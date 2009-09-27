@@ -1,0 +1,34 @@
+## Process this file with automake to produce Makefile.in
+
+PACKAGE = @PACKAGE@
+VERSION = @VERSION@
+BINDIR  = @bindir@
+DATADIR2 = @datadir@
+
+LIBDIR  = $(DATADIR2)/$(PACKAGE)
+PERL  = @PERL@
+KPGENDINEDIR = $(top_srcdir)/src/kpengine
+
+pkgdata_PROGRAMS = kpengine
+pkgdata_DATA = jdata.dat
+
+DEFS = -DLOCALEDIR=\"$(localedir)\" -DVERSION=\"$(VERSION)\" -DPACKAGE=\"$(PACKAGE)\" -DFOR_PILOT_COMPAT -DKP_LIBDIR=\"$(LIBDIR)\" -DBINDIR=\"$(LIBDIR)\"
+if ENABLE_WIN32
+endif
+
+
+AM_CFLAGS = $(DEPS_CFLAGS) 
+INCLUDES =  -I jstroke
+
+kpengine_SOURCES = jstroke/scoring.c jstroke/util.c kpengine.c jstroke/jstroke.h
+kpengine_LDADD =  $(DEPS_LIBS) @LIBINTL@
+kpengine_LDFLAGS = -Wall
+
+## Some special rules are needed for jdata.dat installation
+clean-local: clean-jdata
+clean-jdata:
+	rm -f jdata.dat
+jdata.dat: jstroke/strokedata.h conv_jdata.pl
+	$(PERL) $(KPGENDINEDIR)/conv_jdata.pl < $(KPGENDINEDIR)/jstroke/strokedata.h > jdata.dat
+
+EXTRA_DIST = conv_jdata.pl jstroke/jstroke.h jstroke/memowrite.h jstroke/strokedata.h jstroke/jstrokerc.h jstroke/pilotcompat.h

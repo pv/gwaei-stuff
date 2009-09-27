@@ -1,0 +1,1 @@
+sexy-disable.o: sexy-disable.c

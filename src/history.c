@@ -1,0 +1,444 @@
+/*****************************************************************************
+
+  FILE:
+  src/history.c
+
+  DESCRIPTION:
+  To be written.
+
+  AUTHOR:
+  Helps to manage searchitem objects and abstract out the concept of history.
+  SearchItems contain a variety info, telling whether they are in use or not,
+  number of results, etc.  The HistoryList object contains the back history,
+  forward history, and a pointer to the current search.
+
+  LICENSE:
+  This file is part of gWaei.
+
+  gWaei is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  gWaei is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with gWaei.  If not, see <http://www.gnu.org/licenses/>.
+
+*******************************************************************************/
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <regex.h>
+
+#include <glib.h>
+
+#include <gwaei/definitions.h>
+#include <gwaei/dictionaries.h>
+#include <gwaei/history.h>
+
+HistoryList *results_history;
+HistoryList *kanji_history;
+
+//
+//Searchitem primitive
+//
+SearchItem* searchitem_new (char* query, DictionaryInfo* dictionary,
+                                         const int TARGET)
+{
+  SearchItem *temp;
+
+  //Allocate some memory
+  if ((temp = malloc(sizeof(struct SearchItem))) == NULL) return NULL;
+
+  //Copy the query and dicitonary strings
+  strcpy(temp->query, query);
+
+  temp->results_medium = NULL;
+  temp->results_low = NULL;
+  
+  if (TARGET != GWAEI_TARGET_RESULTS &&
+      TARGET != GWAEI_TARGET_KANJI   &&
+      TARGET != GWAEI_TARGET_CONSOLE       )
+    return NULL;
+
+  //Set the internal pointers to the correct global variables
+  temp->fd     = NULL;
+  temp->status = GWAEI_SEARCH_IDLE;
+  temp->input  = NULL;
+  temp->output = NULL;
+  temp->dictionary = dictionary;
+  temp->target = TARGET;
+  temp->total_relevant_results = 0;
+  temp->total_irrelevant_results = 0;
+  temp->total_results = 0;
+  temp->results_found = TRUE;
+
+  //Create the compiled regular expression
+  int eflags_exist    = REG_EXTENDED | REG_ICASE | REG_NOSUB;
+  int eflags_relevant = REG_EXTENDED | REG_ICASE | REG_NOSUB;
+  int eflags_locate   = REG_EXTENDED | REG_ICASE;
+
+  //Create the needed regex for searching and locating
+  char query_temp[MAX_QUERY];
+  strcpy_with_query_formatting(query_temp, query, dictionary->name, TARGET);
+
+  char expression[(MAX_QUERY * 4) + 150];
+  char *query_ptr = &query_temp[strlen(query_temp)];
+  temp->total_re = 0;
+
+  //The loop compiles a regex for every item between the delimitors
+  while (query_ptr != &query_temp[0] && temp->total_re < MAX_QUERY)
+  {
+    *(query_ptr - 1) = '\0'; //removes the trailing slash
+
+    do {
+      query_ptr = g_utf8_prev_char(query_ptr);
+    } while (query_ptr != &query_temp[0] && *(query_ptr - 1) != DELIMITOR_CHR);
+
+    //Create Regular Expression for Match exists
+    if (regcomp(&((temp->re_exist)[temp->total_re]), query_ptr, eflags_exist) != 0) {
+      int j = 0;
+      while (j < temp->total_re - 1)
+        regfree(&(temp->re_exist[j]));
+      free(temp);
+      temp = NULL;
+      return NULL;
+    }
+
+    //Create Regular Expression for Locate the match
+    if (regcomp(&((temp->re_locate)[temp->total_re]), query_ptr, eflags_locate) != 0) {
+      int j = 0;
+      while (j < temp->total_re - 1)
+        regfree(&(temp->re_locate[j]));
+      free(temp);
+      temp = NULL;
+      return NULL;
+    }
+
+    gunichar test_char = g_utf8_get_char(query_ptr);
+    if (test_char == L'(')
+    {
+      test_char = g_utf8_get_char(g_utf8_next_char(query_ptr));
+    }
+
+    //Prepare the string expression for high relevance
+    //Kanji version
+    if (test_char > L'ン') {
+        strcpy(expression, "((^無)|(^不)|(^非)|(^)|(^お)|(^御))(");
+        strcat(expression, query_ptr);
+        strcat(expression, ")((\\])|(\\))|(\\})|( ))");
+    }
+    //Katakana/Hiragana version
+    else if (test_char > L'ぁ')
+    {
+        strcpy(expression, "((^)|(\\[)|(\\()|(\\{)|( )|(^お))(");
+        strcat(expression, query_ptr);
+        strcat(expression, ")((\\])|(\\))|(\\})|( ))");
+    }
+    //Romanji version
+    else {
+        strcpy(expression, "\\{(");
+        strcat(expression, query_ptr);
+        strcat(expression, ")\\}|(\\) |/)((to )|(to be )|())(");
+        strcat(expression, query_ptr);
+        strcat(expression, ")(( \\([^/]+\\)/)|(/))|(\\[)(");
+        strcat(expression, query_ptr);
+        strcat(expression, ")(\\])|^(");
+        strcat(expression, query_ptr);
+        strcat(expression, ")\\b");
+    }
+
+    //Create Regular Expression for high relevance
+    if (regcomp(&((temp->re_relevance_high)[temp->total_re]), expression, eflags_relevant) != 0) 
+    {
+      int j = 0;
+      while (j < temp->total_re - 1) {
+  
+        regfree(&(temp->re_locate[j]));
+      }
+      free(temp);
+      return NULL;
+    }
+
+
+    //Prepare the string expression for medium relevance
+    //Two character Kanji version
+    /*
+    if ( g_utf8_strlen (query_ptr, -1) == 2 &&
+         g_utf8_get_char(query_ptr) > L'ン' && 
+         g_utf8_get_char(g_utf8_next_char(query_ptr)) > L'ン' )
+    {
+      // (^query..|^..query\b)
+      strcpy(expression, "(^");
+      strcat(expression, query_ptr);
+      strcat(expression, "..\\b|^..");
+      strcat(expression, query_ptr);
+      strcat(expression, "\\b)");
+    }
+    //Katakana/Hiragana/Kanji version
+    else */
+    if (test_char >= L'ぁ')
+    {
+      strcpy(expression, "((^)|(\\[)|(\\()|(\\{)|( )|(お)|(を)|(に)|(で)|(は)|(と))(");
+      /*
+      strcpy(expression, "(((\\()|(\\[)|(\\{)|( ))(");
+      */
+      strcat(expression, query_ptr);
+      /*
+      strcat(expression, "))|((");
+      strcat(expression, query_ptr);
+      strcat(expression, ")((\\()|(\\[)|(\\{)|( )))");
+      */
+      strcat(expression, ")((で)|(が)|(の)|(を)|(に)|(で)|(は)|(と)|(\\])|(\\))|(\\})|( ))");
+    }
+    //Romanji version
+    else
+    {
+      strcpy(expression, "(\\b(");
+      strcat(expression, query_ptr);
+      strcat(expression, ")\\b|^(");
+      strcat(expression, query_ptr);
+      strcat(expression, "))");
+    }
+
+    //Create Regular Expression for medium relevance
+    if (regcomp(&((temp->re_relevance_medium)[temp->total_re]), expression, eflags_relevant) != 0) {
+      int j = 0;
+      while (j < temp->total_re - 1) {
+        regfree(&(temp->re_relevance_medium[j]));
+        regfree(&(temp->re_relevance_high[j]));
+        regfree(&(temp->re_locate[j]));
+      }
+      free(temp);
+      return NULL;
+    }
+
+    temp->total_re++;
+  }
+
+  return temp;
+}
+
+
+void searchitem_reset_result_counters(SearchItem* item)
+{
+  item->total_relevant_results = 0;
+  item->total_irrelevant_results = 0;
+  item->total_results = 0;
+}
+
+
+gboolean searchitem_do_pre_search_prep (SearchItem* item)
+{
+    if ((item->input = malloc (MAX_LINE)) == NULL)
+    {
+      return FALSE;
+    }
+    if ((item->output = malloc (MAX_LINE)) == NULL)
+    {
+      free (item->input);
+      item->input = NULL;
+      return FALSE;
+    }
+    item->fd = fopen ((item->dictionary)->path, "r");
+    item->status = GWAEI_SEARCH_SEARCHING;
+    return TRUE;
+}
+
+
+void searchitem_do_post_search_clean (SearchItem* item)
+{
+    if (item->fd != NULL)
+    {
+      fclose(item->fd);
+      item->fd = NULL;
+    }
+
+    if (item->input != NULL)
+    {
+      free(item->input);
+      item->input = NULL;
+    }
+    if (item->output != NULL)
+    {
+      free(item->output);
+      item->output = NULL;
+    }
+    item->status = GWAEI_SEARCH_IDLE;
+}
+
+
+gboolean searchitem_is_prepared(SearchItem* item)
+{
+    return (item->input != NULL && item->output != NULL);
+}
+
+
+void searchitem_free(SearchItem* item) {
+  int i = 0;
+  while (i < item->total_re) {
+    regfree(&(item->re_exist[i]));
+    regfree(&(item->re_locate[i]));
+    regfree(&(item->re_relevance_high[i]));
+    regfree(&(item->re_relevance_medium[i]));
+    i++;
+  }
+  searchitem_do_post_search_clean (item);
+  free(item);
+  item = NULL;
+}
+
+
+//
+//Historylist methods
+//
+
+HistoryList* historylist_get_list(const int TARGET)
+{
+    if (TARGET == GWAEI_HISTORYLIST_RESULTS)
+      return results_history;
+    else if (TARGET == GWAEI_HISTORYLIST_KANJI)
+      return kanji_history;
+    else
+      return NULL;
+}
+
+
+HistoryList* historylist_new()
+{
+    HistoryList *temp;
+    if ((temp = malloc(sizeof(struct SearchItem))) != NULL)
+    {
+      temp->back = NULL;
+      temp->forward = NULL;
+      temp->current = NULL;
+    }
+
+    return temp;
+}
+
+
+void historylist_clear_forward_history(const int TARGET)
+{
+    HistoryList *hl = historylist_get_list (TARGET);
+
+    while (hl->forward != NULL)
+    {
+      searchitem_free((hl->forward)->data);
+      hl->forward = g_list_delete_link(hl->forward, hl->forward);
+    }
+}
+
+
+GList* historylist_get_back_history (const int TARGET)
+{
+    HistoryList *list = historylist_get_list (TARGET);
+    return list->back;
+}
+
+
+GList* historylist_get_forward_history (const int TARGET)
+{
+    HistoryList *list = historylist_get_list (TARGET);
+    return list->forward;
+}
+
+
+SearchItem* historylist_get_current (const int TARGET)
+{
+    HistoryList *list = historylist_get_list (TARGET);
+    return list->current;
+}
+
+
+GList* historylist_get_combined_history_list (const int TARGET)
+{
+    HistoryList *hl = historylist_get_list (TARGET);
+    GList *back_copy = g_list_copy (hl->back);
+
+    GList *out = NULL;
+    out = g_list_copy (hl->forward);
+    out = g_list_reverse (out);
+    out = g_list_concat (out, back_copy);
+
+    return out;
+}
+
+
+void historylist_add_searchitem_to_history(const int TARGET, SearchItem *item)
+{ 
+    HistoryList *hl = historylist_get_list (TARGET);
+    historylist_clear_forward_history(TARGET);
+
+    if (g_list_length(hl->back) >= 20)
+    {
+      GList* last = g_list_last (hl->back); 
+      searchitem_free(last->data);
+      hl->back = g_list_delete_link(hl->back, last);
+    }
+    if (hl->forward != NULL)
+    {
+      GList *current = hl->forward;
+      while (current != NULL)
+      {
+        searchitem_free(current->data);
+        current = current->next;
+      }
+      g_list_free(hl->forward);
+    }
+
+    hl->back = g_list_prepend(hl->back, item);
+}
+
+
+static void shift_history_by_target(const int TARGET, GList **from, GList **to)
+{
+    HistoryList *hl = historylist_get_list (TARGET);
+    SearchItem **current = &(hl->current);
+
+    //Handle the current searchitem if it exists
+    if (*current != NULL)
+    {
+      if ((*current)->results_found)
+        *to = g_list_prepend (*to, *current);
+      else
+        searchitem_free (*current);
+      *current = NULL;
+    }
+
+    //Shift the top back searchitem to current (which is now empty)
+    GList *item = *from;
+    *from = g_list_remove_link (*from, item);
+    *current = item->data;
+
+    if (g_list_length (*from) == 0)
+      *from = NULL;
+}
+
+
+void historylist_go_back_by_target (const int TARGET)
+{ 
+    HistoryList *hl = historylist_get_list (TARGET);
+    shift_history_by_target (TARGET, &(hl->back), &(hl->forward));
+}
+
+
+void historylist_go_forward_by_target (const int TARGET)
+{ 
+    HistoryList *hl = historylist_get_list (TARGET);
+    shift_history_by_target (TARGET, &(hl->forward), &(hl->back));
+}
+
+
+//connect history_popup to history_menuitem
+void gwaei_history_initialize_history() {
+    results_history = historylist_new();
+    kanji_history   = historylist_new();
+}
+
+
+

@@ -1,0 +1,75 @@
+#define MAX_QUERY        250
+#define MAX_DICTIONARIES 20
+#define MAX_DICTIONARY   100
+#define MAX_RESULTS      1000000
+#define MAX_LINE         5000 
+#define MAX_NMATCH       5
+#define MAX_CHUNK        500
+#define MAX_GCONF_KEY    100
+#define MAX_MEDIUM_IRRELIVENT_RESULTS 100
+#define MAX_LOW_IRRELIVENT_RESULTS    50
+
+
+//#define DEFAULT_FONT_SIZE 12
+#define MAX_FONT_SIZE     22
+#define MIN_FONT_SIZE     8
+
+//GConfig
+#define GCPATH_INTERFACE           "/desktop/gnome/interface"
+#define GCKEY_TOOLBAR_STYLE        "/desktop/gnome/interface/toolbar_style"
+
+#define GCPATH_GWAEI               "/apps/gwaei"
+#define GCKEY_GWAEI_TOOLBAR_SHOW   "/apps/gwaei/toolbar_show"
+#define GCKEY_GWAEI_LESS_RELEVANT_SHOW   "/apps/gwaei/less_relevant_results_show"
+#define GCKEY_GWAEI_FONT_SIZE      "/apps/gwaei/font_size"
+#define GCKEY_GWAEI_HIRA_KATA      "/apps/gwaei/query_hiragana_to_katakana"
+#define GCKEY_GWAEI_KATA_HIRA      "/apps/gwaei/query_katakana_to_hiragana"
+#define GCKEY_GWAEI_ROMAN_KANA     "/apps/gwaei/query_romanji_to_kana"
+#define GCKEY_GWAEI_SPELLCHECK     "/apps/gwaei/query_spellcheck"
+
+#define GCKEY_GWAEI_MATCH_FG       "/apps/gwaei/highlighting/match_foreground"
+#define GCKEY_GWAEI_MATCH_BG       "/apps/gwaei/highlighting/match_background"
+#define GCKEY_GWAEI_HEADER_FG      "/apps/gwaei/highlighting/header_foreground"
+#define GCKEY_GWAEI_HEADER_BG      "/apps/gwaei/highlighting/header_background"
+#define GCKEY_GWAEI_COMMENT_FG     "/apps/gwaei/highlighting/comment_foreground"
+
+#define GWAEI_MATCH_FG_FALLBACK       "#000000"
+#define GWAEI_MATCH_BG_FALLBACK       "#CCEECC"
+#define GWAEI_HEADER_FG_FALLBACK      "#EE1111"
+#define GWAEI_HEADER_BG_FALLBACK      "#FFDEDE"
+#define GWAEI_COMMENT_FG_FALLBACK     "#2222DD"
+
+//Location to install dictionaries from
+#define GCKEY_GWAEI_ENGLISH_SOURCE  "/apps/gwaei/dictionary/english_source"
+#define GCKEY_GWAEI_KANJI_SOURCE    "/apps/gwaei/dictionary/kanji_source"
+#define GCKEY_GWAEI_NAMES_SOURCE    "/apps/gwaei/dictionary/names_source"
+#define GCKEY_GWAEI_PLACES_SOURCE   "/apps/gwaei/dictionary/places_source"
+#define GCKEY_GWAEI_RADICALS_SOURCE "/apps/gwaei/dictionary/radicals_source"
+
+#define GWAEI_ENGLISH_URI_FALLBACK  "ftp://ftp.monash.edu.au/pub/nihongo/edict.gz"
+#define GWAEI_KANJI_URI_FALLBACK    "ftp://ftp.monash.edu.au/pub/nihongo/kanjidic.gz"
+#define GWAEI_NAMES_URI_FALLBACK    "ftp://ftp.monash.edu.au/pub/nihongo/enamdict.gz"
+#define GWAEI_RADICALS_URI_FALLBACK "ftp://ftp.monash.edu.au/pub/nihongo/kradfile.gz"
+
+
+#define GCKEY_DEFAULT_BROWSER "/desktop/gnome/url-handlers/http/command"
+
+#define HIRAGANA  "(あ)|(い)|(う)|(え)|(お)|(か)(き)|(く)|(け)|(こ)|(が)|(ぎ)|(ぐ)|(げ)|(ご)|(さ)|(し)|(す)|(せ)|(そ)|(ざ)|(じ)|(ず)|(ぜ)|(ぞ)|(た)|(ち)(つ)|(て)|(と)|(だ)|(ぢ)|(づ)|(で)|(ど)|(な)|(に)|(ぬ)|(ね)|(の)|(は)(ひ)|(ふ)|(へ)|(ほ)|(ば)|(び)(ぶ)|(べ)|(ぼ)|(ぱ)|(ぴ)|(ぷ)|(ぺ)|(ぽ)(ま)|(み)|(む)|(め)|(も)|(や)|(ゆ)|(よ)|(ら)|(り)|(る)(れ)|(ろ)|(わ)|(を)|(ん)(ぁ)|(ぃ)|(ぇ)|(ぉ)"
+#define KATAKANA "(ア)|(イ)|(ウ)|(エ)|(オ)|(カ)|(キ)|(ク)|(ケ)|(コ)|(ガ)|(ギ)|(グ)|(ゲ)|(ゴ)|(サ)|(シ)|(ス)|(セ)|(ソ)|(ザ)|(ジ)|(ズ)|(ゼ)|(ゾ)|(タ)|(チ)|(ツ)|(テ)|(ト)|(ダ)|(ジ)|(ヅ)|(デ)|(ド)|(ナ)|(ニ)|(ヌ)|(ネ)|(ノ)|(ハ)|(ヒ)|(フ)|(ヘ)|(ホ)|(バ)|(ビ)|(ブ)|(ベ)|(ボ)|(パ)|(ピ)|(プ)|(ペ)|(ポ)|(マ)|(ミ)|(ム)|(メ)|(モ)|(ヤ)|(ユ)|(ヨ)|(ラ)|(リ)|(ル)|(レ)|(ロ)|(ワ)|(ヲ)|(ン)|(ァ)|(ィ)|(ェ)|(ォ)"
+
+
+#define GWAEI_TARGET_RESULTS  0
+#define GWAEI_TARGET_KANJI    1
+#define GWAEI_TARGET_ENTRY    2
+#define GWAEI_TARGET_CONSOLE  3
+
+#define DELIMITOR_STR     ";"
+#define DELIMITOR_CHR     ';'
+
+#define HIGH_RELEVANCE   2
+#define MEDIUM_RELEVANCE 1
+#define LOW_RELEVANCE    0
+
+#define GWAEI_GENERIC_ERROR "gwaei generic error"
+
+#define GWAEI_FILE_ERROR 1

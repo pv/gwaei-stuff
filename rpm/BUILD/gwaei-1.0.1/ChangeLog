@@ -1,0 +1,8 @@
+2009-09-25  pizzach  <pizzach@gmail.com>
+	* configure.ac                  : --without-gnome no longer requires gnome-doc-utils
+	* Makefile.am                   : the help directory is no longer included
+																		when compiled without gnome
+	* utilities.c                   : fixed conversion of "ge" to "げ"
+	* src/kpengine/conv_jdata.pl    : Script was using an absolute path to perl
+	* rpm/gwaei.spec.in             : No longer blatently overwrites
+																		~/.rpmmacros when creating rpms
