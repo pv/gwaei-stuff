@@ -1,0 +1,31 @@
+ReadMe
+*******************
+
+To use this kanjipad library you need to call three functions after including
+the kanjipad.h header
+
+/* Set the entry to append the result to*/
+void kanjipad_set_target_text_widget(GtkWidget* widget);
+
+/* Initialize kanjipad.  This should only be done once*/
+void initialize_kanjipad ();
+
+/* The method to be called when you want the kanjipad window to pop up*/
+void show_kanjipad (GtkBuilder* builder);
+
+
+Kanjipad requires you to build against:
+  gtk+-2.0
+  gconf-2.0
+  gmodule-export-2.0
+
+These files should be passed to gcc with your program:
+  include/gwaei/utilities.h
+  include/gwaei/definitions.h
+  kanjipad/callbacks.c
+  kanjipad/callbacks.h
+  kanjipad/kanjipad.c
+  kanjipad/kanjipad.h
+  kanjipad/padarea.c
+  kanjipad/padarea.h
+
