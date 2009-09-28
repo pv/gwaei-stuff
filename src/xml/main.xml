@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!--Generated with glade3 3.4.5 on Fri Sep 25 21:47:09 2009 -->
+<!--Generated with glade3 3.4.5 on Mon Sep 28 17:15:45 2009 -->
 <interface>
   <object class="GtkListStore" id="model1">
     <columns>
@@ -362,6 +362,7 @@
       <object class="GtkVBox" id="main_vbox">
         <property name="visible">True</property>
         <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
+        <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
         <child>
           <object class="GtkMenuBar" constructor="uimanager4" id="menubar">
             <property name="visible">True</property>
@@ -450,6 +451,9 @@
                 <property name="icon_name">non-word-boundary</property>
                 <signal handler="do_insert_not_word_boundary" name="clicked"/>
               </object>
+              <packing>
+                <property name="homogeneous">True</property>
+              </packing>
             </child>
             <child>
               <object class="GtkToolButton" id="unkown_character_toolitem">
@@ -523,16 +527,6 @@
             <property name="border_width">6</property>
             <property name="spacing">8</property>
             <child>
-              <object class="GtkLabel" id="search_label">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">Search:</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkAlignment" id="search_entry_container">
                 <property name="visible">True</property>
                 <child>
@@ -545,29 +539,19 @@
                     <property name="has_default">True</property>
                     <property name="tooltip-text" translatable="yes">Input your query here</property>
                     <property name="max_length">50</property>
+                    <property name="text" translatable="yes">Enter Your Search Text</property>
+                    <property name="secondary_icon_stock">search_entry_interal_clear_button</property>
+                    <property name="secondary_icon_name">gtk-clear</property>
                     <signal handler="do_focus_change_on_key_press" name="key_press_event"/>
                     <signal handler="do_switch_dictionaries_on_tab_press" name="key_press_event"/>
                     <signal handler="do_history_change_on_key_press" name="key_press_event"/>
+                    <signal handler="do_clear_search" name="icon_release"/>
                     <signal handler="do_update_clipboard_on_focus_change" name="focus_in_event"/>
                     <signal handler="do_search" name="activate"/>
                     <signal handler="search_drag_data_recieved" name="drag_data_received"/>
                   </object>
                 </child>
               </object>
-              <packing>
-                <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="dictionary_label">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">Dictionary:</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">2</property>
-              </packing>
             </child>
             <child>
               <object class="GtkComboBox" id="dictionary_combobox">
@@ -584,8 +568,23 @@
               </object>
               <packing>
                 <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">3</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="button2">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="label" translatable="yes">gtk-find</property>
+                <property name="relief">GTK_RELIEF_NONE</property>
+                <property name="use_stock">True</property>
+                <signal handler="do_search" name="clicked"/>
+                <signal handler="do_search" name="activate"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">2</property>
               </packing>
             </child>
           </object>
@@ -609,6 +608,7 @@
                 <child>
                   <object class="GtkVBox" id="vbox1">
                     <property name="visible">True</property>
+                    <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
                     <child>
                       <object class="GtkHBox" id="hbox1">
                         <property name="visible">True</property>
