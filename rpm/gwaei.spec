@@ -1,4 +1,4 @@
-%define prefix /usr
+%define prefix /usr/local
 %define sysconfdir /etc
 
 %define localedir ${datarootdir}/locale
@@ -19,7 +19,7 @@ support. For example, you can use periods in place of
 unknown Kanji of a word to search for it.
 %prep
 %setup -q
-./configure --prefix /usr --sysconfdir=/etc --disable-schemas-install
+./configure --prefix /usr/local --sysconfdir=/etc --disable-schemas-install
 [ -f rpm/rpm_gconf_install_post.sh ]
 [ -f rpm/rpm_gconf_uninstall_pre.sh ]
 %build
