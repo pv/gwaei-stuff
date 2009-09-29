@@ -910,6 +910,38 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
     //Start the search
     gwaei_search_get_results(hl->current);
 
+    //Set the colors of the entry to the current match highlight colors
+    #define IS_HEXCOLOR(color) (regexec(&re_hexcolor, (color), 1, NULL, 0) == 0)
+    char key[100];
+    char *key_ptr;
+    strcpy(key, GCPATH_GWAEI);
+    strcat(key, "/highlighting/match");
+    key_ptr = &key[strlen(key)];
+    char fg_color[100], bg_color[100], fallback[100];
+    char *ret;
+    strcpy(key_ptr, "_foreground");
+    gwaei_util_strncpy_fallback_from_key (fallback, key, 100);
+    ret = gwaei_pref_get_string (fg_color, key, fallback, 100);
+    if (IS_HEXCOLOR(fg_color) == FALSE)
+    {
+      if (ret != NULL) gwaei_pref_set_string (key, fallback);
+      strncpy(fg_color, fallback, 100);
+    }
+    strcpy(key_ptr, "_background");
+    gwaei_util_strncpy_fallback_from_key (fallback, key, 100);
+    ret = gwaei_pref_get_string (bg_color, key, fallback, 100);
+    if (IS_HEXCOLOR(bg_color) == FALSE)
+    {
+      if (ret != NULL) gwaei_pref_set_string (key, fallback);
+      strncpy(bg_color, fallback, 100);
+    }
+    GdkColor forground, background;
+    gdk_color_parse (fg_color, &forground);
+    gdk_color_parse (bg_color, &background);
+    gtk_widget_modify_base(GTK_WIDGET (search_entry), GTK_STATE_NORMAL, &background);
+    gtk_widget_modify_text(GTK_WIDGET (search_entry), GTK_STATE_NORMAL, &forground);
+
+    //Update the toolbar buttons
     update_toolbar_buttons();
 }
 
@@ -998,18 +1030,22 @@ G_MODULE_EXPORT void search_drag_data_recieved (GtkWidget        *widget,
 G_MODULE_EXPORT void do_update_button_states_based_on_entry_text (GtkWidget *widget,
                                                                   gpointer   data   )
 {
-   //gtk_entry_set_icon_from_icon_name   (search_entry, GTK_ENTRY_ICON_SECONDARY, "gtk-clear");
-   guint16 length = gtk_entry_get_text_length (GTK_ENTRY (search_entry));
-   gboolean enable = (length > 0);
+  //gtk_entry_set_icon_from_icon_name   (search_entry, GTK_ENTRY_ICON_SECONDARY, "gtk-clear");
+  guint16 length = gtk_entry_get_text_length (GTK_ENTRY (search_entry));
+  gboolean enable = (length > 0);
 
-   gtk_entry_set_icon_sensitive (GTK_ENTRY (search_entry), GTK_ENTRY_ICON_SECONDARY, (length > 0));
-   GtkWidget *button = GTK_WIDGET (gtk_builder_get_object(builder, "search_entry_submit_button"));
-   gtk_widget_set_sensitive (button, enable);
+  gtk_entry_set_icon_sensitive (GTK_ENTRY (search_entry), GTK_ENTRY_ICON_SECONDARY, (length > 0));
+  GtkWidget *button = GTK_WIDGET (gtk_builder_get_object(builder, "search_entry_submit_button"));
+  gtk_widget_set_sensitive (button, enable);
 
-   if (enable)
-     gtk_entry_set_icon_from_stock(GTK_ENTRY (search_entry), GTK_ENTRY_ICON_SECONDARY, GTK_STOCK_CLEAR);
-   else
-     gtk_entry_set_icon_from_stock(GTK_ENTRY (search_entry), GTK_ENTRY_ICON_SECONDARY, NULL);
+  if (enable)
+    gtk_entry_set_icon_from_stock(GTK_ENTRY (search_entry), GTK_ENTRY_ICON_SECONDARY, GTK_STOCK_CLEAR);
+  else
+    gtk_entry_set_icon_from_stock(GTK_ENTRY (search_entry), GTK_ENTRY_ICON_SECONDARY, NULL);
+
+  //Return widget colors back to normal
+  gtk_widget_modify_base(GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
+  gtk_widget_modify_text(GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
 }
 
 
