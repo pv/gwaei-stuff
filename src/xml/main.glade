@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Mon Sep 28 19:51:17 2009 -->
+<!--Generated with glade3 3.4.5 on Mon Sep 28 23:26:42 2009 -->
 <glade-interface>
   <widget class="GtkMenu" id="back_popup">
     <property name="visible">True</property>
@@ -688,6 +688,7 @@
                 <property name="tooltip" translatable="yes">Select the dictionary you want to use</property>
                 <property name="focus_on_click">False</property>
                 <property name="items" translatable="yes">word</property>
+                <signal name="changed" handler="do_dictionary_changed_action"/>
               </widget>
               <packing>
                 <property name="expand">False</property>

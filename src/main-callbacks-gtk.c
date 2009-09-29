@@ -467,6 +467,13 @@ G_MODULE_EXPORT void do_toolbar_toggle (GtkWidget *widget, gpointer data)
 
 
 
+G_MODULE_EXPORT void do_dictionary_changed_action (GtkWidget *widget, gpointer data)
+{
+    gwaei_ui_grab_focus_by_target(GWAEI_TARGET_ENTRY);
+}
+
+
+
 G_MODULE_EXPORT void do_select_all (GtkWidget *widget, gpointer data)
 {
     guint TARGET;
@@ -740,7 +747,7 @@ G_MODULE_EXPORT gboolean do_switch_dictionaries_on_tab_press (GtkWidget *widget,
         gwaei_ui_cycle_dictionaries_backward ();
 
       //Set up the entry for typing
-      gwaei_ui_text_select_all_by_target (GWAEI_TARGET_ENTRY);
+      //gwaei_ui_text_select_all_by_target (GWAEI_TARGET_ENTRY);
       gwaei_ui_grab_focus_by_target(GWAEI_TARGET_ENTRY);
 
       return TRUE;
@@ -869,7 +876,7 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
       return;
     }
 
-    gwaei_ui_text_select_all_by_target(GWAEI_TARGET_ENTRY);
+    //gwaei_ui_text_select_all_by_target(GWAEI_TARGET_ENTRY);
 
     //Start the search
     gwaei_search_get_results(hl->current);
