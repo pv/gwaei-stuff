@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!--Generated with glade3 3.4.5 on Tue Sep 29 09:43:39 2009 -->
+<!--Generated with glade3 3.4.5 on Tue Sep 29 11:45:55 2009 -->
 <interface>
   <object class="GtkListStore" id="model1">
     <columns>
@@ -67,7 +67,7 @@
           <object class="GtkAction" id="edit_menuitem">
             <property name="stock_id" translatable="yes">gtk-edit</property>
             <property name="name">edit_menuitem</property>
-            <property name="tooltip" translatable="yes">Edit a the current vocabulary list</property>
+            <property name="tooltip" translatable="yes">Edit the current vocabulary list</property>
             <signal handler="do_edit" name="activate"/>
           </object>
         </child>
@@ -410,6 +410,7 @@
               <object class="GtkToolButton" id="edit_toolbutton">
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
+                <property name="tooltip-text" translatable="yes">Edit the current vocabulary list</property>
                 <property name="stock_id">gtk-edit</property>
                 <signal handler="do_edit" name="clicked"/>
               </object>
@@ -643,7 +644,7 @@
                 <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="tooltip-text" translatable="yes">Click to search</property>
+                <property name="tooltip-text" translatable="yes">Click to start search</property>
                 <property name="relief">GTK_RELIEF_NONE</property>
                 <property name="image_position">GTK_POS_RIGHT</property>
                 <signal handler="do_search" name="clicked"/>
@@ -652,6 +653,7 @@
                   <object class="GtkImage" id="image2">
                     <property name="visible">True</property>
                     <property name="stock">gtk-find</property>
+                    <property name="icon_size">1</property>
                   </object>
                 </child>
               </object>
