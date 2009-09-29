@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Fri Sep 25 21:47:09 2009 -->
+<!--Generated with glade3 3.4.5 on Mon Sep 28 19:51:17 2009 -->
 <glade-interface>
   <widget class="GtkMenu" id="back_popup">
     <property name="visible">True</property>
@@ -57,6 +57,7 @@
     <child>
       <widget class="GtkVBox" id="main_vbox">
         <property name="visible">True</property>
+        <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
         <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
         <child>
           <widget class="GtkMenuBar" id="menubar">
@@ -556,6 +557,9 @@
                 <property name="icon_name">non-word-boundary</property>
                 <signal name="clicked" handler="do_insert_not_word_boundary"/>
               </widget>
+              <packing>
+                <property name="homogeneous">True</property>
+              </packing>
             </child>
             <child>
               <widget class="GtkToolButton" id="unkown_character_toolitem">
@@ -629,7 +633,7 @@
             <property name="border_width">6</property>
             <property name="spacing">8</property>
             <child>
-              <widget class="GtkLabel" id="search_label">
+              <widget class="GtkLabel" id="label3">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Search:</property>
               </widget>
@@ -651,9 +655,12 @@
                     <property name="has_default">True</property>
                     <property name="tooltip" translatable="yes">Input your query here</property>
                     <property name="max_length">50</property>
+                    <property name="caps_lock_warning">False</property>
+                    <signal name="changed" handler="do_update_button_states_based_on_entry_text"/>
                     <signal name="key_press_event" handler="do_focus_change_on_key_press"/>
                     <signal name="key_press_event" handler="do_switch_dictionaries_on_tab_press"/>
                     <signal name="key_press_event" handler="do_history_change_on_key_press"/>
+                    <signal name="icon_release" handler="do_clear_search"/>
                     <signal name="focus_in_event" handler="do_update_clipboard_on_focus_change"/>
                     <signal name="activate" handler="do_search"/>
                     <signal name="drag_data_received" handler="search_drag_data_recieved"/>
@@ -665,7 +672,7 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkLabel" id="dictionary_label">
+              <widget class="GtkLabel" id="label5">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Dictionary:</property>
               </widget>
@@ -686,6 +693,30 @@
                 <property name="expand">False</property>
                 <property name="fill">False</property>
                 <property name="position">3</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkButton" id="search_entry_submit_button">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="tooltip" translatable="yes">Click to search</property>
+                <property name="relief">GTK_RELIEF_NONE</property>
+                <property name="image_position">GTK_POS_TOP</property>
+                <property name="response_id">0</property>
+                <signal name="clicked" handler="do_search"/>
+                <signal name="activate" handler="do_search"/>
+                <child>
+                  <widget class="GtkImage" id="image2">
+                    <property name="visible">True</property>
+                    <property name="stock">gtk-find</property>
+                  </widget>
+                </child>
+              </widget>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">4</property>
               </packing>
             </child>
           </widget>
@@ -709,6 +740,8 @@
                 <child>
                   <widget class="GtkVBox" id="vbox1">
                     <property name="visible">True</property>
+                    <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
+                    <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
                     <child>
                       <widget class="GtkHBox" id="hbox1">
                         <property name="visible">True</property>

@@ -959,3 +959,22 @@ G_MODULE_EXPORT void search_drag_data_recieved (GtkWidget        *widget,
     }
 }
 
+G_MODULE_EXPORT void do_update_button_states_based_on_entry_text (GtkWidget *widget,
+                                                                  gpointer   data   )
+{
+   //gtk_entry_set_icon_from_icon_name   (search_entry, GTK_ENTRY_ICON_SECONDARY, "gtk-clear");
+   guint16 length = gtk_entry_get_text_length (GTK_ENTRY (search_entry));
+   gboolean enable = (length > 0);
+
+   gtk_entry_set_icon_sensitive (GTK_ENTRY (search_entry), GTK_ENTRY_ICON_SECONDARY, (length > 0));
+   GtkWidget *button = GTK_WIDGET (gtk_builder_get_object(builder, "search_entry_submit_button"));
+   gtk_widget_set_sensitive (button, enable);
+
+   if (enable)
+     gtk_entry_set_icon_from_stock(GTK_ENTRY (search_entry), GTK_ENTRY_ICON_SECONDARY, GTK_STOCK_CLEAR);
+   else
+     gtk_entry_set_icon_from_stock(GTK_ENTRY (search_entry), GTK_ENTRY_ICON_SECONDARY, NULL);
+}
+
+
+

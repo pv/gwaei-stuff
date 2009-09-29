@@ -17,6 +17,8 @@ void do_settings (GtkWidget *widget, gpointer data);
 void do_destroy(GtkObject*, gpointer);
 void do_search (GtkWidget *widget, gpointer data);
 void do_search_from_history (GtkWidget*, gpointer);
+void do_clear_search(GtkWidget*, gpointer);
+void do_update_button_states_based_on_entry_text (GtkWidget*, gpointer);
 void do_go_menuitem_action (GtkWidget*, gpointer);
 void do_close_kanji_results(GtkWidget *widget, gpointer data);
 gboolean do_switch_dictionaries_on_tab_press (GtkWidget*, GdkEvent*, gpointer*);
