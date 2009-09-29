@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!--Generated with glade3 3.4.5 on Mon Sep 28 23:26:42 2009 -->
+<!--Generated with glade3 3.4.5 on Tue Sep 29 07:52:44 2009 -->
 <interface>
   <object class="GtkListStore" id="model1">
     <columns>
@@ -525,7 +525,7 @@
           <object class="GtkHBox" id="search_hbox">
             <property name="visible">True</property>
             <property name="border_width">6</property>
-            <property name="spacing">8</property>
+            <property name="spacing">4</property>
             <child>
               <object class="GtkLabel" id="label3">
                 <property name="visible">True</property>
@@ -566,17 +566,6 @@
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="label5">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">Dictionary:</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">2</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkComboBox" id="dictionary_combobox">
                 <property name="visible">True</property>
                 <property name="tooltip-text" translatable="yes">Select the dictionary you want to use</property>
@@ -593,17 +582,17 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
-                <property name="position">3</property>
+                <property name="position">2</property>
               </packing>
             </child>
             <child>
               <object class="GtkButton" id="search_entry_submit_button">
                 <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="tooltip-text" translatable="yes">Click to search</property>
-                <property name="relief">GTK_RELIEF_NONE</property>
-                <property name="image_position">GTK_POS_TOP</property>
+                <property name="image_position">GTK_POS_RIGHT</property>
                 <signal handler="do_search" name="clicked"/>
                 <signal handler="do_search" name="activate"/>
                 <child>
@@ -616,7 +605,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
-                <property name="position">4</property>
+                <property name="position">3</property>
               </packing>
             </child>
           </object>
@@ -643,108 +632,6 @@
                     <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
                     <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
                     <child>
-                      <object class="GtkHBox" id="hbox1">
-                        <property name="visible">True</property>
-                        <child>
-                          <object class="GtkHBox" id="results_label_hbox">
-                            <property name="no_show_all">True</property>
-                            <property name="border_width">6</property>
-                            <child>
-                              <object class="GtkLabel" id="results_label_start">
-                                <property name="visible">True</property>
-                                <property name="label" translatable="yes">Found </property>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="results_label_number">
-                                <property name="visible">True</property>
-                                <property name="label">NUMBER</property>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="results_label_end">
-                                <property name="visible">True</property>
-                                <property name="label" translatable="yes"> Results</property>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="position">2</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkHBox" id="results_relevant_hbox">
-                                <property name="no_show_all">True</property>
-                                <child>
-                                  <object class="GtkLabel" id="label2">
-                                    <property name="visible">True</property>
-                                    <property name="label" translatable="yes"> (</property>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="results_relevant_number">
-                                    <property name="visible">True</property>
-                                    <property name="label">NUMBER</property>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="label4">
-                                    <property name="visible">True</property>
-                                    <property name="label" translatable="yes"> Relevant)</property>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="position">2</property>
-                                  </packing>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="position">3</property>
-                              </packing>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkHBox" id="hbox3">
-                            <property name="visible">True</property>
-                            <property name="border_width">6</property>
-                            <child>
-                              <object class="GtkLabel" id="no_results_label">
-                                <property name="visible">True</property>
-                                <property name="label" translatable="yes">Results:  </property>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                              </packing>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                      </packing>
-                    </child>
-                    <child>
                       <object class="GtkScrolledWindow" id="results_scrolled_window">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
@@ -769,9 +656,6 @@
                           </object>
                         </child>
                       </object>
-                      <packing>
-                        <property name="position">1</property>
-                      </packing>
                     </child>
                   </object>
                 </child>
@@ -789,6 +673,8 @@
                 <child>
                   <object class="GtkVBox" id="kanji-vbox">
                     <property name="visible">True</property>
+                    <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
+                    <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
                     <child>
                       <object class="GtkHBox" id="hbox2">
                         <property name="visible">True</property>
@@ -868,7 +754,108 @@
             </child>
           </object>
           <packing>
-            <property name="position">5000</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkHBox" id="hbox1">
+            <property name="visible">True</property>
+            <property name="border_width">6</property>
+            <child>
+              <object class="GtkHBox" id="results_label_hbox">
+                <property name="no_show_all">True</property>
+                <child>
+                  <object class="GtkLabel" id="results_label_start">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Found </property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="results_label_number">
+                    <property name="visible">True</property>
+                    <property name="label">NUMBER</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="results_label_end">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes"> Results</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkHBox" id="results_relevant_hbox">
+                    <property name="no_show_all">True</property>
+                    <child>
+                      <object class="GtkLabel" id="label2">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes"> (</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="results_relevant_number">
+                        <property name="visible">True</property>
+                        <property name="label">NUMBER</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="label4">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes"> Relevant)</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkHBox" id="hbox3">
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkLabel" id="no_results_label">
+                    <property name="visible">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">4</property>
           </packing>
         </child>
       </object>

@@ -2088,7 +2088,7 @@ void initialize_gui_interface(int *argc, char ***argv)
     initialize_kanjipad();
     initialize_history_popups();
 
-    gwaei_sexy_initialize_libsexy();
+    //gwaei_sexy_initialize_libsexy();
     gwaei_ui_update_history_popups();
     gwaei_ui_show_window ("main_window");
     gwaei_prefs_initialize_preferences();
