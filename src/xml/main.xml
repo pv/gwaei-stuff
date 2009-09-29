@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!--Generated with glade3 3.4.5 on Tue Sep 29 11:45:55 2009 -->
+<!--Generated with glade3 3.4.5 on Tue Sep 29 13:18:34 2009 -->
 <interface>
   <object class="GtkListStore" id="model1">
     <columns>
@@ -607,6 +607,7 @@
                     <signal handler="do_focus_change_on_key_press" name="key_press_event"/>
                     <signal handler="do_switch_dictionaries_on_tab_press" name="key_press_event"/>
                     <signal handler="do_history_change_on_key_press" name="key_press_event"/>
+                    <signal handler="do_switch_dictionaries_quickkey_action" name="key_press_event"/>
                     <signal handler="do_clear_search" name="icon_release"/>
                     <signal handler="do_update_clipboard_on_focus_change" name="focus_in_event"/>
                     <signal handler="do_search" name="activate"/>
@@ -624,6 +625,7 @@
                 <property name="tooltip-text" translatable="yes">Select the dictionary you want to use</property>
                 <property name="focus_on_click">False</property>
                 <signal handler="do_dictionary_changed_action" name="changed"/>
+                <signal handler="do_switch_dictionaries_quickkey_action" name="key_press_event"/>
                 <property name="model">model1</property>
                 <child>
                   <object class="GtkCellRendererText" id="renderer1"/>
@@ -706,6 +708,7 @@
                             <signal handler="do_focus_change_on_key_press" name="key_press_event"/>
                             <signal handler="do_switch_dictionaries_on_tab_press" name="key_press_event"/>
                             <signal handler="do_history_change_on_key_press" name="key_press_event"/>
+                            <signal handler="do_switch_dictionaries_quickkey_action" name="key_press_event"/>
                             <signal handler="do_update_clipboard_on_focus_change" name="focus_in_event" object="results_text_view"/>
                             <signal handler="do_get_iter_for_button_release" name="button_release_event"/>
                           </object>
@@ -790,6 +793,7 @@
                             <signal handler="do_focus_change_on_key_press" name="key_press_event"/>
                             <signal handler="do_switch_dictionaries_on_tab_press" name="key_press_event"/>
                             <signal handler="do_history_change_on_key_press" name="key_press_event"/>
+                            <signal handler="do_switch_dictionaries_quickkey_action" name="key_press_event"/>
                             <signal handler="do_update_clipboard_on_focus_change" name="focus_in_event" object="kanji_text_view"/>
                             <signal handler="do_copy" name="copy_clipboard"/>
                           </object>

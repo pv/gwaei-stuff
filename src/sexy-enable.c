@@ -194,10 +194,13 @@ void gwaei_sexy_initialize_libsexy ()
                       G_CALLBACK (do_focus_change_on_key_press), NULL);
     g_signal_connect( G_OBJECT (entry),       "key-press-event",
                       G_CALLBACK (do_history_change_on_key_press), NULL);
+    g_signal_connect( G_OBJECT (entry),       "key-press-event",
+                      G_CALLBACK (do_switch_dictionaries_quickkey_action), NULL);
     g_signal_connect( G_OBJECT (entry),       "changed",
                       G_CALLBACK (do_update_button_states_based_on_entry_text), NULL);
     g_signal_connect( G_OBJECT (entry),       "icon-release",
                       G_CALLBACK (do_clear_search), NULL);
+
 
 
     //New callbacks specifically for libsexy

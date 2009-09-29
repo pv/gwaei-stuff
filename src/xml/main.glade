@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Tue Sep 29 11:45:55 2009 -->
+<!--Generated with glade3 3.4.5 on Tue Sep 29 13:18:34 2009 -->
 <glade-interface>
   <widget class="GtkMenu" id="back_popup">
     <property name="visible">True</property>
@@ -715,6 +715,7 @@
                     <signal name="key_press_event" handler="do_focus_change_on_key_press"/>
                     <signal name="key_press_event" handler="do_switch_dictionaries_on_tab_press"/>
                     <signal name="key_press_event" handler="do_history_change_on_key_press"/>
+                    <signal name="key_press_event" handler="do_switch_dictionaries_quickkey_action"/>
                     <signal name="icon_release" handler="do_clear_search"/>
                     <signal name="focus_in_event" handler="do_update_clipboard_on_focus_change"/>
                     <signal name="activate" handler="do_search"/>
@@ -733,6 +734,7 @@
                 <property name="focus_on_click">False</property>
                 <property name="items" translatable="yes">word</property>
                 <signal name="changed" handler="do_dictionary_changed_action"/>
+                <signal name="key_press_event" handler="do_switch_dictionaries_quickkey_action"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -809,6 +811,7 @@
                             <signal name="key_press_event" handler="do_focus_change_on_key_press"/>
                             <signal name="key_press_event" handler="do_switch_dictionaries_on_tab_press"/>
                             <signal name="key_press_event" handler="do_history_change_on_key_press"/>
+                            <signal name="key_press_event" handler="do_switch_dictionaries_quickkey_action"/>
                             <signal name="focus_in_event" handler="do_update_clipboard_on_focus_change" object="results_text_view"/>
                             <signal name="button_release_event" handler="do_get_iter_for_button_release"/>
                           </widget>
@@ -894,6 +897,7 @@
                             <signal name="key_press_event" handler="do_focus_change_on_key_press"/>
                             <signal name="key_press_event" handler="do_switch_dictionaries_on_tab_press"/>
                             <signal name="key_press_event" handler="do_history_change_on_key_press"/>
+                            <signal name="key_press_event" handler="do_switch_dictionaries_quickkey_action"/>
                             <signal name="focus_in_event" handler="do_update_clipboard_on_focus_change" object="kanji_text_view"/>
                             <signal name="copy_clipboard" handler="do_copy"/>
                           </widget>

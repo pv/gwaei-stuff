@@ -751,6 +751,46 @@ G_MODULE_EXPORT gboolean do_history_change_on_key_press (GtkWidget *widget,
 }
 
 
+G_MODULE_EXPORT gboolean do_switch_dictionaries_quickkey_action (GtkWidget *widget,
+                                              GdkEvent  *event,
+                                              gpointer  *focus  )
+{
+    //Make sure the tab key was pressed with no modifiers
+    guint state  = ((GdkEventKey*) event)->state;
+    guint keyval = ((GdkEventKey*) event)->keyval;
+    guint modifiers = ( 
+                        GDK_META_MASK |
+                        GDK_Meta_L    |
+                        GDK_Meta_R    |
+                        GDK_Alt_L     |
+                        GDK_Alt_R
+                      );
+
+    //Make sure no extra modifier keys are pressed
+    if (((state & modifiers) != 0 ) && (keyval >= GDK_1 && keyval <= GDK_9))
+    {
+      int request = (keyval & 0x00F) - 1;
+
+      GtkWidget *combobox;
+      char id[50];
+      strncpy (id, "dictionary_combobox", 50);
+      combobox = GTK_WIDGET (gtk_builder_get_object(builder, id));
+
+      gint active;
+      active = gtk_combo_box_get_active( GTK_COMBO_BOX (combobox) );
+      char *active_text;
+
+      gtk_combo_box_set_active( GTK_COMBO_BOX (combobox), request);
+      active_text = gtk_combo_box_get_active_text(GTK_COMBO_BOX (combobox));
+      if (active_text == NULL)
+        gtk_combo_box_set_active( GTK_COMBO_BOX (combobox), active);
+
+      return TRUE;
+    }
+    return FALSE;
+}
+
+
 G_MODULE_EXPORT gboolean do_switch_dictionaries_on_tab_press (GtkWidget *widget,
                                               GdkEvent  *event,
                                               gpointer  *focus  )
@@ -796,7 +836,11 @@ G_MODULE_EXPORT gboolean do_focus_change_on_key_press (GtkWidget *widget,
                         GDK_CONTROL_MASK |
                         GDK_SUPER_MASK   |
                         GDK_HYPER_MASK   |
-                        GDK_META_MASK      
+                        GDK_META_MASK      |
+                        GDK_Meta_L    |
+                        GDK_Meta_R    |
+                        GDK_Alt_L     |
+                        GDK_Alt_R
                       );
 
     //Make sure no modifier keys are pressed

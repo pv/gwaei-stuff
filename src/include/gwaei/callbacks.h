@@ -29,6 +29,7 @@ void search_drag_data_recieved (GtkWidget*, GdkDragContext*,
 gboolean do_update_clipboard_on_focus_change (GtkWidget*, GtkDirectionType, gpointer);
 gboolean do_focus_change_on_key_press (GtkWidget*, GdkEvent*, gpointer*);
 gboolean do_history_change_on_key_press ( GtkWidget*, GdkEvent*, gpointer*);
+gboolean do_switch_dictionaries_quickkey_action ( GtkWidget*, GdkEvent*, gpointer*);
 
 gboolean do_key_press_action (GtkWidget*, GdkEvent*, gpointer*);
 gboolean do_close_on_escape (GtkWidget*, GdkEvent*, gpointer*);
