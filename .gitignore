@@ -1,0 +1,6 @@
+*.[oa]
+autom4te.cache
+src/gwaei
+src/waei
+Makefile
+
