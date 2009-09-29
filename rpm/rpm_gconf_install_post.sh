@@ -8,4 +8,4 @@ GCONF_CONFIG_SOURCE=xml:merged:/etc/gconf/gconf.xml.defaults \
 /usr/bin/killall -q -HUP gconfd-2
 
 #Force the icons to update
-touch -c /usr/local/share/icons/hicolor
+touch -c /usr/share/icons/hicolor

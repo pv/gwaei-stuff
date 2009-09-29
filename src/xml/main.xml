@@ -1,9 +1,5 @@
 <?xml version="1.0"?>
-<<<<<<< HEAD:src/xml/main.xml
 <!--Generated with glade3 3.4.5 on Mon Sep 28 19:51:17 2009 -->
-=======
-<!--Generated with glade3 3.4.5 on Mon Sep 28 17:25:10 2009 -->
->>>>>>> 96e9f09d8209df530246d54462260f43873be1ef:src/xml/main.xml
 <interface>
   <object class="GtkListStore" id="model1">
     <columns>

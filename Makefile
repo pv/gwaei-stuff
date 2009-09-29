@@ -170,9 +170,9 @@ OMF_DIR = ${datadir}/omf
 PACKAGE = gwaei
 PACKAGE_BUGREPORT = 
 PACKAGE_NAME = gwaei
-PACKAGE_STRING = gwaei 1.0.1
+PACKAGE_STRING = gwaei 1.1Dev
 PACKAGE_TARNAME = gwaei
-PACKAGE_VERSION = 1.0.1
+PACKAGE_VERSION = 1.1Dev
 PATH_SEPARATOR = :
 PERL = /usr/bin/perl
 PKG_CONFIG = /usr/bin/pkg-config
@@ -186,7 +186,7 @@ SET_MAKE =
 SHELL = /bin/sh
 STRIP = 
 USE_NLS = yes
-VERSION = 1.0.1
+VERSION = 1.1Dev
 WIN32_CFLAGS = -D_REENTRANT -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/directfb -I/usr/include/libpng12  
 WIN32_LIBS = -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgio-2.0 -lpangoft2-1.0 -lgdk_pixbuf-2.0 -lpangocairo-1.0 -lcairo -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0 -lgmodule-2.0 -lglib-2.0  
 XGETTEXT = /usr/bin/xgettext
@@ -231,7 +231,7 @@ mandir = ${datarootdir}/man
 mkdir_p = /bin/mkdir -p
 oldincludedir = /usr/include
 pdfdir = ${docdir}
-prefix = /usr/local
+prefix = /usr
 program_transform_name = s,x,x,
 psdir = ${docdir}
 sbindir = ${exec_prefix}/sbin
@@ -249,9 +249,9 @@ RPM_RPMS = `/usr/bin/rpm --eval '%{_rpmdir}'`
 news_DATA = NEWS
 copying_DATA = COPYING
 changelog_DATA = ChangeLog
-newsdir = $(docdir)-1.0.1
-copyingdir = $(docdir)-1.0.1
-changelogdir = $(docdir)-1.0.1
+newsdir = $(docdir)-1.1Dev
+copyingdir = $(docdir)-1.1Dev
+changelogdir = $(docdir)-1.1Dev
 CONFIGURE_OPTIONS = --prefix $(prefix) --bindir=$(bindir) --sbindir=$(sbindir) --libexecdir=$(libexecdir) --sysconfdir=$(sysconfdir) --sharedstatedir=$(sharedstatedir) --localstatedir=$(localstatedir) --libdir=$(libdir) --includedir=$(includedir) --oldincludedir=$(oldincludedir) --datarootdir=$(datarootdir) --datadir=$(datadir) --infodir=$(infodir) --localedir=$(localedir) --mandir=$(mandir) --docdir=$(docdir)
 DISTCLEANFILES = gnome-doc-utils.make
 #DISTCHECK_CONFIGURE_FLAGS = --disable-scrollkeeper
@@ -801,9 +801,9 @@ rpm: dist
 	@ cp -f $(HOME)/.rpmmacros $(HOME)/.rpmmacros.backup
 	@ echo "%_topdir $(PWD)/rpm" > $(HOME)/.rpmmacros
 	@ mkdir -p $(top_srcdir)/rpm/SOURCES $(top_srcdir)/rpm/SPECS $(top_srcdir)/rpm/BUILD $(top_srcdir)/rpm/RPMS/i386 $(top_srcdir)/rpm/SRPMS/i386
-	@ cp gwaei-1.0.1.tar.gz $(top_srcdir)/rpm/SOURCES
+	@ cp gwaei-1.1Dev.tar.gz $(top_srcdir)/rpm/SOURCES
 	@ ${RPMBUILD} -ba --target i386 $(top_srcdir)/rpm/gwaei.spec
-	@ cp $(RPM_RPMS)/i386/gwaei-1.0.1-1.i386.rpm $(top_srcdir)
+	@ cp $(RPM_RPMS)/i386/gwaei-1.1Dev-1.i386.rpm $(top_srcdir)
 	@ rm -rf $(top_srcdir)/rpm/SOURCES $(top_srcdir)/rpm/SPECS $(top_srcdir)/rpm/BUILD $(top_srcdir)/rpm/RPMS $(top_srcdir)/rpm/SRPMS
 	@ rm -f $(HOME)/.rpmmacros
 	@ mv -f $(HOME)/.rpmmacros.backup $(HOME)/.rpmmacros
@@ -814,7 +814,7 @@ fedora-rpm:
 	@ make rpm
 
 uninstall-local:
-	@ rm -rf $(DESTDIR)$(docdir)-1.0.1
+	@ rm -rf $(DESTDIR)$(docdir)-1.1Dev
 	@ rm -rf $(DESTDIR)$(datadir)/gwaei
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

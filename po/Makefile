@@ -12,7 +12,7 @@
 GETTEXT_MACRO_VERSION = 0.17
 
 PACKAGE = gwaei
-VERSION = 1.0.1
+VERSION = 1.1Dev
 PACKAGE_BUGREPORT = 
 
 SHELL = /bin/sh
@@ -22,7 +22,7 @@ srcdir = .
 top_srcdir = ..
 
 
-prefix = /usr/local
+prefix = /usr
 exec_prefix = ${prefix}
 datarootdir = ${prefix}/share
 datadir = ${datarootdir}
@@ -230,7 +230,7 @@ $(DOMAIN).pot-update: $(POTFILES) $(srcdir)/POTFILES.in remove-potcdate.sed
 	      --files-from=$(srcdir)/POTFILES.in \
 	      --copyright-holder='$(COPYRIGHT_HOLDER)' \
 	      --package-name="$${package_gnu}gwaei" \
-	      --package-version='1.0.1' \
+	      --package-version='1.1Dev' \
 	      --msgid-bugs-address="$$msgid_bugs_address" \
 	    ;; \
 	esac

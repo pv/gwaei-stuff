@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Mon Sep 28 19:51:17 2009 -->
+<!--Generated with glade3 3.4.5 on Mon Sep 28 19:37:07 2009 -->
 <glade-interface>
   <widget class="GtkMenu" id="back_popup">
     <property name="visible">True</property>
@@ -656,6 +656,7 @@
                     <property name="tooltip" translatable="yes">Input your query here</property>
                     <property name="max_length">50</property>
                     <property name="caps_lock_warning">False</property>
+                    <property name="secondary_icon_tooltip_text">Clear query text</property>
                     <signal name="changed" handler="do_update_button_states_based_on_entry_text"/>
                     <signal name="key_press_event" handler="do_focus_change_on_key_press"/>
                     <signal name="key_press_event" handler="do_switch_dictionaries_on_tab_press"/>

@@ -1,15 +1,15 @@
-%define prefix /usr/local
+%define prefix /usr
 %define sysconfdir /etc
 
 %define localedir ${datarootdir}/locale
 
 Summary: Japanese-English Dictionary for Gnome
 Name: gwaei
-Version: 1.0.1
+Version: 1.1Dev
 Release: 1
 License: GPL
 Group: Applications/Utilities
-Source: ./gwaei-1.0.1.tar.gz
+Source: ./gwaei-1.1Dev.tar.gz
 URL: http://gwaei.sourceforge.net
 BuildRoot: /var/tmp/gwaei-%{PACKAGE_VERSION}-root
 %description
@@ -19,7 +19,7 @@ support. For example, you can use periods in place of
 unknown Kanji of a word to search for it.
 %prep
 %setup -q
-./configure --prefix /usr/local --sysconfdir=/etc --disable-schemas-install
+./configure --prefix /usr --sysconfdir=/etc --disable-schemas-install
 [ -f rpm/rpm_gconf_install_post.sh ]
 [ -f rpm/rpm_gconf_uninstall_pre.sh ]
 %build
