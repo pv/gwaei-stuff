@@ -22,7 +22,11 @@ srcdir = .
 top_srcdir = ..
 
 
+<<<<<<< HEAD:po/Makefile
+prefix = /usr
+=======
 prefix = /usr/local
+>>>>>>> 96e9f09d8209df530246d54462260f43873be1ef:po/Makefile
 exec_prefix = ${prefix}
 datarootdir = ${prefix}/share
 datadir = ${datarootdir}

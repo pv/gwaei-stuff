@@ -531,6 +531,7 @@
             <property name="border_width">6</property>
             <property name="spacing">8</property>
             <child>
+<<<<<<< HEAD:src/xml/main.xml
               <object class="GtkLabel" id="label3">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Search:</property>
@@ -541,6 +542,8 @@
               </packing>
             </child>
             <child>
+=======
+>>>>>>> 96e9f09d8209df530246d54462260f43873be1ef:src/xml/main.xml
               <object class="GtkAlignment" id="search_entry_container">
                 <property name="visible">True</property>
                 <child>
@@ -553,8 +556,14 @@
                     <property name="has_default">True</property>
                     <property name="tooltip-text" translatable="yes">Input your query here</property>
                     <property name="max_length">50</property>
+<<<<<<< HEAD:src/xml/main.xml
                     <property name="caps_lock_warning">False</property>
                     <signal handler="do_update_button_states_based_on_entry_text" name="changed"/>
+=======
+                    <property name="text" translatable="yes">Enter Your Search Text</property>
+                    <property name="secondary_icon_stock">search_entry_interal_clear_button</property>
+                    <property name="secondary_icon_name">gtk-clear</property>
+>>>>>>> 96e9f09d8209df530246d54462260f43873be1ef:src/xml/main.xml
                     <signal handler="do_focus_change_on_key_press" name="key_press_event"/>
                     <signal handler="do_switch_dictionaries_on_tab_press" name="key_press_event"/>
                     <signal handler="do_history_change_on_key_press" name="key_press_event"/>
@@ -565,6 +574,7 @@
                   </object>
                 </child>
               </object>
+<<<<<<< HEAD:src/xml/main.xml
               <packing>
                 <property name="position">1</property>
               </packing>
@@ -579,6 +589,8 @@
                 <property name="fill">False</property>
                 <property name="position">2</property>
               </packing>
+=======
+>>>>>>> 96e9f09d8209df530246d54462260f43873be1ef:src/xml/main.xml
             </child>
             <child>
               <object class="GtkComboBox" id="dictionary_combobox">
@@ -595,6 +607,7 @@
               </object>
               <packing>
                 <property name="expand">False</property>
+<<<<<<< HEAD:src/xml/main.xml
                 <property name="fill">False</property>
                 <property name="position">3</property>
               </packing>
@@ -620,6 +633,25 @@
                 <property name="expand">False</property>
                 <property name="fill">False</property>
                 <property name="position">4</property>
+=======
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="button2">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="label" translatable="yes">gtk-find</property>
+                <property name="relief">GTK_RELIEF_NONE</property>
+                <property name="use_stock">True</property>
+                <signal handler="do_search" name="clicked"/>
+                <signal handler="do_search" name="activate"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">2</property>
+>>>>>>> 96e9f09d8209df530246d54462260f43873be1ef:src/xml/main.xml
               </packing>
             </child>
           </object>

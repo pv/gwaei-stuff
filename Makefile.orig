@@ -231,7 +231,11 @@ mandir = ${datarootdir}/man
 mkdir_p = /bin/mkdir -p
 oldincludedir = /usr/include
 pdfdir = ${docdir}
+<<<<<<< HEAD:Makefile
+prefix = /usr
+=======
 prefix = /usr/local
+>>>>>>> 96e9f09d8209df530246d54462260f43873be1ef:Makefile
 program_transform_name = s,x,x,
 psdir = ${docdir}
 sbindir = ${exec_prefix}/sbin

@@ -9,5 +9,9 @@ GCONF_CONFIG_SOURCE=xml:merged:/etc/gconf/gconf.xml.defaults \
 /usr/bin/killall -q -HUP gconfd-2
 
 #Force the icons to update
+<<<<<<< HEAD:deb/DEBIAN/postinst
+touch -c /usr/share/icons/hicolor
+=======
 touch -c /usr/local/share/icons/hicolor
+>>>>>>> 96e9f09d8209df530246d54462260f43873be1ef:deb/DEBIAN/postinst
 

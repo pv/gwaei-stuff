@@ -1,5 +1,4 @@
-#!/bin/sh
-
+#!/bin/sh -e
 
 #Install and update the gconf schema database
 INSTALL_SOURCE=$(/usr/bin/gconftool-2 --get-default-source | sed 's!^[^/]*/!/!' | sed 's!/[^/]*$!/schemas/gwaei.schemas!')
@@ -9,5 +8,8 @@ GCONF_CONFIG_SOURCE=xml:merged:/etc/gconf/gconf.xml.defaults \
 /usr/bin/killall -q -HUP gconfd-2
 
 #Force the icons to update
+<<<<<<< HEAD:rpm/rpm_gconf_install_post.sh
+touch -c /usr/share/icons/hicolor
+=======
 touch -c /usr/local/share/icons/hicolor
-
+>>>>>>> 96e9f09d8209df530246d54462260f43873be1ef:rpm/rpm_gconf_install_post.sh

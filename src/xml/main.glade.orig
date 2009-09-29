@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
+<<<<<<< HEAD:src/xml/main.glade
+<!--Generated with glade3 3.4.5 on Mon Sep 28 19:51:17 2009 -->
+=======
 <!--Generated with glade3 3.4.5 on Mon Sep 28 17:25:10 2009 -->
+>>>>>>> 96e9f09d8209df530246d54462260f43873be1ef:src/xml/main.glade
 <glade-interface>
   <widget class="GtkMenu" id="back_popup">
     <property name="visible">True</property>
@@ -633,6 +637,7 @@
             <property name="border_width">6</property>
             <property name="spacing">8</property>
             <child>
+<<<<<<< HEAD:src/xml/main.glade
               <widget class="GtkLabel" id="label3">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Search:</property>
@@ -643,6 +648,8 @@
               </packing>
             </child>
             <child>
+=======
+>>>>>>> 96e9f09d8209df530246d54462260f43873be1ef:src/xml/main.glade
               <widget class="GtkAlignment" id="search_entry_container">
                 <property name="visible">True</property>
                 <child>
@@ -655,8 +662,14 @@
                     <property name="has_default">True</property>
                     <property name="tooltip" translatable="yes">Input your query here</property>
                     <property name="max_length">50</property>
+<<<<<<< HEAD:src/xml/main.glade
                     <property name="caps_lock_warning">False</property>
                     <signal name="changed" handler="do_update_button_states_based_on_entry_text"/>
+=======
+                    <property name="text" translatable="yes">Enter Your Search Text</property>
+                    <property name="secondary_icon_stock">search_entry_interal_clear_button</property>
+                    <property name="secondary_icon_name">gtk-clear</property>
+>>>>>>> 96e9f09d8209df530246d54462260f43873be1ef:src/xml/main.glade
                     <signal name="key_press_event" handler="do_focus_change_on_key_press"/>
                     <signal name="key_press_event" handler="do_switch_dictionaries_on_tab_press"/>
                     <signal name="key_press_event" handler="do_history_change_on_key_press"/>
@@ -667,6 +680,7 @@
                   </widget>
                 </child>
               </widget>
+<<<<<<< HEAD:src/xml/main.glade
               <packing>
                 <property name="position">1</property>
               </packing>
@@ -681,6 +695,8 @@
                 <property name="fill">False</property>
                 <property name="position">2</property>
               </packing>
+=======
+>>>>>>> 96e9f09d8209df530246d54462260f43873be1ef:src/xml/main.glade
             </child>
             <child>
               <widget class="GtkComboBox" id="dictionary_combobox">
@@ -691,6 +707,7 @@
               </widget>
               <packing>
                 <property name="expand">False</property>
+<<<<<<< HEAD:src/xml/main.glade
                 <property name="fill">False</property>
                 <property name="position">3</property>
               </packing>
@@ -717,6 +734,26 @@
                 <property name="expand">False</property>
                 <property name="fill">False</property>
                 <property name="position">4</property>
+=======
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkButton" id="button2">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="label" translatable="yes">gtk-find</property>
+                <property name="relief">GTK_RELIEF_NONE</property>
+                <property name="use_stock">True</property>
+                <property name="response_id">0</property>
+                <signal name="clicked" handler="do_search"/>
+                <signal name="activate" handler="do_search"/>
+              </widget>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">2</property>
+>>>>>>> 96e9f09d8209df530246d54462260f43873be1ef:src/xml/main.glade
               </packing>
             </child>
           </widget>

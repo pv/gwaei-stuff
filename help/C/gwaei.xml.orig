@@ -39,7 +39,11 @@
    <abstract>
       <para>
          <mediaobject><imageobject>
+<<<<<<< HEAD:help/C/gwaei.xml
+           <imagedata fileref="/usr/share/gwaei/logo.png" format="PNG"/>
+=======
            <imagedata fileref="/usr/local/share/gwaei/logo.png" format="PNG"/>
+>>>>>>> 96e9f09d8209df530246d54462260f43873be1ef:help/C/gwaei.xml
         </imageobject></mediaobject>
 
         <application>gWaei</application> is a dictionary program for searching
@@ -66,7 +70,11 @@
       <title>Searching Features</title>
        <para>
          <mediaobject><imageobject>
+<<<<<<< HEAD:help/C/gwaei.xml
+             <imagedata fileref="/usr/share/gwaei/character.png" format="PNG"/>
+=======
              <imagedata fileref="/usr/local/share/gwaei/character.png" format="PNG"/>
+>>>>>>> 96e9f09d8209df530246d54462260f43873be1ef:help/C/gwaei.xml
          </imageobject></mediaobject>
          <application>gWaei</application> will do it's best to return the most
          relevant results. The best ones are organized to the top.  A bit

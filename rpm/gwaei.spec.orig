@@ -1,4 +1,8 @@
+<<<<<<< HEAD:rpm/gwaei.spec
+%define prefix /usr
+=======
 %define prefix /usr/local
+>>>>>>> 96e9f09d8209df530246d54462260f43873be1ef:rpm/gwaei.spec
 %define sysconfdir /etc
 
 %define localedir ${datarootdir}/locale
@@ -19,7 +23,11 @@ support. For example, you can use periods in place of
 unknown Kanji of a word to search for it.
 %prep
 %setup -q
+<<<<<<< HEAD:rpm/gwaei.spec
+./configure --prefix /usr --sysconfdir=/etc --disable-schemas-install
+=======
 ./configure --prefix /usr/local --sysconfdir=/etc --disable-schemas-install
+>>>>>>> 96e9f09d8209df530246d54462260f43873be1ef:rpm/gwaei.spec
 [ -f rpm/rpm_gconf_install_post.sh ]
 [ -f rpm/rpm_gconf_uninstall_pre.sh ]
 %build
