@@ -148,6 +148,14 @@ void gwaei_sexy_initialize_libsexy ()
 {
     char id[50];
 
+
+    //Make the hidden spellcheck toolbutton appear
+    GtkWidget *spellcheck_toolbutton;
+    strcpy (id, "spellcheck_toolbutton");
+    spellcheck_toolbutton = GTK_WIDGET (gtk_builder_get_object (builder, id));
+    gtk_widget_show (spellcheck_toolbutton);
+
+
     //Swap the original entry for the libsexy one
     GtkWidget *entry;
     strcpy (id, "search_entry");
@@ -210,4 +218,21 @@ void gwaei_sexy_initialize_libsexy ()
 
 }
 
+void gwaei_sexy_ui_set_spellcheck(gboolean request)
+{
+    char id[50];
 
+    GtkWidget *pref_checkbox, *toolbar_button;
+    strcpy(id, "query_spellcheck");
+    pref_checkbox = GTK_WIDGET (gtk_builder_get_object(builder, id));
+    strcpy(id, "spellcheck_toolbutton");
+    toolbar_button = GTK_WIDGET (gtk_builder_get_object(builder, id));
+
+    g_signal_handlers_block_by_func(pref_checkbox, do_spellcheck_toggle, NULL); 
+    g_signal_handlers_block_by_func(toolbar_button, do_spellcheck_toggle, NULL); 
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (pref_checkbox), request);
+    gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON (toolbar_button), request);
+    g_signal_handlers_unblock_by_func(pref_checkbox, do_spellcheck_toggle, NULL); 
+    g_signal_handlers_unblock_by_func(toolbar_button, do_spellcheck_toggle, NULL); 
+    do_conditionally_enable_spellcheck (NULL, NULL);
+}

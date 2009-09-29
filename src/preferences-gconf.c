@@ -382,9 +382,9 @@ void do_spellcheck_pref_changed_action( GConfClient* client,
     value = gconf_entry_get_value(entry);
 
     if (value != NULL && value->type == GCONF_VALUE_BOOL)
-      gwaei_ui_set_spellcheck(gconf_value_get_bool(value));
+      gwaei_sexy_ui_set_spellcheck(gconf_value_get_bool(value));
     else
-      gwaei_ui_set_spellcheck(TRUE);
+      gwaei_sexy_ui_set_spellcheck(TRUE);
 }
 
 

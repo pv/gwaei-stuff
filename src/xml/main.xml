@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!--Generated with glade3 3.4.5 on Tue Sep 29 07:52:44 2009 -->
+<!--Generated with glade3 3.4.5 on Tue Sep 29 09:43:39 2009 -->
 <interface>
   <object class="GtkListStore" id="model1">
     <columns>
@@ -61,6 +61,14 @@
           <object class="GtkAction" id="file_menu">
             <property name="name">file_menu</property>
             <property name="label" translatable="yes">_File</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkAction" id="edit_menuitem">
+            <property name="stock_id" translatable="yes">gtk-edit</property>
+            <property name="name">edit_menuitem</property>
+            <property name="tooltip" translatable="yes">Edit a the current vocabulary list</property>
+            <signal handler="do_edit" name="activate"/>
           </object>
         </child>
         <child>
@@ -294,6 +302,7 @@
     <ui>
       <menubar name="menubar">
         <menu action="file_menu">
+          <menuitem action="edit_menuitem"/>
           <menuitem action="save_menuitem"/>
           <menuitem action="save_as_menuitem"/>
           <separator/>
@@ -376,7 +385,6 @@
             <property name="no_show_all">True</property>
             <child>
               <object class="GtkMenuToolButton" id="back_toolbutton">
-                <property name="visible">True</property>
                 <property name="sensitive">False</property>
                 <property name="tooltip-text" translatable="yes">Go to the previous search</property>
                 <property name="is_important">True</property>
@@ -387,7 +395,6 @@
             </child>
             <child>
               <object class="GtkMenuToolButton" id="forward_toolbutton">
-                <property name="visible">True</property>
                 <property name="sensitive">False</property>
                 <property name="tooltip-text" translatable="yes">Go to the next search</property>
                 <property name="stock_id">gtk-go-forward</property>
@@ -397,8 +404,18 @@
             </child>
             <child>
               <object class="GtkSeparatorToolItem" id="separatortoolitem2">
-                <property name="visible">True</property>
               </object>
+            </child>
+            <child>
+              <object class="GtkToolButton" id="edit_toolbutton">
+                <property name="visible">True</property>
+                <property name="sensitive">False</property>
+                <property name="stock_id">gtk-edit</property>
+                <signal handler="do_edit" name="clicked"/>
+              </object>
+              <packing>
+                <property name="homogeneous">True</property>
+              </packing>
             </child>
             <child>
               <object class="GtkToolButton" id="save_toolbutton">
@@ -415,7 +432,25 @@
               </packing>
             </child>
             <child>
+              <object class="GtkToolButton" id="save_as_toolbutton">
+                <property name="visible">True</property>
+                <property name="sensitive">False</property>
+                <property name="tooltip-text" translatable="yes">Save the current results to a new file</property>
+                <property name="stock_id">gtk-save-as</property>
+                <signal handler="do_save_as" name="clicked"/>
+              </object>
+              <packing>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkSeparatorToolItem" id="separatortoolitem6">
+                <property name="visible">True</property>
+              </object>
+            </child>
+            <child>
               <object class="GtkToolButton" id="print_toolbutton">
+                <property name="visible">True</property>
                 <property name="sensitive">False</property>
                 <property name="no_show_all">True</property>
                 <property name="tooltip-text" translatable="yes">Print the current results</property>
@@ -473,6 +508,22 @@
               </object>
             </child>
             <child>
+              <object class="GtkToggleToolButton" id="spellcheck_toolbutton">
+                <property name="tooltip-text" translatable="yes">Enable spellcheck for searches</property>
+                <property name="stock_id">gtk-spell-check</property>
+                <signal handler="do_spellcheck_toggle" name="toggled"/>
+              </object>
+              <packing>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkSeparatorToolItem" id="separatortoolitem3">
+                <property name="visible">True</property>
+                <property name="no_show_all">True</property>
+              </object>
+            </child>
+            <child>
               <object class="GtkToolButton" id="zoom_in_toolbutton">
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
@@ -499,12 +550,13 @@
               </packing>
             </child>
             <child>
-              <object class="GtkSeparatorToolItem" id="separatortoolitem3">
-                <property name="no_show_all">True</property>
+              <object class="GtkSeparatorToolItem" id="separatortoolitem5">
+                <property name="visible">True</property>
               </object>
             </child>
             <child>
               <object class="GtkToolButton" id="help_toolbutton">
+                <property name="visible">True</property>
                 <property name="no_show_all">True</property>
                 <property name="tooltip-text" translatable="yes">Open the help dialog</property>
                 <property name="stock_id">gtk-help</property>
@@ -592,6 +644,7 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="tooltip-text" translatable="yes">Click to search</property>
+                <property name="relief">GTK_RELIEF_NONE</property>
                 <property name="image_position">GTK_POS_RIGHT</property>
                 <signal handler="do_search" name="clicked"/>
                 <signal handler="do_search" name="activate"/>

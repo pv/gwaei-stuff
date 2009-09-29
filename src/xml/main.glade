@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Tue Sep 29 07:52:44 2009 -->
+<!--Generated with glade3 3.4.5 on Tue Sep 29 09:43:39 2009 -->
 <glade-interface>
   <widget class="GtkMenu" id="back_popup">
     <property name="visible">True</property>
@@ -70,6 +70,17 @@
                 <child>
                   <widget class="GtkMenu" id="file_popup">
                     <property name="visible">True</property>
+                    <child>
+                      <widget class="GtkImageMenuItem" id="edit_menuitem">
+                        <property name="visible">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="tooltip" translatable="yes">Edit a the current vocabulary list</property>
+                        <property name="label" translatable="yes">gtk-edit</property>
+                        <property name="use_underline">True</property>
+                        <property name="use_stock">True</property>
+                        <signal name="activate" handler="do_edit"/>
+                      </widget>
+                    </child>
                     <child>
                       <widget class="GtkImageMenuItem" id="save_menuitem">
                         <property name="visible">True</property>
@@ -482,7 +493,6 @@
             <property name="no_show_all">True</property>
             <child>
               <widget class="GtkMenuToolButton" id="back_toolbutton">
-                <property name="visible">True</property>
                 <property name="sensitive">False</property>
                 <property name="tooltip" translatable="yes">Go to the previous search</property>
                 <property name="is_important">True</property>
@@ -493,7 +503,6 @@
             </child>
             <child>
               <widget class="GtkMenuToolButton" id="forward_toolbutton">
-                <property name="visible">True</property>
                 <property name="sensitive">False</property>
                 <property name="tooltip" translatable="yes">Go to the next search</property>
                 <property name="stock_id">gtk-go-forward</property>
@@ -503,8 +512,18 @@
             </child>
             <child>
               <widget class="GtkSeparatorToolItem" id="separatortoolitem2">
-                <property name="visible">True</property>
               </widget>
+            </child>
+            <child>
+              <widget class="GtkToolButton" id="edit_toolbutton">
+                <property name="visible">True</property>
+                <property name="sensitive">False</property>
+                <property name="stock_id">gtk-edit</property>
+                <signal name="clicked" handler="do_edit"/>
+              </widget>
+              <packing>
+                <property name="homogeneous">True</property>
+              </packing>
             </child>
             <child>
               <widget class="GtkToolButton" id="save_toolbutton">
@@ -521,7 +540,25 @@
               </packing>
             </child>
             <child>
+              <widget class="GtkToolButton" id="save_as_toolbutton">
+                <property name="visible">True</property>
+                <property name="sensitive">False</property>
+                <property name="tooltip" translatable="yes">Save the current results to a new file</property>
+                <property name="stock_id">gtk-save-as</property>
+                <signal name="clicked" handler="do_save_as"/>
+              </widget>
+              <packing>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkSeparatorToolItem" id="separatortoolitem6">
+                <property name="visible">True</property>
+              </widget>
+            </child>
+            <child>
               <widget class="GtkToolButton" id="print_toolbutton">
+                <property name="visible">True</property>
                 <property name="sensitive">False</property>
                 <property name="no_show_all">True</property>
                 <property name="tooltip" translatable="yes">Print the current results</property>
@@ -579,6 +616,22 @@
               </widget>
             </child>
             <child>
+              <widget class="GtkToggleToolButton" id="spellcheck_toolbutton">
+                <property name="tooltip" translatable="yes">Enable spellcheck for searches</property>
+                <property name="stock_id">gtk-spell-check</property>
+                <signal name="toggled" handler="do_spellcheck_toggle"/>
+              </widget>
+              <packing>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkSeparatorToolItem" id="separatortoolitem3">
+                <property name="visible">True</property>
+                <property name="no_show_all">True</property>
+              </widget>
+            </child>
+            <child>
               <widget class="GtkToolButton" id="zoom_in_toolbutton">
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
@@ -605,12 +658,13 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkSeparatorToolItem" id="separatortoolitem3">
-                <property name="no_show_all">True</property>
+              <widget class="GtkSeparatorToolItem" id="separatortoolitem5">
+                <property name="visible">True</property>
               </widget>
             </child>
             <child>
               <widget class="GtkToolButton" id="help_toolbutton">
+                <property name="visible">True</property>
                 <property name="no_show_all">True</property>
                 <property name="tooltip" translatable="yes">Open the help dialog</property>
                 <property name="stock_id">gtk-help</property>
@@ -692,6 +746,7 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="tooltip" translatable="yes">Click to search</property>
+                <property name="relief">GTK_RELIEF_NONE</property>
                 <property name="image_position">GTK_POS_RIGHT</property>
                 <property name="response_id">0</property>
                 <signal name="clicked" handler="do_search"/>

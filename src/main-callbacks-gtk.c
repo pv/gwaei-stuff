@@ -347,6 +347,14 @@ G_MODULE_EXPORT void do_save_as (GtkWidget *widget, gpointer data)
       filename = NULL;
 
       gwaei_io_write_file("w", text);
+
+      GtkWidget *edit_toolbutton;
+      edit_toolbutton = GTK_WIDGET (gtk_builder_get_object(builder, "edit_toolbutton"));
+      gtk_widget_set_sensitive (edit_toolbutton, TRUE);
+
+      GtkAction *edit_menuitem;
+      edit_menuitem = GTK_ACTION (gtk_builder_get_object(builder, "edit_menuitem"));
+      gtk_action_set_sensitive(edit_menuitem, TRUE);
   }
 
   gtk_widget_destroy (dialog);
@@ -392,6 +400,14 @@ G_MODULE_EXPORT void do_save (GtkWidget *widget, gpointer data)
         filename = NULL;
 
         gwaei_io_write_file("a", text);
+
+        GtkWidget *edit_toolbutton;
+        edit_toolbutton = GTK_WIDGET (gtk_builder_get_object(builder, "edit_toolbutton"));
+        gtk_widget_set_sensitive (edit_toolbutton, TRUE);
+
+        GtkAction *edit_menuitem;
+        edit_menuitem = GTK_ACTION (gtk_builder_get_object(builder, "edit_menuitem"));
+        gtk_action_set_sensitive(edit_menuitem, TRUE);
     }
 
     gtk_widget_destroy (dialog);
@@ -627,6 +643,19 @@ G_MODULE_EXPORT void do_radical_search_tool(GtkWidget *widget, gpointer data)
     //Show the window
     gwaei_ui_show_window ("radicals_window");
 }
+
+G_MODULE_EXPORT void do_edit(GtkWidget *widget, gpointer data)
+{
+    char *uri = g_build_filename("file://", save_path, NULL);
+
+    GError *err = NULL;
+    gtk_show_uri (NULL, uri, gtk_get_current_event_time (), &err);
+    if (err != NULL)
+      g_error_free(err);
+
+    g_free(uri);
+}
+
 
 
 G_MODULE_EXPORT void do_help(GtkWidget *widget, gpointer data)

@@ -306,11 +306,15 @@ void update_toolbar_buttons()
     gtk_action_set_sensitive(action, enable);
 
     //Update Save as sensitivity state
+    strcpy(id, "save_as_toolbutton");
+    button = GTK_WIDGET (gtk_builder_get_object(builder, id));
+
     strcpy(id, "save_as_menuitem");
     action = GTK_ACTION (gtk_builder_get_object(builder, id));
 
     enable = (current != NULL);
 
+    gtk_widget_set_sensitive(button, enable);
     gtk_action_set_sensitive(action, enable);
 
     //Update Print sensitivity state
@@ -787,18 +791,7 @@ void gwaei_ui_set_katakana_hiragana_conv(gboolean request)
 }
 
 
-void gwaei_ui_set_spellcheck(gboolean request)
-{
-    char id[50];
 
-    GtkWidget *widget;
-    strcpy(id, "query_spellcheck");
-    widget = GTK_WIDGET (gtk_builder_get_object(builder, id));
-
-    g_signal_handlers_block_by_func(widget, do_spellcheck_toggle, NULL); 
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (widget), request);
-    g_signal_handlers_unblock_by_func(widget, do_spellcheck_toggle, NULL); 
-}
 
 void gwaei_ui_set_color_to_swatch(const char *widget_id, guint r, guint g, guint b)
 {
@@ -2088,7 +2081,7 @@ void initialize_gui_interface(int *argc, char ***argv)
     initialize_kanjipad();
     initialize_history_popups();
 
-    //gwaei_sexy_initialize_libsexy();
+    gwaei_sexy_initialize_libsexy();
     gwaei_ui_update_history_popups();
     gwaei_ui_show_window ("main_window");
     gwaei_prefs_initialize_preferences();
