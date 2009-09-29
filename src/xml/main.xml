@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!--Generated with glade3 3.4.5 on Tue Sep 29 13:18:34 2009 -->
+<!--Generated with glade3 3.4.5 on Tue Sep 29 17:03:22 2009 -->
 <interface>
   <object class="GtkListStore" id="model1">
     <columns>
@@ -25,41 +25,8 @@
     <child>
       <object class="GtkActionGroup" id="actiongroup1">
         <child>
-          <object class="GtkAction" id="back_menuitem">
-            <property name="stock_id">gtk-go-back</property>
-            <property name="name">back_menuitem</property>
-            <property name="tooltip" translatable="yes">Go to the previous search</property>
-            <property name="label" translatable="yes">_Previous Search</property>
-            <signal handler="do_back" name="activate"/>
-          </object>
-          <accelerator key="Left" modifiers="GDK_MOD1_MASK"/>
-        </child>
-        <child>
-          <object class="GtkAction" id="forward_menuitem">
-            <property name="stock_id">gtk-go-forward</property>
-            <property name="name">forward_menuitem</property>
-            <property name="tooltip" translatable="yes">Go to the next search</property>
-            <property name="label" translatable="yes">_Next Search</property>
-            <signal handler="do_forward" name="activate"/>
-          </object>
-          <accelerator key="Right" modifiers="GDK_MOD1_MASK"/>
-        </child>
-      </object>
-    </child>
-    <ui>
-      <popup name="history_popup">
-        <menuitem action="back_menuitem"/>
-        <menuitem action="forward_menuitem"/>
-        <separator/>
-      </popup>
-    </ui>
-  </object>
-  <object class="GtkUIManager" id="uimanager4">
-    <child>
-      <object class="GtkActionGroup" id="actiongroup2">
-        <child>
-          <object class="GtkAction" id="file_menu">
-            <property name="name">file_menu</property>
+          <object class="GtkAction" id="file_menu1">
+            <property name="name">file_menu1</property>
             <property name="label" translatable="yes">_File</property>
           </object>
         </child>
@@ -270,6 +237,22 @@
           </object>
         </child>
         <child>
+          <object class="GtkAction" id="back_menuitem">
+            <property name="stock_id" translatable="yes">gtk-go-back</property>
+            <property name="name">back_menuitem</property>
+            <signal handler="do_back" name="activate"/>
+          </object>
+          <accelerator key="Left" modifiers="GDK_MOD1_MASK"/>
+        </child>
+        <child>
+          <object class="GtkAction" id="forward_menuitem">
+            <property name="stock_id" translatable="yes">gtk-go-forward</property>
+            <property name="name">forward_menuitem</property>
+            <signal handler="do_forward" name="activate"/>
+          </object>
+          <accelerator key="Right" modifiers="GDK_MOD1_MASK"/>
+        </child>
+        <child>
           <object class="GtkAction" id="help_menu">
             <property name="name">help_menu</property>
             <property name="label" translatable="yes">_Help</property>
@@ -301,7 +284,7 @@
     </child>
     <ui>
       <menubar name="menubar">
-        <menu action="file_menu">
+        <menu action="file_menu1">
           <menuitem action="edit_menuitem"/>
           <menuitem action="save_menuitem"/>
           <menuitem action="save_as_menuitem"/>
@@ -341,7 +324,11 @@
           <separator/>
           <menuitem action="clear_menuitem"/>
         </menu>
-        <menuitem action="history_menu"/>
+        <menu action="history_menu">
+          <menuitem action="back_menuitem"/>
+          <menuitem action="forward_menuitem"/>
+          <separator/>
+        </menu>
         <menu action="help_menu">
           <menuitem action="help_menuitem"/>
           <separator/>
@@ -358,9 +345,6 @@
   <object class="GtkMenu" constructor="uimanager2" id="forward_popup">
     <property name="visible">True</property>
   </object>
-  <object class="GtkMenu" constructor="uimanager3" id="history_popup">
-    <property name="visible">True</property>
-  </object>
   <object class="GtkWindow" id="main_window">
     <property name="title" translatable="yes">gWaei Japanese-English Dictionary</property>
     <property name="default_width">620</property>
@@ -373,7 +357,7 @@
         <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
         <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
         <child>
-          <object class="GtkMenuBar" constructor="uimanager4" id="menubar">
+          <object class="GtkMenuBar" constructor="uimanager3" id="menubar">
             <property name="visible">True</property>
           </object>
           <packing>
@@ -606,7 +590,6 @@
                     <signal handler="do_update_button_states_based_on_entry_text" name="changed"/>
                     <signal handler="do_focus_change_on_key_press" name="key_press_event"/>
                     <signal handler="do_switch_dictionaries_on_tab_press" name="key_press_event"/>
-                    <signal handler="do_history_change_on_key_press" name="key_press_event"/>
                     <signal handler="do_switch_dictionaries_quickkey_action" name="key_press_event"/>
                     <signal handler="do_clear_search" name="icon_release"/>
                     <signal handler="do_update_clipboard_on_focus_change" name="focus_in_event"/>
@@ -625,7 +608,6 @@
                 <property name="tooltip-text" translatable="yes">Select the dictionary you want to use</property>
                 <property name="focus_on_click">False</property>
                 <signal handler="do_dictionary_changed_action" name="changed"/>
-                <signal handler="do_switch_dictionaries_quickkey_action" name="key_press_event"/>
                 <property name="model">model1</property>
                 <child>
                   <object class="GtkCellRendererText" id="renderer1"/>
@@ -707,7 +689,6 @@
                             <signal handler="do_get_iter_for_motion" name="motion_notify_event"/>
                             <signal handler="do_focus_change_on_key_press" name="key_press_event"/>
                             <signal handler="do_switch_dictionaries_on_tab_press" name="key_press_event"/>
-                            <signal handler="do_history_change_on_key_press" name="key_press_event"/>
                             <signal handler="do_switch_dictionaries_quickkey_action" name="key_press_event"/>
                             <signal handler="do_update_clipboard_on_focus_change" name="focus_in_event" object="results_text_view"/>
                             <signal handler="do_get_iter_for_button_release" name="button_release_event"/>
@@ -792,7 +773,6 @@
                             <property name="cursor_visible">False</property>
                             <signal handler="do_focus_change_on_key_press" name="key_press_event"/>
                             <signal handler="do_switch_dictionaries_on_tab_press" name="key_press_event"/>
-                            <signal handler="do_history_change_on_key_press" name="key_press_event"/>
                             <signal handler="do_switch_dictionaries_quickkey_action" name="key_press_event"/>
                             <signal handler="do_update_clipboard_on_focus_change" name="focus_in_event" object="kanji_text_view"/>
                             <signal handler="do_copy" name="copy_clipboard"/>

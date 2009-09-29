@@ -1,1 +1,0 @@
-help-none.o: help-none.c

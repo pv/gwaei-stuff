@@ -724,33 +724,6 @@ G_MODULE_EXPORT void do_about(GtkWidget *widget, gpointer data)
 }
 
 
-G_MODULE_EXPORT gboolean do_history_change_on_key_press (GtkWidget *widget,
-                                         GdkEvent  *event,
-                                         gpointer  *focus  )
-{
-    //Make sure the tab key was pressed with no modifiers
-    guint state  = ((GdkEventKey*) event)->state;
-    guint keyval = ((GdkEventKey*) event)->keyval;
-    guint modifiers = ( 
-                        GDK_MOD1_MASK    //Alt usually...
-                      );
-
-    //Make sure no modifier keys are pressed
-    if (((state & modifiers) > 0 ) && keyval == GDK_Left)
-    {
-      do_back(NULL, NULL);
-      return TRUE;
-    }
-    else if (((state & modifiers) > 0 ) && keyval == GDK_Right)
-    {
-      do_forward(NULL, NULL);
-      return TRUE;
-    }
-
-    return FALSE;
-}
-
-
 G_MODULE_EXPORT gboolean do_switch_dictionaries_quickkey_action (GtkWidget *widget,
                                               GdkEvent  *event,
                                               gpointer  *focus  )

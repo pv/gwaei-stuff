@@ -1,52 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Tue Sep 29 13:18:34 2009 -->
+<!--Generated with glade3 3.4.5 on Tue Sep 29 17:03:22 2009 -->
 <glade-interface>
   <widget class="GtkMenu" id="back_popup">
     <property name="visible">True</property>
   </widget>
   <widget class="GtkMenu" id="forward_popup">
     <property name="visible">True</property>
-  </widget>
-  <widget class="GtkMenu" id="history_popup">
-    <property name="visible">True</property>
-    <child>
-      <widget class="GtkImageMenuItem" id="back_menuitem">
-        <property name="visible">True</property>
-        <property name="tooltip" translatable="yes">Go to the previous search</property>
-        <property name="label" translatable="yes">_Previous Search</property>
-        <property name="use_underline">True</property>
-        <signal name="activate" handler="do_back"/>
-        <accelerator key="Left" modifiers="GDK_MOD1_MASK" signal="activate"/>
-        <child internal-child="image">
-          <widget class="GtkImage" id="menu-item-image10">
-            <property name="visible">True</property>
-            <property name="stock">gtk-go-back</property>
-          </widget>
-        </child>
-      </widget>
-    </child>
-    <child>
-      <widget class="GtkImageMenuItem" id="forward_menuitem">
-        <property name="visible">True</property>
-        <property name="tooltip" translatable="yes">Go to the next search</property>
-        <property name="label" translatable="yes">_Next Search</property>
-        <property name="use_underline">True</property>
-        <signal name="activate" handler="do_forward"/>
-        <accelerator key="Right" modifiers="GDK_MOD1_MASK" signal="activate"/>
-        <child internal-child="image">
-          <widget class="GtkImage" id="menu-item-image11">
-            <property name="visible">True</property>
-            <property name="stock">gtk-go-forward</property>
-          </widget>
-        </child>
-      </widget>
-    </child>
-    <child>
-      <widget class="GtkSeparatorMenuItem" id="separatormenuitem4">
-        <property name="visible">True</property>
-      </widget>
-    </child>
   </widget>
   <widget class="GtkWindow" id="main_window">
     <property name="title" translatable="yes">gWaei Japanese-English Dictionary</property>
@@ -63,7 +23,7 @@
           <widget class="GtkMenuBar" id="menubar">
             <property name="visible">True</property>
             <child>
-              <widget class="GtkMenuItem" id="file_menu">
+              <widget class="GtkMenuItem" id="file_menu1">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">_File</property>
                 <property name="use_underline">True</property>
@@ -429,6 +389,38 @@
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Hi_story</property>
                 <property name="use_underline">True</property>
+                <child>
+                  <widget class="GtkMenu" id="history_popup">
+                    <property name="visible">True</property>
+                    <child>
+                      <widget class="GtkImageMenuItem" id="back_menuitem">
+                        <property name="visible">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="label" translatable="yes">gtk-go-back</property>
+                        <property name="use_underline">True</property>
+                        <property name="use_stock">True</property>
+                        <signal name="activate" handler="do_back"/>
+                        <accelerator key="Left" modifiers="GDK_MOD1_MASK" signal="activate"/>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkImageMenuItem" id="forward_menuitem">
+                        <property name="visible">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="label" translatable="yes">gtk-go-forward</property>
+                        <property name="use_underline">True</property>
+                        <property name="use_stock">True</property>
+                        <signal name="activate" handler="do_forward"/>
+                        <accelerator key="Right" modifiers="GDK_MOD1_MASK" signal="activate"/>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkSeparatorMenuItem" id="separatormenuitem4">
+                        <property name="visible">True</property>
+                      </widget>
+                    </child>
+                  </widget>
+                </child>
               </widget>
             </child>
             <child>
@@ -714,7 +706,6 @@
                     <signal name="changed" handler="do_update_button_states_based_on_entry_text"/>
                     <signal name="key_press_event" handler="do_focus_change_on_key_press"/>
                     <signal name="key_press_event" handler="do_switch_dictionaries_on_tab_press"/>
-                    <signal name="key_press_event" handler="do_history_change_on_key_press"/>
                     <signal name="key_press_event" handler="do_switch_dictionaries_quickkey_action"/>
                     <signal name="icon_release" handler="do_clear_search"/>
                     <signal name="focus_in_event" handler="do_update_clipboard_on_focus_change"/>
@@ -734,7 +725,6 @@
                 <property name="focus_on_click">False</property>
                 <property name="items" translatable="yes">word</property>
                 <signal name="changed" handler="do_dictionary_changed_action"/>
-                <signal name="key_press_event" handler="do_switch_dictionaries_quickkey_action"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -810,7 +800,6 @@
                             <signal name="motion_notify_event" handler="do_get_iter_for_motion"/>
                             <signal name="key_press_event" handler="do_focus_change_on_key_press"/>
                             <signal name="key_press_event" handler="do_switch_dictionaries_on_tab_press"/>
-                            <signal name="key_press_event" handler="do_history_change_on_key_press"/>
                             <signal name="key_press_event" handler="do_switch_dictionaries_quickkey_action"/>
                             <signal name="focus_in_event" handler="do_update_clipboard_on_focus_change" object="results_text_view"/>
                             <signal name="button_release_event" handler="do_get_iter_for_button_release"/>
@@ -896,7 +885,6 @@
                             <property name="cursor_visible">False</property>
                             <signal name="key_press_event" handler="do_focus_change_on_key_press"/>
                             <signal name="key_press_event" handler="do_switch_dictionaries_on_tab_press"/>
-                            <signal name="key_press_event" handler="do_history_change_on_key_press"/>
                             <signal name="key_press_event" handler="do_switch_dictionaries_quickkey_action"/>
                             <signal name="focus_in_event" handler="do_update_clipboard_on_focus_change" object="kanji_text_view"/>
                             <signal name="copy_clipboard" handler="do_copy"/>

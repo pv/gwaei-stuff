@@ -33,6 +33,7 @@
 #include <locale.h>
 #include <libintl.h>
 
+#include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
 #include <gwaei/gtk.h>
@@ -468,28 +469,26 @@ int rebuild_combobox_dictionary_list()
 //
 void gwaei_ui_update_history_menu_popup()
 {
-    //Get a reference to the history_popup
     char id[50];
-    GtkWidget *history_popup;
-    strcpy (id, "history_popup");
-    history_popup = GTK_WIDGET (gtk_builder_get_object(builder, id));
+    GtkMenuBar *menubar;
+    strcpy (id, "menubar");
+    menubar = GTK_MENU_BAR (gtk_builder_get_object(builder, id));
 
-    GList     *children;
-    children = gtk_container_get_children(GTK_CONTAINER (history_popup));
-    GList *history_list;
+    GList *list = gtk_container_get_children (GTK_CONTAINER (menubar));
+    GtkMenuItem *menuitem = g_list_nth_data (list, 4);
+    if (menuitem == NULL) return;
 
-    //Get some references to the back and forward buttons
-    GtkWidget *back_menuitem;
-    back_menuitem = GTK_WIDGET (children->data);
-    children = children->next;
-    history_list = historylist_get_back_history (GWAEI_TARGET_RESULTS);
-    gtk_widget_set_sensitive (back_menuitem, g_list_length (history_list));
+    GtkWidget *menu = GTK_WIDGET (gtk_menu_item_get_submenu (menuitem));
 
-    GtkWidget *forward_menuitem;
-    forward_menuitem = GTK_WIDGET (children->data);
-    children = children->next;
-    history_list = historylist_get_forward_history (GWAEI_TARGET_RESULTS);
-    gtk_widget_set_sensitive (forward_menuitem, g_list_length (history_list));
+
+    GtkMenuShell *shell = GTK_MENU_SHELL (menu);
+    GList     *children = NULL;
+    children = gtk_container_get_children (GTK_CONTAINER (shell));
+
+    //Skip over the back/forward buttons
+    if (children != NULL) children = g_list_next(children);
+    if (children != NULL) children = g_list_next(children);
+    if (children != NULL) children = g_list_next(children);
 
     //Remove all widgets after the back and forward menuitem buttons
     while (children != NULL )
@@ -498,11 +497,11 @@ void gwaei_ui_update_history_menu_popup()
       children = g_list_delete_link(children, children);
     }
 
-    //Add a seperator to the end of the history popup
-    GtkWidget *menuitem;
-    menuitem = gtk_separator_menu_item_new();
-    gtk_menu_shell_append(GTK_MENU_SHELL (history_popup), menuitem);
-    gtk_widget_show(menuitem);
+
+    GtkAction *action = GTK_ACTION (gtk_builder_get_object (builder, "back_menuitem"));
+      gtk_action_set_sensitive (action, (historylist_get_back_history (GWAEI_TARGET_RESULTS) != NULL));
+    action = GTK_ACTION (gtk_builder_get_object (builder, "forward_menuitem"));
+      gtk_action_set_sensitive (action, (historylist_get_forward_history (GWAEI_TARGET_RESULTS) != NULL));
 
 
     //Declarations
@@ -511,16 +510,25 @@ void gwaei_ui_update_history_menu_popup()
     SearchItem *item;
 
     children = historylist_get_combined_history_list (GWAEI_HISTORYLIST_RESULTS);
+
+
+    //Add a sparator if there are some items in history
+    if (children != NULL)
+    {
+      //Add a seperator to the end of the history popup
+      menuitem = GTK_MENU_ITEM (gtk_separator_menu_item_new());
+      gtk_menu_shell_append (GTK_MENU_SHELL (shell), GTK_WIDGET (menuitem));
+      gtk_widget_show (GTK_WIDGET (menuitem));
+    }
+
+
     while (children != NULL)
     {
       item = children->data;
 
+      //A little trick to make the history menu a bit wider...
       int leftover = 200;
       char label[leftover];
-      /*
-      strncpy (label, gettext("Searched for \""), leftover);
-      leftover -= 1;
-      */
       strncpy (label, item->query, leftover);
       leftover -= strlen (item->query);
       while (leftover > 180)
@@ -528,19 +536,12 @@ void gwaei_ui_update_history_menu_popup()
         strncat (label, " ", leftover);
         leftover -= 1;
       }
-      /*
-      strncat (label, gettext("\" in the "), leftover);
-      leftover -= strlen(gettext("\" in the "));
-      strncat (label, item->dictionary->name, leftover);
-      leftover -= strlen (item->dictionary->name);
-      strncat (label, gettext(" Dictionary"), leftover);
-      */
 
-      menuitem = GTK_WIDGET (gtk_menu_item_new_with_label(label));
+      menuitem = GTK_MENU_ITEM (gtk_menu_item_new_with_label(label));
 
       //Create the new menuitem
-      gtk_menu_shell_append(GTK_MENU_SHELL (history_popup), menuitem);
-      gtk_widget_show  (menuitem);
+      gtk_menu_shell_append(GTK_MENU_SHELL (shell), GTK_WIDGET (menuitem));
+      gtk_widget_show  (GTK_WIDGET (menuitem));
       g_signal_connect (GTK_WIDGET (menuitem), 
                         "activate",
                         G_CALLBACK (do_search_from_history), 
@@ -596,13 +597,6 @@ void rebuild_history_button_popup(char* id, GList* list) {
         strncat (label, " ", leftover);
         leftover -= 1;
       }
-      /*
-      strncat (label, gettext("\" in the "), leftover);
-      leftover -= strlen(gettext("\" in the "));
-      strncat (label, item->dictionary->name, leftover);
-      leftover -= strlen (item->dictionary->name);
-      strncat (label, gettext(" Dictionary"), leftover);
-      */
 
       menuitem = GTK_WIDGET (gtk_menu_item_new_with_label(label));
 
@@ -1106,6 +1100,7 @@ gboolean gwaei_ui_load_gtk_builder_xml(const char *name) {
 
 void initialize_history_popups()
 {
+/*
     //Initialize the history popup
     GtkWidget *menubar;
     menubar = GTK_WIDGET (gtk_builder_get_object(builder, "menubar"));
@@ -1123,6 +1118,7 @@ void initialize_history_popups()
     submenu = GTK_WIDGET (gtk_builder_get_object(builder, "history_popup"));
 
     gtk_menu_item_set_submenu (children->data, submenu);
+    */
 }
 
 
