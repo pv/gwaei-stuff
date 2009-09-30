@@ -105,6 +105,7 @@ void append_stored_result_to_output(SearchItem *item, GList **results)
       {
           int start, end;
           char *text = (char*)(*results)->data;
+          remove_duplicate_header_from_result (text);
           gwaei_ui_append_to_buffer (item->target, text,
                                      NULL, NULL, &start, &end);
           gwaei_ui_add_results_tagging (start, end, item);
@@ -135,6 +136,66 @@ int get_relevance (char* text, SearchItem *item) {
 }
 
 
+char comparison_buffer[LINE_MAX + 2] = "INITIALSTRING";
+char* comparison_buffer_ptr = NULL;
+void remove_duplicate_header_from_result (char *input)
+{
+    //Special case for the initial string
+    char temp[MAX_LINE];
+    if (strcmp(comparison_buffer, "INITIALSTRING") == 0) {
+        if (strlen(input) > 1)input[strlen(input) - 1] = '\0';
+        comparison_buffer[0] = '\0';
+        char* position1 = strchr(input, '[');
+        if (position1 != NULL)              
+        {
+        strncpy(comparison_buffer, input, (int)(position1 - input));
+        comparison_buffer[(int)(position1 - input)] = '\0';
+        }
+        return;
+    }
+
+    //Code to remove duplicate kanji in the beginnig of a result /////
+    input[strlen(input) - 1] = '\0';
+    char* position1 = strchr(input, '[');
+    if (position1 == 0)
+    {
+        strcpy(temp, "\n");
+        strncat(temp, input, MAX_LINE - 1);
+        strncpy(input, temp, MAX_LINE);
+    }
+    else if (strstr(input, comparison_buffer) != input || comparison_buffer[0] == '\0')
+    { //Changed
+      strncpy(comparison_buffer, input, (int)(position1 - input));
+      comparison_buffer[(int)(position1 - input)] = '\0';
+      strcpy(temp, "\n");
+      strncat(temp, input, MAX_LINE - 1);
+      strncpy(input, temp, MAX_LINE);
+    }
+    else
+    { //Didn't change
+       char* position2 = input;
+       while (position2 < position1)
+       {
+         if (position1 - position2 > 3)
+         {
+           
+           *position2 = "　"[0];
+           position2++;
+           *position2 = "　"[1];
+           position2++;
+           *position2 = "　"[2];
+           position2++;
+         }
+         else
+         {
+           *position2 = ' ';
+           position2++;
+         }
+       }
+    }
+}
+
+
 gboolean stream_results_thread (gpointer data)
 {
   SearchItem *item = data;
@@ -148,6 +209,7 @@ gboolean stream_results_thread (gpointer data)
          fgets(item->input, MAX_LINE, item->fd) != NULL)
   {
     chunk++;
+
 
     //Commented input in the dictionary...we should skip over it
     if(item->input[0] == '#' || g_utf8_get_char(item->input) == L'？') 
@@ -246,6 +308,7 @@ gboolean stream_results_thread (gpointer data)
               item->total_results++;
               item->total_relevant_results++;
               gwaei_ui_update_total_results_label(item);
+              remove_duplicate_header_from_result (item->input);
               strcpy_with_general_formatting(item->input, item->output);
               append_result_to_output(item);
               break;
@@ -322,6 +385,9 @@ gboolean stream_results_thread (gpointer data)
     }
     item->results_found = FALSE;
   }
+  
+  strcpy(comparison_buffer, "INITIALSTRING");
+  comparison_buffer_ptr = NULL;
 
   return FALSE;
 }
