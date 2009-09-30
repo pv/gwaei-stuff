@@ -424,9 +424,52 @@ void gwaei_ui_finalize_total_results_label (SearchItem* item)
 // Menu dictionary combobox section
 //
 
+GtkMenuShell* get_dictionary_list_popup ()
+{
+    //Get a reference to the File menu
+    GtkMenuShell *shell = NULL;
+    char id[50];
+    GtkMenuBar *menubar;
+    strcpy (id, "menubar");
+    menubar = GTK_MENU_BAR (gtk_builder_get_object(builder, id));
+    GList *list = gtk_container_get_children (GTK_CONTAINER (menubar));
+    GtkMenuItem *menuitem = GTK_MENU_ITEM (g_list_nth_data (list, 0));
+
+    if (menuitem == NULL) return NULL;
+
+    //Use the file menu to get the Dictionaries submenu
+    GtkWidget *menu = GTK_WIDGET (gtk_menu_item_get_submenu (menuitem));
+    list = gtk_container_get_children (GTK_CONTAINER (menu));
+    menuitem = g_list_nth_data (list, 5);
+
+    if (menuitem == NULL) return NULL;
+
+    menu = GTK_WIDGET (gtk_menu_item_get_submenu (menuitem));
+
+    return GTK_MENU_SHELL (menu);
+}
+
+
 int rebuild_combobox_dictionary_list() 
 {
+    //Get dictionaries menu so we can refresh it along with this
     char id[50];
+
+    //Remove all widgets after the back and forward menuitem buttons
+    GtkMenuShell *shell;
+    if (shell = get_dictionary_list_popup ())
+    {
+      GList     *children = NULL;
+      children = gtk_container_get_children (GTK_CONTAINER (shell));
+      while (children != NULL )
+      {
+        gtk_widget_destroy(children->data);
+        children = g_list_delete_link(children, children);
+      }
+    }
+
+
+    //Now update the combobox
     GtkWidget *combobox;
     strcpy(id, "dictionary_combobox");
     combobox = GTK_WIDGET (gtk_builder_get_object(builder, id));
@@ -439,7 +482,13 @@ int rebuild_combobox_dictionary_list()
     }
 
     GList* dictionaries = dictionarylist_get_list ();
+    GSList* group = NULL;
     DictionaryInfo *di;
+    GtkAccelGroup* accel_group = gtk_accel_group_new();
+    GtkWindow *window = GTK_WINDOW (gtk_builder_get_object (builder, "main_window"));
+    gtk_window_add_accel_group (GTK_WINDOW (window), accel_group);
+    GtkWidget *item = NULL;
+
     int i = 0;
     while (dictionaries != NULL)
     {
@@ -451,6 +500,15 @@ int rebuild_combobox_dictionary_list()
             di->id != RADICALS                                               )||
            ((dictionarylist_dictionary_get_status_by_id (MIX) != INSTALLED )))
         {
+          item = GTK_WIDGET (gtk_radio_menu_item_new_with_label (group, di->name));
+          group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
+          gtk_menu_shell_append (GTK_MENU_SHELL (shell),  GTK_WIDGET (item));
+          if (i == 0) gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), TRUE);
+          g_signal_connect( G_OBJECT (item),       "toggled",
+                           G_CALLBACK (do_dictionary_changed_action), NULL);
+          if (i + 1 < 10) gtk_widget_add_accelerator (GTK_WIDGET (item), "activate", accel_group, (GDK_0 + i + 1), GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
+          gtk_widget_show (item);
+
           gtk_combo_box_append_text(GTK_COMBO_BOX (combobox), di->name);
           i++;
         }
@@ -459,8 +517,51 @@ int rebuild_combobox_dictionary_list()
     }
     gtk_combo_box_set_active( GTK_COMBO_BOX (combobox), 0);
 
+
+    item = GTK_WIDGET (gtk_separator_menu_item_new());
+    gtk_menu_shell_append (GTK_MENU_SHELL (shell), GTK_WIDGET (item));
+    gtk_widget_show (GTK_WIDGET (item));
+
+    item = GTK_WIDGET (gtk_menu_item_new_with_mnemonic(gettext("_Cycle Up")));
+    gtk_menu_shell_append (GTK_MENU_SHELL (shell), GTK_WIDGET (item));
+    g_signal_connect( G_OBJECT (item),       "activate",
+                     G_CALLBACK (do_cycle_dictionaries_backward), NULL);
+    gtk_widget_add_accelerator (GTK_WIDGET (item), "activate", accel_group, GDK_Up, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
+    gtk_widget_show (GTK_WIDGET (item));
+
+    item = GTK_WIDGET (gtk_menu_item_new_with_mnemonic(gettext("Cycle _Down")));
+    gtk_menu_shell_append (GTK_MENU_SHELL (shell), GTK_WIDGET (item));
+    g_signal_connect( G_OBJECT (item),       "activate",
+                     G_CALLBACK (do_cycle_dictionaries_forward), NULL);
+    gtk_widget_add_accelerator (GTK_WIDGET (item), "activate", accel_group, GDK_Down, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
+    gtk_widget_show (GTK_WIDGET (item));
+
     printf("%d dictionaries are being used.\n", i);
     return i;
+}
+
+
+void gwaei_ui_set_dictionary(int request)
+{
+    GtkWidget *combobox;
+    combobox = GTK_WIDGET (gtk_builder_get_object (builder, "dictionary_combobox"));
+
+    GtkMenuShell *shell;
+    if (shell = get_dictionary_list_popup ())
+    {
+      GList     *children = NULL;
+      children = gtk_container_get_children (GTK_CONTAINER (shell));
+      GtkWidget *radioitem = g_list_nth_data (children, request);
+      if (radioitem != NULL)
+      {
+        g_signal_handlers_block_by_func(radioitem, do_dictionary_changed_action, NULL);
+        g_signal_handlers_block_by_func(combobox, do_dictionary_changed_action, NULL);
+        gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (radioitem), TRUE);
+        gtk_combo_box_set_active (GTK_COMBO_BOX (combobox), request);
+        g_signal_handlers_unblock_by_func(radioitem, do_dictionary_changed_action, NULL);
+        g_signal_handlers_unblock_by_func(combobox, do_dictionary_changed_action, NULL);
+      }
+    }
 }
 
 
@@ -1096,31 +1197,6 @@ gboolean gwaei_ui_load_gtk_builder_xml(const char *name) {
     printf("Could not find needed xml files\n");
     return FALSE;
 }
-
-
-void initialize_history_popups()
-{
-/*
-    //Initialize the history popup
-    GtkWidget *menubar;
-    menubar = GTK_WIDGET (gtk_builder_get_object(builder, "menubar"));
-
-    GList *children;
-    children = gtk_container_get_children(GTK_CONTAINER (menubar));
-
-    while (children->next != NULL &&
-           strcmp(gtk_widget_get_name(children->data), "history_menu") != 0)
-    {
-      children = children->next;
-    }
-
-    GtkWidget *submenu;
-    submenu = GTK_WIDGET (gtk_builder_get_object(builder, "history_popup"));
-
-    gtk_menu_item_set_submenu (children->data, submenu);
-    */
-}
-
 
 
 /////////
@@ -1981,18 +2057,6 @@ void gwaei_ui_cycle_dictionaries(gboolean cycle_forward)
 }
 
 
-void gwaei_ui_cycle_dictionaries_forward ()
-{
-    gwaei_ui_cycle_dictionaries(TRUE);
-}
-
-
-void gwaei_ui_cycle_dictionaries_backward ()
-{
-    gwaei_ui_cycle_dictionaries(FALSE);
-}
-
-
 char* gwaei_ui_get_text_from_text_buffer(const int TARGET)
 {
   GObject* tb;
@@ -2075,7 +2139,6 @@ void initialize_gui_interface(int *argc, char ***argv)
     initialize_global_widget_pointers();
     gwaei_initialize_tags();
     initialize_kanjipad();
-    initialize_history_popups();
 
     gwaei_sexy_initialize_libsexy();
     gwaei_ui_update_history_popups();
