@@ -16,6 +16,7 @@ struct SearchItem {
   char *input;
   char *output;
   int target;
+  long current_line;
 
   int total_relevant_results;
   int total_irrelevant_results;

@@ -22,6 +22,7 @@ struct DictionaryInfo
     int id;
     int type;
     int status;
+    long total_lines;
     char name[100];
     char path[FILENAME_MAX];
     char gz_path[FILENAME_MAX];

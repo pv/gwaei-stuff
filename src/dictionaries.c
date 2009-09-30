@@ -83,6 +83,17 @@ DictionaryInfo* dictionaryinfo_new (char *name)
     remaining -= strlen(temp->gz_path);
     strncat(temp->gz_path, ".gz", remaining);
 
+    //Calculate the number of lines in the dictionary
+    char line[MAX_LINE];
+    temp->total_lines = 0;
+    FILE *fd = fopen (temp->path, "r");
+    if (fd != NULL)
+    {
+      while (fgets(line, MAX_LINE, fd) != NULL)
+        temp->total_lines++;
+      fclose(fd);
+    }
+
     //Create id (to show special built in dictionaries)
     if      (strcmp(name, "English") == 0)
     {

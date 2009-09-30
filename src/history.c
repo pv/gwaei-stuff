@@ -76,6 +76,7 @@ SearchItem* searchitem_new (char* query, DictionaryInfo* dictionary,
   temp->total_irrelevant_results = 0;
   temp->total_results = 0;
   temp->results_found = TRUE;
+  temp->current_line = 0;
 
   //Create the compiled regular expression
   int eflags_exist    = REG_EXTENDED | REG_ICASE | REG_NOSUB;
@@ -244,6 +245,7 @@ gboolean searchitem_do_pre_search_prep (SearchItem* item)
       item->input = NULL;
       return FALSE;
     }
+    item->current_line = 0;
     item->fd = fopen ((item->dictionary)->path, "r");
     item->status = GWAEI_SEARCH_SEARCHING;
     return TRUE;

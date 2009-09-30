@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!--Generated with glade3 3.4.5 on Tue Sep 29 21:51:06 2009 -->
+<!--Generated with glade3 3.4.5 on Wed Sep 30 18:45:07 2009 -->
 <interface>
   <object class="GtkListStore" id="model1">
     <columns>
@@ -604,6 +604,7 @@
                     <property name="tooltip-text" translatable="yes">Input your query here</property>
                     <property name="max_length">50</property>
                     <property name="caps_lock_warning">False</property>
+                    <property name="secondary_icon_name">gtk-clear</property>
                     <signal handler="do_update_button_states_based_on_entry_text" name="changed"/>
                     <signal handler="do_focus_change_on_key_press" name="key_press_event"/>
                     <signal handler="do_clear_search" name="icon_release"/>
@@ -640,7 +641,6 @@
             <child>
               <object class="GtkButton" id="search_entry_submit_button">
                 <property name="visible">True</property>
-                <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="tooltip-text" translatable="yes">Click to start search</property>
@@ -813,7 +813,6 @@
             <property name="border_width">6</property>
             <child>
               <object class="GtkHBox" id="results_label_hbox">
-                <property name="no_show_all">True</property>
                 <child>
                   <object class="GtkLabel" id="results_label_start">
                     <property name="visible">True</property>
@@ -900,6 +899,23 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label5">
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkProgressBar" id="search_progressbar">
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">3</property>
               </packing>
             </child>
           </object>

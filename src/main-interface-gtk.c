@@ -564,6 +564,23 @@ void gwaei_ui_set_dictionary(int request)
     }
 }
 
+void gwaei_ui_update_search_progressbar (long current, long total)
+{
+    GtkWidget *progress;
+    progress = GTK_WIDGET (gtk_builder_get_object(builder, "search_progressbar"));
+
+    if (total == 0)
+    {
+//      gtk_widget_hide (GTK_WIDGET (progress));
+        gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR (progress), 0.0);
+    }
+    else
+    {
+      gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR (progress), ((double)current/(double)total));
+      gtk_widget_show (GTK_WIDGET (progress));
+    }
+}
+
 
 //
 // Menu popups section

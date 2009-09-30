@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Tue Sep 29 21:51:06 2009 -->
+<!--Generated with glade3 3.4.5 on Wed Sep 30 18:45:07 2009 -->
 <glade-interface>
   <widget class="GtkMenu" id="back_popup">
     <property name="visible">True</property>
@@ -730,6 +730,7 @@
                     <property name="tooltip" translatable="yes">Input your query here</property>
                     <property name="max_length">50</property>
                     <property name="caps_lock_warning">False</property>
+                    <property name="secondary_icon_name">gtk-clear</property>
                     <signal name="changed" handler="do_update_button_states_based_on_entry_text"/>
                     <signal name="key_press_event" handler="do_focus_change_on_key_press"/>
                     <signal name="icon_release" handler="do_clear_search"/>
@@ -760,7 +761,6 @@
             <child>
               <widget class="GtkButton" id="search_entry_submit_button">
                 <property name="visible">True</property>
-                <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="tooltip" translatable="yes">Click to start search</property>
@@ -935,7 +935,6 @@
             <property name="border_width">6</property>
             <child>
               <widget class="GtkHBox" id="results_label_hbox">
-                <property name="no_show_all">True</property>
                 <child>
                   <widget class="GtkLabel" id="results_label_start">
                     <property name="visible">True</property>
@@ -1022,6 +1021,23 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkLabel" id="label5">
+                <property name="visible">True</property>
+              </widget>
+              <packing>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkProgressBar" id="search_progressbar">
+                <property name="visible">True</property>
+              </widget>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">3</property>
               </packing>
             </child>
           </widget>
