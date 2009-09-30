@@ -1,7 +1,7 @@
 /******************************************************************************
 
   FILE:
-  src/search.c
+  src/engine.c
 
   DESCRIPTION:
   This file controls the backend of searches (usually initiated by the
@@ -93,53 +93,11 @@ void append_less_relevant_header_to_output(SearchItem *item)
 }
 
 
-void append_stored_result_to_output(SearchItem *item, GList **results)
+void add_group_formatting (SearchItem* item)
 {
-    if (less_relevant_results_show || item->total_relevant_results == 0)
-    {
-      if (gwaei_util_get_runmode() == GWAEI_CONSOLE_RUNMODE)
-      {
-        printf("%s", (char*)(*results)->data);
-      }
-      else if (item->status != CANCELING)
-      {
-          int start, end;
-          char *text = (char*)(*results)->data;
-          remove_duplicate_header_from_result (text);
-          gwaei_ui_append_to_buffer (item->target, text,
-                                     NULL, NULL, &start, &end);
-          gwaei_ui_add_results_tagging (start, end, item);
-      }
-    }
+    char *input = item->input;
+    char *comparison_buffer = item->comparison_buffer;
 
-    free(((*results)->data));
-    *results = g_list_delete_link(*results, *results);
-}
-
-
-//Quantifier to figure out how relevent a returned item is
-int get_relevance (char* text, SearchItem *item) {
-    int i;
-
-    //The search results is freakin' gold :-D
-    for (i = 0; i < item->total_re; i++)
-      if (regexec(&(item->re_relevance_high[i]), text, 1, NULL, 0) == 0)
-        return HIGH_RELEVANCE;
-
-    //Blarg.  A search result that may come in useful. :-)
-    for (i = 0; i < item->total_re; i++)
-      if (regexec(&(item->re_relevance_medium[i]), text, 1, NULL, 0) == 0)
-        return MEDIUM_RELEVANCE;
-
-    //Search result wasn't relevent. :-(
-    return LOW_RELEVANCE;
-}
-
-
-char comparison_buffer[LINE_MAX + 2] = "INITIALSTRING";
-char* comparison_buffer_ptr = NULL;
-void remove_duplicate_header_from_result (char *input)
-{
     //Special case for the initial string
     char temp[MAX_LINE];
     if (strcmp(comparison_buffer, "INITIALSTRING") == 0) {
@@ -193,6 +151,49 @@ void remove_duplicate_header_from_result (char *input)
          }
        }
     }
+}
+
+
+void append_stored_result_to_output(SearchItem *item, GList **results)
+{
+    if (less_relevant_results_show || item->total_relevant_results == 0)
+    {
+      if (gwaei_util_get_runmode() == GWAEI_CONSOLE_RUNMODE)
+      {
+        printf("%s", (char*)(*results)->data);
+      }
+      else if (item->status != CANCELING)
+      {
+          int start, end;
+          strcpy(item->input, (char*)(*results)->data);
+          add_group_formatting (item);
+          gwaei_ui_append_to_buffer (item->target, item->input,
+                                     NULL, NULL, &start, &end);
+          gwaei_ui_add_results_tagging (start, end, item);
+      }
+    }
+
+    free(((*results)->data));
+    *results = g_list_delete_link(*results, *results);
+}
+
+
+//Quantifier to figure out how relevent a returned item is
+int get_relevance (char* text, SearchItem *item) {
+    int i;
+
+    //The search results is freakin' gold :-D
+    for (i = 0; i < item->total_re; i++)
+      if (regexec(&(item->re_relevance_high[i]), text, 1, NULL, 0) == 0)
+        return HIGH_RELEVANCE;
+
+    //Blarg.  A search result that may come in useful. :-)
+    for (i = 0; i < item->total_re; i++)
+      if (regexec(&(item->re_relevance_medium[i]), text, 1, NULL, 0) == 0)
+        return MEDIUM_RELEVANCE;
+
+    //Search result wasn't relevent. :-(
+    return LOW_RELEVANCE;
 }
 
 
@@ -309,7 +310,7 @@ gboolean stream_results_thread (gpointer data)
               item->total_results++;
               item->total_relevant_results++;
               gwaei_ui_update_total_results_label(item);
-              remove_duplicate_header_from_result (item->input);
+              add_group_formatting (item);
               strcpy_with_general_formatting(item->input, item->output);
               append_result_to_output(item);
               break;
@@ -389,9 +390,6 @@ gboolean stream_results_thread (gpointer data)
     item->results_found = FALSE;
   }
   
-  strcpy(comparison_buffer, "INITIALSTRING");
-  comparison_buffer_ptr = NULL;
-
   return FALSE;
 }
 

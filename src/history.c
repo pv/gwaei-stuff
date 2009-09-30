@@ -246,6 +246,7 @@ gboolean searchitem_do_pre_search_prep (SearchItem* item)
       return FALSE;
     }
     item->current_line = 0;
+    strcpy(item->comparison_buffer, "INITIALSTRING");
     item->fd = fopen ((item->dictionary)->path, "r");
     item->status = GWAEI_SEARCH_SEARCHING;
     return TRUE;

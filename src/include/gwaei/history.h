@@ -17,6 +17,7 @@ struct SearchItem {
   char *output;
   int target;
   long current_line;
+  char comparison_buffer[LINE_MAX + 2];
 
   int total_relevant_results;
   int total_irrelevant_results;
