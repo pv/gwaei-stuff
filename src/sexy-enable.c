@@ -189,11 +189,7 @@ void gwaei_sexy_initialize_libsexy ()
     g_signal_connect( G_OBJECT (entry),       "focus-in-event",
                       G_CALLBACK (do_update_clipboard_on_focus_change), entry);
     g_signal_connect( G_OBJECT (entry),       "key-press-event",
-                      G_CALLBACK (do_switch_dictionaries_on_tab_press), NULL);
-    g_signal_connect( G_OBJECT (entry),       "key-press-event",
                       G_CALLBACK (do_focus_change_on_key_press), NULL);
-    g_signal_connect( G_OBJECT (entry),       "key-press-event",
-                      G_CALLBACK (do_switch_dictionaries_quickkey_action), NULL);
     g_signal_connect( G_OBJECT (entry),       "changed",
                       G_CALLBACK (do_update_button_states_based_on_entry_text), NULL);
     g_signal_connect( G_OBJECT (entry),       "icon-release",

@@ -485,6 +485,60 @@ G_MODULE_EXPORT void do_toolbar_toggle (GtkWidget *widget, gpointer data)
 
 G_MODULE_EXPORT void do_dictionary_changed_action (GtkWidget *widget, gpointer data)
 {
+    //Get a reference to the File menu
+    GtkMenuShell *shell = NULL;
+    char id[50];
+    GtkMenuBar *menubar;
+    strcpy (id, "menubar");
+    menubar = GTK_MENU_BAR (gtk_builder_get_object(builder, id));
+    GList *list = gtk_container_get_children (GTK_CONTAINER (menubar));
+    GtkMenuItem *menuitem = GTK_MENU_ITEM (g_list_nth_data (list, 0));
+    if (menuitem != NULL)
+    {
+      //Use the file menu to get the Dictionaries submenu
+      GtkWidget *menu = GTK_WIDGET (gtk_menu_item_get_submenu (menuitem));
+      list = gtk_container_get_children (GTK_CONTAINER (menu));
+      menuitem = g_list_nth_data (list, 5);
+      if (menuitem != NULL)
+      {
+        menu = GTK_WIDGET (gtk_menu_item_get_submenu (menuitem));
+        shell = GTK_MENU_SHELL (menu);
+      }
+    }
+
+
+    int active = 0;
+
+    if (strcmp(G_OBJECT_TYPE_NAME(widget), "GtkComboBox") == 0 )
+    {
+      active = gtk_combo_box_get_active(GTK_COMBO_BOX (widget));
+    }
+    else if (strcmp(G_OBJECT_TYPE_NAME(widget), "GtkRadioMenuItem") == 0 )
+    {
+      if (shell != NULL)
+      {
+        GList *list;
+        list = gtk_container_get_children (GTK_CONTAINER (shell));
+        while (list != NULL && gtk_check_menu_item_get_active( GTK_CHECK_MENU_ITEM (list->data)) == FALSE)
+        {
+          list = g_list_next(list);
+          active++;
+        }
+      }
+    }
+    gwaei_ui_set_dictionary(active);
+/*
+    GtkWidget *combobox;
+    char id[50];
+    strncpy (id, "dictionary_combobox", 50);
+    combobox = GTK_WIDGET (gtk_builder_get_object(builder, id));
+
+    gint active;
+    active = gtk_combo_box_get_active( GTK_COMBO_BOX (combobox) );
+    char *active_text;
+*/
+
+
     gwaei_ui_grab_focus_by_target(GWAEI_TARGET_ENTRY);
 }
 
@@ -724,77 +778,15 @@ G_MODULE_EXPORT void do_about(GtkWidget *widget, gpointer data)
 }
 
 
-G_MODULE_EXPORT gboolean do_switch_dictionaries_quickkey_action (GtkWidget *widget,
-                                              GdkEvent  *event,
-                                              gpointer  *focus  )
+G_MODULE_EXPORT void do_cycle_dictionaries_forward (GtkWidget *widget, gpointer data)
 {
-    //Make sure the tab key was pressed with no modifiers
-    guint state  = ((GdkEventKey*) event)->state;
-    guint keyval = ((GdkEventKey*) event)->keyval;
-    guint modifiers = ( 
-                        GDK_META_MASK |
-                        GDK_Meta_L    |
-                        GDK_Meta_R    |
-                        GDK_Alt_L     |
-                        GDK_Alt_R
-                      );
-
-    //Make sure no extra modifier keys are pressed
-    if (((state & modifiers) != 0 ) && (keyval >= GDK_1 && keyval <= GDK_9))
-    {
-      int request = (keyval & 0x00F) - 1;
-
-      GtkWidget *combobox;
-      char id[50];
-      strncpy (id, "dictionary_combobox", 50);
-      combobox = GTK_WIDGET (gtk_builder_get_object(builder, id));
-
-      gint active;
-      active = gtk_combo_box_get_active( GTK_COMBO_BOX (combobox) );
-      char *active_text;
-
-      gtk_combo_box_set_active( GTK_COMBO_BOX (combobox), request);
-      active_text = gtk_combo_box_get_active_text(GTK_COMBO_BOX (combobox));
-      if (active_text == NULL)
-        gtk_combo_box_set_active( GTK_COMBO_BOX (combobox), active);
-
-      return TRUE;
-    }
-    return FALSE;
+    gwaei_ui_cycle_dictionaries(TRUE);
 }
 
 
-G_MODULE_EXPORT gboolean do_switch_dictionaries_on_tab_press (GtkWidget *widget,
-                                              GdkEvent  *event,
-                                              gpointer  *focus  )
+G_MODULE_EXPORT void do_cycle_dictionaries_backward (GtkWidget *widget, gpointer data)
 {
-    //Make sure the tab key was pressed with no modifiers
-    guint state  = ((GdkEventKey*) event)->state;
-    guint keyval = ((GdkEventKey*) event)->keyval;
-    guint modifiers = ( 
-                        GDK_MOD1_MASK    |
-                        GDK_CONTROL_MASK |
-                        GDK_SUPER_MASK   |
-                        GDK_HYPER_MASK   |
-                        GDK_META_MASK      
-                      );
-
-    //Make sure no extra modifier keys are pressed
-    if (((state & modifiers) == 0 ) && (keyval == GDK_Tab | keyval == GDK_ISO_Left_Tab))
-    {
-
-      if ((GDK_SHIFT_MASK & state) == 0 && keyval == GDK_Tab)
-        gwaei_ui_cycle_dictionaries_forward ();
-      else
-        gwaei_ui_cycle_dictionaries_backward ();
-
-      //Set up the entry for typing
-      //gwaei_ui_text_select_all_by_target (GWAEI_TARGET_ENTRY);
-      gwaei_ui_grab_focus_by_target(GWAEI_TARGET_ENTRY);
-
-      return TRUE;
-    }
-    return FALSE;
+    gwaei_ui_cycle_dictionaries(FALSE);
 }
 
 
@@ -873,7 +865,6 @@ G_MODULE_EXPORT gboolean do_focus_change_on_key_press (GtkWidget *widget,
         return TRUE;
       }
     }
-
     return FALSE;
 }
 

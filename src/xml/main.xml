@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!--Generated with glade3 3.4.5 on Tue Sep 29 17:03:22 2009 -->
+<!--Generated with glade3 3.4.5 on Tue Sep 29 21:51:06 2009 -->
 <interface>
   <object class="GtkListStore" id="model1">
     <columns>
@@ -51,6 +51,19 @@
             <property name="stock_id" translatable="yes">gtk-save-as</property>
             <property name="name">save_as_menuitem</property>
             <signal handler="do_save_as" name="activate"/>
+          </object>
+        </child>
+        <child>
+          <object class="GtkAction" id="dictionary_submenu">
+            <property name="name">dictionary_submenu</property>
+            <property name="tooltip" translatable="yes">A list of the installed dictionaries</property>
+            <property name="label" translatable="yes">_Dictionaries</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkAction" id="menuitem2">
+            <property name="name">menuitem2</property>
+            <property name="label" translatable="yes">menuitem2</property>
           </object>
         </child>
         <child>
@@ -288,6 +301,10 @@
           <menuitem action="edit_menuitem"/>
           <menuitem action="save_menuitem"/>
           <menuitem action="save_as_menuitem"/>
+          <separator/>
+          <menu action="dictionary_submenu">
+            <menuitem action="menuitem2"/>
+          </menu>
           <separator/>
           <menuitem action="print_menuitem"/>
           <separator/>
@@ -589,8 +606,6 @@
                     <property name="caps_lock_warning">False</property>
                     <signal handler="do_update_button_states_based_on_entry_text" name="changed"/>
                     <signal handler="do_focus_change_on_key_press" name="key_press_event"/>
-                    <signal handler="do_switch_dictionaries_on_tab_press" name="key_press_event"/>
-                    <signal handler="do_switch_dictionaries_quickkey_action" name="key_press_event"/>
                     <signal handler="do_clear_search" name="icon_release"/>
                     <signal handler="do_update_clipboard_on_focus_change" name="focus_in_event"/>
                     <signal handler="do_search" name="activate"/>
@@ -688,8 +703,6 @@
                             <signal handler="do_get_position_for_button_press" name="button_press_event"/>
                             <signal handler="do_get_iter_for_motion" name="motion_notify_event"/>
                             <signal handler="do_focus_change_on_key_press" name="key_press_event"/>
-                            <signal handler="do_switch_dictionaries_on_tab_press" name="key_press_event"/>
-                            <signal handler="do_switch_dictionaries_quickkey_action" name="key_press_event"/>
                             <signal handler="do_update_clipboard_on_focus_change" name="focus_in_event" object="results_text_view"/>
                             <signal handler="do_get_iter_for_button_release" name="button_release_event"/>
                           </object>
@@ -772,8 +785,6 @@
                             <property name="right_margin">5</property>
                             <property name="cursor_visible">False</property>
                             <signal handler="do_focus_change_on_key_press" name="key_press_event"/>
-                            <signal handler="do_switch_dictionaries_on_tab_press" name="key_press_event"/>
-                            <signal handler="do_switch_dictionaries_quickkey_action" name="key_press_event"/>
                             <signal handler="do_update_clipboard_on_focus_change" name="focus_in_event" object="kanji_text_view"/>
                             <signal handler="do_copy" name="copy_clipboard"/>
                           </object>

@@ -20,8 +20,11 @@ void do_search_from_history (GtkWidget*, gpointer);
 void do_clear_search(GtkWidget*, gpointer);
 void do_update_button_states_based_on_entry_text (GtkWidget*, gpointer);
 void do_go_menuitem_action (GtkWidget*, gpointer);
-void do_close_kanji_results(GtkWidget *widget, gpointer data);
+void do_close_kanji_results(GtkWidget*, gpointer);
 gboolean do_switch_dictionaries_on_tab_press (GtkWidget*, GdkEvent*, gpointer*);
+void do_dictionary_changed_action (GtkWidget*, gpointer);
+void do_cycle_dictionaries_forward (GtkWidget*, gpointer);
+void do_cycle_dictionaries_backward (GtkWidget*, gpointer);
 void search_drag_data_recieved (GtkWidget*, GdkDragContext*,
                                 gint, gint,
                                 GtkSelectionData*, guint,
@@ -36,10 +39,10 @@ gboolean do_close_on_escape (GtkWidget*, GdkEvent*, gpointer*);
 
 
 //Settings
-void do_spellcheck_toggle (GtkWidget *widget, gpointer data);
-void do_hiragana_katakana_conv_toggle (GtkWidget *widget, gpointer data);
-void do_katakana_hiragana_conv_toggle (GtkWidget *widget, gpointer data);
-void do_romanji_kana_conv_change (GtkWidget *widget, gpointer data);
+void do_spellcheck_toggle (GtkWidget*, gpointer);
+void do_hiragana_katakana_conv_toggle (GtkWidget*, gpointer);
+void do_katakana_hiragana_conv_toggle (GtkWidget*, gpointer);
+void do_romanji_kana_conv_change (GtkWidget*, gpointer);
 void do_set_color_to_swatch (GtkWidget*, gpointer);
 void do_color_reset_for_swatches (GtkWidget*, gpointer);
 void do_source_entry_changed_action (GtkWidget*, gpointer);

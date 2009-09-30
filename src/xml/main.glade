@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Tue Sep 29 17:03:22 2009 -->
+<!--Generated with glade3 3.4.5 on Tue Sep 29 21:51:06 2009 -->
 <glade-interface>
   <widget class="GtkMenu" id="back_popup">
     <property name="visible">True</property>
@@ -63,6 +63,33 @@
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <signal name="activate" handler="do_save_as"/>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkSeparatorMenuItem" id="menuitem1">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">menuitem1</property>
+                        <property name="use_underline">True</property>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkMenuItem" id="dictionary_submenu">
+                        <property name="visible">True</property>
+                        <property name="tooltip" translatable="yes">A list of the installed dictionaries</property>
+                        <property name="label" translatable="yes">_Dictionaries</property>
+                        <property name="use_underline">True</property>
+                        <child>
+                          <widget class="GtkMenu" id="menu1">
+                            <property name="visible">True</property>
+                            <child>
+                              <widget class="GtkMenuItem" id="menuitem2">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">menuitem2</property>
+                                <property name="use_underline">True</property>
+                              </widget>
+                            </child>
+                          </widget>
+                        </child>
                       </widget>
                     </child>
                     <child>
@@ -705,8 +732,6 @@
                     <property name="caps_lock_warning">False</property>
                     <signal name="changed" handler="do_update_button_states_based_on_entry_text"/>
                     <signal name="key_press_event" handler="do_focus_change_on_key_press"/>
-                    <signal name="key_press_event" handler="do_switch_dictionaries_on_tab_press"/>
-                    <signal name="key_press_event" handler="do_switch_dictionaries_quickkey_action"/>
                     <signal name="icon_release" handler="do_clear_search"/>
                     <signal name="focus_in_event" handler="do_update_clipboard_on_focus_change"/>
                     <signal name="activate" handler="do_search"/>
@@ -799,8 +824,6 @@
                             <signal name="button_press_event" handler="do_get_position_for_button_press"/>
                             <signal name="motion_notify_event" handler="do_get_iter_for_motion"/>
                             <signal name="key_press_event" handler="do_focus_change_on_key_press"/>
-                            <signal name="key_press_event" handler="do_switch_dictionaries_on_tab_press"/>
-                            <signal name="key_press_event" handler="do_switch_dictionaries_quickkey_action"/>
                             <signal name="focus_in_event" handler="do_update_clipboard_on_focus_change" object="results_text_view"/>
                             <signal name="button_release_event" handler="do_get_iter_for_button_release"/>
                           </widget>
@@ -884,8 +907,6 @@
                             <property name="right_margin">5</property>
                             <property name="cursor_visible">False</property>
                             <signal name="key_press_event" handler="do_focus_change_on_key_press"/>
-                            <signal name="key_press_event" handler="do_switch_dictionaries_on_tab_press"/>
-                            <signal name="key_press_event" handler="do_switch_dictionaries_quickkey_action"/>
                             <signal name="focus_in_event" handler="do_update_clipboard_on_focus_change" object="kanji_text_view"/>
                             <signal name="copy_clipboard" handler="do_copy"/>
                           </widget>
