@@ -149,7 +149,7 @@ G_MODULE_EXPORT gboolean do_get_iter_for_button_release (GtkWidget      *widget,
     // Characters above 0xFF00 represent inserted images
     if (unic > L'ー' && unic < 0xFF00 )
     {
-      gwaei_open_kanji_results();
+      gwaei_ui_open_kanji_results();
 
       //Convert the unicode character into to a utf8 string
       gchar query[7];

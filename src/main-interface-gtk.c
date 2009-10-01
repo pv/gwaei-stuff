@@ -1384,7 +1384,7 @@ void gwaei_ui_set_cursor(const int CURSOR)
 }
 
 
-void gwaei_open_kanji_results()
+void gwaei_ui_open_kanji_results()
 {
       //Open the hpane so the kanji results are visible
       gint window_height, window_width;
@@ -1395,7 +1395,7 @@ void gwaei_open_kanji_results()
 
       GtkWidget *hpaned;
       hpaned= GTK_WIDGET (gtk_builder_get_object( builder, "results_hpaned" ));
-      gtk_paned_set_position (GTK_PANED (hpaned), (window_width - 200)); 
+      gtk_paned_set_position (GTK_PANED (hpaned), (window_width - 250)); 
 }
 
 
@@ -2141,7 +2141,7 @@ void gwaei_initialize_tags()
 
     //Large tag
     gwaei_ui_set_tag_to_tagtable ("large", GWAEI_TARGET_RESULTS, "font", "serif 30");
-    gwaei_ui_set_tag_to_tagtable ("large", GWAEI_TARGET_KANJI,   "font", "serif 40");
+    gwaei_ui_set_tag_to_tagtable ("large", GWAEI_TARGET_KANJI,   "font", "KanjiStrokeOrders, serif 100");
 
     //Small tag
     gwaei_ui_set_tag_to_tagtable ("small", GWAEI_TARGET_RESULTS,  "font", "serif 6");
