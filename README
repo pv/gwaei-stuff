@@ -36,13 +36,8 @@ TABLE OF CONTENTS
   An example of a command that Ubuntu/Debian users might use to get the
   required dependancies is:
 
-  apt-get libcurl3-gnutls libgtk2.0-dev libsexy-dev\
+  sudo apt-get install libcurl4-gnutls-dev libgtk2.0-dev libsexy-dev\
   libgconf2-dev rsync build-essential
-
-  To compile (in Ubuntu) users need to install the development version
-  of CURL3 with the following command:
-
-  sudo apt-get install libcurl4-gnutls-dev
 
   For inputing Japanese queries, installing some software for Japanese
   conversion is highly recommended.  Currently, the two main linux methods are
