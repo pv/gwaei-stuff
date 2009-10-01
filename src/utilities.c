@@ -140,11 +140,11 @@ gboolean gwaei_itohexstr(char *color_string, guint color_integer)
 //Returns the string where the waei directory should be.  If it doesn't exist, it creates it
 char* get_waei_directory(char *buffer) 
 {
-    //Get the path of the waei directory
-    strncpy(buffer, g_getenv("HOME"), FILENAME_MAX);
-    strcat(buffer, G_DIR_SEPARATOR_S);
-    strcat(buffer, ".waei");
-    strcat(buffer, G_DIR_SEPARATOR_S);
+    const char* home = g_get_home_dir ();
+    char* directory = g_build_filename (home, ".waei", NULL);
+    strcpy (buffer, directory);
+    strcat (buffer, G_DIR_SEPARATOR_S);
+    g_free (directory);
 
     //Make sure the ~/.waei directory exits, return NULL on error
     if(g_mkdir_with_parents (buffer, 0755) == -1)
