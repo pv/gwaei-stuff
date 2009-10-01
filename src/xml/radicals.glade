@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Fri Sep 25 21:49:06 2009 -->
+<!--Generated with glade3 3.4.5 on Wed Sep 30 19:45:12 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="radicals_window">
     <property name="width_request">550</property>
     <property name="title" translatable="yes">gWaei Radical Search Tool</property>
     <property name="resizable">False</property>
+    <property name="destroy_with_parent">True</property>
     <property name="icon_name">gwaei</property>
+    <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
     <signal name="key_press_event" handler="do_close_on_escape" object="radicals_window"/>
     <signal name="delete_event" handler="do_delete_event_action" object="radicals_window"/>
     <child>
       <widget class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
         <property name="border_width">6</property>
+        <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
         <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
         <child>
           <widget class="GtkTable" id="radicals_table">

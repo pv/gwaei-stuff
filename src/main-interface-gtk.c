@@ -163,6 +163,17 @@ void initialize_window_attributes(char* window_id)
     {
       gtk_window_resize(GTK_WINDOW(window), width, height);
     }
+
+
+    if (strcmp(window_id, "main_window") == 0 &&
+        x == 0 && y == 0                        )
+    {
+      gtk_window_get_size(GTK_WINDOW (window), &width, &height);
+      int half_width = (gdk_screen_width() / 2) - (width / 2);
+      int half_height =  (gdk_screen_height() / 2) - (height / 2);
+    printf("%d %d %d %d\n", x, y, width, height);
+      gtk_window_move(GTK_WINDOW(window), half_width, half_height);
+    }
 }
 
 
@@ -227,6 +238,7 @@ void gwaei_ui_show_window (char *id)
 
       //Show the window
       gtk_window_set_transient_for(GTK_WINDOW (settings_window), GTK_WINDOW (main_window));
+      gtk_window_set_position (GTK_WINDOW (settings_window), GTK_WIN_POS_CENTER);
       gtk_widget_show(settings_window);
     }
     else if (strcmp (id, "kanjipad_window") == 0)

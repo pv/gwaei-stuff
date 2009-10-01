@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Sat Sep 26 17:44:50 2009 -->
+<!--Generated with glade3 3.4.5 on Wed Sep 30 19:38:50 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="settings_window">
     <property name="border_width">5</property>
     <property name="title" translatable="yes">gWaei Settings</property>
     <property name="resizable">False</property>
     <property name="modal">True</property>
-    <property name="window_position">GTK_WIN_POS_CENTER_ALWAYS</property>
+    <property name="window_position">GTK_WIN_POS_CENTER</property>
     <property name="destroy_with_parent">True</property>
     <property name="icon_name">gwaei</property>
+    <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
     <property name="skip_taskbar_hint">True</property>
     <signal name="key_press_event" handler="do_close_on_escape" object="settings_window"/>
     <signal name="delete_event" handler="do_delete_event_action"/>

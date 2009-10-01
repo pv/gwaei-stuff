@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!--Generated with glade3 3.4.5 on Fri Sep 25 21:49:06 2009 -->
+<!--Generated with glade3 3.4.5 on Wed Sep 30 19:45:12 2009 -->
 <interface>
   <object class="GtkAdjustment" id="adjustment1">
     <property name="upper">30</property>
@@ -13,13 +13,16 @@
     <property name="width_request">550</property>
     <property name="title" translatable="yes">gWaei Radical Search Tool</property>
     <property name="resizable">False</property>
+    <property name="destroy_with_parent">True</property>
     <property name="icon_name">gwaei</property>
+    <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
     <signal handler="do_close_on_escape" name="key_press_event" object="radicals_window"/>
     <signal handler="do_delete_event_action" name="delete_event" object="radicals_window"/>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
         <property name="border_width">6</property>
+        <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
         <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
         <child>
           <object class="GtkTable" id="radicals_table">
