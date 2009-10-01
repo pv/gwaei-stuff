@@ -656,27 +656,33 @@ void gwaei_ui_update_history_menu_popup()
     {
       item = children->data;
 
-      //A little trick to make the history menu a bit wider...
-      int leftover = 200;
-      char label[leftover];
-      strncpy (label, item->query, leftover);
-      leftover -= strlen (item->query);
-      while (leftover > 180)
-      {
-        strncat (label, " ", leftover);
-        leftover -= 1;
-      }
+      GtkWidget *menu_item, *accel_label, *label;
+      char dictionary[50];
+      strncpy (dictionary, item->dictionary->name, 50);
+      strncat (dictionary, gettext(" Dictionary"), 50 - strlen(dictionary));
 
-      menuitem = GTK_MENU_ITEM (gtk_menu_item_new_with_label(label));
+      accel_label = gtk_label_new (dictionary);
+      gtk_widget_set_sensitive (GTK_WIDGET (accel_label), FALSE);
+      label = gtk_label_new (item->query);
 
-      //Create the new menuitem
-      gtk_menu_shell_append(GTK_MENU_SHELL (shell), GTK_WIDGET (menuitem));
-      gtk_widget_show  (GTK_WIDGET (menuitem));
-      g_signal_connect (GTK_WIDGET (menuitem), 
+      GtkWidget *hbox;
+      hbox = gtk_hbox_new (FALSE, 0);
+
+      menu_item = gtk_menu_item_new();
+      g_signal_connect (GTK_WIDGET (menu_item), 
                         "activate",
                         G_CALLBACK (do_search_from_history), 
                         item                               );
-   
+
+      gtk_menu_shell_append(GTK_MENU_SHELL (shell), GTK_WIDGET (menu_item));
+      gtk_container_add (GTK_CONTAINER (menu_item), hbox);
+      gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+      gtk_box_pack_end (GTK_BOX (hbox), accel_label, FALSE, FALSE, 0);
+
+      gtk_widget_show(label);
+      gtk_widget_show(accel_label);
+      gtk_widget_show(hbox);
+      gtk_widget_show(menu_item);
       children = children->next;
     }
 }
