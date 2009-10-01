@@ -339,7 +339,8 @@ gboolean stream_results_thread (gpointer data)
   }
 
   //Update the progressbar
-  gwaei_ui_update_search_progressbar (item->current_line, item->dictionary->total_lines);
+  if (item->target == GWAEI_TARGET_RESULTS)
+    gwaei_ui_update_search_progressbar (item->current_line, item->dictionary->total_lines);
 
   //If the chunk reached the max chunk size, there is still file left to load
   if ( chunk == MAX_CHUNK ) {
@@ -405,7 +406,8 @@ gboolean stream_results_cleanup (gpointer data)
     else
     {
       gwaei_ui_finalize_total_results_label (item);
-      gwaei_ui_update_search_progressbar (0, 0);
+      if (item->target == GWAEI_TARGET_RESULTS)
+        gwaei_ui_update_search_progressbar (0, 0);
     }
      
     //Correct for background toggling of the boolean
