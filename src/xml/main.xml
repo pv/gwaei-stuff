@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!--Generated with glade3 3.4.5 on Wed Sep 30 19:35:38 2009 -->
+<!--Generated with glade3 3.4.5 on Thu Oct  1 02:58:02 2009 -->
 <interface>
   <object class="GtkListStore" id="model1">
     <columns>
@@ -34,7 +34,6 @@
           <object class="GtkAction" id="edit_menuitem">
             <property name="stock_id" translatable="yes">gtk-edit</property>
             <property name="name">edit_menuitem</property>
-            <property name="tooltip" translatable="yes">Edit the current vocabulary list</property>
             <signal handler="do_edit" name="activate"/>
           </object>
         </child>

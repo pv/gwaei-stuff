@@ -2170,6 +2170,12 @@ void initialize_gui_interface(int *argc, char ***argv)
     gwaei_ui_load_gtk_builder_xml("settings.xml");
     gwaei_ui_load_gtk_builder_xml("kanjipad.xml");
 
+    //HACK/////////////////////// Glade doesn't like disabling this menuitem for some reason...
+    GtkAction *menuitem;
+    menuitem = GTK_ACTION (gtk_builder_get_object (builder, "edit_menuitem"));
+    gtk_action_set_sensitive (GTK_ACTION (menuitem), FALSE);
+    /////////////////////
+
     //Initialize some component and variables
     initialize_global_widget_pointers();
     gwaei_initialize_tags();
