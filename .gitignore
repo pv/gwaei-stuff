@@ -5,3 +5,24 @@ src/waei
 Makefile
 src/.deps/*
 
+
+#Files created by configure
+Makefile
+config.status
+deb/DEBIAN/control
+deb/DEBIAN/postinst
+deb/DEBIAN/prerm
+help/C/gwaei.xml
+help/Makefile
+po/Makefile
+po/Makefile.in
+rpm/gwaei.spec
+rpm/rpm_gconf_install_post.sh
+rpm/rpm_gconf_uninstall_pre.sh
+src/Makefile
+src/desktop/Makefile
+src/img/Makefile
+src/kpengine/Makefile
+src/schemas/Makefile
+src/xml/Makefile
+
