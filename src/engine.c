@@ -160,7 +160,9 @@ void append_stored_result_to_output(SearchItem *item, GList **results)
     {
       if (gwaei_util_get_runmode() == GWAEI_CONSOLE_RUNMODE)
       {
-        printf("%s", (char*)(*results)->data);
+        strcpy(item->input, (char*)(*results)->data);
+        add_group_formatting (item);
+        printf("%s", item->input);
       }
       else if (item->status != CANCELING)
       {
