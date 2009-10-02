@@ -2096,7 +2096,6 @@ void initialize_gui_interface(int *argc, char ***argv)
 
     //Setup the main windows xml
     builder = gtk_builder_new ();
-    gtk_builder_set_translation_domain (builder, PACKAGE);
     gwaei_ui_load_gtk_builder_xml("main.ui");
     gwaei_ui_load_gtk_builder_xml("radicals.ui");
     gwaei_ui_load_gtk_builder_xml("settings.ui");

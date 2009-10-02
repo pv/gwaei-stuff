@@ -467,12 +467,12 @@ G_MODULE_EXPORT void do_less_relevant_results_toggle (GtkWidget *widget, gpointe
     gboolean state;
     state = gwaei_pref_get_boolean (GCKEY_GWAEI_LESS_RELEVANT_SHOW, TRUE);
     gwaei_pref_set_boolean (GCKEY_GWAEI_LESS_RELEVANT_SHOW, !state);
-
+/*
     HistoryList *hl = historylist_get_list (GWAEI_HISTORYLIST_RESULTS);
 
     if (hl->current != NULL && hl->current->target == GWAEI_TARGET_RESULTS)
       gwaei_search_get_results (hl->current);
-
+*/
     printf("Toggle less relevent results button was clicked\n");
 }
 
