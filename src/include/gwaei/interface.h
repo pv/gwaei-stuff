@@ -20,4 +20,3 @@ const char* gwaei_ui_get_active_dictionary(void);
 char* gwaei_ui_get_text_from_text_buffer(const int);
 
 void initialize_gui_interface(int*, char***);
-void gwaei_settings_combobox_hack (void);

@@ -351,3 +351,6 @@ void gwaei_ui_set_progressbar (char *name, double percent, char *message)
 {
 }
 
+void gwaei_ui_update_search_progressbar (long current, long total)
+{ 
+}
