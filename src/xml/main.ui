@@ -1021,6 +1021,7 @@
     <property name="label">A_ppend</property>
     <property name="tooltip">Append the current results to a file</property>
     <property name="stock_id">gtk-save</property>
+    <property name="is_important">True</property>
     <property name="sensitive">False</property>
     <signal name="activate" handler="do_save"/>
   </object>
@@ -1117,6 +1118,7 @@
     <property name="short_label">Unknown</property>
     <property name="tooltip">Insert an unknown character</property>
     <property name="icon_name">unknown-character</property>
+    <property name="is_important">True</property>
     <signal name="activate" handler="do_insert_unknown_character"/>
   </object>
   <object class="GtkAction" id="insert_and_action">
