@@ -68,22 +68,40 @@ void force_gtk_builder_translation_for_gtk_actions_hack ()
     char *temp1  = gettext("When Possible\n");
     char *temp2  = gettext("Never\n");
 
+    //Edit action
+    strncpy(id, "file_edit_action", id_length);
+    action = GTK_ACTION (gtk_builder_get_object (builder, id));
+    gtk_action_set_tooltip (action, gettext("Edit the current vocabulary list"));
+
     //Append action
     strncpy(id, "file_append_action", id_length);
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
     gtk_action_set_label (action, gettext("A_ppend"));
+    gtk_action_set_tooltip (action, gettext("Append the current results to a file"));
+
+    //Save as action
+    strncpy(id, "file_save_as_action", id_length);
+    action = GTK_ACTION (gtk_builder_get_object (builder, id));
+    gtk_action_set_tooltip (action, gettext("Save the current results to a new file"));
+
+    //Print action
+    strncpy(id, "file_print_action", id_length);
+    action = GTK_ACTION (gtk_builder_get_object (builder, id));
+    gtk_action_set_tooltip (action, gettext("Print the current results"));
 
     //Zoom in action
     strncpy(id, "view_zoom_in_action", id_length);
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
     gtk_action_set_label (action, gettext("_Enlarge Text"));
     gtk_action_set_short_label (action, gettext("Enlarge"));
+    gtk_action_set_tooltip (action, gettext("Enlarge the results text"));
 
     //Zoom out action
     strncpy(id, "view_zoom_out_action", id_length);
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
     gtk_action_set_label (action, gettext("_Shrink Text"));
     gtk_action_set_short_label (action, gettext("Shrink"));
+    gtk_action_set_tooltip (action, gettext("Shrink the results text"));
 
     //Normal size action
     strncpy(id, "view_zoom_100_action", id_length);
@@ -116,18 +134,21 @@ void force_gtk_builder_translation_for_gtk_actions_hack ()
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
     gtk_action_set_label (action, gettext("_Word Edge Mark"));
     gtk_action_set_short_label (action, gettext("_Edge"));
+    gtk_action_set_tooltip (action, gettext("Insert a word-boundary character"));
 
     //Not Word boundary action
     strncpy(id, "insert_non_word_boundary_action", id_length);
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
     gtk_action_set_label (action, gettext("_Not Word Edge Mark"));
     gtk_action_set_short_label (action, gettext("_Not Edge"));
+    gtk_action_set_tooltip (action, gettext("Insert a not-word-boundary character"));
 
     //Unknown character action
     strncpy(id, "insert_unknown_character_action", id_length);
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
     gtk_action_set_label (action, gettext("_Unknown Character"));
     gtk_action_set_short_label (action, gettext("_Unknown"));
+    gtk_action_set_tooltip (action, gettext("Insert an unknown character"));
 
     //Or action
     strncpy(id, "insert_or_action", id_length);
@@ -144,17 +165,46 @@ void force_gtk_builder_translation_for_gtk_actions_hack ()
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
     gtk_action_set_label (action, gettext("_Previous Search"));
     gtk_action_set_short_label (action, gettext("Previous"));
+    gtk_action_set_tooltip (action, gettext("Go to the previous search"));
 
     //Next
     strncpy(id, "history_forward_action", id_length);
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
     gtk_action_set_label (action, gettext("_Next Search"));
     gtk_action_set_short_label (action, gettext("Next"));
+    gtk_action_set_tooltip (action, gettext("Go to the next search"));
 
-    //Glossary
+    //Help
+    strncpy(id, "help_program_action", id_length);
+    action = GTK_ACTION (gtk_builder_get_object (builder, id));
+    gtk_action_set_tooltip (action, gettext("Open the help dialog"));
+
+    //Help glossary
     strncpy(id, "help_glossary_action", id_length);
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
     gtk_action_set_label (action, gettext("Dictionary _Terminology Glossary"));
+
+    GtkWidget *widget;
+
+    //Spellcheck button
+    strncpy(id, "spellcheck_toolbutton", id_length);
+    widget = GTK_WIDGET (gtk_builder_get_object (builder, id));
+    gtk_widget_set_tooltip_text (GTK_WIDGET (widget), gettext("Enable spellcheck for searches"));
+
+    //Search Entry
+    strncpy(id, "search_entry", id_length);
+    widget = GTK_WIDGET (gtk_builder_get_object (builder, id));
+    gtk_widget_set_tooltip_text (GTK_WIDGET (widget), gettext("Input your query here"));
+
+    //Dictionary Combobox
+    strncpy(id, "dictionary_combobox", id_length);
+    widget = GTK_WIDGET (gtk_builder_get_object (builder, id));
+    gtk_widget_set_tooltip_text (GTK_WIDGET (widget), gettext("Select the dictionary you want to use"));
+
+    //Search button
+    strncpy(id, "search_entry_submit_button", id_length);
+    widget = GTK_WIDGET (gtk_builder_get_object (builder, id));
+    gtk_widget_set_tooltip_text (GTK_WIDGET (widget), gettext("Click to start search"));
 }
 
 GObject* get_gobject_from_target(const int TARGET)

@@ -454,7 +454,6 @@
             <property name="no_show_all">True</property>
             <child>
               <object class="GtkMenuToolButton" id="back_toolbutton">
-                <property name="tooltip_text" translatable="yes">Go to the previous search</property>
                 <property name="menu">back_popup</property>
               </object>
               <packing>
@@ -463,7 +462,6 @@
             </child>
             <child>
               <object class="GtkMenuToolButton" id="forward_toolbutton">
-                <property name="tooltip_text" translatable="yes">Go to the next search</property>
                 <property name="menu">forward_popup</property>
               </object>
               <packing>
@@ -479,7 +477,6 @@
             <child>
               <object class="GtkToolButton" id="edit_toolbutton">
                 <property name="visible">True</property>
-                <property name="tooltip_text" translatable="yes">Edit the current vocabulary list</property>
                 <property name="use_action_appearance">True</property>
                 <property name="related_action">file_edit_action</property>
               </object>
@@ -491,7 +488,6 @@
             <child>
               <object class="GtkToolButton" id="save_toolbutton">
                 <property name="visible">True</property>
-                <property name="tooltip_text" translatable="yes">Append the current results to a file</property>
                 <property name="use_action_appearance">True</property>
                 <property name="related_action">file_append_action</property>
                 <property name="label" translatable="yes">Append</property>
@@ -504,7 +500,6 @@
             <child>
               <object class="GtkToolButton" id="save_as_toolbutton">
                 <property name="visible">True</property>
-                <property name="tooltip_text" translatable="yes">Save the current results to a new file</property>
                 <property name="use_action_appearance">True</property>
                 <property name="related_action">file_save_as_action</property>
               </object>
@@ -525,7 +520,6 @@
               <object class="GtkToolButton" id="print_toolbutton">
                 <property name="visible">True</property>
                 <property name="no_show_all">True</property>
-                <property name="tooltip_text" translatable="yes">Print the current results</property>
                 <property name="use_action_appearance">True</property>
                 <property name="related_action">file_print_action</property>
               </object>
@@ -545,7 +539,6 @@
             <child>
               <object class="GtkToolButton" id="word_boundary_toolitem">
                 <property name="visible">True</property>
-                <property name="tooltip_text" translatable="yes">Insert a word-boundary character</property>
                 <property name="use_action_appearance">True</property>
                 <property name="related_action">insert_word_boundary_action</property>
                 <property name="label" translatable="yes">Bound</property>
@@ -558,7 +551,6 @@
             <child>
               <object class="GtkToolButton" id="non_word_boundary_toolitem">
                 <property name="visible">True</property>
-                <property name="tooltip_text" translatable="yes">Insert a not-word-boundary character</property>
                 <property name="use_action_appearance">True</property>
                 <property name="related_action">insert_non_word_boundary_action</property>
                 <property name="label" translatable="yes">Not Bound</property>
@@ -571,7 +563,6 @@
             <child>
               <object class="GtkToolButton" id="unkown_character_toolitem">
                 <property name="visible">True</property>
-                <property name="tooltip_text" translatable="yes">Insert an unknown character</property>
                 <property name="use_action_appearance">True</property>
                 <property name="related_action">insert_unknown_character_action</property>
                 <property name="label" translatable="yes">Unknown</property>
@@ -612,7 +603,6 @@
             <child>
               <object class="GtkToolButton" id="zoom_in_toolbutton">
                 <property name="visible">True</property>
-                <property name="tooltip_text" translatable="yes">Enlarge the results text</property>
                 <property name="use_action_appearance">True</property>
                 <property name="related_action">view_zoom_in_action</property>
                 <property name="label" translatable="yes">Enlarge</property>
@@ -625,7 +615,6 @@
             <child>
               <object class="GtkToolButton" id="zoom_out_toolbutton">
                 <property name="visible">True</property>
-                <property name="tooltip_text" translatable="yes">Shrink the results text</property>
                 <property name="use_action_appearance">True</property>
                 <property name="related_action">view_zoom_out_action</property>
                 <property name="label" translatable="yes">Shrink</property>
@@ -647,7 +636,6 @@
               <object class="GtkToolButton" id="help_toolbutton">
                 <property name="visible">True</property>
                 <property name="no_show_all">True</property>
-                <property name="tooltip_text" translatable="yes">Open the help dialog</property>
                 <property name="related_action">help_program_action</property>
                 <property name="stock_id">gtk-help</property>
               </object>
@@ -1023,6 +1011,7 @@
     </child>
   </object>
   <object class="GtkAction" id="file_edit_action">
+    <property name="tooltip">Edit the current vocabulary list</property>
     <property name="stock_id">gtk-edit</property>
     <property name="is_important">True</property>
     <property name="sensitive">False</property>
@@ -1030,16 +1019,19 @@
   </object>
   <object class="GtkAction" id="file_append_action">
     <property name="label">A_ppend</property>
+    <property name="tooltip">Append the current results to a file</property>
     <property name="stock_id">gtk-save</property>
     <property name="sensitive">False</property>
     <signal name="activate" handler="do_save"/>
   </object>
   <object class="GtkAction" id="file_save_as_action">
+    <property name="tooltip">Save the current results to a new file</property>
     <property name="stock_id">gtk-save-as</property>
     <property name="sensitive">False</property>
     <signal name="activate" handler="do_save_as"/>
   </object>
   <object class="GtkAction" id="file_print_action">
+    <property name="tooltip">Print the current results</property>
     <property name="stock_id">gtk-print</property>
     <property name="sensitive">False</property>
     <signal name="activate" handler="do_print"/>
@@ -1071,12 +1063,14 @@
   <object class="GtkAction" id="view_zoom_in_action">
     <property name="label">_Enlarge Text</property>
     <property name="short_label">Enlarge</property>
+    <property name="tooltip">Enlarge the results text</property>
     <property name="stock_id">gtk-zoom-in</property>
     <signal name="activate" handler="do_zoom_in"/>
   </object>
   <object class="GtkAction" id="view_zoom_out_action">
     <property name="label">_Shrink Text</property>
     <property name="short_label">Shrink</property>
+    <property name="tooltip">Shrink the results text</property>
     <property name="stock_id">gtk-zoom-out</property>
     <signal name="activate" handler="do_zoom_out"/>
   </object>
@@ -1107,18 +1101,21 @@
   <object class="GtkAction" id="insert_word_boundary_action">
     <property name="label">_Word Edge Mark</property>
     <property name="short_label">Edge</property>
+    <property name="tooltip">Insert a word-boundary character</property>
     <property name="icon_name">word-boundary</property>
     <signal name="activate" handler="do_insert_word_boundary"/>
   </object>
   <object class="GtkAction" id="insert_non_word_boundary_action">
     <property name="label">_Not Word Edge Mark</property>
     <property name="short_label">Not Edge</property>
+    <property name="tooltip">Insert a word-boundary character</property>
     <property name="icon_name">non-word-boundary</property>
     <signal name="activate" handler="do_insert_not_word_boundary"/>
   </object>
   <object class="GtkAction" id="insert_unknown_character_action">
     <property name="label">_Unknown Character</property>
     <property name="short_label">Unknown</property>
+    <property name="tooltip">Insert an unknown character</property>
     <property name="icon_name">unknown-character</property>
     <signal name="activate" handler="do_insert_unknown_character"/>
   </object>
@@ -1137,6 +1134,7 @@
   <object class="GtkAction" id="history_back_action">
     <property name="label">_Previous Search</property>
     <property name="short_label">Previous</property>
+    <property name="tooltip">Go to the previous search</property>
     <property name="stock_id">gtk-go-back</property>
     <property name="sensitive">False</property>
     <signal name="activate" handler="do_back"/>
@@ -1144,11 +1142,13 @@
   <object class="GtkAction" id="history_forward_action">
     <property name="label">_Next Search</property>
     <property name="short_label">Next</property>
+    <property name="tooltip">Go to the next search</property>
     <property name="stock_id">gtk-go-forward</property>
     <property name="sensitive">False</property>
     <signal name="activate" handler="do_forward"/>
   </object>
   <object class="GtkAction" id="help_program_action">
+    <property name="tooltip">Open the help dialog</property>
     <property name="stock_id">gtk-help</property>
     <signal name="activate" handler="do_help"/>
   </object>
