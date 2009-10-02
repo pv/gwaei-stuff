@@ -203,6 +203,7 @@ gboolean stream_results_thread (gpointer data)
 {
   SearchItem *item = data;
   char *dictionary = item->dictionary->name;
+  int dictionary_type = item->dictionary->type;
   int chunk = 0;
 
   //We loop, processing lines of the file until the max chunk size has been
@@ -233,11 +234,7 @@ gboolean stream_results_thread (gpointer data)
 
 
     //Search engine for kanji and radicals
-    else if (
-                (regexec(&re_kanji,   dictionary, 1, NULL, 0) == 0) ||
-                (regexec(&re_radical, dictionary, 1, NULL, 0) == 0) ||
-                (regexec(&re_mix,     dictionary, 1, NULL, 0) == 0)
-            )
+    else if (dictionary_type)
     {
       gboolean missing_an_atom = FALSE;
       //Search for existance of every atom in the query
@@ -256,8 +253,7 @@ gboolean stream_results_thread (gpointer data)
               item->total_relevant_results++;
               item->total_results++;
               gwaei_ui_update_total_results_label(item);
-              if (regexec(&re_kanji, dictionary, 1, NULL, 0) == 0 ||
-                  regexec(&re_mix,   dictionary, 1, NULL, 0) == 0     )
+              if (dictionary_type == KANJI)
                 strcpy_with_kanji_formatting(item->output, item->input);
               else
                 strcpy(item->output, item->input);
@@ -267,8 +263,7 @@ gboolean stream_results_thread (gpointer data)
               item->total_irrelevant_results++;
               if (result = (char*)malloc(MAX_LINE))
               {
-                if (regexec(&re_kanji, dictionary, 1, NULL, 0) == 0 ||
-                    regexec(&re_mix,   dictionary, 1, NULL, 0) == 0     )
+                if (dictionary_type == KANJI)
                   strcpy_with_kanji_formatting(result, item->input);
                 else
                   strcpy_with_kanji_formatting(result, item->input);
@@ -279,8 +274,7 @@ gboolean stream_results_thread (gpointer data)
               item->total_irrelevant_results++;
               if (result = (char*)malloc(MAX_LINE))
               {
-                if (regexec(&re_kanji, dictionary, 1, NULL, 0) == 0 ||
-                    regexec(&re_mix, dictionary, 1, NULL, 0) == 0     )
+                if (dictionary_type == KANJI)
                   strcpy_with_kanji_formatting(result, item->input);
                 else
                   strcpy(result, item->input);
