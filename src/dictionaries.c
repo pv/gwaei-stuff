@@ -56,10 +56,30 @@ DictionaryInfo* dictionaryinfo_new (char *name)
     if ((temp = malloc(sizeof(DictionaryInfo))) == NULL) return NULL;
 
     int remaining;
+    temp->load_position = -1;
 
     //Copy the name of the dictionary over
     remaining = MAX_DICTIONARY;
     strncpy(temp->name, name, remaining);
+
+    if (strcmp(name, "English") == 0)
+      strncpy(temp->long_name, gettext ("English"), 100);
+    else if (strcmp(name, "Spanish") == 0)
+      strncpy(temp->long_name, gettext ("Spanish"), 100);
+    else if (strcmp(name, "Mix") == 0)
+      strncpy(temp->long_name, gettext ("Kanji"), 100);
+    else if (strcmp(name, "Kanji") == 0)
+      strncpy(temp->long_name, gettext ("Kanji"), 100);
+    else if (strcmp(name, "Radicals") == 0)
+      strncpy(temp->long_name, gettext ("Radicals"), 100);
+    else if (strcmp(name, "Places") == 0)
+      strncpy(temp->long_name, gettext ("Places"), 100);
+    else if (strcmp(name, "Names") == 0)
+      strncpy(temp->long_name, gettext ("Names"), 100);
+    else
+      strncpy(temp->long_name, name, 100);
+
+    strncat(temp->long_name, gettext(" Dictionary"),  100 - strlen(temp->long_name));
 
     //Calculate the path to the used dictionary file
     remaining = PATH_MAX;
@@ -183,6 +203,25 @@ DictionaryList* dictionarylist_new ()
     return temp;
 }
 
+
+GList* dictionarylist_get_selected()
+{
+    return dictionaries->selected;
+}
+
+GList* dictionarylist_set_selected_by_load_position(int request)
+{
+    GList* current_dictionary = dictionarylist_get_list();
+    do
+    {
+       if (((DictionaryInfo*)current_dictionary->data)->load_position == request)
+         break;
+       current_dictionary = g_list_next (current_dictionary);
+    } while (current_dictionary != NULL);
+
+    dictionaries->selected = current_dictionary;
+    return current_dictionary;
+}
 
 void dictionarylist_add_dictionary(char *name)
 {

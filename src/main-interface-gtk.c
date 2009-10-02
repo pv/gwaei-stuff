@@ -58,6 +58,33 @@ GObject   *kanji_tb     = NULL;
 GtkWidget *search_entry = NULL;
 
 
+void force_gtk_builder_translation_for_gtk_actions_hack ()
+{
+    char *temp = gettext("Only for Non-Japanese Locals");
+    char *temp1  = gettext("When Possible\n");
+    char *temp2  = gettext("Never\n");
+    char *temp3  = gettext("Only for Non-Japanese Locals");
+    char *temp4  = gettext("When Possible");
+    char *temp5  = gettext("Never");
+    char *temp6  = gettext("A_ppend");
+    char *temp7  = gettext("A list of the installed dictionaries");
+    char *temp8  = gettext("Prefe_rences");
+    char *temp9  = gettext("Show _Toolbar");
+    char *temp10 = gettext("_Enlarge Text");
+    char *temp11 = gettext("_Shrink Text");
+    char *temp12 = gettext("_Normal Size");
+    char *temp13 = gettext("Show _Less Relevant Results");
+    char *temp14 = gettext("Using _Kanjipad");
+    char *temp15 = gettext("Using _Radical Search Tool");
+    char *temp16 = gettext("_Word Edge Mark");
+    char *temp17 = gettext("_Not Word Edge Mark");
+    char *temp18 = gettext("_Unknown Character");
+    char *temp19 = gettext("_And Character");
+    char *temp20 = gettext("_Or Character");
+    char *temp21 = gettext("_Contents");
+    char *temp22 = gettext("Dictionary _Terminology Glossary");
+}
+
 GObject* get_gobject_from_target(const int TARGET)
 {
     GObject *gobject;
@@ -257,12 +284,11 @@ void gwaei_ui_show_window (char *id)
 
 void update_toolbar_buttons()
 {
-    char id[50];
+    const int id_length = 50;
+    char id[id_length];
 
     //Delarations
-    GtkWidget *popup, *button;
     GtkAction *action;
-    GList* children;
     gboolean enable;
 
     SearchItem* current;
@@ -272,82 +298,58 @@ void update_toolbar_buttons()
     current_font_size = gwaei_pref_get_int (GCKEY_GWAEI_FONT_SIZE, 12);
 
     //Update Zoom in sensitivity state
-    strcpy(id, "zoom_in_toolbutton");
-    button = GTK_WIDGET (gtk_builder_get_object (builder, id));
-
-    strcpy(id, "zoom_in_menuitem");
+    strncpy(id, "view_zoom_in_action", id_length);
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
-
     enable = (current != NULL && current_font_size < MAX_FONT_SIZE);
-
-    gtk_widget_set_sensitive(button, enable);
     gtk_action_set_sensitive(action, enable);
 
     //Update Zoom out sensitivity state
-    strcpy(id, "zoom_out_toolbutton");
-    button = GTK_WIDGET (gtk_builder_get_object (builder, id));
-
-    strcpy(id, "zoom_out_menuitem");
+    strncpy(id, "view_zoom_out_action", id_length);
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
-
     enable = (current != NULL && current_font_size > MIN_FONT_SIZE);
-
-    gtk_widget_set_sensitive(button, enable);
     gtk_action_set_sensitive(action, enable);
 
     //Update Zoom 100 sensitivity state
-    strcpy(id, "zoom_100_menuitem");
+    strncpy(id, "view_zoom_100_action", id_length);
     action = GTK_ACTION (gtk_builder_get_object(builder, id));
-
     int default_font_size;
     default_font_size = gwaei_pref_get_default_int (GCKEY_GWAEI_FONT_SIZE, 12);
-
     enable = (current != NULL && current_font_size != default_font_size);
-
     gtk_action_set_sensitive(action, enable);
 
     //Update Save sensitivity state
-    strcpy(id, "save_toolbutton");
-    button = GTK_WIDGET (gtk_builder_get_object(builder, id));
-
-    strcpy(id, "save_menuitem");
+    strncpy(id, "file_append_action", id_length);
     action = GTK_ACTION (gtk_builder_get_object(builder, id));
-
     enable = (current != NULL);
-
-    gtk_widget_set_sensitive(button, enable);
     gtk_action_set_sensitive(action, enable);
 
     //Update Save as sensitivity state
-    strcpy(id, "save_as_toolbutton");
-    button = GTK_WIDGET (gtk_builder_get_object(builder, id));
-
-    strcpy(id, "save_as_menuitem");
+    strncpy(id, "file_save_as_action", id_length);
     action = GTK_ACTION (gtk_builder_get_object(builder, id));
-
     enable = (current != NULL);
-
-    gtk_widget_set_sensitive(button, enable);
     gtk_action_set_sensitive(action, enable);
 
     //Update Print sensitivity state
-    strcpy(id, "print_toolbutton");
-    button = GTK_WIDGET (gtk_builder_get_object(builder, id));
-
-    strcpy(id, "print_menuitem");
+    strncpy(id, "file_print_action", id_length);
     action = GTK_ACTION (gtk_builder_get_object(builder, id));
-
     enable = (current != NULL);
-
-    gtk_widget_set_sensitive(button, enable);
     gtk_action_set_sensitive(action, enable);
 
     //Update radicals search tool menuitem
-    strcpy(id, "radicals_menuitem");
+    strncpy(id, "insert_radicals_action", id_length);
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
-
     enable = (dictionarylist_dictionary_get_status_by_id (RADICALS) == INSTALLED);
     gtk_action_set_sensitive(action, enable);
+
+    //Update back button
+    strncpy(id, "history_back_action", id_length);
+    action = GTK_ACTION (gtk_builder_get_object (builder, id));
+      gtk_action_set_sensitive (action, (historylist_get_back_history (GWAEI_TARGET_RESULTS) != NULL));
+
+    //Update forward button
+    strncpy(id, "history_forward_action", id_length);
+    action = GTK_ACTION (gtk_builder_get_object (builder, id));
+      gtk_action_set_sensitive (action, (historylist_get_forward_history (GWAEI_TARGET_RESULTS) != NULL));
 }
 
 
@@ -432,134 +434,18 @@ void gwaei_ui_finalize_total_results_label (SearchItem* item)
 }
 
 
-//
-// Menu dictionary combobox section
-//
-
-GtkMenuShell* get_dictionary_list_popup ()
-{
-    //Get a reference to the File menu
-    GtkMenuShell *shell = NULL;
-    char id[50];
-    GtkMenuBar *menubar;
-    strcpy (id, "menubar");
-    menubar = GTK_MENU_BAR (gtk_builder_get_object(builder, id));
-    GList *list = gtk_container_get_children (GTK_CONTAINER (menubar));
-    GtkMenuItem *menuitem = GTK_MENU_ITEM (g_list_nth_data (list, 0));
-
-    if (menuitem == NULL) return NULL;
-
-    //Use the file menu to get the Dictionaries submenu
-    GtkWidget *menu = GTK_WIDGET (gtk_menu_item_get_submenu (menuitem));
-    list = gtk_container_get_children (GTK_CONTAINER (menu));
-    menuitem = g_list_nth_data (list, 5);
-
-    if (menuitem == NULL) return NULL;
-
-    menu = GTK_WIDGET (gtk_menu_item_get_submenu (menuitem));
-
-    return GTK_MENU_SHELL (menu);
-}
-
-
-int rebuild_combobox_dictionary_list() 
-{
-    //Get dictionaries menu so we can refresh it along with this
-    char id[50];
-
-    //Remove all widgets after the back and forward menuitem buttons
-    GtkMenuShell *shell;
-    if (shell = get_dictionary_list_popup ())
-    {
-      GList     *children = NULL;
-      children = gtk_container_get_children (GTK_CONTAINER (shell));
-      while (children != NULL )
-      {
-        gtk_widget_destroy(children->data);
-        children = g_list_delete_link(children, children);
-      }
-    }
-
-
-    //Now update the combobox
-    GtkWidget *combobox;
-    strcpy(id, "dictionary_combobox");
-    combobox = GTK_WIDGET (gtk_builder_get_object(builder, id));
-
-    gtk_combo_box_set_active( GTK_COMBO_BOX (combobox), 0);
-    while (gtk_combo_box_get_active_text(GTK_COMBO_BOX (combobox)) != NULL)
-    {
-      gtk_combo_box_remove_text( GTK_COMBO_BOX (combobox), 0);
-      gtk_combo_box_set_active( GTK_COMBO_BOX (combobox), 0);
-    }
-
-    GList* dictionaries = dictionarylist_get_list ();
-    GSList* group = NULL;
-    DictionaryInfo *di;
-    GtkAccelGroup* accel_group = gtk_accel_group_new();
-    GtkWindow *window = GTK_WINDOW (gtk_builder_get_object (builder, "main_window"));
-    gtk_window_add_accel_group (GTK_WINDOW (window), accel_group);
-    GtkWidget *item = NULL;
-
-    int i = 0;
-    while (dictionaries != NULL)
-    {
-      di = dictionaries->data;
-      if (di->status == INSTALLED)
-      {
-        if ((dictionarylist_dictionary_get_status_by_id (MIX) == INSTALLED &&
-            di->id != MIX &&
-            di->id != RADICALS                                               )||
-           ((dictionarylist_dictionary_get_status_by_id (MIX) != INSTALLED )))
-        {
-          item = GTK_WIDGET (gtk_radio_menu_item_new_with_label (group, di->name));
-          group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
-          gtk_menu_shell_append (GTK_MENU_SHELL (shell),  GTK_WIDGET (item));
-          if (i == 0) gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), TRUE);
-          g_signal_connect( G_OBJECT (item),       "toggled",
-                           G_CALLBACK (do_dictionary_changed_action), NULL);
-          if (i + 1 < 10) gtk_widget_add_accelerator (GTK_WIDGET (item), "activate", accel_group, (GDK_0 + i + 1), GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
-          gtk_widget_show (item);
-
-          gtk_combo_box_append_text(GTK_COMBO_BOX (combobox), di->name);
-          i++;
-        }
-      }
-      dictionaries = dictionaries->next;
-    }
-    gtk_combo_box_set_active( GTK_COMBO_BOX (combobox), 0);
-
-
-    item = GTK_WIDGET (gtk_separator_menu_item_new());
-    gtk_menu_shell_append (GTK_MENU_SHELL (shell), GTK_WIDGET (item));
-    gtk_widget_show (GTK_WIDGET (item));
-
-    item = GTK_WIDGET (gtk_menu_item_new_with_mnemonic(gettext("_Cycle Up")));
-    gtk_menu_shell_append (GTK_MENU_SHELL (shell), GTK_WIDGET (item));
-    g_signal_connect( G_OBJECT (item),       "activate",
-                     G_CALLBACK (do_cycle_dictionaries_backward), NULL);
-    gtk_widget_add_accelerator (GTK_WIDGET (item), "activate", accel_group, GDK_Up, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
-    gtk_widget_show (GTK_WIDGET (item));
-
-    item = GTK_WIDGET (gtk_menu_item_new_with_mnemonic(gettext("Cycle _Down")));
-    gtk_menu_shell_append (GTK_MENU_SHELL (shell), GTK_WIDGET (item));
-    g_signal_connect( G_OBJECT (item),       "activate",
-                     G_CALLBACK (do_cycle_dictionaries_forward), NULL);
-    gtk_widget_add_accelerator (GTK_WIDGET (item), "activate", accel_group, GDK_Down, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
-    gtk_widget_show (GTK_WIDGET (item));
-
-    printf("%d dictionaries are being used.\n", i);
-    return i;
-}
-
-
 void gwaei_ui_set_dictionary(int request)
 {
+    //Set the correct dictionary in the dictionary list
+    dictionarylist_set_selected_by_load_position(request);
+
+    //Time to make sure everything matches up in the gui
     GtkWidget *combobox;
     combobox = GTK_WIDGET (gtk_builder_get_object (builder, "dictionary_combobox"));
 
-    GtkMenuShell *shell;
-    if (shell = get_dictionary_list_popup ())
+    GtkMenuShell *shell = NULL;
+    shell = GTK_MENU_SHELL (gtk_builder_get_object (builder, "dictionary_popup"));
+    if (shell != NULL)
     {
       GList     *children = NULL;
       children = gtk_container_get_children (GTK_CONTAINER (shell));
@@ -576,21 +462,131 @@ void gwaei_ui_set_dictionary(int request)
     }
 }
 
+
+int rebuild_combobox_dictionary_list() 
+{
+    //Initialize variables
+    const int id_length = 50;
+    char id[id_length];
+
+    GtkListStore *list_store;
+    strncpy(id, "list_store_dictionaries", id_length);
+    list_store = GTK_LIST_STORE (gtk_builder_get_object (builder, id));
+    GtkTreeIter iter;
+
+    GList* dictionaries = dictionarylist_get_list ();
+    GSList* group = NULL;
+    DictionaryInfo *di;
+    GtkAccelGroup* accel_group = gtk_accel_group_new();
+    GtkWindow *window = GTK_WINDOW (gtk_builder_get_object (builder, "main_window"));
+    gtk_window_add_accel_group (GTK_WINDOW (window), accel_group);
+    GtkWidget *item = NULL;
+    int i = 0;
+
+    //Empty the combobox list
+    while (gtk_tree_model_get_iter_first (GTK_TREE_MODEL (list_store), &iter))
+      gtk_list_store_remove(list_store, &iter);
+
+    //Remove all widgets after the back and forward menuitem buttons
+    GtkMenuShell *shell = NULL;
+    shell = GTK_MENU_SHELL (gtk_builder_get_object (builder, "dictionary_popup"));
+    if (shell != NULL)
+    {
+      GList     *children = NULL;
+      children = gtk_container_get_children (GTK_CONTAINER (shell));
+      while (children != NULL )
+      {
+        gtk_widget_destroy(children->data);
+        children = g_list_delete_link(children, children);
+      }
+    }
+
+    const int MAX_NAME = 100;
+    char name[MAX_NAME];
+
+    //Start filling in the new items
+    while (dictionaries != NULL)
+    {
+      di = dictionaries->data;
+      if (di->status == INSTALLED)
+      {
+        if ((dictionarylist_dictionary_get_status_by_id (MIX) == INSTALLED &&
+            di->id != MIX &&
+            di->id != RADICALS                                               )||
+           ((dictionarylist_dictionary_get_status_by_id (MIX) != INSTALLED )))
+        {
+          //Refill the combobox
+          gtk_list_store_append (GTK_LIST_STORE (list_store), &iter);
+          gtk_list_store_set (GTK_LIST_STORE (list_store), &iter,
+                              0, di->long_name, -1                    );
+
+          //Refill the menu
+          item = GTK_WIDGET (gtk_radio_menu_item_new_with_label (group, di->long_name));
+          group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
+          gtk_menu_shell_append (GTK_MENU_SHELL (shell),  GTK_WIDGET (item));
+          if (i == 0) gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), TRUE);
+          g_signal_connect( G_OBJECT (item),       "toggled",
+                           G_CALLBACK (do_dictionary_changed_action), NULL);
+          if (i + 1 < 10) gtk_widget_add_accelerator (GTK_WIDGET (item), "activate", accel_group, (GDK_0 + i + 1), GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
+          gtk_widget_show (item);
+
+          di->load_position = i;
+
+          i++;
+        }
+      }
+      dictionaries = dictionaries->next;
+    }
+
+    //Set the combobox to the first item
+    GtkWidget *combobox;
+    strncpy(id, "dictionary_combobox", id_length);
+    combobox = GTK_WIDGET (gtk_builder_get_object(builder, id));
+    gtk_combo_box_set_active (GTK_COMBO_BOX (combobox), 0);
+
+    //Fill in the other menu items
+    item = GTK_WIDGET (gtk_separator_menu_item_new());
+    gtk_menu_shell_append (GTK_MENU_SHELL (shell), GTK_WIDGET (item));
+    gtk_widget_show (GTK_WIDGET (item));
+
+    item = GTK_WIDGET (gtk_menu_item_new_with_mnemonic(gettext("_Cycle Up")));
+    gtk_menu_shell_append (GTK_MENU_SHELL (shell), GTK_WIDGET (item));
+    g_signal_connect (G_OBJECT (item),       "activate",
+                     G_CALLBACK (do_cycle_dictionaries_backward), NULL);
+    gtk_widget_add_accelerator (GTK_WIDGET (item), "activate", accel_group, GDK_Up, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
+    gtk_widget_show (GTK_WIDGET (item));
+
+    item = GTK_WIDGET (gtk_menu_item_new_with_mnemonic(gettext("Cycle _Down")));
+    gtk_menu_shell_append (GTK_MENU_SHELL (shell), GTK_WIDGET (item));
+    g_signal_connect (G_OBJECT (item),       "activate",
+                     G_CALLBACK (do_cycle_dictionaries_forward), NULL);
+    gtk_widget_add_accelerator (GTK_WIDGET (item), "activate", accel_group, GDK_Down, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
+    gtk_widget_show (GTK_WIDGET (item));
+
+    //Finish
+    printf("%d dictionaries are being used.\n", i);
+    return i;
+}
+
+
 void gwaei_ui_update_search_progressbar (long current, long total)
 {
-    GtkWidget *progress;
-    progress = GTK_WIDGET (gtk_builder_get_object(builder, "search_progressbar"));
+    const int id_length = 50;
+    char id[id_length];
 
+    GtkWidget *progress;
+    strncpy (id, "search_progressbar", id_length);
+    progress = GTK_WIDGET (gtk_builder_get_object(builder, id));
+
+    //Special case if I want to do something with it
     if (total == 0)
     {
-//      gtk_widget_hide (GTK_WIDGET (progress));
         gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR (progress), 0.0);
+        return;
     }
-    else
-    {
-      gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR (progress), ((double)current/(double)total));
-      gtk_widget_show (GTK_WIDGET (progress));
-    }
+
+    gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR (progress), ((double)current/(double)total));
+    gtk_widget_show (GTK_WIDGET (progress));
 }
 
 
@@ -599,24 +595,17 @@ void gwaei_ui_update_search_progressbar (long current, long total)
 //
 void gwaei_ui_update_history_menu_popup()
 {
-    char id[50];
-    GtkMenuBar *menubar;
-    strcpy (id, "menubar");
-    menubar = GTK_MENU_BAR (gtk_builder_get_object(builder, id));
+    const int id_length = 50;
+    char id[id_length];
 
-    GList *list = gtk_container_get_children (GTK_CONTAINER (menubar));
-    GtkMenuItem *menuitem = g_list_nth_data (list, 4);
-    if (menuitem == NULL) return;
+    GtkMenuShell *shell;
+    strncpy (id, "history_popup", id_length);
+    shell = GTK_MENU_SHELL (gtk_builder_get_object(builder, id));
 
-    GtkWidget *menu = GTK_WIDGET (gtk_menu_item_get_submenu (menuitem));
-
-
-    GtkMenuShell *shell = GTK_MENU_SHELL (menu);
     GList     *children = NULL;
     children = gtk_container_get_children (GTK_CONTAINER (shell));
 
     //Skip over the back/forward buttons
-    if (children != NULL) children = g_list_next(children);
     if (children != NULL) children = g_list_next(children);
     if (children != NULL) children = g_list_next(children);
 
@@ -627,41 +616,31 @@ void gwaei_ui_update_history_menu_popup()
       children = g_list_delete_link(children, children);
     }
 
-
-    GtkAction *action = GTK_ACTION (gtk_builder_get_object (builder, "back_menuitem"));
-      gtk_action_set_sensitive (action, (historylist_get_back_history (GWAEI_TARGET_RESULTS) != NULL));
-    action = GTK_ACTION (gtk_builder_get_object (builder, "forward_menuitem"));
-      gtk_action_set_sensitive (action, (historylist_get_forward_history (GWAEI_TARGET_RESULTS) != NULL));
-
-
     //Declarations
     GtkWidget *label;
     const char *text;
     SearchItem *item;
+    GtkWidget *menuitem;
 
     children = historylist_get_combined_history_list (GWAEI_HISTORYLIST_RESULTS);
 
-
-    //Add a sparator if there are some items in history
+    //Add a separator if there are some items in history
     if (children != NULL)
     {
       //Add a seperator to the end of the history popup
-      menuitem = GTK_MENU_ITEM (gtk_separator_menu_item_new());
-      gtk_menu_shell_append (GTK_MENU_SHELL (shell), GTK_WIDGET (menuitem));
-      gtk_widget_show (GTK_WIDGET (menuitem));
+      menuitem = GTK_WIDGET (gtk_separator_menu_item_new());
+      gtk_menu_shell_append (GTK_MENU_SHELL (shell), menuitem);
+      gtk_widget_show (menuitem);
     }
 
-
+    //Fill the history items
     while (children != NULL)
     {
       item = children->data;
 
       GtkWidget *menu_item, *accel_label, *label;
-      char dictionary[50];
-      strncpy (dictionary, item->dictionary->name, 50);
-      strncat (dictionary, gettext(" Dictionary"), 50 - strlen(dictionary));
 
-      accel_label = gtk_label_new (dictionary);
+      accel_label = gtk_label_new (item->dictionary->long_name);
       gtk_widget_set_sensitive (GTK_WIDGET (accel_label), FALSE);
       label = gtk_label_new (item->query);
 
@@ -748,33 +727,16 @@ void rebuild_history_button_popup(char* id, GList* list) {
     }
 }
 
-void gwaei_ui_rebuild_back_history_popup() {
-    
-    GList* list;
-    list = historylist_get_back_history (GWAEI_HISTORYLIST_RESULTS);
-    rebuild_history_button_popup("back_popup", list);
-
-    GtkWidget *button;
-    button= GTK_WIDGET (gtk_builder_get_object (builder, "back_toolbutton"));
-    gtk_widget_set_sensitive (button, (g_list_length(list) > 0));
-}
-
-void gwaei_ui_rebuild_forward_history_popup() {
-    GList* list;
-    list = historylist_get_forward_history (GWAEI_HISTORYLIST_RESULTS);
-    rebuild_history_button_popup("forward_popup", list);
-
-    GtkWidget *button;
-    button = GTK_WIDGET (gtk_builder_get_object (builder, "forward_toolbutton"));
-    gtk_widget_set_sensitive (button, (g_list_length(list) > 0));
-}
-
 
 void gwaei_ui_update_history_popups()
 {
-  gwaei_ui_update_history_menu_popup();
-  gwaei_ui_rebuild_back_history_popup();
-  gwaei_ui_rebuild_forward_history_popup();
+    GList* list;
+
+    gwaei_ui_update_history_menu_popup();
+    list = historylist_get_forward_history (GWAEI_HISTORYLIST_RESULTS);
+    rebuild_history_button_popup("forward_popup", list);
+    list = historylist_get_back_history (GWAEI_HISTORYLIST_RESULTS);
+    rebuild_history_button_popup("back_popup", list);
 }
 
 
@@ -827,10 +789,11 @@ void gwaei_ui_set_toolbar_style(char *request)
 
 void gwaei_ui_set_toolbar_show(gboolean request)
 {
-    char id[50];
+    int id_length = 50;
+    char id[id_length];
     
     GtkWidget *toolbar;
-    strcpy(id, "toolbar");
+    strncpy(id, "toolbar", id_length);
     toolbar = GTK_WIDGET (gtk_builder_get_object(builder, id));
 
     if (request == TRUE)
@@ -838,27 +801,28 @@ void gwaei_ui_set_toolbar_show(gboolean request)
     else
       gtk_widget_hide(toolbar);
 
-    GObject *action;
-    strcpy(id, "toolbar_toggle_menuitem");
-    action = G_OBJECT (gtk_builder_get_object(builder,id));
+    GtkAction *action;
+    strcpy(id, "view_toggle_toolbar_action");
+    action = GTK_ACTION (gtk_builder_get_object(builder,id));
 
-    g_signal_handlers_block_by_func(action, do_toolbar_toggle, NULL);
-    gtk_toggle_action_set_active(GTK_TOGGLE_ACTION (action), request);
-    g_signal_handlers_unblock_by_func(action, do_toolbar_toggle, NULL);
+    g_signal_handlers_block_by_func (G_OBJECT (action), do_toolbar_toggle, NULL);
+    gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), request);
+    g_signal_handlers_unblock_by_func (G_OBJECT (action), do_toolbar_toggle, NULL);
 }
 
 
 void gwaei_ui_set_less_relevant_show(gboolean show)
 {
-  char id[50];
+  int id_length = 50;
+  char id[id_length];
 
-  GObject *action;
-  strcpy(id, "less_relevant_results_toggle_menuitem");
-  action = G_OBJECT (gtk_builder_get_object(builder, id));
+  GtkAction *action;
+  strncpy(id, "view_less_relevant_results_toggle_action", id_length);
+  action = GTK_ACTION (gtk_builder_get_object(builder, id));
 
-  g_signal_handlers_block_by_func(action, do_less_relevant_results_toggle, NULL);
+  g_signal_handlers_block_by_func(G_OBJECT (action), do_less_relevant_results_toggle, NULL);
   gtk_toggle_action_set_active(GTK_TOGGLE_ACTION (action), show);
-  g_signal_handlers_unblock_by_func(action, do_less_relevant_results_toggle, NULL);
+  g_signal_handlers_unblock_by_func(G_OBJECT (action), do_less_relevant_results_toggle, NULL);
 
   less_relevant_results_show = show;
 }
@@ -880,6 +844,7 @@ void gwaei_ui_set_romanji_kana_conv(int request)
 
 void gwaei_ui_set_hiragana_katakana_pref(GtkWidget *widget, gpointer data)
 {
+/*
   gboolean active;
   active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON (widget));
 
@@ -890,11 +855,13 @@ void gwaei_ui_set_hiragana_katakana_pref(GtkWidget *widget, gpointer data)
   strcat(key, gtk_widget_get_name(widget));
 
   gwaei_pref_set_boolean (key, active);
+  */
 }
 
 
 void gwaei_ui_set_hiragana_katakana_conv(gboolean request)
 {
+/*
     char id[50];
 
     GtkWidget *widget;
@@ -904,11 +871,13 @@ void gwaei_ui_set_hiragana_katakana_conv(gboolean request)
     g_signal_handlers_block_by_func(widget, do_hiragana_katakana_conv_toggle, NULL); 
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (widget), request);
     g_signal_handlers_unblock_by_func(widget, do_hiragana_katakana_conv_toggle, NULL); 
+    */
 }
 
 
 void gwaei_ui_set_katakana_hiragana_conv(gboolean request)
 {
+/*
     char id[50];
 
     GtkWidget *widget;
@@ -918,6 +887,7 @@ void gwaei_ui_set_katakana_hiragana_conv(gboolean request)
     g_signal_handlers_block_by_func(widget, do_hiragana_katakana_conv_toggle, NULL); 
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (widget), request);
     g_signal_handlers_unblock_by_func(widget, do_hiragana_katakana_conv_toggle, NULL); 
+    */
 }
 
 
@@ -2000,45 +1970,6 @@ void gwaei_ui_display_no_results_found_page()
 }
 
 
-const char* gwaei_ui_get_active_dictionary ()
-{
-    char id[50];
-    GtkWidget *combobox;
-    strcpy(id, "dictionary_combobox");
-    combobox = GTK_WIDGET (gtk_builder_get_object(builder, id));
-    return (gtk_combo_box_get_active_text(GTK_COMBO_BOX(combobox)));
-}
-
-
-void gwaei_ui_set_active_dictionary_by_name (char* requested_name)
-{
-    //Get a reference to the combobox and it's text contents
-    char id[50];
-    GtkWidget *combobox;
-    strncpy (id, "dictionary_combobox", 50);
-    combobox = GTK_WIDGET (gtk_builder_get_object(builder, id));
-
-    char name[MAX_DICTIONARY];
-    if (strcmp (requested_name, "Mix") == 0)
-      strncpy(name, "Kanji", MAX_DICTIONARY);
-    else
-      strncpy(name, requested_name, MAX_DICTIONARY);
-
-
-    //Set the dictionary in the GtkCombobox
-    int i = 0;
-    while (gwaei_ui_get_active_dictionary () != NULL             &&
-           strcmp (gwaei_ui_get_active_dictionary (), name) != 0   )
-    {
-      gtk_combo_box_set_active (GTK_COMBO_BOX (combobox), i);
-      i++;
-    }
-
-    if (gwaei_ui_get_active_dictionary () == NULL)
-      gtk_combo_box_set_active (GTK_COMBO_BOX (combobox), 0);
-}
-
-
 void gwaei_ui_next_dictionary()
 {
     //Declarations
@@ -2165,16 +2096,11 @@ void initialize_gui_interface(int *argc, char ***argv)
 
     //Setup the main windows xml
     builder = gtk_builder_new ();
-    gwaei_ui_load_gtk_builder_xml("main.xml");
-    gwaei_ui_load_gtk_builder_xml("radicals.xml");
-    gwaei_ui_load_gtk_builder_xml("settings.xml");
-    gwaei_ui_load_gtk_builder_xml("kanjipad.xml");
-
-    //HACK/////////////////////// Glade doesn't like disabling this menuitem for some reason...
-    GtkAction *menuitem;
-    menuitem = GTK_ACTION (gtk_builder_get_object (builder, "edit_menuitem"));
-    gtk_action_set_sensitive (GTK_ACTION (menuitem), FALSE);
-    /////////////////////
+    gtk_builder_set_translation_domain (builder, PACKAGE);
+    gwaei_ui_load_gtk_builder_xml("main.ui");
+    gwaei_ui_load_gtk_builder_xml("radicals.ui");
+    gwaei_ui_load_gtk_builder_xml("settings.ui");
+    gwaei_ui_load_gtk_builder_xml("kanjipad.ui");
 
     //Initialize some component and variables
     initialize_global_widget_pointers();
@@ -2185,7 +2111,6 @@ void initialize_gui_interface(int *argc, char ***argv)
     gwaei_ui_update_history_popups();
     gwaei_ui_show_window ("main_window");
     gwaei_prefs_initialize_preferences();
-    gwaei_settings_combobox_hack ();
 
     if (rebuild_combobox_dictionary_list() == 0) {
       do_settings(NULL, NULL);

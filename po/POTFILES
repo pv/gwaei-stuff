@@ -17,11 +17,11 @@
      ../src/dictionaries.c \
      ../src/history.c \
      ../src/regex.c \
+     ../src/xml/main.ui \
+     ../src/xml/radicals.ui \
+     ../src/xml/settings.ui \
+     ../src/kanjipad/kanjipad.ui \
      ../src/xml/main.glade \
-     ../src/xml/main.xml \
      ../src/xml/radicals.glade \
-     ../src/xml/radicals.xml \
      ../src/xml/settings.glade \
-     ../src/xml/settings.xml \
-     ../src/kanjipad/kanjipad.glade \
-     ../src/kanjipad/kanjipad.xml
+     ../src/kanjipad/kanjipad.glade

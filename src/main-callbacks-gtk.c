@@ -88,8 +88,8 @@ G_MODULE_EXPORT void do_close_kanji_results(GtkWidget *widget, gpointer data)
 
 //Sets the correct cursor when the mouse hovers over a kanji character
 G_MODULE_EXPORT gboolean do_get_iter_for_motion (GtkWidget      *widget,
-                                 GdkEventButton *event,
-                                 gpointer        data   )
+                                                 GdkEventButton *event,
+                                                 gpointer        data   )
 {
     gunichar unic;
     gint x = event->x;
@@ -113,8 +113,8 @@ G_MODULE_EXPORT gboolean do_get_iter_for_motion (GtkWidget      *widget,
 gint button_press_x = 0;
 gint button_press_y = 0;
 G_MODULE_EXPORT gboolean do_get_position_for_button_press (GtkWidget      *widget,
-                                           GdkEventButton *event,
-                                           gpointer        data    )
+                                                           GdkEventButton *event,
+                                                           gpointer        data    )
 {
   //Window coordinates
   button_press_x = event->x;
@@ -127,8 +127,8 @@ G_MODULE_EXPORT gboolean do_get_position_for_button_press (GtkWidget      *widge
 
 
 G_MODULE_EXPORT gboolean do_get_iter_for_button_release (GtkWidget      *widget,
-                                         GdkEventButton *event,
-                                         gpointer        data    )
+                                                         GdkEventButton *event,
+                                                         gpointer        data    )
 {
   //Window coordinates
   gint x = event->x;
@@ -168,6 +168,7 @@ G_MODULE_EXPORT gboolean do_get_iter_for_button_release (GtkWidget      *widget,
       gwaei_close_kanji_results();
     }
   }
+
   return FALSE; 
 }
 
@@ -269,6 +270,7 @@ G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
 
     gwaei_search_get_results(hl->current);
     gwaei_ui_update_history_popups();
+    update_toolbar_buttons();
 
     //Set the search string in the GtkEntry
     gwaei_ui_clear_search_entry();
@@ -276,9 +278,13 @@ G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
     gwaei_ui_text_select_all_by_target(GWAEI_TARGET_ENTRY);
     gwaei_ui_grab_focus_by_target(GWAEI_TARGET_ENTRY);
 
-    char *dictionary;
-    dictionary = hl->current->dictionary->name; 
-    gwaei_ui_set_active_dictionary_by_name (dictionary);
+    //Set the correct dictionary in the gui
+    const int id_length = 50;
+    char id[id_length];
+    GtkWidget *combobox;
+    strncpy(id, "dictionary_combobox", id_length);
+    combobox = GTK_WIDGET (gtk_builder_get_object (builder, id));
+    gtk_combo_box_set_active(GTK_COMBO_BOX (combobox), hl->current->dictionary->load_position);
 }
 
 
@@ -485,60 +491,32 @@ G_MODULE_EXPORT void do_toolbar_toggle (GtkWidget *widget, gpointer data)
 
 G_MODULE_EXPORT void do_dictionary_changed_action (GtkWidget *widget, gpointer data)
 {
-    //Get a reference to the File menu
+    //Declarations
+    const char id_length = 50;
+    char id[id_length];
+    GList *list = NULL;
     GtkMenuShell *shell = NULL;
-    char id[50];
-    GtkMenuBar *menubar;
-    strcpy (id, "menubar");
-    menubar = GTK_MENU_BAR (gtk_builder_get_object(builder, id));
-    GList *list = gtk_container_get_children (GTK_CONTAINER (menubar));
-    GtkMenuItem *menuitem = GTK_MENU_ITEM (g_list_nth_data (list, 0));
-    if (menuitem != NULL)
-    {
-      //Use the file menu to get the Dictionaries submenu
-      GtkWidget *menu = GTK_WIDGET (gtk_menu_item_get_submenu (menuitem));
-      list = gtk_container_get_children (GTK_CONTAINER (menu));
-      menuitem = g_list_nth_data (list, 5);
-      if (menuitem != NULL)
-      {
-        menu = GTK_WIDGET (gtk_menu_item_get_submenu (menuitem));
-        shell = GTK_MENU_SHELL (menu);
-      }
-    }
+    strncpy (id, "dictionary_popup", id_length);
+    shell = GTK_MENU_SHELL (gtk_builder_get_object (builder, id));
 
-
+    //Action depending on the source
     int active = 0;
-
     if (strcmp(G_OBJECT_TYPE_NAME(widget), "GtkComboBox") == 0 )
     {
       active = gtk_combo_box_get_active(GTK_COMBO_BOX (widget));
     }
     else if (strcmp(G_OBJECT_TYPE_NAME(widget), "GtkRadioMenuItem") == 0 )
     {
-      if (shell != NULL)
+      list = gtk_container_get_children (GTK_CONTAINER (shell));
+      while (list != NULL && gtk_check_menu_item_get_active( GTK_CHECK_MENU_ITEM (list->data)) == FALSE)
       {
-        GList *list;
-        list = gtk_container_get_children (GTK_CONTAINER (shell));
-        while (list != NULL && gtk_check_menu_item_get_active( GTK_CHECK_MENU_ITEM (list->data)) == FALSE)
-        {
-          list = g_list_next(list);
-          active++;
-        }
+        list = g_list_next(list);
+        active++;
       }
     }
+
+    //Finish up
     gwaei_ui_set_dictionary(active);
-/*
-    GtkWidget *combobox;
-    char id[50];
-    strncpy (id, "dictionary_combobox", 50);
-    combobox = GTK_WIDGET (gtk_builder_get_object(builder, id));
-
-    gint active;
-    active = gtk_combo_box_get_active( GTK_COMBO_BOX (combobox) );
-    char *active_text;
-*/
-
-
     gwaei_ui_grab_focus_by_target(GWAEI_TARGET_ENTRY);
 }
 
@@ -605,13 +583,13 @@ G_MODULE_EXPORT gboolean do_update_clipboard_on_focus_change (GtkWidget        *
     GtkAction *copy_action, *cut_action, *paste_action, *select_all_action;
 
     char id[50];
-    strncpy(id, "copy_menuitem", 50);
+    strncpy(id, "edit_copy_action", 50);
     copy_action       = GTK_ACTION (gtk_builder_get_object (builder, id));
-    strncpy(id, "cut_menuitem", 50);
+    strncpy(id, "edit_cut_action", 50);
     cut_action        = GTK_ACTION (gtk_builder_get_object (builder, id));
-    strncpy(id, "paste_menuitem", 50);
+    strncpy(id, "edit_paste_action", 50);
     paste_action      = GTK_ACTION (gtk_builder_get_object (builder, id));
-    strncpy(id, "select_all_menuitem", 50);
+    strncpy(id, "edit_select_all_action", 50);
     select_all_action = GTK_ACTION (gtk_builder_get_object (builder, id));
 
     //Disconnected old handlers
@@ -791,8 +769,8 @@ G_MODULE_EXPORT void do_cycle_dictionaries_backward (GtkWidget *widget, gpointer
 
 
 G_MODULE_EXPORT gboolean do_focus_change_on_key_press (GtkWidget *widget,
-                                       GdkEvent  *event,
-                                       gpointer  *focus  )
+                                                       GdkEvent  *event,
+                                                       gpointer  *focus  )
 {
     guint state = ((GdkEventKey*)event)->state;
     guint keyval = ((GdkEventKey*)event)->keyval;
@@ -866,6 +844,8 @@ G_MODULE_EXPORT gboolean do_focus_change_on_key_press (GtkWidget *widget,
       }
     }
     return FALSE;
+
+return FALSE;
 }
 
 
@@ -873,9 +853,8 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
 {
     HistoryList* hl = historylist_get_list(GWAEI_HISTORYLIST_RESULTS);
 
-    const char *active_text = gwaei_ui_get_active_dictionary();
-    DictionaryInfo *dictionary;
-    dictionary = dictionarylist_get_dictionary_by_name(active_text);
+    GList *list = dictionarylist_get_selected();
+    DictionaryInfo *dictionary = list->data;
 
     gchar query[MAX_QUERY], preformatted_query[MAX_QUERY];
     gwaei_ui_strcpy_from_widget(query, MAX_QUERY, GWAEI_TARGET_ENTRY);
@@ -887,7 +866,7 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
                                      dictionary, GWAEI_TARGET_RESULTS);
 
     if (hl->current != NULL && strcmp (preformatted_query, hl->current->query) == 0 &&
-        strcmp (active_text, hl->current->dictionary->name) == 0         )
+        strcmp (dictionary->name, hl->current->dictionary->name) == 0         )
       return;
 
     if (gwaei_ui_cancel_search_by_target(GWAEI_TARGET_RESULTS) == FALSE)
@@ -1009,13 +988,13 @@ G_MODULE_EXPORT void do_open_dictionary_folder(GtkWidget *widget, gpointer data)
 
 
 G_MODULE_EXPORT void search_drag_data_recieved (GtkWidget        *widget,
-                                GdkDragContext   *drag_context,
-                                gint              x,
-                                gint              y,
-                                GtkSelectionData *data,
-                                guint             info,
-                                guint             time,
-                                gpointer          user_data    )
+                                                GdkDragContext   *drag_context,
+                                                gint              x,
+                                                gint              y,
+                                                GtkSelectionData *data,
+                                                guint             info,
+                                                guint             time,
+                                                gpointer          user_data    )
 {
     GtkWidget *entry;
     entry = GTK_WIDGET (widget);
@@ -1038,22 +1017,17 @@ G_MODULE_EXPORT void search_drag_data_recieved (GtkWidget        *widget,
 G_MODULE_EXPORT void do_update_button_states_based_on_entry_text (GtkWidget *widget,
                                                                   gpointer   data   )
 {
-//  gtk_entry_set_icon_from_icon_name   (search_entry, GTK_ENTRY_ICON_SECONDARY, "gtk-clear");
-  guint16 length = gtk_entry_get_text_length (GTK_ENTRY (search_entry));
-  gboolean enable = (length > 0);
+    int length = gtk_entry_get_text_length (GTK_ENTRY (search_entry));
 
-  gtk_entry_set_icon_sensitive (GTK_ENTRY (search_entry), GTK_ENTRY_ICON_SECONDARY, (length > 0));
-//  GtkWidget *button = GTK_WIDGET (gtk_builder_get_object(builder, "search_entry_submit_button"));
-//  gtk_widget_set_sensitive (button, enable);
+    //Show the clear icon when approprate
+    if (length > 0)
+      gtk_entry_set_icon_from_stock(GTK_ENTRY (search_entry), GTK_ENTRY_ICON_SECONDARY, GTK_STOCK_CLEAR);
+    else
+      gtk_entry_set_icon_from_stock(GTK_ENTRY (search_entry), GTK_ENTRY_ICON_SECONDARY, NULL);
 
-  if (enable)
-    gtk_entry_set_icon_from_stock(GTK_ENTRY (search_entry), GTK_ENTRY_ICON_SECONDARY, GTK_STOCK_CLEAR);
-  else
-    gtk_entry_set_icon_from_stock(GTK_ENTRY (search_entry), GTK_ENTRY_ICON_SECONDARY, NULL);
-
-  //Return widget colors back to normal
-  gtk_widget_modify_base(GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
-  gtk_widget_modify_text(GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
+    //Return widget colors back to normal
+    gtk_widget_modify_base(GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
+    gtk_widget_modify_text(GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
 }
 
 

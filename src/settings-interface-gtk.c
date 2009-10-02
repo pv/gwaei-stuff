@@ -430,19 +430,3 @@ void gwaei_ui_set_progressbar (char *name, double percent, char *message)
 }
 
 
-void gwaei_settings_combobox_hack ()
-{
-    //Rebuild the combobox since gtkbuilder doesn't seem to localize it...
-    GtkWidget *combobox;
-    combobox = GTK_WIDGET (gtk_builder_get_object(builder, "query_romanji_to_kana"));
-    int active = gtk_combo_box_get_active (GTK_COMBO_BOX(combobox));
-    gtk_combo_box_append_text(GTK_COMBO_BOX (combobox), gettext("When Possible"));
-    gtk_combo_box_append_text(GTK_COMBO_BOX (combobox), gettext("Never"));
-    gtk_combo_box_append_text(GTK_COMBO_BOX (combobox), gettext("Only for Non-Japanese Locales"));
-    gtk_combo_box_remove_text (GTK_COMBO_BOX(combobox), 0);
-    gtk_combo_box_remove_text (GTK_COMBO_BOX(combobox), 0);
-    gtk_combo_box_remove_text (GTK_COMBO_BOX(combobox), 0);
-    gtk_combo_box_set_active (GTK_COMBO_BOX(combobox), active);
-}
-
-

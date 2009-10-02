@@ -24,11 +24,13 @@ struct DictionaryInfo
     int status;
     long total_lines;
     char name[100];
+    char long_name[100];
     char path[FILENAME_MAX];
     char gz_path[FILENAME_MAX];
     char sync_path[FILENAME_MAX];
     char rsync[FILENAME_MAX];
     char gckey[100];
+    int load_position;
 };
 typedef struct DictionaryInfo DictionaryInfo;
 
@@ -45,3 +47,4 @@ GList* dictionarylist_get_list (void);
 DictionaryInfo* dictionarylist_get_dictionary_by_id (int);
 DictionaryInfo* dictionarylist_get_dictionary_by_name (const char*);
 int dictionarylist_get_total (void);
+GList* dictionarylist_get_selected(void);

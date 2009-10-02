@@ -95,31 +95,35 @@ void do_conditionally_enable_spellcheck (GtkWidget *widget, gpointer data)
        strcpy (id, "dictionary_combobox");
        combobox = GTK_WIDGET (gtk_builder_get_object (builder, id));
 
-       char *active;
-       active = gtk_combo_box_get_active_text (GTK_COMBO_BOX (combobox));
+       //Make sure the combobox is sane
+       if (GTK_WIDGET_IS_SENSITIVE (combobox))
+       {
+         return;
+       }
 
        //Default to the english dictionary when using the english-japanese dict
+       char *active;
+       active = gtk_combo_box_get_active_text (GTK_COMBO_BOX (combobox));
        if (strcmp (active, "English") == 0 || strcmp (active, "english") == 0)
        {
-          //Set the spellchecked language to english
-          GError *err;
-          err = NULL;
-          sexy_spell_entry_activate_language (SEXY_SPELL_ENTRY (entry), "en", &err);
-          if (err != NULL)
-          {
-            g_error_free (err);
-            err = NULL;
-          }
-
-          sexy_spell_entry_set_checked (SEXY_SPELL_ENTRY (entry), TRUE);
+         //Set the spellchecked language to english
+         GError *err;
+         err = NULL;
+         sexy_spell_entry_activate_language (SEXY_SPELL_ENTRY (entry), "en", &err);
+         if (err != NULL)
+         {
+           g_error_free (err);
+           err = NULL;
+         }
+         sexy_spell_entry_set_checked (SEXY_SPELL_ENTRY (entry), TRUE);
        }
 
        //Default to the system default otherwise
        else
        {
-          //Set the system default language
-          sexy_spell_entry_activate_default_languages (SEXY_SPELL_ENTRY (entry));
-          sexy_spell_entry_set_checked (SEXY_SPELL_ENTRY (entry), TRUE);
+         //Set the system default language
+         sexy_spell_entry_activate_default_languages (SEXY_SPELL_ENTRY (entry));
+         sexy_spell_entry_set_checked (SEXY_SPELL_ENTRY (entry), TRUE);
        }
      }
      else

@@ -461,7 +461,7 @@ void show_kanjipad (GtkBuilder* builder)
   strcat(global_path, G_DIR_SEPARATOR_S);
   strcat(global_path, PACKAGE);
   strcat(global_path, G_DIR_SEPARATOR_S);
-  strcat(global_path, "kanjipad.xml");
+  strcat(global_path, "kanjipad.ui");
   gtk_builder_add_from_file (builder, global_path,  NULL );
   gtk_builder_connect_signals (builder, NULL);
 

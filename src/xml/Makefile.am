@@ -3,7 +3,5 @@
 PACKAGE = @PACKAGE@
 VERSION = @VERSION@
 
-pkgdata_DATA = main.xml radicals.xml settings.xml ../kanjipad/kanjipad.xml
-
-EXTRA_DIST = main.glade radicals.glade settings.glade main.xml radicals.xml settings.xml ../kanjipad/kanjipad.xml ../kanjipad/kanjipad.glade edit_glade_file
+pkgdata_DATA = main.ui radicals.ui settings.ui ../kanjipad/kanjipad.ui main.glade radicals.glade settings.glade ../kanjipad/kanjipad.glade
 
