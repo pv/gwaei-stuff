@@ -60,29 +60,101 @@ GtkWidget *search_entry = NULL;
 
 void force_gtk_builder_translation_for_gtk_actions_hack ()
 {
+    const int id_length = 50;
+    char id[id_length];
+    GtkAction *action;
+
     char *temp = gettext("Only for Non-Japanese Locals");
     char *temp1  = gettext("When Possible\n");
     char *temp2  = gettext("Never\n");
-    char *temp3  = gettext("Only for Non-Japanese Locals");
-    char *temp4  = gettext("When Possible");
-    char *temp5  = gettext("Never");
-    char *temp6  = gettext("A_ppend");
-    char *temp7  = gettext("A list of the installed dictionaries");
-    char *temp8  = gettext("Prefe_rences");
-    char *temp9  = gettext("Show _Toolbar");
-    char *temp10 = gettext("_Enlarge Text");
-    char *temp11 = gettext("_Shrink Text");
-    char *temp12 = gettext("_Normal Size");
-    char *temp13 = gettext("Show _Less Relevant Results");
-    char *temp14 = gettext("Using _Kanjipad");
-    char *temp15 = gettext("Using _Radical Search Tool");
-    char *temp16 = gettext("_Word Edge Mark");
-    char *temp17 = gettext("_Not Word Edge Mark");
-    char *temp18 = gettext("_Unknown Character");
-    char *temp19 = gettext("_And Character");
-    char *temp20 = gettext("_Or Character");
-    char *temp21 = gettext("_Contents");
-    char *temp22 = gettext("Dictionary _Terminology Glossary");
+
+    //Append action
+    strncpy(id, "file_append_action", id_length);
+    action = GTK_ACTION (gtk_builder_get_object (builder, id));
+    gtk_action_set_label (action, gettext("A_ppend"));
+
+    //Zoom in action
+    strncpy(id, "view_zoom_in_action", id_length);
+    action = GTK_ACTION (gtk_builder_get_object (builder, id));
+    gtk_action_set_label (action, gettext("_Enlarge Text"));
+    gtk_action_set_short_label (action, gettext("Enlarge"));
+
+    //Zoom out action
+    strncpy(id, "view_zoom_out_action", id_length);
+    action = GTK_ACTION (gtk_builder_get_object (builder, id));
+    gtk_action_set_label (action, gettext("_Shrink Text"));
+    gtk_action_set_short_label (action, gettext("Shrink"));
+
+    //Normal size action
+    strncpy(id, "view_zoom_100_action", id_length);
+    action = GTK_ACTION (gtk_builder_get_object (builder, id));
+    gtk_action_set_label (action, gettext("_Normal _Size"));
+    gtk_action_set_short_label (action, gettext("Normal"));
+
+    //Show toolbar action
+    strncpy(id, "view_toggle_toolbar_action", id_length);
+    action = GTK_ACTION (gtk_builder_get_object (builder, id));
+    gtk_action_set_label (action, gettext("Show _Toolbar"));
+
+    //Show less relevant results action
+    strncpy(id, "view_less_relevant_results_toggle_action", id_length);
+    action = GTK_ACTION (gtk_builder_get_object (builder, id));
+    gtk_action_set_label (action, gettext("Show _Less Relevant Results"));
+
+    //Using kanjipad action
+    strncpy(id, "insert_kanjipad_action", id_length);
+    action = GTK_ACTION (gtk_builder_get_object (builder, id));
+    gtk_action_set_label (action, gettext("Using _Kanjipad"));
+
+    //Using radical search tool action
+    strncpy(id, "insert_radicals_action", id_length);
+    action = GTK_ACTION (gtk_builder_get_object (builder, id));
+    gtk_action_set_label (action, gettext("Using _Radical Search Tool"));
+
+    //Word boundary action
+    strncpy(id, "insert_word_boundary_action", id_length);
+    action = GTK_ACTION (gtk_builder_get_object (builder, id));
+    gtk_action_set_label (action, gettext("_Word Edge Mark"));
+    gtk_action_set_short_label (action, gettext("_Edge"));
+
+    //Not Word boundary action
+    strncpy(id, "insert_non_word_boundary_action", id_length);
+    action = GTK_ACTION (gtk_builder_get_object (builder, id));
+    gtk_action_set_label (action, gettext("_Not Word Edge Mark"));
+    gtk_action_set_short_label (action, gettext("_Not Edge"));
+
+    //Unknown character action
+    strncpy(id, "insert_unknown_character_action", id_length);
+    action = GTK_ACTION (gtk_builder_get_object (builder, id));
+    gtk_action_set_label (action, gettext("_Unknown Character"));
+    gtk_action_set_short_label (action, gettext("_Unknown"));
+
+    //Or action
+    strncpy(id, "insert_or_action", id_length);
+    action = GTK_ACTION (gtk_builder_get_object (builder, id));
+    gtk_action_set_label (action, gettext("_Or Character"));
+
+    //And action
+    strncpy(id, "insert_and_action", id_length);
+    action = GTK_ACTION (gtk_builder_get_object (builder, id));
+    gtk_action_set_label (action, gettext("_And Character"));
+
+    //Previous
+    strncpy(id, "history_back_action", id_length);
+    action = GTK_ACTION (gtk_builder_get_object (builder, id));
+    gtk_action_set_label (action, gettext("_Previous Search"));
+    gtk_action_set_short_label (action, gettext("Previous"));
+
+    //Next
+    strncpy(id, "history_forward_action", id_length);
+    action = GTK_ACTION (gtk_builder_get_object (builder, id));
+    gtk_action_set_label (action, gettext("_Next Search"));
+    gtk_action_set_short_label (action, gettext("Next"));
+
+    //Glossary
+    strncpy(id, "help_glossary_action", id_length);
+    action = GTK_ACTION (gtk_builder_get_object (builder, id));
+    gtk_action_set_label (action, gettext("Dictionary _Terminology Glossary"));
 }
 
 GObject* get_gobject_from_target(const int TARGET)
@@ -2100,6 +2172,9 @@ void initialize_gui_interface(int *argc, char ***argv)
     gwaei_ui_load_gtk_builder_xml("radicals.ui");
     gwaei_ui_load_gtk_builder_xml("settings.ui");
     gwaei_ui_load_gtk_builder_xml("kanjipad.ui");
+
+    //HACK!!!!!!!!!!!!!!
+    force_gtk_builder_translation_for_gtk_actions_hack ();
 
     //Initialize some component and variables
     initialize_global_widget_pointers();
