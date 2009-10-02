@@ -96,7 +96,7 @@ void do_conditionally_enable_spellcheck (GtkWidget *widget, gpointer data)
        combobox = GTK_WIDGET (gtk_builder_get_object (builder, id));
 
        //Make sure the combobox is sane
-       if (GTK_WIDGET_IS_SENSITIVE (combobox))
+       if (!GTK_WIDGET_IS_SENSITIVE (combobox))
        {
          return;
        }

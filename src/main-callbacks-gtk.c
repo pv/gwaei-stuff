@@ -1007,6 +1007,7 @@ G_MODULE_EXPORT void search_drag_data_recieved (GtkWidget        *widget,
 
       drag_context->action = GDK_ACTION_COPY;
       gtk_drag_finish(drag_context, TRUE, FALSE, time);
+      do_clear_search(entry, NULL);
     }
     else
     {
