@@ -42,7 +42,7 @@
            <imagedata fileref="@prefix@/share/@PACKAGE@/logo.png" format="PNG"/>
         </imageobject></mediaobject>
 
-        <application>gWaei</application> is a dictionary program for searching
+        <application>gWaei</application> is a program for made for searching
         dictionary files created by Jim Breen's WWWJDIC Project.  The main
         feature of <application>gWaei</application> is its ability to employ
         searches using regular expressions. But don't forget its nice syntax
@@ -58,7 +58,7 @@
     <para>
 	    <application>gWaei</application> has a number of features.  Many of them
       are enabled through installing specific things. You can find out what is
-      available and how to get it working by looking at he "Features" tab in
+      available and how to get it working by looking at the "Features" tab in
       the setting dialog. The major ones are listed below.
     </para>
 
@@ -352,7 +352,7 @@
     There are a few other things to notice about <application>gWaei</application> that will make your exprience with it more enjoyable.  You will likely get them with time, but he sooner you do notice them, the more <application>gWaei</application> will grow on you.
     </para>
     
-    <para><application>gWaei</application> automatically moves focus where it makes sense.  If you start typing, the focus will move to the search input box.  If you press an arrow key, the focus will move to the results box.  If you hit the tab key, the the next dictionary in the combobox will pop up and the focus will move to the search input box so you can start typing.  You don't need to go clicking around the interface to do things.
+    <para><application>gWaei</application> automatically moves focus where it makes sense.  If you start typing, the focus will move to the search input box.  If you press an arrow key, the focus will move to the results box.  Alt-Up and Alt-Down will cycle the installed dictionaries and the focus will move to the search input box so you can start typing.  You don't need to go clicking around the interface to do things (but you can if you want.)
     </para>
     <para>
     If you install the Kanji dictionary, it is highly recommended you also install the radical dictionary.  Unless they are both installed, many of the most interesting features of the <application>gWaei</application> won't be enabled.  Don't miss out on the fun!

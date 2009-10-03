@@ -3,5 +3,6 @@
 PACKAGE = @PACKAGE@
 VERSION = @VERSION@
 
-pkgdata_DATA = main.ui radicals.ui settings.ui ../kanjipad/kanjipad.ui main.glade radicals.glade settings.glade ../kanjipad/kanjipad.glade
+pkgdata_DATA = main.ui radicals.ui settings.ui ../kanjipad/kanjipad.ui
+EXTRA_DIST = main.glade radicals.glade settings.glade ../kanjipad/kanjipad.glade main.ui radicals.ui settings.ui ../kanjipad/kanjipad.ui
 

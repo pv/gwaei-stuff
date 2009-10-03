@@ -65,8 +65,8 @@ void force_gtk_builder_translation_for_gtk_actions_hack ()
     GtkAction *action;
 
     char *temp = gettext("Only for Non-Japanese Locals");
-    char *temp1  = gettext("When Possible\n");
-    char *temp2  = gettext("Never\n");
+    char *temp1  = gettext("When Possible");
+    char *temp2  = gettext("Never");
 
     //Edit action
     strncpy(id, "file_edit_action", id_length);
@@ -106,7 +106,7 @@ void force_gtk_builder_translation_for_gtk_actions_hack ()
     //Normal size action
     strncpy(id, "view_zoom_100_action", id_length);
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
-    gtk_action_set_label (action, gettext("_Normal _Size"));
+    gtk_action_set_label (action, gettext("_Normal Size"));
     gtk_action_set_short_label (action, gettext("Normal"));
 
     //Show toolbar action
@@ -132,14 +132,14 @@ void force_gtk_builder_translation_for_gtk_actions_hack ()
     //Word boundary action
     strncpy(id, "insert_word_boundary_action", id_length);
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
-    gtk_action_set_label (action, gettext("_Word Edge Mark"));
+    gtk_action_set_label (action, gettext("_Word-edge Mark"));
     gtk_action_set_short_label (action, gettext("_Edge"));
     gtk_action_set_tooltip (action, gettext("Insert a word-boundary character"));
 
     //Not Word boundary action
     strncpy(id, "insert_non_word_boundary_action", id_length);
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
-    gtk_action_set_label (action, gettext("_Not Word Edge Mark"));
+    gtk_action_set_label (action, gettext("_Not-word-edge Mark"));
     gtk_action_set_short_label (action, gettext("_Not Edge"));
     gtk_action_set_tooltip (action, gettext("Insert a not-word-boundary character"));
 
@@ -177,6 +177,8 @@ void force_gtk_builder_translation_for_gtk_actions_hack ()
     //Help
     strncpy(id, "help_program_action", id_length);
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
+    gtk_action_set_label (action, gettext("_Contents"));
+    gtk_action_set_short_label (action, gettext("Help"));
     gtk_action_set_tooltip (action, gettext("Open the help dialog"));
 
     //Help glossary
@@ -1801,7 +1803,7 @@ void gwaei_ui_display_no_results_found_page()
                                    NULL, NULL, NULL, NULL         );
 
         gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
-                                   gettext("Word-Boundary Character"),
+                                   gettext("Word-edge Mark"),
                                    "important", NULL, NULL, NULL         );
 
         gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
@@ -1809,7 +1811,7 @@ void gwaei_ui_display_no_results_found_page()
                                    NULL, NULL, NULL, NULL         );
 
         gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
-                                   gettext("Not-Word-Boundary Character"),
+                                   gettext("Not-word-edge Mark"),
                                    "important", NULL, NULL, NULL         );
 
         gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
@@ -1922,7 +1924,7 @@ void gwaei_ui_display_no_results_found_page()
                                    "important", NULL, NULL, NULL         );
 
         gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
-                                   gettext(" command from the File menu or toolbar, quick and easy creation of a vocabulary lists are possible."),
+                                   gettext(" command from the File menu or toolbar, quick and easy creation of a vocabulary lists is possible."),
                                    NULL, NULL, NULL, NULL         );
         break;
 
@@ -1945,15 +1947,23 @@ void gwaei_ui_display_no_results_found_page()
                                    NULL, NULL, NULL, NULL         );
 
         gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
-                                   gettext("up or down arrow key"),
+                                   gettext("Up or Down arrow key"),
                                    "important", NULL, NULL, NULL         );
 
         gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
-                                   gettext(" will move the focus to the results pane so you can scroll the results.  Hitting the "),
+                                   gettext(" will move the focus to the results pane so you can scroll the results.  Hitting "),
                                    NULL, NULL, NULL, NULL         );
 
         gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
-                                   gettext("tab key"),
+                                   gettext("Alt-Up"),
+                                   "important", NULL, NULL, NULL         );
+
+        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+                                   gettext(" or "),
+                                   NULL, NULL, NULL, NULL         );
+
+        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+                                   gettext("Alt-Down"),
                                    "important", NULL, NULL, NULL         );
 
         gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
