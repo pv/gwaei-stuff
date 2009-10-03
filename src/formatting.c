@@ -503,6 +503,8 @@ void strcpy_with_kanji_formatting(char *output, char *input)
       output_ptr++;
       input_ptr++;
     }
+    *output_ptr = ' ';
+    output_ptr++;
 
     *output_ptr = '\n';
      output_ptr++;

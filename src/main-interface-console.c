@@ -49,39 +49,21 @@ void gwaei_console_uninstall_dictionary_by_name(char *name)
 {
     DictionaryInfo* di;
     di = dictionarylist_get_dictionary_by_name(name);
+    if (di == NULL) return;
 
-    printf("*  ");
-    printf(gettext("Removing %s dictionary..."), name);
-    printf("\n");
-
-    printf("*   ");
-    printf(gettext("Removing %s..."), di->path);
-    printf("\n");
-    g_remove(di->path);
-
-    printf("*   ");
-    printf(gettext("Removing %s..."), di->gz_path);
-    printf("\n");
-    g_remove(di->gz_path);
-
-    printf("*   ");
-    printf(gettext("Removing %s..."), di->sync_path);
-    printf("\n");
-    g_remove(di->sync_path);
-
+    gwaei_io_delete_dictionary_file(di);
     di->status = NOT_INSTALLED;
+    di->load_position = -1;
 
     if (di->id == MIX)
+    {
       gwaei_console_uninstall_dictionary_by_name (name);
-    if (di->id == NAMES &&
-        dictionarylist_dictionary_get_status_by_id (PLACES) == INSTALLED)
+    }
+    if (di->id == NAMES)
+    {
       gwaei_console_uninstall_dictionary_by_name ("Places");
-    if (di->id == PLACES &&
-        dictionarylist_dictionary_get_status_by_id (NAMES) == INSTALLED)
       gwaei_console_uninstall_dictionary_by_name ("Names");
-
-
-    di->status = NOT_INSTALLED;
+    }
 }
 
 

@@ -1599,8 +1599,7 @@ void gwaei_ui_add_results_tagging ( gint sl, gint el, SearchItem* item )
       //
       //Stuff for the kanji section
       //
-      if (regexec(&re_kanji, item->dictionary->name, 1, NULL, 0) == 0 ||
-          strcmp("Mix", item->dictionary->name) == 0                    )
+      if (item->dictionary->type == KANJI)
       {
         char *nextchar;
         char *nextnextchar;
@@ -1608,15 +1607,15 @@ void gwaei_ui_add_results_tagging ( gint sl, gint el, SearchItem* item )
           nextchar = g_utf8_next_char(c);
         else
           nextchar = NULL;
-        if (*nextchar != '\0')
+        if (nextchar != NULL && *nextchar != '\0')
           nextnextchar = g_utf8_next_char(nextchar);
         else
-          nextchar = NULL;
+          nextnextchar = NULL;
 
         //Highlight single kanji lines
         if (g_utf8_get_char(c) > L'カ' && nextchar != NULL &&
-            *(nextchar) == '\n' && nextnextchar != NULL    &&
-            *(nextnextchar) != '{' && co == 0             )
+            *nextchar == ' ' && *nextnextchar == '\n'    &&
+            *nextnextchar != '{' && co == 0             )
         {
            gwaei_ui_apply_tag_to_text (target, "large", cl, 0, cl, 1);
            gwaei_ui_apply_tag_to_text (target, "header", cl, 0, cl, 1);
@@ -1668,8 +1667,7 @@ void gwaei_ui_add_results_tagging ( gint sl, gint el, SearchItem* item )
       else {
         if (*c == '/') {
           is_end_parenth = FALSE;
-          if ( is_end_quote == FALSE &&
-               (regexec(&re_kanji, item->dictionary->name, 1, NULL, 0) != 0) )
+          if ( is_end_quote == FALSE && item->dictionary->type != KANJI)
           {
             is_end_quote = TRUE;
             gwaei_ui_apply_tag_to_text (target, "important", cl, 0, cl, co);

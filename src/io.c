@@ -39,6 +39,7 @@
 
 #include <gwaei/definitions.h>
 #include <gwaei/regex.h>
+#include <gwaei/dictionaries.h>
 
 
 char     save_path[FILENAME_MAX]    = { '\0' };
@@ -179,6 +180,37 @@ gboolean gwaei_io_download_dictionary_file(char *source_path, char *save_path, g
     if (res != 0) g_remove(save_path);
 
     return (res == 0);
+}
+
+
+gboolean gwaei_io_delete_dictionary_file(DictionaryInfo* file)
+{
+    printf("  ");
+    printf(gettext("Removing %s..."), file->long_name);
+    printf("\n");
+
+    printf("*   ");
+    printf(gettext("Removing %s..."), file->path);
+    if (g_remove(file->path) == 0)
+      printf("Success\n");
+    else
+      printf("Failed\n");
+
+    printf("*   ");
+    printf(gettext("Removing %s..."), file->gz_path);
+    if (g_remove(file->gz_path) == 0)
+      printf("Success\n");
+    else
+      printf("Failed\n");
+
+    printf("*   ");
+    printf(gettext("Removing %s..."), file->sync_path);
+    if (g_remove(file->sync_path) == 0)
+      printf("Success\n");
+    else
+      printf("Failed\n");
+
+    return TRUE;
 }
 
 
