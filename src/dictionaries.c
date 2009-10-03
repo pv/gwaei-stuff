@@ -151,7 +151,7 @@ DictionaryInfo* dictionaryinfo_new (char *name)
     else if (strcmp (name, "Mix") == 0)
     {
       temp->id = MIX;
-      temp->type = OTHER;
+      temp->type = KANJI;
       strncpy(temp->gckey, "", 100);
       strcpy (temp->rsync, "");
     }
@@ -201,6 +201,7 @@ GList* dictionarylist_get_selected()
     return dictionaries->selected;
 }
 
+
 GList* dictionarylist_set_selected_by_load_position(int request)
 {
     GList* current_dictionary = dictionarylist_get_list();
@@ -214,6 +215,8 @@ GList* dictionarylist_set_selected_by_load_position(int request)
     dictionaries->selected = current_dictionary;
     return current_dictionary;
 }
+
+
 
 void dictionarylist_add_dictionary(char *name)
 {

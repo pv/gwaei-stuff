@@ -234,7 +234,7 @@ gboolean stream_results_thread (gpointer data)
 
 
     //Search engine for kanji and radicals
-    else if (dictionary_type != OTHER)
+    else if (dictionary_type == KANJI || dictionary_type == RADICALS)
     {
       gboolean missing_an_atom = FALSE;
       //Search for existance of every atom in the query

@@ -636,7 +636,7 @@ int rebuild_combobox_dictionary_list()
       if (di->status == INSTALLED)
       {
         if ((dictionarylist_dictionary_get_status_by_id (MIX) == INSTALLED &&
-            di->id != MIX &&
+            di->id != KANJI &&
             di->id != RADICALS                                               )||
            ((dictionarylist_dictionary_get_status_by_id (MIX) != INSTALLED )))
         {
