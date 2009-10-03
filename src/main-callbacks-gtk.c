@@ -987,6 +987,41 @@ G_MODULE_EXPORT void do_open_dictionary_folder(GtkWidget *widget, gpointer data)
 }
 
 
+G_MODULE_EXPORT gboolean drag_motion_1 (GtkWidget      *widget,
+                                        GdkDragContext *drag_context,
+                                        gint            x,
+                                        gint            y,
+                                        guint           time,
+                                        gpointer        user_data)
+{
+    gdk_drag_status (drag_context, GDK_ACTION_COPY, time);
+    gtk_drag_highlight (widget);
+    return TRUE;
+}
+
+
+G_MODULE_EXPORT void drag_leave_1 (GtkWidget      *widget,
+                                   GdkDragContext *drag_context,
+                                   guint           time,
+                                   gpointer        user_data) 
+{
+    gtk_drag_unhighlight (widget);
+}
+
+
+G_MODULE_EXPORT gboolean drag_drop_1 (GtkWidget      *widget,
+                                      GdkDragContext *drag_context,
+                                      gint            x,
+                                      gint            y,
+                                      guint           time,
+                                      gpointer        user_data)  
+{
+    GdkAtom target;
+    target = gtk_drag_dest_find_target (widget, drag_context, NULL);
+    gtk_drag_get_data (widget, drag_context, target, time);
+}
+
+
 G_MODULE_EXPORT void search_drag_data_recieved (GtkWidget        *widget,
                                                 GdkDragContext   *drag_context,
                                                 gint              x,
@@ -996,18 +1031,24 @@ G_MODULE_EXPORT void search_drag_data_recieved (GtkWidget        *widget,
                                                 guint             time,
                                                 gpointer          user_data    )
 {
-    GtkWidget *entry;
-    entry = GTK_WIDGET (widget);
+    if (strcmp (gtk_widget_get_name (widget), "search_entry") == 0)
+      return;
 
-    if ((data->length >= 0) && (data->format == 8))
+    GtkWidget *entry;
+    entry = GTK_WIDGET (search_entry);
+
+    char* text = gtk_selection_data_get_text (data);
+
+    if ((data->length >= 0) && (data->format == 8) && text != NULL)
     {
+      g_free (text);
+
       do_clear_search(entry, NULL);
       gtk_entry_set_text(GTK_ENTRY (entry), data->data);
       do_search(NULL, NULL);
 
       drag_context->action = GDK_ACTION_COPY;
       gtk_drag_finish(drag_context, TRUE, FALSE, time);
-      do_clear_search(entry, NULL);
     }
     else
     {

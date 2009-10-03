@@ -32,8 +32,8 @@
                     <child>
                       <object class="GtkImageMenuItem" id="edit_menuitem">
                         <property name="visible">True</property>
-                        <property name="related_action">file_edit_action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="related_action">file_edit_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </object>
@@ -41,8 +41,8 @@
                     <child>
                       <object class="GtkImageMenuItem" id="save_menuitem">
                         <property name="visible">True</property>
-                        <property name="related_action">file_append_action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="related_action">file_append_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="s" signal="activate" modifiers="GDK_CONTROL_MASK"/>
@@ -51,8 +51,8 @@
                     <child>
                       <object class="GtkImageMenuItem" id="save_as_menuitem">
                         <property name="visible">True</property>
-                        <property name="related_action">file_save_as_action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="related_action">file_save_as_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </object>
@@ -90,8 +90,8 @@
                     <child>
                       <object class="GtkImageMenuItem" id="print_menuitem">
                         <property name="visible">True</property>
-                        <property name="related_action">file_print_action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="related_action">file_print_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="p" signal="activate" modifiers="GDK_CONTROL_MASK"/>
@@ -105,8 +105,8 @@
                     <child>
                       <object class="GtkImageMenuItem" id="close_menuitem">
                         <property name="visible">True</property>
-                        <property name="related_action">file_close_action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="related_action">file_close_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="w" signal="activate" modifiers="GDK_CONTROL_MASK"/>
@@ -115,8 +115,8 @@
                     <child>
                       <object class="GtkImageMenuItem" id="quit_menuitem">
                         <property name="visible">True</property>
-                        <property name="related_action">file_quit_action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="related_action">file_quit_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="q" signal="activate" modifiers="GDK_CONTROL_MASK"/>
@@ -137,8 +137,8 @@
                     <child>
                       <object class="GtkImageMenuItem" id="cut_menuitem">
                         <property name="visible">True</property>
-                        <property name="related_action">edit_cut_action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="related_action">edit_cut_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="x" signal="activate" modifiers="GDK_CONTROL_MASK"/>
@@ -147,8 +147,8 @@
                     <child>
                       <object class="GtkImageMenuItem" id="copy_menuitem">
                         <property name="visible">True</property>
-                        <property name="related_action">edit_copy_action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="related_action">edit_copy_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="c" signal="activate" modifiers="GDK_CONTROL_MASK"/>
@@ -157,8 +157,8 @@
                     <child>
                       <object class="GtkImageMenuItem" id="paste_menuitem">
                         <property name="visible">True</property>
-                        <property name="related_action">edit_paste_action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="related_action">edit_paste_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="p" signal="activate" modifiers="GDK_CONTROL_MASK"/>
@@ -172,8 +172,8 @@
                     <child>
                       <object class="GtkImageMenuItem" id="select_all_menuitem">
                         <property name="visible">True</property>
-                        <property name="related_action">edit_select_all_action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="related_action">edit_select_all_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="a" signal="activate" modifiers="GDK_CONTROL_MASK"/>
@@ -187,8 +187,8 @@
                     <child>
                       <object class="GtkImageMenuItem" id="settings_menuitem">
                         <property name="visible">True</property>
-                        <property name="related_action">edit_settings_action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="related_action">edit_settings_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </object>
@@ -209,8 +209,8 @@
                     <child>
                       <object class="GtkCheckMenuItem" id="toolbar_toggle_menuitem">
                         <property name="visible">True</property>
-                        <property name="related_action">view_toggle_toolbar_action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="related_action">view_toggle_toolbar_action</property>
                       </object>
                     </child>
                     <child>
@@ -221,8 +221,8 @@
                     <child>
                       <object class="GtkImageMenuItem" id="zoom_in_menuitem">
                         <property name="visible">True</property>
-                        <property name="related_action">view_zoom_in_action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="related_action">view_zoom_in_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="plus" signal="activate" modifiers="GDK_CONTROL_MASK"/>
@@ -231,8 +231,8 @@
                     <child>
                       <object class="GtkImageMenuItem" id="zoom_out_menuitem">
                         <property name="visible">True</property>
-                        <property name="related_action">view_zoom_out_action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="related_action">view_zoom_out_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="minus" signal="activate" modifiers="GDK_CONTROL_MASK"/>
@@ -241,8 +241,8 @@
                     <child>
                       <object class="GtkImageMenuItem" id="zoom_100_menuitem">
                         <property name="visible">True</property>
-                        <property name="related_action">view_zoom_100_action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="related_action">view_zoom_100_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="0" signal="activate" modifiers="GDK_CONTROL_MASK"/>
@@ -256,8 +256,8 @@
                     <child>
                       <object class="GtkCheckMenuItem" id="less_relevant_results_toggle_menuitem">
                         <property name="visible">True</property>
-                        <property name="related_action">view_less_relevant_results_toggle_action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="related_action">view_less_relevant_results_toggle_action</property>
                       </object>
                     </child>
                   </object>
@@ -275,8 +275,8 @@
                     <child>
                       <object class="GtkImageMenuItem" id="kanjipad_menuitem">
                         <property name="visible">True</property>
-                        <property name="related_action">insert_kanjipad_action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="related_action">insert_kanjipad_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="k" signal="activate" modifiers="GDK_CONTROL_MASK"/>
@@ -285,8 +285,8 @@
                     <child>
                       <object class="GtkImageMenuItem" id="radicals_menuitem">
                         <property name="visible">True</property>
-                        <property name="related_action">insert_radicals_action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="related_action">insert_radicals_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="r" signal="activate" modifiers="GDK_CONTROL_MASK"/>
@@ -300,8 +300,8 @@
                     <child>
                       <object class="GtkImageMenuItem" id="word_boundary_menuitem">
                         <property name="visible">True</property>
-                        <property name="related_action">insert_word_boundary_action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="related_action">insert_word_boundary_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="b" signal="activate" modifiers="GDK_CONTROL_MASK"/>
@@ -310,8 +310,8 @@
                     <child>
                       <object class="GtkImageMenuItem" id="non_word_boundary_enuitem">
                         <property name="visible">True</property>
-                        <property name="related_action">insert_non_word_boundary_action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="related_action">insert_non_word_boundary_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="b" signal="activate" modifiers="GDK_SHIFT_MASK | GDK_CONTROL_MASK"/>
@@ -320,8 +320,8 @@
                     <child>
                       <object class="GtkImageMenuItem" id="unkown_character_menuitem">
                         <property name="visible">True</property>
-                        <property name="related_action">insert_unknown_character_action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="related_action">insert_unknown_character_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </object>
@@ -329,15 +329,15 @@
                     <child>
                       <object class="GtkMenuItem" id="and_menuitem">
                         <property name="visible">True</property>
-                        <property name="related_action">insert_and_action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="related_action">insert_and_action</property>
                       </object>
                     </child>
                     <child>
                       <object class="GtkMenuItem" id="or_menuitem">
                         <property name="visible">True</property>
-                        <property name="related_action">insert_or_action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="related_action">insert_or_action</property>
                       </object>
                     </child>
                     <child>
@@ -348,8 +348,8 @@
                     <child>
                       <object class="GtkImageMenuItem" id="clear_menuitem">
                         <property name="visible">True</property>
-                        <property name="related_action">insert_clear_action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="related_action">insert_clear_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="l" signal="activate" modifiers="GDK_CONTROL_MASK"/>
@@ -370,8 +370,8 @@
                     <child>
                       <object class="GtkImageMenuItem" id="back_menuitem">
                         <property name="visible">True</property>
-                        <property name="related_action">history_back_action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="related_action">history_back_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="Left" signal="activate" modifiers="GDK_MOD1_MASK"/>
@@ -380,8 +380,8 @@
                     <child>
                       <object class="GtkImageMenuItem" id="forward_menuitem">
                         <property name="visible">True</property>
-                        <property name="related_action">history_forward_action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="related_action">history_forward_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="Right" signal="activate" modifiers="GDK_MOD1_MASK"/>
@@ -407,8 +407,8 @@
                     <child>
                       <object class="GtkImageMenuItem" id="help_menuitem">
                         <property name="visible">True</property>
-                        <property name="related_action">help_program_action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="related_action">help_program_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </object>
@@ -421,8 +421,8 @@
                     <child>
                       <object class="GtkMenuItem" id="glossary_menuitem">
                         <property name="visible">True</property>
-                        <property name="related_action">help_glossary_action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="related_action">help_glossary_action</property>
                       </object>
                     </child>
                     <child>
@@ -433,8 +433,8 @@
                     <child>
                       <object class="GtkImageMenuItem" id="about_menuitem">
                         <property name="visible">True</property>
-                        <property name="related_action">help_about_action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="related_action">help_about_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </object>
@@ -682,11 +682,10 @@
                     <property name="max_length">50</property>
                     <property name="caps_lock_warning">False</property>
                     <signal name="changed" handler="do_update_button_states_based_on_entry_text"/>
-                    <signal name="key_press_event" handler="do_focus_change_on_key_press"/>
                     <signal name="icon_release" handler="do_clear_search"/>
+                    <signal name="key_press_event" handler="do_focus_change_on_key_press"/>
                     <signal name="focus_in_event" handler="do_update_clipboard_on_focus_change"/>
                     <signal name="activate" handler="do_search"/>
-                    <signal name="drag_data_received" handler="search_drag_data_recieved"/>
                   </object>
                 </child>
               </object>
@@ -769,16 +768,23 @@
                           <object class="GtkTextView" id="results_text_view">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
+                            <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_STRUCTURE_MASK</property>
                             <property name="editable">False</property>
                             <property name="wrap_mode">word</property>
+                            <property name="justification">fill</property>
                             <property name="left_margin">10</property>
                             <property name="right_margin">10</property>
                             <property name="cursor_visible">False</property>
+                            <property name="buffer">textbuffer1</property>
+                            <signal name="drag_motion" handler="drag_motion_1"/>
+                            <signal name="focus_in_event" handler="do_update_clipboard_on_focus_change" object="results_text_view"/>
                             <signal name="button_press_event" handler="do_get_position_for_button_press"/>
                             <signal name="motion_notify_event" handler="do_get_iter_for_motion"/>
-                            <signal name="key_press_event" handler="do_focus_change_on_key_press"/>
-                            <signal name="focus_in_event" handler="do_update_clipboard_on_focus_change" object="results_text_view"/>
+                            <signal name="drag_drop" handler="drag_drop_1"/>
                             <signal name="button_release_event" handler="do_get_iter_for_button_release"/>
+                            <signal name="drag_leave" handler="drag_leave_1"/>
+                            <signal name="drag_data_received" handler="search_drag_data_recieved"/>
+                            <signal name="key_press_event" handler="do_focus_change_on_key_press"/>
                           </object>
                         </child>
                       </object>
@@ -863,9 +869,13 @@
                             <property name="left_margin">5</property>
                             <property name="right_margin">5</property>
                             <property name="cursor_visible">False</property>
+                            <signal name="drag_leave" handler="drag_leave_1"/>
+                            <signal name="drag_motion" handler="drag_motion_1"/>
                             <signal name="key_press_event" handler="do_focus_change_on_key_press"/>
+                            <signal name="drag_drop" handler="drag_drop_1"/>
                             <signal name="focus_in_event" handler="do_update_clipboard_on_focus_change" object="kanji_text_view"/>
                             <signal name="copy_clipboard" handler="do_copy"/>
+                            <signal name="drag_data_received" handler="search_drag_data_recieved"/>
                           </object>
                         </child>
                       </object>
@@ -1170,4 +1180,5 @@
       <column type="gchararray"/>
     </columns>
   </object>
+  <object class="GtkTextBuffer" id="textbuffer1"/>
 </interface>
