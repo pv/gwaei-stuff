@@ -321,6 +321,7 @@ static void *install_thread (gpointer dictionary)
     {
       gdk_threads_enter();
       di->status = INSTALLED;
+      di->total_lines =  gwaei_io_get_total_lines_for_path (di->path);
       gwaei_ui_set_install_line_status(name, "remove", NULL);
       gdk_threads_leave();
     }

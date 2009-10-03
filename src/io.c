@@ -405,7 +405,7 @@ gboolean gwaei_io_split_places_from_names_dictionary (char *spath, char *npath, 
 }
 
 
-gwaei_io_gunzip_dictionary_file(char *path, GError **error)
+gboolean gwaei_io_gunzip_dictionary_file(char *path, GError **error)
 {
     GQuark quark;
     quark = g_quark_from_string (GWAEI_GENERIC_ERROR);
@@ -431,4 +431,20 @@ gwaei_io_gunzip_dictionary_file(char *path, GError **error)
 
     return success;
 } 
+
+
+int gwaei_io_get_total_lines_for_path (char *path)
+{
+    //Calculate the number of lines in the dictionary
+    char line[MAX_LINE];
+    int total_lines = 0;
+    FILE *fd = fopen (path, "r");
+    if (fd != NULL)
+    {
+      while (fgets(line, MAX_LINE, fd) != NULL)
+        total_lines++;
+      fclose(fd);
+    }
+    return total_lines;
+}
 

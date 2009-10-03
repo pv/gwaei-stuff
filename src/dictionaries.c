@@ -103,16 +103,8 @@ DictionaryInfo* dictionaryinfo_new (char *name)
     remaining -= strlen(temp->gz_path);
     strncat(temp->gz_path, ".gz", remaining);
 
-    //Calculate the number of lines in the dictionary
-    char line[MAX_LINE];
-    temp->total_lines = 0;
-    FILE *fd = fopen (temp->path, "r");
-    if (fd != NULL)
-    {
-      while (fgets(line, MAX_LINE, fd) != NULL)
-        temp->total_lines++;
-      fclose(fd);
-    }
+    //Update the line count
+    temp->total_lines =  gwaei_io_get_total_lines_for_path (temp->path);
 
     //Create id (to show special built in dictionaries)
     if      (strcmp(name, "English") == 0)
@@ -183,7 +175,7 @@ DictionaryInfo* dictionaryinfo_new (char *name)
 }
 
 
-void dictionaryitem_free(DictionaryInfo* di)
+void dictionaryinfo_free(DictionaryInfo* di)
 {
     free(di);
     di = NULL;
@@ -238,7 +230,7 @@ void dictionarylist_remove_first()
     GList *list;
     list = dictionaries->list;
 
-    dictionaryitem_free(list->data);
+    dictionaryinfo_free(list->data);
     list = g_list_delete_link(list, list);
 }
 
@@ -247,6 +239,8 @@ dictionarylist_free()
 {
     while (dictionaries->list != NULL)
       dictionarylist_remove_first();
+
+    dictionaries = NULL;
 }
 
 
@@ -402,6 +396,7 @@ int gwaei_dictionaries_initialize_dictionary_list()
 
     dictionaries = dictionarylist_new();
        
+    //Dictionaries having to do with gui elements
     dictionarylist_add_dictionary ("English");
     dictionarylist_add_dictionary ("Mix");
     dictionarylist_add_dictionary ("Kanji");
@@ -465,7 +460,10 @@ static gboolean create_mix_dictionary()
     ret = gwaei_io_create_mix_dictionary(mpath, kpath, rpath);
    
     if (ret)
+    {
       mix->status = INSTALLED;
+      mix->total_lines =  gwaei_io_get_total_lines_for_path (mix->path);
+    }
     else
       mix->status = ERRORED;
 
@@ -508,7 +506,9 @@ static gboolean split_places_from_names_dictionary(GError **error)
     {
       g_remove(source);
       di_places->status = INSTALLED;
+      di_places->total_lines =  gwaei_io_get_total_lines_for_path (di_places->path);
       di_names->status  = INSTALLED;
+      di_names->total_lines =  gwaei_io_get_total_lines_for_path (di_names->path);
     }
     else
     {

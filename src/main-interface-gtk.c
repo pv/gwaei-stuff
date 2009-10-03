@@ -319,11 +319,12 @@ void initialize_window_attributes(char* window_id)
     if (strcmp(window_id, "main_window") == 0 &&
         x == 0 && y == 0                        )
     {
+      int half_width, half_height;
       gtk_window_get_size(GTK_WINDOW (window), &width, &height);
-      int half_width = (gdk_screen_width() / 2) - (width / 2);
-      int half_height =  (gdk_screen_height() / 2) - (height / 2);
-    printf("%d %d %d %d\n", x, y, width, height);
+      half_width = (gdk_screen_width() / 2) - (width / 2);
+      half_height =  (gdk_screen_height() / 2) - (height / 2);
       gtk_window_move(GTK_WINDOW(window), half_width, half_height);
+      printf(gettext("Looks like this may be your initial install.  I'm just going to center this window for ya.  You can thank me later %d %d\n"), x, y);
     }
 }
 
@@ -598,7 +599,6 @@ int rebuild_combobox_dictionary_list()
     list_store = GTK_LIST_STORE (gtk_builder_get_object (builder, id));
     GtkTreeIter iter;
 
-    GList* dictionaries = dictionarylist_get_list ();
     GSList* group = NULL;
     DictionaryInfo *di;
     GtkAccelGroup* accel_group = gtk_accel_group_new();
@@ -629,6 +629,7 @@ int rebuild_combobox_dictionary_list()
     char name[MAX_NAME];
 
     //Start filling in the new items
+    GList* dictionaries = dictionarylist_get_list ();
     while (dictionaries != NULL)
     {
       di = dictionaries->data;
