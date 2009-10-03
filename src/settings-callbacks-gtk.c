@@ -399,7 +399,6 @@ G_MODULE_EXPORT void do_color_reset_for_swatches (GtkWidget *widget, gpointer da
     strcat(key, "/highlighting/");
     key_ptr = &key[strlen(key)];
 
-    char *string;
     char fallback[100];
     int i;
 
@@ -416,7 +415,7 @@ G_MODULE_EXPORT void do_color_reset_for_swatches (GtkWidget *widget, gpointer da
     {
       strcpy(key_ptr, key_id[i]);
       gwaei_util_strncpy_fallback_from_key (fallback, key, 100);
-      string = gwaei_pref_get_default_string (key, fallback);
+      const char *string = gwaei_pref_get_default_string (key, fallback);
       if (string != NULL)
         gwaei_pref_set_string (key, string);
     }
@@ -550,8 +549,7 @@ G_MODULE_EXPORT void do_dictionary_source_reset(GtkWidget *widget, gpointer data
     strcat (key, name);
     strcat (key, "_source");
 
-    char *string;
-    string = gwaei_pref_get_default_string (key, NULL);
+    const char *string = gwaei_pref_get_default_string (key, NULL);
     if (string != NULL)
       gwaei_pref_set_string (key, string);
 }

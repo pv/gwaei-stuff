@@ -170,6 +170,10 @@ char* gwaei_pref_get_string (char *output, char *key, char* backup, int n)
       return_value = NULL;
       strncpy(output, backup, n);
     }
+    else if (return_value == NULL)
+    {
+      strncpy(output, backup, n);
+    }
     else
     {
       strncpy(output, return_value, n);
@@ -179,7 +183,6 @@ char* gwaei_pref_get_string (char *output, char *key, char* backup, int n)
 
     return return_value;
 }
-
 
 const char* gwaei_pref_get_default_string (char *key, char* backup)
 {
@@ -206,12 +209,13 @@ const char* gwaei_pref_get_default_string (char *key, char* backup)
     return return_value;
 }
 
+
 const char* gwaei_pref_free_string (char *sting)
 {
     
 }
 
-void gwaei_pref_set_string (char *key, char* request)
+void gwaei_pref_set_string (char *key, const char* request)
 {
     GConfClient *client;
     client = gconf_client_get_default ();
