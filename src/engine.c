@@ -184,18 +184,18 @@ void append_stored_result_to_output(SearchItem *item, GList **results)
 int get_relevance (char* text, SearchItem *item) {
     int i;
 
-    //The search results is freakin' gold :-D
+    //Check for at least medium relevance
     for (i = 0; i < item->total_re; i++)
-      if (regexec(&(item->re_relevance_high[i]), text, 1, NULL, 0) == 0)
-        return HIGH_RELEVANCE;
+      if (regexec(&(item->re_relevance_medium[i]), text, 1, NULL, 0) != 0)
+        return LOW_RELEVANCE;
 
-    //Blarg.  A search result that may come in useful. :-)
+    //Check for at least high relevance
     for (i = 0; i < item->total_re; i++)
-      if (regexec(&(item->re_relevance_medium[i]), text, 1, NULL, 0) == 0)
+      if (regexec(&(item->re_relevance_high[i]), text, 1, NULL, 0) != 0)
         return MEDIUM_RELEVANCE;
 
-    //Search result wasn't relevent. :-(
-    return LOW_RELEVANCE;
+    //Return high
+    return HIGH_RELEVANCE;
 }
 
 
