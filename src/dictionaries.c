@@ -247,17 +247,8 @@ dictionarylist_free()
 }
 
 
-//This will replace get_dictionary_by_name when approprate
-DictionaryInfo* dictionarylist_get_dictionary_by_alias(const char* request)
+DictionaryInfo* dictionarylist_get_dictionary_by_name (const char* request)
 {
-    char name[MAX_DICTIONARY];
-
-    if ((strcmp (request, "Radicals") == 0 || strcmp (request, "Kanji") == 0) &&
-         dictionarylist_dictionary_get_status_by_id (MIX) == INSTALLED )
-      strncpy (name, "Mix", MAX_DICTIONARY);
-    else 
-      strncpy (name, request, MAX_DICTIONARY);
-
     GList *current;
     current = dictionaries->list;
     DictionaryInfo *di;
@@ -266,10 +257,8 @@ DictionaryInfo* dictionarylist_get_dictionary_by_alias(const char* request)
     while (current != NULL)
     {
       di = (DictionaryInfo*) current->data;
-
-      if (strcmp (di->name, name) == 0)
+      if (strcmp (di->name, request) == 0)
         break;
-
       current = current->next;
       di = NULL;
     }
@@ -278,33 +267,13 @@ DictionaryInfo* dictionarylist_get_dictionary_by_alias(const char* request)
 }
 
 
-DictionaryInfo* dictionarylist_get_dictionary_by_name(const char* request)
+DictionaryInfo* dictionarylist_get_dictionary_by_alias (const char* request)
 {
-    char name[MAX_DICTIONARY];
-
     if ((strcmp (request, "Radicals") == 0 || strcmp (request, "Kanji") == 0) &&
          dictionarylist_dictionary_get_status_by_id (MIX) == INSTALLED )
-      strncpy (name, "Mix", MAX_DICTIONARY);
+      return dictionarylist_get_dictionary_by_name ("Mix");
     else 
-      strncpy (name, request, MAX_DICTIONARY);
-
-    GList *current;
-    current = dictionaries->list;
-    DictionaryInfo *di;
-    di = NULL;
-
-    while (current != NULL)
-    {
-      di = (DictionaryInfo*) current->data;
-
-      if (strcmp (di->name, name) == 0)
-        break;
-
-      current = current->next;
-      di = NULL;
-    }
-
-    return di;
+      return dictionarylist_get_dictionary_by_name (request);
 }
 
 
@@ -443,15 +412,15 @@ int gwaei_dictionaries_initialize_dictionary_list()
 static gboolean create_mix_dictionary()
 {
     DictionaryInfo* mix;
-    mix = dictionarylist_get_dictionary_by_name("Mix");
+    mix = dictionarylist_get_dictionary_by_alias("Mix");
 
     g_remove (mix->path);
     mix->status = NOT_INSTALLED;
 
     DictionaryInfo* kanji;
-    kanji = dictionarylist_get_dictionary_by_name("Kanji");
+    kanji = dictionarylist_get_dictionary_by_alias("Kanji");
     DictionaryInfo* radicals;
-    radicals = dictionarylist_get_dictionary_by_name("Radicals");
+    radicals = dictionarylist_get_dictionary_by_alias("Radicals");
 
     char *mpath = mix->path;
     char *kpath = kanji->path;
@@ -477,10 +446,10 @@ static gboolean create_mix_dictionary()
 static gboolean split_places_from_names_dictionary(GError **error)
 {
     DictionaryInfo* di_places;
-    di_places = dictionarylist_get_dictionary_by_name("Places");
+    di_places = dictionarylist_get_dictionary_by_alias("Places");
 
     DictionaryInfo* di_names;
-    di_names = dictionarylist_get_dictionary_by_name("Names");
+    di_names = dictionarylist_get_dictionary_by_alias("Names");
 
     if (di_names->status == NOT_INSTALLED) return FALSE;
 
@@ -529,7 +498,7 @@ static gboolean split_places_from_names_dictionary(GError **error)
 void dictionarylist_preform_postprocessing_by_name(char* name, GError **error)
 {
     DictionaryInfo* di;
-    di = dictionarylist_get_dictionary_by_name(name);
+    di = dictionarylist_get_dictionary_by_alias(name);
     if (di->status != INSTALLING && di->status != UPDATING && di->status != REBUILDING) return;
 
     int restore_status;
@@ -540,12 +509,12 @@ void dictionarylist_preform_postprocessing_by_name(char* name, GError **error)
     //Figure out whether to create the Mix dictionary
     if (strcmp(name, "Radicals") == 0)
     {
-      di = dictionarylist_get_dictionary_by_name("Kanji");
+      di = dictionarylist_get_dictionary_by_alias("Kanji");
       if (di->status == INSTALLED) create_mix_dictionary();
     }
     else if (strcmp(name, "Kanji") == 0)
     {
-      di = dictionarylist_get_dictionary_by_name("Radicals");
+      di = dictionarylist_get_dictionary_by_alias("Radicals");
       if (di->status == INSTALLED) create_mix_dictionary();
     }
     else if (strcmp(name, "Mix") == 0)

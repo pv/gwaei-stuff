@@ -4,6 +4,7 @@ src/gwaei
 src/waei
 Makefile
 src/.deps/*
+*.gmo
 
 
 #Files created by configure

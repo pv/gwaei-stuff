@@ -45,6 +45,22 @@ typedef struct DictionaryList DictionaryList;
 
 GList* dictionarylist_get_list (void);
 DictionaryInfo* dictionarylist_get_dictionary_by_id (int);
-DictionaryInfo* dictionarylist_get_dictionary_by_name (const char*);
 int dictionarylist_get_total (void);
 GList* dictionarylist_get_selected(void);
+
+
+DictionaryInfo* dictionarylist_get_dictionary_by_name (const char*);
+/*
+ *  Returns a dictionary in the DictionaryList by name.  Unlike
+ *  dictionarylist_get_dictionary_by_alias, it will alway return what you ask
+ *  for.  When the dictionary doesn't exist, it returns null.
+ */
+
+
+DictionaryInfo* dictionarylist_get_dictionary_by_alias(const char*);
+/*
+ *  Searches for a dictionary by a name in the DictionaryList.  When approprate
+ *  it will swap the requsted dictionary for another one.  This usally comes out
+ *  to swapping the Kanji dictionary for the Mixed one when it is present.  When
+ *  the dictionary is not found, it returns null.
+ */

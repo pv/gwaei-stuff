@@ -48,15 +48,15 @@ gboolean exact_switch = FALSE;
 void gwaei_console_uninstall_dictionary_by_name(char *name)
 {
     DictionaryInfo* di;
-    di = dictionarylist_get_dictionary_by_name(name);
+    di = dictionarylist_get_dictionary_by_name (name);
     if (di == NULL) return;
 
     gwaei_io_delete_dictionary_file(di);
     di->status = NOT_INSTALLED;
     di->load_position = -1;
 
-    if (di->id == MIX)
-      gwaei_console_uninstall_dictionary_by_name (name);
+    if (di->id == KANJI || di->id == RADICALS)
+      gwaei_console_uninstall_dictionary_by_name ("Mix");
     else if (di->id == NAMES)
       gwaei_console_uninstall_dictionary_by_name ("Places");
 }
@@ -65,7 +65,7 @@ void gwaei_console_uninstall_dictionary_by_name(char *name)
 gboolean gwaei_console_install_dictionary_by_name(char *name)
 {
     DictionaryInfo* di;
-    di = dictionarylist_get_dictionary_by_name(name);
+    di = dictionarylist_get_dictionary_by_alias(name);
 
     char *path = di->path;
     char *sync_path = di->sync_path;
@@ -345,7 +345,7 @@ void initialize_console_interface(int argc, char **argv)
   char query[MAX_QUERY];
 
   DictionaryInfo *di;
-  di = dictionarylist_get_dictionary_by_name("English");
+  di = dictionarylist_get_dictionary_by_alias("English");
 
   char *args[argc];
   int total_args;
@@ -369,7 +369,7 @@ void initialize_console_interface(int argc, char **argv)
     else if (is_switch (argv[i], "-d", "--dictionary"))
     {
       i++;
-      di = dictionarylist_get_dictionary_by_name(argv[i]);
+      di = dictionarylist_get_dictionary_by_alias(argv[i]);
     }
 
     else
@@ -410,7 +410,7 @@ void initialize_console_interface(int argc, char **argv)
   {
     printf(gettext("%sTrying to install %s%s%s...%s"), "[1m", "[1;31m", args[1], "[0m[1m", "\n[0m");
 
-    di = dictionarylist_get_dictionary_by_name(args[1]);
+    di = dictionarylist_get_dictionary_by_alias(args[1]);
 
     if (di != NULL && di->status != NOT_INSTALLED && di->gckey[0] != '\0')
     {

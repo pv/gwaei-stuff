@@ -459,7 +459,7 @@ G_MODULE_EXPORT void do_dictionary_install (GtkWidget *widget, gpointer data)
     gwaei_parse_widget_name(name, widget, TRUE);
 
     DictionaryInfo *dictionary;
-    dictionary = dictionarylist_get_dictionary_by_name (name);
+    dictionary = dictionarylist_get_dictionary_by_alias (name);
 
     //Create the thread
     if (g_thread_create(&install_thread, dictionary, FALSE, NULL) == NULL) {
@@ -592,7 +592,7 @@ G_MODULE_EXPORT void do_update_installed_dictionaries(GtkWidget *widget, gpointe
     gwaei_parse_widget_name(name, widget, TRUE);
 
     DictionaryInfo *dictionary;
-    dictionary = dictionarylist_get_dictionary_by_name (name);
+    dictionary = dictionarylist_get_dictionary_by_alias (name);
 
     //Create the thread
     if (g_thread_create(&update_thread, NULL, FALSE, NULL) == NULL) {
@@ -613,7 +613,7 @@ G_MODULE_EXPORT void do_force_names_resplit(GtkWidget *widget, gpointer data)
     GError *error = NULL;
 
     DictionaryInfo* di;
-    di = dictionarylist_get_dictionary_by_name("Names");
+    di = dictionarylist_get_dictionary_by_alias("Names");
 
     di->status = REBUILDING;
     dictionarylist_preform_postprocessing_by_name("Names", &error);
@@ -631,7 +631,7 @@ G_MODULE_EXPORT void do_force_mix_rebuild(GtkWidget *widget, gpointer data)
     GError *error = NULL;
 
     DictionaryInfo* di;
-    di = dictionarylist_get_dictionary_by_name("Mix");
+    di = dictionarylist_get_dictionary_by_alias("Mix");
 
     if (dictionarylist_dictionary_get_status_by_id (KANJI)    == INSTALLED &&
         dictionarylist_dictionary_get_status_by_id (RADICALS) == INSTALLED   )
