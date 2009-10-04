@@ -56,14 +56,9 @@ void gwaei_console_uninstall_dictionary_by_name(char *name)
     di->load_position = -1;
 
     if (di->id == MIX)
-    {
       gwaei_console_uninstall_dictionary_by_name (name);
-    }
-    if (di->id == NAMES)
-    {
+    else if (di->id == NAMES)
       gwaei_console_uninstall_dictionary_by_name ("Places");
-      gwaei_console_uninstall_dictionary_by_name ("Names");
-    }
 }
 
 
