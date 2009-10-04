@@ -514,7 +514,7 @@ void strcpy_with_kanji_formatting(char *output, char *input)
     //Test if the radicals information is present
     if(g_utf8_get_char(input_ptr) > 3040)
     {
-      strcat(output, gettext("Radicals: "));
+      strcat(output, gettext("Radicals:"));
       output_ptr = &output[strlen(output)];
       while(g_utf8_get_char(input_ptr) > 3040 || g_utf8_get_char(input_ptr) == L' ')
       {
@@ -543,6 +543,7 @@ void strcpy_with_kanji_formatting(char *output, char *input)
     strcat(output, jplt);
 
     strcat(output, "\n");
+    strcat(output, gettext("Readings:"));
 
     //correct the positioning of the pointers
     while (g_utf8_get_char(input_ptr) < 3041 && *input_ptr != '\0')
@@ -559,14 +560,14 @@ void strcpy_with_kanji_formatting(char *output, char *input)
       //The strange T1 character between kana readings
       if (*input_ptr == 'T' && *(input_ptr + 1) == '1') {
         input_ptr = input_ptr + 3;
-        *output_ptr = '\n';
-        output_ptr++;
       }
       //Add a carrage return before the english translations
       else if (g_utf8_get_char(g_utf8_prev_char(input_ptr)) >= 3041 && *(input_ptr + 1) == '{')
       {
-        *output_ptr = '\n';
-        output_ptr++;
+        *output_ptr = '\0';
+        strcat(output, "\n");
+        strcat(output, gettext("Meanings:"));
+        output_ptr = output_ptr + strlen(gettext("Meanings:")) + 1;
         input_ptr++;
       }
     }

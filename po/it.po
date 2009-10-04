@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2009-10-04 17:18-0400\n"
+"POT-Creation-Date: 2009-10-04 18:16-0400\n"
 "PO-Revision-Date: 2009-10-03 15:48+0100\n"
 "Last-Translator: Fabrizio Sabatini <jecnua@gmail.com>\n"
 "Language-Team: Not Applicable\n"
@@ -31,9 +31,18 @@ msgstr "Freq:"
 msgid "JLPT:"
 msgstr "JLPT:"
 
-#: src/formatting.c:517
-msgid "Radicals: "
-msgstr "Radicali: "
+#: src/formatting.c:517 src/xml/settings.glade:1608
+msgid "Radicals:"
+msgstr "Radicali:"
+
+#: src/formatting.c:546
+#, fuzzy
+msgid "Readings:"
+msgstr "Radicali:"
+
+#: src/formatting.c:569 src/formatting.c:570
+msgid "Meanings:"
+msgstr ""
 
 #: src/main-interface-console.c:97
 msgid "Coping file..."
@@ -503,7 +512,7 @@ msgstr "_Cicla in Alto"
 msgid "Cycle _Down"
 msgstr "Cicla in _Basso"
 
-#: src/main-interface-gtk.c:1717 src/engine.c:410
+#: src/main-interface-gtk.c:1717 src/engine.c:411
 msgid "No results found!"
 msgstr "Nessun risultato trovato!"
 
@@ -1221,10 +1230,6 @@ msgstr "Kanji:"
 msgid "Names:"
 msgstr "Nomi:"
 
-#: src/xml/settings.glade:1608
-msgid "Radicals:"
-msgstr "Radicali:"
-
 #: src/xml/settings.glade:1635
 msgid "Where can I get other dictionaries?"
 msgstr "Dove posso trovare altri dizionari?"
@@ -1328,6 +1333,9 @@ msgstr "gWaei Kanjipad"
 #: src/kanjipad/kanjipad.glade:75
 msgid "_Annotate Strokes"
 msgstr "Tratti _Annotati"
+
+#~ msgid "Radicals: "
+#~ msgstr "Radicali: "
 
 #~ msgid "Removing %s dictionary..."
 #~ msgstr "Rimuovo il dizionario %s..."

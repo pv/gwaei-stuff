@@ -278,6 +278,7 @@ gboolean stream_results_thread (gpointer data)
             case HIGH_RELEVANCE:
                 item->total_relevant_results++;
                 item->total_results++;
+                append_more_relevant_header_to_output(item);
                 gwaei_ui_update_total_results_label(item);
                 if (dictionary_type == KANJI)
                   strcpy_with_kanji_formatting(item->output, item->input);

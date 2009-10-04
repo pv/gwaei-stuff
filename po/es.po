@@ -29,7 +29,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 0.15.1\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2009-10-04 17:18-0400\n"
+"POT-Creation-Date: 2009-10-04 18:16-0400\n"
 "PO-Revision-Date: 2009-03-01 14:45-0500\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -54,9 +54,18 @@ msgstr "Freq:"
 msgid "JLPT:"
 msgstr "JLPT:"
 
-#: src/formatting.c:517
-msgid "Radicals: "
-msgstr "Radicales: "
+#: src/formatting.c:517 src/xml/settings.glade:1608
+msgid "Radicals:"
+msgstr "Radicales:"
+
+#: src/formatting.c:546
+#, fuzzy
+msgid "Readings:"
+msgstr "Radicales:"
+
+#: src/formatting.c:569 src/formatting.c:570
+msgid "Meanings:"
+msgstr ""
 
 #: src/main-interface-console.c:97
 msgid "Coping file..."
@@ -538,7 +547,7 @@ msgstr ""
 msgid "Cycle _Down"
 msgstr ""
 
-#: src/main-interface-gtk.c:1717 src/engine.c:410
+#: src/main-interface-gtk.c:1717 src/engine.c:411
 msgid "No results found!"
 msgstr "¡No se han encontrado resultados!"
 
@@ -1276,10 +1285,6 @@ msgstr "Kanji:"
 msgid "Names:"
 msgstr "Nombres:"
 
-#: src/xml/settings.glade:1608
-msgid "Radicals:"
-msgstr "Radicales:"
-
 #: src/xml/settings.glade:1635
 msgid "Where can I get other dictionaries?"
 msgstr "¿Dónde puedo encontrar otros diccionarios?"
@@ -1383,6 +1388,9 @@ msgstr "gWaei Kanjipad"
 #: src/kanjipad/kanjipad.glade:75
 msgid "_Annotate Strokes"
 msgstr "_Anotar Trazos"
+
+#~ msgid "Radicals: "
+#~ msgstr "Radicales: "
 
 #, fuzzy
 #~ msgid "Removing %s dictionary..."

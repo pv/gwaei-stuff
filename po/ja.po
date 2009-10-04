@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2009-10-04 17:18-0400\n"
+"POT-Creation-Date: 2009-10-04 18:16-0400\n"
 "PO-Revision-Date: 2008-11-30 02:35+0500\n"
 "Last-Translator: Zachary Dovel pizzach@gmail.com\n"
 "Language-Team: Not Applicable\n"
@@ -17,23 +17,31 @@ msgstr ""
 
 #: src/formatting.c:473
 msgid "Grade:"
-msgstr "Grade:"
+msgstr "段階:"
 
 #: src/formatting.c:479
 msgid "Stroke:"
-msgstr "Stroke:"
+msgstr "画数:"
 
 #: src/formatting.c:485
 msgid "Freq:"
-msgstr "Freq:"
+msgstr "頻数:"
 
 #: src/formatting.c:491
 msgid "JLPT:"
 msgstr "JLPT:"
 
-#: src/formatting.c:517
-msgid "Radicals: "
-msgstr "Radicals: "
+#: src/formatting.c:517 src/xml/settings.glade:1608
+msgid "Radicals:"
+msgstr "部首:"
+
+#: src/formatting.c:546
+msgid "Readings:"
+msgstr "読み:"
+
+#: src/formatting.c:569 src/formatting.c:570
+msgid "Meanings:"
+msgstr "意味:"
 
 #: src/main-interface-console.c:97
 msgid "Coping file..."
@@ -493,7 +501,7 @@ msgstr "循環させる(_C)"
 msgid "Cycle _Down"
 msgstr "逆循環させる(_D)"
 
-#: src/main-interface-gtk.c:1717 src/engine.c:410
+#: src/main-interface-gtk.c:1717 src/engine.c:411
 msgid "No results found!"
 msgstr "検討がありません!"
 
@@ -1174,10 +1182,6 @@ msgstr "漢字:"
 msgid "Names:"
 msgstr "名前:"
 
-#: src/xml/settings.glade:1608
-msgid "Radicals:"
-msgstr "部首:"
-
 #: src/xml/settings.glade:1635
 msgid "Where can I get other dictionaries?"
 msgstr "何処で他の辞書を会得する事ができるでしょか?"
@@ -1281,6 +1285,9 @@ msgstr "gWaei 漢字パッド"
 #: src/kanjipad/kanjipad.glade:75
 msgid "_Annotate Strokes"
 msgstr "画数付き(_A)"
+
+#~ msgid "Radicals: "
+#~ msgstr "Radicals: "
 
 #~ msgid "Removing %s dictionary..."
 #~ msgstr "%sの辞書を削除中..."

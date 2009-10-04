@@ -1624,11 +1624,11 @@ void gwaei_ui_add_results_tagging ( gint sl, gint el, SearchItem* item )
           desc_eo = co;
 
           char *temp_c = c;
-          char temp_offset = co;
-          while (  (temp_c - 1) != text && *(temp_c - 1) != ' ' &&
-                  *(temp_c - 1) != '\n' &&   temp_offset > 0        )
+          int temp_offset = co;
+          while (  (temp_c) > text && *(g_utf8_prev_char(temp_c)) != ' ' &&
+                  *(g_utf8_prev_char(temp_c)) != '\n' &&   temp_offset > 0        )
           {
-            temp_c--;
+            temp_c = g_utf8_prev_char(temp_c);
             temp_offset--;
           }
 
