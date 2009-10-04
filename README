@@ -58,7 +58,7 @@ TABLE OF CONTENTS
 
 2.0 CONFIGURATION AND INSTALLATION:
 
-  When configurating, the two most important variables for this program are
+  When configuring, the two most important variables for this program are
   prefix and sysconfdir.  The sysconfdir will decide where the gconf schemas
   will be installed.  This is normally in /etc/gconf/schemas.  For Debian users,
   it's /usr/gconf/schemas.  BSDs tend to use /usr/pkg/gconf/schemas.  If you
@@ -97,18 +97,22 @@ TABLE OF CONTENTS
 
 4.0 MAKING AN RPM PACKAGE:
 
+  You will need to have the rpmbuilder executable available before proceeding.
+  On some architectures it is included with the rpm package itself.  On others
+  you will need to install the rpm-build package.
+  
   If you are not using i386 as your archtecture, you should switch it in
-  configure.ac beforehand. You will then need to configure the installer with
-  You will need to configure the installer first with any needed options using
-  "./configure". It will do the work of setting up the spec file correctly for
-  you.  Then run "make rpm" to actually build the rpm for your architecture. The
-  newly created rpm will appear at the base of the gwaei folder.
+  configure.ac beforehand. You will need to configure the installer with any
+  needed options using "./configure". It will do the work of setting up the
+  spec file correctly for you.  Then run "make rpm" to actually build the rpm
+  for your architecture. The newly created rpm will appear at the base of the
+  gwaei folder.
 
   Most users will get their rpm by doing something similar to this:
     $ ./configure --prefix /usr --sysconf /etc
     $ make rpm
 
-  If you are lazy, you can also use a shortcut for Fedroa:
+  If you are lazy, you can also use a shortcut for Fedora:
     $ ./configure
     $ make fedora-rpm
 
@@ -132,7 +136,9 @@ TABLE OF CONTENTS
     make
     make install
 
-  That's it.
+  That's it.  If someone wants to help sort out the final issues with getting
+  the program running on Windows, please feel free to get in contact with
+  one of the developers on the gWaei homepage.
 
 
 END
