@@ -362,7 +362,7 @@ void strcpy_with_query_formatting( char* output,     char* input,
       *output_ptr = '\0';
 
       //copy the English search atom
-      if (locate_boundary_byte_pointers(input, "[A-Za-z][a-z ]{2,20}", &s, &e))
+      if (locate_boundary_byte_pointers(input, "[A-Za-z][a-z ]{1,20}", &s, &e))
       {
         while(s != e)
         {

@@ -201,194 +201,197 @@ int get_relevance (char* text, SearchItem *item) {
 
 gboolean stream_results_thread (gpointer data)
 {
-  SearchItem *item = data;
-  char *dictionary = item->dictionary->name;
-  int dictionary_type = item->dictionary->type;
-  int chunk = 0;
+    SearchItem *item = data;
+    char *dictionary = item->dictionary->name;
+    int dictionary_type = item->dictionary->type;
+    int chunk = 0;
 
-  //We loop, processing lines of the file until the max chunk size has been
-  //reached or we reach the end of the file or a cancel request is recieved.
-  while (chunk < MAX_CHUNK               &&
-         item->status != GWAEI_SEARCH_CANCELING &&
-         fgets(item->input, MAX_LINE, item->fd) != NULL)
-  {
-    chunk++;
-    item->current_line++;
-
-
-    //Commented input in the dictionary...we should skip over it
-    if(item->input[0] == '#' || g_utf8_get_char(item->input) == L'？') 
-    { } 
-
-
-    //Search engine for the kanji sidebar 
-    else if (item->target == GWAEI_TARGET_KANJI)
+    //We loop, processing lines of the file until the max chunk size has been
+    //reached or we reach the end of the file or a cancel request is recieved.
+    while (chunk < MAX_CHUNK               &&
+           item->status != GWAEI_SEARCH_CANCELING &&
+           fgets(item->input, MAX_LINE, item->fd) != NULL)
     {
-      if (regexec(&(item->re_exist[0]), item->input, 1, NULL, 0) == 0)
+      chunk++;
+      item->current_line++;
+
+
+      //Commented input in the dictionary...we should skip over it
+      if(item->input[0] == '#' || g_utf8_get_char(item->input) == L'？') 
+      { } 
+
+
+      //Search engine for the kanji sidebar 
+      else if (item->target == GWAEI_TARGET_KANJI)
       {
-        strcpy_with_kanji_formatting(item->output, item->input);
-        item->output[strlen(item->output) - 1] = '\0';
-        append_result_to_output(item);
-        chunk = 0;
-      }
-    }
-
-
-    //Search engine for kanji and radicals
-    else if (dictionary_type == KANJI || dictionary_type == RADICALS)
-    {
-      gboolean missing_an_atom = FALSE;
-      //Search for existance of every atom in the query
-      int i;
-      for (i = 0; i < item->total_re && !missing_an_atom; i++)
-        if (regexec(&(item->re_exist[i]), item->input, 1, NULL, 0) != 0)
-          missing_an_atom = TRUE;
-
-      if (!missing_an_atom)
-      {
-        int relevance = get_relevance(item->input, item);
-        char *result = NULL;
-        switch(relevance)
+        if (regexec(&(item->re_exist[0]), item->input, 1, NULL, 0) == 0)
         {
-          case HIGH_RELEVANCE:
-              item->total_relevant_results++;
-              item->total_results++;
-              gwaei_ui_update_total_results_label(item);
-              if (dictionary_type == KANJI)
-                strcpy_with_kanji_formatting(item->output, item->input);
-              else
-                strcpy(item->output, item->input);
-              append_result_to_output(item);
-              break;
-          case MEDIUM_RELEVANCE:
-              item->total_irrelevant_results++;
-              if (result = (char*)malloc(MAX_LINE))
-              {
-                if (dictionary_type == KANJI)
-                  strcpy_with_kanji_formatting(result, item->input);
-                else
-                  strcpy_with_kanji_formatting(result, item->input);
-                item->results_medium =  g_list_append(item->results_medium, result);
-              }
-              break;
-          default:
-              item->total_irrelevant_results++;
-              if (result = (char*)malloc(MAX_LINE))
-              {
-                if (dictionary_type == KANJI)
-                  strcpy_with_kanji_formatting(result, item->input);
-                else
-                  strcpy(result, item->input);
-                item->results_low = g_list_append(item->results_low, result);
-              }
-              break;
+          strcpy_with_kanji_formatting(item->output, item->input);
+          item->output[strlen(item->output) - 1] = '\0';
+          append_result_to_output(item);
+          chunk = 0;
         }
       }
-    }
 
-    //Search engine for other dictionaries
-    else
-    {
-      //Search for existance of every atom in the query.
-      int i;
-      gboolean missing_an_atom = FALSE;
-      for(i = 0; i < item->total_re && !missing_an_atom; i++)
-        if (regexec(&(item->re_exist[i]), item->input, 1, NULL, 0) != 0)
-          missing_an_atom = TRUE;
 
-      //Results match, add to the text buffer
-      if (!missing_an_atom)
+      //Search engine for kanji and radicals
+      else if (dictionary_type == KANJI || dictionary_type == RADICALS)
       {
-        int relevance = get_relevance(item->input, item);
-        char *result = NULL;
-        switch(relevance)
+        gboolean missing_an_atom = FALSE;
+        //Search for existance of every atom in the query
+        int i;
+        for (i = 0; i < item->total_re && !missing_an_atom; i++)
+          if (regexec(&(item->re_exist[i]), item->input, 1, NULL, 0) != 0)
+            missing_an_atom = TRUE;
+
+        if (!missing_an_atom)
         {
-          case HIGH_RELEVANCE:
-              item->total_results++;
-              item->total_relevant_results++;
-              gwaei_ui_update_total_results_label(item);
-              add_group_formatting (item);
-              strcpy_with_general_formatting(item->input, item->output);
-              append_result_to_output(item);
-              break;
-          case MEDIUM_RELEVANCE:
-              if ( item->total_irrelevant_results < MAX_MEDIUM_IRRELIVENT_RESULTS &&
-                   (result = (char*)malloc(MAX_LINE)) )
-              {
+          int relevance = get_relevance(item->input, item);
+          char *result = NULL;
+          switch(relevance)
+          {
+            case HIGH_RELEVANCE:
+                item->total_relevant_results++;
+                item->total_results++;
+                gwaei_ui_update_total_results_label(item);
+                if (dictionary_type == KANJI)
+                  strcpy_with_kanji_formatting(item->output, item->input);
+                else
+                  strcpy(item->output, item->input);
+                append_result_to_output(item);
+                break;
+            case MEDIUM_RELEVANCE:
                 item->total_irrelevant_results++;
-                strcpy_with_general_formatting(item->input, result);
-                item->results_medium =  g_list_append(item->results_medium, result);
-              }
-              break;
-          default:
-              if ( item->total_irrelevant_results < MAX_LOW_IRRELIVENT_RESULTS &&
-                   (result = (char*)malloc(MAX_LINE)))
-              {
+                if (result = (char*)malloc(MAX_LINE))
+                {
+                  if (dictionary_type == KANJI)
+                    strcpy_with_kanji_formatting(result, item->input);
+                  else
+                    strcpy_with_kanji_formatting(result, item->input);
+                  item->results_medium =  g_list_append(item->results_medium, result);
+                }
+                break;
+            default:
                 item->total_irrelevant_results++;
-                strcpy_with_general_formatting(item->input, result);
-                item->results_low = g_list_append(item->results_low, result);
-              }
-              break;
+                if (result = (char*)malloc(MAX_LINE))
+                {
+                  if (dictionary_type == KANJI)
+                    strcpy_with_kanji_formatting(result, item->input);
+                  else
+                    strcpy(result, item->input);
+                  item->results_low = g_list_append(item->results_low, result);
+                }
+                break;
+          }
         }
       }
+
+      //Search engine for other dictionaries
+      else
+      {
+        //Search for existance of every atom in the query.
+        int i;
+        gboolean missing_an_atom = FALSE;
+        for(i = 0; i < item->total_re && !missing_an_atom; i++)
+          if (regexec(&(item->re_exist[i]), item->input, 1, NULL, 0) != 0)
+            missing_an_atom = TRUE;
+
+        //Results match, add to the text buffer
+        if (!missing_an_atom)
+        {
+          int relevance = get_relevance(item->input, item);
+          char *result = NULL;
+          switch(relevance)
+          {
+            case HIGH_RELEVANCE:
+                item->total_results++;
+                item->total_relevant_results++;
+                gwaei_ui_update_total_results_label(item);
+                add_group_formatting (item);
+                strcpy_with_general_formatting(item->input, item->output);
+                append_result_to_output(item);
+                break;
+            case MEDIUM_RELEVANCE:
+                if ( item->total_irrelevant_results < MAX_MEDIUM_IRRELIVENT_RESULTS &&
+                     (result = (char*)malloc(MAX_LINE)) )
+                {
+                  item->total_irrelevant_results++;
+                  strcpy_with_general_formatting(item->input, result);
+                  item->results_medium =  g_list_append(item->results_medium, result);
+                }
+                break;
+            default:
+                if ( item->total_irrelevant_results < MAX_LOW_IRRELIVENT_RESULTS &&
+                     (result = (char*)malloc(MAX_LINE)))
+                {
+                  item->total_irrelevant_results++;
+                  strcpy_with_general_formatting(item->input, result);
+                  item->results_low = g_list_append(item->results_low, result);
+                }
+                break;
+          }
+        }
+      }
+      continue;
     }
-    continue;
-  }
 
-  //Update the progressbar
-  if (item->target == GWAEI_TARGET_RESULTS)
-    gwaei_ui_update_search_progressbar (item->current_line, item->dictionary->total_lines);
+    //Update the progressbar
+    if (item->target == GWAEI_TARGET_RESULTS)
+      gwaei_ui_update_search_progressbar (item->current_line, item->dictionary->total_lines);
 
-  //If the chunk reached the max chunk size, there is still file left to load
-  if ( chunk == MAX_CHUNK ) {
-    return TRUE;
-  }
-
-  //Insert the less relevant title header if needed
-  if ( less_relevant_results_show    &&
-       !less_relevant_title_inserted &&
-       item->total_relevant_results > 0    &&
-       (item->results_medium != NULL || item->results_low != NULL) )
-  {
-    append_less_relevant_header_to_output(item);
-    less_relevant_title_inserted = TRUE;
-  }
-
-  //Append the medium relevent results
-  if (item->results_medium != NULL) {
-    for (chunk = 0; item->results_medium != NULL && chunk < MAX_CHUNK; chunk++) {
-      item->total_results++;
-      append_stored_result_to_output(item, &(item->results_medium));
+    //If the chunk reached the max chunk size, there is still file left to load
+    if ( chunk == MAX_CHUNK ) {
+      return TRUE;
     }
-    gwaei_ui_update_total_results_label(item);
-    return TRUE;
-  }
 
-  //Append the least relevent results
-  if (item->results_low != NULL) {
-    for (chunk = 0; item->results_low != NULL && chunk < MAX_CHUNK; chunk++) {
-      item->total_results++;
-      append_stored_result_to_output(item, &(item->results_low));
-    }
-    gwaei_ui_update_total_results_label(item);
-    return TRUE;
-  }
-
-  if (item->total_results == 0 && item->target != GWAEI_TARGET_KANJI && item->status == GWAEI_SEARCH_SEARCHING)
-  {
-    if (gwaei_util_get_runmode () == GWAEI_CONSOLE_RUNMODE)
+    //Insert the less relevant title header if needed
+    if ( less_relevant_results_show    &&
+         !less_relevant_title_inserted &&
+         item->total_relevant_results > 0    &&
+         (item->results_medium != NULL || item->results_low != NULL) )
     {
-      printf("%s\n\n", gettext("No results found!"));
+      append_less_relevant_header_to_output(item);
+      less_relevant_title_inserted = TRUE;
     }
-    else
+
+    //Append the medium relevent results
+    if (item->results_medium != NULL) {
+      for (chunk = 0; item->results_medium != NULL && chunk < MAX_CHUNK; chunk++) {
+        item->total_results++;
+        append_stored_result_to_output(item, &(item->results_medium));
+      }
+      gwaei_ui_update_total_results_label(item);
+      return TRUE;
+    }
+
+    //Append the least relevent results
+    if (item->results_low != NULL) {
+      for (chunk = 0; item->results_low != NULL && chunk < MAX_CHUNK; chunk++) {
+        item->total_results++;
+        append_stored_result_to_output(item, &(item->results_low));
+      }
+      gwaei_ui_update_total_results_label(item);
+      return TRUE;
+    }
+
+    //Finish up
+    if (item->total_results == 0 &&
+        item->target != GWAEI_TARGET_KANJI &&
+        item->status == GWAEI_SEARCH_SEARCHING)
     {
-      gwaei_ui_clear_buffer_by_target (GWAEI_TARGET_RESULTS);
-      gwaei_ui_display_no_results_found_page();
+      if (gwaei_util_get_runmode () == GWAEI_CONSOLE_RUNMODE)
+      {
+        printf("%s\n\n", gettext("No results found!"));
+      }
+      else
+      {
+        gwaei_ui_clear_buffer_by_target (GWAEI_TARGET_RESULTS);
+        gwaei_ui_display_no_results_found_page();
+      }
+      item->results_found = FALSE;
     }
-    item->results_found = FALSE;
-  }
-  
-  return FALSE;
+    
+    return FALSE;
 }
 
 
