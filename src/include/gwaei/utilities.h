@@ -17,3 +17,4 @@ gboolean gwaei_util_is_hiragana_str(char*);
 gboolean gwaei_util_is_util_kanji_str(char*);
 gboolean gwaei_util_is_katakana_str(char*);
 gboolean gwaei_util_is_romanji_str(char*);
+#define IS_HEXCOLOR(color) (regexec(&re_hexcolor, (color), 1, NULL, 0) == 0)

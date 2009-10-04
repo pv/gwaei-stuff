@@ -227,6 +227,7 @@ gboolean stream_results_thread (gpointer data)
       if (regexec(&(item->re_exist[0]), item->input, 1, NULL, 0) == 0)
       {
         strcpy_with_kanji_formatting(item->output, item->input);
+        item->output[strlen(item->output) - 1] = '\0';
         append_result_to_output(item);
         chunk = 0;
       }

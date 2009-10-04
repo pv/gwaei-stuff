@@ -421,7 +421,7 @@ G_MODULE_EXPORT void do_color_reset_for_swatches (GtkWidget *widget, gpointer da
         gwaei_pref_set_string (key, string);
     }
 
-    gwaei_reload_tagtable_tags();
+    gwaei_ui_reload_tagtable_tags();
 }
 
 

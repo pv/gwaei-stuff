@@ -1335,9 +1335,6 @@ gboolean gwaei_ui_load_gtk_builder_xml(const char *name) {
 /////////////////////////////////////////////////
 
 
-#define fg "foreground"
-#define bg "background"
-#define IS_HEXCOLOR(color) (regexec(&re_hexcolor, (color), 1, NULL, 0) == 0)
 
 gboolean gwaei_ui_set_color_to_tagtable (char    *id,     int      TARGET,
                                          gboolean set_fg, gboolean set_bg )
@@ -1397,13 +1394,13 @@ gboolean gwaei_ui_set_color_to_tagtable (char    *id,     int      TARGET,
     //Insert the new tag into the table
     if (set_fg && set_bg)
       tag = gtk_text_buffer_create_tag (GTK_TEXT_BUFFER (tb), id,
-                                        fg, fg_color, bg, bg_color, NULL );
+                                        "foreground", fg_color, "background", bg_color, NULL );
     else if (set_fg)
       tag = gtk_text_buffer_create_tag (GTK_TEXT_BUFFER (tb), id,
-                                        fg, fg_color, NULL               );
+                                        "foreground", fg_color, NULL               );
     else if (set_bg)
       tag = gtk_text_buffer_create_tag (GTK_TEXT_BUFFER (tb), id,
-                                        bg, bg_color, NULL               );
+                                        "background", bg_color, NULL               );
 
     return TRUE;
 }
@@ -2157,47 +2154,47 @@ void gwaei_ui_cycle_dictionaries(gboolean cycle_forward)
 
 char* gwaei_ui_get_text_from_text_buffer(const int TARGET)
 {
-  GObject* tb;
-  tb = get_gobject_from_target(TARGET);
+    GObject* tb;
+    tb = get_gobject_from_target(TARGET);
 
-  GtkTextIter s, e;
-  if (gtk_text_buffer_get_has_selection (GTK_TEXT_BUFFER (tb)))
-  {
-    gtk_text_buffer_get_selection_bounds(GTK_TEXT_BUFFER (tb), &s, &e);
-  }
-  //Get the region of text to be saved if no text is highlighted
-  else
-  {
-    gtk_text_buffer_get_start_iter(GTK_TEXT_BUFFER (tb), &s);
-    gtk_text_buffer_get_end_iter(GTK_TEXT_BUFFER (tb), &e);
-  }
-  return gtk_text_buffer_get_text(GTK_TEXT_BUFFER (tb), &s, &e, FALSE);
+    GtkTextIter s, e;
+    if (gtk_text_buffer_get_has_selection (GTK_TEXT_BUFFER (tb)))
+    {
+      gtk_text_buffer_get_selection_bounds(GTK_TEXT_BUFFER (tb), &s, &e);
+    }
+    //Get the region of text to be saved if no text is highlighted
+    else
+    {
+      gtk_text_buffer_get_start_iter(GTK_TEXT_BUFFER (tb), &s);
+      gtk_text_buffer_get_end_iter(GTK_TEXT_BUFFER (tb), &e);
+    }
+    return gtk_text_buffer_get_text(GTK_TEXT_BUFFER (tb), &s, &e, FALSE);
 }
 
 
-void gwaei_reload_tagtable_tags()
+void gwaei_ui_reload_tagtable_tags()
 {
-  HistoryList* hl;
-  hl = historylist_get_list (GWAEI_HISTORYLIST_RESULTS);
+    HistoryList* hl;
+    hl = historylist_get_list (GWAEI_HISTORYLIST_RESULTS);
 
-  if (hl != NULL && hl->current != NULL)
-    gwaei_ui_remove_all_tags (hl->current);
+    if (hl != NULL && hl->current != NULL)
+      gwaei_ui_remove_all_tags (hl->current);
 
-  gwaei_ui_set_color_to_tagtable ("comment", GWAEI_TARGET_RESULTS, TRUE, FALSE);
-  gwaei_ui_set_color_to_tagtable ("comment", GWAEI_TARGET_KANJI,   TRUE, FALSE);
+    gwaei_ui_set_color_to_tagtable ("comment", GWAEI_TARGET_RESULTS, TRUE, FALSE);
+    gwaei_ui_set_color_to_tagtable ("comment", GWAEI_TARGET_KANJI,   TRUE, FALSE);
 
-  gwaei_ui_set_color_to_tagtable ("match",   GWAEI_TARGET_RESULTS, TRUE, TRUE );
-  gwaei_ui_set_color_to_tagtable ("match",   GWAEI_TARGET_KANJI,   TRUE, TRUE );
+    gwaei_ui_set_color_to_tagtable ("match",   GWAEI_TARGET_RESULTS, TRUE, TRUE );
+    gwaei_ui_set_color_to_tagtable ("match",   GWAEI_TARGET_KANJI,   TRUE, FALSE);
 
-  gwaei_ui_set_color_to_tagtable ("header",  GWAEI_TARGET_RESULTS, TRUE, FALSE);
-  gwaei_ui_set_color_to_tagtable ("header",  GWAEI_TARGET_KANJI,   TRUE, TRUE );
+    gwaei_ui_set_color_to_tagtable ("header",  GWAEI_TARGET_RESULTS, TRUE, FALSE);
+    gwaei_ui_set_color_to_tagtable ("header",  GWAEI_TARGET_KANJI,   TRUE, FALSE);
 
-  if (hl != NULL && hl->current != NULL)
-    gwaei_ui_add_all_tags (hl->current);
+    if (hl != NULL && hl->current != NULL)
+      gwaei_ui_add_all_tags (hl->current);
 }
 
 
-void gwaei_initialize_tags()
+void gwaei_ui_initialize_tags()
 {
     //Important tag (usually bold)
     gwaei_ui_set_tag_to_tagtable ("important", GWAEI_TARGET_RESULTS,
@@ -2216,7 +2213,7 @@ void gwaei_initialize_tags()
     gwaei_ui_set_tag_to_tagtable ("small", GWAEI_TARGET_RESULTS,  "font", "serif 6");
     gwaei_ui_set_tag_to_tagtable ("small", GWAEI_TARGET_KANJI,    "font", "serif 6");
 
-    gwaei_reload_tagtable_tags();
+    gwaei_ui_reload_tagtable_tags();
 }
 
 
@@ -2238,7 +2235,7 @@ void initialize_gui_interface(int *argc, char ***argv)
 
     //Initialize some component and variables
     initialize_global_widget_pointers();
-    gwaei_initialize_tags();
+    gwaei_ui_initialize_tags();
     initialize_kanjipad();
 
     gwaei_sexy_initialize_libsexy();

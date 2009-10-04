@@ -431,7 +431,7 @@ void do_color_value_changed_action( GConfClient* client,
 
       gwaei_ui_set_color_to_swatch(key_ptr, red, green, blue);
 
-      gwaei_reload_tagtable_tags();
+      gwaei_ui_reload_tagtable_tags();
     }
 }
 

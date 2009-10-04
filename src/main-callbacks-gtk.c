@@ -969,6 +969,21 @@ G_MODULE_EXPORT void do_clear_search(GtkWidget *widget, gpointer data)
     gwaei_ui_grab_focus_by_target (GWAEI_TARGET_ENTRY);
 }
 
+    
+G_MODULE_EXPORT void do_update_styles(GtkWidget *widget, gpointer data)
+{
+    GtkWidget *window, *view;
+    GdkColor color;
+
+    window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
+    view   = GTK_WIDGET (gtk_builder_get_object (builder, "kanji_text_view"));
+    color  = window->style->bg[GTK_STATE_NORMAL];
+
+    g_signal_handlers_block_by_func(widget, do_update_styles, NULL);
+    gtk_widget_modify_base (view, GTK_STATE_NORMAL, &color);
+    g_signal_handlers_unblock_by_func(widget, do_update_styles, NULL);
+}
+
 
 G_MODULE_EXPORT void do_open_dictionary_folder(GtkWidget *widget, gpointer data) 
 {

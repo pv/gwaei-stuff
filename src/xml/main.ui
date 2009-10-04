@@ -13,6 +13,7 @@
     <property name="default_width">620</property>
     <property name="default_height">500</property>
     <property name="icon_name">gwaei</property>
+    <signal name="style_set" handler="do_update_styles"/>
     <signal name="delete_event" handler="do_delete_event_action"/>
     <child>
       <object class="GtkVBox" id="main_vbox">
@@ -861,7 +862,6 @@
                         <child>
                           <object class="GtkTextView" id="kanji_text_view">
                             <property name="visible">True</property>
-                            <property name="sensitive">False</property>
                             <property name="can_focus">True</property>
                             <property name="pixels_above_lines">8</property>
                             <property name="pixels_below_lines">8</property>
@@ -872,12 +872,12 @@
                             <property name="right_margin">5</property>
                             <property name="cursor_visible">False</property>
                             <property name="accepts_tab">False</property>
-                            <signal name="drag_data_received" handler="search_drag_data_recieved"/>
+                            <signal name="drag_leave" handler="drag_leave_1"/>
                             <signal name="drag_motion" handler="drag_motion_1"/>
                             <signal name="key_press_event" handler="do_focus_change_on_key_press"/>
                             <signal name="drag_drop" handler="drag_drop_1"/>
-                            <signal name="drag_leave" handler="drag_leave_1"/>
                             <signal name="copy_clipboard" handler="do_copy"/>
+                            <signal name="drag_data_received" handler="search_drag_data_recieved"/>
                             <signal name="focus_in_event" handler="do_update_clipboard_on_focus_change" object="kanji_text_view"/>
                           </object>
                         </child>
