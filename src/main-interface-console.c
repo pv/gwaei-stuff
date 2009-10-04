@@ -542,7 +542,7 @@ void initialize_console_interface(int argc, char **argv)
       if (quiet_switch == FALSE)
       {
         printf("[1m");
-        printf("%s", gettext("Found "));
+        printf("\n%s", gettext("Found "));
         printf("%d", item->total_results);
         printf("%s", gettext(" Results"));
 

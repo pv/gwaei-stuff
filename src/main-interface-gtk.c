@@ -2217,6 +2217,61 @@ void gwaei_ui_initialize_tags()
 }
 
 
+void gwaei_ui_initialize_buffer_marks()
+{
+    GtkWidget *tv;
+    tv = GTK_WIDGET (gtk_builder_get_object (builder, "results_text_view"));
+
+    GObject *tb;
+    tb = G_OBJECT (gtk_text_view_get_buffer (GTK_TEXT_VIEW (tv)));
+
+    GtkTextIter iter;
+    gtk_text_buffer_get_start_iter (GTK_TEXT_BUFFER (tb), &iter);
+
+    gtk_text_buffer_create_mark (GTK_TEXT_BUFFER (tb), "more_relevant_header_mark", &iter, TRUE);
+    gtk_text_buffer_create_mark (GTK_TEXT_BUFFER (tb), "less_relevant_header_mark", &iter, TRUE);
+}
+
+
+void gwaei_ui_set_header (SearchItem *item, char* text, char* mark_name)
+{
+    GtkTextIter iter;
+    GtkTextMark *mark;
+    gint line;
+
+    mark = gtk_text_buffer_get_mark (GTK_TEXT_BUFFER (results_tb), mark_name);
+    gtk_text_buffer_get_iter_at_mark (GTK_TEXT_BUFFER (results_tb), &iter, mark);
+    line = gtk_text_iter_get_line (&iter);
+
+    char *tag1 = "header";
+    char *tag2 = "important";
+
+    //This is a new header.  Make sure we are appending to the end
+    if (line == 0)
+    {
+      gtk_text_buffer_get_end_iter (GTK_TEXT_BUFFER (results_tb), &iter);
+      gtk_text_buffer_move_mark (GTK_TEXT_BUFFER (results_tb), mark, &iter);
+      gwaei_ui_append_to_buffer(item->target, text,   tag1, tag2, NULL, NULL);
+      if (strcmp(mark_name, "less_relevant_header_mark") == 0)
+        gwaei_ui_append_to_buffer(item->target, "\n", tag1, tag2, NULL, NULL);
+      else
+        gwaei_ui_append_to_buffer(item->target, "\n\n", tag1, tag2, NULL, NULL);
+    }
+    //We are updating a line.  Remove the one there
+    else
+    {
+      char new_text[100];
+      strncpy(new_text, text, 100);
+      strncat(new_text, "\n", 100 - strlen(text));
+      GtkTextIter end_iter;
+      gtk_text_buffer_get_iter_at_line(GTK_TEXT_BUFFER (results_tb), &end_iter, line + 1);
+      gtk_text_buffer_delete (GTK_TEXT_BUFFER (results_tb), &iter, &end_iter);
+      gtk_text_buffer_get_iter_at_mark (GTK_TEXT_BUFFER (results_tb), &iter, mark);
+      gtk_text_buffer_insert_with_tags_by_name (GTK_TEXT_BUFFER (results_tb), &iter, new_text, -1, tag1, tag2, NULL);
+    }
+}
+
+
 void initialize_gui_interface(int *argc, char ***argv)
 {
     //Initialize some libraries
@@ -2242,6 +2297,7 @@ void initialize_gui_interface(int *argc, char ***argv)
     gwaei_ui_update_history_popups();
     gwaei_ui_show_window ("main_window");
     gwaei_prefs_initialize_preferences();
+    gwaei_ui_initialize_buffer_marks();
 
     if (rebuild_combobox_dictionary_list() == 0) {
       do_settings(NULL, NULL);

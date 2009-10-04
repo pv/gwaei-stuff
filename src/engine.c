@@ -75,6 +75,25 @@ void append_result_to_output (SearchItem *item)
 //Private convenience functions
 //
 
+void append_more_relevant_header_to_output(SearchItem *item)
+{
+    if (gwaei_util_get_runmode() == GWAEI_CONSOLE_RUNMODE)
+    {
+    }
+    else
+    {
+      char number[14];
+      gwaei_itoa(item->total_relevant_results, number, 14);
+
+      char text[100];
+      strncpy(text, gettext("Main Results "), 100);
+      strncat(text, number, 100 - strlen(text));
+
+      gwaei_ui_set_header (item, text, "more_relevant_header_mark");
+    }
+}
+
+
 void append_less_relevant_header_to_output(SearchItem *item)
 {
     if (gwaei_util_get_runmode() == GWAEI_CONSOLE_RUNMODE)
@@ -83,12 +102,18 @@ void append_less_relevant_header_to_output(SearchItem *item)
     }
     else
     {
+      char number[14];
+      gwaei_itoa(item->total_irrelevant_results, number, 14);
+
+      char text[100];
+      strncpy(text, gettext("Other Results "), 100);
+      strncat(text, number, 100 - strlen(text));
+
       char *tag1 = "header";
       char *tag2 = "important";
+
       gwaei_ui_append_to_buffer(item->target, "\n\n", tag1, tag2, NULL, NULL);
-      gwaei_ui_append_to_buffer(item->target, gettext("Other Results"),
-                             tag1, tag2, NULL, NULL                       );
-      gwaei_ui_append_to_buffer(item->target, "\n\n", tag1, tag2, NULL, NULL);
+      gwaei_ui_set_header (item, text, "less_relevant_header_mark");
     }
 }
 
@@ -106,13 +131,13 @@ void add_group_formatting (SearchItem* item)
         char* position1 = strchr(input, '[');
         if (position1 != NULL)              
         {
-        strncpy(comparison_buffer, input, (int)(position1 - input));
-        comparison_buffer[(int)(position1 - input)] = '\0';
+          strncpy(comparison_buffer, input, (int)(position1 - input));
+          comparison_buffer[(int)(position1 - input)] = '\0';
         }
         return;
     }
 
-    //Code to remove duplicate kanji in the beginnig of a result /////
+    //Code to remove duplicate kanji in the beginning of a result /////
     input[strlen(input) - 1] = '\0';
     char* position1 = strchr(input, '[');
     if (position1 == 0)
@@ -306,6 +331,7 @@ gboolean stream_results_thread (gpointer data)
             case HIGH_RELEVANCE:
                 item->total_results++;
                 item->total_relevant_results++;
+                append_more_relevant_header_to_output(item);
                 gwaei_ui_update_total_results_label(item);
                 add_group_formatting (item);
                 strcpy_with_general_formatting(item->input, item->output);
