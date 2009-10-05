@@ -2184,7 +2184,7 @@ void gwaei_ui_reload_tagtable_tags()
     gwaei_ui_set_color_to_tagtable ("comment", GWAEI_TARGET_KANJI,   TRUE, FALSE);
 
     gwaei_ui_set_color_to_tagtable ("match",   GWAEI_TARGET_RESULTS, TRUE, TRUE );
-    gwaei_ui_set_color_to_tagtable ("match",   GWAEI_TARGET_KANJI,   TRUE, FALSE);
+    gwaei_ui_set_color_to_tagtable ("match",   GWAEI_TARGET_KANJI,   TRUE, TRUE );
 
     gwaei_ui_set_color_to_tagtable ("header",  GWAEI_TARGET_RESULTS, TRUE, FALSE);
     gwaei_ui_set_color_to_tagtable ("header",  GWAEI_TARGET_KANJI,   TRUE, FALSE);

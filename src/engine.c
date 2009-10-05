@@ -373,7 +373,7 @@ gboolean stream_results_thread (SearchItem *item)
 
 
 //!
-//! Preforms necessary cleanups after the search thread finishes
+//! \brief Preforms necessary cleanups after the search thread finishes
 //!
 //! THIS IS A PRIVATE FUNCTION. The calls to this function are made by
 //! gwaei_search_get_results.  Do not call this function directly.
@@ -403,7 +403,7 @@ gboolean stream_results_cleanup (SearchItem *item)
 
 
 //!
-//! Start a dictionary search
+//! \brief Start a dictionary search
 //!
 //! This is the entry point for starting a search.  It handles setting up the
 //! query, checking things that need to be checked before the final go, and
