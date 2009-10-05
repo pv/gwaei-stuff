@@ -54,7 +54,16 @@ gboolean less_relevant_title_inserted = FALSE;
 gboolean less_relevant_results_show = TRUE;
 
 
-//Private convenience function
+//!
+//! \brief Sends a result directly out to the output.
+//!
+//! THIS IS A PRIVATE FUNCTION. Function takes the current working result of the
+//! search thread and outputs it to the approprate output, be that a terminal or
+//! a text widget.
+//! are below it.
+//!
+//! @param item a SearchItem to get the result from
+//!
 void append_result_to_output (SearchItem *item)
 {
     if (gwaei_util_get_runmode() == GWAEI_CONSOLE_RUNMODE)
@@ -71,10 +80,14 @@ void append_result_to_output (SearchItem *item)
 }
 
 
-//
-//Private convenience functions
-//
-
+//!
+//! \brief Does the work of outputing the more relevant header.
+//!
+//! THIS IS A PRIVATE FUNCTION. The function gives a label for the user to see
+//! and tells how many results are below it.
+//!
+//! @param item a SearchItem to get the result numbers from
+//!
 void append_more_relevant_header_to_output(SearchItem *item)
 {
     if (gwaei_util_get_runmode() == GWAEI_CONSOLE_RUNMODE)
@@ -94,6 +107,14 @@ void append_more_relevant_header_to_output(SearchItem *item)
 }
 
 
+//!
+//! \brief Does the work of outputing the less relevant header
+//!
+//! THIS IS A PRIVATE FUNCTION. The function gives a label for the user to see
+//! and tells how many results are below it.
+//!
+//! @param item a SearchItem to get the result numbers from
+//!
 void append_less_relevant_header_to_output(SearchItem *item)
 {
     if (gwaei_util_get_runmode() == GWAEI_CONSOLE_RUNMODE)
@@ -118,72 +139,21 @@ void append_less_relevant_header_to_output(SearchItem *item)
 }
 
 
-void add_group_formatting (SearchItem* item)
-{
-    char *input = item->input;
-    char *comparison_buffer = item->comparison_buffer;
-
-    //Special case for the initial string
-    char temp[MAX_LINE];
-    if (strcmp(comparison_buffer, "INITIALSTRING") == 0) {
-        if (strlen(input) > 1)input[strlen(input) - 1] = '\0';
-        comparison_buffer[0] = '\0';
-        char* position1 = strchr(input, '[');
-        if (position1 != NULL)              
-        {
-          strncpy(comparison_buffer, input, (int)(position1 - input));
-          comparison_buffer[(int)(position1 - input)] = '\0';
-        }
-        return;
-    }
-
-    //Code to remove duplicate kanji in the beginning of a result /////
-    input[strlen(input) - 1] = '\0';
-    char* position1 = strchr(input, '[');
-    if (position1 == 0)
-    {
-        strcpy(temp, "\n");
-        strncat(temp, input, MAX_LINE - 1);
-        strncpy(input, temp, MAX_LINE);
-    }
-    else if (strstr(input, comparison_buffer) != input || comparison_buffer[0] == '\0')
-    { //Changed
-      strncpy(comparison_buffer, input, (int)(position1 - input));
-      comparison_buffer[(int)(position1 - input)] = '\0';
-      strcpy(temp, "\n");
-      strncat(temp, input, MAX_LINE - 1);
-      strncpy(input, temp, MAX_LINE);
-    }
-    else
-    { //Didn't change
-       char* position2 = input;
-       while (position2 < position1)
-       {
-         if (position1 - position2 > 3)
-         {
-           
-           *position2 = "　"[0];
-           position2++;
-           *position2 = "　"[1];
-           position2++;
-           *position2 = "　"[2];
-           position2++;
-         }
-         else
-         {
-           *position2 = ' ';
-           position2++;
-         }
-       }
-    }
-}
-
-
-void append_stored_result_to_output(SearchItem *item, GList **results)
+//!
+//! \brief Gets a stored result in a search item and posts it to the output.
+//!
+//! THIS IS A PRIVATE FUNCTION. The memory is allocated and tthis function makes
+//! sure to cleanly free it and then post it to the approprate output, be it the
+//! terminal or a text buffer widget.
+//!
+//! @param item a SearchItem
+//! @param results the result stored in a GList to free
+//!
+void append_stored_result_to_output (SearchItem *item, GList **results)
 {
     if (less_relevant_results_show || item->total_relevant_results == 0)
     {
-      if (gwaei_util_get_runmode() == GWAEI_CONSOLE_RUNMODE)
+      if (gwaei_util_get_runmode () == GWAEI_CONSOLE_RUNMODE)
       {
         strcpy(item->input, (char*)(*results)->data);
         add_group_formatting (item);
@@ -205,7 +175,17 @@ void append_stored_result_to_output(SearchItem *item, GList **results)
 }
 
 
-//Quantifier to figure out how relevent a returned item is
+//!
+//! \brief Find the relevance of a returned result
+//!
+//! THIS IS A PRIVATE FUNCTION. Function uses the stored relevance regrex
+//! expressions in the SearchItem to get the relevance of a returned result.  It
+//! then returns the answer to the caller in the form of an int.
+//!
+//! @param text a string to check the relevance of
+//! @param item a search item to grab the regrexes from
+//! @return Returns one of the integers: LOW_RELEVANCE, MEDIUM_RELEVANCE, or HIGH_RELEVANCE.
+//!
 int get_relevance (char* text, SearchItem *item) {
     int i;
 
@@ -224,9 +204,18 @@ int get_relevance (char* text, SearchItem *item) {
 }
 
 
-gboolean stream_results_thread (gpointer data)
+//!
+//! \brief Preforms the brute work of the search
+//!
+//! THIS IS A PRIVATE FUNCTION. This function returns true until it finishes
+//! searching the whole file.  It works in specified chunks before going back to
+//! the thread to help improve speed.  
+//!
+//! @param data A SearchItem to search with
+//! @return Returns true when the search isn't finished yet.
+//!
+gboolean stream_results_thread (SearchItem *item)
 {
-    SearchItem *item = data;
     char *dictionary = item->dictionary->name;
     int dictionary_type = item->dictionary->type;
     int chunk = 0;
@@ -258,60 +247,6 @@ gboolean stream_results_thread (gpointer data)
         }
       }
 
-
-      //Search engine for kanji and radicals
-      else if (dictionary_type == KANJI || dictionary_type == RADICALS)
-      {
-        gboolean missing_an_atom = FALSE;
-        //Search for existance of every atom in the query
-        int i;
-        for (i = 0; i < item->total_re && !missing_an_atom; i++)
-          if (regexec(&(item->re_exist[i]), item->input, 1, NULL, 0) != 0)
-            missing_an_atom = TRUE;
-
-        if (!missing_an_atom)
-        {
-          int relevance = get_relevance(item->input, item);
-          char *result = NULL;
-          switch(relevance)
-          {
-            case HIGH_RELEVANCE:
-                item->total_relevant_results++;
-                item->total_results++;
-                append_more_relevant_header_to_output(item);
-                gwaei_ui_update_total_results_label(item);
-                if (dictionary_type == KANJI)
-                  strcpy_with_kanji_formatting(item->output, item->input);
-                else
-                  strcpy(item->output, item->input);
-                append_result_to_output(item);
-                break;
-            case MEDIUM_RELEVANCE:
-                item->total_irrelevant_results++;
-                if (result = (char*)malloc(MAX_LINE))
-                {
-                  if (dictionary_type == KANJI)
-                    strcpy_with_kanji_formatting(result, item->input);
-                  else
-                    strcpy_with_kanji_formatting(result, item->input);
-                  item->results_medium =  g_list_append(item->results_medium, result);
-                }
-                break;
-            default:
-                item->total_irrelevant_results++;
-                if (result = (char*)malloc(MAX_LINE))
-                {
-                  if (dictionary_type == KANJI)
-                    strcpy_with_kanji_formatting(result, item->input);
-                  else
-                    strcpy(result, item->input);
-                  item->results_low = g_list_append(item->results_low, result);
-                }
-                break;
-          }
-        }
-      }
-
       //Search engine for other dictionaries
       else
       {
@@ -335,7 +270,12 @@ gboolean stream_results_thread (gpointer data)
                 append_more_relevant_header_to_output(item);
                 gwaei_ui_update_total_results_label(item);
                 add_group_formatting (item);
-                strcpy_with_general_formatting(item->input, item->output);
+                if (dictionary_type == KANJI)
+                  strcpy_with_kanji_formatting(item->output, item->input);
+                else if (dictionary_type == OTHER)
+                  strcpy_with_general_formatting(item->output, item->input);
+                else
+                  strcpy(item->output, item->input);
                 append_result_to_output(item);
                 break;
             case MEDIUM_RELEVANCE:
@@ -343,7 +283,12 @@ gboolean stream_results_thread (gpointer data)
                      (result = (char*)malloc(MAX_LINE)) )
                 {
                   item->total_irrelevant_results++;
-                  strcpy_with_general_formatting(item->input, result);
+                  if (dictionary_type == KANJI)
+                    strcpy_with_kanji_formatting(result, item->input);
+                  else if (dictionary_type == OTHER)
+                    strcpy_with_general_formatting(result, item->input);
+                  else
+                    strcpy(item->output, item->input);
                   item->results_medium =  g_list_append(item->results_medium, result);
                 }
                 break;
@@ -352,7 +297,12 @@ gboolean stream_results_thread (gpointer data)
                      (result = (char*)malloc(MAX_LINE)))
                 {
                   item->total_irrelevant_results++;
-                  strcpy_with_general_formatting(item->input, result);
+                  if (dictionary_type == KANJI)
+                    strcpy_with_kanji_formatting(result, item->input);
+                  else if (dictionary_type == OTHER)
+                    strcpy_with_general_formatting(result, item->input);
+                  else
+                    strcpy(item->output, item->input);
                   item->results_low = g_list_append(item->results_low, result);
                 }
                 break;
@@ -422,9 +372,18 @@ gboolean stream_results_thread (gpointer data)
 }
 
 
-gboolean stream_results_cleanup (gpointer data)
+//!
+//! Preforms necessary cleanups after the search thread finishes
+//!
+//! THIS IS A PRIVATE FUNCTION. The calls to this function are made by
+//! gwaei_search_get_results.  Do not call this function directly.
+//!
+//! @see gwaei_search_get_results()
+//! @param data A SearchItem to clean up the data of
+//! @return currently unused
+//!
+gboolean stream_results_cleanup (SearchItem *item)
 {
-    SearchItem *item = data;
     searchitem_do_post_search_clean (item);
     less_relevant_title_inserted = FALSE;
     if (gwaei_util_get_runmode () == GWAEI_CONSOLE_RUNMODE)
@@ -443,13 +402,19 @@ gboolean stream_results_cleanup (gpointer data)
 }
 
 
-
-//Intermediates searches
+//!
+//! Start a dictionary search
+//!
+//! This is the entry point for starting a search.  It handles setting up the
+//! query, checking things that need to be checked before the final go, and
+//! initializing the search loop or thread.
+//!
+//! @param item a SearchItem argument.
+//!
 void gwaei_search_get_results (SearchItem *item)
 {
-    if (regexec(&re_kanji,   item->dictionary->name, 1, NULL, 0) == 0 ||
-        regexec(&re_radical, item->dictionary->name, 1, NULL, 0) == 0 ||
-        regexec(&re_mix,     item->dictionary->name, 1, NULL, 0) == 0   )
+    //Misc preparations
+    if (item->dictionary->type == KANJI || item->dictionary->type == RADICALS)
       less_relevant_results_show = TRUE;
 
     if (gwaei_util_get_runmode () != GWAEI_CONSOLE_RUNMODE)
@@ -466,6 +431,7 @@ void gwaei_search_get_results (SearchItem *item)
       gwaei_close_kanji_results();
 
 
+    //Start the search
     if (gwaei_util_get_runmode () == GWAEI_CONSOLE_RUNMODE)
     {
       while (stream_results_thread(item))

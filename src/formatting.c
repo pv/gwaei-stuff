@@ -433,7 +433,7 @@ void strcpy_with_query_formatting( char* output,     char* input,
 }
 
 
-void strcpy_with_general_formatting(char *input, char *output) 
+void strcpy_with_general_formatting(char *output, char *input) 
 {
     char *input_ptr = &input[0];
     char *output_ptr = &output[0];
@@ -577,3 +577,62 @@ void strcpy_with_kanji_formatting(char *output, char *input)
 }
 
 
+void add_group_formatting (SearchItem* item)
+{
+    char *input = item->input;
+    char *comparison_buffer = item->comparison_buffer;
+
+    //Special case for the initial string
+    char temp[MAX_LINE];
+    if (strcmp(comparison_buffer, "INITIALSTRING") == 0) {
+        if (strlen(input) > 1)input[strlen(input) - 1] = '\0';
+        comparison_buffer[0] = '\0';
+        char* position1 = strchr(input, '[');
+        if (position1 != NULL)              
+        {
+          strncpy(comparison_buffer, input, (int)(position1 - input));
+          comparison_buffer[(int)(position1 - input)] = '\0';
+        }
+        return;
+    }
+
+    //Code to remove duplicate kanji in the beginning of a result /////
+    input[strlen(input) - 1] = '\0';
+    char* position1 = strchr(input, '[');
+    if (position1 == 0)
+    {
+        strcpy(temp, "\n");
+        strncat(temp, input, MAX_LINE - 1);
+        strncpy(input, temp, MAX_LINE);
+    }
+    else if (strstr(input, comparison_buffer) != input || comparison_buffer[0] == '\0')
+    { //Changed
+      strncpy(comparison_buffer, input, (int)(position1 - input));
+      comparison_buffer[(int)(position1 - input)] = '\0';
+      strcpy(temp, "\n");
+      strncat(temp, input, MAX_LINE - 1);
+      strncpy(input, temp, MAX_LINE);
+    }
+    else
+    { //Didn't change
+       char* position2 = input;
+       while (position2 < position1)
+       {
+         if (position1 - position2 > 3)
+         {
+           
+           *position2 = "　"[0];
+           position2++;
+           *position2 = "　"[1];
+           position2++;
+           *position2 = "　"[2];
+           position2++;
+         }
+         else
+         {
+           *position2 = ' ';
+           position2++;
+         }
+       }
+    }
+}
