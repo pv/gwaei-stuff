@@ -7,42 +7,41 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2009-10-05 07:49-0400\n"
-"PO-Revision-Date: 2009-10-03 15:48+0100\n"
+"POT-Creation-Date: 2009-10-05 19:19+0200\n"
+"PO-Revision-Date: 2009-10-05 19:31+0100\n"
 "Last-Translator: Fabrizio Sabatini <jecnua@gmail.com>\n"
 "Language-Team: Not Applicable\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/formatting.c:518
+#: src/formatting.c:519
 msgid "Grade:"
 msgstr "Grado:"
 
-#: src/formatting.c:524
+#: src/formatting.c:525
 msgid "Stroke:"
 msgstr "Tratti:"
 
-#: src/formatting.c:530
+#: src/formatting.c:531
 msgid "Freq:"
 msgstr "Freq:"
 
-#: src/formatting.c:536
+#: src/formatting.c:537
 msgid "JLPT:"
 msgstr "JLPT:"
 
-#: src/formatting.c:562 src/xml/settings.glade:1608
+#: src/formatting.c:563 src/xml/settings.glade:1608
 msgid "Radicals:"
 msgstr "Radicali:"
 
-#: src/formatting.c:591
-#, fuzzy
+#: src/formatting.c:592
 msgid "Readings:"
-msgstr "Radicali:"
+msgstr "Lettura:"
 
-#: src/formatting.c:614 src/formatting.c:615
+#: src/formatting.c:615 src/formatting.c:616
 msgid "Meanings:"
-msgstr ""
+msgstr "Significato:"
 
 #: src/main-interface-console.c:97
 msgid "Coping file..."
@@ -499,6 +498,8 @@ msgid ""
 "Looks like this may be your initial install.  I'm just going to center this "
 "window for ya.  You can thank me later %d %d\n"
 msgstr ""
+"Sembra che questa sia la tua prima installazione. Centrerò la finestra per "
+"te. Mi potrai ringraziare più tardi %d %d\n"
 
 #: src/main-interface-gtk.c:490
 msgid "Searching... "
@@ -512,7 +513,7 @@ msgstr "_Cicla in Alto"
 msgid "Cycle _Down"
 msgstr "Cicla in _Basso"
 
-#: src/main-interface-gtk.c:1717 src/engine.c:361
+#: src/main-interface-gtk.c:1717 src/engine.c:360
 msgid "No results found!"
 msgstr "Nessun risultato trovato!"
 
@@ -865,24 +866,22 @@ msgstr ""
 "I dizionari sono forniti da Jim Breen's WWWJDIC."
 
 #: src/engine.c:102
-#, fuzzy
 msgid "Main Results "
-msgstr " Risultati"
+msgstr "Risultati Principali "
 
 #: src/engine.c:122
 msgid "Other Results"
 msgstr "Altri Risultati"
 
 #: src/engine.c:130
-#, fuzzy
 msgid "Other Results "
-msgstr "Altri Risultati"
+msgstr "Altri Risultati "
 
 #: src/printing-gtk.c:300
 msgid "Page "
 msgstr "Pagina "
 
-#: src/io.c:99 src/dictionaries.c:571
+#: src/io.c:99 src/dictionaries.c:578
 msgid "File read failed"
 msgstr "Lettura file fallita"
 
@@ -1025,12 +1024,12 @@ msgstr "Nomi"
 msgid " Dictionary"
 msgstr " Dizionario"
 
-#: src/dictionaries.c:566
+#: src/dictionaries.c:573
 #, c-format
 msgid "Syncing %s dictionary"
 msgstr "Aggiorno il dizionario %s"
 
-#: src/dictionaries.c:596
+#: src/dictionaries.c:603
 msgid "Success"
 msgstr "Operazione terminata correttamente"
 
