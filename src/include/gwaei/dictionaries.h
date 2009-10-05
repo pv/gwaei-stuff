@@ -39,6 +39,7 @@ struct DictionaryList
 {
     GList *list;
     GList *selected;
+    int id_increment;
 };
 typedef struct DictionaryList DictionaryList;
 

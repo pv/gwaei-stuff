@@ -856,17 +856,15 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
     GList *list = dictionarylist_get_selected();
     DictionaryInfo *dictionary = list->data;
 
-    gchar query[MAX_QUERY], preformatted_query[MAX_QUERY];
+    gchar query[MAX_QUERY];
     gwaei_ui_strcpy_from_widget(query, MAX_QUERY, GWAEI_TARGET_ENTRY);
 
     if (strlen (query) == 0)
       return;
 
-    strcpy_with_query_preformatting (preformatted_query, query,
-                                     dictionary, GWAEI_TARGET_RESULTS);
-
-    if (hl->current != NULL && strcmp (preformatted_query, hl->current->query) == 0 &&
-        strcmp (dictionary->name, hl->current->dictionary->name) == 0         )
+    if (hl->current != NULL &&
+        strcmp (query, hl->current->query) == 0 &&
+        dictionary->id == hl->current->dictionary->id)
       return;
 
     if (gwaei_ui_cancel_search_by_target(GWAEI_TARGET_RESULTS) == FALSE)
@@ -885,20 +883,17 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
     }
     
     //in add_to_history() rather than here
-    hl->current = searchitem_new (preformatted_query, dictionary, GWAEI_TARGET_RESULTS);
+    hl->current = searchitem_new (query, dictionary, GWAEI_TARGET_RESULTS);
     if (hl->current == NULL)
     {
       g_warning("There was an error creating the searchitem variable.  I will cancel this search.  Please eat some cheese.\n");
       return;
     }
 
-    //gwaei_ui_text_select_all_by_target(GWAEI_TARGET_ENTRY);
-
     //Start the search
     gwaei_search_get_results(hl->current);
 
     //Set the colors of the entry to the current match highlight colors
-    #define IS_HEXCOLOR(color) (regexec(&re_hexcolor, (color), 1, NULL, 0) == 0)
     char key[100];
     char *key_ptr;
     strcpy(key, GCPATH_GWAEI);

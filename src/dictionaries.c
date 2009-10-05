@@ -157,7 +157,7 @@ DictionaryInfo* dictionaryinfo_new (char *name)
     }
     else
     {
-      temp->id = OTHER;
+      temp->id = dictionarylist_make_dictionary_id ();
       temp->type = OTHER;
       strncpy(temp->gckey, "", 100);
       strcpy (temp->rsync, "");
@@ -191,8 +191,15 @@ DictionaryList* dictionarylist_new ()
 
     temp->list = NULL;
     temp->selected = NULL;
+    temp->id_increment = 100;
 
     return temp;
+}
+
+int dictionarylist_make_dictionary_id ()
+{
+    dictionaries->id_increment++;
+    return dictionaries->id_increment;
 }
 
 

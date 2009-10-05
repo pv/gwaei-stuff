@@ -528,13 +528,8 @@ void initialize_console_interface(int argc, char **argv)
     if (quiet_switch == FALSE)
       print_search_start_banner(query, di->name);
 
-    char preformatted_query[MAX_QUERY];
-
-    strcpy_with_query_preformatting (preformatted_query, query,
-                                     di, GWAEI_TARGET_CONSOLE);
-
     SearchItem *item;
-    item = searchitem_new(preformatted_query, di, GWAEI_TARGET_CONSOLE);
+    item = searchitem_new(query, di, GWAEI_TARGET_CONSOLE);
     if (item != NULL )
     {
       gwaei_search_get_results (item);

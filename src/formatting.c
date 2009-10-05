@@ -45,6 +45,17 @@
 
 
 
+//!
+//! \brief Searches for a regex and returns pointers to matches
+//!
+//! THIS IS A PRIVATE FUNCTION. Function takes searches for the pattern in a
+//! a string and then returns pointers to the beginning and end of matches.
+//!
+//! @param string a constant string to be searched
+//! @param pattern a pattern string to search for
+//! @param start a character pointer array for match starts points
+//! @param end a character pointer array for match end points
+//!
 gboolean locate_boundary_byte_pointers( const char *string, char  *pattern,
                                         char      **start,  char **end      )
 {
@@ -67,8 +78,18 @@ gboolean locate_boundary_byte_pointers( const char *string, char  *pattern,
 } 
 
 
-gboolean strcpy_with_query_preformatting( char* output,     char* input,
-                                          char* dictionary, int   target )
+//!
+//! \brief Copies a string while adding some special formatting
+//!
+//! The formatting added will be to decide of the word will have have hiragara
+//! and katakana variations of it searched and if four kanji woulds have the
+//! two kanji pieces also searched.
+//!
+//! @param output the character array the formatting string is copied to
+//! @param output the character array to format
+//! @param item a SearchItem to get misc data from
+//!
+gboolean strcpy_with_query_preformatting (char* output, char* input, SearchItem *item)
 {
     char buffer[MAX_QUERY];
     strncpy(buffer, input, MAX_QUERY);
@@ -84,9 +105,7 @@ gboolean strcpy_with_query_preformatting( char* output,     char* input,
     roman_kana_conv_pref = gwaei_pref_get_int (GCKEY_GWAEI_ROMAN_KANA, 2);
 
     //Load the preformatting preferences from pref
-    if ( g_utf8_strlen(buffer, -1) == 0 ||
-         regexec(&re_kanji,   dictionary, 1, NULL, 0) == 0 ||
-         regexec(&re_radical, dictionary, 1, NULL, 0) == 0    )
+    if (item->dictionary->type == KANJI || item->dictionary->type == RADICALS)
     {
       strcpy(output, buffer);
       return FALSE;
@@ -241,11 +260,20 @@ gboolean strcpy_with_query_preformatting( char* output,     char* input,
 }
 
 
-void strcpy_with_query_formatting( char* output,     char* input,
-                                   char* dictionary, int   target )
+//!
+//! \brief Copies a string while adding some special formatting
+//!
+//! This function parses a string, adding delimiters for search atoms and then
+//! writes the edited string to the output.
+//!
+//! @param output the character array the formatting string is copied to
+//! @param output the character array to format
+//! @param item a SearchItem to get misc data from
+//!
+void strcpy_with_query_formatting (char* output, char* input, SearchItem *item)
 {
     //Searching in the kanji sidebar only look for a matching first character
-    if (target == GWAEI_TARGET_KANJI)
+    if (item->target == GWAEI_TARGET_KANJI)
     {
       strcpy(output, "^(");
       strcat(output, input);
@@ -255,9 +283,7 @@ void strcpy_with_query_formatting( char* output,     char* input,
 
     //General Radical and kanji searches look for every single atom separated by
     //the delimitor
-    else if ( regexec(&re_radical, dictionary, 1, NULL, 0) == 0 ||
-              regexec(&re_mix    , dictionary, 1, NULL, 0) == 0 ||
-              regexec(&re_kanji  , dictionary, 1, NULL, 0) == 0    )
+    else if (item->dictionary->type == KANJI || item->dictionary->type == RADICALS)
     {
       //Radical and kanji searches don't use regex
       //so the search should be cleaned before sending.
@@ -433,7 +459,17 @@ void strcpy_with_query_formatting( char* output,     char* input,
 }
 
 
-void strcpy_with_general_formatting(char *output, char *input) 
+//!
+//! \brief Copies a string while adding some special formatting
+//!
+//! Adds the formatting to a returned search result so it becomes
+//! more readable at the output.
+//!
+//! @param output the character array the formatting string is copied to
+//! @param output the character array to format
+//! @param item a SearchItem to get misc data from
+//!
+void strcpy_with_general_formatting(char *output, char *input, SearchItem *item) 
 {
     char *input_ptr = &input[0];
     char *output_ptr = &output[0];
@@ -457,8 +493,18 @@ void strcpy_with_general_formatting(char *output, char *input)
 }
 
 
-
-void strcpy_with_kanji_formatting(char *output, char *input)
+//!
+//! \brief Copies a string while adding some special formatting
+//!
+//! Adds the formatting to a returned search result so it becomes
+//! more readable at the output.  This version is used for kanji dictionary
+//! searches.
+//!
+//! @param output the character array the formatting string is copied to
+//! @param output the character array to format
+//! @param item a SearchItem to get misc data from
+//!
+void strcpy_with_kanji_formatting(char *output, char *input, SearchItem *item)
 {
     //First generate the grade, stroke, frequency, and jplt fields
     char *start, *end;
@@ -577,6 +623,14 @@ void strcpy_with_kanji_formatting(char *output, char *input)
 }
 
 
+//!
+//! \brief Adds group formatting to a string
+//!
+//! If this function detects similar kanji between strings, it will over write
+//! the kanji with spaces and remove vertical white space between the results.
+//!
+//! @param item a SearchItem to get the result from
+//!
 void add_group_formatting (SearchItem* item)
 {
     char *input = item->input;
@@ -636,3 +690,5 @@ void add_group_formatting (SearchItem* item)
        }
     }
 }
+
+

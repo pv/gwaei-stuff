@@ -54,9 +54,6 @@ SearchItem* searchitem_new (char* query, DictionaryInfo* dictionary,
   //Allocate some memory
   if ((temp = malloc(sizeof(struct SearchItem))) == NULL) return NULL;
 
-  //Copy the query and dicitonary strings
-  strcpy(temp->query, query);
-
   temp->results_medium = NULL;
   temp->results_low = NULL;
   
@@ -78,6 +75,9 @@ SearchItem* searchitem_new (char* query, DictionaryInfo* dictionary,
   temp->results_found = TRUE;
   temp->current_line = 0;
 
+  //Copy the query and dicitonary strings
+  strcpy_with_query_preformatting (temp->query, query, temp);
+
   //Create the compiled regular expression
   int eflags_exist    = REG_EXTENDED | REG_ICASE | REG_NOSUB;
   int eflags_relevant = REG_EXTENDED | REG_ICASE | REG_NOSUB;
@@ -85,7 +85,7 @@ SearchItem* searchitem_new (char* query, DictionaryInfo* dictionary,
 
   //Create the needed regex for searching and locating
   char query_temp[MAX_QUERY];
-  strcpy_with_query_formatting(query_temp, query, dictionary->name, TARGET);
+  strcpy_with_query_formatting(query_temp, query, temp);
   if (strlen(query_temp) == 0) return NULL;
 
   char expression[(MAX_QUERY * 4) + 150];

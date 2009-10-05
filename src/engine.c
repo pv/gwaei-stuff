@@ -240,7 +240,7 @@ gboolean stream_results_thread (SearchItem *item)
       {
         if (regexec(&(item->re_exist[0]), item->input, 1, NULL, 0) == 0)
         {
-          strcpy_with_kanji_formatting(item->output, item->input);
+          strcpy_with_kanji_formatting(item->output, item->input, item);
           item->output[strlen(item->output) - 1] = '\0';
           append_result_to_output(item);
           chunk = 0;
@@ -271,9 +271,9 @@ gboolean stream_results_thread (SearchItem *item)
                 gwaei_ui_update_total_results_label(item);
                 add_group_formatting (item);
                 if (dictionary_type == KANJI)
-                  strcpy_with_kanji_formatting(item->output, item->input);
+                  strcpy_with_kanji_formatting(item->output, item->input, item);
                 else if (dictionary_type == OTHER)
-                  strcpy_with_general_formatting(item->output, item->input);
+                  strcpy_with_general_formatting(item->output, item->input, item);
                 else
                   strcpy(item->output, item->input);
                 append_result_to_output(item);
@@ -284,9 +284,9 @@ gboolean stream_results_thread (SearchItem *item)
                 {
                   item->total_irrelevant_results++;
                   if (dictionary_type == KANJI)
-                    strcpy_with_kanji_formatting(result, item->input);
+                    strcpy_with_kanji_formatting(result, item->input, item);
                   else if (dictionary_type == OTHER)
-                    strcpy_with_general_formatting(result, item->input);
+                    strcpy_with_general_formatting(result, item->input, item);
                   else
                     strcpy(item->output, item->input);
                   item->results_medium =  g_list_append(item->results_medium, result);
@@ -298,9 +298,9 @@ gboolean stream_results_thread (SearchItem *item)
                 {
                   item->total_irrelevant_results++;
                   if (dictionary_type == KANJI)
-                    strcpy_with_kanji_formatting(result, item->input);
+                    strcpy_with_kanji_formatting(result, item->input, item);
                   else if (dictionary_type == OTHER)
-                    strcpy_with_general_formatting(result, item->input);
+                    strcpy_with_general_formatting(result, item->input, item);
                   else
                     strcpy(item->output, item->input);
                   item->results_low = g_list_append(item->results_low, result);
