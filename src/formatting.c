@@ -56,8 +56,8 @@
 //! @param start a character pointer array for match starts points
 //! @param end a character pointer array for match end points
 //!
-gboolean locate_boundary_byte_pointers( const char *string, char  *pattern,
-                                        char      **start,  char **end      )
+static gboolean locate_boundary_byte_pointers( const char *string, char  *pattern,
+                                               char      **start,  char **end      )
 {
   regex_t re;
   int status;
@@ -249,6 +249,7 @@ gboolean strcpy_with_query_preformatting (char* output, char* input, SearchItem 
         strncat(output, kana, leftover);
         leftover -= strlen(kana);
         strncat(output, ")",  leftover);
+        printf("%s\n", output);
 
         return TRUE;
       }

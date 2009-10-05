@@ -50,7 +50,7 @@
 #include <gwaei/utilities.h>
 #include <gwaei/formatting.h>
 
-gboolean less_relevant_title_inserted = FALSE;
+static gboolean less_relevant_title_inserted = FALSE;
 gboolean less_relevant_results_show = TRUE;
 
 
@@ -64,7 +64,7 @@ gboolean less_relevant_results_show = TRUE;
 //!
 //! @param item a SearchItem to get the result from
 //!
-void append_result_to_output (SearchItem *item)
+static void append_result_to_output (SearchItem *item)
 {
     if (gwaei_util_get_runmode() == GWAEI_CONSOLE_RUNMODE)
     {
@@ -88,7 +88,7 @@ void append_result_to_output (SearchItem *item)
 //!
 //! @param item a SearchItem to get the result numbers from
 //!
-void append_more_relevant_header_to_output(SearchItem *item)
+static void append_more_relevant_header_to_output(SearchItem *item)
 {
     if (gwaei_util_get_runmode() == GWAEI_CONSOLE_RUNMODE)
     {
@@ -115,7 +115,7 @@ void append_more_relevant_header_to_output(SearchItem *item)
 //!
 //! @param item a SearchItem to get the result numbers from
 //!
-void append_less_relevant_header_to_output(SearchItem *item)
+static void append_less_relevant_header_to_output(SearchItem *item)
 {
     if (gwaei_util_get_runmode() == GWAEI_CONSOLE_RUNMODE)
     {
@@ -149,7 +149,7 @@ void append_less_relevant_header_to_output(SearchItem *item)
 //! @param item a SearchItem
 //! @param results the result stored in a GList to free
 //!
-void append_stored_result_to_output (SearchItem *item, GList **results)
+static void append_stored_result_to_output (SearchItem *item, GList **results)
 {
     if (less_relevant_results_show || item->total_relevant_results == 0)
     {
@@ -186,7 +186,7 @@ void append_stored_result_to_output (SearchItem *item, GList **results)
 //! @param item a search item to grab the regrexes from
 //! @return Returns one of the integers: LOW_RELEVANCE, MEDIUM_RELEVANCE, or HIGH_RELEVANCE.
 //!
-int get_relevance (char* text, SearchItem *item) {
+static int get_relevance (char* text, SearchItem *item) {
     int i;
 
     //Check for at least medium relevance
@@ -214,7 +214,7 @@ int get_relevance (char* text, SearchItem *item) {
 //! @param data A SearchItem to search with
 //! @return Returns true when the search isn't finished yet.
 //!
-gboolean stream_results_thread (SearchItem *item)
+static gboolean stream_results_thread (SearchItem *item)
 {
     char *dictionary = item->dictionary->name;
     int dictionary_type = item->dictionary->type;
@@ -382,7 +382,7 @@ gboolean stream_results_thread (SearchItem *item)
 //! @param data A SearchItem to clean up the data of
 //! @return currently unused
 //!
-gboolean stream_results_cleanup (SearchItem *item)
+static gboolean stream_results_cleanup (SearchItem *item)
 {
     searchitem_do_post_search_clean (item);
     less_relevant_title_inserted = FALSE;

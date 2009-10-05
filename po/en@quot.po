@@ -29,8 +29,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 1.1Dev\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2009-10-04 18:16-0400\n"
-"PO-Revision-Date: 2009-10-04 18:16-0400\n"
+"POT-Creation-Date: 2009-10-05 07:49-0400\n"
+"PO-Revision-Date: 2009-10-05 07:49-0400\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -38,31 +38,31 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/formatting.c:473
+#: src/formatting.c:518
 msgid "Grade:"
 msgstr "Grade:"
 
-#: src/formatting.c:479
+#: src/formatting.c:524
 msgid "Stroke:"
 msgstr "Stroke:"
 
-#: src/formatting.c:485
+#: src/formatting.c:530
 msgid "Freq:"
 msgstr "Freq:"
 
-#: src/formatting.c:491
+#: src/formatting.c:536
 msgid "JLPT:"
 msgstr "JLPT:"
 
-#: src/formatting.c:517 src/xml/settings.glade:1608
+#: src/formatting.c:562 src/xml/settings.glade:1608
 msgid "Radicals:"
 msgstr "Radicals:"
 
-#: src/formatting.c:546
+#: src/formatting.c:591
 msgid "Readings:"
 msgstr "Readings:"
 
-#: src/formatting.c:569 src/formatting.c:570
+#: src/formatting.c:614 src/formatting.c:615
 msgid "Meanings:"
 msgstr "Meanings:"
 
@@ -307,24 +307,24 @@ msgstr "Syncing possible installed dictionaries..."
 msgid "Requested dictionary not found!\n"
 msgstr "Requested dictionary not found!\n"
 
-#: src/main-interface-console.c:545 src/main-interface-gtk.c:559
+#: src/main-interface-console.c:540 src/main-interface-gtk.c:559
 #: src/xml/main.glade:893
 msgid "Found "
 msgstr "Found "
 
-#: src/main-interface-console.c:547 src/xml/main.glade:913
+#: src/main-interface-console.c:542 src/xml/main.glade:913
 msgid " Results"
 msgstr " Results"
 
-#: src/main-interface-console.c:551 src/xml/main.glade:926
+#: src/main-interface-console.c:546 src/xml/main.glade:926
 msgid " ("
 msgstr " ("
 
-#: src/main-interface-console.c:553 src/xml/main.glade:946
+#: src/main-interface-console.c:548 src/xml/main.glade:946
 msgid " Relevant)"
 msgstr " Relevant)"
 
-#: src/main-interface-console.c:560
+#: src/main-interface-console.c:555
 #, c-format
 msgid ""
 "Results seem to have incorrect formatting. Did you close all of your\n"
@@ -534,7 +534,7 @@ msgstr "_Cycle Up"
 msgid "Cycle _Down"
 msgstr "Cycle _Down"
 
-#: src/main-interface-gtk.c:1717 src/engine.c:411
+#: src/main-interface-gtk.c:1717 src/engine.c:361
 msgid "No results found!"
 msgstr "No results found!"
 
@@ -883,15 +883,15 @@ msgstr ""
 "Program for Japanese translation and reference. The\n"
 "dictionaries are supplied by Jim Breen's WWWJDIC."
 
-#: src/engine.c:89
+#: src/engine.c:102
 msgid "Main Results "
 msgstr "Main Results "
 
-#: src/engine.c:101
+#: src/engine.c:122
 msgid "Other Results"
 msgstr "Other Results"
 
-#: src/engine.c:109
+#: src/engine.c:130
 msgid "Other Results "
 msgstr "Other Results "
 
