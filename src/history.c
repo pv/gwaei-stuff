@@ -74,6 +74,8 @@ SearchItem* searchitem_new (char* query, DictionaryInfo* dictionary,
   temp->total_results = 0;
   temp->results_found = TRUE;
   temp->current_line = 0;
+  char *key = GCKEY_GWAEI_LESS_RELEVANT_SHOW; 
+  temp->show_less_relevant_results = gwaei_pref_get_boolean (key, TRUE);
 
   //Create the compiled regular expression
   int eflags_exist    = REG_EXTENDED | REG_ICASE | REG_NOSUB;

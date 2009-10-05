@@ -949,8 +949,6 @@ void gwaei_ui_set_less_relevant_show(gboolean show)
   g_signal_handlers_block_by_func(G_OBJECT (action), do_less_relevant_results_toggle, NULL);
   gtk_toggle_action_set_active(GTK_TOGGLE_ACTION (action), show);
   g_signal_handlers_unblock_by_func(G_OBJECT (action), do_less_relevant_results_toggle, NULL);
-
-  less_relevant_results_show = show;
 }
 
 

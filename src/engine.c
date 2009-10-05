@@ -51,7 +51,6 @@
 #include <gwaei/formatting.h>
 
 static gboolean less_relevant_title_inserted = FALSE;
-gboolean less_relevant_results_show = TRUE;
 
 
 //!
@@ -151,7 +150,7 @@ static void append_less_relevant_header_to_output(SearchItem *item)
 //!
 static void append_stored_result_to_output (SearchItem *item, GList **results)
 {
-    if (less_relevant_results_show || item->total_relevant_results == 0)
+    if (item->show_less_relevant_results || item->total_relevant_results == 0)
     {
       if (gwaei_util_get_runmode () == GWAEI_CONSOLE_RUNMODE)
       {
@@ -161,12 +160,12 @@ static void append_stored_result_to_output (SearchItem *item, GList **results)
       }
       else if (item->status != CANCELING)
       {
-          int start, end;
-          strcpy(item->input, (char*)(*results)->data);
-          add_group_formatting (item);
-          gwaei_ui_append_to_buffer (item->target, item->input,
-                                     NULL, NULL, &start, &end);
-          gwaei_ui_add_results_tagging (start, end, item);
+        int start, end;
+        strcpy(item->input, (char*)(*results)->data);
+        add_group_formatting (item);
+        gwaei_ui_append_to_buffer (item->target, item->input,
+                                   NULL, NULL, &start, &end);
+        gwaei_ui_add_results_tagging (start, end, item);
       }
     }
 
@@ -322,7 +321,7 @@ static gboolean stream_results_thread (SearchItem *item)
     }
 
     //Insert the less relevant title header if needed
-    if ( less_relevant_results_show    &&
+    if ( item->show_less_relevant_results    &&
          !less_relevant_title_inserted &&
          (item->results_medium != NULL || item->results_low != NULL) )
     {
@@ -393,11 +392,7 @@ static gboolean stream_results_cleanup (SearchItem *item)
       gwaei_ui_finalize_total_results_label (item);
       if (item->target == GWAEI_TARGET_RESULTS)
         gwaei_ui_update_search_progressbar (0, 0);
-    }
-     
-    //Correct for background toggling of the boolean
-    char *key = GCKEY_GWAEI_LESS_RELEVANT_SHOW; 
-    less_relevant_results_show = gwaei_pref_get_boolean (key, TRUE);
+    }     
 }
 
 
@@ -414,7 +409,7 @@ void gwaei_search_get_results (SearchItem *item)
 {
     //Misc preparations
     if (item->dictionary->type == KANJI || item->dictionary->type == RADICALS)
-      less_relevant_results_show = TRUE;
+      item->show_less_relevant_results = TRUE;
 
     if (gwaei_util_get_runmode () != GWAEI_CONSOLE_RUNMODE)
       gwaei_ui_clear_buffer_by_target (item->target);

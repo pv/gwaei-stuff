@@ -2,4 +2,3 @@
 void gwaei_search_get_results (SearchItem*);
 
 
-gboolean less_relevant_results_show;

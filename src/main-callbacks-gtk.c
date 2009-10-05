@@ -268,6 +268,7 @@ G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
         historylist_go_forward_by_target (GWAEI_HISTORYLIST_RESULTS);
     }
 
+    searchitem_reset_result_counters(hl->current);
     gwaei_search_get_results(hl->current);
     gwaei_ui_update_history_popups();
     update_toolbar_buttons();
@@ -467,12 +468,7 @@ G_MODULE_EXPORT void do_less_relevant_results_toggle (GtkWidget *widget, gpointe
     gboolean state;
     state = gwaei_pref_get_boolean (GCKEY_GWAEI_LESS_RELEVANT_SHOW, TRUE);
     gwaei_pref_set_boolean (GCKEY_GWAEI_LESS_RELEVANT_SHOW, !state);
-/*
-    HistoryList *hl = historylist_get_list (GWAEI_HISTORYLIST_RESULTS);
 
-    if (hl->current != NULL && hl->current->target == GWAEI_TARGET_RESULTS)
-      gwaei_search_get_results (hl->current);
-*/
     printf("Toggle less relevent results button was clicked\n");
 }
 
@@ -859,12 +855,16 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
     gchar query[MAX_QUERY];
     gwaei_ui_strcpy_from_widget(query, MAX_QUERY, GWAEI_TARGET_ENTRY);
 
+    char *gckey = GCKEY_GWAEI_LESS_RELEVANT_SHOW; 
+    gboolean show_less_relevant = gwaei_pref_get_boolean (gckey, TRUE);
+
     if (strlen (query) == 0)
       return;
 
     if (hl->current != NULL &&
         strcmp (query, hl->current->query) == 0 &&
-        dictionary->id == hl->current->dictionary->id)
+        dictionary->id == hl->current->dictionary->id &&
+        show_less_relevant == hl->current->show_less_relevant_results)
       return;
 
     if (gwaei_ui_cancel_search_by_target(GWAEI_TARGET_RESULTS) == FALSE)

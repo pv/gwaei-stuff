@@ -54,8 +54,6 @@ G_MODULE_EXPORT void do_radical_clear (GtkWidget *widget, gpointer data)
 
 G_MODULE_EXPORT void do_radical_search (GtkWidget *widget, gpointer data)
 {
-    less_relevant_results_show = TRUE;
-
     HistoryList* hl = historylist_get_list(GWAEI_HISTORYLIST_RESULTS);   
 
     int leftover = 250;
@@ -74,9 +72,6 @@ G_MODULE_EXPORT void do_radical_search (GtkWidget *widget, gpointer data)
 
     DictionaryInfo *dictionary;
     dictionary = dictionarylist_get_dictionary_by_alias ("Radicals");
-
-    //SearchItem *item;
-    //item = searchitem_new (query, dictionary, GWAEI_TARGET_RESULTS);
 
     if (gwaei_ui_cancel_search_by_target(GWAEI_TARGET_RESULTS) == FALSE)
       return;

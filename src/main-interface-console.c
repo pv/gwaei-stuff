@@ -358,7 +358,6 @@ void initialize_console_interface(int argc, char **argv)
     if (is_switch (argv[i], "-e", "--exact"))
     {
       exact_switch = TRUE;
-      less_relevant_results_show = FALSE;
     }
 
     else if (is_switch (argv[i], "-q", "--quiet"))
@@ -530,6 +529,8 @@ void initialize_console_interface(int argc, char **argv)
 
     SearchItem *item;
     item = searchitem_new(query, di, GWAEI_TARGET_CONSOLE);
+    item->show_less_relevant_results = !exact_switch;
+
     if (item != NULL )
     {
       gwaei_search_get_results (item);
