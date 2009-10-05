@@ -249,7 +249,6 @@ gboolean strcpy_with_query_preformatting (char* output, char* input, SearchItem 
         strncat(output, kana, leftover);
         leftover -= strlen(kana);
         strncat(output, ")",  leftover);
-        printf("%s\n", output);
 
         return TRUE;
       }

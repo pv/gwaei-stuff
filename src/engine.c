@@ -189,18 +189,18 @@ static void append_stored_result_to_output (SearchItem *item, GList **results)
 static int get_relevance (char* text, SearchItem *item) {
     int i;
 
-    //Check for at least medium relevance
+    //The search results is freakin' gold :-D
     for (i = 0; i < item->total_re; i++)
-      if (regexec(&(item->re_relevance_medium[i]), text, 1, NULL, 0) != 0)
-        return LOW_RELEVANCE;
+      if (regexec(&(item->re_relevance_high[i]), text, 1, NULL, 0) == 0)
+        return HIGH_RELEVANCE;
 
-    //Check for at least high relevance
+    //Blarg.  A search result that may come in useful. :-)
     for (i = 0; i < item->total_re; i++)
-      if (regexec(&(item->re_relevance_high[i]), text, 1, NULL, 0) != 0)
+      if (regexec(&(item->re_relevance_medium[i]), text, 1, NULL, 0) == 0)
         return MEDIUM_RELEVANCE;
 
-    //Return high
-    return HIGH_RELEVANCE;
+    //Search result wasn't relevent. :-(
+    return LOW_RELEVANCE;
 }
 
 
@@ -324,7 +324,6 @@ static gboolean stream_results_thread (SearchItem *item)
     //Insert the less relevant title header if needed
     if ( less_relevant_results_show    &&
          !less_relevant_title_inserted &&
-         item->total_relevant_results > 0    &&
          (item->results_medium != NULL || item->results_low != NULL) )
     {
       append_less_relevant_header_to_output(item);
