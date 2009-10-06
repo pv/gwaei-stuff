@@ -3,8 +3,7 @@ Version: @VERSION@
 Section: gnome
 Priority: optional
 Architecture: @ARCH@
-Depends: libgtk2.0-0 (>= 2.16.1), libgconf2-4 (>= 2.26.0), libcurl3 (>= 7.18.2), gconf2 (>= 2.26.0), libsexy2 (>= 0.1.11), gnome-doc-utils (>= 0.16.0)
-Recommends: ttf-kanjistrokeorders
+Depends: libgtk2.0-0 (>= 2.16.1), libgconf2-4 (>= 2.26.0), libcurl3 (>= 7.18.2), gconf2 (>= 2.26.0), libsexy2 (>= 0.1.11), gnome-doc-utils (>= 0.16.0), ttf-kanjistrokeorders
 Maintainer: Zachary Dovel <pizzach@gmail.com>
 Description: Japanese-English Dictionary for GNOME
   gWaei is a drop-in replacement for Gjiten. The main
