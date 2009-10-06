@@ -13,6 +13,9 @@
     <property name="default_width">620</property>
     <property name="default_height">500</property>
     <property name="icon_name">gwaei</property>
+    <accel-groups>
+      <group name="main_accelgroup"/>
+    </accel-groups>
     <signal name="style_set" handler="do_update_styles"/>
     <signal name="delete_event" handler="do_delete_event_action"/>
     <child>
@@ -40,7 +43,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="save_menuitem">
+                      <object class="GtkImageMenuItem" id="append_menuitem">
                         <property name="visible">True</property>
                         <property name="use_action_appearance">True</property>
                         <property name="related_action">file_append_action</property>
@@ -111,6 +114,7 @@
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="w" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                        <signal name="activate" handler="do_close"/>
                       </object>
                     </child>
                     <child>
@@ -271,7 +275,7 @@
                 <property name="label" translatable="yes">_Insert</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
-                  <object class="GtkMenu" id="menu2">
+                  <object class="GtkMenu" id="tools_popup">
                     <property name="visible">True</property>
                     <child>
                       <object class="GtkImageMenuItem" id="kanjipad_menuitem">
@@ -299,20 +303,20 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="word_boundary_menuitem">
+                      <object class="GtkImageMenuItem" id="word_edge_menuitem">
                         <property name="visible">True</property>
                         <property name="use_action_appearance">True</property>
-                        <property name="related_action">insert_word_boundary_action</property>
+                        <property name="related_action">insert_word_edge_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="b" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="non_word_boundary_enuitem">
+                      <object class="GtkImageMenuItem" id="not_word_edge_menuitem">
                         <property name="visible">True</property>
                         <property name="use_action_appearance">True</property>
-                        <property name="related_action">insert_non_word_boundary_action</property>
+                        <property name="related_action">insert_not_word_edge_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="b" signal="activate" modifiers="GDK_SHIFT_MASK | GDK_CONTROL_MASK"/>
@@ -412,6 +416,7 @@
                         <property name="related_action">help_program_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <accelerator key="F1" signal="activate"/>
                       </object>
                     </child>
                     <child>
@@ -541,7 +546,7 @@
               <object class="GtkToolButton" id="word_boundary_toolitem">
                 <property name="visible">True</property>
                 <property name="use_action_appearance">True</property>
-                <property name="related_action">insert_word_boundary_action</property>
+                <property name="related_action">insert_word_edge_action</property>
                 <property name="label" translatable="yes">Bound</property>
               </object>
               <packing>
@@ -553,7 +558,7 @@
               <object class="GtkToolButton" id="non_word_boundary_toolitem">
                 <property name="visible">True</property>
                 <property name="use_action_appearance">True</property>
-                <property name="related_action">insert_non_word_boundary_action</property>
+                <property name="related_action">insert_not_word_edge_action</property>
                 <property name="label" translatable="yes">Not Bound</property>
               </object>
               <packing>
@@ -781,6 +786,7 @@
                             <signal name="button_press_event" handler="do_get_position_for_button_press"/>
                             <signal name="motion_notify_event" handler="do_get_iter_for_motion"/>
                             <signal name="drag_drop" handler="drag_drop_1"/>
+                            <signal name="move_viewport" handler="do_move_cursor_onscreen"/>
                             <signal name="button_release_event" handler="do_get_iter_for_button_release"/>
                             <signal name="drag_leave" handler="drag_leave_1"/>
                             <signal name="drag_data_received" handler="search_drag_data_recieved"/>
@@ -871,12 +877,12 @@
                             <property name="right_margin">5</property>
                             <property name="cursor_visible">False</property>
                             <property name="accepts_tab">False</property>
-                            <signal name="drag_data_received" handler="search_drag_data_recieved"/>
+                            <signal name="drag_leave" handler="drag_leave_1"/>
                             <signal name="drag_motion" handler="drag_motion_1"/>
                             <signal name="key_press_event" handler="do_focus_change_on_key_press"/>
                             <signal name="drag_drop" handler="drag_drop_1"/>
-                            <signal name="drag_leave" handler="drag_leave_1"/>
                             <signal name="copy_clipboard" handler="do_copy"/>
+                            <signal name="drag_data_received" handler="search_drag_data_recieved"/>
                             <signal name="focus_in_event" handler="do_update_clipboard_on_focus_change" object="kanji_text_view"/>
                           </object>
                         </child>
@@ -1111,19 +1117,19 @@
     <property name="stock_id">gtk-find</property>
     <signal name="activate" handler="do_radical_search_tool"/>
   </object>
-  <object class="GtkAction" id="insert_word_boundary_action">
+  <object class="GtkAction" id="insert_word_edge_action">
     <property name="label">_Word-edge Mark</property>
     <property name="short_label">Edge</property>
-    <property name="tooltip">Insert a word-boundary character</property>
+    <property name="tooltip">Insert a word-edge character</property>
     <property name="icon_name">word-boundary</property>
-    <signal name="activate" handler="do_insert_word_boundary"/>
+    <signal name="activate" handler="do_insert_word_edge"/>
   </object>
-  <object class="GtkAction" id="insert_non_word_boundary_action">
+  <object class="GtkAction" id="insert_not_word_edge_action">
     <property name="label">_Not-word-edge Mark</property>
     <property name="short_label">Not Edge</property>
-    <property name="tooltip">Insert a word-boundary character</property>
+    <property name="tooltip">Insert a not word-edege character</property>
     <property name="icon_name">non-word-boundary</property>
-    <signal name="activate" handler="do_insert_not_word_boundary"/>
+    <signal name="activate" handler="do_insert_not_word_edge"/>
   </object>
   <object class="GtkAction" id="insert_unknown_character_action">
     <property name="label">_Unknown Character</property>
@@ -1183,4 +1189,6 @@
     </columns>
   </object>
   <object class="GtkTextBuffer" id="textbuffer1"/>
+  <object class="GtkAccelGroup" id="main_accelgroup"/>
+  <object class="GtkActionGroup" id="main_actiongroup"/>
 </interface>

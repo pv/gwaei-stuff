@@ -242,6 +242,7 @@ G_MODULE_EXPORT gboolean do_close_on_escape (GtkWidget *widget,
 
 G_MODULE_EXPORT void do_quit (GtkWidget *widget, gpointer data)
 {
+    printf("Quitting...\n");
     do_close(widget, data);
     gtk_main_quit ();
 }
@@ -934,13 +935,13 @@ G_MODULE_EXPORT void do_insert_unknown_character(GtkWidget *widget, gpointer dat
 }
 
 
-G_MODULE_EXPORT void do_insert_word_boundary(GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void do_insert_word_edge(GtkWidget *widget, gpointer data)
 {
     gwaei_ui_search_entry_insert ("\\b");
 }
 
 
-G_MODULE_EXPORT void do_insert_not_word_boundary(GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void do_insert_not_word_edge(GtkWidget *widget, gpointer data)
 {
     gwaei_ui_search_entry_insert ("\\B");
 }
@@ -997,6 +998,27 @@ G_MODULE_EXPORT void do_open_dictionary_folder(GtkWidget *widget, gpointer data)
 }
 
 
+//!
+//! \brief Moves the cursor on screen
+//!
+//! This function is used as a callback during scrolling to keep the cursor
+//! on the screen.  The effect is, if the user types a letter by accident, the
+//! buffer won't suddenly jump all the way to the bottom (where the cursor
+//! normally is after all these operations.)
+//!
+G_MODULE_EXPORT void do_move_cursor_onscreen (GtkWidget *widget, gpointer data)
+{
+    gtk_text_view_place_cursor_onscreen (widget);
+}
+
+
+//!
+//! \brief Drag an drop code for starting searches
+//!
+//! Uses the dropped text to automatically start a search.  It generally works
+//! really well except for it can't get text from it's own buffer for some
+//! reason...
+//!
 G_MODULE_EXPORT gboolean drag_motion_1 (GtkWidget      *widget,
                                         GdkDragContext *drag_context,
                                         gint            x,
@@ -1066,6 +1088,14 @@ G_MODULE_EXPORT void search_drag_data_recieved (GtkWidget        *widget,
     }
 }
 
+
+//!
+//! \brief Hides/shows buttons depending on search entry text
+//!
+//! Currently this function just hides and shown the clear icon depending if
+//! there is any text in the entry.  Previously, this would also set the search
+//! button in it's insensitive state also.
+//!
 G_MODULE_EXPORT void do_update_button_states_based_on_entry_text (GtkWidget *widget,
                                                                   gpointer   data   )
 {
