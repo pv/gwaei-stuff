@@ -5,6 +5,8 @@ src/waei
 Makefile
 src/.deps/*
 *.gmo
+*.rpm
+*.deb
 
 
 #Files created by configure
