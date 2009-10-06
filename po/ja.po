@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2009-10-05 21:36-0400\n"
+"POT-Creation-Date: 2009-10-06 13:10-0400\n"
 "PO-Revision-Date: 2008-11-30 02:35+0500\n"
 "Last-Translator: Zachary Dovel pizzach@gmail.com\n"
 "Language-Team: Not Applicable\n"
@@ -391,7 +391,6 @@ msgid "_Edge"
 msgstr "言葉端(_E)"
 
 #: src/main-interface-gtk.c:163
-#, fuzzy
 msgid "Insert a word-edge character"
 msgstr "言葉端の文字を挿入する"
 
@@ -404,7 +403,6 @@ msgid "_Not Edge"
 msgstr "非言葉端"
 
 #: src/main-interface-gtk.c:171
-#, fuzzy
 msgid "Insert a not-word-edge character"
 msgstr "非言葉端の文字を挿入する"
 
@@ -790,19 +788,19 @@ msgstr "語彙.txt"
 msgid "Save"
 msgstr "保存"
 
-#: src/main-callbacks-gtk.c:721
+#: src/main-callbacks-gtk.c:727
 msgid "Italian: "
 msgstr "イタリア語: "
 
-#: src/main-callbacks-gtk.c:722
+#: src/main-callbacks-gtk.c:728
 msgid "Japanese: "
 msgstr "日本語: "
 
-#: src/main-callbacks-gtk.c:723
+#: src/main-callbacks-gtk.c:729
 msgid "Spanish: "
 msgstr "スペイン語: "
 
-#: src/main-callbacks-gtk.c:744
+#: src/main-callbacks-gtk.c:750
 msgid ""
 "gWaei (C) 2008-2009 Zachary Dovel\n"
 "Kanjipad backend (C) 2002 Owen Taylor\n"
@@ -812,7 +810,7 @@ msgstr ""
 "漢字パッド バックエンド (C) 2002 Owen Taylor\n"
 "JStroke バックエンド(C) 1997 Robert Wells"
 
-#: src/main-callbacks-gtk.c:745
+#: src/main-callbacks-gtk.c:751
 msgid ""
 "Program for Japanese translation and reference. The\n"
 "dictionaries are supplied by Jim Breen's WWWJDIC."
