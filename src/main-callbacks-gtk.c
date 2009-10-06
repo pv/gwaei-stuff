@@ -1008,7 +1008,7 @@ G_MODULE_EXPORT void do_open_dictionary_folder(GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void do_move_cursor_onscreen (GtkWidget *widget, gpointer data)
 {
-    gtk_text_view_place_cursor_onscreen (widget);
+    gtk_text_view_place_cursor_onscreen (GTK_TEXT_VIEW (widget));
 }
 
 
