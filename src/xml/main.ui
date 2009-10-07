@@ -9,6 +9,7 @@
     <property name="visible">True</property>
   </object>
   <object class="GtkWindow" id="main_window">
+    <property name="events">GDK_POINTER_MOTION_MASK | GDK_BUTTON_MOTION_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_STRUCTURE_MASK</property>
     <property name="title" translatable="yes">gWaei Japanese-English Dictionary</property>
     <property name="default_width">620</property>
     <property name="default_height">500</property>
@@ -17,6 +18,7 @@
       <group name="main_accelgroup"/>
     </accel-groups>
     <signal name="style_set" handler="do_update_styles"/>
+    <signal name="event_after" handler="update_icons_for_selection"/>
     <signal name="delete_event" handler="do_delete_event_action"/>
     <child>
       <object class="GtkVBox" id="main_vbox">
@@ -684,6 +686,7 @@
                     <property name="is_focus">True</property>
                     <property name="can_default">True</property>
                     <property name="has_default">True</property>
+                    <property name="events">GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_STRUCTURE_MASK</property>
                     <property name="tooltip_text" translatable="yes">Input your query here</property>
                     <property name="max_length">50</property>
                     <property name="caps_lock_warning">False</property>
@@ -774,7 +777,8 @@
                           <object class="GtkTextView" id="results_text_view">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_STRUCTURE_MASK</property>
+                            <property name="is_focus">True</property>
+                            <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_STRUCTURE_MASK</property>
                             <property name="editable">False</property>
                             <property name="wrap_mode">word</property>
                             <property name="left_margin">10</property>
@@ -791,6 +795,7 @@
                             <signal name="drag_leave" handler="drag_leave_1"/>
                             <signal name="drag_data_received" handler="search_drag_data_recieved"/>
                             <signal name="key_press_event" handler="do_focus_change_on_key_press"/>
+                            <signal name="event_after" handler="update_icons_for_selection"/>
                           </object>
                         </child>
                       </object>
@@ -868,6 +873,7 @@
                           <object class="GtkTextView" id="kanji_text_view">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
+                            <property name="events">GDK_POINTER_MOTION_MASK | GDK_BUTTON_MOTION_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_STRUCTURE_MASK</property>
                             <property name="pixels_above_lines">8</property>
                             <property name="pixels_below_lines">8</property>
                             <property name="editable">False</property>
@@ -877,13 +883,14 @@
                             <property name="right_margin">5</property>
                             <property name="cursor_visible">False</property>
                             <property name="accepts_tab">False</property>
-                            <signal name="drag_leave" handler="drag_leave_1"/>
                             <signal name="drag_motion" handler="drag_motion_1"/>
-                            <signal name="key_press_event" handler="do_focus_change_on_key_press"/>
-                            <signal name="drag_drop" handler="drag_drop_1"/>
-                            <signal name="copy_clipboard" handler="do_copy"/>
-                            <signal name="drag_data_received" handler="search_drag_data_recieved"/>
                             <signal name="focus_in_event" handler="do_update_clipboard_on_focus_change" object="kanji_text_view"/>
+                            <signal name="copy_clipboard" handler="do_copy"/>
+                            <signal name="drag_drop" handler="drag_drop_1"/>
+                            <signal name="drag_leave" handler="drag_leave_1"/>
+                            <signal name="drag_data_received" handler="search_drag_data_recieved"/>
+                            <signal name="event_after" handler="update_icons_for_selection"/>
+                            <signal name="key_press_event" handler="do_focus_change_on_key_press"/>
                           </object>
                         </child>
                       </object>

@@ -30,6 +30,9 @@ po/Makefile
 po/Makefile.in
 po/en@boldquot.insert-header
 po/en@quot.insert-header
+po/en@boldquot.po
+po/en@quot.po
+
 po/remove-potcdate.sed
 po/Makevars.template
 po/stamp-it

@@ -428,7 +428,7 @@ void gwaei_ui_show_window (char *id)
 }
 
 
-void update_toolbar_buttons()
+void gwaei_ui_update_toolbar_buttons()
 {
     const int id_length = 50;
     char id[id_length];
@@ -496,6 +496,41 @@ void update_toolbar_buttons()
     strncpy(id, "history_forward_action", id_length);
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
       gtk_action_set_sensitive (action, (historylist_get_forward_history (GWAEI_TARGET_RESULTS) != NULL));
+
+    //Update cut/copy buttons
+    gboolean sensitive;
+    if (GTK_WIDGET_HAS_FOCUS(search_entry) )
+    {
+      sensitive = (gtk_editable_get_selection_bounds (GTK_EDITABLE (search_entry), NULL, NULL));
+      strncpy(id, "edit_copy_action", id_length);
+      action = GTK_ACTION (gtk_builder_get_object (builder, id));
+      gtk_action_set_sensitive (action, sensitive);
+      strncpy(id, "edit_cut_action", id_length);
+      action = GTK_ACTION (gtk_builder_get_object (builder, id));
+      gtk_action_set_sensitive (action, sensitive);
+    }
+    else if (GTK_WIDGET_HAS_FOCUS(results_tv))
+    {
+      sensitive = (gwaei_ui_has_selection_by_target (GWAEI_TARGET_RESULTS));
+      strncpy(id, "edit_copy_action", id_length);
+      action = GTK_ACTION (gtk_builder_get_object (builder, id));
+      gtk_action_set_sensitive (action, sensitive);
+      strncpy(id, "edit_cut_action", id_length);
+      action = GTK_ACTION (gtk_builder_get_object (builder, id));
+      gtk_action_set_sensitive (action, FALSE);
+    }
+
+    else if (GTK_WIDGET_HAS_FOCUS(kanji_tv))
+    {
+      sensitive = (gwaei_ui_has_selection_by_target (GWAEI_TARGET_KANJI));
+      strncpy(id, "edit_copy_action", id_length);
+      action = GTK_ACTION (gtk_builder_get_object (builder, id));
+      gtk_action_set_sensitive (action, sensitive);
+      strncpy(id, "edit_cut_action", id_length);
+      action = GTK_ACTION (gtk_builder_get_object (builder, id));
+      gtk_action_set_sensitive (action, FALSE);
+    }
+
 }
 
 
@@ -2351,4 +2386,19 @@ gboolean gwaei_ui_cancel_search_by_target(const int TARGET)
       gdk_threads_enter();
     }
     return TRUE;
+}
+
+
+//!
+//! \brief Abstraction function to find out if some text is selected
+//!
+//! It gets the requested text buffer and then returns if it has text selected
+//! or not.
+//!
+//! @param TARGET A constant int representing a text buffer
+//!
+gboolean gwaei_ui_has_selection_by_target (const int TARGET)
+{
+    GObject* tb = get_gobject_from_target(TARGET);
+    return (gtk_text_buffer_get_has_selection (GTK_TEXT_BUFFER (tb)));
 }

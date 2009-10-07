@@ -266,7 +266,7 @@ G_MODULE_EXPORT void do_close (GtkWidget *widget, gpointer data)
       if (rebuild_combobox_dictionary_list () > 0)
       {
         gtk_widget_hide (widget);
-        update_toolbar_buttons ();
+        gwaei_ui_update_toolbar_buttons ();
       }
       else
       {
@@ -388,7 +388,7 @@ G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
     searchitem_reset_result_counters (hl->current);
     gwaei_search_get_results (hl->current);
     gwaei_ui_update_history_popups ();
-    update_toolbar_buttons ();
+    gwaei_ui_update_toolbar_buttons ();
 
     //Set the search string in the GtkEntry
     gwaei_ui_clear_search_entry ();
@@ -920,18 +920,12 @@ G_MODULE_EXPORT gboolean do_update_clipboard_on_focus_change (GtkWidget        *
                                                widget                      );
 
 
-    //Correct the sensitive states of the menuitems
+    //Correct the sensitive state to paste
     if (gwaei_ui_widget_equals_target (data, GWAEI_TARGET_RESULTS) ||
         gwaei_ui_widget_equals_target (data, GWAEI_TARGET_KANJI)     )
-    {
-      gtk_action_set_sensitive (GTK_ACTION (cut_action), FALSE);
       gtk_action_set_sensitive (GTK_ACTION (paste_action), FALSE);
-    }
     else
-    {
-      gtk_action_set_sensitive (GTK_ACTION (cut_action), TRUE);
       gtk_action_set_sensitive (GTK_ACTION (paste_action), TRUE);
-    }
 
     return FALSE;
 }
@@ -1319,7 +1313,7 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
     gtk_widget_modify_text (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, &forground);
 
     //Update the toolbar buttons
-    update_toolbar_buttons ();
+    gwaei_ui_update_toolbar_buttons ();
 }
 
 
@@ -1618,7 +1612,7 @@ G_MODULE_EXPORT void search_drag_data_recieved (GtkWidget        *widget,
 //!
 //! \brief Hides/shows buttons depending on search entry text
 //!
-//! Currently this function just hides and shown the clear icon depending if
+//! Currently this function just hides and shows the clear icon depending if
 //! there is any text in the entry.  Previously, this would also set the search
 //! button in it's insensitive state also.
 //!
@@ -1641,5 +1635,46 @@ G_MODULE_EXPORT void do_update_button_states_based_on_entry_text (GtkWidget *wid
     gtk_widget_modify_text (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
 }
 
+
+//!
+//! \brief Finds out if some text is selected and updates the buttons accordingly
+//!
+//! When text is found selected, some buttons become sensitive and some have the
+//! label change.  This tells the user they can save/print sections of the
+//! results.
+//!
+//! @param widget Unused GtkWidget pointer
+//! @param data Unused gpointer
+//!
+G_MODULE_EXPORT gboolean update_icons_for_selection (GtkWidget *widget, 
+                                                     GdkEvent  *event,
+                                                     gpointer   data   ) 
+{
+    GtkAction *action;
+    action = GTK_ACTION (gtk_builder_get_object (builder, "file_print_action"));
+    //Set the special buttons
+    if ((event->type == GDK_MOTION_NOTIFY || event->type == GDK_BUTTON_RELEASE) && gwaei_ui_has_selection_by_target (GWAEI_TARGET_RESULTS))
+    {
+      gwaei_ui_update_toolbar_buttons();
+      action = GTK_ACTION (gtk_builder_get_object (builder, "file_append_action"));
+      gtk_action_set_label (action, gettext("A_ppend Selected"));
+      action = GTK_ACTION (gtk_builder_get_object (builder, "file_save_as_action"));
+      gtk_action_set_label (action, gettext("Save Selected _As"));
+      action = GTK_ACTION (gtk_builder_get_object (builder, "file_print_action"));
+      gtk_action_set_label (action, gettext("_Print Selected"));
+    }
+    //Reset the buttons to their normal states
+    else if ((event->type == GDK_FOCUS_CHANGE || event->type == GDK_BUTTON_RELEASE || event->type == GDK_KEY_RELEASE || event->type == GDK_LEAVE_NOTIFY) && !gwaei_ui_has_selection_by_target (GWAEI_TARGET_RESULTS))
+    {
+      gwaei_ui_update_toolbar_buttons();
+      action = GTK_ACTION (gtk_builder_get_object (builder, "file_append_action"));
+      gtk_action_set_label (action, gettext("A_ppend"));
+      action = GTK_ACTION (gtk_builder_get_object (builder, "file_save_as_action"));
+      gtk_action_set_label (action, NULL);
+      action = GTK_ACTION (gtk_builder_get_object (builder, "file_print_action"));
+      gtk_action_set_label (action, NULL);
+    }
+    return FALSE; 
+}
 
 

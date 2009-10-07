@@ -307,7 +307,7 @@ void do_font_size_pref_changed_action ( GConfClient* client,
 
     gwaei_ui_set_font("Sans", size);
 
-    update_toolbar_buttons ();
+    gwaei_ui_update_toolbar_buttons ();
 }
 
 
