@@ -215,11 +215,11 @@ gboolean strcpy_with_query_preformatting (char* output, char* input, GwSearchIte
       leftover = MAX_QUERY;
       while (leftover-- > 0)
       {
-        kana_ptr = gw_romanji_to_hiragana (input_ptr, kana_ptr);
+        kana_ptr = gw_romaji_to_hiragana (input_ptr, kana_ptr);
         if (kana_ptr == NULL || input_ptr == NULL)
           break;
 
-        input_ptr = gw_next_hiragana_char_from_romanji (input_ptr);
+        input_ptr = gw_next_hiragana_char_from_romaji (input_ptr);
         if (kana_ptr == NULL || input_ptr == NULL)
           break;
 

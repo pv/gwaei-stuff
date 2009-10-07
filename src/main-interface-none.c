@@ -102,7 +102,7 @@ void gw_ui_set_less_relevant_show(gboolean show)
 }
 
 
-void gw_ui_set_romanji_kana_conv(int request)
+void gw_ui_set_romaji_kana_conv(int request)
 {
 }
 

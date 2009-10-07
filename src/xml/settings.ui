@@ -1969,13 +1969,13 @@ choose other installation sources.</property>
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkComboBox" id="query_romanji_to_kana">
+                              <object class="GtkComboBox" id="query_romaji_to_kana">
                                 <property name="visible">True</property>
-                                <property name="model">query_romanji_to_kana_list_store</property>
+                                <property name="model">query_romaji_to_kana_list_store</property>
                                 <property name="active">0</property>
-                                <signal name="changed" handler="do_romanji_kana_conv_change"/>
+                                <signal name="changed" handler="do_romaji_kana_conv_change"/>
                                 <child>
-                                  <object class="GtkCellRendererText" id="query_romanji_to_kana_cell_renderer"/>
+                                  <object class="GtkCellRendererText" id="query_romaji_to_kana_cell_renderer"/>
                                   <attributes>
                                     <attribute name="text">0</attribute>
                                   </attributes>
@@ -2713,9 +2713,9 @@ choose other installation sources.</property>
       </object>
     </child>
   </object>
-  <object class="GtkListStore" id="query_romanji_to_kana_list_store">
+  <object class="GtkListStore" id="query_romaji_to_kana_list_store">
     <columns>
-      <!-- column-name query_romanji_to_kana_column -->
+      <!-- column-name query_romaji_to_kana_column -->
       <column type="gchararray"/>
     </columns>
     <data>

@@ -340,9 +340,9 @@ void do_roman_kana_conv_pref_changed_action( GConfClient* client,
        selection = gconf_value_get_int(value);
 
        if (selection <= 2 && selection >= 0)
-         gw_ui_set_romanji_kana_conv(selection);
+         gw_ui_set_romaji_kana_conv(selection);
        else
-         gw_ui_set_romanji_kana_conv(2);
+         gw_ui_set_romaji_kana_conv(2);
     }
 }
 

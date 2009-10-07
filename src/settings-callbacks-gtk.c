@@ -358,7 +358,7 @@ G_MODULE_EXPORT void do_spellcheck_toggle (GtkWidget *widget, gpointer data)
 }
 
 
-G_MODULE_EXPORT void do_romanji_kana_conv_change (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void do_romaji_kana_conv_change (GtkWidget *widget, gpointer data)
 {
     int active;
     active = gtk_combo_box_get_active(GTK_COMBO_BOX (widget));

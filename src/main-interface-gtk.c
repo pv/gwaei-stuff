@@ -1012,17 +1012,17 @@ void gw_ui_set_less_relevant_show(gboolean show)
 }
 
 
-void gw_ui_set_romanji_kana_conv(int request)
+void gw_ui_set_romaji_kana_conv(int request)
 {
   char id[50];
 
   GtkWidget *widget;
-  strcpy(id, "query_romanji_to_kana");
+  strcpy(id, "query_romaji_to_kana");
   widget = GTK_WIDGET (gtk_builder_get_object(builder, id));
 
-  g_signal_handlers_block_by_func(widget, do_romanji_kana_conv_change, NULL);
+  g_signal_handlers_block_by_func(widget, do_romaji_kana_conv_change, NULL);
   gtk_combo_box_set_active(GTK_COMBO_BOX (widget), request);
-  g_signal_handlers_unblock_by_func(widget, do_romanji_kana_conv_change, NULL);
+  g_signal_handlers_unblock_by_func(widget, do_romaji_kana_conv_change, NULL);
 }
 
 

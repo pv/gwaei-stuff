@@ -42,7 +42,7 @@ gboolean do_close_on_escape (GtkWidget*, GdkEvent*, gpointer*);
 void do_spellcheck_toggle (GtkWidget*, gpointer);
 void do_hiragana_katakana_conv_toggle (GtkWidget*, gpointer);
 void do_katakana_hiragana_conv_toggle (GtkWidget*, gpointer);
-void do_romanji_kana_conv_change (GtkWidget*, gpointer);
+void do_romaji_kana_conv_change (GtkWidget*, gpointer);
 void do_set_color_to_swatch (GtkWidget*, gpointer);
 void do_color_reset_for_swatches (GtkWidget*, gpointer);
 void do_source_entry_changed_action (GtkWidget*, gpointer);

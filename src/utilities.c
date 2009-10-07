@@ -155,7 +155,7 @@ char* get_waei_directory(char *buffer)
 
 
 
-//Check if characters are romanji, katakana, hiragana, or kanji
+//Check if characters are romaji, katakana, hiragana, or kanji
 gboolean gw_all_chars_are_in_range ( char input[],
                                         int  start_unic_boundary,
                                         int  end_unic_boundary    )
@@ -199,7 +199,7 @@ gboolean gw_util_is_kanji_str(char input[])
     return gw_all_chars_are_in_range (input, L'ー', 0xFF00);
 }
 
-gboolean gw_util_is_romanji_str(char input[])
+gboolean gw_util_is_romaji_str(char input[])
 {
     return gw_all_chars_are_in_range (input, L'A', L'z');
 }
@@ -256,11 +256,11 @@ void gw_str_shift_katakana_to_hiragana(char input[])
 
 
 //
-//Functions for managing romanji to hiragana conversions
+//Functions for managing romaji to hiragana conversions
 //
 
 
-char* gw_next_hiragana_char_from_romanji(char *input)
+char* gw_next_hiragana_char_from_romaji(char *input)
 {
     char *input_ptr;
     input_ptr = input;
@@ -322,7 +322,7 @@ char* gw_next_hiragana_char_from_romanji(char *input)
 }
 
 
-char* gw_romanji_to_hiragana(char *input, char *output)
+char* gw_romaji_to_hiragana(char *input, char *output)
 {
     //Set up the input pointer
     char *input_ptr;
@@ -335,7 +335,7 @@ char* gw_romanji_to_hiragana(char *input, char *output)
     char buffer[] = "           ";
     char *buffer_ptr = buffer;
 
-    //Copy the next hiragana char written in romanji to the buffer
+    //Copy the next hiragana char written in romaji to the buffer
     while ( 
             (
               *input_ptr != '\0' &&
