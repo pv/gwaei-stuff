@@ -46,7 +46,7 @@ HistoryList *kanji_history;
 //
 //Searchitem primitive
 //
-SearchItem* searchitem_new (char* query, DictionaryInfo* dictionary,
+SearchItem* searchitem_new (char* query, GwaeiDictInfo* dictionary,
                                          const int TARGET)
 {
   SearchItem *temp;

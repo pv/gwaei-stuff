@@ -487,7 +487,7 @@ void gwaei_ui_update_toolbar_buttons()
     //Update radicals search tool menuitem
     strncpy(id, "insert_radicals_action", id_length);
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
-    enable = (dictionarylist_dictionary_get_status_by_id (RADICALS) == INSTALLED);
+    enable = (gwaei_dictlist_dictionary_get_status_by_id (RADICALS) == INSTALLED);
     gtk_action_set_sensitive(action, enable);
 
     //Update back button
@@ -621,7 +621,7 @@ void gwaei_ui_finalize_total_results_label (SearchItem* item)
 void gwaei_ui_set_dictionary(int request)
 {
     //Set the correct dictionary in the dictionary list
-    dictionarylist_set_selected_by_load_position(request);
+    gwaei_dictlist_set_selected_by_load_position(request);
 
     //Time to make sure everything matches up in the gui
     GtkWidget *combobox;
@@ -659,7 +659,7 @@ int rebuild_combobox_dictionary_list()
     GtkTreeIter iter;
 
     GSList* group = NULL;
-    DictionaryInfo *di;
+    GwaeiDictInfo *di;
     GtkAccelGroup* accel_group;
     accel_group = GTK_ACCEL_GROUP (gtk_builder_get_object (builder, "main_accelgroup"));
     //GtkAccelGroup* accel_group = gtk_accel_group_new();
@@ -690,16 +690,16 @@ int rebuild_combobox_dictionary_list()
     char name[MAX_NAME];
 
     //Start filling in the new items
-    GList* dictionaries = dictionarylist_get_list ();
+    GList* dictionaries = gwaei_dictlist_get_list ();
     while (dictionaries != NULL)
     {
       di = dictionaries->data;
       if (di->status == INSTALLED)
       {
-        if ((dictionarylist_dictionary_get_status_by_id (MIX) == INSTALLED &&
+        if ((gwaei_dictlist_dictionary_get_status_by_id (MIX) == INSTALLED &&
             di->id != KANJI &&
             di->id != RADICALS                                               )||
-           ((dictionarylist_dictionary_get_status_by_id (MIX) != INSTALLED )))
+           ((gwaei_dictlist_dictionary_get_status_by_id (MIX) != INSTALLED )))
         {
           //Refill the combobox
           gtk_list_store_append (GTK_LIST_STORE (list_store), &iter);

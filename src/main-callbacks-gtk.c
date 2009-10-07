@@ -1,32 +1,33 @@
 /******************************************************************************
+    AUTHOR:
+    File written and Copyrighted by Zachary Dovel. All Rights Reserved.
 
-  FILE:
-  src/callback.c
+    LICENSE:
+    This file is part of gWaei.
 
-  DESCRIPTION:
-  Callbacks for activities initiated by the user. Most of the gtk code here
-  should still be abstracted to the interface C file when possible.
+    gWaei is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-  AUTHOR:
-  File written and Copyrighted by Zachary Dovel. All Rights Reserved.
-
-  LICENSE:
-  This file is part of gWaei.
-
-  gWaei is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  gWaei is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-  
-  You should have received a copy of the GNU General Public License
-  along with gWaei.  If not, see <http://www.gnu.org/licenses/>.
-
+    gWaei is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    
+    You should have received a copy of the GNU General Public License
+    along with gWaei.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
+
+//!
+//! @file src/main-callbacks-gtk.c
+//!
+//! @brief Gtk callbacks for events
+//!
+//! Callbacks for activities initiated by the user. Most of the gtk code here
+//! should still be abstracted to the interface C file when possible.
+//!
+
 
 #include <string.h>
 #include <regex.h>
@@ -62,7 +63,7 @@ static gulong select_all_handler_id = 0;
 
 
 //!
-//! \brief Brings up the preferences dialog to change settings
+//! @brief Brings up the preferences dialog to change settings
 //!
 //! This function sets up the dialog window, makes sure no searches are
 //! currently running, then makes the window appear.
@@ -86,7 +87,7 @@ G_MODULE_EXPORT void do_settings (GtkWidget *widget, gpointer data)
 
 
 //!
-//! \brief Brings up the kanjipad dialog to change settings
+//! @brief Brings up the kanjipad dialog to change settings
 //!
 //! Sets kanjipad to paste the selected result to the search entry
 //! and then makes the dialog to appear.
@@ -102,7 +103,7 @@ G_MODULE_EXPORT void do_kanjipad (GtkWidget *widget, gpointer data)
 
 
 //!
-//! \brief Closes the kanjipad sidebar
+//! @brief Closes the kanjipad sidebar
 //!
 //! Calls the gwaei ui function to close the kanji results sidebar.
 //!
@@ -116,7 +117,7 @@ G_MODULE_EXPORT void do_close_kanji_results (GtkWidget *widget, gpointer data)
 
 
 //!
-//! \brief Sets the cursor type depending on the character hovered
+//! @brief Sets the cursor type depending on the character hovered
 //!
 //! If the character hovered is a kanji character, the hand turns into a
 //! pointer in order to show that the selection is clickable. It will open
@@ -127,7 +128,7 @@ G_MODULE_EXPORT void do_close_kanji_results (GtkWidget *widget, gpointer data)
 //! @see do_get_iter_for_button_release ()
 //! @param widget Currently unused widget pointer
 //! @param data Currently unused gpointer
-//! \return Always returns false
+//! @return Always returns false
 //!
 G_MODULE_EXPORT gboolean do_get_iter_for_motion (GtkWidget      *widget,
                                                  GdkEventButton *event,
@@ -139,8 +140,8 @@ G_MODULE_EXPORT gboolean do_get_iter_for_motion (GtkWidget      *widget,
 
     unic = gwaei_get_hovered_character (&x, &y);
 
-    DictionaryInfo *di;
-    di = dictionarylist_get_dictionary_by_alias ("Kanji");
+    GwaeiDictInfo *di;
+    di = gwaei_dictlist_get_dictionary_by_alias ("Kanji");
   
     // Characters above 0xFF00 represent inserted images
     if (unic > L'ー' && unic < 0xFF00 && di->status == INSTALLED)
@@ -153,7 +154,7 @@ G_MODULE_EXPORT gboolean do_get_iter_for_motion (GtkWidget      *widget,
 
 
 //!
-//! \brief Gets the position of the cursor click and stores it
+//! @brief Gets the position of the cursor click and stores it
 //!
 //! The function stores the location of the button press, but takes no action
 //! by itself.  do_get_iter_for_button_release () uses the saved x and y
@@ -162,7 +163,7 @@ G_MODULE_EXPORT gboolean do_get_iter_for_motion (GtkWidget      *widget,
 //! @see do_get_iter_for_button_release ()
 //! @param widget Currently unused widget pointer
 //! @param data Currently unused gpointer
-//! \return Always returns false
+//! @return Always returns false
 //!
 G_MODULE_EXPORT gboolean do_get_position_for_button_press (GtkWidget      *widget,
                                                            GdkEventButton *event,
@@ -179,7 +180,7 @@ G_MODULE_EXPORT gboolean do_get_position_for_button_press (GtkWidget      *widge
 
 
 //!
-//! \brief Gets the position of the cursor click then opens the kanji sidebar
+//! @brief Gets the position of the cursor click then opens the kanji sidebar
 //!
 //! Compares the x and y coordinates fetch by do_get_position_for_button_press
 //! for the cursor, and if the difference is below a certain threshhold,
@@ -189,7 +190,7 @@ G_MODULE_EXPORT gboolean do_get_position_for_button_press (GtkWidget      *widge
 //! @see do_get_position_for_button_press ()
 //! @param widget Currently unused widget pointer
 //! @param data Currently unused gpointer
-//! \return Always returns false
+//! @return Always returns false
 //!
 G_MODULE_EXPORT gboolean do_get_iter_for_button_release (GtkWidget      *widget,
                                                          GdkEventButton *event,
@@ -204,8 +205,8 @@ G_MODULE_EXPORT gboolean do_get_iter_for_button_release (GtkWidget      *widget,
     gunichar unic;
     unic = gwaei_get_hovered_character (&x, &y);
 
-    DictionaryInfo *di;
-    di = dictionarylist_get_dictionary_by_alias ("Kanji");
+    GwaeiDictInfo *di;
+    di = gwaei_dictlist_get_dictionary_by_alias ("Kanji");
 
     if (di->status == INSTALLED     &&
         abs (button_press_x - x) < 3 &&
@@ -239,7 +240,7 @@ G_MODULE_EXPORT gboolean do_get_iter_for_button_release (GtkWidget      *widget,
 
 
 //!
-//! \brief Closes the window passed throught the widget pointer
+//! @brief Closes the window passed throught the widget pointer
 //!
 //! This function closes the window passed through the widget pointer.
 //! Depending if it is a specific window, it will save it's coordinates
@@ -277,14 +278,14 @@ G_MODULE_EXPORT void do_close (GtkWidget *widget, gpointer data)
 
 
 //!
-//! \brief Preforms the action the window manager close event
+//! @brief Preforms the action the window manager close event
 //!
 //! This function currently acts as a proxy for the do_close () function.
 //! 
 //! @see do_close ()
 //! @param widget GtkWidget pointer to the window to close
 //! @param data Currently unused gpointer
-//! \return Always returns true
+//! @return Always returns true
 //!
 G_MODULE_EXPORT gboolean do_delete_event_action (GtkWidget *widget, gpointer data)
 { 
@@ -294,7 +295,7 @@ G_MODULE_EXPORT gboolean do_delete_event_action (GtkWidget *widget, gpointer dat
 
 
 //!
-//! \brief Closes the current window when the escape key is pressed
+//! @brief Closes the current window when the escape key is pressed
 //!
 //! Checks for a pure escape press with no modifiers then closes the window
 //! passed to the function through the widget pointer is do_close(). This
@@ -304,7 +305,7 @@ G_MODULE_EXPORT gboolean do_delete_event_action (GtkWidget *widget, gpointer dat
 //! @see do_close ()
 //! @param widget GtkWidget pointer to the window to close
 //! @param data Currently unused gpointer
-//! \return Returns true when escape key is pressed
+//! @return Returns true when escape key is pressed
 //!
 G_MODULE_EXPORT gboolean do_close_on_escape (GtkWidget *widget,
                                              GdkEvent  *event,
@@ -334,7 +335,7 @@ G_MODULE_EXPORT gboolean do_close_on_escape (GtkWidget *widget,
 
 
 //!
-//! \brief Quits out of the application
+//! @brief Quits out of the application
 //!
 //! This function quits gWaei out.  But before it does, it calls the do_close
 //! function an the calling window to make sure it's current coordinates are
@@ -353,7 +354,7 @@ G_MODULE_EXPORT void do_quit (GtkWidget *widget, gpointer data)
 
 
 //!
-//! \brief Preforms a search from the history.
+//! @brief Preforms a search from the history.
 //!
 //! The function uses the gpointer data to fetch a SearchItem that was pased
 //! to the function for the search.  It will reflow the back and forward
@@ -407,7 +408,7 @@ G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
 
 
 //!
-//! \brief Goes back one step in the search history
+//! @brief Goes back one step in the search history
 //! 
 //! This function checks the top of the back historylist and uses the
 //! SearchItem in it to invoke do_search_from_history () using it.
@@ -430,7 +431,7 @@ G_MODULE_EXPORT void do_back (GtkWidget *widget, gpointer data)
 
 
 //!
-//! \brief Goes forward one step in the search history
+//! @brief Goes forward one step in the search history
 //! 
 //! This function checks the top of the forward historylist and uses the
 //! SearchItem in it to invoke do_search_from_history () using it.
@@ -453,7 +454,7 @@ G_MODULE_EXPORT void do_forward (GtkWidget *widget, gpointer data)
 
 
 //!
-//! \brief Saves the current search results to a file
+//! @brief Saves the current search results to a file
 //! 
 //! The function gets the current contents of the results text view and saves
 //! it to a file, overwriting it if it already exists.  If part of the results
@@ -522,7 +523,7 @@ G_MODULE_EXPORT void do_save_as (GtkWidget *widget, gpointer data)
 
 
 //!
-//! \brief Appends the current search results to a file
+//! @brief Appends the current search results to a file
 //! 
 //! The function gets the current contents of the results text view and appends
 //! it to a file.  If the user has already saved once, it will automatically
@@ -595,7 +596,7 @@ G_MODULE_EXPORT void do_save (GtkWidget *widget, gpointer data)
 
 
 //!
-//! \brief Makes the text in the text buffer enlarge
+//! @brief Makes the text in the text buffer enlarge
 //! 
 //! Determines if the text size is smaller than the max possible text size,
 //! and then sets the pref in gconf which will trigger the font size setting
@@ -617,7 +618,7 @@ G_MODULE_EXPORT void do_zoom_in (GtkWidget *widget, gpointer data)
 
 
 //!
-//! \brief Makes the text in the text buffer shrink
+//! @brief Makes the text in the text buffer shrink
 //! 
 //! Determines if the text size is larger than the min possible text size,
 //! and then sets the pref in gconf which will trigger the font size setting
@@ -639,7 +640,7 @@ G_MODULE_EXPORT void do_zoom_out (GtkWidget *widget, gpointer data)
 
 
 //!
-//! \brief Resets the text size to the default in the text buffers
+//! @brief Resets the text size to the default in the text buffers
 //! 
 //! The function acts gconf for the default font size from the schema, and then
 //! sets it, which makes gconf call the font size setting function since the
@@ -660,7 +661,7 @@ G_MODULE_EXPORT void do_zoom_100 (GtkWidget *widget, gpointer data)
 
 
 //!
-//! \brief Sets the less relevant results show boolean
+//! @brief Sets the less relevant results show boolean
 //! 
 //! Makes the gconf pref match the current state of the triggering widget.
 //! Each separate SearchItem stores this individually, so even if you flip
@@ -682,7 +683,7 @@ G_MODULE_EXPORT void do_less_relevant_results_toggle (GtkWidget *widget, gpointe
 
 
 //!
-//! \brief Sets the show toolbar boolean to match the widget
+//! @brief Sets the show toolbar boolean to match the widget
 //! 
 //! Makes the gconf pref match the current state of the triggering widget.
 //! The gconf value changed callback then updates the state of the toolbar
@@ -703,7 +704,7 @@ G_MODULE_EXPORT void do_toolbar_toggle (GtkWidget *widget, gpointer data)
 
 
 //!
-//! \brief Changes the selected dictionary in the dictionarylist
+//! @brief Changes the selected dictionary in the dictionarylist
 //! 
 //! This function makes the selected dictionary in the dictionarylist match
 //! the dictionary of the widget that was modified.  The selected dictionary
@@ -745,7 +746,7 @@ G_MODULE_EXPORT void do_dictionary_changed_action (GtkWidget *widget, gpointer d
 
 
 //!
-//! \brief Selects all the text in the current widget
+//! @brief Selects all the text in the current widget
 //! 
 //! This function makes the selected dictionary in the dictionarylist match
 //! the dictionary of the widget that was modified.  The selected dictionary
@@ -770,7 +771,7 @@ G_MODULE_EXPORT void do_select_all (GtkWidget *widget, gpointer data)
 
 
 //!
-//! \brief Pastes text into the current widget
+//! @brief Pastes text into the current widget
 //! 
 //! This function makes the selected dictionary in the dictionarylist match
 //! the dictionary of the widget that was modified.  The selected dictionary
@@ -794,7 +795,7 @@ G_MODULE_EXPORT void do_paste (GtkWidget *widget, gpointer data)
 
 
 //!
-//! \brief Cuts text from the current widget
+//! @brief Cuts text from the current widget
 //! 
 //! This function makes the selected dictionary in the dictionarylist match
 //! the dictionary of the widget that was modified.  The selected dictionary
@@ -818,7 +819,7 @@ G_MODULE_EXPORT void do_cut (GtkWidget *widget, gpointer data)
 
 
 //!
-//! \brief Pastes text into the current widget
+//! @brief Pastes text into the current widget
 //! 
 //! This function makes the selected dictionary in the dictionarylist match
 //! the dictionary of the widget that was modified.  The selected dictionary
@@ -842,7 +843,7 @@ G_MODULE_EXPORT void do_copy (GtkWidget *widget, gpointer data)
 
 
 //!
-//! \brief Manages the required changes for focus in different elements
+//! @brief Manages the required changes for focus in different elements
 //! 
 //! Depending if the object's text is editable or not, the clipboard will
 //! update button states approprately and connect the signal handlers to the
@@ -854,7 +855,7 @@ G_MODULE_EXPORT void do_copy (GtkWidget *widget, gpointer data)
 //! @see do_select_all ()
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
-//! \return Always returns false
+//! @return Always returns false
 //!
 G_MODULE_EXPORT gboolean do_update_clipboard_on_focus_change (GtkWidget        *widget, 
                                                               GtkDirectionType  arg1,
@@ -929,7 +930,7 @@ G_MODULE_EXPORT gboolean do_update_clipboard_on_focus_change (GtkWidget        *
 
 
 //!
-//! \brief Prints the current results
+//! @brief Prints the current results
 //! 
 //! When this function is called, the current results on screen are printed.
 //! If a section of the results is selected, only that is printed.
@@ -947,7 +948,7 @@ G_MODULE_EXPORT void do_print (GtkWidget *widget, gpointer data)
 
 
 //!
-//! \brief Brings up the search tool dialog
+//! @brief Brings up the search tool dialog
 //! 
 //! This function sets up the radical search tool dialog as needed, then makes
 //! it appear.  Before showing it, it makes sure that the strokes spinner is 
@@ -973,7 +974,7 @@ G_MODULE_EXPORT void do_radical_search_tool (GtkWidget *widget, gpointer data)
 
 
     //Hide the togglebox if the Mix dictionary is not present
-    if (dictionarylist_dictionary_get_status_by_id (MIX) != INSTALLED)
+    if (gwaei_dictlist_dictionary_get_status_by_id (MIX) != INSTALLED)
       gtk_widget_hide (hbox); 
     else
       gtk_widget_show (hbox); 
@@ -984,7 +985,7 @@ G_MODULE_EXPORT void do_radical_search_tool (GtkWidget *widget, gpointer data)
 
 
 //!
-//! \brief Opens the saved vocab list in your default editor
+//! @brief Opens the saved vocab list in your default editor
 //! 
 //! If the user saved a vocab list using the save as or append functions, this
 //! action becomes available where the file is opened in the user's default
@@ -1007,7 +1008,7 @@ G_MODULE_EXPORT void do_edit (GtkWidget *widget, gpointer data)
 
 
 //!
-//! \brief Sends the user to the gWaei irc channel for help
+//! @brief Sends the user to the gWaei irc channel for help
 //! 
 //! The IRC uri should open in the user's default IRC client.
 //!
@@ -1024,7 +1025,7 @@ G_MODULE_EXPORT void do_irc_channel (GtkWidget *widget, gpointer data)
 
 
 //!
-//! \brief Sends the user to the gWaei homepage for whatever they need
+//! @brief Sends the user to the gWaei homepage for whatever they need
 //! 
 //! The homepage should open in their default browser.
 //!
@@ -1041,7 +1042,7 @@ G_MODULE_EXPORT void do_homepage (GtkWidget *widget, gpointer data)
 
 
 //!
-//! \brief Opens the gWaei help documentation
+//! @brief Opens the gWaei help documentation
 //!
 //! The gWaei help documentation is opened in the user's default help program.
 //!
@@ -1058,7 +1059,7 @@ G_MODULE_EXPORT void do_help (GtkWidget *widget, gpointer data)
 
 
 //!
-//! \brief Opens the gWaei dictionary glossary help documentation
+//! @brief Opens the gWaei dictionary glossary help documentation
 //!
 //! The gWaei dictionary glossary help documentation is opened in the user's
 //! default help program.
@@ -1080,7 +1081,7 @@ G_MODULE_EXPORT void do_glossary (GtkWidget *widget, gpointer data)
 
 
 //!
-//! \brief Opens the gWaei about dialog
+//! @brief Opens the gWaei about dialog
 //!
 //! The gWaei help dialog is displayed, showing the credits of everyone who has
 //! helped to make this program possible.
@@ -1134,7 +1135,7 @@ G_MODULE_EXPORT void do_about (GtkWidget *widget, gpointer data)
 
 
 //!
-//! \brief Cycles the active dictionaries down the list
+//! @brief Cycles the active dictionaries down the list
 //!
 //! This function cycles the dictionaries down the list.  If it reaches the
 //! end, it will loop back to the top.
@@ -1150,7 +1151,7 @@ G_MODULE_EXPORT void do_cycle_dictionaries_forward (GtkWidget *widget, gpointer 
 
 
 //!
-//! \brief Cycles the active dictionaries up the list
+//! @brief Cycles the active dictionaries up the list
 //!
 //! This function cycles the dictionaries up the list.  If it reaches the
 //! end, it will loop back to the bottom.
@@ -1166,7 +1167,7 @@ G_MODULE_EXPORT void do_cycle_dictionaries_backward (GtkWidget *widget, gpointer
 
 
 //!
-//! \brief Function handles automatic focus changes on key presses
+//! @brief Function handles automatic focus changes on key presses
 //!
 //! When the user types a letter, the focus will move to the search entry and
 //! auto-highlight the results so you can start typing immediately.  If the
@@ -1175,7 +1176,7 @@ G_MODULE_EXPORT void do_cycle_dictionaries_backward (GtkWidget *widget, gpointer
 //!
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
-//! \return Always returns false
+//! @return Always returns false
 //!
 G_MODULE_EXPORT gboolean do_focus_change_on_key_press (GtkWidget *widget,
                                                        GdkEvent  *event,
@@ -1255,7 +1256,7 @@ G_MODULE_EXPORT gboolean do_focus_change_on_key_press (GtkWidget *widget,
 
 
 //!
-//! \brief Initiates a search on the user's typed query
+//! @brief Initiates a search on the user's typed query
 //!
 //! This function does the needed work to check the query for basic
 //! correctness, shift the previously completed search to the history list,
@@ -1270,8 +1271,8 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
 {
     HistoryList* hl = historylist_get_list (GWAEI_HISTORYLIST_RESULTS);
 
-    GList *list = dictionarylist_get_selected ();
-    DictionaryInfo *dictionary = list->data;
+    GList *list = gwaei_dictlist_get_selected ();
+    GwaeiDictInfo *dictionary = list->data;
 
     gchar query[MAX_QUERY];
     gwaei_ui_strcpy_from_widget (query, MAX_QUERY, GWAEI_TARGET_ENTRY);
@@ -1350,7 +1351,7 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
 
 
 //!
-//! \brief Inserts an unknown regex character into the entry
+//! @brief Inserts an unknown regex character into the entry
 //!
 //! Used to help users discover regex searches.  It just insert a period
 //! wherever the cursor presently is in the search entry.
@@ -1369,7 +1370,7 @@ G_MODULE_EXPORT void do_insert_unknown_character (GtkWidget *widget, gpointer da
 
 
 //!
-//! \brief Inserts an a word-boundary regex character into the entry
+//! @brief Inserts an a word-boundary regex character into the entry
 //!
 //! Used to help users discover regex searches.  It just insert \\b
 //! wherever the cursor presently is in the search entry.
@@ -1388,7 +1389,7 @@ G_MODULE_EXPORT void do_insert_word_edge (GtkWidget *widget, gpointer data)
 
 
 //!
-//! \brief Inserts an a not-word-boundary regex character into the entry
+//! @brief Inserts an a not-word-boundary regex character into the entry
 //!
 //! Used to help users discover regex searches.  It just insert \\B
 //! wherever the cursor presently is in the search entry.
@@ -1407,7 +1408,7 @@ G_MODULE_EXPORT void do_insert_not_word_edge (GtkWidget *widget, gpointer data)
 
 
 //!
-//! \brief Inserts an an and regex character into the entry
+//! @brief Inserts an an and regex character into the entry
 //!
 //! Used to help users discover regex searches.  It just insert &
 //! wherever the cursor presently is in the search entry.
@@ -1426,7 +1427,7 @@ G_MODULE_EXPORT void do_insert_and (GtkWidget *widget, gpointer data)
 
 
 //!
-//! \brief Inserts an an or regex character into the entry
+//! @brief Inserts an an or regex character into the entry
 //!
 //! Used to help users discover regex searches.  It just insert |
 //! wherever the cursor presently is in the search entry.
@@ -1445,7 +1446,7 @@ G_MODULE_EXPORT void do_insert_or (GtkWidget *widget, gpointer data)
 
 
 //!
-//! \brief Clears the search entry and moves the focus to it
+//! @brief Clears the search entry and moves the focus to it
 //!
 //! This function acts as a quick way for the user to get back to the search
 //! entry and do another search whereever they are.
@@ -1462,7 +1463,7 @@ G_MODULE_EXPORT void do_clear_search (GtkWidget *widget, gpointer data)
 
 
 //!
-//! \brief Makes the background color of the kanji sidebar max the theme
+//! @brief Makes the background color of the kanji sidebar max the theme
 //!
 //! Keeps the kanji sidebar backgound looking as if it is part of the window
 //! even if the gtk theme changes.  The look helps to keep the central focus
@@ -1487,7 +1488,7 @@ G_MODULE_EXPORT void do_update_styles (GtkWidget *widget, gpointer data)
 
 
 //!
-//! \brief Opens the dictionary folder using the user's default file browser
+//! @brief Opens the dictionary folder using the user's default file browser
 //!
 //! The dictionary folder that is opened is generally in "~/.waei".
 //!
@@ -1512,7 +1513,7 @@ G_MODULE_EXPORT void do_open_dictionary_folder (GtkWidget *widget, gpointer data
 
 
 //!
-//! \brief Moves the text cursor on screen
+//! @brief Moves the text cursor on screen
 //!
 //! This function is used as a callback during scrolling to keep the cursor
 //! on the screen.  The effect is, if the user types a letter by accident, the
@@ -1529,7 +1530,7 @@ G_MODULE_EXPORT void do_move_cursor_onscreen (GtkWidget *widget, gpointer data)
 
 
 //!
-//! \brief Sets the drag icon to the cursor if the widget is dragged over
+//! @brief Sets the drag icon to the cursor if the widget is dragged over
 //!
 //! Part of a group of four functions to handle drag drops of text into
 //! the main text buffer which will initialize a search based on that text.
@@ -1537,7 +1538,7 @@ G_MODULE_EXPORT void do_move_cursor_onscreen (GtkWidget *widget, gpointer data)
 //! @see search_drag_data_recieved ()
 //! @see drag_leave_1 ()
 //! @see drag_drop_1 ()
-//! \return Always returns true
+//! @return Always returns true
 //!
 G_MODULE_EXPORT gboolean drag_motion_1 (GtkWidget      *widget,
                                         GdkDragContext *drag_context,
@@ -1553,7 +1554,7 @@ G_MODULE_EXPORT gboolean drag_motion_1 (GtkWidget      *widget,
 
 
 //!
-//! \brief Resets the gui when the drag leaves the widget area
+//! @brief Resets the gui when the drag leaves the widget area
 //!
 //! Part of a group of four functions to handle drag drops of text into
 //! the main text buffer which will initialize a search based on that text.
@@ -1572,7 +1573,7 @@ G_MODULE_EXPORT void drag_leave_1 (GtkWidget      *widget,
 
 
 //!
-//! \brief Tells the widget to recieve the dragged data
+//! @brief Tells the widget to recieve the dragged data
 //!
 //! Part of a group of four functions to handle drag drops of text into
 //! the main text buffer which will initialize a search based on that text.
@@ -1580,7 +1581,7 @@ G_MODULE_EXPORT void drag_leave_1 (GtkWidget      *widget,
 //! @see search_drag_data_recieved ()
 //! @see drag_leave_1 ()
 //! @see drag_motion_1 ()
-//! \return Always returns true
+//! @return Always returns true
 //!
 G_MODULE_EXPORT gboolean drag_drop_1 (GtkWidget      *widget,
                                       GdkDragContext *drag_context,
@@ -1597,7 +1598,7 @@ G_MODULE_EXPORT gboolean drag_drop_1 (GtkWidget      *widget,
 
 
 //!
-//! \brief The widget recieves the data and starts a search based on it.
+//! @brief The widget recieves the data and starts a search based on it.
 //!
 //! Part of a group of four functions to handle drag drops of text into
 //! the main text buffer which will initialize a search based on that text.
@@ -1642,7 +1643,7 @@ G_MODULE_EXPORT void search_drag_data_recieved (GtkWidget        *widget,
 
 
 //!
-//! \brief Hides/shows buttons depending on search entry text
+//! @brief Hides/shows buttons depending on search entry text
 //!
 //! Currently this function just hides and shows the clear icon depending if
 //! there is any text in the entry.  Previously, this would also set the search
@@ -1669,7 +1670,7 @@ G_MODULE_EXPORT void do_update_button_states_based_on_entry_text (GtkWidget *wid
 
 
 //!
-//! \brief Finds out if some text is selected and updates the buttons accordingly
+//! @brief Finds out if some text is selected and updates the buttons accordingly
 //!
 //! When text is found selected, some buttons become sensitive and some have the
 //! label change.  This tells the user they can save/print sections of the

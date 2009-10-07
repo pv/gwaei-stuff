@@ -183,7 +183,7 @@ gboolean gwaei_io_download_dictionary_file(char *source_path, char *save_path, g
 }
 
 
-gboolean gwaei_io_delete_dictionary_file(DictionaryInfo* file)
+gboolean gwaei_io_delete_dictionary_file(GwaeiDictInfo* file)
 {
     printf("  ");
     printf(gettext("Removing %s..."), file->long_name);

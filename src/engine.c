@@ -1,37 +1,37 @@
 /******************************************************************************
+    AUTHOR:
+    File written and Copyrighted by Zachary Dovel. All Rights Reserved.
 
-  FILE:
-  src/engine.c
+    LICENSE:
+    This file is part of gWaei.
 
-  DESCRIPTION:
-  This file controls the backend of searches (usually initiated by the
-  do_search command.) get_results is the gatekeeper to stream_results.
-  get_results sets everything up that needs to be correct and double checked.
-  stream_results is called on a timer by gmainloop until it finished.  It then
-  cleans up after after the things set up in get_results.  If another search is
-  started before the previous is finished, get_results puts out a stop request
-  to stream_results and then waits for it to finish.
+    gWaei is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-  AUTHOR:
-  File written and Copyrighted by Zachary Dovel. All Rights Reserved.
-
-  LICENSE:
-  This file is part of gWaei.
-
-  gWaei is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  gWaei is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-  
-  You should have received a copy of the GNU General Public License
-  along with gWaei.  If not, see <http://www.gnu.org/licenses/>.
-
+    gWaei is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    
+    You should have received a copy of the GNU General Public License
+    along with gWaei.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
+
+//!
+//! @file src/engine.c
+//!
+//! @brief search logic
+//!
+//! This file controls the backend of searches (usually initiated by the
+//! do_search command.) get_results is the gatekeeper to stream_results.
+//! get_results sets everything up that needs to be correct and double checked.
+//! stream_results is called on a timer by gmainloop until it finished.  It then
+//! cleans up after after the things set up in get_results.  If another search is
+//! started before the previous is finished, get_results puts out a stop request
+//! to stream_results and then waits for it to finish.
+//!
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -54,7 +54,7 @@ static gboolean less_relevant_title_inserted = FALSE;
 
 
 //!
-//! \brief Sends a result directly out to the output.
+//! @brief Sends a result directly out to the output.
 //!
 //! THIS IS A PRIVATE FUNCTION. Function takes the current working result of the
 //! search thread and outputs it to the approprate output, be that a terminal or
@@ -80,7 +80,7 @@ static void append_result_to_output (SearchItem *item)
 
 
 //!
-//! \brief Does the work of outputing the more relevant header.
+//! @brief Does the work of outputing the more relevant header.
 //!
 //! THIS IS A PRIVATE FUNCTION. The function gives a label for the user to see
 //! and tells how many results are below it.
@@ -107,7 +107,7 @@ static void append_more_relevant_header_to_output(SearchItem *item)
 
 
 //!
-//! \brief Does the work of outputing the less relevant header
+//! @brief Does the work of outputing the less relevant header
 //!
 //! THIS IS A PRIVATE FUNCTION. The function gives a label for the user to see
 //! and tells how many results are below it.
@@ -139,7 +139,7 @@ static void append_less_relevant_header_to_output(SearchItem *item)
 
 
 //!
-//! \brief Gets a stored result in a search item and posts it to the output.
+//! @brief Gets a stored result in a search item and posts it to the output.
 //!
 //! THIS IS A PRIVATE FUNCTION. The memory is allocated and tthis function makes
 //! sure to cleanly free it and then post it to the approprate output, be it the
@@ -175,7 +175,7 @@ static void append_stored_result_to_output (SearchItem *item, GList **results)
 
 
 //!
-//! \brief Find the relevance of a returned result
+//! @brief Find the relevance of a returned result
 //!
 //! THIS IS A PRIVATE FUNCTION. Function uses the stored relevance regrex
 //! expressions in the SearchItem to get the relevance of a returned result.  It
@@ -204,7 +204,7 @@ static int get_relevance (char* text, SearchItem *item) {
 
 
 //!
-//! \brief Preforms the brute work of the search
+//! @brief Preforms the brute work of the search
 //!
 //! THIS IS A PRIVATE FUNCTION. This function returns true until it finishes
 //! searching the whole file.  It works in specified chunks before going back to
@@ -371,7 +371,7 @@ static gboolean stream_results_thread (SearchItem *item)
 
 
 //!
-//! \brief Preforms necessary cleanups after the search thread finishes
+//! @brief Preforms necessary cleanups after the search thread finishes
 //!
 //! THIS IS A PRIVATE FUNCTION. The calls to this function are made by
 //! gwaei_search_get_results.  Do not call this function directly.
@@ -397,7 +397,7 @@ static gboolean stream_results_cleanup (SearchItem *item)
 
 
 //!
-//! \brief Start a dictionary search
+//! @brief Start a dictionary search
 //!
 //! This is the entry point for starting a search.  It handles setting up the
 //! query, checking things that need to be checked before the final go, and

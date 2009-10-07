@@ -52,3 +52,4 @@ src/xml/Makefile
 src/kpengine/jdata.dat
 src/kpengine/kpengine
 
+documentation/*

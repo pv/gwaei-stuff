@@ -74,25 +74,25 @@ char* gwaei_parse_widget_name (char *output, GtkWidget *widget,
 void gwaei_settings_initialize_enabled_features_list()
 {
     //General search
-    if (dictionarylist_get_total_with_status(INSTALLED) > 0)
+    if (gwaei_dictlist_get_total_with_status(INSTALLED) > 0)
       gwaei_ui_set_feature_line_status("general", "enabled");
     else
       gwaei_ui_set_feature_line_status("general", "disabled");
 
     //Combined dictionary
-    if (dictionarylist_dictionary_get_status_by_id(MIX) == INSTALLED)
+    if (gwaei_dictlist_dictionary_get_status_by_id(MIX) == INSTALLED)
       gwaei_ui_set_feature_line_status("mix", "enabled");
     else
       gwaei_ui_set_feature_line_status("mix", "disabled");
 
     //Radical search tool
-    if (dictionarylist_dictionary_get_status_by_id(RADICALS) == INSTALLED)
+    if (gwaei_dictlist_dictionary_get_status_by_id(RADICALS) == INSTALLED)
       gwaei_ui_set_feature_line_status("radical", "enabled");
     else
       gwaei_ui_set_feature_line_status("radical", "disabled");
 
     //Kanji lookup tool
-    if (dictionarylist_dictionary_get_status_by_id(KANJI) == INSTALLED)
+    if (gwaei_dictlist_dictionary_get_status_by_id(KANJI) == INSTALLED)
       gwaei_ui_set_feature_line_status("kanji", "enabled");
     else
       gwaei_ui_set_feature_line_status("kanji", "disabled");
@@ -109,22 +109,22 @@ void gwaei_settings_initialize_enabled_features_list()
 
 void gwaei_settings_initialize_installed_dictionary_list() 
 {
-    if (dictionarylist_dictionary_get_status_by_id(ENGLISH) == INSTALLED)
+    if (gwaei_dictlist_dictionary_get_status_by_id(ENGLISH) == INSTALLED)
       gwaei_ui_set_install_line_status("english", "remove", NULL);
     else
       gwaei_ui_set_install_line_status("english", "install", NULL);
 
-    if (dictionarylist_dictionary_get_status_by_id(KANJI) == INSTALLED)
+    if (gwaei_dictlist_dictionary_get_status_by_id(KANJI) == INSTALLED)
       gwaei_ui_set_install_line_status("kanji", "remove", NULL);
     else
       gwaei_ui_set_install_line_status("kanji", "install", NULL);
 
-    if (dictionarylist_dictionary_get_status_by_id(NAMES) == INSTALLED)
+    if (gwaei_dictlist_dictionary_get_status_by_id(NAMES) == INSTALLED)
       gwaei_ui_set_install_line_status("names", "remove", NULL);
     else
       gwaei_ui_set_install_line_status("names", "install", NULL);
 
-    if (dictionarylist_dictionary_get_status_by_id(RADICALS) == INSTALLED)
+    if (gwaei_dictlist_dictionary_get_status_by_id(RADICALS) == INSTALLED)
       gwaei_ui_set_install_line_status("radicals", "remove", NULL);
     else
       gwaei_ui_set_install_line_status("radicals", "install", NULL);

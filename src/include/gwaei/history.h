@@ -9,7 +9,7 @@
 
 struct SearchItem {
   char query[MAX_QUERY];
-  DictionaryInfo* dictionary;
+  GwaeiDictInfo* dictionary;
 
   FILE* fd;
   int status;
@@ -39,7 +39,7 @@ typedef struct SearchItem SearchItem;
 
 
 //searchitem methods
-SearchItem* searchitem_new    (char*, DictionaryInfo*, int);
+SearchItem* searchitem_new    (char*, GwaeiDictInfo*, int);
 void        searchitem_remove (struct SearchItem*);
 
 

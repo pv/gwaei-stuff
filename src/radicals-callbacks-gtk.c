@@ -70,8 +70,8 @@ G_MODULE_EXPORT void do_radical_search (GtkWidget *widget, gpointer data)
     gwaei_ui_search_entry_insert (query);
     gwaei_ui_text_select_all_by_target (GWAEI_TARGET_ENTRY);
 
-    DictionaryInfo *dictionary;
-    dictionary = dictionarylist_get_dictionary_by_alias ("Radicals");
+    GwaeiDictInfo *dictionary;
+    dictionary = gwaei_dictlist_get_dictionary_by_alias ("Radicals");
 
     if (gwaei_ui_cancel_search_by_target(GWAEI_TARGET_RESULTS) == FALSE)
       return;

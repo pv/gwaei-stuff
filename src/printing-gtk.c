@@ -1,32 +1,33 @@
 /******************************************************************************
+    AUTHOR:
+    File written and Copyrighted by Zachary Dovel. All Rights Reserved.
 
-  FILE:
-  src/printing.c
+    LICENSE:
+    This file is part of gWaei.
 
-  DESCRIPTION:
-  This is where the functions needed for printing are kept. This is the gtk
-  version.
+    gWaei is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-  AUTHOR:
-  File written and Copyrighted by Zachary Dovel. All Rights Reserved.
-
-  LICENSE:
-  This file is part of gWaei.
-
-  gWaei is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  gWaei is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-  
-  You should have received a copy of the GNU General Public License
-  along with gWaei.  If not, see <http://www.gnu.org/licenses/>.
-
+    gWaei is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    
+    You should have received a copy of the GNU General Public License
+    along with gWaei.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
+
+//!
+//! @file src/printing-gtk.c
+//!
+//! @brief Gtk printing
+//!
+//! This is where the functions needed for printing are kept. This is the gtk
+//! version.
+//!
+
 
 #include <string.h>
 #include <stdlib.h>
@@ -48,46 +49,30 @@
 #include <gwaei/interface.h>
 
 
-//Global variables
-GtkPrintSettings *settings = NULL;
+//!
+//! @brief Storage of the current print settings
+//!
+static GtkPrintSettings *settings = NULL;
 
-//Pageinfo primitive
-struct gwaei_pageinfo {
-    GList *pages;
-    GtkTextIter page_end_line;
-    gint total_pages;
+//!
+//! @brief Primitive for storing information on printing
+//!
+struct GwaeiPageInfo {
+    GList *pages;              //!< pages GList of all the created pages
+    GtkTextIter page_end_line; //!< Mark in the buffer where we have paginated to
+    gint total_pages;          //!< The total pages that need pagination
 };
-typedef struct gwaei_pageinfo gwaei_pageinfo;
+typedef struct GwaeiPageInfo GwaeiPageInfo;
 
 
-//Pageinfo methods
-gwaei_pageinfo *gwaei_pageinfo_new (void);
-void gwaei_pageinfo_free (gwaei_pageinfo*);
 
-
-//Callbacks used when printing
-
-void begin_print (void);
-
-void draw_page ( GtkPrintOperation*,
-                 GtkPrintContext*,
-                 gint,
-                 gpointer           );
-
-gboolean paginate(GtkPrintOperation*,
-                  GtkPrintContext*,
-                  gpointer            );
-
-void done ( GtkPrintOperation      *operation,
-            GtkPrintOperationResult result,
-            gpointer                user_data );
-
-
-//Methods for the pageinfo primitive
-gwaei_pageinfo *gwaei_pageinfo_new()
+//!
+//! @brief Allocates a new GwaeiPageInfo object
+//!
+GwaeiPageInfo *gwaei_pageinfo_new()
 {
-    gwaei_pageinfo *temp;
-    if ((temp = (gwaei_pageinfo*)malloc(sizeof(gwaei_pageinfo))) == NULL)
+    GwaeiPageInfo *temp;
+    if ((temp = (GwaeiPageInfo*)malloc(sizeof(GwaeiPageInfo))) == NULL)
       return NULL;
 
     HistoryList *hl = historylist_get_list (GWAEI_HISTORYLIST_RESULTS);
@@ -115,8 +100,12 @@ gwaei_pageinfo *gwaei_pageinfo_new()
     return temp;
 }
 
-
-void gwaei_pageinfo_free(gwaei_pageinfo *pi) {
+//!
+//! @brief Frees a GwaeiPageInfo object
+//!
+//! @param pi a GwaeiPageInfo object to free
+//!
+void gwaei_pageinfo_free(GwaeiPageInfo *pi) {
     if (pi == NULL)
       return;
 
@@ -136,20 +125,40 @@ void gwaei_pageinfo_free(gwaei_pageinfo *pi) {
 
 
 
-void begin_print() {
+//!
+//! @brief function for signal fired upon start of printing.
+//!
+//! This function currently does nothing.
+//!
+//! @sa done() begin_print() draw() paginate()
+//!
+static void begin_print() {
   printf("begin_print!\n");
 }
 
-gboolean paginate(GtkPrintOperation *operation,
-                  GtkPrintContext   *context,
-                  gpointer           user_data )
+//!
+//! @brief Pagination algorithm to calculate how many pages are needed
+//!
+//! The function loops through and draws all the pages to figure out exactly
+//! what will need to be drawn.
+//!
+//! @param operation Unused GtkPrintOperation
+//! @param context Pointer co a GtkPrintContext to draw on
+//! @param page_nr Integer of the current page number being draw
+//! @param data Painter to a PageInfo struct to use for information
+//! @return Return true when pagination finishes
+//! @sa done() begin_print() draw() begin_print()
+//!
+static gboolean paginate(GtkPrintOperation *operation,
+                         GtkPrintContext   *context,
+                         gpointer           user_data )
 {
     printf("paginate!\n");
 
     HistoryList *hl = historylist_get_list (GWAEI_HISTORYLIST_RESULTS);
     GObject *tb = get_gobject_from_target(GWAEI_TARGET_RESULTS);
 
-    gwaei_pageinfo *pi  = user_data;
+    GwaeiPageInfo *pi  = user_data;
 
     //Set the page_start_iter to the page_end_iter's positon
     GtkTextIter *page_start_line = malloc(sizeof(GtkTextIter));
@@ -234,14 +243,23 @@ gboolean paginate(GtkPrintOperation *operation,
 }
 
 
-
-
-void draw_page( GtkPrintOperation *operation,
-                GtkPrintContext   *context,
-                gint               page_nr,
-                gpointer           user_data )
+//!
+//! @brief Draws a page for pagination
+//!
+//! This draws a page for pagination to be printed using the current position.
+//!
+//! @param operation Unused GtkPrintOperation
+//! @param context Pointer co a GtkPrintContext to draw on
+//! @param page_nr Integer of the current page number being draw
+//! @param data Painter to a PageInfo struct to use for information
+//! @sa done() begin_print() paginate() begin_print()
+//!
+static void draw_page (GtkPrintOperation *operation,
+                       GtkPrintContext   *context,
+                       gint               page_nr,
+                       gpointer           data      )
 {
-    gwaei_pageinfo *pi  = user_data;
+    GwaeiPageInfo *pi  = data;
     HistoryList *hl = historylist_get_list (GWAEI_HISTORYLIST_RESULTS);
     GObject *tb = get_gobject_from_target(GWAEI_TARGET_RESULTS);
 
@@ -256,14 +274,14 @@ void draw_page( GtkPrintOperation *operation,
     if (gtk_text_buffer_get_has_selection (GTK_TEXT_BUFFER (tb)))
     {
       GtkTextIter unused;
-      gtk_text_buffer_get_selection_bounds( GTK_TEXT_BUFFER (tb),
-                                            &unused,
-                                            &(pi->page_end_line)                   );
+      gtk_text_buffer_get_selection_bounds(GTK_TEXT_BUFFER (tb),
+                                           &unused,
+                                           &(pi->page_end_line) );
     }
     else
     {
-      gtk_text_buffer_get_end_iter ( GTK_TEXT_BUFFER (tb),
-                                     &pi->page_end_line                         );
+      gtk_text_buffer_get_end_iter (GTK_TEXT_BUFFER (tb),
+                                    &pi->page_end_line   );
     }
 
 
@@ -322,21 +340,40 @@ void draw_page( GtkPrintOperation *operation,
 }
 
 
-void done( GtkPrintOperation      *operation,
-           GtkPrintOperationResult result,
-           gpointer                user_data) 
+//!
+//! @brief Called when pagination finishes.
+//!
+//! The function checks the results of the results text buffer, and then attempts
+//! to set up a print operation.  If a section of the search results are highlighted
+//! only those results are printed.
+//!
+//! @param operation Unused
+//! @param result Unused
+//! @param data Pointer to a PageInfo struct to free when pagination finishes
+//! @sa draw_page() begin_print() pageinate() begin_print()
+//!
+static void done (GtkPrintOperation      *operation,
+                  GtkPrintOperationResult result,
+                  gpointer                data      ) 
 {
-    printf("done\n");
     //Cleanup
-    gwaei_pageinfo *pi  = user_data;
+    GwaeiPageInfo *pi  = data;
     gwaei_pageinfo_free(pi);
     pi = NULL;
+    printf("done\n");
 }
 
 
+//!
+//! @brief Sets up a print operation for the current results
+//!
+//! The function checks the results of the results text buffer, and then attempts
+//! to set up a print operation.  If a section of the search results are highlighted
+//! only those results are printed.
+//!
 void gwaei_print()
 {
-    gwaei_pageinfo *pi = gwaei_pageinfo_new();
+    GwaeiPageInfo *pi = gwaei_pageinfo_new();
 
 
     //Start setting up the print operation

@@ -17,7 +17,7 @@
 #define MIX      6
 
 
-struct DictionaryInfo
+struct GwaeiDictInfo
 {
     int id;
     int type;
@@ -32,35 +32,35 @@ struct DictionaryInfo
     char gckey[100];
     int load_position;
 };
-typedef struct DictionaryInfo DictionaryInfo;
+typedef struct GwaeiDictInfo GwaeiDictInfo;
 
 
-struct DictionaryList
+struct GwaeiDictList
 {
     GList *list;
     GList *selected;
     int id_increment;
 };
-typedef struct DictionaryList DictionaryList;
+typedef struct GwaeiDictList GwaeiDictList;
 
 
-GList* dictionarylist_get_list (void);
-DictionaryInfo* dictionarylist_get_dictionary_by_id (int);
-int dictionarylist_get_total (void);
-GList* dictionarylist_get_selected(void);
+GList* gwaei_dictlist_get_list (void);
+GwaeiDictInfo* gwaei_dictlist_get_dictionary_by_id (int);
+int gwaei_dictlist_get_total (void);
+GList* gwaei_dictlist_get_selected(void);
 
 
-DictionaryInfo* dictionarylist_get_dictionary_by_name (const char*);
+GwaeiDictInfo* gwaei_dictlist_get_dictionary_by_name (const char*);
 /*
- *  Returns a dictionary in the DictionaryList by name.  Unlike
- *  dictionarylist_get_dictionary_by_alias, it will alway return what you ask
+ *  Returns a dictionary in the GwaeiDictList by name.  Unlike
+ *  gwaei_dictlist_get_dictionary_by_alias, it will alway return what you ask
  *  for.  When the dictionary doesn't exist, it returns null.
  */
 
 
-DictionaryInfo* dictionarylist_get_dictionary_by_alias(const char*);
+GwaeiDictInfo* gwaei_dictlist_get_dictionary_by_alias(const char*);
 /*
- *  Searches for a dictionary by a name in the DictionaryList.  When approprate
+ *  Searches for a dictionary by a name in the GwaeiDictList.  When approprate
  *  it will swap the requsted dictionary for another one.  This usally comes out
  *  to swapping the Kanji dictionary for the Mixed one when it is present.  When
  *  the dictionary is not found, it returns null.

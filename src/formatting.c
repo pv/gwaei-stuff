@@ -1,32 +1,34 @@
 /******************************************************************************
+    AUTHOR:
+    File written and Copyrighted by Zachary Dovel. All Rights Reserved.
 
-  FILE:
-  src/formatting.c
+    LICENSE:
+    This file is part of gWaei.
 
-  DESCRIPTION:
-  Functions to add proper formatting to results/queries depending on the
-  context.
+    gWaei is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-  AUTHOR:
-  File written and Copyrighted by Zachary Dovel. All Rights Reserved.
-
-  LICENSE:
-  This file is part of gWaei.
-
-  gWaei is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  gWaei is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-  
-  You should have received a copy of the GNU General Public License
-  along with gWaei.  If not, see <http://www.gnu.org/licenses/>.
-
+    gWaei is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    
+    You should have received a copy of the GNU General Public License
+    along with gWaei.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
+
+//! 
+//! @file src/formatting.c
+//!
+//! @brief Adds general text formatting to strings
+//!
+//! Functions to add proper formatting to results/queries depending on the
+//! context.
+//!
+
+
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -46,7 +48,7 @@
 
 
 //!
-//! \brief Searches for a regex and returns pointers to matches
+//! @brief Searches for a regex and returns pointers to matches
 //!
 //! THIS IS A PRIVATE FUNCTION. Function takes searches for the pattern in a
 //! a string and then returns pointers to the beginning and end of matches.
@@ -79,15 +81,15 @@ static gboolean locate_boundary_byte_pointers( const char *string, char  *patter
 
 
 //!
-//! \brief Copies a string while adding some special formatting
+//! @brief Copies a string while adding some special formatting
 //!
 //! The formatting added will be to decide of the word will have have hiragara
 //! and katakana variations of it searched and if four kanji woulds have the
 //! two kanji pieces also searched.
 //!
-//! @param output the character array the formatting string is copied to
-//! @param output the character array to format
-//! @param item a SearchItem to get misc data from
+//! @param output Character array the formatting string is copied to
+//! @param output Character array to format
+//! @param item SearchItem to get misc data from
 //!
 gboolean strcpy_with_query_preformatting (char* output, char* input, SearchItem *item)
 {
@@ -261,14 +263,14 @@ gboolean strcpy_with_query_preformatting (char* output, char* input, SearchItem 
 
 
 //!
-//! \brief Copies a string while adding some special formatting
+//! @brief Copies a string while adding some special formatting
 //!
 //! This function parses a string, adding delimiters for search atoms and then
 //! writes the edited string to the output.
 //!
-//! @param output the character array the formatting string is copied to
-//! @param output the character array to format
-//! @param item a SearchItem to get misc data from
+//! @param output Character array the formatting string is copied to
+//! @param output Character array to format
+//! @param item SearchItem to get misc data from
 //!
 void strcpy_with_query_formatting (char* output, char* input, SearchItem *item)
 {
@@ -460,14 +462,14 @@ void strcpy_with_query_formatting (char* output, char* input, SearchItem *item)
 
 
 //!
-//! \brief Copies a string while adding some special formatting
+//! @brief Copies a string while adding some special formatting
 //!
 //! Adds the formatting to a returned search result so it becomes
 //! more readable at the output.
 //!
-//! @param output the character array the formatting string is copied to
-//! @param output the character array to format
-//! @param item a SearchItem to get misc data from
+//! @param output Character array the formatting string is copied to
+//! @param output Character array to format
+//! @param item SearchItem to get misc data from
 //!
 void strcpy_with_general_formatting(char *output, char *input, SearchItem *item) 
 {
@@ -494,15 +496,15 @@ void strcpy_with_general_formatting(char *output, char *input, SearchItem *item)
 
 
 //!
-//! \brief Copies a string while adding some special formatting
+//! @brief Copies a string while adding some special formatting
 //!
 //! Adds the formatting to a returned search result so it becomes
 //! more readable at the output.  This version is used for kanji dictionary
 //! searches.
 //!
-//! @param output the character array the formatting string is copied to
-//! @param output the character array to format
-//! @param item a SearchItem to get misc data from
+//! @param output Character array the formatting string is copied to
+//! @param output Character array to format
+//! @param item SearchItem to get misc data from
 //!
 void strcpy_with_kanji_formatting(char *output, char *input, SearchItem *item)
 {
@@ -624,12 +626,12 @@ void strcpy_with_kanji_formatting(char *output, char *input, SearchItem *item)
 
 
 //!
-//! \brief Adds group formatting to a string
+//! @brief Adds group formatting to a string
 //!
 //! If this function detects similar kanji between strings, it will over write
 //! the kanji with spaces and remove vertical white space between the results.
 //!
-//! @param item a SearchItem to get the result from
+//! @param item SearchItem to get the result to add formatting to
 //!
 void add_group_formatting (SearchItem* item)
 {

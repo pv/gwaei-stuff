@@ -82,7 +82,7 @@ void gwaei_ui_update_settings_interface()
   resplit_button = GTK_WIDGET (gtk_builder_get_object(builder, id));
 
 
-  if (dictionarylist_get_total_with_status (UPDATING) > 0)
+  if (gwaei_dictlist_get_total_with_status (UPDATING) > 0)
   {
     gtk_widget_set_sensitive (close_button,   FALSE);
     gtk_widget_set_sensitive (install_table,  FALSE);
@@ -91,7 +91,7 @@ void gwaei_ui_update_settings_interface()
     gtk_widget_set_sensitive (update_button,  TRUE );
     gtk_widget_set_sensitive (updated_button, TRUE );
   }
-  else if (dictionarylist_get_total_with_status (INSTALLING) > 0)
+  else if (gwaei_dictlist_get_total_with_status (INSTALLING) > 0)
   {
     gtk_widget_set_sensitive (close_button,   FALSE);
     gtk_widget_set_sensitive (install_table,  TRUE );
@@ -100,7 +100,7 @@ void gwaei_ui_update_settings_interface()
     gtk_widget_set_sensitive (update_button,  FALSE);
     gtk_widget_set_sensitive (updated_button, FALSE);
   }
-  else if (dictionarylist_get_total_with_status (REBUILDING) > 0)
+  else if (gwaei_dictlist_get_total_with_status (REBUILDING) > 0)
   {
     gtk_widget_set_sensitive (close_button,   FALSE);
     gtk_widget_set_sensitive (install_table,  FALSE);
@@ -117,9 +117,9 @@ void gwaei_ui_update_settings_interface()
     gtk_widget_set_sensitive (updated_button, TRUE );
 
     gboolean state;
-    state = (dictionarylist_dictionary_get_status_by_id(MIX) == INSTALLED);
+    state = (gwaei_dictlist_dictionary_get_status_by_id(MIX) == INSTALLED);
     gtk_widget_set_sensitive (rebuild_button, state);
-    state = (dictionarylist_dictionary_get_status_by_id(NAMES) == INSTALLED);
+    state = (gwaei_dictlist_dictionary_get_status_by_id(NAMES) == INSTALLED);
     gtk_widget_set_sensitive (resplit_button, state);
   }
 }
@@ -368,8 +368,8 @@ void gwaei_ui_set_install_line_status(char *name, char *status, char *message)
     GtkWidget *button;
     gboolean sensitive;
 
-    sensitive = (rsync_exists && dictionarylist_get_total() &&
-                 dictionarylist_get_total_with_status(INSTALLING) == 0);
+    sensitive = (rsync_exists && gwaei_dictlist_get_total() &&
+                 gwaei_dictlist_get_total_with_status(INSTALLING) == 0);
 
     strcpy(id, "update_install_button");
     button = GTK_WIDGET (gtk_builder_get_object(builder, id));

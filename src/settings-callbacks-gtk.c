@@ -57,24 +57,24 @@ static void *update_thread(void *nothing)
 
     char text[200];
 
-    DictionaryInfo* kanji;
-    kanji = dictionarylist_get_dictionary_by_id (KANJI);
-    DictionaryInfo* names;
-    names = dictionarylist_get_dictionary_by_id (NAMES);
-    DictionaryInfo* radicals;
-    radicals = dictionarylist_get_dictionary_by_id (RADICALS);
+    GwaeiDictInfo* kanji;
+    kanji = gwaei_dictlist_get_dictionary_by_id (KANJI);
+    GwaeiDictInfo* names;
+    names = gwaei_dictlist_get_dictionary_by_id (NAMES);
+    GwaeiDictInfo* radicals;
+    radicals = gwaei_dictlist_get_dictionary_by_id (RADICALS);
 
     //Find out how many dictionaries need updating
     gdouble total_dictionary_updates = 0.0;
     gdouble extra_processing_jobs = 0.0;
 
-    GList *dictionarylist = dictionarylist_get_list();
+    GList *dictionarylist = gwaei_dictlist_get_list();
     GList *updatelist = NULL;
-    DictionaryInfo* di;
+    GwaeiDictInfo* di;
 
     while (dictionarylist != NULL)
     {
-      di = (DictionaryInfo*)dictionarylist->data;
+      di = (GwaeiDictInfo*)dictionarylist->data;
       if (di->status == INSTALLED && strlen(di->rsync) > 1)
       {
         updatelist = g_list_append (updatelist, di);
@@ -106,7 +106,7 @@ static void *update_thread(void *nothing)
 
     while (updatelist != NULL && gwaei_ui_get_install_line_status("update") != CANCELING)
     {
-      di = (DictionaryInfo*) updatelist->data;
+      di = (GwaeiDictInfo*) updatelist->data;
 
       char *path = di->path;
       char *sync_path = di->sync_path;
@@ -144,13 +144,13 @@ static void *update_thread(void *nothing)
       if (error == NULL)
       {
         if (di->id == KANJI && 
-            dictionarylist_dictionary_get_status_by_id(RADICALS) == INSTALLED)
+            gwaei_dictlist_dictionary_get_status_by_id(RADICALS) == INSTALLED)
         {
           gdk_threads_enter ();
           strcpy(text, gettext("Recreating Mixed dictionary..."));
           gwaei_ui_set_progressbar ("update", progress, text);
           gdk_threads_leave ();
-          dictionarylist_preform_postprocessing_by_name (di->name, &error);
+          gwaei_dictlist_preform_postprocessing_by_name (di->name, &error);
           progress += increment;
         }
         else if (di->id == NAMES && error == NULL)
@@ -158,7 +158,7 @@ static void *update_thread(void *nothing)
           gdk_threads_enter ();
           strcpy(text, gettext("Resplitting Names dictionary..."));
           gwaei_ui_set_progressbar ("update", progress, text);
-          dictionarylist_preform_postprocessing_by_name (di->name, &error);
+          gwaei_dictlist_preform_postprocessing_by_name (di->name, &error);
           gdk_threads_leave ();
           progress += increment;
         }
@@ -187,9 +187,9 @@ static void *update_thread(void *nothing)
     gdk_threads_enter();
     if(error != NULL)
     {
-      dictionarylist_normalize_all_status_from_to (ERRORED, INSTALLED);
-      dictionarylist_normalize_all_status_from_to (UPDATING, INSTALLED);
-      dictionarylist_normalize_all_status_from_to (UPDATED, INSTALLED);
+      gwaei_dictlist_normalize_all_status_from_to (ERRORED, INSTALLED);
+      gwaei_dictlist_normalize_all_status_from_to (UPDATING, INSTALLED);
+      gwaei_dictlist_normalize_all_status_from_to (UPDATED, INSTALLED);
       gwaei_ui_set_install_line_status ("update",  "error", error->message);
       g_error_free(error);
       error = NULL;
@@ -197,16 +197,16 @@ static void *update_thread(void *nothing)
     else if (gwaei_ui_get_install_line_status ("update") == CANCELING)
     {
       strcpy(text, gettext("Update was cancelled"));
-      dictionarylist_normalize_all_status_from_to (UPDATING, INSTALLED);
-      dictionarylist_normalize_all_status_from_to (UPDATED, INSTALLED);
-      dictionarylist_normalize_all_status_from_to (CANCELING, INSTALLED);
+      gwaei_dictlist_normalize_all_status_from_to (UPDATING, INSTALLED);
+      gwaei_dictlist_normalize_all_status_from_to (UPDATED, INSTALLED);
+      gwaei_dictlist_normalize_all_status_from_to (CANCELING, INSTALLED);
       gwaei_ui_set_install_line_status ("update",  "install", text);
     }
     else
     {
       strcpy(text, gettext("Dictionary update finished"));
-      dictionarylist_normalize_all_status_from_to (UPDATING, INSTALLED);
-      dictionarylist_normalize_all_status_from_to (UPDATED, INSTALLED);
+      gwaei_dictlist_normalize_all_status_from_to (UPDATING, INSTALLED);
+      gwaei_dictlist_normalize_all_status_from_to (UPDATED, INSTALLED);
       gwaei_ui_set_install_line_status ("update", "remove", text);
     }
 
@@ -221,7 +221,7 @@ static void *install_thread (gpointer dictionary)
     quark = g_quark_from_string (GWAEI_GENERIC_ERROR);
     GError *error = NULL;
 
-    DictionaryInfo *di = (DictionaryInfo*) dictionary;
+    GwaeiDictInfo *di = (GwaeiDictInfo*) dictionary;
     char *name;
     name = g_utf8_strdown(di->name, -1);
 
@@ -293,7 +293,7 @@ static void *install_thread (gpointer dictionary)
       gdk_threads_enter();
       gwaei_ui_set_install_line_status(name, "finishing", gettext("Postprocessing..."));
       gdk_threads_leave();
-      dictionarylist_preform_postprocessing_by_name(di->name, &error);
+      gwaei_dictlist_preform_postprocessing_by_name(di->name, &error);
     }
      
     //Was canceled
@@ -458,8 +458,8 @@ G_MODULE_EXPORT void do_dictionary_install (GtkWidget *widget, gpointer data)
     char name[100];
     gwaei_parse_widget_name(name, widget, TRUE);
 
-    DictionaryInfo *dictionary;
-    dictionary = dictionarylist_get_dictionary_by_alias (name);
+    GwaeiDictInfo *dictionary;
+    dictionary = gwaei_dictlist_get_dictionary_by_alias (name);
 
     //Create the thread
     if (g_thread_create(&install_thread, dictionary, FALSE, NULL) == NULL) {
@@ -591,8 +591,8 @@ G_MODULE_EXPORT void do_update_installed_dictionaries(GtkWidget *widget, gpointe
     char name[100];
     gwaei_parse_widget_name(name, widget, TRUE);
 
-    DictionaryInfo *dictionary;
-    dictionary = dictionarylist_get_dictionary_by_alias (name);
+    GwaeiDictInfo *dictionary;
+    dictionary = gwaei_dictlist_get_dictionary_by_alias (name);
 
     //Create the thread
     if (g_thread_create(&update_thread, NULL, FALSE, NULL) == NULL) {
@@ -612,11 +612,11 @@ G_MODULE_EXPORT void do_force_names_resplit(GtkWidget *widget, gpointer data)
 {
     GError *error = NULL;
 
-    DictionaryInfo* di;
-    di = dictionarylist_get_dictionary_by_alias("Names");
+    GwaeiDictInfo* di;
+    di = gwaei_dictlist_get_dictionary_by_alias("Names");
 
     di->status = REBUILDING;
-    dictionarylist_preform_postprocessing_by_name("Names", &error);
+    gwaei_dictlist_preform_postprocessing_by_name("Names", &error);
     di->status = INSTALLED;
 
     if (error != NULL)
@@ -630,14 +630,14 @@ G_MODULE_EXPORT void do_force_mix_rebuild(GtkWidget *widget, gpointer data)
 {
     GError *error = NULL;
 
-    DictionaryInfo* di;
-    di = dictionarylist_get_dictionary_by_alias("Mix");
+    GwaeiDictInfo* di;
+    di = gwaei_dictlist_get_dictionary_by_alias("Mix");
 
-    if (dictionarylist_dictionary_get_status_by_id (KANJI)    == INSTALLED &&
-        dictionarylist_dictionary_get_status_by_id (RADICALS) == INSTALLED   )
+    if (gwaei_dictlist_dictionary_get_status_by_id (KANJI)    == INSTALLED &&
+        gwaei_dictlist_dictionary_get_status_by_id (RADICALS) == INSTALLED   )
     {
       di->status = REBUILDING;
-      dictionarylist_preform_postprocessing_by_name("Mix", &error);
+      gwaei_dictlist_preform_postprocessing_by_name("Mix", &error);
       di->status = INSTALLED;
     }
     if (error != NULL)

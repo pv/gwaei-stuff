@@ -47,8 +47,8 @@ gboolean exact_switch = FALSE;
 
 void gwaei_console_uninstall_dictionary_by_name(char *name)
 {
-    DictionaryInfo* di;
-    di = dictionarylist_get_dictionary_by_name (name);
+    GwaeiDictInfo* di;
+    di = gwaei_dictlist_get_dictionary_by_name (name);
     if (di == NULL) return;
 
     gwaei_io_delete_dictionary_file(di);
@@ -64,8 +64,8 @@ void gwaei_console_uninstall_dictionary_by_name(char *name)
 
 gboolean gwaei_console_install_dictionary_by_name(char *name)
 {
-    DictionaryInfo* di;
-    di = dictionarylist_get_dictionary_by_alias(name);
+    GwaeiDictInfo* di;
+    di = gwaei_dictlist_get_dictionary_by_alias(name);
 
     char *path = di->path;
     char *sync_path = di->sync_path;
@@ -124,7 +124,7 @@ gboolean gwaei_console_install_dictionary_by_name(char *name)
     if (ret)
     {
       printf("* %s\n", gettext("Postprocessing..."));
-      dictionarylist_preform_postprocessing_by_name(name);
+      gwaei_dictlist_preform_postprocessing_by_name(name);
     }
 
     return ret;
@@ -173,8 +173,8 @@ static void print_installable_dictionaries()
 
     int i = 0; 
 
-    DictionaryInfo* di;
-    GList *list = dictionarylist_get_list();
+    GwaeiDictInfo* di;
+    GList *list = gwaei_dictlist_get_list();
     while (list != NULL)
     {
       di = list->data;
@@ -204,8 +204,8 @@ static void print_uninstallable_dictionaries()
 
     int i = 0; 
 
-    DictionaryInfo* di;
-    GList *list = dictionarylist_get_list();
+    GwaeiDictInfo* di;
+    GList *list = gwaei_dictlist_get_list();
     while (list != NULL)
     {
       di = list->data;
@@ -236,8 +236,8 @@ static void print_available_dictionaries()
 
     int i = 0; 
 
-    DictionaryInfo* di;
-    GList *list = dictionarylist_get_list();
+    GwaeiDictInfo* di;
+    GList *list = gwaei_dictlist_get_list();
     while (list != NULL)
     {
       di = list->data;
@@ -344,8 +344,8 @@ void initialize_console_interface(int argc, char **argv)
   int leftover;
   char query[MAX_QUERY];
 
-  DictionaryInfo *di;
-  di = dictionarylist_get_dictionary_by_alias("English");
+  GwaeiDictInfo *di;
+  di = gwaei_dictlist_get_dictionary_by_alias("English");
 
   char *args[argc];
   int total_args;
@@ -368,7 +368,7 @@ void initialize_console_interface(int argc, char **argv)
     else if (is_switch (argv[i], "-d", "--dictionary"))
     {
       i++;
-      di = dictionarylist_get_dictionary_by_alias(argv[i]);
+      di = gwaei_dictlist_get_dictionary_by_alias(argv[i]);
     }
 
     else
@@ -409,7 +409,7 @@ void initialize_console_interface(int argc, char **argv)
   {
     printf(gettext("%sTrying to install %s%s%s...%s"), "[1m", "[1;31m", args[1], "[0m[1m", "\n[0m");
 
-    di = dictionarylist_get_dictionary_by_alias(args[1]);
+    di = gwaei_dictlist_get_dictionary_by_alias(args[1]);
 
     if (di != NULL && di->status != NOT_INSTALLED && di->gckey[0] != '\0')
     {
@@ -449,7 +449,7 @@ void initialize_console_interface(int argc, char **argv)
   {
     printf(gettext("%sTrying to uninstall %s%s%s...%s"), "[1m", "[1;31m", args[1], "[0m[1m", "\n[0m");
 
-    if (dictionarylist_check_if_loaded_by_name(argv[2]))
+    if (gwaei_dictlist_check_if_loaded_by_name(argv[2]))
     {
       gwaei_console_uninstall_dictionary_by_name(argv[2]);
 
@@ -471,12 +471,12 @@ void initialize_console_interface(int argc, char **argv)
     printf(gettext("Syncing possible installed dictionaries..."));
     printf("[0m\n");
 
-    DictionaryInfo* di;
-    GList *list = dictionarylist_get_list();
+    GwaeiDictInfo* di;
+    GList *list = gwaei_dictlist_get_list();
     while (list != NULL && error == NULL)
     {
       di = list->data;
-      dictionarylist_sync_dictionary (di, &error);
+      gwaei_dictlist_sync_dictionary (di, &error);
       list = list->next;
     }
 
