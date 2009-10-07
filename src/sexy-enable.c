@@ -1,35 +1,35 @@
-/*****************************************************************************
+/******************************************************************************
+    AUTHOR:
+    File written and Copyrighted by Zachary Dovel. All Rights Reserved.
 
-  FILE:
-  src/sexy.c
+    LICENSE:
+    This file is part of gWaei.
 
-  DESCRIPTION:
-  File used for implimenting a libsexy entry as the search query.  Libsexy
-  is nice because it allows spell checking compatibility.  Because some day
-  I may want to remove the dependeny, this code mingles with the other files
-  minimally.  One the initialize_sexy() command should be used if you want
-  to use the libsexy search entry.
+    gWaei is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-  AUTHOR:
-  File written and Copyrighted by Zachary Dovel. All Rights Reserved.
-
-  LICENSE:
-  This file is part of gWaei.
-
-  gWaei is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  gWaei is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-  
-  You should have received a copy of the GNU General Public License
-  along with gWaei.  If not, see <http://www.gnu.org/licenses/>.
-
+    gWaei is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    
+    You should have received a copy of the GNU General Public License
+    along with gWaei.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
+
+//! 
+//! @file src/sexy-enable.c
+//!
+//! @brief Overlays a sexy entry in play of the gtk one
+//!
+//! File used for implimenting a libsexy entry as the search query.  Libsexy
+//! is nice because it allows spell checking compatibility.  Because some day
+//! I may want to remove the dependeny, this code mingles with the other files
+//! minimally.  One the initialize_sexy() command should be used if you want
+//! to use the libsexy search entry.
+//!
 
 
 #include <stdlib.h>
@@ -50,8 +50,17 @@
 #include <gwaei/preferences.h>
 
 
-//Events for enabling/disabling spellchecking if the query only contains romanji
-
+//!
+//! @brief Turns on or aff spellcheck given specific conditions
+//!
+//! The function has to make sure that the user wants spellcheck, and if 
+//! the query is convertable to hiragana if the conversion pref is turned on.
+//!
+//! @param widget Unused GtkWidget
+//! @param data Unused gpointer
+//!
+#include <locale.h>
+#include <libintl.h>
 void do_conditionally_enable_spellcheck (GtkWidget *widget, gpointer data)
 {
      char id[50];
@@ -61,6 +70,10 @@ void do_conditionally_enable_spellcheck (GtkWidget *widget, gpointer data)
 
      gboolean spellcheck_pref;
      spellcheck_pref = gw_pref_get_boolean (GCKEY_GWAEI_SPELLCHECK, TRUE);
+     int rk_conv_pref;
+     rk_conv_pref = gw_pref_get_int (GCKEY_GWAEI_ROMAN_KANA, 0);
+     gboolean want_conv;
+     want_conv = (rk_conv_pref == 0 || (rk_conv_pref == 2 && !is_japanese_locale()));
 
      char *text = gtk_editable_get_chars (GTK_EDITABLE (entry), 0, -1);
      if (text == NULL) return;
@@ -85,7 +98,7 @@ void do_conditionally_enable_spellcheck (GtkWidget *widget, gpointer data)
      }
 
      gboolean is_convertable_to_hiragana;
-     is_convertable_to_hiragana= (input_ptr != NULL && strlen (input_ptr) == 0);
+     is_convertable_to_hiragana= (input_ptr != NULL && strlen (input_ptr) == 0 && want_conv);
 
      if (gw_all_chars_are_in_range (text, L' ', L'|') == TRUE &&
          is_convertable_to_hiragana == FALSE                     &&
@@ -134,6 +147,14 @@ void do_conditionally_enable_spellcheck (GtkWidget *widget, gpointer data)
 }
 
 
+//!
+//! @brief Conitionally enables search when focus enters the searh entry
+//!
+//! @param widget Unused GtkWidget
+//! @param data Unused gpointer
+//! @see do_enable_spellcheck_when_focus_out ()
+//! @return always returns false
+//!
 gboolean do_enable_spellcheck_when_focus_in (GtkWidget *widget, gpointer data)
 {
       do_conditionally_enable_spellcheck (NULL, NULL);
@@ -141,6 +162,17 @@ gboolean do_enable_spellcheck_when_focus_in (GtkWidget *widget, gpointer data)
 }
 
 
+//!
+//! @brief Disables spell check wehn the focus isn't in the search entry
+//!
+//! The though behind is is the red underline is distracting when the results
+//! are being searched through by the user.
+//!
+//! @param widget Unused GtkWidget
+//! @param data Unused gpointer
+//! @see do_enable_spellcheck_when_focus_in ()
+//! @return always returns false
+//!
 gboolean do_disable_spellcheck_when_focus_out (GtkWidget *widget, gpointer data)
 {
     sexy_spell_entry_set_checked (SEXY_SPELL_ENTRY (search_entry), FALSE);
@@ -148,6 +180,14 @@ gboolean do_disable_spellcheck_when_focus_out (GtkWidget *widget, gpointer data)
 }
 
 
+//!
+//! @brief Sets up the sexy text entry
+//!
+//! The function takes the time to get rid of the gtkentry and replace it with
+//! a SexySpellEntry.  In the process, it makes sure all of the signals are
+//! connected to the new widget. It also make hidden spellcheck toolbutton
+//! and checkbox visible.
+//!
 void gw_sexy_initialize_libsexy ()
 {
     char id[50];
@@ -188,8 +228,6 @@ void gw_sexy_initialize_libsexy ()
     //Mimic original callbacks from the original search entry
     g_signal_connect( G_OBJECT (entry),       "activate",
                       G_CALLBACK (do_search), NULL);
-    g_signal_connect( G_OBJECT (entry),       "drag-data-received",
-                      G_CALLBACK (search_drag_data_recieved), NULL);
     g_signal_connect( G_OBJECT (entry),       "focus-in-event",
                       G_CALLBACK (do_update_clipboard_on_focus_change), entry);
     g_signal_connect( G_OBJECT (entry),       "key-press-event",
@@ -198,8 +236,6 @@ void gw_sexy_initialize_libsexy ()
                       G_CALLBACK (do_update_button_states_based_on_entry_text), NULL);
     g_signal_connect( G_OBJECT (entry),       "icon-release",
                       G_CALLBACK (do_clear_search), NULL);
-
-
 
     //New callbacks specifically for libsexy
     g_signal_connect( G_OBJECT (entry), "changed",
@@ -219,6 +255,15 @@ void gw_sexy_initialize_libsexy ()
 
 }
 
+
+//!
+//! @brief Sets the gui widgets consistently to the requested state
+//!
+//! The function makes sure that both of the widgets in the gui are the same
+//! when the user clicks a one of them to change the settings.
+//!
+//! @param request the requested state for spellchecking widgets
+//!
 void gw_sexy_ui_set_spellcheck(gboolean request)
 {
     char id[50];

@@ -1520,17 +1520,17 @@ G_MODULE_EXPORT void do_open_dictionary_folder (GtkWidget *widget, gpointer data
 //! Part of a group of four functions to handle drag drops of text into
 //! the main text buffer which will initialize a search based on that text.
 //!
-//! @see search_drag_data_recieved ()
-//! @see drag_leave_1 ()
-//! @see drag_drop_1 ()
+//! @see do_search_drag_data_recieved ()
+//! @see do_drag_leave_1 ()
+//! @see do_drag_drop_1 ()
 //! @return Always returns true
 //!
-G_MODULE_EXPORT gboolean drag_motion_1 (GtkWidget      *widget,
-                                        GdkDragContext *drag_context,
-                                        gint            x,
-                                        gint            y,
-                                        guint           time,
-                                        gpointer        user_data)
+G_MODULE_EXPORT gboolean do_drag_motion_1 (GtkWidget      *widget,
+                                           GdkDragContext *drag_context,
+                                           gint            x,
+                                           gint            y,
+                                           guint           time,
+                                           gpointer        user_data)
 {
     gdk_drag_status (drag_context, GDK_ACTION_COPY, time);
     gtk_drag_highlight (widget);
@@ -1544,14 +1544,14 @@ G_MODULE_EXPORT gboolean drag_motion_1 (GtkWidget      *widget,
 //! Part of a group of four functions to handle drag drops of text into
 //! the main text buffer which will initialize a search based on that text.
 //!
-//! @see search_drag_data_recieved ()
-//! @see drag_drop_1 ()
-//! @see drag_motion_1 ()
+//! @see do_search_drag_data_recieved ()
+//! @see do_drag_drop_1 ()
+//! @see do_drag_motion_1 ()
 //!
-G_MODULE_EXPORT void drag_leave_1 (GtkWidget      *widget,
-                                   GdkDragContext *drag_context,
-                                   guint           time,
-                                   gpointer        user_data) 
+G_MODULE_EXPORT void do_drag_leave_1 (GtkWidget      *widget,
+                                      GdkDragContext *drag_context,
+                                      guint           time,
+                                      gpointer        user_data) 
 {
     gtk_drag_unhighlight (widget);
 }
@@ -1563,17 +1563,17 @@ G_MODULE_EXPORT void drag_leave_1 (GtkWidget      *widget,
 //! Part of a group of four functions to handle drag drops of text into
 //! the main text buffer which will initialize a search based on that text.
 //!
-//! @see search_drag_data_recieved ()
-//! @see drag_leave_1 ()
-//! @see drag_motion_1 ()
+//! @see do_search_drag_data_recieved ()
+//! @see do_drag_leave_1 ()
+//! @see do_drag_motion_1 ()
 //! @return Always returns true
 //!
-G_MODULE_EXPORT gboolean drag_drop_1 (GtkWidget      *widget,
-                                      GdkDragContext *drag_context,
-                                      gint            x,
-                                      gint            y,
-                                      guint           time,
-                                      gpointer        user_data)  
+G_MODULE_EXPORT gboolean do_drag_drop_1 (GtkWidget      *widget,
+                                         GdkDragContext *drag_context,
+                                         gint            x,
+                                         gint            y,
+                                         guint           time,
+                                         gpointer        user_data)  
 {
     GdkAtom target;
     target = gtk_drag_dest_find_target (widget, drag_context, NULL);
@@ -1588,18 +1588,18 @@ G_MODULE_EXPORT gboolean drag_drop_1 (GtkWidget      *widget,
 //! Part of a group of four functions to handle drag drops of text into
 //! the main text buffer which will initialize a search based on that text.
 //!
-//! @see drag_leave_1 ()
-//! @see drag_drop_1 ()
-//! @see drag_motion_1 ()
+//! @see do_drag_leave_1 ()
+//! @see do_drag_drop_1 ()
+//! @see do_drag_motion_1 ()
 //!
-G_MODULE_EXPORT void search_drag_data_recieved (GtkWidget        *widget,
-                                                GdkDragContext   *drag_context,
-                                                gint              x,
-                                                gint              y,
-                                                GtkSelectionData *data,
-                                                guint             info,
-                                                guint             time,
-                                                gpointer          user_data    )
+G_MODULE_EXPORT void do_search_drag_data_recieved (GtkWidget        *widget,
+                                                   GdkDragContext   *drag_context,
+                                                   gint              x,
+                                                   gint              y,
+                                                   GtkSelectionData *data,
+                                                   guint             info,
+                                                   guint             time,
+                                                   gpointer          user_data    )
 {
     if (strcmp (gtk_widget_get_name (widget), "search_entry") == 0)
       return;
@@ -1664,9 +1664,9 @@ G_MODULE_EXPORT void do_update_button_states_based_on_entry_text (GtkWidget *wid
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT gboolean update_icons_for_selection (GtkWidget *widget, 
-                                                     GdkEvent  *event,
-                                                     gpointer   data   ) 
+G_MODULE_EXPORT gboolean do_update_icons_for_selection (GtkWidget *widget, 
+                                                        GdkEvent  *event,
+                                                        gpointer   data   ) 
 {
     GtkAction *action;
     action = GTK_ACTION (gtk_builder_get_object (builder, "file_print_action"));

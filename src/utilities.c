@@ -718,6 +718,7 @@ gboolean is_japanese_ctype()
            );
 }
 
+
 gboolean is_japanese_locale()
 {
     return ( setlocale(LC_MESSAGES, NULL) != NULL &&

@@ -18,7 +18,7 @@
       <group name="main_accelgroup"/>
     </accel-groups>
     <signal name="style_set" handler="do_update_styles"/>
-    <signal name="event_after" handler="update_icons_for_selection"/>
+    <signal name="event_after" handler="do_update_icons_for_selection"/>
     <signal name="delete_event" handler="do_delete_event_action"/>
     <child>
       <object class="GtkVBox" id="main_vbox">
@@ -801,16 +801,16 @@
                             <property name="right_margin">10</property>
                             <property name="cursor_visible">False</property>
                             <property name="buffer">results_text_buffer</property>
-                            <signal name="drag_motion" handler="drag_motion_1"/>
+                            <signal name="drag_motion" handler="do_drag_motion_1"/>
                             <signal name="focus_in_event" handler="do_update_clipboard_on_focus_change" object="results_text_view"/>
                             <signal name="button_press_event" handler="do_get_position_for_button_press"/>
                             <signal name="motion_notify_event" handler="do_get_iter_for_motion"/>
-                            <signal name="drag_drop" handler="drag_drop_1"/>
+                            <signal name="drag_drop" handler="do_drag_drop_1"/>
                             <signal name="button_release_event" handler="do_get_iter_for_button_release"/>
-                            <signal name="drag_leave" handler="drag_leave_1"/>
-                            <signal name="drag_data_received" handler="search_drag_data_recieved"/>
+                            <signal name="drag_leave" handler="do_drag_leave_1"/>
+                            <signal name="drag_data_received" handler="do_search_drag_data_recieved"/>
                             <signal name="key_press_event" handler="do_focus_change_on_key_press"/>
-                            <signal name="event_after" handler="update_icons_for_selection"/>
+                            <signal name="event_after" handler="do_update_icons_for_selection"/>
                           </object>
                         </child>
                       </object>
@@ -900,13 +900,13 @@
                             <property name="right_margin">5</property>
                             <property name="cursor_visible">False</property>
                             <property name="accepts_tab">False</property>
-                            <signal name="drag_motion" handler="drag_motion_1"/>
+                            <signal name="drag_motion" handler="do_drag_motion_1"/>
                             <signal name="focus_in_event" handler="do_update_clipboard_on_focus_change" object="kanji_text_view"/>
                             <signal name="copy_clipboard" handler="do_copy"/>
-                            <signal name="drag_drop" handler="drag_drop_1"/>
-                            <signal name="drag_leave" handler="drag_leave_1"/>
-                            <signal name="drag_data_received" handler="search_drag_data_recieved"/>
-                            <signal name="event_after" handler="update_icons_for_selection"/>
+                            <signal name="drag_drop" handler="do_drag_drop_1"/>
+                            <signal name="drag_leave" handler="do_drag_leave_1"/>
+                            <signal name="drag_data_received" handler="do_search_drag_data_recieved"/>
+                            <signal name="event_after" handler="do_update_icons_for_selection"/>
                             <signal name="key_press_event" handler="do_focus_change_on_key_press"/>
                           </object>
                         </child>
