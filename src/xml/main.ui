@@ -847,7 +847,10 @@
                             <property name="relief">none</property>
                             <signal name="clicked" handler="do_close_kanji_results"/>
                             <child>
-                              <placeholder/>
+                              <object class="GtkImage" id="image2">
+                                <property name="visible">True</property>
+                                <property name="stock">gtk-close</property>
+                              </object>
                             </child>
                           </object>
                           <packing>
@@ -860,6 +863,9 @@
                           <object class="GtkLabel" id="label1">
                             <property name="visible">True</property>
                             <property name="label" translatable="yes">Kanji Lookup:</property>
+                            <attributes>
+                              <attribute name="weight" value="bold"/>
+                            </attributes>
                           </object>
                           <packing>
                             <property name="expand">False</property>
