@@ -26,7 +26,7 @@ void save_window_attributes_and_hide(char* window_id)
 }
 
 
-void gwaei_ui_show_window (char *id)
+void gw_ui_show_window (char *id)
 {
 }
 
@@ -36,16 +36,16 @@ void update_toolbar_buttons()
 }
 
 
-void gwaei_ui_reinitialize_results_label (SearchItem *item)
+void gw_ui_reinitialize_results_label (GwSearchItem *item)
 {
 }
 
 
-void gwaei_ui_update_total_results_label (SearchItem* item)
+void gw_ui_update_total_results_label (GwSearchItem* item)
 {
 }
 
-void gwaei_ui_finalize_total_results_label (SearchItem* item)
+void gw_ui_finalize_total_results_label (GwSearchItem* item)
 {
 }
 
@@ -62,7 +62,7 @@ int rebuild_combobox_dictionary_list()
 //
 // Menu popups section
 //
-void gwaei_ui_update_history_menu_popup()
+void gw_ui_update_history_menu_popup()
 {
 }
 
@@ -71,119 +71,119 @@ void gwaei_ui_update_history_menu_popup()
 void rebuild_history_button_popup(char* id, GList* list) {
 }
 
-void gwaei_ui_rebuild_back_history_popup() {
+void gw_ui_rebuild_back_history_popup() {
 }
 
-void gwaei_ui_rebuild_forward_history_popup() {
+void gw_ui_rebuild_forward_history_popup() {
 }
 
 
-void gwaei_ui_update_history_popups()
+void gw_ui_update_history_popups()
 {
 }
 
 
-void gwaei_ui_set_font(char *family, int size)
+void gw_ui_set_font(char *family, int size)
 {
 }
 
-void gwaei_ui_set_toolbar_style(char *request) 
-{
-}
-
-
-void gwaei_ui_set_toolbar_show(gboolean request)
+void gw_ui_set_toolbar_style(char *request) 
 {
 }
 
 
-void gwaei_ui_set_less_relevant_show(gboolean show)
+void gw_ui_set_toolbar_show(gboolean request)
 {
 }
 
 
-void gwaei_ui_set_romanji_kana_conv(int request)
+void gw_ui_set_less_relevant_show(gboolean show)
 {
 }
 
 
-void gwaei_ui_set_hiragana_katakana_conv(gboolean request)
+void gw_ui_set_romanji_kana_conv(int request)
 {
 }
 
 
-void gwaei_ui_set_katakana_hiragana_conv(gboolean request)
+void gw_ui_set_hiragana_katakana_conv(gboolean request)
 {
 }
 
 
-void gwaei_ui_set_spellcheck(gboolean request)
+void gw_ui_set_katakana_hiragana_conv(gboolean request)
 {
 }
 
 
-void gwaei_ui_set_color_to_swatch(const char *widget_id, uint r, uint g, uint b)
+void gw_ui_set_spellcheck(gboolean request)
 {
 }
 
 
-void gwaei_ui_append_to_buffer(const int TARGET, char *text, char *tag1,
+void gw_ui_set_color_to_swatch(const char *widget_id, uint r, uint g, uint b)
+{
+}
+
+
+void gw_ui_append_to_buffer(const int TARGET, char *text, char *tag1,
                                char *tag2, int *start_line, int *end_line)
 {
 }
 
 
-void gwaei_ui_clear_buffer_by_target (const int TARGET)
+void gw_ui_clear_buffer_by_target (const int TARGET)
 {
 }
 
 
-void gwaei_ui_search_entry_insert(char* text)
+void gw_ui_search_entry_insert(char* text)
 {
 }
 
 
-void gwaei_ui_grab_focus_by_target (const int TARGET)
+void gw_ui_grab_focus_by_target (const int TARGET)
 {
 }
 
 
-void gwaei_ui_clear_search_entry()
+void gw_ui_clear_search_entry()
 {
 }
 
 
-void gwaei_ui_strcpy_from_widget(char* output, int MAX, int TARGET)
+void gw_ui_strcpy_from_widget(char* output, int MAX, int TARGET)
 {
 }
 
 
-void gwaei_ui_text_select_all_by_target (int TARGET)
+void gw_ui_text_select_all_by_target (int TARGET)
 {
 }
 
-void gwaei_ui_text_select_none_by_target (int TARGET)
+void gw_ui_text_select_none_by_target (int TARGET)
 {
 }
 
-guint gwaei_ui_get_current_widget_focus (char *window_id)
+guint gw_ui_get_current_widget_focus (char *window_id)
 {
 }
 
-void gwaei_ui_copy_text(guint TARGET)
+void gw_ui_copy_text(guint TARGET)
 {
 }
 
-void gwaei_ui_cut_text(guint TARGET)
+void gw_ui_cut_text(guint TARGET)
 {
 }
 
-void gwaei_ui_paste_text(guint TARGET)
+void gw_ui_paste_text(guint TARGET)
 {
 }
 
 
-gboolean gwaei_ui_load_gtk_builder_xml(const char *name) {
+gboolean gw_ui_load_gtk_builder_xml(const char *name) {
     return FALSE;
 }
 
@@ -199,7 +199,7 @@ void initialize_history_popups()
 /////////////////////////////////////////////////
 
 
-gboolean gwaei_ui_set_color_to_tagtable (char    *id,     int      TARGET,
+gboolean gw_ui_set_color_to_tagtable (char    *id,     int      TARGET,
                                          gboolean set_fg, gboolean set_bg )
 {
     return TRUE;
@@ -207,39 +207,39 @@ gboolean gwaei_ui_set_color_to_tagtable (char    *id,     int      TARGET,
 
 
 
-void  gwaei_ui_set_tag_to_tagtable (char *id,   int      TARGET,
+void  gw_ui_set_tag_to_tagtable (char *id,   int      TARGET,
                                     char *atr,  gpointer val    )
 {
 }
 
 
-char* gwaei_ui_get_text_slice_from_buffer (int TARGET, int sl, int el)
+char* gw_ui_get_text_slice_from_buffer (int TARGET, int sl, int el)
 {
 }
 
 
-void gwaei_ui_apply_tag_to_text (int TARGET, char tag[],
+void gw_ui_apply_tag_to_text (int TARGET, char tag[],
                                  int sl, int so, int el, int eo)
 {
 }
 
 
-gunichar gwaei_get_hovered_character(int *x, int *y)
+gunichar gw_get_hovered_character(int *x, int *y)
 {
 } 
 
 
-void gwaei_ui_set_cursor(const int CURSOR)
+void gw_ui_set_cursor(const int CURSOR)
 {
 }
 
 
-void gwaei_open_kanji_results()
+void gw_open_kanji_results()
 {
 }
 
 
-void gwaei_close_kanji_results()
+void gw_close_kanji_results()
 {
 }
 
@@ -252,61 +252,61 @@ char* locate_offset( char *string, char *line_start, regex_t *re_locate,
 
 
 
-void gwaei_ui_add_results_tagging ( gint sl, gint el, SearchItem* item )
+void gw_ui_add_results_tagging ( gint sl, gint el, GwSearchItem* item )
 {
 }
 
 
-void gwaei_ui_display_no_results_found_page()
+void gw_ui_display_no_results_found_page()
 {
 }
 
 
-void gwaei_ui_cancel_search_status_by_target(const int TARGET)
+void gw_ui_cancel_search_status_by_target(const int TARGET)
 {
 }
 
 
-const char* gwaei_ui_get_active_dictionary ()
+const char* gw_ui_get_active_dictionary ()
 {
 }
 
 
-void gwaei_ui_set_active_dictionary_by_name (char* name)
+void gw_ui_set_active_dictionary_by_name (char* name)
 {
 }
 
 
-void gwaei_ui_next_dictionary()
+void gw_ui_next_dictionary()
 {
 }
 
 
-void gwaei_ui_cycle_dictionaries(gboolean cycle_forward)
+void gw_ui_cycle_dictionaries(gboolean cycle_forward)
 {
 }
 
-void gwaei_ui_cycle_dictionaries_forward ()
+void gw_ui_cycle_dictionaries_forward ()
 {
 }
 
-void gwaei_ui_cycle_dictionaries_backward ()
-{
-}
-
-
-
-char* gwaei_ui_get_text_from_text_buffer(const int TARGET)
+void gw_ui_cycle_dictionaries_backward ()
 {
 }
 
 
-void gwaei_reload_tagtable_tags()
+
+char* gw_ui_get_text_from_text_buffer(const int TARGET)
 {
 }
 
 
-void gwaei_initialize_tags()
+void gw_reload_tagtable_tags()
+{
+}
+
+
+void gw_initialize_tags()
 {
 }
 
@@ -316,29 +316,29 @@ void initialize_gui_interface(int *argc, char ***argv)
 }
 
 
-void gwaei_ui_update_settings_interface()
+void gw_ui_update_settings_interface()
 {
 }
 
-void gwaei_ui_set_dictionary_source(const char* id, const char* value)
+void gw_ui_set_dictionary_source(const char* id, const char* value)
 {
 }
 
 
 //Sets the status of an individual feature
-void gwaei_ui_set_feature_line_status(char* name, char* status)
+void gw_ui_set_feature_line_status(char* name, char* status)
 {
 }
 
 
 //Sets the install status of an individual dictionary
-void gwaei_ui_set_install_line_status(char *name, char *status, char *message)
+void gw_ui_set_install_line_status(char *name, char *status, char *message)
 {
 }
 
 
 //The layout of this function is specifically for a libcurl callback
-int gwaei_ui_update_progressbar (void   *id,
+int gw_ui_update_progressbar (void   *id,
                                  double  dltotal,
                                  double  dlnow,
                                  double  ultotal,
@@ -347,10 +347,10 @@ int gwaei_ui_update_progressbar (void   *id,
 }
 
 
-void gwaei_ui_set_progressbar (char *name, double percent, char *message)
+void gw_ui_set_progressbar (char *name, double percent, char *message)
 {
 }
 
-void gwaei_ui_update_search_progressbar (long current, long total)
+void gw_ui_update_search_progressbar (long current, long total)
 { 
 }

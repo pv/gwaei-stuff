@@ -7,4 +7,4 @@ regex_t re_mix;
 regex_t re_gz;
 regex_t re_hexcolor;
 
-void gwaei_regex_initialize_constant_regular_expressions(void);
+void gw_regex_initialize_constant_regular_expressions(void);

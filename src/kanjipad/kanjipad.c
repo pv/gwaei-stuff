@@ -424,13 +424,13 @@ static void initialize_window_attributes(GtkWidget *window)
     int x, y, width, height;
 
     strncpy(value, "/x", leftover - strlen("/x"));
-    x = gwaei_pref_get_int (key, 0);
+    x = gw_pref_get_int (key, 0);
     strncpy(value, "/y", leftover - strlen("/y"));
-    y = gwaei_pref_get_int(key, 0);
+    y = gw_pref_get_int(key, 0);
     strncpy(value, "/width", leftover - strlen("/width"));
-    width = gwaei_pref_get_int(key, 100);
+    width = gw_pref_get_int(key, 100);
     strncpy(value, "/height", leftover - strlen("/height"));
-    height = gwaei_pref_get_int(key, 100);
+    height = gw_pref_get_int(key, 100);
 
     //Apply the x and y if they are within the screen size
     if (x < gdk_screen_width() && y < gdk_screen_height()) {

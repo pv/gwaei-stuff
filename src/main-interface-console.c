@@ -45,27 +45,27 @@
 gboolean quiet_switch = FALSE;
 gboolean exact_switch = FALSE;
 
-void gwaei_console_uninstall_dictionary_by_name(char *name)
+void gw_console_uninstall_dictionary_by_name(char *name)
 {
-    GwaeiDictInfo* di;
-    di = gwaei_dictlist_get_dictionary_by_name (name);
+    GwDictInfo* di;
+    di = gw_dictlist_get_dictionary_by_name (name);
     if (di == NULL) return;
 
-    gwaei_io_delete_dictionary_file(di);
+    gw_io_delete_dictionary_file(di);
     di->status = NOT_INSTALLED;
     di->load_position = -1;
 
     if (di->id == KANJI || di->id == RADICALS)
-      gwaei_console_uninstall_dictionary_by_name ("Mix");
+      gw_console_uninstall_dictionary_by_name ("Mix");
     else if (di->id == NAMES)
-      gwaei_console_uninstall_dictionary_by_name ("Places");
+      gw_console_uninstall_dictionary_by_name ("Places");
 }
 
 
-gboolean gwaei_console_install_dictionary_by_name(char *name)
+gboolean gw_console_install_dictionary_by_name(char *name)
 {
-    GwaeiDictInfo* di;
-    di = gwaei_dictlist_get_dictionary_by_alias(name);
+    GwDictInfo* di;
+    di = gw_dictlist_get_dictionary_by_alias(name);
 
     char *path = di->path;
     char *sync_path = di->sync_path;
@@ -75,10 +75,10 @@ gboolean gwaei_console_install_dictionary_by_name(char *name)
     di->status = INSTALLING;
     
     char fallback_uri[100];
-    gwaei_util_strncpy_fallback_from_key (fallback_uri, di->gckey, 100);
+    gw_util_strncpy_fallback_from_key (fallback_uri, di->gckey, 100);
  
     char uri[100];
-    gwaei_pref_get_string (uri, di->gckey, fallback_uri, 100);
+    gw_pref_get_string (uri, di->gckey, fallback_uri, 100);
 
     //Make sure the download folder exits
     char download_path[FILENAME_MAX] = "";
@@ -95,24 +95,24 @@ gboolean gwaei_console_install_dictionary_by_name(char *name)
     if (ret && g_file_test (uri, G_FILE_TEST_IS_REGULAR))
     {
       printf("  %s\n", gettext("Coping file..."));
-      ret = gwaei_io_copy_dictionary_file (uri, gz_path, NULL);
+      ret = gw_io_copy_dictionary_file (uri, gz_path, NULL);
     }
     else if (ret)
     {
       printf("* %s\n", gettext("Downloading file..."));
-      ret = gwaei_io_download_dictionary_file (uri, gz_path, NULL, NULL);
+      ret = gw_io_download_dictionary_file (uri, gz_path, NULL, NULL);
     }
 
     if (ret)
     {
       printf("* %s\n", gettext("Gunzipping file..."));
-      ret = gwaei_io_gunzip_dictionary_file(gz_path, NULL);
+      ret = gw_io_gunzip_dictionary_file(gz_path, NULL);
     }
    
     if (ret)
     {
       printf("* %s\n",gettext("Converting encoding..."));
-      ret = gwaei_io_copy_with_encoding(sync_path, path, "EUC-JP","UTF-8");
+      ret = gw_io_copy_with_encoding(sync_path, path, "EUC-JP","UTF-8");
     }
 
     if (ret)
@@ -124,7 +124,7 @@ gboolean gwaei_console_install_dictionary_by_name(char *name)
     if (ret)
     {
       printf("* %s\n", gettext("Postprocessing..."));
-      gwaei_dictlist_preform_postprocessing_by_name(name);
+      gw_dictlist_preform_postprocessing_by_name(name);
     }
 
     return ret;
@@ -173,8 +173,8 @@ static void print_installable_dictionaries()
 
     int i = 0; 
 
-    GwaeiDictInfo* di;
-    GList *list = gwaei_dictlist_get_list();
+    GwDictInfo* di;
+    GList *list = gw_dictlist_get_list();
     while (list != NULL)
     {
       di = list->data;
@@ -204,8 +204,8 @@ static void print_uninstallable_dictionaries()
 
     int i = 0; 
 
-    GwaeiDictInfo* di;
-    GList *list = gwaei_dictlist_get_list();
+    GwDictInfo* di;
+    GList *list = gw_dictlist_get_list();
     while (list != NULL)
     {
       di = list->data;
@@ -236,8 +236,8 @@ static void print_available_dictionaries()
 
     int i = 0; 
 
-    GwaeiDictInfo* di;
-    GList *list = gwaei_dictlist_get_list();
+    GwDictInfo* di;
+    GList *list = gw_dictlist_get_list();
     while (list != NULL)
     {
       di = list->data;
@@ -344,8 +344,8 @@ void initialize_console_interface(int argc, char **argv)
   int leftover;
   char query[MAX_QUERY];
 
-  GwaeiDictInfo *di;
-  di = gwaei_dictlist_get_dictionary_by_alias("English");
+  GwDictInfo *di;
+  di = gw_dictlist_get_dictionary_by_alias("English");
 
   char *args[argc];
   int total_args;
@@ -368,7 +368,7 @@ void initialize_console_interface(int argc, char **argv)
     else if (is_switch (argv[i], "-d", "--dictionary"))
     {
       i++;
-      di = gwaei_dictlist_get_dictionary_by_alias(argv[i]);
+      di = gw_dictlist_get_dictionary_by_alias(argv[i]);
     }
 
     else
@@ -409,7 +409,7 @@ void initialize_console_interface(int argc, char **argv)
   {
     printf(gettext("%sTrying to install %s%s%s...%s"), "[1m", "[1;31m", args[1], "[0m[1m", "\n[0m");
 
-    di = gwaei_dictlist_get_dictionary_by_alias(args[1]);
+    di = gw_dictlist_get_dictionary_by_alias(args[1]);
 
     if (di != NULL && di->status != NOT_INSTALLED && di->gckey[0] != '\0')
     {
@@ -424,7 +424,7 @@ void initialize_console_interface(int argc, char **argv)
       //printf("[0m");
       exit (1);
     }
-    else if (gwaei_console_install_dictionary_by_name (args[1]))
+    else if (gw_console_install_dictionary_by_name (args[1]))
     {
       printf("[1m");
       printf(gettext("Finished"));
@@ -449,9 +449,9 @@ void initialize_console_interface(int argc, char **argv)
   {
     printf(gettext("%sTrying to uninstall %s%s%s...%s"), "[1m", "[1;31m", args[1], "[0m[1m", "\n[0m");
 
-    if (gwaei_dictlist_check_if_loaded_by_name(argv[2]))
+    if (gw_dictlist_check_if_loaded_by_name(argv[2]))
     {
-      gwaei_console_uninstall_dictionary_by_name(argv[2]);
+      gw_console_uninstall_dictionary_by_name(argv[2]);
 
       printf("[1m");
       printf(gettext("Finished"));
@@ -471,12 +471,12 @@ void initialize_console_interface(int argc, char **argv)
     printf(gettext("Syncing possible installed dictionaries..."));
     printf("[0m\n");
 
-    GwaeiDictInfo* di;
-    GList *list = gwaei_dictlist_get_list();
+    GwDictInfo* di;
+    GList *list = gw_dictlist_get_list();
     while (list != NULL && error == NULL)
     {
       di = list->data;
-      gwaei_dictlist_sync_dictionary (di, &error);
+      gw_dictlist_sync_dictionary (di, &error);
       list = list->next;
     }
 
@@ -527,13 +527,13 @@ void initialize_console_interface(int argc, char **argv)
     if (quiet_switch == FALSE)
       print_search_start_banner(query, di->name);
 
-    SearchItem *item;
-    item = searchitem_new(query, di, GWAEI_TARGET_CONSOLE);
+    GwSearchItem *item;
+    item = gw_searchitem_new(query, di, GWAEI_TARGET_CONSOLE);
     item->show_less_relevant_results = !exact_switch;
 
     if (item != NULL )
     {
-      gwaei_search_get_results (item);
+      gw_search_get_results (item);
 
       if (quiet_switch == FALSE)
       {

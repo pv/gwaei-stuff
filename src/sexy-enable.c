@@ -60,7 +60,7 @@ void do_conditionally_enable_spellcheck (GtkWidget *widget, gpointer data)
      entry = search_entry;
 
      gboolean spellcheck_pref;
-     spellcheck_pref = gwaei_pref_get_boolean (GCKEY_GWAEI_SPELLCHECK, TRUE);
+     spellcheck_pref = gw_pref_get_boolean (GCKEY_GWAEI_SPELLCHECK, TRUE);
 
      char *text = gtk_editable_get_chars (GTK_EDITABLE (entry), 0, -1);
      if (text == NULL) return;
@@ -74,10 +74,10 @@ void do_conditionally_enable_spellcheck (GtkWidget *widget, gpointer data)
      leftover = MAX_QUERY;
      while (leftover-- > 0)
      {
-       kana_ptr = gwaei_romanji_to_hiragana (input_ptr, kana_ptr);
+       kana_ptr = gw_romanji_to_hiragana (input_ptr, kana_ptr);
        if (kana_ptr == NULL || input_ptr == NULL)
          break;
-       input_ptr = gwaei_next_hiragana_char_from_romanji (input_ptr);
+       input_ptr = gw_next_hiragana_char_from_romanji (input_ptr);
        if (kana_ptr == NULL || input_ptr == NULL)
          break;
 
@@ -87,7 +87,7 @@ void do_conditionally_enable_spellcheck (GtkWidget *widget, gpointer data)
      gboolean is_convertable_to_hiragana;
      is_convertable_to_hiragana= (input_ptr != NULL && strlen (input_ptr) == 0);
 
-     if (gwaei_all_chars_are_in_range (text, L' ', L'|') == TRUE &&
+     if (gw_all_chars_are_in_range (text, L' ', L'|') == TRUE &&
          is_convertable_to_hiragana == FALSE                     &&
          spellcheck_pref == TRUE                                   )
      {
@@ -148,7 +148,7 @@ gboolean do_disable_spellcheck_when_focus_out (GtkWidget *widget, gpointer data)
 }
 
 
-void gwaei_sexy_initialize_libsexy ()
+void gw_sexy_initialize_libsexy ()
 {
     char id[50];
 
@@ -219,7 +219,7 @@ void gwaei_sexy_initialize_libsexy ()
 
 }
 
-void gwaei_sexy_ui_set_spellcheck(gboolean request)
+void gw_sexy_ui_set_spellcheck(gboolean request)
 {
     char id[50];
 

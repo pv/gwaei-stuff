@@ -47,7 +47,7 @@
 #include <gwaei/settings.h>
 
 
-char* gwaei_parse_widget_name (char *output, GtkWidget *widget,
+char* gw_parse_widget_name (char *output, GtkWidget *widget,
                                gboolean capitalize             )
 {
     //Declarations
@@ -71,31 +71,31 @@ char* gwaei_parse_widget_name (char *output, GtkWidget *widget,
 }
 
 
-void gwaei_settings_initialize_enabled_features_list()
+void gw_settings_initialize_enabled_features_list()
 {
     //General search
-    if (gwaei_dictlist_get_total_with_status(INSTALLED) > 0)
-      gwaei_ui_set_feature_line_status("general", "enabled");
+    if (gw_dictlist_get_total_with_status(INSTALLED) > 0)
+      gw_ui_set_feature_line_status("general", "enabled");
     else
-      gwaei_ui_set_feature_line_status("general", "disabled");
+      gw_ui_set_feature_line_status("general", "disabled");
 
     //Combined dictionary
-    if (gwaei_dictlist_dictionary_get_status_by_id(MIX) == INSTALLED)
-      gwaei_ui_set_feature_line_status("mix", "enabled");
+    if (gw_dictlist_dictionary_get_status_by_id(MIX) == INSTALLED)
+      gw_ui_set_feature_line_status("mix", "enabled");
     else
-      gwaei_ui_set_feature_line_status("mix", "disabled");
+      gw_ui_set_feature_line_status("mix", "disabled");
 
     //Radical search tool
-    if (gwaei_dictlist_dictionary_get_status_by_id(RADICALS) == INSTALLED)
-      gwaei_ui_set_feature_line_status("radical", "enabled");
+    if (gw_dictlist_dictionary_get_status_by_id(RADICALS) == INSTALLED)
+      gw_ui_set_feature_line_status("radical", "enabled");
     else
-      gwaei_ui_set_feature_line_status("radical", "disabled");
+      gw_ui_set_feature_line_status("radical", "disabled");
 
     //Kanji lookup tool
-    if (gwaei_dictlist_dictionary_get_status_by_id(KANJI) == INSTALLED)
-      gwaei_ui_set_feature_line_status("kanji", "enabled");
+    if (gw_dictlist_dictionary_get_status_by_id(KANJI) == INSTALLED)
+      gw_ui_set_feature_line_status("kanji", "enabled");
     else
-      gwaei_ui_set_feature_line_status("kanji", "disabled");
+      gw_ui_set_feature_line_status("kanji", "disabled");
 
 /*
     GtkWidget *label;
@@ -107,27 +107,27 @@ void gwaei_settings_initialize_enabled_features_list()
 
 
 
-void gwaei_settings_initialize_installed_dictionary_list() 
+void gw_settings_initialize_installed_dictionary_list() 
 {
-    if (gwaei_dictlist_dictionary_get_status_by_id(ENGLISH) == INSTALLED)
-      gwaei_ui_set_install_line_status("english", "remove", NULL);
+    if (gw_dictlist_dictionary_get_status_by_id(ENGLISH) == INSTALLED)
+      gw_ui_set_install_line_status("english", "remove", NULL);
     else
-      gwaei_ui_set_install_line_status("english", "install", NULL);
+      gw_ui_set_install_line_status("english", "install", NULL);
 
-    if (gwaei_dictlist_dictionary_get_status_by_id(KANJI) == INSTALLED)
-      gwaei_ui_set_install_line_status("kanji", "remove", NULL);
+    if (gw_dictlist_dictionary_get_status_by_id(KANJI) == INSTALLED)
+      gw_ui_set_install_line_status("kanji", "remove", NULL);
     else
-      gwaei_ui_set_install_line_status("kanji", "install", NULL);
+      gw_ui_set_install_line_status("kanji", "install", NULL);
 
-    if (gwaei_dictlist_dictionary_get_status_by_id(NAMES) == INSTALLED)
-      gwaei_ui_set_install_line_status("names", "remove", NULL);
+    if (gw_dictlist_dictionary_get_status_by_id(NAMES) == INSTALLED)
+      gw_ui_set_install_line_status("names", "remove", NULL);
     else
-      gwaei_ui_set_install_line_status("names", "install", NULL);
+      gw_ui_set_install_line_status("names", "install", NULL);
 
-    if (gwaei_dictlist_dictionary_get_status_by_id(RADICALS) == INSTALLED)
-      gwaei_ui_set_install_line_status("radicals", "remove", NULL);
+    if (gw_dictlist_dictionary_get_status_by_id(RADICALS) == INSTALLED)
+      gw_ui_set_install_line_status("radicals", "remove", NULL);
     else
-      gwaei_ui_set_install_line_status("radicals", "install", NULL);
+      gw_ui_set_install_line_status("radicals", "install", NULL);
 }
 
 

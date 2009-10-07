@@ -38,7 +38,7 @@
 
 int run_mode;
 
-void gwaei_util_initialize_runmode(char* call)
+void gw_util_initialize_runmode(char* call)
 {
    char *call_ptr = &call[strlen(call)];
    while (call_ptr != call && !G_IS_DIR_SEPARATOR(*call_ptr))
@@ -54,14 +54,14 @@ void gwaei_util_initialize_runmode(char* call)
      run_mode = GWAEI_QT_RUNMODE;
 }
 
-int gwaei_util_get_runmode()
+int gw_util_get_runmode()
 {
     return run_mode;
 }
 
 
 //A fairly fast int to acsii char funciton
-gboolean gwaei_itoa(int input, char *output, const int MAX)
+gboolean gw_itoa(int input, char *output, const int MAX)
 {
   //digit_ptr is used to write and track the number
   char buffer[MAX];
@@ -87,7 +87,7 @@ gboolean gwaei_itoa(int input, char *output, const int MAX)
     return TRUE;
 }
 
-guint gwaei_2digithexstrtoint(char hex_char_digit_2, char hex_char_digit_1)
+guint gw_2digithexstrtoint(char hex_char_digit_2, char hex_char_digit_1)
 {
     int digit1;
     if (hex_char_digit_1 <= '9')
@@ -105,7 +105,7 @@ guint gwaei_2digithexstrtoint(char hex_char_digit_2, char hex_char_digit_1)
 }
 
 
-gboolean gwaei_itohexstr(char *color_string, guint color_integer)
+gboolean gw_itohexstr(char *color_string, guint color_integer)
 {
     char *color_string_ptr = color_string;
     *color_string_ptr = '#';
@@ -156,7 +156,7 @@ char* get_waei_directory(char *buffer)
 
 
 //Check if characters are romanji, katakana, hiragana, or kanji
-gboolean gwaei_all_chars_are_in_range ( char input[],
+gboolean gw_all_chars_are_in_range ( char input[],
                                         int  start_unic_boundary,
                                         int  end_unic_boundary    )
 {
@@ -184,29 +184,29 @@ gboolean gwaei_all_chars_are_in_range ( char input[],
 
 
 //Convenience functions
-gboolean gwaei_util_is_hiragana_str(char input[])
+gboolean gw_util_is_hiragana_str(char input[])
 {
-    return gwaei_all_chars_are_in_range (input, L'ぁ', L'ん');
+    return gw_all_chars_are_in_range (input, L'ぁ', L'ん');
 }
 
-gboolean gwaei_util_is_katakana_str(char input[])
+gboolean gw_util_is_katakana_str(char input[])
 {
-    return gwaei_all_chars_are_in_range (input, L'ァ', L'ー');
+    return gw_all_chars_are_in_range (input, L'ァ', L'ー');
 }
 
-gboolean gwaei_util_is_kanji_str(char input[])
+gboolean gw_util_is_kanji_str(char input[])
 {
-    return gwaei_all_chars_are_in_range (input, L'ー', 0xFF00);
+    return gw_all_chars_are_in_range (input, L'ー', 0xFF00);
 }
 
-gboolean gwaei_util_is_romanji_str(char input[])
+gboolean gw_util_is_romanji_str(char input[])
 {
-    return gwaei_all_chars_are_in_range (input, L'A', L'z');
+    return gw_all_chars_are_in_range (input, L'A', L'z');
 }
 
 
 //Shift characters between hiragana and katakana
-void gwaei_shift_all_chars_in_str_by(char input[], int shift)
+void gw_shift_all_chars_in_str_by(char input[], int shift)
 {
     //Setup
     char *input_ptr;
@@ -244,14 +244,14 @@ void gwaei_shift_all_chars_in_str_by(char input[], int shift)
 //
 
 
-gwaei_str_shift_hiragana_to_katakana(char input[])
+void gw_str_shift_hiragana_to_katakana(char input[])
 {
-    gwaei_shift_all_chars_in_str_by(input, (L'ア' - L'あ'));
+    gw_shift_all_chars_in_str_by(input, (L'ア' - L'あ'));
 }
 
-gwaei_str_shift_katakana_to_hiragana(char input[])
+void gw_str_shift_katakana_to_hiragana(char input[])
 {
-    gwaei_shift_all_chars_in_str_by(input, (L'あ' - L'ア'));
+    gw_shift_all_chars_in_str_by(input, (L'あ' - L'ア'));
 }
 
 
@@ -260,7 +260,7 @@ gwaei_str_shift_katakana_to_hiragana(char input[])
 //
 
 
-char* gwaei_next_hiragana_char_from_romanji(char *input)
+char* gw_next_hiragana_char_from_romanji(char *input)
 {
     char *input_ptr;
     input_ptr = input;
@@ -322,7 +322,7 @@ char* gwaei_next_hiragana_char_from_romanji(char *input)
 }
 
 
-char* gwaei_romanji_to_hiragana(char *input, char *output)
+char* gw_romanji_to_hiragana(char *input, char *output)
 {
     //Set up the input pointer
     char *input_ptr;
@@ -734,7 +734,7 @@ gboolean is_japanese_locale()
 }
 
 
-void gwaei_util_strncpy_fallback_from_key (char *value, char *key, int n)
+void gw_util_strncpy_fallback_from_key (char *value, char *key, int n)
 {
   if (strcmp (GCKEY_GWAEI_ENGLISH_SOURCE, key) == 0)
     strncpy (value, GWAEI_ENGLISH_URI_FALLBACK, n);

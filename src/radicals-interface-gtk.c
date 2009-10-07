@@ -43,7 +43,7 @@
 #include <gwaei/callbacks.h>
 
 
-void gwaei_ui_strcpy_all_selected_radicals(char *output, int *MAX)
+void gw_ui_strcpy_all_selected_radicals(char *output, int *MAX)
 {
     char id[50];
     
@@ -76,7 +76,7 @@ void gwaei_ui_strcpy_all_selected_radicals(char *output, int *MAX)
 }
 
 
-void gwaei_ui_strcpy_prefered_stroke_count(char *output, int *MAX)
+void gw_ui_strcpy_prefered_stroke_count(char *output, int *MAX)
 {
     char id[50];
 
@@ -97,7 +97,7 @@ void gwaei_ui_strcpy_prefered_stroke_count(char *output, int *MAX)
       strokes = gtk_spin_button_get_value (GTK_SPIN_BUTTON (spinbutton));
 
       char S[3];
-      gwaei_itoa(strokes, S, 3);
+      gw_itoa(strokes, S, 3);
 
       strncat(output, "S", leftover);
       leftover -= 1;
@@ -110,7 +110,7 @@ void gwaei_ui_strcpy_prefered_stroke_count(char *output, int *MAX)
 }
 
 
-void gwaei_ui_update_strokes_checkbox_state()
+void gw_ui_update_strokes_checkbox_state()
 {
     char id[50];
 
@@ -134,7 +134,7 @@ void gwaei_ui_update_strokes_checkbox_state()
 }
 
 
-void gwaei_ui_deselect_all_radicals()
+void gw_ui_deselect_all_radicals()
 {
     char id[50];
 
@@ -158,7 +158,7 @@ void gwaei_ui_deselect_all_radicals()
 }
 
 
-void gwaei_ui_set_strokes_checkbox_state (gboolean state)
+void gw_ui_set_strokes_checkbox_state (gboolean state)
 {
     char id[50];
 

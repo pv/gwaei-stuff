@@ -124,13 +124,13 @@ G_MODULE_EXPORT void exit_callback (GtkWidget *widget, gpointer data)
     //Start sending the attributes to pref for storage
 
     strncpy(value, "/x", leftover - strlen("/x"));
-    gwaei_pref_set_int (key, x);
+    gw_pref_set_int (key, x);
     strncpy(value, "/y", leftover - strlen("/y"));
-    gwaei_pref_set_int (key, y);
+    gw_pref_set_int (key, y);
     strncpy(value, "/width", leftover - strlen("/width"));
-    gwaei_pref_set_int (key, width);
+    gw_pref_set_int (key, width);
     strncpy(value, "/height", leftover - strlen("/height"));
-    gwaei_pref_set_int (key, height);
+    gw_pref_set_int (key, height);
 
   //Finally exit the program
   //exit (EXIT_SUCCESS);

@@ -61,20 +61,20 @@ static gboolean less_relevant_title_inserted = FALSE;
 //! a text widget.
 //! are below it.
 //!
-//! @param item a SearchItem to get the result from
+//! @param item a GwSearchItem to get the result from
 //!
-static void append_result_to_output (SearchItem *item)
+static void append_result_to_output (GwSearchItem *item)
 {
-    if (gwaei_util_get_runmode() == GWAEI_CONSOLE_RUNMODE)
+    if  (gw_util_get_runmode() == GWAEI_CONSOLE_RUNMODE)
     {
       printf("%s", item->output);
     }
     else
     {
       int start, end;
-      gwaei_ui_append_to_buffer (item->target, item->output,
+      gw_ui_append_to_buffer (item->target, item->output,
                                  NULL, NULL, &start, &end  );
-      gwaei_ui_add_results_tagging (start, end, item);
+      gw_ui_add_results_tagging (start, end, item);
     }
 }
 
@@ -85,23 +85,23 @@ static void append_result_to_output (SearchItem *item)
 //! THIS IS A PRIVATE FUNCTION. The function gives a label for the user to see
 //! and tells how many results are below it.
 //!
-//! @param item a SearchItem to get the result numbers from
+//! @param item a GwSearchItem to get the result numbers from
 //!
-static void append_more_relevant_header_to_output(SearchItem *item)
+static void append_more_relevant_header_to_output(GwSearchItem *item)
 {
-    if (gwaei_util_get_runmode() == GWAEI_CONSOLE_RUNMODE)
+    if (gw_util_get_runmode() == GWAEI_CONSOLE_RUNMODE)
     {
     }
     else
     {
       char number[14];
-      gwaei_itoa(item->total_relevant_results, number, 14);
+      gw_itoa(item->total_relevant_results, number, 14);
 
       char text[100];
       strncpy(text, gettext("Main Results "), 100);
       strncat(text, number, 100 - strlen(text));
 
-      gwaei_ui_set_header (item, text, "more_relevant_header_mark");
+      gw_ui_set_header (item, text, "more_relevant_header_mark");
     }
 }
 
@@ -112,18 +112,18 @@ static void append_more_relevant_header_to_output(SearchItem *item)
 //! THIS IS A PRIVATE FUNCTION. The function gives a label for the user to see
 //! and tells how many results are below it.
 //!
-//! @param item a SearchItem to get the result numbers from
+//! @param item a GwSearchItem to get the result numbers from
 //!
-static void append_less_relevant_header_to_output(SearchItem *item)
+static void append_less_relevant_header_to_output(GwSearchItem *item)
 {
-    if (gwaei_util_get_runmode() == GWAEI_CONSOLE_RUNMODE)
+    if (gw_util_get_runmode() == GWAEI_CONSOLE_RUNMODE)
     {
       printf("\n[0;31m***[0m[1m%s[0;31m***************************[0m\n\n\n", gettext("Other Results"));
     }
     else
     {
       char number[14];
-      gwaei_itoa(item->total_irrelevant_results, number, 14);
+      gw_itoa(item->total_irrelevant_results, number, 14);
 
       char text[100];
       strncpy(text, gettext("Other Results "), 100);
@@ -132,8 +132,8 @@ static void append_less_relevant_header_to_output(SearchItem *item)
       char *tag1 = "header";
       char *tag2 = "important";
 
-      gwaei_ui_append_to_buffer(item->target, "\n\n", tag1, tag2, NULL, NULL);
-      gwaei_ui_set_header (item, text, "less_relevant_header_mark");
+      gw_ui_append_to_buffer(item->target, "\n\n", tag1, tag2, NULL, NULL);
+      gw_ui_set_header (item, text, "less_relevant_header_mark");
     }
 }
 
@@ -145,14 +145,14 @@ static void append_less_relevant_header_to_output(SearchItem *item)
 //! sure to cleanly free it and then post it to the approprate output, be it the
 //! terminal or a text buffer widget.
 //!
-//! @param item a SearchItem
+//! @param item a GwSearchItem
 //! @param results the result stored in a GList to free
 //!
-static void append_stored_result_to_output (SearchItem *item, GList **results)
+static void append_stored_result_to_output (GwSearchItem *item, GList **results)
 {
     if (item->show_less_relevant_results || item->total_relevant_results == 0)
     {
-      if (gwaei_util_get_runmode () == GWAEI_CONSOLE_RUNMODE)
+      if  (gw_util_get_runmode () == GWAEI_CONSOLE_RUNMODE)
       {
         strcpy(item->input, (char*)(*results)->data);
         add_group_formatting (item);
@@ -163,9 +163,9 @@ static void append_stored_result_to_output (SearchItem *item, GList **results)
         int start, end;
         strcpy(item->input, (char*)(*results)->data);
         add_group_formatting (item);
-        gwaei_ui_append_to_buffer (item->target, item->input,
+        gw_ui_append_to_buffer (item->target, item->input,
                                    NULL, NULL, &start, &end);
-        gwaei_ui_add_results_tagging (start, end, item);
+        gw_ui_add_results_tagging (start, end, item);
       }
     }
 
@@ -178,14 +178,14 @@ static void append_stored_result_to_output (SearchItem *item, GList **results)
 //! @brief Find the relevance of a returned result
 //!
 //! THIS IS A PRIVATE FUNCTION. Function uses the stored relevance regrex
-//! expressions in the SearchItem to get the relevance of a returned result.  It
+//! expressions in the GwSearchItem to get the relevance of a returned result.  It
 //! then returns the answer to the caller in the form of an int.
 //!
 //! @param text a string to check the relevance of
 //! @param item a search item to grab the regrexes from
 //! @return Returns one of the integers: LOW_RELEVANCE, MEDIUM_RELEVANCE, or HIGH_RELEVANCE.
 //!
-static int get_relevance (char* text, SearchItem *item) {
+static int get_relevance (char* text, GwSearchItem *item) {
     int i;
 
     //The search results is freakin' gold :-D
@@ -210,10 +210,10 @@ static int get_relevance (char* text, SearchItem *item) {
 //! searching the whole file.  It works in specified chunks before going back to
 //! the thread to help improve speed.  
 //!
-//! @param data A SearchItem to search with
+//! @param data A GwSearchItem to search with
 //! @return Returns true when the search isn't finished yet.
 //!
-static gboolean stream_results_thread (SearchItem *item)
+static gboolean stream_results_thread (GwSearchItem *item)
 {
     char *dictionary = item->dictionary->name;
     int dictionary_type = item->dictionary->type;
@@ -267,7 +267,7 @@ static gboolean stream_results_thread (SearchItem *item)
                 item->total_results++;
                 item->total_relevant_results++;
                 append_more_relevant_header_to_output(item);
-                gwaei_ui_update_total_results_label(item);
+                gw_ui_update_total_results_label(item);
                 add_group_formatting (item);
                 if (dictionary_type == KANJI)
                   strcpy_with_kanji_formatting(item->output, item->input, item);
@@ -313,7 +313,7 @@ static gboolean stream_results_thread (SearchItem *item)
 
     //Update the progressbar
     if (item->target == GWAEI_TARGET_RESULTS)
-      gwaei_ui_update_search_progressbar (item->current_line, item->dictionary->total_lines);
+      gw_ui_update_search_progressbar (item->current_line, item->dictionary->total_lines);
 
     //If the chunk reached the max chunk size, there is still file left to load
     if ( chunk == MAX_CHUNK ) {
@@ -335,7 +335,7 @@ static gboolean stream_results_thread (SearchItem *item)
         item->total_results++;
         append_stored_result_to_output(item, &(item->results_medium));
       }
-      gwaei_ui_update_total_results_label(item);
+      gw_ui_update_total_results_label(item);
       return TRUE;
     }
 
@@ -345,7 +345,7 @@ static gboolean stream_results_thread (SearchItem *item)
         item->total_results++;
         append_stored_result_to_output(item, &(item->results_low));
       }
-      gwaei_ui_update_total_results_label(item);
+      gw_ui_update_total_results_label(item);
       return TRUE;
     }
 
@@ -354,14 +354,14 @@ static gboolean stream_results_thread (SearchItem *item)
         item->target != GWAEI_TARGET_KANJI &&
         item->status == GWAEI_SEARCH_SEARCHING)
     {
-      if (gwaei_util_get_runmode () == GWAEI_CONSOLE_RUNMODE)
+      if (gw_util_get_runmode () == GWAEI_CONSOLE_RUNMODE)
       {
         printf("%s\n\n", gettext("No results found!"));
       }
       else
       {
-        gwaei_ui_clear_buffer_by_target (GWAEI_TARGET_RESULTS);
-        gwaei_ui_display_no_results_found_page();
+        gw_ui_clear_buffer_by_target (GWAEI_TARGET_RESULTS);
+        gw_ui_display_no_results_found_page();
       }
       item->results_found = FALSE;
     }
@@ -374,24 +374,24 @@ static gboolean stream_results_thread (SearchItem *item)
 //! @brief Preforms necessary cleanups after the search thread finishes
 //!
 //! THIS IS A PRIVATE FUNCTION. The calls to this function are made by
-//! gwaei_search_get_results.  Do not call this function directly.
+//! gw_search_get_results.  Do not call this function directly.
 //!
-//! @see gwaei_search_get_results()
-//! @param data A SearchItem to clean up the data of
+//! @see gw_search_get_results()
+//! @param data A GwSearchItem to clean up the data of
 //! @return currently unused
 //!
-static gboolean stream_results_cleanup (SearchItem *item)
+static gboolean stream_results_cleanup (GwSearchItem *item)
 {
-    searchitem_do_post_search_clean (item);
+    gw_searchitem_do_post_search_clean (item);
     less_relevant_title_inserted = FALSE;
-    if (gwaei_util_get_runmode () == GWAEI_CONSOLE_RUNMODE)
+    if (gw_util_get_runmode () == GWAEI_CONSOLE_RUNMODE)
     {
     }
     else
     {
-      gwaei_ui_finalize_total_results_label (item);
+      gw_ui_finalize_total_results_label (item);
       if (item->target == GWAEI_TARGET_RESULTS)
-        gwaei_ui_update_search_progressbar (0, 0);
+        gw_ui_update_search_progressbar (0, 0);
     }     
 }
 
@@ -403,30 +403,30 @@ static gboolean stream_results_cleanup (SearchItem *item)
 //! query, checking things that need to be checked before the final go, and
 //! initializing the search loop or thread.
 //!
-//! @param item a SearchItem argument.
+//! @param item a GwSearchItem argument.
 //!
-void gwaei_search_get_results (SearchItem *item)
+void gw_search_get_results (GwSearchItem *item)
 {
     //Misc preparations
     if (item->dictionary->type == KANJI || item->dictionary->type == RADICALS)
       item->show_less_relevant_results = TRUE;
 
-    if (gwaei_util_get_runmode () != GWAEI_CONSOLE_RUNMODE)
-      gwaei_ui_clear_buffer_by_target (item->target);
+    if (gw_util_get_runmode () != GWAEI_CONSOLE_RUNMODE)
+      gw_ui_clear_buffer_by_target (item->target);
 
-    if (searchitem_is_prepared (item) == FALSE)
-      if (searchitem_do_pre_search_prep (item) == FALSE)
+    if (gw_searchitem_is_prepared (item) == FALSE)
+      if (gw_searchitem_do_pre_search_prep (item) == FALSE)
       {
-        searchitem_free(item);
+        gw_searchitem_free(item);
         return;
       }
 
     if (item->target == GWAEI_TARGET_RESULTS)
-      gwaei_ui_close_kanji_results();
+      gw_ui_close_kanji_results();
 
 
     //Start the search
-    if (gwaei_util_get_runmode () == GWAEI_CONSOLE_RUNMODE)
+    if (gw_util_get_runmode () == GWAEI_CONSOLE_RUNMODE)
     {
       while (stream_results_thread(item))
         ;
@@ -434,7 +434,7 @@ void gwaei_search_get_results (SearchItem *item)
     }
     else
     {
-      gwaei_ui_reinitialize_results_label (item);
+      gw_ui_reinitialize_results_label (item);
       g_timeout_add_full (G_PRIORITY_DEFAULT_IDLE, 1,
                           (GSourceFunc)stream_results_thread, item,
                           (GDestroyNotify)stream_results_cleanup     );

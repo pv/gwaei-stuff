@@ -37,7 +37,7 @@
 #include <gwaei/regex.h>
 
 
-int gwaei_pref_get_int (char *key, int backup)
+int gw_pref_get_int (char *key, int backup)
 {
     GConfClient *client;
     client = gconf_client_get_default ();
@@ -60,7 +60,7 @@ int gwaei_pref_get_int (char *key, int backup)
 }
 
 
-int gwaei_pref_get_default_int (char *key, int backup)
+int gw_pref_get_default_int (char *key, int backup)
 {
     GConfClient *client;
     client = gconf_client_get_default ();
@@ -86,7 +86,7 @@ int gwaei_pref_get_default_int (char *key, int backup)
 }
 
 
-void gwaei_pref_set_int (char *key, int request)
+void gw_pref_set_int (char *key, int request)
 {
     GConfClient *client;
     client = gconf_client_get_default ();
@@ -95,7 +95,7 @@ void gwaei_pref_set_int (char *key, int request)
 }
 
 
-gboolean gwaei_pref_get_boolean (char *key, gboolean backup)
+gboolean gw_pref_get_boolean (char *key, gboolean backup)
 {
     GConfClient *client;
     client = gconf_client_get_default ();
@@ -118,7 +118,7 @@ gboolean gwaei_pref_get_boolean (char *key, gboolean backup)
 }
 
 
-gboolean gwaei_pref_get_default_boolean (char *key, gboolean backup)
+gboolean gw_pref_get_default_boolean (char *key, gboolean backup)
 {
     GConfClient *client;
     client = gconf_client_get_default ();
@@ -144,7 +144,7 @@ gboolean gwaei_pref_get_default_boolean (char *key, gboolean backup)
 }
 
 
-void gwaei_pref_set_boolean (char *key, gboolean request)
+void gw_pref_set_boolean (char *key, gboolean request)
 {
     GConfClient *client;
     client = gconf_client_get_default ();
@@ -153,7 +153,7 @@ void gwaei_pref_set_boolean (char *key, gboolean request)
 }
 
 
-char* gwaei_pref_get_string (char *output, char *key, char* backup, int n)
+char* gw_pref_get_string (char *output, char *key, char* backup, int n)
 {
     GConfClient *client;
     client = gconf_client_get_default ();
@@ -184,7 +184,7 @@ char* gwaei_pref_get_string (char *output, char *key, char* backup, int n)
     return return_value;
 }
 
-const char* gwaei_pref_get_default_string (char *key, char* backup)
+const char* gw_pref_get_default_string (char *key, char* backup)
 {
     GConfClient *client;
     client = gconf_client_get_default ();
@@ -210,12 +210,12 @@ const char* gwaei_pref_get_default_string (char *key, char* backup)
 }
 
 
-const char* gwaei_pref_free_string (char *sting)
+const char* gw_pref_free_string (char *sting)
 {
     
 }
 
-void gwaei_pref_set_string (char *key, const char* request)
+void gw_pref_set_string (char *key, const char* request)
 {
     GConfClient *client;
     client = gconf_client_get_default ();
@@ -245,7 +245,7 @@ void do_dictionary_source_gconf_key_changed_action (GConfClient* client,
         key_ptr--;
       key_ptr++;
 
-      gwaei_ui_set_dictionary_source(key_ptr, gconf_value_get_string(value));
+      gw_ui_set_dictionary_source(key_ptr, gconf_value_get_string(value));
     }
 }
 
@@ -259,9 +259,9 @@ void do_toolbar_style_pref_changed_action( GConfClient* client,
     value = gconf_entry_get_value(entry);
 
     if (value != NULL && value->type == GCONF_VALUE_STRING)
-      gwaei_ui_set_toolbar_style(gconf_value_get_string(value));
+      gw_ui_set_toolbar_style(gconf_value_get_string(value));
     else
-      gwaei_ui_set_toolbar_style("both");
+      gw_ui_set_toolbar_style("both");
 }
 
 
@@ -274,9 +274,9 @@ void do_toolbar_show_pref_changed_action ( GConfClient* client,
     value = gconf_entry_get_value(entry);
 
     if (value != NULL && value->type == GCONF_VALUE_BOOL)
-      gwaei_ui_set_toolbar_show(gconf_value_get_bool(value));
+      gw_ui_set_toolbar_show(gconf_value_get_bool(value));
     else
-      gwaei_ui_set_toolbar_show(FALSE);
+      gw_ui_set_toolbar_show(FALSE);
 }
 
 
@@ -305,9 +305,9 @@ void do_font_size_pref_changed_action ( GConfClient* client,
       return;
     }
 
-    gwaei_ui_set_font("Sans", size);
+    gw_ui_set_font("Sans", size);
 
-    gwaei_ui_update_toolbar_buttons ();
+    gw_ui_update_toolbar_buttons ();
 }
 
 
@@ -320,9 +320,9 @@ void do_less_relevant_show_pref_changed_action ( GConfClient* client,
     value = gconf_entry_get_value(entry);
 
     if (value != NULL && value->type == GCONF_VALUE_BOOL)
-      gwaei_ui_set_less_relevant_show(gconf_value_get_bool(value));
+      gw_ui_set_less_relevant_show(gconf_value_get_bool(value));
     else
-      gwaei_ui_set_less_relevant_show(TRUE);
+      gw_ui_set_less_relevant_show(TRUE);
 }
 
 
@@ -340,9 +340,9 @@ void do_roman_kana_conv_pref_changed_action( GConfClient* client,
        selection = gconf_value_get_int(value);
 
        if (selection <= 2 && selection >= 0)
-         gwaei_ui_set_romanji_kana_conv(selection);
+         gw_ui_set_romanji_kana_conv(selection);
        else
-         gwaei_ui_set_romanji_kana_conv(2);
+         gw_ui_set_romanji_kana_conv(2);
     }
 }
 
@@ -356,9 +356,9 @@ void do_hira_kata_conv_pref_changed_action( GConfClient* client,
     value = gconf_entry_get_value(entry);
 
     if (value != NULL && value->type == GCONF_VALUE_BOOL)
-      gwaei_ui_set_hiragana_katakana_conv(gconf_value_get_bool(value));
+      gw_ui_set_hiragana_katakana_conv(gconf_value_get_bool(value));
     else
-      gwaei_ui_set_hiragana_katakana_conv(TRUE);
+      gw_ui_set_hiragana_katakana_conv(TRUE);
 }
 
 
@@ -371,9 +371,9 @@ void do_kata_hira_conv_pref_changed_action( GConfClient *client,
     value = gconf_entry_get_value(entry);
 
     if (value != NULL && value->type == GCONF_VALUE_BOOL)
-      gwaei_ui_set_katakana_hiragana_conv(gconf_value_get_bool(value));
+      gw_ui_set_katakana_hiragana_conv(gconf_value_get_bool(value));
     else
-      gwaei_ui_set_katakana_hiragana_conv(TRUE);
+      gw_ui_set_katakana_hiragana_conv(TRUE);
 }
 
 
@@ -386,9 +386,9 @@ void do_spellcheck_pref_changed_action( GConfClient* client,
     value = gconf_entry_get_value(entry);
 
     if (value != NULL && value->type == GCONF_VALUE_BOOL)
-      gwaei_sexy_ui_set_spellcheck(gconf_value_get_bool(value));
+      gw_sexy_ui_set_spellcheck(gconf_value_get_bool(value));
     else
-      gwaei_sexy_ui_set_spellcheck(TRUE);
+      gw_sexy_ui_set_spellcheck(TRUE);
 }
 
 
@@ -418,9 +418,9 @@ void do_color_value_changed_action( GConfClient* client,
           return;
       }
 
-      guint red   = gwaei_2digithexstrtoint(hex_string[1], hex_string[2]);
-      guint green = gwaei_2digithexstrtoint(hex_string[3], hex_string[4]);
-      guint blue  = gwaei_2digithexstrtoint(hex_string[5], hex_string[6]);
+      guint red   = gw_2digithexstrtoint(hex_string[1], hex_string[2]);
+      guint green = gw_2digithexstrtoint(hex_string[3], hex_string[4]);
+      guint blue  = gw_2digithexstrtoint(hex_string[5], hex_string[6]);
 
       //The last portion of the key happens to be the widget id
       const char *key = gconf_entry_get_key(entry);
@@ -429,9 +429,9 @@ void do_color_value_changed_action( GConfClient* client,
         key_ptr--;
       key_ptr++;
 
-      gwaei_ui_set_color_to_swatch(key_ptr, red, green, blue);
+      gw_ui_set_color_to_swatch(key_ptr, red, green, blue);
 
-      gwaei_ui_reload_tagtable_tags();
+      gw_ui_reload_tagtable_tags();
     }
 }
 
@@ -443,7 +443,7 @@ void do_color_value_changed_action( GConfClient* client,
 
 
 
-void gwaei_prefs_initialize_preferences()
+void gw_prefs_initialize_preferences()
 {
   g_type_init();
 

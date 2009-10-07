@@ -89,22 +89,22 @@ static gboolean locate_boundary_byte_pointers( const char *string, char  *patter
 //!
 //! @param output Character array the formatting string is copied to
 //! @param output Character array to format
-//! @param item SearchItem to get misc data from
+//! @param item GwSearchItem to get misc data from
 //!
-gboolean strcpy_with_query_preformatting (char* output, char* input, SearchItem *item)
+gboolean strcpy_with_query_preformatting (char* output, char* input, GwSearchItem *item)
 {
     char buffer[MAX_QUERY];
     strncpy(buffer, input, MAX_QUERY);
 
     //Load the preformatting preferences from pref
     gboolean hira_kata_conv_pref;
-    hira_kata_conv_pref = gwaei_pref_get_boolean (GCKEY_GWAEI_HIRA_KATA, TRUE);
+    hira_kata_conv_pref = gw_pref_get_boolean (GCKEY_GWAEI_HIRA_KATA, TRUE);
       
     gboolean kata_hira_conv_pref;
-    kata_hira_conv_pref = gwaei_pref_get_boolean (GCKEY_GWAEI_KATA_HIRA, TRUE);
+    kata_hira_conv_pref = gw_pref_get_boolean (GCKEY_GWAEI_KATA_HIRA, TRUE);
 
     int roman_kana_conv_pref;
-    roman_kana_conv_pref = gwaei_pref_get_int (GCKEY_GWAEI_ROMAN_KANA, 2);
+    roman_kana_conv_pref = gw_pref_get_int (GCKEY_GWAEI_ROMAN_KANA, 2);
 
     //Load the preformatting preferences from pref
     if (item->dictionary->type == KANJI || item->dictionary->type == RADICALS)
@@ -114,12 +114,12 @@ gboolean strcpy_with_query_preformatting (char* output, char* input, SearchItem 
     }
   
     //Hiragana query preprocessing
-    else if (hira_kata_conv_pref == TRUE && gwaei_util_is_hiragana_str(buffer))
+    else if (hira_kata_conv_pref == TRUE && gw_util_is_hiragana_str(buffer))
     {
       char hira[MAX_QUERY], kata[MAX_QUERY];
       strcpy(hira, buffer);
       strcpy(kata, buffer);
-      gwaei_str_shift_hiragana_to_katakana(kata);
+      gw_str_shift_hiragana_to_katakana(kata);
 
       int leftover;
       leftover = MAX_QUERY;
@@ -137,12 +137,12 @@ gboolean strcpy_with_query_preformatting (char* output, char* input, SearchItem 
     }
 
     //Katakana query preprocessing
-    else if (kata_hira_conv_pref == TRUE && gwaei_util_is_katakana_str(buffer))
+    else if (kata_hira_conv_pref == TRUE && gw_util_is_katakana_str(buffer))
     {
       char hira[MAX_QUERY], kata[MAX_QUERY];
       strcpy(hira, buffer);
       strcpy(kata, buffer);
-      gwaei_str_shift_katakana_to_hiragana(hira);
+      gw_str_shift_katakana_to_hiragana(hira);
 
       int leftover;
       leftover = MAX_QUERY;
@@ -160,7 +160,7 @@ gboolean strcpy_with_query_preformatting (char* output, char* input, SearchItem 
     }
 
     //Kanji 四字熟語 query preprocessing
-    else if(gwaei_util_is_kanji_str(buffer) && g_utf8_strlen(buffer, -1) == 4)
+    else if (gw_util_is_kanji_str(buffer) && g_utf8_strlen(buffer, -1) == 4)
     {
       char first_half[20];
       char second_half[20];
@@ -215,11 +215,11 @@ gboolean strcpy_with_query_preformatting (char* output, char* input, SearchItem 
       leftover = MAX_QUERY;
       while (leftover-- > 0)
       {
-        kana_ptr = gwaei_romanji_to_hiragana (input_ptr, kana_ptr);
+        kana_ptr = gw_romanji_to_hiragana (input_ptr, kana_ptr);
         if (kana_ptr == NULL || input_ptr == NULL)
           break;
 
-        input_ptr = gwaei_next_hiragana_char_from_romanji (input_ptr);
+        input_ptr = gw_next_hiragana_char_from_romanji (input_ptr);
         if (kana_ptr == NULL || input_ptr == NULL)
           break;
 
@@ -247,7 +247,7 @@ gboolean strcpy_with_query_preformatting (char* output, char* input, SearchItem 
         strncat(output, ")|(", leftover);
         leftover -= 3;
 
-        gwaei_str_shift_hiragana_to_katakana(kana);
+        gw_str_shift_hiragana_to_katakana(kana);
         strncat(output, kana, leftover);
         leftover -= strlen(kana);
         strncat(output, ")",  leftover);
@@ -270,9 +270,9 @@ gboolean strcpy_with_query_preformatting (char* output, char* input, SearchItem 
 //!
 //! @param output Character array the formatting string is copied to
 //! @param output Character array to format
-//! @param item SearchItem to get misc data from
+//! @param item GwSearchItem to get misc data from
 //!
-void strcpy_with_query_formatting (char* output, char* input, SearchItem *item)
+void strcpy_with_query_formatting (char* output, char* input, GwSearchItem *item)
 {
     //Searching in the kanji sidebar only look for a matching first character
     if (item->target == GWAEI_TARGET_KANJI)
@@ -469,9 +469,9 @@ void strcpy_with_query_formatting (char* output, char* input, SearchItem *item)
 //!
 //! @param output Character array the formatting string is copied to
 //! @param output Character array to format
-//! @param item SearchItem to get misc data from
+//! @param item GwSearchItem to get misc data from
 //!
-void strcpy_with_general_formatting(char *output, char *input, SearchItem *item) 
+void strcpy_with_general_formatting(char *output, char *input, GwSearchItem *item) 
 {
     char *input_ptr = &input[0];
     char *output_ptr = &output[0];
@@ -504,9 +504,9 @@ void strcpy_with_general_formatting(char *output, char *input, SearchItem *item)
 //!
 //! @param output Character array the formatting string is copied to
 //! @param output Character array to format
-//! @param item SearchItem to get misc data from
+//! @param item GwSearchItem to get misc data from
 //!
-void strcpy_with_kanji_formatting(char *output, char *input, SearchItem *item)
+void strcpy_with_kanji_formatting(char *output, char *input, GwSearchItem *item)
 {
     //First generate the grade, stroke, frequency, and jplt fields
     char *start, *end;
@@ -631,9 +631,9 @@ void strcpy_with_kanji_formatting(char *output, char *input, SearchItem *item)
 //! If this function detects similar kanji between strings, it will over write
 //! the kanji with spaces and remove vertical white space between the results.
 //!
-//! @param item SearchItem to get the result to add formatting to
+//! @param item GwSearchItem to get the result to add formatting to
 //!
-void add_group_formatting (SearchItem* item)
+void add_group_formatting (GwSearchItem* item)
 {
     char *input = item->input;
     char *comparison_buffer = item->comparison_buffer;

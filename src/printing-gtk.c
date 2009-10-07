@@ -57,25 +57,25 @@ static GtkPrintSettings *settings = NULL;
 //!
 //! @brief Primitive for storing information on printing
 //!
-struct GwaeiPageInfo {
+struct GwPageInfo {
     GList *pages;              //!< pages GList of all the created pages
     GtkTextIter page_end_line; //!< Mark in the buffer where we have paginated to
     gint total_pages;          //!< The total pages that need pagination
 };
-typedef struct GwaeiPageInfo GwaeiPageInfo;
+typedef struct GwPageInfo GwPageInfo;
 
 
 
 //!
-//! @brief Allocates a new GwaeiPageInfo object
+//! @brief Allocates a new GwPageInfo object
 //!
-GwaeiPageInfo *gwaei_pageinfo_new()
+GwPageInfo* gw_pageinfo_new()
 {
-    GwaeiPageInfo *temp;
-    if ((temp = (GwaeiPageInfo*)malloc(sizeof(GwaeiPageInfo))) == NULL)
+    GwPageInfo *temp;
+    if ((temp = (GwPageInfo*)malloc(sizeof(GwPageInfo))) == NULL)
       return NULL;
 
-    HistoryList *hl = historylist_get_list (GWAEI_HISTORYLIST_RESULTS);
+    GwHistoryList *hl = historylist_get_list (GWAEI_HISTORYLIST_RESULTS);
     GObject *tb = get_gobject_from_target(GWAEI_TARGET_RESULTS);
 
     //Start from the start of the highlighted text
@@ -101,11 +101,11 @@ GwaeiPageInfo *gwaei_pageinfo_new()
 }
 
 //!
-//! @brief Frees a GwaeiPageInfo object
+//! @brief Frees a GwPageInfo object
 //!
-//! @param pi a GwaeiPageInfo object to free
+//! @param pi a GwPageInfo object to free
 //!
-void gwaei_pageinfo_free(GwaeiPageInfo *pi) {
+void gw_pageinfo_free(GwPageInfo *pi) {
     if (pi == NULL)
       return;
 
@@ -155,10 +155,10 @@ static gboolean paginate(GtkPrintOperation *operation,
 {
     printf("paginate!\n");
 
-    HistoryList *hl = historylist_get_list (GWAEI_HISTORYLIST_RESULTS);
+    GwHistoryList *hl = historylist_get_list (GWAEI_HISTORYLIST_RESULTS);
     GObject *tb = get_gobject_from_target(GWAEI_TARGET_RESULTS);
 
-    GwaeiPageInfo *pi  = user_data;
+    GwPageInfo *pi  = user_data;
 
     //Set the page_start_iter to the page_end_iter's positon
     GtkTextIter *page_start_line = malloc(sizeof(GtkTextIter));
@@ -259,8 +259,8 @@ static void draw_page (GtkPrintOperation *operation,
                        gint               page_nr,
                        gpointer           data      )
 {
-    GwaeiPageInfo *pi  = data;
-    HistoryList *hl = historylist_get_list (GWAEI_HISTORYLIST_RESULTS);
+    GwPageInfo *pi  = data;
+    GwHistoryList *hl = historylist_get_list (GWAEI_HISTORYLIST_RESULTS);
     GObject *tb = get_gobject_from_target(GWAEI_TARGET_RESULTS);
 
     GList *page = pi->pages;
@@ -304,7 +304,7 @@ static void draw_page (GtkPrintOperation *operation,
 
     //Convert the page number to a string
     char page_number[10];
-    gwaei_itoa(page_nr + 1, page_number, 10);
+    gw_itoa(page_nr + 1, page_number, 10);
    
     //Get the text from the text_buffer
     char *input_text, *output_text;
@@ -357,8 +357,8 @@ static void done (GtkPrintOperation      *operation,
                   gpointer                data      ) 
 {
     //Cleanup
-    GwaeiPageInfo *pi  = data;
-    gwaei_pageinfo_free(pi);
+    GwPageInfo *pi  = data;
+    gw_pageinfo_free(pi);
     pi = NULL;
     printf("done\n");
 }
@@ -371,9 +371,9 @@ static void done (GtkPrintOperation      *operation,
 //! to set up a print operation.  If a section of the search results are highlighted
 //! only those results are printed.
 //!
-void gwaei_print()
+void gw_print()
 {
-    GwaeiPageInfo *pi = gwaei_pageinfo_new();
+    GwPageInfo *pi = gw_pageinfo_new();
 
 
     //Start setting up the print operation

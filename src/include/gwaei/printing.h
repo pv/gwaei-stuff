@@ -1,2 +1,2 @@
 
-void gwaei_print(void);
+void gw_print(void);

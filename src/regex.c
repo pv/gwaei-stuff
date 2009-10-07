@@ -45,7 +45,7 @@ regex_t re_gz;
 regex_t re_hexcolor;
 
 
-void gwaei_regex_initialize_constant_regular_expressions() {
+void gw_regex_initialize_constant_regular_expressions() {
   int eflags_exist = REG_EXTENDED | REG_ICASE | REG_NOSUB;
   if (regcomp(&re_english, "English", eflags_exist) != 0) {
     printf("A problem occured while setting the regular expression for English\n");

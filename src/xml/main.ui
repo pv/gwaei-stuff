@@ -794,19 +794,18 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="is_focus">True</property>
-                            <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_STRUCTURE_MASK</property>
+                            <property name="events">GDK_EXPOSURE_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_MOTION_MASK | GDK_BUTTON1_MOTION_MASK | GDK_BUTTON2_MOTION_MASK | GDK_BUTTON3_MOTION_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK | GDK_FOCUS_CHANGE_MASK | GDK_STRUCTURE_MASK | GDK_PROPERTY_CHANGE_MASK | GDK_VISIBILITY_NOTIFY_MASK | GDK_PROXIMITY_IN_MASK | GDK_PROXIMITY_OUT_MASK | GDK_SUBSTRUCTURE_MASK | GDK_SCROLL_MASK</property>
                             <property name="editable">False</property>
                             <property name="wrap_mode">word</property>
                             <property name="left_margin">10</property>
                             <property name="right_margin">10</property>
                             <property name="cursor_visible">False</property>
-                            <property name="buffer">textbuffer1</property>
+                            <property name="buffer">results_text_buffer</property>
                             <signal name="drag_motion" handler="drag_motion_1"/>
                             <signal name="focus_in_event" handler="do_update_clipboard_on_focus_change" object="results_text_view"/>
                             <signal name="button_press_event" handler="do_get_position_for_button_press"/>
                             <signal name="motion_notify_event" handler="do_get_iter_for_motion"/>
                             <signal name="drag_drop" handler="drag_drop_1"/>
-                            <signal name="move_viewport" handler="do_move_cursor_onscreen"/>
                             <signal name="button_release_event" handler="do_get_iter_for_button_release"/>
                             <signal name="drag_leave" handler="drag_leave_1"/>
                             <signal name="drag_data_received" handler="search_drag_data_recieved"/>
@@ -1213,7 +1212,7 @@
       <column type="gchararray"/>
     </columns>
   </object>
-  <object class="GtkTextBuffer" id="textbuffer1"/>
+  <object class="GtkTextBuffer" id="results_text_buffer"/>
   <object class="GtkAccelGroup" id="main_accelgroup"/>
   <object class="GtkAction" id="help_homepage_action">
     <property name="label">Go to _Homepage</property>

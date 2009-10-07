@@ -265,7 +265,7 @@ GtkWidget* get_widget_from_target(const int TARGET)
 }
 
 
-gboolean gwaei_ui_widget_equals_target (gpointer widget, const int TARGET)
+gboolean gw_ui_widget_equals_target (gpointer widget, const int TARGET)
 {
     GtkWidget* target;
     target = get_widget_from_target (TARGET);
@@ -317,13 +317,13 @@ void initialize_window_attributes(char* window_id)
     int x, y, width, height;
 
     strncpy(value, "/x", leftover - strlen("/x"));
-    x = gwaei_pref_get_int (key, 0);
+    x = gw_pref_get_int (key, 0);
     strncpy(value, "/y", leftover - strlen("/y"));
-    y = gwaei_pref_get_int(key, 0);
+    y = gw_pref_get_int(key, 0);
     strncpy(value, "/width", leftover - strlen("/width"));
-    width = gwaei_pref_get_int(key, 100);
+    width = gw_pref_get_int(key, 100);
     strncpy(value, "/height", leftover - strlen("/height"));
-    height = gwaei_pref_get_int(key, 100);
+    height = gw_pref_get_int(key, 100);
 
     //Apply the x and y if they are within the screen size
     if (x < gdk_screen_width() && y < gdk_screen_height()) {
@@ -385,17 +385,17 @@ void save_window_attributes_and_hide(char* window_id)
     //Start sending the attributes to pref for storage
 
     strncpy(value, "/x", leftover - strlen("/x"));
-    gwaei_pref_set_int (key, x);
+    gw_pref_set_int (key, x);
     strncpy(value, "/y", leftover - strlen("/y"));
-    gwaei_pref_set_int (key, y);
+    gw_pref_set_int (key, y);
     strncpy(value, "/width", leftover - strlen("/width"));
-    gwaei_pref_set_int (key, width);
+    gw_pref_set_int (key, width);
     strncpy(value, "/height", leftover - strlen("/height"));
-    gwaei_pref_set_int (key, height);
+    gw_pref_set_int (key, height);
 }
 
 
-void gwaei_ui_show_window (char *id)
+void gw_ui_show_window (char *id)
 {
     if (strcmp(id, "main_window") == 0 || strcmp (id, "radicals_window") == 0)
     {
@@ -431,7 +431,7 @@ void gwaei_ui_show_window (char *id)
 }
 
 
-void gwaei_ui_update_toolbar_buttons()
+void gw_ui_update_toolbar_buttons()
 {
     const int id_length = 50;
     char id[id_length];
@@ -440,11 +440,11 @@ void gwaei_ui_update_toolbar_buttons()
     GtkAction *action;
     gboolean enable;
 
-    SearchItem* current;
+    GwSearchItem* current;
     current = historylist_get_current (GWAEI_TARGET_RESULTS);
 
     int current_font_size;
-    current_font_size = gwaei_pref_get_int (GCKEY_GWAEI_FONT_SIZE, 12);
+    current_font_size = gw_pref_get_int (GCKEY_GWAEI_FONT_SIZE, 12);
 
     //Update Zoom in sensitivity state
     strncpy(id, "view_zoom_in_action", id_length);
@@ -462,7 +462,7 @@ void gwaei_ui_update_toolbar_buttons()
     strncpy(id, "view_zoom_100_action", id_length);
     action = GTK_ACTION (gtk_builder_get_object(builder, id));
     int default_font_size;
-    default_font_size = gwaei_pref_get_default_int (GCKEY_GWAEI_FONT_SIZE, 12);
+    default_font_size = gw_pref_get_default_int (GCKEY_GWAEI_FONT_SIZE, 12);
     enable = (current != NULL && current_font_size != default_font_size);
     gtk_action_set_sensitive(action, enable);
 
@@ -487,7 +487,7 @@ void gwaei_ui_update_toolbar_buttons()
     //Update radicals search tool menuitem
     strncpy(id, "insert_radicals_action", id_length);
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
-    enable = (gwaei_dictlist_dictionary_get_status_by_id (RADICALS) == INSTALLED);
+    enable = (gw_dictlist_dictionary_get_status_by_id (RADICALS) == INSTALLED);
     gtk_action_set_sensitive(action, enable);
 
     //Update back button
@@ -514,7 +514,7 @@ void gwaei_ui_update_toolbar_buttons()
     }
     else if (GTK_WIDGET_HAS_FOCUS(results_tv))
     {
-      sensitive = (gwaei_ui_has_selection_by_target (GWAEI_TARGET_RESULTS));
+      sensitive = (gw_ui_has_selection_by_target (GWAEI_TARGET_RESULTS));
       strncpy(id, "edit_copy_action", id_length);
       action = GTK_ACTION (gtk_builder_get_object (builder, id));
       gtk_action_set_sensitive (action, sensitive);
@@ -525,7 +525,7 @@ void gwaei_ui_update_toolbar_buttons()
 
     else if (GTK_WIDGET_HAS_FOCUS(kanji_tv))
     {
-      sensitive = (gwaei_ui_has_selection_by_target (GWAEI_TARGET_KANJI));
+      sensitive = (gw_ui_has_selection_by_target (GWAEI_TARGET_KANJI));
       strncpy(id, "edit_copy_action", id_length);
       action = GTK_ACTION (gtk_builder_get_object (builder, id));
       gtk_action_set_sensitive (action, sensitive);
@@ -537,7 +537,7 @@ void gwaei_ui_update_toolbar_buttons()
 }
 
 
-void gwaei_ui_reinitialize_results_label (SearchItem *item)
+void gw_ui_reinitialize_results_label (GwSearchItem *item)
 {
     if (item->target == GWAEI_TARGET_KANJI) return;
 
@@ -554,13 +554,13 @@ void gwaei_ui_reinitialize_results_label (SearchItem *item)
 
     item->total_results = 0;
     item->total_relevant_results = 0;
-    gwaei_ui_update_total_results_label(item);
+    gw_ui_update_total_results_label(item);
 }
 
 
-void gwaei_ui_update_total_results_label (SearchItem* item)
+void gw_ui_update_total_results_label (GwSearchItem* item)
 {
-    if (gwaei_util_get_runmode () == GWAEI_CONSOLE_RUNMODE) return;
+    if (gw_util_get_runmode () == GWAEI_CONSOLE_RUNMODE) return;
     if (item->target == GWAEI_TARGET_KANJI) return;
 
     char id[50];
@@ -580,7 +580,7 @@ void gwaei_ui_update_total_results_label (SearchItem* item)
 
     int number_int = item->total_results;
     char number_string[14];
-    gwaei_itoa(number_int, number_string, 14);
+    gw_itoa(number_int, number_string, 14);
 
     //Finish
     gtk_widget_hide(no_results);
@@ -599,14 +599,14 @@ void gwaei_ui_update_total_results_label (SearchItem* item)
 
       number_int = item->total_relevant_results;
       number_string[0] = '\0';
-      gwaei_itoa(number_int, number_string, 14);
+      gw_itoa(number_int, number_string, 14);
 
       gtk_label_set_text(GTK_LABEL (number), number_string);
       gtk_widget_show(results);
     }
 }
 
-void gwaei_ui_finalize_total_results_label (SearchItem* item)
+void gw_ui_finalize_total_results_label (GwSearchItem* item)
 {
     if (item->target == GWAEI_TARGET_KANJI) return;
 
@@ -618,10 +618,10 @@ void gwaei_ui_finalize_total_results_label (SearchItem* item)
 }
 
 
-void gwaei_ui_set_dictionary(int request)
+void gw_ui_set_dictionary(int request)
 {
     //Set the correct dictionary in the dictionary list
-    gwaei_dictlist_set_selected_by_load_position(request);
+    gw_dictlist_set_selected_by_load_position(request);
 
     //Time to make sure everything matches up in the gui
     GtkWidget *combobox;
@@ -659,7 +659,7 @@ int rebuild_combobox_dictionary_list()
     GtkTreeIter iter;
 
     GSList* group = NULL;
-    GwaeiDictInfo *di;
+    GwDictInfo *di;
     GtkAccelGroup* accel_group;
     accel_group = GTK_ACCEL_GROUP (gtk_builder_get_object (builder, "main_accelgroup"));
     //GtkAccelGroup* accel_group = gtk_accel_group_new();
@@ -690,16 +690,16 @@ int rebuild_combobox_dictionary_list()
     char name[MAX_NAME];
 
     //Start filling in the new items
-    GList* dictionaries = gwaei_dictlist_get_list ();
+    GList* dictionaries = gw_dictlist_get_list ();
     while (dictionaries != NULL)
     {
       di = dictionaries->data;
       if (di->status == INSTALLED)
       {
-        if ((gwaei_dictlist_dictionary_get_status_by_id (MIX) == INSTALLED &&
+        if ((gw_dictlist_dictionary_get_status_by_id (MIX) == INSTALLED &&
             di->id != KANJI &&
             di->id != RADICALS                                               )||
-           ((gwaei_dictlist_dictionary_get_status_by_id (MIX) != INSTALLED )))
+           ((gw_dictlist_dictionary_get_status_by_id (MIX) != INSTALLED )))
         {
           //Refill the combobox
           gtk_list_store_append (GTK_LIST_STORE (list_store), &iter);
@@ -755,7 +755,7 @@ int rebuild_combobox_dictionary_list()
 }
 
 
-void gwaei_ui_update_search_progressbar (long current, long total)
+void gw_ui_update_search_progressbar (long current, long total)
 {
     const int id_length = 50;
     char id[id_length];
@@ -779,7 +779,7 @@ void gwaei_ui_update_search_progressbar (long current, long total)
 //
 // Menu popups section
 //
-void gwaei_ui_update_history_menu_popup()
+void gw_ui_update_history_menu_popup()
 {
     const int id_length = 50;
     char id[id_length];
@@ -805,7 +805,7 @@ void gwaei_ui_update_history_menu_popup()
     //Declarations
     GtkWidget *label;
     const char *text;
-    SearchItem *item;
+    GwSearchItem *item;
     GtkWidget *menuitem;
 
     children = historylist_get_combined_history_list (GWAEI_HISTORYLIST_RESULTS);
@@ -878,7 +878,7 @@ void rebuild_history_button_popup(char* id, GList* list) {
     //Declarations
     GtkWidget *label;
     const char *text;
-    SearchItem *item;
+    GwSearchItem *item;
 
     children = list;
     while (children != NULL)
@@ -914,11 +914,11 @@ void rebuild_history_button_popup(char* id, GList* list) {
 }
 
 
-void gwaei_ui_update_history_popups()
+void gw_ui_update_history_popups()
 {
     GList* list;
 
-    gwaei_ui_update_history_menu_popup();
+    gw_ui_update_history_menu_popup();
     list = historylist_get_forward_history (GWAEI_HISTORYLIST_RESULTS);
     rebuild_history_button_popup("forward_popup", list);
     list = historylist_get_back_history (GWAEI_HISTORYLIST_RESULTS);
@@ -926,7 +926,7 @@ void gwaei_ui_update_history_popups()
 }
 
 
-void gwaei_ui_set_font(char *family, int size)
+void gw_ui_set_font(char *family, int size)
 {
     //Convert the int version of size to a string
     char digit2 = ((size/10) + 48);
@@ -951,7 +951,7 @@ void gwaei_ui_set_font(char *family, int size)
     desc = NULL;
 }
 
-void gwaei_ui_set_toolbar_style(char *request) 
+void gw_ui_set_toolbar_style(char *request) 
 {
     char id[50];
 
@@ -973,7 +973,7 @@ void gwaei_ui_set_toolbar_style(char *request)
 }
 
 
-void gwaei_ui_set_toolbar_show(gboolean request)
+void gw_ui_set_toolbar_show(gboolean request)
 {
     int id_length = 50;
     char id[id_length];
@@ -997,7 +997,7 @@ void gwaei_ui_set_toolbar_show(gboolean request)
 }
 
 
-void gwaei_ui_set_less_relevant_show(gboolean show)
+void gw_ui_set_less_relevant_show(gboolean show)
 {
   int id_length = 50;
   char id[id_length];
@@ -1012,7 +1012,7 @@ void gwaei_ui_set_less_relevant_show(gboolean show)
 }
 
 
-void gwaei_ui_set_romanji_kana_conv(int request)
+void gw_ui_set_romanji_kana_conv(int request)
 {
   char id[50];
 
@@ -1026,7 +1026,7 @@ void gwaei_ui_set_romanji_kana_conv(int request)
 }
 
 
-void gwaei_ui_set_hiragana_katakana_pref(GtkWidget *widget, gpointer data)
+void gw_ui_set_hiragana_katakana_pref(GtkWidget *widget, gpointer data)
 {
 /*
   gboolean active;
@@ -1038,12 +1038,12 @@ void gwaei_ui_set_hiragana_katakana_pref(GtkWidget *widget, gpointer data)
   strcat(key, "/");
   strcat(key, gtk_widget_get_name(widget));
 
-  gwaei_pref_set_boolean (key, active);
+  gw_pref_set_boolean (key, active);
   */
 }
 
 
-void gwaei_ui_set_hiragana_katakana_conv(gboolean request)
+void gw_ui_set_hiragana_katakana_conv(gboolean request)
 {
 /*
     char id[50];
@@ -1059,7 +1059,7 @@ void gwaei_ui_set_hiragana_katakana_conv(gboolean request)
 }
 
 
-void gwaei_ui_set_katakana_hiragana_conv(gboolean request)
+void gw_ui_set_katakana_hiragana_conv(gboolean request)
 {
 /*
     char id[50];
@@ -1077,7 +1077,7 @@ void gwaei_ui_set_katakana_hiragana_conv(gboolean request)
 
 
 
-void gwaei_ui_set_color_to_swatch(const char *widget_id, guint r, guint g, guint b)
+void gw_ui_set_color_to_swatch(const char *widget_id, guint r, guint g, guint b)
 {
     GtkWidget *widget;
     widget = GTK_WIDGET (gtk_builder_get_object(builder, widget_id));
@@ -1094,7 +1094,7 @@ void gwaei_ui_set_color_to_swatch(const char *widget_id, guint r, guint g, guint
 }
 
 
-void gwaei_ui_append_to_buffer (const int TARGET, char *text, char *tag1,
+void gw_ui_append_to_buffer (const int TARGET, char *text, char *tag1,
                                 char *tag2, int *start_line, int *end_line)
 {
     //Assertain the target text buffer
@@ -1128,7 +1128,7 @@ void gwaei_ui_append_to_buffer (const int TARGET, char *text, char *tag1,
 }
 
 
-void gwaei_ui_append_image_to_buffer (const int TARGET, char *name)
+void gw_ui_append_image_to_buffer (const int TARGET, char *name)
 {
     //Insert the pixbuf
     int leftover = FILENAME_MAX;
@@ -1156,7 +1156,7 @@ void gwaei_ui_append_image_to_buffer (const int TARGET, char *name)
 }
 
 
-void gwaei_ui_clear_buffer_by_target (const int TARGET)
+void gw_ui_clear_buffer_by_target (const int TARGET)
 {
     //Assertain the target text buffer
     GObject *tb;
@@ -1165,7 +1165,7 @@ void gwaei_ui_clear_buffer_by_target (const int TARGET)
     if (TARGET != GWAEI_TARGET_KANJI) {
       //Clear the target text buffer
       gtk_text_buffer_set_text (GTK_TEXT_BUFFER (tb), "", -1);
-      gwaei_ui_append_to_buffer (TARGET, "\n", "small", NULL, NULL, NULL);
+      gw_ui_append_to_buffer (TARGET, "\n", "small", NULL, NULL, NULL);
     }
     else {
       //Clear the target text buffer
@@ -1174,7 +1174,7 @@ void gwaei_ui_clear_buffer_by_target (const int TARGET)
 }
 
 
-void gwaei_ui_search_entry_insert(char* text)
+void gw_ui_search_entry_insert(char* text)
 {
     GtkWidget *entry;
     entry = search_entry;
@@ -1191,7 +1191,7 @@ void gwaei_ui_search_entry_insert(char* text)
 }
 
 
-void gwaei_ui_grab_focus_by_target (const int TARGET)
+void gw_ui_grab_focus_by_target (const int TARGET)
 {
     GtkWidget* widget;
     widget = get_widget_from_target(TARGET);
@@ -1199,7 +1199,7 @@ void gwaei_ui_grab_focus_by_target (const int TARGET)
 }
 
 
-void gwaei_ui_clear_search_entry()
+void gw_ui_clear_search_entry()
 {
     GtkWidget *entry;
     entry = search_entry;
@@ -1211,7 +1211,7 @@ void gwaei_ui_clear_search_entry()
 }
 
 
-void gwaei_ui_strcpy_from_widget(char* output, int MAX, int TARGET)
+void gw_ui_strcpy_from_widget(char* output, int MAX, int TARGET)
 {
     //GtkEntry
     if (TARGET == GWAEI_TARGET_ENTRY)
@@ -1245,7 +1245,7 @@ void gwaei_ui_strcpy_from_widget(char* output, int MAX, int TARGET)
 }
 
 
-void gwaei_ui_text_select_all_by_target (int TARGET)
+void gw_ui_text_select_all_by_target (int TARGET)
 {
     //GtkEntry
     if (TARGET == GWAEI_TARGET_ENTRY)
@@ -1273,7 +1273,7 @@ void gwaei_ui_text_select_all_by_target (int TARGET)
 }
 
 
-void gwaei_ui_text_select_none_by_target (int TARGET)
+void gw_ui_text_select_none_by_target (int TARGET)
 {
     //GtkEntry
     if (TARGET == GWAEI_TARGET_ENTRY)
@@ -1301,7 +1301,7 @@ void gwaei_ui_text_select_none_by_target (int TARGET)
 }
 
 
-guint gwaei_ui_get_current_widget_focus (char *window_id)
+guint gw_ui_get_current_widget_focus (char *window_id)
 {
     GtkWidget *window;
     window = GTK_WIDGET (gtk_builder_get_object (builder, window_id));
@@ -1320,7 +1320,7 @@ guint gwaei_ui_get_current_widget_focus (char *window_id)
 }
 
 
-void gwaei_ui_copy_text(guint TARGET)
+void gw_ui_copy_text(guint TARGET)
 {
     GtkClipboard *clipbd;
 
@@ -1341,7 +1341,7 @@ void gwaei_ui_copy_text(guint TARGET)
 }
 
 
-void gwaei_ui_cut_text(guint TARGET)
+void gw_ui_cut_text(guint TARGET)
 {
     switch (TARGET)
     {
@@ -1352,7 +1352,7 @@ void gwaei_ui_cut_text(guint TARGET)
 }
 
 
-void gwaei_ui_paste_text(guint TARGET)
+void gw_ui_paste_text(guint TARGET)
 {
     switch (TARGET)
     {
@@ -1363,7 +1363,7 @@ void gwaei_ui_paste_text(guint TARGET)
 }
 
 
-gboolean gwaei_ui_load_gtk_builder_xml(const char *name) {
+gboolean gw_ui_load_gtk_builder_xml(const char *name) {
     char local_path[FILENAME_MAX];
     strcpy(local_path, "xml");
     strcat(local_path, G_DIR_SEPARATOR_S);
@@ -1394,7 +1394,7 @@ gboolean gwaei_ui_load_gtk_builder_xml(const char *name) {
 
 
 
-gboolean gwaei_ui_set_color_to_tagtable (char    *id,     int      TARGET,
+gboolean gw_ui_set_color_to_tagtable (char    *id,     int      TARGET,
                                          gboolean set_fg, gboolean set_bg )
 {
     GtkTextTag *tag;
@@ -1424,11 +1424,11 @@ gboolean gwaei_ui_set_color_to_tagtable (char    *id,     int      TARGET,
     if (set_fg)
     {
       strcpy(key_ptr, "_foreground");
-      gwaei_util_strncpy_fallback_from_key (fallback, key, 100);
-      ret = gwaei_pref_get_string (fg_color, key, fallback, 100);
+      gw_util_strncpy_fallback_from_key (fallback, key, 100);
+      ret = gw_pref_get_string (fg_color, key, fallback, 100);
       if (IS_HEXCOLOR(fg_color) == FALSE)
       {
-        if (ret != NULL) gwaei_pref_set_string (key, fallback);
+        if (ret != NULL) gw_pref_set_string (key, fallback);
         strncpy(fg_color, fallback, 100);
       }
     }
@@ -1436,11 +1436,11 @@ gboolean gwaei_ui_set_color_to_tagtable (char    *id,     int      TARGET,
     if (set_bg)
     {
       strcpy(key_ptr, "_background");
-      gwaei_util_strncpy_fallback_from_key (fallback, key, 100);
-      ret = gwaei_pref_get_string (bg_color, key, fallback, 100);
+      gw_util_strncpy_fallback_from_key (fallback, key, 100);
+      ret = gw_pref_get_string (bg_color, key, fallback, 100);
       if (IS_HEXCOLOR(bg_color) == FALSE)
       {
-        if (ret != NULL) gwaei_pref_set_string (key, fallback);
+        if (ret != NULL) gw_pref_set_string (key, fallback);
         strncpy(bg_color, fallback, 100);
       }
     }
@@ -1465,7 +1465,7 @@ gboolean gwaei_ui_set_color_to_tagtable (char    *id,     int      TARGET,
 
 
 
-void  gwaei_ui_set_tag_to_tagtable (char *id,   int      TARGET,
+void  gw_ui_set_tag_to_tagtable (char *id,   int      TARGET,
                                     char *atr,  gpointer val    )
 {
     //Assertain the target text buffer
@@ -1478,7 +1478,7 @@ void  gwaei_ui_set_tag_to_tagtable (char *id,   int      TARGET,
 }
 
 
-char* gwaei_ui_get_text_slice_from_buffer (int TARGET, int sl, int el)
+char* gw_ui_get_text_slice_from_buffer (int TARGET, int sl, int el)
 {
     //Assertain the target text buffer
     GObject *tb;
@@ -1493,7 +1493,7 @@ char* gwaei_ui_get_text_slice_from_buffer (int TARGET, int sl, int el)
 }
 
 
-void gwaei_ui_apply_tag_to_text (int TARGET, char tag[],
+void gw_ui_apply_tag_to_text (int TARGET, char tag[],
                                  int sl, int so, int el, int eo)
 {
     //Assertain the target text buffer
@@ -1512,7 +1512,7 @@ void gwaei_ui_apply_tag_to_text (int TARGET, char tag[],
 }
 
 
-gunichar gwaei_get_hovered_character(int *x, int *y)
+gunichar gw_get_hovered_character(int *x, int *y)
 {
     gint trailing = 0;
 
@@ -1529,7 +1529,7 @@ gunichar gwaei_get_hovered_character(int *x, int *y)
 } 
 
 
-void gwaei_ui_set_cursor(const int CURSOR)
+void gw_ui_set_cursor(const int CURSOR)
 {
     GdkWindow* gdk_window;
     gdk_window = gtk_text_view_get_window( GTK_TEXT_VIEW (results_tv), 
@@ -1541,7 +1541,7 @@ void gwaei_ui_set_cursor(const int CURSOR)
 }
 
 
-void gwaei_ui_open_kanji_results()
+void gw_ui_open_kanji_results()
 {
       //Open the hpane so the kanji results are visible
       gint window_height, window_width;
@@ -1556,7 +1556,7 @@ void gwaei_ui_open_kanji_results()
 }
 
 
-void gwaei_ui_close_kanji_results()
+void gw_ui_close_kanji_results()
 {
     gint window_height, window_width;
 
@@ -1600,7 +1600,7 @@ char* locate_offset( char *string, char *line_start, regex_t *re_locate,
     }
 }
 
-void gwaei_ui_remove_all_tags (SearchItem *item)
+void gw_ui_remove_all_tags (GwSearchItem *item)
 {
     if (item->total_results == 0) return;
 
@@ -1616,7 +1616,7 @@ void gwaei_ui_remove_all_tags (SearchItem *item)
 }
 
 
-void gwaei_ui_add_results_tagging ( gint sl, gint el, SearchItem* item )
+void gw_ui_add_results_tagging ( gint sl, gint el, GwSearchItem* item )
 {
   char *text, *c, *temp_c;
   gboolean is_end_quote, is_end_parenth;
@@ -1629,7 +1629,7 @@ void gwaei_ui_add_results_tagging ( gint sl, gint el, SearchItem* item )
 
   for(re = 0; re < item->total_re; re++) {
     //Set up the text
-    text = gwaei_ui_get_text_slice_from_buffer (target, sl, el);
+    text = gw_ui_get_text_slice_from_buffer (target, sl, el);
     c = &text[0];
 
     //Position tracking variables
@@ -1647,7 +1647,7 @@ void gwaei_ui_add_results_tagging ( gint sl, gint el, SearchItem* item )
          while ((temp_c = locate_offset( temp_c, c, &item->re_locate[re],
                                          &match_so, &match_eo)) != NULL)
          {
-           gwaei_ui_apply_tag_to_text (target, "match", cl, match_so,
+           gw_ui_apply_tag_to_text (target, "match", cl, match_so,
                                                         cl, match_eo );
          }
       }
@@ -1673,8 +1673,8 @@ void gwaei_ui_add_results_tagging ( gint sl, gint el, SearchItem* item )
             *nextchar == ' ' && *nextnextchar == '\n'    &&
             *nextnextchar != '{' && co == 0             )
         {
-           gwaei_ui_apply_tag_to_text (target, "large", cl, 0, cl, 1);
-           gwaei_ui_apply_tag_to_text (target, "header", cl, 0, cl, 1);
+           gw_ui_apply_tag_to_text (target, "large", cl, 0, cl, 1);
+           gw_ui_apply_tag_to_text (target, "header", cl, 0, cl, 1);
         }
         //Bold kanji description titles
         if (*c == ':')
@@ -1691,7 +1691,7 @@ void gwaei_ui_add_results_tagging ( gint sl, gint el, SearchItem* item )
           }
 
           desc_so = temp_offset;
-          gwaei_ui_apply_tag_to_text (target, "important", cl, desc_so,
+          gw_ui_apply_tag_to_text (target, "important", cl, desc_so,
                                                            cl, desc_eo);
         }
       }
@@ -1705,7 +1705,7 @@ void gwaei_ui_add_results_tagging ( gint sl, gint el, SearchItem* item )
         is_end_parenth = FALSE;
         if (*(c + 1) == '/' || *(c + 1) == ' ') {
           parenth_eo = co + 1;
-          gwaei_ui_apply_tag_to_text (target, "comment", cl, parenth_so,
+          gw_ui_apply_tag_to_text (target, "comment", cl, parenth_so,
                                                          cl, parenth_eo);
         }
       }
@@ -1726,7 +1726,7 @@ void gwaei_ui_add_results_tagging ( gint sl, gint el, SearchItem* item )
           if ( is_end_quote == FALSE && item->dictionary->type != KANJI)
           {
             is_end_quote = TRUE;
-            gwaei_ui_apply_tag_to_text (target, "important", cl, 0, cl, co);
+            gw_ui_apply_tag_to_text (target, "important", cl, 0, cl, co);
           }
         }
         co++;
@@ -1740,7 +1740,7 @@ void gwaei_ui_add_results_tagging ( gint sl, gint el, SearchItem* item )
 }
 
 
-void gwaei_ui_add_all_tags (SearchItem *item)
+void gw_ui_add_all_tags (GwSearchItem *item)
 {
     if (item->total_results == 0) return;
 
@@ -1755,29 +1755,29 @@ void gwaei_ui_add_all_tags (SearchItem *item)
     gint el;
     el = gtk_text_iter_get_line (&end);
 
-    gwaei_ui_add_results_tagging (sl, el, item);
+    gw_ui_add_results_tagging (sl, el, item);
 }
 
 
-gint32 gwaei_previous_tip = 0;
-void gwaei_ui_display_no_results_found_page()
+gint32 gw_previous_tip = 0;
+void gw_ui_display_no_results_found_page()
 {
     gint32 temp = g_random_int_range(0,9);
-    while (temp == gwaei_previous_tip)
+    while (temp == gw_previous_tip)
       temp = g_random_int_range(0,9);
     const gint32 TIP_NUMBER = temp;
-    gwaei_previous_tip = temp;
+    gw_previous_tip = temp;
     char tip_number_str[5];
-    gwaei_itoa((TIP_NUMBER + 1), tip_number_str, 5);
+    gw_itoa((TIP_NUMBER + 1), tip_number_str, 5);
 
 
     //Add the title
-    gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS, gettext("No results found!"),
+    gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS, gettext("No results found!"),
                             "important", "larger", NULL, NULL    );
 
 
     //Linebreak before the image
-    gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS, "\n", NULL, NULL, NULL, NULL);
+    gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS, "\n", NULL, NULL, NULL, NULL);
 
     char image_name[100];
     strcpy(image_name, "character");
@@ -1785,127 +1785,127 @@ void gwaei_ui_display_no_results_found_page()
       strcat(image_name, "3");
     strcat(image_name, ".png");
     
-    gwaei_ui_append_image_to_buffer(GWAEI_TARGET_RESULTS, image_name);
+    gw_ui_append_image_to_buffer(GWAEI_TARGET_RESULTS, image_name);
 
 
     //Insert the instruction text
-    gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS, "\n\n", NULL, NULL, NULL, NULL);
+    gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS, "\n\n", NULL, NULL, NULL, NULL);
 
-    gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS, gettext("gWaei Usage Tip #"),
+    gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS, gettext("gWaei Usage Tip #"),
                             "important", NULL, NULL, NULL         );
-    gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS, tip_number_str,
+    gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS, tip_number_str,
                             "important", NULL, NULL, NULL         );
-    gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS, gettext(": "),
+    gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS, gettext(": "),
                             "important", NULL, NULL, NULL         );
                             
     switch (TIP_NUMBER)
     {
       case 0:
         //Tip 1
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("Inputting Unknown Kanji"),
                                    "header", "important", NULL, NULL         );
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    "\n\n",
                                    NULL, NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("Use the "),
                                    NULL, NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("Unknown Character"),
                                    "important", NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext(" from the Insert menu or toolbar in place of unknown Kanji.  "),
                                    NULL, NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    "日.語",
                                    "important", NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext(" will return results like "),
                                    NULL, NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    "日本語",
                                    "important", NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext(".\n\nKanjipad"),
                                    "important", NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext(" is another option for inputting Kanji characters.  Because of how the innards of Kanjipad works, drawing with the correct number of strokes and drawing the strokes in the correct direction is very important."),
                                    NULL, NULL, NULL, NULL         );
         break;
 
      case 1:
         //Tip 2
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("Getting More Exact Matches"),
                                    "important", "header", NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    "\n\n",
                                    NULL, NULL, NULL, NULL         );
 
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("Use the "),
                                    NULL, NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("Word-edge Mark"),
                                    "important", NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext(" and the "),
                                    NULL, NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("Not-word-edge Mark"),
                                    "important", NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext(" from the insert menu to get more relevant results.  "),
                                    NULL, NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("fish\\b"),
                                    "important", NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext(" will return results like "),
                                    "important", NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    "fish",
                                    "important", "match", NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext(" and "),
                                    NULL, NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    "sel",
                                    "important", NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    "fish",
                                    "important", "match", NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext(", but not "),
                                    NULL, NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    "fish",
                                    "important", "match", NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    "erman", 
                                    "important", NULL, NULL, NULL         );
 
@@ -1913,115 +1913,115 @@ void gwaei_ui_display_no_results_found_page()
 
      case 2:
         //Tip 3
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("Searching for Multiple Words"),
                                    "important", "header", NULL, NULL);
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    "\n\n",
                                    NULL, NULL, NULL, NULL         );
 
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("Use the "),
                                    NULL, NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("And Character"),
                                    "important", NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext(" or "),
                                    NULL, NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("Or Character"),
                                    "important", NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext(" to search for results that contain a combination of words that might not be right next to each other.  "),
                                    NULL, NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("cats&dogs"), 
                                    "important", NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext(" will return only results that contain both the words cats and dogs like "),
                                    NULL, NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    "犬猫", 
                                    "important", "match", NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    " does.", 
                                    NULL, NULL, NULL, NULL         );
         break;
 
      case 3:
         //Tip 4
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("Make a Vocabulary List"),
                                    "important", "header", NULL, NULL);
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    "\n\n",
                                    NULL, NULL, NULL, NULL         );
 
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
             gettext("Specific sections of results can be printed or saved by dragging the mouse to highlight them.  Using this in combination with the "),
                                    NULL, NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("Append"),
                                    "important", NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext(" command from the File menu or toolbar, quick and easy creation of a vocabulary lists is possible."),
                                    NULL, NULL, NULL, NULL         );
         break;
 
      case 4:
         //Tip 5
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("Why Use the Mouse?"),
                                    "important", "header", NULL, NULL);
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    "\n\n",
                                    NULL, NULL, NULL, NULL         );
 
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("Typing something"),
                                    "important", NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext(" will move the focus to the search input box.  Hitting the "),
                                    NULL, NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("Up or Down arrow key"),
                                    "important", NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext(" will move the focus to the results pane so you can scroll the results.  Hitting "),
                                    NULL, NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("Alt-Up"),
                                    "important", NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext(" or "),
                                    NULL, NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("Alt-Down"),
                                    "important", NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext(" will cycle the currently installed dictionaries."),
                                    NULL, NULL, NULL, NULL         );
 
@@ -2029,38 +2029,38 @@ void gwaei_ui_display_no_results_found_page()
 
      case 5:
         //Tip 6
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("Get Ready for the JLPT"),
                                    "important", "header", NULL, NULL);
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    "\n\n",
                                    NULL, NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("The Kanji dictionary has some hidden features.  One such one is the ability to filter out Kanji that don't meet a certain criteria.  If you are planning on taking the Japanese Language Proficiency Test, using the phrase "),
                                    NULL, NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("J#"),
                                    "important", NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext(" will filter out Kanji not of that level for easy study.  For example, "),
                                    NULL, NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("J4"),
                                    "important", NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext(" will only show Kanji that appears on the forth level test.\n\nAlso of interest, the phrase "),
                                    NULL, NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("G#"),
                                    "important", NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext(" will filter out Kanji for the grade level a Japanese person would study it at in school."),
                                    NULL, NULL, NULL, NULL         );
 
@@ -2068,30 +2068,30 @@ void gwaei_ui_display_no_results_found_page()
 
      case 6:
         //Tip 7
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("Just drag words in!"),
                                 "important", "header", NULL, NULL);
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    "\n\n",
                                    NULL, NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("If you drag and drop a highlighted word into "),
                                    NULL, NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("gWaei"),
                                    "important", NULL, NULL, NULL         );
             
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("'s search query input, "),
                                    NULL, NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("gWaei"),
                                    "important", NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext(" will automatically start a search using that text.  This can be a nice way to quickly look up words while browsing webpages."),
                                    NULL, NULL, NULL, NULL         );
 
@@ -2099,38 +2099,38 @@ void gwaei_ui_display_no_results_found_page()
 
      case 7:
         //Tip 8
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("What does (adj-i) mean?"),
                                    "important", "header", NULL, NULL);
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    "\n\n",
                                    NULL, NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("It is part of the terminalogy used by the EDICT group of dictionaries to categorize words.  Some are obvious, but there are a number that there is no way to know the meaning other than by looking it up.\n\n"),
                                    NULL, NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("gWaei"),
                                    "important", NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext(" includes some of the EDICT documentation in its help manual.  Click the "),
                                    NULL, NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("Dictionary Terminology Glossary menuitem"),
                                    "important", NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext(" in the "),
                                    NULL, NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("Help menu"),
                                    "important", NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext(" to get to it."),
                                    NULL, NULL, NULL, NULL         );
 
@@ -2138,26 +2138,26 @@ void gwaei_ui_display_no_results_found_page()
 
      case 8:
         //Tip 9
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("Books are Heavy"),
                                    "important", "header", NULL, NULL);
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    "\n\n",
                                    NULL, NULL, NULL, NULL         );
 
-        gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+        gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                    gettext("Aways wear a construction helmet when working with books.  They are dangerous heavy objects that can at any point fall on and injure you.  Please all urge all of your friends to, too.  They will thank you later.  Really."),
                                    NULL, NULL, NULL, NULL         );
        break;
     }
 
-    gwaei_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
+    gw_ui_append_to_buffer (GWAEI_TARGET_RESULTS,
                                "\n\n",
                                NULL, NULL, NULL, NULL         );
 }
 
 
-void gwaei_ui_next_dictionary()
+void gw_ui_next_dictionary()
 {
     //Declarations
     char id[50];
@@ -2171,7 +2171,7 @@ void gwaei_ui_next_dictionary()
 }
 
 
-void gwaei_ui_cycle_dictionaries(gboolean cycle_forward)
+void gw_ui_cycle_dictionaries(gboolean cycle_forward)
 {
     char id[50];
     int increment;
@@ -2210,7 +2210,7 @@ void gwaei_ui_cycle_dictionaries(gboolean cycle_forward)
 }
 
 
-char* gwaei_ui_get_text_from_text_buffer(const int TARGET)
+char* gw_ui_get_text_from_text_buffer(const int TARGET)
 {
     GObject* tb;
     tb = get_gobject_from_target(TARGET);
@@ -2230,52 +2230,52 @@ char* gwaei_ui_get_text_from_text_buffer(const int TARGET)
 }
 
 
-void gwaei_ui_reload_tagtable_tags()
+void gw_ui_reload_tagtable_tags()
 {
-    HistoryList* hl;
+    GwHistoryList* hl;
     hl = historylist_get_list (GWAEI_HISTORYLIST_RESULTS);
 
     if (hl != NULL && hl->current != NULL)
-      gwaei_ui_remove_all_tags (hl->current);
+      gw_ui_remove_all_tags (hl->current);
 
-    gwaei_ui_set_color_to_tagtable ("comment", GWAEI_TARGET_RESULTS, TRUE, FALSE);
-    gwaei_ui_set_color_to_tagtable ("comment", GWAEI_TARGET_KANJI,   TRUE, FALSE);
+    gw_ui_set_color_to_tagtable ("comment", GWAEI_TARGET_RESULTS, TRUE, FALSE);
+    gw_ui_set_color_to_tagtable ("comment", GWAEI_TARGET_KANJI,   TRUE, FALSE);
 
-    gwaei_ui_set_color_to_tagtable ("match",   GWAEI_TARGET_RESULTS, TRUE, TRUE );
-    gwaei_ui_set_color_to_tagtable ("match",   GWAEI_TARGET_KANJI,   TRUE, TRUE );
+    gw_ui_set_color_to_tagtable ("match",   GWAEI_TARGET_RESULTS, TRUE, TRUE );
+    gw_ui_set_color_to_tagtable ("match",   GWAEI_TARGET_KANJI,   TRUE, TRUE );
 
-    gwaei_ui_set_color_to_tagtable ("header",  GWAEI_TARGET_RESULTS, TRUE, FALSE);
-    gwaei_ui_set_color_to_tagtable ("header",  GWAEI_TARGET_KANJI,   TRUE, FALSE);
+    gw_ui_set_color_to_tagtable ("header",  GWAEI_TARGET_RESULTS, TRUE, FALSE);
+    gw_ui_set_color_to_tagtable ("header",  GWAEI_TARGET_KANJI,   TRUE, FALSE);
 
     if (hl != NULL && hl->current != NULL)
-      gwaei_ui_add_all_tags (hl->current);
+      gw_ui_add_all_tags (hl->current);
 }
 
 
-void gwaei_ui_initialize_tags()
+void gw_ui_initialize_tags()
 {
     //Important tag (usually bold)
-    gwaei_ui_set_tag_to_tagtable ("important", GWAEI_TARGET_RESULTS,
+    gw_ui_set_tag_to_tagtable ("important", GWAEI_TARGET_RESULTS,
                                   "weight",    GINT_TO_POINTER(PANGO_WEIGHT_BOLD));
-    gwaei_ui_set_tag_to_tagtable ("important", GWAEI_TARGET_KANJI,
+    gw_ui_set_tag_to_tagtable ("important", GWAEI_TARGET_KANJI,
                                   "weight",    GINT_TO_POINTER(PANGO_WEIGHT_BOLD));
 
     //Larger tag
-    gwaei_ui_set_tag_to_tagtable ("larger", GWAEI_TARGET_RESULTS, "font", "sans 20");
+    gw_ui_set_tag_to_tagtable ("larger", GWAEI_TARGET_RESULTS, "font", "sans 20");
 
     //Large tag
-    gwaei_ui_set_tag_to_tagtable ("large", GWAEI_TARGET_RESULTS, "font", "serif 30");
-    gwaei_ui_set_tag_to_tagtable ("large", GWAEI_TARGET_KANJI,   "font", "KanjiStrokeOrders, serif 100");
+    gw_ui_set_tag_to_tagtable ("large", GWAEI_TARGET_RESULTS, "font", "serif 30");
+    gw_ui_set_tag_to_tagtable ("large", GWAEI_TARGET_KANJI,   "font", "KanjiStrokeOrders, serif 100");
 
     //Small tag
-    gwaei_ui_set_tag_to_tagtable ("small", GWAEI_TARGET_RESULTS,  "font", "serif 6");
-    gwaei_ui_set_tag_to_tagtable ("small", GWAEI_TARGET_KANJI,    "font", "serif 6");
+    gw_ui_set_tag_to_tagtable ("small", GWAEI_TARGET_RESULTS,  "font", "serif 6");
+    gw_ui_set_tag_to_tagtable ("small", GWAEI_TARGET_KANJI,    "font", "serif 6");
 
-    gwaei_ui_reload_tagtable_tags();
+    gw_ui_reload_tagtable_tags();
 }
 
 
-void gwaei_ui_initialize_buffer_marks()
+void gw_ui_initialize_buffer_marks()
 {
     GtkWidget *tv;
     tv = GTK_WIDGET (gtk_builder_get_object (builder, "results_text_view"));
@@ -2291,7 +2291,7 @@ void gwaei_ui_initialize_buffer_marks()
 }
 
 
-void gwaei_ui_set_header (SearchItem *item, char* text, char* mark_name)
+void gw_ui_set_header (GwSearchItem *item, char* text, char* mark_name)
 {
     GtkTextIter iter;
     GtkTextMark *mark;
@@ -2309,11 +2309,11 @@ void gwaei_ui_set_header (SearchItem *item, char* text, char* mark_name)
     {
       gtk_text_buffer_get_end_iter (GTK_TEXT_BUFFER (results_tb), &iter);
       gtk_text_buffer_move_mark (GTK_TEXT_BUFFER (results_tb), mark, &iter);
-      gwaei_ui_append_to_buffer(item->target, text,   tag1, tag2, NULL, NULL);
+      gw_ui_append_to_buffer(item->target, text,   tag1, tag2, NULL, NULL);
       if (strcmp(mark_name, "less_relevant_header_mark") == 0)
-        gwaei_ui_append_to_buffer(item->target, "\n", tag1, tag2, NULL, NULL);
+        gw_ui_append_to_buffer(item->target, "\n", tag1, tag2, NULL, NULL);
       else
-        gwaei_ui_append_to_buffer(item->target, "\n\n", tag1, tag2, NULL, NULL);
+        gw_ui_append_to_buffer(item->target, "\n\n", tag1, tag2, NULL, NULL);
     }
     //We are updating a line.  Remove the one there
     else
@@ -2338,31 +2338,31 @@ void initialize_gui_interface(int *argc, char ***argv)
 
     //Setup the main windows xml
     builder = gtk_builder_new ();
-    gwaei_ui_load_gtk_builder_xml("main.ui");
-    gwaei_ui_load_gtk_builder_xml("radicals.ui");
-    gwaei_ui_load_gtk_builder_xml("settings.ui");
-    gwaei_ui_load_gtk_builder_xml("kanjipad.ui");
+    gw_ui_load_gtk_builder_xml("main.ui");
+    gw_ui_load_gtk_builder_xml("radicals.ui");
+    gw_ui_load_gtk_builder_xml("settings.ui");
+    gw_ui_load_gtk_builder_xml("kanjipad.ui");
 
     //HACK!!!!!!!!!!!!!!
     force_gtk_builder_translation_for_gtk_actions_hack ();
 
     //Initialize some component and variables
     initialize_global_widget_pointers();
-    gwaei_ui_initialize_tags();
+    gw_ui_initialize_tags();
     initialize_kanjipad();
 
-    gwaei_sexy_initialize_libsexy();
-    gwaei_ui_update_history_popups();
-    gwaei_ui_show_window ("main_window");
-    gwaei_prefs_initialize_preferences();
-    gwaei_ui_initialize_buffer_marks();
+    gw_sexy_initialize_libsexy();
+    gw_ui_update_history_popups();
+    gw_ui_show_window ("main_window");
+    gw_prefs_initialize_preferences();
+    gw_ui_initialize_buffer_marks();
 
     if (rebuild_combobox_dictionary_list() == 0) {
       do_settings(NULL, NULL);
     }
 
     //Set the initial focus to the search bar
-    gwaei_ui_grab_focus_by_target (GWAEI_TARGET_ENTRY);
+    gw_ui_grab_focus_by_target (GWAEI_TARGET_ENTRY);
 
     //Enter the main loop
     gdk_threads_enter();
@@ -2371,10 +2371,10 @@ void initialize_gui_interface(int *argc, char ***argv)
 }
 
 
-gboolean gwaei_ui_cancel_search_by_target(const int TARGET)
+gboolean gw_ui_cancel_search_by_target(const int TARGET)
 {
-    HistoryList* hl = historylist_get_list(GWAEI_HISTORYLIST_RESULTS);
-    SearchItem *item = hl->current;
+    GwHistoryList* hl = historylist_get_list(GWAEI_HISTORYLIST_RESULTS);
+    GwSearchItem *item = hl->current;
 
     if (item != NULL && item->status == GWAEI_SEARCH_CANCELING) return FALSE;
 
@@ -2400,7 +2400,7 @@ gboolean gwaei_ui_cancel_search_by_target(const int TARGET)
 //!
 //! @param TARGET A constant int representing a text buffer
 //!
-gboolean gwaei_ui_has_selection_by_target (const int TARGET)
+gboolean gw_ui_has_selection_by_target (const int TARGET)
 {
     GObject* tb = get_gobject_from_target(TARGET);
     return (gtk_text_buffer_get_has_selection (GTK_TEXT_BUFFER (tb)));

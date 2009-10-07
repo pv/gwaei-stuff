@@ -48,7 +48,7 @@
 #include <gwaei/interface.h>
 
 
-void gwaei_ui_update_settings_interface()
+void gw_ui_update_settings_interface()
 {
   char id[50];
 
@@ -82,7 +82,7 @@ void gwaei_ui_update_settings_interface()
   resplit_button = GTK_WIDGET (gtk_builder_get_object(builder, id));
 
 
-  if (gwaei_dictlist_get_total_with_status (UPDATING) > 0)
+  if (gw_dictlist_get_total_with_status (UPDATING) > 0)
   {
     gtk_widget_set_sensitive (close_button,   FALSE);
     gtk_widget_set_sensitive (install_table,  FALSE);
@@ -91,7 +91,7 @@ void gwaei_ui_update_settings_interface()
     gtk_widget_set_sensitive (update_button,  TRUE );
     gtk_widget_set_sensitive (updated_button, TRUE );
   }
-  else if (gwaei_dictlist_get_total_with_status (INSTALLING) > 0)
+  else if (gw_dictlist_get_total_with_status (INSTALLING) > 0)
   {
     gtk_widget_set_sensitive (close_button,   FALSE);
     gtk_widget_set_sensitive (install_table,  TRUE );
@@ -100,7 +100,7 @@ void gwaei_ui_update_settings_interface()
     gtk_widget_set_sensitive (update_button,  FALSE);
     gtk_widget_set_sensitive (updated_button, FALSE);
   }
-  else if (gwaei_dictlist_get_total_with_status (REBUILDING) > 0)
+  else if (gw_dictlist_get_total_with_status (REBUILDING) > 0)
   {
     gtk_widget_set_sensitive (close_button,   FALSE);
     gtk_widget_set_sensitive (install_table,  FALSE);
@@ -117,14 +117,14 @@ void gwaei_ui_update_settings_interface()
     gtk_widget_set_sensitive (updated_button, TRUE );
 
     gboolean state;
-    state = (gwaei_dictlist_dictionary_get_status_by_id(MIX) == INSTALLED);
+    state = (gw_dictlist_dictionary_get_status_by_id(MIX) == INSTALLED);
     gtk_widget_set_sensitive (rebuild_button, state);
-    state = (gwaei_dictlist_dictionary_get_status_by_id(NAMES) == INSTALLED);
+    state = (gw_dictlist_dictionary_get_status_by_id(NAMES) == INSTALLED);
     gtk_widget_set_sensitive (resplit_button, state);
   }
 }
 
-void gwaei_ui_set_dictionary_source(const char* id, const char* value)
+void gw_ui_set_dictionary_source(const char* id, const char* value)
 {
     GtkWidget *widget;
     widget = GTK_WIDGET (gtk_builder_get_object(builder, id));
@@ -136,7 +136,7 @@ void gwaei_ui_set_dictionary_source(const char* id, const char* value)
 
 
 //Sets the status of an individual feature
-void gwaei_ui_set_feature_line_status(char* name, char* status)
+void gw_ui_set_feature_line_status(char* name, char* status)
 {
     char id[100];
     strcpy(id, name);
@@ -171,7 +171,7 @@ void gwaei_ui_set_feature_line_status(char* name, char* status)
     }
 }
 
-int gwaei_ui_get_install_line_status(char *name)
+int gw_ui_get_install_line_status(char *name)
 {
     GtkWidget *button;
 
@@ -199,7 +199,7 @@ int gwaei_ui_get_install_line_status(char *name)
 }
 
 //Sets the install status of an individual dictionary
-void gwaei_ui_set_install_line_status(char *name, char *status, char *message)
+void gw_ui_set_install_line_status(char *name, char *status, char *message)
 {
     GtkWidget *install_button, *remove_button, *cancel_button;
     GtkWidget *hbox, *label, *icon_installed, *icon_errored, *progressbar;
@@ -368,8 +368,8 @@ void gwaei_ui_set_install_line_status(char *name, char *status, char *message)
     GtkWidget *button;
     gboolean sensitive;
 
-    sensitive = (rsync_exists && gwaei_dictlist_get_total() &&
-                 gwaei_dictlist_get_total_with_status(INSTALLING) == 0);
+    sensitive = (rsync_exists && gw_dictlist_get_total() &&
+                 gw_dictlist_get_total_with_status(INSTALLING) == 0);
 
     strcpy(id, "update_install_button");
     button = GTK_WIDGET (gtk_builder_get_object(builder, id));
@@ -382,7 +382,7 @@ void gwaei_ui_set_install_line_status(char *name, char *status, char *message)
 
 
 //The layout of this function is specifically for a libcurl callback
-int gwaei_ui_update_progressbar (void   *id,
+int gw_ui_update_progressbar (void   *id,
                                  double  dltotal,
                                  double  dlnow,
                                  double  ultotal,
@@ -414,7 +414,7 @@ int gwaei_ui_update_progressbar (void   *id,
 }
 
 
-void gwaei_ui_set_progressbar (char *name, double percent, char *message)
+void gw_ui_set_progressbar (char *name, double percent, char *message)
 {
     char id[50];
     strcpy (id, name);

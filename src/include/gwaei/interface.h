@@ -8,15 +8,15 @@ int  rebuild_combobox_dictionary_list (void);
 
 void update_toolbar_buttons (void);
 void update_history_popup (void);
-void gwaei_ui_update_total_results_label (SearchItem*);
-gboolean gwaei_load_gtk_builder_xml (const char );
+void gw_ui_update_total_results_label (GwSearchItem*);
+gboolean gw_load_gtk_builder_xml (const char );
 
-char* gwaei_ui_get_text_slice_from_buffer (int, int, int);
+char* gw_ui_get_text_slice_from_buffer (int, int, int);
 
 //Settings
-int gwaei_ui_update_progressbar (void*, double, double, double, double);
+int gw_ui_update_progressbar (void*, double, double, double, double);
 
-const char* gwaei_ui_get_active_dictionary(void);
-char* gwaei_ui_get_text_from_text_buffer(const int);
+const char* gw_ui_get_active_dictionary(void);
+char* gw_ui_get_text_from_text_buffer(const int);
 
 void initialize_gui_interface(int*, char***);

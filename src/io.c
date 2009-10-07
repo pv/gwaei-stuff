@@ -45,7 +45,7 @@
 char     save_path[FILENAME_MAX]    = { '\0' };
 gboolean rsync_exists               = FALSE;
 
-void gwaei_io_write_file(const char* write_mode, gchar *text)
+void gw_io_write_file(const char* write_mode, gchar *text)
 {
     if (save_path[0] != '\0')
     {
@@ -74,7 +74,7 @@ void gwaei_io_write_file(const char* write_mode, gchar *text)
 }
 
 
-void gwaei_io_check_for_rsync()
+void gw_io_check_for_rsync()
 {
     rsync_exists = ( RSYNC != NULL     &&
                      strlen(RSYNC) > 0 &&
@@ -83,7 +83,7 @@ void gwaei_io_check_for_rsync()
 }
 
 
-gboolean gwaei_io_copy_with_encoding( char *source_path,     char *target_path,
+gboolean gw_io_copy_with_encoding( char *source_path,     char *target_path,
                                   char *source_encoding, char *target_encoding,
                                   GError **error)
 {
@@ -148,7 +148,7 @@ size_t read_func(void *ptr, size_t size, size_t nmemb, FILE *stream)
 }
 
 
-gboolean gwaei_io_download_dictionary_file(char *source_path, char *save_path, gpointer func, gpointer data)
+gboolean gw_io_download_dictionary_file(char *source_path, char *save_path, gpointer func, gpointer data)
 {
     CURL *curl;
     CURLcode res;
@@ -183,7 +183,7 @@ gboolean gwaei_io_download_dictionary_file(char *source_path, char *save_path, g
 }
 
 
-gboolean gwaei_io_delete_dictionary_file(GwaeiDictInfo* file)
+gboolean gw_io_delete_dictionary_file(GwDictInfo* file)
 {
     printf("  ");
     printf(gettext("Removing %s..."), file->long_name);
@@ -214,7 +214,7 @@ gboolean gwaei_io_delete_dictionary_file(GwaeiDictInfo* file)
 }
 
 
-gboolean gwaei_io_copy_dictionary_file(char *source_path, char *target_path, GError **error)
+gboolean gw_io_copy_dictionary_file(char *source_path, char *target_path, GError **error)
 {
     GQuark quark;
     quark = g_quark_from_string (GWAEI_GENERIC_ERROR);
@@ -238,7 +238,7 @@ gboolean gwaei_io_copy_dictionary_file(char *source_path, char *target_path, GEr
 
 
 //Creates a single dictionary containing both the radical dict and kanji dict
-gboolean gwaei_io_create_mix_dictionary(char *mpath, char *kpath, char *rpath)
+gboolean gw_io_create_mix_dictionary(char *mpath, char *kpath, char *rpath)
 {
     printf(gettext("  Recreating mixed dictionary..."));
 
@@ -330,7 +330,7 @@ gboolean gwaei_io_create_mix_dictionary(char *mpath, char *kpath, char *rpath)
 }
 
 
-gboolean gwaei_io_split_places_from_names_dictionary (char *spath, char *npath, char *ppath)
+gboolean gw_io_split_places_from_names_dictionary (char *spath, char *npath, char *ppath)
 {
     /*
       Current composition of the Enamdic dictionary
@@ -437,7 +437,7 @@ gboolean gwaei_io_split_places_from_names_dictionary (char *spath, char *npath, 
 }
 
 
-gboolean gwaei_io_gunzip_dictionary_file(char *path, GError **error)
+gboolean gw_io_gunzip_dictionary_file(char *path, GError **error)
 {
     GQuark quark;
     quark = g_quark_from_string (GWAEI_GENERIC_ERROR);
@@ -465,7 +465,7 @@ gboolean gwaei_io_gunzip_dictionary_file(char *path, GError **error)
 } 
 
 
-int gwaei_io_get_total_lines_for_path (char *path)
+int gw_io_get_total_lines_for_path (char *path)
 {
     //Calculate the number of lines in the dictionary
     char line[MAX_LINE];

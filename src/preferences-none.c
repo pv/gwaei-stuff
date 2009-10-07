@@ -38,51 +38,51 @@
 #include <gwaei/regex.h>
 
 
-int gwaei_pref_get_int (char *key, int backup)
+int gw_pref_get_int (char *key, int backup)
 {
     return backup;
 }
 
-int gwaei_pref_get_default_int (char *key, int backup)
+int gw_pref_get_default_int (char *key, int backup)
 {
     return backup;
 }
 
-void gwaei_pref_set_int (char *key, int request)
+void gw_pref_set_int (char *key, int request)
 {
 }
 
 
-gboolean gwaei_pref_get_boolean (char *key, gboolean backup)
-{
-    return backup;
-}
-
-
-gboolean gwaei_pref_get_default_boolean (char *key, gboolean backup)
+gboolean gw_pref_get_boolean (char *key, gboolean backup)
 {
     return backup;
 }
 
 
-void gwaei_pref_set_boolean (char *key, gboolean request)
-{
-}
-
-
-char* gwaei_pref_get_string (char *output, char *key, char* backup, int n)
+gboolean gw_pref_get_default_boolean (char *key, gboolean backup)
 {
     return backup;
 }
 
 
-char* gwaei_pref_get_default_string (char *key, char* backup)
+void gw_pref_set_boolean (char *key, gboolean request)
+{
+}
+
+
+char* gw_pref_get_string (char *output, char *key, char* backup, int n)
 {
     return backup;
 }
 
 
-void gwaei_pref_set_string (char *key, char* request)
+char* gw_pref_get_default_string (char *key, char* backup)
+{
+    return backup;
+}
+
+
+void gw_pref_set_string (char *key, char* request)
 {
 }
 
@@ -91,7 +91,7 @@ void gwaei_pref_set_string (char *key, char* request)
 //Preference initializations
 //
 
-void gwaei_prefs_initialize_preferences()
+void gw_prefs_initialize_preferences()
 {
 }
 

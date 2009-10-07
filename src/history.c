@@ -8,8 +8,8 @@
 
   AUTHOR:
   Helps to manage searchitem objects and abstract out the concept of history.
-  SearchItems contain a variety info, telling whether they are in use or not,
-  number of results, etc.  The HistoryList object contains the back history,
+  GwSearchItems contain a variety info, telling whether they are in use or not,
+  number of results, etc.  The GwHistoryList object contains the back history,
   forward history, and a pointer to the current search.
 
   LICENSE:
@@ -40,19 +40,19 @@
 #include <gwaei/dictionaries.h>
 #include <gwaei/history.h>
 
-HistoryList *results_history;
-HistoryList *kanji_history;
+GwHistoryList *results_history;
+GwHistoryList *kanji_history;
 
 //
 //Searchitem primitive
 //
-SearchItem* searchitem_new (char* query, GwaeiDictInfo* dictionary,
+GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary,
                                          const int TARGET)
 {
-  SearchItem *temp;
+  GwSearchItem *temp;
 
   //Allocate some memory
-  if ((temp = malloc(sizeof(struct SearchItem))) == NULL) return NULL;
+  if ((temp = malloc(sizeof(struct GwSearchItem))) == NULL) return NULL;
 
   temp->results_medium = NULL;
   temp->results_low = NULL;
@@ -75,7 +75,7 @@ SearchItem* searchitem_new (char* query, GwaeiDictInfo* dictionary,
   temp->results_found = TRUE;
   temp->current_line = 0;
   char *key = GCKEY_GWAEI_LESS_RELEVANT_SHOW; 
-  temp->show_less_relevant_results = gwaei_pref_get_boolean (key, TRUE);
+  temp->show_less_relevant_results = gw_pref_get_boolean (key, TRUE);
 
   //Create the compiled regular expression
   int eflags_exist    = REG_EXTENDED | REG_ICASE | REG_NOSUB;
@@ -226,7 +226,7 @@ SearchItem* searchitem_new (char* query, GwaeiDictInfo* dictionary,
 }
 
 
-void searchitem_reset_result_counters(SearchItem* item)
+void gw_searchitem_reset_result_counters(GwSearchItem* item)
 {
   item->total_relevant_results = 0;
   item->total_irrelevant_results = 0;
@@ -234,7 +234,7 @@ void searchitem_reset_result_counters(SearchItem* item)
 }
 
 
-gboolean searchitem_do_pre_search_prep (SearchItem* item)
+gboolean gw_searchitem_do_pre_search_prep (GwSearchItem* item)
 {
     if ((item->input = malloc (MAX_LINE)) == NULL)
     {
@@ -254,7 +254,7 @@ gboolean searchitem_do_pre_search_prep (SearchItem* item)
 }
 
 
-void searchitem_do_post_search_clean (SearchItem* item)
+void gw_searchitem_do_post_search_clean (GwSearchItem* item)
 {
     if (item->fd != NULL)
     {
@@ -276,13 +276,13 @@ void searchitem_do_post_search_clean (SearchItem* item)
 }
 
 
-gboolean searchitem_is_prepared(SearchItem* item)
+gboolean gw_searchitem_is_prepared(GwSearchItem* item)
 {
     return (item->input != NULL && item->output != NULL);
 }
 
 
-void searchitem_free(SearchItem* item) {
+void gw_searchitem_free(GwSearchItem* item) {
   int i = 0;
   while (i < item->total_re) {
     regfree(&(item->re_exist[i]));
@@ -291,7 +291,7 @@ void searchitem_free(SearchItem* item) {
     regfree(&(item->re_relevance_medium[i]));
     i++;
   }
-  searchitem_do_post_search_clean (item);
+  gw_searchitem_do_post_search_clean (item);
   free(item);
   item = NULL;
 }
@@ -301,7 +301,7 @@ void searchitem_free(SearchItem* item) {
 //Historylist methods
 //
 
-HistoryList* historylist_get_list(const int TARGET)
+GwHistoryList* historylist_get_list(const int TARGET)
 {
     if (TARGET == GWAEI_HISTORYLIST_RESULTS)
       return results_history;
@@ -312,10 +312,10 @@ HistoryList* historylist_get_list(const int TARGET)
 }
 
 
-HistoryList* historylist_new()
+GwHistoryList* historylist_new()
 {
-    HistoryList *temp;
-    if ((temp = malloc(sizeof(struct SearchItem))) != NULL)
+    GwHistoryList *temp;
+    if ((temp = malloc(sizeof(struct GwSearchItem))) != NULL)
     {
       temp->back = NULL;
       temp->forward = NULL;
@@ -328,11 +328,11 @@ HistoryList* historylist_new()
 
 void historylist_clear_forward_history(const int TARGET)
 {
-    HistoryList *hl = historylist_get_list (TARGET);
+    GwHistoryList *hl = historylist_get_list (TARGET);
 
     while (hl->forward != NULL)
     {
-      searchitem_free((hl->forward)->data);
+      gw_searchitem_free((hl->forward)->data);
       hl->forward = g_list_delete_link(hl->forward, hl->forward);
     }
 }
@@ -340,28 +340,28 @@ void historylist_clear_forward_history(const int TARGET)
 
 GList* historylist_get_back_history (const int TARGET)
 {
-    HistoryList *list = historylist_get_list (TARGET);
+    GwHistoryList *list = historylist_get_list (TARGET);
     return list->back;
 }
 
 
 GList* historylist_get_forward_history (const int TARGET)
 {
-    HistoryList *list = historylist_get_list (TARGET);
+    GwHistoryList *list = historylist_get_list (TARGET);
     return list->forward;
 }
 
 
-SearchItem* historylist_get_current (const int TARGET)
+GwSearchItem* historylist_get_current (const int TARGET)
 {
-    HistoryList *list = historylist_get_list (TARGET);
+    GwHistoryList *list = historylist_get_list (TARGET);
     return list->current;
 }
 
 
 GList* historylist_get_combined_history_list (const int TARGET)
 {
-    HistoryList *hl = historylist_get_list (TARGET);
+    GwHistoryList *hl = historylist_get_list (TARGET);
     GList *back_copy = g_list_copy (hl->back);
 
     GList *out = NULL;
@@ -373,15 +373,15 @@ GList* historylist_get_combined_history_list (const int TARGET)
 }
 
 
-void historylist_add_searchitem_to_history(const int TARGET, SearchItem *item)
+void historylist_add_searchitem_to_history(const int TARGET, GwSearchItem *item)
 { 
-    HistoryList *hl = historylist_get_list (TARGET);
+    GwHistoryList *hl = historylist_get_list (TARGET);
     historylist_clear_forward_history(TARGET);
 
     if (g_list_length(hl->back) >= 20)
     {
       GList* last = g_list_last (hl->back); 
-      searchitem_free(last->data);
+      gw_searchitem_free(last->data);
       hl->back = g_list_delete_link(hl->back, last);
     }
     if (hl->forward != NULL)
@@ -389,7 +389,7 @@ void historylist_add_searchitem_to_history(const int TARGET, SearchItem *item)
       GList *current = hl->forward;
       while (current != NULL)
       {
-        searchitem_free(current->data);
+        gw_searchitem_free(current->data);
         current = current->next;
       }
       g_list_free(hl->forward);
@@ -401,8 +401,8 @@ void historylist_add_searchitem_to_history(const int TARGET, SearchItem *item)
 
 static void shift_history_by_target(const int TARGET, GList **from, GList **to)
 {
-    HistoryList *hl = historylist_get_list (TARGET);
-    SearchItem **current = &(hl->current);
+    GwHistoryList *hl = historylist_get_list (TARGET);
+    GwSearchItem **current = &(hl->current);
 
     //Handle the current searchitem if it exists
     if (*current != NULL)
@@ -410,7 +410,7 @@ static void shift_history_by_target(const int TARGET, GList **from, GList **to)
       if ((*current)->results_found)
         *to = g_list_prepend (*to, *current);
       else
-        searchitem_free (*current);
+        gw_searchitem_free (*current);
       *current = NULL;
     }
 
@@ -426,20 +426,20 @@ static void shift_history_by_target(const int TARGET, GList **from, GList **to)
 
 void historylist_go_back_by_target (const int TARGET)
 { 
-    HistoryList *hl = historylist_get_list (TARGET);
+    GwHistoryList *hl = historylist_get_list (TARGET);
     shift_history_by_target (TARGET, &(hl->back), &(hl->forward));
 }
 
 
 void historylist_go_forward_by_target (const int TARGET)
 { 
-    HistoryList *hl = historylist_get_list (TARGET);
+    GwHistoryList *hl = historylist_get_list (TARGET);
     shift_history_by_target (TARGET, &(hl->forward), &(hl->back));
 }
 
 
 //connect history_popup to history_menuitem
-void gwaei_history_initialize_history() {
+void gw_history_initialize_history() {
     results_history = historylist_new();
     kanji_history   = historylist_new();
 }

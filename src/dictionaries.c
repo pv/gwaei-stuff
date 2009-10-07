@@ -5,7 +5,7 @@
 
   DESCRIPTION:
   The functions her generally manage the creation, destruction, and searching
-  of dictionaries.  The GwaeiDictInfo objects also are used as a convenient
+  of dictionaries.  The GwDictInfo objects also are used as a convenient
   container for variables pointing towards download locations, install locations
   etc.
 
@@ -45,15 +45,15 @@
 #include <gwaei/io.h>
 #include <gwaei/dictionaries.h>
 
-GwaeiDictList *dictionaries;
+GwDictList *dictionaries;
 
 
-GwaeiDictInfo* gwaei_dictinfo_new (char *name)
+GwDictInfo* gw_dictinfo_new (char *name)
 {
-    GwaeiDictInfo *temp;
+    GwDictInfo *temp;
 
     //Allocate some memory
-    if ((temp = malloc(sizeof(GwaeiDictInfo))) == NULL) return NULL;
+    if ((temp = malloc(sizeof(GwDictInfo))) == NULL) return NULL;
 
     int remaining;
     temp->load_position = -1;
@@ -104,7 +104,7 @@ GwaeiDictInfo* gwaei_dictinfo_new (char *name)
     strncat(temp->gz_path, ".gz", remaining);
 
     //Update the line count
-    temp->total_lines =  gwaei_io_get_total_lines_for_path (temp->path);
+    temp->total_lines =  gw_io_get_total_lines_for_path (temp->path);
 
     //Create id (to show special built in dictionaries)
     if      (strcmp(name, "English") == 0)
@@ -157,7 +157,7 @@ GwaeiDictInfo* gwaei_dictinfo_new (char *name)
     }
     else
     {
-      temp->id = gwaei_dictlist_make_dictionary_id ();
+      temp->id = gw_dictlist_make_dictionary_id ();
       temp->type = OTHER;
       strncpy(temp->gckey, "", 100);
       strcpy (temp->rsync, "");
@@ -175,19 +175,19 @@ GwaeiDictInfo* gwaei_dictinfo_new (char *name)
 }
 
 
-void gwaei_dictinfo_free(GwaeiDictInfo* di)
+void gw_dictinfo_free(GwDictInfo* di)
 {
     free(di);
     di = NULL;
 }
 
 
-GwaeiDictList* gwaei_dictlist_new ()
+GwDictList* gw_dictlist_new ()
 {
-    GwaeiDictList *temp;
+    GwDictList *temp;
 
     //Allocate some memory
-    if ((temp = malloc(sizeof(GwaeiDictList))) == NULL) return NULL;
+    if ((temp = malloc(sizeof(GwDictList))) == NULL) return NULL;
 
     temp->list = NULL;
     temp->selected = NULL;
@@ -196,25 +196,25 @@ GwaeiDictList* gwaei_dictlist_new ()
     return temp;
 }
 
-int gwaei_dictlist_make_dictionary_id ()
+int gw_dictlist_make_dictionary_id ()
 {
     dictionaries->id_increment++;
     return dictionaries->id_increment;
 }
 
 
-GList* gwaei_dictlist_get_selected()
+GList* gw_dictlist_get_selected()
 {
     return dictionaries->selected;
 }
 
 
-GList* gwaei_dictlist_set_selected_by_load_position(int request)
+GList* gw_dictlist_set_selected_by_load_position(int request)
 {
-    GList* current_dictionary = gwaei_dictlist_get_list();
+    GList* current_dictionary = gw_dictlist_get_list();
     do
     {
-       if (((GwaeiDictInfo*)current_dictionary->data)->load_position == request)
+       if (((GwDictInfo*)current_dictionary->data)->load_position == request)
          break;
        current_dictionary = g_list_next (current_dictionary);
     } while (current_dictionary != NULL);
@@ -225,45 +225,45 @@ GList* gwaei_dictlist_set_selected_by_load_position(int request)
 
 
 
-void gwaei_dictlist_add_dictionary(char *name)
+void gw_dictlist_add_dictionary(char *name)
 {
-    GwaeiDictInfo *di;
-    if (gwaei_dictlist_check_if_loaded_by_name (name) == FALSE)
-      di = gwaei_dictinfo_new (name);
+    GwDictInfo *di;
+    if  (gw_dictlist_check_if_loaded_by_name (name) == FALSE)
+      di = gw_dictinfo_new (name);
     if (di != NULL)
       dictionaries->list = g_list_append (dictionaries->list, di);
 }
 
 
-void gwaei_dictlist_remove_first()
+void gw_dictlist_remove_first()
 {
     GList *list;
     list = dictionaries->list;
 
-    gwaei_dictinfo_free(list->data);
+    gw_dictinfo_free(list->data);
     list = g_list_delete_link(list, list);
 }
 
 
-gwaei_dictlist_free()
+void gw_dictlist_free()
 {
     while (dictionaries->list != NULL)
-      gwaei_dictlist_remove_first();
+      gw_dictlist_remove_first();
 
     dictionaries = NULL;
 }
 
 
-GwaeiDictInfo* gwaei_dictlist_get_dictionary_by_name (const char* request)
+GwDictInfo* gw_dictlist_get_dictionary_by_name (const char* request)
 {
     GList *current;
     current = dictionaries->list;
-    GwaeiDictInfo *di;
+    GwDictInfo *di;
     di = NULL;
 
     while (current != NULL)
     {
-      di = (GwaeiDictInfo*) current->data;
+      di = (GwDictInfo*) current->data;
       if (strcmp (di->name, request) == 0)
         break;
       current = current->next;
@@ -274,24 +274,24 @@ GwaeiDictInfo* gwaei_dictlist_get_dictionary_by_name (const char* request)
 }
 
 
-GwaeiDictInfo* gwaei_dictlist_get_dictionary_by_alias (const char* request)
+GwDictInfo* gw_dictlist_get_dictionary_by_alias (const char* request)
 {
     if ((strcmp (request, "Radicals") == 0 || strcmp (request, "Kanji") == 0) &&
-         gwaei_dictlist_dictionary_get_status_by_id (MIX) == INSTALLED )
-      return gwaei_dictlist_get_dictionary_by_name ("Mix");
+         gw_dictlist_dictionary_get_status_by_id (MIX) == INSTALLED )
+      return gw_dictlist_get_dictionary_by_name ("Mix");
     else 
-      return gwaei_dictlist_get_dictionary_by_name (request);
+      return gw_dictlist_get_dictionary_by_name (request);
 }
 
 
-gboolean gwaei_dictlist_check_if_loaded_by_name(char* name)
+gboolean gw_dictlist_check_if_loaded_by_name(char* name)
 {
     GList *current = dictionaries->list;
-    GwaeiDictInfo *di;
+    GwDictInfo *di;
 
     while (current != NULL)
     {
-      di = (GwaeiDictInfo*) current->data;
+      di = (GwDictInfo*) current->data;
       if (strcmp (di->name, name) == 0 && di->status == INSTALLED)
         return TRUE;
       current = current->next;
@@ -302,15 +302,15 @@ gboolean gwaei_dictlist_check_if_loaded_by_name(char* name)
 
 
 
-int gwaei_dictlist_get_total_with_status(int status)
+int gw_dictlist_get_total_with_status(int status)
 {
-    GwaeiDictInfo *di;
+    GwDictInfo *di;
     GList *current = dictionaries->list;
     int i = 0;
 
     while (current != NULL)
     {
-      di = (GwaeiDictInfo*) current->data;
+      di = (GwDictInfo*) current->data;
       if (di->status == status)
       {
         i++;
@@ -322,14 +322,14 @@ int gwaei_dictlist_get_total_with_status(int status)
 }
 
 
-int gwaei_dictlist_dictionary_get_status_by_id(int id)
+int gw_dictlist_dictionary_get_status_by_id(int id)
 {
     GList *current = dictionaries->list;
-    GwaeiDictInfo *di = (GwaeiDictInfo*) current->data;
+    GwDictInfo *di = (GwDictInfo*) current->data;
 
     while (current != NULL && di->id != id)
     {
-      di = (GwaeiDictInfo*) current->data;
+      di = (GwDictInfo*) current->data;
       current = current->next;
     }
     
@@ -340,14 +340,14 @@ int gwaei_dictlist_dictionary_get_status_by_id(int id)
 }
 
 
-GwaeiDictInfo* gwaei_dictlist_get_dictionary_by_id(int id)
+GwDictInfo* gw_dictlist_get_dictionary_by_id(int id)
 {
     GList *current = dictionaries->list;
-    GwaeiDictInfo *di = (GwaeiDictInfo*) current->data;
+    GwDictInfo *di = (GwDictInfo*) current->data;
 
     while (current != NULL && di->id != id)
     {
-      di = (GwaeiDictInfo*) current->data;
+      di = (GwDictInfo*) current->data;
       current = current->next;
     }
     
@@ -355,33 +355,33 @@ GwaeiDictInfo* gwaei_dictlist_get_dictionary_by_id(int id)
 }
 
 
-int gwaei_dictlist_get_total()
+int gw_dictlist_get_total()
 {
     return g_list_length(dictionaries->list);
 }
 
 
-GList* gwaei_dictlist_get_list()
+GList* gw_dictlist_get_list()
 {
     return dictionaries->list;
 }
 
 
 //!!This function should never run DURING a dictionary install
-int gwaei_dictionaries_initialize_dictionary_list()
+int gw_dictionaries_initialize_dictionary_list()
 {
     if (dictionaries != NULL)
-      gwaei_dictlist_free ();
+      gw_dictlist_free ();
 
-    dictionaries = gwaei_dictlist_new();
+    dictionaries = gw_dictlist_new();
        
     //Dictionaries having to do with gui elements
-    gwaei_dictlist_add_dictionary ("English");
-    gwaei_dictlist_add_dictionary ("Mix");
-    gwaei_dictlist_add_dictionary ("Kanji");
-    gwaei_dictlist_add_dictionary ("Radicals");
-    gwaei_dictlist_add_dictionary ("Names");
-    gwaei_dictlist_add_dictionary ("Places");
+    gw_dictlist_add_dictionary ("English");
+    gw_dictlist_add_dictionary ("Mix");
+    gw_dictlist_add_dictionary ("Kanji");
+    gw_dictlist_add_dictionary ("Radicals");
+    gw_dictlist_add_dictionary ("Names");
+    gw_dictlist_add_dictionary ("Places");
 
     //Path variables
     char path[FILENAME_MAX];
@@ -408,7 +408,7 @@ int gwaei_dictionaries_initialize_dictionary_list()
             strcmp  (filename, "Radicals"          ) != 0     &&     
             strcmp  (filename, "Mix"               ) != 0       )
         {
-          gwaei_dictlist_add_dictionary (filename);
+          gw_dictlist_add_dictionary (filename);
         }
       }
     }
@@ -418,16 +418,16 @@ int gwaei_dictionaries_initialize_dictionary_list()
 
 static gboolean create_mix_dictionary()
 {
-    GwaeiDictInfo* mix;
-    mix = gwaei_dictlist_get_dictionary_by_alias("Mix");
+    GwDictInfo* mix;
+    mix = gw_dictlist_get_dictionary_by_alias("Mix");
 
     g_remove (mix->path);
     mix->status = NOT_INSTALLED;
 
-    GwaeiDictInfo* kanji;
-    kanji = gwaei_dictlist_get_dictionary_by_alias("Kanji");
-    GwaeiDictInfo* radicals;
-    radicals = gwaei_dictlist_get_dictionary_by_alias("Radicals");
+    GwDictInfo* kanji;
+    kanji = gw_dictlist_get_dictionary_by_alias("Kanji");
+    GwDictInfo* radicals;
+    radicals = gw_dictlist_get_dictionary_by_alias("Radicals");
 
     char *mpath = mix->path;
     char *kpath = kanji->path;
@@ -436,12 +436,12 @@ static gboolean create_mix_dictionary()
     mix->status = INSTALLING;
 
     gboolean ret;
-    ret = gwaei_io_create_mix_dictionary(mpath, kpath, rpath);
+    ret = gw_io_create_mix_dictionary(mpath, kpath, rpath);
    
     if (ret)
     {
       mix->status = INSTALLED;
-      mix->total_lines =  gwaei_io_get_total_lines_for_path (mix->path);
+      mix->total_lines =  gw_io_get_total_lines_for_path (mix->path);
     }
     else
       mix->status = ERRORED;
@@ -452,11 +452,11 @@ static gboolean create_mix_dictionary()
 
 static gboolean split_places_from_names_dictionary(GError **error)
 {
-    GwaeiDictInfo* di_places;
-    di_places = gwaei_dictlist_get_dictionary_by_alias("Places");
+    GwDictInfo* di_places;
+    di_places = gw_dictlist_get_dictionary_by_alias("Places");
 
-    GwaeiDictInfo* di_names;
-    di_names = gwaei_dictlist_get_dictionary_by_alias("Names");
+    GwDictInfo* di_names;
+    di_names = gw_dictlist_get_dictionary_by_alias("Names");
 
     if (di_names->status == NOT_INSTALLED) return FALSE;
 
@@ -471,13 +471,13 @@ static gboolean split_places_from_names_dictionary(GError **error)
     gboolean ret = TRUE;
 
     if (ret)
-      ret = gwaei_io_copy_with_encoding(raw, source, "EUC-JP","UTF-8", error);
+      ret = gw_io_copy_with_encoding(raw, source, "EUC-JP","UTF-8", error);
        
     if (ret)
     {
       remove(names);
       remove(places);
-      ret = gwaei_io_split_places_from_names_dictionary (source, names, places);
+      ret = gw_io_split_places_from_names_dictionary (source, names, places);
     }
 
 
@@ -485,9 +485,9 @@ static gboolean split_places_from_names_dictionary(GError **error)
     {
       g_remove(source);
       di_places->status = INSTALLED;
-      di_places->total_lines =  gwaei_io_get_total_lines_for_path (di_places->path);
+      di_places->total_lines =  gw_io_get_total_lines_for_path (di_places->path);
       di_names->status  = INSTALLED;
-      di_names->total_lines =  gwaei_io_get_total_lines_for_path (di_names->path);
+      di_names->total_lines =  gw_io_get_total_lines_for_path (di_names->path);
     }
     else
     {
@@ -502,10 +502,10 @@ static gboolean split_places_from_names_dictionary(GError **error)
 }
 
 
-void gwaei_dictlist_preform_postprocessing_by_name(char* name, GError **error)
+void gw_dictlist_preform_postprocessing_by_name(char* name, GError **error)
 {
-    GwaeiDictInfo* di;
-    di = gwaei_dictlist_get_dictionary_by_alias(name);
+    GwDictInfo* di;
+    di = gw_dictlist_get_dictionary_by_alias(name);
     if (di->status != INSTALLING && di->status != UPDATING && di->status != REBUILDING) return;
 
     int restore_status;
@@ -516,20 +516,20 @@ void gwaei_dictlist_preform_postprocessing_by_name(char* name, GError **error)
     //Figure out whether to create the Mix dictionary
     if (strcmp(name, "Radicals") == 0)
     {
-      di = gwaei_dictlist_get_dictionary_by_alias("Kanji");
+      di = gw_dictlist_get_dictionary_by_alias("Kanji");
       if (di->status == INSTALLED) create_mix_dictionary();
     }
     else if (strcmp(name, "Kanji") == 0)
     {
-      di = gwaei_dictlist_get_dictionary_by_alias("Radicals");
+      di = gw_dictlist_get_dictionary_by_alias("Radicals");
       if (di->status == INSTALLED) create_mix_dictionary();
     }
     else if (strcmp(name, "Mix") == 0)
     {
-      di = gwaei_dictlist_get_dictionary_by_id(RADICALS);
+      di = gw_dictlist_get_dictionary_by_id(RADICALS);
       if (di->status == INSTALLED)
       {
-        di = gwaei_dictlist_get_dictionary_by_id(KANJI);
+        di = gw_dictlist_get_dictionary_by_id(KANJI);
         if (di->status == INSTALLED)
           create_mix_dictionary();
       }
@@ -543,14 +543,14 @@ void gwaei_dictlist_preform_postprocessing_by_name(char* name, GError **error)
 }
 
 
-void gwaei_dictlist_normalize_all_status_from_to(const int OLD, const int NEW)
+void gw_dictlist_normalize_all_status_from_to(const int OLD, const int NEW)
 {
     GList *current = dictionaries->list;
-    GwaeiDictInfo *di;
+    GwDictInfo *di;
 
     while (current != NULL)
     {
-      di = (GwaeiDictInfo*) current->data;
+      di = (GwDictInfo*) current->data;
       if (di->status == OLD)
         di->status = NEW;
       current = current->next;
@@ -558,7 +558,7 @@ void gwaei_dictlist_normalize_all_status_from_to(const int OLD, const int NEW)
 }
 
 
-void gwaei_dictlist_sync_dictionary (GwaeiDictInfo *di, GError **error)
+void gw_dictlist_sync_dictionary (GwDictInfo *di, GError **error)
 {
     GQuark quark;
     quark = g_quark_from_string (GWAEI_GENERIC_ERROR);
@@ -581,11 +581,11 @@ void gwaei_dictlist_sync_dictionary (GwaeiDictInfo *di, GError **error)
     }
     
     if (*error == NULL)
-      gwaei_io_copy_with_encoding(sync_path, path, "EUC-JP","UTF-8", error);
+      gw_io_copy_with_encoding(sync_path, path, "EUC-JP","UTF-8", error);
 
     //Special dictionary post processing
     if (*error == NULL)
-      gwaei_dictlist_preform_postprocessing_by_name(di->name, error);
+      gw_dictlist_preform_postprocessing_by_name(di->name, error);
 
     if (*error == NULL)
       di->status = UPDATED;

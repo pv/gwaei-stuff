@@ -49,7 +49,7 @@
 
 int main( int argc, char *argv[] )
 {    
-    gwaei_util_initialize_runmode(argv[0]);
+    gw_util_initialize_runmode(argv[0]);
 
     //Setup for localized messages
     setlocale(LC_MESSAGES, "");
@@ -97,12 +97,12 @@ int main( int argc, char *argv[] )
     //g_type_init();
     curl_global_init(CURL_GLOBAL_ALL);
 
-    gwaei_regex_initialize_constant_regular_expressions();
-    gwaei_dictionaries_initialize_dictionary_list();
-    gwaei_history_initialize_history();
-    gwaei_io_check_for_rsync();
+    gw_regex_initialize_constant_regular_expressions();
+    gw_dictionaries_initialize_dictionary_list();
+    gw_history_initialize_history();
+    gw_io_check_for_rsync();
 
-    if (gwaei_util_get_runmode() == GWAEI_CONSOLE_RUNMODE)
+    if  (gw_util_get_runmode() == GWAEI_CONSOLE_RUNMODE)
       initialize_console_interface(argc, argv);
     else
       initialize_gui_interface(&argc, &argv);

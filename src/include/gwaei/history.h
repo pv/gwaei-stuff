@@ -7,9 +7,9 @@
 
 /*Searchitem primitives*/
 
-struct SearchItem {
+struct GwSearchItem {
   char query[MAX_QUERY];
-  GwaeiDictInfo* dictionary;
+  GwDictInfo* dictionary;
 
   FILE* fd;
   int status;
@@ -35,37 +35,37 @@ struct SearchItem {
 
   int total_re;
 };
-typedef struct SearchItem SearchItem;
+typedef struct GwSearchItem GwSearchItem;
 
 
 //searchitem methods
-SearchItem* searchitem_new    (char*, GwaeiDictInfo*, int);
-void        searchitem_remove (struct SearchItem*);
+GwSearchItem* gw_searchitem_new    (char*, GwDictInfo*, int);
+void        gw_searchitem_remove (struct GwSearchItem*);
 
 
 /*Historylist primitives*/
 
-struct HistoryList
+struct GwHistoryList
 {
     GList *back;
     GList *forward;
-    SearchItem *current;
+    GwSearchItem *current;
 };
-typedef struct HistoryList HistoryList;
+typedef struct GwHistoryList GwHistoryList;
 
 /*Historylist methods*/
-HistoryList* historylist_new_item(HistoryList*, char*, char*);
-HistoryList* historylist_add_item(HistoryList*, SearchItem*);
-HistoryList* historylist_unlink_item(HistoryList*);
-HistoryList* historylist_remove_last_item(HistoryList*);
-void   historylist_clear(HistoryList*, GList**);
-void   historylist_shift_item(HistoryList*, GList**);
+GwHistoryList* historylist_new_item(GwHistoryList*, char*, char*);
+GwHistoryList* historylist_add_item(GwHistoryList*, GwSearchItem*);
+GwHistoryList* historylist_unlink_item(GwHistoryList*);
+GwHistoryList* historylist_remove_last_item(GwHistoryList*);
+void   historylist_clear(GwHistoryList*, GList**);
+void   historylist_shift_item(GwHistoryList*, GList**);
 
 
 /*Functions*/
-gboolean searchitem_do_pre_search_prep (SearchItem*);
-HistoryList* historylist_get_list(const int);
-SearchItem* historylist_get_current (const int);
+gboolean gw_searchitem_do_pre_search_prep (GwSearchItem*);
+GwHistoryList* historylist_get_list(const int);
+GwSearchItem* historylist_get_current (const int);
 GList* historylist_get_combined_history_list (const int);
 GList* historylist_get_back_history (const int);
 GList* historylist_get_forward_history (const int);

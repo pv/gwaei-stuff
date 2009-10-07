@@ -44,60 +44,60 @@
 
 G_MODULE_EXPORT void do_radical_clear (GtkWidget *widget, gpointer data)
 {
-  gwaei_ui_deselect_all_radicals ();
-  gwaei_ui_set_strokes_checkbox_state (FALSE);
+  gw_ui_deselect_all_radicals ();
+  gw_ui_set_strokes_checkbox_state (FALSE);
 
   //Make the search stop that automatically starts
-  gwaei_ui_cancel_search_by_target(GWAEI_TARGET_RESULTS);
+  gw_ui_cancel_search_by_target(GWAEI_TARGET_RESULTS);
 }
 
 
 G_MODULE_EXPORT void do_radical_search (GtkWidget *widget, gpointer data)
 {
-    HistoryList* hl = historylist_get_list(GWAEI_HISTORYLIST_RESULTS);   
+    GwHistoryList* hl = historylist_get_list(GWAEI_HISTORYLIST_RESULTS);   
 
     int leftover = 250;
 
     char query[leftover];
     query[0] = '\0';
 
-    gwaei_ui_strcpy_all_selected_radicals (query, &leftover);
-    gwaei_ui_strcpy_prefered_stroke_count (query, &leftover);
+    gw_ui_strcpy_all_selected_radicals (query, &leftover);
+    gw_ui_strcpy_prefered_stroke_count (query, &leftover);
 
     if (strlen(query) == 0) return;
 
-    gwaei_ui_clear_search_entry ();
-    gwaei_ui_search_entry_insert (query);
-    gwaei_ui_text_select_all_by_target (GWAEI_TARGET_ENTRY);
+    gw_ui_clear_search_entry ();
+    gw_ui_search_entry_insert (query);
+    gw_ui_text_select_all_by_target (GWAEI_TARGET_ENTRY);
 
-    GwaeiDictInfo *dictionary;
-    dictionary = gwaei_dictlist_get_dictionary_by_alias ("Radicals");
+    GwDictInfo *dictionary;
+    dictionary = gw_dictlist_get_dictionary_by_alias ("Radicals");
 
-    if (gwaei_ui_cancel_search_by_target(GWAEI_TARGET_RESULTS) == FALSE)
+    if (gw_ui_cancel_search_by_target(GWAEI_TARGET_RESULTS) == FALSE)
       return;
 
     if (hl->current != NULL && (hl->current)->total_results > 0) 
     {
       historylist_add_searchitem_to_history(GWAEI_HISTORYLIST_RESULTS, hl->current);
       hl->current = NULL;
-      gwaei_ui_update_history_popups();
+      gw_ui_update_history_popups();
     }
     else if (hl->current != NULL)
     {
-      searchitem_free (hl->current);
+      gw_searchitem_free (hl->current);
       hl->current = NULL;
     }
  
-    hl->current = searchitem_new(query, dictionary, GWAEI_TARGET_RESULTS);
+    hl->current = gw_searchitem_new(query, dictionary, GWAEI_TARGET_RESULTS);
 
     //Start the search
-    gwaei_search_get_results (hl->current);
+    gw_search_get_results (hl->current);
 }
 
 
 G_MODULE_EXPORT void do_radical_kanji_stroke_checkbox_update (GtkWidget *widget, gpointer data)
 {
-    gwaei_ui_update_strokes_checkbox_state ();
+    gw_ui_update_strokes_checkbox_state ();
 
     //Start the search
     do_radical_search (NULL, NULL);
