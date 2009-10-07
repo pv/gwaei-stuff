@@ -1518,7 +1518,7 @@ void gwaei_ui_open_kanji_results()
 }
 
 
-void gwaei_close_kanji_results()
+void gwaei_ui_close_kanji_results()
 {
     gint window_height, window_width;
 

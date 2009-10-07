@@ -422,7 +422,7 @@ void gwaei_search_get_results (SearchItem *item)
       }
 
     if (item->target == GWAEI_TARGET_RESULTS)
-      gwaei_close_kanji_results();
+      gwaei_ui_close_kanji_results();
 
 
     //Start the search

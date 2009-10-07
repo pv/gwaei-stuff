@@ -53,40 +53,82 @@
 #include "kanjipad/kanjipad.h"
 
 
-G_MODULE_EXPORT void do_settings(GtkWidget *widget, gpointer data)
+static gint button_press_x = 0;
+static gint button_press_y = 0;
+static gulong copy_handler_id = 0;
+static gulong cut_handler_id = 0;
+static gulong paste_handler_id = 0;
+static gulong select_all_handler_id = 0;
+
+
+//!
+//! \brief Brings up the preferences dialog to change settings
+//!
+//! This function sets up the dialog window, makes sure no searches are
+//! currently running, then makes the window appear.
+//!
+//! @param widget Currently unused widget pointer
+//! @param data Currently unused gpointer
+//!
+G_MODULE_EXPORT void do_settings (GtkWidget *widget, gpointer data)
 {
-    gwaei_ui_cancel_search_by_target(GWAEI_TARGET_RESULTS);
-    gwaei_ui_cancel_search_by_target(GWAEI_TARGET_KANJI);
+    gwaei_ui_cancel_search_by_target (GWAEI_TARGET_RESULTS);
+    gwaei_ui_cancel_search_by_target (GWAEI_TARGET_KANJI);
 
     //Prepare the interface
-    gwaei_settings_initialize_enabled_features_list();
-    gwaei_settings_initialize_installed_dictionary_list();
-    gwaei_ui_update_settings_interface();
+    gwaei_settings_initialize_enabled_features_list ();
+    gwaei_settings_initialize_installed_dictionary_list ();
+    gwaei_ui_update_settings_interface ();
 
     //get some needed window references
     gwaei_ui_show_window ("settings_window");
 }
 
 
-G_MODULE_EXPORT void do_kanjipad(GtkWidget *widget, gpointer data)
+//!
+//! \brief Brings up the kanjipad dialog to change settings
+//!
+//! Sets kanjipad to paste the selected result to the search entry
+//! and then makes the dialog to appear.
+//!
+//! @param widget Currently unused widget pointer
+//! @param data Currently unused gpointer
+//!
+G_MODULE_EXPORT void do_kanjipad (GtkWidget *widget, gpointer data)
 {
-    kanjipad_set_target_text_widget(search_entry);
+    kanjipad_set_target_text_widget (search_entry);
     show_kanjipad (builder);
 }
 
 
-G_MODULE_EXPORT void do_close_kanji_results(GtkWidget *widget, gpointer data)
+//!
+//! \brief Closes the kanjipad sidebar
+//!
+//! Calls the gwaei ui function to close the kanji results sidebar.
+//!
+//! @param widget Currently unused widget pointer
+//! @param data Currently unused gpointer
+//!
+G_MODULE_EXPORT void do_close_kanji_results (GtkWidget *widget, gpointer data)
 { 
-    gwaei_close_kanji_results();
+    gwaei_ui_close_kanji_results ();
 }
 
 
-//
-// Functions for looking up a kanji character at the mouse position
-//
-
-
-//Sets the correct cursor when the mouse hovers over a kanji character
+//!
+//! \brief Sets the cursor type depending on the character hovered
+//!
+//! If the character hovered is a kanji character, the hand turns into a
+//! pointer in order to show that the selection is clickable. It will open
+//! the kanji sidebar using do_get_position_for_button_press () and
+//! do_get_iter_for_button_release ().
+//! 
+//! @see do_get_position_for_button_press ()
+//! @see do_get_iter_for_button_release ()
+//! @param widget Currently unused widget pointer
+//! @param data Currently unused gpointer
+//! \return Always returns false
+//!
 G_MODULE_EXPORT gboolean do_get_iter_for_motion (GtkWidget      *widget,
                                                  GdkEventButton *event,
                                                  gpointer        data   )
@@ -95,89 +137,117 @@ G_MODULE_EXPORT gboolean do_get_iter_for_motion (GtkWidget      *widget,
     gint x = event->x;
     gint y = event->y;
 
-    unic = gwaei_get_hovered_character(&x, &y);
+    unic = gwaei_get_hovered_character (&x, &y);
 
     DictionaryInfo *di;
     di = dictionarylist_get_dictionary_by_alias ("Kanji");
   
     // Characters above 0xFF00 represent inserted images
     if (unic > L'ー' && unic < 0xFF00 && di->status == INSTALLED)
-      gwaei_ui_set_cursor(GDK_HAND2);
+      gwaei_ui_set_cursor (GDK_HAND2);
     else
-      gwaei_ui_set_cursor(GDK_XTERM);
+      gwaei_ui_set_cursor (GDK_XTERM);
 
     return FALSE;
 }
 
 
-gint button_press_x = 0;
-gint button_press_y = 0;
+//!
+//! \brief Gets the position of the cursor click and stores it
+//!
+//! The function stores the location of the button press, but takes no action
+//! by itself.  do_get_iter_for_button_release () uses the saved x and y
+//! coordinates and determines if an action should be taken then.
+//! 
+//! @see do_get_iter_for_button_release ()
+//! @param widget Currently unused widget pointer
+//! @param data Currently unused gpointer
+//! \return Always returns false
+//!
 G_MODULE_EXPORT gboolean do_get_position_for_button_press (GtkWidget      *widget,
                                                            GdkEventButton *event,
                                                            gpointer        data    )
 {
-  //Window coordinates
-  button_press_x = event->x;
-  button_press_y = event->y;
+    //Window coordinates
+    button_press_x = event->x;
+    button_press_y = event->y;
 
-  gwaei_get_hovered_character(&button_press_x, &button_press_y);
+    gwaei_get_hovered_character (&button_press_x, &button_press_y);
 
-  return FALSE;
+    return FALSE;
 }
 
 
+//!
+//! \brief Gets the position of the cursor click then opens the kanji sidebar
+//!
+//! Compares the x and y coordinates fetch by do_get_position_for_button_press
+//! for the cursor, and if the difference is below a certain threshhold,
+//! decides if the user wants to open the kanji character under cursor in the
+//! kanji sidebar or not.
+//! 
+//! @see do_get_position_for_button_press ()
+//! @param widget Currently unused widget pointer
+//! @param data Currently unused gpointer
+//! \return Always returns false
+//!
 G_MODULE_EXPORT gboolean do_get_iter_for_button_release (GtkWidget      *widget,
                                                          GdkEventButton *event,
                                                          gpointer        data    )
 {
-  //Window coordinates
-  gint x = event->x;
-  gint y = event->y;
-  gint trailing = 0;
-  GtkTextIter start;
+    //Window coordinates
+    gint x = event->x;
+    gint y = event->y;
+    gint trailing = 0;
+    GtkTextIter start;
 
-  gunichar unic;
-  unic = gwaei_get_hovered_character(&x, &y);
+    gunichar unic;
+    unic = gwaei_get_hovered_character (&x, &y);
 
-  DictionaryInfo *di;
-  di = dictionarylist_get_dictionary_by_alias ("Kanji");
+    DictionaryInfo *di;
+    di = dictionarylist_get_dictionary_by_alias ("Kanji");
 
-  if (di->status == INSTALLED     &&
-      abs(button_press_x - x) < 3 &&
-      abs(button_press_y - y) < 3   )
-  {
-    // Characters above 0xFF00 represent inserted images
-    if (unic > L'ー' && unic < 0xFF00 )
+    if (di->status == INSTALLED     &&
+        abs (button_press_x - x) < 3 &&
+        abs (button_press_y - y) < 3   )
     {
-      gwaei_ui_open_kanji_results();
+      // Characters above 0xFF00 represent inserted images
+      if (unic > L'ー' && unic < 0xFF00 )
+      {
+        gwaei_ui_open_kanji_results ();
 
-      //Convert the unicode character into to a utf8 string
-      gchar query[7];
-      gint length = g_unichar_to_utf8(unic, query);
-      query[length] = '\0'; 
-      printf("Kanji lookup: %s\n", query);
+        //Convert the unicode character into to a utf8 string
+        gchar query[7];
+        gint length = g_unichar_to_utf8 (unic, query);
+        query[length] = '\0'; 
+        printf ("Kanji lookup: %s\n", query);
 
-      //Start the search
-      SearchItem *item;
-      item = searchitem_new (query, di, GWAEI_TARGET_KANJI);
+        //Start the search
+        SearchItem *item;
+        item = searchitem_new (query, di, GWAEI_TARGET_KANJI);
 
-      gwaei_search_get_results (item);
+        gwaei_search_get_results (item);
+      }
+      else
+      {
+        gwaei_ui_close_kanji_results ();
+      }
     }
-    else
-    {
-      gwaei_close_kanji_results();
-    }
-  }
 
-  return FALSE; 
+    return FALSE; 
 }
 
 
-//
-//Calbacks for closing a window
-//
-
-
+//!
+//! \brief Closes the window passed throught the widget pointer
+//!
+//! This function closes the window passed through the widget pointer.
+//! Depending if it is a specific window, it will save it's coordinates
+//! or take other special actions before closing.
+//! 
+//! @param widget GtkWidget pointer to the window to close
+//! @param data Currently unused gpointer
+//!
 G_MODULE_EXPORT void do_close (GtkWidget *widget, gpointer data)
 {
     const char *id = gtk_widget_get_name (widget);
@@ -196,100 +266,157 @@ G_MODULE_EXPORT void do_close (GtkWidget *widget, gpointer data)
       if (rebuild_combobox_dictionary_list () > 0)
       {
         gtk_widget_hide (widget);
-        update_toolbar_buttons();
+        update_toolbar_buttons ();
       }
       else
       {
-        gtk_main_quit();
+        gtk_main_quit ();
       }
     }
 }
 
 
+//!
+//! \brief Preforms the action the window manager close event
+//!
+//! This function currently acts as a proxy for the do_close () function.
+//! 
+//! @see do_close ()
+//! @param widget GtkWidget pointer to the window to close
+//! @param data Currently unused gpointer
+//! \return Always returns true
+//!
 G_MODULE_EXPORT gboolean do_delete_event_action (GtkWidget *widget, gpointer data)
 { 
-    do_close(widget, data);
+    do_close (widget, data);
     return TRUE;
 }
 
 
+//!
+//! \brief Closes the current window when the escape key is pressed
+//!
+//! Checks for a pure escape press with no modifiers then closes the window
+//! passed to the function through the widget pointer is do_close(). This
+//! function is generally only attached to windows you could picture a cancel
+//! button being attached to in the right context.
+//! 
+//! @see do_close ()
+//! @param widget GtkWidget pointer to the window to close
+//! @param data Currently unused gpointer
+//! \return Returns true when escape key is pressed
+//!
 G_MODULE_EXPORT gboolean do_close_on_escape (GtkWidget *widget,
-                             GdkEvent  *event,
-                             gpointer  *data   )
+                                             GdkEvent  *event,
+                                             gpointer  *data   )
 {
-  guint keyval = ((GdkEventKey*)event)->keyval;
-  guint state = ((GdkEventKey*)event)->state;
-  guint modifiers = ( 
-                      GDK_MOD1_MASK    |
-                      GDK_CONTROL_MASK |
-                      GDK_SUPER_MASK   |
-                      GDK_HYPER_MASK   |
-                      GDK_META_MASK      
-                    );
+    guint keyval = ((GdkEventKey*)event)->keyval;
+    guint state = ((GdkEventKey*)event)->state;
+    guint modifiers = ( 
+                        GDK_MOD1_MASK    |
+                        GDK_CONTROL_MASK |
+                        GDK_SUPER_MASK   |
+                        GDK_HYPER_MASK   |
+                        GDK_META_MASK      
+                      );
 
-  //Make sure no modifier keys are pressed
-  if (((state & modifiers) == 0 ) && keyval == GDK_Escape)
-  {
-    do_close(widget, data);
-    return TRUE;
-  }
-  else
-  {
-    return FALSE;
-  }
+    //Make sure no modifier keys are pressed
+    if (((state & modifiers) == 0 ) && keyval == GDK_Escape)
+    {
+      do_close (widget, data);
+      return TRUE;
+    }
+    else
+    {
+      return FALSE;
+    }
 }
 
 
+//!
+//! \brief Quits out of the application
+//!
+//! This function quits gWaei out.  But before it does, it calls the do_close
+//! function an the calling window to make sure it's current coordinates are
+//! recorded for the next time the application is started.
+//! 
+//! @see do_close ()
+//! @param widget GtkWidget pointer to the window to close
+//! @param data Currently unused gpointer
+//!
 G_MODULE_EXPORT void do_quit (GtkWidget *widget, gpointer data)
 {
-    printf("Quitting...\n");
-    do_close(widget, data);
+    printf ("Quitting...\n");
+    do_close (widget, data);
     gtk_main_quit ();
 }
 
 
+//!
+//! \brief Preforms a search from the history.
+//!
+//! The function uses the gpointer data to fetch a SearchItem that was pased
+//! to the function for the search.  It will reflow the back and forward
+//! history lists so the SearchItem is in the current position of the
+//! Historylist.
+//! 
+//! @see do_search ()
+//! @param widget Unused GtkWidget pointer.
+//! @param data pointer to a specially attached SearchItem variable
+//!
 G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
 {
-    if (gwaei_ui_cancel_search_by_target(GWAEI_TARGET_RESULTS) == FALSE) return;
+    if (gwaei_ui_cancel_search_by_target (GWAEI_TARGET_RESULTS) == FALSE) return;
 
     HistoryList *hl;
-    hl = historylist_get_list(GWAEI_HISTORYLIST_RESULTS);
+    hl = historylist_get_list (GWAEI_HISTORYLIST_RESULTS);
 
     SearchItem *item;
     item = (SearchItem*) data;
 
-    if (hl->back != NULL && g_list_find(hl->back, item))
+    if (hl->back != NULL && g_list_find (hl->back, item))
     {
       while (hl->back != NULL && hl->current != item)
         historylist_go_back_by_target (GWAEI_HISTORYLIST_RESULTS);
     }
-    else if (hl->forward != NULL && g_list_find(hl->forward, item))
+    else if (hl->forward != NULL && g_list_find (hl->forward, item))
     {
       while (hl->forward != NULL && hl->current != item)
         historylist_go_forward_by_target (GWAEI_HISTORYLIST_RESULTS);
     }
 
-    searchitem_reset_result_counters(hl->current);
-    gwaei_search_get_results(hl->current);
-    gwaei_ui_update_history_popups();
-    update_toolbar_buttons();
+    searchitem_reset_result_counters (hl->current);
+    gwaei_search_get_results (hl->current);
+    gwaei_ui_update_history_popups ();
+    update_toolbar_buttons ();
 
     //Set the search string in the GtkEntry
-    gwaei_ui_clear_search_entry();
-    gwaei_ui_search_entry_insert((hl->current)->query);
-    gwaei_ui_text_select_all_by_target(GWAEI_TARGET_ENTRY);
-    gwaei_ui_grab_focus_by_target(GWAEI_TARGET_ENTRY);
+    gwaei_ui_clear_search_entry ();
+    gwaei_ui_search_entry_insert ((hl->current)->query);
+    gwaei_ui_text_select_all_by_target (GWAEI_TARGET_ENTRY);
+    gwaei_ui_grab_focus_by_target (GWAEI_TARGET_ENTRY);
 
     //Set the correct dictionary in the gui
     const int id_length = 50;
     char id[id_length];
     GtkWidget *combobox;
-    strncpy(id, "dictionary_combobox", id_length);
+    strncpy (id, "dictionary_combobox", id_length);
     combobox = GTK_WIDGET (gtk_builder_get_object (builder, id));
-    gtk_combo_box_set_active(GTK_COMBO_BOX (combobox), hl->current->dictionary->load_position);
+    gtk_combo_box_set_active (GTK_COMBO_BOX (combobox), hl->current->dictionary->load_position);
 }
 
 
+//!
+//! \brief Goes back one step in the search history
+//! 
+//! This function checks the top of the back historylist and uses the
+//! SearchItem in it to invoke do_search_from_history () using it.
+//!
+//! @see do_search_from_history ()
+//! @see do_forward ()
+//! @param widget Unused GtkWidget pointer.
+//! @param data pointer to a specially attached SearchItem variable
+//!
 G_MODULE_EXPORT void do_back (GtkWidget *widget, gpointer data)
 {
     HistoryList *hl;
@@ -297,11 +424,22 @@ G_MODULE_EXPORT void do_back (GtkWidget *widget, gpointer data)
     if (hl->back != NULL)
     {
       do_search_from_history (NULL, hl->back->data);
-      printf("Back button clicked\n");
+      printf ("Back button clicked\n");
     }
 }
 
 
+//!
+//! \brief Goes forward one step in the search history
+//! 
+//! This function checks the top of the forward historylist and uses the
+//! SearchItem in it to invoke do_search_from_history () using it.
+//!
+//! @see do_search_from_history ()
+//! @see do_back ()
+//! @param widget Unused GtkWidget pointer.
+//! @param data pointer to a specially attached SearchItem variable
+//!
 G_MODULE_EXPORT void do_forward (GtkWidget *widget, gpointer data)
 {
     HistoryList *hl;
@@ -309,82 +447,28 @@ G_MODULE_EXPORT void do_forward (GtkWidget *widget, gpointer data)
     if (hl->forward != NULL)
     {
       do_search_from_history (NULL, hl->forward->data);
-      printf("Forward button clicked\n");
+      printf ("Forward button clicked\n");
     }
 }
 
 
+//!
+//! \brief Saves the current search results to a file
+//! 
+//! The function gets the current contents of the results text view and saves
+//! it to a file, overwriting it if it already exists.  If part of the results
+//! are highlighted, only that gets saved.
+//!
+//! @see do_save ()
+//! @param widget Unused GtkWidget pointer.
+//! @param data Unused gpointer
+//!
 G_MODULE_EXPORT void do_save_as (GtkWidget *widget, gpointer data)
 {
-  //Declarations
-  GtkWidget *dialog, *window;
-  window = GTK_WIDGET (gtk_builder_get_object(builder, "main_window"));
-  dialog = gtk_file_chooser_dialog_new (gettext("Save As"),
-				      GTK_WINDOW (window),
-				      GTK_FILE_CHOOSER_ACTION_SAVE,
-				      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-				      GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
-				      NULL);
-  gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dialog), TRUE);
-
-  //See if the user has already saved.  If they did, reuse the path
-  if (save_path[0] == '\0')
-  {
-      gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), "");
-      gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dialog), gettext("vocabulary.txt"));
-  }
-  else
-  {
-      gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (dialog), save_path);
-  }
-
-  //Prepare the text
-  gchar *text;
-  //Get the region of text to be saved if some text is highlighted
-  text = gwaei_ui_get_text_from_text_buffer(GWAEI_TARGET_RESULTS);
-
-  //Run the save as dialog
-  if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
-  {
-      char *filename;
-      filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
-      strncpy( save_path,
-               gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog)),
-               FILENAME_MAX                                               );
-      g_free (filename);
-      filename = NULL;
-
-      gwaei_io_write_file("w", text);
-
-      GtkWidget *edit_toolbutton;
-      edit_toolbutton = GTK_WIDGET (gtk_builder_get_object(builder, "edit_toolbutton"));
-      gtk_widget_set_sensitive (edit_toolbutton, TRUE);
-
-      GtkAction *edit_menuitem;
-      edit_menuitem = GTK_ACTION (gtk_builder_get_object(builder, "edit_menuitem"));
-      gtk_action_set_sensitive(edit_menuitem, TRUE);
-  }
-
-  gtk_widget_destroy (dialog);
-  g_free(text);
-  text = NULL;
-  printf("Save as button was clicked\n");
-}
-
-
-G_MODULE_EXPORT void do_save (GtkWidget *widget, gpointer data)
-{
-  GtkWidget *dialog, *window;
-  window = GTK_WIDGET (gtk_builder_get_object(builder, "main_window"));
-
-  gchar *text;
-  text = gwaei_ui_get_text_from_text_buffer(GWAEI_TARGET_RESULTS);
-
-  //Pop up a save dialog if the user hasn't saved before
-  if (save_path[0] == '\0')
-  {
-    //Setup the save dialog
-    dialog = gtk_file_chooser_dialog_new (gettext("Save"),
+    //Declarations
+    GtkWidget *dialog, *window;
+    window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
+    dialog = gtk_file_chooser_dialog_new (gettext ("Save As"),
                 GTK_WINDOW (window),
                 GTK_FILE_CHOOSER_ACTION_SAVE,
                 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -392,48 +476,135 @@ G_MODULE_EXPORT void do_save (GtkWidget *widget, gpointer data)
                 NULL);
     gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dialog), TRUE);
 
-    //Set the default save path
-    gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), "");
-    gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dialog), gettext("vocabulary.txt"));
+    //See if the user has already saved.  If they did, reuse the path
+    if (save_path[0] == '\0')
+    {
+        gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), "");
+        gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dialog), gettext ("vocabulary.txt"));
+    }
+    else
+    {
+        gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (dialog), save_path);
+    }
 
-    //Run the save dialog
+    //Prepare the text
+    gchar *text;
+    //Get the region of text to be saved if some text is highlighted
+    text = gwaei_ui_get_text_from_text_buffer (GWAEI_TARGET_RESULTS);
+
+    //Run the save as dialog
     if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
     {
         char *filename;
         filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
-        strncpy( save_path,
-                 gtk_file_chooser_get_filename(GTK_FILE_CHOOSER (dialog)),
-                 FILENAME_MAX                                              );
-        g_free(filename);
+        strncpy (save_path,
+                 gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog)),
+                 FILENAME_MAX                                               );
+        g_free (filename);
         filename = NULL;
 
-        gwaei_io_write_file("a", text);
+        gwaei_io_write_file ("w", text);
 
         GtkWidget *edit_toolbutton;
-        edit_toolbutton = GTK_WIDGET (gtk_builder_get_object(builder, "edit_toolbutton"));
+        edit_toolbutton = GTK_WIDGET (gtk_builder_get_object (builder, "edit_toolbutton"));
         gtk_widget_set_sensitive (edit_toolbutton, TRUE);
 
         GtkAction *edit_menuitem;
-        edit_menuitem = GTK_ACTION (gtk_builder_get_object(builder, "edit_menuitem"));
-        gtk_action_set_sensitive(edit_menuitem, TRUE);
+        edit_menuitem = GTK_ACTION (gtk_builder_get_object (builder, "edit_menuitem"));
+        gtk_action_set_sensitive (edit_menuitem, TRUE);
     }
 
     gtk_widget_destroy (dialog);
-  }
-
-  //Write the file without opening a dialog
-  else
-  {
-      gwaei_io_write_file("a", text);
-  }
-
-  g_free(text);
-  text = NULL;
-  printf("Save button was clicked\n");
+    g_free (text);
+    text = NULL;
+    printf ("Save as button was clicked\n");
 }
 
 
-//Zoom functions
+//!
+//! \brief Appends the current search results to a file
+//! 
+//! The function gets the current contents of the results text view and appends
+//! it to a file.  If the user has already saved once, it will automatically
+//! keep appending to the same file. If part of the results are highlighted,
+//! only that gets appended.
+//!
+//! @see do_save_as ()
+//! @param widget Unused GtkWidget pointer.
+//! @param data Unused gpointer
+//!
+G_MODULE_EXPORT void do_save (GtkWidget *widget, gpointer data)
+{
+    GtkWidget *dialog, *window;
+    window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
+
+    gchar *text;
+    text = gwaei_ui_get_text_from_text_buffer (GWAEI_TARGET_RESULTS);
+
+    //Pop up a save dialog if the user hasn't saved before
+    if (save_path[0] == '\0')
+    {
+      //Setup the save dialog
+      dialog = gtk_file_chooser_dialog_new (gettext ("Save"),
+                  GTK_WINDOW (window),
+                  GTK_FILE_CHOOSER_ACTION_SAVE,
+                  GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                  GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+                  NULL);
+      gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dialog), TRUE);
+
+      //Set the default save path
+      gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), "");
+      gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dialog), gettext ("vocabulary.txt"));
+
+      //Run the save dialog
+      if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
+      {
+          char *filename;
+          filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+          strncpy (save_path,
+                   gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog)),
+                   FILENAME_MAX                                              );
+          g_free (filename);
+          filename = NULL;
+
+          gwaei_io_write_file ("a", text);
+
+          GtkWidget *edit_toolbutton;
+          edit_toolbutton = GTK_WIDGET (gtk_builder_get_object (builder, "edit_toolbutton"));
+          gtk_widget_set_sensitive (edit_toolbutton, TRUE);
+
+          GtkAction *edit_menuitem;
+          edit_menuitem = GTK_ACTION (gtk_builder_get_object (builder, "edit_menuitem"));
+          gtk_action_set_sensitive (edit_menuitem, TRUE);
+      }
+
+      gtk_widget_destroy (dialog);
+    }
+
+    //Write the file without opening a dialog
+    else
+    {
+        gwaei_io_write_file ("a", text);
+    }
+
+    g_free (text);
+    text = NULL;
+    printf ("Save button was clicked\n");
+}
+
+
+//!
+//! \brief Makes the text in the text buffer enlarge
+//! 
+//! Determines if the text size is smaller than the max possible text size,
+//! and then sets the pref in gconf which will trigger the font size setting
+//! function.
+//!
+//! @see gwaei_ui_set_font()
+//! @param widget Unused GtkWidget pointer.
+//! @param data Unused gpointer
+//!
 G_MODULE_EXPORT void do_zoom_in (GtkWidget *widget, gpointer data)
 {
     int size;
@@ -441,9 +612,21 @@ G_MODULE_EXPORT void do_zoom_in (GtkWidget *widget, gpointer data)
     if (size >= MIN_FONT_SIZE && size <= MAX_FONT_SIZE)
       gwaei_pref_set_int (GCKEY_GWAEI_FONT_SIZE, size);
 
-    printf("Zoom in button was clicked\n");
+    printf ("Zoom in button was clicked\n");
 }
 
+
+//!
+//! \brief Makes the text in the text buffer shrink
+//! 
+//! Determines if the text size is larger than the min possible text size,
+//! and then sets the pref in gconf which will trigger the font size setting
+//! function.
+//!
+//! @see gwaei_ui_set_font()
+//! @param widget Unused GtkWidget pointer.
+//! @param data Unused gpointer
+//!
 G_MODULE_EXPORT void do_zoom_out (GtkWidget *widget, gpointer data)
 {
     int size;
@@ -451,9 +634,21 @@ G_MODULE_EXPORT void do_zoom_out (GtkWidget *widget, gpointer data)
     if (size >= MIN_FONT_SIZE | size <= MAX_FONT_SIZE)
       gwaei_pref_set_int (GCKEY_GWAEI_FONT_SIZE, size);
 
-    printf("Zoom out button was clicked\n");
+    printf ("Zoom out button was clicked\n");
 }
 
+
+//!
+//! \brief Resets the text size to the default in the text buffers
+//! 
+//! The function acts gconf for the default font size from the schema, and then
+//! sets it, which makes gconf call the font size setting function since the
+//! stored value changed.
+//!
+//! @see gwaei_ui_set_font()
+//! @param widget Unused GtkWidget pointer.
+//! @param data Unused gpointer
+//!
 G_MODULE_EXPORT void do_zoom_100 (GtkWidget *widget, gpointer data)
 {
     int size;
@@ -464,28 +659,59 @@ G_MODULE_EXPORT void do_zoom_100 (GtkWidget *widget, gpointer data)
 }
 
 
+//!
+//! \brief Sets the less relevant results show boolean
+//! 
+//! Makes the gconf pref match the current state of the triggering widget.
+//! Each separate SearchItem stores this individually, so even if you flip
+//! this, you will need to do a new search if you want to change how things are
+//! displayed.
+//!
+//! @see gwaei_ui_set_less_relevant_show ()
+//! @param widget Unused GtkWidget pointer.
+//! @param data Unused gpointer
+//!
 G_MODULE_EXPORT void do_less_relevant_results_toggle (GtkWidget *widget, gpointer data)
 {
     gboolean state;
     state = gwaei_pref_get_boolean (GCKEY_GWAEI_LESS_RELEVANT_SHOW, TRUE);
     gwaei_pref_set_boolean (GCKEY_GWAEI_LESS_RELEVANT_SHOW, !state);
 
-    printf("Toggle less relevent results button was clicked\n");
+    printf ("Toggle less relevent results button was clicked\n");
 }
 
 
-
+//!
+//! \brief Sets the show toolbar boolean to match the widget
+//! 
+//! Makes the gconf pref match the current state of the triggering widget.
+//! The gconf value changed callback then updates the state of the toolbar
+//! to match the pref.
+//!
+//! @see gwaei_ui_set_toolbar_show ()
+//! @param widget Unused GtkWidget pointer.
+//! @param data Unused gpointer
+//!
 G_MODULE_EXPORT void do_toolbar_toggle (GtkWidget *widget, gpointer data)
 {
     gboolean state;
     state = gwaei_pref_get_boolean (GCKEY_GWAEI_TOOLBAR_SHOW, TRUE);
     gwaei_pref_set_boolean (GCKEY_GWAEI_TOOLBAR_SHOW, !state);
 
-    printf("Toolbar toggle button was clicked\n");
+    printf ("Toolbar toggle button was clicked\n");
 }
 
 
-
+//!
+//! \brief Changes the selected dictionary in the dictionarylist
+//! 
+//! This function makes the selected dictionary in the dictionarylist match
+//! the dictionary of the widget that was modified.  The selected dictionary
+//! in the dictionarylist acts as the central reference for the GUI.
+//!
+//! @param widget pointer to the GtkWidget that changed dictionaries
+//! @param data Unused gpointer
+//!
 G_MODULE_EXPORT void do_dictionary_changed_action (GtkWidget *widget, gpointer data)
 {
     //Declarations
@@ -498,116 +724,180 @@ G_MODULE_EXPORT void do_dictionary_changed_action (GtkWidget *widget, gpointer d
 
     //Action depending on the source
     int active = 0;
-    if (strcmp(G_OBJECT_TYPE_NAME(widget), "GtkComboBox") == 0 )
+    if (strcmp (G_OBJECT_TYPE_NAME(widget), "GtkComboBox") == 0 )
     {
-      active = gtk_combo_box_get_active(GTK_COMBO_BOX (widget));
+      active = gtk_combo_box_get_active (GTK_COMBO_BOX (widget));
     }
-    else if (strcmp(G_OBJECT_TYPE_NAME(widget), "GtkRadioMenuItem") == 0 )
+    else if (strcmp (G_OBJECT_TYPE_NAME(widget), "GtkRadioMenuItem") == 0 )
     {
       list = gtk_container_get_children (GTK_CONTAINER (shell));
-      while (list != NULL && gtk_check_menu_item_get_active( GTK_CHECK_MENU_ITEM (list->data)) == FALSE)
+      while (list != NULL && gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (list->data)) == FALSE)
       {
-        list = g_list_next(list);
+        list = g_list_next (list);
         active++;
       }
     }
 
     //Finish up
-    gwaei_ui_set_dictionary(active);
-    gwaei_ui_grab_focus_by_target(GWAEI_TARGET_ENTRY);
+    gwaei_ui_set_dictionary (active);
+    gwaei_ui_grab_focus_by_target (GWAEI_TARGET_ENTRY);
 }
 
 
-
+//!
+//! \brief Selects all the text in the current widget
+//! 
+//! This function makes the selected dictionary in the dictionarylist match
+//! the dictionary of the widget that was modified.  The selected dictionary
+//! in the dictionarylist acts as the central reference for the GUI.
+//!
+//! @see do_cut ()
+//! @see do_copy ()
+//! @see do_paste ()
+//! @see do_update_clipboard_on_focus_change ()
+//! @param widget Unused GtkWidget pointer
+//! @param data Unused gpointer
+//!
 G_MODULE_EXPORT void do_select_all (GtkWidget *widget, gpointer data)
 {
     guint TARGET;
-    TARGET = gwaei_ui_get_current_widget_focus("main_window");
+    TARGET = gwaei_ui_get_current_widget_focus ("main_window");
 
-    gwaei_ui_text_select_all_by_target(TARGET);
+    gwaei_ui_text_select_all_by_target (TARGET);
 
-    printf("Select All button was clicked\n");
+    printf ("Select All button was clicked\n");
 }
 
 
 
+//!
+//! \brief Pastes text into the current widget
+//! 
+//! This function makes the selected dictionary in the dictionarylist match
+//! the dictionary of the widget that was modified.  The selected dictionary
+//! in the dictionarylist acts as the central reference for the GUI.
+//!
+//! @see do_cut ()
+//! @see do_copy ()
+//! @see do_select_all ()
+//! @see do_update_clipboard_on_focus_change ()
+//! @param widget Unused GtkWidget pointer
+//! @param data Unused gpointer
+//!
 G_MODULE_EXPORT void do_paste (GtkWidget *widget, gpointer data)
 {
     guint TARGET;
-    TARGET = gwaei_ui_get_current_widget_focus("main_window");
-    gwaei_ui_paste_text(TARGET);
+    TARGET = gwaei_ui_get_current_widget_focus ("main_window");
+    gwaei_ui_paste_text (TARGET);
 
-    printf("Paste button was clicked\n");
+    printf ("Paste button was clicked\n");
 }
 
 
 
+//!
+//! \brief Cuts text from the current widget
+//! 
+//! This function makes the selected dictionary in the dictionarylist match
+//! the dictionary of the widget that was modified.  The selected dictionary
+//! in the dictionarylist acts as the central reference for the GUI.
+//!
+//! @see do_paste ()
+//! @see do_copy ()
+//! @see do_select_all ()
+//! @see do_update_clipboard_on_focus_change ()
+//! @param widget Unused GtkWidget pointer
+//! @param data Unused gpointer
+//!
 G_MODULE_EXPORT void do_cut (GtkWidget *widget, gpointer data)
 {
     guint TARGET;
-    TARGET = gwaei_ui_get_current_widget_focus("main_window");
-    gwaei_ui_cut_text(TARGET);
+    TARGET = gwaei_ui_get_current_widget_focus ("main_window");
+    gwaei_ui_cut_text (TARGET);
 
-    printf("Cut button was clicked\n");
+    printf ("Cut button was clicked\n");
 }
 
 
 
+//!
+//! \brief Pastes text into the current widget
+//! 
+//! This function makes the selected dictionary in the dictionarylist match
+//! the dictionary of the widget that was modified.  The selected dictionary
+//! in the dictionarylist acts as the central reference for the GUI.
+//!
+//! @see do_cut ()
+//! @see do_paste ()
+//! @see do_select_all ()
+//! @see do_update_clipboard_on_focus_change ()
+//! @param widget Unused GtkWidget pointer
+//! @param data Unused gpointer
+//!
 G_MODULE_EXPORT void do_copy (GtkWidget *widget, gpointer data)
 {
     guint TARGET;
-    TARGET = gwaei_ui_get_current_widget_focus("main_window");
-    gwaei_ui_copy_text(TARGET);
+    TARGET = gwaei_ui_get_current_widget_focus ("main_window");
+    gwaei_ui_copy_text (TARGET);
 
-    printf("Copy button was clicked\n");
+    printf ("Copy button was clicked\n");
 }
 
 
-
-gulong copy_handler_id = 0;
-gulong cut_handler_id = 0;
-gulong paste_handler_id = 0;
-gulong select_all_handler_id = 0;
-
+//!
+//! \brief Manages the required changes for focus in different elements
+//! 
+//! Depending if the object's text is editable or not, the clipboard will
+//! update button states approprately and connect the signal handlers to the
+//! approprate widgets.
+//!
+//! @see do_cut ()
+//! @see do_copy ()
+//! @see do_paste ()
+//! @see do_select_all ()
+//! @param widget Unused GtkWidget pointer
+//! @param data Unused gpointer
+//! \return Always returns false
+//!
 G_MODULE_EXPORT gboolean do_update_clipboard_on_focus_change (GtkWidget        *widget, 
-                                              GtkDirectionType  arg1,
-                                              gpointer          data   ) 
+                                                              GtkDirectionType  arg1,
+                                                              gpointer          data   ) 
 {
     guint TARGET;
-    TARGET = gwaei_ui_get_current_widget_focus("main_window");
+    TARGET = gwaei_ui_get_current_widget_focus ("main_window");
 
     //Set up the references to the actions
     GtkAction *copy_action, *cut_action, *paste_action, *select_all_action;
 
     char id[50];
-    strncpy(id, "edit_copy_action", 50);
+    strncpy (id, "edit_copy_action", 50);
     copy_action       = GTK_ACTION (gtk_builder_get_object (builder, id));
-    strncpy(id, "edit_cut_action", 50);
+    strncpy (id, "edit_cut_action", 50);
     cut_action        = GTK_ACTION (gtk_builder_get_object (builder, id));
-    strncpy(id, "edit_paste_action", 50);
+    strncpy (id, "edit_paste_action", 50);
     paste_action      = GTK_ACTION (gtk_builder_get_object (builder, id));
-    strncpy(id, "edit_select_all_action", 50);
+    strncpy (id, "edit_select_all_action", 50);
     select_all_action = GTK_ACTION (gtk_builder_get_object (builder, id));
 
     //Disconnected old handlers
     if (copy_handler_id != 0)
     {
-      g_signal_handler_disconnect( copy_action, copy_handler_id );
+      g_signal_handler_disconnect (copy_action, copy_handler_id);
       copy_handler_id = 0;
     }
     if (cut_handler_id != 0)
     {
-      g_signal_handler_disconnect( cut_action, cut_handler_id );
+      g_signal_handler_disconnect (cut_action, cut_handler_id);
       cut_handler_id = 0;
     }
     if (paste_handler_id != 0)
     {
-      g_signal_handler_disconnect( paste_action, paste_handler_id );
+      g_signal_handler_disconnect (paste_action, paste_handler_id);
       paste_handler_id = 0;
     }
     if (select_all_handler_id != 0)
     {
-      g_signal_handler_disconnect( select_all_action, select_all_handler_id );
+      g_signal_handler_disconnect (select_all_action, select_all_handler_id);
       select_all_handler_id = 0;
     }
                                           
@@ -634,38 +924,60 @@ G_MODULE_EXPORT gboolean do_update_clipboard_on_focus_change (GtkWidget        *
     if (gwaei_ui_widget_equals_target (data, GWAEI_TARGET_RESULTS) ||
         gwaei_ui_widget_equals_target (data, GWAEI_TARGET_KANJI)     )
     {
-      gtk_action_set_sensitive(GTK_ACTION (cut_action), FALSE);
-      gtk_action_set_sensitive(GTK_ACTION (paste_action), FALSE);
+      gtk_action_set_sensitive (GTK_ACTION (cut_action), FALSE);
+      gtk_action_set_sensitive (GTK_ACTION (paste_action), FALSE);
     }
     else
     {
-      gtk_action_set_sensitive(GTK_ACTION (cut_action), TRUE);
-      gtk_action_set_sensitive(GTK_ACTION (paste_action), TRUE);
+      gtk_action_set_sensitive (GTK_ACTION (cut_action), TRUE);
+      gtk_action_set_sensitive (GTK_ACTION (paste_action), TRUE);
     }
 
     return FALSE;
 }
 
 
+//!
+//! \brief Prints the current results
+//! 
+//! When this function is called, the current results on screen are printed.
+//! If a section of the results is selected, only that is printed.
+//!
+//! @see gwaei_print ()
+//! @param widget Unused GtkWidget pointer
+//! @param data Unused gpointer
+//!
 G_MODULE_EXPORT void do_print (GtkWidget *widget, gpointer data)
 {
-    gwaei_ui_cancel_search_by_target(GWAEI_TARGET_RESULTS);
-    gwaei_print();
-    printf("Print button was clicked\n");
+    gwaei_ui_cancel_search_by_target (GWAEI_TARGET_RESULTS);
+    gwaei_print ();
+    printf ("Print button was clicked\n");
 }
 
 
-G_MODULE_EXPORT void do_radical_search_tool(GtkWidget *widget, gpointer data)
+//!
+//! \brief Brings up the search tool dialog
+//! 
+//! This function sets up the radical search tool dialog as needed, then makes
+//! it appear.  Before showing it, it makes sure that the strokes spinner is 
+//! visable if the needed dictionaries are available and sets the spinner to
+//! default to 1 stroke.
+//!
+//! @see gwaei_print ()
+//! @param widget Unused GtkWidget pointer
+//! @param data Unused gpointer
+//!
+G_MODULE_EXPORT void do_radical_search_tool (GtkWidget *widget, gpointer data)
 {
     char id[50];
 
     GtkWidget *hbox;
-    strncpy(id, "strokes_hbox", 50);
-    hbox = GTK_WIDGET (gtk_builder_get_object(builder, id));
+    strncpy (id, "strokes_hbox", 50);
+    hbox = GTK_WIDGET (gtk_builder_get_object (builder, id));
 
     GtkWidget *spinbutton;
-    strcpy(id, "strokes_spinbutton");
-    spinbutton = GTK_WIDGET (gtk_builder_get_object(builder, id));
+    strcpy (id, "strokes_spinbutton");
+    spinbutton = GTK_WIDGET (gtk_builder_get_object (builder, id));
     gtk_spin_button_set_value (GTK_SPIN_BUTTON (spinbutton), 1.0);
 
 
@@ -679,69 +991,105 @@ G_MODULE_EXPORT void do_radical_search_tool(GtkWidget *widget, gpointer data)
     gwaei_ui_show_window ("radicals_window");
 }
 
-G_MODULE_EXPORT void do_edit(GtkWidget *widget, gpointer data)
+
+//!
+//! \brief Opens the saved vocab list in your default editor
+//! 
+//! If the user saved a vocab list using the save as or append functions, this
+//! action becomes available where the file is opened in the user's default
+//! text editor.
+//!
+//! @param widget Unused GtkWidget pointer
+//! @param data Unused gpointer
+//!
+G_MODULE_EXPORT void do_edit (GtkWidget *widget, gpointer data)
 {
-    char *uri = g_build_filename("file://", save_path, NULL);
+    char *uri = g_build_filename ("file://", save_path, NULL);
 
     GError *err = NULL;
     gtk_show_uri (NULL, uri, gtk_get_current_event_time (), &err);
     if (err != NULL)
-      g_error_free(err);
+      g_error_free (err);
 
-    g_free(uri);
+    g_free (uri);
 }
 
 
-
-G_MODULE_EXPORT void do_help(GtkWidget *widget, gpointer data)
+//!
+//! \brief Opens the gWaei help documentation
+//!
+//! The gWaei help documentation is opened in the user's default help program.
+//!
+//! @param widget Unused GtkWidget pointer
+//! @param data Unused gpointer
+//!
+G_MODULE_EXPORT void do_help (GtkWidget *widget, gpointer data)
 {
     GError *err = NULL;
     gtk_show_uri (NULL, "ghelp:gwaei", gtk_get_current_event_time (), &err);
     if (err != NULL)
-      g_error_free(err);
+      g_error_free (err);
 }
 
 
-G_MODULE_EXPORT void do_glossary(GtkWidget *widget, gpointer data)
+//!
+//! \brief Opens the gWaei dictionary glossary help documentation
+//!
+//! The gWaei dictionary glossary help documentation is opened in the user's
+//! default help program.
+//!
+//! @param widget Unused GtkWidget pointer
+//! @param data Unused gpointer
+//!
+G_MODULE_EXPORT void do_glossary (GtkWidget *widget, gpointer data)
 {
-    char *uri = g_build_filename("ghelp://", DATADIR2, "gnome", "help", "gwaei", "C", "glossary.xml", NULL);
+    char *uri = g_build_filename ("ghelp://", DATADIR2, "gnome", "help", "gwaei", "C", "glossary.xml", NULL);
 
     GError *err = NULL;
     gtk_show_uri (NULL, uri, gtk_get_current_event_time (), &err);
     if (err != NULL)
-      g_error_free(err);
+      g_error_free (err);
 
-    g_free(uri);
+    g_free (uri);
 }
 
 
-G_MODULE_EXPORT void do_about(GtkWidget *widget, gpointer data)
+//!
+//! \brief Opens the gWaei about dialog
+//!
+//! The gWaei help dialog is displayed, showing the credits of everyone who has
+//! helped to make this program possible.
+//!
+//! @param widget Unused GtkWidget pointer
+//! @param data Unused gpointer
+//!
+G_MODULE_EXPORT void do_about (GtkWidget *widget, gpointer data)
 {
     char pixbuf_path[FILENAME_MAX];
-    strcpy(pixbuf_path, DATADIR2);
-    strcat(pixbuf_path, "/");
-    strcat(pixbuf_path, PACKAGE);
-    strcat(pixbuf_path, "/logo.png");
+    strcpy (pixbuf_path, DATADIR2);
+    strcat (pixbuf_path, "/");
+    strcat (pixbuf_path, PACKAGE);
+    strcat (pixbuf_path, "/logo.png");
 
     //Generate the translator credits in such a way it is easily localizable
-    char *italian = gettext("Italian: ");
-    char *japanese = gettext("Japanese: ");
-    char *spanish = gettext("Spanish: ");
+    char *italian = gettext ("Italian: ");
+    char *japanese = gettext ("Japanese: ");
+    char *spanish = gettext ("Spanish: ");
     char translator_credits[10000];
-    strcpy(translator_credits, "");
+    strcpy (translator_credits, "");
 
-    strcat(translator_credits, italian);
-    strcat(translator_credits, "Fabrizio Sabatini\n");
-    strcat(translator_credits, japanese);
-    strcat(translator_credits, "Zachary Dovel\n");
-    strcat(translator_credits, spanish);
-    strcat(translator_credits, "4packed\n");
+    strcat (translator_credits, italian);
+    strcat (translator_credits, "Fabrizio Sabatini\n");
+    strcat (translator_credits, japanese);
+    strcat (translator_credits, "Zachary Dovel\n");
+    strcat (translator_credits, spanish);
+    strcat (translator_credits, "4packed\n");
 
     GdkPixbuf *logo;
     if ( (logo = gdk_pixbuf_new_from_file ( pixbuf_path,    NULL)) == NULL &&
          (logo = gdk_pixbuf_new_from_file ( "img/logo.png", NULL)) == NULL    )
     {
-      printf("Was unable to load the gwaei logo.\n");
+      printf ("Was unable to load the gwaei logo.\n");
     }
 
   GtkWidget *about = g_object_new (GTK_TYPE_ABOUT_DIALOG,
@@ -753,24 +1101,56 @@ G_MODULE_EXPORT void do_about(GtkWidget *widget, gpointer data)
                "logo", logo,
                "translator-credits", translator_credits,
                NULL);
-    gtk_dialog_run(GTK_DIALOG (about));
+    gtk_dialog_run (GTK_DIALOG (about));
     g_object_unref (logo);
     gtk_widget_destroy (about);
 }
 
 
+//!
+//! \brief Cycles the active dictionaries down the list
+//!
+//! This function cycles the dictionaries down the list.  If it reaches the
+//! end, it will loop back to the top.
+//!
+//! @see do_cycle_dictionaries_backward ()
+//! @param widget Unused GtkWidget pointer
+//! @param data Unused gpointer
+//!
 G_MODULE_EXPORT void do_cycle_dictionaries_forward (GtkWidget *widget, gpointer data)
 {
-    gwaei_ui_cycle_dictionaries(TRUE);
+    gwaei_ui_cycle_dictionaries (TRUE);
 }
 
 
+//!
+//! \brief Cycles the active dictionaries up the list
+//!
+//! This function cycles the dictionaries up the list.  If it reaches the
+//! end, it will loop back to the bottom.
+//!
+//! @see do_cycle_dictionaries_forward ()
+//! @param widget Unused GtkWidget pointer
+//! @param data Unused gpointer
+//!
 G_MODULE_EXPORT void do_cycle_dictionaries_backward (GtkWidget *widget, gpointer data)
 {
-    gwaei_ui_cycle_dictionaries(FALSE);
+    gwaei_ui_cycle_dictionaries (FALSE);
 }
 
 
+//!
+//! \brief Function handles automatic focus changes on key presses
+//!
+//! When the user types a letter, the focus will move to the search entry and
+//! auto-highlight the results so you can start typing immediately.  If the
+//! user hits an arrow key or pageup/pagedown, the focus will move to the
+//! search results so they can scroll them.
+//!
+//! @param widget Unused GtkWidget pointer
+//! @param data Unused gpointer
+//! \return Always returns false
+//!
 G_MODULE_EXPORT gboolean do_focus_change_on_key_press (GtkWidget *widget,
                                                        GdkEvent  *event,
                                                        gpointer  *focus  )
@@ -829,7 +1209,6 @@ G_MODULE_EXPORT gboolean do_focus_change_on_key_press (GtkWidget *widget,
       {
         gwaei_ui_text_select_none_by_target (GWAEI_TARGET_ENTRY);
         gwaei_ui_grab_focus_by_target (GWAEI_TARGET_RESULTS);
-        return TRUE;
       }
 
       //Change focus to the entry if other key
@@ -842,25 +1221,34 @@ G_MODULE_EXPORT gboolean do_focus_change_on_key_press (GtkWidget *widget,
               )
       {
         gwaei_ui_text_select_all_by_target (GWAEI_TARGET_ENTRY);
-        gwaei_ui_grab_focus_by_target(GWAEI_TARGET_ENTRY);
-        return TRUE;
+        gwaei_ui_grab_focus_by_target (GWAEI_TARGET_ENTRY);
       }
     }
     return FALSE;
-
-return FALSE;
 }
 
 
+//!
+//! \brief Initiates a search on the user's typed query
+//!
+//! This function does the needed work to check the query for basic
+//! correctness, shift the previously completed search to the history list,
+//! creates the searchitem, and then initiates the search.
+//!
+//! @see do_search_from_history ()
+//! @see gwaei_search_get_results ()
+//! @param widget Unused GtkWidget pointer
+//! @param data Unused gpointer
+//!
 G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
 {
-    HistoryList* hl = historylist_get_list(GWAEI_HISTORYLIST_RESULTS);
+    HistoryList* hl = historylist_get_list (GWAEI_HISTORYLIST_RESULTS);
 
-    GList *list = dictionarylist_get_selected();
+    GList *list = dictionarylist_get_selected ();
     DictionaryInfo *dictionary = list->data;
 
     gchar query[MAX_QUERY];
-    gwaei_ui_strcpy_from_widget(query, MAX_QUERY, GWAEI_TARGET_ENTRY);
+    gwaei_ui_strcpy_from_widget (query, MAX_QUERY, GWAEI_TARGET_ENTRY);
 
     char *gckey = GCKEY_GWAEI_LESS_RELEVANT_SHOW; 
     gboolean show_less_relevant = gwaei_pref_get_boolean (gckey, TRUE);
@@ -874,14 +1262,14 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
         show_less_relevant == hl->current->show_less_relevant_results)
       return;
 
-    if (gwaei_ui_cancel_search_by_target(GWAEI_TARGET_RESULTS) == FALSE)
+    if (gwaei_ui_cancel_search_by_target (GWAEI_TARGET_RESULTS) == FALSE)
       return;
 
     if (hl->current != NULL && (hl->current)->results_found) 
     {
-      historylist_add_searchitem_to_history(GWAEI_HISTORYLIST_RESULTS, hl->current);
+      historylist_add_searchitem_to_history (GWAEI_HISTORYLIST_RESULTS, hl->current);
       hl->current = NULL;
-      gwaei_ui_update_history_popups();
+      gwaei_ui_update_history_popups ();
     }
     else if (hl->current != NULL)
     {
@@ -893,86 +1281,171 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
     hl->current = searchitem_new (query, dictionary, GWAEI_TARGET_RESULTS);
     if (hl->current == NULL)
     {
-      g_warning("There was an error creating the searchitem variable.  I will cancel this search.  Please eat some cheese.\n");
+      g_warning ("There was an error creating the searchitem variable.  I will cancel this search.  Please eat some cheese.\n");
       return;
     }
 
     //Start the search
-    gwaei_search_get_results(hl->current);
+    gwaei_search_get_results (hl->current);
 
     //Set the colors of the entry to the current match highlight colors
     char key[100];
     char *key_ptr;
-    strcpy(key, GCPATH_GWAEI);
-    strcat(key, "/highlighting/match");
-    key_ptr = &key[strlen(key)];
+    strcpy (key, GCPATH_GWAEI);
+    strcat (key, "/highlighting/match");
+    key_ptr = &key[strlen (key)];
     char fg_color[100], bg_color[100], fallback[100];
     char *ret;
-    strcpy(key_ptr, "_foreground");
+    strcpy (key_ptr, "_foreground");
     gwaei_util_strncpy_fallback_from_key (fallback, key, 100);
     ret = gwaei_pref_get_string (fg_color, key, fallback, 100);
     if (IS_HEXCOLOR(fg_color) == FALSE)
     {
       if (ret != NULL) gwaei_pref_set_string (key, fallback);
-      strncpy(fg_color, fallback, 100);
+      strncpy (fg_color, fallback, 100);
     }
-    strcpy(key_ptr, "_background");
+    strcpy (key_ptr, "_background");
     gwaei_util_strncpy_fallback_from_key (fallback, key, 100);
     ret = gwaei_pref_get_string (bg_color, key, fallback, 100);
     if (IS_HEXCOLOR(bg_color) == FALSE)
     {
       if (ret != NULL) gwaei_pref_set_string (key, fallback);
-      strncpy(bg_color, fallback, 100);
+      strncpy (bg_color, fallback, 100);
     }
     GdkColor forground, background;
     gdk_color_parse (fg_color, &forground);
     gdk_color_parse (bg_color, &background);
-    gtk_widget_modify_base(GTK_WIDGET (search_entry), GTK_STATE_NORMAL, &background);
-    gtk_widget_modify_text(GTK_WIDGET (search_entry), GTK_STATE_NORMAL, &forground);
+    gtk_widget_modify_base (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, &background);
+    gtk_widget_modify_text (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, &forground);
 
     //Update the toolbar buttons
-    update_toolbar_buttons();
+    update_toolbar_buttons ();
 }
 
 
-G_MODULE_EXPORT void do_insert_unknown_character(GtkWidget *widget, gpointer data)
+//!
+//! \brief Inserts an unknown regex character into the entry
+//!
+//! Used to help users discover regex searches.  It just insert a period
+//! wherever the cursor presently is in the search entry.
+//!
+//! @see do_insert_word_edge ()
+//! @see do_insert_not_word_edge ()
+//! @see do_insert_and ()
+//! @see do_insert_or ()
+//! @param widget Unused GtkWidget pointer
+//! @param data Unused gpointer
+//!
+G_MODULE_EXPORT void do_insert_unknown_character (GtkWidget *widget, gpointer data)
 {
     gwaei_ui_search_entry_insert (".");
 }
 
 
-G_MODULE_EXPORT void do_insert_word_edge(GtkWidget *widget, gpointer data)
+//!
+//! \brief Inserts an a word-boundary regex character into the entry
+//!
+//! Used to help users discover regex searches.  It just insert \\b
+//! wherever the cursor presently is in the search entry.
+//!
+//! @see do_insert_unknown_character ()
+//! @see do_insert_not_word_edge ()
+//! @see do_insert_and ()
+//! @see do_insert_or ()
+//! @param widget Unused GtkWidget pointer
+//! @param data Unused gpointer
+//!
+G_MODULE_EXPORT void do_insert_word_edge (GtkWidget *widget, gpointer data)
 {
     gwaei_ui_search_entry_insert ("\\b");
 }
 
 
-G_MODULE_EXPORT void do_insert_not_word_edge(GtkWidget *widget, gpointer data)
+//!
+//! \brief Inserts an a not-word-boundary regex character into the entry
+//!
+//! Used to help users discover regex searches.  It just insert \\B
+//! wherever the cursor presently is in the search entry.
+//!
+//! @see do_insert_unknown_character ()
+//! @see do_insert_word_edge ()
+//! @see do_insert_and ()
+//! @see do_insert_or ()
+//! @param widget Unused GtkWidget pointer
+//! @param data Unused gpointer
+//!
+G_MODULE_EXPORT void do_insert_not_word_edge (GtkWidget *widget, gpointer data)
 {
     gwaei_ui_search_entry_insert ("\\B");
 }
 
 
-G_MODULE_EXPORT void do_insert_and(GtkWidget *widget, gpointer data)
+//!
+//! \brief Inserts an an and regex character into the entry
+//!
+//! Used to help users discover regex searches.  It just insert &
+//! wherever the cursor presently is in the search entry.
+//!
+//! @see do_insert_unknown_character ()
+//! @see do_insert_word_edge ()
+//! @see do_insert_not_word_edge ()
+//! @see do_insert_or ()
+//! @param widget Unused GtkWidget pointer
+//! @param data Unused gpointer
+//!
+G_MODULE_EXPORT void do_insert_and (GtkWidget *widget, gpointer data)
 {
     gwaei_ui_search_entry_insert ("&");
 }
 
 
-G_MODULE_EXPORT void do_insert_or(GtkWidget *widget, gpointer data)
+//!
+//! \brief Inserts an an or regex character into the entry
+//!
+//! Used to help users discover regex searches.  It just insert |
+//! wherever the cursor presently is in the search entry.
+//!
+//! @see do_insert_unknown_character ()
+//! @see do_insert_word_edge ()
+//! @see do_insert_not_word_edge ()
+//! @see do_insert_and ()
+//! @param widget Unused GtkWidget pointer
+//! @param data Unused gpointer
+//!
+G_MODULE_EXPORT void do_insert_or (GtkWidget *widget, gpointer data)
 {
     gwaei_ui_search_entry_insert ("|");
 }
 
 
-G_MODULE_EXPORT void do_clear_search(GtkWidget *widget, gpointer data)
+//!
+//! \brief Clears the search entry and moves the focus to it
+//!
+//! This function acts as a quick way for the user to get back to the search
+//! entry and do another search whereever they are.
+//!
+//! @see gwaei_ui_clear_search_entry ()
+//! @param widget Unused GtkWidget pointer
+//! @param data Unused gpointer
+//!
+G_MODULE_EXPORT void do_clear_search (GtkWidget *widget, gpointer data)
 {
     gwaei_ui_clear_search_entry ();
     gwaei_ui_grab_focus_by_target (GWAEI_TARGET_ENTRY);
 }
 
-    
-G_MODULE_EXPORT void do_update_styles(GtkWidget *widget, gpointer data)
+
+//!
+//! \brief Makes the background color of the kanji sidebar max the theme
+//!
+//! Keeps the kanji sidebar backgound looking as if it is part of the window
+//! even if the gtk theme changes.  The look helps to keep the central focus
+//! of the window on the main results, and it looks nice, too.
+//!
+//! @param widget Unused GtkWidget pointer
+//! @param data Unused gpointer
+//!
+G_MODULE_EXPORT void do_update_styles (GtkWidget *widget, gpointer data)
 {
     GtkWidget *window, *view;
     GdkColor color;
@@ -981,36 +1454,47 @@ G_MODULE_EXPORT void do_update_styles(GtkWidget *widget, gpointer data)
     view   = GTK_WIDGET (gtk_builder_get_object (builder, "kanji_text_view"));
     color  = window->style->bg[GTK_STATE_NORMAL];
 
-    g_signal_handlers_block_by_func(widget, do_update_styles, NULL);
+    g_signal_handlers_block_by_func (widget, do_update_styles, NULL);
     gtk_widget_modify_base (view, GTK_STATE_NORMAL, &color);
-    g_signal_handlers_unblock_by_func(widget, do_update_styles, NULL);
+    g_signal_handlers_unblock_by_func (widget, do_update_styles, NULL);
 }
 
 
-G_MODULE_EXPORT void do_open_dictionary_folder(GtkWidget *widget, gpointer data) 
+//!
+//! \brief Opens the dictionary folder using the user's default file browser
+//!
+//! The dictionary folder that is opened is generally in "~/.waei".
+//!
+//! @param widget Unused GtkWidget pointer
+//! @param data Unused gpointer
+//!
+G_MODULE_EXPORT void do_open_dictionary_folder (GtkWidget *widget, gpointer data) 
 {
     char directory[FILENAME_MAX];
-    get_waei_directory(directory);
-    printf("%s\n",directory);
+    get_waei_directory (directory);
+    printf ("%s\n",directory);
 
     char *uri = g_build_filename ("file://", directory, NULL);
 
     GError *err = NULL;
     gtk_show_uri (NULL, uri, gtk_get_current_event_time (), &err);
     if (err != NULL)
-      g_error_free(err);
+      g_error_free (err);
 
-    g_free(uri);
+    g_free (uri);
 }
 
 
 //!
-//! \brief Moves the cursor on screen
+//! \brief Moves the text cursor on screen
 //!
 //! This function is used as a callback during scrolling to keep the cursor
 //! on the screen.  The effect is, if the user types a letter by accident, the
 //! buffer won't suddenly jump all the way to the bottom (where the cursor
 //! normally is after all these operations.)
+//!
+//! @param widget Unused GtkWidget pointer
+//! @param data Unused gpointer
 //!
 G_MODULE_EXPORT void do_move_cursor_onscreen (GtkWidget *widget, gpointer data)
 {
@@ -1019,11 +1503,15 @@ G_MODULE_EXPORT void do_move_cursor_onscreen (GtkWidget *widget, gpointer data)
 
 
 //!
-//! \brief Drag an drop code for starting searches
+//! \brief Sets the drag icon to the cursor if the widget is dragged over
 //!
-//! Uses the dropped text to automatically start a search.  It generally works
-//! really well except for it can't get text from it's own buffer for some
-//! reason...
+//! Part of a group of four functions to handle drag drops of text into
+//! the main text buffer which will initialize a search based on that text.
+//!
+//! @see search_drag_data_recieved ()
+//! @see drag_leave_1 ()
+//! @see drag_drop_1 ()
+//! \return Always returns true
 //!
 G_MODULE_EXPORT gboolean drag_motion_1 (GtkWidget      *widget,
                                         GdkDragContext *drag_context,
@@ -1038,6 +1526,16 @@ G_MODULE_EXPORT gboolean drag_motion_1 (GtkWidget      *widget,
 }
 
 
+//!
+//! \brief Resets the gui when the drag leaves the widget area
+//!
+//! Part of a group of four functions to handle drag drops of text into
+//! the main text buffer which will initialize a search based on that text.
+//!
+//! @see search_drag_data_recieved ()
+//! @see drag_drop_1 ()
+//! @see drag_motion_1 ()
+//!
 G_MODULE_EXPORT void drag_leave_1 (GtkWidget      *widget,
                                    GdkDragContext *drag_context,
                                    guint           time,
@@ -1047,6 +1545,17 @@ G_MODULE_EXPORT void drag_leave_1 (GtkWidget      *widget,
 }
 
 
+//!
+//! \brief Tells the widget to recieve the dragged data
+//!
+//! Part of a group of four functions to handle drag drops of text into
+//! the main text buffer which will initialize a search based on that text.
+//!
+//! @see search_drag_data_recieved ()
+//! @see drag_leave_1 ()
+//! @see drag_motion_1 ()
+//! \return Always returns true
+//!
 G_MODULE_EXPORT gboolean drag_drop_1 (GtkWidget      *widget,
                                       GdkDragContext *drag_context,
                                       gint            x,
@@ -1057,9 +1566,20 @@ G_MODULE_EXPORT gboolean drag_drop_1 (GtkWidget      *widget,
     GdkAtom target;
     target = gtk_drag_dest_find_target (widget, drag_context, NULL);
     gtk_drag_get_data (widget, drag_context, target, time);
+    return TRUE;
 }
 
 
+//!
+//! \brief The widget recieves the data and starts a search based on it.
+//!
+//! Part of a group of four functions to handle drag drops of text into
+//! the main text buffer which will initialize a search based on that text.
+//!
+//! @see drag_leave_1 ()
+//! @see drag_drop_1 ()
+//! @see drag_motion_1 ()
+//!
 G_MODULE_EXPORT void search_drag_data_recieved (GtkWidget        *widget,
                                                 GdkDragContext   *drag_context,
                                                 gint              x,
@@ -1081,16 +1601,16 @@ G_MODULE_EXPORT void search_drag_data_recieved (GtkWidget        *widget,
     {
       g_free (text);
 
-      do_clear_search(entry, NULL);
-      gtk_entry_set_text(GTK_ENTRY (entry), data->data);
-      do_search(NULL, NULL);
+      do_clear_search (entry, NULL);
+      gtk_entry_set_text (GTK_ENTRY (entry), data->data);
+      do_search (NULL, NULL);
 
       drag_context->action = GDK_ACTION_COPY;
-      gtk_drag_finish(drag_context, TRUE, FALSE, time);
+      gtk_drag_finish (drag_context, TRUE, FALSE, time);
     }
     else
     {
-      gtk_drag_finish(drag_context, FALSE, FALSE, time);
+      gtk_drag_finish (drag_context, FALSE, FALSE, time);
     }
 }
 
@@ -1102,6 +1622,9 @@ G_MODULE_EXPORT void search_drag_data_recieved (GtkWidget        *widget,
 //! there is any text in the entry.  Previously, this would also set the search
 //! button in it's insensitive state also.
 //!
+//! @param widget Unused GtkWidget pointer
+//! @param data Unused gpointer
+//!
 G_MODULE_EXPORT void do_update_button_states_based_on_entry_text (GtkWidget *widget,
                                                                   gpointer   data   )
 {
@@ -1109,13 +1632,13 @@ G_MODULE_EXPORT void do_update_button_states_based_on_entry_text (GtkWidget *wid
 
     //Show the clear icon when approprate
     if (length > 0)
-      gtk_entry_set_icon_from_stock(GTK_ENTRY (search_entry), GTK_ENTRY_ICON_SECONDARY, GTK_STOCK_CLEAR);
+      gtk_entry_set_icon_from_stock (GTK_ENTRY (search_entry), GTK_ENTRY_ICON_SECONDARY, GTK_STOCK_CLEAR);
     else
-      gtk_entry_set_icon_from_stock(GTK_ENTRY (search_entry), GTK_ENTRY_ICON_SECONDARY, NULL);
+      gtk_entry_set_icon_from_stock (GTK_ENTRY (search_entry), GTK_ENTRY_ICON_SECONDARY, NULL);
 
     //Return widget colors back to normal
-    gtk_widget_modify_base(GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
-    gtk_widget_modify_text(GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
+    gtk_widget_modify_base (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
+    gtk_widget_modify_text (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
 }
 
 
