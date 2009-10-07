@@ -422,15 +422,31 @@
                       </object>
                     </child>
                     <child>
+                      <object class="GtkMenuItem" id="glossary_menuitem">
+                        <property name="visible">True</property>
+                        <property name="use_action_appearance">True</property>
+                        <property name="related_action">help_glossary_action</property>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkSeparatorMenuItem" id="separatormenuitem8">
                         <property name="visible">True</property>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkMenuItem" id="glossary_menuitem">
+                      <object class="GtkMenuItem" id="homepage_menuitem">
                         <property name="visible">True</property>
-                        <property name="use_action_appearance">True</property>
-                        <property name="related_action">help_glossary_action</property>
+                        <property name="label" translatable="yes">Go to the _Project Homepage</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="do_homepage"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="irc_channel_menuitem">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Get Help on I_RC</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="do_irc_channel"/>
                       </object>
                     </child>
                     <child>
@@ -732,7 +748,7 @@
                 <signal name="clicked" handler="do_search"/>
                 <signal name="activate" handler="do_search"/>
                 <child>
-                  <object class="GtkImage" id="image2">
+                  <object class="GtkImage" id="image1">
                     <property name="visible">True</property>
                     <property name="stock">gtk-find</property>
                     <property name="icon-size">1</property>
@@ -831,11 +847,7 @@
                             <property name="relief">none</property>
                             <signal name="clicked" handler="do_close_kanji_results"/>
                             <child>
-                              <object class="GtkImage" id="image1">
-                                <property name="visible">True</property>
-                                <property name="stock">gtk-close</property>
-                                <property name="icon-size">1</property>
-                              </object>
+                              <placeholder/>
                             </child>
                           </object>
                           <packing>
@@ -1197,5 +1209,15 @@
   </object>
   <object class="GtkTextBuffer" id="textbuffer1"/>
   <object class="GtkAccelGroup" id="main_accelgroup"/>
+  <object class="GtkAction" id="help_homepage_action">
+    <property name="label">Go to _Homepage</property>
+    <property name="short_label">Homepage</property>
+    <signal name="activate" handler="do_homepage"/>
+  </object>
+  <object class="GtkAction" id="help_irc_action">
+    <property name="label">Get Help on I_RC</property>
+    <property name="short_label">IRC Channel</property>
+    <signal name="activate" handler="do_irc_channel"/>
+  </object>
   <object class="GtkActionGroup" id="main_actiongroup"/>
 </interface>

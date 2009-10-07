@@ -41,17 +41,17 @@
          <mediaobject><imageobject>
            <imagedata fileref="@prefix@/share/@PACKAGE@/logo.png" format="PNG"/>
         </imageobject></mediaobject>
-
         <application>gWaei</application> is a program for made for searching
-        dictionary files created by Jim Breen's WWWJDIC Project.  The main
-        feature of <application>gWaei</application> is its ability to employ
-        searches using regular expressions. But don't forget its nice syntax
-        highlighting, integrated Kanjipad, and a fancy radical search tool, too.
+        dictionary files created by Jim Breen's WWWJDIC Project.
       </para>
-	  <para>
-	    
-	  </para>
-    </abstract>
+      <para>If you need help outside of what is covered in this manual, there
+        is the
+        <ulink url="http://gwaei.sourceforge.net/">gWaei homepage</ulink>
+        with the latest news and updates, and the
+        <ulink url="irc://irc.freenode.net/gwaei">gWaei IRC channel</ulink>
+        where you can ask questions.
+      </para>
+  </abstract>
 <!-- ============= Features ============================= -->
     <sect1 id="Features">
       <title>Features</title>

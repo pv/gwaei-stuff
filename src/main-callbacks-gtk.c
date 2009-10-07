@@ -769,7 +769,6 @@ G_MODULE_EXPORT void do_select_all (GtkWidget *widget, gpointer data)
 }
 
 
-
 //!
 //! \brief Pastes text into the current widget
 //! 
@@ -794,7 +793,6 @@ G_MODULE_EXPORT void do_paste (GtkWidget *widget, gpointer data)
 }
 
 
-
 //!
 //! \brief Cuts text from the current widget
 //! 
@@ -817,7 +815,6 @@ G_MODULE_EXPORT void do_cut (GtkWidget *widget, gpointer data)
 
     printf ("Cut button was clicked\n");
 }
-
 
 
 //!
@@ -1006,6 +1003,40 @@ G_MODULE_EXPORT void do_edit (GtkWidget *widget, gpointer data)
       g_error_free (err);
 
     g_free (uri);
+}
+
+
+//!
+//! \brief Sends the user to the gWaei irc channel for help
+//! 
+//! The IRC uri should open in the user's default IRC client.
+//!
+//! @param widget Unused GtkWidget pointer
+//! @param data Unused gpointer
+//!
+G_MODULE_EXPORT void do_irc_channel (GtkWidget *widget, gpointer data)
+{
+    GError *err = NULL;
+    gtk_show_uri (NULL, "irc://irc.freenode.net/gWaei", gtk_get_current_event_time (), &err);
+    if (err != NULL)
+      g_error_free (err);
+}
+
+
+//!
+//! \brief Sends the user to the gWaei homepage for whatever they need
+//! 
+//! The homepage should open in their default browser.
+//!
+//! @param widget Unused GtkWidget pointer
+//! @param data Unused gpointer
+//!
+G_MODULE_EXPORT void do_homepage (GtkWidget *widget, gpointer data)
+{
+    GError *err = NULL;
+    gtk_show_uri (NULL, "http://gwaei.sourceforge.net/", gtk_get_current_event_time (), &err);
+    if (err != NULL)
+      g_error_free (err);
 }
 
 
