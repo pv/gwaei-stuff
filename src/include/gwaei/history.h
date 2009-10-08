@@ -87,18 +87,18 @@ struct GwHistoryList
 typedef struct GwHistoryList GwHistoryList;
 
 /*Historylist methods*/
-GwHistoryList* historylist_new_item(GwHistoryList*, char*, char*);
-GwHistoryList* historylist_add_item(GwHistoryList*, GwSearchItem*);
-GwHistoryList* historylist_unlink_item(GwHistoryList*);
-GwHistoryList* historylist_remove_last_item(GwHistoryList*);
-void   historylist_clear(GwHistoryList*, GList**);
-void   historylist_shift_item(GwHistoryList*, GList**);
+GwHistoryList* gw_historylist_new_item(GwHistoryList*, char*, char*);
+GwHistoryList* gw_historylist_add_item(GwHistoryList*, GwSearchItem*);
+GwHistoryList* gw_historylist_unlink_item(GwHistoryList*);
+GwHistoryList* gw_historylist_remove_last_item(GwHistoryList*);
+void   gw_historylist_clear(GwHistoryList*, GList**);
+void   gw_historylist_shift_item(GwHistoryList*, GList**);
 
 
 /*Functions*/
 gboolean gw_searchitem_do_pre_search_prep (GwSearchItem*);
-GwHistoryList* historylist_get_list(const int);
-GwSearchItem* historylist_get_current (const int);
-GList* historylist_get_combined_history_list (const int);
-GList* historylist_get_back_history (const int);
-GList* historylist_get_forward_history (const int);
+GwHistoryList* gw_historylist_get_list(const int);
+GwSearchItem* gw_historylist_get_current (const int);
+GList* gw_historylist_get_combined_history_list (const int);
+GList* gw_historylist_get_back_history (const int);
+GList* gw_historylist_get_forward_history (const int);

@@ -370,7 +370,7 @@ G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
     if (gw_ui_cancel_search_by_target (GWAEI_TARGET_RESULTS) == FALSE) return;
 
     GwHistoryList *hl;
-    hl = historylist_get_list (GWAEI_HISTORYLIST_RESULTS);
+    hl = gw_historylist_get_list (GWAEI_HISTORYLIST_RESULTS);
 
     GwSearchItem *item;
     item = (GwSearchItem*) data;
@@ -378,12 +378,12 @@ G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
     if (hl->back != NULL && g_list_find (hl->back, item))
     {
       while (hl->back != NULL && hl->current != item)
-        historylist_go_back_by_target (GWAEI_HISTORYLIST_RESULTS);
+        gw_historylist_go_back_by_target (GWAEI_HISTORYLIST_RESULTS);
     }
     else if (hl->forward != NULL && g_list_find (hl->forward, item))
     {
       while (hl->forward != NULL && hl->current != item)
-        historylist_go_forward_by_target (GWAEI_HISTORYLIST_RESULTS);
+        gw_historylist_go_forward_by_target (GWAEI_HISTORYLIST_RESULTS);
     }
 
     gw_searchitem_reset_result_counters (hl->current);
@@ -421,7 +421,7 @@ G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void do_back (GtkWidget *widget, gpointer data)
 {
     GwHistoryList *hl;
-    hl = historylist_get_list (GWAEI_HISTORYLIST_RESULTS);
+    hl = gw_historylist_get_list (GWAEI_HISTORYLIST_RESULTS);
     if (hl->back != NULL)
     {
       do_search_from_history (NULL, hl->back->data);
@@ -444,7 +444,7 @@ G_MODULE_EXPORT void do_back (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void do_forward (GtkWidget *widget, gpointer data)
 {
     GwHistoryList *hl;
-    hl = historylist_get_list (GWAEI_HISTORYLIST_RESULTS);
+    hl = gw_historylist_get_list (GWAEI_HISTORYLIST_RESULTS);
     if (hl->forward != NULL)
     {
       do_search_from_history (NULL, hl->forward->data);
@@ -1271,7 +1271,7 @@ G_MODULE_EXPORT gboolean do_focus_change_on_key_press (GtkWidget *widget,
 //!
 G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
 {
-    GwHistoryList* hl = historylist_get_list (GWAEI_HISTORYLIST_RESULTS);
+    GwHistoryList* hl = gw_historylist_get_list (GWAEI_HISTORYLIST_RESULTS);
 
     GList *list = gw_dictlist_get_selected ();
     GwDictInfo *dictionary = list->data;
@@ -1296,7 +1296,7 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
 
     if (hl->current != NULL && (hl->current)->results_found) 
     {
-      historylist_add_searchitem_to_history (GWAEI_HISTORYLIST_RESULTS, hl->current);
+      gw_historylist_add_searchitem_to_history (GWAEI_HISTORYLIST_RESULTS, hl->current);
       hl->current = NULL;
       gw_ui_update_history_popups ();
     }

@@ -55,7 +55,7 @@ G_MODULE_EXPORT void do_radical_clear (GtkWidget *widget, gpointer data)
 
 G_MODULE_EXPORT void do_radical_search (GtkWidget *widget, gpointer data)
 {
-    GwHistoryList* hl = historylist_get_list(GWAEI_HISTORYLIST_RESULTS);   
+    GwHistoryList* hl = gw_historylist_get_list(GWAEI_HISTORYLIST_RESULTS);   
 
     int leftover = 250;
 
@@ -79,7 +79,7 @@ G_MODULE_EXPORT void do_radical_search (GtkWidget *widget, gpointer data)
 
     if (hl->current != NULL && (hl->current)->total_results > 0) 
     {
-      historylist_add_searchitem_to_history(GWAEI_HISTORYLIST_RESULTS, hl->current);
+      gw_historylist_add_searchitem_to_history(GWAEI_HISTORYLIST_RESULTS, hl->current);
       hl->current = NULL;
       gw_ui_update_history_popups();
     }

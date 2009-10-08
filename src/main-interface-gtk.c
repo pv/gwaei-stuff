@@ -440,7 +440,7 @@ void gw_ui_update_toolbar_buttons()
     gboolean enable;
 
     GwSearchItem* current;
-    current = historylist_get_current (GWAEI_TARGET_RESULTS);
+    current = gw_historylist_get_current (GWAEI_TARGET_RESULTS);
 
     int current_font_size;
     current_font_size = gw_pref_get_int (GCKEY_GWAEI_FONT_SIZE, 12);
@@ -492,12 +492,12 @@ void gw_ui_update_toolbar_buttons()
     //Update back button
     strncpy(id, "history_back_action", id_length);
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
-      gtk_action_set_sensitive (action, (historylist_get_back_history (GWAEI_TARGET_RESULTS) != NULL));
+      gtk_action_set_sensitive (action, (gw_historylist_get_back_history (GWAEI_TARGET_RESULTS) != NULL));
 
     //Update forward button
     strncpy(id, "history_forward_action", id_length);
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
-      gtk_action_set_sensitive (action, (historylist_get_forward_history (GWAEI_TARGET_RESULTS) != NULL));
+      gtk_action_set_sensitive (action, (gw_historylist_get_forward_history (GWAEI_TARGET_RESULTS) != NULL));
 
     //Update cut/copy buttons
     gboolean sensitive;
@@ -807,7 +807,7 @@ void gw_ui_update_history_menu_popup()
     GwSearchItem *item;
     GtkWidget *menuitem;
 
-    children = historylist_get_combined_history_list (GWAEI_HISTORYLIST_RESULTS);
+    children = gw_historylist_get_combined_history_list (GWAEI_HISTORYLIST_RESULTS);
 
     //Add a separator if there are some items in history
     if (children != NULL)
@@ -849,6 +849,7 @@ void gw_ui_update_history_menu_popup()
       gtk_widget_show(menu_item);
       children = children->next;
     }
+    g_list_free (children);
 }
 
 
@@ -918,9 +919,9 @@ void gw_ui_update_history_popups()
     GList* list;
 
     gw_ui_update_history_menu_popup();
-    list = historylist_get_forward_history (GWAEI_HISTORYLIST_RESULTS);
+    list = gw_historylist_get_forward_history (GWAEI_HISTORYLIST_RESULTS);
     rebuild_history_button_popup("forward_popup", list);
-    list = historylist_get_back_history (GWAEI_HISTORYLIST_RESULTS);
+    list = gw_historylist_get_back_history (GWAEI_HISTORYLIST_RESULTS);
     rebuild_history_button_popup("back_popup", list);
 }
 
@@ -2232,7 +2233,7 @@ char* gw_ui_get_text_from_text_buffer(const int TARGET)
 void gw_ui_reload_tagtable_tags()
 {
     GwHistoryList* hl;
-    hl = historylist_get_list (GWAEI_HISTORYLIST_RESULTS);
+    hl = gw_historylist_get_list (GWAEI_HISTORYLIST_RESULTS);
 
     if (hl != NULL && hl->current != NULL)
       gw_ui_remove_all_tags (hl->current);
@@ -2372,7 +2373,7 @@ void initialize_gui_interface(int *argc, char ***argv)
 
 gboolean gw_ui_cancel_search_by_target(const int TARGET)
 {
-    GwHistoryList* hl = historylist_get_list(GWAEI_HISTORYLIST_RESULTS);
+    GwHistoryList* hl = gw_historylist_get_list(GWAEI_HISTORYLIST_RESULTS);
     GwSearchItem *item = hl->current;
 
     if (item != NULL && item->status == GWAEI_SEARCH_CANCELING) return FALSE;

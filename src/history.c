@@ -39,12 +39,21 @@
 #include <gwaei/dictionaries.h>
 #include <gwaei/history.h>
 
-GwHistoryList *results_history;
-GwHistoryList *kanji_history;
+static GwHistoryList *results_history;
+static GwHistoryList *kanji_history;
 
-//
-//Searchitem primitive
-//
+//!
+//! @brief Creates a new GwSearchItem object. 
+//!
+//! Takes the query and parses it according to the dictionary and TARGET give
+//! to it.  Searchitem also stores various variables such as the file
+//! it uses and the tallied results.
+//!
+//! @param query The text to be search for
+//! @param dictionary The GwDictInfo object to use
+//! @param TARGET The widget to output the results to
+//! @return Returns an allocated GwSearchItem object
+//!
 GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary,
                                          const int TARGET)
 {
@@ -225,6 +234,15 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary,
 }
 
 
+//!
+//! @brief Resets all counters in the GwSearchItem to 0
+//!
+//! This function is most useful for making sure history searchs
+//! start with zero.  If they don't, some logic can go wonkey during
+//! the search.
+//!
+//! @param item The GwSearchItem to have its counters reset
+//!
 void gw_searchitem_reset_result_counters(GwSearchItem* item)
 {
   item->total_relevant_results = 0;
@@ -233,13 +251,23 @@ void gw_searchitem_reset_result_counters(GwSearchItem* item)
 }
 
 
+//!
+//! @brief Does variable preparation required before a search
+//!
+//! The input and output scratch buffers have their memory allocated
+//! the current_line integer is reset to 0, the comparison buffer
+//! reset to it's initial state, the search status set to
+//! SEARCHING, and the file descriptior is opened.
+//!
+//! @param item The GwSearchItem to its variables prepared
+//!
 gboolean gw_searchitem_do_pre_search_prep (GwSearchItem* item)
 {
-    if ((item->input = malloc (MAX_LINE)) == NULL)
+    if (item->input != NULL || (item->input = malloc (MAX_LINE)) == NULL)
     {
       return FALSE;
     }
-    if ((item->output = malloc (MAX_LINE)) == NULL)
+    if (item->output != NULL || (item->output = malloc (MAX_LINE)) == NULL)
     {
       free (item->input);
       item->input = NULL;
@@ -247,12 +275,21 @@ gboolean gw_searchitem_do_pre_search_prep (GwSearchItem* item)
     }
     item->current_line = 0;
     strcpy(item->comparison_buffer, "INITIALSTRING");
-    item->fd = fopen ((item->dictionary)->path, "r");
+    if (item->fd == NULL)
+      item->fd = fopen ((item->dictionary)->path, "r");
     item->status = GWAEI_SEARCH_SEARCHING;
     return TRUE;
 }
 
 
+//!
+//! @brief Cleanups after a search completes
+//!
+//! The file descriptior is closed, various variables are
+//! reset, and the search status is set to IDLE.
+//!
+//! @param item The GwSearchItem to its state reset.
+//!
 void gw_searchitem_do_post_search_clean (GwSearchItem* item)
 {
     if (item->fd != NULL)
@@ -275,12 +312,14 @@ void gw_searchitem_do_post_search_clean (GwSearchItem* item)
 }
 
 
-gboolean gw_searchitem_is_prepared(GwSearchItem* item)
-{
-    return (item->input != NULL && item->output != NULL);
-}
-
-
+//!
+//! @brief Releases a GwSearchItem object from memory. 
+//!
+//! All of the various interally allocated memory in the GwSearchItem is freed.
+//! The file descriptiors and such are made sure to also be closed.
+//!
+//! @param item The GwSearchItem to have it's memory freed.
+//!
 void gw_searchitem_free(GwSearchItem* item) {
   int i = 0;
   while (i < item->total_re) {
@@ -296,11 +335,15 @@ void gw_searchitem_free(GwSearchItem* item) {
 }
 
 
-//
-//Historylist methods
-//
-
-GwHistoryList* historylist_get_list(const int TARGET)
+//!
+//! @brief Returns the private historylist of the history.c file
+//!
+//! The two options here are GWAEI_HISTORYLIST_RESULTS to get the results
+//! history list and GWAEI_HISTORYLIST_KANJI to get the kanji history list.
+//!
+//! @param TARGET The target who's history list we want.
+//!
+GwHistoryList* gw_historylist_get_list(const int TARGET)
 {
     if (TARGET == GWAEI_HISTORYLIST_RESULTS)
       return results_history;
@@ -311,7 +354,15 @@ GwHistoryList* historylist_get_list(const int TARGET)
 }
 
 
-GwHistoryList* historylist_new()
+//!
+//! @brief Creates a new GwHistoryList object. 
+//!
+//! Creates a new history list object which null pointers
+//! a a back, forward history list and a current GwSearchItem.
+//!
+//! @return Returns the allocated GwHistoryList object.
+//!
+GwHistoryList* gw_historylist_new()
 {
     GwHistoryList *temp;
     if ((temp = malloc(sizeof(struct GwSearchItem))) != NULL)
@@ -325,9 +376,19 @@ GwHistoryList* historylist_new()
 }
 
 
-void historylist_clear_forward_history(const int TARGET)
+//!
+//! @brief Clears the forward history of the desired target.
+//!
+//! This function was designed in mind with the user case of
+//! hitting the back button multiple times, then doing a new
+//! search.  It frees all the search items, then deletes the links
+//! in the list.
+//!
+//! @return Returns the allocated GwHistoryList object.
+//!
+void gw_historylist_clear_forward_history(const int TARGET)
 {
-    GwHistoryList *hl = historylist_get_list (TARGET);
+    GwHistoryList *hl = gw_historylist_get_list (TARGET);
 
     while (hl->forward != NULL)
     {
@@ -337,30 +398,65 @@ void historylist_clear_forward_history(const int TARGET)
 }
 
 
-GList* historylist_get_back_history (const int TARGET)
+//!
+//! @brief Gets the back history of the target history list
+//!
+//! @see gw_historylist_get_forward_history ()
+//! @see gw_historylist_get_current ()
+//! @return Returns a GList containing the GwSearchItem back history
+//!
+GList* gw_historylist_get_back_history (const int TARGET)
 {
-    GwHistoryList *list = historylist_get_list (TARGET);
+    GwHistoryList *list = gw_historylist_get_list (TARGET);
     return list->back;
 }
 
 
-GList* historylist_get_forward_history (const int TARGET)
+//!
+//! @brief Gets the forward history of the target history list
+//!
+//! @see gw_historylist_get_back_history ()
+//! @see gw_historylist_get_current ()
+//! @return Returns a GList containing the GwSearchItem forward history
+//!
+GList* gw_historylist_get_forward_history (const int TARGET)
 {
-    GwHistoryList *list = historylist_get_list (TARGET);
+    GwHistoryList *list = gw_historylist_get_list (TARGET);
     return list->forward;
 }
 
 
-GwSearchItem* historylist_get_current (const int TARGET)
+//!
+//! @brief Gets the current search item of the user
+//!
+//! This is the search item of the current search.  It doesn't get lumped
+//! into a history list until the user hits the back button or does another
+//! search.
+//!
+//! @see gw_historylist_get_back_history ()
+//! @see gw_historylist_get_forward_history ()
+//! @return Returns a GList containing the GwSearchItem forward history
+//!
+GwSearchItem* gw_historylist_get_current (const int TARGET)
 {
-    GwHistoryList *list = historylist_get_list (TARGET);
+    GwHistoryList *list = gw_historylist_get_list (TARGET);
     return list->current;
 }
 
 
-GList* historylist_get_combined_history_list (const int TARGET)
+//!
+//! @brief Concatinates together a copy of the back and forward histories
+//!
+//! This function was made with the idea of easily preparing a history list
+//! for a history menu which doesn't care about separating each list.
+//!
+//! @see gw_historylist_get_back_history ()
+//! @see gw_historylist_get_forward_history ()
+//! @return Returns an allocated GList containing the back and forward history
+//!
+GList* gw_historylist_get_combined_history_list (const int TARGET)
 {
-    GwHistoryList *hl = historylist_get_list (TARGET);
+    GwHistoryList *hl = gw_historylist_get_list (TARGET);
     GList *back_copy = g_list_copy (hl->back);
 
     GList *out = NULL;
@@ -372,10 +468,16 @@ GList* historylist_get_combined_history_list (const int TARGET)
 }
 
 
-void historylist_add_searchitem_to_history(const int TARGET, GwSearchItem *item)
+//!
+//! @brief Moves an item to the back history
+//!
+//! The current variable has its GwSearchItem moved into the backhistory list.  The
+//! forward history is also cleared at this time.
+//!
+void gw_historylist_add_searchitem_to_history(const int TARGET, GwSearchItem *item)
 { 
-    GwHistoryList *hl = historylist_get_list (TARGET);
-    historylist_clear_forward_history(TARGET);
+    GwHistoryList *hl = gw_historylist_get_list (TARGET);
+    gw_historylist_clear_forward_history(TARGET);
 
     if (g_list_length(hl->back) >= 20)
     {
@@ -383,24 +485,19 @@ void historylist_add_searchitem_to_history(const int TARGET, GwSearchItem *item)
       gw_searchitem_free(last->data);
       hl->back = g_list_delete_link(hl->back, last);
     }
-    if (hl->forward != NULL)
-    {
-      GList *current = hl->forward;
-      while (current != NULL)
-      {
-        gw_searchitem_free(current->data);
-        current = current->next;
-      }
-      g_list_free(hl->forward);
-    }
-
     hl->back = g_list_prepend(hl->back, item);
 }
 
 
+//!
+//! @brief Flopps the history stack 1 item in the desired direction
+//!
+//! Data is shifted between the forward, current, and back variables. If current is
+//! null, the list just fills it in rather than shifting the data around.
+//!
 static void shift_history_by_target(const int TARGET, GList **from, GList **to)
 {
-    GwHistoryList *hl = historylist_get_list (TARGET);
+    GwHistoryList *hl = gw_historylist_get_list (TARGET);
     GwSearchItem **current = &(hl->current);
 
     //Handle the current searchitem if it exists
@@ -423,24 +520,39 @@ static void shift_history_by_target(const int TARGET, GList **from, GList **to)
 }
 
 
-void historylist_go_back_by_target (const int TARGET)
+//!
+//! @brief Go back 1 in history
+//!
+//! @param TARGET the target that should have it's history list adjusted
+//!
+void gw_historylist_go_back_by_target (const int TARGET)
 { 
-    GwHistoryList *hl = historylist_get_list (TARGET);
+    GwHistoryList *hl = gw_historylist_get_list (TARGET);
     shift_history_by_target (TARGET, &(hl->back), &(hl->forward));
 }
 
 
-void historylist_go_forward_by_target (const int TARGET)
+//!
+//! @brief Go formward 1 in history
+//!
+//! @param TARGET the target that should have it's history list adjusted
+//!
+void gw_historylist_go_forward_by_target (const int TARGET)
 { 
-    GwHistoryList *hl = historylist_get_list (TARGET);
+    GwHistoryList *hl = gw_historylist_get_list (TARGET);
     shift_history_by_target (TARGET, &(hl->forward), &(hl->back));
 }
 
 
-//connect history_popup to history_menuitem
+//!
+//! @brief Prepare the historylists for the desired widgets
+//!
+//! Currently there is the results history list and the mostly unused
+//! kanji history list for the sidebar.
+//!
 void gw_history_initialize_history() {
-    results_history = historylist_new();
-    kanji_history   = historylist_new();
+    results_history = gw_historylist_new();
+    kanji_history   = gw_historylist_new();
 }
 
 

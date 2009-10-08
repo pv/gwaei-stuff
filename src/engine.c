@@ -414,12 +414,11 @@ void gw_search_get_results (GwSearchItem *item)
     if (gw_util_get_runmode () != GWAEI_CONSOLE_RUNMODE)
       gw_ui_clear_buffer_by_target (item->target);
 
-    if (gw_searchitem_is_prepared (item) == FALSE)
-      if (gw_searchitem_do_pre_search_prep (item) == FALSE)
-      {
-        gw_searchitem_free(item);
-        return;
-      }
+    if (gw_searchitem_do_pre_search_prep (item) == FALSE)
+    {
+      gw_searchitem_free(item);
+      return;
+    }
 
     if (item->target == GWAEI_TARGET_RESULTS)
       gw_ui_close_kanji_results();
