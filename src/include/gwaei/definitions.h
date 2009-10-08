@@ -24,7 +24,7 @@
 #define GCKEY_GWAEI_FONT_SIZE      "/apps/gwaei/font_size"
 #define GCKEY_GWAEI_HIRA_KATA      "/apps/gwaei/query_hiragana_to_katakana"
 #define GCKEY_GWAEI_KATA_HIRA      "/apps/gwaei/query_katakana_to_hiragana"
-#define GCKEY_GWAEI_ROMAN_KANA     "/apps/gwaei/query_romaji_to_kana"
+#define GCKEY_GWAEI_ROMAN_KANA     "/apps/gwaei/query_romanji_to_kana"
 #define GCKEY_GWAEI_SPELLCHECK     "/apps/gwaei/query_spellcheck"
 
 #define GCKEY_GWAEI_MATCH_FG       "/apps/gwaei/highlighting/match_foreground"
