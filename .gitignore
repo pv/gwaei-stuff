@@ -41,6 +41,7 @@ po/stamp-it
 rpm/gwaei.spec
 rpm/rpm_gconf_install_post.sh
 rpm/rpm_gconf_uninstall_pre.sh
+rpm/BUILD
 
 src/gwaei
 src/waei

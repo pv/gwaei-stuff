@@ -24,13 +24,15 @@ TABLE OF CONTENTS
   required.  Additionally, you will want to have rsync, gzip and
   kanjistrokeorders  available.  Most of these are satisfied with a
   default install of Gnome 2.26 or newer which should come with Ubuntu 9.04
-  and Fedora 11.
+  and Fedora 11. There are also 2 fonts you may want which will make the kanji
+  look nicer.  ttf-kanjistrokeorders and ttf-arphic-ukai.  The previous is a
+  dependency in the deb and rpm so that it gets pulled in on install.
 
   An example of a command that Ubuntu/Debian users might use to get the
   required runtime dependancies is:
 
   sudo apt-get install libcurl3 libgtk2.0-0 libsexy2 libgconf2-4\ 
-  ttf-kanjistrokeorders gnome-doc-utils
+  ttf-kanjistrokeorders ttf-arphic-ukai gnome-doc-utils
 
   To compile the program, you will have to have the dev files for  GCONF2,
   GTK+, CURL3 and LIBSEXY and available. Users with binary based distributions

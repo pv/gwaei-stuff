@@ -10,6 +10,7 @@ Release: @RELEASE@
 License: GPL
 Group: Applications/Utilities
 Source: ./@PACKAGE@-@VERSION@.tar.gz
+Requires: ttf-kanjistrokeorders, ttf-arphic-ukai
 URL: http://gwaei.sourceforge.net
 BuildRoot: /var/tmp/gwaei-%{PACKAGE_VERSION}-root
 %description
