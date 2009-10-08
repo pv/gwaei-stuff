@@ -1,3 +1,32 @@
+/******************************************************************************
+    AUTHOR:
+    File written and Copyrighted by Zachary Dovel. All Rights Reserved.
+
+    LICENSE:
+    This file is part of gWaei.
+
+    gWaei is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    gWaei is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    
+    You should have received a copy of the GNU General Public License
+    along with gWaei.  If not, see <http://www.gnu.org/licenses/>.
+*******************************************************************************/
+
+//!
+//! @file src/include/gwaei/history.h
+//!
+//! @brief To be written.
+//!
+//! To be written.
+//!
+
 #define GWAEI_HISTORYLIST_RESULTS 0
 #define GWAEI_HISTORYLIST_KANJI   1
 
@@ -5,35 +34,36 @@
 #define GWAEI_SEARCH_SEARCHING 1
 #define GWAEI_SEARCH_CANCELING 2
 
-/*Searchitem primitives*/
-
+//!
+//! @brief Primitive for storing search item information
+//!
 struct GwSearchItem {
-  char query[MAX_QUERY];
-  GwDictInfo* dictionary;
+  char query[MAX_QUERY];                  //!< Query of the search
+  GwDictInfo* dictionary;                 //!< Pointer to the dictionary used
 
-  FILE* fd;
-  int status;
-  char *input;
-  char *output;
-  int target;
-  long current_line;
-  char comparison_buffer[LINE_MAX + 2];
-  gboolean show_less_relevant_results;
+  FILE* fd;                               //!< File descriptor for file search position
+  int status;                             //!< Used to test if a search is in progress.
+  char *input;                            //!< Scratch space
+  char *output;                           //!< Scratch space
+  int target;                             //!< What gui element should be outputted to
+  long current_line;                      //!< Current line in teh dictionary file
+  char comparison_buffer[LINE_MAX + 2];   //!< Saves the previously loaded result for comparison
+  gboolean show_less_relevant_results;    //!< Saved search display format
 
-  int total_relevant_results;
-  int total_irrelevant_results;
-  int total_results;
-  gboolean results_found;
+  int total_relevant_results;             //!< Total results guessed to be highly relevant to the query
+  int total_irrelevant_results;           //!< Total results guessed to be vaguely relevant to the query
+  int total_results;                      //!< Total results returned from the search
+  gboolean results_found;                 //!< is this even used??
 
-  regex_t re_exist[MAX_QUERY];
-  regex_t re_locate[MAX_QUERY];
+  regex_t re_exist[MAX_QUERY];            //!< Parsed regex atoms for checking of a needle exists
+  regex_t re_locate[MAX_QUERY];           //!< Parsed regex atoms for pulling the needle out of the haystack.
 
-  regex_t re_relevance_medium[MAX_QUERY];
-  regex_t re_relevance_high[MAX_QUERY];
-  GList *results_medium;
-  GList *results_low;
+  regex_t re_relevance_medium[MAX_QUERY]; //!< Parsed regex atoms for testing medium relevance on a result
+  regex_t re_relevance_high[MAX_QUERY];   //!< Parsed regex atoms for testing high relevance on a result
+  GList *results_medium;                  //!< Buffer storing mediumly relevant result for later display
+  GList *results_low;                     //!< Buffer storing lowly relevant result for later display
 
-  int total_re;
+  int total_re;                           //!< The total regex atoms that were created.
 };
 typedef struct GwSearchItem GwSearchItem;
 
@@ -45,11 +75,14 @@ void        gw_searchitem_remove (struct GwSearchItem*);
 
 /*Historylist primitives*/
 
+//!
+//! @brief Primitive for storing search items in intelligent ways
+//!
 struct GwHistoryList
 {
-    GList *back;
-    GList *forward;
-    GwSearchItem *current;
+    GList *back;           //!< A GList of past search items
+    GList *forward;        //!< A GList where past search items get stacked when the user goes back.
+    GwSearchItem *current; //!< The current search before it gets pushed only into a history list.
 };
 typedef struct GwHistoryList GwHistoryList;
 

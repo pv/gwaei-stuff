@@ -53,3 +53,5 @@ src/kpengine/jdata.dat
 src/kpengine/kpengine
 
 documentation/*
+
+src/include/gwaei/definitions.h
