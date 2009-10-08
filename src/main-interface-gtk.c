@@ -2264,7 +2264,7 @@ void gw_ui_initialize_tags()
     gw_ui_set_tag_to_tagtable ("larger", GWAEI_TARGET_RESULTS, "font", "sans 20");
 
     //Large tag
-    gw_ui_set_tag_to_tagtable ("large", GWAEI_TARGET_RESULTS, "font", "AR PL UKai, serif 40");
+    gw_ui_set_tag_to_tagtable ("large", GWAEI_TARGET_RESULTS, "font", "AR PL UKai CN, serif 40");
     gw_ui_set_tag_to_tagtable ("large", GWAEI_TARGET_KANJI,   "font", "KanjiStrokeOrders, AR PL UKai, serif 100");
 
     //Small tag
