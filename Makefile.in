@@ -35,9 +35,10 @@ host_triplet = @host@
 @ENABLE_WIN32_TRUE@@WITHOUT_GNOME_FALSE@am__append_1 = src/xml src/kpengine src/img src/desktop
 @ENABLE_WIN32_FALSE@@WITHOUT_GNOME_FALSE@am__append_2 = src/schemas src/xml src/kpengine src/img src/desktop help
 subdir = .
-DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
-	$(srcdir)/Makefile.in $(srcdir)/config.h.in \
-	$(top_srcdir)/configure $(top_srcdir)/deb/DEBIAN/control.in \
+DIST_COMMON = README $(am__configure_deps) $(srcdir)/Doxyfile.in \
+	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
+	$(srcdir)/config.h.in $(top_srcdir)/configure \
+	$(top_srcdir)/deb/DEBIAN/control.in \
 	$(top_srcdir)/deb/DEBIAN/postinst.in \
 	$(top_srcdir)/deb/DEBIAN/prerm.in \
 	$(top_srcdir)/help/C/gwaei.xml.in \
@@ -48,12 +49,7 @@ DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	AUTHORS COPYING ChangeLog INSTALL NEWS THANKS config.guess \
 	config.rpath config.sub depcomp install-sh missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/gettext.m4 \
-	$(top_srcdir)/m4/gnome-doc-utils.m4 $(top_srcdir)/m4/iconv.m4 \
-	$(top_srcdir)/m4/lib-ld.m4 $(top_srcdir)/m4/lib-link.m4 \
-	$(top_srcdir)/m4/lib-prefix.m4 $(top_srcdir)/m4/nls.m4 \
-	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/progtest.m4 \
-	$(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
@@ -63,7 +59,7 @@ CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES = help/C/gwaei.xml deb/DEBIAN/control \
 	deb/DEBIAN/postinst deb/DEBIAN/prerm rpm/gwaei.spec \
 	rpm/rpm_gconf_install_post.sh rpm/rpm_gconf_uninstall_pre.sh \
-	src/include/gwaei/definitions.h
+	src/include/gwaei/definitions.h Doxyfile
 SOURCES =
 DIST_SOURCES =
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
@@ -325,6 +321,8 @@ rpm/rpm_gconf_install_post.sh: $(top_builddir)/config.status $(top_srcdir)/rpm/r
 rpm/rpm_gconf_uninstall_pre.sh: $(top_builddir)/config.status $(top_srcdir)/rpm/rpm_gconf_uninstall_pre.sh.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 src/include/gwaei/definitions.h: $(top_builddir)/config.status $(top_srcdir)/src/include/gwaei/definitions.h.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+Doxyfile: $(top_builddir)/config.status $(srcdir)/Doxyfile.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 install-changelogDATA: $(changelog_DATA)
 	@$(NORMAL_INSTALL)

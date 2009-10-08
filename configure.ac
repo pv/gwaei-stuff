@@ -112,5 +112,5 @@ AM_GNU_GETTEXT_VERSION(0.17)
 if([test x$gnome = xfalse]);then([cp help/Makefile.am.gnome help/Makefile.am]);fi
 if([test x$gnome = xtrue]);then([cp help/Makefile.am.none help/Makefile.am]);fi
 
-AC_CONFIG_FILES([Makefile src/Makefile help/Makefile help/gwaei.omf help/C/gwaei.xml src/xml/Makefile src/img/Makefile src/schemas/Makefile src/desktop/Makefile src/kpengine/Makefile src/kpengine/conv_jdata.pl deb/DEBIAN/control deb/DEBIAN/postinst deb/DEBIAN/prerm rpm/gwaei.spec po/Makefile.in rpm/rpm_gconf_install_post.sh rpm/rpm_gconf_uninstall_pre.sh src/schemas/gwaei.schemas src/include/gwaei/definitions.h])
+AC_CONFIG_FILES([Makefile src/Makefile help/Makefile help/gwaei.omf help/C/gwaei.xml src/xml/Makefile src/img/Makefile src/schemas/Makefile src/desktop/Makefile src/kpengine/Makefile src/kpengine/conv_jdata.pl deb/DEBIAN/control deb/DEBIAN/postinst deb/DEBIAN/prerm rpm/gwaei.spec po/Makefile.in rpm/rpm_gconf_install_post.sh rpm/rpm_gconf_uninstall_pre.sh src/schemas/gwaei.schemas src/include/gwaei/definitions.h] Doxyfile)
 AC_OUTPUT

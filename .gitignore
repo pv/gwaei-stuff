@@ -16,6 +16,7 @@ intltool-merge.in
 intltool-update.in
 m4/intltool.m4
 config.h
+Doxyfile
 
 deb/DEBIAN/control
 deb/DEBIAN/postinst
