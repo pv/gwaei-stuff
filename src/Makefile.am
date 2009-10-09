@@ -38,7 +38,7 @@ INCLUDES = -I $(top_srcdir)/src/include
 
 ##WINDOWS SETUP
 if ENABLE_WIN32
-gwaei_SOURCES += main-callbacks-gtk.c main-interface-gtk.c settings.c settings-callbacks-gtk.c settings-interface-gtk.c radicals-interface-gtk.c radicals-callbacks-gtk.c printing-gtk.c include/gwaei/interface.h include/gwaei/callbacks.h include/gwaei/radicals.h include/gwaei/settings.h include/gwaei/printing.h include/gwaei/gtk.h kanjipad/callbacks.c kanjipad/callbacks.h  kanjipad/kanjipad.c kanjipad/kanjipad.h kanjipad/padarea.c kanjipad/padarea.h 
+gwaei_SOURCES += main-callbacks-gtk.c main-interface-gtk.c settings-callbacks-gtk.c settings-interface-gtk.c radicals-interface-gtk.c radicals-callbacks-gtk.c printing-gtk.c include/gwaei/interface.h include/gwaei/callbacks.h include/gwaei/radicals.h include/gwaei/settings.h include/gwaei/printing.h include/gwaei/gtk.h kanjipad/callbacks.c kanjipad/callbacks.h  kanjipad/kanjipad.c kanjipad/kanjipad.h kanjipad/padarea.c kanjipad/padarea.h 
 gwaei_SOURCES += sexy-disable.c
 gwaei_SOURCES += preferences-none.c
 gwaei_LDADD += $(WIN32_LIBS)
@@ -65,7 +65,7 @@ DEFS += -DINTERFACE=\"NONE\"
 else
 gwaei_SOURCES += preferences-gconf.c 
 gwaei_SOURCES += sexy-enable.c
-gwaei_SOURCES += main-callbacks-gtk.c main-interface-gtk.c settings.c settings-callbacks-gtk.c settings-interface-gtk.c radicals-interface-gtk.c radicals-callbacks-gtk.c printing-gtk.c include/gwaei/interface.h include/gwaei/callbacks.h include/gwaei/radicals.h include/gwaei/settings.h include/gwaei/printing.h include/gwaei/gtk.h kanjipad/callbacks.c kanjipad/callbacks.h  kanjipad/kanjipad.c kanjipad/kanjipad.h kanjipad/padarea.c kanjipad/padarea.h include/gwaei/sexy.h
+gwaei_SOURCES += main-callbacks-gtk.c main-interface-gtk.c settings-callbacks-gtk.c settings-interface-gtk.c radicals-interface-gtk.c radicals-callbacks-gtk.c printing-gtk.c include/gwaei/interface.h include/gwaei/callbacks.h include/gwaei/radicals.h include/gwaei/settings.h include/gwaei/printing.h include/gwaei/gtk.h kanjipad/callbacks.c kanjipad/callbacks.h  kanjipad/kanjipad.c kanjipad/kanjipad.h kanjipad/padarea.c kanjipad/padarea.h include/gwaei/sexy.h
 gwaei_LDADD += $(GNOME_LIBS)
 AM_CFLAGS += $(GNOME_CFLAGS)
 DEFS += -DINTERFACE=\"GTK\"

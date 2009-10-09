@@ -46,40 +46,6 @@
 #include <gwaei/preferences.h>
 
 
-
-//!
-//! @brief Searches for a regex and returns pointers to matches
-//!
-//! THIS IS A PRIVATE FUNCTION. Function takes searches for the pattern in a
-//! a string and then returns pointers to the beginning and end of matches.
-//!
-//! @param string a constant string to be searched
-//! @param pattern a pattern string to search for
-//! @param start a character pointer array for match starts points
-//! @param end a character pointer array for match end points
-//!
-static gboolean locate_boundary_byte_pointers( const char *string, char  *pattern,
-                                               char      **start,  char **end      )
-{
-  regex_t re;
-  int status;
-  int eflags = REG_EXTENDED | REG_ICASE;
- 
-  if ((status = regcomp(&re, pattern, eflags)) == 0)
-  {
-    size_t nmatch = 1;
-    regmatch_t pmatch[nmatch];
-    if ((status = regexec(&re, string, nmatch, pmatch, 0)) == 0)
-    {
-      *start = (char*) (string + pmatch[0].rm_so);
-      *end = (char*) (string + pmatch[0].rm_eo);
-    }
-    regfree(&re);
-  }
-  return !status; 
-} 
-
-
 //!
 //! @brief Copies a string while adding some special formatting
 //!
@@ -91,7 +57,7 @@ static gboolean locate_boundary_byte_pointers( const char *string, char  *patter
 //! @param output Character array to format
 //! @param item GwSearchItem to get misc data from
 //!
-gboolean strcpy_with_query_preformatting (char* output, char* input, GwSearchItem *item)
+gboolean gw_fmt_strcpy_with_query_preformatting (char* output, char* input, GwSearchItem *item)
 {
     char buffer[MAX_QUERY];
     strncpy(buffer, input, MAX_QUERY);
@@ -142,7 +108,7 @@ gboolean strcpy_with_query_preformatting (char* output, char* input, GwSearchIte
       char hira[MAX_QUERY], kata[MAX_QUERY];
       strcpy(hira, buffer);
       strcpy(kata, buffer);
-      gw_str_shift_kata_to_hira(hira);
+      gw_util_str_shift_kata_to_hira(hira);
 
       int leftover;
       leftover = MAX_QUERY;
@@ -272,7 +238,7 @@ gboolean strcpy_with_query_preformatting (char* output, char* input, GwSearchIte
 //! @param output Character array to format
 //! @param item GwSearchItem to get misc data from
 //!
-void strcpy_with_query_formatting (char* output, char* input, GwSearchItem *item)
+void gw_fmt_strcpy_with_query_formatting (char* output, char* input, GwSearchItem *item)
 {
     //Searching in the kanji sidebar only look for a matching first character
     if (item->target == GW_TARGET_KANJI)
@@ -319,7 +285,7 @@ void strcpy_with_query_formatting (char* output, char* input, GwSearchItem *item
       *output_ptr = '\0';
 
       //copy the Grade search atom
-      if (locate_boundary_byte_pointers(input, "G[0-9]{1,2}", &s, &e))
+      if (gw_regex_locate_boundary_byte_pointers(input, "G[0-9]{1,2}", &s, &e))
       {
         *output_ptr = ' ';
         output_ptr++;
@@ -337,7 +303,7 @@ void strcpy_with_query_formatting (char* output, char* input, GwSearchItem *item
       *output_ptr = '\0';
 
       //copy the Stroke search atom
-      if (locate_boundary_byte_pointers(input, "S[0-9]{1,2}", &s, &e))
+      if (gw_regex_locate_boundary_byte_pointers(input, "S[0-9]{1,2}", &s, &e))
       {
         *output_ptr = ' ';
         output_ptr++;
@@ -355,7 +321,7 @@ void strcpy_with_query_formatting (char* output, char* input, GwSearchItem *item
       *output_ptr = '\0';
 
       //copy the Frequency search atom
-      if (locate_boundary_byte_pointers(input, "F[0-9]{1,8}", &s, &e))
+      if (gw_regex_locate_boundary_byte_pointers(input, "F[0-9]{1,8}", &s, &e))
       {
         *output_ptr = ' ';
         output_ptr++;
@@ -373,7 +339,7 @@ void strcpy_with_query_formatting (char* output, char* input, GwSearchItem *item
       *output_ptr = '\0';
 
       //copy the JLPT search atom
-      if (locate_boundary_byte_pointers(input, "J[0-4]", &s, &e)){
+      if (gw_regex_locate_boundary_byte_pointers(input, "J[0-4]", &s, &e)){
         *output_ptr = ' ';
         output_ptr++;
         while(s != e)
@@ -390,7 +356,7 @@ void strcpy_with_query_formatting (char* output, char* input, GwSearchItem *item
       *output_ptr = '\0';
 
       //copy the English search atom
-      if (locate_boundary_byte_pointers(input, "[A-Za-z][a-z ]{1,20}", &s, &e))
+      if (gw_regex_locate_boundary_byte_pointers(input, "[A-Za-z][a-z ]{1,20}", &s, &e))
       {
         while(s != e)
         {
@@ -412,7 +378,7 @@ void strcpy_with_query_formatting (char* output, char* input, GwSearchItem *item
       strcat(exp, "|");
       strcat(exp, KATAKANA);
       strcat(exp, ")]+");
-      if (locate_boundary_byte_pointers(input, exp, &s, &e) && (e - s) >= 3 )
+      if (gw_regex_locate_boundary_byte_pointers(input, exp, &s, &e) && (e - s) >= 3 )
       {
         while(s != e && s != '\0')
         {
@@ -471,7 +437,7 @@ void strcpy_with_query_formatting (char* output, char* input, GwSearchItem *item
 //! @param output Character array to format
 //! @param item GwSearchItem to get misc data from
 //!
-void strcpy_with_general_formatting(char *output, char *input, GwSearchItem *item) 
+void gw_fmt_strcpy_with_general_formatting(char *output, char *input, GwSearchItem *item) 
 {
     char *input_ptr = &input[0];
     char *output_ptr = &output[0];
@@ -506,7 +472,7 @@ void strcpy_with_general_formatting(char *output, char *input, GwSearchItem *ite
 //! @param output Character array to format
 //! @param item GwSearchItem to get misc data from
 //!
-void strcpy_with_kanji_formatting(char *output, char *input, GwSearchItem *item)
+void gw_fmt_strcpy_with_kanji_formatting(char *output, char *input, GwSearchItem *item)
 {
     //First generate the grade, stroke, frequency, and jplt fields
     char *start, *end;
@@ -516,25 +482,25 @@ void strcpy_with_kanji_formatting(char *output, char *input, GwSearchItem *item)
     char frequency[50] = "";
     char jplt[50]      = "";
 
-    if (locate_boundary_byte_pointers(input, " G[0-9]{1,2} ", &start, &end))
+    if (gw_regex_locate_boundary_byte_pointers(input, " G[0-9]{1,2} ", &start, &end))
     {
       strcat(grade, gettext("Grade:"));
       strncat(grade, start + 2, (end - start - 2));
     }
 
-    if (locate_boundary_byte_pointers(input, " S[0-9]{1,2} ", &start, &end))
+    if (gw_regex_locate_boundary_byte_pointers(input, " S[0-9]{1,2} ", &start, &end))
     {
       strcat(stroke, gettext("Stroke:"));
       strncat(stroke, start + 2, (end - start - 2));
     }
 
-    if (locate_boundary_byte_pointers(input, " F[0-9]{1,5} ", &start, &end))
+    if (gw_regex_locate_boundary_byte_pointers(input, " F[0-9]{1,5} ", &start, &end))
     {
       strcat(frequency, gettext("Freq:"));
       strncat(frequency, start + 2, (end - start - 2));
     }
 
-    if (locate_boundary_byte_pointers(input, " J[0-9]{1,1} ", &start, &end))
+    if (gw_regex_locate_boundary_byte_pointers(input, " J[0-9]{1,1} ", &start, &end))
     {
       strcat(jplt, gettext("JLPT:"));
       strncat(jplt, start + 2, (end - start - 2));
@@ -626,52 +592,52 @@ void strcpy_with_kanji_formatting(char *output, char *input, GwSearchItem *item)
 
 
 //!
-//! @brief Adds group formatting to a string
+//! @brief Copies a string with group formatting
 //!
 //! If this function detects similar kanji between strings, it will over write
 //! the kanji with spaces and remove vertical white space between the results.
 //!
 //! @param item GwSearchItem to get the result to add formatting to
 //!
-void add_group_formatting (GwSearchItem* item)
+void gw_fmt_strcpy_with_group_formatting (char* output, char* input, GwSearchItem* item)
 {
-    char *input = item->scratch_buffer1;
+    //Declarations
     char *comparison_buffer = item->comparison_buffer;
+    char* position1 = NULL;
+    char* position2 = NULL;
 
     //Special case for the initial string
-    char temp[MAX_LINE];
     if (strcmp(comparison_buffer, "INITIALSTRING") == 0) {
-        if (strlen(input) > 1)input[strlen(input) - 1] = '\0';
-        comparison_buffer[0] = '\0';
-        char* position1 = strchr(input, '[');
-        if (position1 != NULL)              
-        {
-          strncpy(comparison_buffer, input, (int)(position1 - input));
-          comparison_buffer[(int)(position1 - input)] = '\0';
-        }
-        return;
+      if (strlen(input) > 1) input[strlen(input) - 1] = '\0';
+      comparison_buffer[0] = '\0';
+      if ((position1 = strchr(input, '[')) != NULL)              
+      {
+        strncpy(comparison_buffer, input, (int)(position1 - input));
+        comparison_buffer[(int)(position1 - input) + 1] = '\0';
+      }
+      strcpy(output, input);
+      return;
     }
 
     //Code to remove duplicate kanji in the beginning of a result /////
     input[strlen(input) - 1] = '\0';
-    char* position1 = strchr(input, '[');
-    if (position1 == 0)
+    if ((position1 = strchr(input, '[')) == 0)
     {
-        strcpy(temp, "\n");
-        strncat(temp, input, MAX_LINE - 1);
-        strncpy(input, temp, MAX_LINE);
+      strcpy(output, "\n");
+      strncat(output, input, MAX_LINE - 1);
     }
     else if (strstr(input, comparison_buffer) != input || comparison_buffer[0] == '\0')
     { //Changed
       strncpy(comparison_buffer, input, (int)(position1 - input));
       comparison_buffer[(int)(position1 - input)] = '\0';
-      strcpy(temp, "\n");
-      strncat(temp, input, MAX_LINE - 1);
-      strncpy(input, temp, MAX_LINE);
+      strcpy(output, "\n");
+      strncat(output, input, MAX_LINE - 1);
     }
     else
     { //Didn't change
-       char* position2 = input;
+       strcpy(output, input);
+       position1 = strchr(output, '[');
+       position2 = output;
        while (position2 < position1)
        {
          if (position1 - position2 > 3)

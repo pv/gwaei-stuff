@@ -34,7 +34,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include <glib.h>
+
 #include <gwaei/regex.h>
+
 
 regex_t re_english;
 regex_t re_radical;
@@ -46,32 +49,66 @@ regex_t re_gz;
 regex_t re_hexcolor;
 
 
-void gw_regex_initialize_constant_regular_expressions() {
-  int eflags_exist = REG_EXTENDED | REG_ICASE | REG_NOSUB;
-  if (regcomp(&re_english, "English", eflags_exist) != 0) {
-    printf("A problem occured while setting the regular expression for English\n");
-  }
-  if (regcomp(&re_radical, "Radical", eflags_exist) != 0) {
-    printf("A problem occured while setting the regular expression for Radical\n");
-  }
-  if (regcomp(&re_kanji, "Kanji", eflags_exist) != 0) {
-    printf("A problem occured while setting the regular expression for Kanji\n");
-  }
-  if (regcomp(&re_names, "Names", eflags_exist) != 0) {
-    printf("A problem occured while setting the regular expression for Names\n");
-  }
-  if (regcomp(&re_places, "Places", eflags_exist) != 0) {
-    printf("A problem occured while setting the regular expression for Places\n");
-  }
-  if (regcomp(&re_mix, "Mix", eflags_exist) != 0) {
-    printf("A problem occured while setting the regular expression for Mix\n");
-  }
-  if (regcomp(&re_gz, "\\.gz", eflags_exist) != 0) {
-    printf("A problem occured while setting the regular expression for .gz\n");
-  }
-  if (regcomp(&re_hexcolor, "^#[0-9A-Fa-f]{6,6}$", eflags_exist) != 0) {
-    printf("A problem occured while setting the regular expression for hexcolor\n");
-  }
+//!
+//! @brief Initializes rebuild often used prebuilt regex expressions
+//!
+//! These are mostly dictionary names where we want to ignore things like case.
+//!
+void gw_regex_initialize_constant_regular_expressions ()
+{
+    int eflags_exist = REG_EXTENDED | REG_ICASE | REG_NOSUB;
+    if (regcomp (&re_english, "English", eflags_exist) != 0)
+      printf ("A problem occured while setting the regular expression for English\n");
+    if (regcomp (&re_radical, "Radical", eflags_exist) != 0)
+      printf ("A problem occured while setting the regular expression for Radical\n");
+    if (regcomp (&re_kanji, "Kanji", eflags_exist) != 0)
+      printf ("A problem occured while setting the regular expression for Kanji\n");
+    if (regcomp (&re_names, "Names", eflags_exist) != 0)
+      printf ("A problem occured while setting the regular expression for Names\n");
+    if (regcomp (&re_places, "Places", eflags_exist) != 0)
+      printf ("A problem occured while setting the regular expression for Places\n");
+    if (regcomp (&re_mix, "Mix", eflags_exist) != 0)
+      printf ("A problem occured while setting the regular expression for Mix\n");
+    if (regcomp (&re_gz, "\\.gz", eflags_exist) != 0)
+      printf ("A problem occured while setting the regular expression for .gz\n");
+    if (regcomp (&re_hexcolor, "^#[0-9A-Fa-f]{6,6}$", eflags_exist) != 0)
+      printf ("A problem occured while setting the regular expression for hexcolor\n");
 }
+
+
+//!
+//! @brief Builds a regex for a pattern and returns pointers to matches
+//!
+//! Function takes searches for the pattern in a string and then returns
+//! pointers to the beginning and end of matches. As is expected, this kind of search
+//! should be avoided when possible because it is slow.
+//!
+//! @param string a constant string to be searched
+//! @param pattern a pattern string to search for
+//! @param start a character pointer array for match starts points
+//! @param end a character pointer array for match end points
+//! @return Returns truE when pattern is found.
+//!
+gboolean gw_regex_locate_boundary_byte_pointers (const char *string, char  *pattern,
+                                                 char      **start,  char **end     )
+{
+    regex_t re;
+    int status;
+    int eflags = REG_EXTENDED | REG_ICASE;
+   
+    if ((status = regcomp(&re, pattern, eflags)) == 0)
+    {
+      size_t nmatch = 1;
+      regmatch_t pmatch[nmatch];
+      if ((status = regexec(&re, string, nmatch, pmatch, 0)) == 0)
+      {
+        *start = (char*) (string + pmatch[0].rm_so);
+        *end = (char*) (string + pmatch[0].rm_eo);
+      }
+      regfree(&re);
+    }
+    return !status; 
+} 
+
 
 

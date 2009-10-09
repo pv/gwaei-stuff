@@ -249,7 +249,7 @@ void gw_util_str_shift_hira_to_kata (char input[])
     gw_util_shift_all_chars_in_str_by (input, (L'ア' - L'あ'));
 }
 
-void gw_str_shift_kata_to_hira (char input[])
+void gw_util_str_shift_kata_to_hira (char input[])
 {
     gw_util_shift_all_chars_in_str_by (input, (L'あ' - L'ア'));
 }

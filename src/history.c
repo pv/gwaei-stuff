@@ -93,8 +93,8 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary,
 
   //Create the needed regex for searching and locating
   char query_temp[MAX_QUERY];
-  strcpy_with_query_preformatting (temp->query, query, temp);
-  strcpy_with_query_formatting(query_temp, temp->query, temp);
+  gw_fmt_strcpy_with_query_preformatting (temp->query, query, temp);
+  gw_fmt_strcpy_with_query_formatting(query_temp, temp->query, temp);
   if (strlen(query_temp) == 0) return NULL;
 
   char expression[(MAX_QUERY * 4) + 150];

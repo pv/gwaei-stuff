@@ -122,11 +122,10 @@ void gw_pageinfo_free(GwPageInfo *pi) {
 }
 
 
-
 //!
 //! @brief function for signal fired upon start of printing.
 //!
-//! This function currently does nothing.
+//! THIS IS A PRIVATE FUNCTION.  This function currently does nothing.
 //!
 //! @sa done() begin_print() draw() paginate()
 //!
@@ -134,11 +133,12 @@ static void begin_print() {
   printf("begin_print!\n");
 }
 
+
 //!
 //! @brief Pagination algorithm to calculate how many pages are needed
 //!
-//! The function loops through and draws all the pages to figure out exactly
-//! what will need to be drawn.
+//! THIS IS A PRIVATE FUNCTION.  The function loops through and draws all the
+//! pages to figure out exactly what will need to be drawn.
 //!
 //! @param operation Unused GtkPrintOperation
 //! @param context Pointer co a GtkPrintContext to draw on
@@ -244,7 +244,8 @@ static gboolean paginate(GtkPrintOperation *operation,
 //!
 //! @brief Draws a page for pagination
 //!
-//! This draws a page for pagination to be printed using the current position.
+//! THIS IS A PRIVATE FUNCTION.  This draws a page for pagination to be printed
+//! using the current position.
 //!
 //! @param operation Unused GtkPrintOperation
 //! @param context Pointer co a GtkPrintContext to draw on
@@ -282,7 +283,6 @@ static void draw_page (GtkPrintOperation *operation,
                                     &pi->page_end_line   );
     }
 
-
     //Prepare the cairo/pango context
     cairo_t *cr;
     PangoLayout *layout;
@@ -301,28 +301,28 @@ static void draw_page (GtkPrintOperation *operation,
     pango_font_description_free (desc);
 
     //Convert the page number to a string
-    char page_number[10];
-    gw_util_itoa(page_nr + 1, page_number, 10);
+    char page_number[20];
+    gw_util_itoa (page_nr + 1, page_number, 20);
    
     //Get the text from the text_buffer
     char *input_text, *output_text;
-    input_text = gtk_text_buffer_get_text( GTK_TEXT_BUFFER (tb),
-                                           page->data, &pi->page_end_line,
-                                           FALSE                           );
+    input_text = gtk_text_buffer_get_text(GTK_TEXT_BUFFER (tb),
+                                          page->data, &pi->page_end_line,
+                                          FALSE                          );
 
-    output_text = malloc((sizeof(char) * strlen(input_text)) + 50);
+    output_text = malloc ((sizeof(char) * strlen(input_text)) + 50);
 
     //Copy the data to the output_text string
-    strcpy(output_text, gettext("Page "));
-    strcat(output_text, page_number);
-    strcat(output_text, "\n\n");
-    strcat(output_text, input_text);
+    strcpy (output_text, gettext("Page "));
+    strcat (output_text, page_number);
+    strcat (output_text, "\n\n");
+    strcat (output_text, input_text);
     
     //Add the text to the  pango context
     pango_layout_set_text (layout, output_text, -1);
     pango_layout_set_width (layout, width * PANGO_SCALE);
     pango_layout_set_alignment (layout, PANGO_ALIGN_LEFT);
-    pango_layout_set_height(layout, height * PANGO_SCALE);
+    pango_layout_set_height (layout, height * PANGO_SCALE);
                 
     pango_layout_get_size (layout, NULL, &layout_height);
     text_height = (gdouble)layout_height / PANGO_SCALE;
@@ -341,9 +341,9 @@ static void draw_page (GtkPrintOperation *operation,
 //!
 //! @brief Called when pagination finishes.
 //!
-//! The function checks the results of the results text buffer, and then attempts
-//! to set up a print operation.  If a section of the search results are highlighted
-//! only those results are printed.
+//! THIS IS A PRIVATE FUNCTION.  The function checks the results of the results
+//! text buffer, and then attempts to set up a print operation.  If a section
+//! of the search results are highlighted only those results are printed.
 //!
 //! @param operation Unused
 //! @param result Unused
@@ -409,3 +409,4 @@ void gw_print()
       }
     g_object_unref (operation);
 }
+

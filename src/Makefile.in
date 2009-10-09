@@ -34,7 +34,7 @@ build_triplet = @build@
 host_triplet = @host@
 bin_PROGRAMS = gwaei$(EXEEXT)
 @ENABLE_WIN32_TRUE@am__append_1 = main-callbacks-gtk.c \
-@ENABLE_WIN32_TRUE@	main-interface-gtk.c settings.c \
+@ENABLE_WIN32_TRUE@	main-interface-gtk.c \
 @ENABLE_WIN32_TRUE@	settings-callbacks-gtk.c \
 @ENABLE_WIN32_TRUE@	settings-interface-gtk.c \
 @ENABLE_WIN32_TRUE@	radicals-interface-gtk.c \
@@ -69,7 +69,6 @@ bin_PROGRAMS = gwaei$(EXEEXT)
 @ENABLE_WIN32_FALSE@@WITHOUT_GNOME_FALSE@	sexy-enable.c \
 @ENABLE_WIN32_FALSE@@WITHOUT_GNOME_FALSE@	main-callbacks-gtk.c \
 @ENABLE_WIN32_FALSE@@WITHOUT_GNOME_FALSE@	main-interface-gtk.c \
-@ENABLE_WIN32_FALSE@@WITHOUT_GNOME_FALSE@	settings.c \
 @ENABLE_WIN32_FALSE@@WITHOUT_GNOME_FALSE@	settings-callbacks-gtk.c \
 @ENABLE_WIN32_FALSE@@WITHOUT_GNOME_FALSE@	settings-interface-gtk.c \
 @ENABLE_WIN32_FALSE@@WITHOUT_GNOME_FALSE@	radicals-interface-gtk.c \
@@ -110,7 +109,7 @@ am__gwaei_SOURCES_DIST = main.c dictionaries.c engine.c utilities.c \
 	include/gwaei/regex.h include/gwaei/engine.h \
 	include/gwaei/formatting.h include/gwaei/history.h \
 	include/gwaei/definitions.h include/gwaei/preferences.h \
-	main-callbacks-gtk.c main-interface-gtk.c settings.c \
+	main-callbacks-gtk.c main-interface-gtk.c \
 	settings-callbacks-gtk.c settings-interface-gtk.c \
 	radicals-interface-gtk.c radicals-callbacks-gtk.c \
 	printing-gtk.c include/gwaei/interface.h \
@@ -123,7 +122,6 @@ am__gwaei_SOURCES_DIST = main.c dictionaries.c engine.c utilities.c \
 	include/gwaei/sexy.h
 @ENABLE_WIN32_TRUE@am__objects_1 = main-callbacks-gtk.$(OBJEXT) \
 @ENABLE_WIN32_TRUE@	main-interface-gtk.$(OBJEXT) \
-@ENABLE_WIN32_TRUE@	settings.$(OBJEXT) \
 @ENABLE_WIN32_TRUE@	settings-callbacks-gtk.$(OBJEXT) \
 @ENABLE_WIN32_TRUE@	settings-interface-gtk.$(OBJEXT) \
 @ENABLE_WIN32_TRUE@	radicals-interface-gtk.$(OBJEXT) \
@@ -139,7 +137,6 @@ am__gwaei_SOURCES_DIST = main.c dictionaries.c engine.c utilities.c \
 @ENABLE_WIN32_FALSE@@WITHOUT_GNOME_FALSE@	sexy-enable.$(OBJEXT) \
 @ENABLE_WIN32_FALSE@@WITHOUT_GNOME_FALSE@	main-callbacks-gtk.$(OBJEXT) \
 @ENABLE_WIN32_FALSE@@WITHOUT_GNOME_FALSE@	main-interface-gtk.$(OBJEXT) \
-@ENABLE_WIN32_FALSE@@WITHOUT_GNOME_FALSE@	settings.$(OBJEXT) \
 @ENABLE_WIN32_FALSE@@WITHOUT_GNOME_FALSE@	settings-callbacks-gtk.$(OBJEXT) \
 @ENABLE_WIN32_FALSE@@WITHOUT_GNOME_FALSE@	settings-interface-gtk.$(OBJEXT) \
 @ENABLE_WIN32_FALSE@@WITHOUT_GNOME_FALSE@	radicals-interface-gtk.$(OBJEXT) \
@@ -418,7 +415,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/regex.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/settings-callbacks-gtk.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/settings-interface-gtk.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/settings.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sexy-disable.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sexy-enable.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utilities.Po@am__quote@
