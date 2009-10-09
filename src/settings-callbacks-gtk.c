@@ -20,11 +20,10 @@
 *******************************************************************************/
 
 //!
-//!  @file src/settings-callbacks.c
+//!  @file src/settings-callbacks-gtk.c
 //!
-//!  @brief To be written
+//!  @brief Abstraction layer for gtk callbacks
 //!
-//!  regrexs are stored to improve search speed.
 //!  Callbacks for activities initiated by the user. Most of the gtk code here
 //!  should still be abstracted to the interface C file when possible.
 //!
@@ -253,7 +252,7 @@ static void *install_thread (gpointer dictionary)
 
     //Make sure the download folder exits
     char download_path[FILENAME_MAX] = "";
-    get_waei_directory(download_path);
+    gw_util_get_waei_directory(download_path);
     strcat(download_path, G_DIR_SEPARATOR_S);
     strcat(download_path, "download");
     if (ret)
@@ -380,7 +379,7 @@ G_MODULE_EXPORT void do_set_color_to_swatch (GtkWidget *widget, gpointer data)
     int hex_integer = (red << 8) | (green) | (blue >> 8);
 
     char hex_string[10];
-    if (gw_itohexstr(hex_string, hex_integer) == TRUE)
+    if (gw_util_itohexstr(hex_string, hex_integer) == TRUE)
       printf("hex string: %s\n", hex_string);
 
     char key[100];

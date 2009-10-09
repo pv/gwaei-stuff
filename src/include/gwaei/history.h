@@ -27,64 +27,71 @@
 //! To be written.
 //!
 
-#define GW_HISTORYLIST_RESULTS 0
-#define GW_HISTORYLIST_KANJI   1
+//!
+//! Historylist targets
+//!
+enum historylist_targets
+{
+  GW_HISTORYLIST_RESULTS,
+  GW_HISTORYLIST_KANJI
+};
 
-#define GW_SEARCH_IDLE 0
-#define GW_SEARCH_SEARCHING 1
-#define GW_SEARCH_GW_DICT_STATUS_CANCELING 2
+//!
+//! Search status types
+//!
+enum search_states
+{
+  GW_SEARCH_IDLE,
+  GW_SEARCH_SEARCHING,
+  GW_SEARCH_GW_DICT_STATUS_CANCELING
+};
+
 
 //!
 //! @brief Primitive for storing search item information
 //!
-struct GwSearchItem {
-  char query[MAX_QUERY];                  //!< Query of the search
-  GwDictInfo* dictionary;                 //!< Pointer to the dictionary used
+typedef struct GwSearchItem {
+    char query[MAX_QUERY];                  //!< Query of the search
+    GwDictInfo* dictionary;                 //!< Pointer to the dictionary used
 
-  FILE* fd;                               //!< File descriptor for file search position
-  int status;                             //!< Used to test if a search is in progress.
-  char *input;                            //!< Scratch space
-  char *output;                           //!< Scratch space
-  int target;                             //!< What gui element should be outputted to
-  long current_line;                      //!< Current line in teh dictionary file
-  char comparison_buffer[LINE_MAX + 2];   //!< Saves the previously loaded result for comparison
-  gboolean show_less_relevant_results;    //!< Saved search display format
+    FILE* fd;                               //!< File descriptor for file search position
+    int status;                             //!< Used to test if a search is in progress.
+    char *scratch_buffer1;                  //!< Scratch space
+    char *scratch_buffer2;                  //!< Scratch space
+    char *comparison_buffer;                //!< Saves the previously loaded result for comparison
+    int target;                             //!< What gui element should be outputted to
+    long current_line;                      //!< Current line in teh dictionary file
+    gboolean show_less_relevant_results;    //!< Saved search display format
 
-  int total_relevant_results;             //!< Total results guessed to be highly relevant to the query
-  int total_irrelevant_results;           //!< Total results guessed to be vaguely relevant to the query
-  int total_results;                      //!< Total results returned from the search
-  gboolean results_found;                 //!< is this even used??
+    int total_relevant_results;             //!< Total results guessed to be highly relevant to the query
+    int total_irrelevant_results;           //!< Total results guessed to be vaguely relevant to the query
+    int total_results;                      //!< Total results returned from the search
 
-  regex_t re_exist[MAX_QUERY];            //!< Parsed regex atoms for checking of a needle exists
-  regex_t re_locate[MAX_QUERY];           //!< Parsed regex atoms for pulling the needle out of the haystack.
+    regex_t re_exist[MAX_QUERY];            //!< Parsed regex atoms for checking of a needle exists
+    regex_t re_locate[MAX_QUERY];           //!< Parsed regex atoms for pulling the needle out of the haystack.
 
-  regex_t re_relevance_medium[MAX_QUERY]; //!< Parsed regex atoms for testing medium relevance on a result
-  regex_t re_relevance_high[MAX_QUERY];   //!< Parsed regex atoms for testing high relevance on a result
-  GList *results_medium;                  //!< Buffer storing mediumly relevant result for later display
-  GList *results_low;                     //!< Buffer storing lowly relevant result for later display
+    regex_t re_relevance_medium[MAX_QUERY]; //!< Parsed regex atoms for testing medium relevance on a result
+    regex_t re_relevance_high[MAX_QUERY];   //!< Parsed regex atoms for testing high relevance on a result
+    GList *results_medium;                  //!< Buffer storing mediumly relevant result for later display
+    GList *results_low;                     //!< Buffer storing lowly relevant result for later display
+    int total_re;                           //!< The total regex atoms that were created.
+} GwSearchItem;
 
-  int total_re;                           //!< The total regex atoms that were created.
-};
-typedef struct GwSearchItem GwSearchItem;
-
-
-//searchitem methods
-GwSearchItem* gw_searchitem_new    (char*, GwDictInfo*, int);
-void        gw_searchitem_remove (struct GwSearchItem*);
-
-
-/*Historylist primitives*/
 
 //!
 //! @brief Primitive for storing search items in intelligent ways
 //!
-struct GwHistoryList
+typedef struct GwHistoryList
 {
     GList *back;           //!< A GList of past search items
     GList *forward;        //!< A GList where past search items get stacked when the user goes back.
     GwSearchItem *current; //!< The current search before it gets pushed only into a history list.
-};
-typedef struct GwHistoryList GwHistoryList;
+} GwHistoryList;
+
+
+/*searchitem methods*/
+GwSearchItem* gw_searchitem_new    (char*, GwDictInfo*, int);
+void        gw_searchitem_remove (struct GwSearchItem*);
 
 /*Historylist methods*/
 GwHistoryList* gw_historylist_new_item(GwHistoryList*, char*, char*);
@@ -94,7 +101,6 @@ GwHistoryList* gw_historylist_remove_last_item(GwHistoryList*);
 void   gw_historylist_clear(GwHistoryList*, GList**);
 void   gw_historylist_shift_item(GwHistoryList*, GList**);
 
-
 /*Functions*/
 gboolean gw_searchitem_do_pre_search_prep (GwSearchItem*);
 GwHistoryList* gw_historylist_get_list(const int);
@@ -102,3 +108,4 @@ GwSearchItem* gw_historylist_get_current (const int);
 GList* gw_historylist_get_combined_history_list (const int);
 GList* gw_historylist_get_back_history (const int);
 GList* gw_historylist_get_forward_history (const int);
+

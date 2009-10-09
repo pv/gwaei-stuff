@@ -22,7 +22,7 @@
 //!
 //! @file src/radicals-interface-gtk.c
 //!
-//! @brief To be written.
+//! @brief Abstraction layer for gtk objects 
 //!
 //!  Used as a go between for functions interacting with GUI interface objects.
 //!  This is the gtk version.
@@ -98,7 +98,7 @@ void gw_ui_strcpy_prefered_stroke_count(char *output, int *MAX)
       strokes = gtk_spin_button_get_value (GTK_SPIN_BUTTON (spinbutton));
 
       char S[3];
-      gw_itoa(strokes, S, 3);
+      gw_util_itoa(strokes, S, 3);
 
       strncat(output, "S", leftover);
       leftover -= 1;

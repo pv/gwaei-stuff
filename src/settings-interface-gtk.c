@@ -20,9 +20,9 @@
 *******************************************************************************/
 
 //!
-//! @file src/settings-interface.c
+//! @file src/settings-interface-gtk.c
 //!
-//! @brief To be written
+//! @brief Abstraction layer for gtk objects
 //!
 //! Used as a go between for functions interacting with GUI interface objects.
 //! widgets.
@@ -47,6 +47,33 @@
 #include <gwaei/engine.h>
 #include <gwaei/callbacks.h>
 #include <gwaei/interface.h>
+
+
+
+
+
+char* gw_parse_widget_name (char *output, GtkWidget *widget,
+                               gboolean capitalize             )
+{
+    //Declarations
+    const char* input = gtk_widget_get_name(widget);
+    const char *input_ptr = input;
+    char *output_ptr = output;
+
+    //Copy up to the underscore
+    while (*input_ptr != '\0' && *input_ptr != '_') {
+      *output_ptr = *input_ptr;
+      output_ptr++;
+      input_ptr++;
+    }
+    *output_ptr = '\0';
+
+    //Capitalize the first letter
+    if (capitalize == TRUE) output[0] -= 0x20;
+
+    //Finish
+    return output;
+}
 
 
 void gw_ui_update_settings_interface()
@@ -87,8 +114,8 @@ void gw_ui_update_settings_interface()
   {
     gtk_widget_set_sensitive (close_button,   FALSE);
     gtk_widget_set_sensitive (install_table,  FALSE);
-    gtk_widget_set_sensitive (rebuild_button,  FALSE);
-    gtk_widget_set_sensitive (resplit_button,    FALSE);
+    gtk_widget_set_sensitive (rebuild_button, FALSE);
+    gtk_widget_set_sensitive (resplit_button, FALSE);
     gtk_widget_set_sensitive (update_button,  TRUE );
     gtk_widget_set_sensitive (updated_button, TRUE );
   }
@@ -96,8 +123,8 @@ void gw_ui_update_settings_interface()
   {
     gtk_widget_set_sensitive (close_button,   FALSE);
     gtk_widget_set_sensitive (install_table,  TRUE );
-    gtk_widget_set_sensitive (rebuild_button,  FALSE);
-    gtk_widget_set_sensitive (resplit_button,    FALSE);
+    gtk_widget_set_sensitive (rebuild_button, FALSE);
+    gtk_widget_set_sensitive (resplit_button, FALSE);
     gtk_widget_set_sensitive (update_button,  FALSE);
     gtk_widget_set_sensitive (updated_button, FALSE);
   }
@@ -384,10 +411,10 @@ void gw_ui_set_install_line_status(char *name, char *status, char *message)
 
 //The layout of this function is specifically for a libcurl callback
 int gw_ui_update_progressbar (void   *id,
-                                 double  dltotal,
-                                 double  dlnow,
-                                 double  ultotal,
-                                 double  ulnow   )
+                              double  dltotal,
+                              double  dlnow,
+                              double  ultotal,
+                              double  ulnow   )
 {
     gdk_threads_enter();
 
@@ -430,4 +457,63 @@ void gw_ui_set_progressbar (char *name, double percent, char *message)
       gtk_progress_bar_set_text(GTK_PROGRESS_BAR (progressbar), message);
 }
 
+
+void gw_settings_initialize_enabled_features_list()
+{
+    //General search
+    if (gw_dictlist_get_total_with_status(GW_DICT_STATUS_INSTALLED) > 0)
+      gw_ui_set_feature_line_status("general", "enabled");
+    else
+      gw_ui_set_feature_line_status("general", "disabled");
+
+    //Combined dictionary
+    if (gw_dictlist_dictionary_get_status_by_id(GW_DICT_MIX) == GW_DICT_STATUS_INSTALLED)
+      gw_ui_set_feature_line_status("mix", "enabled");
+    else
+      gw_ui_set_feature_line_status("mix", "disabled");
+
+    //Radical search tool
+    if (gw_dictlist_dictionary_get_status_by_id(GW_DICT_RADICALS) == GW_DICT_STATUS_INSTALLED)
+      gw_ui_set_feature_line_status("radical", "enabled");
+    else
+      gw_ui_set_feature_line_status("radical", "disabled");
+
+    //Kanji lookup tool
+    if (gw_dictlist_dictionary_get_status_by_id(GW_DICT_KANJI) == GW_DICT_STATUS_INSTALLED)
+      gw_ui_set_feature_line_status("kanji", "enabled");
+    else
+      gw_ui_set_feature_line_status("kanji", "disabled");
+
+/*
+    GtkWidget *label;
+    label = GTK_WIDGET (gtk_builder_get_object(builder, "update_install_label"));
+    if (rsync_exists)
+      gtk_label_set_text(GTK_LABEL (label), gettext("Requires rsync to be installed"));
+*/
+}
+
+
+
+void gw_settings_initialize_installed_dictionary_list() 
+{
+    if (gw_dictlist_dictionary_get_status_by_id(GW_DICT_ENGLISH) == GW_DICT_STATUS_INSTALLED)
+      gw_ui_set_install_line_status("english", "remove", NULL);
+    else
+      gw_ui_set_install_line_status("english", "install", NULL);
+
+    if (gw_dictlist_dictionary_get_status_by_id(GW_DICT_KANJI) == GW_DICT_STATUS_INSTALLED)
+      gw_ui_set_install_line_status("kanji", "remove", NULL);
+    else
+      gw_ui_set_install_line_status("kanji", "install", NULL);
+
+    if (gw_dictlist_dictionary_get_status_by_id(GW_DICT_NAMES) == GW_DICT_STATUS_INSTALLED)
+      gw_ui_set_install_line_status("names", "remove", NULL);
+    else
+      gw_ui_set_install_line_status("names", "install", NULL);
+
+    if (gw_dictlist_dictionary_get_status_by_id(GW_DICT_RADICALS) == GW_DICT_STATUS_INSTALLED)
+      gw_ui_set_install_line_status("radicals", "remove", NULL);
+    else
+      gw_ui_set_install_line_status("radicals", "install", NULL);
+}
 

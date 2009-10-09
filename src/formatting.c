@@ -119,7 +119,7 @@ gboolean strcpy_with_query_preformatting (char* output, char* input, GwSearchIte
       char hira[MAX_QUERY], kata[MAX_QUERY];
       strcpy(hira, buffer);
       strcpy(kata, buffer);
-      gw_str_shift_hiragana_to_katakana(kata);
+      gw_util_str_shift_hira_to_kata(kata);
 
       int leftover;
       leftover = MAX_QUERY;
@@ -142,7 +142,7 @@ gboolean strcpy_with_query_preformatting (char* output, char* input, GwSearchIte
       char hira[MAX_QUERY], kata[MAX_QUERY];
       strcpy(hira, buffer);
       strcpy(kata, buffer);
-      gw_str_shift_katakana_to_hiragana(hira);
+      gw_str_shift_kata_to_hira(hira);
 
       int leftover;
       leftover = MAX_QUERY;
@@ -203,7 +203,7 @@ gboolean strcpy_with_query_preformatting (char* output, char* input, GwSearchIte
     //Romanji/other query preprocessing
     else if (
              (roman_kana_conv_pref == 0                                 ) || 
-             (roman_kana_conv_pref == 2 && is_japanese_locale() == FALSE)
+             (roman_kana_conv_pref == 2 && gw_util_is_japanese_locale() == FALSE)
             )
     {
       char *input_ptr = buffer;
@@ -215,11 +215,11 @@ gboolean strcpy_with_query_preformatting (char* output, char* input, GwSearchIte
       leftover = MAX_QUERY;
       while (leftover-- > 0)
       {
-        kana_ptr = gw_romaji_to_hiragana (input_ptr, kana_ptr);
+        kana_ptr = gw_util_roma_to_hira (input_ptr, kana_ptr);
         if (kana_ptr == NULL || input_ptr == NULL)
           break;
 
-        input_ptr = gw_next_hiragana_char_from_romaji (input_ptr);
+        input_ptr = gw_util_next_hira_char_from_roma (input_ptr);
         if (kana_ptr == NULL || input_ptr == NULL)
           break;
 
@@ -247,7 +247,7 @@ gboolean strcpy_with_query_preformatting (char* output, char* input, GwSearchIte
         strncat(output, ")|(", leftover);
         leftover -= 3;
 
-        gw_str_shift_hiragana_to_katakana(kana);
+        gw_util_str_shift_hira_to_kata(kana);
         strncat(output, kana, leftover);
         leftover -= strlen(kana);
         strncat(output, ")",  leftover);
@@ -635,7 +635,7 @@ void strcpy_with_kanji_formatting(char *output, char *input, GwSearchItem *item)
 //!
 void add_group_formatting (GwSearchItem* item)
 {
-    char *input = item->input;
+    char *input = item->scratch_buffer1;
     char *comparison_buffer = item->comparison_buffer;
 
     //Special case for the initial string

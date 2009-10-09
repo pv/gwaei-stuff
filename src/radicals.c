@@ -20,11 +20,11 @@
 *******************************************************************************/
 
 //!
-//!  @file src/radicals.c
+//! @file src/radicals.c
 //!
-//!  @brief To be written
+//! @brief Placeholder file.
 //!
-//! To be written
+//! This file is currently unused.
 //!
 
 

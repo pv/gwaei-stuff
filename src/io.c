@@ -22,7 +22,7 @@
 //!
 //! @file src/io.c
 //!
-//! @brief To be written
+//! @brief File reading and writing.
 //!
 //! Functions that mostly deal with reading and writing files.
 //!

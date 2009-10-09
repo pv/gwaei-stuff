@@ -22,7 +22,7 @@
 //!
 //! @file src/main-interface-gtk.c
 //!
-//! @brief To be written.
+//! @brief Abstraction layer for gtk objects
 //!
 //! Used as a go between for functions interacting with GUI interface objects.
 //! This is the gtk version.
@@ -579,7 +579,7 @@ void gw_ui_update_total_results_label (GwSearchItem* item)
 
     int number_int = item->total_results;
     char number_string[14];
-    gw_itoa(number_int, number_string, 14);
+    gw_util_itoa(number_int, number_string, 14);
 
     //Finish
     gtk_widget_hide(no_results);
@@ -598,7 +598,7 @@ void gw_ui_update_total_results_label (GwSearchItem* item)
 
       number_int = item->total_relevant_results;
       number_string[0] = '\0';
-      gw_itoa(number_int, number_string, 14);
+      gw_util_itoa(number_int, number_string, 14);
 
       gtk_label_set_text(GTK_LABEL (number), number_string);
       gtk_widget_show(results);
@@ -1768,7 +1768,7 @@ void gw_ui_display_no_results_found_page()
     const gint32 TIP_NUMBER = temp;
     gw_previous_tip = temp;
     char tip_number_str[5];
-    gw_itoa((TIP_NUMBER + 1), tip_number_str, 5);
+    gw_util_itoa((TIP_NUMBER + 1), tip_number_str, 5);
 
 
     //Add the title

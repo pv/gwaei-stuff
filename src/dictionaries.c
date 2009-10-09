@@ -95,13 +95,13 @@ GwDictInfo* gw_dictinfo_new (char *name)
 
     //Calculate the path to the used dictionary file
     remaining = PATH_MAX;
-    get_waei_directory(temp->path);
+    gw_util_get_waei_directory(temp->path);
     remaining -= strlen(temp->path);
     strncat(temp->path, name, remaining);
 
     //Calculate the path to the sync file
     remaining = PATH_MAX;
-    get_waei_directory(temp->sync_path);
+    gw_util_get_waei_directory(temp->sync_path);
     remaining -= strlen(temp->sync_path);
     strncat(temp->sync_path, "download", remaining);
     remaining -= strlen("download");
@@ -192,7 +192,7 @@ GwDictInfo* gw_dictinfo_new (char *name)
 //! Takes care of any of the work needed to release a GwDictInfo object from
 //! memory.
 //!
-//! @param name Name of the object to create
+//! @param di GwDictInfo object to free
 //!
 void gw_dictinfo_free(GwDictInfo* di)
 {
@@ -543,7 +543,7 @@ void gw_dictionaries_initialize_dictionary_list()
 
     //Path variables
     char path[FILENAME_MAX];
-    if (get_waei_directory (path) == NULL) return;
+    if (gw_util_get_waei_directory (path) == NULL) return;
     char *filename = &path[strlen (path)];
 
     //Directory variables
@@ -577,8 +577,8 @@ void gw_dictionaries_initialize_dictionary_list()
 //!
 //! @brief Does the required post processing to create the Mix dictionary
 //!
-//! The function removes the current Mix dictionary if it is there, then 
-//! attempts to create a new mix dictionary.
+//! THIS IS A PRIVATE FUNCTION. The function removes the current Mix dictionary
+//! if it is there, then attempts to create a new mix dictionary.
 //!
 //! @see gw_io_create_mix_dictionary ()
 //! @returns Returns true on success
@@ -619,9 +619,9 @@ static gboolean create_mix_dictionary()
 //!
 //! @brief Splits out the place names from the person names
 //!
-//! Function checks to see the Names dictionary is installed, then tries
-//! to split out the Names and Places dictionaries.  If there is a failure,
-//! false is returned and the GError error gets set.
+//! THIS IS A PRIVATE FUNCTION.  Function checks to see the Names dictionary
+//! is installed, then tries to split out the Names and Places dictionaries.
+//! If there is a failure, false is returned and the GError error gets set.
 //!
 //! @see gw_io_split_places_from_names_dictionary ()
 //! @param error set a GError to the pointer when an error occurs

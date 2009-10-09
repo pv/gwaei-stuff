@@ -22,7 +22,7 @@
 //!
 //! @file src/main-interface-console.c
 //!
-//! @brief To be written
+//! @brief Abstraction layer for the console
 //!
 //! Used as a go between for functions interacting with the console.
 //!
@@ -83,7 +83,7 @@ gboolean gw_console_install_dictionary_by_name(char *name)
 
     //Make sure the download folder exits
     char download_path[FILENAME_MAX] = "";
-    get_waei_directory(download_path);
+    gw_util_get_waei_directory(download_path);
     strcat(download_path, G_DIR_SEPARATOR_S);
     strcat(download_path, "download");
 

@@ -22,9 +22,10 @@
 //!
 //! @file src/preferences-gconf.c
 //!
-//! @brief Main entrance into the program.
+//! @brief Abstraction layer for gconf preferences
 //!
-//! Main entrance into the program.
+//! Allows access to gconf with the ability to specify backup preferences upon
+//! failure to get the preference value.
 //!
 
 
@@ -419,9 +420,9 @@ void do_color_value_changed_action( GConfClient* client,
           return;
       }
 
-      guint red   = gw_2digithexstrtoint(hex_string[1], hex_string[2]);
-      guint green = gw_2digithexstrtoint(hex_string[3], hex_string[4]);
-      guint blue  = gw_2digithexstrtoint(hex_string[5], hex_string[6]);
+      guint red   = gw_util_2digithexstrtoint(hex_string[1], hex_string[2]);
+      guint green = gw_util_2digithexstrtoint(hex_string[3], hex_string[4]);
+      guint blue  = gw_util_2digithexstrtoint(hex_string[5], hex_string[6]);
 
       //The last portion of the key happens to be the widget id
       const char *key = gconf_entry_get_key(entry);

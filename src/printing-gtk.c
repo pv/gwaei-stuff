@@ -22,7 +22,7 @@
 //!
 //! @file src/printing-gtk.c
 //!
-//! @brief Gtk printing
+//! @brief Abstraction layer for gtk printing
 //!
 //! This is where the functions needed for printing are kept. This is the gtk
 //! version.
@@ -57,13 +57,11 @@ static GtkPrintSettings *settings = NULL;
 //!
 //! @brief Primitive for storing information on printing
 //!
-struct GwPageInfo {
+typedef struct GwPageInfo {
     GList *pages;              //!< pages GList of all the created pages
     GtkTextIter page_end_line; //!< Mark in the buffer where we have paginated to
     gint total_pages;          //!< The total pages that need pagination
-};
-typedef struct GwPageInfo GwPageInfo;
-
+} GwPageInfo;
 
 
 //!
@@ -304,7 +302,7 @@ static void draw_page (GtkPrintOperation *operation,
 
     //Convert the page number to a string
     char page_number[10];
-    gw_itoa(page_nr + 1, page_number, 10);
+    gw_util_itoa(page_nr + 1, page_number, 10);
    
     //Get the text from the text_buffer
     char *input_text, *output_text;

@@ -22,7 +22,7 @@
 //! 
 //! @file src/sexy-enable.c
 //!
-//! @brief Overlays a sexy entry in play of the gtk one
+//! @brief Replaces the search GtkEntry with a SexySpellEntry.
 //!
 //! File used for implimenting a libsexy entry as the search query.  Libsexy
 //! is nice because it allows spell checking compatibility.  Because some day
@@ -73,7 +73,7 @@ void do_conditionally_enable_spellcheck (GtkWidget *widget, gpointer data)
      int rk_conv_pref;
      rk_conv_pref = gw_pref_get_int (GCKEY_GW_ROMAN_KANA, 0);
      gboolean want_conv;
-     want_conv = (rk_conv_pref == 0 || (rk_conv_pref == 2 && !is_japanese_locale()));
+     want_conv = (rk_conv_pref == 0 || (rk_conv_pref == 2 && !gw_util_is_japanese_locale()));
 
      char *text = gtk_editable_get_chars (GTK_EDITABLE (entry), 0, -1);
      if (text == NULL) return;
@@ -87,10 +87,10 @@ void do_conditionally_enable_spellcheck (GtkWidget *widget, gpointer data)
      leftover = MAX_QUERY;
      while (leftover-- > 0)
      {
-       kana_ptr = gw_romaji_to_hiragana (input_ptr, kana_ptr);
+       kana_ptr = gw_util_roma_to_hira (input_ptr, kana_ptr);
        if (kana_ptr == NULL || input_ptr == NULL)
          break;
-       input_ptr = gw_next_hiragana_char_from_romaji (input_ptr);
+       input_ptr = gw_util_next_hira_char_from_roma (input_ptr);
        if (kana_ptr == NULL || input_ptr == NULL)
          break;
 
@@ -100,7 +100,7 @@ void do_conditionally_enable_spellcheck (GtkWidget *widget, gpointer data)
      gboolean is_convertable_to_hiragana;
      is_convertable_to_hiragana= (input_ptr != NULL && strlen (input_ptr) == 0 && want_conv);
 
-     if (gw_all_chars_are_in_range (text, L' ', L'|') == TRUE &&
+     if (gw_util_all_chars_are_in_range (text, L' ', L'|') == TRUE &&
          is_convertable_to_hiragana == FALSE                     &&
          spellcheck_pref == TRUE                                   )
      {

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2009-10-08 15:11-0400\n"
+"POT-Creation-Date: 2009-10-08 22:45-0400\n"
 "PO-Revision-Date: 2009-10-07 09:47+0100\n"
 "Last-Translator: Fabrizio Sabatini <jecnua@gmail.com>\n"
 "Language-Team: Not Applicable\n"
@@ -901,7 +901,7 @@ msgstr "Altri Risultati "
 msgid "Page "
 msgstr "Pagina "
 
-#: src/io.c:100 src/dictionaries.c:782
+#: src/io.c:100 src/dictionaries.c:787
 msgid "File read failed"
 msgstr "Lettura file fallita"
 
@@ -1044,12 +1044,12 @@ msgstr "Nomi"
 msgid " Dictionary"
 msgstr " Dizionario"
 
-#: src/dictionaries.c:777
+#: src/dictionaries.c:782
 #, c-format
 msgid "Syncing %s dictionary"
 msgstr "Aggiorno il dizionario %s"
 
-#: src/dictionaries.c:807
+#: src/dictionaries.c:812
 msgid "Success"
 msgstr "Operazione terminata correttamente"
 

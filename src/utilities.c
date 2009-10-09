@@ -22,7 +22,7 @@
 //!
 //! @file src/utilities.c
 //!
-//! @brief To be written.
+//! @brief Generic utility functions
 //!
 //! Holds some basic functions that are extremely handy for gWaei.
 //!
@@ -38,32 +38,32 @@
 #include <gwaei/definitions.h>
 #include <gwaei/utilities.h>
 
-int run_mode;
+static int run_mode;
 
-void gw_util_initialize_runmode(char* call)
+void gw_util_initialize_runmode (char* call)
 {
    char *call_ptr = &call[strlen(call)];
-   while (call_ptr != call && !G_IS_DIR_SEPARATOR(*call_ptr))
+   while (call_ptr != call && !G_IS_DIR_SEPARATOR (*call_ptr))
      call_ptr--;
-   if (G_IS_DIR_SEPARATOR(*call_ptr))
+   if (G_IS_DIR_SEPARATOR (*call_ptr))
      call_ptr++;
 
-   if (strcmp(call_ptr, "waei") == 0 || strcmp(INTERFACE, "NONE") == 0)
+   if (strcmp (call_ptr, "waei") == 0 || strcmp (INTERFACE, "NONE") == 0)
      run_mode = GW_CONSOLE_RUNMODE;
-   else if (strcmp(call_ptr, "gwaei") == 0)
+   else if (strcmp (call_ptr, "gwaei") == 0)
      run_mode = GW_GTK_RUNMODE;
-   else if (strcmp(call_ptr, "kwaei") == 0)
+   else if (strcmp (call_ptr, "kwaei") == 0)
      run_mode = GW_QT_RUNMODE;
 }
 
-int gw_util_get_runmode()
+int gw_util_get_runmode ()
 {
     return run_mode;
 }
 
 
 //A fairly fast int to acsii char funciton
-gboolean gw_itoa(int input, char *output, const int MAX)
+gboolean gw_util_itoa (int input, char *output, const int MAX)
 {
   //digit_ptr is used to write and track the number
   char buffer[MAX];
@@ -89,7 +89,7 @@ gboolean gw_itoa(int input, char *output, const int MAX)
     return TRUE;
 }
 
-guint gw_2digithexstrtoint(char hex_char_digit_2, char hex_char_digit_1)
+guint gw_util_2digithexstrtoint(char hex_char_digit_2, char hex_char_digit_1)
 {
     int digit1;
     if (hex_char_digit_1 <= '9')
@@ -107,7 +107,7 @@ guint gw_2digithexstrtoint(char hex_char_digit_2, char hex_char_digit_1)
 }
 
 
-gboolean gw_itohexstr(char *color_string, guint color_integer)
+gboolean gw_util_itohexstr (char *color_string, guint color_integer)
 {
     char *color_string_ptr = color_string;
     *color_string_ptr = '#';
@@ -137,10 +137,8 @@ gboolean gw_itohexstr(char *color_string, guint color_integer)
 }
 
 
-
-
 //Returns the string where the waei directory should be.  If it doesn't exist, it creates it
-char* get_waei_directory(char *buffer) 
+char* gw_util_get_waei_directory(char *buffer) 
 {
     const char* home = g_get_home_dir ();
     char* directory = g_build_filename (home, ".waei", NULL);
@@ -158,9 +156,9 @@ char* get_waei_directory(char *buffer)
 
 
 //Check if characters are romaji, katakana, hiragana, or kanji
-gboolean gw_all_chars_are_in_range ( char input[],
-                                        int  start_unic_boundary,
-                                        int  end_unic_boundary    )
+gboolean gw_util_all_chars_are_in_range (char input[],
+                                         int  start_unic_boundary,
+                                         int  end_unic_boundary   )
 {
   //Setup
   char *input_ptr;
@@ -186,29 +184,29 @@ gboolean gw_all_chars_are_in_range ( char input[],
 
 
 //Convenience functions
-gboolean gw_util_is_hiragana_str(char input[])
+gboolean gw_util_is_hiragana_str (char input[])
 {
-    return gw_all_chars_are_in_range (input, L'ぁ', L'ん');
+    return gw_util_all_chars_are_in_range (input, L'ぁ', L'ん');
 }
 
-gboolean gw_util_is_katakana_str(char input[])
+gboolean gw_util_is_katakana_str (char input[])
 {
-    return gw_all_chars_are_in_range (input, L'ァ', L'ー');
+    return gw_util_all_chars_are_in_range (input, L'ァ', L'ー');
 }
 
-gboolean gw_util_is_kanji_str(char input[])
+gboolean gw_util_is_kanji_str (char input[])
 {
-    return gw_all_chars_are_in_range (input, L'ー', 0xFF00);
+    return gw_util_all_chars_are_in_range (input, L'ー', 0xFF00);
 }
 
-gboolean gw_util_is_romaji_str(char input[])
+gboolean gw_util_is_romaji_str (char input[])
 {
-    return gw_all_chars_are_in_range (input, L'A', L'z');
+    return gw_util_all_chars_are_in_range (input, L'A', L'z');
 }
 
 
 //Shift characters between hiragana and katakana
-void gw_shift_all_chars_in_str_by(char input[], int shift)
+void gw_util_shift_all_chars_in_str_by (char input[], int shift)
 {
     //Setup
     char *input_ptr;
@@ -246,14 +244,14 @@ void gw_shift_all_chars_in_str_by(char input[], int shift)
 //
 
 
-void gw_str_shift_hiragana_to_katakana(char input[])
+void gw_util_str_shift_hira_to_kata (char input[])
 {
-    gw_shift_all_chars_in_str_by(input, (L'ア' - L'あ'));
+    gw_util_shift_all_chars_in_str_by (input, (L'ア' - L'あ'));
 }
 
-void gw_str_shift_katakana_to_hiragana(char input[])
+void gw_str_shift_kata_to_hira (char input[])
 {
-    gw_shift_all_chars_in_str_by(input, (L'あ' - L'ア'));
+    gw_util_shift_all_chars_in_str_by (input, (L'あ' - L'ア'));
 }
 
 
@@ -262,7 +260,7 @@ void gw_str_shift_katakana_to_hiragana(char input[])
 //
 
 
-char* gw_next_hiragana_char_from_romaji(char *input)
+char* gw_util_next_hira_char_from_roma (char *input)
 {
     char *input_ptr;
     input_ptr = input;
@@ -324,7 +322,7 @@ char* gw_next_hiragana_char_from_romaji(char *input)
 }
 
 
-char* gw_romaji_to_hiragana(char *input, char *output)
+char* gw_util_roma_to_hira (char *input, char *output)
 {
     //Set up the input pointer
     char *input_ptr;
@@ -398,15 +396,15 @@ char* gw_romaji_to_hiragana(char *input, char *output)
        strcpy(output, "ん");
 
 
-    else if ( strlen(buffer_ptr) == 1 &&
-              buffer_ptr[0] != 'a'    &&
-              buffer_ptr[0] != 'i'    &&
-              buffer_ptr[0] != 'u'    &&
-              buffer_ptr[0] != 'e'    &&
-              buffer_ptr[0] != 'o'    &&
-              buffer_ptr[0] != '-'    &&
-              buffer_ptr[0] != 'y'    &&
-              input_ptr[1] != '\0'      )
+    else if (strlen(buffer_ptr) == 1 &&
+             buffer_ptr[0] != 'a'    &&
+             buffer_ptr[0] != 'i'    &&
+             buffer_ptr[0] != 'u'    &&
+             buffer_ptr[0] != 'e'    &&
+             buffer_ptr[0] != 'o'    &&
+             buffer_ptr[0] != '-'    &&
+             buffer_ptr[0] != 'y'    &&
+             input_ptr[1] != '\0'      )
        strcpy(output, "っ");
 
     else if (strcmp(buffer_ptr, "a") == 0)
@@ -705,23 +703,23 @@ char* gw_romaji_to_hiragana(char *input, char *output)
 }
 
 
-gboolean is_japanese_ctype()
+gboolean gw_util_is_japanese_ctype ()
 {
-    return ( setlocale(LC_CTYPE, NULL) != NULL &&
-             (
-               strcmp(setlocale(LC_CTYPE, NULL), "ja_JP.UTF8")  == 0 ||
-               strcmp(setlocale(LC_CTYPE, NULL), "ja_JP.UTF-8") == 0 ||
-               strcmp(setlocale(LC_CTYPE, NULL), "ja_JP.utf8")  == 0 ||
-               strcmp(setlocale(LC_CTYPE, NULL), "ja_JP.utf-8") == 0 ||
-               strcmp(setlocale(LC_CTYPE, NULL), "ja_JP")       == 0 ||
-               strcmp(setlocale(LC_CTYPE, NULL), "ja")          == 0 ||
-               strcmp(setlocale(LC_CTYPE, NULL), "japanese")    == 0
-             )
+    return (setlocale(LC_CTYPE, NULL) != NULL &&
+            (
+              strcmp(setlocale(LC_CTYPE, NULL), "ja_JP.UTF8")  == 0 ||
+              strcmp(setlocale(LC_CTYPE, NULL), "ja_JP.UTF-8") == 0 ||
+              strcmp(setlocale(LC_CTYPE, NULL), "ja_JP.utf8")  == 0 ||
+              strcmp(setlocale(LC_CTYPE, NULL), "ja_JP.utf-8") == 0 ||
+              strcmp(setlocale(LC_CTYPE, NULL), "ja_JP")       == 0 ||
+              strcmp(setlocale(LC_CTYPE, NULL), "ja")          == 0 ||
+              strcmp(setlocale(LC_CTYPE, NULL), "japanese")    == 0
+            )
            );
 }
 
 
-gboolean is_japanese_locale()
+gboolean gw_util_is_japanese_locale()
 {
     return ( setlocale(LC_MESSAGES, NULL) != NULL &&
              (

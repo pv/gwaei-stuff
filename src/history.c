@@ -22,9 +22,9 @@
 //!
 //! @file src/history.c
 //!
-//! @brief To be written.
+//! @brief Search item and history management
 //!
-//! To be written.
+//! Functions and objects to create search items and manage them.
 //!
 
 
@@ -41,6 +41,7 @@
 
 static GwHistoryList *results_history;
 static GwHistoryList *kanji_history;
+
 
 //!
 //! @brief Creates a new GwSearchItem object. 
@@ -73,14 +74,14 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary,
   //Set the internal pointers to the correct global variables
   temp->fd     = NULL;
   temp->status = GW_SEARCH_IDLE;
-  temp->input  = NULL;
-  temp->output = NULL;
+  temp->scratch_buffer1 = NULL;
+  temp->scratch_buffer2 = NULL;
+  temp->comparison_buffer = NULL;
   temp->dictionary = dictionary;
   temp->target = TARGET;
   temp->total_relevant_results = 0;
   temp->total_irrelevant_results = 0;
   temp->total_results = 0;
-  temp->results_found = TRUE;
   temp->current_line = 0;
   char *key = GCKEY_GW_LESS_RELEVANT_SHOW; 
   temp->show_less_relevant_results = gw_pref_get_boolean (key, TRUE);
@@ -235,23 +236,6 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary,
 
 
 //!
-//! @brief Resets all counters in the GwSearchItem to 0
-//!
-//! This function is most useful for making sure history searchs
-//! start with zero.  If they don't, some logic can go wonkey during
-//! the search.
-//!
-//! @param item The GwSearchItem to have its counters reset
-//!
-void gw_searchitem_reset_result_counters(GwSearchItem* item)
-{
-  item->total_relevant_results = 0;
-  item->total_irrelevant_results = 0;
-  item->total_results = 0;
-}
-
-
-//!
 //! @brief Does variable preparation required before a search
 //!
 //! The input and output scratch buffers have their memory allocated
@@ -260,21 +244,36 @@ void gw_searchitem_reset_result_counters(GwSearchItem* item)
 //! SEARCHING, and the file descriptior is opened.
 //!
 //! @param item The GwSearchItem to its variables prepared
+//! @return Returns false on seachitem prep failure.
 //!
 gboolean gw_searchitem_do_pre_search_prep (GwSearchItem* item)
 {
-    if (item->input != NULL || (item->input = malloc (MAX_LINE)) == NULL)
+    if (item->scratch_buffer1 != NULL || (item->scratch_buffer1 = malloc (MAX_LINE)) == NULL)
     {
       return FALSE;
     }
-    if (item->output != NULL || (item->output = malloc (MAX_LINE)) == NULL)
+    if (item->scratch_buffer2 != NULL || (item->scratch_buffer2 = malloc (MAX_LINE)) == NULL)
     {
-      free (item->input);
-      item->input = NULL;
+      free (item->scratch_buffer1);
+      item->scratch_buffer1 = NULL;
       return FALSE;
     }
-    item->current_line = 0;
+    if (item->comparison_buffer != NULL || (item->comparison_buffer = malloc (MAX_LINE)) == NULL)
+    {
+      free (item->scratch_buffer1);
+      item->scratch_buffer1 = NULL;
+      free (item->scratch_buffer2);
+      item->scratch_buffer2 = NULL;
+      return FALSE;
+    }
+
+    //Reset internal variables
     strcpy(item->comparison_buffer, "INITIALSTRING");
+    item->current_line = 0;
+    item->total_relevant_results = 0;
+    item->total_irrelevant_results = 0;
+    item->total_results = 0;
+
     if (item->fd == NULL)
       item->fd = fopen ((item->dictionary)->path, "r");
     item->status = GW_SEARCH_SEARCHING;
@@ -298,15 +297,20 @@ void gw_searchitem_do_post_search_clean (GwSearchItem* item)
       item->fd = NULL;
     }
 
-    if (item->input != NULL)
+    if (item->scratch_buffer1 != NULL)
     {
-      free(item->input);
-      item->input = NULL;
+      free(item->scratch_buffer1);
+      item->scratch_buffer1 = NULL;
     }
-    if (item->output != NULL)
+    if (item->scratch_buffer2 != NULL)
     {
-      free(item->output);
-      item->output = NULL;
+      free(item->scratch_buffer2);
+      item->scratch_buffer2 = NULL;
+    }
+    if (item->comparison_buffer != NULL)
+    {
+      free(item->comparison_buffer);
+      item->comparison_buffer = NULL;
     }
     item->status = GW_SEARCH_IDLE;
 }
@@ -431,7 +435,8 @@ GList* gw_historylist_get_forward_history (const int TARGET)
 //!
 //! This is the search item of the current search.  It doesn't get lumped
 //! into a history list until the user hits the back button or does another
-//! search.
+//! search. At program start, it has the special value of null which causes
+//! many GUI elements to become disabled.
 //!
 //! @see gw_historylist_get_back_history ()
 //! @see gw_historylist_get_forward_history ()
@@ -503,7 +508,7 @@ static void shift_history_by_target(const int TARGET, GList **from, GList **to)
     //Handle the current searchitem if it exists
     if (*current != NULL)
     {
-      if ((*current)->results_found)
+      if ((*current)->total_results)
         *to = g_list_prepend (*to, *current);
       else
         gw_searchitem_free (*current);

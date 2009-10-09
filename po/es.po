@@ -29,7 +29,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 0.15.1\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2009-10-08 15:11-0400\n"
+"POT-Creation-Date: 2009-10-08 22:45-0400\n"
 "PO-Revision-Date: 2009-03-01 14:45-0500\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -950,7 +950,7 @@ msgstr "Otros resultados"
 msgid "Page "
 msgstr "Página "
 
-#: src/io.c:100 src/dictionaries.c:782
+#: src/io.c:100 src/dictionaries.c:787
 msgid "File read failed"
 msgstr ""
 
@@ -1100,12 +1100,12 @@ msgstr "Nombres:"
 msgid " Dictionary"
 msgstr "Diccionario:"
 
-#: src/dictionaries.c:777
+#: src/dictionaries.c:782
 #, fuzzy, c-format
 msgid "Syncing %s dictionary"
 msgstr "Recreando diccionario Mixto..."
 
-#: src/dictionaries.c:807
+#: src/dictionaries.c:812
 #, fuzzy
 msgid "Success"
 msgstr "éxito\n"

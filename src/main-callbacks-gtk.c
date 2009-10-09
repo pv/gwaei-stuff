@@ -22,7 +22,7 @@
 //!
 //! @file src/main-callbacks-gtk.c
 //!
-//! @brief Gtk callbacks for events
+//! @brief Abstraction layer for gtk callbacks
 //!
 //! Callbacks for activities initiated by the user. Most of the gtk code here
 //! should still be abstracted to the interface C file when possible.
@@ -386,7 +386,6 @@ G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
         gw_historylist_go_forward_by_target (GW_HISTORYLIST_RESULTS);
     }
 
-    gw_searchitem_reset_result_counters (hl->current);
     gw_search_get_results (hl->current);
     gw_ui_update_history_popups ();
     gw_ui_update_toolbar_buttons ();
@@ -1294,7 +1293,7 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
     if (gw_ui_cancel_search_by_target (GW_TARGET_RESULTS) == FALSE)
       return;
 
-    if (hl->current != NULL && (hl->current)->results_found) 
+    if (hl->current != NULL && (hl->current)->total_results) 
     {
       gw_historylist_add_searchitem_to_history (GW_HISTORYLIST_RESULTS, hl->current);
       hl->current = NULL;
@@ -1500,7 +1499,7 @@ G_MODULE_EXPORT void do_update_styles (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void do_open_dictionary_folder (GtkWidget *widget, gpointer data) 
 {
     char directory[FILENAME_MAX];
-    get_waei_directory (directory);
+    gw_util_get_waei_directory (directory);
     printf ("%s\n",directory);
 
     char *uri = g_build_filename ("file://", directory, NULL);

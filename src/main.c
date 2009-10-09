@@ -63,7 +63,7 @@ int main( int argc, char *argv[] )
     setlocale(LC_COLLATE, "");
     setlocale(LC_MESSAGES, "");
     //Check if it's the correct locale
-    if (is_japanese_ctype() == FALSE)
+    if (gw_util_is_japanese_ctype() == FALSE)
     {
       //Try forcing a correct or better setting
       //This will have nice effects like antialiased text
