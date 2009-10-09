@@ -409,8 +409,8 @@ static void initialize_window_attributes(GtkWidget *window)
     leftover = MAX_GCONF_KEY;
     char key[leftover];
 
-    strncpy(key, GCPATH_GWAEI, leftover);
-    leftover -= strlen(GCPATH_GWAEI);
+    strncpy(key, GCPATH_GW, leftover);
+    leftover -= strlen(GCPATH_GW);
     strncat(key, "/", leftover);
     leftover -= 1;
     strncat(key, gtk_widget_get_name(window), leftover);

@@ -55,7 +55,7 @@ static GwDictList *dictionaries;
 //! Memory for a new GwDictInfo object will be allocated, and the name passed
 //! to the function as a param will be searched for in the .waei folder.  If 
 //! it is a known name, the long name of the object will betranslated and if
-//! it is installed, the status variable set to INSTALLED.
+//! it is installed, the status variable set to GW_DICT_STATUS_INSTALLED.
 //!
 //! @param name Name of the object to create
 //! @return An allocated GwDictInfo that will be needed to be freed by gw_dictinfo_free ()
@@ -121,66 +121,65 @@ GwDictInfo* gw_dictinfo_new (char *name)
     //Create id (to show special built in dictionaries)
     if      (strcmp(name, "English") == 0)
     {
-      temp->id = ENGLISH;
-      temp->type = OTHER;
-      strncpy (temp->gckey, GCKEY_GWAEI_ENGLISH_SOURCE, 100);
+      temp->id = GW_DICT_ENGLISH;
+      temp->type = GW_DICT_OTHER;
+      strncpy (temp->gckey, GCKEY_GW_ENGLISH_SOURCE, 100);
       strcpy (temp->rsync, RSYNC);
       strcat (temp->rsync, " -v ftp.monash.edu.au::nihongo/edict ");
       strcat (temp->rsync, temp->sync_path);
     }
     else if (strcmp (name, "Kanji") == 0)
     {
-      temp->id = KANJI;
-      temp->type = KANJI;
-      strncpy (temp->gckey, GCKEY_GWAEI_KANJI_SOURCE, 100);
+      temp->id = GW_DICT_KANJI;
+      temp->type = GW_DICT_KANJI;
+      strncpy (temp->gckey, GCKEY_GW_KANJI_SOURCE, 100);
       strcpy (temp->rsync, RSYNC);
       strcat (temp->rsync, " -v ftp.monash.edu.au::nihongo/kanjidic ");
       strcat (temp->rsync, temp->sync_path);
     }
     else if (strcmp (name, "Radicals") == 0)
     {
-      temp->id = RADICALS;
-      temp->type = RADICALS;
-      strncpy (temp->gckey, GCKEY_GWAEI_RADICALS_SOURCE, 100);
+      temp->id = GW_DICT_RADICALS;
+      temp->type = GW_DICT_RADICALS;
+      strncpy (temp->gckey, GCKEY_GW_RADICALS_SOURCE, 100);
       strcpy (temp->rsync, "");
     }
     else if (strcmp (name, "Names") == 0)
     {
-      temp->id = NAMES;
-      temp->type = OTHER;
-      strncpy (temp->gckey, GCKEY_GWAEI_NAMES_SOURCE, 100);
+      temp->id = GW_DICT_NAMES;
+      temp->type = GW_DICT_OTHER;
+      strncpy (temp->gckey, GCKEY_GW_NAMES_SOURCE, 100);
       strcpy (temp->rsync, RSYNC);
       strcat (temp->rsync, " -v ftp.monash.edu.au::nihongo/enamdict ");
       strcat (temp->rsync, temp->sync_path);
     }
     else if (strcmp (name, "Places") == 0)
     {
-      temp->id = PLACES;
-      temp->type = OTHER;
+      temp->id = GW_DICT_PLACES;
+      temp->type = GW_DICT_OTHER;
       strncpy(temp->gckey, "", 100);
       strcpy (temp->rsync, "");
     }
     else if (strcmp (name, "Mix") == 0)
     {
-      temp->id = MIX;
-      temp->type = KANJI;
+      temp->id = GW_DICT_MIX;
+      temp->type = GW_DICT_KANJI;
       strncpy(temp->gckey, "", 100);
       strcpy (temp->rsync, "");
     }
     else
     {
       temp->id = gw_dictlist_make_dictionary_id ();
-      temp->type = OTHER;
+      temp->type = GW_DICT_OTHER;
       strncpy(temp->gckey, "", 100);
       strcpy (temp->rsync, "");
     }
 
-
     //Set the initial installation status
     if (g_file_test(temp->path, G_FILE_TEST_IS_REGULAR) == TRUE)
-      temp->status = INSTALLED;
+      temp->status = GW_DICT_STATUS_INSTALLED;
     else
-      temp->status = NOT_INSTALLED;
+      temp->status = GW_DICT_STATUS_NOT_INSTALLED;
 
     //Done
     return temp;
@@ -373,7 +372,7 @@ GwDictInfo* gw_dictlist_get_dictionary_by_name (const char* request)
 GwDictInfo* gw_dictlist_get_dictionary_by_alias (const char* request)
 {
     if ((strcmp (request, "Radicals") == 0 || strcmp (request, "Kanji") == 0) &&
-         gw_dictlist_dictionary_get_status_by_id (MIX) == INSTALLED )
+         gw_dictlist_dictionary_get_status_by_id (GW_DICT_MIX) == GW_DICT_STATUS_INSTALLED )
       return gw_dictlist_get_dictionary_by_name ("Mix");
     else 
       return gw_dictlist_get_dictionary_by_name (request);
@@ -385,7 +384,7 @@ GwDictInfo* gw_dictlist_get_dictionary_by_alias (const char* request)
 //!
 //! This as a convenience function to see if a dictionary is installed,
 //! negating the need to see if it was added to the dictionary list and if
-//! it has the INSTALLED status set.
+//! it has the GW_DICT_STATUS_INSTALLED status set.
 //!
 //! @param request a const string to search for in the dictionary names
 //! @return returns true if the dictionary is installed
@@ -398,7 +397,7 @@ gboolean gw_dictlist_check_if_loaded_by_name(char* name)
     while (current != NULL)
     {
       di = (GwDictInfo*) current->data;
-      if (strcmp (di->name, name) == 0 && di->status == INSTALLED)
+      if (strcmp (di->name, name) == 0 && di->status == GW_DICT_STATUS_INSTALLED)
         return TRUE;
       current = current->next;
     }
@@ -412,8 +411,8 @@ gboolean gw_dictlist_check_if_loaded_by_name(char* name)
 //!
 //! The function will loop through each item in the dictionary list,
 //! incrementing its count by 1 for each found dictionary, then returning the
-//! number. The statuses include: INSTALLING, INSTALLED, NOT_INSTALLED,
-//! UPDATING, UPDATED, and CANCELING. See dictionaries.h for the current list.
+//! number. The statuses include: GW_DICT_STATUS_INSTALLING, GW_DICT_STATUS_INSTALLED, GW_DICT_STATUS_NOT_INSTALLED,
+//! GW_DICT_STATUS_UPDATING, GW_DICT_STATUS_UPDATED, and GW_DICT_STATUS_CANCELING. See dictionaries.h for the current list.
 //!
 //! @param status the integer status to check for
 //! @return returns the number of dictionaries with the status
@@ -442,8 +441,8 @@ int gw_dictlist_get_total_with_status(int status)
 //! @brief Gets a dictionary status from the dictionary list by its id
 //!
 //! The function will loop the dictionary list looking for a specific id,
-//! returning it's status.  Ids include ENGLISH, KANJI, RADICALS, NAMES, PLACES
-//! and MIX. See dictionaries.h for the current list.
+//! returning it's status.  Ids include GW_DICT_ENGLISH, GW_DICT_KANJI, GW_DICT_RADICALS, GW_DICT_NAMES, GW_DICT_PLACES
+//! and GW_DICT_MIX. See dictionaries.h for the current list.
 //!
 //! @param id Id attribute of the wanted dictionary
 //! @return Returns the status of the dictionary
@@ -462,7 +461,7 @@ int gw_dictlist_dictionary_get_status_by_id(int id)
     if (di->id == id)
       return di->status;
     else
-      return NOT_INSTALLED;
+      return GW_DICT_STATUS_NOT_INSTALLED;
 }
 
 
@@ -496,7 +495,7 @@ GwDictInfo* gw_dictlist_get_dictionary_by_id(int id)
 //! This is not the number of dictionaries that are active.  It shows
 //! how many dictionary names are recorded in the dictionary list.
 //! By default, the default dictionaries appended to the list with
-//! an UNINSTALLED status if they are unavailable. If the MIX dictionary
+//! an UNGW_DICT_STATUS_INSTALLED status if they are unavailable. If the GW_DICT_MIX dictionary
 //! is installed, Kanji and Radicals disappear from the GUI, but are still
 //! in this list.
 //!
@@ -587,31 +586,31 @@ void gw_dictionaries_initialize_dictionary_list()
 static gboolean create_mix_dictionary()
 {
     GwDictInfo* mix;
-    mix = gw_dictlist_get_dictionary_by_id(MIX);
+    mix = gw_dictlist_get_dictionary_by_id(GW_DICT_MIX);
     g_remove (mix->path);
-    mix->status = NOT_INSTALLED;
+    mix->status = GW_DICT_STATUS_NOT_INSTALLED;
 
     GwDictInfo* kanji;
-    kanji = gw_dictlist_get_dictionary_by_id(KANJI);
+    kanji = gw_dictlist_get_dictionary_by_id(GW_DICT_KANJI);
     GwDictInfo* radicals;
-    radicals = gw_dictlist_get_dictionary_by_id(RADICALS);
+    radicals = gw_dictlist_get_dictionary_by_id(GW_DICT_RADICALS);
 
     char *mpath = mix->path;
     char *kpath = kanji->path;
     char *rpath = radicals->path;
 
-    mix->status = INSTALLING;
+    mix->status = GW_DICT_STATUS_INSTALLING;
 
     gboolean ret;
     ret = gw_io_create_mix_dictionary(mpath, kpath, rpath);
    
     if (ret)
     {
-      mix->status = INSTALLED;
+      mix->status = GW_DICT_STATUS_INSTALLED;
       mix->total_lines =  gw_io_get_total_lines_for_path (mix->path);
     }
     else
-      mix->status = ERRORED;
+      mix->status = GW_DICT_STATUS_ERRORED;
 
     return ret;
 }
@@ -631,11 +630,11 @@ static gboolean create_mix_dictionary()
 static gboolean split_places_from_names_dictionary(GError **error)
 {
     GwDictInfo* di_places;
-    di_places = gw_dictlist_get_dictionary_by_id (PLACES);
+    di_places = gw_dictlist_get_dictionary_by_id (GW_DICT_PLACES);
     GwDictInfo* di_names;
-    di_names = gw_dictlist_get_dictionary_by_id (NAMES);
+    di_names = gw_dictlist_get_dictionary_by_id (GW_DICT_NAMES);
 
-    if (di_names->status == NOT_INSTALLED) return FALSE;
+    if (di_names->status == GW_DICT_STATUS_NOT_INSTALLED) return FALSE;
 
     char *raw = di_names->sync_path;
     char source[FILENAME_MAX];
@@ -661,9 +660,9 @@ static gboolean split_places_from_names_dictionary(GError **error)
     if (ret)
     {
       g_remove(source);
-      di_places->status = INSTALLED;
+      di_places->status = GW_DICT_STATUS_INSTALLED;
       di_places->total_lines =  gw_io_get_total_lines_for_path (di_places->path);
-      di_names->status  = INSTALLED;
+      di_names->status  = GW_DICT_STATUS_INSTALLED;
       di_names->total_lines =  gw_io_get_total_lines_for_path (di_names->path);
     }
     else
@@ -671,8 +670,8 @@ static gboolean split_places_from_names_dictionary(GError **error)
       g_remove(source);
       g_remove(names);
       remove(places);
-      di_places->status = ERRORED;
-      di_names->status  = ERRORED;
+      di_places->status = GW_DICT_STATUS_ERRORED;
+      di_names->status  = GW_DICT_STATUS_ERRORED;
     }
     
     return ret;
@@ -697,32 +696,32 @@ void gw_dictlist_preform_postprocessing_by_name(char* name, GError **error)
     //Sanity check
     GwDictInfo* di;
     di = gw_dictlist_get_dictionary_by_name (name);
-    if (di->status != INSTALLING &&
-        di->status != UPDATING &&
-        di->status != REBUILDING)
+    if (di->status != GW_DICT_STATUS_INSTALLING &&
+        di->status != GW_DICT_STATUS_UPDATING &&
+        di->status != GW_DICT_STATUS_REBUILDING)
       return;
 
     //Setup some pointers
-    GwDictInfo* k_di = gw_dictlist_get_dictionary_by_id (KANJI);
-    GwDictInfo* r_di = gw_dictlist_get_dictionary_by_id (RADICALS);
-    GwDictInfo* n_di = gw_dictlist_get_dictionary_by_id (NAMES);
+    GwDictInfo* k_di = gw_dictlist_get_dictionary_by_id (GW_DICT_KANJI);
+    GwDictInfo* r_di = gw_dictlist_get_dictionary_by_id (GW_DICT_RADICALS);
+    GwDictInfo* n_di = gw_dictlist_get_dictionary_by_id (GW_DICT_NAMES);
 
     //Preseve the status
     int restore_status = di->status;
-    di->status = INSTALLED;
+    di->status = GW_DICT_STATUS_INSTALLED;
 
     //Rebuild the mix dictionary
-    if ((di->id == RADICALS || di->id == KANJI || di->id == MIX) &&
-        (k_di->status == INSTALLED && r_di->status == INSTALLED)
+    if ((di->id == GW_DICT_RADICALS || di->id == GW_DICT_KANJI || di->id == GW_DICT_MIX) &&
+        (k_di->status == GW_DICT_STATUS_INSTALLED && r_di->status == GW_DICT_STATUS_INSTALLED)
        )
     {
-      di->status = REBUILDING;
+      di->status = GW_DICT_STATUS_REBUILDING;
       create_mix_dictionary ();
     }
     //Rebuild the names dictionary
-    else if(di->id == NAMES && n_di->status == INSTALLED)
+    else if(di->id == GW_DICT_NAMES && n_di->status == GW_DICT_STATUS_INSTALLED)
     {
-      di->status = REBUILDING;
+      di->status = GW_DICT_STATUS_REBUILDING;
       split_places_from_names_dictionary(error);
     }
     //Cleanup
@@ -737,7 +736,7 @@ void gw_dictlist_preform_postprocessing_by_name(char* name, GError **error)
 //! a specific status, it is switched to the requested one.  This is a good way
 //! to quickly cleanup after possible installation errors to reset the
 //! dictionaries to an uninstalled status state. The possible statuses include:
-//! INSTALLING, INSTALLED, NOT_INSTALLED, UPDATING, UPDATED, and CANCELING.
+//! GW_DICT_STATUS_INSTALLING, GW_DICT_STATUS_INSTALLED, GW_DICT_STATUS_NOT_INSTALLED, GW_DICT_STATUS_UPDATING, GW_DICT_STATUS_UPDATED, and GW_DICT_STATUS_CANCELING.
 //! See dictionaries.h for the current list.
 //!
 //! @param OLD const int of the current install status
@@ -771,12 +770,12 @@ void gw_dictlist_normalize_all_status_from_to (const int OLD, const int NEW)
 void gw_dictlist_sync_dictionary (GwDictInfo *di, GError **error)
 {
     GQuark quark;
-    quark = g_quark_from_string (GWAEI_GENERIC_ERROR);
+    quark = g_quark_from_string (GW_GENERIC_ERROR);
 
     char *path = di->path;
     char *sync_path = di->sync_path;
 
-    if (di->status != INSTALLED || strlen(di->rsync) < 2)
+    if (di->status != GW_DICT_STATUS_INSTALLED || strlen(di->rsync) < 2)
       return;
 
     printf("*  ");
@@ -787,7 +786,7 @@ void gw_dictlist_sync_dictionary (GwDictInfo *di, GError **error)
     {
       const char *message = gettext("File read failed");
       if (*error != NULL)
-        *error = g_error_new_literal (quark, GWAEI_FILE_ERROR, message);
+        *error = g_error_new_literal (quark, GW_FILE_ERROR, message);
     }
     
     if (*error == NULL)
@@ -798,9 +797,9 @@ void gw_dictlist_sync_dictionary (GwDictInfo *di, GError **error)
       gw_dictlist_preform_postprocessing_by_name(di->name, error);
 
     if (*error == NULL)
-      di->status = UPDATED;
+      di->status = GW_DICT_STATUS_UPDATED;
     else
-      di->status = ERRORED;
+      di->status = GW_DICT_STATUS_ERRORED;
 
     if (error != NULL && *error != NULL)
     {

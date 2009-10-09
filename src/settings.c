@@ -76,25 +76,25 @@ char* gw_parse_widget_name (char *output, GtkWidget *widget,
 void gw_settings_initialize_enabled_features_list()
 {
     //General search
-    if (gw_dictlist_get_total_with_status(INSTALLED) > 0)
+    if (gw_dictlist_get_total_with_status(GW_DICT_STATUS_INSTALLED) > 0)
       gw_ui_set_feature_line_status("general", "enabled");
     else
       gw_ui_set_feature_line_status("general", "disabled");
 
     //Combined dictionary
-    if (gw_dictlist_dictionary_get_status_by_id(MIX) == INSTALLED)
+    if (gw_dictlist_dictionary_get_status_by_id(GW_DICT_MIX) == GW_DICT_STATUS_INSTALLED)
       gw_ui_set_feature_line_status("mix", "enabled");
     else
       gw_ui_set_feature_line_status("mix", "disabled");
 
     //Radical search tool
-    if (gw_dictlist_dictionary_get_status_by_id(RADICALS) == INSTALLED)
+    if (gw_dictlist_dictionary_get_status_by_id(GW_DICT_RADICALS) == GW_DICT_STATUS_INSTALLED)
       gw_ui_set_feature_line_status("radical", "enabled");
     else
       gw_ui_set_feature_line_status("radical", "disabled");
 
     //Kanji lookup tool
-    if (gw_dictlist_dictionary_get_status_by_id(KANJI) == INSTALLED)
+    if (gw_dictlist_dictionary_get_status_by_id(GW_DICT_KANJI) == GW_DICT_STATUS_INSTALLED)
       gw_ui_set_feature_line_status("kanji", "enabled");
     else
       gw_ui_set_feature_line_status("kanji", "disabled");
@@ -111,22 +111,22 @@ void gw_settings_initialize_enabled_features_list()
 
 void gw_settings_initialize_installed_dictionary_list() 
 {
-    if (gw_dictlist_dictionary_get_status_by_id(ENGLISH) == INSTALLED)
+    if (gw_dictlist_dictionary_get_status_by_id(GW_DICT_ENGLISH) == GW_DICT_STATUS_INSTALLED)
       gw_ui_set_install_line_status("english", "remove", NULL);
     else
       gw_ui_set_install_line_status("english", "install", NULL);
 
-    if (gw_dictlist_dictionary_get_status_by_id(KANJI) == INSTALLED)
+    if (gw_dictlist_dictionary_get_status_by_id(GW_DICT_KANJI) == GW_DICT_STATUS_INSTALLED)
       gw_ui_set_install_line_status("kanji", "remove", NULL);
     else
       gw_ui_set_install_line_status("kanji", "install", NULL);
 
-    if (gw_dictlist_dictionary_get_status_by_id(NAMES) == INSTALLED)
+    if (gw_dictlist_dictionary_get_status_by_id(GW_DICT_NAMES) == GW_DICT_STATUS_INSTALLED)
       gw_ui_set_install_line_status("names", "remove", NULL);
     else
       gw_ui_set_install_line_status("names", "install", NULL);
 
-    if (gw_dictlist_dictionary_get_status_by_id(RADICALS) == INSTALLED)
+    if (gw_dictlist_dictionary_get_status_by_id(GW_DICT_RADICALS) == GW_DICT_STATUS_INSTALLED)
       gw_ui_set_install_line_status("radicals", "remove", NULL);
     else
       gw_ui_set_install_line_status("radicals", "install", NULL);

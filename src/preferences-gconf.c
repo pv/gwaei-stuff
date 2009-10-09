@@ -288,21 +288,21 @@ void do_font_size_pref_changed_action ( GConfClient* client,
 {
     //Get the size from the GCONF key
     int size;
-    size = gconf_client_get_int ( client, GCKEY_GWAEI_FONT_SIZE, NULL);
+    size = gconf_client_get_int ( client, GCKEY_GW_FONT_SIZE, NULL);
 
     //If the value is strange, get the default value
     if (size < MIN_FONT_SIZE | size > MAX_FONT_SIZE)
     {
       GConfValue *value;
       value = gconf_client_get_default_from_schema ( client,
-                                                     GCKEY_GWAEI_FONT_SIZE,
+                                                     GCKEY_GW_FONT_SIZE,
                                                      NULL                   );
       size = gconf_value_get_int (value);
       if (value != NULL && size >= MIN_FONT_SIZE && size <= MAX_FONT_SIZE) {
-        gconf_client_set_int ( client, GCKEY_GWAEI_FONT_SIZE, size, NULL);
+        gconf_client_set_int ( client, GCKEY_GW_FONT_SIZE, size, NULL);
       }
       else
-        gconf_client_set_int ( client, GCKEY_GWAEI_FONT_SIZE, 12, NULL);
+        gconf_client_set_int ( client, GCKEY_GW_FONT_SIZE, 12, NULL);
       return;
     }
 
@@ -411,7 +411,7 @@ void do_color_value_changed_action( GConfClient* client,
       if (regexec(&re_hexcolor, gconf_value_get_string(value), 1, NULL, 0) != 0)
       {
         value = gconf_client_get_default_from_schema (client,
-                                                      GCKEY_GWAEI_FONT_SIZE,
+                                                      GCKEY_GW_FONT_SIZE,
                                                       NULL                  );
         if (value != NULL && value->type == GCONF_VALUE_STRING)
           hex_string = gconf_value_get_string (value);
@@ -457,12 +457,12 @@ void gw_prefs_initialize_preferences()
     gconf_client_add_dir   ( client, GCPATH_INTERFACE, 
                              GCONF_CLIENT_PRELOAD_NONE,
                              NULL                             );
-    gconf_client_add_dir   ( client, GCPATH_GWAEI, 
+    gconf_client_add_dir   ( client, GCPATH_GW, 
                              GCONF_CLIENT_PRELOAD_NONE,
                              NULL                            );
 
     //Add preference change notifiers
-    gconf_client_notify_add (client, GCKEY_GWAEI_LESS_RELEVANT_SHOW, 
+    gconf_client_notify_add (client, GCKEY_GW_LESS_RELEVANT_SHOW, 
                              do_less_relevant_show_pref_changed_action,
                              NULL, NULL, NULL                );
 
@@ -470,90 +470,90 @@ void gw_prefs_initialize_preferences()
                              do_toolbar_style_pref_changed_action,
                              NULL, NULL, NULL                 );
 
-    gconf_client_notify_add (client, GCKEY_GWAEI_TOOLBAR_SHOW, 
+    gconf_client_notify_add (client, GCKEY_GW_TOOLBAR_SHOW, 
                              do_toolbar_show_pref_changed_action,
                              NULL, NULL, NULL                );
 
-    gconf_client_notify_add (client, GCKEY_GWAEI_FONT_SIZE, 
+    gconf_client_notify_add (client, GCKEY_GW_FONT_SIZE, 
                              do_font_size_pref_changed_action,
                              NULL, NULL, NULL               );
 
-    gconf_client_notify_add (client, GCKEY_GWAEI_ROMAN_KANA, 
+    gconf_client_notify_add (client, GCKEY_GW_ROMAN_KANA, 
                              do_roman_kana_conv_pref_changed_action,
                              NULL, NULL, NULL                );
 
-    gconf_client_notify_add (client, GCKEY_GWAEI_HIRA_KATA, 
+    gconf_client_notify_add (client, GCKEY_GW_HIRA_KATA, 
                              do_hira_kata_conv_pref_changed_action,
                              NULL, NULL, NULL                );
 
-    gconf_client_notify_add (client, GCKEY_GWAEI_KATA_HIRA, 
+    gconf_client_notify_add (client, GCKEY_GW_KATA_HIRA, 
                              do_kata_hira_conv_pref_changed_action,
                              NULL, NULL, NULL                );
 
-    gconf_client_notify_add (client, GCKEY_GWAEI_SPELLCHECK, 
+    gconf_client_notify_add (client, GCKEY_GW_SPELLCHECK, 
                              do_spellcheck_pref_changed_action,
                              NULL, NULL, NULL                );
 
-    gconf_client_notify_add (client, GCKEY_GWAEI_MATCH_FG, 
+    gconf_client_notify_add (client, GCKEY_GW_MATCH_FG, 
                              do_color_value_changed_action,
                              NULL, NULL, NULL                );
 
-    gconf_client_notify_add (client, GCKEY_GWAEI_MATCH_BG, 
+    gconf_client_notify_add (client, GCKEY_GW_MATCH_BG, 
                              do_color_value_changed_action,
                              NULL, NULL, NULL                );
 
-    gconf_client_notify_add (client, GCKEY_GWAEI_HEADER_FG, 
+    gconf_client_notify_add (client, GCKEY_GW_HEADER_FG, 
                              do_color_value_changed_action,
                              NULL, NULL, NULL                );
 
-    gconf_client_notify_add (client, GCKEY_GWAEI_HEADER_BG, 
+    gconf_client_notify_add (client, GCKEY_GW_HEADER_BG, 
                              do_color_value_changed_action,
                              NULL, NULL, NULL                );
 
-    gconf_client_notify_add (client, GCKEY_GWAEI_COMMENT_FG, 
+    gconf_client_notify_add (client, GCKEY_GW_COMMENT_FG, 
                              do_color_value_changed_action,
                              NULL, NULL, NULL                );
 
     gconf_client_notify_add (client,
-                             GCKEY_GWAEI_ENGLISH_SOURCE, 
+                             GCKEY_GW_ENGLISH_SOURCE, 
                              do_dictionary_source_gconf_key_changed_action,
                              NULL, NULL, NULL                 );
 
     gconf_client_notify_add (client,
-                             GCKEY_GWAEI_KANJI_SOURCE, 
+                             GCKEY_GW_KANJI_SOURCE, 
                              do_dictionary_source_gconf_key_changed_action,
                              NULL, NULL, NULL                 );
 
     gconf_client_notify_add (client,
-                             GCKEY_GWAEI_NAMES_SOURCE, 
+                             GCKEY_GW_NAMES_SOURCE, 
                              do_dictionary_source_gconf_key_changed_action,
                              NULL, NULL, NULL                 );
 
     gconf_client_notify_add (client,
-                             GCKEY_GWAEI_RADICALS_SOURCE, 
+                             GCKEY_GW_RADICALS_SOURCE, 
                              do_dictionary_source_gconf_key_changed_action,
                              NULL, NULL, NULL                 );
 
 
     //Do an initial trigger of the notifications to set an initial state
-    gconf_client_notify (client, GCKEY_GWAEI_TOOLBAR_SHOW);
+    gconf_client_notify (client, GCKEY_GW_TOOLBAR_SHOW);
     gconf_client_notify (client, GCKEY_TOOLBAR_STYLE);
-    gconf_client_notify (client, GCKEY_GWAEI_FONT_SIZE);
-    gconf_client_notify (client, GCKEY_GWAEI_KATA_HIRA);
-    gconf_client_notify (client, GCKEY_GWAEI_HIRA_KATA);
-    gconf_client_notify (client, GCKEY_GWAEI_ROMAN_KANA);
-    gconf_client_notify (client, GCKEY_GWAEI_SPELLCHECK);
-    gconf_client_notify (client, GCKEY_GWAEI_LESS_RELEVANT_SHOW);
-    gconf_client_notify (client, GCKEY_GWAEI_MATCH_FG);
-    gconf_client_notify (client, GCKEY_GWAEI_MATCH_BG);
-    gconf_client_notify (client, GCKEY_GWAEI_HEADER_FG);
-    gconf_client_notify (client, GCKEY_GWAEI_HEADER_BG);
-    gconf_client_notify (client, GCKEY_GWAEI_COMMENT_FG);
-    gconf_client_notify (client, GCKEY_GWAEI_ENGLISH_SOURCE);
-    gconf_client_notify (client, GCKEY_GWAEI_KANJI_SOURCE);
-    gconf_client_notify (client, GCKEY_GWAEI_NAMES_SOURCE);
-    gconf_client_notify (client, GCKEY_GWAEI_PLACES_SOURCE);
-    gconf_client_notify (client, GCKEY_GWAEI_RADICALS_SOURCE);
+    gconf_client_notify (client, GCKEY_GW_FONT_SIZE);
+    gconf_client_notify (client, GCKEY_GW_KATA_HIRA);
+    gconf_client_notify (client, GCKEY_GW_HIRA_KATA);
+    gconf_client_notify (client, GCKEY_GW_ROMAN_KANA);
+    gconf_client_notify (client, GCKEY_GW_SPELLCHECK);
+    gconf_client_notify (client, GCKEY_GW_LESS_RELEVANT_SHOW);
+    gconf_client_notify (client, GCKEY_GW_MATCH_FG);
+    gconf_client_notify (client, GCKEY_GW_MATCH_BG);
+    gconf_client_notify (client, GCKEY_GW_HEADER_FG);
+    gconf_client_notify (client, GCKEY_GW_HEADER_BG);
+    gconf_client_notify (client, GCKEY_GW_COMMENT_FG);
+    gconf_client_notify (client, GCKEY_GW_ENGLISH_SOURCE);
+    gconf_client_notify (client, GCKEY_GW_KANJI_SOURCE);
+    gconf_client_notify (client, GCKEY_GW_NAMES_SOURCE);
+    gconf_client_notify (client, GCKEY_GW_PLACES_SOURCE);
+    gconf_client_notify (client, GCKEY_GW_RADICALS_SOURCE);
 
   g_object_unref(client);
 }

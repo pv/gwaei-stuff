@@ -65,14 +65,14 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary,
   temp->results_medium = NULL;
   temp->results_low = NULL;
   
-  if (TARGET != GWAEI_TARGET_RESULTS &&
-      TARGET != GWAEI_TARGET_KANJI   &&
-      TARGET != GWAEI_TARGET_CONSOLE       )
+  if (TARGET != GW_TARGET_RESULTS &&
+      TARGET != GW_TARGET_KANJI   &&
+      TARGET != GW_TARGET_CONSOLE       )
     return NULL;
 
   //Set the internal pointers to the correct global variables
   temp->fd     = NULL;
-  temp->status = GWAEI_SEARCH_IDLE;
+  temp->status = GW_SEARCH_IDLE;
   temp->input  = NULL;
   temp->output = NULL;
   temp->dictionary = dictionary;
@@ -82,7 +82,7 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary,
   temp->total_results = 0;
   temp->results_found = TRUE;
   temp->current_line = 0;
-  char *key = GCKEY_GWAEI_LESS_RELEVANT_SHOW; 
+  char *key = GCKEY_GW_LESS_RELEVANT_SHOW; 
   temp->show_less_relevant_results = gw_pref_get_boolean (key, TRUE);
 
   //Create the compiled regular expression
@@ -277,7 +277,7 @@ gboolean gw_searchitem_do_pre_search_prep (GwSearchItem* item)
     strcpy(item->comparison_buffer, "INITIALSTRING");
     if (item->fd == NULL)
       item->fd = fopen ((item->dictionary)->path, "r");
-    item->status = GWAEI_SEARCH_SEARCHING;
+    item->status = GW_SEARCH_SEARCHING;
     return TRUE;
 }
 
@@ -308,7 +308,7 @@ void gw_searchitem_do_post_search_clean (GwSearchItem* item)
       free(item->output);
       item->output = NULL;
     }
-    item->status = GWAEI_SEARCH_IDLE;
+    item->status = GW_SEARCH_IDLE;
 }
 
 
@@ -338,16 +338,16 @@ void gw_searchitem_free(GwSearchItem* item) {
 //!
 //! @brief Returns the private historylist of the history.c file
 //!
-//! The two options here are GWAEI_HISTORYLIST_RESULTS to get the results
-//! history list and GWAEI_HISTORYLIST_KANJI to get the kanji history list.
+//! The two options here are GW_HISTORYLIST_RESULTS to get the results
+//! history list and GW_HISTORYLIST_KANJI to get the kanji history list.
 //!
 //! @param TARGET The target who's history list we want.
 //!
 GwHistoryList* gw_historylist_get_list(const int TARGET)
 {
-    if (TARGET == GWAEI_HISTORYLIST_RESULTS)
+    if (TARGET == GW_HISTORYLIST_RESULTS)
       return results_history;
-    else if (TARGET == GWAEI_HISTORYLIST_KANJI)
+    else if (TARGET == GW_HISTORYLIST_KANJI)
       return kanji_history;
     else
       return NULL;

@@ -98,16 +98,16 @@ gboolean strcpy_with_query_preformatting (char* output, char* input, GwSearchIte
 
     //Load the preformatting preferences from pref
     gboolean hira_kata_conv_pref;
-    hira_kata_conv_pref = gw_pref_get_boolean (GCKEY_GWAEI_HIRA_KATA, TRUE);
+    hira_kata_conv_pref = gw_pref_get_boolean (GCKEY_GW_HIRA_KATA, TRUE);
       
     gboolean kata_hira_conv_pref;
-    kata_hira_conv_pref = gw_pref_get_boolean (GCKEY_GWAEI_KATA_HIRA, TRUE);
+    kata_hira_conv_pref = gw_pref_get_boolean (GCKEY_GW_KATA_HIRA, TRUE);
 
     int roman_kana_conv_pref;
-    roman_kana_conv_pref = gw_pref_get_int (GCKEY_GWAEI_ROMAN_KANA, 2);
+    roman_kana_conv_pref = gw_pref_get_int (GCKEY_GW_ROMAN_KANA, 2);
 
     //Load the preformatting preferences from pref
-    if (item->dictionary->type == KANJI || item->dictionary->type == RADICALS)
+    if (item->dictionary->type == GW_DICT_KANJI || item->dictionary->type == GW_DICT_RADICALS)
     {
       strcpy(output, buffer);
       return FALSE;
@@ -275,7 +275,7 @@ gboolean strcpy_with_query_preformatting (char* output, char* input, GwSearchIte
 void strcpy_with_query_formatting (char* output, char* input, GwSearchItem *item)
 {
     //Searching in the kanji sidebar only look for a matching first character
-    if (item->target == GWAEI_TARGET_KANJI)
+    if (item->target == GW_TARGET_KANJI)
     {
       strcpy(output, "^(");
       strcat(output, input);
@@ -285,7 +285,7 @@ void strcpy_with_query_formatting (char* output, char* input, GwSearchItem *item
 
     //General Radical and kanji searches look for every single atom separated by
     //the delimitor
-    else if (item->dictionary->type == KANJI || item->dictionary->type == RADICALS)
+    else if (item->dictionary->type == GW_DICT_KANJI || item->dictionary->type == GW_DICT_RADICALS)
     {
       //Radical and kanji searches don't use regex
       //so the search should be cleaned before sending.

@@ -92,14 +92,14 @@ gboolean gw_io_copy_with_encoding( char *source_path,     char *target_path,
     char *converted_buffer = NULL;
     gsize bytes_read, bytes_written;
     GQuark quark;
-    quark = g_quark_from_string (GWAEI_GENERIC_ERROR);
+    quark = g_quark_from_string (GW_GENERIC_ERROR);
 
     //Load the file into memory
     if (g_file_get_contents (source_path, &buffer, NULL, NULL) == FALSE)
     {
       const char *message = gettext("File read failed");
       if (error != NULL)
-        *error = g_error_new_literal (quark, GWAEI_FILE_ERROR, message);
+        *error = g_error_new_literal (quark, GW_FILE_ERROR, message);
       return FALSE;
     }
 
@@ -115,7 +115,7 @@ gboolean gw_io_copy_with_encoding( char *source_path,     char *target_path,
     {
       const char *message = gettext("Encoding conversion failed");
       if (error != NULL)
-        *error = g_error_new_literal (quark, GWAEI_FILE_ERROR, message);
+        *error = g_error_new_literal (quark, GW_FILE_ERROR, message);
       free(buffer);
       return FALSE;
     }
@@ -124,7 +124,7 @@ gboolean gw_io_copy_with_encoding( char *source_path,     char *target_path,
     {
       const char *message = gettext("Write file failed");
       if (error != NULL)
-        *error = g_error_new_literal (quark, GWAEI_FILE_ERROR, message);
+        *error = g_error_new_literal (quark, GW_FILE_ERROR, message);
       free(buffer);
       free(converted_buffer);
       return FALSE;
@@ -218,7 +218,7 @@ gboolean gw_io_delete_dictionary_file(GwDictInfo* file)
 gboolean gw_io_copy_dictionary_file(char *source_path, char *target_path, GError **error)
 {
     GQuark quark;
-    quark = g_quark_from_string (GWAEI_GENERIC_ERROR);
+    quark = g_quark_from_string (GW_GENERIC_ERROR);
 
     char *contents;
     gssize length;
@@ -229,7 +229,7 @@ gboolean gw_io_copy_dictionary_file(char *source_path, char *target_path, GError
       remove(target_path);
       const char *message = gettext("File copy error");
       if (error != NULL)
-        *error = g_error_new_literal (quark, GWAEI_FILE_ERROR, message);
+        *error = g_error_new_literal (quark, GW_FILE_ERROR, message);
       return FALSE;
     }
     free(contents);
@@ -441,7 +441,7 @@ gboolean gw_io_split_places_from_names_dictionary (char *spath, char *npath, cha
 gboolean gw_io_gunzip_dictionary_file(char *path, GError **error)
 {
     GQuark quark;
-    quark = g_quark_from_string (GWAEI_GENERIC_ERROR);
+    quark = g_quark_from_string (GW_GENERIC_ERROR);
 
     gboolean success;
     int leftover = FILENAME_MAX;
@@ -459,7 +459,7 @@ gboolean gw_io_gunzip_dictionary_file(char *path, GError **error)
       g_remove(path);
       const char *message = gettext("gunzip error");
       if (error != NULL)
-        *error = g_error_new_literal (quark, GWAEI_FILE_ERROR, message);
+        *error = g_error_new_literal (quark, GW_FILE_ERROR, message);
     }
 
     return success;

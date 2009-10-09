@@ -53,12 +53,12 @@ void gw_console_uninstall_dictionary_by_name(char *name)
     if (di == NULL) return;
 
     gw_io_delete_dictionary_file(di);
-    di->status = NOT_INSTALLED;
+    di->status = GW_DICT_STATUS_NOT_INSTALLED;
     di->load_position = -1;
 
-    if (di->id == KANJI || di->id == RADICALS)
+    if (di->id == GW_DICT_KANJI || di->id == GW_DICT_RADICALS)
       gw_console_uninstall_dictionary_by_name ("Mix");
-    else if (di->id == NAMES)
+    else if (di->id == GW_DICT_NAMES)
       gw_console_uninstall_dictionary_by_name ("Places");
 }
 
@@ -72,8 +72,8 @@ gboolean gw_console_install_dictionary_by_name(char *name)
     char *sync_path = di->sync_path;
     char *gz_path = di->gz_path;
 
-    if (di->status != NOT_INSTALLED || di->id == PLACES) return FALSE;
-    di->status = INSTALLING;
+    if (di->status != GW_DICT_STATUS_NOT_INSTALLED || di->id == GW_DICT_PLACES) return FALSE;
+    di->status = GW_DICT_STATUS_INSTALLING;
     
     char fallback_uri[100];
     gw_util_strncpy_fallback_from_key (fallback_uri, di->gckey, 100);
@@ -117,9 +117,9 @@ gboolean gw_console_install_dictionary_by_name(char *name)
     }
 
     if (ret)
-      di->status = INSTALLED;
+      di->status = GW_DICT_STATUS_INSTALLED;
     else
-      di->status = NOT_INSTALLED;
+      di->status = GW_DICT_STATUS_NOT_INSTALLED;
 
     //Special dictionary post processing
     if (ret)
@@ -179,7 +179,7 @@ static void print_installable_dictionaries()
     while (list != NULL)
     {
       di = list->data;
-      if (di->gckey[0] != '\0' && di->status == NOT_INSTALLED)
+      if (di->gckey[0] != '\0' && di->status == GW_DICT_STATUS_NOT_INSTALLED)
       {
         if (i != 0) printf(" ");
         printf("%s", di->name);
@@ -210,7 +210,7 @@ static void print_uninstallable_dictionaries()
     while (list != NULL)
     {
       di = list->data;
-      if (di->status == INSTALLED)
+      if (di->status == GW_DICT_STATUS_INSTALLED)
       {
         if (i != 0) printf(" ");
         printf("%s", di->name);
@@ -242,7 +242,7 @@ static void print_available_dictionaries()
     while (list != NULL)
     {
       di = list->data;
-      if (di->status == INSTALLED)
+      if (di->status == GW_DICT_STATUS_INSTALLED)
       {
         if (i != 0) printf(" ");
         printf("%s", di->name);
@@ -412,7 +412,7 @@ void initialize_console_interface(int argc, char **argv)
 
     di = gw_dictlist_get_dictionary_by_alias(args[1]);
 
-    if (di != NULL && di->status != NOT_INSTALLED && di->gckey[0] != '\0')
+    if (di != NULL && di->status != GW_DICT_STATUS_NOT_INSTALLED && di->gckey[0] != '\0')
     {
       //printf("[1m");
       printf("%s\n", gettext("Already Installed"));
@@ -499,7 +499,7 @@ void initialize_console_interface(int argc, char **argv)
 
 
   //Make sure the selected dictionary exists
-  else if (di == NULL || di->status != INSTALLED)
+  else if (di == NULL || di->status != GW_DICT_STATUS_INSTALLED)
   {
     printf(gettext("Requested dictionary not found!\n"));
   }
@@ -529,7 +529,7 @@ void initialize_console_interface(int argc, char **argv)
       print_search_start_banner(query, di->name);
 
     GwSearchItem *item;
-    item = gw_searchitem_new(query, di, GWAEI_TARGET_CONSOLE);
+    item = gw_searchitem_new(query, di, GW_TARGET_CONSOLE);
     item->show_less_relevant_results = !exact_switch;
 
     if (item != NULL )

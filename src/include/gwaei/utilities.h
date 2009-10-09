@@ -1,6 +1,6 @@
-#define GWAEI_CONSOLE_RUNMODE 0
-#define GWAEI_GTK_RUNMODE     1
-#define GWAEI_QT_RUNMODE      2
+#define GW_CONSOLE_RUNMODE 0
+#define GW_GTK_RUNMODE     1
+#define GW_QT_RUNMODE      2
 
 gboolean gw_itoa(int, char *, const int);
 char* get_waei_directory( char* );

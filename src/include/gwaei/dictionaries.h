@@ -27,24 +27,43 @@
 //! To be written.
 //!
 
-#define INSTALLING    0
-#define INSTALLED     1
-#define NOT_INSTALLED 2
-#define UPDATING      3
-#define UPDATED       4
-#define CANCELING     5
-#define CANCELED      6
-#define ERRORED       7
-#define REBUILDING    8
+//!
+//! @brief Enumeration of dictionary statuses
+//!
+//! Statuses used for clueing thet states of dictionaries added to the
+//! dictionary list.  This helps to set the GUI up correctly and generally
+//! keep havoc from breaking out.
+//!
+enum gw_dictionary_statuses {
+  GW_DICT_STATUS_INSTALLING,
+  GW_DICT_STATUS_INSTALLED,
+  GW_DICT_STATUS_NOT_INSTALLED,
+  GW_DICT_STATUS_UPDATING,
+  GW_DICT_STATUS_UPDATED,
+  GW_DICT_STATUS_CANCELING,
+  GW_DICT_STATUS_CANCELED,
+  GW_DICT_STATUS_ERRORED,
+  GW_DICT_STATUS_REBUILDING
+};
 
-#define OTHER    0
-#define ENGLISH  1
-#define KANJI    2
-#define RADICALS 3
-#define NAMES    4
-#define PLACES   5
-#define MIX      6
-
+//!
+//! @brief Enumeration of dictionary types
+//!
+//! These are used for simple identification of known dictionaries.  Other
+//! is not used for known dictionaries, but a unique id number generated
+//! dynamically using gw_dictlist_make_dictionary_id().  Other is used for
+//! in the dictionary type classificaton which falls into GW_DICT_OTHER,
+//! GW_DICT_RADICAL, and GW_DICT_KANJI.
+//!
+enum gw_dictionary_types {  
+  GW_DICT_ENGLISH,
+  GW_DICT_KANJI,
+  GW_DICT_RADICALS,
+  GW_DICT_NAMES,
+  GW_DICT_PLACES,
+  GW_DICT_MIX,
+  GW_DICT_OTHER
+};
 
 //!
 //! @brief Primitive for storing dictionary information

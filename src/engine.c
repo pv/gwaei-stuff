@@ -65,7 +65,7 @@ static gboolean less_relevant_title_inserted = FALSE;
 //!
 static void append_result_to_output (GwSearchItem *item)
 {
-    if  (gw_util_get_runmode() == GWAEI_CONSOLE_RUNMODE)
+    if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
     {
       printf("%s", item->output);
     }
@@ -89,7 +89,7 @@ static void append_result_to_output (GwSearchItem *item)
 //!
 static void append_more_relevant_header_to_output(GwSearchItem *item)
 {
-    if (gw_util_get_runmode() == GWAEI_CONSOLE_RUNMODE)
+    if (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
     {
     }
     else
@@ -116,7 +116,7 @@ static void append_more_relevant_header_to_output(GwSearchItem *item)
 //!
 static void append_less_relevant_header_to_output(GwSearchItem *item)
 {
-    if (gw_util_get_runmode() == GWAEI_CONSOLE_RUNMODE)
+    if (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
     {
       printf("\n[0;31m***[0m[1m%s[0;31m***************************[0m\n\n\n", gettext("Other Results"));
     }
@@ -152,13 +152,13 @@ static void append_stored_result_to_output (GwSearchItem *item, GList **results)
 {
     if (item->show_less_relevant_results || item->total_relevant_results == 0)
     {
-      if  (gw_util_get_runmode () == GWAEI_CONSOLE_RUNMODE)
+      if  (gw_util_get_runmode () == GW_CONSOLE_RUNMODE)
       {
         strcpy(item->input, (char*)(*results)->data);
         add_group_formatting (item);
         printf("%s", item->input);
       }
-      else if (item->status != CANCELING)
+      else if (item->status != GW_DICT_STATUS_CANCELING)
       {
         int start, end;
         strcpy(item->input, (char*)(*results)->data);
@@ -222,7 +222,7 @@ static gboolean stream_results_thread (GwSearchItem *item)
     //We loop, processing lines of the file until the max chunk size has been
     //reached or we reach the end of the file or a cancel request is recieved.
     while (chunk < MAX_CHUNK               &&
-           item->status != GWAEI_SEARCH_CANCELING &&
+           item->status != GW_SEARCH_GW_DICT_STATUS_CANCELING &&
            fgets(item->input, MAX_LINE, item->fd) != NULL)
     {
       chunk++;
@@ -235,7 +235,7 @@ static gboolean stream_results_thread (GwSearchItem *item)
 
 
       //Search engine for the kanji sidebar 
-      else if (item->target == GWAEI_TARGET_KANJI)
+      else if (item->target == GW_TARGET_KANJI)
       {
         if (regexec(&(item->re_exist[0]), item->input, 1, NULL, 0) == 0)
         {
@@ -269,9 +269,9 @@ static gboolean stream_results_thread (GwSearchItem *item)
                 append_more_relevant_header_to_output(item);
                 gw_ui_update_total_results_label(item);
                 add_group_formatting (item);
-                if (dictionary_type == KANJI)
+                if (dictionary_type == GW_DICT_KANJI)
                   strcpy_with_kanji_formatting(item->output, item->input, item);
-                else if (dictionary_type == OTHER)
+                else if (dictionary_type == GW_DICT_OTHER)
                   strcpy_with_general_formatting(item->output, item->input, item);
                 else
                   strcpy(item->output, item->input);
@@ -282,12 +282,12 @@ static gboolean stream_results_thread (GwSearchItem *item)
                      (result = (char*)malloc(MAX_LINE)) )
                 {
                   item->total_irrelevant_results++;
-                  if (dictionary_type == KANJI)
+                  if (dictionary_type == GW_DICT_KANJI)
                     strcpy_with_kanji_formatting(result, item->input, item);
-                  else if (dictionary_type == OTHER)
+                  else if (dictionary_type == GW_DICT_OTHER)
                     strcpy_with_general_formatting(result, item->input, item);
                   else
-                    strcpy(item->output, item->input);
+                    strcpy(result, item->input);
                   item->results_medium =  g_list_append(item->results_medium, result);
                 }
                 break;
@@ -296,12 +296,12 @@ static gboolean stream_results_thread (GwSearchItem *item)
                      (result = (char*)malloc(MAX_LINE)))
                 {
                   item->total_irrelevant_results++;
-                  if (dictionary_type == KANJI)
+                  if (dictionary_type == GW_DICT_KANJI)
                     strcpy_with_kanji_formatting(result, item->input, item);
-                  else if (dictionary_type == OTHER)
+                  else if (dictionary_type == GW_DICT_OTHER)
                     strcpy_with_general_formatting(result, item->input, item);
                   else
-                    strcpy(item->output, item->input);
+                    strcpy(result, item->input);
                   item->results_low = g_list_append(item->results_low, result);
                 }
                 break;
@@ -312,7 +312,7 @@ static gboolean stream_results_thread (GwSearchItem *item)
     }
 
     //Update the progressbar
-    if (item->target == GWAEI_TARGET_RESULTS)
+    if (item->target == GW_TARGET_RESULTS)
       gw_ui_update_search_progressbar (item->current_line, item->dictionary->total_lines);
 
     //If the chunk reached the max chunk size, there is still file left to load
@@ -351,16 +351,16 @@ static gboolean stream_results_thread (GwSearchItem *item)
 
     //Finish up
     if (item->total_results == 0 &&
-        item->target != GWAEI_TARGET_KANJI &&
-        item->status == GWAEI_SEARCH_SEARCHING)
+        item->target != GW_TARGET_KANJI &&
+        item->status == GW_SEARCH_SEARCHING)
     {
-      if (gw_util_get_runmode () == GWAEI_CONSOLE_RUNMODE)
+      if (gw_util_get_runmode () == GW_CONSOLE_RUNMODE)
       {
         printf("%s\n\n", gettext("No results found!"));
       }
       else
       {
-        gw_ui_clear_buffer_by_target (GWAEI_TARGET_RESULTS);
+        gw_ui_clear_buffer_by_target (GW_TARGET_RESULTS);
         gw_ui_display_no_results_found_page();
       }
       item->results_found = FALSE;
@@ -384,13 +384,13 @@ static gboolean stream_results_cleanup (GwSearchItem *item)
 {
     gw_searchitem_do_post_search_clean (item);
     less_relevant_title_inserted = FALSE;
-    if (gw_util_get_runmode () == GWAEI_CONSOLE_RUNMODE)
+    if (gw_util_get_runmode () == GW_CONSOLE_RUNMODE)
     {
     }
     else
     {
       gw_ui_finalize_total_results_label (item);
-      if (item->target == GWAEI_TARGET_RESULTS)
+      if (item->target == GW_TARGET_RESULTS)
         gw_ui_update_search_progressbar (0, 0);
     }     
 }
@@ -408,10 +408,10 @@ static gboolean stream_results_cleanup (GwSearchItem *item)
 void gw_search_get_results (GwSearchItem *item)
 {
     //Misc preparations
-    if (item->dictionary->type == KANJI || item->dictionary->type == RADICALS)
+    if (item->dictionary->type == GW_DICT_KANJI || item->dictionary->type == GW_DICT_RADICALS)
       item->show_less_relevant_results = TRUE;
 
-    if (gw_util_get_runmode () != GWAEI_CONSOLE_RUNMODE)
+    if (gw_util_get_runmode () != GW_CONSOLE_RUNMODE)
       gw_ui_clear_buffer_by_target (item->target);
 
     if (gw_searchitem_do_pre_search_prep (item) == FALSE)
@@ -420,12 +420,12 @@ void gw_search_get_results (GwSearchItem *item)
       return;
     }
 
-    if (item->target == GWAEI_TARGET_RESULTS)
+    if (item->target == GW_TARGET_RESULTS)
       gw_ui_close_kanji_results();
 
 
     //Start the search
-    if (gw_util_get_runmode () == GWAEI_CONSOLE_RUNMODE)
+    if (gw_util_get_runmode () == GW_CONSOLE_RUNMODE)
     {
       while (stream_results_thread(item))
         ;

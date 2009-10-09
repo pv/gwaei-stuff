@@ -49,11 +49,11 @@ void gw_util_initialize_runmode(char* call)
      call_ptr++;
 
    if (strcmp(call_ptr, "waei") == 0 || strcmp(INTERFACE, "NONE") == 0)
-     run_mode = GWAEI_CONSOLE_RUNMODE;
+     run_mode = GW_CONSOLE_RUNMODE;
    else if (strcmp(call_ptr, "gwaei") == 0)
-     run_mode = GWAEI_GTK_RUNMODE;
+     run_mode = GW_GTK_RUNMODE;
    else if (strcmp(call_ptr, "kwaei") == 0)
-     run_mode = GWAEI_QT_RUNMODE;
+     run_mode = GW_QT_RUNMODE;
 }
 
 int gw_util_get_runmode()
@@ -739,25 +739,25 @@ gboolean is_japanese_locale()
 
 void gw_util_strncpy_fallback_from_key (char *value, char *key, int n)
 {
-  if (strcmp (GCKEY_GWAEI_ENGLISH_SOURCE, key) == 0)
-    strncpy (value, GWAEI_ENGLISH_URI_FALLBACK, n);
-  else if (strcmp (GCKEY_GWAEI_KANJI_SOURCE, key) == 0)
-    strncpy (value, GWAEI_KANJI_URI_FALLBACK, n);
-  else if (strcmp (GCKEY_GWAEI_NAMES_SOURCE, key) == 0)
-    strncpy (value, GWAEI_NAMES_URI_FALLBACK, n);
-  else if (strcmp (GCKEY_GWAEI_RADICALS_SOURCE, key) == 0)
-    strncpy (value, GWAEI_RADICALS_URI_FALLBACK, n);
+  if (strcmp (GCKEY_GW_ENGLISH_SOURCE, key) == 0)
+    strncpy (value, GW_ENGLISH_URI_FALLBACK, n);
+  else if (strcmp (GCKEY_GW_KANJI_SOURCE, key) == 0)
+    strncpy (value, GW_KANJI_URI_FALLBACK, n);
+  else if (strcmp (GCKEY_GW_NAMES_SOURCE, key) == 0)
+    strncpy (value, GW_NAMES_URI_FALLBACK, n);
+  else if (strcmp (GCKEY_GW_RADICALS_SOURCE, key) == 0)
+    strncpy (value, GW_RADICALS_URI_FALLBACK, n);
 
-  else if (strcmp (GCKEY_GWAEI_MATCH_FG, key) == 0)
-    strncpy (value, GWAEI_MATCH_FG_FALLBACK, n);
-  else if (strcmp (GCKEY_GWAEI_MATCH_BG, key) == 0)
-    strncpy (value, GWAEI_MATCH_BG_FALLBACK, n);
-  else if (strcmp (GCKEY_GWAEI_HEADER_FG, key) == 0)
-    strncpy (value, GWAEI_HEADER_FG_FALLBACK, n);
-  else if (strcmp (GCKEY_GWAEI_HEADER_BG, key) == 0)
-    strncpy (value, GWAEI_HEADER_BG_FALLBACK, n);
-  else if (strcmp (GCKEY_GWAEI_COMMENT_FG, key) == 0)
-    strncpy (value, GWAEI_COMMENT_FG_FALLBACK, n);
+  else if (strcmp (GCKEY_GW_MATCH_FG, key) == 0)
+    strncpy (value, GW_MATCH_FG_FALLBACK, n);
+  else if (strcmp (GCKEY_GW_MATCH_BG, key) == 0)
+    strncpy (value, GW_MATCH_BG_FALLBACK, n);
+  else if (strcmp (GCKEY_GW_HEADER_FG, key) == 0)
+    strncpy (value, GW_HEADER_FG_FALLBACK, n);
+  else if (strcmp (GCKEY_GW_HEADER_BG, key) == 0)
+    strncpy (value, GW_HEADER_BG_FALLBACK, n);
+  else if (strcmp (GCKEY_GW_COMMENT_FG, key) == 0)
+    strncpy (value, GW_COMMENT_FG_FALLBACK, n);
 
   else
     strncpy (value, "", n);

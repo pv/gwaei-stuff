@@ -69,9 +69,9 @@ void do_conditionally_enable_spellcheck (GtkWidget *widget, gpointer data)
      entry = search_entry;
 
      gboolean spellcheck_pref;
-     spellcheck_pref = gw_pref_get_boolean (GCKEY_GWAEI_SPELLCHECK, TRUE);
+     spellcheck_pref = gw_pref_get_boolean (GCKEY_GW_SPELLCHECK, TRUE);
      int rk_conv_pref;
-     rk_conv_pref = gw_pref_get_int (GCKEY_GWAEI_ROMAN_KANA, 0);
+     rk_conv_pref = gw_pref_get_int (GCKEY_GW_ROMAN_KANA, 0);
      gboolean want_conv;
      want_conv = (rk_conv_pref == 0 || (rk_conv_pref == 2 && !is_japanese_locale()));
 

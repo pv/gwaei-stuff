@@ -49,13 +49,13 @@ G_MODULE_EXPORT void do_radical_clear (GtkWidget *widget, gpointer data)
   gw_ui_set_strokes_checkbox_state (FALSE);
 
   //Make the search stop that automatically starts
-  gw_ui_cancel_search_by_target(GWAEI_TARGET_RESULTS);
+  gw_ui_cancel_search_by_target(GW_TARGET_RESULTS);
 }
 
 
 G_MODULE_EXPORT void do_radical_search (GtkWidget *widget, gpointer data)
 {
-    GwHistoryList* hl = gw_historylist_get_list(GWAEI_HISTORYLIST_RESULTS);   
+    GwHistoryList* hl = gw_historylist_get_list(GW_HISTORYLIST_RESULTS);   
 
     int leftover = 250;
 
@@ -69,17 +69,17 @@ G_MODULE_EXPORT void do_radical_search (GtkWidget *widget, gpointer data)
 
     gw_ui_clear_search_entry ();
     gw_ui_search_entry_insert (query);
-    gw_ui_text_select_all_by_target (GWAEI_TARGET_ENTRY);
+    gw_ui_text_select_all_by_target (GW_TARGET_ENTRY);
 
     GwDictInfo *dictionary;
     dictionary = gw_dictlist_get_dictionary_by_alias ("Radicals");
 
-    if (gw_ui_cancel_search_by_target(GWAEI_TARGET_RESULTS) == FALSE)
+    if (gw_ui_cancel_search_by_target(GW_TARGET_RESULTS) == FALSE)
       return;
 
     if (hl->current != NULL && (hl->current)->total_results > 0) 
     {
-      gw_historylist_add_searchitem_to_history(GWAEI_HISTORYLIST_RESULTS, hl->current);
+      gw_historylist_add_searchitem_to_history(GW_HISTORYLIST_RESULTS, hl->current);
       hl->current = NULL;
       gw_ui_update_history_popups();
     }
@@ -89,7 +89,7 @@ G_MODULE_EXPORT void do_radical_search (GtkWidget *widget, gpointer data)
       hl->current = NULL;
     }
  
-    hl->current = gw_searchitem_new(query, dictionary, GWAEI_TARGET_RESULTS);
+    hl->current = gw_searchitem_new(query, dictionary, GW_TARGET_RESULTS);
 
     //Start the search
     gw_search_get_results (hl->current);

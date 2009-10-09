@@ -54,17 +54,17 @@
 static void *update_thread(void *nothing)
 {
     GQuark quark;
-    quark = g_quark_from_string (GWAEI_GENERIC_ERROR);
+    quark = g_quark_from_string (GW_GENERIC_ERROR);
     GError *error = NULL;
 
     char text[200];
 
     GwDictInfo* kanji;
-    kanji = gw_dictlist_get_dictionary_by_id (KANJI);
+    kanji = gw_dictlist_get_dictionary_by_id (GW_DICT_KANJI);
     GwDictInfo* names;
-    names = gw_dictlist_get_dictionary_by_id (NAMES);
+    names = gw_dictlist_get_dictionary_by_id (GW_DICT_NAMES);
     GwDictInfo* radicals;
-    radicals = gw_dictlist_get_dictionary_by_id (RADICALS);
+    radicals = gw_dictlist_get_dictionary_by_id (GW_DICT_RADICALS);
 
     //Find out how many dictionaries need updating
     gdouble total_dictionary_updates = 0.0;
@@ -77,15 +77,15 @@ static void *update_thread(void *nothing)
     while (dictionarylist != NULL)
     {
       di = (GwDictInfo*)dictionarylist->data;
-      if (di->status == INSTALLED && strlen(di->rsync) > 1)
+      if (di->status == GW_DICT_STATUS_INSTALLED && strlen(di->rsync) > 1)
       {
         updatelist = g_list_append (updatelist, di);
-        di->status = UPDATING;
+        di->status = GW_DICT_STATUS_UPDATING;
         total_dictionary_updates++;
 
-        if (di->id == KANJI && radicals->status == INSTALLED)
+        if (di->id == GW_DICT_KANJI && radicals->status == GW_DICT_STATUS_INSTALLED)
           extra_processing_jobs++;
-        else if (di->id == NAMES)
+        else if (di->id == GW_DICT_NAMES)
           extra_processing_jobs++;
       }
       dictionarylist = dictionarylist->next;
@@ -106,7 +106,7 @@ static void *update_thread(void *nothing)
     gw_ui_update_settings_interface();
     gdk_threads_leave();
 
-    while (updatelist != NULL && gw_ui_get_install_line_status("update") != CANCELING)
+    while (updatelist != NULL && gw_ui_get_install_line_status("update") != GW_DICT_STATUS_CANCELING)
     {
       di = (GwDictInfo*) updatelist->data;
 
@@ -125,7 +125,7 @@ static void *update_thread(void *nothing)
         if (system (di->rsync) != 0)
         {
           const char *message = gettext("Connection failure\n");
-          error = g_error_new_literal (quark, GWAEI_FILE_ERROR, message);
+          error = g_error_new_literal (quark, GW_FILE_ERROR, message);
         }
       }
       progress += increment;
@@ -145,8 +145,8 @@ static void *update_thread(void *nothing)
       //Special dictionary post processing
       if (error == NULL)
       {
-        if (di->id == KANJI && 
-            gw_dictlist_dictionary_get_status_by_id(RADICALS) == INSTALLED)
+        if (di->id == GW_DICT_KANJI && 
+            gw_dictlist_dictionary_get_status_by_id(GW_DICT_RADICALS) == GW_DICT_STATUS_INSTALLED)
         {
           gdk_threads_enter ();
           strcpy(text, gettext("Recreating Mixed dictionary..."));
@@ -155,7 +155,7 @@ static void *update_thread(void *nothing)
           gw_dictlist_preform_postprocessing_by_name (di->name, &error);
           progress += increment;
         }
-        else if (di->id == NAMES && error == NULL)
+        else if (di->id == GW_DICT_NAMES && error == NULL)
         {
           gdk_threads_enter ();
           strcpy(text, gettext("Resplitting Names dictionary..."));
@@ -168,9 +168,9 @@ static void *update_thread(void *nothing)
 
       gdk_threads_enter ();
       if (error == NULL)
-        di->status = UPDATED;
+        di->status = GW_DICT_STATUS_UPDATED;
       else
-        di->status = ERRORED;
+        di->status = GW_DICT_STATUS_ERRORED;
       gdk_threads_leave ();
 
       updatelist = updatelist->next;
@@ -189,26 +189,26 @@ static void *update_thread(void *nothing)
     gdk_threads_enter();
     if(error != NULL)
     {
-      gw_dictlist_normalize_all_status_from_to (ERRORED, INSTALLED);
-      gw_dictlist_normalize_all_status_from_to (UPDATING, INSTALLED);
-      gw_dictlist_normalize_all_status_from_to (UPDATED, INSTALLED);
+      gw_dictlist_normalize_all_status_from_to (GW_DICT_STATUS_ERRORED, GW_DICT_STATUS_INSTALLED);
+      gw_dictlist_normalize_all_status_from_to (GW_DICT_STATUS_UPDATING, GW_DICT_STATUS_INSTALLED);
+      gw_dictlist_normalize_all_status_from_to (GW_DICT_STATUS_UPDATED, GW_DICT_STATUS_INSTALLED);
       gw_ui_set_install_line_status ("update",  "error", error->message);
       g_error_free(error);
       error = NULL;
     }
-    else if (gw_ui_get_install_line_status ("update") == CANCELING)
+    else if (gw_ui_get_install_line_status ("update") == GW_DICT_STATUS_CANCELING)
     {
       strcpy(text, gettext("Update was cancelled"));
-      gw_dictlist_normalize_all_status_from_to (UPDATING, INSTALLED);
-      gw_dictlist_normalize_all_status_from_to (UPDATED, INSTALLED);
-      gw_dictlist_normalize_all_status_from_to (CANCELING, INSTALLED);
+      gw_dictlist_normalize_all_status_from_to (GW_DICT_STATUS_UPDATING, GW_DICT_STATUS_INSTALLED);
+      gw_dictlist_normalize_all_status_from_to (GW_DICT_STATUS_UPDATED, GW_DICT_STATUS_INSTALLED);
+      gw_dictlist_normalize_all_status_from_to (GW_DICT_STATUS_CANCELING, GW_DICT_STATUS_INSTALLED);
       gw_ui_set_install_line_status ("update",  "install", text);
     }
     else
     {
       strcpy(text, gettext("Dictionary update finished"));
-      gw_dictlist_normalize_all_status_from_to (UPDATING, INSTALLED);
-      gw_dictlist_normalize_all_status_from_to (UPDATED, INSTALLED);
+      gw_dictlist_normalize_all_status_from_to (GW_DICT_STATUS_UPDATING, GW_DICT_STATUS_INSTALLED);
+      gw_dictlist_normalize_all_status_from_to (GW_DICT_STATUS_UPDATED, GW_DICT_STATUS_INSTALLED);
       gw_ui_set_install_line_status ("update", "remove", text);
     }
 
@@ -220,7 +220,7 @@ static void *update_thread(void *nothing)
 static void *install_thread (gpointer dictionary)
 {
     GQuark quark;
-    quark = g_quark_from_string (GWAEI_GENERIC_ERROR);
+    quark = g_quark_from_string (GW_GENERIC_ERROR);
     GError *error = NULL;
 
     GwDictInfo *di = (GwDictInfo*) dictionary;
@@ -232,10 +232,10 @@ static void *install_thread (gpointer dictionary)
     char *sync_path = di->sync_path;
     char *gz_path = di->gz_path;
 
-    if (di->status != NOT_INSTALLED) return;
+    if (di->status != GW_DICT_STATUS_NOT_INSTALLED) return;
 
     //If everything succeeded, update the interface
-    di->status = INSTALLING;
+    di->status = GW_DICT_STATUS_INSTALLING;
     gdk_threads_enter ();
     gw_ui_set_install_line_status(name, "cancel", NULL);
     gw_ui_update_settings_interface();
@@ -269,7 +269,7 @@ static void *install_thread (gpointer dictionary)
       if (ret == FALSE)
       {
         const char *message = gettext("Connection failure\n");
-        error = g_error_new_literal (quark, GWAEI_FILE_ERROR, message);
+        error = g_error_new_literal (quark, GW_FILE_ERROR, message);
       }
     }
 
@@ -299,10 +299,10 @@ static void *install_thread (gpointer dictionary)
     }
      
     //Was canceled
-    if (error != NULL && gw_ui_get_install_line_status(name) == CANCELING)
+    if (error != NULL && gw_ui_get_install_line_status(name) == GW_DICT_STATUS_CANCELING)
     {
       gdk_threads_enter();
-      di->status = NOT_INSTALLED;
+      di->status = GW_DICT_STATUS_NOT_INSTALLED;
       gw_ui_set_install_line_status(name, "install", NULL);
       gdk_threads_leave();
       g_error_free(error);
@@ -312,7 +312,7 @@ static void *install_thread (gpointer dictionary)
     else if (error != NULL)
     {
       gdk_threads_enter();
-      di->status = NOT_INSTALLED;
+      di->status = GW_DICT_STATUS_NOT_INSTALLED;
       gw_ui_set_install_line_status(name, "error", error->message);
       gdk_threads_leave();
       g_error_free(error);
@@ -322,7 +322,7 @@ static void *install_thread (gpointer dictionary)
     else
     {
       gdk_threads_enter();
-      di->status = INSTALLED;
+      di->status = GW_DICT_STATUS_INSTALLED;
       di->total_lines =  gw_io_get_total_lines_for_path (di->path);
       gw_ui_set_install_line_status(name, "remove", NULL);
       gdk_threads_leave();
@@ -339,24 +339,24 @@ static void *install_thread (gpointer dictionary)
 G_MODULE_EXPORT void do_hiragana_katakana_conv_toggle (GtkWidget *widget, gpointer data)
 {
     gboolean state;
-    state = gw_pref_get_boolean (GCKEY_GWAEI_HIRA_KATA, TRUE);
-    gw_pref_set_boolean (GCKEY_GWAEI_HIRA_KATA, !state);
+    state = gw_pref_get_boolean (GCKEY_GW_HIRA_KATA, TRUE);
+    gw_pref_set_boolean (GCKEY_GW_HIRA_KATA, !state);
 }
 
 
 G_MODULE_EXPORT void do_katakana_hiragana_conv_toggle (GtkWidget *widget, gpointer data)
 {
     gboolean state;
-    state = gw_pref_get_boolean (GCKEY_GWAEI_KATA_HIRA, TRUE);
-    gw_pref_set_boolean (GCKEY_GWAEI_KATA_HIRA, !state);
+    state = gw_pref_get_boolean (GCKEY_GW_KATA_HIRA, TRUE);
+    gw_pref_set_boolean (GCKEY_GW_KATA_HIRA, !state);
 }
 
 
 G_MODULE_EXPORT void do_spellcheck_toggle (GtkWidget *widget, gpointer data)
 {
     gboolean state;
-    state = gw_pref_get_boolean (GCKEY_GWAEI_SPELLCHECK, TRUE);
-    gw_pref_set_boolean (GCKEY_GWAEI_SPELLCHECK, !state);
+    state = gw_pref_get_boolean (GCKEY_GW_SPELLCHECK, TRUE);
+    gw_pref_set_boolean (GCKEY_GW_SPELLCHECK, !state);
 }
 
 
@@ -364,7 +364,7 @@ G_MODULE_EXPORT void do_romaji_kana_conv_change (GtkWidget *widget, gpointer dat
 {
     int active;
     active = gtk_combo_box_get_active(GTK_COMBO_BOX (widget));
-    gw_pref_set_int (GCKEY_GWAEI_ROMAN_KANA, active);
+    gw_pref_set_int (GCKEY_GW_ROMAN_KANA, active);
 }
 
 
@@ -385,7 +385,7 @@ G_MODULE_EXPORT void do_set_color_to_swatch (GtkWidget *widget, gpointer data)
 
     char key[100];
     char *key_ptr;
-    strcpy(key, GCPATH_GWAEI);
+    strcpy(key, GCPATH_GW);
     strcat(key, "/highlighting/");
     key_ptr = &key[strlen(key)];
     strcpy(key_ptr, gtk_widget_get_name(widget));
@@ -398,7 +398,7 @@ G_MODULE_EXPORT void do_color_reset_for_swatches (GtkWidget *widget, gpointer da
 {
     char key[100];
     char *key_ptr;
-    strcpy(key, GCPATH_GWAEI);
+    strcpy(key, GCPATH_GW);
     strcat(key, "/highlighting/");
     key_ptr = &key[strlen(key)];
 
@@ -529,7 +529,7 @@ G_MODULE_EXPORT void do_source_entry_changed_action (GtkWidget *widget, gpointer
     gw_parse_widget_name(name, widget, FALSE);
 
     char key[100];
-    strcpy(key, GCPATH_GWAEI);
+    strcpy(key, GCPATH_GW);
     strcat(key, "/dictionary/");
     strcat(key, name);
     strcat(key, "_source");
@@ -547,7 +547,7 @@ G_MODULE_EXPORT void do_dictionary_source_reset(GtkWidget *widget, gpointer data
     gw_parse_widget_name (name, widget, FALSE);
 
     char key[100];
-    strcpy (key, GCPATH_GWAEI);
+    strcpy (key, GCPATH_GW);
     strcat (key, "/dictionary/");
     strcat (key, name);
     strcat (key, "_source");
@@ -617,9 +617,9 @@ G_MODULE_EXPORT void do_force_names_resplit(GtkWidget *widget, gpointer data)
     GwDictInfo* di;
     di = gw_dictlist_get_dictionary_by_alias("Names");
 
-    di->status = REBUILDING;
+    di->status = GW_DICT_STATUS_REBUILDING;
     gw_dictlist_preform_postprocessing_by_name("Names", &error);
-    di->status = INSTALLED;
+    di->status = GW_DICT_STATUS_INSTALLED;
 
     if (error != NULL)
     {
@@ -635,12 +635,12 @@ G_MODULE_EXPORT void do_force_mix_rebuild(GtkWidget *widget, gpointer data)
     GwDictInfo* di;
     di = gw_dictlist_get_dictionary_by_alias("Mix");
 
-    if (gw_dictlist_dictionary_get_status_by_id (KANJI)    == INSTALLED &&
-        gw_dictlist_dictionary_get_status_by_id (RADICALS) == INSTALLED   )
+    if (gw_dictlist_dictionary_get_status_by_id (GW_DICT_KANJI)    == GW_DICT_STATUS_INSTALLED &&
+        gw_dictlist_dictionary_get_status_by_id (GW_DICT_RADICALS) == GW_DICT_STATUS_INSTALLED   )
     {
-      di->status = REBUILDING;
+      di->status = GW_DICT_STATUS_REBUILDING;
       gw_dictlist_preform_postprocessing_by_name("Mix", &error);
-      di->status = INSTALLED;
+      di->status = GW_DICT_STATUS_INSTALLED;
     }
     if (error != NULL)
     {

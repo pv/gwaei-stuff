@@ -83,7 +83,7 @@ void gw_ui_update_settings_interface()
   resplit_button = GTK_WIDGET (gtk_builder_get_object(builder, id));
 
 
-  if (gw_dictlist_get_total_with_status (UPDATING) > 0)
+  if (gw_dictlist_get_total_with_status (GW_DICT_STATUS_UPDATING) > 0)
   {
     gtk_widget_set_sensitive (close_button,   FALSE);
     gtk_widget_set_sensitive (install_table,  FALSE);
@@ -92,7 +92,7 @@ void gw_ui_update_settings_interface()
     gtk_widget_set_sensitive (update_button,  TRUE );
     gtk_widget_set_sensitive (updated_button, TRUE );
   }
-  else if (gw_dictlist_get_total_with_status (INSTALLING) > 0)
+  else if (gw_dictlist_get_total_with_status (GW_DICT_STATUS_INSTALLING) > 0)
   {
     gtk_widget_set_sensitive (close_button,   FALSE);
     gtk_widget_set_sensitive (install_table,  TRUE );
@@ -101,7 +101,7 @@ void gw_ui_update_settings_interface()
     gtk_widget_set_sensitive (update_button,  FALSE);
     gtk_widget_set_sensitive (updated_button, FALSE);
   }
-  else if (gw_dictlist_get_total_with_status (REBUILDING) > 0)
+  else if (gw_dictlist_get_total_with_status (GW_DICT_STATUS_REBUILDING) > 0)
   {
     gtk_widget_set_sensitive (close_button,   FALSE);
     gtk_widget_set_sensitive (install_table,  FALSE);
@@ -118,9 +118,9 @@ void gw_ui_update_settings_interface()
     gtk_widget_set_sensitive (updated_button, TRUE );
 
     gboolean state;
-    state = (gw_dictlist_dictionary_get_status_by_id(MIX) == INSTALLED);
+    state = (gw_dictlist_dictionary_get_status_by_id(GW_DICT_MIX) == GW_DICT_STATUS_INSTALLED);
     gtk_widget_set_sensitive (rebuild_button, state);
-    state = (gw_dictlist_dictionary_get_status_by_id(NAMES) == INSTALLED);
+    state = (gw_dictlist_dictionary_get_status_by_id(GW_DICT_NAMES) == GW_DICT_STATUS_INSTALLED);
     gtk_widget_set_sensitive (resplit_button, state);
   }
 }
@@ -183,19 +183,19 @@ int gw_ui_get_install_line_status(char *name)
     strcpy(suffix, "_install_button");
     button = GTK_WIDGET (gtk_builder_get_object (builder, id));
     if (GTK_WIDGET_VISIBLE (button) == TRUE)
-      return NOT_INSTALLED;
+      return GW_DICT_STATUS_NOT_INSTALLED;
 
     strcpy(suffix, "_remove_button");
     button = GTK_WIDGET (gtk_builder_get_object (builder, id));
     if (GTK_WIDGET_VISIBLE (button) == TRUE)
-      return INSTALLED;
+      return GW_DICT_STATUS_INSTALLED;
 
     strcpy(suffix, "_cancel_button");
     button = GTK_WIDGET (gtk_builder_get_object (builder, id));
     if (GTK_WIDGET_VISIBLE (button) == TRUE && GTK_WIDGET_SENSITIVE(button) == TRUE)
-      return INSTALLING;
+      return GW_DICT_STATUS_INSTALLING;
     if (GTK_WIDGET_VISIBLE (button) == TRUE && GTK_WIDGET_SENSITIVE (button) == FALSE)
-      return CANCELING;
+      return GW_DICT_STATUS_CANCELING;
 
 }
 
@@ -370,7 +370,7 @@ void gw_ui_set_install_line_status(char *name, char *status, char *message)
     gboolean sensitive;
 
     sensitive = (rsync_exists && gw_dictlist_get_total() &&
-                 gw_dictlist_get_total_with_status(INSTALLING) == 0);
+                 gw_dictlist_get_total_with_status(GW_DICT_STATUS_INSTALLING) == 0);
 
     strcpy(id, "update_install_button");
     button = GTK_WIDGET (gtk_builder_get_object(builder, id));

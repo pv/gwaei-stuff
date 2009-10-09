@@ -27,12 +27,12 @@
 //! To be written.
 //!
 
-#define GWAEI_HISTORYLIST_RESULTS 0
-#define GWAEI_HISTORYLIST_KANJI   1
+#define GW_HISTORYLIST_RESULTS 0
+#define GW_HISTORYLIST_KANJI   1
 
-#define GWAEI_SEARCH_IDLE 0
-#define GWAEI_SEARCH_SEARCHING 1
-#define GWAEI_SEARCH_CANCELING 2
+#define GW_SEARCH_IDLE 0
+#define GW_SEARCH_SEARCHING 1
+#define GW_SEARCH_GW_DICT_STATUS_CANCELING 2
 
 //!
 //! @brief Primitive for storing search item information

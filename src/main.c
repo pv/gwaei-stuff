@@ -103,7 +103,7 @@ int main( int argc, char *argv[] )
     gw_history_initialize_history();
     gw_io_check_for_rsync();
 
-    if  (gw_util_get_runmode() == GWAEI_CONSOLE_RUNMODE)
+    if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
       initialize_console_interface(argc, argv);
     else
       initialize_gui_interface(&argc, &argv);

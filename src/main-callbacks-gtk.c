@@ -73,8 +73,8 @@ static gulong select_all_handler_id = 0;
 //!
 G_MODULE_EXPORT void do_settings (GtkWidget *widget, gpointer data)
 {
-    gw_ui_cancel_search_by_target (GWAEI_TARGET_RESULTS);
-    gw_ui_cancel_search_by_target (GWAEI_TARGET_KANJI);
+    gw_ui_cancel_search_by_target (GW_TARGET_RESULTS);
+    gw_ui_cancel_search_by_target (GW_TARGET_KANJI);
 
     //Prepare the interface
     gw_settings_initialize_enabled_features_list ();
@@ -144,7 +144,7 @@ G_MODULE_EXPORT gboolean do_get_iter_for_motion (GtkWidget      *widget,
     di = gw_dictlist_get_dictionary_by_alias ("Kanji");
   
     // Characters above 0xFF00 represent inserted images
-    if (unic > L'ー' && unic < 0xFF00 && di->status == INSTALLED)
+    if (unic > L'ー' && unic < 0xFF00 && di->status == GW_DICT_STATUS_INSTALLED)
       gw_ui_set_cursor (GDK_HAND2);
     else
       gw_ui_set_cursor (GDK_XTERM);
@@ -208,7 +208,7 @@ G_MODULE_EXPORT gboolean do_get_iter_for_button_release (GtkWidget      *widget,
     GwDictInfo *di;
     di = gw_dictlist_get_dictionary_by_alias ("Kanji");
 
-    if (di->status == INSTALLED     &&
+    if (di->status == GW_DICT_STATUS_INSTALLED     &&
         abs (button_press_x - x) < 3 &&
         abs (button_press_y - y) < 3   )
     {
@@ -225,7 +225,7 @@ G_MODULE_EXPORT gboolean do_get_iter_for_button_release (GtkWidget      *widget,
 
         //Start the search
         GwSearchItem *item;
-        item = gw_searchitem_new (query, di, GWAEI_TARGET_KANJI);
+        item = gw_searchitem_new (query, di, GW_TARGET_KANJI);
 
         gw_search_get_results (item);
       }
@@ -367,10 +367,10 @@ G_MODULE_EXPORT void do_quit (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
 {
-    if (gw_ui_cancel_search_by_target (GWAEI_TARGET_RESULTS) == FALSE) return;
+    if (gw_ui_cancel_search_by_target (GW_TARGET_RESULTS) == FALSE) return;
 
     GwHistoryList *hl;
-    hl = gw_historylist_get_list (GWAEI_HISTORYLIST_RESULTS);
+    hl = gw_historylist_get_list (GW_HISTORYLIST_RESULTS);
 
     GwSearchItem *item;
     item = (GwSearchItem*) data;
@@ -378,12 +378,12 @@ G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
     if (hl->back != NULL && g_list_find (hl->back, item))
     {
       while (hl->back != NULL && hl->current != item)
-        gw_historylist_go_back_by_target (GWAEI_HISTORYLIST_RESULTS);
+        gw_historylist_go_back_by_target (GW_HISTORYLIST_RESULTS);
     }
     else if (hl->forward != NULL && g_list_find (hl->forward, item))
     {
       while (hl->forward != NULL && hl->current != item)
-        gw_historylist_go_forward_by_target (GWAEI_HISTORYLIST_RESULTS);
+        gw_historylist_go_forward_by_target (GW_HISTORYLIST_RESULTS);
     }
 
     gw_searchitem_reset_result_counters (hl->current);
@@ -394,8 +394,8 @@ G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
     //Set the search string in the GtkEntry
     gw_ui_clear_search_entry ();
     gw_ui_search_entry_insert ((hl->current)->query);
-    gw_ui_text_select_all_by_target (GWAEI_TARGET_ENTRY);
-    gw_ui_grab_focus_by_target (GWAEI_TARGET_ENTRY);
+    gw_ui_text_select_all_by_target (GW_TARGET_ENTRY);
+    gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
 
     //Set the correct dictionary in the gui
     const int id_length = 50;
@@ -421,7 +421,7 @@ G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void do_back (GtkWidget *widget, gpointer data)
 {
     GwHistoryList *hl;
-    hl = gw_historylist_get_list (GWAEI_HISTORYLIST_RESULTS);
+    hl = gw_historylist_get_list (GW_HISTORYLIST_RESULTS);
     if (hl->back != NULL)
     {
       do_search_from_history (NULL, hl->back->data);
@@ -444,7 +444,7 @@ G_MODULE_EXPORT void do_back (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void do_forward (GtkWidget *widget, gpointer data)
 {
     GwHistoryList *hl;
-    hl = gw_historylist_get_list (GWAEI_HISTORYLIST_RESULTS);
+    hl = gw_historylist_get_list (GW_HISTORYLIST_RESULTS);
     if (hl->forward != NULL)
     {
       do_search_from_history (NULL, hl->forward->data);
@@ -491,7 +491,7 @@ G_MODULE_EXPORT void do_save_as (GtkWidget *widget, gpointer data)
     //Prepare the text
     gchar *text;
     //Get the region of text to be saved if some text is highlighted
-    text = gw_ui_get_text_from_text_buffer (GWAEI_TARGET_RESULTS);
+    text = gw_ui_get_text_from_text_buffer (GW_TARGET_RESULTS);
 
     //Run the save as dialog
     if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
@@ -540,7 +540,7 @@ G_MODULE_EXPORT void do_save (GtkWidget *widget, gpointer data)
     window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
 
     gchar *text;
-    text = gw_ui_get_text_from_text_buffer (GWAEI_TARGET_RESULTS);
+    text = gw_ui_get_text_from_text_buffer (GW_TARGET_RESULTS);
 
     //Pop up a save dialog if the user hasn't saved before
     if (save_path[0] == '\0')
@@ -609,9 +609,9 @@ G_MODULE_EXPORT void do_save (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void do_zoom_in (GtkWidget *widget, gpointer data)
 {
     int size;
-    size = gw_pref_get_int (GCKEY_GWAEI_FONT_SIZE, 12) + 2;
+    size = gw_pref_get_int (GCKEY_GW_FONT_SIZE, 12) + 2;
     if (size >= MIN_FONT_SIZE && size <= MAX_FONT_SIZE)
-      gw_pref_set_int (GCKEY_GWAEI_FONT_SIZE, size);
+      gw_pref_set_int (GCKEY_GW_FONT_SIZE, size);
 
     printf ("Zoom in button was clicked\n");
 }
@@ -631,9 +631,9 @@ G_MODULE_EXPORT void do_zoom_in (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void do_zoom_out (GtkWidget *widget, gpointer data)
 {
     int size;
-    size = gw_pref_get_int (GCKEY_GWAEI_FONT_SIZE, 12) - 2;
+    size = gw_pref_get_int (GCKEY_GW_FONT_SIZE, 12) - 2;
     if (size >= MIN_FONT_SIZE | size <= MAX_FONT_SIZE)
-      gw_pref_set_int (GCKEY_GWAEI_FONT_SIZE, size);
+      gw_pref_set_int (GCKEY_GW_FONT_SIZE, size);
 
     printf ("Zoom out button was clicked\n");
 }
@@ -653,8 +653,8 @@ G_MODULE_EXPORT void do_zoom_out (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void do_zoom_100 (GtkWidget *widget, gpointer data)
 {
     int size;
-    size = gw_pref_get_default_int (GCKEY_GWAEI_FONT_SIZE, 12);
-    gw_pref_set_int (GCKEY_GWAEI_FONT_SIZE, size);
+    size = gw_pref_get_default_int (GCKEY_GW_FONT_SIZE, 12);
+    gw_pref_set_int (GCKEY_GW_FONT_SIZE, size);
 
     printf ("Zoom 100 button was clicked\n");
 }
@@ -675,8 +675,8 @@ G_MODULE_EXPORT void do_zoom_100 (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void do_less_relevant_results_toggle (GtkWidget *widget, gpointer data)
 {
     gboolean state;
-    state = gw_pref_get_boolean (GCKEY_GWAEI_LESS_RELEVANT_SHOW, TRUE);
-    gw_pref_set_boolean (GCKEY_GWAEI_LESS_RELEVANT_SHOW, !state);
+    state = gw_pref_get_boolean (GCKEY_GW_LESS_RELEVANT_SHOW, TRUE);
+    gw_pref_set_boolean (GCKEY_GW_LESS_RELEVANT_SHOW, !state);
 
     printf ("Toggle less relevent results button was clicked\n");
 }
@@ -696,8 +696,8 @@ G_MODULE_EXPORT void do_less_relevant_results_toggle (GtkWidget *widget, gpointe
 G_MODULE_EXPORT void do_toolbar_toggle (GtkWidget *widget, gpointer data)
 {
     gboolean state;
-    state = gw_pref_get_boolean (GCKEY_GWAEI_TOOLBAR_SHOW, TRUE);
-    gw_pref_set_boolean (GCKEY_GWAEI_TOOLBAR_SHOW, !state);
+    state = gw_pref_get_boolean (GCKEY_GW_TOOLBAR_SHOW, TRUE);
+    gw_pref_set_boolean (GCKEY_GW_TOOLBAR_SHOW, !state);
 
     printf ("Toolbar toggle button was clicked\n");
 }
@@ -741,7 +741,7 @@ G_MODULE_EXPORT void do_dictionary_changed_action (GtkWidget *widget, gpointer d
 
     //Finish up
     gw_ui_set_dictionary (active);
-    gw_ui_grab_focus_by_target (GWAEI_TARGET_ENTRY);
+    gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
 }
 
 
@@ -919,8 +919,8 @@ G_MODULE_EXPORT gboolean do_update_clipboard_on_focus_change (GtkWidget        *
 
 
     //Correct the sensitive state to paste
-    if (gw_ui_widget_equals_target (data, GWAEI_TARGET_RESULTS) ||
-        gw_ui_widget_equals_target (data, GWAEI_TARGET_KANJI)     )
+    if (gw_ui_widget_equals_target (data, GW_TARGET_RESULTS) ||
+        gw_ui_widget_equals_target (data, GW_TARGET_KANJI)     )
       gtk_action_set_sensitive (GTK_ACTION (paste_action), FALSE);
     else
       gtk_action_set_sensitive (GTK_ACTION (paste_action), TRUE);
@@ -941,7 +941,7 @@ G_MODULE_EXPORT gboolean do_update_clipboard_on_focus_change (GtkWidget        *
 //!
 G_MODULE_EXPORT void do_print (GtkWidget *widget, gpointer data)
 {
-    gw_ui_cancel_search_by_target (GWAEI_TARGET_RESULTS);
+    gw_ui_cancel_search_by_target (GW_TARGET_RESULTS);
     gw_print ();
     printf ("Print button was clicked\n");
 }
@@ -974,7 +974,7 @@ G_MODULE_EXPORT void do_radical_search_tool (GtkWidget *widget, gpointer data)
 
 
     //Hide the togglebox if the Mix dictionary is not present
-    if (gw_dictlist_dictionary_get_status_by_id (MIX) != INSTALLED)
+    if (gw_dictlist_dictionary_get_status_by_id (GW_DICT_MIX) != GW_DICT_STATUS_INSTALLED)
       gtk_widget_hide (hbox); 
     else
       gtk_widget_show (hbox); 
@@ -1230,12 +1230,12 @@ G_MODULE_EXPORT gboolean do_focus_change_on_key_press (GtkWidget *widget,
              keyval == GDK_Page_Down   
            ) &&
            (
-             !gw_ui_widget_equals_target (widget, GWAEI_TARGET_RESULTS)
+             !gw_ui_widget_equals_target (widget, GW_TARGET_RESULTS)
            )
          )
       {
-        gw_ui_text_select_none_by_target (GWAEI_TARGET_ENTRY);
-        gw_ui_grab_focus_by_target (GWAEI_TARGET_RESULTS);
+        gw_ui_text_select_none_by_target (GW_TARGET_ENTRY);
+        gw_ui_grab_focus_by_target (GW_TARGET_RESULTS);
         return TRUE;
       }
 
@@ -1245,11 +1245,11 @@ G_MODULE_EXPORT gboolean do_focus_change_on_key_press (GtkWidget *widget,
                 keyval != GDK_Down      &&
                 keyval != GDK_Page_Up   &&
                 keyval != GDK_Page_Down &&
-                !gw_ui_widget_equals_target (widget, GWAEI_TARGET_ENTRY)
+                !gw_ui_widget_equals_target (widget, GW_TARGET_ENTRY)
               )
       {
-        gw_ui_text_select_all_by_target (GWAEI_TARGET_ENTRY);
-        gw_ui_grab_focus_by_target (GWAEI_TARGET_ENTRY);
+        gw_ui_text_select_all_by_target (GW_TARGET_ENTRY);
+        gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
         return TRUE;
       }
     }
@@ -1271,15 +1271,15 @@ G_MODULE_EXPORT gboolean do_focus_change_on_key_press (GtkWidget *widget,
 //!
 G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
 {
-    GwHistoryList* hl = gw_historylist_get_list (GWAEI_HISTORYLIST_RESULTS);
+    GwHistoryList* hl = gw_historylist_get_list (GW_HISTORYLIST_RESULTS);
 
     GList *list = gw_dictlist_get_selected ();
     GwDictInfo *dictionary = list->data;
 
     gchar query[MAX_QUERY];
-    gw_ui_strcpy_from_widget (query, MAX_QUERY, GWAEI_TARGET_ENTRY);
+    gw_ui_strcpy_from_widget (query, MAX_QUERY, GW_TARGET_ENTRY);
 
-    char *gckey = GCKEY_GWAEI_LESS_RELEVANT_SHOW; 
+    char *gckey = GCKEY_GW_LESS_RELEVANT_SHOW; 
     gboolean show_less_relevant = gw_pref_get_boolean (gckey, TRUE);
 
     if (strlen (query) == 0)
@@ -1291,12 +1291,12 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
         show_less_relevant == hl->current->show_less_relevant_results)
       return;
 
-    if (gw_ui_cancel_search_by_target (GWAEI_TARGET_RESULTS) == FALSE)
+    if (gw_ui_cancel_search_by_target (GW_TARGET_RESULTS) == FALSE)
       return;
 
     if (hl->current != NULL && (hl->current)->results_found) 
     {
-      gw_historylist_add_searchitem_to_history (GWAEI_HISTORYLIST_RESULTS, hl->current);
+      gw_historylist_add_searchitem_to_history (GW_HISTORYLIST_RESULTS, hl->current);
       hl->current = NULL;
       gw_ui_update_history_popups ();
     }
@@ -1307,7 +1307,7 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
     }
     
     //in add_to_history() rather than here
-    hl->current = gw_searchitem_new (query, dictionary, GWAEI_TARGET_RESULTS);
+    hl->current = gw_searchitem_new (query, dictionary, GW_TARGET_RESULTS);
     if (hl->current == NULL)
     {
       g_warning ("There was an error creating the searchitem variable.  I will cancel this search.  Please eat some cheese.\n");
@@ -1320,7 +1320,7 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
     //Set the colors of the entry to the current match highlight colors
     char key[100];
     char *key_ptr;
-    strcpy (key, GCPATH_GWAEI);
+    strcpy (key, GCPATH_GW);
     strcat (key, "/highlighting/match");
     key_ptr = &key[strlen (key)];
     char fg_color[100], bg_color[100], fallback[100];
@@ -1460,7 +1460,7 @@ G_MODULE_EXPORT void do_insert_or (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void do_clear_search (GtkWidget *widget, gpointer data)
 {
     gw_ui_clear_search_entry ();
-    gw_ui_grab_focus_by_target (GWAEI_TARGET_ENTRY);
+    gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
 }
 
 
@@ -1671,7 +1671,7 @@ G_MODULE_EXPORT gboolean do_update_icons_for_selection (GtkWidget *widget,
     GtkAction *action;
     action = GTK_ACTION (gtk_builder_get_object (builder, "file_print_action"));
     //Set the special buttons
-    if ((event->type == GDK_MOTION_NOTIFY || event->type == GDK_BUTTON_RELEASE) && gw_ui_has_selection_by_target (GWAEI_TARGET_RESULTS))
+    if ((event->type == GDK_MOTION_NOTIFY || event->type == GDK_BUTTON_RELEASE) && gw_ui_has_selection_by_target (GW_TARGET_RESULTS))
     {
       gw_ui_update_toolbar_buttons();
       action = GTK_ACTION (gtk_builder_get_object (builder, "file_append_action"));
@@ -1682,7 +1682,7 @@ G_MODULE_EXPORT gboolean do_update_icons_for_selection (GtkWidget *widget,
       gtk_action_set_label (action, gettext("_Print Selected"));
     }
     //Reset the buttons to their normal states
-    else if ((event->type == GDK_FOCUS_CHANGE || event->type == GDK_BUTTON_RELEASE || event->type == GDK_KEY_RELEASE || event->type == GDK_LEAVE_NOTIFY) &&  !gw_ui_has_selection_by_target (GWAEI_TARGET_RESULTS))
+    else if ((event->type == GDK_FOCUS_CHANGE || event->type == GDK_BUTTON_RELEASE || event->type == GDK_KEY_RELEASE || event->type == GDK_LEAVE_NOTIFY) &&  !gw_ui_has_selection_by_target (GW_TARGET_RESULTS))
     {
       gw_ui_update_toolbar_buttons();
       action = GTK_ACTION (gtk_builder_get_object (builder, "file_append_action"));
