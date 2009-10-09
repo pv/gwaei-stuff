@@ -40,6 +40,16 @@
 
 static int run_mode;
 
+
+//!
+//! @brief Sets the runmode of the program
+//!
+//! The runmode describes tells what interface the program will be using to
+//! primarily interact with the user.  The two possible choices are GTK or
+//! the console.  QT is currently a red herring.
+//!
+//! @param call String describing the runmode to set.
+//!
 void gw_util_initialize_runmode (char* call)
 {
    char *call_ptr = &call[strlen(call)];
@@ -56,39 +66,63 @@ void gw_util_initialize_runmode (char* call)
      run_mode = GW_QT_RUNMODE;
 }
 
+
+//!
+//! @brief Gets the runmode of the program
+//!
+//! The runmode describes tells what interface the program will be using to
+//! primarily interact with the user.  The two possible outputs:
+//! GW_CONSOLE_RUNMODE or GW_GTK_RUNMODE.  QT is currently a red herring.
+//!
+//! @return Returns the current runmode as an integer
+//!
 int gw_util_get_runmode ()
 {
     return run_mode;
 }
 
 
-//A fairly fast int to acsii char funciton
+//!
+//! @brief Internal integer to string converson algorithm
+//!
+//! @param the input integer
+//! @param a preallocated char array to store the string
+//! @param the length of the array for the radix
+//! @return Returns true if there were no problems
+//!
 gboolean gw_util_itoa (int input, char *output, const int MAX)
 {
-  //digit_ptr is used to write and track the number
-  char buffer[MAX];
-  char *digit_ptr = &buffer[MAX - 1];
+    //digit_ptr is used to write and track the number
+    char buffer[MAX];
+    char *digit_ptr = &buffer[MAX - 1];
 
-  *digit_ptr = '\0';
-  //Write out the digits starting at the end of of the buffer
-  do
-  {
-    digit_ptr--;
-    *digit_ptr = input % 10;
-    *digit_ptr += 48;
-    input /= 10;
-  } while (input != 0 && digit_ptr != &output[0]);
+    *digit_ptr = '\0';
+    //Write out the digits starting at the end of of the buffer
+    do
+    {
+      digit_ptr--;
+      *digit_ptr = input % 10;
+      *digit_ptr += 48;
+      input /= 10;
+    } while (input != 0 && digit_ptr != &output[0]);
 
-  //Shift the digits to the beginning of the string
-  strcpy(output, digit_ptr);
+    //Shift the digits to the beginning of the string
+    strcpy(output, digit_ptr);
 
-  //Send return status
-  if (input != 0 && digit_ptr == &output[0])
-    return FALSE;
-  else
-    return TRUE;
+    //Send return status
+    if (input != 0 && digit_ptr == &output[0])
+      return FALSE;
+    else
+      return TRUE;
 }
 
+//!
+//! @brief Converts a 2 digit hex number from a string to an integer
+//!
+//! @param the higher hex digit
+//! @param the lower hex digit
+//! @return Returns the int form of the hex number
+//!
 guint gw_util_2digithexstrtoint(char hex_char_digit_2, char hex_char_digit_1)
 {
     int digit1;
@@ -107,6 +141,13 @@ guint gw_util_2digithexstrtoint(char hex_char_digit_2, char hex_char_digit_1)
 }
 
 
+//!
+//! @brief Creates a hex string out of an integer
+//!
+//! @param a pre-allocated string to write into
+//! @param an integer representing a color
+//! @return Always returns true
+//!
 gboolean gw_util_itohexstr (char *color_string, guint color_integer)
 {
     char *color_string_ptr = color_string;
@@ -136,8 +177,13 @@ gboolean gw_util_itohexstr (char *color_string, guint color_integer)
     return TRUE;
 }
 
-
-//Returns the string where the waei directory should be.  If it doesn't exist, it creates it
+//!
+//! @brief Gets the location of the waei dictionary folder
+//!
+//! @param a pre-allocated string to write into
+//! @param an integer representing a color
+//! @return Always returns true
+//!
 char* gw_util_get_waei_directory(char *buffer) 
 {
     const char* home = g_get_home_dir ();
@@ -154,58 +200,122 @@ char* gw_util_get_waei_directory(char *buffer)
 }
 
 
-
-//Check if characters are romaji, katakana, hiragana, or kanji
+//!
+//! @brief Makes sure that all of the characters are in a specific range
+//!
+//! This function was made for the general purpose of quickly figuring out if
+//! a character string is all katakana, hiragana, or romaji.
+//!
+//! @param input The string to check
+//! @param start_unic_boundary the lower bound
+//! @param end_unic_boundary the upper bound
+//! @return Returns true if it is in the range
+//! @see gw_util_is_hiragana_str ()
+//! @see gw_util_is_katakana_str ()
+//! @see gw_util_is_kanji_str ()
+//! @see gw_util_is_romaji_str ()
+//!
 gboolean gw_util_all_chars_are_in_range (char input[],
                                          int  start_unic_boundary,
                                          int  end_unic_boundary   )
 {
-  //Setup
-  char *input_ptr;
-  input_ptr = input;
+    //Setup
+    char *input_ptr;
+    input_ptr = input;
 
-  gunichar unic;
-  unic = g_utf8_get_char(input_ptr);
-
-  gboolean is_in_boundary;
-  is_in_boundary = (unic >= start_unic_boundary && unic <= end_unic_boundary);
-
-  //Check
-  while (*input_ptr != '\0' && is_in_boundary)
-  {
-    input_ptr = g_utf8_next_char(input_ptr);
+    gunichar unic;
     unic = g_utf8_get_char(input_ptr);
-    is_in_boundary = (unic >= start_unic_boundary && unic <= end_unic_boundary);
-  }
 
-  //Return Results
-  return (input[0] != '\0' && *input_ptr == '\0');
+    gboolean is_in_boundary;
+    is_in_boundary = (unic >= start_unic_boundary && unic <= end_unic_boundary);
+
+    //Check
+    while (*input_ptr != '\0' && is_in_boundary)
+    {
+      input_ptr = g_utf8_next_char(input_ptr);
+      unic = g_utf8_get_char(input_ptr);
+      is_in_boundary = (unic >= start_unic_boundary && unic <= end_unic_boundary);
+    }
+
+    //Return Results
+    return (input[0] != '\0' && *input_ptr == '\0');
 }
 
 
-//Convenience functions
+//!
+//! @brief Convenience function for seeing if a string is hiragana
+//!
+//! @param input The string to check
+//! @return Returns true if it is in the range
+//! @see gw_util_all_chars_are_in_range ()
+//! @see gw_util_is_katakana_str ()
+//! @see gw_util_is_kanji_str ()
+//! @see gw_util_is_romaji_str ()
+//!
 gboolean gw_util_is_hiragana_str (char input[])
 {
     return gw_util_all_chars_are_in_range (input, L'ぁ', L'ん');
 }
 
+
+//!
+//! @brief Convenience function for seeing if a string is katakana
+//!
+//! @param input The string to check
+//! @return Returns true if it is in the range
+//! @see gw_util_all_chars_are_in_range ()
+//! @see gw_util_is_hiragana_str ()
+//! @see gw_util_is_kanji_str ()
+//! @see gw_util_is_romaji_str ()
+//!
 gboolean gw_util_is_katakana_str (char input[])
 {
     return gw_util_all_chars_are_in_range (input, L'ァ', L'ー');
 }
 
+
+//!
+//! @brief Convenience function for seeing if a string is kanji
+//!
+//! @param input The string to check
+//! @return Returns true if it is in the range
+//! @see gw_util_all_chars_are_in_range ()
+//! @see gw_util_is_hiragana_str ()
+//! @see gw_util_is_katakana_str ()
+//! @see gw_util_is_romaji_str ()
+//!
 gboolean gw_util_is_kanji_str (char input[])
 {
     return gw_util_all_chars_are_in_range (input, L'ー', 0xFF00);
 }
 
+
+//!
+//! @brief Convenience function for seeing if a string is romaji
+//!
+//! @param input The string to check
+//! @return Returns true if it is in the range
+//! @see gw_util_all_chars_are_in_range ()
+//! @see gw_util_is_hiragana_str ()
+//! @see gw_util_is_katakana_str ()
+//! @see gw_util_is_kanji_str ()
+//!
 gboolean gw_util_is_romaji_str (char input[])
 {
     return gw_util_all_chars_are_in_range (input, L'A', L'z');
 }
 
 
-//Shift characters between hiragana and katakana
+//!
+//! @brief Shifts the characters in a specific direction
+//!
+//! This function is used for hiragana to katakana conversions and vice versa.
+//!
+//! @param input The string to shift
+//! @param shift How much to shift by
+//! @see gw_util_str_shift_hira_to_kata ()
+//! @see gw_util_str_shift_kata_to_hira ()
+//!
 void gw_util_shift_all_chars_in_str_by (char input[], int shift)
 {
     //Setup
@@ -239,27 +349,41 @@ void gw_util_shift_all_chars_in_str_by (char input[], int shift)
 }
 
 
-//
-//Convenience functions
-//
-
-
+//!
+//! @brief Convenience function to shift hiragana to katakana
+//!
+//! @param input The string to shift
+//! @see gw_util_shift_all_chars_in_str_by ()
+//! @see gw_util_str_shift_kata_to_hira ()
+//!
 void gw_util_str_shift_hira_to_kata (char input[])
 {
     gw_util_shift_all_chars_in_str_by (input, (L'ア' - L'あ'));
 }
 
+
+//!
+//! @brief Convenience function to shift katakana to hiragana
+//!
+//! @param input The string to shift
+//! @see gw_util_shift_all_chars_in_str_by ()
+//! @see gw_util_str_shift_hira_to_kata ()
+//!
 void gw_util_str_shift_kata_to_hira (char input[])
 {
     gw_util_shift_all_chars_in_str_by (input, (L'あ' - L'ア'));
 }
 
 
-//
-//Functions for managing romaji to hiragana conversions
-//
-
-
+//!
+//! @brief Gets the next hiragana equivalent char pointer in a string
+//!
+//! This function returns the hiragana equivalent and skips the romanji equivalent
+//! forward in the string.  This function is used for romaji->hiragana conversions.
+//!
+//! @param input The string to jump around
+//! @return where the next hiragana equivalent character would start
+//!
 char* gw_util_next_hira_char_from_roma (char *input)
 {
     char *input_ptr;
@@ -322,6 +446,15 @@ char* gw_util_next_hira_char_from_roma (char *input)
 }
 
 
+//!
+//! @brief Converts a romaji string to hiragana.
+//!
+//! Attempts to convert a romaji string to hiragana.
+//!
+//! @param input The source romaji string
+//! @param input The string to write the hiragana equivalent to
+//! @return Returns null on error/end
+//!
 char* gw_util_roma_to_hira (char *input, char *output)
 {
     //Set up the input pointer
@@ -703,6 +836,11 @@ char* gw_util_roma_to_hira (char *input, char *output)
 }
 
 
+//!
+//! @brief Checks for a Japanese ctype localization setting
+//!
+//! @return Returns true if it is a japanese ctype
+//!
 gboolean gw_util_is_japanese_ctype ()
 {
     return (setlocale(LC_CTYPE, NULL) != NULL &&
@@ -718,7 +856,14 @@ gboolean gw_util_is_japanese_ctype ()
            );
 }
 
-
+//!
+//! @brief Checks for a Japanese local messages setting
+//!
+//! Basically this checks if the interface is supposed to come out to be
+//! Japanese in the program or not.
+//!
+//! @return Returns true if it is a japanese local
+//!
 gboolean gw_util_is_japanese_locale()
 {
     return ( setlocale(LC_MESSAGES, NULL) != NULL &&
@@ -735,30 +880,41 @@ gboolean gw_util_is_japanese_locale()
 }
 
 
+//!
+//! @brief A function that gets the default pref hardwired in.
+//!
+//! This function is made to take things like gconf out of the equation
+//! so that the program can run even if it doesn't have any preferences
+//! stored anywhere.
+//!
+//! @param value The pre-allocated string to copy the value to
+//! @param key the key of the wanted preference
+//! @param n the radix of the size of the value array
+//!
 void gw_util_strncpy_fallback_from_key (char *value, char *key, int n)
 {
-  if (strcmp (GCKEY_GW_ENGLISH_SOURCE, key) == 0)
-    strncpy (value, GW_ENGLISH_URI_FALLBACK, n);
-  else if (strcmp (GCKEY_GW_KANJI_SOURCE, key) == 0)
-    strncpy (value, GW_KANJI_URI_FALLBACK, n);
-  else if (strcmp (GCKEY_GW_NAMES_SOURCE, key) == 0)
-    strncpy (value, GW_NAMES_URI_FALLBACK, n);
-  else if (strcmp (GCKEY_GW_RADICALS_SOURCE, key) == 0)
-    strncpy (value, GW_RADICALS_URI_FALLBACK, n);
+    if (strcmp (GCKEY_GW_ENGLISH_SOURCE, key) == 0)
+      strncpy (value, GW_ENGLISH_URI_FALLBACK, n);
+    else if (strcmp (GCKEY_GW_KANJI_SOURCE, key) == 0)
+      strncpy (value, GW_KANJI_URI_FALLBACK, n);
+    else if (strcmp (GCKEY_GW_NAMES_SOURCE, key) == 0)
+      strncpy (value, GW_NAMES_URI_FALLBACK, n);
+    else if (strcmp (GCKEY_GW_RADICALS_SOURCE, key) == 0)
+      strncpy (value, GW_RADICALS_URI_FALLBACK, n);
 
-  else if (strcmp (GCKEY_GW_MATCH_FG, key) == 0)
-    strncpy (value, GW_MATCH_FG_FALLBACK, n);
-  else if (strcmp (GCKEY_GW_MATCH_BG, key) == 0)
-    strncpy (value, GW_MATCH_BG_FALLBACK, n);
-  else if (strcmp (GCKEY_GW_HEADER_FG, key) == 0)
-    strncpy (value, GW_HEADER_FG_FALLBACK, n);
-  else if (strcmp (GCKEY_GW_HEADER_BG, key) == 0)
-    strncpy (value, GW_HEADER_BG_FALLBACK, n);
-  else if (strcmp (GCKEY_GW_COMMENT_FG, key) == 0)
-    strncpy (value, GW_COMMENT_FG_FALLBACK, n);
+    else if (strcmp (GCKEY_GW_MATCH_FG, key) == 0)
+      strncpy (value, GW_MATCH_FG_FALLBACK, n);
+    else if (strcmp (GCKEY_GW_MATCH_BG, key) == 0)
+      strncpy (value, GW_MATCH_BG_FALLBACK, n);
+    else if (strcmp (GCKEY_GW_HEADER_FG, key) == 0)
+      strncpy (value, GW_HEADER_FG_FALLBACK, n);
+    else if (strcmp (GCKEY_GW_HEADER_BG, key) == 0)
+      strncpy (value, GW_HEADER_BG_FALLBACK, n);
+    else if (strcmp (GCKEY_GW_COMMENT_FG, key) == 0)
+      strncpy (value, GW_COMMENT_FG_FALLBACK, n);
 
-  else
-    strncpy (value, "", n);
+    else
+      strncpy (value, "", n);
 }
 
 

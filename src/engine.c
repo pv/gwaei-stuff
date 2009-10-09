@@ -238,7 +238,7 @@ static gboolean stream_results_thread (GwSearchItem *item)
         if (regexec(&(item->re_exist[0]), item->scratch_buffer1, 1, NULL, 0) == 0)
         {
           gw_fmt_strcpy_with_kanji_formatting(item->scratch_buffer2, item->scratch_buffer1, item);
-          item->scratch_buffer2[strlen(item->scratch_buffer2) - 1] = '\0';
+          strcpy(item->scratch_buffer1, item->scratch_buffer2);
           append_result_to_output(item);
           chunk = 0;
         }
