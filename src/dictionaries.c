@@ -694,33 +694,39 @@ static gboolean split_places_from_names_dictionary(GError **error)
 //!
 void gw_dictlist_preform_postprocessing_by_name(char* name, GError **error)
 {
+    //Sanity check
     GwDictInfo* di;
-    di = gw_dictlist_get_dictionary_by_alias(name);
-    if (di->status != INSTALLING && di->status != UPDATING && di->status != REBUILDING) return;
+    di = gw_dictlist_get_dictionary_by_name (name);
+    if (di->status != INSTALLING &&
+        di->status != UPDATING &&
+        di->status != REBUILDING)
+      return;
 
-    int restore_status;
-    restore_status = di->status;
+    //Setup some pointers
+    GwDictInfo* k_di = gw_dictlist_get_dictionary_by_id (KANJI);
+    GwDictInfo* r_di = gw_dictlist_get_dictionary_by_id (RADICALS);
+    GwDictInfo* n_di = gw_dictlist_get_dictionary_by_id (NAMES);
 
-    di->status == REBUILDING;
+    //Preseve the status
+    int restore_status = di->status;
+    di->status = INSTALLED;
 
-    //Figure out whether to create the Mix dictionary
-    if (strcmp(name, "Radicals") == 0 ||
-        strcmp(name, "Kanji"   ) == 0 ||
-        strcmp(name, "Mix"     ) == 0   )
+    //Rebuild the mix dictionary
+    if ((di->id == RADICALS || di->id == KANJI || di->id == MIX) &&
+        (k_di->status == INSTALLED && r_di->status == INSTALLED)
+       )
     {
-      GwDictInfo* k_di = gw_dictlist_get_dictionary_by_id (KANJI);
-      GwDictInfo* r_di = gw_dictlist_get_dictionary_by_id (RADICALS);
-      if (k_di->status == INSTALLED && r_di->status == INSTALLED)
-        create_mix_dictionary ();
+      di->status = REBUILDING;
+      create_mix_dictionary ();
     }
-    else if(strcmp(name, "Names") == 0)
+    //Rebuild the names dictionary
+    else if(di->id == NAMES && n_di->status == INSTALLED)
     {
-      GwDictInfo* n_di = gw_dictlist_get_dictionary_by_id (NAMES);
-      if (n_di->status == INSTALLED)
+      di->status = REBUILDING;
       split_places_from_names_dictionary(error);
     }
-
-    di->status == restore_status;
+    //Cleanup
+    di->status = restore_status;
 }
 
 
