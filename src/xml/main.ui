@@ -723,6 +723,7 @@
                 <property name="visible">True</property>
                 <property name="tooltip_text" translatable="yes">Select the dictionary you want to use</property>
                 <property name="model">list_store_dictionaries</property>
+                <property name="focus_on_click">False</property>
                 <signal name="changed" handler="do_dictionary_changed_action"/>
                 <child>
                   <object class="GtkCellRendererText" id="dictionary_combobox_renderer"/>
@@ -740,7 +741,7 @@
             <child>
               <object class="GtkButton" id="search_entry_submit_button">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
+                <property name="can_focus">False</property>
                 <property name="receives_default">True</property>
                 <property name="tooltip_text" translatable="yes">Click to start search</property>
                 <property name="relief">none</property>
@@ -883,7 +884,6 @@
                       <object class="GtkScrolledWindow" id="kanji_scrolled_window">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="border_width">10</property>
                         <property name="hscrollbar_policy">automatic</property>
                         <property name="vscrollbar_policy">automatic</property>
                         <child>
