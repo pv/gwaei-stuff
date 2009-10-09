@@ -408,7 +408,8 @@ static gboolean stream_results_cleanup (GwSearchItem *item)
 void gw_search_get_results (GwSearchItem *item)
 {
     //Misc preparations
-    if (item->dictionary->type == GW_DICT_KANJI || item->dictionary->type == GW_DICT_RADICALS)
+    if (item->target != GW_TARGET_CONSOLE &&
+        (item->dictionary->type == GW_DICT_KANJI || item->dictionary->type == GW_DICT_RADICALS))
       item->show_less_relevant_results = TRUE;
 
     if (gw_util_get_runmode () != GW_CONSOLE_RUNMODE)

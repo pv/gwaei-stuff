@@ -261,7 +261,7 @@ void gw_open_kanji_results()
 }
 
 
-void gw_close_kanji_results()
+void gw_ui_close_kanji_results()
 {
 }
 
@@ -375,4 +375,8 @@ void gw_ui_set_progressbar (char *name, double percent, char *message)
 
 void gw_ui_update_search_progressbar (long current, long total)
 { 
+}
+
+void gw_ui_set_header (GwSearchItem *item, char* text, char* mark_name)
+{
 }
