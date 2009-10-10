@@ -9,7 +9,6 @@
      ../src/engine.c \
      ../src/printing-gtk.c \
      ../src/io.c \
-     ../src/settings.c \
      ../src/settings-interface-gtk.c \
      ../src/settings-callbacks-gtk.c \
      ../src/radicals-interface-gtk.c \

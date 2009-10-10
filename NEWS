@@ -1,3 +1,8 @@
-2009-06-14: Released gWaei 1.0
-  Offical 1.0 release!  The 1.0 series will continue and stay stable for people
-  who just want to get things done (TM). 1.1 will come when/if it is needed.
+2009-10-09: Released gWaei 1.0
+  Offical 1.1 release!  A bunch of changes made it into the program.  Much of
+  the main interface has been rethought out. Bugs squashed, code reworked.
+  Much of the program has been documented using doxygen, a new IRC help channel
+  setup, and links to the homepage from the program.
+
+  This release requires Gnome 2.26 level dependencies.  This would be about 
+  Fedora 11 or Ubuntu 9 level.

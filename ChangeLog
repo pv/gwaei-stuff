@@ -1,8 +1,25 @@
-2009-09-25  pizzach  <pizzach@gmail.com>
-	* configure.ac                  : --without-gnome no longer requires gnome-doc-utils
-	* Makefile.am                   : the help directory is no longer included
-																		when compiled without gnome
-	* utilities.c                   : fixed conversion of "ge" to "げ"
-	* src/kpengine/conv_jdata.pl    : Script was using an absolute path to perl
-	* rpm/gwaei.spec.in             : No longer blatently overwrites
-																		~/.rpmmacros when creating rpms
+2009-10-09  pizzach  <pizzach@gmail.com>
+
+	* Doxygen : Created documentation for much of the program
+	* Everything : Massive code cleanups in the program.
+	* New fonts for Kanji : ttf-arphic-ukai, ttf-kanjistrokeorders 
+	* Kanji sidebar redesign : Kanji stroke orders are shown in in the kanji
+	sidebar background made to be more cohesive.  Centered.
+	* Results grouping : results starting with the same kanji are grouped for
+	legibility.
+	* Added IRC channel links and homepage links in various places.
+	* Buttons/menus change when text is highlighted : Shows that the action only
+	is applied to the highlighted text.
+	* ui xml has been moved directly to gtkbuilder : there is no more conversion
+	of the glade file with the glade conversion script anymore.
+	* Menus moved to GtkActions : helps to simplify the code
+	* Updated documentation : The help documents etc have been updated.
+	* Redesigned main window : It has been rethrought and balanced out.  New
+	clear search and search start button.  Progress bar in the lower right hand
+	corner.
+	* Drag and drop target moved : It is now accomplished by dragging into the
+	main results area to intitiate an automatic search.
+	* The whole interface in now translated : some previously untranslatable
+	items have been made translatable.
+	* New keybindings : Tab no longer changes dictionaries.  Alt-# or
+	alt-up/alt-down does. Alt-left/alt-right now appears in the history menu.

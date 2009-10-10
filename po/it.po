@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2009-10-08 22:45-0400\n"
+"POT-Creation-Date: 2009-10-09 18:37-0400\n"
 "PO-Revision-Date: 2009-10-07 09:47+0100\n"
 "Last-Translator: Fabrizio Sabatini <jecnua@gmail.com>\n"
 "Language-Team: Not Applicable\n"
@@ -15,31 +15,31 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/formatting.c:521
+#: src/formatting.c:487
 msgid "Grade:"
 msgstr "Grado:"
 
-#: src/formatting.c:527
+#: src/formatting.c:493
 msgid "Stroke:"
 msgstr "Tratti:"
 
-#: src/formatting.c:533
+#: src/formatting.c:499
 msgid "Freq:"
 msgstr "Freq:"
 
-#: src/formatting.c:539
+#: src/formatting.c:505
 msgid "JLPT:"
 msgstr "JLPT:"
 
-#: src/formatting.c:565 src/xml/settings.glade:1608
+#: src/formatting.c:531 src/xml/settings.glade:1608
 msgid "Radicals:"
 msgstr "Radicali:"
 
-#: src/formatting.c:594
+#: src/formatting.c:560
 msgid "Readings:"
 msgstr "Lettura:"
 
-#: src/formatting.c:617 src/formatting.c:618
+#: src/formatting.c:583 src/formatting.c:584
 msgid "Meanings:"
 msgstr "Significato:"
 
@@ -55,11 +55,11 @@ msgstr "Sto scaricando..."
 msgid "Gunzipping file..."
 msgstr "Sto scompattando..."
 
-#: src/main-interface-console.c:115 src/settings-callbacks-gtk.c:287
+#: src/main-interface-console.c:115 src/settings-callbacks-gtk.c:286
 msgid "Converting encoding..."
 msgstr "Convertendo l'encoding..."
 
-#: src/main-interface-console.c:127 src/settings-callbacks-gtk.c:296
+#: src/main-interface-console.c:127 src/settings-callbacks-gtk.c:295
 msgid "Postprocessing..."
 msgstr "Postprocessando..."
 
@@ -336,7 +336,7 @@ msgstr "Cerca Aiuto su I_RC"
 msgid "Edit the current vocabulary list"
 msgstr "Modifica la lista dei vocabolari correnti"
 
-#: src/main-interface-gtk.c:110 src/main-callbacks-gtk.c:1689
+#: src/main-interface-gtk.c:110 src/main-callbacks-gtk.c:1688
 msgid "A_ppend"
 msgstr "_Aggiungi"
 
@@ -521,7 +521,7 @@ msgstr "_Cicla in Alto"
 msgid "Cycle _Down"
 msgstr "Cicla in _Basso"
 
-#: src/main-interface-gtk.c:1775 src/engine.c:359
+#: src/main-interface-gtk.c:1775 src/engine.c:357
 msgid "No results found!"
 msgstr "Nessun risultato trovato!"
 
@@ -834,38 +834,38 @@ msgstr ""
 "ferirti. Per favore, avvertite della cosa anche tutti i vostri amici. Dopo "
 "vi ringrazieranno. Davvero."
 
-#: src/main-callbacks-gtk.c:472
+#: src/main-callbacks-gtk.c:471
 msgid "Save As"
 msgstr "Salva con nome..."
 
-#: src/main-callbacks-gtk.c:484 src/main-callbacks-gtk.c:559
+#: src/main-callbacks-gtk.c:483 src/main-callbacks-gtk.c:558
 msgid "vocabulary.txt"
 msgstr "vocabolario.txt"
 
-#: src/main-callbacks-gtk.c:549
+#: src/main-callbacks-gtk.c:548
 msgid "Save"
 msgstr "Salva"
 
-#: src/main-callbacks-gtk.c:1101
+#: src/main-callbacks-gtk.c:1100
 msgid "Italian: "
 msgstr "Italiano: "
 
-#: src/main-callbacks-gtk.c:1102
+#: src/main-callbacks-gtk.c:1101
 msgid "Japanese: "
 msgstr "Giapponese: "
 
-#: src/main-callbacks-gtk.c:1103
+#: src/main-callbacks-gtk.c:1102
 msgid "Spanish: "
 msgstr "Spagnolo: "
 
-#: src/main-callbacks-gtk.c:1124
+#: src/main-callbacks-gtk.c:1123
 msgid ""
 "gWaei (C) 2008-2009 Zachary Dovel\n"
 "Kanjipad backend (C) 2002 Owen Taylor\n"
 "JStroke backend (C) 1997 Robert Wells"
 msgstr ""
 
-#: src/main-callbacks-gtk.c:1125
+#: src/main-callbacks-gtk.c:1124
 msgid ""
 "Program for Japanese translation and reference. The\n"
 "dictionaries are supplied by Jim Breen's WWWJDIC."
@@ -873,15 +873,15 @@ msgstr ""
 "Programma per la traduzione e consultazione del Giapponese.\n"
 "I dizionari sono forniti da Jim Breen's WWWJDIC."
 
-#: src/main-callbacks-gtk.c:1678
+#: src/main-callbacks-gtk.c:1677
 msgid "A_ppend Selected"
 msgstr "_Aggiungi Selezione"
 
-#: src/main-callbacks-gtk.c:1680
+#: src/main-callbacks-gtk.c:1679
 msgid "Save Selected _As"
 msgstr "S_alva selezione come"
 
-#: src/main-callbacks-gtk.c:1682
+#: src/main-callbacks-gtk.c:1681
 msgid "_Print Selected"
 msgstr "Stampa Selezione"
 
@@ -897,7 +897,7 @@ msgstr "Altri Risultati"
 msgid "Other Results "
 msgstr "Altri Risultati "
 
-#: src/printing-gtk.c:318
+#: src/printing-gtk.c:316
 msgid "Page "
 msgstr "Pagina "
 
@@ -936,83 +936,83 @@ msgstr "Operazione terminata con successo\n"
 msgid "gunzip error"
 msgstr ""
 
-#: src/settings-interface-gtk.c:165 src/xml/settings.glade:199
+#: src/settings-interface-gtk.c:192 src/xml/settings.glade:199
 #: src/xml/settings.glade:276 src/xml/settings.glade:329
 #: src/xml/settings.glade:382
 msgid "Enabled"
 msgstr "Attivato"
 
-#: src/settings-interface-gtk.c:171
+#: src/settings-interface-gtk.c:198
 msgid "Disabled"
 msgstr "Disattivato"
 
-#: src/settings-interface-gtk.c:249 src/settings-callbacks-gtk.c:182
+#: src/settings-interface-gtk.c:276 src/settings-callbacks-gtk.c:181
 msgid "Finishing..."
 msgstr "Sto Finendo..."
 
-#: src/settings-interface-gtk.c:263
+#: src/settings-interface-gtk.c:290
 msgid "Cancelling..."
 msgstr "Sto Cancellando..."
 
-#: src/settings-interface-gtk.c:305
+#: src/settings-interface-gtk.c:332
 msgid "Not Installed"
 msgstr "Non Installato"
 
-#: src/settings-interface-gtk.c:331 src/xml/settings.glade:718
+#: src/settings-interface-gtk.c:358 src/xml/settings.glade:718
 #: src/xml/settings.glade:800 src/xml/settings.glade:1041
 #: src/xml/settings.glade:1124
 msgid "Installed"
 msgstr "Installato"
 
-#: src/settings-interface-gtk.c:347
+#: src/settings-interface-gtk.c:374
 msgid "Errored"
 msgstr "Errori"
 
-#: src/settings-interface-gtk.c:404
+#: src/settings-interface-gtk.c:431
 msgid "Downloading..."
 msgstr "Sto Scaricando..."
 
-#: src/settings-callbacks-gtk.c:119
+#: src/settings-callbacks-gtk.c:118
 msgid "Syncing "
 msgstr "Stò sincronizzando il dizionario "
 
-#: src/settings-callbacks-gtk.c:121
+#: src/settings-callbacks-gtk.c:120
 msgid " dictionary with server..."
 msgstr " con il server..."
 
-#: src/settings-callbacks-gtk.c:127 src/settings-callbacks-gtk.c:271
+#: src/settings-callbacks-gtk.c:126 src/settings-callbacks-gtk.c:270
 msgid "Connection failure\n"
 msgstr "Errore nella connessione\n"
 
-#: src/settings-callbacks-gtk.c:136
+#: src/settings-callbacks-gtk.c:135
 msgid "Finalizing "
 msgstr "Sto completando le modifiche al dizionario "
 
-#: src/settings-callbacks-gtk.c:138
+#: src/settings-callbacks-gtk.c:137
 msgid " dictionary changes..."
 msgstr " ..."
 
-#: src/settings-callbacks-gtk.c:152
+#: src/settings-callbacks-gtk.c:151
 msgid "Recreating Mixed dictionary..."
 msgstr "Ricreo il Dizionario Misto..."
 
-#: src/settings-callbacks-gtk.c:161
+#: src/settings-callbacks-gtk.c:160
 msgid "Resplitting Names dictionary..."
 msgstr "Risuddivido il dizionario dei Nomi..."
 
-#: src/settings-callbacks-gtk.c:201
+#: src/settings-callbacks-gtk.c:200
 msgid "Update was cancelled"
 msgstr "L'aggiornamento è stato cancellato"
 
-#: src/settings-callbacks-gtk.c:209
+#: src/settings-callbacks-gtk.c:208
 msgid "Dictionary update finished"
 msgstr "Finito l'aggiornamento dei dizionari"
 
-#: src/settings-callbacks-gtk.c:279
+#: src/settings-callbacks-gtk.c:278
 msgid "Decompressing..."
 msgstr "Scompattando..."
 
-#: src/settings-callbacks-gtk.c:566
+#: src/settings-callbacks-gtk.c:565
 msgid "Dictionary File Select"
 msgstr "Seleziona il File Dizionario"
 
