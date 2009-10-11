@@ -33,13 +33,13 @@
 #define PACKAGE_NAME "gwaei"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "gwaei 1.1"
+#define PACKAGE_STRING "gwaei 1.2Dev"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "gwaei"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "1.1"
+#define PACKAGE_VERSION "1.2Dev"
 
 /* Version number of package */
-#define VERSION "1.1"
+#define VERSION "1.2Dev"
