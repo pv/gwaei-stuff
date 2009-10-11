@@ -111,4 +111,49 @@ gboolean gw_regex_locate_boundary_byte_pointers (const char *string, char  *patt
 } 
 
 
+//!
+//! @brief A function used to quickly locate the position of a pattern in a haystack
+//!
+//! Mostly this function is used for located where matches are a string so the approprate
+//! highlighting can be applied to them.
+//!
+//! @param string the current position in the line
+//! @param line_start the start of the line to calculate the offset against
+//! @param re_locate A compiled regex to use
+//! @param start the start offset
+//! @param start the end offset
+//! @return Returns a new position in the line after the match
+//!
+char* gw_regex_locate_offset (char *string, char *line_start, regex_t *re_locate,
+                              gint *start,  gint    *end                         )
+
+{
+    if (string == NULL) return NULL;
+
+    //Force regex to stop searching at line breaks
+    char *string_ptr = string;
+    char temp;
+    while(*string_ptr != '\n' && *string_ptr != '\0')
+      string_ptr++;
+    temp = *string_ptr;
+    *string_ptr = '\0';
+
+    size_t nmatch = 1;
+    regmatch_t pmatch[nmatch];
+
+    int status;
+    if ((status = regexec(re_locate, string, 1, pmatch, 0)) == 0)
+    {
+      *start = g_utf8_pointer_to_offset (line_start, string + pmatch[0].rm_so);
+      *end = g_utf8_pointer_to_offset (line_start, string + pmatch[0].rm_eo);
+      *string_ptr = temp;
+      return (string + pmatch[0].rm_eo);
+    }
+    else
+    {
+      *string_ptr = temp;
+      return NULL;
+    }
+}
+
 

@@ -8,3 +8,4 @@ regex_t re_gz;
 regex_t re_hexcolor;
 
 void gw_regex_initialize_constant_regular_expressions(void);
+char* gw_regex_locate_offset (char*, char*, regex_t*, gint*, gint*);

@@ -1572,34 +1572,6 @@ void gw_ui_close_kanji_results()
 
 
 
-static char* locate_offset( char *string, char *line_start, regex_t *re_locate,
-                     gint *start,  gint    *end                          )
-{
-    //Force regex to stop searching at line breaks
-    char *string_ptr = string;
-    char temp;
-    while(*string_ptr != '\n' && *string_ptr != '\0')
-      string_ptr++;
-    temp = *string_ptr;
-    *string_ptr = '\0';
-
-    size_t nmatch = 1;
-    regmatch_t pmatch[nmatch];
-
-    int status;
-    if ((status = regexec(re_locate, string, 1, pmatch, 0)) == 0)
-    {
-      *start = g_utf8_pointer_to_offset (line_start, string + pmatch[0].rm_so);
-      *end = g_utf8_pointer_to_offset (line_start, string + pmatch[0].rm_eo);
-      *string_ptr = temp;
-      return (string + pmatch[0].rm_eo);
-    }
-    else
-    {
-      *string_ptr = temp;
-      return NULL;
-    }
-}
 
 void gw_ui_remove_all_tags (GwSearchItem *item)
 {
@@ -2387,8 +2359,8 @@ void gw_ui_add_match_highlights (gint line, gint start_offset, gint end_offset, 
     char *pos = text;
 
     for(i = 0; i < item->total_re; i++) {
-       while ((pos = locate_offset( pos, text, &item->re_locate[i],
-                                       &match_so, &match_eo)) != NULL)
+       while ((pos = gw_regex_locate_offset (pos, text, &item->re_locate[i],
+                                             &match_so, &match_eo)) != NULL )
        {
          gw_ui_apply_tag_to_text (item->target, "match", line, match_so + start_offset,
                                                       line, match_eo + start_offset);
