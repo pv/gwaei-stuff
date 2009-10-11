@@ -625,17 +625,6 @@ choose other installation sources.</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
-                    <child>
-                      <object class="GtkAlignment" id="alignment24">
-                        <property name="visible">True</property>
-                        <child>
-                          <placeholder/>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="position">2</property>
-                      </packing>
-                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -1411,77 +1400,6 @@ choose other installation sources.</property>
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkHBox" id="english_advanced_hbox">
-                                <property name="sensitive">False</property>
-                                <property name="no_show_all">True</property>
-                                <property name="spacing">3</property>
-                                <child>
-                                  <object class="GtkAlignment" id="alignment25">
-                                    <property name="visible">True</property>
-                                    <child>
-                                      <placeholder/>
-                                    </child>
-                                  </object>
-                                  <packing>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="label3">
-                                    <property name="visible">True</property>
-                                    <property name="label" translatable="yes">Source: </property>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkEntry" id="english_source">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">True</property>
-                                    <signal name="changed" handler="do_source_entry_changed_action"/>
-                                  </object>
-                                  <packing>
-                                    <property name="position">2</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkButton" id="english_browse_button">
-                                    <property name="label" translatable="yes">Browse</property>
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="receives_default">True</property>
-                                    <signal name="clicked" handler="do_dictionary_source_browse" object="english_source"/>
-                                    <signal name="activate" handler="do_dictionary_source_browse" object="english_source"/>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="position">3</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkButton" id="english_reset_button">
-                                    <property name="label" translatable="yes">Reset</property>
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="receives_default">True</property>
-                                    <signal name="clicked" handler="do_dictionary_source_reset" object="english_source"/>
-                                    <signal name="activate" handler="do_dictionary_source_reset" object="english_source"/>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="position">4</property>
-                                  </packing>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="right_attach">3</property>
-                                <property name="top_attach">1</property>
-                                <property name="bottom_attach">2</property>
-                              </packing>
-                            </child>
-                            <child>
                               <object class="GtkHBox" id="hbox2">
                                 <property name="visible">True</property>
                                 <child>
@@ -1648,6 +1566,77 @@ choose other installation sources.</property>
                                 <property name="bottom_attach">9</property>
                               </packing>
                             </child>
+                            <child>
+                              <object class="GtkHBox" id="english_advanced_hbox">
+                                <property name="sensitive">False</property>
+                                <property name="no_show_all">True</property>
+                                <property name="spacing">3</property>
+                                <child>
+                                  <object class="GtkAlignment" id="alignment24">
+                                    <property name="visible">True</property>
+                                    <child>
+                                      <placeholder/>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel" id="label3">
+                                    <property name="visible">True</property>
+                                    <property name="label" translatable="yes">Source: </property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkEntry" id="english_source">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <signal name="changed" handler="do_source_entry_changed_action"/>
+                                  </object>
+                                  <packing>
+                                    <property name="position">2</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkButton" id="english_browse_button">
+                                    <property name="label" translatable="yes">Browse</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">True</property>
+                                    <signal name="clicked" handler="do_dictionary_source_browse" object="english_source"/>
+                                    <signal name="activate" handler="do_dictionary_source_browse" object="english_source"/>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="position">3</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkButton" id="english_reset_button">
+                                    <property name="label" translatable="yes">Reset</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">True</property>
+                                    <signal name="clicked" handler="do_dictionary_source_reset" object="english_source"/>
+                                    <signal name="activate" handler="do_dictionary_source_reset" object="english_source"/>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="position">4</property>
+                                  </packing>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="right_attach">3</property>
+                                <property name="top_attach">1</property>
+                                <property name="bottom_attach">2</property>
+                              </packing>
+                            </child>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -1669,10 +1658,16 @@ choose other installation sources.</property>
                       </object>
                     </child>
                     <child type="label">
-                      <object class="GtkLabel" id="label18">
+                      <object class="GtkComboBox" id="dictionary_languages_combobox">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">&lt;b&gt;Dictionaries&lt;/b&gt;</property>
-                        <property name="use_markup">True</property>
+                        <property name="model">dictionary_languages</property>
+                        <property name="active">0</property>
+                        <child>
+                          <object class="GtkCellRendererText" id="dictionary_language_renderer"/>
+                          <attributes>
+                            <attribute name="text">0</attribute>
+                          </attributes>
+                        </child>
                       </object>
                     </child>
                   </object>
@@ -2677,17 +2672,6 @@ choose other installation sources.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkAlignment" id="alignment50">
-                <property name="visible">True</property>
-                <child>
-                  <placeholder/>
-                </child>
-              </object>
-              <packing>
-                <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkButton" id="settings_close_button">
                 <property name="label">gtk-close</property>
                 <property name="visible">True</property>
@@ -2700,7 +2684,8 @@ choose other installation sources.</property>
               </object>
               <packing>
                 <property name="expand">False</property>
-                <property name="position">2</property>
+                <property name="pack_type">end</property>
+                <property name="position">1</property>
               </packing>
             </child>
           </object>
@@ -2727,6 +2712,23 @@ choose other installation sources.</property>
       </row>
       <row>
         <col id="0" translatable="yes">Only for Non-Japanese Locals</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="dictionary_languages">
+    <columns>
+      <!-- column-name language -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Spanish Dictionaries</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">German Dictionaries</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">English Dictionaries</col>
       </row>
     </data>
   </object>

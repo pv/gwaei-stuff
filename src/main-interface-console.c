@@ -37,6 +37,7 @@
 #include <glib.h>
 
 #include <gwaei/definitions.h>
+#include <gwaei/resultline.h>
 #include <gwaei/regex.h>
 #include <gwaei/dictionaries.h>
 #include <gwaei/history.h>
@@ -562,3 +563,77 @@ void initialize_console_interface(int argc, char **argv)
 }
 
 
+void gw_console_append_normal_results (GwSearchItem *item, GwResultLine *resultline)
+{
+    //Kanji
+    printf("%s", resultline->kanji_start);
+    //Furigana
+    if (resultline->furigana_start)
+    {
+      printf(" [%s]", resultline->furigana_start);
+    }
+    //Other info
+    if (resultline->classification_start)
+    {
+      printf(" %s", resultline->classification_start);
+    }
+    if (resultline->important)
+    {
+      printf(" %s", "P");
+    }
+    printf("\n");
+    //Definitions
+    int i = 0;
+    while (i < resultline->def_total)
+    {
+      printf("      %s %s\n", resultline->number[i], resultline->def_start[i]);
+      i++;
+    }
+    printf("\n");
+
+}
+
+void gw_console_append_kanji_results (GwSearchItem *item, GwResultLine *resultline)
+{
+    //Kanji
+    printf("%s\n", resultline->kanji);
+    if (resultline->radicals) printf("%s%s\n", gettext("Radicals:"), resultline->radicals);
+
+    char line_started = FALSE;
+    if (resultline->strokes)
+    {
+      line_started = TRUE;
+      printf("%s%s", gettext("Stroke:"), resultline->strokes);
+    }
+    if (resultline->frequency)
+    {
+      if (line_started) printf(" ");
+      line_started = TRUE;
+      printf("%s%s", gettext("Freq:"), resultline->frequency);
+    }
+    if (resultline->grade)
+    {
+      if (line_started) printf(" ");
+      line_started = TRUE;
+      printf("%s%s", gettext("Grade:"), resultline->grade);
+    }
+    if (resultline->jlpt)
+    {
+      if (line_started) printf(" ");
+      line_started = TRUE;
+      printf("%s%s", gettext("JLPT:"), resultline->jlpt);
+    }
+    if (line_started) printf("\n");
+    if (resultline->readings[0]) printf("%s%s", gettext("Readings:"), resultline->readings[0]);
+    if (resultline->readings[1]) printf("%s", resultline->readings[1]);
+    printf("\n");
+
+    if (resultline->meanings) printf("%s%s\n", gettext("Meanings:"), resultline->meanings);
+    printf("\n");
+
+}
+
+void gw_console_append_radical_results (GwSearchItem *item, GwResultLine *resultline)
+{
+    printf("%s : %s", resultline->kanji, resultline->radicals);
+}

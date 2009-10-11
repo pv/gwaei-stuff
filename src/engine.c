@@ -49,8 +49,12 @@
 #include <gwaei/engine.h>
 #include <gwaei/utilities.h>
 #include <gwaei/formatting.h>
+#include <gwaei/resultline.h>
 
 static gboolean less_relevant_title_inserted = FALSE;
+static GwResultLine* resultline = NULL;
+static GwResultLine* backup_resultline = NULL;
+static GwResultLine* swap_resultline = NULL;
 
 
 //!
@@ -63,18 +67,41 @@ static gboolean less_relevant_title_inserted = FALSE;
 //!
 //! @param item a GwSearchItem to get the result from
 //!
-static void append_result_to_output (GwSearchItem *item)
+static void append_result_to_output (GwSearchItem *item, GwResultLine *resultline)
 {
     if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
     {
-      printf("%s", item->scratch_buffer1);
+      if (item->dictionary->type == GW_DICT_OTHER)
+        gw_console_append_normal_results (item, resultline);
+      if (item->dictionary->type == GW_DICT_KANJI)
+        gw_console_append_kanji_results (item, resultline);
+      if (item->dictionary->type == GW_DICT_RADICALS)
+        gw_console_append_radical_results (item, resultline);
     }
     else
     {
-      int start, end;
-      gw_ui_append_to_buffer (item->target, item->scratch_buffer1,
-                                 NULL, NULL, &start, &end  );
-      gw_ui_add_results_tagging (start, end, item);
+      switch (item->dictionary->type)
+      {
+        case GW_DICT_OTHER:
+            //Begin comparison if possible
+            if (resultline->kanji_start != NULL && backup_resultline->kanji_start != NULL &&
+                ((strcmp(resultline->def_start[0], backup_resultline->def_start[0]) == 0 &&
+                 resultline->def_total == backup_resultline->def_total) ||
+                 (strcmp (resultline->kanji_start, backup_resultline->kanji_start) == 0 &&
+                 strcmp (resultline->furigana_start, backup_resultline->furigana_start) == 0)))
+            {
+              gw_ui_append_def_same_to_buffer (item, resultline);
+            }
+            else
+              gw_ui_append_results_to_buffer (item, resultline);
+            break;
+        case GW_DICT_KANJI:
+            gw_ui_append_kanji_results_to_buffer (item, resultline);
+            break;
+        case GW_DICT_RADICALS:
+            gw_ui_append_radicals_results_to_buffer (item, resultline);
+            break;
+      }
     }
 }
 
@@ -132,8 +159,9 @@ static void append_less_relevant_header_to_output(GwSearchItem *item)
       char *tag1 = "header";
       char *tag2 = "important";
 
-      gw_ui_append_to_buffer(item->target, "\n\n", tag1, tag2, NULL, NULL);
+      gw_ui_append_to_buffer(item->target, "\n", tag1, tag2, NULL, NULL);
       gw_ui_set_header (item, text, "less_relevant_header_mark");
+      gw_ui_append_to_buffer(item->target, "\n", tag1, tag2, NULL, NULL);
     }
 }
 
@@ -148,23 +176,17 @@ static void append_less_relevant_header_to_output(GwSearchItem *item)
 //! @param item a GwSearchItem
 //! @param results the result stored in a GList to free
 //!
-static void append_stored_result_to_output (GwSearchItem *item, GList **results)
+static void append_stored_result_to_output (GwSearchItem *item, GList **results, GwResultLine *resultline)
 {
     if (item->show_less_relevant_results || item->total_relevant_results == 0)
     {
-      if  (gw_util_get_runmode () == GW_CONSOLE_RUNMODE)
-      {
-        gw_fmt_strcpy_with_group_formatting (item->scratch_buffer1, (char*)(*results)->data, item);
-        printf("%s", item->scratch_buffer1);
-      }
-      else if (item->status != GW_DICT_STATUS_CANCELING)
-      {
-        int start, end;
-        gw_fmt_strcpy_with_group_formatting (item->scratch_buffer1, (char*)(*results)->data, item);
-        gw_ui_append_to_buffer (item->target, item->scratch_buffer1,
-                                   NULL, NULL, &start, &end);
-        gw_ui_add_results_tagging (start, end, item);
-      }
+      if (item->dictionary->type == GW_DICT_OTHER)
+        gw_resultline_parse_result_string (resultline, (char*)(*results)->data);
+      else if (item->dictionary->type == GW_DICT_KANJI)
+        gw_resultline_parse_kanji_result_string (resultline, (char*)(*results)->data);
+      else if (item->dictionary->type == GW_DICT_RADICALS)
+        gw_resultline_parse_radical_result_string (resultline, (char*)(*results)->data);
+      append_result_to_output (item, resultline);
     }
 
     free(((*results)->data));
@@ -226,7 +248,6 @@ static gboolean stream_results_thread (GwSearchItem *item)
       chunk++;
       item->current_line++;
 
-
       //Commented input in the dictionary...we should skip over it
       if(item->scratch_buffer1[0] == '#' || g_utf8_get_char(item->scratch_buffer1) == L'？') 
       { } 
@@ -237,9 +258,8 @@ static gboolean stream_results_thread (GwSearchItem *item)
       {
         if (regexec(&(item->re_exist[0]), item->scratch_buffer1, 1, NULL, 0) == 0)
         {
-          gw_fmt_strcpy_with_kanji_formatting(item->scratch_buffer2, item->scratch_buffer1, item);
-          strcpy(item->scratch_buffer1, item->scratch_buffer2);
-          append_result_to_output(item);
+          gw_resultline_parse_kanji_result_string (resultline, item->scratch_buffer1);
+          append_result_to_output (item, resultline);
           chunk = 0;
         }
       }
@@ -266,40 +286,37 @@ static gboolean stream_results_thread (GwSearchItem *item)
                 item->total_relevant_results++;
                 append_more_relevant_header_to_output(item);
                 gw_ui_update_total_results_label(item);
-                gw_fmt_strcpy_with_group_formatting (item->scratch_buffer2, item->scratch_buffer1, item);
-                if (dictionary_type == GW_DICT_KANJI)
-                  gw_fmt_strcpy_with_kanji_formatting(item->scratch_buffer1, item->scratch_buffer2, item);
-                else if (dictionary_type == GW_DICT_OTHER)
-                  gw_fmt_strcpy_with_general_formatting(item->scratch_buffer1, item->scratch_buffer2, item);
-                else
-                  strcpy(item->scratch_buffer1, item->scratch_buffer2);
-                append_result_to_output(item);
+                if (resultline != NULL)
+                {
+                  //Pull a switcheroo
+                  swap_resultline = backup_resultline;
+                  backup_resultline = resultline;
+                  resultline = swap_resultline;
+                  swap_resultline = NULL;
+                }
+                if (item->dictionary->type == GW_DICT_OTHER)
+                  gw_resultline_parse_result_string (resultline, item->scratch_buffer1);
+                else if (item->dictionary->type == GW_DICT_KANJI)
+                  gw_resultline_parse_kanji_result_string (resultline, item->scratch_buffer1);
+                else if (item->dictionary->type == GW_DICT_RADICALS)
+                  gw_resultline_parse_radical_result_string (resultline, item->scratch_buffer1);
+                append_result_to_output(item, resultline);
                 break;
             case MEDIUM_RELEVANCE:
                 if ( item->total_irrelevant_results < MAX_MEDIUM_IRRELIVENT_RESULTS &&
-                     (result = (char*)malloc(MAX_LINE)) )
+                     (result = (char*)malloc(strlen(item->scratch_buffer1) + 2)))
                 {
                   item->total_irrelevant_results++;
-                  if (dictionary_type == GW_DICT_KANJI)
-                    gw_fmt_strcpy_with_kanji_formatting(result, item->scratch_buffer1, item);
-                  else if (dictionary_type == GW_DICT_OTHER)
-                    gw_fmt_strcpy_with_general_formatting(result, item->scratch_buffer1, item);
-                  else
-                    strcpy(result, item->scratch_buffer1);
+                  strcpy(result, item->scratch_buffer1);
                   item->results_medium =  g_list_append(item->results_medium, result);
                 }
                 break;
             default:
                 if ( item->total_irrelevant_results < MAX_LOW_IRRELIVENT_RESULTS &&
-                     (result = (char*)malloc(MAX_LINE)))
+                     (result = (char*)malloc(strlen(item->scratch_buffer1) + 2)))
                 {
                   item->total_irrelevant_results++;
-                  if (dictionary_type == GW_DICT_KANJI)
-                    gw_fmt_strcpy_with_kanji_formatting(result, item->scratch_buffer1, item);
-                  else if (dictionary_type == GW_DICT_OTHER)
-                    gw_fmt_strcpy_with_general_formatting(result, item->scratch_buffer1, item);
-                  else
-                    strcpy(result, item->scratch_buffer1);
+                  strcpy(result, item->scratch_buffer1);
                   item->results_low = g_list_append(item->results_low, result);
                 }
                 break;
@@ -331,7 +348,11 @@ static gboolean stream_results_thread (GwSearchItem *item)
     if (item->results_medium != NULL) {
       for (chunk = 0; item->results_medium != NULL && chunk < MAX_CHUNK; chunk++) {
         item->total_results++;
-        append_stored_result_to_output(item, &(item->results_medium));
+        swap_resultline = backup_resultline;
+        backup_resultline = resultline;
+        resultline = swap_resultline;
+        swap_resultline = NULL;
+        append_stored_result_to_output(item, &(item->results_medium), resultline);
       }
       gw_ui_update_total_results_label(item);
       return TRUE;
@@ -341,7 +362,11 @@ static gboolean stream_results_thread (GwSearchItem *item)
     if (item->results_low != NULL) {
       for (chunk = 0; item->results_low != NULL && chunk < MAX_CHUNK; chunk++) {
         item->total_results++;
-        append_stored_result_to_output(item, &(item->results_low));
+        swap_resultline = backup_resultline;
+        backup_resultline = resultline;
+        resultline = swap_resultline;
+        swap_resultline = NULL;
+        append_stored_result_to_output(item, &(item->results_low), resultline);
       }
       gw_ui_update_total_results_label(item);
       return TRUE;
@@ -379,6 +404,11 @@ static gboolean stream_results_thread (GwSearchItem *item)
 //!
 static gboolean stream_results_cleanup (GwSearchItem *item)
 {
+    free (resultline);
+    resultline = NULL;
+    free (backup_resultline);
+    backup_resultline = NULL;
+
     gw_searchitem_do_post_search_clean (item);
     less_relevant_title_inserted = FALSE;
     if (gw_util_get_runmode () == GW_CONSOLE_RUNMODE)
@@ -404,6 +434,9 @@ static gboolean stream_results_cleanup (GwSearchItem *item)
 //!
 void gw_search_get_results (GwSearchItem *item)
 {
+    resultline = gw_resultline_new ();
+    backup_resultline = gw_resultline_new ();
+
     //Misc preparations
     if (item->target != GW_TARGET_CONSOLE &&
         (item->dictionary->type == GW_DICT_KANJI || item->dictionary->type == GW_DICT_RADICALS))
@@ -437,5 +470,4 @@ void gw_search_get_results (GwSearchItem *item)
                           (GDestroyNotify)stream_results_cleanup     );
     }
 }
-
 

@@ -45,6 +45,7 @@
 #include <gwaei/history.h>
 
 #include <gwaei/engine.h>
+#include <gwaei/resultline.h>
 #include <gwaei/callbacks.h>
 #include <gwaei/interface.h>
 #include <gwaei/preferences.h>
@@ -1571,7 +1572,7 @@ void gw_ui_close_kanji_results()
 
 
 
-char* locate_offset( char *string, char *line_start, regex_t *re_locate,
+static char* locate_offset( char *string, char *line_start, regex_t *re_locate,
                      gint *start,  gint    *end                          )
 {
     //Force regex to stop searching at line breaks
@@ -1618,6 +1619,7 @@ void gw_ui_remove_all_tags (GwSearchItem *item)
 
 void gw_ui_add_results_tagging ( gint sl, gint el, GwSearchItem* item )
 {
+/*
   char *text, *c, *temp_c;
   gboolean is_end_quote, is_end_parenth;
   gint cl, co;
@@ -1629,7 +1631,8 @@ void gw_ui_add_results_tagging ( gint sl, gint el, GwSearchItem* item )
 
   for(re = 0; re < item->total_re; re++) {
     //Set up the text
-    text = gw_ui_get_text_slice_from_buffer (target, sl, el);
+    text = gw_ui_get_text_slice_from_buffer (target, sl - 1, sl);
+    printf("LIIIIIIIIIIINE: %s\n", text);
     c = &text[0];
 
     //Position tracking variables
@@ -1652,56 +1655,12 @@ void gw_ui_add_results_tagging ( gint sl, gint el, GwSearchItem* item )
          }
       }
 
-      //
-      //Stuff for the kanji section
-      //
-      if (item->dictionary->type == GW_DICT_KANJI)
-      {
-        char *nextchar;
-        char *nextnextchar;
-        if (*c != '\0')
-          nextchar = g_utf8_next_char(c);
-        else
-          nextchar = NULL;
-        if (nextchar != NULL && *nextchar != '\0')
-          nextnextchar = g_utf8_next_char(nextchar);
-        else
-          nextnextchar = NULL;
-
-        //Highlight single kanji lines
-        if (g_utf8_get_char(c) > L'カ' && nextchar != NULL &&
-            *nextchar == ' ' && *nextnextchar == '\n'    &&
-            *nextnextchar != '{' && co == 0             )
-        {
-           gw_ui_apply_tag_to_text (target, "large", cl, 0, cl, 1);
-           gw_ui_apply_tag_to_text (target, "header", cl, 0, cl, 1);
-        }
-        //Bold kanji description titles
-        if (*c == ':')
-        {
-          desc_eo = co;
-
-          char *temp_c = c;
-          int temp_offset = co;
-          while (  (temp_c) > text && *(g_utf8_prev_char(temp_c)) != ' ' &&
-                  *(g_utf8_prev_char(temp_c)) != '\n' &&   temp_offset > 0        )
-          {
-            temp_c = g_utf8_prev_char(temp_c);
-            temp_offset--;
-          }
-
-          desc_so = temp_offset;
-          gw_ui_apply_tag_to_text (target, "important", cl, desc_so,
-                                                           cl, desc_eo);
-        }
-      }
-
       //Add highlighting to word description (adjective, verb type etc...)
-      if (*c == '(' && *(c - 1) == '/') {
+      if (*c == '(') {
         is_end_parenth = TRUE;
         parenth_so = co;
       }
-      else if (*c == ')' && *(c + 1) != '\0' && *(c + 1) != '(' && *(c + 2) != '(' && is_end_parenth == TRUE) {
+      else if (*c == ')' && is_end_parenth == TRUE) {
         is_end_parenth = FALSE;
         if (*(c + 1) == '/' || *(c + 1) == ' ') {
           parenth_eo = co + 1;
@@ -1709,34 +1668,14 @@ void gw_ui_add_results_tagging ( gint sl, gint el, GwSearchItem* item )
                                                          cl, parenth_eo);
         }
       }
-      
-      //Make the Japanese half of the results bold
-      if (*c == '\n') {
-
-        if (is_end_quote == TRUE) {
-          is_end_quote = FALSE;
-        }
-        cl++;
-        co = 0;
-        c = g_utf8_next_char(c);
-      }
-      else {
-        if (*c == '/') {
-          is_end_parenth = FALSE;
-          if ( is_end_quote == FALSE && item->dictionary->type != GW_DICT_KANJI)
-          {
-            is_end_quote = TRUE;
-            gw_ui_apply_tag_to_text (target, "important", cl, 0, cl, co);
-          }
-        }
-        co++;
-        c = g_utf8_next_char(c);
-      }
+      co++;
+      c = g_utf8_next_char(c);
     }
 
     //Cleanup
     g_free(text);
   }
+  */
 }
 
 
@@ -2254,6 +2193,12 @@ void gw_ui_reload_tagtable_tags()
 
 void gw_ui_initialize_tags()
 {
+    gw_ui_set_tag_to_tagtable ("italic", GW_TARGET_RESULTS,
+                                  "style", GINT_TO_POINTER(PANGO_STYLE_ITALIC));
+    gw_ui_set_tag_to_tagtable ("gray", GW_TARGET_RESULTS,
+                                  "foreground",    "#888888");
+    gw_ui_set_tag_to_tagtable ("smaller", GW_TARGET_RESULTS,
+                                  "size",    "smaller");
     //Important tag (usually bold)
     gw_ui_set_tag_to_tagtable ("important", GW_TARGET_RESULTS,
                                   "weight",    GINT_TO_POINTER(PANGO_WEIGHT_BOLD));
@@ -2264,8 +2209,8 @@ void gw_ui_initialize_tags()
     gw_ui_set_tag_to_tagtable ("larger", GW_TARGET_RESULTS, "font", "sans 20");
 
     //Large tag
-    gw_ui_set_tag_to_tagtable ("large", GW_TARGET_RESULTS, "font", "AR PL UKai CN, serif 40");
-    gw_ui_set_tag_to_tagtable ("large", GW_TARGET_KANJI,   "font", "KanjiStrokeOrders, AR PL UKai, serif 100");
+    gw_ui_set_tag_to_tagtable ("large", GW_TARGET_RESULTS, "font", "serif 40");
+    gw_ui_set_tag_to_tagtable ("large", GW_TARGET_KANJI,   "font", "KanjiStrokeOrders, serif 100");
 
     //Small tag
     gw_ui_set_tag_to_tagtable ("small", GW_TARGET_RESULTS,  "font", "serif 6");
@@ -2405,3 +2350,317 @@ gboolean gw_ui_has_selection_by_target (const int TARGET)
     GObject* tb = get_gobject_from_target(TARGET);
     return (gtk_text_buffer_get_has_selection (GTK_TEXT_BUFFER (tb)));
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///////////////NEW STUFFFFFSSSS/////////////////////////////
+///////////////NEW STUFFFFFSSSS/////////////////////////////
+///////////////NEW STUFFFFFSSSS/////////////////////////////
+///////////////NEW STUFFFFFSSSS/////////////////////////////
+
+
+
+void gw_ui_add_match_highlights (gint line, gint start_offset, gint end_offset, GwSearchItem* item)
+{
+    GtkTextBuffer *tb = GTK_TEXT_BUFFER (get_gobject_from_target(item->target));
+    
+    int re, i;
+    int match_so, match_eo;
+    GtkTextIter si, ei;
+    gtk_text_buffer_get_iter_at_line_offset (tb, &si, line, start_offset);
+    gtk_text_buffer_get_iter_at_line_offset (tb, &ei, line, end_offset);
+    char *text = gtk_text_buffer_get_slice (tb, &si, &ei, FALSE);
+    char *pos = text;
+
+    for(i = 0; i < item->total_re; i++) {
+       while ((pos = locate_offset( pos, text, &item->re_locate[i],
+                                       &match_so, &match_eo)) != NULL)
+       {
+         gw_ui_apply_tag_to_text (item->target, "match", line, match_so + start_offset,
+                                                      line, match_eo + start_offset);
+       }
+    }
+    g_free (text);
+}
+
+void gw_ui_shift_stay_mark (char *name)
+{
+    GtkTextMark *mark;
+    GtkTextIter iter;
+    gtk_text_buffer_get_end_iter (GTK_TEXT_BUFFER (results_tb), &iter);
+    if ((mark = gtk_text_buffer_get_mark (GTK_TEXT_BUFFER (results_tb), name)) == NULL)
+      gtk_text_buffer_create_mark (GTK_TEXT_BUFFER (results_tb), name, &iter, TRUE);
+    else
+      gtk_text_buffer_move_mark (GTK_TEXT_BUFFER (results_tb), mark, &iter);
+}
+
+void gw_ui_shift_append_mark (char *stay_name, char *append_name)
+{
+    GtkTextIter iter;
+    GtkTextMark *stay_mark, *append_mark;
+
+    stay_mark = gtk_text_buffer_get_mark (GTK_TEXT_BUFFER (results_tb), stay_name);
+    gtk_text_buffer_get_iter_at_mark (GTK_TEXT_BUFFER (results_tb), &iter, stay_mark);
+
+    if ((append_mark = gtk_text_buffer_get_mark (GTK_TEXT_BUFFER (results_tb), append_name)) == NULL)
+      gtk_text_buffer_create_mark (GTK_TEXT_BUFFER (results_tb), append_name, &iter, FALSE);
+    else
+      gtk_text_buffer_move_mark (GTK_TEXT_BUFFER (results_tb), append_mark, &iter);
+}
+
+
+void gw_ui_append_results_to_buffer (GwSearchItem *item, GwResultLine *resultline)
+{
+    GtkTextBuffer *tb = GTK_TEXT_BUFFER (get_gobject_from_target(item->target));
+
+    int line, start_offset, end_offset;
+    GtkTextIter iter;
+    gtk_text_buffer_get_end_iter (tb, &iter);
+    line = gtk_text_iter_get_line (&iter);
+    //Kanji
+    gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->kanji_start, -1, "important", NULL);
+    //Furigana
+    if (resultline->furigana_start)
+    {
+      gtk_text_buffer_insert_with_tags_by_name (tb, &iter, " [", -1, "important", NULL);
+      gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->furigana_start, -1, "important", NULL);
+      gtk_text_buffer_insert_with_tags_by_name (tb, &iter, "]", -1, "important", NULL);
+    }
+    //Other info
+    if (resultline->classification_start)
+    {
+      gtk_text_buffer_insert (tb, &iter, " ", -1);
+      gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->classification_start, -1, "gray", "italic", NULL);
+    }
+    if (resultline->important)
+    {
+      gtk_text_buffer_insert (tb, &iter, " ", -1);
+      gtk_text_buffer_insert_with_tags_by_name (tb, &iter, gettext("Pop"), -1, "small", NULL);
+    }
+    gw_ui_shift_stay_mark ("previous_result");
+    start_offset = 0;
+    end_offset = gtk_text_iter_get_line_offset (&iter);
+    gtk_text_buffer_insert (tb, &iter, "\n", -1);
+    gw_ui_add_match_highlights (line, start_offset, end_offset, item);
+    //Definitions
+    int i = 0;
+    while (i < resultline->def_total)
+    {
+      gtk_text_buffer_insert (tb, &iter, "      ", -1);
+
+      gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->number[i], -1, "comment", NULL);
+      gtk_text_buffer_insert                   (tb, &iter, " ", -1);
+      gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->def_start[i], -1, NULL);
+      end_offset = gtk_text_iter_get_line_offset (&iter);
+      line = gtk_text_iter_get_line (&iter);
+      gw_ui_add_match_highlights (line, start_offset, end_offset, item);
+      gtk_text_buffer_insert                   (tb, &iter, "\n", -1);
+      i++;
+    }
+    gtk_text_buffer_insert (tb, &iter, "\n", -1);
+}
+
+
+void gw_ui_append_def_same_to_buffer (GwSearchItem* item, GwResultLine *resultline)
+{
+    GtkTextBuffer *tb = GTK_TEXT_BUFFER (get_gobject_from_target(item->target));
+
+    gw_ui_shift_append_mark ("previous_result", "new_result");
+    GtkTextMark *mark;
+    if ((mark = gtk_text_buffer_get_mark (tb, "new_result")) != NULL)
+    {
+      GtkTextIter iter;
+      int line, start_offset, end_offset;
+      gtk_text_buffer_get_iter_at_mark (tb, &iter, mark);
+      line = gtk_text_iter_get_line (&iter);
+      start_offset = gtk_text_iter_get_line_offset (&iter);
+      gtk_text_buffer_insert_with_tags_by_name (tb, &iter, " /", -1, "important", NULL);
+      gtk_text_buffer_insert (tb, &iter, " ", -1);
+      //Kanji
+      gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->kanji_start, -1, "important", NULL);
+      //Furigana
+      if (resultline->furigana_start)
+      {
+        gtk_text_buffer_insert_with_tags_by_name (tb, &iter, " [", -1, "important", NULL);
+        gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->furigana_start, -1, "important", NULL);
+        gtk_text_buffer_insert_with_tags_by_name (tb, &iter, "]", -1, "important", NULL);
+      }
+      //Other info
+      if (resultline->classification_start)
+      {
+        gtk_text_buffer_insert                   (tb, &iter, " ", -1);
+        gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->classification_start, -1, "gray", "italic", NULL);
+      }
+      if (resultline->important)
+      {
+        gtk_text_buffer_insert                   (tb, &iter, " ", -1);
+        gtk_text_buffer_insert_with_tags_by_name (tb, &iter, gettext("Pop"), -1, "small", NULL);
+      }
+      end_offset = gtk_text_iter_get_line_offset (&iter);
+      gw_ui_add_match_highlights (line, start_offset, end_offset, item);
+    }
+}
+
+
+void gw_ui_append_kanji_results_to_buffer (GwSearchItem *item, GwResultLine *resultline)
+{
+      GtkTextBuffer *tb = GTK_TEXT_BUFFER (get_gobject_from_target(item->target));
+
+      int line, start_offset, end_offset;
+      GtkTextIter iter;
+      gtk_text_buffer_get_end_iter (tb, &iter);
+
+      //Kanji
+      gtk_text_buffer_get_end_iter (tb, &iter); start_offset = gtk_text_iter_get_line_offset (&iter);
+      gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->kanji, -1, "large", NULL);
+      if (item->target == GW_TARGET_RESULTS) gtk_text_buffer_insert_with_tags_by_name (tb, &iter, " ", -1, "large", NULL);
+      gtk_text_buffer_get_end_iter (tb, &iter); end_offset = gtk_text_iter_get_line_offset (&iter);
+      gtk_text_buffer_get_end_iter (tb, &iter); line = gtk_text_iter_get_line (&iter);
+      gw_ui_add_match_highlights (line, start_offset, end_offset, item);
+
+      if (item->target == GW_TARGET_RESULTS) return;
+
+      gtk_text_buffer_insert (tb, &iter, "\n", -1);
+      gtk_text_buffer_get_end_iter (tb, &iter); line = gtk_text_iter_get_line (&iter);
+      
+      //Radicals
+      if (resultline->radicals != NULL)
+      {
+        gtk_text_buffer_insert_with_tags_by_name (tb, &iter, gettext("Radicals:"), -1, "important", NULL);
+        gtk_text_buffer_get_end_iter (tb, &iter); start_offset = gtk_text_iter_get_line_offset (&iter);
+        gtk_text_buffer_insert (tb, &iter, resultline->radicals, -1);
+        gtk_text_buffer_get_end_iter (tb, &iter); end_offset = gtk_text_iter_get_line_offset (&iter);
+        gw_ui_add_match_highlights (line, start_offset, end_offset, item);
+
+        gtk_text_buffer_insert (tb, &iter, "\n", -1);
+        gtk_text_buffer_get_end_iter (tb, &iter); line = gtk_text_iter_get_line (&iter);
+      }
+
+
+      //Readings
+      if (resultline->readings[0] != NULL)
+      {
+        gtk_text_buffer_insert_with_tags_by_name (tb, &iter, gettext("Readings:"), -1, "important", NULL);
+        gtk_text_buffer_get_end_iter (tb, &iter); start_offset = gtk_text_iter_get_line_offset (&iter);
+        gtk_text_buffer_insert (tb, &iter, resultline->readings[0], -1);
+        if (resultline->readings[1] != NULL)
+        {
+          gtk_text_buffer_insert (tb, &iter, " ", -1);
+          gtk_text_buffer_insert (tb, &iter, resultline->readings[1], -1);
+        }
+        gtk_text_buffer_get_end_iter (tb, &iter); end_offset = gtk_text_iter_get_line_offset (&iter);
+        gw_ui_add_match_highlights (line, start_offset, end_offset, item);
+        gtk_text_buffer_insert (tb, &iter, "\n", -1);
+        gtk_text_buffer_get_end_iter (tb, &iter); line = gtk_text_iter_get_line (&iter);
+      }
+
+
+      //etc
+      gboolean line_started = FALSE;
+      if (resultline->strokes)
+      {
+        gtk_text_buffer_insert_with_tags_by_name (tb, &iter, gettext("Stroke:"), -1, "important", NULL);
+        gtk_text_buffer_insert (tb, &iter, resultline->strokes, -1);
+        line_started = TRUE;
+      }
+      if (resultline->frequency)
+      {
+        if (line_started) gtk_text_buffer_insert (tb, &iter, " ", -1);
+        gtk_text_buffer_insert_with_tags_by_name (tb, &iter, gettext("Freq:"), -1, "important", NULL);
+        gtk_text_buffer_insert (tb, &iter, resultline->frequency, -1);
+        gtk_text_buffer_insert (tb, &iter, " ", -1);
+      }
+      if (resultline->grade)
+      {
+        if (line_started) gtk_text_buffer_insert (tb, &iter, " ", -1);
+        gtk_text_buffer_insert_with_tags_by_name (tb, &iter, gettext("Grade:"), -1, "important", NULL);
+        gtk_text_buffer_insert (tb, &iter, resultline->grade, -1);
+      }
+      if (resultline->jlpt)
+      {
+        if (line_started) gtk_text_buffer_insert (tb, &iter, " ", -1);
+        gtk_text_buffer_insert_with_tags_by_name (tb, &iter, gettext("JLPT:"), -1, "important", NULL);
+        gtk_text_buffer_insert (tb, &iter, resultline->jlpt, -1);
+      }
+
+      gtk_text_buffer_insert (tb, &iter, "\n", -1);
+      gtk_text_buffer_get_end_iter (tb, &iter); line = gtk_text_iter_get_line (&iter);
+
+      //Meanings
+      gtk_text_buffer_get_end_iter (tb, &iter); start_offset = gtk_text_iter_get_line_offset (&iter);
+      gtk_text_buffer_insert_with_tags_by_name (tb, &iter, gettext("Meanings:"), -1, "important", NULL);
+      gtk_text_buffer_insert (tb, &iter, resultline->meanings, -1);
+      gtk_text_buffer_get_end_iter (tb, &iter); end_offset = gtk_text_iter_get_line_offset (&iter);
+      gw_ui_add_match_highlights (line, start_offset, end_offset, item);
+
+}
+
+
+void gw_ui_append_radicals_results_to_buffer (GwSearchItem *item, GwResultLine *resultline)
+{
+      GtkTextBuffer *tb = GTK_TEXT_BUFFER (get_gobject_from_target(item->target));
+
+      int line, start_offset, end_offset;
+      GtkTextIter iter;
+      gtk_text_buffer_get_end_iter (tb, &iter);
+
+      //Kanji
+      gtk_text_buffer_get_end_iter (tb, &iter); start_offset = gtk_text_iter_get_line_offset (&iter);
+      gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->kanji, -1, "large", NULL);
+      if (item->target == GW_TARGET_RESULTS) gtk_text_buffer_insert_with_tags_by_name (tb, &iter, " ", -1, "large", NULL);
+      gtk_text_buffer_get_end_iter (tb, &iter); end_offset = gtk_text_iter_get_line_offset (&iter);
+      gtk_text_buffer_get_end_iter (tb, &iter); line = gtk_text_iter_get_line (&iter);
+      gw_ui_add_match_highlights (line, start_offset, end_offset, item);
+
+      gtk_text_buffer_insert (tb, &iter, "\n", -1);
+      gtk_text_buffer_get_end_iter (tb, &iter); line = gtk_text_iter_get_line (&iter);
+      
+      //Radicals
+      if (resultline->radicals != NULL)
+      {
+        gtk_text_buffer_insert_with_tags_by_name (tb, &iter, gettext("Radicals:"), -1, "important", NULL);
+        gtk_text_buffer_get_end_iter (tb, &iter); start_offset = gtk_text_iter_get_line_offset (&iter);
+        gtk_text_buffer_insert (tb, &iter, resultline->radicals, -1);
+        gtk_text_buffer_get_end_iter (tb, &iter); end_offset = gtk_text_iter_get_line_offset (&iter);
+        gw_ui_add_match_highlights (line, start_offset, end_offset, item);
+
+        gtk_text_buffer_insert (tb, &iter, "\n", -1);
+        gtk_text_buffer_get_end_iter (tb, &iter); line = gtk_text_iter_get_line (&iter);
+      }
+}
+
+
+void gw_ui_append_other_results_to_buffer (GwSearchItem *item, GwResultLine *resultline)
+{
+      GtkTextBuffer *tb = GTK_TEXT_BUFFER (get_gobject_from_target(item->target));
+
+      int line, start_offset, end_offset;
+      GtkTextIter iter;
+      gtk_text_buffer_get_end_iter (tb, &iter);
+
+      //Kanji
+      gtk_text_buffer_get_end_iter (tb, &iter); start_offset = gtk_text_iter_get_line_offset (&iter);
+      gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->string, -1, "large", NULL);
+      if (item->target == GW_TARGET_RESULTS) gtk_text_buffer_insert_with_tags_by_name (tb, &iter, " ", -1, "large", NULL);
+      gtk_text_buffer_get_end_iter (tb, &iter); end_offset = gtk_text_iter_get_line_offset (&iter);
+      gtk_text_buffer_get_end_iter (tb, &iter); line = gtk_text_iter_get_line (&iter);
+      gw_ui_add_match_highlights (line, start_offset, end_offset, item);
+
+      gtk_text_buffer_insert (tb, &iter, "\n", -1);
+      gtk_text_buffer_get_end_iter (tb, &iter); line = gtk_text_iter_get_line (&iter);
+}
+

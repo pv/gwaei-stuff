@@ -29,7 +29,7 @@ datadir = @datadir@
 localedir = $(datadir)/locale
 DEFS = -DLOCALEDIR=\"$(localedir)\" -DVERSION=\"$(VERSION)\" -DPACKAGE=\"$(PACKAGE)\" -DBINDIR=\"$(bindir)\" -DRSYNC=\"$(RSYNC)\" -DGUNZIP=\"$(GUNZIP)\" -DDATADIR2=\"$(datadir)\"
 
-gwaei_SOURCES = main.c dictionaries.c engine.c utilities.c io.c regex.c main-interface-console.c formatting.c history.c include/gwaei/main.h include/gwaei/dictionaries.h include/gwaei/utilities.h include/gwaei/io.h include/gwaei/regex.h include/gwaei/engine.h include/gwaei/formatting.h include/gwaei/history.h include/gwaei/definitions.h include/gwaei/preferences.h
+gwaei_SOURCES = main.c dictionaries.c engine.c utilities.c io.c regex.c main-interface-console.c formatting.c history.c include/gwaei/main.h include/gwaei/dictionaries.h include/gwaei/utilities.h include/gwaei/io.h include/gwaei/regex.h include/gwaei/engine.h include/gwaei/formatting.h include/gwaei/history.h include/gwaei/definitions.h include/gwaei/preferences.h resultline.c resultline.h
 gwaei_LDADD =  $(DEPS_LIBS) @LIBINTL@
 gwaei_LDFLAGS = -Wall -Wextra -pedantic
 

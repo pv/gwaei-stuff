@@ -840,7 +840,7 @@ msgstr "選択のを印刷"
 
 #: src/engine.c:101
 msgid "Main Results "
-msgstr "適当な候補 "
+msgstr "一致する候補 "
 
 #: src/engine.c:121
 msgid "Other Results"
