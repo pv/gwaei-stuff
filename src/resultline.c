@@ -128,7 +128,7 @@ void gw_resultline_parse_result_string (GwResultLine *item, char *string)
     int i = 1;
 
     temp = ptr;
-    while ((temp = g_utf8_strchr(temp, -1, L'(')) != NULL)
+    while ((temp = g_utf8_strchr(temp, -1, L'(')) != NULL && i < 50)
     {
       next = g_utf8_next_char (temp);
       nextnext = g_utf8_next_char (next);
@@ -143,11 +143,12 @@ void gw_resultline_parse_result_string (GwResultLine *item, char *string)
       {
          *(temp - 1) = '\0';
          item->number[i] = temp;
-         *(temp + 3) = '\0';
-         item->def_start[i] = temp + 4;
+         temp = g_utf8_strchr (temp, -1, L')');
+         *(temp + 1) = '\0';
+         item->def_start[i] = temp + 2;
          i++;
       }
-      temp = nextnextnext + 1;
+      temp = temp + 2;
     }
     item->def_total = i;
     i--;

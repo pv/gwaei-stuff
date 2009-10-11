@@ -2,8 +2,8 @@ typedef struct GwResultLine {
     char string[MAX_LINE];
 
     //General result things
-    char *def_start[20];
-    char *number[20];
+    char *def_start[50];
+    char *number[50];
     int def_total;
     char *kanji_start;
     char *furigana_start;
