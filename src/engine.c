@@ -80,20 +80,36 @@ static void append_result_to_output (GwSearchItem *item, GwResultLine *resultlin
     }
     else
     {
+      gboolean furigana_exists, kanji_exists;
+      gboolean same_def_totals, same_first_def, same_furigana, same_kanji, skip;
       switch (item->dictionary->type)
       {
         case GW_DICT_OTHER:
+            kanji_exists = (resultline->kanji_start != NULL && backup_resultline->kanji_start != NULL);
+            furigana_exists = (resultline->furigana_start != NULL && backup_resultline->furigana_start != NULL);
+            if (resultline->kanji_start == NULL || backup_resultline->kanji_start == NULL)
+            {
+              skip = TRUE;
+            }
+            else
+            {
+              same_def_totals = (resultline->def_total == backup_resultline->def_total);
+              same_first_def = (strcmp(resultline->def_start[0], backup_resultline->def_start[0]) == 0);
+
+              same_furigana = (!furigana_exists ||strcmp(resultline->furigana_start, backup_resultline->furigana_start) == 0);
+              same_kanji = (!kanji_exists || strcmp(resultline->kanji_start, backup_resultline->kanji_start) == 0);
+              skip = FALSE;
+            }
+
             //Begin comparison if possible
-            if (resultline->kanji_start != NULL && backup_resultline->kanji_start != NULL &&
-                ((strcmp(resultline->def_start[0], backup_resultline->def_start[0]) == 0 &&
-                 resultline->def_total == backup_resultline->def_total) ||
-                 (strcmp (resultline->kanji_start, backup_resultline->kanji_start) == 0 &&
-                 strcmp (resultline->furigana_start, backup_resultline->furigana_start) == 0)))
+            if (!skip && ((same_def_totals && same_first_def) || (same_kanji && same_furigana)))
             {
               gw_ui_append_def_same_to_buffer (item, resultline);
             }
+            else if (!skip && same_kanji)
+              gw_ui_append_results_to_buffer (item, resultline, TRUE);
             else
-              gw_ui_append_results_to_buffer (item, resultline);
+              gw_ui_append_results_to_buffer (item, resultline, FALSE);
             break;
         case GW_DICT_KANJI:
             gw_ui_append_kanji_results_to_buffer (item, resultline);

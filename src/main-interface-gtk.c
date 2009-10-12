@@ -2395,9 +2395,31 @@ void gw_ui_shift_append_mark (char *stay_name, char *append_name)
 }
 
 
-void gw_ui_append_results_to_buffer (GwSearchItem *item, GwResultLine *resultline)
+void gw_ui_append_results_to_buffer (GwSearchItem *item, GwResultLine *resultline, gboolean remove_last_linebreak)
 {
     GtkTextBuffer *tb = GTK_TEXT_BUFFER (get_gobject_from_target(item->target));
+
+    if (remove_last_linebreak)
+    {
+      GtkTextIter si, ei;
+      GtkTextMark *temp_mark;
+      if ((temp_mark = gtk_text_buffer_get_mark (tb, "previous_result")) && gtk_text_buffer_get_mark (tb, "note_mark") == NULL)
+      {
+        gtk_text_buffer_get_iter_at_mark (tb, &si, temp_mark);
+        gtk_text_buffer_create_mark (tb, "note_mark", &si, TRUE);
+        gtk_text_buffer_get_iter_at_line (tb, &ei, gtk_text_iter_get_line (&si) + 1);
+        gtk_text_buffer_delete (tb, &si, &ei);
+      }
+      gtk_text_buffer_get_end_iter (tb, &ei);
+      gtk_text_buffer_get_iter_at_line (tb, &si, gtk_text_iter_get_line (&ei) - 1);
+      gtk_text_buffer_delete(tb, &si, &ei);
+    }
+    else
+    {
+      GtkTextMark *temp_mark;
+      if (temp_mark = gtk_text_buffer_get_mark (tb, "note_mark"))
+         gtk_text_buffer_delete_mark (tb, temp_mark);
+    }
 
     int line, start_offset, end_offset;
     GtkTextIter iter;
@@ -2426,7 +2448,7 @@ void gw_ui_append_results_to_buffer (GwSearchItem *item, GwResultLine *resultlin
     gw_ui_shift_stay_mark ("previous_result");
     start_offset = 0;
     end_offset = gtk_text_iter_get_line_offset (&iter);
-    gtk_text_buffer_insert (tb, &iter, "\n", -1);
+    if (!remove_last_linebreak) gtk_text_buffer_insert (tb, &iter, "\n", -1);
     gw_ui_add_match_highlights (line, start_offset, end_offset, item);
     //Definitions
     int i = 0;
