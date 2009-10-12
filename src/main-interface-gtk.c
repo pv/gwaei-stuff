@@ -2458,7 +2458,7 @@ void gw_ui_append_results_to_buffer (GwSearchItem *item, GwResultLine *resultlin
 
       gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->number[i], -1, "comment", NULL);
       gtk_text_buffer_insert                   (tb, &iter, " ", -1);
-      gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->def_start[i], -1, NULL);
+      gtk_text_buffer_insert                   (tb, &iter, resultline->def_start[i], -1);
       end_offset = gtk_text_iter_get_line_offset (&iter);
       line = gtk_text_iter_get_line (&iter);
       gw_ui_add_match_highlights (line, start_offset, end_offset, item);

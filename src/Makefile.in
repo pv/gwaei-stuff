@@ -93,12 +93,7 @@ bin_PROGRAMS = gwaei$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/gettext.m4 \
-	$(top_srcdir)/m4/gnome-doc-utils.m4 $(top_srcdir)/m4/iconv.m4 \
-	$(top_srcdir)/m4/lib-ld.m4 $(top_srcdir)/m4/lib-link.m4 \
-	$(top_srcdir)/m4/lib-prefix.m4 $(top_srcdir)/m4/nls.m4 \
-	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/progtest.m4 \
-	$(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -114,7 +109,7 @@ am__gwaei_SOURCES_DIST = main.c dictionaries.c engine.c utilities.c \
 	include/gwaei/regex.h include/gwaei/engine.h \
 	include/gwaei/formatting.h include/gwaei/history.h \
 	include/gwaei/definitions.h include/gwaei/preferences.h \
-	resultline.c resultline.h main-callbacks-gtk.c \
+	resultline.c include/gwaei/resultline.h main-callbacks-gtk.c \
 	main-interface-gtk.c settings-callbacks-gtk.c \
 	settings-interface-gtk.c radicals-interface-gtk.c \
 	radicals-callbacks-gtk.c printing-gtk.c \
@@ -327,8 +322,8 @@ gwaei_SOURCES = main.c dictionaries.c engine.c utilities.c io.c \
 	include/gwaei/regex.h include/gwaei/engine.h \
 	include/gwaei/formatting.h include/gwaei/history.h \
 	include/gwaei/definitions.h include/gwaei/preferences.h \
-	resultline.c resultline.h $(am__append_1) $(am__append_6) \
-	$(am__append_8)
+	resultline.c include/gwaei/resultline.h $(am__append_1) \
+	$(am__append_6) $(am__append_8)
 gwaei_LDADD = $(DEPS_LIBS) @LIBINTL@ $(am__append_2) $(am__append_9)
 gwaei_LDFLAGS = -Wall -Wextra -pedantic
 AM_CFLAGS = $(DEPS_CFLAGS) $(am__append_3) $(am__append_10)

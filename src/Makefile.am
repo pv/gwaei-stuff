@@ -29,7 +29,7 @@ datadir = @datadir@
 localedir = $(datadir)/locale
 DEFS = -DLOCALEDIR=\"$(localedir)\" -DVERSION=\"$(VERSION)\" -DPACKAGE=\"$(PACKAGE)\" -DBINDIR=\"$(bindir)\" -DRSYNC=\"$(RSYNC)\" -DGUNZIP=\"$(GUNZIP)\" -DDATADIR2=\"$(datadir)\"
 
-gwaei_SOURCES = main.c dictionaries.c engine.c utilities.c io.c regex.c main-interface-console.c formatting.c history.c include/gwaei/main.h include/gwaei/dictionaries.h include/gwaei/utilities.h include/gwaei/io.h include/gwaei/regex.h include/gwaei/engine.h include/gwaei/formatting.h include/gwaei/history.h include/gwaei/definitions.h include/gwaei/preferences.h resultline.c resultline.h
+gwaei_SOURCES = main.c dictionaries.c engine.c utilities.c io.c regex.c main-interface-console.c formatting.c history.c include/gwaei/main.h include/gwaei/dictionaries.h include/gwaei/utilities.h include/gwaei/io.h include/gwaei/regex.h include/gwaei/engine.h include/gwaei/formatting.h include/gwaei/history.h include/gwaei/definitions.h include/gwaei/preferences.h resultline.c include/gwaei/resultline.h
 gwaei_LDADD =  $(DEPS_LIBS) @LIBINTL@
 gwaei_LDFLAGS = -Wall -Wextra -pedantic
 
@@ -38,7 +38,7 @@ INCLUDES = -I $(top_srcdir)/src/include
 
 ##WINDOWS SETUP
 if ENABLE_WIN32
-gwaei_SOURCES += main-callbacks-gtk.c main-interface-gtk.c settings-callbacks-gtk.c settings-interface-gtk.c radicals-interface-gtk.c radicals-callbacks-gtk.c printing-gtk.c include/gwaei/interface.h include/gwaei/callbacks.h include/gwaei/radicals.h include/gwaei/settings.h include/gwaei/printing.h include/gwaei/gtk.h kanjipad/callbacks.c kanjipad/callbacks.h  kanjipad/kanjipad.c kanjipad/kanjipad.h kanjipad/padarea.c kanjipad/padarea.h 
+gwaei_SOURCES += main-callbacks-gtk.c main-interface-gtk.c settings-callbacks-gtk.c settings-interface-gtk.c radicals-interface-gtk.c radicals-callbacks-gtk.c printing-gtk.c include/gwaei/interface.h include/gwaei/callbacks.h include/gwaei/radicals.h include/gwaei/settings.h include/gwaei/printing.h include/gwaei/gtk.h kanjipad/callbacks.c kanjipad/callbacks.h  kanjipad/kanjipad.c kanjipad/kanjipad.h kanjipad/padarea.c kanjipad/padarea.h
 gwaei_SOURCES += sexy-disable.c
 gwaei_SOURCES += preferences-none.c
 gwaei_LDADD += $(WIN32_LIBS)
