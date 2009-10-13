@@ -356,7 +356,7 @@ engine_input_handler (GIOChannel *source, GIOCondition condition, gpointer data)
 static void 
 init_engine()
 {
-  gchar *argv[] = { DATADIR2 G_DIR_SEPARATOR_S PACKAGE G_DIR_SEPARATOR_S "kpengine", "--data-file", NULL, NULL };
+  gchar *argv[] = { LIBDIR G_DIR_SEPARATOR_S PACKAGE G_DIR_SEPARATOR_S "kpengine", "--data-file", NULL, NULL };
   GError *err = NULL;
   gchar *uninstalled;
   int stdin_fd, stdout_fd;

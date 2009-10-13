@@ -9,7 +9,8 @@ LIBDIR  = $(DATADIR2)/$(PACKAGE)
 PERL  = @PERL@
 KPGENDINEDIR = $(top_srcdir)/src/kpengine
 
-pkgdata_PROGRAMS = kpengine
+libdir_PROGRAMS = kpengine
+libdirdir = $(libdir)/$(PACKAGE)
 pkgdata_DATA = jdata.dat
 
 DEFS = -DLOCALEDIR=\"$(localedir)\" -DVERSION=\"$(VERSION)\" -DPACKAGE=\"$(PACKAGE)\" -DFOR_PILOT_COMPAT -DKP_LIBDIR=\"$(LIBDIR)\" -DBINDIR=\"$(LIBDIR)\"

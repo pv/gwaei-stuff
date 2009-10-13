@@ -186,8 +186,9 @@ CYGPATH_W = @CYGPATH_W@
 DEFS = -DLOCALEDIR=\"$(localedir)\" -DVERSION=\"$(VERSION)\" \
 	-DPACKAGE=\"$(PACKAGE)\" -DBINDIR=\"$(bindir)\" \
 	-DRSYNC=\"$(RSYNC)\" -DGUNZIP=\"$(GUNZIP)\" \
-	-DDATADIR2=\"$(datadir)\" $(am__append_4) $(am__append_5) \
-	$(am__append_7) $(am__append_11)
+	-DDATADIR2=\"$(datadir)\" -DLIBDIR=\"$(libdir)\" \
+	$(am__append_4) $(am__append_5) $(am__append_7) \
+	$(am__append_11)
 DEPDIR = @DEPDIR@
 DEPS_CFLAGS = @DEPS_CFLAGS@
 DEPS_LIBS = @DEPS_LIBS@

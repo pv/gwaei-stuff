@@ -33,7 +33,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-pkgdata_PROGRAMS = kpengine$(EXEEXT)
+libdir_PROGRAMS = kpengine$(EXEEXT)
 subdir = src/kpengine
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(srcdir)/conv_jdata.pl.in
@@ -44,9 +44,9 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES = conv_jdata.pl
-am__installdirs = "$(DESTDIR)$(pkgdatadir)" "$(DESTDIR)$(pkgdatadir)"
-pkgdataPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
-PROGRAMS = $(pkgdata_PROGRAMS)
+am__installdirs = "$(DESTDIR)$(libdirdir)" "$(DESTDIR)$(pkgdatadir)"
+libdirPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
+PROGRAMS = $(libdir_PROGRAMS)
 am_kpengine_OBJECTS = scoring.$(OBJEXT) util.$(OBJEXT) \
 	kpengine.$(OBJEXT)
 kpengine_OBJECTS = $(am_kpengine_OBJECTS)
@@ -223,6 +223,7 @@ BINDIR = @bindir@
 DATADIR2 = @datadir@
 LIBDIR = $(DATADIR2)/$(PACKAGE)
 KPGENDINEDIR = $(top_srcdir)/src/kpengine
+libdirdir = $(libdir)/$(PACKAGE)
 pkgdata_DATA = jdata.dat
 AM_CFLAGS = $(DEPS_CFLAGS) 
 INCLUDES = -I jstroke
@@ -265,29 +266,29 @@ $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 conv_jdata.pl: $(top_builddir)/config.status $(srcdir)/conv_jdata.pl.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
-install-pkgdataPROGRAMS: $(pkgdata_PROGRAMS)
+install-libdirPROGRAMS: $(libdir_PROGRAMS)
 	@$(NORMAL_INSTALL)
-	test -z "$(pkgdatadir)" || $(MKDIR_P) "$(DESTDIR)$(pkgdatadir)"
-	@list='$(pkgdata_PROGRAMS)'; for p in $$list; do \
+	test -z "$(libdirdir)" || $(MKDIR_P) "$(DESTDIR)$(libdirdir)"
+	@list='$(libdir_PROGRAMS)'; for p in $$list; do \
 	  p1=`echo $$p|sed 's/$(EXEEXT)$$//'`; \
 	  if test -f $$p \
 	  ; then \
 	    f=`echo "$$p1" | sed 's,^.*/,,;$(transform);s/$$/$(EXEEXT)/'`; \
-	   echo " $(INSTALL_PROGRAM_ENV) $(pkgdataPROGRAMS_INSTALL) '$$p' '$(DESTDIR)$(pkgdatadir)/$$f'"; \
-	   $(INSTALL_PROGRAM_ENV) $(pkgdataPROGRAMS_INSTALL) "$$p" "$(DESTDIR)$(pkgdatadir)/$$f" || exit 1; \
+	   echo " $(INSTALL_PROGRAM_ENV) $(libdirPROGRAMS_INSTALL) '$$p' '$(DESTDIR)$(libdirdir)/$$f'"; \
+	   $(INSTALL_PROGRAM_ENV) $(libdirPROGRAMS_INSTALL) "$$p" "$(DESTDIR)$(libdirdir)/$$f" || exit 1; \
 	  else :; fi; \
 	done
 
-uninstall-pkgdataPROGRAMS:
+uninstall-libdirPROGRAMS:
 	@$(NORMAL_UNINSTALL)
-	@list='$(pkgdata_PROGRAMS)'; for p in $$list; do \
+	@list='$(libdir_PROGRAMS)'; for p in $$list; do \
 	  f=`echo "$$p" | sed 's,^.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/'`; \
-	  echo " rm -f '$(DESTDIR)$(pkgdatadir)/$$f'"; \
-	  rm -f "$(DESTDIR)$(pkgdatadir)/$$f"; \
+	  echo " rm -f '$(DESTDIR)$(libdirdir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(libdirdir)/$$f"; \
 	done
 
-clean-pkgdataPROGRAMS:
-	-test -z "$(pkgdata_PROGRAMS)" || rm -f $(pkgdata_PROGRAMS)
+clean-libdirPROGRAMS:
+	-test -z "$(libdir_PROGRAMS)" || rm -f $(libdir_PROGRAMS)
 kpengine$(EXEEXT): $(kpengine_OBJECTS) $(kpengine_DEPENDENCIES) 
 	@rm -f kpengine$(EXEEXT)
 	$(kpengine_LINK) $(kpengine_OBJECTS) $(kpengine_LDADD) $(LIBS)
@@ -438,7 +439,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(PROGRAMS) $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(pkgdatadir)" "$(DESTDIR)$(pkgdatadir)"; do \
+	for dir in "$(DESTDIR)$(libdirdir)" "$(DESTDIR)$(pkgdatadir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -467,7 +468,7 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-generic clean-local clean-pkgdataPROGRAMS \
+clean-am: clean-generic clean-libdirPROGRAMS clean-local \
 	mostlyclean-am
 
 distclean: distclean-am
@@ -486,7 +487,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-pkgdataDATA install-pkgdataPROGRAMS
+install-data-am: install-libdirPROGRAMS install-pkgdataDATA
 
 install-dvi: install-dvi-am
 
@@ -521,23 +522,23 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-pkgdataDATA uninstall-pkgdataPROGRAMS
+uninstall-am: uninstall-libdirPROGRAMS uninstall-pkgdataDATA
 
 .MAKE: install-am install-strip
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
-	clean-local clean-pkgdataPROGRAMS ctags distclean \
+	clean-libdirPROGRAMS clean-local ctags distclean \
 	distclean-compile distclean-generic distclean-tags distdir dvi \
 	dvi-am html html-am info info-am install install-am \
 	install-data install-data-am install-dvi install-dvi-am \
 	install-exec install-exec-am install-html install-html-am \
-	install-info install-info-am install-man install-pdf \
-	install-pdf-am install-pkgdataDATA install-pkgdataPROGRAMS \
+	install-info install-info-am install-libdirPROGRAMS \
+	install-man install-pdf install-pdf-am install-pkgdataDATA \
 	install-ps install-ps-am install-strip installcheck \
 	installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
-	uninstall-am uninstall-pkgdataDATA uninstall-pkgdataPROGRAMS
+	uninstall-am uninstall-libdirPROGRAMS uninstall-pkgdataDATA
 
 
 clean-local: clean-jdata
