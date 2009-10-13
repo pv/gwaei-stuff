@@ -516,7 +516,7 @@ void gw_ui_update_dictionary_orders ()
     }
     dictionaries[i + 1] = '\0';
 
-    GtkWidget *label, *container, *dictionary, *move_up_button, *move_down_button, *button_box, *button_image, *number_label, *eventbox;
+    GtkWidget *label, *container, *dictionary, *move_up_button, *move_down_button, *button_box, *button_image, *number_label, *eventbox, *quickkey;
     GtkWidget *icon_image;
     container = GTK_WIDGET (gtk_builder_get_object (builder, "organize_dictionary_list_hbox"));
     GList *list;
@@ -550,8 +550,16 @@ void gw_ui_update_dictionary_orders ()
         markup = g_markup_printf_escaped ("<span size=\"larger\">%s</span>", di->long_name);
       else
         markup = g_markup_printf_escaped ("<span size=\"larger\">%s</span>", dictionaries[i]);
-
       gtk_label_set_markup (GTK_LABEL (label), markup);
+      g_free (markup);
+
+      quickkey = GTK_WIDGET (gtk_label_new (NULL));
+      if (i < 9)
+        markup = g_markup_printf_escaped ("<span size=\"smaller\">Alt-%d</span>", i + 1);
+      else
+        markup = g_markup_printf_escaped ("<span size=\"smaller\">   </span>", i + 1);
+      gtk_label_set_markup (GTK_LABEL (quickkey), markup);
+      gtk_widget_set_sensitive (GTK_WIDGET (quickkey), FALSE);
       g_free (markup);
 
       dictionary = GTK_WIDGET (gtk_hbox_new (FALSE, 5));
@@ -581,6 +589,7 @@ void gw_ui_update_dictionary_orders ()
       gtk_box_pack_start (GTK_BOX (dictionary), number_label, FALSE, FALSE, 5);
       GtkWidget *temp = GTK_WIDGET (gtk_hbox_new (FALSE, 5));
       gtk_box_pack_start (GTK_BOX (temp), label, FALSE, FALSE, 5);
+      gtk_box_pack_start (GTK_BOX (temp), quickkey, FALSE, FALSE, 5);
       gtk_box_pack_start (GTK_BOX (dictionary), temp, TRUE, TRUE, 5);
 
       if (i % 2)

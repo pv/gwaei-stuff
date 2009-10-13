@@ -674,7 +674,6 @@ G_MODULE_EXPORT void do_switch_displayed_dictionaries_action (GtkWidget *widget,
     GtkWidget *main_dictionaries_table, *other_dictionaries_table;
 
     active = gtk_combo_box_get_active (GTK_COMBO_BOX (widget));
-    printf("%d\n", active);
     main_dictionaries_table = GTK_WIDGET (gtk_builder_get_object (builder, "dictionaries_table"));
     other_dictionaries_table = GTK_WIDGET (gtk_builder_get_object (builder, "other_dictionaries_table"));
 

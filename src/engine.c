@@ -103,9 +103,7 @@ static void append_result_to_output (GwSearchItem *item, GwResultLine *resultlin
 
             //Begin comparison if possible
             if (!skip && ((same_def_totals && same_first_def) || (same_kanji && same_furigana)))
-            {
               gw_ui_append_def_same_to_buffer (item, resultline);
-            }
             else if (!skip && same_kanji)
               gw_ui_append_results_to_buffer (item, resultline, TRUE);
             else
@@ -319,7 +317,7 @@ static gboolean stream_results_thread (GwSearchItem *item)
                 append_result_to_output(item, resultline);
                 break;
             case MEDIUM_RELEVANCE:
-                if ( item->total_irrelevant_results < MAX_MEDIUM_IRRELIVENT_RESULTS &&
+                if ((item->dictionary->type == GW_DICT_KANJI || item->total_irrelevant_results < MAX_MEDIUM_IRRELIVENT_RESULTS) &&
                      (result = (char*)malloc(strlen(item->scratch_buffer1) + 2)))
                 {
                   item->total_irrelevant_results++;
@@ -328,7 +326,7 @@ static gboolean stream_results_thread (GwSearchItem *item)
                 }
                 break;
             default:
-                if ( item->total_irrelevant_results < MAX_LOW_IRRELIVENT_RESULTS &&
+                if ((item->dictionary->type == GW_DICT_KANJI || item->total_irrelevant_results < MAX_LOW_IRRELIVENT_RESULTS) &&
                      (result = (char*)malloc(strlen(item->scratch_buffer1) + 2)))
                 {
                   item->total_irrelevant_results++;
@@ -459,7 +457,7 @@ void gw_search_get_results (GwSearchItem *item)
       item->show_less_relevant_results = TRUE;
 
     if (gw_util_get_runmode () != GW_CONSOLE_RUNMODE)
-      gw_ui_clear_buffer_by_target (item->target);
+      gw_ui_initialize_buffer_by_target (item->target);
 
     if (gw_searchitem_do_pre_search_prep (item) == FALSE)
     {
