@@ -40,12 +40,9 @@ dataunknowncharacter24_DATA = 24x24/unknown-character.png
 install-data-hook: update-icon-cache
 uninstall-hook: update-icon-cache
 
-if GCONF_SCHEMAS_INSTALL
-update-icon-cache:
-	touch -c $(datadir)/icons/hicolor
-else
-update-icon-cache:
-endif
+
+@GCONF_SCHEMAS_INSTALL_TRUE@update-icon-cache:
+@GCONF_SCHEMAS_INSTALL_FALSE@update-icon-cache:
 
 
 EXTRA_DIST = logo.png 16x16/$(PACKAGE).png 24x24/$(PACKAGE).png 32x32/$(PACKAGE).png 48x48/$(PACKAGE).png 22x22/word-boundary.png 16x16/non-word-boundary.png 16x16/unknown-character.png 24x24/non-word-boundary.png 16x16/word-boundary.png 24x24/unknown-character.png 22x22/non-word-boundary.png 24x24/word-boundary.png 22x22/unknown-character.png character.png character2.png character3.png

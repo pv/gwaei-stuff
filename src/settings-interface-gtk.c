@@ -598,7 +598,9 @@ void gw_ui_update_dictionary_orders ()
 
       gtk_box_pack_start (GTK_BOX (dictionary), icon_image, FALSE, FALSE, 5);
       gtk_box_pack_start (GTK_BOX (dictionary), number_label, FALSE, FALSE, 5);
-      gtk_box_pack_start (GTK_BOX (dictionary), label, TRUE, TRUE, 5);
+      GtkWidget *temp = GTK_WIDGET (gtk_hbox_new (FALSE, 5));
+      gtk_box_pack_start (GTK_BOX (temp), label, FALSE, FALSE, 5);
+      gtk_box_pack_start (GTK_BOX (dictionary), temp, TRUE, TRUE, 5);
 
       if (i % 2)
       {

@@ -2930,9 +2930,9 @@ choose other installation sources.</property>
                         <child>
                           <object class="GtkCheckButton" id="query_hiragana_to_katakana">
                             <property name="label" translatable="yes">Also search for _Katakana versions of Hiragana queries</property>
+                            <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
-                            <property name="no_show_all">True</property>
                             <property name="use_underline">True</property>
                             <property name="draw_indicator">True</property>
                             <signal name="toggled" handler="do_hiragana_katakana_conv_toggle"/>
@@ -2946,9 +2946,9 @@ choose other installation sources.</property>
                         <child>
                           <object class="GtkCheckButton" id="query_katakana_to_hiragana">
                             <property name="label" translatable="yes">Also search for _Hiragana versions of Katakana queries</property>
+                            <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
-                            <property name="no_show_all">True</property>
                             <property name="use_underline">True</property>
                             <property name="draw_indicator">True</property>
                             <signal name="toggled" handler="do_hiragana_katakana_conv_toggle"/>
@@ -3004,139 +3004,8 @@ choose other installation sources.</property>
                           <object class="GtkTable" id="table3">
                             <property name="visible">True</property>
                             <property name="border_width">8</property>
-                            <property name="n_rows">3</property>
                             <property name="n_columns">2</property>
                             <property name="homogeneous">True</property>
-                            <child>
-                              <object class="GtkButton" id="force_resplit_button">
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <signal name="clicked" handler="do_force_names_resplit"/>
-                                <signal name="activate" handler="do_force_names_resplit"/>
-                                <child>
-                                  <object class="GtkHBox" id="hbox34">
-                                    <property name="visible">True</property>
-                                    <child>
-                                      <object class="GtkAlignment" id="alignment39">
-                                        <property name="visible">True</property>
-                                        <child>
-                                          <placeholder/>
-                                        </child>
-                                      </object>
-                                      <packing>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkImage" id="image4">
-                                        <property name="visible">True</property>
-                                        <property name="stock">gtk-refresh</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel" id="label38">
-                                        <property name="visible">True</property>
-                                        <property name="label" translatable="yes">Force Resplit of _Names Dictionary</property>
-                                        <property name="use_underline">True</property>
-                                        <property name="mnemonic_widget">force_resplit_button</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">2</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkAlignment" id="alignment42">
-                                        <property name="visible">True</property>
-                                        <child>
-                                          <placeholder/>
-                                        </child>
-                                      </object>
-                                      <packing>
-                                        <property name="position">3</property>
-                                      </packing>
-                                    </child>
-                                  </object>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="top_attach">2</property>
-                                <property name="bottom_attach">3</property>
-                                <property name="x_options">GTK_FILL</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkButton" id="force_rebuild_button">
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <signal name="clicked" handler="do_force_mix_rebuild"/>
-                                <signal name="activate" handler="do_force_mix_rebuild"/>
-                                <child>
-                                  <object class="GtkHBox" id="hbox30">
-                                    <property name="visible">True</property>
-                                    <child>
-                                      <object class="GtkAlignment" id="alignment37">
-                                        <property name="visible">True</property>
-                                        <child>
-                                          <placeholder/>
-                                        </child>
-                                      </object>
-                                      <packing>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkImage" id="image3">
-                                        <property name="visible">True</property>
-                                        <property name="stock">gtk-refresh</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel" id="label37">
-                                        <property name="visible">True</property>
-                                        <property name="label" translatable="yes">Force Rebuild of _Mix Dictionary</property>
-                                        <property name="use_underline">True</property>
-                                        <property name="mnemonic_widget">force_rebuild_button</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">2</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkAlignment" id="alignment41">
-                                        <property name="visible">True</property>
-                                        <child>
-                                          <placeholder/>
-                                        </child>
-                                      </object>
-                                      <packing>
-                                        <property name="position">3</property>
-                                      </packing>
-                                    </child>
-                                  </object>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="top_attach">1</property>
-                                <property name="bottom_attach">2</property>
-                                <property name="x_options">GTK_FILL</property>
-                              </packing>
-                            </child>
                             <child>
                               <object class="GtkButton" id="open_gwaei_folder_button">
                                 <property name="visible">True</property>
@@ -3198,50 +3067,6 @@ choose other installation sources.</property>
                               </object>
                               <packing>
                                 <property name="x_options">GTK_FILL</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkHBox" id="hbox18">
-                                <property name="visible">True</property>
-                                <child>
-                                  <object class="GtkLabel" id="label33">
-                                    <property name="visible">True</property>
-                                    <property name="label" translatable="yes"> into the Names and Places Dictionaries.</property>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">False</property>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
-                                <property name="top_attach">2</property>
-                                <property name="bottom_attach">3</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkHBox" id="hbox28">
-                                <property name="visible">True</property>
-                                <child>
-                                  <object class="GtkLabel" id="label31">
-                                    <property name="visible">True</property>
-                                    <property name="label" translatable="yes"> from the Kanji and Radicals Dictionaries.</property>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">False</property>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
-                                <property name="top_attach">1</property>
-                                <property name="bottom_attach">2</property>
                               </packing>
                             </child>
                             <child>

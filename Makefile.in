@@ -38,9 +38,7 @@ subdir = .
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Doxyfile.in \
 	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(srcdir)/config.h.in $(top_srcdir)/configure \
-	$(top_srcdir)/deb/DEBIAN/control.in \
-	$(top_srcdir)/deb/DEBIAN/postinst.in \
-	$(top_srcdir)/deb/DEBIAN/prerm.in \
+	$(top_srcdir)/debian/postinst.in $(top_srcdir)/debian/prerm.in \
 	$(top_srcdir)/help/C/gwaei.xml.in \
 	$(top_srcdir)/rpm/gwaei.spec.in \
 	$(top_srcdir)/rpm/rpm_gconf_install_post.sh.in \
@@ -56,10 +54,10 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES = help/C/gwaei.xml deb/DEBIAN/control \
-	deb/DEBIAN/postinst deb/DEBIAN/prerm rpm/gwaei.spec \
-	rpm/rpm_gconf_install_post.sh rpm/rpm_gconf_uninstall_pre.sh \
-	src/include/gwaei/definitions.h Doxyfile
+CONFIG_CLEAN_FILES = help/C/gwaei.xml debian/postinst debian/prerm \
+	rpm/gwaei.spec rpm/rpm_gconf_install_post.sh \
+	rpm/rpm_gconf_uninstall_pre.sh src/include/gwaei/definitions.h \
+	Doxyfile
 SOURCES =
 DIST_SOURCES =
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
@@ -255,8 +253,7 @@ copyingdir = $(docdir)-@VERSION@
 changelogdir = $(docdir)-@VERSION@
 CONFIGURE_OPTIONS = --prefix $(prefix) --bindir=$(bindir) --sbindir=$(sbindir) --libexecdir=$(libexecdir) --sysconfdir=$(sysconfdir) --sharedstatedir=$(sharedstatedir) --localstatedir=$(localstatedir) --libdir=$(libdir) --includedir=$(includedir) --oldincludedir=$(oldincludedir) --datarootdir=$(datarootdir) --datadir=$(datadir) --infodir=$(infodir) --localedir=$(localedir) --mandir=$(mandir) --docdir=$(docdir)
 DISTCLEANFILES = gnome-doc-utils.make
-#DISTCHECK_CONFIGURE_FLAGS = --disable-scrollkeeper
-EXTRA_DIST = config.rpath m4/ChangeLog config.rpath m4/ChangeLog deb/DEBIAN/rules gnome-doc-utils.make help/Makefile.am.gnome help/Makefile.am.none
+EXTRA_DIST = config.rpath m4/ChangeLog config.rpath m4/ChangeLog debian/rules debian/changelog debian/control debian/compat debian/copyright debian/series gnome-doc-utils.make help/Makefile.am.gnome help/Makefile.am.none
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -313,11 +310,9 @@ distclean-hdr:
 	-rm -f config.h stamp-h1
 help/C/gwaei.xml: $(top_builddir)/config.status $(top_srcdir)/help/C/gwaei.xml.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
-deb/DEBIAN/control: $(top_builddir)/config.status $(top_srcdir)/deb/DEBIAN/control.in
+debian/postinst: $(top_builddir)/config.status $(top_srcdir)/debian/postinst.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
-deb/DEBIAN/postinst: $(top_builddir)/config.status $(top_srcdir)/deb/DEBIAN/postinst.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
-deb/DEBIAN/prerm: $(top_builddir)/config.status $(top_srcdir)/deb/DEBIAN/prerm.in
+debian/prerm: $(top_builddir)/config.status $(top_srcdir)/debian/prerm.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 rpm/gwaei.spec: $(top_builddir)/config.status $(top_srcdir)/rpm/gwaei.spec.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
@@ -775,23 +770,9 @@ uninstall-am: uninstall-changelogDATA uninstall-copyingDATA \
 
 
 distclean-local:
-	@ rm -rf $(top_srcdir)/debian
 
 deb: dist
-	@ rm -rf $(top_srcdir)/debian
-	@ cp -R $(top_srcdir)/deb $(top_srcdir)/debian
-	@ rm $(top_srcdir)/debian/DEBIAN/*.in
-	@ cp $(top_srcdir)/ChangeLog $(top_srcdir)/debian/DEBIAN/changelog
-	@ cp $(top_srcdir)/COPYING $(top_srcdir)/debian/DEBIAN/copyright
-	@ $(top_srcdir)/configure $(CONFIGURE_OPTIONS) --disable-schemas-install > /dev/null
-	@ make clean > /dev/null
-	@ make
-	@ chmod a+x $(top_srcdir)/debian/DEBIAN/postinst
-	@ chmod a+x $(top_srcdir)/debian/DEBIAN/prerm
-	@ make DESTDIR=$(PWD)/debian install
-	@ ${DPKG_DEB} --build debian > /dev/null
-	@ mv $(top_srcdir)/debian.deb $(top_srcdir)/$(PACKAGE)-$(VERSION)-$(RELEASE).$(ARCH).deb
-	@ rm -rf $(top_srcdir)/debian
+	dpkg-buildpackage -us -uc -rfakeroot -b
 	@ echo "Success! Finished creating the deb package.  Please have a sugary day."
 
 ubuntu-deb:

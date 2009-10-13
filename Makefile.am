@@ -34,23 +34,10 @@ changelogdir = $(docdir)-@VERSION@
 CONFIGURE_OPTIONS = --prefix $(prefix) --bindir=$(bindir) --sbindir=$(sbindir) --libexecdir=$(libexecdir) --sysconfdir=$(sysconfdir) --sharedstatedir=$(sharedstatedir) --localstatedir=$(localstatedir) --libdir=$(libdir) --includedir=$(includedir) --oldincludedir=$(oldincludedir) --datarootdir=$(datarootdir) --datadir=$(datadir) --infodir=$(infodir) --localedir=$(localedir) --mandir=$(mandir) --docdir=$(docdir)
 
 distclean-local:
-	@ rm -rf $(top_srcdir)/debian
+##	@ rm -rf $(top_srcdir)/debian
 
 deb: dist
-	@ rm -rf $(top_srcdir)/debian
-	@ cp -R $(top_srcdir)/deb $(top_srcdir)/debian
-	@ rm $(top_srcdir)/debian/DEBIAN/*.in
-	@ cp $(top_srcdir)/ChangeLog $(top_srcdir)/debian/DEBIAN/changelog
-	@ cp $(top_srcdir)/COPYING $(top_srcdir)/debian/DEBIAN/copyright
-	@ $(top_srcdir)/configure $(CONFIGURE_OPTIONS) --disable-schemas-install > /dev/null
-	@ make clean > /dev/null
-	@ make
-	@ chmod a+x $(top_srcdir)/debian/DEBIAN/postinst
-	@ chmod a+x $(top_srcdir)/debian/DEBIAN/prerm
-	@ make DESTDIR=$(PWD)/debian install
-	@ ${DPKG_DEB} --build debian > /dev/null
-	@ mv $(top_srcdir)/debian.deb $(top_srcdir)/$(PACKAGE)-$(VERSION)-$(RELEASE).$(ARCH).deb
-	@ rm -rf $(top_srcdir)/debian
+	dpkg-buildpackage -us -uc -rfakeroot -b
 	@ echo "Success! Finished creating the deb package.  Please have a sugary day."
 
 ubuntu-deb:
@@ -84,6 +71,6 @@ uninstall-local:
 
 
 DISTCLEANFILES = gnome-doc-utils.make
-#DISTCHECK_CONFIGURE_FLAGS = --disable-scrollkeeper
-EXTRA_DIST = config.rpath m4/ChangeLog config.rpath m4/ChangeLog deb/DEBIAN/rules gnome-doc-utils.make help/Makefile.am.gnome help/Makefile.am.none
+EXTRA_DIST = config.rpath m4/ChangeLog config.rpath m4/ChangeLog debian/rules debian/changelog debian/control debian/compat debian/copyright debian/series gnome-doc-utils.make help/Makefile.am.gnome help/Makefile.am.none
+
 
