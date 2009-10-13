@@ -27,9 +27,9 @@ RPM_RPMS=`@RPMDIR@ --eval '%{_rpmdir}'`
 news_DATA = NEWS
 copying_DATA = COPYING
 changelog_DATA = ChangeLog
-newsdir = $(docdir)-@VERSION@
-copyingdir = $(docdir)-@VERSION@
-changelogdir = $(docdir)-@VERSION@
+newsdir = $(docdir)
+copyingdir = $(docdir)
+changelogdir = $(docdir)
 
 CONFIGURE_OPTIONS = --prefix $(prefix) --bindir=$(bindir) --sbindir=$(sbindir) --libexecdir=$(libexecdir) --sysconfdir=$(sysconfdir) --sharedstatedir=$(sharedstatedir) --localstatedir=$(localstatedir) --libdir=$(libdir) --includedir=$(includedir) --oldincludedir=$(oldincludedir) --datarootdir=$(datarootdir) --datadir=$(datadir) --infodir=$(infodir) --localedir=$(localedir) --mandir=$(mandir) --docdir=$(docdir)
 
@@ -66,7 +66,7 @@ fedora-rpm:
 
 
 uninstall-local:
-	@ rm -rf $(DESTDIR)$(docdir)-@VERSION@
+	@ rm -rf $(DESTDIR)$(docdir)
 	@ rm -rf $(DESTDIR)$(datadir)/@PACKAGE@
 
 

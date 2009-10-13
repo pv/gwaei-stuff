@@ -38,7 +38,6 @@ subdir = .
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Doxyfile.in \
 	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(srcdir)/config.h.in $(top_srcdir)/configure \
-	$(top_srcdir)/debian/postinst.in $(top_srcdir)/debian/prerm.in \
 	$(top_srcdir)/help/C/gwaei.xml.in \
 	$(top_srcdir)/rpm/gwaei.spec.in \
 	$(top_srcdir)/rpm/rpm_gconf_install_post.sh.in \
@@ -54,10 +53,9 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES = help/C/gwaei.xml debian/postinst debian/prerm \
-	rpm/gwaei.spec rpm/rpm_gconf_install_post.sh \
-	rpm/rpm_gconf_uninstall_pre.sh src/include/gwaei/definitions.h \
-	Doxyfile
+CONFIG_CLEAN_FILES = help/C/gwaei.xml rpm/gwaei.spec \
+	rpm/rpm_gconf_install_post.sh rpm/rpm_gconf_uninstall_pre.sh \
+	src/include/gwaei/definitions.h Doxyfile
 SOURCES =
 DIST_SOURCES =
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
@@ -248,9 +246,9 @@ RPM_RPMS = `@RPMDIR@ --eval '%{_rpmdir}'`
 news_DATA = NEWS
 copying_DATA = COPYING
 changelog_DATA = ChangeLog
-newsdir = $(docdir)-@VERSION@
-copyingdir = $(docdir)-@VERSION@
-changelogdir = $(docdir)-@VERSION@
+newsdir = $(docdir)
+copyingdir = $(docdir)
+changelogdir = $(docdir)
 CONFIGURE_OPTIONS = --prefix $(prefix) --bindir=$(bindir) --sbindir=$(sbindir) --libexecdir=$(libexecdir) --sysconfdir=$(sysconfdir) --sharedstatedir=$(sharedstatedir) --localstatedir=$(localstatedir) --libdir=$(libdir) --includedir=$(includedir) --oldincludedir=$(oldincludedir) --datarootdir=$(datarootdir) --datadir=$(datadir) --infodir=$(infodir) --localedir=$(localedir) --mandir=$(mandir) --docdir=$(docdir)
 EXTRA_DIST = config.rpath m4/ChangeLog config.rpath m4/ChangeLog debian/rules debian/changelog debian/control debian/compat debian/copyright debian/series help/Makefile.am.gnome help/Makefile.am.none
 all: config.h
@@ -308,10 +306,6 @@ $(srcdir)/config.h.in:  $(am__configure_deps)
 distclean-hdr:
 	-rm -f config.h stamp-h1
 help/C/gwaei.xml: $(top_builddir)/config.status $(top_srcdir)/help/C/gwaei.xml.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
-debian/postinst: $(top_builddir)/config.status $(top_srcdir)/debian/postinst.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
-debian/prerm: $(top_builddir)/config.status $(top_srcdir)/debian/prerm.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 rpm/gwaei.spec: $(top_builddir)/config.status $(top_srcdir)/rpm/gwaei.spec.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
@@ -796,7 +790,7 @@ fedora-rpm:
 	@ make rpm
 
 uninstall-local:
-	@ rm -rf $(DESTDIR)$(docdir)-@VERSION@
+	@ rm -rf $(DESTDIR)$(docdir)
 	@ rm -rf $(DESTDIR)$(datadir)/@PACKAGE@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

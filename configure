@@ -6821,7 +6821,7 @@ _ACEOF
 if(test x$gnome = xfalse);then(cp help/Makefile.am.gnome help/Makefile.am);fi
 if(test x$gnome = xtrue);then(cp help/Makefile.am.none help/Makefile.am);fi
 
-ac_config_files="$ac_config_files Makefile src/Makefile help/Makefile help/gwaei.omf help/C/gwaei.xml src/xml/Makefile src/img/Makefile src/schemas/Makefile src/desktop/Makefile src/kpengine/Makefile src/kpengine/conv_jdata.pl debian/postinst debian/prerm rpm/gwaei.spec po/Makefile.in rpm/rpm_gconf_install_post.sh rpm/rpm_gconf_uninstall_pre.sh src/schemas/gwaei.schemas src/include/gwaei/definitions.h Doxyfile"
+ac_config_files="$ac_config_files Makefile src/Makefile help/Makefile help/gwaei.omf help/C/gwaei.xml src/xml/Makefile src/img/Makefile src/schemas/Makefile src/desktop/Makefile src/kpengine/Makefile src/kpengine/conv_jdata.pl rpm/gwaei.spec po/Makefile.in rpm/rpm_gconf_install_post.sh rpm/rpm_gconf_uninstall_pre.sh src/schemas/gwaei.schemas src/include/gwaei/definitions.h Doxyfile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -7505,8 +7505,6 @@ do
     "src/desktop/Makefile") CONFIG_FILES="$CONFIG_FILES src/desktop/Makefile" ;;
     "src/kpengine/Makefile") CONFIG_FILES="$CONFIG_FILES src/kpengine/Makefile" ;;
     "src/kpengine/conv_jdata.pl") CONFIG_FILES="$CONFIG_FILES src/kpengine/conv_jdata.pl" ;;
-    "debian/postinst") CONFIG_FILES="$CONFIG_FILES debian/postinst" ;;
-    "debian/prerm") CONFIG_FILES="$CONFIG_FILES debian/prerm" ;;
     "rpm/gwaei.spec") CONFIG_FILES="$CONFIG_FILES rpm/gwaei.spec" ;;
     "po/Makefile.in") CONFIG_FILES="$CONFIG_FILES po/Makefile.in" ;;
     "rpm/rpm_gconf_install_post.sh") CONFIG_FILES="$CONFIG_FILES rpm/rpm_gconf_install_post.sh" ;;
