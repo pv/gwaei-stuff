@@ -536,7 +536,7 @@ void gw_ui_update_dictionary_orders ()
     {
       eventbox = gtk_event_box_new();
       if (i == 0)
-        icon_image = gtk_image_new_from_icon_name ("emblem-favorite", GTK_ICON_SIZE_LARGE_TOOLBAR);
+        icon_image = gtk_image_new_from_icon_name ("emblem-favorite", GTK_ICON_SIZE_MENU);
       else
         icon_image = gtk_image_new_from_stock (GTK_STOCK_YES, GTK_ICON_SIZE_MENU);
 
@@ -554,7 +554,7 @@ void gw_ui_update_dictionary_orders ()
       gtk_label_set_markup (GTK_LABEL (label), markup);
       g_free (markup);
 
-      dictionary = GTK_WIDGET (gtk_hbox_new (TRUE, 5));
+      dictionary = GTK_WIDGET (gtk_hbox_new (FALSE, 5));
       gtk_container_set_border_width (GTK_CONTAINER (dictionary), 10);
       button_box = GTK_WIDGET (gtk_hbox_new (TRUE, 5));
 

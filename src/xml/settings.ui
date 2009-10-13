@@ -49,11 +49,11 @@
                     </child>
                     <child>
                       <object class="GtkLabel" id="status_description_label">
+                        <property name="width_request">350</property>
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">gWaei uses some external components and files to function.
-At the very least, a single dictionary needs to be installed for
-proper operation.  To install a dictionary automatically
-through the program, go to the Install Dictionaries tab.</property>
+                        <property name="ypad">2</property>
+                        <property name="label" translatable="yes">gWaei uses some external components and files to function. At the very least, a single dictionary needs to be installed for proper operation.  To install a dictionary automatically through the program, go to the Install Dictionaries tab.</property>
+                        <property name="wrap">True</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -93,10 +93,10 @@ through the program, go to the Install Dictionaries tab.</property>
                                     <property name="visible">True</property>
                                     <child>
                                       <object class="GtkLabel" id="label21">
+                                        <property name="width_request">250</property>
                                         <property name="visible">True</property>
-                                        <property name="label" translatable="yes">General searches require at least one dictionary
-to be installed.  Go to the Install Dictionaries tab
-for more information.</property>
+                                        <property name="label" translatable="yes">General searches require at least one dictionary to be installed.  Go to the Install Dictionaries tab for more information.</property>
+                                        <property name="wrap">True</property>
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>
@@ -115,10 +115,10 @@ for more information.</property>
                                     <property name="visible">True</property>
                                     <child>
                                       <object class="GtkLabel" id="label4">
+                                        <property name="width_request">250</property>
                                         <property name="visible">True</property>
-                                        <property name="label" translatable="yes">Allows searching for Kanji and radical characters
-from the same dictionary.  To enable, install both
-the  Radicals and Kanji dictionaries.</property>
+                                        <property name="label" translatable="yes">Allows searching for Kanji and radical characters from the same dictionary.  To enable, install both the  Radicals and Kanji dictionaries.</property>
+                                        <property name="wrap">True</property>
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>
@@ -310,10 +310,10 @@ the  Radicals and Kanji dictionaries.</property>
                                     <property name="visible">True</property>
                                     <child>
                                       <object class="GtkLabel" id="label15">
+                                        <property name="width_request">250</property>
                                         <property name="visible">True</property>
-                                        <property name="label" translatable="yes">Allows quick Kanji lookups in the side bar by
-clicking Kanji characters in the results pane.  To
-enable, install the Kanji dictionary.</property>
+                                        <property name="label" translatable="yes">Allows quick Kanji lookups in the side bar by clicking Kanji characters in the results pane.  To enable, install the Kanji dictionary.</property>
+                                        <property name="wrap">True</property>
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>
@@ -416,10 +416,10 @@ enable, install the Kanji dictionary.</property>
                                     <property name="visible">True</property>
                                     <child>
                                       <object class="GtkLabel" id="label6">
+                                        <property name="width_request">250</property>
                                         <property name="visible">True</property>
-                                        <property name="label" translatable="yes">Allows a Kanji search tool with clickable radical
-characters.  To enable, install the Radicals
-dictionary.</property>
+                                        <property name="label" translatable="yes">Allows a Kanji search tool with clickable radical characters.  To enable, install the Radicals dictionary.</property>
+                                        <property name="wrap">True</property>
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>
@@ -546,11 +546,10 @@ dictionary.</property>
                     </child>
                     <child>
                       <object class="GtkLabel" id="dictionary_description_label">
+                        <property name="width_request">350</property>
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">gWaei will take care of installing dictionaries for you.  Just
-click the button of the one you want. The files are downloaded
-from Jim Breen's WWWJDIC servers.  Click the triangles to
-choose other installation sources.</property>
+                        <property name="label" translatable="yes">gWaei will take care of installing dictionaries for you.  Just click the button of the one you want. The files are downloaded from Jim Breen's WWWJDIC servers.  Click the triangles to choose other installation sources.</property>
+                        <property name="wrap">True</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -2801,6 +2800,7 @@ choose other installation sources.</property>
                   <object class="GtkHBox" id="hbox1">
                     <property name="visible">True</property>
                     <property name="border_width">12</property>
+                    <property name="spacing">16</property>
                     <child>
                       <object class="GtkImage" id="image5">
                         <property name="visible">True</property>
@@ -2815,17 +2815,22 @@ choose other installation sources.</property>
                     </child>
                     <child>
                       <object class="GtkLabel" id="label1">
+                        <property name="width_request">350</property>
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">Rearrange your installed ditionaries.</property>
+                        <property name="ypad">3</property>
+                        <property name="label" translatable="yes">Reorganize your dictionaries by clicking the arrow keys.  You know you want to.</property>
+                        <property name="wrap">True</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
+                        <property name="fill">False</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
+                    <property name="fill">False</property>
                     <property name="position">0</property>
                   </packing>
                 </child>

@@ -49,11 +49,11 @@
                     </child>
                     <child>
                       <widget class="GtkLabel" id="status_description_label">
+                        <property name="width_request">400</property>
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">gWaei uses some external components and files to function.
-At the very least, a single dictionary needs to be installed for
-proper operation.  To install a dictionary automatically
-through the program, go to the Install Dictionaries tab.</property>
+                        <property name="ypad">2</property>
+                        <property name="label" translatable="yes">gWaei uses some external components and files to function. At the very least, a single dictionary needs to be installed for proper operation.  To install a dictionary automatically through the program, go to the Install Dictionaries tab.</property>
+                        <property name="wrap">True</property>
                       </widget>
                       <packing>
                         <property name="expand">False</property>
@@ -93,10 +93,10 @@ through the program, go to the Install Dictionaries tab.</property>
                                     <property name="visible">True</property>
                                     <child>
                                       <widget class="GtkLabel" id="label21">
+                                        <property name="width_request">250</property>
                                         <property name="visible">True</property>
-                                        <property name="label" translatable="yes">General searches require at least one dictionary
-to be installed.  Go to the Install Dictionaries tab
-for more information.</property>
+                                        <property name="label" translatable="yes">General searches require at least one dictionary to be installed.  Go to the Install Dictionaries tab for more information.</property>
+                                        <property name="wrap">True</property>
                                       </widget>
                                       <packing>
                                         <property name="expand">False</property>
@@ -115,10 +115,10 @@ for more information.</property>
                                     <property name="visible">True</property>
                                     <child>
                                       <widget class="GtkLabel" id="label4">
+                                        <property name="width_request">250</property>
                                         <property name="visible">True</property>
-                                        <property name="label" translatable="yes">Allows searching for Kanji and radical characters
-from the same dictionary.  To enable, install both
-the  Radicals and Kanji dictionaries.</property>
+                                        <property name="label" translatable="yes">Allows searching for Kanji and radical characters from the same dictionary.  To enable, install both the  Radicals and Kanji dictionaries.</property>
+                                        <property name="wrap">True</property>
                                       </widget>
                                       <packing>
                                         <property name="expand">False</property>
@@ -310,10 +310,10 @@ the  Radicals and Kanji dictionaries.</property>
                                     <property name="visible">True</property>
                                     <child>
                                       <widget class="GtkLabel" id="label15">
+                                        <property name="width_request">250</property>
                                         <property name="visible">True</property>
-                                        <property name="label" translatable="yes">Allows quick Kanji lookups in the side bar by
-clicking Kanji characters in the results pane.  To
-enable, install the Kanji dictionary.</property>
+                                        <property name="label" translatable="yes">Allows quick Kanji lookups in the side bar by clicking Kanji characters in the results pane.  To enable, install the Kanji dictionary.</property>
+                                        <property name="wrap">True</property>
                                       </widget>
                                       <packing>
                                         <property name="expand">False</property>
@@ -416,10 +416,10 @@ enable, install the Kanji dictionary.</property>
                                     <property name="visible">True</property>
                                     <child>
                                       <widget class="GtkLabel" id="label6">
+                                        <property name="width_request">250</property>
                                         <property name="visible">True</property>
-                                        <property name="label" translatable="yes">Allows a Kanji search tool with clickable radical
-characters.  To enable, install the Radicals
-dictionary.</property>
+                                        <property name="label" translatable="yes">Allows a Kanji search tool with clickable radical characters.  To enable, install the Radicals dictionary.</property>
+                                        <property name="wrap">True</property>
                                       </widget>
                                       <packing>
                                         <property name="expand">False</property>
@@ -550,11 +550,10 @@ dictionary.</property>
                     </child>
                     <child>
                       <widget class="GtkLabel" id="dictionary_description_label">
+                        <property name="width_request">400</property>
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">gWaei will take care of installing dictionaries for you.  Just
-click the button of the one you want. The files are downloaded
-from Jim Breen's WWWJDIC servers.  Click the triangles to
-choose other installation sources.</property>
+                        <property name="label" translatable="yes">gWaei will take care of installing dictionaries for you.  Just click the button of the one you want. The files are downloaded from Jim Breen's WWWJDIC servers.  Click the triangles to choose other installation sources.</property>
+                        <property name="wrap">True</property>
                       </widget>
                       <packing>
                         <property name="expand">False</property>
@@ -2832,6 +2831,7 @@ choose other installation sources.</property>
                   <widget class="GtkHBox" id="hbox1">
                     <property name="visible">True</property>
                     <property name="border_width">12</property>
+                    <property name="spacing">16</property>
                     <child>
                       <widget class="GtkImage" id="image5">
                         <property name="visible">True</property>
@@ -2846,17 +2846,22 @@ choose other installation sources.</property>
                     </child>
                     <child>
                       <widget class="GtkLabel" id="label1">
+                        <property name="width_request">250</property>
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">Rearrange your installed ditionaries.</property>
+                        <property name="ypad">3</property>
+                        <property name="label" translatable="yes">Reorganize your dictionaries by clicking the arrow keys.  You know you want to.</property>
+                        <property name="wrap">True</property>
                       </widget>
                       <packing>
                         <property name="expand">False</property>
+                        <property name="fill">False</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
                   </widget>
                   <packing>
                     <property name="expand">False</property>
+                    <property name="fill">False</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -2961,9 +2966,9 @@ choose other installation sources.</property>
                         <child>
                           <widget class="GtkCheckButton" id="query_hiragana_to_katakana">
                             <property name="label" translatable="yes">Also search for _Katakana versions of Hiragana queries</property>
+                            <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
-                            <property name="no_show_all">True</property>
                             <property name="use_underline">True</property>
                             <property name="draw_indicator">True</property>
                             <signal name="toggled" handler="do_hiragana_katakana_conv_toggle"/>
@@ -2977,12 +2982,12 @@ choose other installation sources.</property>
                         <child>
                           <widget class="GtkCheckButton" id="query_katakana_to_hiragana">
                             <property name="label" translatable="yes">Also search for _Hiragana versions of Katakana queries</property>
+                            <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
-                            <property name="no_show_all">True</property>
                             <property name="use_underline">True</property>
                             <property name="draw_indicator">True</property>
-                            <signal name="toggled" handler="do_hiragana_katakana_conv_toggle"/>
+                            <signal name="toggled" handler="do_katakana_hiragana_conv_toggle"/>
                           </widget>
                           <packing>
                             <property name="expand">False</property>
@@ -3038,139 +3043,8 @@ choose other installation sources.</property>
                           <widget class="GtkTable" id="table3">
                             <property name="visible">True</property>
                             <property name="border_width">8</property>
-                            <property name="n_rows">3</property>
                             <property name="n_columns">2</property>
                             <property name="homogeneous">True</property>
-                            <child>
-                              <widget class="GtkButton" id="force_resplit_button">
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <signal name="clicked" handler="do_force_names_resplit"/>
-                                <signal name="activate" handler="do_force_names_resplit"/>
-                                <child>
-                                  <widget class="GtkHBox" id="hbox34">
-                                    <property name="visible">True</property>
-                                    <child>
-                                      <widget class="GtkAlignment" id="alignment39">
-                                        <property name="visible">True</property>
-                                        <child>
-                                          <placeholder/>
-                                        </child>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="GtkImage" id="image4">
-                                        <property name="visible">True</property>
-                                        <property name="stock">gtk-refresh</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="GtkLabel" id="label38">
-                                        <property name="visible">True</property>
-                                        <property name="label" translatable="yes">Force Resplit of _Names Dictionary</property>
-                                        <property name="use_underline">True</property>
-                                        <property name="mnemonic_widget">force_resplit_button</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">2</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="GtkAlignment" id="alignment42">
-                                        <property name="visible">True</property>
-                                        <child>
-                                          <placeholder/>
-                                        </child>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">3</property>
-                                      </packing>
-                                    </child>
-                                  </widget>
-                                </child>
-                              </widget>
-                              <packing>
-                                <property name="top_attach">2</property>
-                                <property name="bottom_attach">3</property>
-                                <property name="x_options">GTK_FILL</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkButton" id="force_rebuild_button">
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <signal name="clicked" handler="do_force_mix_rebuild"/>
-                                <signal name="activate" handler="do_force_mix_rebuild"/>
-                                <child>
-                                  <widget class="GtkHBox" id="hbox30">
-                                    <property name="visible">True</property>
-                                    <child>
-                                      <widget class="GtkAlignment" id="alignment37">
-                                        <property name="visible">True</property>
-                                        <child>
-                                          <placeholder/>
-                                        </child>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="GtkImage" id="image3">
-                                        <property name="visible">True</property>
-                                        <property name="stock">gtk-refresh</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="GtkLabel" id="label37">
-                                        <property name="visible">True</property>
-                                        <property name="label" translatable="yes">Force Rebuild of _Mix Dictionary</property>
-                                        <property name="use_underline">True</property>
-                                        <property name="mnemonic_widget">force_rebuild_button</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">2</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="GtkAlignment" id="alignment41">
-                                        <property name="visible">True</property>
-                                        <child>
-                                          <placeholder/>
-                                        </child>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">3</property>
-                                      </packing>
-                                    </child>
-                                  </widget>
-                                </child>
-                              </widget>
-                              <packing>
-                                <property name="top_attach">1</property>
-                                <property name="bottom_attach">2</property>
-                                <property name="x_options">GTK_FILL</property>
-                              </packing>
-                            </child>
                             <child>
                               <widget class="GtkButton" id="open_gwaei_folder_button">
                                 <property name="visible">True</property>
@@ -3232,50 +3106,6 @@ choose other installation sources.</property>
                               </widget>
                               <packing>
                                 <property name="x_options">GTK_FILL</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkHBox" id="hbox18">
-                                <property name="visible">True</property>
-                                <child>
-                                  <widget class="GtkLabel" id="label33">
-                                    <property name="visible">True</property>
-                                    <property name="label" translatable="yes"> into the Names and Places Dictionaries.</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">False</property>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                              </widget>
-                              <packing>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
-                                <property name="top_attach">2</property>
-                                <property name="bottom_attach">3</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkHBox" id="hbox28">
-                                <property name="visible">True</property>
-                                <child>
-                                  <widget class="GtkLabel" id="label31">
-                                    <property name="visible">True</property>
-                                    <property name="label" translatable="yes"> from the Kanji and Radicals Dictionaries.</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">False</property>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                              </widget>
-                              <packing>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
-                                <property name="top_attach">1</property>
-                                <property name="bottom_attach">2</property>
                               </packing>
                             </child>
                             <child>
