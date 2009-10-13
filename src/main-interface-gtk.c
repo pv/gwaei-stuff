@@ -1100,52 +1100,31 @@ void gw_ui_set_romaji_kana_conv(int request)
 }
 
 
-void gw_ui_set_hiragana_katakana_pref(GtkWidget *widget, gpointer data)
-{
-/*
-  gboolean active;
-  active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON (widget));
-
-  char key[100];
-  char *key_ptr;
-  strcpy(key, GCPATH_GW);
-  strcat(key, "/");
-  strcat(key, gtk_widget_get_name(widget));
-
-  gw_pref_set_boolean (key, active);
-  */
-}
-
-
 void gw_ui_set_hiragana_katakana_conv(gboolean request)
 {
-/*
     char id[50];
-
     GtkWidget *widget;
     strcpy(id, "query_hiragana_to_katakana");
-    widget = GTK_WIDGET (gtk_builder_get_object(builder, id));
-
-    g_signal_handlers_block_by_func(widget, do_hiragana_katakana_conv_toggle, NULL); 
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (widget), request);
-    g_signal_handlers_unblock_by_func(widget, do_hiragana_katakana_conv_toggle, NULL); 
-    */
+    if (widget = GTK_WIDGET (gtk_builder_get_object(builder, id)))
+    {
+      g_signal_handlers_block_by_func(widget, do_hiragana_katakana_conv_toggle, NULL); 
+      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (widget), request);
+      g_signal_handlers_unblock_by_func(widget, do_hiragana_katakana_conv_toggle, NULL); 
+    }
 }
 
 
 void gw_ui_set_katakana_hiragana_conv(gboolean request)
 {
-/*
     char id[50];
-
     GtkWidget *widget;
     strcpy(id, "query_katakana_to_hiragana");
-    widget = GTK_WIDGET (gtk_builder_get_object(builder, id));
-
-    g_signal_handlers_block_by_func(widget, do_hiragana_katakana_conv_toggle, NULL); 
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (widget), request);
-    g_signal_handlers_unblock_by_func(widget, do_hiragana_katakana_conv_toggle, NULL); 
-    */
+    if (widget = GTK_WIDGET (gtk_builder_get_object(builder, id)))
+    {
+      g_signal_handlers_block_by_func(widget, do_katakana_hiragana_conv_toggle, NULL); 
+      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (widget), request);
+      g_signal_handlers_unblock_by_func(widget, do_katakana_hiragana_conv_toggle, NULL); 
+    }
 }
 
 

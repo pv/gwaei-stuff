@@ -2951,7 +2951,7 @@ choose other installation sources.</property>
                             <property name="receives_default">False</property>
                             <property name="use_underline">True</property>
                             <property name="draw_indicator">True</property>
-                            <signal name="toggled" handler="do_hiragana_katakana_conv_toggle"/>
+                            <signal name="toggled" handler="do_katakana_hiragana_conv_toggle"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>

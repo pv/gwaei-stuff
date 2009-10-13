@@ -101,21 +101,11 @@ void gw_ui_update_settings_interface()
   strcpy(id, "update_remove_button");
   updated_button = GTK_WIDGET (gtk_builder_get_object(builder, id));
 
-  GtkWidget *rebuild_button;
-  strcpy(id, "force_rebuild_button");
-  rebuild_button = GTK_WIDGET (gtk_builder_get_object(builder, id));
-
-  GtkWidget *resplit_button;
-  strcpy(id, "force_resplit_button");
-  resplit_button = GTK_WIDGET (gtk_builder_get_object(builder, id));
-
 
   if (gw_dictlist_get_total_with_status (GW_DICT_STATUS_UPDATING) > 0)
   {
     gtk_widget_set_sensitive (close_button,   FALSE);
     gtk_widget_set_sensitive (install_table,  FALSE);
-    gtk_widget_set_sensitive (rebuild_button, FALSE);
-    gtk_widget_set_sensitive (resplit_button, FALSE);
     gtk_widget_set_sensitive (update_button,  TRUE );
     gtk_widget_set_sensitive (updated_button, TRUE );
   }
@@ -123,8 +113,6 @@ void gw_ui_update_settings_interface()
   {
     gtk_widget_set_sensitive (close_button,   FALSE);
     gtk_widget_set_sensitive (install_table,  TRUE );
-    gtk_widget_set_sensitive (rebuild_button, FALSE);
-    gtk_widget_set_sensitive (resplit_button, FALSE);
     gtk_widget_set_sensitive (update_button,  FALSE);
     gtk_widget_set_sensitive (updated_button, FALSE);
   }
@@ -132,8 +120,6 @@ void gw_ui_update_settings_interface()
   {
     gtk_widget_set_sensitive (close_button,   FALSE);
     gtk_widget_set_sensitive (install_table,  FALSE);
-    gtk_widget_set_sensitive (rebuild_button, FALSE);
-    gtk_widget_set_sensitive (resplit_button, FALSE);
     gtk_widget_set_sensitive (update_button,  FALSE);
     gtk_widget_set_sensitive (updated_button, FALSE);
   }
@@ -143,12 +129,6 @@ void gw_ui_update_settings_interface()
     gtk_widget_set_sensitive (install_table,  TRUE );
     gtk_widget_set_sensitive (update_button,  TRUE );
     gtk_widget_set_sensitive (updated_button, TRUE );
-
-    gboolean state;
-    state = (gw_dictlist_dictionary_get_status_by_id(GW_DICT_MIX) == GW_DICT_STATUS_INSTALLED);
-    gtk_widget_set_sensitive (rebuild_button, state);
-    state = (gw_dictlist_dictionary_get_status_by_id(GW_DICT_NAMES) == GW_DICT_STATUS_INSTALLED);
-    gtk_widget_set_sensitive (resplit_button, state);
   }
 }
 
@@ -457,7 +437,7 @@ void gw_ui_set_progressbar (char *name, double percent, char *message)
       gtk_progress_bar_set_text(GTK_PROGRESS_BAR (progressbar), message);
 }
 
-void gw_settings_initialize_enabled_features_list()
+void gw_settings_initialize_enabled_features_list ()
 {
     //General search
     if (gw_dictlist_get_total_with_status(GW_DICT_STATUS_INSTALLED) > 0)
@@ -482,11 +462,12 @@ void gw_settings_initialize_enabled_features_list()
       gw_ui_set_feature_line_status("kanji", "enabled");
     else
       gw_ui_set_feature_line_status("kanji", "disabled");
-
+/*
     GtkWidget *label;
     label = GTK_WIDGET (gtk_builder_get_object(builder, "update_install_label"));
     if (rsync_exists)
       gtk_label_set_text(GTK_LABEL (label), gettext("Requires rsync to be installed"));
+*/
 }
 
 
