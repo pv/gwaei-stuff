@@ -489,19 +489,25 @@ G_MODULE_EXPORT void do_toggle_advanced_show(GtkWidget *widget, gpointer data)
       "kanji_expander",
       "names_expander",
       "radicals_expander",
-      "examples_expander"
+      "examples_expander",
+      "french_expander",
+      "german_expander",
+      "spanish_expander"
     };
     static char *hbox_name[] = {
       "english_advanced_hbox",
       "kanji_advanced_hbox",
       "names_advanced_hbox",
       "radicals_advanced_hbox",
-      "examples_advanced_hbox"
+      "examples_advanced_hbox",
+      "french_advanced_hbox",
+      "german_advanced_hbox",
+      "spanish_advanced_hbox"
     };
 
     int i;
     GtkWidget *hbox, *expander;
-    for (i = 0; i < 5; i++) {
+    for (i = 0; i < 8; i++) {
       hbox = GTK_WIDGET (gtk_builder_get_object(builder, hbox_name[i]));
       gtk_widget_hide(hbox);
       expander = GTK_WIDGET (gtk_builder_get_object(builder, expander_name[i]));
@@ -518,7 +524,6 @@ G_MODULE_EXPORT void do_toggle_advanced_show(GtkWidget *widget, gpointer data)
 
       GtkWidget *target_advanced_hbox;
       target_advanced_hbox = GTK_WIDGET (gtk_builder_get_object(builder, id));
-
       gtk_widget_show(target_advanced_hbox);
     }
 

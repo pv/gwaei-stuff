@@ -497,6 +497,21 @@ void gw_settings_initialize_installed_dictionary_list()
       gw_ui_set_install_line_status("examples", "remove", NULL);
     else
       gw_ui_set_install_line_status("examples", "install", NULL);
+
+    if (gw_dictlist_dictionary_get_status_by_id(GW_DICT_FRENCH) == GW_DICT_STATUS_INSTALLED)
+      gw_ui_set_install_line_status("french", "remove", NULL);
+    else
+      gw_ui_set_install_line_status("french", "install", NULL);
+
+    if (gw_dictlist_dictionary_get_status_by_id(GW_DICT_GERMAN) == GW_DICT_STATUS_INSTALLED)
+      gw_ui_set_install_line_status("german", "remove", NULL);
+    else
+      gw_ui_set_install_line_status("german", "install", NULL);
+
+    if (gw_dictlist_dictionary_get_status_by_id(GW_DICT_SPANISH) == GW_DICT_STATUS_INSTALLED)
+      gw_ui_set_install_line_status("spanish", "remove", NULL);
+    else
+      gw_ui_set_install_line_status("spanish", "install", NULL);
 }
 
 

@@ -90,6 +90,12 @@ GwDictInfo* gw_dictinfo_new (char *name)
       strncpy(temp->long_name, gettext ("Names"), 100);
     else if (strcmp(name, "Examples") == 0)
       strncpy(temp->long_name, gettext ("Examples"), 100);
+    else if (strcmp(name, "French") == 0)
+      strncpy(temp->long_name, gettext ("French"), 100);
+    else if (strcmp(name, "German") == 0)
+      strncpy(temp->long_name, gettext ("German"), 100);
+    else if (strcmp(name, "Spanish") == 0)
+      strncpy(temp->long_name, gettext ("Spanish"), 100);
     else
       strncpy(temp->long_name, name, 100);
 
@@ -167,6 +173,27 @@ GwDictInfo* gw_dictinfo_new (char *name)
       temp->id = GW_DICT_EXAMPLES;
       temp->type = GW_DICT_RADICALS;
       strncpy(temp->gckey, GCKEY_GW_EXAMPLES_SOURCE, 100);
+      strcpy (temp->rsync, "");
+    }
+    else if (strcmp (name, "French") == 0)
+    {
+      temp->id = GW_DICT_FRENCH;
+      temp->type = GW_DICT_OTHER;
+      strncpy(temp->gckey, GCKEY_GW_FRENCH_SOURCE, 100);
+      strcpy (temp->rsync, "");
+    }
+    else if (strcmp (name, "German") == 0)
+    {
+      temp->id = GW_DICT_GERMAN;
+      temp->type = GW_DICT_OTHER;
+      strncpy(temp->gckey, GCKEY_GW_GERMAN_SOURCE, 100);
+      strcpy (temp->rsync, "");
+    }
+    else if (strcmp (name, "Spanish") == 0)
+    {
+      temp->id = GW_DICT_SPANISH;
+      temp->type = GW_DICT_OTHER;
+      strncpy(temp->gckey, GCKEY_GW_SPANISH_SOURCE, 100);
       strcpy (temp->rsync, "");
     }
     else if (strcmp (name, "Mix") == 0)
@@ -574,6 +601,9 @@ void gw_dictionaries_initialize_dictionary_list()
     gw_dictlist_add_dictionary ("Names");
     gw_dictlist_add_dictionary ("Places");
     gw_dictlist_add_dictionary ("Examples");
+    gw_dictlist_add_dictionary ("French");
+    gw_dictlist_add_dictionary ("German");
+    gw_dictlist_add_dictionary ("Spanish");
 
     //Path variables
     char path[FILENAME_MAX];
@@ -599,6 +629,9 @@ void gw_dictionaries_initialize_dictionary_list()
             strcmp  (filename, "Places"            ) != 0     &&        
             strcmp  (filename, "Radicals"          ) != 0     &&     
             strcmp  (filename, "Examples"          ) != 0     &&     
+            strcmp  (filename, "French"            ) != 0     &&     
+            strcmp  (filename, "German"            ) != 0     &&     
+            strcmp  (filename, "Spanish"           ) != 0     &&     
             strcmp  (filename, "Mix"               ) != 0       )
         {
           gw_dictlist_add_dictionary (filename);

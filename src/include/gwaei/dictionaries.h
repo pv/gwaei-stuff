@@ -63,6 +63,9 @@ enum gw_dictionary_types {
   GW_DICT_PLACES,
   GW_DICT_MIX,
   GW_DICT_EXAMPLES,
+  GW_DICT_FRENCH,
+  GW_DICT_GERMAN,
+  GW_DICT_SPANISH,
   GW_DICT_OTHER
 };
 

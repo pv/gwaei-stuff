@@ -82,8 +82,9 @@ void gw_resultline_parse_result_string (GwResultLine *item, char *string)
     char *temp = NULL;
 
     //Remove the final line break
-    if ((temp = g_utf8_strrchr (item->string, -1, L'\n')) != NULL)
+    if ((temp = g_utf8_strchr (item->string, -1, '\n')) != NULL)
     {
+        temp--;
         *temp = '\0';
     }
 

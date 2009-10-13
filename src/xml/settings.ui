@@ -1786,7 +1786,7 @@
                             <property name="column_spacing">10</property>
                             <property name="row_spacing">6</property>
                             <child>
-                              <object class="GtkHBox" id="names_advanced_hbox1">
+                              <object class="GtkHBox" id="french_advanced_hbox">
                                 <property name="sensitive">False</property>
                                 <property name="no_show_all">True</property>
                                 <property name="spacing">3</property>
@@ -1814,21 +1814,23 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkEntry" id="names_source1">
+                                  <object class="GtkEntry" id="french_source">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="invisible_char">&#x25CF;</property>
+                                    <signal name="changed" handler="do_source_entry_changed_action"/>
                                   </object>
                                   <packing>
                                     <property name="position">2</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkButton" id="names_browse_button1">
+                                  <object class="GtkButton" id="french_browse_button">
                                     <property name="label" translatable="yes">Browse</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
+                                    <signal name="clicked" handler="do_dictionary_source_browse"/>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -1836,11 +1838,12 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkButton" id="names_reset_button1">
+                                  <object class="GtkButton" id="french_reset_button">
                                     <property name="label" translatable="yes">Reset</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
+                                    <signal name="clicked" handler="do_dictionary_source_reset"/>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -1855,7 +1858,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkHBox" id="names_advanced_hbox2">
+                              <object class="GtkHBox" id="german_advanced_hbox">
                                 <property name="sensitive">False</property>
                                 <property name="no_show_all">True</property>
                                 <property name="spacing">3</property>
@@ -1883,21 +1886,23 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkEntry" id="names_source2">
+                                  <object class="GtkEntry" id="german_source">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="invisible_char">&#x25CF;</property>
+                                    <signal name="changed" handler="do_source_entry_changed_action"/>
                                   </object>
                                   <packing>
                                     <property name="position">2</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkButton" id="names_browse_button2">
+                                  <object class="GtkButton" id="german_browse_button">
                                     <property name="label" translatable="yes">Browse</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
+                                    <signal name="clicked" handler="do_dictionary_source_browse"/>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -1905,11 +1910,12 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkButton" id="names_reset_button2">
+                                  <object class="GtkButton" id="german_reset_button">
                                     <property name="label" translatable="yes">Reset</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
+                                    <signal name="clicked" handler="do_dictionary_source_reset"/>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -1924,7 +1930,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkHBox" id="names_advanced_hbox3">
+                              <object class="GtkHBox" id="spanish_advanced_hbox">
                                 <property name="sensitive">False</property>
                                 <property name="no_show_all">True</property>
                                 <property name="spacing">3</property>
@@ -1952,21 +1958,23 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkEntry" id="names_source3">
+                                  <object class="GtkEntry" id="spanish_source">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="invisible_char">&#x25CF;</property>
+                                    <signal name="changed" handler="do_source_entry_changed_action"/>
                                   </object>
                                   <packing>
                                     <property name="position">2</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkButton" id="names_browse_button3">
+                                  <object class="GtkButton" id="spanish_browse_button">
                                     <property name="label" translatable="yes">Browse</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
+                                    <signal name="clicked" handler="do_dictionary_source_browse"/>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -1974,11 +1982,12 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkButton" id="names_reset_button3">
+                                  <object class="GtkButton" id="spanish_reset_button">
                                     <property name="label" translatable="yes">Reset</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
+                                    <signal name="clicked" handler="do_dictionary_source_reset"/>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -1998,36 +2007,39 @@
                                 <property name="visible">True</property>
                                 <property name="homogeneous">True</property>
                                 <child>
-                                  <object class="GtkButton" id="radicals_remove_button2">
+                                  <object class="GtkButton" id="french_remove_button">
                                     <property name="label">gtk-delete</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="use_stock">True</property>
+                                    <signal name="clicked" handler="do_dictionary_remove"/>
                                   </object>
                                   <packing>
                                     <property name="position">0</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkButton" id="radicals_cancel_button2">
+                                  <object class="GtkButton" id="french_cancel_button">
                                     <property name="label">gtk-cancel</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="use_stock">True</property>
+                                    <signal name="clicked" handler="do_cancel_dictionary_install"/>
                                   </object>
                                   <packing>
                                     <property name="position">1</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkButton" id="radicals_install_button2">
+                                  <object class="GtkButton" id="french_install_button">
                                     <property name="label">gtk-add</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="use_stock">True</property>
+                                    <signal name="clicked" handler="do_dictionary_install"/>
                                   </object>
                                   <packing>
                                     <property name="position">2</property>
@@ -2046,36 +2058,39 @@
                                 <property name="visible">True</property>
                                 <property name="homogeneous">True</property>
                                 <child>
-                                  <object class="GtkButton" id="radicals_remove_button3">
+                                  <object class="GtkButton" id="german_remove_button">
                                     <property name="label">gtk-delete</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="use_stock">True</property>
+                                    <signal name="clicked" handler="do_dictionary_remove"/>
                                   </object>
                                   <packing>
                                     <property name="position">0</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkButton" id="radicals_cancel_button3">
+                                  <object class="GtkButton" id="german_cancel_button">
                                     <property name="label">gtk-cancel</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="use_stock">True</property>
+                                    <signal name="clicked" handler="do_cancel_dictionary_install"/>
                                   </object>
                                   <packing>
                                     <property name="position">1</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkButton" id="radicals_install_button3">
+                                  <object class="GtkButton" id="german_install_button">
                                     <property name="label">gtk-add</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="use_stock">True</property>
+                                    <signal name="clicked" handler="do_dictionary_install"/>
                                   </object>
                                   <packing>
                                     <property name="position">2</property>
@@ -2096,36 +2111,39 @@
                                 <property name="visible">True</property>
                                 <property name="homogeneous">True</property>
                                 <child>
-                                  <object class="GtkButton" id="radicals_remove_button4">
+                                  <object class="GtkButton" id="spanish_remove_button">
                                     <property name="label">gtk-delete</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="use_stock">True</property>
+                                    <signal name="clicked" handler="do_dictionary_remove"/>
                                   </object>
                                   <packing>
                                     <property name="position">0</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkButton" id="radicals_cancel_button4">
+                                  <object class="GtkButton" id="spanish_cancel_button">
                                     <property name="label">gtk-cancel</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="use_stock">True</property>
+                                    <signal name="clicked" handler="do_cancel_dictionary_install"/>
                                   </object>
                                   <packing>
                                     <property name="position">1</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkButton" id="radicals_install_button4">
+                                  <object class="GtkButton" id="spanish_install_button">
                                     <property name="label">gtk-add</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="use_stock">True</property>
+                                    <signal name="clicked" handler="do_dictionary_install"/>
                                   </object>
                                   <packing>
                                     <property name="position">2</property>
@@ -2144,14 +2162,15 @@
                               <object class="GtkHBox" id="hbox44">
                                 <property name="visible">True</property>
                                 <child>
-                                  <object class="GtkExpander" id="examples_expander3">
+                                  <object class="GtkExpander" id="german_expander">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <signal name="activate" handler="do_toggle_advanced_show"/>
                                     <child>
                                       <placeholder/>
                                     </child>
                                     <child type="label">
-                                      <object class="GtkLabel" id="examples_dictionary_label2">
+                                      <object class="GtkLabel" id="german_dictionary_label">
                                         <property name="visible">True</property>
                                         <property name="label" translatable="yes">German:</property>
                                         <property name="use_underline">True</property>
@@ -2176,14 +2195,15 @@
                               <object class="GtkHBox" id="hbox43">
                                 <property name="visible">True</property>
                                 <child>
-                                  <object class="GtkExpander" id="examples_expander2">
+                                  <object class="GtkExpander" id="french_expander">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <signal name="activate" handler="do_toggle_advanced_show"/>
                                     <child>
                                       <placeholder/>
                                     </child>
                                     <child type="label">
-                                      <object class="GtkLabel" id="examples_dictionary_label1">
+                                      <object class="GtkLabel" id="french_dictionary_label">
                                         <property name="visible">True</property>
                                         <property name="label" translatable="yes">French:</property>
                                         <property name="use_underline">True</property>
@@ -2206,14 +2226,15 @@
                               <object class="GtkHBox" id="hbox15">
                                 <property name="visible">True</property>
                                 <child>
-                                  <object class="GtkExpander" id="examples_expander4">
+                                  <object class="GtkExpander" id="spanish_expander">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <signal name="activate" handler="do_toggle_advanced_show"/>
                                     <child>
                                       <placeholder/>
                                     </child>
                                     <child type="label">
-                                      <object class="GtkLabel" id="examples_dictionary_label3">
+                                      <object class="GtkLabel" id="spanish_dictionary_label">
                                         <property name="visible">True</property>
                                         <property name="label" translatable="yes">Spanish:</property>
                                         <property name="use_underline">True</property>
@@ -2235,11 +2256,11 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkHBox" id="examples_status_hbox1">
+                              <object class="GtkHBox" id="french_status_hbox">
                                 <property name="width_request">150</property>
                                 <property name="visible">True</property>
                                 <child>
-                                  <object class="GtkProgressBar" id="examples_install_progressbar1">
+                                  <object class="GtkProgressBar" id="french_install_progressbar">
                                     <property name="visible">True</property>
                                     <property name="show_text">True</property>
                                     <property name="text" translatable="yes">Installing...</property>
@@ -2249,13 +2270,13 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkHBox" id="examples_install_hbox1">
+                                  <object class="GtkHBox" id="french_install_hbox">
                                     <property name="visible">True</property>
                                     <child>
-                                      <object class="GtkHBox" id="examples_status_icons_hbox1">
+                                      <object class="GtkHBox" id="french_status_icons_hbox">
                                         <property name="visible">True</property>
                                         <child>
-                                          <object class="GtkImage" id="examples_icon_installed1">
+                                          <object class="GtkImage" id="french_icon_installed">
                                             <property name="visible">True</property>
                                             <property name="stock">gtk-apply</property>
                                           </object>
@@ -2267,7 +2288,7 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkImage" id="examples_icon_errored1">
+                                          <object class="GtkImage" id="french_icon_errored">
                                             <property name="visible">True</property>
                                             <property name="stock">gtk-dialog-error</property>
                                           </object>
@@ -2284,10 +2305,10 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkHBox" id="examples_status_label_hbox1">
+                                      <object class="GtkHBox" id="french_status_label_hbox">
                                         <property name="visible">True</property>
                                         <child>
-                                          <object class="GtkLabel" id="examples_install_label1">
+                                          <object class="GtkLabel" id="french_install_label">
                                             <property name="visible">True</property>
                                             <property name="label" translatable="yes">Installed</property>
                                           </object>
@@ -2313,11 +2334,11 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkHBox" id="examples_status_hbox2">
+                              <object class="GtkHBox" id="german_status_hbox">
                                 <property name="width_request">150</property>
                                 <property name="visible">True</property>
                                 <child>
-                                  <object class="GtkProgressBar" id="examples_install_progressbar2">
+                                  <object class="GtkProgressBar" id="german_install_progressbar">
                                     <property name="visible">True</property>
                                     <property name="show_text">True</property>
                                     <property name="text" translatable="yes">Installing...</property>
@@ -2327,13 +2348,13 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkHBox" id="examples_install_hbox2">
+                                  <object class="GtkHBox" id="german_install_hbox">
                                     <property name="visible">True</property>
                                     <child>
-                                      <object class="GtkHBox" id="examples_status_icons_hbox2">
+                                      <object class="GtkHBox" id="german_status_icons_hbox">
                                         <property name="visible">True</property>
                                         <child>
-                                          <object class="GtkImage" id="examples_icon_installed2">
+                                          <object class="GtkImage" id="german_icon_installed">
                                             <property name="visible">True</property>
                                             <property name="stock">gtk-apply</property>
                                           </object>
@@ -2345,7 +2366,7 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkImage" id="examples_icon_errored2">
+                                          <object class="GtkImage" id="german_icon_errored">
                                             <property name="visible">True</property>
                                             <property name="stock">gtk-dialog-error</property>
                                           </object>
@@ -2362,10 +2383,10 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkHBox" id="examples_status_label_hbox2">
+                                      <object class="GtkHBox" id="german_status_label_hbox">
                                         <property name="visible">True</property>
                                         <child>
-                                          <object class="GtkLabel" id="examples_install_label2">
+                                          <object class="GtkLabel" id="german_install_label">
                                             <property name="visible">True</property>
                                             <property name="label" translatable="yes">Installed</property>
                                           </object>
@@ -2393,11 +2414,11 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkHBox" id="examples_status_hbox3">
+                              <object class="GtkHBox" id="spanish_status_hbox">
                                 <property name="width_request">150</property>
                                 <property name="visible">True</property>
                                 <child>
-                                  <object class="GtkProgressBar" id="examples_install_progressbar3">
+                                  <object class="GtkProgressBar" id="spanish_install_progressbar">
                                     <property name="visible">True</property>
                                     <property name="show_text">True</property>
                                     <property name="text" translatable="yes">Installing...</property>
@@ -2407,13 +2428,13 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkHBox" id="examples_install_hbox3">
+                                  <object class="GtkHBox" id="spanish_install_hbox">
                                     <property name="visible">True</property>
                                     <child>
-                                      <object class="GtkHBox" id="examples_status_icons_hbox3">
+                                      <object class="GtkHBox" id="spanish_status_icons_hbox">
                                         <property name="visible">True</property>
                                         <child>
-                                          <object class="GtkImage" id="examples_icon_installed3">
+                                          <object class="GtkImage" id="spanish_icon_installed">
                                             <property name="visible">True</property>
                                             <property name="stock">gtk-apply</property>
                                           </object>
@@ -2425,7 +2446,7 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkImage" id="examples_icon_errored3">
+                                          <object class="GtkImage" id="spanish_icon_errored">
                                             <property name="visible">True</property>
                                             <property name="stock">gtk-dialog-error</property>
                                           </object>
@@ -2442,10 +2463,10 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkHBox" id="examples_status_label_hbox3">
+                                      <object class="GtkHBox" id="spanish_status_label_hbox">
                                         <property name="visible">True</property>
                                         <child>
-                                          <object class="GtkLabel" id="examples_install_label3">
+                                          <object class="GtkLabel" id="spanish_install_label">
                                             <property name="visible">True</property>
                                             <property name="label" translatable="yes">Installed</property>
                                           </object>
@@ -2835,25 +2856,35 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkScrolledWindow" id="organize_dictionaries_scrolledwindow">
+                  <object class="GtkHBox" id="hbox16">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="border_width">12</property>
-                    <property name="hscrollbar_policy">never</property>
-                    <property name="vscrollbar_policy">automatic</property>
                     <child>
-                      <object class="GtkViewport" id="organize_dictionaries_viewport">
+                      <object class="GtkScrolledWindow" id="organize_dictionaries_scrolledwindow">
                         <property name="visible">True</property>
-                        <property name="resize_mode">queue</property>
+                        <property name="can_focus">True</property>
+                        <property name="border_width">12</property>
+                        <property name="hscrollbar_policy">never</property>
+                        <property name="vscrollbar_policy">automatic</property>
                         <child>
-                          <object class="GtkVBox" id="organize_dictionary_list_hbox">
+                          <object class="GtkViewport" id="organize_dictionaries_viewport">
                             <property name="visible">True</property>
+                            <property name="resize_mode">queue</property>
                             <child>
-                              <placeholder/>
+                              <object class="GtkVBox" id="organize_dictionary_list_hbox">
+                                <property name="visible">True</property>
+                                <property name="orientation">vertical</property>
+                                <child>
+                                  <placeholder/>
+                                </child>
+                              </object>
                             </child>
                           </object>
                         </child>
                       </object>
+                      <packing>
+                        <property name="fill">False</property>
+                        <property name="position">0</property>
+                      </packing>
                     </child>
                   </object>
                   <packing>

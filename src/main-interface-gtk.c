@@ -682,6 +682,7 @@ int rebuild_combobox_dictionary_list()
     char new_order[5000];
     GwDictInfo* di = NULL;
     gw_pref_get_string (order, GCKEY_GW_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
+
     char *names[50];
     char *mix_name = NULL, *kanji_name = NULL, *radicals_name = NULL;
     names[0] = order;
@@ -693,6 +694,27 @@ int rebuild_combobox_dictionary_list()
       names[i]++;
     }
     names[i + 1] = NULL;
+
+    //Add any missing dictionaries
+    int j = 0;
+    GList *list = gw_dictlist_get_list ();
+    while (list != NULL)
+    {
+      di = list->data;
+      j = 0;
+      while (names[j] != NULL && strcmp(di->name, names[j]) != 0)
+        j++;
+
+      if (names[j] == NULL && j > 0 && di->status == GW_DICT_STATUS_INSTALLED)
+      {
+        names[j] = names[j - 1];
+        while (*names[j] != '\0') names[j]++;
+        names[j]++;
+        strcpy(names[j], di->name);
+        names[j + 1] = NULL;
+      }
+      list = g_list_next (list);
+    }
 
     //Remove not installed dictionaries from the list
     i = 0;
@@ -708,13 +730,14 @@ int rebuild_combobox_dictionary_list()
     }
 
     //Remove kanji and radicals if mix exists
-    if (mix_name)
+    if (mix_name != NULL)
     {
       if (kanji_name) *kanji_name = '\0';
       if (radicals_name) *radicals_name = '\0';
     }
-
-    int j = 0;
+    
+    //Collapse the holes
+    j = 0;
     i = 0;
     new_order[0] = '\0';
     while (names[i] != NULL && names[j] != NULL)
@@ -735,8 +758,6 @@ int rebuild_combobox_dictionary_list()
     new_order[strlen(new_order) - 1] = '\0';
     names[i] = NULL;
     gw_pref_set_string (GCKEY_GW_LOAD_ORDER, new_order);
-
-
 
     //Initialize variables
     const int id_length = 50;
