@@ -245,6 +245,7 @@ static void *install_thread (gpointer dictionary)
 
     char uri[100];
     gw_pref_get_string (uri, di->gckey, fallback_uri, 100);
+    printf("%s\n", uri);
 
     char progressbar_id[100];
     strcpy(progressbar_id, name);
@@ -270,6 +271,7 @@ static void *install_thread (gpointer dictionary)
         const char *message = gettext("Connection failure\n");
         error = g_error_new_literal (quark, GW_FILE_ERROR, message);
       }
+      printf("BREAK1\n");
     }
 
     if (ret && error == NULL)
@@ -278,6 +280,7 @@ static void *install_thread (gpointer dictionary)
       gw_ui_set_install_line_status(name, "finishing", gettext("Decompressing..."));
       gdk_threads_leave();
       ret = gw_io_gunzip_dictionary_file(gz_path, &error);
+      printf("BREAK2\n");
     }
    
     if (ret && error == NULL)
@@ -286,6 +289,7 @@ static void *install_thread (gpointer dictionary)
       gw_ui_set_install_line_status(name, "finishing", gettext("Converting encoding..."));
       gdk_threads_leave();
       ret = gw_io_copy_with_encoding(sync_path, path, "EUC-JP","UTF-8", &error);
+      printf("BREAK3\n");
     }
 
     //Special dictionary post processing
@@ -295,6 +299,7 @@ static void *install_thread (gpointer dictionary)
       gw_ui_set_install_line_status(name, "finishing", gettext("Postprocessing..."));
       gdk_threads_leave();
       gw_dictlist_preform_postprocessing_by_name(di->name, &error);
+      printf("BREAK4\n");
     }
      
     //Was canceled
@@ -306,6 +311,7 @@ static void *install_thread (gpointer dictionary)
       gdk_threads_leave();
       g_error_free(error);
       error = NULL;
+      printf("BREAK5\n");
     }
     //Errored
     else if (error != NULL)
@@ -316,6 +322,7 @@ static void *install_thread (gpointer dictionary)
       gdk_threads_leave();
       g_error_free(error);
       error = NULL;
+      printf("BREAK6\n");
     }
     //Install was successful
     else
@@ -481,18 +488,20 @@ G_MODULE_EXPORT void do_toggle_advanced_show(GtkWidget *widget, gpointer data)
       "english_expander",
       "kanji_expander",
       "names_expander",
-      "radicals_expander"
+      "radicals_expander",
+      "examples_expander"
     };
     static char *hbox_name[] = {
       "english_advanced_hbox",
       "kanji_advanced_hbox",
       "names_advanced_hbox",
-      "radicals_advanced_hbox"
+      "radicals_advanced_hbox",
+      "examples_advanced_hbox"
     };
 
     int i;
     GtkWidget *hbox, *expander;
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < 5; i++) {
       hbox = GTK_WIDGET (gtk_builder_get_object(builder, hbox_name[i]));
       gtk_widget_hide(hbox);
       expander = GTK_WIDGET (gtk_builder_get_object(builder, expander_name[i]));
@@ -656,4 +665,107 @@ G_MODULE_EXPORT void do_other_dictionaries_help (GtkWidget *widget, gpointer dat
     gtk_show_uri (NULL, uri, gtk_get_current_event_time (), &err);
     if (err != NULL)
       g_error_free(err);
+}
+
+
+G_MODULE_EXPORT void do_switch_displayed_dictionaries_action (GtkWidget *widget, gpointer data)
+{
+    int active;
+    GtkWidget *main_dictionaries_table, *other_dictionaries_table;
+
+    active = gtk_combo_box_get_active (GTK_COMBO_BOX (widget));
+    printf("%d\n", active);
+    main_dictionaries_table = GTK_WIDGET (gtk_builder_get_object (builder, "dictionaries_table"));
+    other_dictionaries_table = GTK_WIDGET (gtk_builder_get_object (builder, "other_dictionaries_table"));
+
+    gtk_widget_hide (other_dictionaries_table);
+    gtk_widget_hide (main_dictionaries_table);
+
+    if (active == 0)
+       gtk_widget_show (main_dictionaries_table);
+    else if (active == 1)
+       gtk_widget_show (other_dictionaries_table);
+}
+
+
+G_MODULE_EXPORT void do_move_dictionary_up (GtkWidget *widget, gpointer data)
+{
+    printf("Moving up...\n");
+    //Get element number
+    int requested_move = GPOINTER_TO_INT(data);
+
+    //Parse the string
+    char order[5000];
+    gw_pref_get_string (order, GCKEY_GW_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
+    char *dictionaries[50];
+    dictionaries[0] = order;
+    int i = 0;
+    while ((dictionaries[i + 1] = g_utf8_strchr (dictionaries[i], -1, L',')) && i < 50)
+    {
+      i++;
+      *dictionaries[i] = '\0';
+      dictionaries[i]++;
+    }
+    dictionaries[i + 1] = NULL;
+
+    //Pull the switcheroo
+    if (requested_move > 0)
+    {
+      char *temp = dictionaries[requested_move - 1];
+      dictionaries[requested_move - 1] = dictionaries[requested_move];
+      dictionaries[requested_move] = temp;
+    }
+
+    i = 0;
+    char output[5000];
+    output[0] = '\0';
+    while (dictionaries[i] != NULL)
+    {
+      strcat (output, dictionaries[i]);
+      strcat (output, ",");
+      i++;
+    }
+    output[strlen(output) - 1] = '\0';
+    gw_pref_set_string (GCKEY_GW_LOAD_ORDER, output);
+}
+
+
+G_MODULE_EXPORT void do_move_dictionary_down (GtkWidget *widget, gpointer data)
+{
+    printf("Moving down...\n");
+    int requested_move = GPOINTER_TO_INT(data);
+
+    //Parse the string
+    char order[5000];
+    gw_pref_get_string (order, GCKEY_GW_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
+    char *dictionaries[50];
+    dictionaries[0] = order;
+    int i = 0;
+    while ((dictionaries[i + 1] = g_utf8_strchr (dictionaries[i], -1, L',')) && i < 50)
+    {
+      i++;
+      *dictionaries[i] = '\0';
+      dictionaries[i]++;
+    }
+    dictionaries[i + 1] = NULL;
+
+    //Pull the switcheroo
+    if (requested_move < i)
+    {
+      char *temp = dictionaries[requested_move + 1];
+      dictionaries[requested_move + 1] = dictionaries[requested_move];
+      dictionaries[requested_move] = temp;
+    }
+
+    i = 0;
+    char output[5000];
+    output[0] = '\0';
+    while (dictionaries[i] != NULL)
+    {
+      strcat (output, dictionaries[i]);
+      strcat (output, ",");
+      i++;
+    }
+    output[strlen(output) - 1] = '\0';
+    gw_pref_set_string (GCKEY_GW_LOAD_ORDER, output);
 }

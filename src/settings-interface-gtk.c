@@ -457,7 +457,6 @@ void gw_ui_set_progressbar (char *name, double percent, char *message)
       gtk_progress_bar_set_text(GTK_PROGRESS_BAR (progressbar), message);
 }
 
-
 void gw_settings_initialize_enabled_features_list()
 {
     //General search
@@ -484,14 +483,11 @@ void gw_settings_initialize_enabled_features_list()
     else
       gw_ui_set_feature_line_status("kanji", "disabled");
 
-/*
     GtkWidget *label;
     label = GTK_WIDGET (gtk_builder_get_object(builder, "update_install_label"));
     if (rsync_exists)
       gtk_label_set_text(GTK_LABEL (label), gettext("Requires rsync to be installed"));
-*/
 }
-
 
 
 void gw_settings_initialize_installed_dictionary_list() 
@@ -515,5 +511,108 @@ void gw_settings_initialize_installed_dictionary_list()
       gw_ui_set_install_line_status("radicals", "remove", NULL);
     else
       gw_ui_set_install_line_status("radicals", "install", NULL);
+
+    if (gw_dictlist_dictionary_get_status_by_id(GW_DICT_EXAMPLES) == GW_DICT_STATUS_INSTALLED)
+      gw_ui_set_install_line_status("examples", "remove", NULL);
+    else
+      gw_ui_set_install_line_status("examples", "install", NULL);
 }
 
+
+void gw_ui_update_dictionary_orders ()
+{
+    //Parse the the names of the dictionary list
+    char order[5000];
+    gw_pref_get_string (order, GCKEY_GW_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
+    char *dictionaries[50];
+    dictionaries[0] = order;
+    int i = 0;
+    while ((dictionaries[i + 1] = g_utf8_strchr (dictionaries[i], -1, L',')) && i < 50)
+    {
+      i++;
+      *dictionaries[i] = '\0';
+      dictionaries[i]++;
+    }
+    dictionaries[i + 1] = '\0';
+
+    GtkWidget *label, *container, *dictionary, *move_up_button, *move_down_button, *button_box, *button_image, *number_label, *eventbox;
+    GtkWidget *icon_image;
+    container = GTK_WIDGET (gtk_builder_get_object (builder, "organize_dictionary_list_hbox"));
+    GList *list;
+    //Clear out old buttons
+    list = gtk_container_get_children (GTK_CONTAINER (container));
+    while (list != NULL)
+    {
+      gtk_widget_destroy (GTK_WIDGET(list->data));
+      list = gtk_container_get_children (GTK_CONTAINER (container));
+    }
+
+    //Add new buttons
+    i = 0;
+    char *markup;
+    GwDictInfo* di = NULL;
+    while (dictionaries[i] != NULL)
+    {
+      eventbox = gtk_event_box_new();
+      if (i == 0)
+        icon_image = gtk_image_new_from_icon_name ("emblem-favorite", GTK_ICON_SIZE_LARGE_TOOLBAR);
+      else
+        icon_image = gtk_image_new_from_stock (GTK_STOCK_YES, GTK_ICON_SIZE_MENU);
+
+      number_label = GTK_WIDGET (gtk_label_new (NULL));
+      markup = g_markup_printf_escaped ("<span weight=\"bold\">%d</span>", i + 1);
+      gtk_label_set_markup (GTK_LABEL (number_label), markup);
+      g_free (markup);
+
+      label = GTK_WIDGET (gtk_label_new (NULL));
+      if (di = gw_dictlist_get_dictionary_by_name (dictionaries[i]))
+        markup = g_markup_printf_escaped ("<span size=\"larger\">%s</span>", di->long_name);
+      else
+        markup = g_markup_printf_escaped ("<span size=\"larger\">%s</span>", dictionaries[i]);
+
+      gtk_label_set_markup (GTK_LABEL (label), markup);
+      g_free (markup);
+
+      dictionary = GTK_WIDGET (gtk_hbox_new (TRUE, 5));
+      gtk_container_set_border_width (GTK_CONTAINER (dictionary), 10);
+      button_box = GTK_WIDGET (gtk_hbox_new (TRUE, 5));
+
+      move_up_button = GTK_WIDGET (gtk_button_new ());
+      gtk_button_set_relief (GTK_BUTTON (move_up_button), GTK_RELIEF_NONE);
+      button_image = GTK_WIDGET (gtk_image_new_from_stock (GTK_STOCK_GO_UP, GTK_ICON_SIZE_MENU));
+      gtk_container_add (GTK_CONTAINER (move_up_button), button_image);
+      if (i == 0) gtk_widget_set_sensitive (move_up_button, FALSE);
+      g_signal_connect( G_OBJECT (move_up_button),       "clicked",
+                        G_CALLBACK (do_move_dictionary_up), GINT_TO_POINTER(i));
+
+      move_down_button = GTK_WIDGET (gtk_button_new ());
+      gtk_button_set_relief (GTK_BUTTON (move_down_button), GTK_RELIEF_NONE);
+      button_image = GTK_WIDGET (gtk_image_new_from_stock (GTK_STOCK_GO_DOWN, GTK_ICON_SIZE_MENU));
+      gtk_container_add (GTK_CONTAINER (move_down_button), button_image);
+      g_signal_connect( G_OBJECT (move_down_button),       "clicked",
+                        G_CALLBACK (do_move_dictionary_down), GINT_TO_POINTER(i));
+      
+      gtk_box_pack_start (GTK_BOX (button_box), move_up_button, FALSE, FALSE, 0);
+      gtk_box_pack_start (GTK_BOX (button_box), move_down_button, FALSE, FALSE, 0);
+      gtk_box_pack_end (GTK_BOX (dictionary), button_box, FALSE, FALSE, 5);
+
+      gtk_box_pack_start (GTK_BOX (dictionary), icon_image, FALSE, FALSE, 5);
+      gtk_box_pack_start (GTK_BOX (dictionary), number_label, FALSE, FALSE, 5);
+      gtk_box_pack_start (GTK_BOX (dictionary), label, TRUE, TRUE, 5);
+
+      if (i % 2)
+      {
+        gtk_container_add (GTK_CONTAINER (eventbox), dictionary);
+        gtk_box_pack_start (GTK_BOX (container), eventbox, FALSE,FALSE, 0);
+        gtk_widget_show_all (eventbox);
+      }
+      else
+      {
+        gtk_box_pack_start (GTK_BOX (container), dictionary, FALSE, FALSE, 0);
+        gtk_widget_show_all (dictionary);
+      }
+      
+      i++;
+    }
+    gtk_widget_set_sensitive (move_down_button, FALSE);
+}

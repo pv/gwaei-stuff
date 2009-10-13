@@ -437,6 +437,15 @@ void do_color_value_changed_action( GConfClient* client,
     }
 }
 
+void do_update_dictionary_order_list_changed_action ()
+{
+      gw_ui_update_dictionary_orders ();
+}
+
+
+
+
+
 
 
 //
@@ -535,6 +544,16 @@ void gw_prefs_initialize_preferences()
                              do_dictionary_source_gconf_key_changed_action,
                              NULL, NULL, NULL                 );
 
+    gconf_client_notify_add (client,
+                             GCKEY_GW_EXAMPLES_SOURCE, 
+                             do_dictionary_source_gconf_key_changed_action,
+                             NULL, NULL, NULL                 );
+
+    gconf_client_notify_add (client,
+                             GCKEY_GW_LOAD_ORDER, 
+                             do_update_dictionary_order_list_changed_action,
+                             NULL, NULL, NULL                 );
+
 
     //Do an initial trigger of the notifications to set an initial state
     gconf_client_notify (client, GCKEY_GW_TOOLBAR_SHOW);
@@ -555,6 +574,8 @@ void gw_prefs_initialize_preferences()
     gconf_client_notify (client, GCKEY_GW_NAMES_SOURCE);
     gconf_client_notify (client, GCKEY_GW_PLACES_SOURCE);
     gconf_client_notify (client, GCKEY_GW_RADICALS_SOURCE);
+    gconf_client_notify (client, GCKEY_GW_EXAMPLES_SOURCE);
+    gconf_client_notify (client, GCKEY_GW_LOAD_ORDER);
 
   g_object_unref(client);
 }

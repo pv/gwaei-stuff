@@ -47,3 +47,5 @@ void do_set_color_to_swatch (GtkWidget*, gpointer);
 void do_color_reset_for_swatches (GtkWidget*, gpointer);
 void do_source_entry_changed_action (GtkWidget*, gpointer);
 void do_radical_search (GtkWidget*, gpointer);
+void do_move_dictionary_up (GtkWidget*, gpointer);
+void do_move_dictionary_down (GtkWidget*, gpointer);

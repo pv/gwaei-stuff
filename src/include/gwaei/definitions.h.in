@@ -45,11 +45,23 @@
 #define GCKEY_GW_NAMES_SOURCE    "/apps/gwaei/dictionary/names_source"
 #define GCKEY_GW_PLACES_SOURCE   "/apps/gwaei/dictionary/places_source"
 #define GCKEY_GW_RADICALS_SOURCE "/apps/gwaei/dictionary/radicals_source"
+#define GCKEY_GW_EXAMPLES_SOURCE "/apps/gwaei/dictionary/examples_source"
+#define GCKEY_GW_LOAD_ORDER "/apps/gwaei/dictionary/load_order"
+
+#define GCKEY_GW_FRENCH_SOURCE "/apps/gwaei/dictionary/french_source"
+#define GCKEY_GW_GERMAN_SOURCE "/apps/gwaei/dictionary/german_source"
+#define GCKEY_GW_SPANISH_SOURCE "/apps/gwaei/dictionary/spanish_source"
 
 #define GW_ENGLISH_URI_FALLBACK  "@ENGLISH_DEFAULT_URI@"
 #define GW_KANJI_URI_FALLBACK    "@KANJI_DEFAULT_URI@"
 #define GW_NAMES_URI_FALLBACK    "@NAMES_DEFAULT_URI@"
 #define GW_RADICALS_URI_FALLBACK "@RADICALS_DEFAULT_URI@"
+#define GW_EXAMPLES_URI_FALLBACK "@EXAMPLES_DEFAULT_URI@"
+
+#define GW_FRENCH_URI_FALLBACK "@FRENCH_DEFAULT_URI@"
+#define GW_GERMAN_URI_FALLBACK "@GERMAN_DEFAULT_URI@"
+#define GW_SPANISH_URI_FALLBACK "@SPANISH_DEFAULT_URI@"
+#define GW_LOAD_ORDER_FALLBACK "@LOAD_ORDER_DEFAULT@"
 
 
 #define GCKEY_DEFAULT_BROWSER "/desktop/gnome/url-handlers/http/command"

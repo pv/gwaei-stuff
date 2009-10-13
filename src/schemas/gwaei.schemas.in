@@ -239,6 +239,58 @@
       </schema>
 
       <schema>
+        <key>/schemas/apps/gwaei/dictionary/examples_source</key>
+        <applyto>/apps/gwaei/dictionary/examples_source</applyto>
+        <owner>gwaei</owner>
+        <type>string</type>
+        <default>@EXAMPLES_DEFAULT_URI@</default>
+        <locale name="C">
+	      <short>Examples dictionary install source</short>
+	      <long>Used for determining the path to install and update the Radicals dictionary from.</long>
+        </locale>
+      </schema>
+
+
+      <schema>
+        <key>/schemas/apps/gwaei/dictionary/french_source</key>
+        <applyto>/apps/gwaei/dictionary/french_source</applyto>
+        <owner>gwaei</owner>
+        <type>string</type>
+        <default>@FRENCH_DEFAULT_URI@</default>
+        <locale name="C">
+	      <short>French dictionary install source</short>
+	      <long>Used for determining the path to install and update the Radicals dictionary from.</long>
+        </locale>
+      </schema>
+
+
+      <schema>
+        <key>/schemas/apps/gwaei/dictionary/german_source</key>
+        <applyto>/apps/gwaei/dictionary/german_source</applyto>
+        <owner>gwaei</owner>
+        <type>string</type>
+        <default>@GERMAN_DEFAULT_URI@</default>
+        <locale name="C">
+	      <short>German dictionary install source</short>
+	      <long>Used for determining the path to install and update the Radicals dictionary from.</long>
+        </locale>
+      </schema>
+
+
+      <schema>
+        <key>/schemas/apps/gwaei/dictionary/spanish_source</key>
+        <applyto>/apps/gwaei/dictionary/spanish_source</applyto>
+        <owner>gwaei</owner>
+        <type>string</type>
+        <default>@SPANISH_DEFAULT_URI@</default>
+        <locale name="C">
+	      <short>Spanish dictionary install source</short>
+	      <long>Used for determining the path to install and update the Radicals dictionary from.</long>
+        </locale>
+      </schema>
+
+
+      <schema>
         <key>/schemas/apps/gwaei/highlighting/comment_foreground</key>
         <applyto>/apps/gwaei/highlighting/comment_foreground</applyto>
         <owner>gwaei</owner>
@@ -293,6 +345,19 @@
         <owner>gwaei</owner>
         <type>string</type>
         <default>@HEADER_BG_DEFAULT@</default>
+        <locale name="C">
+	      <short>Used for the styling of some titles</short>
+	      <long>Used as a separator for the "Other results" section. Is not always used.</long>
+        </locale>
+      </schema>
+
+
+      <schema>
+        <key>/schemas/apps/gwaei/dictionary/load_order</key>
+        <applyto>/apps/gwaei/dictionary/load_order</applyto>
+        <owner>gwaei</owner>
+        <type>string</type>
+        <default>@LOAD_ORDER_DEFAULT@</default>
         <locale name="C">
 	      <short>Used for the styling of some titles</short>
 	      <long>Used as a separator for the "Other results" section. Is not always used.</long>

@@ -88,51 +88,44 @@ gboolean gw_io_copy_with_encoding( char *source_path,     char *target_path,
                                   char *source_encoding, char *target_encoding,
                                   GError **error)
 {
-    char *buffer = NULL;
-    char *converted_buffer = NULL;
-    gsize bytes_read, bytes_written;
-    GQuark quark;
-    quark = g_quark_from_string (GW_GENERIC_ERROR);
+    FILE* readfd = NULL;
+    readfd = fopen (source_path, "r");
+    if (readfd == NULL) exit(0);
 
-    //Load the file into memory
-    if (g_file_get_contents (source_path, &buffer, NULL, NULL) == FALSE)
-    {
-      const char *message = gettext("File read failed");
-      if (error != NULL)
-        *error = g_error_new_literal (quark, GW_FILE_ERROR, message);
-      return FALSE;
-    }
+    FILE* writefd = NULL;
+    writefd = fopen (target_path, "w");
+    if (writefd == NULL) exit(0);
 
-    //Convert it to the prefered encoding
-    if ((converted_buffer = g_convert_with_fallback ( buffer,          -1,
-                                               target_encoding, source_encoding,
-                                               NULL,
-                                               &bytes_read,     &bytes_written,
-                                               NULL
-                                              )
-        ) == NULL
-       )
-    {
-      const char *message = gettext("Encoding conversion failed");
-      if (error != NULL)
-        *error = g_error_new_literal (quark, GW_FILE_ERROR, message);
-      free(buffer);
-      return FALSE;
-    }
-    //Write the data back to the disk
-    if (g_file_set_contents (target_path, converted_buffer, -1, NULL) == FALSE)
-    {
-      const char *message = gettext("Write file failed");
-      if (error != NULL)
-        *error = g_error_new_literal (quark, GW_FILE_ERROR, message);
-      free(buffer);
-      free(converted_buffer);
-      return FALSE;
-    }
+    int length = MAX_LINE;
+    char buffer[length];
+    char output[length];
+    gsize inbytes_left, outbytes_left;
+    char *inptr, *outptr;
+    char prev_inbytes = 0;
 
-    //Success!  Now to cleaup...
-    free(buffer);
-    free(converted_buffer);
+    GIConv conv = g_iconv_open (target_encoding, source_encoding);
+    while (fgets(buffer, length, readfd) != NULL)
+    {
+      inptr = buffer; outptr = output;
+      inbytes_left = length; outbytes_left = length;
+      while (inbytes_left && outbytes_left && g_iconv (conv, &inptr, &inbytes_left, &outptr, &outbytes_left) != -1)
+      {
+        if (prev_inbytes == inbytes_left)
+        {
+          inptr++;
+          inbytes_left--;
+        }
+        prev_inbytes = inbytes_left;
+        inptr = inptr + strlen(inptr) - inbytes_left;
+        outptr = outptr + strlen(outptr) - outbytes_left;
+      }
+      fwrite(output, 1, strlen(output), writefd); 
+    }
+    g_iconv_close (conv);
+
+    close(readfd);
+    close(writefd);
+
     return TRUE;
 }
 
@@ -220,7 +213,7 @@ gboolean gw_io_copy_dictionary_file(char *source_path, char *target_path, GError
     GQuark quark;
     quark = g_quark_from_string (GW_GENERIC_ERROR);
 
-    char *contents;
+    char *contents = NULL;
     gssize length;
     if ( g_file_get_contents(source_path, &contents, &length, NULL) == FALSE ||
          g_file_set_contents(target_path, contents, length, NULL) == FALSE     )
@@ -232,7 +225,7 @@ gboolean gw_io_copy_dictionary_file(char *source_path, char *target_path, GError
         *error = g_error_new_literal (quark, GW_FILE_ERROR, message);
       return FALSE;
     }
-    free(contents);
+    if (contents != NULL) g_free(contents);
 
     return TRUE;
 }

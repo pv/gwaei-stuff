@@ -88,6 +88,8 @@ GwDictInfo* gw_dictinfo_new (char *name)
       strncpy(temp->long_name, gettext ("Places"), 100);
     else if (strcmp(name, "Names") == 0)
       strncpy(temp->long_name, gettext ("Names"), 100);
+    else if (strcmp(name, "Examples") == 0)
+      strncpy(temp->long_name, gettext ("Examples"), 100);
     else
       strncpy(temp->long_name, name, 100);
 
@@ -158,6 +160,13 @@ GwDictInfo* gw_dictinfo_new (char *name)
       temp->id = GW_DICT_PLACES;
       temp->type = GW_DICT_OTHER;
       strncpy(temp->gckey, "", 100);
+      strcpy (temp->rsync, "");
+    }
+    else if (strcmp (name, "Examples") == 0)
+    {
+      temp->id = GW_DICT_EXAMPLES;
+      temp->type = GW_DICT_RADICALS;
+      strncpy(temp->gckey, GCKEY_GW_EXAMPLES_SOURCE, 100);
       strcpy (temp->rsync, "");
     }
     else if (strcmp (name, "Mix") == 0)
@@ -251,6 +260,30 @@ GList* gw_dictlist_get_selected()
     return dictionaries->selected;
 }
 
+
+//!
+//! @brief Gets the dictionary by load position in the GUI
+//!
+//! Each dictionary has a load position recorded in the GUI when it is added to
+//! it.  This function makes it easy for a GUI callback to find that exact
+//! dictionary in the GwDictList.
+//!
+//! @param request The GUI load position of the desired dictionary
+//! @return The position in the GwDictList of the GwDictInfo
+//!
+GList* gw_dictlist_get_dict_by_load_position (int request)
+{
+    GList* current = gw_dictlist_get_list();
+    GwDictInfo *di = NULL;
+    do
+    {
+       di = (GwDictInfo*) current->data;
+       if (current && di && di->load_position == request)
+         break;
+       current = g_list_next (current);
+    } while (current);
+    return current;
+}
 
 //!
 //! @brief Gets the dictionary by load position in the GUI
@@ -540,6 +573,7 @@ void gw_dictionaries_initialize_dictionary_list()
     gw_dictlist_add_dictionary ("Radicals");
     gw_dictlist_add_dictionary ("Names");
     gw_dictlist_add_dictionary ("Places");
+    gw_dictlist_add_dictionary ("Examples");
 
     //Path variables
     char path[FILENAME_MAX];
@@ -564,6 +598,7 @@ void gw_dictionaries_initialize_dictionary_list()
             strcmp  (filename, "Names"             ) != 0     &&           
             strcmp  (filename, "Places"            ) != 0     &&        
             strcmp  (filename, "Radicals"          ) != 0     &&     
+            strcmp  (filename, "Examples"          ) != 0     &&     
             strcmp  (filename, "Mix"               ) != 0       )
         {
           gw_dictlist_add_dictionary (filename);
@@ -811,4 +846,82 @@ void gw_dictlist_sync_dictionary (GwDictInfo *di, GError **error)
     if (*error == NULL)
       printf("%s\n", gettext("Success"));
 }
+
+
+void gw_dictlist_update_dictionary_order_list ()
+{
+    //Get the pref string
+    char order[5000];
+    gw_pref_get_string (order, GCKEY_GW_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
+
+    //Make sure all the dictionaries are in there
+    GList* list = gw_dictlist_get_list();
+    GwDictInfo* di = NULL;
+    while (list != NULL)
+    {
+      di = list->data;
+      if (strstr(di->name, order) != 0)
+      {
+         strcat(order, ",");
+         strcat(order, di->name);
+      }
+    }
+
+    //Parse the string
+    char *names[50];
+    char *mix_name = NULL, *kanji_name = NULL, *radicals_name = NULL;
+    names[0] = order;
+    int i = 0;
+    while ((names[i + 1] = g_utf8_strchr (names[i], -1, L',')) && i < 50)
+    {
+      i++;
+      *names[i] = '\0';
+      names[i]++;
+    }
+    names[i + 1] = NULL;
+
+    //Remove not installed dictionaries from the list
+    i = 0;
+    while (names[i] != NULL)
+    {
+      di = gw_dictlist_get_dictionary_by_name (names[i]);
+      if (di == NULL || di->status != GW_DICT_STATUS_INSTALLED)
+        *names[i] = '\0';
+      if (di && di->id == GW_DICT_MIX) mix_name = names[i];
+      if (di && di->id == GW_DICT_KANJI) kanji_name = names[i];
+      if (di && di->id == GW_DICT_RADICALS) radicals_name = names[i];
+      i++;
+    }
+
+    //Remove kanji and radicals if mix exists
+    if (mix_name)
+    {
+      if (kanji_name) *kanji_name = '\0';
+      if (radicals_name) *radicals_name = '\0';
+    }
+
+    int j = 0;
+    i = 0;
+    char new_order[5000];
+    new_order[0] = '\0';
+    while (names[i] != NULL && names[j] != NULL)
+    {
+      if (*names[j] == '\0')
+      {
+        j++;
+      }
+      else if (*names[j] != '\0')
+      {
+        names[i] = names[j];
+        strcat(new_order, names[j]);
+        strcat(new_order, ",");
+        i++;
+        j++;
+      }
+    }
+    new_order[strlen(new_order) - 1] = '\0';
+    names[i] = NULL;
+    gw_pref_set_string (GCKEY_GW_LOAD_ORDER, new_order);
+}
+
 

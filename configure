@@ -671,6 +671,11 @@ HEADER_BG_DEFAULT
 HEADER_FG_DEFAULT
 MATCH_BG_DEFAULT
 MATCH_FG_DEFAULT
+LOAD_ORDER_DEFAULT
+SPANISH_DEFAULT_URI
+GERMAN_DEFAULT_URI
+FRENCH_DEFAULT_URI
+EXAMPLES_DEFAULT_URI
 NAMES_DEFAULT_URI
 RADICALS_DEFAULT_URI
 KANJI_DEFAULT_URI
@@ -2911,6 +2916,21 @@ RADICALS_DEFAULT_URI=ftp://ftp.monash.edu.au/pub/nihongo/kradfile.gz
 
 
 NAMES_DEFAULT_URI=ftp://ftp.monash.edu.au/pub/nihongo/enamdict.gz
+
+
+EXAMPLES_DEFAULT_URI=ftp://ftp.csse.monash.edu.au/users/jwb/examples.gz
+
+
+FRENCH_DEFAULT_URI=http://dico.fj.free.fr/fj.utf
+
+
+GERMAN_DEFAULT_URI=http://www.bibiko.de/WdJTEUC.zip
+
+
+SPANISH_DEFAULT_URI=http://hispadic.googlepages.com/hispamix_euc.zip
+
+
+LOAD_ORDER_DEFAULT=English,Mix,Kanji,Radicals,Names,Places,Examples
 
 
 

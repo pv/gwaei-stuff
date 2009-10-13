@@ -646,9 +646,98 @@ void gw_ui_set_dictionary(int request)
     }
 }
 
+/*
+static void is_in_dictionary_order_list ()
+{
+    //Parse the string
+    char order[5000];
+    gw_pref_get_string (order, GCKEY_GW_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
+    char *dictionaries[50];
+    dictionaries[0] = order;
+    int i = 0;
+    while ((dictionaries[i + 1] = g_utf8_strchr (dictionaries[i], -1, L',')) && i < 50)
+    {
+      i++;
+      *dictionaries[i] = '\0';
+      dictionaries[i]++;
+    }
+    dictionaries[i + 1] = NULL;
+
+    i = 0;
+    while (dictionaries[i] != NULL)
+    {
+      if (strcmp(dictionaries[i], name) == 0)
+        return TRUE;
+      i++;
+    }
+    return FALSE;
+}
+*/
+
 
 int rebuild_combobox_dictionary_list() 
 {
+    //Parse the string
+    char order[5000];
+    char new_order[5000];
+    GwDictInfo* di = NULL;
+    gw_pref_get_string (order, GCKEY_GW_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
+    char *names[50];
+    char *mix_name = NULL, *kanji_name = NULL, *radicals_name = NULL;
+    names[0] = order;
+    int i = 0;
+    while ((names[i + 1] = g_utf8_strchr (names[i], -1, L',')) && i < 50)
+    {
+      i++;
+      *names[i] = '\0';
+      names[i]++;
+    }
+    names[i + 1] = NULL;
+
+    //Remove not installed dictionaries from the list
+    i = 0;
+    while (names[i] != NULL)
+    {
+      di = gw_dictlist_get_dictionary_by_name (names[i]);
+      if (di == NULL || di->status != GW_DICT_STATUS_INSTALLED)
+        *names[i] = '\0';
+      if (di && di->id == GW_DICT_MIX) mix_name = names[i];
+      if (di && di->id == GW_DICT_KANJI) kanji_name = names[i];
+      if (di && di->id == GW_DICT_RADICALS) radicals_name = names[i];
+      i++;
+    }
+
+    //Remove kanji and radicals if mix exists
+    if (mix_name)
+    {
+      if (kanji_name) *kanji_name = '\0';
+      if (radicals_name) *radicals_name = '\0';
+    }
+
+    int j = 0;
+    i = 0;
+    new_order[0] = '\0';
+    while (names[i] != NULL && names[j] != NULL)
+    {
+      if (*names[j] == '\0')
+      {
+        j++;
+      }
+      else if (*names[j] != '\0')
+      {
+        names[i] = names[j];
+        strcat(new_order, names[j]);
+        strcat(new_order, ",");
+        i++;
+        j++;
+      }
+    }
+    new_order[strlen(new_order) - 1] = '\0';
+    names[i] = NULL;
+    gw_pref_set_string (GCKEY_GW_LOAD_ORDER, new_order);
+
+
+
     //Initialize variables
     const int id_length = 50;
     char id[id_length];
@@ -659,14 +748,10 @@ int rebuild_combobox_dictionary_list()
     GtkTreeIter iter;
 
     GSList* group = NULL;
-    GwDictInfo *di;
     GtkAccelGroup* accel_group;
     accel_group = GTK_ACCEL_GROUP (gtk_builder_get_object (builder, "main_accelgroup"));
-    //GtkAccelGroup* accel_group = gtk_accel_group_new();
-    //GtkWindow *window = GTK_WINDOW (gtk_builder_get_object (builder, "main_window"));
-    //gtk_window_add_accel_group (GTK_WINDOW (window), accel_group);
     GtkWidget *item = NULL;
-    int i = 0;
+    i = 0;
 
     //Empty the combobox list
     while (gtk_tree_model_get_iter_first (GTK_TREE_MODEL (list_store), &iter))
@@ -686,42 +771,30 @@ int rebuild_combobox_dictionary_list()
       }
     }
 
-    const int MAX_NAME = 100;
-    char name[MAX_NAME];
-
     //Start filling in the new items
-    GList* dictionaries = gw_dictlist_get_list ();
-    while (dictionaries != NULL)
+    while (names[i] != NULL)
     {
-      di = dictionaries->data;
-      if (di->status == GW_DICT_STATUS_INSTALLED)
-      {
-        if ((gw_dictlist_dictionary_get_status_by_id (GW_DICT_MIX) == GW_DICT_STATUS_INSTALLED &&
-            di->id != GW_DICT_KANJI &&
-            di->id != GW_DICT_RADICALS                                               )||
-           ((gw_dictlist_dictionary_get_status_by_id (GW_DICT_MIX) != GW_DICT_STATUS_INSTALLED )))
-        {
-          //Refill the combobox
-          gtk_list_store_append (GTK_LIST_STORE (list_store), &iter);
-          gtk_list_store_set (GTK_LIST_STORE (list_store), &iter,
-                              0, di->long_name, -1                    );
+      printf("%d %s\n", i, names[i]);
 
-          //Refill the menu
-          item = GTK_WIDGET (gtk_radio_menu_item_new_with_label (group, di->long_name));
-          group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
-          gtk_menu_shell_append (GTK_MENU_SHELL (shell),  GTK_WIDGET (item));
-          if (i == 0) gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), TRUE);
-          g_signal_connect( G_OBJECT (item),       "toggled",
-                           G_CALLBACK (do_dictionary_changed_action), NULL);
-          if (i + 1 < 10) gtk_widget_add_accelerator (GTK_WIDGET (item), "activate", accel_group, (GDK_0 + i + 1), GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
-          gtk_widget_show (item);
+      di = gw_dictlist_get_dictionary_by_name (names[i]);
+      //Refill the combobox
+      gtk_list_store_append (GTK_LIST_STORE (list_store), &iter);
+      gtk_list_store_set (GTK_LIST_STORE (list_store), &iter,
+                          0, di->long_name, -1                    );
 
-          di->load_position = i;
+      //Refill the menu
+      item = GTK_WIDGET (gtk_radio_menu_item_new_with_label (group, di->long_name));
+      group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
+      gtk_menu_shell_append (GTK_MENU_SHELL (shell),  GTK_WIDGET (item));
+      if (i == 0) gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), TRUE);
+      g_signal_connect( G_OBJECT (item),       "toggled",
+                       G_CALLBACK (do_dictionary_changed_action), NULL);
+      if (i + 1 < 10) gtk_widget_add_accelerator (GTK_WIDGET (item), "activate", accel_group, (GDK_0 + i + 1), GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
+      gtk_widget_show (item);
 
-          i++;
-        }
-      }
-      dictionaries = dictionaries->next;
+      di->load_position = i;
+
+      i++;
     }
 
     //Set the combobox to the first item

@@ -239,6 +239,58 @@
       </schema>
 
       <schema>
+        <key>/schemas/apps/gwaei/dictionary/examples_source</key>
+        <applyto>/apps/gwaei/dictionary/examples_source</applyto>
+        <owner>gwaei</owner>
+        <type>string</type>
+        <default>ftp://ftp.csse.monash.edu.au/users/jwb/examples.gz</default>
+        <locale name="C">
+	      <short>Examples dictionary install source</short>
+	      <long>Used for determining the path to install and update the Radicals dictionary from.</long>
+        </locale>
+      </schema>
+
+
+      <schema>
+        <key>/schemas/apps/gwaei/dictionary/french_source</key>
+        <applyto>/apps/gwaei/dictionary/french_source</applyto>
+        <owner>gwaei</owner>
+        <type>string</type>
+        <default>http://dico.fj.free.fr/fj.utf</default>
+        <locale name="C">
+	      <short>French dictionary install source</short>
+	      <long>Used for determining the path to install and update the Radicals dictionary from.</long>
+        </locale>
+      </schema>
+
+
+      <schema>
+        <key>/schemas/apps/gwaei/dictionary/german_source</key>
+        <applyto>/apps/gwaei/dictionary/german_source</applyto>
+        <owner>gwaei</owner>
+        <type>string</type>
+        <default>http://www.bibiko.de/WdJTEUC.zip</default>
+        <locale name="C">
+	      <short>German dictionary install source</short>
+	      <long>Used for determining the path to install and update the Radicals dictionary from.</long>
+        </locale>
+      </schema>
+
+
+      <schema>
+        <key>/schemas/apps/gwaei/dictionary/spanish_source</key>
+        <applyto>/apps/gwaei/dictionary/spanish_source</applyto>
+        <owner>gwaei</owner>
+        <type>string</type>
+        <default>http://hispadic.googlepages.com/hispamix_euc.zip</default>
+        <locale name="C">
+	      <short>Spanish dictionary install source</short>
+	      <long>Used for determining the path to install and update the Radicals dictionary from.</long>
+        </locale>
+      </schema>
+
+
+      <schema>
         <key>/schemas/apps/gwaei/highlighting/comment_foreground</key>
         <applyto>/apps/gwaei/highlighting/comment_foreground</applyto>
         <owner>gwaei</owner>
@@ -293,6 +345,19 @@
         <owner>gwaei</owner>
         <type>string</type>
         <default>#FFDEDE</default>
+        <locale name="C">
+	      <short>Used for the styling of some titles</short>
+	      <long>Used as a separator for the "Other results" section. Is not always used.</long>
+        </locale>
+      </schema>
+
+
+      <schema>
+        <key>/schemas/apps/gwaei/dictionary/load_order</key>
+        <applyto>/apps/gwaei/dictionary/load_order</applyto>
+        <owner>gwaei</owner>
+        <type>string</type>
+        <default>English,Mix,Kanji,Radicals,Names,Places,Examples</default>
         <locale name="C">
 	      <short>Used for the styling of some titles</short>
 	      <long>Used as a separator for the "Other results" section. Is not always used.</long>

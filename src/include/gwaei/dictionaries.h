@@ -62,6 +62,7 @@ enum gw_dictionary_types {
   GW_DICT_NAMES,
   GW_DICT_PLACES,
   GW_DICT_MIX,
+  GW_DICT_EXAMPLES,
   GW_DICT_OTHER
 };
 
@@ -105,17 +106,6 @@ GList* gw_dictlist_get_selected(void);
 
 
 GwDictInfo* gw_dictlist_get_dictionary_by_name (const char*);
-/*
- *  Returns a dictionary in the GwDictList by name.  Unlike
- *  gw_dictlist_get_dictionary_by_alias, it will alway return what you ask
- *  for.  When the dictionary doesn't exist, it returns null.
- */
-
-
 GwDictInfo* gw_dictlist_get_dictionary_by_alias(const char*);
-/*
- *  Searches for a dictionary by a name in the GwDictList.  When approprate
- *  it will swap the requsted dictionary for another one.  This usally comes out
- *  to swapping the Kanji dictionary for the Mixed one when it is present.  When
- *  the dictionary is not found, it returns null.
- */
+GList* gw_dictlist_get_dict_by_load_position(int);
+GList* gw_dictlist_set_selected_by_load_position(int);

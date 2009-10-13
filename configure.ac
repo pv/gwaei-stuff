@@ -53,6 +53,21 @@ AC_SUBST(RADICALS_DEFAULT_URI)
 NAMES_DEFAULT_URI=ftp://ftp.monash.edu.au/pub/nihongo/enamdict.gz
 AC_SUBST(NAMES_DEFAULT_URI)
 
+EXAMPLES_DEFAULT_URI=ftp://ftp.csse.monash.edu.au/users/jwb/examples.gz
+AC_SUBST(EXAMPLES_DEFAULT_URI)
+
+FRENCH_DEFAULT_URI=http://dico.fj.free.fr/fj.utf
+AC_SUBST(FRENCH_DEFAULT_URI)
+
+GERMAN_DEFAULT_URI=http://www.bibiko.de/WdJTEUC.zip
+AC_SUBST(GERMAN_DEFAULT_URI)
+
+SPANISH_DEFAULT_URI=http://hispadic.googlepages.com/hispamix_euc.zip
+AC_SUBST(SPANISH_DEFAULT_URI)
+
+LOAD_ORDER_DEFAULT=English,Mix,Kanji,Radicals,Names,Places,Examples
+AC_SUBST(LOAD_ORDER_DEFAULT)
+
 
 MATCH_FG_DEFAULT=#000000
 AC_SUBST(MATCH_FG_DEFAULT)
