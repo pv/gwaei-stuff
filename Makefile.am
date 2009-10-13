@@ -70,7 +70,7 @@ uninstall-local:
 	@ rm -rf $(DESTDIR)$(datadir)/@PACKAGE@
 
 
-DISTCLEANFILES = gnome-doc-utils.make
-EXTRA_DIST = config.rpath m4/ChangeLog config.rpath m4/ChangeLog debian/rules debian/changelog debian/control debian/compat debian/copyright debian/series gnome-doc-utils.make help/Makefile.am.gnome help/Makefile.am.none
+##DISTCLEANFILES = gnome-doc-utils.make
+EXTRA_DIST = config.rpath m4/ChangeLog config.rpath m4/ChangeLog debian/rules debian/changelog debian/control debian/compat debian/copyright debian/series help/Makefile.am.gnome help/Makefile.am.none
 
 
