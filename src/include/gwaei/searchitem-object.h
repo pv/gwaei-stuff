@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file src/include/gwaei/history.h
+//! @file src/include/gwaei/search-object.h
 //!
 //! @brief To be written.
 //!
@@ -30,11 +30,9 @@
 //!
 //! Historylist targets
 //!
-enum historylist_targets
-{
-  GW_HISTORYLIST_RESULTS,
-  GW_HISTORYLIST_KANJI
-};
+
+#include <gwaei/resultline-object.h>
+
 
 //!
 //! Search status types
@@ -75,37 +73,14 @@ typedef struct GwSearchItem {
     GList *results_medium;                  //!< Buffer storing mediumly relevant result for later display
     GList *results_low;                     //!< Buffer storing lowly relevant result for later display
     int total_re;                           //!< The total regex atoms that were created.
+
+    GwResultLine* resultline;               //!< Result line to store parsed result
+    GwResultLine* backup_resultline;        //!< Result line kept for comparison purposes from previosu result line
+    GwResultLine* swap_resultline;          //!< Swap space for swapping result line and backup_resultline
+
+
+    void (*gw_searchitem_parse_result_string)(GwResultLine*, char*);
+    void (*gw_searchitem_append_results_to_output)(struct GwSearchItem*, gboolean);
 } GwSearchItem;
 
-
-//!
-//! @brief Primitive for storing search items in intelligent ways
-//!
-typedef struct GwHistoryList
-{
-    GList *back;           //!< A GList of past search items
-    GList *forward;        //!< A GList where past search items get stacked when the user goes back.
-    GwSearchItem *current; //!< The current search before it gets pushed only into a history list.
-} GwHistoryList;
-
-
-/*searchitem methods*/
-GwSearchItem* gw_searchitem_new    (char*, GwDictInfo*, int);
-void        gw_searchitem_remove (struct GwSearchItem*);
-
-/*Historylist methods*/
-GwHistoryList* gw_historylist_new_item(GwHistoryList*, char*, char*);
-GwHistoryList* gw_historylist_add_item(GwHistoryList*, GwSearchItem*);
-GwHistoryList* gw_historylist_unlink_item(GwHistoryList*);
-GwHistoryList* gw_historylist_remove_last_item(GwHistoryList*);
-void   gw_historylist_clear(GwHistoryList*, GList**);
-void   gw_historylist_shift_item(GwHistoryList*, GList**);
-
-/*Functions*/
-gboolean gw_searchitem_do_pre_search_prep (GwSearchItem*);
-GwHistoryList* gw_historylist_get_list(const int);
-GwSearchItem* gw_historylist_get_current (const int);
-GList* gw_historylist_get_combined_history_list (const int);
-GList* gw_historylist_get_back_history (const int);
-GList* gw_historylist_get_forward_history (const int);
 

@@ -43,8 +43,8 @@
 #include <gwaei/sexy.h>
 #include <gwaei/definitions.h>
 #include <gwaei/utilities.h>
-#include <gwaei/dictionaries.h>
-#include <gwaei/history.h>
+#include <gwaei/dictionary-objects.h>
+#include <gwaei/search-objects.h>
 #include <gwaei/interface.h>
 #include <gwaei/callbacks.h>
 #include <gwaei/preferences.h>

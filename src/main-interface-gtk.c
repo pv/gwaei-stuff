@@ -41,11 +41,10 @@
 #include <gwaei/regex.h>
 #include <gwaei/utilities.h>
 #include <gwaei/io.h>
-#include <gwaei/dictionaries.h>
-#include <gwaei/history.h>
+#include <gwaei/dictionary-objects.h>
+#include <gwaei/search-objects.h>
 
 #include <gwaei/engine.h>
-#include <gwaei/resultline.h>
 #include <gwaei/callbacks.h>
 #include <gwaei/interface.h>
 #include <gwaei/preferences.h>
@@ -2515,8 +2514,10 @@ void gw_ui_shift_append_mark (char *stay_name, char *append_name)
 }
 
 
-void gw_ui_append_results_to_buffer (GwSearchItem *item, GwResultLine *resultline, gboolean remove_last_linebreak)
+void gw_ui_append_results_to_buffer (GwSearchItem *item, gboolean remove_last_linebreak)
 {
+    GwResultLine* resultline = item->resultline;
+
     GtkTextBuffer *tb = GTK_TEXT_BUFFER (get_gobject_from_target(item->target));
     GtkTextMark *mark;
     mark = gtk_text_buffer_get_mark (tb, "content_insertion_mark");
@@ -2591,8 +2592,10 @@ void gw_ui_append_results_to_buffer (GwSearchItem *item, GwResultLine *resultlin
 }
 
 
-void gw_ui_append_def_same_to_buffer (GwSearchItem* item, GwResultLine *resultline)
+void gw_ui_append_def_same_to_buffer (GwSearchItem* item, gboolean UNUSED)
 {
+    GwResultLine* resultline = item->resultline;
+
     GtkTextBuffer *tb = GTK_TEXT_BUFFER (get_gobject_from_target(item->target));
 
     gw_ui_shift_append_mark ("previous_result", "new_result");
@@ -2632,8 +2635,9 @@ void gw_ui_append_def_same_to_buffer (GwSearchItem* item, GwResultLine *resultli
 }
 
 
-void gw_ui_append_kanji_results_to_buffer (GwSearchItem *item, GwResultLine *resultline)
+void gw_ui_append_kanji_results_to_buffer (GwSearchItem *item, gboolean unused)
 {
+      GwResultLine* resultline = item->resultline;
       GtkTextBuffer *tb = GTK_TEXT_BUFFER (get_gobject_from_target(item->target));
       GtkTextIter iter;
       GtkTextMark *mark;
@@ -2740,8 +2744,9 @@ void gw_ui_append_kanji_results_to_buffer (GwSearchItem *item, GwResultLine *res
 }
 
 
-void gw_ui_append_radicals_results_to_buffer (GwSearchItem *item, GwResultLine *resultline)
+void gw_ui_append_radicals_results_to_buffer (GwSearchItem *item, gboolean unused)
 {
+      GwResultLine* resultline = item->resultline;
       GtkTextBuffer *tb = GTK_TEXT_BUFFER (get_gobject_from_target(item->target));
 
       int line, start_offset, end_offset;
@@ -2776,8 +2781,9 @@ void gw_ui_append_radicals_results_to_buffer (GwSearchItem *item, GwResultLine *
 }
 
 
-void gw_ui_append_examples_results_to_buffer (GwSearchItem *item, GwResultLine *resultline)
+void gw_ui_append_examples_results_to_buffer (GwSearchItem *item, gboolean unused)
 {
+      GwResultLine* resultline = item->resultline;
       GtkTextBuffer *tb = GTK_TEXT_BUFFER (get_gobject_from_target(item->target));
 
       int line, start_offset, end_offset;
@@ -2823,8 +2829,9 @@ void gw_ui_append_examples_results_to_buffer (GwSearchItem *item, GwResultLine *
       gtk_text_buffer_insert (tb, &iter, "\n", -1);
 }
 
-void gw_ui_append_other_results_to_buffer (GwSearchItem *item, GwResultLine *resultline)
+void gw_ui_append_unknown_results_to_buffer (GwSearchItem *item, gboolean unused)
 {
+      GwResultLine* resultline = item->resultline;
       GtkTextBuffer *tb = GTK_TEXT_BUFFER (get_gobject_from_target(item->target));
       GtkTextIter iter;
       GtkTextMark *mark;

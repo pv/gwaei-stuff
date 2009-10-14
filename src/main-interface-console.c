@@ -37,10 +37,9 @@
 #include <glib.h>
 
 #include <gwaei/definitions.h>
-#include <gwaei/resultline.h>
 #include <gwaei/regex.h>
-#include <gwaei/dictionaries.h>
-#include <gwaei/history.h>
+#include <gwaei/dictionary-objects.h>
+#include <gwaei/search-objects.h>
 #include <gwaei/engine.h>
 #include <gwaei/preferences.h>
 
@@ -563,7 +562,7 @@ void initialize_console_interface(int argc, char **argv)
 }
 
 
-void gw_console_append_normal_results (GwSearchItem *item, GwResultLine *resultline)
+void gw_console_append_normal_results (GwSearchItem *item, GwResultLine *resultline, gboolean unused)
 {
     //Kanji
     printf("%s", resultline->kanji_start);
@@ -593,7 +592,7 @@ void gw_console_append_normal_results (GwSearchItem *item, GwResultLine *resultl
 
 }
 
-void gw_console_append_kanji_results (GwSearchItem *item, GwResultLine *resultline)
+void gw_console_append_kanji_results (GwSearchItem *item, GwResultLine *resultline, gboolean unused)
 {
     //Kanji
     printf("%s\n", resultline->kanji);
@@ -633,7 +632,7 @@ void gw_console_append_kanji_results (GwSearchItem *item, GwResultLine *resultli
 
 }
 
-void gw_console_append_radical_results (GwSearchItem *item, GwResultLine *resultline)
+void gw_console_append_radical_results (GwSearchItem *item, GwResultLine *resultline, gboolean unused)
 {
     printf("%s : %s", resultline->kanji, resultline->radicals);
 }

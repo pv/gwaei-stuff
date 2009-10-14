@@ -40,7 +40,7 @@
 
 #include <gwaei/definitions.h>
 #include <gwaei/regex.h>
-#include <gwaei/dictionaries.h>
+#include <gwaei/dictionary-objects.h>
 
 
 char     save_path[FILENAME_MAX]    = { '\0' };

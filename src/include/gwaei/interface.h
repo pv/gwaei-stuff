@@ -20,3 +20,13 @@ const char* gw_ui_get_active_dictionary(void);
 char* gw_ui_get_text_from_text_buffer(const int);
 
 void initialize_gui_interface(int*, char***);
+
+void gw_ui_append_results_to_buffer (GwSearchItem*, gboolean);
+void gw_ui_append_kanji_results_to_buffer (GwSearchItem*, gboolean);
+void gw_ui_append_radicals_results_to_buffer (GwSearchItem*, gboolean);
+void gw_ui_append_examples_results_to_buffer (GwSearchItem*, gboolean);
+void gw_ui_append_unknown_results_to_buffer (GwSearchItem*, gboolean);
+
+void gw_console_append_normal_results (GwSearchItem*, gboolean);
+void gw_console_append_kanji_results (GwSearchItem*, gboolean);
+void gw_console_append_radical_results (GwSearchItem*, gboolean);

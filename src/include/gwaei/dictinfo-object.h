@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file src/include/gwaei/dictionaries.h
+//! @file src/include/gwaei/dictinfo-object.h
 //!
 //! @brief To be written.
 //!
@@ -90,25 +90,4 @@ struct GwDictInfo
 typedef struct GwDictInfo GwDictInfo;
 
 
-//!
-//! @brief Primitive for storing lists of dictionaries
-//!
-struct GwDictList
-{
-    GList *list;      //!< GList of the installed dictionaries
-    GList *selected;  //!< Pointer to the currently selected dictionary in the GList
-    int id_increment; //!< Unique id increment for the dictionary list object
-};
-typedef struct GwDictList GwDictList;
-
-
-GList* gw_dictlist_get_list (void);
-GwDictInfo* gw_dictlist_get_dictionary_by_id (int);
-int gw_dictlist_get_total (void);
-GList* gw_dictlist_get_selected(void);
-
-
-GwDictInfo* gw_dictlist_get_dictionary_by_name (const char*);
-GwDictInfo* gw_dictlist_get_dictionary_by_alias(const char*);
-GList* gw_dictlist_get_dict_by_load_position(int);
-GList* gw_dictlist_set_selected_by_load_position(int);
+GwDictInfo* gw_dictinfo_new (char*);

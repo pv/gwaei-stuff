@@ -107,14 +107,19 @@ CONFIG_CLEAN_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
-am__gwaei_SOURCES_DIST = main.c dictionaries.c engine.c utilities.c \
-	io.c regex.c main-interface-console.c formatting.c history.c \
-	include/gwaei/main.h include/gwaei/dictionaries.h \
-	include/gwaei/utilities.h include/gwaei/io.h \
-	include/gwaei/regex.h include/gwaei/engine.h \
-	include/gwaei/formatting.h include/gwaei/history.h \
+am__gwaei_SOURCES_DIST = main.c dictinfo-object.c dictlist-object.c \
+	engine.c utilities.c io.c regex.c main-interface-console.c \
+	formatting.c searchitem-object.c historylist-object.c \
+	resultline-object.c include/gwaei/main.h \
+	include/gwaei/dictinfo-object.h \
+	include/gwaei/dictlist-object.h include/gwaei/utilities.h \
+	include/gwaei/io.h include/gwaei/regex.h \
+	include/gwaei/engine.h include/gwaei/formatting.h \
 	include/gwaei/definitions.h include/gwaei/preferences.h \
-	resultline.c include/gwaei/resultline.h main-callbacks-gtk.c \
+	include/gwaei/resultline-object.h \
+	include/gwaei/historylist-object.h \
+	include/gwaei/searchitem-object.h \
+	include/gwaei/search-objects.h main-callbacks-gtk.c \
 	main-interface-gtk.c settings-callbacks-gtk.c \
 	settings-interface-gtk.c radicals-interface-gtk.c \
 	radicals-callbacks-gtk.c printing-gtk.c \
@@ -150,10 +155,11 @@ am__gwaei_SOURCES_DIST = main.c dictionaries.c engine.c utilities.c \
 @ENABLE_WIN32_FALSE@@WITHOUT_GNOME_FALSE@	callbacks.$(OBJEXT) \
 @ENABLE_WIN32_FALSE@@WITHOUT_GNOME_FALSE@	kanjipad.$(OBJEXT) \
 @ENABLE_WIN32_FALSE@@WITHOUT_GNOME_FALSE@	padarea.$(OBJEXT)
-am_gwaei_OBJECTS = main.$(OBJEXT) dictionaries.$(OBJEXT) \
-	engine.$(OBJEXT) utilities.$(OBJEXT) io.$(OBJEXT) \
-	regex.$(OBJEXT) main-interface-console.$(OBJEXT) \
-	formatting.$(OBJEXT) history.$(OBJEXT) resultline.$(OBJEXT) \
+am_gwaei_OBJECTS = main.$(OBJEXT) dictinfo-object.$(OBJEXT) \
+	dictlist-object.$(OBJEXT) engine.$(OBJEXT) utilities.$(OBJEXT) \
+	io.$(OBJEXT) regex.$(OBJEXT) main-interface-console.$(OBJEXT) \
+	formatting.$(OBJEXT) searchitem-object.$(OBJEXT) \
+	historylist-object.$(OBJEXT) resultline-object.$(OBJEXT) \
 	$(am__objects_1) $(am__objects_2) $(am__objects_3)
 gwaei_OBJECTS = $(am_gwaei_OBJECTS)
 am__DEPENDENCIES_1 =
@@ -327,15 +333,19 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 ACLOCAL_AMFLAGS = -I m4
-gwaei_SOURCES = main.c dictionaries.c engine.c utilities.c io.c \
-	regex.c main-interface-console.c formatting.c history.c \
-	include/gwaei/main.h include/gwaei/dictionaries.h \
-	include/gwaei/utilities.h include/gwaei/io.h \
-	include/gwaei/regex.h include/gwaei/engine.h \
-	include/gwaei/formatting.h include/gwaei/history.h \
+gwaei_SOURCES = main.c dictinfo-object.c dictlist-object.c engine.c \
+	utilities.c io.c regex.c main-interface-console.c formatting.c \
+	searchitem-object.c historylist-object.c resultline-object.c \
+	include/gwaei/main.h include/gwaei/dictinfo-object.h \
+	include/gwaei/dictlist-object.h include/gwaei/utilities.h \
+	include/gwaei/io.h include/gwaei/regex.h \
+	include/gwaei/engine.h include/gwaei/formatting.h \
 	include/gwaei/definitions.h include/gwaei/preferences.h \
-	resultline.c include/gwaei/resultline.h $(am__append_1) \
-	$(am__append_6) $(am__append_8)
+	include/gwaei/resultline-object.h \
+	include/gwaei/historylist-object.h \
+	include/gwaei/searchitem-object.h \
+	include/gwaei/search-objects.h $(am__append_1) $(am__append_6) \
+	$(am__append_8)
 gwaei_LDADD = $(DEPS_LIBS) @LIBINTL@ $(am__append_2) $(am__append_9)
 gwaei_LDFLAGS = -Wall -Wextra -pedantic
 AM_CFLAGS = $(DEPS_CFLAGS) $(am__append_3) $(am__append_10)
@@ -408,10 +418,11 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/callbacks.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dictionaries.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dictinfo-object.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dictlist-object.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/engine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/formatting.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/history.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/historylist-object.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kanjipad.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main-callbacks-gtk.Po@am__quote@
@@ -426,7 +437,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/radicals-callbacks-gtk.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/radicals-interface-gtk.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/regex.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/resultline.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/resultline-object.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/searchitem-object.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/settings-callbacks-gtk.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/settings-interface-gtk.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sexy-disable.Po@am__quote@

@@ -41,8 +41,8 @@
 #include <gwaei/regex.h>
 #include <gwaei/utilities.h>
 #include <gwaei/io.h>
-#include <gwaei/dictionaries.h>
-#include <gwaei/history.h>
+#include <gwaei/dictionary-objects.h>
+#include <gwaei/search-objects.h>
 
 #include <gwaei/engine.h>
 #include <gwaei/callbacks.h>
