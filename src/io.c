@@ -44,8 +44,20 @@
 
 
 char     save_path[FILENAME_MAX]    = { '\0' };
-gboolean rsync_exists               = FALSE;
 
+
+//!
+//! \brief Writes a file using the given text and write mode
+//!
+//! This function is an extension of the save as/append buttons.
+//! Thus, the program currently only uses the write and append write modes.
+//! The save path is gathered using some's build in function for a dialog, and the
+//! path is saved for as long as the program is running, so it doesn't need to be
+//! asked a second time.
+//!
+//! @param write_mode A constant char representing the write mode to be used (w,a)
+//! @param text A char pointer to some text to save.
+//!
 void gw_io_write_file(const char* write_mode, gchar *text)
 {
     if (save_path[0] != '\0')
@@ -75,15 +87,39 @@ void gw_io_write_file(const char* write_mode, gchar *text)
 }
 
 
-void gw_io_check_for_rsync()
+//!
+//! \brief Checks to see if rsync is available
+//!
+//! The variable that this checks is set at compile time, so if the program
+//! was compiled when rsync wasn't available, the option will be preminiently
+//! disabled.
+//!
+//! @return The status of the existance of rsync
+//!
+gboolean gw_io_check_for_rsync()
 {
+    gboolean rsync_exists;
     rsync_exists = ( RSYNC != NULL     &&
                      strlen(RSYNC) > 0 &&
                      g_file_test(RSYNC, G_FILE_TEST_IS_EXECUTABLE)
                    );
+    return rsync_exists;
 }
 
 
+//!
+//! \brief Copies a file and creates a new one using the new encoding
+//!
+//! This function is made to be risilient to errors unlike the built in easy
+//! to use g_convert.  It will skip over any characters it has problems converting.
+//!
+//! @param source_path The source file to change the encoding on.
+//! @param target_path The place to save the new file with the new encoding.
+//! @param source_encoding The encoding of the source file.
+//! @param target_encoding THe wanted encoding in the new file to be created.
+//!
+//! @return The status of the conversion opertaion
+//!
 gboolean gw_io_copy_with_encoding( char *source_path,     char *target_path,
                                   char *source_encoding, char *target_encoding,
                                   GError **error)
@@ -130,13 +166,13 @@ gboolean gw_io_copy_with_encoding( char *source_path,     char *target_path,
 }
 
 
-size_t write_func(void *ptr, size_t size, size_t nmemb, FILE *stream)
+static size_t write_func(void *ptr, size_t size, size_t nmemb, FILE *stream)
 {
     return fwrite(ptr, size, nmemb, stream);
 }
  
 
-size_t read_func(void *ptr, size_t size, size_t nmemb, FILE *stream)
+static size_t read_func(void *ptr, size_t size, size_t nmemb, FILE *stream)
 {
     return fread(ptr, size, nmemb, stream);
 }
@@ -435,16 +471,12 @@ gboolean gw_io_gunzip_dictionary_file(char *path, GError **error)
 {
     GQuark quark;
     quark = g_quark_from_string (GW_GENERIC_ERROR);
-
     gboolean success;
-    int leftover = FILENAME_MAX;
-    char command[leftover];
 
-    strncpy(command, GUNZIP, leftover);
-    leftover -= strlen(GUNZIP);
-    strncat(command, " ", leftover);
-    leftover -= 1;
-    strncat(command, path, leftover);
+    char command[FILENAME_MAX]; 
+    strcpy(command, GUNZIP);
+    strcat(command, " ");
+    strcat(command, path);
 
     success = (system(command) == 0);
 
@@ -457,6 +489,36 @@ gboolean gw_io_gunzip_dictionary_file(char *path, GError **error)
 
     return success;
 } 
+
+
+gboolean gw_io_unzip_dictionary_file(char *path, GError **error)
+{
+    GQuark quark;
+    quark = g_quark_from_string (GW_GENERIC_ERROR);
+    gboolean success;
+
+    char extraction_directory[FILENAME_MAX];
+    strcpy(extraction_directory, path);
+    *strrchr (extraction_directory, G_DIR_SEPARATOR) = '\0';
+
+
+    char command[FILENAME_MAX]; 
+    strcpy(command, UNZIP);
+    strcat(command, " ");
+    strcat(command, path);
+    strcat(command, " -d ");
+    strcat(command, extraction_directory);
+
+    success = (system(command) == 0);
+
+    if (success == FALSE) {
+      g_remove(path);
+      const char *message = gettext("gunzip error");
+      if (error != NULL)
+        *error = g_error_new_literal (quark, GW_FILE_ERROR, message);
+    }
+    return success;
+}
 
 
 int gw_io_get_total_lines_for_path (char *path)

@@ -376,7 +376,7 @@ void gw_ui_set_install_line_status(char *name, char *status, char *message)
     GtkWidget *button;
     gboolean sensitive;
 
-    sensitive = (rsync_exists && gw_dictlist_get_total() &&
+    sensitive = (gw_io_check_for_rsync() && gw_dictlist_get_total() &&
                  gw_dictlist_get_total_with_status(GW_DICT_STATUS_INSTALLING) == 0);
 
     strcpy(id, "update_install_button");
@@ -462,12 +462,12 @@ void gw_settings_initialize_enabled_features_list ()
       gw_ui_set_feature_line_status("kanji", "enabled");
     else
       gw_ui_set_feature_line_status("kanji", "disabled");
-/*
+
     GtkWidget *label;
     label = GTK_WIDGET (gtk_builder_get_object(builder, "update_install_label"));
-    if (rsync_exists)
+    if (!gw_io_check_for_rsync())
       gtk_label_set_text(GTK_LABEL (label), gettext("Requires rsync to be installed"));
-*/
+
 }
 
 

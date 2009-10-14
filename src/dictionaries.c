@@ -181,7 +181,18 @@ GwDictInfo* gw_dictinfo_new (char *name)
       temp->type = GW_DICT_OTHER;
       strncpy(temp->gckey, GCKEY_GW_FRENCH_SOURCE, 100);
       strcpy (temp->rsync, "");
-    }
+
+      gw_util_get_waei_directory(temp->gz_path);
+      strcat(temp->gz_path, "download");
+      strncat(temp->gz_path, G_DIR_SEPARATOR_S, remaining);
+      strcat(temp->gz_path, "French.UTF8");
+
+      gw_util_get_waei_directory(temp->sync_path);
+      strcat(temp->sync_path, "download");
+      strncat(temp->sync_path, G_DIR_SEPARATOR_S, remaining);
+      strcat(temp->sync_path, "French.UTF8");
+
+}
     else if (strcmp (name, "German") == 0)
     {
       temp->id = GW_DICT_GERMAN;
@@ -195,6 +206,20 @@ GwDictInfo* gw_dictinfo_new (char *name)
       temp->type = GW_DICT_OTHER;
       strncpy(temp->gckey, GCKEY_GW_SPANISH_SOURCE, 100);
       strcpy (temp->rsync, "");
+      strcpy(temp->gz_path, temp->sync_path);
+
+      gw_util_get_waei_directory(temp->gz_path);
+      strcat(temp->gz_path, "download");
+      strncat(temp->gz_path, G_DIR_SEPARATOR_S, remaining);
+      strcat(temp->gz_path, "Spanish.zip");
+
+      gw_util_get_waei_directory(temp->sync_path);
+      strcat(temp->sync_path, "download");
+      strncat(temp->sync_path, G_DIR_SEPARATOR_S, remaining);
+      strcat(temp->sync_path, "hispamix.euc");
+
+      gw_util_get_waei_directory(temp->path);
+      strcat(temp->path, "Spanish");
     }
     else if (strcmp (name, "Mix") == 0)
     {

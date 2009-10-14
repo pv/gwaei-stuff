@@ -274,22 +274,32 @@ static void *install_thread (gpointer dictionary)
       printf("BREAK1\n");
     }
 
-    if (ret && error == NULL)
+    if (strstr(gz_path, ".gz") && ret && error == NULL)
     {
+    printf("gunzipping...\n");
       gdk_threads_enter();
       gw_ui_set_install_line_status(name, "finishing", gettext("Decompressing..."));
       gdk_threads_leave();
       ret = gw_io_gunzip_dictionary_file(gz_path, &error);
       printf("BREAK2\n");
     }
+    else if (strstr(gz_path, ".zip") && ret && error == NULL)
+    {
+    printf("unzipping...\n");
+      ret = gw_io_unzip_dictionary_file(gz_path, &error);
+    }
    
-    if (ret && error == NULL)
+    if (strstr(sync_path, "UTF") == NULL && ret && error == NULL)
     {
       gdk_threads_enter();
       gw_ui_set_install_line_status(name, "finishing", gettext("Converting encoding..."));
       gdk_threads_leave();
       ret = gw_io_copy_with_encoding(sync_path, path, "EUC-JP","UTF-8", &error);
       printf("BREAK3\n");
+    }
+    else
+    {
+      gw_io_copy_dictionary_file(sync_path, path, &error);
     }
 
     //Special dictionary post processing

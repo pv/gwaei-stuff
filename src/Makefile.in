@@ -93,7 +93,12 @@ bin_PROGRAMS = gwaei$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/gettext.m4 \
+	$(top_srcdir)/m4/gnome-doc-utils.m4 $(top_srcdir)/m4/iconv.m4 \
+	$(top_srcdir)/m4/lib-ld.m4 $(top_srcdir)/m4/lib-link.m4 \
+	$(top_srcdir)/m4/lib-prefix.m4 $(top_srcdir)/m4/nls.m4 \
+	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/progtest.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -185,10 +190,10 @@ CPPFLAGS = @CPPFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = -DLOCALEDIR=\"$(localedir)\" -DVERSION=\"$(VERSION)\" \
 	-DPACKAGE=\"$(PACKAGE)\" -DBINDIR=\"$(bindir)\" \
-	-DRSYNC=\"$(RSYNC)\" -DGUNZIP=\"$(GUNZIP)\" \
-	-DDATADIR2=\"$(datadir)\" -DLIBDIR=\"$(libdir)\" \
-	$(am__append_4) $(am__append_5) $(am__append_7) \
-	$(am__append_11)
+	-DRSYNC=\"$(RSYNC)\" -DUNZIP=\"$(UNZIP)\" \
+	-DGUNZIP=\"$(GUNZIP)\" -DDATADIR2=\"$(datadir)\" \
+	-DLIBDIR=\"$(libdir)\" $(am__append_4) $(am__append_5) \
+	$(am__append_7) $(am__append_11)
 DEPDIR = @DEPDIR@
 DEPS_CFLAGS = @DEPS_CFLAGS@
 DEPS_LIBS = @DEPS_LIBS@
@@ -263,6 +268,7 @@ SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 SPANISH_DEFAULT_URI = @SPANISH_DEFAULT_URI@
 STRIP = @STRIP@
+UNZIP = @UNZIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 WIN32_CFLAGS = @WIN32_CFLAGS@
