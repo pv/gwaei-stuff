@@ -92,6 +92,8 @@ void force_gtk_builder_translation_for_gtk_actions_hack ()
     char *temp2  = gettext("Never");
     char *temp3 = gettext("Go to the _Project Homepage");
     char *temp4 = gettext("Get Help on I_RC");
+    char *temp5 = gettext("Other Dictionaries");
+    char *temp6 = gettext("Main Dictionaries");
 
 
     gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "close_menuitem")), "activate", accel_group, GDK_w, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
