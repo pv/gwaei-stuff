@@ -172,7 +172,7 @@ char* gw_pref_get_string (char *output, char *key, char* backup, int n)
       return_value = NULL;
       strncpy(output, backup, n);
     }
-    else if (return_value == NULL)
+    else if (return_value == NULL || strlen(return_value) == 0)
     {
       strncpy(output, backup, n);
     }
