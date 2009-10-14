@@ -31,5 +31,7 @@ clean-jdata:
 	rm -f jdata.dat
 jdata.dat: jstroke/strokedata.h conv_jdata.pl
 	$(PERL) $(KPGENDINEDIR)/conv_jdata.pl < $(KPGENDINEDIR)/jstroke/strokedata.h > jdata.dat
+uninstall-local:
+	@ rm -rf $(libdirdir)
 
 EXTRA_DIST = conv_jdata.pl jstroke/jstroke.h jstroke/memowrite.h jstroke/strokedata.h jstroke/jstrokerc.h jstroke/pilotcompat.h

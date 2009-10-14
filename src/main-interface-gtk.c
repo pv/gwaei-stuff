@@ -647,34 +647,6 @@ void gw_ui_set_dictionary(int request)
     }
 }
 
-/*
-static void is_in_dictionary_order_list ()
-{
-    //Parse the string
-    char order[5000];
-    gw_pref_get_string (order, GCKEY_GW_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
-    char *dictionaries[50];
-    dictionaries[0] = order;
-    int i = 0;
-    while ((dictionaries[i + 1] = g_utf8_strchr (dictionaries[i], -1, L',')) && i < 50)
-    {
-      i++;
-      *dictionaries[i] = '\0';
-      dictionaries[i]++;
-    }
-    dictionaries[i + 1] = NULL;
-
-    i = 0;
-    while (dictionaries[i] != NULL)
-    {
-      if (strcmp(dictionaries[i], name) == 0)
-        return TRUE;
-      i++;
-    }
-    return FALSE;
-}
-*/
-
 
 int rebuild_combobox_dictionary_list() 
 {

@@ -528,7 +528,8 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-libdirPROGRAMS uninstall-pkgdataDATA
+uninstall-am: uninstall-libdirPROGRAMS uninstall-local \
+	uninstall-pkgdataDATA
 
 .MAKE: install-am install-strip
 
@@ -544,7 +545,8 @@ uninstall-am: uninstall-libdirPROGRAMS uninstall-pkgdataDATA
 	installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
-	uninstall-am uninstall-libdirPROGRAMS uninstall-pkgdataDATA
+	uninstall-am uninstall-libdirPROGRAMS uninstall-local \
+	uninstall-pkgdataDATA
 
 
 clean-local: clean-jdata
@@ -552,6 +554,8 @@ clean-jdata:
 	rm -f jdata.dat
 jdata.dat: jstroke/strokedata.h conv_jdata.pl
 	$(PERL) $(KPGENDINEDIR)/conv_jdata.pl < $(KPGENDINEDIR)/jstroke/strokedata.h > jdata.dat
+uninstall-local:
+	@ rm -rf $(libdirdir)
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

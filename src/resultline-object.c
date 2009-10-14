@@ -187,10 +187,10 @@ void gw_resultline_parse_result_string (GwResultLine *line, char *string)
 
     //Get the importance
     //temp = line->def_start[i] + strlen(line->def_start[i]) - 4;
-    if ((temp = g_utf8_strrchr (line->def_start[i], -1, L'(')) != NULL)
+    if ((temp = g_utf8_strchr (line->def_start[i], -1, L'(')) != NULL)
     {
       line->important = (*temp == '(' && *(temp + 1) == 'P' && *(temp + 2) == ')');
-      if (line->important) *(temp) = '\0';
+      if (line->important) *(temp - 1) = '\0';
     }
 }
 
