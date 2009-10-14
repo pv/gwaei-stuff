@@ -171,7 +171,7 @@ GwDictInfo* gw_dictinfo_new (char *name)
     else if (strcmp (name, "Examples") == 0)
     {
       temp->id = GW_DICT_EXAMPLES;
-      temp->type = GW_DICT_RADICALS;
+      temp->type = GW_DICT_EXAMPLES;
       strncpy(temp->gckey, GCKEY_GW_EXAMPLES_SOURCE, 100);
       strcpy (temp->rsync, "");
     }

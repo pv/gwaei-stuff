@@ -114,6 +114,8 @@ static void append_result_to_output (GwSearchItem *item, GwResultLine *resultlin
             break;
         case GW_DICT_RADICALS:
             gw_ui_append_radicals_results_to_buffer (item, resultline);
+        case GW_DICT_EXAMPLES:
+            gw_ui_append_examples_results_to_buffer (item, resultline);
             break;
       }
     }
@@ -200,6 +202,8 @@ static void append_stored_result_to_output (GwSearchItem *item, GList **results,
         gw_resultline_parse_kanji_result_string (resultline, (char*)(*results)->data);
       else if (item->dictionary->type == GW_DICT_RADICALS)
         gw_resultline_parse_radical_result_string (resultline, (char*)(*results)->data);
+      else if (item->dictionary->type == GW_DICT_EXAMPLES)
+        gw_resultline_parse_examples_result_string (resultline, (char*)(*results)->data);
       append_result_to_output (item, resultline);
     }
 
@@ -262,11 +266,18 @@ static gboolean stream_results_thread (GwSearchItem *item)
       chunk++;
       item->current_line++;
 
+      if (item->scratch_buffer1[0] == 'A' && item->scratch_buffer1[1] == ':' && fgets(item->scratch_buffer2, MAX_LINE, item->fd) != NULL)
+      {
+        
+        char *eraser = NULL;
+        if (eraser = g_utf8_strchr (item->scratch_buffer1, -1, L'\n')) { *eraser = '\0'; }
+        if (eraser = g_utf8_strchr (item->scratch_buffer2, -1, L'\n')) { *eraser = '\0'; }
+        strcat(item->scratch_buffer1, ":");
+        strcat(item->scratch_buffer1, item->scratch_buffer2);
+      }
       //Commented input in the dictionary...we should skip over it
       if(item->scratch_buffer1[0] == '#' || g_utf8_get_char(item->scratch_buffer1) == L'？') 
       { } 
-
-
       //Search engine for the kanji sidebar 
       else if (item->target == GW_TARGET_KANJI)
       {
@@ -314,6 +325,8 @@ static gboolean stream_results_thread (GwSearchItem *item)
                   gw_resultline_parse_kanji_result_string (resultline, item->scratch_buffer1);
                 else if (item->dictionary->type == GW_DICT_RADICALS)
                   gw_resultline_parse_radical_result_string (resultline, item->scratch_buffer1);
+                else if (item->dictionary->type == GW_DICT_EXAMPLES)
+                  gw_resultline_parse_examples_result_string (resultline, item->scratch_buffer1);
                 append_result_to_output(item, resultline);
                 break;
             case MEDIUM_RELEVANCE:

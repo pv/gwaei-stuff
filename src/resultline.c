@@ -265,6 +265,59 @@ void gw_resultline_parse_radical_result_string (GwResultLine *item, char *string
     }
 }
 
+
+//!
+//! @brief Parses a string for an example format string
+//!
+//! @param item item
+//! @param string string
+//!
+void gw_resultline_parse_examples_result_string (GwResultLine *item, char *string)
+{
+    gw_resultline_clear_variables (item);
+    strncpy(item->string, string, MAX_LINE);
+
+    //First generate the grade, stroke, frequency, and jplt fields
+    item->kanji = item->string;
+
+    char *temp = NULL;
+    char *eraser = NULL;
+    int i = 0;
+
+    //Example sentence:    A:日本語English:B:読み解説
+    temp = item->string;
+    while (temp = g_utf8_strchr (temp, -1, L':'))
+    {
+      //Get the letter bullet 
+      if (g_utf8_get_char(temp - 1) == L'A' || g_utf8_get_char(temp - 1) == L'B')
+      {
+         item->number[i] = temp - 1;
+         *temp = '\0';
+         temp++;
+         temp++;
+         item->def_start[i] = temp;
+         i++;
+         if (eraser = g_utf8_strchr (temp, -1, L'\t'))
+         {
+             temp = eraser;
+             *temp = '\0';
+             item->number[i] = temp;
+             temp++;
+             item->def_start[i] = temp;
+             i++;
+         }
+      }
+      //Get the example
+      else
+      {
+         *temp = '\0';
+         temp++;
+      }
+    }
+    item->def_start[i] = NULL;
+    item->number[i] = NULL;
+}
+
 void gw_resultline_parse_unknown_result_string (GwResultLine *item, char *string)
 {
     gw_resultline_clear_variables (item);

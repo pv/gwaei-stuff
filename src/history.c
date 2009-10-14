@@ -138,7 +138,22 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary,
 
     //Prepare the string expression for high relevance
     //Kanji version
-    if (test_char > L'ン') {
+    if (temp->dictionary->type == GW_DICT_EXAMPLES)
+    {
+      if (test_char > L'ン')
+      {
+        strcpy(expression, "(");
+        strcat(expression, query_ptr);
+        strcat(expression, ")");
+      }
+      else
+      {
+        strcpy(expression, "(\\b(");
+        strcat(expression, query_ptr);
+        strcat(expression, ")\\b)");
+      }
+    }
+    else if (test_char > L'ン') {
         strcpy(expression, "((^無)|(^不)|(^非)|(^)|(^お)|(^御))(");
         strcat(expression, query_ptr);
         strcat(expression, ")((\\])|(\\))|(\\})|( ))");
