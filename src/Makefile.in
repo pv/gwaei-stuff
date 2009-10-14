@@ -119,7 +119,8 @@ am__gwaei_SOURCES_DIST = main.c dictinfo-object.c dictlist-object.c \
 	include/gwaei/resultline-object.h \
 	include/gwaei/historylist-object.h \
 	include/gwaei/searchitem-object.h \
-	include/gwaei/search-objects.h main-callbacks-gtk.c \
+	include/gwaei/search-objects.h \
+	include/gwaei/dictionary-objects.h main-callbacks-gtk.c \
 	main-interface-gtk.c settings-callbacks-gtk.c \
 	settings-interface-gtk.c radicals-interface-gtk.c \
 	radicals-callbacks-gtk.c printing-gtk.c \
@@ -344,8 +345,9 @@ gwaei_SOURCES = main.c dictinfo-object.c dictlist-object.c engine.c \
 	include/gwaei/resultline-object.h \
 	include/gwaei/historylist-object.h \
 	include/gwaei/searchitem-object.h \
-	include/gwaei/search-objects.h $(am__append_1) $(am__append_6) \
-	$(am__append_8)
+	include/gwaei/search-objects.h \
+	include/gwaei/dictionary-objects.h $(am__append_1) \
+	$(am__append_6) $(am__append_8)
 gwaei_LDADD = $(DEPS_LIBS) @LIBINTL@ $(am__append_2) $(am__append_9)
 gwaei_LDFLAGS = -Wall -Wextra -pedantic
 AM_CFLAGS = $(DEPS_CFLAGS) $(am__append_3) $(am__append_10)
