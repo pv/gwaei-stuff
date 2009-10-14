@@ -174,6 +174,7 @@ GwDictInfo* gw_dictinfo_new (char *name)
       temp->type = GW_DICT_EXAMPLES;
       strncpy(temp->gckey, GCKEY_GW_EXAMPLES_SOURCE, 100);
       strcpy (temp->rsync, "");
+      temp->total_lines =  temp->total_lines / 2;
     }
     else if (strcmp (name, "French") == 0)
     {

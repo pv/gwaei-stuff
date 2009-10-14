@@ -266,12 +266,13 @@ static gboolean stream_results_thread (GwSearchItem *item)
       chunk++;
       item->current_line++;
 
-      if (item->scratch_buffer1[0] == 'A' && item->scratch_buffer1[1] == ':' && fgets(item->scratch_buffer2, MAX_LINE, item->fd) != NULL)
+      if (item->scratch_buffer1[0] == 'A' && item->scratch_buffer1[1] == ':' &&
+          fgets(item->scratch_buffer2, MAX_LINE, item->fd) != NULL             )
       {
-        
         char *eraser = NULL;
         if (eraser = g_utf8_strchr (item->scratch_buffer1, -1, L'\n')) { *eraser = '\0'; }
         if (eraser = g_utf8_strchr (item->scratch_buffer2, -1, L'\n')) { *eraser = '\0'; }
+        if (eraser = g_utf8_strrchr (item->scratch_buffer1, -1, L'#')) { *eraser = '\0'; }
         strcat(item->scratch_buffer1, ":");
         strcat(item->scratch_buffer1, item->scratch_buffer2);
       }

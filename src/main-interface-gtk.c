@@ -858,11 +858,12 @@ void gw_ui_update_search_progressbar (long current, long total)
     strncpy (id, "search_progressbar", id_length);
     progress = GTK_WIDGET (gtk_builder_get_object(builder, id));
 
-    //Special case if I want to do something with it
-    if (total == 0)
+    if (((double)current/(double)total) > 1.0)
+      return;
+    else if (total == 0)
     {
-        gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR (progress), 0.0);
-        return;
+      gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR (progress), 0.0);
+      return;
     }
 
     gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR (progress), ((double)current/(double)total));
