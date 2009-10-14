@@ -116,16 +116,16 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary,
       case GW_DICT_EXAMPLES:
         temp->gw_searchitem_parse_result_string = &gw_resultline_parse_examples_result_string;
         if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
-          ;
+          temp->gw_searchitem_append_results_to_output = &gw_console_append_examples_results;
         else
           temp->gw_searchitem_append_results_to_output = &gw_ui_append_examples_results_to_buffer;
         break;
       default:
         temp->gw_searchitem_parse_result_string = &gw_resultline_parse_unknown_result_string;
         if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
-          ;
+          temp->gw_searchitem_append_results_to_output = &gw_console_append_unknown_results;
         else
-        temp->gw_searchitem_append_results_to_output = &gw_ui_append_unknown_results_to_buffer;
+          temp->gw_searchitem_append_results_to_output = &gw_ui_append_unknown_results_to_buffer;
         break;
   }
 

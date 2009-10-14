@@ -134,7 +134,7 @@ gboolean gw_console_install_dictionary_by_name(char *name)
 
 static void print_about_program ()
 {
-    printf ("[1;31m%s Version %s[0m[1m with ", PACKAGE, VERSION);
+    printf ("[1;31m%s Version %s[0m with ", PACKAGE, VERSION);
     if (strcmp (INTERFACE, "NONE") == 0)
       printf ("no");
     else if (strcmp (INTERFACE, "gwaei"))
@@ -150,11 +150,11 @@ static void print_about_program ()
 
 static void print_search_start_banner(char *query, char *dictionary)
 {
-    printf("[1m");
+    printf("");
     printf("%s", gettext("Searching for \""));
-    printf("[1;31m%s[0m[1m", query);
+    printf("[1;31m%s[0m", query);
     printf("%s", gettext("\" in the "));
-    printf("[1;31m%s[0m[1m", dictionary);
+    printf("[1;31m%s[0m", dictionary);
     printf("%s", gettext(" dictionary..."));
     printf("[0m\n\n");
 
@@ -408,32 +408,32 @@ void initialize_console_interface(int argc, char **argv)
   //User wants to install dictionary
   else if (total_args == 2 && is_switch (args[0], "-i", "--install"))
   {
-    printf(gettext("%sTrying to install %s%s%s...%s"), "[1m", "[1;31m", args[1], "[0m[1m", "\n[0m");
+    printf(gettext("%sTrying to install %s%s%s...%s"), "", "[1;31m", args[1], "[0m", "\n[0m");
 
     di = gw_dictlist_get_dictionary_by_alias(args[1]);
 
     if (di != NULL && di->status != GW_DICT_STATUS_NOT_INSTALLED && di->gckey[0] != '\0')
     {
-      //printf("[1m");
+      //printf("");
       printf("%s\n", gettext("Already Installed"));
       //printf("[0m");
     }
     else if (di == NULL || di->gckey[0] == '\0')
     {
-      //printf("[1m");
+      //printf("");
       printf("%s\n", gettext("That dictionary is not installable with this mechanism"));
       //printf("[0m");
       exit (1);
     }
     else if (gw_console_install_dictionary_by_name (args[1]))
     {
-      printf("[1m");
+      printf("");
       printf(gettext("Finished"));
       printf("[0m\n");
     }
     else
     {
-      printf("[1m");
+      printf("");
       printf(gettext("Failed"));
       printf("[0m\n");
     }
@@ -448,13 +448,13 @@ void initialize_console_interface(int argc, char **argv)
   //User wants to uninstall dictionary
   else if (total_args == 2 && is_switch (args[0], "-u", "--uninstall"))
   {
-    printf(gettext("%sTrying to uninstall %s%s%s...%s"), "[1m", "[1;31m", args[1], "[0m[1m", "\n[0m");
+    printf(gettext("%sTrying to uninstall %s%s%s...%s"), "", "[1;31m", args[1], "[0m", "\n[0m");
 
     if (gw_dictlist_check_if_loaded_by_name(argv[2]))
     {
       gw_console_uninstall_dictionary_by_name(argv[2]);
 
-      printf("[1m");
+      printf("");
       printf(gettext("Finished"));
       printf("[0m\n");
     }
@@ -468,7 +468,7 @@ void initialize_console_interface(int argc, char **argv)
   //User wants to sync dictionaries
   else if (total_args == 1 && is_switch (args[0], "-s", "--sync"))
   {
-    printf("[1m");
+    printf("");
     printf(gettext("Syncing possible installed dictionaries..."));
     printf("[0m\n");
 
@@ -483,13 +483,13 @@ void initialize_console_interface(int argc, char **argv)
 
     if (error == NULL)
     {
-      printf("[1m");
+      printf("");
       printf(gettext("Finished"));
       printf("[0m\n");
     }
     else
     {
-      printf("[1m");
+      printf("");
       printf("%s", error->message);
       printf("[0m\n");
       g_error_free (error);
@@ -538,7 +538,7 @@ void initialize_console_interface(int argc, char **argv)
 
       if (quiet_switch == FALSE)
       {
-        printf("[1m");
+        printf("");
         printf("\n%s", gettext("Found "));
         printf("%d", item->total_results);
         printf("%s", gettext(" Results"));
@@ -562,10 +562,11 @@ void initialize_console_interface(int argc, char **argv)
 }
 
 
-void gw_console_append_normal_results (GwSearchItem *item, GwResultLine *resultline, gboolean unused)
+void gw_console_append_normal_results (GwSearchItem *item, gboolean unused)
 {
+    GwResultLine *resultline = item->resultline;
     //Kanji
-    printf("%s", resultline->kanji_start);
+    printf("[32m%s", resultline->kanji_start);
     //Furigana
     if (resultline->furigana_start)
     {
@@ -574,65 +575,88 @@ void gw_console_append_normal_results (GwSearchItem *item, GwResultLine *resultl
     //Other info
     if (resultline->classification_start)
     {
-      printf(" %s", resultline->classification_start);
+      printf("[0m %s", resultline->classification_start);
     }
     if (resultline->important)
     {
-      printf(" %s", "P");
+      printf("[0m %s", "P");
     }
     printf("\n");
     //Definitions
     int i = 0;
     while (i < resultline->def_total)
     {
-      printf("      %s %s\n", resultline->number[i], resultline->def_start[i]);
+      printf("[0m      [35m%s [0m%s\n", resultline->number[i], resultline->def_start[i]);
       i++;
     }
     printf("\n");
 
 }
 
-void gw_console_append_kanji_results (GwSearchItem *item, GwResultLine *resultline, gboolean unused)
+void gw_console_append_kanji_results (GwSearchItem *item, gboolean unused)
 {
+    GwResultLine *resultline = item->resultline;
     //Kanji
-    printf("%s\n", resultline->kanji);
-    if (resultline->radicals) printf("%s%s\n", gettext("Radicals:"), resultline->radicals);
+    printf("[32;1m%s[0m\n", resultline->kanji);
+    if (resultline->radicals) printf("%s%s\n", gettext("[35mRadicals:[0m"), resultline->radicals);
 
     char line_started = FALSE;
     if (resultline->strokes)
     {
       line_started = TRUE;
-      printf("%s%s", gettext("Stroke:"), resultline->strokes);
+      printf("%s%s", gettext("[35mStroke:[0m"), resultline->strokes);
     }
     if (resultline->frequency)
     {
       if (line_started) printf(" ");
       line_started = TRUE;
-      printf("%s%s", gettext("Freq:"), resultline->frequency);
+      printf("%s%s", gettext("[35mFreq:[0m"), resultline->frequency);
     }
     if (resultline->grade)
     {
       if (line_started) printf(" ");
       line_started = TRUE;
-      printf("%s%s", gettext("Grade:"), resultline->grade);
+      printf("%s%s", gettext("[35mGrade:[0m"), resultline->grade);
     }
     if (resultline->jlpt)
     {
       if (line_started) printf(" ");
       line_started = TRUE;
-      printf("%s%s", gettext("JLPT:"), resultline->jlpt);
+      printf("%s%s", gettext("[35mJLPT:[0m"), resultline->jlpt);
     }
     if (line_started) printf("\n");
-    if (resultline->readings[0]) printf("%s%s", gettext("Readings:"), resultline->readings[0]);
+    if (resultline->readings[0]) printf("%s%s", gettext("[35mReadings:[0m"), resultline->readings[0]);
     if (resultline->readings[1]) printf("%s", resultline->readings[1]);
     printf("\n");
 
-    if (resultline->meanings) printf("%s%s\n", gettext("Meanings:"), resultline->meanings);
+    if (resultline->meanings) printf("%s%s\n", gettext("[35mMeanings:[0m"), resultline->meanings);
     printf("\n");
 
 }
 
-void gw_console_append_radical_results (GwSearchItem *item, GwResultLine *resultline, gboolean unused)
+void gw_console_append_radical_results (GwSearchItem *item, gboolean unused)
 {
-    printf("%s : %s", resultline->kanji, resultline->radicals);
+    GwResultLine *resultline = item->resultline;
+    printf("[32;1m%s:[0m %s\n\n", resultline->kanji, resultline->radicals);
+}
+
+void gw_console_append_examples_results (GwSearchItem *item, gboolean unused)
+{
+    GwResultLine *resultline = item->resultline;
+    int i = 0;
+    while (resultline->number[i] != NULL && resultline->def_start[i] != NULL)
+    {
+      if (resultline->number[i][0] == 'A' || resultline->number[i][0] == 'B')
+        printf("[32;1m%s:[0m\t%s\n", resultline->number[i], resultline->def_start[i]);
+      else
+        printf("\t%s\n", resultline->def_start[i]);
+      i++;
+    }
+    printf("\n");
+}
+
+void gw_console_append_unknown_results (GwSearchItem *item, gboolean unused)
+{
+    GwResultLine *resultline = item->resultline;
+    printf("%s\n", resultline->string);
 }

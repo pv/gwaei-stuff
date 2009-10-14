@@ -30,3 +30,5 @@ void gw_ui_append_unknown_results_to_buffer (GwSearchItem*, gboolean);
 void gw_console_append_normal_results (GwSearchItem*, gboolean);
 void gw_console_append_kanji_results (GwSearchItem*, gboolean);
 void gw_console_append_radical_results (GwSearchItem*, gboolean);
+void gw_console_append_examples_results (GwSearchItem*, gboolean);
+void gw_console_append_unknown_results (GwSearchItem*, gboolean);
