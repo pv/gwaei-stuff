@@ -430,6 +430,7 @@ static gboolean stream_results_cleanup (GwSearchItem *item)
     }
     else
     {
+      gw_ui_remove_whitespace_from_buffer (GW_TARGET_RESULTS);
       gw_ui_finalize_total_results_label (item);
       if (item->target == GW_TARGET_RESULTS)
         gw_ui_update_search_progressbar (0, 0);

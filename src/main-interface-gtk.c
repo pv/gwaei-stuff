@@ -2795,3 +2795,51 @@ void gw_ui_append_other_results_to_buffer (GwSearchItem *item, GwResultLine *res
       gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); line = gtk_text_iter_get_line (&iter);
 }
 
+
+//!
+//! @brief Remove whitespace from the top and bottom of the buffer
+//!
+//! The current functions are egraries with white space, sepecially
+//! if some sections return with no results. This tidies things up
+//! a bit.
+//!
+//! @param TARGET A contast int representing a target
+//!
+void gw_ui_remove_whitespace_from_buffer (const int TARGET)
+{
+      GtkTextBuffer *tb;
+      tb = GTK_TEXT_BUFFER (get_gobject_from_target(TARGET));
+      GtkTextIter iter, iter2;
+      gunichar c;
+
+      //Remove end whitespace
+      gtk_text_buffer_get_end_iter (tb, &iter);
+      gtk_text_iter_backward_char (&iter);
+      c = gtk_text_iter_get_char (&iter);
+      while (c == L' ' || c == L'\n' && c != 0)
+      {
+        gtk_text_iter_backward_char (&iter);
+        c = gtk_text_iter_get_char (&iter);
+      }
+      gtk_text_iter_forward_char (&iter);
+      
+      gtk_text_buffer_get_end_iter (tb, &iter2);
+      gtk_text_iter_backward_char (&iter2);
+
+      gtk_text_buffer_delete (tb, &iter, &iter2);
+
+      //Remove start whitespace
+      gtk_text_buffer_get_start_iter (tb, &iter);
+      gtk_text_iter_forward_char (&iter);
+
+      gtk_text_buffer_get_start_iter (tb, &iter2);
+      gtk_text_iter_forward_char (&iter2);
+      c = gtk_text_iter_get_char (&iter2);
+      while (c == L' ' || c == L'\n' && c != 0)
+      {
+        gtk_text_iter_forward_char (&iter2);
+        c = gtk_text_iter_get_char (&iter2);
+      }
+      gtk_text_buffer_delete (tb, &iter, &iter2);
+}
+
