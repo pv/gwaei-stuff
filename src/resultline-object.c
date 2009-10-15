@@ -99,7 +99,16 @@ void gw_resultline_free (GwResultLine *item)
     free (item);
 }
 
-void gw_resultline_parse_result_string (GwResultLine *line, char *string)
+
+//!
+//! @brief Parses a string for a Edict format string
+//!
+//! String parsing for the Jim Breen Edict dictionary.
+//!
+//! @param line line
+//! @param string string
+//!
+void gw_resultline_parse_normal_result_string (GwResultLine *line, char *string)
 {
     gw_resultline_clear_variables (line);
     strncpy(line->string, string, MAX_LINE);
@@ -193,6 +202,15 @@ void gw_resultline_parse_result_string (GwResultLine *line, char *string)
 }
 
 
+//!
+//! @brief Parses a string for a Kanjidic format string
+//!
+//! String parsing for the Jim Breen Kanji dictionary.  It also supports the
+//! gWaei custom Mix dictionary.
+//!
+//! @param line line
+//! @param string string
+//!
 void gw_resultline_parse_kanji_result_string (GwResultLine *line, char *string)
 {
     gw_resultline_clear_variables (line);
@@ -274,6 +292,14 @@ void gw_resultline_parse_kanji_result_string (GwResultLine *line, char *string)
 }
 
 
+//!
+//! @brief Parses a string for an radical format string
+//!
+//! String parsing for the Jim Breen Radicals dictionary
+//!
+//! @param line line
+//! @param string string
+//!
 void gw_resultline_parse_radical_result_string (GwResultLine *line, char *string)
 {
     gw_resultline_clear_variables (line);
@@ -299,6 +325,8 @@ void gw_resultline_parse_radical_result_string (GwResultLine *line, char *string
 
 //!
 //! @brief Parses a string for an example format string
+//!
+//! String parsing for the Jim Breen Example dictionaries.
 //!
 //! @param line line
 //! @param string string
@@ -349,6 +377,15 @@ void gw_resultline_parse_examples_result_string (GwResultLine *line, char *strin
     line->number[i] = NULL;
 }
 
+//!
+//! @brief Parses a string for an unknown format string
+//!
+//! This is the fallback format for user installed unknown dictionaries. Should be generally
+//! compatible with anything.
+//!
+//! @param line line
+//! @param string string
+//!
 void gw_resultline_parse_unknown_result_string (GwResultLine *line, char *string)
 {
     gw_resultline_clear_variables (line);

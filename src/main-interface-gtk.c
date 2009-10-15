@@ -1671,87 +1671,6 @@ void gw_ui_remove_all_tags (GwSearchItem *item)
 }
 
 
-void gw_ui_add_results_tagging ( gint sl, gint el, GwSearchItem* item )
-{
-/*
-  char *text, *c, *temp_c;
-  gboolean is_end_quote, is_end_parenth;
-  gint cl, co;
-  gint match_so, match_eo;
-  gint parenth_so, parenth_eo;
-  gint desc_so, desc_eo;
-  gint target = item->target;
-  gint re;
-
-  for(re = 0; re < item->total_re; re++) {
-    //Set up the text
-    text = gw_ui_get_text_slice_from_buffer (target, sl - 1, sl);
-    printf("LIIIIIIIIIIINE: %s\n", text);
-    c = &text[0];
-
-    //Position tracking variables
-    cl = sl;
-    co = 0;
-    is_end_quote = FALSE;
-    is_end_parenth = FALSE;
-
-    while (*c != '\0' && (cl < el || *c != '\n') ) {
-      //Highlight query matches whenever we hit a newline
-      if (c == &text[0] || *(c - 1) == '\n') {
-         //Backup the c position
-         temp_c = c;
-
-         while ((temp_c = locate_offset( temp_c, c, &item->re_locate[re],
-                                         &match_so, &match_eo)) != NULL)
-         {
-           gw_ui_apply_tag_to_text (target, "match", cl, match_so,
-                                                        cl, match_eo );
-         }
-      }
-
-      //Add highlighting to word description (adjective, verb type etc...)
-      if (*c == '(') {
-        is_end_parenth = TRUE;
-        parenth_so = co;
-      }
-      else if (*c == ')' && is_end_parenth == TRUE) {
-        is_end_parenth = FALSE;
-        if (*(c + 1) == '/' || *(c + 1) == ' ') {
-          parenth_eo = co + 1;
-          gw_ui_apply_tag_to_text (target, "comment", cl, parenth_so,
-                                                         cl, parenth_eo);
-        }
-      }
-      co++;
-      c = g_utf8_next_char(c);
-    }
-
-    //Cleanup
-    g_free(text);
-  }
-  */
-}
-
-
-void gw_ui_add_all_tags (GwSearchItem *item)
-{
-    if (item->total_results == 0) return;
-
-    GObject* tb;
-    tb = get_gobject_from_target(item->target);
-
-    gint sl;
-    sl = 0;
-
-    GtkTextIter end;
-    gtk_text_buffer_get_end_iter (GTK_TEXT_BUFFER (tb), &end);
-    gint el;
-    el = gtk_text_iter_get_line (&end);
-
-    gw_ui_add_results_tagging (sl, el, item);
-}
-
-
 gint32 gw_previous_tip = 0;
 void gw_ui_display_no_results_found_page()
 {
@@ -2240,9 +2159,6 @@ void gw_ui_reload_tagtable_tags()
 
     gw_ui_set_color_to_tagtable ("header",  GW_TARGET_RESULTS, TRUE, FALSE);
     gw_ui_set_color_to_tagtable ("header",  GW_TARGET_KANJI,   TRUE, FALSE);
-
-    if (hl != NULL && hl->current != NULL)
-      gw_ui_add_all_tags (hl->current);
 }
 
 
@@ -2487,7 +2403,7 @@ void gw_ui_shift_append_mark (char *stay_name, char *append_name)
 }
 
 
-void gw_ui_append_results_to_buffer (GwSearchItem *item, gboolean remove_last_linebreak)
+void gw_ui_append_normal_results_to_buffer (GwSearchItem *item, gboolean remove_last_linebreak)
 {
     GwResultLine* resultline = item->resultline;
 
@@ -2637,7 +2553,8 @@ void gw_ui_append_kanji_results_to_buffer (GwSearchItem *item, gboolean unused)
       if (item->target == GW_TARGET_RESULTS) gtk_text_buffer_insert_with_tags_by_name (tb, &iter, " ", -1, "large", NULL);
       gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
       gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); line = gtk_text_iter_get_line (&iter);
-      gw_ui_add_match_highlights (line, start_offset, end_offset, item);
+      if (item->target == GW_TARGET_RESULTS)
+        gw_ui_add_match_highlights (line, start_offset, end_offset, item);
 
       gtk_text_buffer_insert (tb, &iter, "\n", -1);
       gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); line = gtk_text_iter_get_line (&iter);
@@ -2650,7 +2567,8 @@ void gw_ui_append_kanji_results_to_buffer (GwSearchItem *item, gboolean unused)
         gtk_text_buffer_insert (tb, &iter, resultline->radicals, -1);
         gtk_text_buffer_insert (tb, &iter, " ", -1);
         gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
-        gw_ui_add_match_highlights (line, start_offset, end_offset, item);
+        if (item->target == GW_TARGET_RESULTS)
+          gw_ui_add_match_highlights (line, start_offset, end_offset, item);
 
         gtk_text_buffer_insert (tb, &iter, "\n", -1);
         gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); line = gtk_text_iter_get_line (&iter);
@@ -2670,7 +2588,8 @@ void gw_ui_append_kanji_results_to_buffer (GwSearchItem *item, gboolean unused)
           gtk_text_buffer_insert (tb, &iter, resultline->readings[1], -1);
         }
         gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
-        gw_ui_add_match_highlights (line, start_offset, end_offset, item);
+        if (item->target == GW_TARGET_RESULTS)
+          gw_ui_add_match_highlights (line, start_offset, end_offset, item);
         gtk_text_buffer_insert (tb, &iter, "\n", -1);
         gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); line = gtk_text_iter_get_line (&iter);
       }
@@ -2712,7 +2631,8 @@ void gw_ui_append_kanji_results_to_buffer (GwSearchItem *item, gboolean unused)
       gtk_text_buffer_insert_with_tags_by_name (tb, &iter, gettext("Meanings:"), -1, "important", NULL);
       gtk_text_buffer_insert (tb, &iter, resultline->meanings, -1);
       gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
-      gw_ui_add_match_highlights (line, start_offset, end_offset, item);
+      if (item->target == GW_TARGET_RESULTS)
+        gw_ui_add_match_highlights (line, start_offset, end_offset, item);
 
       if (item->target == GW_TARGET_RESULTS)
         gtk_text_buffer_insert (tb, &iter, "\n\n", -1);

@@ -26,7 +26,7 @@ typedef struct GwResultLine {
 
 
 GwResultLine* gw_resultline_new (void );
-void gw_resultline_parse_result_string (GwResultLine*, char*);
+void gw_resultline_parse_normal_result_string (GwResultLine*, char*);
 void gw_resultline_parse_kanji_result_string (GwResultLine*, char*);
 void gw_resultline_parse_radical_result_string (GwResultLine*, char*);
 void gw_resultline_parse_examples_result_string (GwResultLine*, char*);

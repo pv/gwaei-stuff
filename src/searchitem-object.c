@@ -93,11 +93,11 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary,
   switch (temp->dictionary->type)
   {
       case GW_DICT_OTHER:
-        temp->gw_searchitem_parse_result_string = &gw_resultline_parse_result_string;
+        temp->gw_searchitem_parse_result_string = &gw_resultline_parse_normal_result_string;
         if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
           temp->gw_searchitem_append_results_to_output = &gw_console_append_normal_results;
         else
-          temp->gw_searchitem_append_results_to_output = &gw_ui_append_results_to_buffer;
+          temp->gw_searchitem_append_results_to_output = &gw_ui_append_normal_results_to_buffer;
         break;
       case GW_DICT_RADICALS:
         temp->gw_searchitem_parse_result_string = &gw_resultline_parse_radical_result_string;
