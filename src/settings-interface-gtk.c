@@ -520,21 +520,49 @@ void gw_ui_update_dictionary_orders ()
     //Parse the the names of the dictionary list
     char order[5000];
     gw_pref_get_string (order, GCKEY_GW_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
-    char *dictionaries[50];
-    dictionaries[0] = order;
+    char *long_name_list[50];
+    char **condensed_name_list[50];
+    long_name_list[0] = order;
     int i = 0;
-    while ((dictionaries[i + 1] = g_utf8_strchr (dictionaries[i], -1, L',')) && i < 50)
+    int j = 0;
+    while ((long_name_list[i + 1] = g_utf8_strchr (long_name_list[i], -1, L',')) && i < 50)
     {
       i++;
-      *dictionaries[i] = '\0';
-      dictionaries[i]++;
+      *long_name_list[i] = '\0';
+      long_name_list[i]++;
     }
-    dictionaries[i + 1] = '\0';
+    long_name_list[i + 1] = NULL;
 
-    GtkWidget *label, *container, *dictionary, *move_up_button, *move_down_button, *button_box, *button_image, *number_label, *eventbox, *quickkey;
+    //Get the condensed version
+    i = 0;
+    j = 0;
+    GwDictInfo *di1, *di2;
+    while (long_name_list[i] != NULL && long_name_list[j] != NULL)
+    {
+      di1 = gw_dictlist_get_dictionary_by_name (long_name_list[j]);
+      di2 = gw_dictlist_get_dictionary_by_alias (long_name_list[j]);
+      if (strcmp(di1->name, di2->name) == 0 && di2->status == GW_DICT_STATUS_INSTALLED)
+      {
+        condensed_name_list[i] = &long_name_list[j];
+        i++; j++;
+      }
+      else
+      {
+        j++;
+      }
+        
+    }
+    condensed_name_list[i] = NULL;
+
+
+    //Declarations
+    GtkWidget *label, *container, *dictionary, *move_up_button;
+    GtkWidget *move_down_button, *button_box, *button_image;
+    GtkWidget *number_label, *eventbox, *quickkey;
     GtkWidget *icon_image;
-    container = GTK_WIDGET (gtk_builder_get_object (builder, "organize_dictionary_list_hbox"));
     GList *list;
+    container = GTK_WIDGET (gtk_builder_get_object (builder, "organize_dictionary_list_hbox"));
+
     //Clear out old buttons
     list = gtk_container_get_children (GTK_CONTAINER (container));
     while (list != NULL)
@@ -546,8 +574,8 @@ void gw_ui_update_dictionary_orders ()
     //Add new buttons
     i = 0;
     char *markup;
-    GwDictInfo* di = NULL;
-    while (dictionaries[i] != NULL)
+    GwDictInfo *di;
+    while (condensed_name_list[i] != NULL)
     {
       eventbox = gtk_event_box_new();
       if (i == 0)
@@ -561,10 +589,10 @@ void gw_ui_update_dictionary_orders ()
       g_free (markup);
 
       label = GTK_WIDGET (gtk_label_new (NULL));
-      if (di = gw_dictlist_get_dictionary_by_name (dictionaries[i]))
+      if (di = gw_dictlist_get_dictionary_by_name (*condensed_name_list[i]))
         markup = g_markup_printf_escaped ("<span size=\"larger\">%s</span>", di->long_name);
       else
-        markup = g_markup_printf_escaped ("<span size=\"larger\">%s</span>", dictionaries[i]);
+        markup = g_markup_printf_escaped ("<span size=\"larger\">%s</span>", *condensed_name_list[i]);
       gtk_label_set_markup (GTK_LABEL (label), markup);
       g_free (markup);
 
@@ -618,7 +646,6 @@ void gw_ui_update_dictionary_orders ()
         gtk_box_pack_start (GTK_BOX (container), dictionary, FALSE, FALSE, 0);
         gtk_widget_show_all (dictionary);
       }
-      
       i++;
     }
     gtk_widget_set_sensitive (move_down_button, FALSE);

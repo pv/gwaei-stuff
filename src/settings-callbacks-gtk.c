@@ -20,12 +20,12 @@
 *******************************************************************************/
 
 //!
-//!  @file src/settings-callbacks-gtk.c
+//! @file src/settings-callbacks-gtk.c
 //!
-//!  @brief Abstraction layer for gtk callbacks
+//! @brief Abstraction layer for gtk callbacks
 //!
-//!  Callbacks for activities initiated by the user. Most of the gtk code here
-//!  should still be abstracted to the interface C file when possible.
+//! Callbacks for activities initiated by the user. Most of the gtk code here
+//! should still be abstracted to the interface C file when possible.
 //!
 
 
@@ -271,7 +271,6 @@ static void *install_thread (gpointer dictionary)
         const char *message = gettext("Connection failure\n");
         error = g_error_new_literal (quark, GW_FILE_ERROR, message);
       }
-      printf("BREAK1\n");
     }
 
     if (strstr(gz_path, ".gz") && ret && error == NULL)
@@ -281,7 +280,6 @@ static void *install_thread (gpointer dictionary)
       gw_ui_set_install_line_status(name, "finishing", gettext("Decompressing..."));
       gdk_threads_leave();
       ret = gw_io_gunzip_dictionary_file(gz_path, &error);
-      printf("BREAK2\n");
     }
     else if (strstr(gz_path, ".zip") && ret && error == NULL)
     {
@@ -295,7 +293,6 @@ static void *install_thread (gpointer dictionary)
       gw_ui_set_install_line_status(name, "finishing", gettext("Converting encoding..."));
       gdk_threads_leave();
       ret = gw_io_copy_with_encoding(sync_path, path, "EUC-JP","UTF-8", &error);
-      printf("BREAK3\n");
     }
     else
     {
@@ -309,7 +306,6 @@ static void *install_thread (gpointer dictionary)
       gw_ui_set_install_line_status(name, "finishing", gettext("Postprocessing..."));
       gdk_threads_leave();
       gw_dictlist_preform_postprocessing_by_name(di->name, &error);
-      printf("BREAK4\n");
     }
      
     //Was canceled
@@ -321,7 +317,6 @@ static void *install_thread (gpointer dictionary)
       gdk_threads_leave();
       g_error_free(error);
       error = NULL;
-      printf("BREAK5\n");
     }
     //Errored
     else if (error != NULL)
@@ -332,7 +327,6 @@ static void *install_thread (gpointer dictionary)
       gdk_threads_leave();
       g_error_free(error);
       error = NULL;
-      printf("BREAK6\n");
     }
     //Install was successful
     else
@@ -713,31 +707,54 @@ G_MODULE_EXPORT void do_move_dictionary_up (GtkWidget *widget, gpointer data)
     //Parse the string
     char order[5000];
     gw_pref_get_string (order, GCKEY_GW_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
-    char *dictionaries[50];
-    dictionaries[0] = order;
+    char *long_name_list[50];
+    char **condensed_name_list[50];
+    long_name_list[0] = order;
     int i = 0;
-    while ((dictionaries[i + 1] = g_utf8_strchr (dictionaries[i], -1, L',')) && i < 50)
+    int j = 0;
+    while ((long_name_list[i + 1] = g_utf8_strchr (long_name_list[i], -1, L',')) && i < 50)
     {
       i++;
-      *dictionaries[i] = '\0';
-      dictionaries[i]++;
+      *long_name_list[i] = '\0';
+      long_name_list[i]++;
     }
-    dictionaries[i + 1] = NULL;
+    long_name_list[i + 1] = NULL;
+
+    i = 0;
+    j = 0;
+    GwDictInfo *di1, *di2;
+    while (long_name_list[i] != NULL && long_name_list[j] != NULL)
+    {
+      di1 = gw_dictlist_get_dictionary_by_name (long_name_list[j]);
+      di2 = gw_dictlist_get_dictionary_by_alias (long_name_list[j]);
+      if (strcmp(di1->name, di2->name) == 0 && di2->status == GW_DICT_STATUS_INSTALLED)
+      {
+        condensed_name_list[i] = &long_name_list[j];
+        i++; j++;
+      }
+      else
+      {
+        j++;
+      }
+        
+    }
+    condensed_name_list[i] = NULL;
 
     //Pull the switcheroo
     if (requested_move > 0)
     {
-      char *temp = dictionaries[requested_move - 1];
-      dictionaries[requested_move - 1] = dictionaries[requested_move];
-      dictionaries[requested_move] = temp;
+      char *temp;
+      temp = *condensed_name_list[requested_move - 1];
+      *condensed_name_list[requested_move - 1] = *condensed_name_list[requested_move];
+      *condensed_name_list[requested_move] = temp;
     }
 
     i = 0;
     char output[5000];
     output[0] = '\0';
-    while (dictionaries[i] != NULL)
+    while (long_name_list[i] != NULL)
     {
-      strcat (output, dictionaries[i]);
+      strcat (output, long_name_list[i]);
       strcat (output, ",");
       i++;
     }
@@ -749,36 +766,60 @@ G_MODULE_EXPORT void do_move_dictionary_up (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void do_move_dictionary_down (GtkWidget *widget, gpointer data)
 {
     printf("Moving down...\n");
+    //Get element number
     int requested_move = GPOINTER_TO_INT(data);
 
     //Parse the string
     char order[5000];
     gw_pref_get_string (order, GCKEY_GW_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
-    char *dictionaries[50];
-    dictionaries[0] = order;
+    char *long_name_list[50];
+    char **condensed_name_list[50];
+    long_name_list[0] = order;
     int i = 0;
-    while ((dictionaries[i + 1] = g_utf8_strchr (dictionaries[i], -1, L',')) && i < 50)
+    int j = 0;
+    while ((long_name_list[i + 1] = g_utf8_strchr (long_name_list[i], -1, L',')) && i < 50)
     {
       i++;
-      *dictionaries[i] = '\0';
-      dictionaries[i]++;
+      *long_name_list[i] = '\0';
+      long_name_list[i]++;
     }
-    dictionaries[i + 1] = NULL;
+    long_name_list[i + 1] = NULL;
+
+    i = 0;
+    j = 0;
+    GwDictInfo *di1, *di2;
+    while (long_name_list[i] != NULL && long_name_list[j] != NULL)
+    {
+      di1 = gw_dictlist_get_dictionary_by_name (long_name_list[j]);
+      di2 = gw_dictlist_get_dictionary_by_alias (long_name_list[j]);
+      if (strcmp(di1->name, di2->name) == 0 && di2->status == GW_DICT_STATUS_INSTALLED)
+      {
+        condensed_name_list[i] = &long_name_list[j];
+        i++; j++;
+      }
+      else
+      {
+        j++;
+      }
+        
+    }
+    condensed_name_list[i] = NULL;
 
     //Pull the switcheroo
     if (requested_move < i)
     {
-      char *temp = dictionaries[requested_move + 1];
-      dictionaries[requested_move + 1] = dictionaries[requested_move];
-      dictionaries[requested_move] = temp;
+      char *temp;
+      temp = *condensed_name_list[requested_move + 1];
+      *condensed_name_list[requested_move + 1] = *condensed_name_list[requested_move];
+      *condensed_name_list[requested_move] = temp;
     }
 
     i = 0;
     char output[5000];
     output[0] = '\0';
-    while (dictionaries[i] != NULL)
+    while (long_name_list[i] != NULL)
     {
-      strcat (output, dictionaries[i]);
+      strcat (output, long_name_list[i]);
       strcat (output, ",");
       i++;
     }
