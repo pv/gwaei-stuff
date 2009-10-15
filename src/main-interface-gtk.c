@@ -1232,7 +1232,7 @@ void gw_ui_initialize_buffer_by_target (const int TARGET)
 
       gtk_text_buffer_get_end_iter (GTK_TEXT_BUFFER (tb), &iter);
       gtk_text_buffer_create_mark (GTK_TEXT_BUFFER (tb), "more_relevant_header_mark", &iter, TRUE);
-      gtk_text_buffer_insert (GTK_TEXT_BUFFER (tb), &iter, "\n", -1);
+      gtk_text_buffer_insert (GTK_TEXT_BUFFER (tb), &iter, "\n\n", -1);
 
       gtk_text_buffer_get_end_iter (GTK_TEXT_BUFFER (tb), &iter);
       gtk_text_buffer_insert (GTK_TEXT_BUFFER (tb), &iter, "\n", -1);
@@ -1242,7 +1242,7 @@ void gw_ui_initialize_buffer_by_target (const int TARGET)
 
       gtk_text_buffer_get_end_iter (GTK_TEXT_BUFFER (tb), &iter);
       gtk_text_buffer_create_mark (GTK_TEXT_BUFFER (tb), "less_relevant_header_mark", &iter, TRUE);
-      gtk_text_buffer_insert (GTK_TEXT_BUFFER (tb), &iter, "\n", -1);
+      gtk_text_buffer_insert (GTK_TEXT_BUFFER (tb), &iter, "\n\n", -1);
 
       gtk_text_buffer_get_end_iter (GTK_TEXT_BUFFER (tb), &iter);
       gtk_text_buffer_insert (GTK_TEXT_BUFFER (tb), &iter, "\n", -1);
@@ -2236,7 +2236,7 @@ void gw_ui_reload_tagtable_tags()
     gw_ui_set_color_to_tagtable ("comment", GW_TARGET_KANJI,   TRUE, FALSE);
 
     gw_ui_set_color_to_tagtable ("match",   GW_TARGET_RESULTS, TRUE, TRUE );
-    gw_ui_set_color_to_tagtable ("match",   GW_TARGET_KANJI,   TRUE, TRUE );
+    gw_ui_set_color_to_tagtable ("match",   GW_TARGET_KANJI,   FALSE,FALSE);
 
     gw_ui_set_color_to_tagtable ("header",  GW_TARGET_RESULTS, TRUE, FALSE);
     gw_ui_set_color_to_tagtable ("header",  GW_TARGET_KANJI,   TRUE, FALSE);
@@ -2333,7 +2333,6 @@ void gw_ui_set_header (GwSearchItem *item, char* text, char* mark_name)
     gtk_text_buffer_delete (GTK_TEXT_BUFFER (results_tb), &iter, &end_iter);
     gtk_text_buffer_get_iter_at_mark (GTK_TEXT_BUFFER (results_tb), &iter, mark);
     gtk_text_buffer_insert_with_tags_by_name (GTK_TEXT_BUFFER (results_tb), &iter, new_text, -1, "header", "important", NULL);
-
 }
 
 
@@ -2642,13 +2641,14 @@ void gw_ui_append_kanji_results_to_buffer (GwSearchItem *item, gboolean unused)
 
       gtk_text_buffer_insert (tb, &iter, "\n", -1);
       gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); line = gtk_text_iter_get_line (&iter);
- 
+
       //Radicals
       if (resultline->radicals != NULL)
       {
         gtk_text_buffer_insert_with_tags_by_name (tb, &iter, gettext("Radicals:"), -1, "important", NULL);
         gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); start_offset = gtk_text_iter_get_line_offset (&iter);
         gtk_text_buffer_insert (tb, &iter, resultline->radicals, -1);
+        gtk_text_buffer_insert (tb, &iter, " ", -1);
         gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
         gw_ui_add_match_highlights (line, start_offset, end_offset, item);
 
@@ -2715,7 +2715,7 @@ void gw_ui_append_kanji_results_to_buffer (GwSearchItem *item, gboolean unused)
       gw_ui_add_match_highlights (line, start_offset, end_offset, item);
 
       if (item->target == GW_TARGET_RESULTS)
-        gtk_text_buffer_insert (tb, &iter, "\n", -1);
+        gtk_text_buffer_insert (tb, &iter, "\n\n", -1);
 }
 
 
@@ -2850,9 +2850,8 @@ void gw_ui_remove_whitespace_from_buffer (const int TARGET)
       gtk_text_buffer_get_end_iter (tb, &iter);
       gtk_text_iter_backward_char (&iter);
       c = gtk_text_iter_get_char (&iter);
-      while (c == L' ' || c == L'\n' && c != 0)
+      while ((c == L' ' || c == L'\n') && c != 0 && gtk_text_iter_backward_char (&iter))
       {
-        gtk_text_iter_backward_char (&iter);
         c = gtk_text_iter_get_char (&iter);
       }
       gtk_text_iter_forward_char (&iter);
@@ -2869,9 +2868,8 @@ void gw_ui_remove_whitespace_from_buffer (const int TARGET)
       gtk_text_buffer_get_start_iter (tb, &iter2);
       gtk_text_iter_forward_char (&iter2);
       c = gtk_text_iter_get_char (&iter2);
-      while (c == L' ' || c == L'\n' && c != 0)
+      while ((c == L' ' || c == L'\n') && c != 0 && gtk_text_iter_forward_char (&iter2))
       {
-        gtk_text_iter_forward_char (&iter2);
         c = gtk_text_iter_get_char (&iter2);
       }
       gtk_text_buffer_delete (tb, &iter, &iter2);

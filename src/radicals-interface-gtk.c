@@ -90,7 +90,7 @@ void gw_ui_set_button_sensative_when_label_is (const char *string)
     GList     *list;
     const char *label_text = NULL;
 
-    char *jump = string;
+    const char *jump = string;
     char radical[4];
     if (jump[0] != '\0' && jump[1] != '\0' && jump[2] != '\0')
     {

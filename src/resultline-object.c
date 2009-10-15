@@ -92,8 +92,6 @@ void gw_resultline_clear_variables (GwResultLine *temp)
     temp->jlpt = NULL;
     temp->kanji = NULL;
     temp->radicals = NULL;
-
-
 }
 
 void gw_resultline_free (GwResultLine *item)
@@ -237,12 +235,14 @@ void gw_resultline_parse_kanji_result_string (GwResultLine *line, char *string)
     if(g_utf8_get_char(ptr) > 3040)
     {
       line->radicals = ptr;
-      while(g_utf8_get_char(ptr) > 3040 || g_utf8_get_char(ptr) == L' ')
+      while((g_utf8_get_char(ptr) > 3040 || g_utf8_get_char(ptr) == L' '))
       {
         ptr = g_utf8_next_char(ptr);
       }
       *(ptr - 1) = '\0';
     }
+    else
+      line->radicals = NULL;
 
     //Go to the readings section
     while (g_utf8_get_char(ptr) < 3041 && *ptr != '\0')
@@ -291,8 +291,8 @@ void gw_resultline_parse_radical_result_string (GwResultLine *line, char *string
 
     if (temp = g_utf8_strchr (line->string, -1, L':'))
     {
-       *temp = '\0';
-       line->radicals = temp + 1;
+      *temp = '\0';
+      line->radicals = temp + 1;
     }
 }
 

@@ -139,17 +139,10 @@ static void append_less_relevant_header_to_output(GwSearchItem *item)
     {
       char number[14];
       gw_util_itoa(item->total_irrelevant_results, number, 14);
-
       char text[100];
       strncpy(text, gettext("Other Results "), 100);
       strncat(text, number, 100 - strlen(text));
-
-      char *tag1 = "header";
-      char *tag2 = "important";
-
-      gw_ui_append_to_buffer(item->target, "\n", tag1, tag2, NULL, NULL);
       gw_ui_set_header (item, text, "less_relevant_header_mark");
-      gw_ui_append_to_buffer(item->target, "\n", tag1, tag2, NULL, NULL);
     }
 }
 
