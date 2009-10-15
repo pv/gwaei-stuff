@@ -8,7 +8,7 @@ Standards-Version: 3.8.3
 Package: gwaei
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Recommends: ttf-arphic-ukai, ttf-kanjistrokeorders
+Recommends: ttf-kanjistrokeorders
 Description: Japanese-English Dictionary for GNOME
  gWaei is a drop-in replacement for Gjiten. The main
  feature of this dictonary program is regular expression
