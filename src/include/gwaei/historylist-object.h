@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file src/include/gwaei/history-object.h
+//! @file src/include/gwaei/historylist-object.h
 //!
 //! @brief To be written.
 //!

@@ -44,8 +44,15 @@
 #include <gwaei/callbacks.h>
 
 
-char radical_cache[300 * 3];
+static char radical_cache[300 * 3];
 
+
+//
+//! @brief Copies all the lables of the depressed buttons in the radicals window
+//!
+//! @param output The string to copy to
+//! @param The max characters to copy
+//!
 void gw_ui_strcpy_all_selected_radicals(char *output, int *MAX)
 {
     char id[50];
@@ -60,6 +67,7 @@ void gw_ui_strcpy_all_selected_radicals(char *output, int *MAX)
     int leftover = *MAX;
     const char *label_text = NULL;
     radical_cache[0] = '\0';
+    gboolean a_button_was_in_pressed_state = FALSE;
 
     //Probe all of the active toggle buttons in the table
     while (list != NULL)
@@ -69,6 +77,7 @@ void gw_ui_strcpy_all_selected_radicals(char *output, int *MAX)
          label_text = gtk_button_get_label( GTK_BUTTON(list->data));
          if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(list->data)))
          {
+           a_button_was_in_pressed_state = TRUE;
            strncat(output, label_text, leftover);
            leftover -= strlen(label_text);
          }
@@ -78,10 +87,18 @@ void gw_ui_strcpy_all_selected_radicals(char *output, int *MAX)
       list = list->next;
     }
 
+    if (!a_button_was_in_pressed_state)
+      gw_ui_deselect_all_radicals ();
+
     *MAX = leftover;
 }
 
 
+//!
+//! @brief Finds the radical button with the string label and sets it sensitive
+//!
+//! @param string The label to search for
+//!
 void gw_ui_set_button_sensative_when_label_is (const char *string)
 {
     GtkWidget *table;
@@ -136,6 +153,11 @@ void gw_ui_set_button_sensative_when_label_is (const char *string)
     }
 }
 
+//!
+//! @brief Copies the stroke count in the prefered format
+//!
+//! @param output The string to copy the prefered stroke count to
+//! @param MAX The max characters to copy
 void gw_ui_strcpy_prefered_stroke_count(char *output, int *MAX)
 {
     char id[50];
@@ -170,6 +192,9 @@ void gw_ui_strcpy_prefered_stroke_count(char *output, int *MAX)
 }
 
 
+//!
+//! @brief Matches the sensativity of the strokes spinbutton to the stokes checkbox
+//!
 void gw_ui_update_strokes_checkbox_state()
 {
     char id[50];
@@ -194,6 +219,9 @@ void gw_ui_update_strokes_checkbox_state()
 }
 
 
+//!
+//! @brief Resets the states of all the radical buttons
+//!
 void gw_ui_deselect_all_radicals()
 {
     char id[50];
@@ -219,6 +247,9 @@ void gw_ui_deselect_all_radicals()
 }
 
 
+//!
+//! @brief Sets the stroke enable checkbox to a specific state
+//!
 void gw_ui_set_strokes_checkbox_state (gboolean state)
 {
     char id[50];

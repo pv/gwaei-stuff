@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file src/include/gwaei/search-object.h
+//! @file src/include/gwaei/searchitem-object.h
 //!
 //! @brief To be written.
 //!
