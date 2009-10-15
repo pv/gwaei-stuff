@@ -394,8 +394,6 @@ void do_spellcheck_pref_changed_action( GConfClient* client,
 }
 
 
-#define IS_HEXCOLOR(color) (regexec(&re_hexcolor, (color), 1, NULL, 0) == 0)
-
 void do_color_value_changed_action( GConfClient* client, 
                                     guint cnxn_id,
                                     GConfEntry *entry,
@@ -437,13 +435,11 @@ void do_color_value_changed_action( GConfClient* client,
     }
 }
 
+
 void do_update_dictionary_order_list_changed_action ()
 {
       gw_ui_update_dictionary_orders ();
 }
-
-
-
 
 
 

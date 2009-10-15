@@ -1469,14 +1469,16 @@ gboolean gw_ui_load_gtk_builder_xml(const char *name) {
 }
 
 
-/////////
-//  Tag handling
-/////////////////////////////////////////////////
-
-
-
-gboolean gw_ui_set_color_to_tagtable (char    *id,     int      TARGET,
-                                         gboolean set_fg, gboolean set_bg )
+//!
+//! @brief Sets or updates an existing tag to the buffer
+//!
+//! @param id String representing the name of the tag
+//! @param A constant int representing the target buffer
+//! @param set_fg Boolean whether to set the foreground color or not
+//! @param set_bg Boolean whether to set the background color or not
+//!
+gboolean gw_ui_set_color_to_tagtable (char    *id,     const int TARGET,
+                                      gboolean set_fg, gboolean set_bg  )
 {
     GtkTextTag *tag;
 
@@ -1526,21 +1528,36 @@ gboolean gw_ui_set_color_to_tagtable (char    *id,     int      TARGET,
       }
     }
 
-    //Remove the previous tag from the table if it exists
-    if ((tag = gtk_text_tag_table_lookup(GTK_TEXT_TAG_TABLE (table), id)) != NULL)
-      gtk_text_tag_table_remove(GTK_TEXT_TAG_TABLE (table), GTK_TEXT_TAG (tag));
-
-    //Insert the new tag into the table
-    if (set_fg && set_bg)
-      tag = gtk_text_buffer_create_tag (GTK_TEXT_BUFFER (tb), id,
-                                        "foreground", fg_color, "background", bg_color, NULL );
-    else if (set_fg)
-      tag = gtk_text_buffer_create_tag (GTK_TEXT_BUFFER (tb), id,
-                                        "foreground", fg_color, NULL               );
-    else if (set_bg)
-      tag = gtk_text_buffer_create_tag (GTK_TEXT_BUFFER (tb), id,
-                                        "background", bg_color, NULL               );
-
+    if ((tag = gtk_text_tag_table_lookup(GTK_TEXT_TAG_TABLE (table), id)) == NULL)
+    {
+      //Insert the new tag into the table
+      if (set_fg && set_bg)
+        tag = gtk_text_buffer_create_tag (GTK_TEXT_BUFFER (tb), id,
+                                          "foreground", fg_color, "background", bg_color, NULL );
+      else if (set_fg)
+        tag = gtk_text_buffer_create_tag (GTK_TEXT_BUFFER (tb), id,
+                                          "foreground", fg_color, NULL               );
+      else if (set_bg)
+        tag = gtk_text_buffer_create_tag (GTK_TEXT_BUFFER (tb), id,
+                                          "background", bg_color, NULL               );
+    }
+    else
+    {
+      GValue fg_value = {0}, bg_value = {0};
+      tag = gtk_text_tag_table_lookup (GTK_TEXT_TAG_TABLE (table), id);
+      if (set_fg)
+      {
+        g_value_init (&fg_value, G_TYPE_STRING);
+        g_value_set_string (&fg_value, fg_color);
+        g_object_set_property (G_OBJECT (tag), "foreground", &fg_value);
+      }
+      if (set_bg)
+      {
+        g_value_init (&bg_value, G_TYPE_STRING);
+        g_value_set_string (&bg_value, bg_color);
+        g_object_set_property (G_OBJECT (tag), "background", &bg_value);
+      }
+    }
     return TRUE;
 }
 
@@ -1552,8 +1569,6 @@ void  gw_ui_set_tag_to_tagtable (char *id,   int      TARGET,
     //Assertain the target text buffer
     GObject *tb;
     tb = get_gobject_from_target(TARGET);
-
-    //Important tag (usually bold)
     GtkTextTag *tag;
     tag = gtk_text_buffer_create_tag (GTK_TEXT_BUFFER (tb), id, atr, val, NULL);
 }
@@ -1571,25 +1586,6 @@ char* gw_ui_get_text_slice_from_buffer (int TARGET, int sl, int el)
     gtk_text_buffer_get_iter_at_line (GTK_TEXT_BUFFER (tb), &ei, el);
 
     return gtk_text_buffer_get_slice (GTK_TEXT_BUFFER (tb), &si, &ei, TRUE);
-}
-
-
-void gw_ui_apply_tag_to_text (int TARGET, char tag[],
-                                 int sl, int so, int el, int eo)
-{
-    //Assertain the target text buffer
-    GObject *tb;
-    tb = get_gobject_from_target(TARGET);
-
-    //Load the text iters
-    GtkTextIter si;
-    gtk_text_buffer_get_iter_at_line_offset (GTK_TEXT_BUFFER (tb), &si, sl, so);
-
-    GtkTextIter ei;
-    gtk_text_buffer_get_iter_at_line_offset (GTK_TEXT_BUFFER (tb), &ei, el, eo);
-
-    //Apply the tag
-    gtk_text_buffer_apply_tag_by_name (GTK_TEXT_BUFFER (tb), tag, &si, &ei);
 }
 
 
@@ -1650,23 +1646,6 @@ void gw_ui_close_kanji_results()
     gtk_paned_set_position (GTK_PANED (hpaned), window_width); 
 }
 
-
-
-
-void gw_ui_remove_all_tags (GwSearchItem *item)
-{
-    if (item->total_results == 0) return;
-
-    GObject* tb;
-    tb = get_gobject_from_target(item->target);
-
-    GtkTextIter start;
-    gtk_text_buffer_get_start_iter (GTK_TEXT_BUFFER (tb), &start);
-    GtkTextIter end;
-    gtk_text_buffer_get_end_iter (GTK_TEXT_BUFFER (tb), &end);
-
-    gtk_text_buffer_remove_all_tags (GTK_TEXT_BUFFER (tb), &start, &end);
-}
 
 
 gint32 gw_previous_tip = 0;
@@ -2146,9 +2125,6 @@ void gw_ui_reload_tagtable_tags()
     GwHistoryList* hl;
     hl = gw_historylist_get_list (GW_HISTORYLIST_RESULTS);
 
-    if (hl != NULL && hl->current != NULL)
-      gw_ui_remove_all_tags (hl->current);
-
     gw_ui_set_color_to_tagtable ("comment", GW_TARGET_RESULTS, TRUE, FALSE);
     gw_ui_set_color_to_tagtable ("comment", GW_TARGET_KANJI,   TRUE, FALSE);
 
@@ -2328,31 +2304,18 @@ gboolean gw_ui_has_selection_by_target (const int TARGET)
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-///////////////NEW STUFFFFFSSSS/////////////////////////////
-///////////////NEW STUFFFFFSSSS/////////////////////////////
-///////////////NEW STUFFFFFSSSS/////////////////////////////
-///////////////NEW STUFFFFFSSSS/////////////////////////////
-
-
-
+//!
+//! @brief Apples a tag to a section of text
+//!
+//! @param line An integer showing the line in the buffer to tag
+//! @param start_offset the ending character in the line to highlight
+//! @param end_offset The ending character in the line to highlight
+//! @param item A GwSearchItem to get general information from
+//!
 void gw_ui_add_match_highlights (gint line, gint start_offset, gint end_offset, GwSearchItem* item)
 {
-    GtkTextBuffer *tb = GTK_TEXT_BUFFER (get_gobject_from_target(item->target));
+    GtkTextBuffer *tb;
+    tb = GTK_TEXT_BUFFER (get_gobject_from_target(item->target));
     
     int re, i;
     int match_so, match_eo;
@@ -2367,8 +2330,10 @@ void gw_ui_add_match_highlights (gint line, gint start_offset, gint end_offset, 
        while ((pos = gw_regex_locate_offset (pos, text, &item->re_locate[i],
                                              &match_so, &match_eo)) != NULL )
        {
-         gw_ui_apply_tag_to_text (item->target, "match", line, match_so + start_offset,
-                                                      line, match_eo + start_offset);
+          //Apply the tag
+          gtk_text_buffer_get_iter_at_line_offset (tb, &si, line, match_so + start_offset);
+          gtk_text_buffer_get_iter_at_line_offset (tb, &ei, line, match_eo + start_offset);
+          gtk_text_buffer_apply_tag_by_name (tb, "match", &si, &ei);
        }
     }
     g_free (text);

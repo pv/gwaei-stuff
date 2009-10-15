@@ -438,6 +438,7 @@ G_MODULE_EXPORT void do_color_reset_for_swatches (GtkWidget *widget, gpointer da
 }
 
 
+
 G_MODULE_EXPORT void do_dictionary_remove (GtkWidget* widget, gpointer* dictionary)
 {
     char name[100];
