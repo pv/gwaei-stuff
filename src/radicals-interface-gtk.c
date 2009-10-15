@@ -44,6 +44,8 @@
 #include <gwaei/callbacks.h>
 
 
+char radical_cache[300 * 3];
+
 void gw_ui_strcpy_all_selected_radicals(char *output, int *MAX)
 {
     char id[50];
@@ -57,18 +59,21 @@ void gw_ui_strcpy_all_selected_radicals(char *output, int *MAX)
 
     int leftover = *MAX;
     const char *label_text = NULL;
+    radical_cache[0] = '\0';
 
     //Probe all of the active toggle buttons in the table
     while (list != NULL)
     {
       if (G_OBJECT_TYPE(list->data) == g_type_from_name("GtkToggleButton"))
       {
+         label_text = gtk_button_get_label( GTK_BUTTON(list->data));
          if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(list->data)))
          {
-           label_text = gtk_button_get_label( GTK_BUTTON(list->data));
            strncat(output, label_text, leftover);
            leftover -= strlen(label_text);
          }
+         strcat (radical_cache, label_text);
+         gtk_widget_set_sensitive (GTK_WIDGET (list->data), FALSE);
       }
       list = list->next;
     }
@@ -76,6 +81,60 @@ void gw_ui_strcpy_all_selected_radicals(char *output, int *MAX)
     *MAX = leftover;
 }
 
+
+void gw_ui_set_button_sensative_when_label_is (const char *string)
+{
+    GtkWidget *table;
+    table = GTK_WIDGET (gtk_builder_get_object(builder, "radicals_table"));
+
+    GList     *list;
+    const char *label_text = NULL;
+
+    char *jump = string;
+    char radical[4];
+    if (jump[0] != '\0' && jump[1] != '\0' && jump[2] != '\0')
+    {
+      radical[0] = jump[0];
+      radical[1] = jump[1];
+      radical[2] = jump[2];
+      radical[3] = '\0';
+
+      list  = gtk_container_get_children (GTK_CONTAINER (table));
+      while (list != NULL)
+      {
+        if (G_OBJECT_TYPE(list->data) == g_type_from_name("GtkToggleButton"))
+        {
+           label_text = gtk_button_get_label (GTK_BUTTON(list->data));
+           if (strcmp(label_text, radical) == 0)
+            gtk_widget_set_sensitive (GTK_WIDGET (list->data), TRUE);
+        }
+        list = list->next;
+      }
+    }
+    while ((jump = g_utf8_strchr (jump, -1, L' ')))
+    {
+      jump++;
+      if (jump[0] != '\0' && jump[1] != '\0' && jump[2] != '\0')
+      {
+        radical[0] = jump[0];
+        radical[1] = jump[1];
+        radical[2] = jump[2];
+        radical[3] = '\0';
+
+        list  = gtk_container_get_children (GTK_CONTAINER (table));
+        while (list != NULL)
+        {
+          if (G_OBJECT_TYPE(list->data) == g_type_from_name("GtkToggleButton"))
+          {
+             label_text = gtk_button_get_label (GTK_BUTTON(list->data));
+             if (strcmp(label_text, radical) == 0)
+              gtk_widget_set_sensitive (GTK_WIDGET (list->data), TRUE);
+          }
+          list = list->next;
+        }
+      }
+    }
+}
 
 void gw_ui_strcpy_prefered_stroke_count(char *output, int *MAX)
 {
@@ -153,6 +212,7 @@ void gw_ui_deselect_all_radicals()
       if (G_OBJECT_TYPE(list->data) == g_type_from_name("GtkToggleButton"))
          gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(list->data), FALSE);
       g_signal_handlers_unblock_by_func(list->data, do_radical_search , NULL);
+      gtk_widget_set_sensitive (GTK_WIDGET (list->data), TRUE);
 
       list = list->next;
     }

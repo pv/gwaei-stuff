@@ -971,6 +971,7 @@ G_MODULE_EXPORT void do_radical_search_tool (GtkWidget *widget, gpointer data)
     spinbutton = GTK_WIDGET (gtk_builder_get_object (builder, id));
     gtk_spin_button_set_value (GTK_SPIN_BUTTON (spinbutton), 1.0);
 
+    do_radical_clear (NULL, NULL);
 
     //Hide the togglebox if the Mix dictionary is not present
     if (gw_dictlist_dictionary_get_status_by_id (GW_DICT_MIX) != GW_DICT_STATUS_INSTALLED)

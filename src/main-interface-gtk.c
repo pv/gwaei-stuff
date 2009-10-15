@@ -790,6 +790,7 @@ int rebuild_combobox_dictionary_list()
 
       i++;
     }
+    printf("\n");
 
     //Set the combobox to the first item
     GtkWidget *combobox;
@@ -2449,6 +2450,7 @@ void gw_ui_add_match_highlights (gint line, gint start_offset, gint end_offset, 
     char *pos = text;
 
     for(i = 0; i < item->total_re; i++) {
+       pos = text;
        while ((pos = gw_regex_locate_offset (pos, text, &item->re_locate[i],
                                              &match_so, &match_eo)) != NULL )
        {
@@ -2652,8 +2654,9 @@ void gw_ui_append_kanji_results_to_buffer (GwSearchItem *item, gboolean unused)
 
         gtk_text_buffer_insert (tb, &iter, "\n", -1);
         gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); line = gtk_text_iter_get_line (&iter);
-      }
 
+        gw_ui_set_button_sensative_when_label_is (resultline->radicals);
+      }
 
       //Readings
       if (resultline->readings[0] != NULL)
@@ -2749,6 +2752,8 @@ void gw_ui_append_radicals_results_to_buffer (GwSearchItem *item, gboolean unuse
 
         gtk_text_buffer_insert (tb, &iter, "\n", -1);
         gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); line = gtk_text_iter_get_line (&iter);
+
+        gw_ui_set_button_sensative_when_label_is (resultline->radicals);
       }
 }
 

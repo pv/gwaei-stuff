@@ -42,7 +42,12 @@
 #include <gwaei/interface.h>
 
 
-
+//!
+//! @brief Resets the states of all the buttons as if the dialog was just freshly opened
+//!
+//! @param widget Currently unused GtkWidget pointer
+//! @param data Currently unused gpointer
+//!
 G_MODULE_EXPORT void do_radical_clear (GtkWidget *widget, gpointer data)
 {
   gw_ui_deselect_all_radicals ();
@@ -53,6 +58,15 @@ G_MODULE_EXPORT void do_radical_clear (GtkWidget *widget, gpointer data)
 }
 
 
+//!
+//! @brief The function that does the grunt work of setting up a search using the window
+//!
+//! The function will get the data from the buttons to set up the query and the dictionary
+//! with that to set up the searchitem. 
+//!
+//! @param widget Currently unused GtkWidget pointer
+//! @param data Currently unused gpointer
+//!
 G_MODULE_EXPORT void do_radical_search (GtkWidget *widget, gpointer data)
 {
     GwHistoryList* hl = gw_historylist_get_list(GW_HISTORYLIST_RESULTS);   
@@ -96,6 +110,12 @@ G_MODULE_EXPORT void do_radical_search (GtkWidget *widget, gpointer data)
 }
 
 
+//!
+//! @brief Forces a search when the checkbox sensitivity is changed
+//!
+//! @param widget Currently unused GtkWidget pointer
+//! @param data Currently unused gpointer
+//!
 G_MODULE_EXPORT void do_radical_kanji_stroke_checkbox_update (GtkWidget *widget, gpointer data)
 {
     gw_ui_update_strokes_checkbox_state ();
