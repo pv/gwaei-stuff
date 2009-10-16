@@ -1,11 +1,14 @@
 *.[oa]
 Makefile
+Makefile.in
 **/.deps/*
 *.gmo
 *.rpm
 *.deb
 *.tar.gz
 
+mandir/Makefile
+mandir/Makefile.in
 
 stamp-h1
 autom4te.cache

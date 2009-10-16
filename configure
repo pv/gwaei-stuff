@@ -6873,7 +6873,7 @@ _ACEOF
 if(test x$gnome = xfalse);then(cp help/Makefile.am.gnome help/Makefile.am);fi
 if(test x$gnome = xtrue);then(cp help/Makefile.am.none help/Makefile.am);fi
 
-ac_config_files="$ac_config_files Makefile src/Makefile help/Makefile help/gwaei.omf help/C/gwaei.xml src/xml/Makefile src/img/Makefile src/schemas/Makefile src/desktop/Makefile src/kpengine/Makefile src/kpengine/conv_jdata.pl rpm/gwaei.spec po/Makefile.in rpm/rpm_gconf_install_post.sh rpm/rpm_gconf_uninstall_pre.sh src/schemas/gwaei.schemas src/include/gwaei/definitions.h Doxyfile"
+ac_config_files="$ac_config_files Makefile src/Makefile mandir/Makefile help/Makefile help/gwaei.omf help/C/gwaei.xml src/xml/Makefile src/img/Makefile src/schemas/Makefile src/desktop/Makefile src/kpengine/Makefile src/kpengine/conv_jdata.pl rpm/gwaei.spec po/Makefile.in rpm/rpm_gconf_install_post.sh rpm/rpm_gconf_uninstall_pre.sh src/schemas/gwaei.schemas src/include/gwaei/definitions.h Doxyfile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -7548,6 +7548,7 @@ do
     "po-directories") CONFIG_COMMANDS="$CONFIG_COMMANDS po-directories" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
+    "mandir/Makefile") CONFIG_FILES="$CONFIG_FILES mandir/Makefile" ;;
     "help/Makefile") CONFIG_FILES="$CONFIG_FILES help/Makefile" ;;
     "help/gwaei.omf") CONFIG_FILES="$CONFIG_FILES help/gwaei.omf" ;;
     "help/C/gwaei.xml") CONFIG_FILES="$CONFIG_FILES help/C/gwaei.xml" ;;
