@@ -1688,6 +1688,7 @@ void gw_ui_close_kanji_results()
     GtkWidget *hpaned;
     hpaned = GTK_WIDGET (gtk_builder_get_object( builder, "results_hpaned" ));
     gtk_paned_set_position (GTK_PANED (hpaned), window_width); 
+    //gw_ui_close_suggestion_box ();
 }
 
 
@@ -2831,3 +2832,149 @@ void gw_ui_remove_whitespace_from_buffer (const int TARGET)
       gtk_text_buffer_delete (tb, &iter, &iter2);
 }
 
+
+void gw_ui_close_suggestion_box ()
+{
+  GtkWidget *suggestion_hbox;
+  suggestion_hbox = GTK_WIDGET (gtk_builder_get_object (builder, "suggestion_hbox"));
+  gtk_widget_hide (suggestion_hbox);
+}
+
+
+void gw_ui_verb_check_with_suggestion (char *query)
+{
+  GtkWidget *suggestion_label;
+  suggestion_label = GTK_WIDGET (gtk_builder_get_object (builder, "suggestion_label"));
+  GtkWidget *suggestion_eventbox;
+  suggestion_eventbox = GTK_WIDGET (gtk_builder_get_object (builder, "suggestion_eventbox"));
+  GtkWidget *suggestion_hbox;
+  suggestion_hbox = GTK_WIDGET (gtk_builder_get_object (builder, "suggestion_hbox"));
+  GtkWidget *window;
+  window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
+  GdkColor fgcolor;
+  fgcolor = window->style->fg[GTK_STATE_SELECTED];
+  GdkColor bgcolor;
+  bgcolor = window->style->bg[GTK_STATE_SELECTED];
+
+  gtk_event_box_set_visible_window (GTK_EVENT_BOX (suggestion_eventbox), TRUE);
+  gtk_widget_modify_fg (suggestion_eventbox, GTK_STATE_NORMAL, &fgcolor);
+  gtk_widget_modify_bg (suggestion_eventbox, GTK_STATE_NORMAL, &bgcolor);
+
+  if (regexec(&re_verb_politepast, query, 1, NULL, 0) == 0)
+  {
+    gtk_label_set_text (GTK_LABEL (suggestion_label), gettext ("Your query is possibly polite past form."));
+    gtk_widget_show (suggestion_hbox);
+  }
+  else if (regexec(&re_verb_pastform, query, 1, NULL, 0) == 0)
+  {
+    gtk_label_set_text (GTK_LABEL (suggestion_label), gettext ("Your query is possibly a past-form verb."));
+    gtk_widget_show (suggestion_hbox);
+  }
+  else if (regexec(&re_i_adj_pastform, query, 1, NULL, 0) == 0)
+  {
+    gtk_label_set_text (GTK_LABEL (suggestion_label), gettext ("Your query is possibly a past-form i-adjective."));
+    gtk_widget_show (suggestion_hbox);
+  }
+  else if (regexec(&re_na_adj_pastform, query, 1, NULL, 0) == 0)
+  {
+    gtk_label_set_text (GTK_LABEL (suggestion_label), gettext ("Your query is possibly a past-form na-adjective"));
+    gtk_widget_show (suggestion_hbox);
+  }
+  else if (regexec(&re_verb_presentform, query, 1, NULL, 0) == 0)
+  {
+    gtk_label_set_text (GTK_LABEL (suggestion_label), gettext ("Your query is possibly a present-form verb."));
+    gtk_widget_show (suggestion_hbox);
+  }
+  else if (regexec(&re_verb_negative, query, 1, NULL, 0) == 0)
+  {
+    gtk_label_set_text (GTK_LABEL (suggestion_label), gettext ("Your query is possibly a negative form verb."));
+    gtk_widget_show (suggestion_hbox);
+  }
+  else if (regexec(&re_verb_pastform_negative, query, 1, NULL, 0) == 0)
+  {
+    gtk_label_set_text (GTK_LABEL (suggestion_label), gettext ("Your query is possibly a past-form negative verb."));
+    gtk_widget_show (suggestion_hbox);
+  }
+  else if (regexec(&re_i_adj_negative, query, 1, NULL, 0) == 0)
+  {
+    gtk_label_set_text (GTK_LABEL (suggestion_label), gettext ("Your query is possibly a negative i-adjective."));
+    gtk_widget_show (suggestion_hbox);
+  }
+  else if (regexec(&re_na_adj_negative, query, 1, NULL, 0) == 0)
+  {
+    gtk_label_set_text (GTK_LABEL (suggestion_label), gettext ("Your query is possibly a negative na-adjective."));
+    gtk_widget_show (suggestion_hbox);
+  }
+  else if (regexec(&re_verb_te_form, query, 1, NULL, 0) == 0)
+  {
+    gtk_label_set_text (GTK_LABEL (suggestion_label), gettext ("Your query is possibly a te-form verb."));
+    gtk_widget_show (suggestion_hbox);
+  }
+  else if (regexec(&re_i_adj_te_form, query, 1, NULL, 0) == 0)
+  {
+    gtk_label_set_text (GTK_LABEL (suggestion_label), gettext ("Your query is possibly a te-form i-adjective."));
+    gtk_widget_show (suggestion_hbox);
+  }
+  else if (regexec(&re_na_adj_te_form, query, 1, NULL, 0) == 0)
+  {
+    gtk_label_set_text (GTK_LABEL (suggestion_label), gettext ("Your query is possibly a te-form na-adjective."));
+    gtk_widget_show (suggestion_hbox);
+  }
+  else if (regexec(&re_verb_potention, query, 1, NULL, 0) == 0)
+  {
+    gtk_label_set_text (GTK_LABEL (suggestion_label), gettext ("Your query is possibly a potential-form verb."));
+    gtk_widget_show (suggestion_hbox);
+  }
+  /*
+  else if (regexec(&re_verb_causative, query, 1, NULL, 0) == 0)
+  {
+    gtk_label_set_text (GTK_LABEL (suggestion_label), gettext ("Your query is possibly a causitive-form verb."));
+    gtk_widget_show (suggestion_hbox);
+  }
+  else if (regexec(&re_i_adj_causative, query, 1, NULL, 0) == 0)
+  {
+    gtk_label_set_text (GTK_LABEL (suggestion_label), gettext ("Your query is possibly a causitive-form i-adjective."));
+    gtk_widget_show (suggestion_hbox);
+  }
+  else if (regexec(&re_na_adj_causative, query, 1, NULL, 0) == 0)
+  {
+    gtk_label_set_text (GTK_LABEL (suggestion_label), gettext ("Your query is possibly a causitive-form na-adjective."));
+    gtk_widget_show (suggestion_hbox);
+  }
+  */
+  else if (regexec(&re_conditional, query, 1, NULL, 0) == 0)
+  {
+    gtk_label_set_text (GTK_LABEL (suggestion_label), gettext ("Your query is possibly a conditional-form verb."));
+    gtk_widget_show (suggestion_hbox);
+  }
+  else if (regexec(&re_i_adj_conditional, query, 1, NULL, 0) == 0)
+  {
+    gtk_label_set_text (GTK_LABEL (suggestion_label), gettext ("Your query is possibly a conditional-form i-adjective."));
+    gtk_widget_show (suggestion_hbox);
+  }
+  else if (regexec(&re_na_adj_conditional, query, 1, NULL, 0) == 0)
+  {
+    gtk_label_set_text (GTK_LABEL (suggestion_label), gettext ("Your query is possibly a form-conditional na-adjective."));
+    gtk_widget_show (suggestion_hbox);
+  }
+  else if (regexec(&re_negative_conditional, query, 1, NULL, 0) == 0)
+  {
+    gtk_label_set_text (GTK_LABEL (suggestion_label), gettext ("Your query is possibly a negative-form conditional."));
+    gtk_widget_show (suggestion_hbox);
+  }
+  else if (regexec(&re_verb_imperative, query, 1, NULL, 0) == 0)
+  {
+    gtk_label_set_text (GTK_LABEL (suggestion_label), gettext ("Your query is possibly an imperative-form verb."));
+    gtk_widget_show (suggestion_hbox);
+  }
+  else if (regexec(&re_verb_passive, query, 1, NULL, 0) == 0)
+  {
+    gtk_label_set_text (GTK_LABEL (suggestion_label), gettext ("Your query is possibly a passive-form verb."));
+    gtk_widget_show (suggestion_hbox);
+  }
+  else if (regexec(&re_verb_volitional, query, 1, NULL, 0) == 0)
+  {
+    gtk_label_set_text (GTK_LABEL (suggestion_label), gettext ("Your query is possibly a volitional-form verb."));
+    gtk_widget_show (suggestion_hbox);
+  }
+}

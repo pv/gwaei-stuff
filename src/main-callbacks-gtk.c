@@ -1318,6 +1318,7 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
 
     //Start the search
     gw_search_get_results (hl->current);
+    //gw_ui_verb_check_with_suggestion (hl->current->query);
 
     //Set the colors of the entry to the current match highlight colors
     char key[100];

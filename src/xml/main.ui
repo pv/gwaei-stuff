@@ -794,7 +794,6 @@
                           <object class="GtkTextView" id="results_text_view">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="is_focus">True</property>
                             <property name="events">GDK_EXPOSURE_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_MOTION_MASK | GDK_BUTTON1_MOTION_MASK | GDK_BUTTON2_MOTION_MASK | GDK_BUTTON3_MOTION_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK | GDK_FOCUS_CHANGE_MASK | GDK_STRUCTURE_MASK | GDK_PROPERTY_CHANGE_MASK | GDK_VISIBILITY_NOTIFY_MASK | GDK_PROXIMITY_IN_MASK | GDK_PROXIMITY_OUT_MASK | GDK_SUBSTRUCTURE_MASK | GDK_SCROLL_MASK</property>
                             <property name="editable">False</property>
                             <property name="wrap_mode">word</property>
@@ -817,6 +816,80 @@
                       </object>
                       <packing>
                         <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkHBox" id="suggestion_hbox">
+                        <property name="border_width">6</property>
+                        <child>
+                          <object class="GtkEventBox" id="suggestion_eventbox">
+                            <property name="visible">True</property>
+                            <property name="border_width">2</property>
+                            <child>
+                              <object class="GtkVBox" id="vbox2">
+                                <property name="visible">True</property>
+                                <property name="orientation">vertical</property>
+                                <child>
+                                  <object class="GtkHBox" id="hbox7">
+                                    <property name="visible">True</property>
+                                    <child>
+                                      <object class="GtkLabel" id="label6">
+                                        <property name="visible">True</property>
+                                      </object>
+                                      <packing>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkImage" id="image3">
+                                        <property name="visible">True</property>
+                                        <property name="stock">gtk-dialog-info</property>
+                                        <property name="icon-size">3</property>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">False</property>
+                                        <property name="padding">15</property>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkLabel" id="suggestion_label">
+                                        <property name="visible">True</property>
+                                        <property name="label" translatable="yes">Did you mean?</property>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">False</property>
+                                        <property name="position">2</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkLabel" id="label7">
+                                        <property name="visible">True</property>
+                                      </object>
+                                      <packing>
+                                        <property name="position">3</property>
+                                      </packing>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="position">1</property>
                       </packing>
                     </child>
                   </object>
