@@ -367,14 +367,16 @@ G_MODULE_EXPORT void do_quit (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
 {
-    if (gw_ui_cancel_search_by_target (GW_TARGET_RESULTS) == FALSE) return;
-
     GwHistoryList *hl;
     hl = gw_historylist_get_list (GW_HISTORYLIST_RESULTS);
-
     GwSearchItem *item;
     item = (GwSearchItem*) data;
 
+    //Checks to make sure everything is sane
+    if (gw_ui_cancel_search_by_target (GW_TARGET_RESULTS) == FALSE) return;
+    if (item->dictionary->status != GW_DICT_STATUS_INSTALLED) return;
+
+    //Start setting things up;
     if (hl->back != NULL && g_list_find (hl->back, item))
     {
       while (hl->back != NULL && hl->current != item)
