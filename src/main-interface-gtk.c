@@ -33,6 +33,7 @@
 #include <locale.h>
 #include <libintl.h>
 
+#include <unique/unique.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
@@ -56,6 +57,49 @@ GtkWidget *kanji_tv     = NULL;
 GObject   *results_tb   = NULL;
 GObject   *kanji_tb     = NULL;
 GtkWidget *search_entry = NULL;
+
+
+static UniqueResponse message_received_cb (UniqueApp         *app,
+                                           UniqueCommand      command,
+                                           UniqueMessageData *message,
+                                           guint              time_,
+                                           gpointer           user_data)
+{
+    UniqueResponse res;
+    GtkWidget *main_window, *settings_window, *radicals_window, *kanjipad_window;
+    main_window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
+    kanjipad_window = GTK_WIDGET (gtk_builder_get_object (builder, "kanjipad_window"));
+    radicals_window = GTK_WIDGET (gtk_builder_get_object (builder, "radicals_window"));
+    settings_window = GTK_WIDGET (gtk_builder_get_object (builder, "settings_window"));
+    switch (command)
+    {
+        case UNIQUE_ACTIVATE:
+          gtk_window_set_screen (GTK_WINDOW (main_window), unique_message_data_get_screen (message));
+          gtk_window_present_with_time (GTK_WINDOW (main_window), time_);
+          if (GTK_WIDGET_VISIBLE (kanjipad_window))
+          {
+            gtk_window_set_screen (GTK_WINDOW (kanjipad_window), unique_message_data_get_screen (message));
+            gtk_window_present_with_time (GTK_WINDOW (kanjipad_window), time_);
+          }
+          if (GTK_WIDGET_VISIBLE (radicals_window))
+          {
+            gtk_window_set_screen (GTK_WINDOW (radicals_window), unique_message_data_get_screen (message));
+            gtk_window_present_with_time (GTK_WINDOW (radicals_window), time_);
+          }
+          if (GTK_WIDGET_VISIBLE (settings_window))
+          {
+            gtk_window_set_screen (GTK_WINDOW (settings_window), unique_message_data_get_screen (message));
+            gtk_window_present_with_time (GTK_WINDOW (settings_window), time_);
+          }
+          res = UNIQUE_RESPONSE_OK;
+          break;
+        default:
+          res = UNIQUE_RESPONSE_OK;
+          break;
+    }
+    return res;
+}
+
 
 
 //!
@@ -2232,42 +2276,65 @@ void gw_ui_set_header (GwSearchItem *item, char* text, char* mark_name)
 void initialize_gui_interface(int *argc, char ***argv)
 {
     //Initialize some libraries
+    UniqueApp *app;
     gdk_threads_init();
     gtk_init (argc, argv);
 
-    //Setup the main windows xml
-    builder = gtk_builder_new ();
-    gw_ui_load_gtk_builder_xml("main.ui");
-    gw_ui_load_gtk_builder_xml("radicals.ui");
-    gw_ui_load_gtk_builder_xml("settings.ui");
-    gw_ui_load_gtk_builder_xml("kanjipad.ui");
+    app = unique_app_new_with_commands ("org.dictionary.gWaei", NULL, NULL);
 
-    //HACK!!!!!!!!!!!!!!
-    force_gtk_builder_translation_for_gtk_actions_hack ();
-
-    //Initialize some component and variables
-    initialize_global_widget_pointers();
-    gw_ui_initialize_tags();
-    initialize_kanjipad();
-
-    gw_sexy_initialize_libsexy();
-    gw_ui_update_history_popups();
-    gw_ui_show_window ("main_window");
-    gw_prefs_initialize_preferences();
-    gw_ui_initialize_buffer_marks();
-
-    if (rebuild_combobox_dictionary_list() == 0) {
-      do_settings(NULL, NULL);
+    
+    //Activate the main window in the program is already open
+    if (unique_app_is_running (app))
+    {
+      UniqueResponse response;
+      response = unique_app_send_message (app, UNIQUE_ACTIVATE, NULL);
     }
+    //Fresh instance startup
+    else
+    {
+      //Setup the main windows xml
+      builder = gtk_builder_new ();
+      gw_ui_load_gtk_builder_xml("main.ui");
+      gw_ui_load_gtk_builder_xml("radicals.ui");
+      gw_ui_load_gtk_builder_xml("settings.ui");
+      gw_ui_load_gtk_builder_xml("kanjipad.ui");
 
-    //Set the initial focus to the search bar
-    gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
-    gw_ui_clear_buffer_by_target (GW_TARGET_RESULTS);
+      GtkWidget *main_window;
+      main_window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
+      unique_app_watch_window (app, GTK_WINDOW (main_window));
+      g_signal_connect (app, "message-received", G_CALLBACK (message_received_cb), NULL);
 
-    //Enter the main loop
-    gdk_threads_enter();
-    gtk_main ();
-    gdk_threads_leave();
+
+
+      //HACK!!!!!!!!!!!!!!
+      force_gtk_builder_translation_for_gtk_actions_hack ();
+
+      //Initialize some component and variables
+      initialize_global_widget_pointers();
+      gw_ui_initialize_tags();
+      initialize_kanjipad();
+
+      gw_sexy_initialize_libsexy();
+      gw_ui_update_history_popups();
+      gw_ui_show_window ("main_window");
+      gw_prefs_initialize_preferences();
+      gw_ui_initialize_buffer_marks();
+
+      if (rebuild_combobox_dictionary_list() == 0) {
+        do_settings(NULL, NULL);
+      }
+
+      //Set the initial focus to the search bar
+      gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
+      gw_ui_clear_buffer_by_target (GW_TARGET_RESULTS);
+
+      //Enter the main loop
+      gdk_threads_enter();
+      gtk_main ();
+      gdk_threads_leave();
+
+      g_object_unref (app);
+    }
 }
 
 

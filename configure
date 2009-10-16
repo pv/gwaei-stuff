@@ -2416,6 +2416,7 @@ LIBCURL_REQUIRED_VERSION=7.18.0
 GMODULE_EXPORT_REQUIRED_VERSION=2.16.0
 LIBSEXY_REQUIRED_VERSION=0.1.11
 GDU_REQUIRED_VERSION=0.13.0
+LIBUNIQUE_REQUIRED_VERSION=1.0.0
 
 
 
@@ -2543,10 +2544,12 @@ if test -n "$DEPS_CFLAGS"; then
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
     { ($as_echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"glib-2.0           >= \$GLIB_REQUIRED_VERSION
+                        unique-1.0         >= \$LIBUNIQUE_REQUIRED_VERSION
                         libcurl            >= \$LIBCURL_REQUIRED_VERSION
                         gmodule-2.0        >= \$GMODULE_EXPORT_REQUIRED_VERSION
                         gthread-2.0        >= \$GTHREAD_REQUIRED_VERSION       \"") >&5
   ($PKG_CONFIG --exists --print-errors "glib-2.0           >= $GLIB_REQUIRED_VERSION
+                        unique-1.0         >= $LIBUNIQUE_REQUIRED_VERSION
                         libcurl            >= $LIBCURL_REQUIRED_VERSION
                         gmodule-2.0        >= $GMODULE_EXPORT_REQUIRED_VERSION
                         gthread-2.0        >= $GTHREAD_REQUIRED_VERSION       ") 2>&5
@@ -2554,6 +2557,7 @@ if test -n "$DEPS_CFLAGS"; then
   $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; then
   pkg_cv_DEPS_CFLAGS=`$PKG_CONFIG --cflags "glib-2.0           >= $GLIB_REQUIRED_VERSION
+                        unique-1.0         >= $LIBUNIQUE_REQUIRED_VERSION
                         libcurl            >= $LIBCURL_REQUIRED_VERSION
                         gmodule-2.0        >= $GMODULE_EXPORT_REQUIRED_VERSION
                         gthread-2.0        >= $GTHREAD_REQUIRED_VERSION       " 2>/dev/null`
@@ -2568,10 +2572,12 @@ if test -n "$DEPS_LIBS"; then
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
     { ($as_echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"glib-2.0           >= \$GLIB_REQUIRED_VERSION
+                        unique-1.0         >= \$LIBUNIQUE_REQUIRED_VERSION
                         libcurl            >= \$LIBCURL_REQUIRED_VERSION
                         gmodule-2.0        >= \$GMODULE_EXPORT_REQUIRED_VERSION
                         gthread-2.0        >= \$GTHREAD_REQUIRED_VERSION       \"") >&5
   ($PKG_CONFIG --exists --print-errors "glib-2.0           >= $GLIB_REQUIRED_VERSION
+                        unique-1.0         >= $LIBUNIQUE_REQUIRED_VERSION
                         libcurl            >= $LIBCURL_REQUIRED_VERSION
                         gmodule-2.0        >= $GMODULE_EXPORT_REQUIRED_VERSION
                         gthread-2.0        >= $GTHREAD_REQUIRED_VERSION       ") 2>&5
@@ -2579,6 +2585,7 @@ if test -n "$DEPS_LIBS"; then
   $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; then
   pkg_cv_DEPS_LIBS=`$PKG_CONFIG --libs "glib-2.0           >= $GLIB_REQUIRED_VERSION
+                        unique-1.0         >= $LIBUNIQUE_REQUIRED_VERSION
                         libcurl            >= $LIBCURL_REQUIRED_VERSION
                         gmodule-2.0        >= $GMODULE_EXPORT_REQUIRED_VERSION
                         gthread-2.0        >= $GTHREAD_REQUIRED_VERSION       " 2>/dev/null`
@@ -2600,11 +2607,13 @@ else
 fi
         if test $_pkg_short_errors_supported = yes; then
 	        DEPS_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "glib-2.0           >= $GLIB_REQUIRED_VERSION
+                        unique-1.0         >= $LIBUNIQUE_REQUIRED_VERSION
                         libcurl            >= $LIBCURL_REQUIRED_VERSION
                         gmodule-2.0        >= $GMODULE_EXPORT_REQUIRED_VERSION
                         gthread-2.0        >= $GTHREAD_REQUIRED_VERSION       " 2>&1`
         else
 	        DEPS_PKG_ERRORS=`$PKG_CONFIG --print-errors "glib-2.0           >= $GLIB_REQUIRED_VERSION
+                        unique-1.0         >= $LIBUNIQUE_REQUIRED_VERSION
                         libcurl            >= $LIBCURL_REQUIRED_VERSION
                         gmodule-2.0        >= $GMODULE_EXPORT_REQUIRED_VERSION
                         gthread-2.0        >= $GTHREAD_REQUIRED_VERSION       " 2>&1`
@@ -2613,6 +2622,7 @@ fi
 	echo "$DEPS_PKG_ERRORS" >&5
 
 	{ { $as_echo "$as_me:$LINENO: error: Package requirements (glib-2.0           >= $GLIB_REQUIRED_VERSION
+                        unique-1.0         >= $LIBUNIQUE_REQUIRED_VERSION
                         libcurl            >= $LIBCURL_REQUIRED_VERSION
                         gmodule-2.0        >= $GMODULE_EXPORT_REQUIRED_VERSION
                         gthread-2.0        >= $GTHREAD_REQUIRED_VERSION       ) were not met:
@@ -2627,6 +2637,7 @@ and DEPS_LIBS to avoid the need to call pkg-config.
 See the pkg-config man page for more details.
 " >&5
 $as_echo "$as_me: error: Package requirements (glib-2.0           >= $GLIB_REQUIRED_VERSION
+                        unique-1.0         >= $LIBUNIQUE_REQUIRED_VERSION
                         libcurl            >= $LIBCURL_REQUIRED_VERSION
                         gmodule-2.0        >= $GMODULE_EXPORT_REQUIRED_VERSION
                         gthread-2.0        >= $GTHREAD_REQUIRED_VERSION       ) were not met:
