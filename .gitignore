@@ -1,6 +1,5 @@
 *.[oa]
 Makefile
-Makefile.in
 **/.deps/*
 *.gmo
 *.rpm
@@ -8,7 +7,6 @@ Makefile.in
 *.tar.gz
 
 mandir/Makefile
-mandir/Makefile.in
 
 stamp-h1
 autom4te.cache
@@ -33,7 +31,6 @@ help/gwaei-C.omf
 help/gwaei.omf
 
 po/Makefile
-po/Makefile.in
 po/en@boldquot.insert-header
 po/en@quot.insert-header
 po/en@boldquot.po
