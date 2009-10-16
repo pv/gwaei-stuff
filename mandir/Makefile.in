@@ -193,7 +193,8 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-man_MANS = gwaei.1 waei.1
+@WITHOUT_GNOME_FALSE@man_MANS = gwaei.1 waei.1
+@WITHOUT_GNOME_TRUE@man_MANS = waei.1
 all: all-am
 
 .SUFFIXES:

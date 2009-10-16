@@ -441,6 +441,11 @@ char* gw_util_next_hira_char_from_roma (char *input)
       //Increment
       input_ptr++;
     }
+    if (*(input_ptr - 1) == 'n' &&
+            *(input_ptr) == 'n'
+       )
+      input_ptr++;
+
 
     return input_ptr;
 }
