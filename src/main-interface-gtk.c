@@ -2544,6 +2544,9 @@ void gw_ui_append_def_same_to_buffer (GwSearchItem* item, gboolean UNUSED)
       if (resultline->classification_start)
       {
         gtk_text_buffer_insert                   (tb, &iter, " ", -1);
+        GtkTextIter copy = iter;
+        gtk_text_iter_backward_char (&copy);
+        gtk_text_buffer_remove_tag_by_name (tb, "important", &copy, &iter);
         gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->classification_start, -1, "gray", "italic", NULL);
       }
       if (resultline->important)
