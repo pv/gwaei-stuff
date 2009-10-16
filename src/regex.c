@@ -50,27 +50,28 @@ regex_t re_hexcolor;
 
 
 regex_t re_i_adj_pastform;
+regex_t re_i_adj_negative;
+regex_t re_i_adj_te_form;
+regex_t re_i_adj_causative;
+regex_t re_i_adj_conditional;
 regex_t re_na_adj_pastform;
+regex_t re_na_adj_negative;
+regex_t re_na_adj_te_form;
+regex_t re_na_adj_causative;
+regex_t re_na_adj_conditional;
+/*
 regex_t re_verb_presentform;
 regex_t re_verb_pastform_negative;
 regex_t re_verb_pastform;
-regex_t re_i_adj_negative;
-regex_t re_na_adj_negative;
 regex_t re_verb_te_form;
-regex_t re_i_adj_te_form;
-regex_t re_na_adj_te_form;
 regex_t re_verb_potention;
 regex_t re_verb_causative;
-regex_t re_i_adj_causative;
-regex_t re_na_adj_causative;
 regex_t re_conditional;
-regex_t re_i_adj_conditional;
-regex_t re_na_adj_conditional;
 regex_t re_negative_conditional;
 regex_t re_verb_imperative;
 regex_t re_verb_passive;
 regex_t re_verb_volitional;
-
+*/
 
 
 //!
@@ -101,60 +102,36 @@ void gw_regex_initialize_constant_regular_expressions ()
       printf ("A problem occured while setting the regular expression for hexcolor\n");
 
 
-    //Past tense verb forms
-    if (regcomp (&re_verb_pastform, "\\B((った)|(いた)|(いだ)|(した)|(んだ)|(えた))$", eflags_exist) != 0)
-      printf ("A problem occured while setting the regular expression for hexcolor\n");
-    if (regcomp (&re_i_adj_pastform, "\\B((かった))$", eflags_exist) != 0)
-      printf ("A problem occured while setting the regular expression for hexcolor\n");
-    if (regcomp (&re_na_adj_pastform, "\\B((だった))$", eflags_exist) != 0)
-      printf ("A problem occured while setting the regular expression for hexcolor\n");
-    if (regcomp (&re_verb_presentform, "\\B((ます))$", eflags_exist) != 0)
-      printf ("A problem occured while setting the regular expression for hexcolor\n");
-    if (regcomp (&re_verb_politepast, "\\B((ました))$", eflags_exist) != 0)
-      printf ("A problem occured while setting the regular expression for hexcolor\n");
-    if (regcomp (&re_verb_pastform_negative, "\\B((なかった))$", eflags_exist) != 0)
-      printf ("A problem occured while setting the regular expression for hexcolor\n");
+    //Adjective forms
+    regcomp (&re_i_adj_past,         "\\B((かった))$", eflags_exist);
+    regcomp (&re_i_adj_negative,     "\\B((くない))$", eflags_exist);
+    regcomp (&re_i_adj_te,           "\\B((くて))$", eflags_exist);
+    regcomp (&re_i_adj_causative,    "\\B((くさせる))$", eflags_exist);
+    regcomp (&re_i_adj_conditional,  "\\B((ければ))$", eflags_exist);
 
-    if (regcomp (&re_verb_negative, "\\B((わない)|(かない)|(がない)|(さない)|(たない)|(なない)|(まない)|(いない))$", eflags_exist) != 0)
-      printf ("A problem occured while setting the regular expression for hexcolor\n");
-    if (regcomp (&re_i_adj_negative, "\\B((くない))$", eflags_exist) != 0)
-      printf ("A problem occured while setting the regular expression for hexcolor\n");
-    if (regcomp (&re_na_adj_negative, "\\B((くない)|(ではない)|(じゃない))$", eflags_exist) != 0)
-      printf ("A problem occured while setting the regular expression for hexcolor\n");
+    regcomp (&re_na_adj_past,        "\\B((だった))$", eflags_exist);
+    regcomp (&re_na_adj_negative,    "\\B((くない)|(ではない)|(じゃない))$", eflags_exist);
+    regcomp (&re_na_adj_te,          "\\B((で))$", eflags_exist);
+    regcomp (&re_na_adj_causative,   "\\B((にさせる))$", eflags_exist);
+    regcomp (&re_na_adj_conditional, "\\B((であれば))$", eflags_exist);
 
-    if (regcomp (&re_verb_te_form, "\\B((って)|(いて)|(いで)|(して)|(んで))$", eflags_exist) != 0)
-      printf ("A problem occured while setting the regular expression for hexcolor\n");
-    if (regcomp (&re_i_adj_te_form, "\\B((くて))$", eflags_exist) != 0)
-      printf ("A problem occured while setting the regular expression for hexcolor\n");
-    if (regcomp (&re_na_adj_te_form, "\\B((で))$", eflags_exist) != 0)
-      printf ("A problem occured while setting the regular expression for hexcolor\n");
 
-    if (regcomp (&re_verb_potention, "\\B((える)|(ける)|(げる)|(せる)|(てる)|(ねる)|(べる)|(める)|(れる)|(いられる)|(えられる)|(いれる))$", eflags_exist) != 0)
-      printf ("A problem occured while setting the regular expression for hexcolor\n");
-    if (regcomp (&re_verb_causative, "\\B((させる)|(わせる)|(かせる)|(がせる)|(なせる)|(たせる)|(ばせる)|ませる(らせる)|(いさせる)|())$", eflags_exist) != 0)
-      printf ("A problem occured while setting the regular expression for hexcolor\n");
-    if (regcomp (&re_i_adj_causative, "\\B((くさせる))$", eflags_exist) != 0)
-      printf ("A problem occured while setting the regular expression for hexcolor\n");
-    if (regcomp (&re_na_adj_causative, "\\B((にさせる))$", eflags_exist) != 0)
-      printf ("A problem occured while setting the regular expression for hexcolor\n");
-
-    if (regcomp (&re_conditional, "\\B((すれば)|(くれば)|(であれば)|(えば)|(けば)|(げば)|(せば)|(てば)|(ねば)|(べば)|(めば)|(れば)|(いれば)|(れば))$", eflags_exist) != 0)
-      printf ("A problem occured while setting the regular expression for hexcolor\n");
-
-    if (regcomp (&re_i_adj_conditional, "\\B((ければ))$", eflags_exist) != 0)
-      printf ("A problem occured while setting the regular expression for hexcolor\n");
-    if (regcomp (&re_na_adj_conditional, "\\B((であれば))$", eflags_exist) != 0)
-      printf ("A problem occured while setting the regular expression for hexcolor\n");
-    if (regcomp (&re_negative_conditional, "\\B((なければ))$", eflags_exist) != 0)
-      printf ("A problem occured while setting the regular expression for hexcolor\n");
-
-    if (regcomp (&re_verb_imperative, "\\B((しろ)|(せよ)|(こい)|(くれ)|(ませ)|(であれ)|(え)|(け)|(せ)|(て)|(ね)|(べ)|(め)|(れ)|(いろ)|(えろ))$", eflags_exist) != 0)
-      printf ("A problem occured while setting the regular expression for hexcolor\n");
-
-    if (regcomp (&re_verb_passive, "\\B((される)|(こられる)|(われる)|(かれる)|(がれる)|(される)|(たれる)|(なれる)|(ばれる)|(まれる)|(られる)|(いられる)|(えられる))$", eflags_exist) != 0)
-      printf ("A problem occured while setting the regular expression for hexcolor\n");
-    if (regcomp (&re_verb_volitional, "\\B((しよう)|(せよう)|(こよう)|(だろう)|(ましょう)|(おう)|(こう)|(ごう)|(そう)|(とう)|(のう)|(ぼう)|(もう)|(ろう)|(いよう)|(よう))$", eflags_exist) != 0)
-      printf ("A problem occured while setting the regular expression for hexcolor\n");
+    //Verb forms
+/*
+    regcomp (&re_verb_presentform, "\\B((ます))$", eflags_exist);
+    regcomp (&re_verb_politepast, "\\B((ました))$", eflags_exist);
+    regcomp (&re_verb_pastform_negative, "\\B((なかった))$", eflags_exist);
+    regcomp (&re_verb_pastform, "\\B((った)|(いた)|(いだ)|(した)|(んだ)|(えた))$", eflags_exist);
+    regcomp (&re_verb_negative, "\\B((わない)|(かない)|(がない)|(さない)|(たない)|(なない)|(まない)|(いない))$", eflags_exist);
+    regcomp (&re_verb_te_form, "\\B((って)|(いて)|(いで)|(して)|(んで))$", eflags_exist);
+    regcomp (&re_verb_potention, "\\B((える)|(ける)|(げる)|(せる)|(てる)|(ねる)|(べる)|(める)|(れる)|(いられる)|(えられる)|(いれる))$", eflags_exist);
+    regcomp (&re_verb_causative, "\\B((させる)|(わせる)|(かせる)|(がせる)|(なせる)|(たせる)|(ばせる)|ませる(らせる)|(いさせる)|())$", eflags_exist);
+    regcomp (&re_conditional, "\\B((すれば)|(くれば)|(であれば)|(えば)|(けば)|(げば)|(せば)|(てば)|(ねば)|(べば)|(めば)|(れば)|(いれば)|(れば))$", eflags_exist);
+    regcomp (&re_negative_conditional, "\\B((なければ))$", eflags_exist);
+    regcomp (&re_verb_imperative, "\\B((しろ)|(せよ)|(こい)|(くれ)|(ませ)|(であれ)|(え)|(け)|(せ)|(て)|(ね)|(べ)|(め)|(れ)|(いろ)|(えろ))$", eflags_exist);
+    regcomp (&re_verb_passive, "\\B((される)|(こられる)|(われる)|(かれる)|(がれる)|(される)|(たれる)|(なれる)|(ばれる)|(まれる)|(られる)|(いられる)|(えられる))$", eflags_exist);
+    regcomp (&re_verb_volitional, "\\B((しよう)|(せよう)|(こよう)|(だろう)|(ましょう)|(おう)|(こう)|(ごう)|(そう)|(とう)|(のう)|(ぼう)|(もう)|(ろう)|(いよう)|(よう))$", eflags_exist);
+*/
 }
 
 

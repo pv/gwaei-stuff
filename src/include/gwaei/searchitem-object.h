@@ -49,6 +49,7 @@ enum search_states
 //! @brief Primitive for storing search item information
 //!
 typedef struct GwSearchItem {
+    char raw_query[MAX_QUERY];              //!< Query of the search
     char query[MAX_QUERY];                  //!< Query of the search
     GwDictInfo* dictionary;                 //!< Pointer to the dictionary used
 
