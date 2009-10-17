@@ -139,6 +139,7 @@ gboolean gw_io_copy_with_encoding( char *source_path,     char *target_path,
     char *inptr, *outptr;
     char prev_inbytes = 0;
 
+    size_t written;
     GIConv conv = g_iconv_open (target_encoding, source_encoding);
     while (fgets(buffer, length, readfd) != NULL)
     {
@@ -155,7 +156,7 @@ gboolean gw_io_copy_with_encoding( char *source_path,     char *target_path,
         inptr = inptr + strlen(inptr) - inbytes_left;
         outptr = outptr + strlen(outptr) - outbytes_left;
       }
-      fwrite(output, 1, strlen(output), writefd); 
+      written = fwrite(output, 1, strlen(output), writefd); 
     }
     g_iconv_close (conv);
 
