@@ -71,6 +71,6 @@ uninstall-local:
 
 
 ##DISTCLEANFILES = gnome-doc-utils.make
-EXTRA_DIST = config.rpath m4/ChangeLog config.rpath m4/ChangeLog debian/rules debian/changelog debian/control debian/compat debian/copyright debian/series help/Makefile.am.gnome help/Makefile.am.none
+EXTRA_DIST = config.rpath m4/ChangeLog config.rpath m4/ChangeLog help/Makefile.am.gnome help/Makefile.am.none mandir/gwaei.1 mandir/waei.1
 
 

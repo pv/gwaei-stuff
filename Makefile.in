@@ -251,7 +251,7 @@ newsdir = $(docdir)
 copyingdir = $(docdir)
 changelogdir = $(docdir)
 CONFIGURE_OPTIONS = --prefix $(prefix) --bindir=$(bindir) --sbindir=$(sbindir) --libexecdir=$(libexecdir) --sysconfdir=$(sysconfdir) --sharedstatedir=$(sharedstatedir) --localstatedir=$(localstatedir) --libdir=$(libdir) --includedir=$(includedir) --oldincludedir=$(oldincludedir) --datarootdir=$(datarootdir) --datadir=$(datadir) --infodir=$(infodir) --localedir=$(localedir) --mandir=$(mandir) --docdir=$(docdir)
-EXTRA_DIST = config.rpath m4/ChangeLog config.rpath m4/ChangeLog debian/rules debian/changelog debian/control debian/compat debian/copyright debian/series help/Makefile.am.gnome help/Makefile.am.none
+EXTRA_DIST = config.rpath m4/ChangeLog config.rpath m4/ChangeLog help/Makefile.am.gnome help/Makefile.am.none mandir/gwaei.1 mandir/waei.1
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
