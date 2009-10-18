@@ -74,20 +74,24 @@ static UniqueResponse message_received_cb (UniqueApp         *app,
     switch (command)
     {
         case UNIQUE_ACTIVATE:
+          gdk_x11_window_move_to_current_desktop (main_window->window);
           gtk_window_set_screen (GTK_WINDOW (main_window), unique_message_data_get_screen (message));
           gtk_window_present_with_time (GTK_WINDOW (main_window), time_);
           if (GTK_WIDGET_VISIBLE (kanjipad_window))
           {
+            gdk_x11_window_move_to_current_desktop (main_window->window);
             gtk_window_set_screen (GTK_WINDOW (kanjipad_window), unique_message_data_get_screen (message));
             gtk_window_present_with_time (GTK_WINDOW (kanjipad_window), time_);
           }
           if (GTK_WIDGET_VISIBLE (radicals_window))
           {
+            gdk_x11_window_move_to_current_desktop (radicals_window->window);
             gtk_window_set_screen (GTK_WINDOW (radicals_window), unique_message_data_get_screen (message));
             gtk_window_present_with_time (GTK_WINDOW (radicals_window), time_);
           }
           if (GTK_WIDGET_VISIBLE (settings_window))
           {
+            gdk_x11_window_move_to_current_desktop (settings_window->window);
             gtk_window_set_screen (GTK_WINDOW (settings_window), unique_message_data_get_screen (message));
             gtk_window_present_with_time (GTK_WINDOW (settings_window), time_);
           }
