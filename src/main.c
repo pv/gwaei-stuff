@@ -108,6 +108,8 @@ int main( int argc, char *argv[] )
     else
       initialize_gui_interface(&argc, &argv);
 
+    gw_dictlist_free ();
+
     exit(EXIT_SUCCESS);
 }
 

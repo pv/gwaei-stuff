@@ -99,12 +99,12 @@ void gw_ui_strcpy_all_selected_radicals(char *output, int *MAX)
 //!
 //! @param string The label to search for
 //!
-void gw_ui_set_button_sensative_when_label_is (const char *string)
+void gw_ui_set_button_sensitive_when_label_is (const char *string)
 {
     GtkWidget *table;
     table = GTK_WIDGET (gtk_builder_get_object(builder, "radicals_table"));
 
-    GList     *list;
+    GList     *list, *it;
     const char *label_text = NULL;
 
     const char *jump = string;
@@ -116,17 +116,18 @@ void gw_ui_set_button_sensative_when_label_is (const char *string)
       radical[2] = jump[2];
       radical[3] = '\0';
 
-      list  = gtk_container_get_children (GTK_CONTAINER (table));
-      while (list != NULL)
+      it = list  = gtk_container_get_children (GTK_CONTAINER (table));
+      while (it != NULL)
       {
-        if (G_OBJECT_TYPE(list->data) == g_type_from_name("GtkToggleButton"))
+        if (G_OBJECT_TYPE(it->data) == g_type_from_name("GtkToggleButton"))
         {
-           label_text = gtk_button_get_label (GTK_BUTTON(list->data));
+           label_text = gtk_button_get_label (GTK_BUTTON(it->data));
            if (strcmp(label_text, radical) == 0)
-            gtk_widget_set_sensitive (GTK_WIDGET (list->data), TRUE);
+            gtk_widget_set_sensitive (GTK_WIDGET (it->data), TRUE);
         }
-        list = list->next;
+        it = it->next;
       }
+      g_list_free(list);
     }
     while ((jump = g_utf8_strchr (jump, -1, L' ')))
     {
@@ -138,17 +139,18 @@ void gw_ui_set_button_sensative_when_label_is (const char *string)
         radical[2] = jump[2];
         radical[3] = '\0';
 
-        list  = gtk_container_get_children (GTK_CONTAINER (table));
-        while (list != NULL)
+        it = list  = gtk_container_get_children (GTK_CONTAINER (table));
+        while (it != NULL)
         {
-          if (G_OBJECT_TYPE(list->data) == g_type_from_name("GtkToggleButton"))
+          if (G_OBJECT_TYPE(it->data) == g_type_from_name("GtkToggleButton"))
           {
-             label_text = gtk_button_get_label (GTK_BUTTON(list->data));
+             label_text = gtk_button_get_label (GTK_BUTTON(it->data));
              if (strcmp(label_text, radical) == 0)
-              gtk_widget_set_sensitive (GTK_WIDGET (list->data), TRUE);
+              gtk_widget_set_sensitive (GTK_WIDGET (it->data), TRUE);
           }
-          list = list->next;
+          it = it->next;
         }
+        g_list_free(list);
       }
     }
 }

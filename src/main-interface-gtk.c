@@ -2725,7 +2725,7 @@ void gw_ui_append_kanji_results_to_buffer (GwSearchItem *item, gboolean unused)
         gtk_text_buffer_insert (tb, &iter, "\n", -1);
         gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); line = gtk_text_iter_get_line (&iter);
 
-        gw_ui_set_button_sensative_when_label_is (resultline->radicals);
+        gw_ui_set_button_sensitive_when_label_is (resultline->radicals);
       }
 
       //Readings
@@ -2825,7 +2825,7 @@ void gw_ui_append_radicals_results_to_buffer (GwSearchItem *item, gboolean unuse
         gtk_text_buffer_insert (tb, &iter, "\n", -1);
         gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); line = gtk_text_iter_get_line (&iter);
 
-        gw_ui_set_button_sensative_when_label_is (resultline->radicals);
+        gw_ui_set_button_sensitive_when_label_is (resultline->radicals);
       }
 }
 

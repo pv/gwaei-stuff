@@ -180,8 +180,9 @@ GList* gw_dictlist_remove_first()
 void gw_dictlist_free()
 {
     while (dictionaries->list != NULL)
-      gw_dictlist_remove_first();
+      dictionaries->list = gw_dictlist_remove_first();
 
+    g_free(dictionaries);
     dictionaries = NULL;
 }
 
