@@ -20,9 +20,13 @@
 *******************************************************************************/
 
 //!
-//!  @file src/queryline-object.c
+//! @file src/queryline-object.c
 //!
-//!  @brief Currently unused query object
+//! @brief Currently unused preliminary query object
+//!
+//! The GwQueryLine object will be used for parsing
+//! the query into token so comparisons can be more
+//! intelligently handled.
 //!
 
 #include <stdio.h>
@@ -39,7 +43,7 @@
 #define EFLAGS_RELEVANT REG_EXTENDED | REG_ICASE | REG_NOSUB
 #define EFLAGS_LOCATE   REG_EXTENDED | REG_ICASE
 
-  //Create the needed regex for searching and locating
+//Create the needed regex for searching and locating
 
 
 GwQueryLine* gw_queryline_new ()
@@ -219,5 +223,62 @@ gboolean create_roma_med_regex (regex_t *regex, char *string, int flags)
     strcat(expression, string);
     strcat(expression, ")\\b");
     return (regcomp(regex, expression, flags) != 0);
+}
+
+
+//!
+//! @brief Comparison function that should be moved to the GwSearchItem file when it matures
+//!
+//! @param item A GwSearchItem to get search information from
+//!
+gboolean gw_searchitem_generic_comparison (GwSearchItem *item;)
+{
+    int i;
+    int j;
+    GwResultLine *rl, *ql;
+    rl = item->resultline;
+    ql = item->queryline;
+
+    //Compare kanji atoms
+    i = 0;
+    while (ql->kanji_atom[i])
+    {
+      if (regexec(&(ql->kanji_regex_high[i]), rl->kanji_start, 1, NULL, 0) == 0)
+        return TRUE;
+      i++;  
+    }
+    //Compare furigana atoms
+    i = 0;
+    while (ql->hira_atom[i])
+    {
+      if (regexec(&(ql->hira_regex_high[i]), rl->furigana_start, 1, NULL, 0) == 0)
+        return TRUE;
+      else if (regexec(&(ql->kata_regex_high[i]), rl->furigana_start, 1, NULL, 0) == 0)
+        return TRUE;
+      i++;  
+    }
+    //Compare romaji atoms
+    i = 0;
+    while (ql->roma_atom[i])
+    {
+      j = 0;
+      while (rl->def_start[j])
+      {
+        if (regexec(&(ql->roma_regex_high[i]), rl->def_start[j], 1, NULL, 0) == 0)
+          return TRUE;
+        j++;
+      }
+      i++;  
+    }
+    //Compare mix atoms
+    i = 0;
+    while (ql->mix[i])
+    {
+      if (regexec(&(ql->mix_regex_high[i]), rl->string, 1, NULL, 0) == 0)
+        return TRUE;
+      i++;  
+    }
+
+    return FALSE;
 }
 
