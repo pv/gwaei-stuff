@@ -2396,7 +2396,7 @@ void initialize_gui_interface(int *argc, char ***argv)
     gdk_threads_init();
     gtk_init (argc, argv);
 
-    app = unique_app_new_with_commands ("org.dictionary.gWaei", NULL, "unused_custom_command", NULL);
+    app = unique_app_new ("org.dictionary.gWaei", NULL);
 
     
     //Activate the main window in the program is already open
