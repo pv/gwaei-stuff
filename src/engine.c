@@ -181,21 +181,13 @@ static void append_stored_result_to_output (GwSearchItem *item, GList **results,
 //! @param item a search item to grab the regrexes from
 //! @return Returns one of the integers: LOW_RELEVANCE, MEDIUM_RELEVANCE, or HIGH_RELEVANCE.
 //!
-static int get_relevance (char* text, GwSearchItem *item) {
-    int i;
-
-    //The search results is freakin' gold :-D
-    for (i = 0; i < item->total_re; i++)
-      if (regexec(&(item->re_relevance_high[i]), text, 1, NULL, 0) == 0)
-        return HIGH_RELEVANCE;
-
-    //Blarg.  A search result that may come in useful. :-)
-    for (i = 0; i < item->total_re; i++)
-      if (regexec(&(item->re_relevance_medium[i]), text, 1, NULL, 0) == 0)
-        return MEDIUM_RELEVANCE;
-
-    //Search result wasn't relevent. :-(
-    return LOW_RELEVANCE;
+static int get_relevance (GwSearchItem *item) {
+    if (gw_searchitem_existance_generic_comparison (item, GW_QUERYLINE_HIGH))
+      return HIGH_RELEVANCE;
+    else if (gw_searchitem_existance_generic_comparison (item, GW_QUERYLINE_MED))
+      return MEDIUM_RELEVANCE;
+    else
+      return LOW_RELEVANCE;
 }
 
 
@@ -234,11 +226,24 @@ static gboolean stream_results_thread (GwSearchItem *item)
         strcat(item->scratch_buffer1, ":");
         strcat(item->scratch_buffer1, item->scratch_buffer2);
       }
+
       //Commented input in the dictionary...we should skip over it
       if(item->scratch_buffer1[0] == '#' || g_utf8_get_char(item->scratch_buffer1) == L'？') 
-      { } 
+        continue;
+
+      //Setup the resultline
+      if (item->resultline != NULL)
+      {
+        item->swap_resultline = item->backup_resultline;
+        item->backup_resultline = item->resultline;
+        item->resultline = item->swap_resultline;
+        item->swap_resultline = NULL;
+      }
+      (*item->gw_searchitem_parse_result_string)(item->resultline, item->scratch_buffer1);
+
+
       //Search engine for the kanji sidebar 
-      else if (item->target == GW_TARGET_KANJI)
+      if (item->target == GW_TARGET_KANJI)
       {
         if (regexec(&(item->re_exist[0]), item->scratch_buffer1, 1, NULL, 0) == 0)
         {
@@ -251,17 +256,10 @@ static gboolean stream_results_thread (GwSearchItem *item)
       //Search engine for other dictionaries
       else
       {
-        //Search for existance of every atom in the query.
-        int i;
-        gboolean missing_an_atom = FALSE;
-        for(i = 0; i < item->total_re && !missing_an_atom; i++)
-          if (regexec(&(item->re_exist[i]), item->scratch_buffer1, 1, NULL, 0) != 0)
-            missing_an_atom = TRUE;
-
         //Results match, add to the text buffer
-        if (!missing_an_atom)
+        if (gw_searchitem_existance_generic_comparison (item, GW_QUERYLINE_EXIST))
         {
-          int relevance = get_relevance(item->scratch_buffer1, item);
+          int relevance = get_relevance(item);
           char *result = NULL;
           switch(relevance)
           {
@@ -270,15 +268,6 @@ static gboolean stream_results_thread (GwSearchItem *item)
                 item->total_relevant_results++;
                 append_more_relevant_header_to_output(item);
                 gw_ui_update_total_results_label(item);
-                if (item->resultline != NULL)
-                {
-                  //Pull a switcheroo
-                  item->swap_resultline = item->backup_resultline;
-                  item->backup_resultline = item->resultline;
-                  item->resultline = item->swap_resultline;
-                  item->swap_resultline = NULL;
-                }
-                (*item->gw_searchitem_parse_result_string)(item->resultline, item->scratch_buffer1);
                 append_result_to_output(item, item->resultline);
                 break;
             case MEDIUM_RELEVANCE:

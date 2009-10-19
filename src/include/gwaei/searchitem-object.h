@@ -31,6 +31,7 @@
 //! Historylist targets
 //!
 
+#include <gwaei/queryline-object.h>
 #include <gwaei/resultline-object.h>
 
 
@@ -78,6 +79,7 @@ typedef struct GwSearchItem {
     GwResultLine* resultline;               //!< Result line to store parsed result
     GwResultLine* backup_resultline;        //!< Result line kept for comparison purposes from previosu result line
     GwResultLine* swap_resultline;          //!< Swap space for swapping result line and backup_resultline
+    GwQueryLine* queryline;               //!< Result line to store parsed result
 
 
     void (*gw_searchitem_parse_result_string)(GwResultLine*, char*);

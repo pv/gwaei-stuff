@@ -97,55 +97,49 @@ int gw_queryline_parse_string (GwQueryLine *line, const char* string)
 
    while (generic_atoms[i] != NULL && i < MAX_ATOMS)
    {
-     printf("%s\n", generic_atoms[i]);
      if (gw_util_is_kanji_str (generic_atoms[i]))
      {
        line->kanji_atom[kanji_pos] = generic_atoms[i];
-       if (regcomp(&((line->kanji_regex_exist)[kanji_pos]), generic_atoms[i], EFLAGS_EXIST) != 0)  return FALSE;
-       if (regcomp(&((line->kanji_regex_locate)[kanji_pos]), generic_atoms[i], EFLAGS_LOCATE) != 0)return FALSE;
-       if (!create_kanji_high_regex(&((line->kanji_regex_high)[kanji_pos]), generic_atoms[i], EFLAGS_LOCATE))return FALSE;
-       if (!create_kanji_med_regex(&((line->kanji_regex_med)[kanji_pos]), generic_atoms[i], EFLAGS_LOCATE))return FALSE;
-       printf("kanji atom: %s\n", line->kanji_atom[kanji_pos]);
+       if (regcomp (&(line->kanji_regex                [GW_QUERYLINE_EXIST] [kanji_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0) return FALSE;
+       if (regcomp (&(line->kanji_regex                [GW_QUERYLINE_LOCATE][kanji_pos]), generic_atoms[i], EFLAGS_LOCATE) != 0) return FALSE;
+       if (create_kanji_high_regex (&(line->kanji_regex[GW_QUERYLINE_HIGH]  [kanji_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0) return FALSE;
+       if (create_kanji_med_regex (&(line->kanji_regex [GW_QUERYLINE_MED]   [kanji_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0) return FALSE;
        kanji_pos++;
      }
      else if (gw_util_is_hiragana_str (generic_atoms[i]))
      {
        line->hira_atom[hira_pos] = generic_atoms[i];
-       if (regcomp(&((line->hira_regex_exist)[hira_pos]), generic_atoms[i], EFLAGS_EXIST) != 0)  return FALSE;
-       if (regcomp(&((line->hira_regex_locate)[hira_pos]), generic_atoms[i], EFLAGS_LOCATE) != 0)return FALSE;
-       if (!create_katahira_high_regex(&((line->hira_regex_high)[hira_pos]), generic_atoms[i], EFLAGS_LOCATE))return FALSE;
-       if (!create_katahira_med_regex(&((line->hira_regex_med)[hira_pos]), generic_atoms[i], EFLAGS_LOCATE))return FALSE;
-       printf("hiragana atom: %s\n", line->hira_atom[hira_pos]);
+       if (regcomp (&(line->hira_regex                   [GW_QUERYLINE_EXIST] [hira_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0)  return FALSE;
+       if (regcomp (&(line->hira_regex                   [GW_QUERYLINE_LOCATE][hira_pos]), generic_atoms[i], EFLAGS_LOCATE) != 0)  return FALSE;
+       if (create_katahira_high_regex (&(line->hira_regex[GW_QUERYLINE_HIGH]  [hira_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0)  return FALSE;
+       if (create_katahira_med_regex (&(line->hira_regex [GW_QUERYLINE_MED]   [hira_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0)  return FALSE;
        hira_pos++;
      }
      else if (gw_util_is_katakana_str (generic_atoms[i]))
      {
        line->kata_atom[kata_pos] = generic_atoms[i];
-       if (regcomp(&((line->kata_regex_exist)[kata_pos]), generic_atoms[i], EFLAGS_EXIST) != 0)  return FALSE;
-       if (regcomp(&((line->kata_regex_locate)[kata_pos]), generic_atoms[i], EFLAGS_LOCATE) != 0)return FALSE;
-       if (!create_katahira_high_regex(&((line->kata_regex_high)[kata_pos]), generic_atoms[i], EFLAGS_LOCATE))return FALSE;
-       if (!create_katahira_med_regex(&((line->kata_regex_med)[kata_pos]), generic_atoms[i], EFLAGS_LOCATE))return FALSE;
-       printf("katakanaatom: %s\n", line->kata_atom[kata_pos]);
+       if (regcomp (&(line->kata_regex                   [GW_QUERYLINE_EXIST] [kata_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0)  return FALSE;
+       if (regcomp (&(line->kata_regex                   [GW_QUERYLINE_LOCATE][kata_pos]), generic_atoms[i], EFLAGS_LOCATE) != 0)  return FALSE;
+       if (create_katahira_high_regex (&(line->kata_regex[GW_QUERYLINE_HIGH]  [kata_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0)  return FALSE;
+       if (create_katahira_med_regex (&(line->kata_regex [GW_QUERYLINE_MED]   [kata_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0)  return FALSE;
        kata_pos++;
      }
      else if (gw_util_is_romaji_str (generic_atoms[i]))
      {
        line->roma_atom[roma_pos] = generic_atoms[i];
-       if (regcomp(&((line->roma_regex_exist)[roma_pos]), generic_atoms[i], EFLAGS_EXIST) != 0)  return FALSE;
-       if (regcomp(&((line->roma_regex_locate)[roma_pos]), generic_atoms[i], EFLAGS_LOCATE) != 0)return FALSE;
-       if (!create_roma_high_regex(&((line->roma_regex_high)[roma_pos]), generic_atoms[i], EFLAGS_LOCATE))return FALSE;
-       if (!create_roma_med_regex(&((line->roma_regex_med)[roma_pos]), generic_atoms[i], EFLAGS_LOCATE))return FALSE;
-       printf("romaji atom: %s\n", line->roma_atom[roma_pos]);
+       if (regcomp (&(line->roma_regex               [GW_QUERYLINE_EXIST] [roma_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0)  return FALSE;
+       if (regcomp (&(line->roma_regex               [GW_QUERYLINE_LOCATE][roma_pos]), generic_atoms[i], EFLAGS_LOCATE) != 0)  return FALSE;
+       if (create_roma_high_regex (&(line->roma_regex[GW_QUERYLINE_HIGH]  [roma_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0)  return FALSE;
+       if (create_roma_med_regex (&(line->roma_regex [GW_QUERYLINE_MED]   [roma_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0)  return FALSE;
        roma_pos++;
      }
      else
      {
        line->mix_atom[mix_pos] = generic_atoms[i];
-       if (regcomp(&((line->mix_regex_exist)[mix_pos]), generic_atoms[i], EFLAGS_EXIST) != 0)  return FALSE;
-       if (regcomp(&((line->mix_regex_locate)[mix_pos]), generic_atoms[i], EFLAGS_LOCATE) != 0)return FALSE;
-//       if (!create_mix_high_regex(&((line->mix_regex_high)[mix_pos]), generic_atoms[i], EFLAGS_LOCATE))return FALSE;
-//       if (!create_mix_med_regex(&((line->mix_regex_med)[mix_pos]), generic_atoms[i], EFLAGS_LOCATE))return FALSE;
-       printf("mix: %s\n", line->mix_atom[mix_pos]);
+       if (regcomp (&(line->mix_regex              [GW_QUERYLINE_EXIST] [mix_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0) return FALSE;
+       if (regcomp (&(line->mix_regex              [GW_QUERYLINE_LOCATE][mix_pos]), generic_atoms[i], EFLAGS_LOCATE) != 0) return FALSE;
+       if (create_mix_high_regex (&(line->mix_regex[GW_QUERYLINE_HIGH]  [mix_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0) return FALSE;
+       if (create_mix_med_regex (&(line->mix_regex [GW_QUERYLINE_MED]   [mix_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0) return FALSE;
        mix_pos++;
      }
      i++;
@@ -153,8 +147,9 @@ int gw_queryline_parse_string (GwQueryLine *line, const char* string)
    line->kanji_atom[kanji_pos] = NULL;
    line->hira_atom[hira_pos]   = NULL;
    line->kata_atom[kata_pos]   = NULL;
-   line->roma_atom[roma_pos] = NULL;
+   line->roma_atom[roma_pos]   = NULL;
    line->mix_atom[mix_pos]     = NULL;
+   return TRUE;
 }
 
 
@@ -162,19 +157,19 @@ int gw_queryline_parse_string (GwQueryLine *line, const char* string)
 gboolean create_kanji_high_regex (regex_t *regex, char *string, int flags)
 {
     char expression[MAX_LINE * 2];
-    strcpy(expression, "((^)|(\\[)|(\\()|(\\{)|( )|(お)|(を)|(に)|(で)|(は)|(と))(");
-    strcat(expression, string);
-    strcat(expression, ")((で)|(が)|(の)|(を)|(に)|(で)|(は)|(と)|(\\])|(\\))|(\\})|( ))");
-    return (regcomp(regex, expression, flags) != 0);
+    strcpy (expression, "((^)|(\\[)|(\\()|(\\{)|( )|(お)|(を)|(に)|(で)|(は)|(と))(");
+    strcat (expression, string);
+    strcat (expression, ")((で)|(が)|(の)|(を)|(に)|(で)|(は)|(と)|(\\])|(\\))|(\\})|( ))");
+    return regcomp (regex, expression, flags);
 }
 
 gboolean create_katahira_high_regex (regex_t *regex, char *string, int flags)
 {
     char expression[MAX_LINE * 2];
-    strcpy(expression, "((^)|(\\[)|(\\()|(\\{)|( )|(^お))(");
-    strcat(expression, string);
-    strcat(expression, ")((\\])|(\\))|(\\})|( ))");
-    return (regcomp(regex, expression, flags) != 0);
+    strcpy (expression, "((^)|(\\[)|(\\()|(\\{)|( )|(^お))(");
+    strcat (expression, string);
+    strcat (expression, ")((\\])|(\\))|(\\})|( ))");
+    return regcomp (regex, expression, flags);
 }
 
 
@@ -182,103 +177,72 @@ gboolean create_katahira_high_regex (regex_t *regex, char *string, int flags)
 gboolean create_roma_high_regex (regex_t *regex, char *string, int flags)
 {
     char expression[MAX_LINE * 2];
-    strcpy(expression, "(\\b(");
-    strcat(expression, string);
-    strcat(expression, ")\\b|^(");
-    strcat(expression, string);
-    strcat(expression, "))");
-    return (regcomp(regex, expression, flags) != 0);
+    strcpy (expression, "(^|\\)|/)\\b(");
+    strcat (expression, string);
+    strcat (expression, ")\\b(\\(|/|$)");
+    printf("%s\n", expression);
+    return regcomp (regex, expression, flags);
 }
 
 gboolean create_kanji_med_regex (regex_t *regex, char *string, int flags)
 {
     char expression[MAX_LINE * 2];
-    strcpy(expression, "((^無)|(^不)|(^非)|(^)|(^お)|(^御))(");
-    strcat(expression, string);
-    strcat(expression, ")((\\])|(\\))|(\\})|( ))");
-    return (regcomp(regex, expression, flags) != 0);
+    strcpy (expression, "((^無)|(^不)|(^非)|(^)|(^お)|(^御))(");
+    strcat (expression, string);
+    strcat (expression, ")((\\])|(\\))|(\\})|( ))");
+    return regcomp (regex, expression, flags);
 }
 
 
 gboolean create_katahira_med_regex (regex_t *regex, char *string, int flags)
 {
     char expression[MAX_LINE * 2];
-    strcpy(expression, "((^)|(\\[)|(\\()|(\\{)|( )|(^お))(");
-    strcat(expression, string);
-    strcat(expression, ")((\\])|(\\))|(\\})|( ))");
-    return (regcomp(regex, expression, flags) != 0);
+    strcpy (expression, "((^)|(\\[)|(\\()|(\\{)|( )|(^お))(");
+    strcat (expression, string);
+    strcat (expression, ")((\\])|(\\))|(\\})|( ))");
+    return regcomp (regex, expression, flags);
 }
 
 
 gboolean create_roma_med_regex (regex_t *regex, char *string, int flags)
 {
     char expression[MAX_LINE * 2];
-    strcpy(expression, "\\{(");
-    strcat(expression, string);
-    strcat(expression, ")\\}|(\\) |/)((to )|(to be )|())(");
-    strcat(expression, string);
-    strcat(expression, ")(( \\([^/]+\\)/)|(/))|(\\[)(");
-    strcat(expression, string);
-    strcat(expression, ")(\\])|^(");
-    strcat(expression, string);
-    strcat(expression, ")\\b");
-    return (regcomp(regex, expression, flags) != 0);
+    strcpy (expression, "\\{(");
+    strcat (expression, string);
+    strcat (expression, ")\\}|(\\) |/)((to )|(to be )|())(");
+    strcat (expression, string);
+    strcat (expression, ")(( \\([^/]+\\)/)|(/))|(\\[)(");
+    strcat (expression, string);
+    strcat (expression, ")(\\])|^(");
+    strcat (expression, string);
+    strcat (expression, ")\\b");
+    return regcomp (regex, expression, flags);
 }
 
 
-//!
-//! @brief Comparison function that should be moved to the GwSearchItem file when it matures
-//!
-//! @param item A GwSearchItem to get search information from
-//!
-gboolean gw_searchitem_generic_comparison (GwSearchItem *item;)
+gboolean create_mix_high_regex (regex_t *regex, char *string, int flags)
 {
-    int i;
-    int j;
-    GwResultLine *rl, *ql;
-    rl = item->resultline;
-    ql = item->queryline;
+    char expression[MAX_LINE * 2];
+    strcpy (expression, "(\\b(");
+    strcat (expression, string);
+    strcat (expression, ")\\b|^(");
+    strcat (expression, string);
+    strcat (expression, "))");
+    return regcomp (regex, expression, flags);
+}
 
-    //Compare kanji atoms
-    i = 0;
-    while (ql->kanji_atom[i])
-    {
-      if (regexec(&(ql->kanji_regex_high[i]), rl->kanji_start, 1, NULL, 0) == 0)
-        return TRUE;
-      i++;  
-    }
-    //Compare furigana atoms
-    i = 0;
-    while (ql->hira_atom[i])
-    {
-      if (regexec(&(ql->hira_regex_high[i]), rl->furigana_start, 1, NULL, 0) == 0)
-        return TRUE;
-      else if (regexec(&(ql->kata_regex_high[i]), rl->furigana_start, 1, NULL, 0) == 0)
-        return TRUE;
-      i++;  
-    }
-    //Compare romaji atoms
-    i = 0;
-    while (ql->roma_atom[i])
-    {
-      j = 0;
-      while (rl->def_start[j])
-      {
-        if (regexec(&(ql->roma_regex_high[i]), rl->def_start[j], 1, NULL, 0) == 0)
-          return TRUE;
-        j++;
-      }
-      i++;  
-    }
-    //Compare mix atoms
-    i = 0;
-    while (ql->mix[i])
-    {
-      if (regexec(&(ql->mix_regex_high[i]), rl->string, 1, NULL, 0) == 0)
-        return TRUE;
-      i++;  
-    }
-
-    return FALSE;
+gboolean create_mix_med_regex (regex_t *regex, char *string, int flags)
+{
+    char expression[MAX_LINE * 2];
+    strcpy (expression, "\\{(");
+    strcat (expression, string);
+    strcat (expression, ")\\}|(\\) |/)((to )|(to be )|())(");
+    strcat (expression, string);
+    strcat (expression, ")(( \\([^/]+\\)/)|(/))|(\\[)(");
+    strcat (expression, string);
+    strcat (expression, ")(\\])|^(");
+    strcat (expression, string);
+    strcat (expression, ")\\b");
+    return regcomp (regex, expression, flags);
 }
 

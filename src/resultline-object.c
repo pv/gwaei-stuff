@@ -190,6 +190,7 @@ void gw_resultline_parse_normal_result_string (GwResultLine *line, char *string)
       temp = temp + 2;
     }
     line->def_total = i;
+    line->def_start[i] = NULL;
     i--;
 
     //Get the importance

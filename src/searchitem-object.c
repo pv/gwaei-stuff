@@ -85,6 +85,10 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary,
   temp->resultline = NULL;
   temp->backup_resultline = NULL;
   temp->swap_resultline = NULL;
+  temp->queryline = gw_queryline_new ();
+  if (gw_queryline_parse_string (temp->queryline, query))
+      printf("Success creating parsing queryline!\n");
+
   char *key = GCKEY_GW_LESS_RELEVANT_SHOW; 
   temp->show_less_relevant_results = gw_pref_get_boolean (key, TRUE);
 
@@ -127,168 +131,6 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary,
         else
           temp->gw_searchitem_append_results_to_output = &gw_ui_append_unknown_results_to_buffer;
         break;
-  }
-
-
-  //Create the compiled regular expression
-  int eflags_exist    = REG_EXTENDED | REG_ICASE | REG_NOSUB;
-  int eflags_relevant = REG_EXTENDED | REG_ICASE | REG_NOSUB;
-  int eflags_locate   = REG_EXTENDED | REG_ICASE;
-
-  //Create the needed regex for searching and locating
-  char query_temp[MAX_QUERY];
-  strncpy (temp->raw_query, query, MAX_QUERY);
-  gw_fmt_strcpy_with_query_preformatting (temp->query, query, temp);
-  gw_fmt_strcpy_with_query_formatting(query_temp, temp->query, temp);
-  if (strlen(query_temp) == 0) return NULL;
-
-  char expression[(MAX_QUERY * 4) + 150];
-  char *query_ptr = &query_temp[strlen(query_temp)];
-  temp->total_re = 0;
-
-  //The loop compiles a regex for every item between the delimitors
-  while (query_ptr != &query_temp[0] && temp->total_re < MAX_QUERY)
-  {
-    *(query_ptr - 1) = '\0'; //removes the trailing slash
-
-    do {
-      query_ptr = g_utf8_prev_char(query_ptr);
-    } while (query_ptr != &query_temp[0] && *(query_ptr - 1) != DELIMITOR_CHR);
-
-    //Create Regular Expression for Match exists
-    if (regcomp(&((temp->re_exist)[temp->total_re]), query_ptr, eflags_exist) != 0) {
-      int j = 0;
-      while (j < temp->total_re - 1)
-        regfree(&(temp->re_exist[j]));
-      free(temp);
-      temp = NULL;
-      return NULL;
-    }
-
-    //Create Regular Expression for Locate the match
-    if (regcomp(&((temp->re_locate)[temp->total_re]), query_ptr, eflags_locate) != 0) {
-      int j = 0;
-      while (j < temp->total_re - 1)
-        regfree(&(temp->re_locate[j]));
-      free(temp);
-      temp = NULL;
-      return NULL;
-    }
-
-    gunichar test_char = g_utf8_get_char(query_ptr);
-    if (test_char == L'(')
-    {
-      test_char = g_utf8_get_char(g_utf8_next_char(query_ptr));
-    }
-
-    //Prepare the string expression for high relevance
-    //Kanji version
-    if (temp->dictionary->type == GW_DICT_EXAMPLES)
-    {
-      if (test_char > L'ン')
-      {
-        strcpy(expression, "(");
-        strcat(expression, query_ptr);
-        strcat(expression, ")");
-      }
-      else
-      {
-        strcpy(expression, "(\\b(");
-        strcat(expression, query_ptr);
-        strcat(expression, ")\\b)");
-      }
-    }
-    else if (test_char > L'ン') {
-        strcpy(expression, "((^無)|(^不)|(^非)|(^)|(^お)|(^御))(");
-        strcat(expression, query_ptr);
-        strcat(expression, ")((\\])|(\\))|(\\})|( ))");
-    }
-    //Katakana/Hiragana version
-    else if (test_char > L'ぁ')
-    {
-        strcpy(expression, "((^)|(\\[)|(\\()|(\\{)|( )|(^お))(");
-        strcat(expression, query_ptr);
-        strcat(expression, ")((\\])|(\\))|(\\})|( ))");
-    }
-    //Romanji version
-    else {
-        strcpy(expression, "\\{(");
-        strcat(expression, query_ptr);
-        strcat(expression, ")\\}|(\\) |/)((to )|(to be )|())(");
-        strcat(expression, query_ptr);
-        strcat(expression, ")(( \\([^/]+\\)/)|(/))|(\\[)(");
-        strcat(expression, query_ptr);
-        strcat(expression, ")(\\])|^(");
-        strcat(expression, query_ptr);
-        strcat(expression, ")\\b");
-    }
-
-    //Create Regular Expression for high relevance
-    if (regcomp(&((temp->re_relevance_high)[temp->total_re]), expression, eflags_relevant) != 0) 
-    {
-      int j = 0;
-      while (j < temp->total_re - 1) {
-  
-        regfree(&(temp->re_locate[j]));
-      }
-      free(temp);
-      return NULL;
-    }
-
-
-    //Prepare the string expression for medium relevance
-    //Two character Kanji version
-    /*
-    if ( g_utf8_strlen (query_ptr, -1) == 2 &&
-         g_utf8_get_char(query_ptr) > L'ン' && 
-         g_utf8_get_char(g_utf8_next_char(query_ptr)) > L'ン' )
-    {
-      // (^query..|^..query\b)
-      strcpy(expression, "(^");
-      strcat(expression, query_ptr);
-      strcat(expression, "..\\b|^..");
-      strcat(expression, query_ptr);
-      strcat(expression, "\\b)");
-    }
-    //Katakana/Hiragana/Kanji version
-    else */
-    if (test_char >= L'ぁ')
-    {
-      strcpy(expression, "((^)|(\\[)|(\\()|(\\{)|( )|(お)|(を)|(に)|(で)|(は)|(と))(");
-      /*
-      strcpy(expression, "(((\\()|(\\[)|(\\{)|( ))(");
-      */
-      strcat(expression, query_ptr);
-      /*
-      strcat(expression, "))|((");
-      strcat(expression, query_ptr);
-      strcat(expression, ")((\\()|(\\[)|(\\{)|( )))");
-      */
-      strcat(expression, ")((で)|(が)|(の)|(を)|(に)|(で)|(は)|(と)|(\\])|(\\))|(\\})|( ))");
-    }
-    //Romanji version
-    else
-    {
-      strcpy(expression, "(\\b(");
-      strcat(expression, query_ptr);
-      strcat(expression, ")\\b|^(");
-      strcat(expression, query_ptr);
-      strcat(expression, "))");
-    }
-
-    //Create Regular Expression for medium relevance
-    if (regcomp(&((temp->re_relevance_medium)[temp->total_re]), expression, eflags_relevant) != 0) {
-      int j = 0;
-      while (j < temp->total_re - 1) {
-        regfree(&(temp->re_relevance_medium[j]));
-        regfree(&(temp->re_relevance_high[j]));
-        regfree(&(temp->re_locate[j]));
-      }
-      free(temp);
-      return NULL;
-    }
-
-    temp->total_re++;
   }
 
   return temp;
@@ -432,4 +274,61 @@ void gw_searchitem_free(GwSearchItem* item) {
   item = NULL;
 }
 
+
+
+//!
+//! @brief Comparison function that should be moved to the GwSearchItem file when it matures
+//!
+//! @param item A GwSearchItem to get search information from
+//!
+gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const int REGEX_TYPE)
+{
+    int i;
+    int j;
+    GwResultLine *rl;
+    GwQueryLine *ql;
+
+    rl = item->resultline;
+    ql = item->queryline;
+    //Compare kanji atoms
+    i = 0;
+    while (ql->kanji_atom[i])
+    {
+      if (regexec(&(ql->kanji_regex[REGEX_TYPE][i]), rl->kanji_start, 1, NULL, 0) == 0)
+        return TRUE;
+      i++;  
+    }
+    //Compare furigana atoms
+    i = 0;
+    while (ql->hira_atom[i] && ql->hira_atom[i])
+    {
+      if (regexec(&(ql->hira_regex[REGEX_TYPE][i]), rl->furigana_start, 1, NULL, 0) == 0)
+        return TRUE;
+      else if (regexec(&(ql->kata_regex[REGEX_TYPE][i]), rl->furigana_start, 1, NULL, 0) == 0)
+        return TRUE;
+      i++;  
+    }
+    //Compare romaji atoms
+    i = 0;
+    while (ql->roma_atom[i])
+    {
+      j = 0;
+      while (rl->def_start[j])
+      {
+        if (regexec(&(ql->roma_regex[REGEX_TYPE][i]), rl->def_start[j], 1, NULL, 0) == 0)
+          return TRUE;
+        j++;
+      }
+      i++;  
+    }
+    //Compare mix atoms
+    i = 0;
+    while (ql->mix_atom[i])
+    {
+      if (regexec(&(ql->mix_regex[REGEX_TYPE][i]), rl->string, 1, NULL, 0) == 0)
+        return TRUE;
+      i++;  
+    }
+    return FALSE;
+}
 
