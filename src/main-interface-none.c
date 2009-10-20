@@ -378,5 +378,17 @@ void gw_ui_update_search_progressbar (long current, long total)
 }
 
 void gw_ui_set_header (GwSearchItem *item, char* text, char* mark_name)
-{
-}
+{}
+
+void gw_ui_append_normal_results_to_buffer (GwSearchItem* a, gboolean b) {}
+void gw_ui_append_kanji_results_to_buffer (GwSearchItem* a, gboolean b) {}
+void gw_ui_append_radicals_results_to_buffer (GwSearchItem* a, gboolean b) {}
+void gw_ui_append_examples_results_to_buffer (GwSearchItem* a, gboolean b) {}
+void gw_ui_append_unknown_results_to_buffer (GwSearchItem* a, gboolean b) {}
+
+
+void gw_ui_append_def_same_to_buffer (GwSearchItem* item, gboolean UNUSED) {}
+void gw_ui_remove_whitespace_from_buffer (const int TARGET) {}
+void gw_ui_initialize_buffer_by_target (const int TARGET) {}
+
+

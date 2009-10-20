@@ -20,7 +20,6 @@ GDU_REQUIRED_VERSION=0.13.0
 LIBUNIQUE_REQUIRED_VERSION=1.0.0
 
 PKG_CHECK_MODULES(DEPS, glib-2.0           >= $GLIB_REQUIRED_VERSION
-                        unique-1.0         >= $LIBUNIQUE_REQUIRED_VERSION
                         libcurl            >= $LIBCURL_REQUIRED_VERSION
                         gmodule-2.0        >= $GMODULE_EXPORT_REQUIRED_VERSION 
                         gthread-2.0        >= $GTHREAD_REQUIRED_VERSION       )
@@ -36,6 +35,7 @@ AC_SUBST(WIN32_LIBS)
 
 PKG_CHECK_MODULES(GNOME, gtk+-2.0           >= $GTK2_REQUIRED_VERSION
                          gconf-2.0          >= $GCONF_REQUIRED_VERSION
+                         unique-1.0         >= $LIBUNIQUE_REQUIRED_VERSION
                          libsexy            >= $LIBSEXY_REQUIRED_VERSION
                          gnome-doc-utils    >= $GDU_REQUIRED_VERSION
                           ,,AM_CONDITIONAL([WITHOUT_GNOME], true))
