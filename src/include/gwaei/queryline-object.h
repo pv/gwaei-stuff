@@ -12,10 +12,8 @@ typedef struct GwQueryLine {
 
     char   *kanji_atom[MAX_ATOMS];
     regex_t kanji_regex[5][MAX_ATOMS];
-    char   *hira_atom[MAX_ATOMS];
-    regex_t hira_regex[5][MAX_ATOMS];
-    char   *kata_atom[MAX_ATOMS];
-    regex_t kata_regex[5][MAX_ATOMS];
+    char   *furi_atom[MAX_ATOMS];
+    regex_t furi_regex[5][MAX_ATOMS];
     char   *roma_atom[MAX_ATOMS];
     regex_t roma_regex[5][MAX_ATOMS];
     char   *mix_atom[MAX_ATOMS];

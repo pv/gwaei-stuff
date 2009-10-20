@@ -203,8 +203,6 @@ static int get_relevance (GwSearchItem *item) {
 //!
 static gboolean stream_results_thread (GwSearchItem *item)
 {
-    char *dictionary = item->dictionary->name;
-    int dictionary_type = item->dictionary->type;
     int chunk = 0;
 
     //We loop, processing lines of the file until the max chunk size has been
@@ -240,55 +238,41 @@ static gboolean stream_results_thread (GwSearchItem *item)
         item->swap_resultline = NULL;
       }
       (*item->gw_searchitem_parse_result_string)(item->resultline, item->scratch_buffer1);
+      gw_ui_verb_check_with_suggestion (item);
 
 
-      //Search engine for the kanji sidebar 
-      if (item->target == GW_TARGET_KANJI)
+      //Results match, add to the text buffer
+      if (gw_searchitem_existance_generic_comparison (item, GW_QUERYLINE_EXIST))
       {
-        if (regexec(&(item->re_exist[0]), item->scratch_buffer1, 1, NULL, 0) == 0)
+        int relevance = get_relevance(item);
+        char *result = NULL;
+        switch(relevance)
         {
-          (*item->gw_searchitem_parse_result_string)(item->resultline, item->scratch_buffer1);
-          append_result_to_output (item, item->resultline);
-          chunk = 0;
-        }
-      }
-
-      //Search engine for other dictionaries
-      else
-      {
-        //Results match, add to the text buffer
-        if (gw_searchitem_existance_generic_comparison (item, GW_QUERYLINE_EXIST))
-        {
-          int relevance = get_relevance(item);
-          char *result = NULL;
-          switch(relevance)
-          {
-            case HIGH_RELEVANCE:
-                item->total_results++;
-                item->total_relevant_results++;
-                append_more_relevant_header_to_output(item);
-                gw_ui_update_total_results_label(item);
-                append_result_to_output(item, item->resultline);
-                break;
-            case MEDIUM_RELEVANCE:
-                if ((item->dictionary->type == GW_DICT_KANJI || item->total_irrelevant_results < MAX_MEDIUM_IRRELIVENT_RESULTS) &&
-                     (result = (char*)malloc(strlen(item->scratch_buffer1) + 2)))
-                {
-                  item->total_irrelevant_results++;
-                  strcpy(result, item->scratch_buffer1);
-                  item->results_medium =  g_list_append(item->results_medium, result);
-                }
-                break;
-            default:
-                if ((item->dictionary->type == GW_DICT_KANJI || item->total_irrelevant_results < MAX_LOW_IRRELIVENT_RESULTS) &&
-                     (result = (char*)malloc(strlen(item->scratch_buffer1) + 2)))
-                {
-                  item->total_irrelevant_results++;
-                  strcpy(result, item->scratch_buffer1);
-                  item->results_low = g_list_append(item->results_low, result);
-                }
-                break;
-          }
+          case HIGH_RELEVANCE:
+              item->total_results++;
+              item->total_relevant_results++;
+              append_more_relevant_header_to_output(item);
+              gw_ui_update_total_results_label(item);
+              append_result_to_output(item, item->resultline);
+              break;
+          case MEDIUM_RELEVANCE:
+              if ((item->dictionary->type == GW_DICT_KANJI || item->total_irrelevant_results < MAX_MEDIUM_IRRELIVENT_RESULTS) &&
+                   (result = (char*)malloc(strlen(item->scratch_buffer1) + 2)))
+              {
+                item->total_irrelevant_results++;
+                strcpy(result, item->scratch_buffer1);
+                item->results_medium =  g_list_append(item->results_medium, result);
+              }
+              break;
+          default:
+              if ((item->dictionary->type == GW_DICT_KANJI || item->total_irrelevant_results < MAX_LOW_IRRELIVENT_RESULTS) &&
+                   (result = (char*)malloc(strlen(item->scratch_buffer1) + 2)))
+              {
+                item->total_irrelevant_results++;
+                strcpy(result, item->scratch_buffer1);
+                item->results_low = g_list_append(item->results_low, result);
+              }
+              break;
         }
       }
       continue;

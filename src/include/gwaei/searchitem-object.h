@@ -50,7 +50,6 @@ enum search_states
 //! @brief Primitive for storing search item information
 //!
 typedef struct GwSearchItem {
-    char raw_query[MAX_QUERY];              //!< Query of the search
     char query[MAX_QUERY];                  //!< Query of the search
     GwDictInfo* dictionary;                 //!< Pointer to the dictionary used
 
@@ -67,14 +66,8 @@ typedef struct GwSearchItem {
     int total_irrelevant_results;           //!< Total results guessed to be vaguely relevant to the query
     int total_results;                      //!< Total results returned from the search
 
-    regex_t re_exist[MAX_QUERY];            //!< Parsed regex atoms for checking of a needle exists
-    regex_t re_locate[MAX_QUERY];           //!< Parsed regex atoms for pulling the needle out of the haystack.
-
-    regex_t re_relevance_medium[MAX_QUERY]; //!< Parsed regex atoms for testing medium relevance on a result
-    regex_t re_relevance_high[MAX_QUERY];   //!< Parsed regex atoms for testing high relevance on a result
     GList *results_medium;                  //!< Buffer storing mediumly relevant result for later display
     GList *results_low;                     //!< Buffer storing lowly relevant result for later display
-    int total_re;                           //!< The total regex atoms that were created.
 
     GwResultLine* resultline;               //!< Result line to store parsed result
     GwResultLine* backup_resultline;        //!< Result line kept for comparison purposes from previosu result line

@@ -116,8 +116,22 @@ void gw_ui_close_suggestion_box ()
 
 void gw_ui_verb_check_with_suggestion (GwSearchItem *item)
 {
-  char *query = item->query;
+  char *query = item->queryline->string;
   GwResultLine *line = item->resultline;
+
+  gunichar query_first_letter;
+  query_first_letter = g_utf8_get_char (item->queryline->string);
+  gunichar result_kanji_first_letter;
+  result_kanji_first_letter = g_utf8_get_char (line->kanji_start);
+  gunichar result_furigana_first_letter; 
+  if (line->furigana_start != NULL)
+    result_furigana_first_letter = g_utf8_get_char (line->furigana_start);
+  else
+    result_furigana_first_letter = result_kanji_first_letter;
+
+  //Make sure the query and the search result start similarly
+  if (query_first_letter != result_kanji_first_letter && query_first_letter != result_furigana_first_letter)
+    return;
 
   GtkWidget *suggestion_label;
   suggestion_label = GTK_WIDGET (gtk_builder_get_object (builder, "suggestion_label"));
@@ -135,25 +149,6 @@ void gw_ui_verb_check_with_suggestion (GwSearchItem *item)
   gtk_event_box_set_visible_window (GTK_EVENT_BOX (suggestion_eventbox), TRUE);
   gtk_widget_modify_fg (suggestion_eventbox, GTK_STATE_NORMAL, &fgcolor);
   gtk_widget_modify_bg (suggestion_eventbox, GTK_STATE_NORMAL, &bgcolor);
-
-
-  gunichar query_first_letter;
-  query_first_letter = g_utf8_get_char (item->raw_query);
-  gunichar result_kanji_first_letter;
-  result_kanji_first_letter = g_utf8_get_char (line->kanji_start);
-  gunichar result_furigana_first_letter; 
-  if (line->furigana_start)
-    result_furigana_first_letter = g_utf8_get_char (line->furigana_start);
-  else
-    result_furigana_first_letter = result_kanji_first_letter;
-
-    printf("entering... %s %s\n", query, line->kanji_start);
-
-  //Make sure the query and the search result start similarly
-  if (query_first_letter != result_kanji_first_letter && query_first_letter != result_furigana_first_letter)
-    return;
-
-    printf("first letter same\n");
 
 
   //i-adjective stuffs
@@ -2506,8 +2501,9 @@ void gw_ui_add_match_highlights (gint line, gint start_offset, gint end_offset, 
 {
     GtkTextBuffer *tb;
     tb = GTK_TEXT_BUFFER (get_gobject_from_target(item->target));
+    GwQueryLine *ql = item->queryline;
     
-    int re, i;
+    int i;
     int match_so, match_eo;
     GtkTextIter si, ei;
     gtk_text_buffer_get_iter_at_line_offset (tb, &si, line, start_offset);
@@ -2515,12 +2511,31 @@ void gw_ui_add_match_highlights (gint line, gint start_offset, gint end_offset, 
     char *text = gtk_text_buffer_get_slice (tb, &si, &ei, FALSE);
     char *pos = text;
 
-    for(i = 0; i < item->total_re; i++) {
+    //Look for kanji atoms
+    for(i = 0; ql->kanji_atom[i] != NULL; i++) {
        pos = text;
-       while ((pos = gw_regex_locate_offset (pos, text, &item->re_locate[i],
-                                             &match_so, &match_eo)) != NULL )
+       while ((pos = gw_regex_locate_offset (pos, text, &(ql->kanji_regex[GW_QUERYLINE_LOCATE][i]), &match_so, &match_eo)) != NULL )
        {
-          //Apply the tag
+          gtk_text_buffer_get_iter_at_line_offset (tb, &si, line, match_so + start_offset);
+          gtk_text_buffer_get_iter_at_line_offset (tb, &ei, line, match_eo + start_offset);
+          gtk_text_buffer_apply_tag_by_name (tb, "match", &si, &ei);
+       }
+    }
+    //Look for furigana atoms
+    for(i = 0; ql->furi_atom[i] != NULL; i++) {
+       pos = text;
+       while ((pos = gw_regex_locate_offset (pos, text, &(ql->furi_regex[GW_QUERYLINE_LOCATE][i]), &match_so, &match_eo)) != NULL )
+       {
+          gtk_text_buffer_get_iter_at_line_offset (tb, &si, line, match_so + start_offset);
+          gtk_text_buffer_get_iter_at_line_offset (tb, &ei, line, match_eo + start_offset);
+          gtk_text_buffer_apply_tag_by_name (tb, "match", &si, &ei);
+       }
+    }
+    //Look for romaji atoms
+    for(i = 0; ql->roma_atom[i] != NULL; i++) {
+       pos = text;
+       while ((pos = gw_regex_locate_offset (pos, text, &(ql->roma_regex[GW_QUERYLINE_LOCATE][i]), &match_so, &match_eo)) != NULL )
+       {
           gtk_text_buffer_get_iter_at_line_offset (tb, &si, line, match_so + start_offset);
           gtk_text_buffer_get_iter_at_line_offset (tb, &ei, line, match_eo + start_offset);
           gtk_text_buffer_apply_tag_by_name (tb, "match", &si, &ei);

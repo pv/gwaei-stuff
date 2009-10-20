@@ -36,6 +36,7 @@
 
 #include <glib.h>
 
+#include <gwaei/definitions.h>
 #include <gwaei/regex.h>
 
 
@@ -215,4 +216,180 @@ char* gw_regex_locate_offset (char *string, char *line_start, regex_t *re_locate
     }
 }
 
+
+//!
+//! @brief Regex for determining highly relevent kanji atoms
+//!
+//! Builds the regex used in engine.c for determining the relevance
+//! of a returned result when the query is a kanji one.
+//!
+//! @param regex A passed regex_t to assign an allocated regext to
+//! @param strang The regex pattern to use
+//! @param flags The regex flags to use
+//! 
+gboolean gw_regex_create_kanji_high_regex (regex_t *regex, char *string, int flags)
+{
+    char expression[MAX_LINE * 2];
+    strcpy (expression, "((^無)|(^不)|(^非)|(^)|(^お)|(^御))(");
+    strcat (expression, string);
+    strcat (expression, ")((で)|(が)|(の)|(を)|(に)|(で)|(は)|(と)|($))");
+    return regcomp (regex, expression, flags);
+}
+
+
+//!
+//! @brief Regex for determining mediumly relevent kanji atoms
+//!
+//! Builds the regex used in engine.c for determining the relevance
+//! of a returned result when the query is a kanji one.
+//!
+//! @param regex A passed regex_t to assign an allocated regext to
+//! @param strang The regex pattern to use
+//! @param flags The regex flags to use
+//! 
+gboolean gw_regex_create_kanji_med_regex (regex_t *regex, char *string, int flags)
+{
+    char expression[MAX_LINE * 2];
+    strcpy (expression, "((^)|(^お)|(を)|(に)|(で)|(は)|(と))(");
+    strcat (expression, string);
+    strcat (expression, ")((で)|(が)|(の)|(を)|(に)|(で)|(は)|(と)|($))");
+    return regcomp (regex, expression, flags);
+}
+
+
+//!
+//! @brief Regex for determining highly relevent furigana atoms
+//!
+//! Builds the regex used in engine.c for determining the relevance
+//! of a returned result when the query is a furigana one.
+//!
+//! @param regex A passed regex_t to assign an allocated regext to
+//! @param strang The regex pattern to use
+//! @param flags The regex flags to use
+//! 
+gboolean gw_regex_create_furi_high_regex (regex_t *regex, char *string, int flags)
+{
+    char expression[MAX_LINE * 2];
+    strcpy (expression, "^((お)|())(");
+    strcat (expression, string);
+    strcat (expression, ")$");
+    return regcomp (regex, expression, flags);
+}
+
+
+//!
+//! @brief Regex for determining mediumly relevent furigana atoms
+//!
+//! Builds the regex used in engine.c for determining the relevance
+//! of a returned result when the query is a furigana one.
+//!
+//! @param regex A passed regex_t to assign an allocated regext to
+//! @param strang The regex pattern to use
+//! @param flags The regex flags to use
+//! 
+gboolean gw_regex_create_furi_med_regex (regex_t *regex, char *string, int flags)
+{
+    char expression[MAX_LINE * 2];
+    strcpy (expression, "((^)|(^お)|(を)|(に)|(で)|(は)|(と))(");
+    strcat (expression, string);
+    strcat (expression, ")((で)|(が)|(の)|(を)|(に)|(で)|(は)|(と)|($))");
+    return regcomp (regex, expression, flags);
+}
+
+
+//!
+//! @brief Regex for determining highly relevent romaji atoms
+//!
+//! Builds the regex used in engine.c for determining the relevance
+//! of a returned result when the query is a romaji one.
+//!
+//! @param regex A passed regex_t to assign an allocated regext to
+//! @param strang The regex pattern to use
+//! @param flags The regex flags to use
+//! 
+gboolean gw_regex_create_roma_high_regex (regex_t *regex, char *string, int flags)
+{
+    char expression[MAX_LINE * 2];
+    strcpy (expression, "(^|\\)|/)\\b(");
+    strcat (expression, string);
+    strcat (expression, ")\\b(\\(|/|$)");
+    printf("%s\n", expression);
+    return regcomp (regex, expression, flags);
+}
+
+
+//!
+//! @brief Regex for determining mediumly relevent romaji atoms
+//!
+//! Builds the regex used in engine.c for determining the relevance
+//! of a returned result when the query is a romaji one.
+//!
+//! @param regex A passed regex_t to assign an allocated regext to
+//! @param strang The regex pattern to use
+//! @param flags The regex flags to use
+//! 
+gboolean gw_regex_create_roma_med_regex (regex_t *regex, char *string, int flags)
+{
+    char expression[MAX_LINE * 2];
+    strcpy (expression, "\\{(");
+    strcat (expression, string);
+    strcat (expression, ")\\}|(\\) |/)((to )|(to be )|())(");
+    strcat (expression, string);
+    strcat (expression, ")(( \\([^/]+\\)/)|(/))|(\\[)(");
+    strcat (expression, string);
+    strcat (expression, ")(\\])|^(");
+    strcat (expression, string);
+    strcat (expression, ")\\b");
+    return regcomp (regex, expression, flags);
+}
+
+
+//!
+//! @brief Regex for determining highly relevent mix atoms
+//!
+//! Builds the regex used in engine.c for determining the relevance
+//! of a returned result when the query is a mix one. This means
+//! there is kanji/hiragana/romaji mingled throughout.
+//!
+//! @param regex A passed regex_t to assign an allocated regext to
+//! @param strang The regex pattern to use
+//! @param flags The regex flags to use
+//! 
+gboolean gw_regex_create_mix_high_regex (regex_t *regex, char *string, int flags)
+{
+    char expression[MAX_LINE * 2];
+    strcpy (expression, "(\\b(");
+    strcat (expression, string);
+    strcat (expression, ")\\b|^(");
+    strcat (expression, string);
+    strcat (expression, "))");
+    return regcomp (regex, expression, flags);
+}
+
+
+//!
+//! @brief Regex for determining mediumly relevent mix atoms
+//!
+//! Builds the regex used in engine.c for determining the relevance
+//! of a returned result when the query is a mix one. This means
+//! there is kanji/hiragana/romaji mingled throughout.
+//!
+//! @param regex A passed regex_t to assign an allocated regext to
+//! @param strang The regex pattern to use
+//! @param flags The regex flags to use
+//! 
+gboolean gw_regex_create_mix_med_regex (regex_t *regex, char *string, int flags)
+{
+    char expression[MAX_LINE * 2];
+    strcpy (expression, "\\{(");
+    strcat (expression, string);
+    strcat (expression, ")\\}|(\\) |/)((to )|(to be )|())(");
+    strcat (expression, string);
+    strcat (expression, ")(( \\([^/]+\\)/)|(/))|(\\[)(");
+    strcat (expression, string);
+    strcat (expression, ")(\\])|^(");
+    strcat (expression, string);
+    strcat (expression, ")\\b");
+    return regcomp (regex, expression, flags);
+}
 

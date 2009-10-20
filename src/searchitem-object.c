@@ -261,14 +261,6 @@ void gw_searchitem_do_post_search_clean (GwSearchItem* item)
 //! @param item The GwSearchItem to have it's memory freed.
 //!
 void gw_searchitem_free(GwSearchItem* item) {
-  int i = 0;
-  while (i < item->total_re) {
-    regfree(&(item->re_exist[i]));
-    regfree(&(item->re_locate[i]));
-    regfree(&(item->re_relevance_high[i]));
-    regfree(&(item->re_relevance_medium[i]));
-    i++;
-  }
   gw_searchitem_do_post_search_clean (item);
   free(item);
   item = NULL;
@@ -300,11 +292,9 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
     }
     //Compare furigana atoms
     i = 0;
-    while (ql->hira_atom[i] && ql->hira_atom[i])
+    while (ql->furi_atom[i] && rl->furigana_start)
     {
-      if (regexec(&(ql->hira_regex[REGEX_TYPE][i]), rl->furigana_start, 1, NULL, 0) == 0)
-        return TRUE;
-      else if (regexec(&(ql->kata_regex[REGEX_TYPE][i]), rl->furigana_start, 1, NULL, 0) == 0)
+      if (regexec(&(ql->furi_regex[REGEX_TYPE][i]), rl->furigana_start, 1, NULL, 0) == 0)
         return TRUE;
       i++;  
     }
