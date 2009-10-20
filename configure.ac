@@ -109,7 +109,13 @@ AM_CONDITIONAL([WITHOUT_GNOME], [test x$gnome = xtrue])
 
 
 AC_CONFIG_MACRO_DIR([m4])
-GNOME_DOC_INIT[0.1,,]
+if test ${gnome} = false; then
+  GNOME_DOC_INIT
+else
+  dnl Do not care if GDU is not found
+  GNOME_DOC_INIT(,,[:])
+fi
+
 
 
 AM_GCONF_SOURCE_2
