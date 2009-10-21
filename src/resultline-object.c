@@ -108,26 +108,23 @@ void gw_resultline_free (GwResultLine *item)
 //! @param line line
 //! @param string string
 //!
-void gw_resultline_parse_normal_result_string (GwResultLine *line, char *string)
+void gw_resultline_parse_normal_result_string (GwResultLine *rl)
 {
-    gw_resultline_clear_variables (line);
-    strncpy(line->string, string, MAX_LINE);
-
-    char *ptr = line->string;
+    char *ptr = rl->string;
     char *next = NULL;
     char *nextnext = NULL;
     char *nextnextnext = NULL;
     char *temp = NULL;
 
     //Remove the final line break
-    if ((temp = g_utf8_strchr (line->string, -1, '\n')) != NULL)
+    if ((temp = g_utf8_strchr (rl->string, -1, '\n')) != NULL)
     {
         temp--;
         *temp = '\0';
     }
 
     //Set the kanji pointers
-    line->kanji_start = ptr;
+    rl->kanji_start = ptr;
     ptr = g_utf8_strchr (ptr, -1, L' ');
     *ptr = '\0';
 
@@ -136,13 +133,13 @@ void gw_resultline_parse_normal_result_string (GwResultLine *line, char *string)
     if (g_utf8_get_char(ptr) == L'[')
     {
       ptr = g_utf8_next_char(ptr);
-      line->furigana_start = ptr;
+      rl->furigana_start = ptr;
       ptr = g_utf8_strchr (ptr, -1, L']');
       *ptr = '\0';
     }
     else
     {
-      line->furigana_start = NULL;
+      rl->furigana_start = NULL;
       ptr--;
     }
 
@@ -153,7 +150,7 @@ void gw_resultline_parse_normal_result_string (GwResultLine *line, char *string)
     temp = g_utf8_strchr (temp, -1, L'/');
     if (g_utf8_get_char(temp + 1) == '(')
     {
-      line->classification_start = temp + 2;
+      rl->classification_start = temp + 2;
       temp = g_utf8_strchr (temp, -1, L')');
       *temp = '\0';
       ptr = temp;
@@ -162,8 +159,8 @@ void gw_resultline_parse_normal_result_string (GwResultLine *line, char *string)
     //Set the definition pointers
     ptr++;
     ptr = g_utf8_next_char(ptr);
-    line->def_start[0] = ptr;
-    line->number[0] = line->first;
+    rl->def_start[0] = ptr;
+    rl->number[0] = rl->first;
     int i = 1;
 
     temp = ptr;
@@ -175,30 +172,31 @@ void gw_resultline_parse_normal_result_string (GwResultLine *line, char *string)
       if (*next != '\0' && *nextnext != '\0' &&
           *next == L'1' && *nextnext == L')')
       {
-         line->def_start[0] = line->def_start[0] + 4;
+         rl->def_start[0] = rl->def_start[0] + 4;
       }
       else if (*next != '\0' && *nextnext != '\0' && *nextnextnext != '\0' &&
                *next >= L'1' && *next <= L'9' && (*nextnext == L')' || *nextnextnext == L')'))
       {
          *(temp - 1) = '\0';
-         line->number[i] = temp;
+         rl->number[i] = temp;
          temp = g_utf8_strchr (temp, -1, L')');
          *(temp + 1) = '\0';
-         line->def_start[i] = temp + 2;
+         rl->def_start[i] = temp + 2;
          i++;
       }
       temp = temp + 2;
     }
-    line->def_total = i;
-    line->def_start[i] = NULL;
+    rl->def_total = i;
+    rl->def_start[i] = NULL;
+    rl->number[i] = NULL;
     i--;
 
     //Get the importance
-    //temp = line->def_start[i] + strlen(line->def_start[i]) - 4;
-    if ((temp = g_utf8_strrchr (line->def_start[i], -1, L'(')) != NULL)
+    //temp = rl->def_start[i] + strlen(rl->def_start[i]) - 4;
+    if ((temp = g_utf8_strrchr (rl->def_start[i], -1, L'(')) != NULL)
     {
-      line->important = (*temp == '(' && *(temp + 1) == 'P' && *(temp + 2) == ')');
-      if (line->important) 
+      rl->important = (*temp == '(' && *(temp + 1) == 'P' && *(temp + 2) == ')');
+      if (rl->important) 
       {
         *(temp - 1) = '\0';
       }
@@ -215,38 +213,35 @@ void gw_resultline_parse_normal_result_string (GwResultLine *line, char *string)
 //! @param line line
 //! @param string string
 //!
-void gw_resultline_parse_kanji_result_string (GwResultLine *line, char *string)
+void gw_resultline_parse_kanji_result_string (GwResultLine *rl)
 {
-    gw_resultline_clear_variables (line);
-    strncpy(line->string, string, MAX_LINE);
-
     //First generate the grade, stroke, frequency, and jplt fields
     char *start[4], *end[4];
     gboolean found[4];
-    char *ptr = line->string;
+    char *ptr = rl->string;
 
     if ((found[0] = gw_regex_locate_boundary_byte_pointers(ptr, " G[0-9]{1,2} ", &start[0], &end[0])))
-      line->grade = start[0] + 2;
+      rl->grade = start[0] + 2;
     else
-      line->grade = NULL;
+      rl->grade = NULL;
 
     if ((found[1] =gw_regex_locate_boundary_byte_pointers(ptr, " S[0-9]{1,2} ", &start[1], &end[1])))
-      line->strokes = start[1] + 2;
+      rl->strokes = start[1] + 2;
     else
-      line->strokes = NULL;
+      rl->strokes = NULL;
 
     if ((found[2] =gw_regex_locate_boundary_byte_pointers(ptr, " F[0-9]{1,5} ", &start[2], &end[2])))
-      line->frequency = start[2] + 2;
+      rl->frequency = start[2] + 2;
     else
-      line->frequency = NULL;
+      rl->frequency = NULL;
 
     if ((found[3] = gw_regex_locate_boundary_byte_pointers(ptr, " J[0-9]{1,1} ", &start[3], &end[3])))
-      line->jlpt = start[3] + 2;
+      rl->jlpt = start[3] + 2;
     else
-      line->jlpt = NULL;
+      rl->jlpt = NULL;
 
     //Get the kanji character
-    line->kanji = ptr;
+    rl->kanji = ptr;
     while (g_utf8_get_char(ptr) != L' ') {
       ptr = g_utf8_next_char(ptr);
     }
@@ -256,7 +251,7 @@ void gw_resultline_parse_kanji_result_string (GwResultLine *line, char *string)
     //Test if the radicals information is present
     if(g_utf8_get_char(ptr) > 3040)
     {
-      line->radicals = ptr;
+      rl->radicals = ptr;
       while((g_utf8_get_char(ptr) > 3040 || g_utf8_get_char(ptr) == L' '))
       {
         ptr = g_utf8_next_char(ptr);
@@ -264,12 +259,12 @@ void gw_resultline_parse_kanji_result_string (GwResultLine *line, char *string)
       *(ptr - 1) = '\0';
     }
     else
-      line->radicals = NULL;
+      rl->radicals = NULL;
 
     //Go to the readings section
     while (g_utf8_get_char(ptr) < 3041 && *ptr != '\0')
       ptr = g_utf8_next_char (ptr);
-    line->readings[0] = ptr;
+    rl->readings[0] = ptr;
 
     //Copy the rest of the data
     char *next = ptr;
@@ -278,12 +273,12 @@ void gw_resultline_parse_kanji_result_string (GwResultLine *line, char *string)
       //The strange T1 character between kana readings
       if (g_utf8_get_char (ptr) == L'T' && g_utf8_get_char(next) == L'1') {
         *(ptr - 1) = '\0';
-        line->readings[1] = next + 2;
+        rl->readings[1] = next + 2;
       }
       ptr = next;
     }
     *ptr = '\0';
-    line->meanings = next;
+    rl->meanings = next;
 
     ptr++;
     if ((ptr = g_utf8_strrchr (ptr, -1, '\n')))
@@ -304,25 +299,22 @@ void gw_resultline_parse_kanji_result_string (GwResultLine *line, char *string)
 //! @param line line
 //! @param string string
 //!
-void gw_resultline_parse_radical_result_string (GwResultLine *line, char *string)
+void gw_resultline_parse_radical_result_string (GwResultLine *rl)
 {
-    gw_resultline_clear_variables (line);
-    strncpy(line->string, string, MAX_LINE);
-
     //First generate the grade, stroke, frequency, and jplt fields
-    line->kanji = line->string;
+    rl->kanji = rl->string;
 
     char *temp = NULL;
 
-    if (temp = g_utf8_strchr (line->string, -1, L'\n'))
+    if (temp = g_utf8_strchr (rl->string, -1, L'\n'))
     {
       *temp = '\0';
     }
 
-    if (temp = g_utf8_strchr (line->string, -1, L':'))
+    if (temp = g_utf8_strchr (rl->string, -1, L':'))
     {
       *temp = '\0';
-      line->radicals = temp + 1;
+      rl->radicals = temp + 1;
     }
 }
 
@@ -335,38 +327,35 @@ void gw_resultline_parse_radical_result_string (GwResultLine *line, char *string
 //! @param line line
 //! @param string string
 //!
-void gw_resultline_parse_examples_result_string (GwResultLine *line, char *string)
+void gw_resultline_parse_examples_result_string (GwResultLine *rl)
 {
-    gw_resultline_clear_variables (line);
-    strncpy(line->string, string, MAX_LINE);
-
     //First generate the grade, stroke, frequency, and jplt fields
-    line->kanji = line->string;
+    rl->kanji = rl->string;
 
     char *temp = NULL;
     char *eraser = NULL;
     int i = 0;
 
     //Example sentence:    A:日本語English:B:読み解説
-    temp = line->string;
-    while (temp = g_utf8_strchr (temp, -1, L':'))
+    temp = rl->string;
+    while ((temp = g_utf8_strchr (temp, -1, L':')) != NULL)
     {
       //Get the letter bullet 
       if (g_utf8_get_char(temp - 1) == L'A' || g_utf8_get_char(temp - 1) == L'B')
       {
-         line->number[i] = temp - 1;
+         rl->number[i] = temp - 1;
          *temp = '\0';
          temp++;
          temp++;
-         line->def_start[i] = temp;
+         rl->def_start[i] = temp;
          i++;
          if (eraser = g_utf8_strchr (temp, -1, L'\t'))
          {
              temp = eraser;
              *temp = '\0';
-             line->number[i] = temp;
+             rl->number[i] = temp;
              temp++;
-             line->def_start[i] = temp;
+             rl->def_start[i] = temp;
              i++;
          }
       }
@@ -377,8 +366,8 @@ void gw_resultline_parse_examples_result_string (GwResultLine *line, char *strin
          temp++;
       }
     }
-    line->def_start[i] = NULL;
-    line->number[i] = NULL;
+    rl->def_start[i] = NULL;
+    rl->number[i] = NULL;
 }
 
 //!
@@ -390,12 +379,10 @@ void gw_resultline_parse_examples_result_string (GwResultLine *line, char *strin
 //! @param line line
 //! @param string string
 //!
-void gw_resultline_parse_unknown_result_string (GwResultLine *line, char *string)
+void gw_resultline_parse_unknown_result_string (GwResultLine *rl)
 {
-    gw_resultline_clear_variables (line);
-    strncpy(line->string, string, MAX_LINE);
     char *temp = NULL;
-    if (temp = g_utf8_strchr (line->string, -1, L'\n'))
+    if (temp = g_utf8_strchr (rl->string, -1, L'\n'))
     {
       *temp = '\0';
     }

@@ -1,3 +1,6 @@
+#define GW_REGEX_EFLAGS_EXIST    (REG_EXTENDED | REG_ICASE | REG_NOSUB)
+#define GW_REGEX_EFLAGS_LOCATE   (REG_EXTENDED | REG_ICASE)
+
 regex_t re_english;
 regex_t re_radical;
 regex_t re_kanji;

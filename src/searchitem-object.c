@@ -73,8 +73,7 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary,
   //Set the internal pointers to the correct global variables
   temp->fd     = NULL;
   temp->status = GW_SEARCH_IDLE;
-  temp->scratch_buffer1 = NULL;
-  temp->scratch_buffer2 = NULL;
+  temp->scratch_buffer = NULL;
   temp->comparison_buffer = NULL;
   temp->dictionary = dictionary;
   temp->target = TARGET;
@@ -150,32 +149,22 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary,
 //!
 gboolean gw_searchitem_do_pre_search_prep (GwSearchItem* item)
 {
-    if (item->scratch_buffer1 != NULL || (item->scratch_buffer1 = malloc (MAX_LINE)) == NULL)
+    if (item->scratch_buffer != NULL || (item->scratch_buffer = malloc (MAX_LINE)) == NULL)
     {
-      return FALSE;
-    }
-    if (item->scratch_buffer2 != NULL || (item->scratch_buffer2 = malloc (MAX_LINE)) == NULL)
-    {
-      free (item->scratch_buffer1);
-      item->scratch_buffer1 = NULL;
       return FALSE;
     }
     if (item->comparison_buffer != NULL || (item->comparison_buffer = malloc (MAX_LINE)) == NULL)
     {
-      free (item->scratch_buffer1);
-      item->scratch_buffer1 = NULL;
-      free (item->scratch_buffer2);
-      item->scratch_buffer2 = NULL;
+      free (item->scratch_buffer);
+      item->scratch_buffer = NULL;
       return FALSE;
     }
     if (item->resultline != NULL || (item->resultline = gw_resultline_new ()) == NULL)
     {
       free (item->comparison_buffer);
       item->comparison_buffer = NULL;
-      free (item->scratch_buffer1);
-      item->scratch_buffer1 = NULL;
-      free (item->scratch_buffer2);
-      item->scratch_buffer2 = NULL;
+      free (item->scratch_buffer);
+      item->scratch_buffer = NULL;
       return FALSE;
     }
     if (item->backup_resultline != NULL || (item->backup_resultline = gw_resultline_new ()) == NULL)
@@ -184,10 +173,8 @@ gboolean gw_searchitem_do_pre_search_prep (GwSearchItem* item)
       item->resultline = NULL;
       free (item->comparison_buffer);
       item->comparison_buffer = NULL;
-      free (item->scratch_buffer1);
-      item->scratch_buffer1 = NULL;
-      free (item->scratch_buffer2);
-      item->scratch_buffer2 = NULL;
+      free (item->scratch_buffer);
+      item->scratch_buffer = NULL;
       return FALSE;
     }
 
@@ -222,15 +209,10 @@ void gw_searchitem_do_post_search_clean (GwSearchItem* item)
       item->fd = NULL;
     }
 
-    if (item->scratch_buffer1 != NULL)
+    if (item->scratch_buffer != NULL)
     {
-      free(item->scratch_buffer1);
-      item->scratch_buffer1 = NULL;
-    }
-    if (item->scratch_buffer2 != NULL)
-    {
-      free(item->scratch_buffer2);
-      item->scratch_buffer2 = NULL;
+      free(item->scratch_buffer);
+      item->scratch_buffer = NULL;
     }
     if (item->comparison_buffer != NULL)
     {
@@ -262,7 +244,8 @@ void gw_searchitem_do_post_search_clean (GwSearchItem* item)
 //!
 void gw_searchitem_free(GwSearchItem* item) {
   gw_searchitem_do_post_search_clean (item);
-  free(item);
+  free (item->queryline);
+  free (item);
   item = NULL;
 }
 
@@ -284,7 +267,7 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
     ql = item->queryline;
     //Compare kanji atoms
     i = 0;
-    while (ql->kanji_atom[i])
+    while (ql->kanji_atom[i] != NULL && rl->kanji_start != NULL)
     {
       if (regexec(&(ql->kanji_regex[REGEX_TYPE][i]), rl->kanji_start, 1, NULL, 0) == 0)
         return TRUE;
@@ -292,7 +275,7 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
     }
     //Compare furigana atoms
     i = 0;
-    while (ql->furi_atom[i] && rl->furigana_start)
+    while (ql->furi_atom[i] != NULL && rl->furigana_start != NULL)
     {
       if (regexec(&(ql->furi_regex[REGEX_TYPE][i]), rl->furigana_start, 1, NULL, 0) == 0)
         return TRUE;
@@ -300,10 +283,10 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
     }
     //Compare romaji atoms
     i = 0;
-    while (ql->roma_atom[i])
+    while (ql->roma_atom[i] != NULL)
     {
       j = 0;
-      while (rl->def_start[j])
+      while (rl->def_start[j] != NULL)
       {
         if (regexec(&(ql->roma_regex[REGEX_TYPE][i]), rl->def_start[j], 1, NULL, 0) == 0)
           return TRUE;
@@ -313,7 +296,7 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
     }
     //Compare mix atoms
     i = 0;
-    while (ql->mix_atom[i])
+    while (ql->mix_atom[i] != NULL)
     {
       if (regexec(&(ql->mix_regex[REGEX_TYPE][i]), rl->string, 1, NULL, 0) == 0)
         return TRUE;

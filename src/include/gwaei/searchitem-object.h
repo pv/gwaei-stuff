@@ -55,8 +55,7 @@ typedef struct GwSearchItem {
 
     FILE* fd;                               //!< File descriptor for file search position
     int status;                             //!< Used to test if a search is in progress.
-    char *scratch_buffer1;                  //!< Scratch space
-    char *scratch_buffer2;                  //!< Scratch space
+    char *scratch_buffer;                  //!< Scratch space
     char *comparison_buffer;                //!< Saves the previously loaded result for comparison
     int target;                             //!< What gui element should be outputted to
     long current_line;                      //!< Current line in teh dictionary file
@@ -75,7 +74,7 @@ typedef struct GwSearchItem {
     GwQueryLine* queryline;               //!< Result line to store parsed result
 
 
-    void (*gw_searchitem_parse_result_string)(GwResultLine*, char*);
+    void (*gw_searchitem_parse_result_string)(GwResultLine*);
     void (*gw_searchitem_append_results_to_output)(struct GwSearchItem*, gboolean);
 } GwSearchItem;
 

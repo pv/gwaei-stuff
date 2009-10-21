@@ -75,7 +75,7 @@ int gw_queryline_parse_string (GwQueryLine *line, const char* string)
    int i = 0;
    char *generic_atoms[MAX_ATOMS];
    generic_atoms[i] = line->string;
-   while ((generic_atoms[i + 1] = g_utf8_strchr (generic_atoms[i], -1, L'&')) && i < MAX_ATOMS)
+   while ((generic_atoms[i + 1] = g_utf8_strchr (generic_atoms[i], -1, L'&')) != NULL && i < MAX_ATOMS)
    {
      i++;
      *generic_atoms[i] = '\0';

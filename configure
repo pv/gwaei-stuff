@@ -1418,7 +1418,8 @@ Optional Features:
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --enable-win32         turn on win32 (do not touch: experimental)
   --disable-scrollkeeper  do not make updates to the scrollkeeper database
-  --disable-schemas-install	Disable the schemas installation
+  --disable-schemas-install
+                          Disable the schemas installation
   --disable-dependency-tracking  speeds up one-time build
   --enable-dependency-tracking   do not reject slow dependency extractors
   --disable-nls           do not use Native Language Support
