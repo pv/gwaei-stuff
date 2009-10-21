@@ -72,10 +72,14 @@ int gw_pref_get_default_int (char *key, int backup)
     GError *err = NULL;
 
     value = gconf_client_get_default_from_schema (client, key, &err);
-    if (err != NULL || (value != NULL && value->type != GCONF_VALUE_INT))
+    if (err != NULL)
     {
       g_error_free (err);
       err = NULL;
+      return_value = backup;
+    }
+    if (value == NULL || value->type != GCONF_VALUE_INT)
+    {
       return_value = backup;
     }
     else
@@ -130,10 +134,14 @@ gboolean gw_pref_get_default_boolean (char *key, gboolean backup)
     GError *err = NULL;
 
     value = gconf_client_get_default_from_schema (client, key, &err);
-    if (err != NULL || (value != NULL && value->type != GCONF_VALUE_BOOL))
+    if (err != NULL)
     {
       g_error_free (err);
       err = NULL;
+      return_value = backup;
+    }
+    else if (value == NULL || value->type != GCONF_VALUE_BOOL)
+    {
       return_value = backup;
     }
     else
