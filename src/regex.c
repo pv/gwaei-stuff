@@ -217,7 +217,7 @@ gboolean gw_regex_create_kanji_high_regex (regex_t *regex, char *string, int fla
     char expression[MAX_LINE * 2];
     strcpy (expression, "((^無)|(^不)|(^非)|(^)|(^お)|(^御))(");
     strcat (expression, string);
-    strcat (expression, ")((で)|(が)|(の)|(を)|(に)|(で)|(は)|(と)|($))");
+    strcat (expression, ")(($))");
     return regcomp (regex, expression, flags);
 }
 
@@ -295,7 +295,7 @@ gboolean gw_regex_create_furi_med_regex (regex_t *regex, char *string, int flags
 gboolean gw_regex_create_roma_high_regex (regex_t *regex, char *string, int flags)
 {
     char expression[MAX_LINE * 2];
-    strcpy (expression, "(^|\\)|/)\\b(");
+    strcpy (expression, "(^|\\)|(/)|(to ))\\b(");
     strcat (expression, string);
     strcat (expression, ")\\b(\\(|/|$)");
     printf("%s\n", expression);

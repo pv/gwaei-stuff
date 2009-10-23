@@ -238,7 +238,7 @@ static gboolean stream_results_thread (GwSearchItem *item)
         strcat(item->resultline->string, item->scratch_buffer);
       }
       (*item->gw_searchitem_parse_result_string)(item->resultline);
-      gw_ui_verb_check_with_suggestion (item);
+      //gw_ui_verb_check_with_suggestion (item);
 
       //Results match, add to the text buffer
       if (gw_searchitem_existance_generic_comparison (item, GW_QUERYLINE_EXIST))

@@ -74,7 +74,6 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary,
   temp->fd     = NULL;
   temp->status = GW_SEARCH_IDLE;
   temp->scratch_buffer = NULL;
-  temp->comparison_buffer = NULL;
   temp->dictionary = dictionary;
   temp->target = TARGET;
   temp->total_relevant_results = 0;
@@ -153,16 +152,8 @@ gboolean gw_searchitem_do_pre_search_prep (GwSearchItem* item)
     {
       return FALSE;
     }
-    if (item->comparison_buffer != NULL || (item->comparison_buffer = malloc (MAX_LINE)) == NULL)
-    {
-      free (item->scratch_buffer);
-      item->scratch_buffer = NULL;
-      return FALSE;
-    }
     if (item->resultline != NULL || (item->resultline = gw_resultline_new ()) == NULL)
     {
-      free (item->comparison_buffer);
-      item->comparison_buffer = NULL;
       free (item->scratch_buffer);
       item->scratch_buffer = NULL;
       return FALSE;
@@ -171,16 +162,12 @@ gboolean gw_searchitem_do_pre_search_prep (GwSearchItem* item)
     {
       gw_resultline_free (item->resultline);
       item->resultline = NULL;
-      free (item->comparison_buffer);
-      item->comparison_buffer = NULL;
       free (item->scratch_buffer);
       item->scratch_buffer = NULL;
       return FALSE;
     }
 
-
     //Reset internal variables
-    strcpy(item->comparison_buffer, "INITIALSTRING");
     item->current_line = 0;
     item->total_relevant_results = 0;
     item->total_irrelevant_results = 0;
@@ -213,11 +200,6 @@ void gw_searchitem_do_post_search_clean (GwSearchItem* item)
     {
       free(item->scratch_buffer);
       item->scratch_buffer = NULL;
-    }
-    if (item->comparison_buffer != NULL)
-    {
-      free(item->comparison_buffer);
-      item->comparison_buffer = NULL;
     }
     if (item->resultline != NULL)
     {

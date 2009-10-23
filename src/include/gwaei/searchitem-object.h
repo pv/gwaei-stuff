@@ -56,7 +56,6 @@ typedef struct GwSearchItem {
     FILE* fd;                               //!< File descriptor for file search position
     int status;                             //!< Used to test if a search is in progress.
     char *scratch_buffer;                  //!< Scratch space
-    char *comparison_buffer;                //!< Saves the previously loaded result for comparison
     int target;                             //!< What gui element should be outputted to
     long current_line;                      //!< Current line in teh dictionary file
     gboolean show_less_relevant_results;    //!< Saved search display format

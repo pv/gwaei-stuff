@@ -110,6 +110,23 @@ void gw_resultline_free (GwResultLine *item)
 //!
 void gw_resultline_parse_normal_result_string (GwResultLine *rl)
 {
+    //Reinitialize Variables to help prevent craziness
+    rl->def_start[0] = NULL;
+    rl->def_total = 0;
+    rl->kanji_start = NULL;
+    rl->furigana_start = NULL;
+    rl->classification_start = NULL;
+    rl->important = FALSE;
+    rl->strokes = NULL;
+    rl->frequency = NULL;
+    rl->readings[0] = NULL;
+    rl->readings[1] = NULL;
+    rl->meanings = NULL;
+    rl->grade = NULL;
+    rl->jlpt = NULL;
+    rl->kanji = NULL;
+    rl->radicals = NULL;
+
     char *ptr = rl->string;
     char *next = NULL;
     char *nextnext = NULL;
@@ -148,7 +165,7 @@ void gw_resultline_parse_normal_result_string (GwResultLine *rl)
     temp = ptr;
     temp++;
     temp = g_utf8_strchr (temp, -1, L'/');
-    if (g_utf8_get_char(temp + 1) == '(')
+    if (g_utf8_get_char(temp + 1) == L'(')
     {
       rl->classification_start = temp + 2;
       temp = g_utf8_strchr (temp, -1, L')');
@@ -215,6 +232,23 @@ void gw_resultline_parse_normal_result_string (GwResultLine *rl)
 //!
 void gw_resultline_parse_kanji_result_string (GwResultLine *rl)
 {
+    //Reinitialize Variables to help prevent craziness
+    rl->def_start[0] = NULL;
+    rl->def_total = 0;
+    rl->kanji_start = NULL;
+    rl->furigana_start = NULL;
+    rl->classification_start = NULL;
+    rl->important = FALSE;
+    rl->strokes = NULL;
+    rl->frequency = NULL;
+    rl->readings[0] = NULL;
+    rl->readings[1] = NULL;
+    rl->meanings = NULL;
+    rl->grade = NULL;
+    rl->jlpt = NULL;
+    rl->kanji = NULL;
+    rl->radicals = NULL;
+
     //First generate the grade, stroke, frequency, and jplt fields
     char *start[4], *end[4];
     gboolean found[4];
@@ -301,6 +335,23 @@ void gw_resultline_parse_kanji_result_string (GwResultLine *rl)
 //!
 void gw_resultline_parse_radical_result_string (GwResultLine *rl)
 {
+    //Reinitialize Variables to help prevent craziness
+    rl->def_start[0] = NULL;
+    rl->def_total = 0;
+    rl->kanji_start = NULL;
+    rl->furigana_start = NULL;
+    rl->classification_start = NULL;
+    rl->important = FALSE;
+    rl->strokes = NULL;
+    rl->frequency = NULL;
+    rl->readings[0] = NULL;
+    rl->readings[1] = NULL;
+    rl->meanings = NULL;
+    rl->grade = NULL;
+    rl->jlpt = NULL;
+    rl->kanji = NULL;
+    rl->radicals = NULL;
+
     //First generate the grade, stroke, frequency, and jplt fields
     rl->kanji = rl->string;
 
@@ -329,6 +380,23 @@ void gw_resultline_parse_radical_result_string (GwResultLine *rl)
 //!
 void gw_resultline_parse_examples_result_string (GwResultLine *rl)
 {
+    //Reinitialize Variables to help prevent craziness
+    rl->def_start[0] = NULL;
+    rl->def_total = 0;
+    rl->kanji_start = NULL;
+    rl->furigana_start = NULL;
+    rl->classification_start = NULL;
+    rl->important = FALSE;
+    rl->strokes = NULL;
+    rl->frequency = NULL;
+    rl->readings[0] = NULL;
+    rl->readings[1] = NULL;
+    rl->meanings = NULL;
+    rl->grade = NULL;
+    rl->jlpt = NULL;
+    rl->kanji = NULL;
+    rl->radicals = NULL;
+
     //First generate the grade, stroke, frequency, and jplt fields
     rl->kanji = rl->string;
 
@@ -381,6 +449,23 @@ void gw_resultline_parse_examples_result_string (GwResultLine *rl)
 //!
 void gw_resultline_parse_unknown_result_string (GwResultLine *rl)
 {
+    //Reinitialize Variables to help prevent craziness
+    rl->def_start[0] = NULL;
+    rl->def_total = 0;
+    rl->kanji_start = NULL;
+    rl->furigana_start = NULL;
+    rl->classification_start = NULL;
+    rl->important = FALSE;
+    rl->strokes = NULL;
+    rl->frequency = NULL;
+    rl->readings[0] = NULL;
+    rl->readings[1] = NULL;
+    rl->meanings = NULL;
+    rl->grade = NULL;
+    rl->jlpt = NULL;
+    rl->kanji = NULL;
+    rl->radicals = NULL;
+
     char *temp = NULL;
     if (temp = g_utf8_strchr (rl->string, -1, L'\n'))
     {

@@ -130,7 +130,7 @@ void gw_ui_verb_check_with_suggestion (GwSearchItem *item)
     result_furigana_first_letter = result_kanji_first_letter;
 
   //Make sure the query and the search result start similarly
-  if (query_first_letter != result_kanji_first_letter && query_first_letter != result_furigana_first_letter)
+  if (line->classification_start == NULL || (query_first_letter != result_kanji_first_letter && query_first_letter != result_furigana_first_letter))
     return;
 
   GtkWidget *suggestion_label;
