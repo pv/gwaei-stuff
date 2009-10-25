@@ -14,19 +14,19 @@ TABLE OF CONTENTS
   3.0 MAKING A DEB PACKAGE
   4.0 MAKING AN RPM PACKAGE
   5.0 COMPILING ON WINDOWS
+  6.0 MESSAGE TO PACKAGERS
 
 
 
 1.0 PREREQUISITES:
 
-  To run gWaei 1.1, an environment with at least gtk+-2.16/glib-2.9.0,
+  To run gWaei 1.2, an environment with at least gtk+-2.16/glib-2.9.0,
   gconf-2.24.0, curl 7.19.6, gnome-doc-utils-0.14.0 and libsexy-0.1.11 are
   required.  Additionally, you will want to have rsync, gzip and
   kanjistrokeorders  available.  Most of these are satisfied with a
   default install of Gnome 2.26 or newer which should come with Ubuntu 9.04
-  and Fedora 11. There are also 2 fonts you may want which will make the kanji
-  look nicer.  ttf-kanjistrokeorders and ttf-arphic-ukai.  The previous is a
-  dependency in the deb and rpm so that it gets pulled in on install.
+  and Fedora 11. If you want to be able to see kanji stroke orders in the program,
+  it is recommended you install ttf-kanjistrokeorders along with gWaei.
 
   An example of a command that Ubuntu/Debian users might use to get the
   required runtime dependancies is:
@@ -47,7 +47,7 @@ TABLE OF CONTENTS
   required compilation dependancies is:
 
   sudo apt-get install libcurl4-gnutls-dev libgtk2.0-dev libsexy-dev\
-  libgconf2-dev build-essential gnome-doc-utils
+  libgconf2-dev build-essential gnome-doc-utils libunique-dev
 
   For inputing Japanese queries, installing some software for Japanese
   conversion is highly recommended.  Currently, the two main linux methods are
@@ -79,21 +79,15 @@ TABLE OF CONTENTS
 
 3.0 MAKING A DEB PACKAGE:
 
-  If you are not using i386 as your archtecture, you should switch it in
-  configure.ac beforehand. You will then need to configure the installer with
-  any needed options using "./configure". After that just run "make deb" to
-  have the deb install file created in the base of the gwaei folder.
+  Debian packages of gWaei are coming to most distros through Debian.  In the
+  mean time, you can run:
+    $ git clone git://gwaei.git.sourceforge.net/gitroot/gwaei/gwaei debian
 
-  i386 Ubuntu users will do something similar to this to create the deb:
-    $ ./configure --prefix /usr --sysconf /etc
-    $ make deb
-  i386 Debian users will do something similiar to this to create the deb:
-    $ ./configure --prefix /usr --sysconf /usr
-    $ make deb
-
-  If you are lazy, you can also use a shortcut for Ubuntu:
+  to get a copy of the debian folder.  Then run:
     $ ./configure
-    $ make ubuntu-deb
+    $ make deb
+
+  to get your debian package.
 
 
 
@@ -103,12 +97,10 @@ TABLE OF CONTENTS
   On some architectures it is included with the rpm package itself.  On others
   you will need to install the rpm-build package.
   
-  If you are not using i386 as your archtecture, you should switch it in
-  configure.ac beforehand. You will need to configure the installer with any
-  needed options using "./configure". It will do the work of setting up the
-  spec file correctly for you.  Then run "make rpm" to actually build the rpm
-  for your architecture. The newly created rpm will appear at the base of the
-  gwaei folder.
+  You will need to configure the installer with any needed options using "./configure".
+  It will do the work of setting up the spec file correctly for you.  Then run
+  "make rpm" to actually build the rpm for your architecture. The newly created
+  rpm will appear at the base of the gwaei folder.
 
   Most users will get their rpm by doing something similar to this:
     $ ./configure --prefix /usr --sysconf /etc
@@ -117,6 +109,7 @@ TABLE OF CONTENTS
   If you are lazy, you can also use a shortcut for Fedora:
     $ ./configure
     $ make fedora-rpm
+
 
 
 5.0 COMPILING ON WINDOWS:
@@ -141,6 +134,21 @@ TABLE OF CONTENTS
   That's it.  If someone wants to help sort out the final issues with getting
   the program running on Windows, please feel free to get in contact with
   one of the developers on the gWaei homepage.
+
+
+
+6.0 MESSAGE TO PACKAGERS
+
+  Libunique is a new dependancy for gWaei, so please make sure not to miss it.
+  If you still have it written that gWaei depends on libgnome and/or
+  libgnome-ui, please remove those lines.  They have been unneeded for a while.
+
+  I'm trying my best to make things easier for you guys.  Make sure to use the
+  --disable-schemas-install flag on configure to disable both the schemas install
+  call *and* the icon cache updating of the local install.  Otherwise, you will
+  likely get some kind of sandbox error.  You do not need to patch the icon cache
+  update line out. 
+
 
 
 END

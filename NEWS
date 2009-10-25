@@ -1,8 +1,7 @@
-2009-10-09: Released gWaei 1.0
-  Offical 1.1 release!  A bunch of changes made it into the program.  Much of
-  the main interface has been rethought out. Bugs squashed, code reworked.
-  Much of the program has been documented using doxygen, a new IRC help channel
-  setup, and links to the homepage from the program.
-
-  This release requires Gnome 2.26 level dependencies.  This would be about 
-  Fedora 11 or Ubuntu 9 level.
+2009-10-25: Released gWaei 1.2.0
+  Offical 1.2.0 release!  The results have been worked to have better,
+  easier to skim formatting. New German, French, and Spanish dictionaries
+  have been added.  The dictionaries are now user organizable.  The radicals
+  in the Radical search tool now grey out when certain combinations do not
+  return any kanji.  Other general improvements to make the program easier to
+  use and remove bugs.  Packagers, please read my messages to you in the README.

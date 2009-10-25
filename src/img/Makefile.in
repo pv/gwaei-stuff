@@ -35,12 +35,7 @@ host_triplet = @host@
 subdir = src/img
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/gettext.m4 \
-	$(top_srcdir)/m4/gnome-doc-utils.m4 $(top_srcdir)/m4/iconv.m4 \
-	$(top_srcdir)/m4/lib-ld.m4 $(top_srcdir)/m4/lib-link.m4 \
-	$(top_srcdir)/m4/lib-prefix.m4 $(top_srcdir)/m4/nls.m4 \
-	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/progtest.m4 \
-	$(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -715,7 +710,8 @@ install-data-hook: update-icon-cache
 uninstall-hook: update-icon-cache
 
 @GCONF_SCHEMAS_INSTALL_TRUE@update-icon-cache:
-@GCONF_SCHEMAS_INSTALL_FALSE@update-icon-cache:
+@GCONF_SCHEMAS_INSTALL_TRUE@	gtk-update-icon-cache $(datadir)/icons/hicolor || true
+@GCONF_SCHEMAS_INSTALL_FALSE@	update-icon-cache:
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

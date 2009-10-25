@@ -517,6 +517,10 @@ void gw_settings_initialize_installed_dictionary_list()
 
 void gw_ui_update_dictionary_orders ()
 {
+    if (GTK_WIDGET (gtk_builder_get_object (builder, "organize_dictionary_list_hbox")) == NULL)
+      return;
+
+
     //Parse the the names of the dictionary list
     char order[5000];
     gw_pref_get_string (order, GCKEY_GW_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
@@ -562,6 +566,7 @@ void gw_ui_update_dictionary_orders ()
     GtkWidget *icon_image;
     GList *list;
     container = GTK_WIDGET (gtk_builder_get_object (builder, "organize_dictionary_list_hbox"));
+    move_down_button = NULL;
 
     //Clear out old buttons
     list = gtk_container_get_children (GTK_CONTAINER (container));
@@ -648,5 +653,5 @@ void gw_ui_update_dictionary_orders ()
       }
       i++;
     }
-    gtk_widget_set_sensitive (move_down_button, FALSE);
+    if (move_down_button != NULL) gtk_widget_set_sensitive (move_down_button, FALSE);
 }

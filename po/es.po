@@ -29,7 +29,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 0.15.1\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2009-10-20 11:58-0400\n"
+"POT-Creation-Date: 2009-10-25 12:55-0400\n"
 "PO-Revision-Date: 2009-10-10 01:05-0500\n"
 "Last-Translator: dean <3dx@live.com>\n"
 "Language-Team: none\n"
@@ -285,7 +285,7 @@ msgstr "Sincronizando posibles diccionarios instalados..."
 msgid "Requested dictionary not found!\n"
 msgstr "El diccionario solicitado no ha sido encontrado\n"
 
-#: src/main-interface-console.c:542 src/main-interface-gtk.c:781
+#: src/main-interface-console.c:542 src/main-interface-gtk.c:784
 #: src/xml/main.glade:893
 msgid "Found "
 msgstr "Encontrado "
@@ -343,245 +343,245 @@ msgstr "Lecturas:"
 msgid "[35mMeanings:[0m"
 msgstr "Significados:"
 
-#: src/main-interface-gtk.c:165
+#: src/main-interface-gtk.c:168
 msgid "Your query is possibly a past-form i-adjective."
 msgstr ""
 
-#: src/main-interface-gtk.c:170
+#: src/main-interface-gtk.c:173
 msgid "Your query is possibly a negative i-adjective."
 msgstr ""
 
-#: src/main-interface-gtk.c:175
+#: src/main-interface-gtk.c:178
 msgid "Your query is possibly a te-form i-adjective."
 msgstr ""
 
-#: src/main-interface-gtk.c:180
+#: src/main-interface-gtk.c:183
 msgid "Your query is possibly a causitive-form i-adjective."
 msgstr ""
 
-#: src/main-interface-gtk.c:185
+#: src/main-interface-gtk.c:188
 msgid "Your query is possibly a conditional-form i-adjective."
 msgstr ""
 
-#: src/main-interface-gtk.c:196
+#: src/main-interface-gtk.c:199
 msgid "Your query is possibly a past-form na-adjective"
 msgstr ""
 
-#: src/main-interface-gtk.c:201
+#: src/main-interface-gtk.c:204
 msgid "Your query is possibly a negative na-adjective."
 msgstr ""
 
-#: src/main-interface-gtk.c:206
+#: src/main-interface-gtk.c:209
 msgid "Your query is possibly a te-form na-adjective."
 msgstr ""
 
-#: src/main-interface-gtk.c:211
+#: src/main-interface-gtk.c:214
 msgid "Your query is possibly a causitive-form na-adjective."
 msgstr ""
 
-#: src/main-interface-gtk.c:216
+#: src/main-interface-gtk.c:219
 msgid "Your query is possibly a form-conditional na-adjective."
 msgstr ""
 
-#: src/main-interface-gtk.c:252
+#: src/main-interface-gtk.c:255
 msgid "Only for Non-Japanese Locals"
 msgstr "Sólo para Non-Japanese Locales"
 
-#: src/main-interface-gtk.c:253
+#: src/main-interface-gtk.c:256
 msgid "When Possible"
 msgstr "Si es posible"
 
-#: src/main-interface-gtk.c:254
+#: src/main-interface-gtk.c:257
 msgid "Never"
 msgstr "Nunca"
 
-#: src/main-interface-gtk.c:255
+#: src/main-interface-gtk.c:258
 msgid "Go to the _Project Homepage"
 msgstr "Ir a la _Página del proyecto"
 
-#: src/main-interface-gtk.c:256
+#: src/main-interface-gtk.c:259
 msgid "Get Help on I_RC"
 msgstr "Obtenga ayuda vía I_RC"
 
-#: src/main-interface-gtk.c:257
+#: src/main-interface-gtk.c:260
 #, fuzzy
 msgid "Other Dictionaries"
 msgstr "_Diccionarios"
 
-#: src/main-interface-gtk.c:258
+#: src/main-interface-gtk.c:261
 #, fuzzy
 msgid "Main Dictionaries"
 msgstr "_Diccionarios"
 
-#: src/main-interface-gtk.c:271
+#: src/main-interface-gtk.c:274
 msgid "Edit the current vocabulary list"
 msgstr "Editar la lista de vocabulario actual"
 
-#: src/main-interface-gtk.c:275 src/main-callbacks-gtk.c:1691
+#: src/main-interface-gtk.c:278 src/main-callbacks-gtk.c:1691
 msgid "A_ppend"
 msgstr "A_nexo"
 
-#: src/main-interface-gtk.c:276
+#: src/main-interface-gtk.c:279
 msgid "Append the current results to a file"
 msgstr "Adjuntar resultados actuales al archivo"
 
-#: src/main-interface-gtk.c:281
+#: src/main-interface-gtk.c:284
 msgid "Save the current results to a new file"
 msgstr "Guardar los resultados actuales en un nuevo archivo"
 
-#: src/main-interface-gtk.c:285
+#: src/main-interface-gtk.c:288
 msgid "Print the current results"
 msgstr "Imprimir resultados actuales"
 
-#: src/main-interface-gtk.c:290
+#: src/main-interface-gtk.c:293
 msgid "_Enlarge Text"
 msgstr "_Agrandar texto"
 
-#: src/main-interface-gtk.c:291 src/xml/main.glade:607
+#: src/main-interface-gtk.c:294 src/xml/main.glade:607
 msgid "Enlarge"
 msgstr "Agrandar"
 
-#: src/main-interface-gtk.c:292
+#: src/main-interface-gtk.c:295
 msgid "Enlarge the results text"
 msgstr "Agrandar el texto de los resultados"
 
-#: src/main-interface-gtk.c:297
+#: src/main-interface-gtk.c:300
 msgid "_Shrink Text"
 msgstr "_Reducir texto"
 
-#: src/main-interface-gtk.c:298 src/xml/main.glade:619
+#: src/main-interface-gtk.c:301 src/xml/main.glade:619
 msgid "Shrink"
 msgstr "Reducir"
 
-#: src/main-interface-gtk.c:299
+#: src/main-interface-gtk.c:302
 msgid "Shrink the results text"
 msgstr "Reducir el texto de los resultados"
 
-#: src/main-interface-gtk.c:304
+#: src/main-interface-gtk.c:307
 msgid "_Normal Size"
 msgstr "_Tamaño normal"
 
-#: src/main-interface-gtk.c:305
+#: src/main-interface-gtk.c:308
 msgid "Normal"
 msgstr "_Normal"
 
-#: src/main-interface-gtk.c:310
+#: src/main-interface-gtk.c:313
 msgid "Show _Toolbar"
 msgstr "Mostrar _Barra de herramientas"
 
-#: src/main-interface-gtk.c:314
+#: src/main-interface-gtk.c:317
 msgid "Show _Less Relevant Results"
 msgstr "Mostrar resultados _Poco relevantes"
 
-#: src/main-interface-gtk.c:318
+#: src/main-interface-gtk.c:321
 msgid "Using _Kanjipad"
 msgstr "Usar _Kanjipad"
 
-#: src/main-interface-gtk.c:323
+#: src/main-interface-gtk.c:326
 msgid "Using _Radical Search Tool"
 msgstr "Buscar por _Radical"
 
-#: src/main-interface-gtk.c:328
+#: src/main-interface-gtk.c:331
 msgid "_Word-edge Mark"
 msgstr "Marca de _Límite-palabra"
 
-#: src/main-interface-gtk.c:329
+#: src/main-interface-gtk.c:332
 msgid "_Edge"
 msgstr "_Límite"
 
-#: src/main-interface-gtk.c:330
+#: src/main-interface-gtk.c:333
 msgid "Insert a word-edge character"
 msgstr "Insertar un caracter de palabra-límite"
 
-#: src/main-interface-gtk.c:336
+#: src/main-interface-gtk.c:339
 msgid "_Not-word-edge Mark"
 msgstr "Marca de _Sin-palabra-límite"
 
-#: src/main-interface-gtk.c:337
+#: src/main-interface-gtk.c:340
 msgid "_Not Edge"
 msgstr ""
 
-#: src/main-interface-gtk.c:338
+#: src/main-interface-gtk.c:341
 msgid "Insert a not-word-edge character"
 msgstr "Insertar un caracter sin-palabra-límite"
 
-#: src/main-interface-gtk.c:343
+#: src/main-interface-gtk.c:346
 msgid "_Unknown Character"
 msgstr "_Caracter desconocido"
 
-#: src/main-interface-gtk.c:344
+#: src/main-interface-gtk.c:347
 msgid "_Unknown"
 msgstr "_Desconocido"
 
-#: src/main-interface-gtk.c:345
+#: src/main-interface-gtk.c:348
 msgid "Insert an unknown character"
 msgstr "Insertar un caracter desconocido"
 
-#: src/main-interface-gtk.c:349
+#: src/main-interface-gtk.c:352
 msgid "_Or Character"
 msgstr "Comodín _O"
 
-#: src/main-interface-gtk.c:353
+#: src/main-interface-gtk.c:356
 msgid "_And Character"
 msgstr "Comodín _Y"
 
-#: src/main-interface-gtk.c:357
+#: src/main-interface-gtk.c:360
 msgid "_Previous Search"
 msgstr "_Búsqueda previa"
 
-#: src/main-interface-gtk.c:358
+#: src/main-interface-gtk.c:361
 msgid "Previous"
 msgstr "Previo"
 
-#: src/main-interface-gtk.c:359
+#: src/main-interface-gtk.c:362
 msgid "Go to the previous search"
 msgstr "Ir a la búsqueda anterior"
 
-#: src/main-interface-gtk.c:364
+#: src/main-interface-gtk.c:367
 msgid "_Next Search"
 msgstr "_Siguiente búsqueda"
 
-#: src/main-interface-gtk.c:365
+#: src/main-interface-gtk.c:368
 msgid "Next"
 msgstr "Siguiente"
 
-#: src/main-interface-gtk.c:366
+#: src/main-interface-gtk.c:369
 msgid "Go to the next search"
 msgstr "Ir a la siguiente búsqueda"
 
-#: src/main-interface-gtk.c:371
+#: src/main-interface-gtk.c:374
 msgid "_Contents"
 msgstr "_Contenidos"
 
-#: src/main-interface-gtk.c:372
+#: src/main-interface-gtk.c:375
 msgid "Help"
 msgstr "Ayuda"
 
-#: src/main-interface-gtk.c:373
+#: src/main-interface-gtk.c:376
 msgid "Open the help dialog"
 msgstr "Abrir el dialogo de ayuda"
 
-#: src/main-interface-gtk.c:378
+#: src/main-interface-gtk.c:381
 msgid "Dictionary _Terminology Glossary"
 msgstr "Glosario _de Terminologías del Diccionario"
 
-#: src/main-interface-gtk.c:385
+#: src/main-interface-gtk.c:388
 msgid "Enable spellcheck for searches"
 msgstr "Permitir corrector ortográfico para las búsquedas"
 
-#: src/main-interface-gtk.c:389
+#: src/main-interface-gtk.c:392
 msgid "Input your query here"
 msgstr "Entre la búsqueda aquí"
 
-#: src/main-interface-gtk.c:393
+#: src/main-interface-gtk.c:396
 msgid "Select the dictionary you want to use"
 msgstr "Seleccione el diccionario a usar"
 
-#: src/main-interface-gtk.c:397
+#: src/main-interface-gtk.c:400
 msgid "Click to start search"
 msgstr "Clic para empezar la búsqueda"
 
-#: src/main-interface-gtk.c:515
+#: src/main-interface-gtk.c:518
 #, c-format
 msgid ""
 "Looks like this may be your initial install.  I'm just going to center this "
@@ -590,59 +590,59 @@ msgstr ""
 "Parece que es su primera instalación. Centraré esta ventana por Ud. Puede "
 "agradecérmelo después %d %d\n"
 
-#: src/main-interface-gtk.c:712
+#: src/main-interface-gtk.c:715
 msgid "Searching... "
 msgstr "Buscando... "
 
-#: src/main-interface-gtk.c:967
+#: src/main-interface-gtk.c:970
 msgid "_Cycle Up"
 msgstr ""
 
-#: src/main-interface-gtk.c:974
+#: src/main-interface-gtk.c:977
 msgid "Cycle _Down"
 msgstr ""
 
-#: src/main-interface-gtk.c:982
+#: src/main-interface-gtk.c:985
 #, fuzzy, c-format
 msgid "%d dictionaries are being used.\n"
 msgstr "Todos los diccionarios están instalados"
 
-#: src/main-interface-gtk.c:1829 src/engine.c:361
+#: src/main-interface-gtk.c:1832 src/engine.c:361
 msgid "No results found!"
 msgstr "¡No se han encontrado resultados!"
 
-#: src/main-interface-gtk.c:1848
+#: src/main-interface-gtk.c:1851
 msgid "gWaei Usage Tip #"
 msgstr "Tip para usar gWaei #"
 
-#: src/main-interface-gtk.c:1852
+#: src/main-interface-gtk.c:1855
 msgid ": "
 msgstr ": "
 
-#: src/main-interface-gtk.c:1860
+#: src/main-interface-gtk.c:1863
 msgid "Inputting Unknown Kanji"
 msgstr "Entrada desconocida de Kanji"
 
-#: src/main-interface-gtk.c:1867 src/main-interface-gtk.c:1911
-#: src/main-interface-gtk.c:1980
+#: src/main-interface-gtk.c:1870 src/main-interface-gtk.c:1914
+#: src/main-interface-gtk.c:1983
 msgid "Use the "
 msgstr "Use la opción "
 
-#: src/main-interface-gtk.c:1871
+#: src/main-interface-gtk.c:1874
 msgid "Unknown Character"
 msgstr "Caracter desconocido"
 
-#: src/main-interface-gtk.c:1875
+#: src/main-interface-gtk.c:1878
 msgid " from the Insert menu or toolbar in place of unknown Kanji.  "
 msgstr ""
 " desde el menú Insertar o la barra de herramientas en lugar del Kanji "
 "desconocido.  "
 
-#: src/main-interface-gtk.c:1883 src/main-interface-gtk.c:1935
+#: src/main-interface-gtk.c:1886 src/main-interface-gtk.c:1938
 msgid " will return results like "
 msgstr " retornará resultados como "
 
-#: src/main-interface-gtk.c:1891
+#: src/main-interface-gtk.c:1894
 msgid ""
 ".\n"
 "\n"
@@ -652,7 +652,7 @@ msgstr ""
 "\n"
 "Kanjipad"
 
-#: src/main-interface-gtk.c:1895
+#: src/main-interface-gtk.c:1898
 msgid ""
 " is another option for inputting Kanji characters.  Because of how the "
 "innards of Kanjipad works, drawing with the correct number of strokes and "
@@ -662,55 +662,55 @@ msgstr ""
 "funcionamiento del Kanjipad, dibujar con el correcto número de trazos y "
 "orden es muy importante."
 
-#: src/main-interface-gtk.c:1902
+#: src/main-interface-gtk.c:1905
 msgid "Getting More Exact Matches"
 msgstr "Obteniendo equivalencias más exactas"
 
-#: src/main-interface-gtk.c:1915
+#: src/main-interface-gtk.c:1918
 msgid "Word-edge Mark"
 msgstr "Marca de palabra-límite"
 
-#: src/main-interface-gtk.c:1919
+#: src/main-interface-gtk.c:1922
 msgid " and the "
 msgstr " y la opción "
 
-#: src/main-interface-gtk.c:1923
+#: src/main-interface-gtk.c:1926
 msgid "Not-word-edge Mark"
 msgstr " Marca de Sin-palabra-límite"
 
-#: src/main-interface-gtk.c:1927
+#: src/main-interface-gtk.c:1930
 msgid " from the insert menu to get more relevant results.  "
 msgstr " del menú Insertar para obtener más resultados relevantes.  "
 
-#: src/main-interface-gtk.c:1931
+#: src/main-interface-gtk.c:1934
 msgid "fish\\b"
 msgstr "Por ejemplo fish\\b"
 
-#: src/main-interface-gtk.c:1943
+#: src/main-interface-gtk.c:1946
 msgid " and "
 msgstr " y "
 
-#: src/main-interface-gtk.c:1955
+#: src/main-interface-gtk.c:1958
 msgid ", but not "
 msgstr ", pero no "
 
-#: src/main-interface-gtk.c:1971
+#: src/main-interface-gtk.c:1974
 msgid "Searching for Multiple Words"
 msgstr "Buscar con múltiples palabras"
 
-#: src/main-interface-gtk.c:1984
+#: src/main-interface-gtk.c:1987
 msgid "And Character"
 msgstr "Comodín Y"
 
-#: src/main-interface-gtk.c:1988 src/main-interface-gtk.c:2071
+#: src/main-interface-gtk.c:1991 src/main-interface-gtk.c:2074
 msgid " or "
 msgstr " o "
 
-#: src/main-interface-gtk.c:1992
+#: src/main-interface-gtk.c:1995
 msgid "Or Character"
 msgstr "Comodín O"
 
-#: src/main-interface-gtk.c:1996
+#: src/main-interface-gtk.c:1999
 msgid ""
 " to search for results that contain a combination of words that might not be "
 "right next to each other.  "
@@ -718,20 +718,20 @@ msgstr ""
 " para buscar por resultados que contengan una combinación de palabras que "
 "pudieran no estar cerca uno del otro.  "
 
-#: src/main-interface-gtk.c:2000
+#: src/main-interface-gtk.c:2003
 msgid "cats&dogs"
 msgstr "gatos&perros"
 
-#: src/main-interface-gtk.c:2004
+#: src/main-interface-gtk.c:2007
 msgid ""
 " will return only results that contain both the words cats and dogs like "
 msgstr " retornará sólo resultados que contengan las palabras gatos y perros "
 
-#: src/main-interface-gtk.c:2019
+#: src/main-interface-gtk.c:2022
 msgid "Make a Vocabulary List"
 msgstr "Hacer una lista de vocabulario"
 
-#: src/main-interface-gtk.c:2028
+#: src/main-interface-gtk.c:2031
 msgid ""
 "Specific sections of results can be printed or saved by dragging the mouse "
 "to highlight them.  Using this in combination with the "
@@ -739,11 +739,11 @@ msgstr ""
 "Secciones específicas de los resultados pueden ser impresos o guardados "
 "seleccionando con el ratón para resaltarlos.  En combinación con el botón "
 
-#: src/main-interface-gtk.c:2032 src/xml/main.glade:493
+#: src/main-interface-gtk.c:2035 src/xml/main.glade:493
 msgid "Append"
 msgstr "Anexar"
 
-#: src/main-interface-gtk.c:2036
+#: src/main-interface-gtk.c:2039
 msgid ""
 " command from the File menu or toolbar, quick and easy creation of a "
 "vocabulary lists is possible."
@@ -751,23 +751,23 @@ msgstr ""
 " desde el menú Archivo o la barra de herramientas, es posible una rápida y "
 "fácil creación de listas de vocabularios."
 
-#: src/main-interface-gtk.c:2043
+#: src/main-interface-gtk.c:2046
 msgid "Why Use the Mouse?"
 msgstr "¿Por qué usar el ratón?"
 
-#: src/main-interface-gtk.c:2051
+#: src/main-interface-gtk.c:2054
 msgid "Typing something"
 msgstr "Escribir algo"
 
-#: src/main-interface-gtk.c:2055
+#: src/main-interface-gtk.c:2058
 msgid " will move the focus to the search input box.  Hitting the "
 msgstr " moverá el cursor hacia la caja de búsqueda.  Presionando las "
 
-#: src/main-interface-gtk.c:2059
+#: src/main-interface-gtk.c:2062
 msgid "Up or Down arrow key"
 msgstr "teclas direccionales de arriba o abajo "
 
-#: src/main-interface-gtk.c:2063
+#: src/main-interface-gtk.c:2066
 msgid ""
 " will move the focus to the results pane so you can scroll the results.  "
 "Hitting "
@@ -775,23 +775,23 @@ msgstr ""
 " moverá el cursor hacía el panel de resultado y podrá moverse entre ellos.  "
 "Usando "
 
-#: src/main-interface-gtk.c:2067
+#: src/main-interface-gtk.c:2070
 msgid "Alt-Up"
 msgstr "Alt-Arriba"
 
-#: src/main-interface-gtk.c:2075
+#: src/main-interface-gtk.c:2078
 msgid "Alt-Down"
 msgstr "Alt-Abajo"
 
-#: src/main-interface-gtk.c:2079
+#: src/main-interface-gtk.c:2082
 msgid " will cycle the currently installed dictionaries."
 msgstr " podrá moverse entre los diccionarios instalados."
 
-#: src/main-interface-gtk.c:2087
+#: src/main-interface-gtk.c:2090
 msgid "Get Ready for the JLPT"
 msgstr "Prepárese para el JLPT"
 
-#: src/main-interface-gtk.c:2094
+#: src/main-interface-gtk.c:2097
 msgid ""
 "The Kanji dictionary has some hidden features.  One such one is the ability "
 "to filter out Kanji that don't meet a certain criteria.  If you are planning "
@@ -802,21 +802,21 @@ msgstr ""
 "Si está planeando o va a tomar el examen de suficiencia del japonés, usando "
 "el parámetro "
 
-#: src/main-interface-gtk.c:2098
+#: src/main-interface-gtk.c:2101
 msgid "J#"
 msgstr "J#"
 
-#: src/main-interface-gtk.c:2102
+#: src/main-interface-gtk.c:2105
 msgid " will filter out Kanji not of that level for easy study.  For example, "
 msgstr ""
 " filtrará Kanjis que no correspondan con el nivel para un fácil estudio.  "
 "Por ejemplo, "
 
-#: src/main-interface-gtk.c:2106
+#: src/main-interface-gtk.c:2109
 msgid "J4"
 msgstr "J4"
 
-#: src/main-interface-gtk.c:2110
+#: src/main-interface-gtk.c:2113
 msgid ""
 " will only show Kanji that appears on the forth level test.\n"
 "\n"
@@ -826,11 +826,11 @@ msgstr ""
 "\n"
 "Además, el parámetro "
 
-#: src/main-interface-gtk.c:2114
+#: src/main-interface-gtk.c:2117
 msgid "G#"
 msgstr "G#"
 
-#: src/main-interface-gtk.c:2118
+#: src/main-interface-gtk.c:2121
 msgid ""
 " will filter out Kanji for the grade level a Japanese person would study it "
 "at in school."
@@ -838,25 +838,25 @@ msgstr ""
 " filtrará Kanjis de acuerdo con el nivel que una persona nativa estudiaría "
 "en una escuela."
 
-#: src/main-interface-gtk.c:2126
+#: src/main-interface-gtk.c:2129
 msgid "Just drag words in!"
 msgstr "¡Sólo arrastre las palabras!"
 
-#: src/main-interface-gtk.c:2133
+#: src/main-interface-gtk.c:2136
 msgid "If you drag and drop a highlighted word into "
 msgstr ""
 "Si arrastra y suelta una palabra resaltada dentro de la caja de búsqueda de "
 
-#: src/main-interface-gtk.c:2137 src/main-interface-gtk.c:2145
-#: src/main-interface-gtk.c:2168
+#: src/main-interface-gtk.c:2140 src/main-interface-gtk.c:2148
+#: src/main-interface-gtk.c:2171
 msgid "gWaei"
 msgstr "gWaei"
 
-#: src/main-interface-gtk.c:2141
+#: src/main-interface-gtk.c:2144
 msgid "'s search query input, "
 msgstr " , la entrada de consultas de búsqueda"
 
-#: src/main-interface-gtk.c:2149
+#: src/main-interface-gtk.c:2152
 msgid ""
 " will automatically start a search using that text.  This can be a nice way "
 "to quickly look up words while browsing webpages."
@@ -864,11 +864,11 @@ msgstr ""
 " automáticamente empezará la búsqueda de ese texto.  Puede ser una manera "
 "fácil de buscar rápidamente mientras navega en páginas web."
 
-#: src/main-interface-gtk.c:2157
+#: src/main-interface-gtk.c:2160
 msgid "What does (adj-i) mean?"
 msgstr "¿Que significa (adj-i)?"
 
-#: src/main-interface-gtk.c:2164
+#: src/main-interface-gtk.c:2167
 msgid ""
 "It is part of the terminalogy used by the EDICT group of dictionaries to "
 "categorize words.  Some are obvious, but there are a number that there is no "
@@ -880,34 +880,34 @@ msgstr ""
 "no hay forma de conocer el significado si no es revisándolo.\n"
 "\n"
 
-#: src/main-interface-gtk.c:2172
+#: src/main-interface-gtk.c:2175
 msgid ""
 " includes some of the EDICT documentation in its help manual.  Click the "
 msgstr ""
 " incluye un poco de la documentación de EDICT dentro de su manual de ayuda. "
 "Clic en "
 
-#: src/main-interface-gtk.c:2176
+#: src/main-interface-gtk.c:2179
 msgid "Dictionary Terminology Glossary menuitem"
 msgstr "el Glosario de Terminologías del Diccionario"
 
-#: src/main-interface-gtk.c:2180
+#: src/main-interface-gtk.c:2183
 msgid " in the "
 msgstr " en el "
 
-#: src/main-interface-gtk.c:2184
+#: src/main-interface-gtk.c:2187
 msgid "Help menu"
 msgstr "menú de Ayuda"
 
-#: src/main-interface-gtk.c:2188
+#: src/main-interface-gtk.c:2191
 msgid " to get to it."
 msgstr " para acceder."
 
-#: src/main-interface-gtk.c:2196
+#: src/main-interface-gtk.c:2199
 msgid "Books are Heavy"
 msgstr "Los libros son pesados"
 
-#: src/main-interface-gtk.c:2203
+#: src/main-interface-gtk.c:2206
 msgid ""
 "Aways wear a construction helmet when working with books.  They are "
 "dangerous heavy objects that can at any point fall on and injure you.  "
@@ -918,36 +918,36 @@ msgstr ""
 "que pueden herirlo en cualquier momento.  Por favor, advierta a todos sus "
 "amigos.  Se lo agradecerán después. No es broma."
 
-#: src/main-interface-gtk.c:2611 src/main-interface-gtk.c:2675
+#: src/main-interface-gtk.c:2615 src/main-interface-gtk.c:2679
 msgid "Pop"
 msgstr ""
 
-#: src/main-interface-gtk.c:2721 src/main-interface-gtk.c:2823
+#: src/main-interface-gtk.c:2725 src/main-interface-gtk.c:2827
 #: src/xml/settings.glade:1213
 msgid "Radicals:"
 msgstr "Radicales:"
 
-#: src/main-interface-gtk.c:2738
+#: src/main-interface-gtk.c:2742
 msgid "Readings:"
 msgstr "Lecturas:"
 
-#: src/main-interface-gtk.c:2758
+#: src/main-interface-gtk.c:2762
 msgid "Stroke:"
 msgstr "Trazo:"
 
-#: src/main-interface-gtk.c:2765
+#: src/main-interface-gtk.c:2769
 msgid "Freq:"
 msgstr "Freq:"
 
-#: src/main-interface-gtk.c:2772
+#: src/main-interface-gtk.c:2776
 msgid "Grade:"
 msgstr "Grado:"
 
-#: src/main-interface-gtk.c:2778
+#: src/main-interface-gtk.c:2782
 msgid "JLPT:"
 msgstr "JLPT:"
 
-#: src/main-interface-gtk.c:2787
+#: src/main-interface-gtk.c:2791
 msgid "Meanings:"
 msgstr "Significados:"
 

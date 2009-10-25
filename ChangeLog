@@ -1,25 +1,20 @@
-2009-10-09  pizzach  <pizzach@gmail.com>
+2009-10-25  pizzach  <pizzach@gmail.com>
 
-	* Doxygen : Created documentation for much of the program
-	* Everything : Massive code cleanups in the program.
-	* New fonts for Kanji : ttf-arphic-ukai, ttf-kanjistrokeorders 
-	* Kanji sidebar redesign : Kanji stroke orders are shown in in the kanji
-	sidebar background made to be more cohesive.  Centered.
-	* Results grouping : results starting with the same kanji are grouped for
-	legibility.
-	* Added IRC channel links and homepage links in various places.
-	* Buttons/menus change when text is highlighted : Shows that the action only
-	is applied to the highlighted text.
-	* ui xml has been moved directly to gtkbuilder : there is no more conversion
-	of the glade file with the glade conversion script anymore.
-	* Menus moved to GtkActions : helps to simplify the code
-	* Updated documentation : The help documents etc have been updated.
-	* Redesigned main window : It has been rethrought and balanced out.  New
-	clear search and search start button.  Progress bar in the lower right hand
-	corner.
-	* Drag and drop target moved : It is now accomplished by dragging into the
-	main results area to intitiate an automatic search.
-	* The whole interface in now translated : some previously untranslatable
-	items have been made translatable.
-	* New keybindings : Tab no longer changes dictionaries.  Alt-# or
-	alt-up/alt-down does. Alt-left/alt-right now appears in the history menu.
+	* schemas errors : Made gWaei run fine without crashing even if the schemas
+	* gnome-doc-utils configure : configure no longer fails when gnome-doc-utils
+	is missing when only compiling waei.
+	* Addition of libunique : gWaei is now a single instance application.
+	Future improvements will use this to manage multiple windows of the program.
+	* Memory leak in Radical Search tool fixed : Fixed by Mikael Magnusson
+	* Fixes to romaji->hiragana conversion : The progam was having problems
+	interpreting symbolic n.
+	* New Man pages added : Written by Asumu Takikawa
+	* Added German/French/Spanish dictionaries : These are offshoots of the
+	edict dictionaryies.
+	* better color highlighting for the console : Different colors are used to
+	make different part of results easier to read.
+	* Radical search tool buttons gray out : The racials that aren't available
+	gray out to help make searching easier.
+	* New formatting for results that is easier to read : The meanings of the
+	results are indented in to make them easier to skim.  Kanji searches now
+	show an overview of the returned kanji at the top.

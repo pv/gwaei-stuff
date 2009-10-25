@@ -74,9 +74,12 @@ static UniqueResponse message_received_cb (UniqueApp         *app,
     switch (command)
     {
         case UNIQUE_ACTIVATE:
+          if (GTK_WIDGET_VISIBLE (main_window))
+          {
           gdk_x11_window_move_to_current_desktop (main_window->window);
           gtk_window_set_screen (GTK_WINDOW (main_window), unique_message_data_get_screen (message));
           gtk_window_present_with_time (GTK_WINDOW (main_window), time_);
+          }
           if (GTK_WIDGET_VISIBLE (kanjipad_window))
           {
             gdk_x11_window_move_to_current_desktop (main_window->window);
@@ -2437,6 +2440,7 @@ void initialize_gui_interface(int *argc, char ***argv)
       gw_sexy_initialize_libsexy();
       gw_ui_update_history_popups();
       gw_ui_show_window ("main_window");
+
       gw_prefs_initialize_preferences();
       gw_ui_initialize_buffer_marks();
 

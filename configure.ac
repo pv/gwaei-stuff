@@ -1,4 +1,4 @@
-AC_INIT(gwaei, 1.2Dev)
+AC_INIT(gwaei, 1.2.0)
 AC_CONFIG_SRCDIR([src/main.c])
 AM_INIT_AUTOMAKE
 AM_CONFIG_HEADER(config.h)
@@ -25,23 +25,6 @@ PKG_CHECK_MODULES(DEPS, glib-2.0           >= $GLIB_REQUIRED_VERSION
                         gthread-2.0        >= $GTHREAD_REQUIRED_VERSION       )
 AC_SUBST(DEPS_CFLAGS)
 AC_SUBST(DEPS_LIBS)
-
-
-PKG_CHECK_MODULES(WIN32, gtk+-2.0           >= $GTK2_REQUIRED_VERSION )
-AC_SUBST(WIN32_CFLAGS)
-AC_SUBST(WIN32_LIBS)
-
-
-
-PKG_CHECK_MODULES(GNOME, gtk+-2.0           >= $GTK2_REQUIRED_VERSION
-                         gconf-2.0          >= $GCONF_REQUIRED_VERSION
-                         unique-1.0         >= $LIBUNIQUE_REQUIRED_VERSION
-                         libsexy            >= $LIBSEXY_REQUIRED_VERSION
-                         gnome-doc-utils    >= $GDU_REQUIRED_VERSION
-                          ,,AM_CONDITIONAL([WITHOUT_GNOME], true))
-AC_SUBST(GNOME_CFLAGS)
-AC_SUBST(GNOME_LIBS)
-
 
 ENGLISH_DEFAULT_URI=ftp://ftp.monash.edu.au/pub/nihongo/edict.gz
 AC_SUBST(ENGLISH_DEFAULT_URI)
@@ -109,7 +92,19 @@ AM_CONDITIONAL([WITHOUT_GNOME], [test x$gnome = xtrue])
 
 
 AC_CONFIG_MACRO_DIR([m4])
-if test ${gnome} = false; then
+
+if test ${win32} = true; then
+  PKG_CHECK_MODULES(WIN32, gtk+-2.0           >= $GTK2_REQUIRED_VERSION )
+  AC_SUBST(WIN32_CFLAGS)
+  AC_SUBST(WIN32_LIBS)
+elif test ${gnome} = false; then
+  PKG_CHECK_MODULES(GNOME, gtk+-2.0           >= $GTK2_REQUIRED_VERSION
+                           gconf-2.0          >= $GCONF_REQUIRED_VERSION
+                           unique-1.0         >= $LIBUNIQUE_REQUIRED_VERSION
+                           libsexy            >= $LIBSEXY_REQUIRED_VERSION
+                           gnome-doc-utils    >= $GDU_REQUIRED_VERSION )
+  AC_SUBST(GNOME_CFLAGS)
+  AC_SUBST(GNOME_LIBS)
   GNOME_DOC_INIT
 else
   dnl Do not care if GDU is not found

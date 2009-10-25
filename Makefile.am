@@ -41,7 +41,7 @@ deb: dist
 	@ echo "Success! Finished creating the deb package.  Please have a sugary day."
 
 ubuntu-deb:
-	@ $(top_srcdir)/configure --prefix /usr --sysconfdir /etc --docdir=/usr/share/doc/@PACKAGE@  > /dev/null
+	@ $(top_srcdir)/configure --prefix /usr --sysconfdir /etc --docdir=/usr/share/doc/@PACKAGE@ --disable-schemas-install  > /dev/null
 	@ make deb
   
 
