@@ -18,6 +18,15 @@ typedef struct GwQueryLine {
     regex_t roma_regex[5][MAX_ATOMS];
     char   *mix_atom[MAX_ATOMS];
     regex_t mix_regex[5][MAX_ATOMS];
+
+    //Kanji things
+    char strokes[10];
+    char frequency[10];
+    char readings[100];
+    char meanings[100];
+    char grade[10];
+    char jlpt[10];
+    char kanji[MAX_ATOMS][5];
 } GwQueryLine;
 
 

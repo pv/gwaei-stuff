@@ -318,10 +318,10 @@ void gw_resultline_parse_kanji_result_string (GwResultLine *rl)
     if ((ptr = g_utf8_strrchr (ptr, -1, '\n')))
       *ptr = '\0';
 
-    if (found[0]) *end[0] = '\0';
-    if (found[1]) *end[1] = '\0';
-    if (found[2]) *end[2] = '\0';
-    if (found[3]) *end[3] = '\0';
+    if (found[0]) *(end[0] - 1) = '\0';
+    if (found[1]) *(end[1] - 1) = '\0';
+    if (found[2]) *(end[2] - 1) = '\0';
+    if (found[3]) *(end[3] - 1) = '\0';
 }
 
 

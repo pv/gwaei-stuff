@@ -240,50 +240,109 @@ void gw_searchitem_free(GwSearchItem* item) {
 //!
 gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const int REGEX_TYPE)
 {
-    int i;
-    int j;
     GwResultLine *rl;
     GwQueryLine *ql;
-
     rl = item->resultline;
     ql = item->queryline;
-    //Compare kanji atoms
-    i = 0;
-    while (ql->kanji_atom[i] != NULL && rl->kanji_start != NULL)
+
+    //Kanji radical dictionary search
+    if (item->dictionary->type == GW_DICT_KANJI || item->dictionary->type == GW_DICT_RADICALS)
     {
-      if (regexec(&(ql->kanji_regex[REGEX_TYPE][i]), rl->kanji_start, 1, NULL, 0) == 0)
-        return TRUE;
-      i++;  
-    }
-    //Compare furigana atoms
-    i = 0;
-    while (ql->furi_atom[i] != NULL && rl->furigana_start != NULL)
-    {
-      if (regexec(&(ql->furi_regex[REGEX_TYPE][i]), rl->furigana_start, 1, NULL, 0) == 0)
-        return TRUE;
-      i++;  
-    }
-    //Compare romaji atoms
-    i = 0;
-    while (ql->roma_atom[i] != NULL)
-    {
-      j = 0;
-      while (rl->def_start[j] != NULL)
+      if (ql->strokes[0] != '\0' && rl->strokes != NULL)
       {
-        if (regexec(&(ql->roma_regex[REGEX_TYPE][i]), rl->def_start[j], 1, NULL, 0) == 0)
-          return TRUE;
-        j++;
+        if (strcmp(ql->strokes, rl->strokes) != 0)
+          return FALSE;
       }
-      i++;  
+      if (ql->frequency[0] != '\0' && rl->frequency != NULL)
+        if (strcmp(ql->frequency, rl->frequency) != 0)
+          return FALSE;
+      if (ql->grade[0] != '\0' && rl->grade != NULL)
+        if (strcmp(ql->grade, rl->grade) == != 0)
+          return FALSE;
+      if (ql->jlpt[0] != '\0' && rl->jlpt != NULL)
+        if (strcmp(ql->jlpt, rl->jlpt) != 0)
+          return FALSE;
+
+      if (ql->meanings[0] != '\0' && rl->meanings != NULL)
+        if (strstr(ql->meanings, rl->meanings) == NULL)
+          return FALSE;
+      if (ql->readings[0] != '\0' && rl->readings[0] != NULL)
+        if (strstr(ql->readings, rl->readings[0]) == NULL)
+          return FALSE;
+
+      int i = 0;
+      int j = 0;
+      while (ql->kanji[i][0] != '\0')
+      {
+        j = 0;
+        while (rl->kanji[j] != NULL)
+        {
+          if (strcmp(ql->kanji[i], rl->kanji[j]) != 0)
+            return FALSE;
+          j++;
+        }
+        i++;
+      }
+      i = 0;
+      j = 0;
+      while (ql->kanji[i][0] != '\0')
+      {
+        j = 0;
+        while (rl->radicals[j] != NULL)
+        {
+          if (strcmp(ql->kanji[i], rl->radicals[j]) != 0)
+            return FALSE;
+          j++;
+        }
+        i++;
+      }
+      return TRUE;
     }
-    //Compare mix atoms
-    i = 0;
-    while (ql->mix_atom[i] != NULL)
+
+    //Standard dictionary search
+    else
     {
-      if (regexec(&(ql->mix_regex[REGEX_TYPE][i]), rl->string, 1, NULL, 0) == 0)
-        return TRUE;
-      i++;  
+      int i;
+      int j;
+      //Compare kanji atoms
+      i = 0;
+      while (ql->kanji_atom[i] != NULL && rl->kanji_start != NULL)
+      {
+        if (regexec(&(ql->kanji_regex[REGEX_TYPE][i]), rl->kanji_start, 1, NULL, 0) == 0)
+          return TRUE;
+        i++;  
+      }
+      //Compare furigana atoms
+      i = 0;
+      while (ql->furi_atom[i] != NULL && rl->furigana_start != NULL)
+      {
+        if (regexec(&(ql->furi_regex[REGEX_TYPE][i]), rl->furigana_start, 1, NULL, 0) == 0)
+          return TRUE;
+        i++;  
+      }
+      //Compare romaji atoms
+      i = 0;
+      while (ql->roma_atom[i] != NULL)
+      {
+        j = 0;
+        while (rl->def_start[j] != NULL)
+        {
+          if (regexec(&(ql->roma_regex[REGEX_TYPE][i]), rl->def_start[j], 1, NULL, 0) == 0)
+            return TRUE;
+          j++;
+        }
+        i++;  
+      }
+      //Compare mix atoms
+      i = 0;
+      while (ql->mix_atom[i] != NULL)
+      {
+        if (regexec(&(ql->mix_regex[REGEX_TYPE][i]), rl->string, 1, NULL, 0) == 0)
+          return TRUE;
+        i++;  
+      }
+
+      return FALSE;
     }
-    return FALSE;
 }
 
