@@ -257,14 +257,14 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
         if (strcmp(ql->frequency, rl->frequency) != 0)
           return FALSE;
       if (ql->grade[0] != '\0' && rl->grade != NULL)
-        if (strcmp(ql->grade, rl->grade) == != 0)
+        if (strcmp(ql->grade, rl->grade) != 0)
           return FALSE;
       if (ql->jlpt[0] != '\0' && rl->jlpt != NULL)
         if (strcmp(ql->jlpt, rl->jlpt) != 0)
           return FALSE;
 
       if (ql->meanings[0] != '\0' && rl->meanings != NULL)
-        if (strstr(ql->meanings, rl->meanings) == NULL)
+        if (strstr(rl->meanings, ql->meanings) == NULL)
           return FALSE;
       if (ql->readings[0] != '\0' && rl->readings[0] != NULL)
         if (strstr(ql->readings, rl->readings[0]) == NULL)
@@ -274,12 +274,10 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
       int j = 0;
       while (ql->kanji[i][0] != '\0')
       {
-        j = 0;
-        while (rl->kanji[j] != NULL)
+        if (rl->kanji != NULL)
         {
-          if (strcmp(ql->kanji[i], rl->kanji[j]) != 0)
+          if (strstr (rl->kanji, ql->kanji[i]) == NULL)
             return FALSE;
-          j++;
         }
         i++;
       }
@@ -287,12 +285,10 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
       j = 0;
       while (ql->kanji[i][0] != '\0')
       {
-        j = 0;
-        while (rl->radicals[j] != NULL)
+        if (rl->radicals != NULL)
         {
-          if (strcmp(ql->kanji[i], rl->radicals[j]) != 0)
+          if (strstr (rl->radicals, ql->kanji[i]) == NULL)
             return FALSE;
-          j++;
         }
         i++;
       }

@@ -254,6 +254,7 @@ void gw_resultline_parse_kanji_result_string (GwResultLine *rl)
     gboolean found[4];
     char *ptr = rl->string;
 
+    /*THIS SECTION IS EXTREMELY SLOW.  MUST FIX*/
     if ((found[0] = gw_regex_locate_boundary_byte_pointers(ptr, " G[0-9]{1,2} ", &start[0], &end[0])))
       rl->grade = start[0] + 2;
     else
