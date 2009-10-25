@@ -517,7 +517,9 @@ void gw_settings_initialize_installed_dictionary_list()
 
 void gw_ui_update_dictionary_orders ()
 {
-    if (GTK_WIDGET (gtk_builder_get_object (builder, "organize_dictionary_list_hbox")) == NULL)
+    GtkWidget *container;
+    container = GTK_WIDGET (gtk_builder_get_object (builder, "organize_dictionary_list_hbox"));
+    if (container == NULL)
       return;
 
 
@@ -560,12 +562,11 @@ void gw_ui_update_dictionary_orders ()
 
 
     //Declarations
-    GtkWidget *label, *container, *dictionary, *move_up_button;
+    GtkWidget *label, *dictionary, *move_up_button;
     GtkWidget *move_down_button, *button_box, *button_image;
     GtkWidget *number_label, *eventbox, *quickkey;
     GtkWidget *icon_image;
     GList *list;
-    container = GTK_WIDGET (gtk_builder_get_object (builder, "organize_dictionary_list_hbox"));
     move_down_button = NULL;
 
     //Clear out old buttons
@@ -653,5 +654,11 @@ void gw_ui_update_dictionary_orders ()
       }
       i++;
     }
+
+    //Hide the last move down arrow
     if (move_down_button != NULL) gtk_widget_set_sensitive (move_down_button, FALSE);
+
+    //Force the container to resize
+    gtk_widget_hide (container);
+    gtk_widget_show (container);
 }

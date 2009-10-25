@@ -505,7 +505,7 @@ gboolean gw_io_unzip_dictionary_file(char *path, GError **error)
 
     char command[FILENAME_MAX]; 
     strcpy(command, UNZIP);
-    strcat(command, " ");
+    strcat(command, " -o ");
     strcat(command, path);
     strcat(command, " -d ");
     strcat(command, extraction_directory);
