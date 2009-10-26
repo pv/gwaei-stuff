@@ -45,7 +45,7 @@ if GCONF_SCHEMAS_INSTALL
 update-icon-cache:
 	gtk-update-icon-cache $(datadir)/icons/hicolor || true
 else
-	update-icon-cache:
+update-icon-cache:
 endif
 
 

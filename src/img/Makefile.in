@@ -711,7 +711,7 @@ uninstall-hook: update-icon-cache
 
 @GCONF_SCHEMAS_INSTALL_TRUE@update-icon-cache:
 @GCONF_SCHEMAS_INSTALL_TRUE@	gtk-update-icon-cache $(datadir)/icons/hicolor || true
-@GCONF_SCHEMAS_INSTALL_FALSE@	update-icon-cache:
+@GCONF_SCHEMAS_INSTALL_FALSE@update-icon-cache:
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
