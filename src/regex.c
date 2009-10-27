@@ -40,6 +40,7 @@
 #include <gwaei/regex.h>
 
 
+
 regex_t re_english;
 regex_t re_radical;
 regex_t re_kanji;
@@ -69,24 +70,22 @@ regex_t re_na_adj_conditional;
 //!
 void gw_regex_initialize_constant_regular_expressions ()
 {
-    if (regcomp (&re_english, "English", GW_REGEX_EFLAGS_EXIST) != 0)
-      printf ("A problem occured while setting the regular expression for English\n");
-    if (regcomp (&re_radical, "Radical", GW_REGEX_EFLAGS_EXIST) != 0)
-      printf ("A problem occured while setting the regular expression for Radical\n");
-    if (regcomp (&re_kanji, "Kanji", GW_REGEX_EFLAGS_EXIST) != 0)
-      printf ("A problem occured while setting the regular expression for Kanji\n");
-    if (regcomp (&re_names, "Names", GW_REGEX_EFLAGS_EXIST) != 0)
-      printf ("A problem occured while setting the regular expression for Names\n");
-    if (regcomp (&re_places, "Places", GW_REGEX_EFLAGS_EXIST) != 0)
-      printf ("A problem occured while setting the regular expression for Places\n");
-    if (regcomp (&re_mix, "Mix", GW_REGEX_EFLAGS_EXIST) != 0)
-      printf ("A problem occured while setting the regular expression for Mix\n");
-    if (regcomp (&re_gz, "\\.gz", GW_REGEX_EFLAGS_EXIST) != 0)
-      printf ("A problem occured while setting the regular expression for .gz\n");
-    if (regcomp (&re_hexcolor, "^#[0-9A-Fa-f]{6,6}$", GW_REGEX_EFLAGS_EXIST) != 0)
-      printf ("A problem occured while setting the regular expression for hexcolor\n");
-    if (regcomp (&re_hexcolor, "^#[0-9A-Fa-f]{6,6}$", GW_REGEX_EFLAGS_EXIST) != 0)
-      printf ("A problem occured while setting the regular expression for hexcolor\n");
+    regcomp (&re_english, "English", GW_REGEX_EFLAGS_EXIST);
+    regcomp (&re_radical, "Radical", GW_REGEX_EFLAGS_EXIST);
+    regcomp (&re_kanji, "Kanji", GW_REGEX_EFLAGS_EXIST);
+    regcomp (&re_names, "Names", GW_REGEX_EFLAGS_EXIST);
+    regcomp (&re_places, "Places", GW_REGEX_EFLAGS_EXIST);
+    regcomp (&re_mix, "Mix", GW_REGEX_EFLAGS_EXIST);
+    regcomp (&re_gz, "\\.gz", GW_REGEX_EFLAGS_EXIST);
+    regcomp (&re_hexcolor, "^#[0-9A-Fa-f]{6,6}$", GW_REGEX_EFLAGS_EXIST);
+    regcomp (&re_hexcolor, "^#[0-9A-Fa-f]{6,6}$", GW_REGEX_EFLAGS_EXIST);
+
+
+    regcomp (&gw_re[GW_RE_QUERY_STROKES],   "\\bS[0-9]{1,2}\\b", GW_REGEX_EFLAGS_LOCATE);
+    regcomp (&gw_re[GW_RE_QUERY_FREQUENCY], "\\bF[0-9]{1,4}\\b", GW_REGEX_EFLAGS_LOCATE);
+    regcomp (&gw_re[GW_RE_QUERY_GRADE],     "\\bG[0-4]{1,1}\\b", GW_REGEX_EFLAGS_LOCATE);
+    regcomp (&gw_re[GW_RE_QUERY_JLPT],      "\\bJ[0-4]{1,1}\\b", GW_REGEX_EFLAGS_LOCATE);
+
 
     //Adjective forms
     regcomp (&re_i_adj_past,         "\\B((かった))$",              GW_REGEX_EFLAGS_LOCATE);

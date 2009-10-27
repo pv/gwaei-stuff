@@ -28,10 +28,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <regex.h>
 
 #include <glib.h>
 
 #include <gwaei/definitions.h>
+#include <gwaei/regex.h>
 #include <gwaei/resultline-object.h>
 
 
@@ -232,6 +234,13 @@ void gw_resultline_parse_normal_result_string (GwResultLine *rl)
 //!
 void gw_resultline_parse_kanji_result_string (GwResultLine *rl)
 {
+    size_t nmatch = 1;
+    regmatch_t pmatch[nmatch];
+    enum temp_enum { STROKES, FREQUENCY, GRADE, JLPT, LENGTH };
+    char *end[LENGTH];
+    gboolean found[LENGTH];
+    char *ptr = rl->string;
+
     //Reinitialize Variables to help prevent craziness
     rl->def_start[0] = NULL;
     rl->def_total = 0;
@@ -239,41 +248,47 @@ void gw_resultline_parse_kanji_result_string (GwResultLine *rl)
     rl->furigana_start = NULL;
     rl->classification_start = NULL;
     rl->important = FALSE;
-    rl->strokes = NULL;
-    rl->frequency = NULL;
     rl->readings[0] = NULL;
     rl->readings[1] = NULL;
     rl->meanings = NULL;
-    rl->grade = NULL;
-    rl->jlpt = NULL;
     rl->kanji = NULL;
     rl->radicals = NULL;
 
+
     //First generate the grade, stroke, frequency, and jplt fields
-    char *start[4], *end[4];
-    gboolean found[4];
-    char *ptr = rl->string;
 
-    /*THIS SECTION IS EXTREMELY SLOW.  MUST FIX*/
-    if ((found[0] = gw_regex_locate_boundary_byte_pointers(ptr, " G[0-9]{1,2} ", &start[0], &end[0])))
-      rl->grade = start[0] + 2;
-    else
-      rl->grade = NULL;
+    //Get strokes
+    rl->strokes = NULL;
+    if (found[STROKES] = (regexec(&gw_re[GW_RE_QUERY_STROKES], ptr, nmatch, pmatch, 0) == 0))
+    {
+      rl->strokes = ptr + pmatch[0].rm_so + 1;
+      end[STROKES] = ptr + pmatch[0].rm_eo;
+    }
 
-    if ((found[1] =gw_regex_locate_boundary_byte_pointers(ptr, " S[0-9]{1,2} ", &start[1], &end[1])))
-      rl->strokes = start[1] + 2;
-    else
-      rl->strokes = NULL;
+    //Get frequency
+    rl->frequency = NULL;
+    if (found[FREQUENCY] = (regexec(&gw_re[GW_RE_QUERY_FREQUENCY], ptr, nmatch, pmatch, 0) == 0))
+    {
+      rl->frequency = ptr + pmatch[0].rm_so;
+      end[FREQUENCY] = ptr + pmatch[0].rm_eo;
+    }
 
-    if ((found[2] =gw_regex_locate_boundary_byte_pointers(ptr, " F[0-9]{1,5} ", &start[2], &end[2])))
-      rl->frequency = start[2] + 2;
-    else
-      rl->frequency = NULL;
+    //Get grade
+    rl->grade = NULL;
+    if (found[GRADE] = (regexec(&gw_re[GW_RE_QUERY_GRADE], ptr, nmatch, pmatch, 0) == 0))
+    {
+      rl->grade = ptr + pmatch[0].rm_so;
+      end[GRADE] = ptr + pmatch[0].rm_eo;
+    }
 
-    if ((found[3] = gw_regex_locate_boundary_byte_pointers(ptr, " J[0-9]{1,1} ", &start[3], &end[3])))
-      rl->jlpt = start[3] + 2;
-    else
-      rl->jlpt = NULL;
+    //Get JLPT
+    rl->jlpt = NULL;
+    if (found[JLPT] = (regexec(&gw_re[GW_RE_QUERY_JLPT], ptr, nmatch, pmatch, 0) == 0))
+    {
+      rl->jlpt = ptr + pmatch[0].rm_so;
+      end[JLPT] = ptr + pmatch[0].rm_eo;
+    }
+
 
     //Get the kanji character
     rl->kanji = ptr;
@@ -319,10 +334,14 @@ void gw_resultline_parse_kanji_result_string (GwResultLine *rl)
     if ((ptr = g_utf8_strrchr (ptr, -1, '\n')))
       *ptr = '\0';
 
-    if (found[0]) *(end[0] - 1) = '\0';
-    if (found[1]) *(end[1] - 1) = '\0';
-    if (found[2]) *(end[2] - 1) = '\0';
-    if (found[3]) *(end[3] - 1) = '\0';
+    if (found[STROKES])
+      *end[STROKES] = '\0';
+    if (found[FREQUENCY])
+      *end[FREQUENCY] = '\0';
+    if (found[GRADE])
+      *end[GRADE] = '\0';
+    if (found[JLPT])
+      *end[JLPT] = '\0';
 }
 
 

@@ -37,6 +37,7 @@
 #include <glib.h>
 
 #include <gwaei/definitions.h>
+#include <gwaei/regex.h>
 #include <gwaei/queryline-object.h>
 
 #define EFLAGS_EXIST    (REG_EXTENDED | REG_ICASE | REG_NOSUB)
@@ -146,40 +147,52 @@ int gw_queryline_parse_kanji_string (GwQueryLine *ql, const char* string)
     char *ptr = ql->string;
     char *next = NULL;
     gunichar character;
+    size_t nmatch = 1;
+    char *start;
+    int length;
+    regmatch_t pmatch[nmatch];
 
     //Get stroke
     ql->strokes[0] = '\0';
-    if (gw_regex_locate_boundary_byte_pointers(ptr, "\\bS[0-4]{1,2}\\b", &ptr, &next))
+    if (regexec(&gw_re[GW_RE_QUERY_STROKES], ptr, nmatch, pmatch, 0) == 0)
     {
-      strncpy (ql->strokes, ptr + 1, next - ptr);
-      ql->strokes[next - ptr] = '\0';
+      start = ptr + pmatch[0].rm_so + 1;
+      length = pmatch[0].rm_eo - pmatch[0].rm_so - 1;
+      strncpy (ql->strokes, start, length);
+      ql->strokes[length] = '\0';
     }
     printf("Strokes: %s\n", ql->strokes);
 
     //Get Frequency
     ql->frequency[0] = '\0';
-    if (gw_regex_locate_boundary_byte_pointers(ptr, "\\bF[0-4]{1,4}\\b", &ptr, &next))
+    if (regexec(&gw_re[GW_RE_QUERY_FREQUENCY], ptr, nmatch, pmatch, 0) == 0)
     {
-      strncpy (ql->frequency, ptr + 1, next - ptr);
-      ql->frequency[next - ptr] = '\0';
+      start = ptr + pmatch[0].rm_so + 1;
+      length = pmatch[0].rm_eo - pmatch[0].rm_so - 1;
+      strncpy (ql->frequency, start, length);
+      ql->frequency[length] = '\0';
     }
     printf("Frequency: %s\n", ql->frequency);
 
     //Get Grade
     ql->grade[0] = '\0';
-    if (gw_regex_locate_boundary_byte_pointers(ptr, "\\bG[0-4]{1,1}\\b", &ptr, &next))
+    if (regexec(&gw_re[GW_RE_QUERY_GRADE], ptr, nmatch, pmatch, 0) == 0)
     {
-      strncpy (ql->grade, ptr + 1, next - ptr);
-      ql->grade[next - ptr] = '\0';
+      start = ptr + pmatch[0].rm_so + 1;
+      length = pmatch[0].rm_eo - pmatch[0].rm_so - 1;
+      strncpy (ql->grade, start, length);
+      ql->grade[length] = '\0';
     }
     printf("Grade: %s\n", ql->grade);
 
     //Get JLPT 
     ql->jlpt[0] = '\0';
-    if (gw_regex_locate_boundary_byte_pointers(ptr, "\\bJ[0-4]{1,1}\\b", &ptr, &next))
+    if (regexec(&gw_re[GW_RE_QUERY_JLPT], ptr, nmatch, pmatch, 0) == 0)
     {
-      strncpy (ql->jlpt, ptr + 1, next - ptr);
-      ql->jlpt[next - ptr] = '\0';
+      start = ptr + pmatch[0].rm_so + 1;
+      length = pmatch[0].rm_eo - pmatch[0].rm_so - 1;
+      strncpy (ql->jlpt, start, length);
+      ql->jlpt[length] = '\0';
     }
     printf("JLPT: %s\n", ql->jlpt);
 

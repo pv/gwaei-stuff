@@ -249,10 +249,8 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
     if (item->dictionary->type == GW_DICT_KANJI || item->dictionary->type == GW_DICT_RADICALS)
     {
       if (ql->strokes[0] != '\0' && rl->strokes != NULL)
-      {
         if (strcmp(ql->strokes, rl->strokes) != 0)
           return FALSE;
-      }
       if (ql->frequency[0] != '\0' && rl->frequency != NULL)
         if (strcmp(ql->frequency, rl->frequency) != 0)
           return FALSE;

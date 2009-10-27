@@ -37,3 +37,39 @@ gboolean gw_regex_create_roma_high_regex (regex_t*, char*, int);
 gboolean gw_regex_create_roma_med_regex (regex_t*, char*, int);
 gboolean gw_regex_create_mix_high_regex (regex_t*, char*, int);
 gboolean gw_regex_create_mix_med_regex (regex_t*, char*, int);
+
+
+enum initial_dictionary_regexes {
+  GW_RE_DICT_ENGLISH,
+  GW_RE_DICT_RADICAL,
+  GW_RE_DICT_KANJI,
+  GW_RE_DICT_PLACES,
+  GW_RE_DICT_NAMES,
+  GW_RE_DICT_MIX,
+
+  GW_RE_QUERY_STROKES,
+  GW_RE_QUERY_GRADE,
+  GW_RE_QUERY_FREQUENCY,
+  GW_RE_QUERY_JLPT,
+
+  GW_RE_FILENAME_GZ,
+  GW_RE_COLOR_HEXCOLOR,
+
+  GW_RE_WORD_I_ADJ_PASTFORM,
+  GW_RE_WORD_I_ADJ_NEGATIVE,
+  GW_RE_WORD_I_ADJ_TE_FORM,
+  GW_RE_WORD_I_ADJ_CAUSATIVE,
+  GW_RE_WORD_I_ADJ_CONDITIONAL,
+  GW_RE_WORD_NA_ADJ_PASTFORM,
+  GW_RE_WORD_NA_ADJ_NEGATIVE,
+  GW_RE_WORD_NA_ADJ_TE_FORM,
+  GW_RE_WORD_NA_ADJ_CAUSATIVE,
+  GW_RE_WORD_NA_ADJ_CONDITIONAL,
+
+  GW_RE_LENGTH
+};
+
+regex_t gw_re[GW_RE_LENGTH];
+
+
+
