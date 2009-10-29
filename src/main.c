@@ -95,7 +95,7 @@ int main( int argc, char *argv[] )
     if (!g_thread_supported ())
       g_thread_init (NULL);
 
-    //g_type_init();
+    g_type_init();
     curl_global_init(CURL_GLOBAL_ALL);
 
     gw_regex_initialize_constant_regular_expressions();
