@@ -530,6 +530,12 @@ void initialize_console_interface(int argc, char **argv)
 
     GwSearchItem *item;
     item = gw_searchitem_new(query, di, GW_TARGET_CONSOLE);
+    if (item == NULL){
+    	//TODO: Use GError instead
+    	printf("Out of memory. Exiting.");
+    	exit (EXIT_FAILURE);
+    }
+
     item->show_less_relevant_results = !exact_switch;
 
     if (item != NULL )
