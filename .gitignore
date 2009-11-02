@@ -35,6 +35,8 @@ po/en@boldquot.insert-header
 po/en@quot.insert-header
 po/en@boldquot.po
 po/en@quot.po
+po/en@boldquot.po~
+po/en@quot.po~
 po/POTFILES
 
 po/remove-potcdate.sed
@@ -61,3 +63,15 @@ src/kpengine/.deps/*
 documentation/*
 
 src/include/gwaei/definitions.h
+
+Makefile.in
+aclocal.m4
+help/Makefile.in
+mandir/Makefile.in
+src/Makefile.in
+src/desktop/Makefile.in
+src/img/Makefile.in
+src/kpengine/Makefile.in
+src/schemas/Makefile.in
+src/xml/Makefile.in
+
