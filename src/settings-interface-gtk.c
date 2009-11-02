@@ -547,7 +547,7 @@ void gw_ui_update_dictionary_orders ()
     {
       di1 = gw_dictlist_get_dictionary_by_name (long_name_list[j]);
       di2 = gw_dictlist_get_dictionary_by_alias (long_name_list[j]);
-      if (strcmp(di1->name, di2->name) == 0 && di2->status == GW_DICT_STATUS_INSTALLED)
+      if (di1 != NULL && di2 != NULL && strcmp(di1->name, di2->name) == 0 && di2->status == GW_DICT_STATUS_INSTALLED)
       {
         condensed_name_list[i] = &long_name_list[j];
         i++; j++;
