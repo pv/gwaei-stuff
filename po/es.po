@@ -29,7 +29,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 0.15.1\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2009-10-25 12:55-0400\n"
+"POT-Creation-Date: 2009-11-14 23:26-0500\n"
 "PO-Revision-Date: 2009-10-10 01:05-0500\n"
 "Last-Translator: dean <3dx@live.com>\n"
 "Language-Team: none\n"
@@ -285,24 +285,24 @@ msgstr "Sincronizando posibles diccionarios instalados..."
 msgid "Requested dictionary not found!\n"
 msgstr "El diccionario solicitado no ha sido encontrado\n"
 
-#: src/main-interface-console.c:542 src/main-interface-gtk.c:784
+#: src/main-interface-console.c:548 src/main-interface-gtk.c:784
 #: src/xml/main.glade:893
 msgid "Found "
 msgstr "Encontrado "
 
-#: src/main-interface-console.c:544 src/xml/main.glade:913
+#: src/main-interface-console.c:550 src/xml/main.glade:913
 msgid " Results"
 msgstr " Resultados"
 
-#: src/main-interface-console.c:548 src/xml/main.glade:926
+#: src/main-interface-console.c:554 src/xml/main.glade:926
 msgid " ("
 msgstr " ("
 
-#: src/main-interface-console.c:550 src/xml/main.glade:946
+#: src/main-interface-console.c:556 src/xml/main.glade:946
 msgid " Relevant)"
 msgstr " Relevante)"
 
-#: src/main-interface-console.c:557
+#: src/main-interface-console.c:563
 #, c-format
 msgid ""
 "Results seem to have incorrect formatting. Did you close all of your\n"
@@ -311,34 +311,34 @@ msgstr ""
 "Los resultados parecen tener un formato incorrecto. ¿Ha cerrado todos los\n"
 "paréntesis?  Quizá también quiera intentar con comillas.\n"
 
-#: src/main-interface-console.c:601
+#: src/main-interface-console.c:607
 #, fuzzy
 msgid "[35mRadicals:[0m"
 msgstr "Radicales:"
 
-#: src/main-interface-console.c:607
+#: src/main-interface-console.c:613
 #, fuzzy
 msgid "[35mStroke:[0m"
 msgstr "Trazo:"
 
-#: src/main-interface-console.c:613
+#: src/main-interface-console.c:619
 msgid "[35mFreq:[0m"
 msgstr ""
 
-#: src/main-interface-console.c:619
+#: src/main-interface-console.c:625
 msgid "[35mGrade:[0m"
 msgstr ""
 
-#: src/main-interface-console.c:625
+#: src/main-interface-console.c:631
 msgid "[35mJLPT:[0m"
 msgstr ""
 
-#: src/main-interface-console.c:628
+#: src/main-interface-console.c:634
 #, fuzzy
 msgid "[35mReadings:[0m"
 msgstr "Lecturas:"
 
-#: src/main-interface-console.c:632
+#: src/main-interface-console.c:638
 #, fuzzy
 msgid "[35mMeanings:[0m"
 msgstr "Significados:"

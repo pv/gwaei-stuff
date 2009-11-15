@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2009-10-25 12:55-0400\n"
+"POT-Creation-Date: 2009-11-14 23:26-0500\n"
 "PO-Revision-Date: 2008-11-30 02:35+0500\n"
 "Last-Translator: Zachary Dovel pizzach@gmail.com\n"
 "Language-Team: Not Applicable\n"
@@ -250,55 +250,55 @@ msgstr "可能な辞書をシンク中..."
 msgid "Requested dictionary not found!\n"
 msgstr "望みの辞書が存在しない!\n"
 
-#: src/main-interface-console.c:542 src/main-interface-gtk.c:784
+#: src/main-interface-console.c:548 src/main-interface-gtk.c:784
 #: src/xml/main.glade:893
 msgid "Found "
 msgstr "候補を"
 
-#: src/main-interface-console.c:544 src/xml/main.glade:913
+#: src/main-interface-console.c:550 src/xml/main.glade:913
 msgid " Results"
 msgstr "つ見出した"
 
-#: src/main-interface-console.c:548 src/xml/main.glade:926
+#: src/main-interface-console.c:554 src/xml/main.glade:926
 msgid " ("
 msgstr " ("
 
-#: src/main-interface-console.c:550 src/xml/main.glade:946
+#: src/main-interface-console.c:556 src/xml/main.glade:946
 msgid " Relevant)"
 msgstr "つが一致する)"
 
-#: src/main-interface-console.c:557
+#: src/main-interface-console.c:563
 #, c-format
 msgid ""
 "Results seem to have incorrect formatting. Did you close all of your\n"
 "parenthesis?  You may want to try quotes too.\n"
 msgstr ""
 
-#: src/main-interface-console.c:601
+#: src/main-interface-console.c:607
 msgid "[35mRadicals:[0m"
 msgstr "部首:"
 
-#: src/main-interface-console.c:607
+#: src/main-interface-console.c:613
 msgid "[35mStroke:[0m"
 msgstr "画数:"
 
-#: src/main-interface-console.c:613
+#: src/main-interface-console.c:619
 msgid "[35mFreq:[0m"
 msgstr ""
 
-#: src/main-interface-console.c:619
+#: src/main-interface-console.c:625
 msgid "[35mGrade:[0m"
 msgstr ""
 
-#: src/main-interface-console.c:625
+#: src/main-interface-console.c:631
 msgid "[35mJLPT:[0m"
 msgstr ""
 
-#: src/main-interface-console.c:628
+#: src/main-interface-console.c:634
 msgid "[35mReadings:[0m"
 msgstr "読み:"
 
-#: src/main-interface-console.c:632
+#: src/main-interface-console.c:638
 msgid "[35mMeanings:[0m"
 msgstr "意味:"
 
