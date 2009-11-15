@@ -81,7 +81,7 @@ TABLE OF CONTENTS
 
   Debian packages of gWaei are coming to most distros through Debian.  In the
   mean time, you can run:
-    $ git clone git://gwaei.git.sourceforge.net/gitroot/gwaei/gwaei debian
+    $ git clone git://gwaei.git.sourceforge.net/gitroot/gwaei/debian debian
 
   to get a copy of the debian folder.  Then run:
     $ ./configure

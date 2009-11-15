@@ -1103,6 +1103,7 @@ G_MODULE_EXPORT void do_about (GtkWidget *widget, gpointer data)
     char *italian = gettext ("Italian: ");
     char *japanese = gettext ("Japanese: ");
     char *spanish = gettext ("Spanish: ");
+    char *french = gettext ("French: ");
     char translator_credits[10000];
     strcpy (translator_credits, "");
 
@@ -1112,6 +1113,8 @@ G_MODULE_EXPORT void do_about (GtkWidget *widget, gpointer data)
     strcat (translator_credits, "Zachary Dovel\n");
     strcat (translator_credits, spanish);
     strcat (translator_credits, "4packed\n");
+    strcat (translator_credits, french);
+    strcat (translator_credits, "Nicolas (aka FoeNyx)\n");
 
     GdkPixbuf *logo;
     if ( (logo = gdk_pixbuf_new_from_file ( pixbuf_path,    NULL)) == NULL &&

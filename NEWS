@@ -1,7 +1,5 @@
-2009-10-25: Released gWaei 1.2.0
-  Offical 1.2.0 release!  The results have been worked to have better,
-  easier to skim formatting. New German, French, and Spanish dictionaries
-  have been added.  The dictionaries are now user organizable.  The radicals
-  in the Radical search tool now grey out when certain combinations do not
-  return any kanji.  Other general improvements to make the program easier to
-  use and remove bugs.  Packagers, please read my messages to you in the README.
+2009-11-14: Released gWaei 1.2.1
+  A bug fix release.  People sent in problems and various things were fixed.
+  A few random crashers when waei was used with no running gtk using environment
+  and when starting gwaei.  Also, the installation prodecure was fixed when doing
+  --disable-schemas-install.  Sorry packagers!

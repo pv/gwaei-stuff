@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2009-11-14 23:26-0500\n"
+"POT-Creation-Date: 2009-11-15 00:50-0500\n"
 "PO-Revision-Date: 2008-11-30 02:35+0500\n"
 "Last-Translator: Zachary Dovel pizzach@gmail.com\n"
 "Language-Team: Not Applicable\n"
@@ -374,7 +374,7 @@ msgstr "主な辞書"
 msgid "Edit the current vocabulary list"
 msgstr "現在語彙リストを編集する"
 
-#: src/main-interface-gtk.c:278 src/main-callbacks-gtk.c:1691
+#: src/main-interface-gtk.c:278 src/main-callbacks-gtk.c:1694
 msgid "A_ppend"
 msgstr "追加(_P)"
 
@@ -894,7 +894,12 @@ msgstr "日本語: "
 msgid "Spanish: "
 msgstr "和西: "
 
-#: src/main-callbacks-gtk.c:1126
+#: src/main-callbacks-gtk.c:1106
+#, fuzzy
+msgid "French: "
+msgstr "フランス語:"
+
+#: src/main-callbacks-gtk.c:1129
 msgid ""
 "gWaei (C) 2008-2009 Zachary Dovel\n"
 "Kanjipad backend (C) 2002 Owen Taylor\n"
@@ -904,7 +909,7 @@ msgstr ""
 "漢字パッド バックエンド (C) 2002 Owen Taylor\n"
 "JStroke バックエンド(C) 1997 Robert Wells"
 
-#: src/main-callbacks-gtk.c:1127
+#: src/main-callbacks-gtk.c:1130
 msgid ""
 "Program for Japanese translation and reference. The\n"
 "dictionaries are supplied by Jim Breen's WWWJDIC."
@@ -912,15 +917,15 @@ msgstr ""
 "日本語の翻訳や参照の為に作られたプログラムです. 辞書ファイルがJim Breenの"
 "WWWJDICから取られています."
 
-#: src/main-callbacks-gtk.c:1680
+#: src/main-callbacks-gtk.c:1683
 msgid "A_ppend Selected"
 msgstr "選択のを追加(_P)"
 
-#: src/main-callbacks-gtk.c:1682
+#: src/main-callbacks-gtk.c:1685
 msgid "Save Selected _As"
 msgstr "選択のを別名で保存"
 
-#: src/main-callbacks-gtk.c:1684
+#: src/main-callbacks-gtk.c:1687
 msgid "_Print Selected"
 msgstr "選択のを印刷"
 
