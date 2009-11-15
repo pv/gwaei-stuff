@@ -16,18 +16,22 @@ uninstall-local: uninstall-schemas
 
 if GCONF_SCHEMAS_INSTALL
 uninstall-schemas:
+#	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) \
+#	$(GCONFTOOL) --makefile-uninstall-rule $(SCHEMAS_DIRECTORY)/@PACKAGE@.schemas
+#	`$(KILLALL) -HUP gconfd-2 || true`
 	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) \
-	$(GCONFTOOL) --makefile-uninstall-rule $(SCHEMAS_DIRECTORY)/@PACKAGE@.schemas
-	`$(KILLALL) -HUP gconfd-2 || true`
+	$(GCONFTOOL) --makefile-install-rule $(SCHEMAS_DIRECTORY)/@PACKAGE@.schemas `$(KILLALL) -HUP gconfd-2 || gconftool-2 --install-schema-file=$(SCHEMAS_DIRECTORY)/@PACKAGE@.schemas` || true
 else
 uninstall-schemas:
 endif
 
 if GCONF_SCHEMAS_INSTALL
 install-schemas:
+#	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) \
+#	$(GCONFTOOL) --makefile-install-rule $(SCHEMAS_DIRECTORY)/@PACKAGE@.schemas
+#	`$(KILLALL) -HUP gconfd-2 || true`
 	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) \
-	$(GCONFTOOL) --makefile-install-rule $(SCHEMAS_DIRECTORY)/@PACKAGE@.schemas
-	`$(KILLALL) -HUP gconfd-2 || true`
+	$(GCONFTOOL) --makefile-install-rule $(SCHEMAS_DIRECTORY)/@PACKAGE@.schemas `$(KILLALL) -HUP gconfd-2 || gconftool-2 --install-schema-file=$(SCHEMAS_DIRECTORY)/@PACKAGE@.schemas` || true
 else
 install-schemas:
 endif
