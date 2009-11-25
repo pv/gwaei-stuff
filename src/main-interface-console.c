@@ -335,7 +335,73 @@ static gboolean is_switch (char *arg, char *short_switch, char *long_switch) {
   return (strcmp(arg, short_switch) == 0 || strcmp(arg, long_switch) == 0);
 }
 
+/*
+ * FIXME FIXME FIXME
+ */
+static void get_search (GwDictInfo *dictionary){
 
+	GError *error = NULL;
+	GwSearchItem *item;
+	char query[MAX_QUERY];
+	int cont;
+	char *fgetsTest;
+
+	printf ("\nNew search: ");
+	fgetsTest = fgets (query, MAX_QUERY, stdin);
+	if (fgetsTest == NULL){
+		printf("ERROR (get_search): Input error!");
+		return;
+	}
+
+	if (query[0] == '\n'){
+		printf("Insert a word...\n");
+		return; //TODO: Quit instead
+	}
+
+	/* remove the null terminator */
+	for (cont = 0; cont < sizeof(query); ++cont) {
+		if (query[cont] == '\n') {
+			query[cont] = '\0';
+			break;
+		}
+	}
+
+	print_search_start_banner(query, dictionary->name);
+
+	item = gw_searchitem_new(query, dictionary, GW_TARGET_CONSOLE);
+	if (item == NULL){
+		//TODO: Use GError instead. TODO
+		printf(gettext("Results seem to have incorrect formatting. Did you "
+						"close all of your\nparenthesis?  You may want to tr"
+						"y quotes too.\n"));
+		printf("Or\n");
+		printf("Out of memory.\n Exiting.\n");
+		exit (EXIT_FAILURE);
+	}
+
+	//item->show_less_relevant_results = !exact_switch;
+	gw_search_get_results (item); //TODO: Print here?? <---
+
+	//Print the number of results
+
+	//if (quiet_switch == FALSE) {
+		printf("");
+		printf("\n%s%d%s", gettext("Found "), item->total_results, gettext(" Results"));
+
+		if (item->total_relevant_results != item->total_results)
+			printf("%s%d%s", gettext(" ("), item->total_relevant_results, gettext(" Relevant)"));
+
+		printf("[0m\n");
+	//}
+
+	free(item);
+
+	return;
+}
+
+/*
+ *
+ */
 void initialize_console_interface(int argc, char **argv) {
 
 	GError *error = NULL;
@@ -541,74 +607,23 @@ void initialize_console_interface(int argc, char **argv) {
 	//Print the number of results
 	if (quiet_switch == FALSE) {
 		printf("");
-		printf("\n%s", gettext("Found "));
-		printf("%d", item->total_results);
-		printf("%s", gettext(" Results"));
-
-		if (item->total_relevant_results != item->total_results) {
-			printf("%s", gettext(" ("));
-			printf("%d", item->total_relevant_results);
-			printf("%s", gettext(" Relevant)"));
-		}
-		printf("[0m\n");
-	}
-
-	//TODO: Recursive call
-
-	free(item);
-
-	return;
-}
-
-/*
- *
- * FIXME FIXME FIXME
- *
- */
-void get_search (GwDictInfo *di){
-
-	GError *error = NULL;
-	char query[MAX_QUERY];
-	GwSearchItem *item;
-
-	printf ("\nNew search: ");
-	gets (query);
-
-	//TODO: if no search quit
-
-	print_search_start_banner(query, di->name);
-
-	item = gw_searchitem_new(query, di, GW_TARGET_CONSOLE);
-	if (item == NULL){
-		//TODO: Use GError instead. TODO
-		printf(gettext("Results seem to have incorrect formatting. Did you "
-						"close all of your\nparenthesis?  You may want to tr"
-						"y quotes too.\n"));
-		printf("Or\n");
-		printf("Out of memory.\n Exiting.\n");
-		exit (EXIT_FAILURE);
-	}
-
-	//item->show_less_relevant_results = !exact_switch;
-	gw_search_get_results (item); //TODO: Print here?? <---
-
-	//Print the number of results
-
-	//if (quiet_switch == FALSE) {
-		printf("");
 		printf("\n%s%d%s", gettext("Found "), item->total_results, gettext(" Results"));
 
 		if (item->total_relevant_results != item->total_results)
 			printf("%s%d%s", gettext(" ("), item->total_relevant_results, gettext(" Relevant)"));
 
 		printf("[0m\n");
-	//}
+	}
 
 	free(item);
 
 	return;
 }
 
+
+/*
+ *
+ */
 void gw_console_append_normal_results (GwSearchItem *item, gboolean unused) {
 
 	//Definitions
@@ -687,30 +702,45 @@ void gw_console_append_kanji_results (GwSearchItem *item, gboolean unused) {
     printf("\n");
 }
 
+/*
+ *
+ */
 void gw_console_append_radical_results (GwSearchItem *item, gboolean unused) {
-
-    GwResultLine *resultline = item->resultline;
-    printf("[32;1m%s:[0m %s\n\n", resultline->kanji, resultline->radicals);
+	if (item != NULL)
+	    printf("[32;1m%s:[0m %s\n\n", item->resultline->kanji, item->resultline->radicals);
+	else
+		printf("ERROR (gw_console_append_radical_results): NULL POINTER!");
 }
 
+/*
+ *
+ */
 void gw_console_append_examples_results (GwSearchItem *item, gboolean unused) {
 
-    GwResultLine *resultline = item->resultline;
-    int i = 0;
+	if (item != NULL) {
+	    GwResultLine *resultline = item->resultline;
+	    int i = 0;
 
-    while (resultline->number[i] != NULL && resultline->def_start[i] != NULL) {
-      if (resultline->number[i][0] == 'A' || resultline->number[i][0] == 'B')
-        printf("[32;1m%s:[0m\t%s\n", resultline->number[i], resultline->def_start[i]);
-      else
-        printf("\t%s\n", resultline->def_start[i]);
-      i++;
-    }
+	    while (resultline->number[i] != NULL && resultline->def_start[i] != NULL) {
+	      if (resultline->number[i][0] == 'A' || resultline->number[i][0] == 'B')
+	        printf("[32;1m%s:[0m\t%s\n", resultline->number[i], resultline->def_start[i]);
+	      else
+	        printf("\t%s\n", resultline->def_start[i]);
+	      i++;
+	    }
 
-    printf("\n");
+	    printf("\n");
+	}
+	else
+		printf("ERROR (gw_console_append_examples_results): NULL POINTER!");
 }
 
+/*
+ *
+ */
 void gw_console_append_unknown_results (GwSearchItem *item, gboolean unused) {
-
-    GwResultLine *resultline = item->resultline;
-    printf("%s\n", resultline->string);
+	if (item != NULL)
+	    printf("%s\n", item->resultline->string);
+	else
+		printf("ERROR (gw_console_append_unknown_results): NULL POINTER!");
 }
