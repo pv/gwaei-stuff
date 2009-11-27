@@ -194,58 +194,63 @@ static void print_installable_dictionaries()
     printf ("\n");
 }
 
-static void print_uninstallable_dictionaries()
-{
-    if (quiet_switch == FALSE)
-    {
-      printf("[1;31m");
-      printf("%s ", gettext("Uninstallable:"));
-      printf("[0m");
-    }
+/*
+ *
+ */
+//[1;31m	RED
+//[0m		BLACK
+static void printRed(char* string) {
+	printf ("[1;31m%s[0m", string);
+}
+
+/*
+ *
+ * -u (alone)
+ */
+static void print_uninstallable_dictionaries() {
+
+	if (quiet_switch == FALSE)
+    	printRed(gettext("Uninstallable:"));
 
     int i = 0; 
 
     GwDictInfo* di;
     GList *list = gw_dictlist_get_list();
-    while (list != NULL)
-    {
+    while (list != NULL) {
       di = list->data;
-      if (di->status == GW_DICT_STATUS_INSTALLED)
-      {
-        if (i != 0) printf(" ");
-        printf("%s", di->name);
+      if (di->status == GW_DICT_STATUS_INSTALLED) {
+        printf(" %s", di->name);
         i++;
       }
       list = list->next;
     }
 
-    if (i == 0 && quiet_switch == FALSE)
-      printf(gettext("There are no dictionaries installed"));
+    if (i == 0 && quiet_switch == FALSE) {
+    	printf(" ");
+    	printf(gettext("There are no dictionaries installed"));
+    }
 
     printf ("\n");
 }
 
+/*
+ *
+ * -i (alone)
+ */
+static void print_available_dictionaries() {
 
-static void print_available_dictionaries()
-{
-    if (quiet_switch == FALSE)
-    {
-      printf("[1;31m");
-      printf("%s ", gettext("Available:"));
-      printf("[0m");
-    }
-
-    int i = 0; 
-
+    int i = 0;
     GwDictInfo* di;
-    GList *list = gw_dictlist_get_list();
-    while (list != NULL)
-    {
+    GList *list;
+
+	if (quiet_switch == FALSE)
+    	printRed(gettext("Available:"));
+
+	list = gw_dictlist_get_list();
+    while (list != NULL) {
       di = list->data;
-      if (di->status == GW_DICT_STATUS_INSTALLED)
-      {
-        if (i != 0) printf(" ");
-        printf("%s", di->name);
+      if (di->status == GW_DICT_STATUS_INSTALLED) {
+        printf(" %s", di->name);
         i++;
       }
       list = list->next;
@@ -258,8 +263,8 @@ static void print_available_dictionaries()
 }
 
 
-static void print_help_message()
-{
+static void print_help_message() {
+
     printf("%s\n\n", gettext("waei [options]... pattern"));
     printf("%s\n", gettext("This is a Japanese-English dictionary program that allows regex style searches.\nThe dictionaries include: English, Places, Names, Radicals and Kanji. Periods\ncan be used in place of unknown kanji."));
 
@@ -330,10 +335,13 @@ static void print_help_message()
                    "Look up a place in the place database"));
 }
 
-
+/*
+ *
+ */
 static gboolean is_switch (char *arg, char *short_switch, char *long_switch) {
   return (strcmp(arg, short_switch) == 0 || strcmp(arg, long_switch) == 0);
 }
+
 
 /*
  * FIXME FIXME FIXME
@@ -343,58 +351,90 @@ static void get_search (GwDictInfo *dictionary){
 	GError *error = NULL;
 	GwSearchItem *item;
 	char query[MAX_QUERY];
-	int cont;
+	int cont, loop;
 	char *fgetsTest;
 
-	printf ("\nNew search: ");
-	fgetsTest = fgets (query, MAX_QUERY, stdin);
-	if (fgetsTest == NULL){
-		printf("ERROR (get_search): Input error!");
-		return;
-	}
+	loop = TRUE;
 
-	if (query[0] == '\n'){
-		printf("Insert a word...\n");
-		return; //TODO: Quit instead
-	}
+	while(loop) {
 
-	/* remove the null terminator */
-	for (cont = 0; cont < sizeof(query); ++cont) {
-		if (query[cont] == '\n') {
-			query[cont] = '\0';
+		//TODO: Accept a !quit/!q like vim?
+
+		printf ("\nNew search (");
+		if (exact_switch == TRUE)
+			printRed ("--exact ");
+		else
+			printRed ("--allResult ");
+		if (quiet_switch == TRUE)
+			printRed ("--quiet ");
+		else
+			printRed ("--verbose ");
+	    printf ("in [1;31m%s[0m dictionary): ", dictionary->name);
+
+		fgetsTest = fgets (query, MAX_QUERY, stdin);
+		if (fgetsTest == NULL){
+			printf("ERROR (get_search): Input error!");
+			loop = FALSE;
 			break;
 		}
+
+		if (query[0] == '\n') {
+			printf("Exiting...\n");
+			loop = FALSE;
+			break;
+		}
+
+		/* remove the null terminator */
+		for (cont = 0; cont < sizeof(query); ++cont) {
+			if (query[cont] == '\n') {
+				query[cont] = '\0';
+				break;
+			}
+		}
+
+		//TODO: Search for all!
+		//TODO: Search for a sustring and extract it
+		if (is_switch (query, "-e", "--exact")) {
+			exact_switch = TRUE;
+		}
+		else if (is_switch (query, "-q", "--quiet")) {
+			quiet_switch = TRUE;
+		} /*
+		else if (is_switch (query, "-d", "--dictionary")) {
+			dictionary = gw_dictlist_get_dictionary_by_alias(query); //TODO: FIXME
+		} */ 		//TODO: Exstract all the spaces
+		else {
+			print_search_start_banner(query, dictionary->name);
+
+			item = gw_searchitem_new(query, dictionary, GW_TARGET_CONSOLE);
+			if (item == NULL){
+				//TODO: Use GError instead. TODO
+				printf(gettext("Results seem to have incorrect formatting. Did you "
+								"close all of your\nparenthesis?  You may want to tr"
+								"y quotes too.\n"));
+				printf("Or\n");
+				printf("Out of memory.\n Exiting.\n");
+				exit (EXIT_FAILURE);
+			}
+
+			item->show_less_relevant_results = !exact_switch;
+			gw_search_get_results (item); //TODO: Print here?? <---
+
+			//Print the number of results
+
+			if (quiet_switch == FALSE) {
+				printf("");
+				printf("\n%s%d%s", gettext("Found "), item->total_results, gettext(" Results"));
+
+				if (item->total_relevant_results != item->total_results)
+					printf("%s%d%s", gettext(" ("), item->total_relevant_results, gettext(" Relevant)"));
+
+				printf("[0m\n");
+			}
+
+			free(item);
+		}
 	}
-
-	print_search_start_banner(query, dictionary->name);
-
-	item = gw_searchitem_new(query, dictionary, GW_TARGET_CONSOLE);
-	if (item == NULL){
-		//TODO: Use GError instead. TODO
-		printf(gettext("Results seem to have incorrect formatting. Did you "
-						"close all of your\nparenthesis?  You may want to tr"
-						"y quotes too.\n"));
-		printf("Or\n");
-		printf("Out of memory.\n Exiting.\n");
-		exit (EXIT_FAILURE);
-	}
-
-	//item->show_less_relevant_results = !exact_switch;
-	gw_search_get_results (item); //TODO: Print here?? <---
-
-	//Print the number of results
-
-	//if (quiet_switch == FALSE) {
-		printf("");
-		printf("\n%s%d%s", gettext("Found "), item->total_results, gettext(" Results"));
-
-		if (item->total_relevant_results != item->total_results)
-			printf("%s%d%s", gettext(" ("), item->total_relevant_results, gettext(" Relevant)"));
-
-		printf("[0m\n");
-	//}
-
-	free(item);
 
 	return;
 }
@@ -454,8 +494,7 @@ void initialize_console_interface(int argc, char **argv) {
 
 		//TODO: STUB
 		if (is_switch (args[0], "-m", "--multisearch")){
-			while(TRUE) //TODO: Accept a !quit/!q like vim?
-				get_search(di);
+			get_search(di);
 			return;
 		}
 
