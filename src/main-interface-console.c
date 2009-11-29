@@ -194,58 +194,63 @@ static void print_installable_dictionaries()
     printf ("\n");
 }
 
-static void print_uninstallable_dictionaries()
-{
-    if (quiet_switch == FALSE)
-    {
-      printf("[1;31m");
-      printf("%s ", gettext("Uninstallable:"));
-      printf("[0m");
-    }
+/*
+ *
+ */
+//[1;31m	RED
+//[0m		BLACK
+static void printRed(char* string) {
+	printf ("[1;31m%s[0m", string);
+}
+
+/*
+ *
+ * -u (alone)
+ */
+static void print_uninstallable_dictionaries() {
+
+	if (quiet_switch == FALSE)
+    	printRed(gettext("Uninstallable:"));
 
     int i = 0; 
 
     GwDictInfo* di;
     GList *list = gw_dictlist_get_list();
-    while (list != NULL)
-    {
+    while (list != NULL) {
       di = list->data;
-      if (di->status == GW_DICT_STATUS_INSTALLED)
-      {
-        if (i != 0) printf(" ");
-        printf("%s", di->name);
+      if (di->status == GW_DICT_STATUS_INSTALLED) {
+        printf(" %s", di->name);
         i++;
       }
       list = list->next;
     }
 
-    if (i == 0 && quiet_switch == FALSE)
-      printf(gettext("There are no dictionaries installed"));
+    if (i == 0 && quiet_switch == FALSE) {
+    	printf(" ");
+    	printf(gettext("There are no dictionaries installed"));
+    }
 
     printf ("\n");
 }
 
+/*
+ *
+ * -i (alone)
+ */
+static void print_available_dictionaries() {
 
-static void print_available_dictionaries()
-{
-    if (quiet_switch == FALSE)
-    {
-      printf("[1;31m");
-      printf("%s ", gettext("Available:"));
-      printf("[0m");
-    }
-
-    int i = 0; 
-
+    int i = 0;
     GwDictInfo* di;
-    GList *list = gw_dictlist_get_list();
-    while (list != NULL)
-    {
+    GList *list;
+
+	if (quiet_switch == FALSE)
+    	printRed(gettext("Available:"));
+
+	list = gw_dictlist_get_list();
+    while (list != NULL) {
       di = list->data;
-      if (di->status == GW_DICT_STATUS_INSTALLED)
-      {
-        if (i != 0) printf(" ");
-        printf("%s", di->name);
+      if (di->status == GW_DICT_STATUS_INSTALLED) {
+        printf(" %s", di->name);
         i++;
       }
       list = list->next;
@@ -258,8 +263,8 @@ static void print_available_dictionaries()
 }
 
 
-static void print_help_message()
-{
+static void print_help_message() {
+
     printf("%s\n\n", gettext("waei [options]... pattern"));
     printf("%s\n", gettext("This is a Japanese-English dictionary program that allows regex style searches.\nThe dictionaries include: English, Places, Names, Radicals and Kanji. Periods\ncan be used in place of unknown kanji."));
 
@@ -330,339 +335,451 @@ static void print_help_message()
                    "Look up a place in the place database"));
 }
 
-
-static gboolean is_switch (char *arg, char *short_switch, char *long_switch)
-{
+/*
+ *
+ */
+static gboolean is_switch (char *arg, char *short_switch, char *long_switch) {
   return (strcmp(arg, short_switch) == 0 || strcmp(arg, long_switch) == 0);
 }
 
 
-void initialize_console_interface(int argc, char **argv)
-{
-  GError *error = NULL;
+/*
+ * FIXME FIXME FIXME
+ */
+static void get_search (GwDictInfo *dictionary){
 
-  int i;
-  int leftover;
-  char query[MAX_QUERY];
+	GError *error = NULL;
+	GwSearchItem *item;
+	char query[MAX_QUERY];
+	int cont, loop;
+	char *fgetsTest;
 
-  GwDictInfo *di;
-  di = gw_dictlist_get_dictionary_by_alias("English");
+	loop = TRUE;
 
-  char *args[argc];
-  int total_args;
+	while(loop) {
 
-  //Filter out modification arguments
-  i = 1;
-  total_args = 0;
-  while (i < argc)
-  {
-    if (is_switch (argv[i], "-e", "--exact"))
-    {
-      exact_switch = TRUE;
-    }
+		//TODO: Accept a !quit/!q like vim?
 
-    else if (is_switch (argv[i], "-q", "--quiet"))
-    {
-      quiet_switch = TRUE;
-    }
+		printf ("\nNew search (");
+		if (exact_switch == TRUE)
+			printRed ("--exact ");
+		else
+			printRed ("--allResult ");
+		if (quiet_switch == TRUE)
+			printRed ("--quiet ");
+		else
+			printRed ("--verbose ");
+	    printf ("in [1;31m%s[0m dictionary): ", dictionary->name);
 
-    else if (is_switch (argv[i], "-d", "--dictionary"))
-    {
-      i++;
-      di = gw_dictlist_get_dictionary_by_alias(argv[i]);
-    }
+		fgetsTest = fgets (query, MAX_QUERY, stdin);
+		if (fgetsTest == NULL){
+			printf("ERROR (get_search): Input error!");
+			loop = FALSE;
+			break;
+		}
 
-    else
-    {
-      args[total_args] = argv[i];
-      total_args++;
-    }
-    i++;
-  }
+		if (query[0] == '\n') {
+			printf("Exiting...\n");
+			loop = FALSE;
+			break;
+		}
+
+		/* remove the null terminator */
+		for (cont = 0; cont < sizeof(query); ++cont) {
+			if (query[cont] == '\n') {
+				query[cont] = '\0';
+				break;
+			}
+		}
+
+		//TODO: Search for all!
+		//TODO: Search for a sustring and extract it
+		if (is_switch (query, "-e", "--exact")) {
+			exact_switch = TRUE;
+		}
+		else if (is_switch (query, "-q", "--quiet")) {
+			quiet_switch = TRUE;
+		} /*
+		else if (is_switch (query, "-d", "--dictionary")) {
+			dictionary = gw_dictlist_get_dictionary_by_alias(query); //TODO: FIXME
+		} */ 		//TODO: Exstract all the spaces
+		else {
+			print_search_start_banner(query, dictionary->name);
+
+			item = gw_searchitem_new(query, dictionary, GW_TARGET_CONSOLE);
+			if (item == NULL){
+				//TODO: Use GError instead. TODO
+				printf(gettext("Results seem to have incorrect formatting. Did you "
+								"close all of your\nparenthesis?  You may want to tr"
+								"y quotes too.\n"));
+				printf("Or\n");
+				printf("Out of memory.\n Exiting.\n");
+				exit (EXIT_FAILURE);
+			}
+
+			item->show_less_relevant_results = !exact_switch;
+			gw_search_get_results (item); //TODO: Print here?? <---
+
+			//Print the number of results
+
+			if (quiet_switch == FALSE) {
+				printf("");
+				printf("\n%s%d%s", gettext("Found "), item->total_results, gettext(" Results"));
+
+				if (item->total_relevant_results != item->total_results)
+					printf("%s%d%s", gettext(" ("), item->total_relevant_results, gettext(" Relevant)"));
+
+				printf("[0m\n");
+			}
+
+			free(item);
+		}
+	}
+
+	return;
+}
+
+/*
+ *
+ */
+void initialize_console_interface(int argc, char **argv) {
+
+	GError *error = NULL;
+
+	int thisArg, leftover, total_args;
+	char query[MAX_QUERY];
+	char *args[argc];
+
+	//TODO: Why this check?
+	GwDictInfo *di;
+	di = gw_dictlist_get_dictionary_by_alias("English");
+	//Make sure the selected dictionary exists
+	if (di == NULL || di->status != GW_DICT_STATUS_INSTALLED) {
+		printf(gettext("Requested dictionary not found!\n"));
+		return;
+	}
+
+	//Filter out modification arguments
+	thisArg = 1;
+	total_args = 0;
+	while (thisArg < argc) {
+
+		if (is_switch (argv[thisArg], "-e", "--exact"))
+		  exact_switch = TRUE;
+
+		else if (is_switch (argv[thisArg], "-q", "--quiet"))
+		  quiet_switch = TRUE;
+
+		else if (is_switch (argv[thisArg], "-d", "--dictionary")) {
+		  thisArg++;
+		  di = gw_dictlist_get_dictionary_by_alias(argv[thisArg]);
+		}
+
+		else {
+		  args[total_args] = argv[thisArg];
+		  total_args++;
+		}
+
+		thisArg++;
+	}
+
+	//User requests help
+	if (total_args == 0 || (total_args == 1 && is_switch (argv[1], "-h", "--help"))){
+		print_help_message();
+		return;
+	}
+
+	//User wants to see the available dictionaries
+	if (total_args == 1){
+
+		//TODO: STUB
+		if (is_switch (args[0], "-m", "--multisearch")){
+			get_search(di);
+			return;
+		}
+
+		if (is_switch (args[0], "-l", "--list")){
+			print_available_dictionaries ();
+			return;
+		}
+
+		//User wants to see the version of waei
+		else if (is_switch (args[0], "-v", "--version")){
+			print_about_program ();
+			return;
+		}
+
+		//Show installable dictionaries
+		else if (is_switch (args[0], "-i", "--install")){
+			print_installable_dictionaries();
+			return;
+		}
+
+		//Show uninstallable dictionaries
+		else if (is_switch (args[0], "-u", "--uninstall")){
+			print_uninstallable_dictionaries();
+			return;
+		}
+
+		//User wants to sync dictionaries
+		else if (is_switch (args[0], "-s", "--sync")) {
+
+			printf("");
+			printf(gettext("Syncing possible installed dictionaries..."));
+			printf("[0m\n");
+
+			GwDictInfo* di;
+			GList *list = gw_dictlist_get_list();
+
+			while (list != NULL && error == NULL) {
+				di = list->data;
+				gw_dictlist_sync_dictionary (di, &error);
+				list = list->next;
+			}
+
+			if (error == NULL) {
+				printf("");
+				printf(gettext("Finished"));
+				printf("[0m\n");
+			}
+			else {
+				printf("");
+				printf("%s", error->message);
+				printf("[0m\n");
+				g_error_free (error);
+				error = NULL;
+			}
+
+			return;
+		}
+	}
 
 
-  //User requests help
-  if (total_args == 0 || (total_args == 1 && is_switch (argv[1], "-h", "--help")))
-  {
-    print_help_message();
-  }
+	if (total_args == 2){
 
-  //User wants to see the available dictionaries
-  else if (total_args == 1 && is_switch (args[0], "-l", "--list"))
-  {
-    print_available_dictionaries ();
-  }
+		//User wants to install dictionary
+		if (is_switch (args[0], "-i", "--install")) {
 
-  //User wants to see the version of waei
-  else if (total_args == 1 && is_switch (args[0], "-v", "--version"))
-  {
-    print_about_program ();
-  }
+			printf(gettext("%sTrying to install %s%s%s...%s"), "", "[1;31m", args[1], "[0m", "\n[0m");
 
-  //Show installable dictionaries
-  else if (total_args == 1 && is_switch (args[0], "-i", "--install"))
-  {
-    print_installable_dictionaries();
-  }
+			di = gw_dictlist_get_dictionary_by_alias(args[1]);
 
-  //User wants to install dictionary
-  else if (total_args == 2 && is_switch (args[0], "-i", "--install"))
-  {
-    printf(gettext("%sTrying to install %s%s%s...%s"), "", "[1;31m", args[1], "[0m", "\n[0m");
+			if (di != NULL && di->status != GW_DICT_STATUS_NOT_INSTALLED && di->gckey[0] != '\0') {
+				//printf("");
+				printf("%s\n", gettext("Already Installed"));
+				//printf("[0m");
+			}
+			else if (di == NULL || di->gckey[0] == '\0') {
+				//printf("");
+				printf("%s\n", gettext("That dictionary is not installable with this mechanism"));
+				//printf("[0m");
+				exit (1);
+			}
+			else if (gw_console_install_dictionary_by_name (args[1])) {
+				printf("");
+				printf(gettext("Finished"));
+				printf("[0m\n");
+			}
+			else {
+				printf("");
+				printf(gettext("Failed"));
+				printf("[0m\n");
+			}
 
-    di = gw_dictlist_get_dictionary_by_alias(args[1]);
+			return;
+		}
 
-    if (di != NULL && di->status != GW_DICT_STATUS_NOT_INSTALLED && di->gckey[0] != '\0')
-    {
-      //printf("");
-      printf("%s\n", gettext("Already Installed"));
-      //printf("[0m");
-    }
-    else if (di == NULL || di->gckey[0] == '\0')
-    {
-      //printf("");
-      printf("%s\n", gettext("That dictionary is not installable with this mechanism"));
-      //printf("[0m");
-      exit (1);
-    }
-    else if (gw_console_install_dictionary_by_name (args[1]))
-    {
-      printf("");
-      printf(gettext("Finished"));
-      printf("[0m\n");
-    }
-    else
-    {
-      printf("");
-      printf(gettext("Failed"));
-      printf("[0m\n");
-    }
-  }
+		//User wants to uninstall dictionary
+		if (is_switch (args[0], "-u", "--uninstall")) {
 
-  //Show uninstallable dictionaries
-  else if (total_args == 1 && is_switch (args[0], "-u", "--uninstall"))
-  {
-    print_uninstallable_dictionaries();
-  }
+			printf(gettext("%sTrying to uninstall %s%s%s...%s"), "", "[1;31m", args[1], "[0m", "\n[0m");
 
-  //User wants to uninstall dictionary
-  else if (total_args == 2 && is_switch (args[0], "-u", "--uninstall"))
-  {
-    printf(gettext("%sTrying to uninstall %s%s%s...%s"), "", "[1;31m", args[1], "[0m", "\n[0m");
+			if (gw_dictlist_check_if_loaded_by_name(argv[2])) {
+				gw_console_uninstall_dictionary_by_name(argv[2]);
+				printf("");
+				printf(gettext("Finished"));
+				printf("[0m\n");
+			}
+			else
+				printf("%s\n", gettext("Is not installed"));
 
-    if (gw_dictlist_check_if_loaded_by_name(argv[2]))
-    {
-      gw_console_uninstall_dictionary_by_name(argv[2]);
+			return;
+		}
 
-      printf("");
-      printf(gettext("Finished"));
-      printf("[0m\n");
-    }
-    else
-    {
-      printf("%s\n", gettext("Is not installed"));
-    }
-  }
+	}
+
+	//Collect the query terms
+	thisArg = 0;
+	query[0] = '\0';
+	leftover = MAX_QUERY;
+
+	while (leftover > 0 && thisArg < total_args) {
+		strncat(query, args[thisArg], leftover);
+		leftover -= strlen (args[thisArg]);
+		thisArg++;
+		if (thisArg != total_args) {
+			strncat (query, " ", leftover);
+			leftover -= 1;
+		}
+	}
+
+	//Print the search intro
+	if (quiet_switch == FALSE)
+		print_search_start_banner(query, di->name);
 
 
-  //User wants to sync dictionaries
-  else if (total_args == 1 && is_switch (args[0], "-s", "--sync"))
-  {
-    printf("");
-    printf(gettext("Syncing possible installed dictionaries..."));
-    printf("[0m\n");
+	GwSearchItem *item;
+	item = gw_searchitem_new(query, di, GW_TARGET_CONSOLE);
+	if (item == NULL){
+		//TODO: Use GError instead. TODO
+		printf(gettext("Results seem to have incorrect formatting. Did you "
+						"close all of your\nparenthesis?  You may want to tr"
+						"y quotes too.\n"));
+		printf("Or\n");
+		printf("Out of memory.\n Exiting.\n");
+		exit (EXIT_FAILURE);
+	}
 
-    GwDictInfo* di;
-    GList *list = gw_dictlist_get_list();
-    while (list != NULL && error == NULL)
-    {
-      di = list->data;
-      gw_dictlist_sync_dictionary (di, &error);
-      list = list->next;
-    }
+	item->show_less_relevant_results = !exact_switch;
+	gw_search_get_results (item); //TODO: Print here?? <---
 
-    if (error == NULL)
-    {
-      printf("");
-      printf(gettext("Finished"));
-      printf("[0m\n");
-    }
-    else
-    {
-      printf("");
-      printf("%s", error->message);
-      printf("[0m\n");
-      g_error_free (error);
-      error = NULL;
-    }
-  }
+	//Print the number of results
+	if (quiet_switch == FALSE) {
+		printf("");
+		printf("\n%s%d%s", gettext("Found "), item->total_results, gettext(" Results"));
 
+		if (item->total_relevant_results != item->total_results)
+			printf("%s%d%s", gettext(" ("), item->total_relevant_results, gettext(" Relevant)"));
 
-  //Make sure the selected dictionary exists
-  else if (di == NULL || di->status != GW_DICT_STATUS_INSTALLED)
-  {
-    printf(gettext("Requested dictionary not found!\n"));
-  }
+		printf("[0m\n");
+	}
 
-  //Start the search
-  else
-  {
-    //Collect the query terms
-    i = 0;
-    query[0] = '\0';
-    leftover = MAX_QUERY;
+	free(item);
 
-    while (leftover > 0 && i < total_args)
-    {
-       strncat(query, args[i], leftover);
-       leftover -= strlen (args[i]);
-       i++;
-       if (i != total_args)
-       {
-         strncat (query, " ", leftover);
-         leftover -= 1;
-       }
-    }
-
-    //Start the search
-    if (quiet_switch == FALSE)
-      print_search_start_banner(query, di->name);
-
-    GwSearchItem *item;
-    item = gw_searchitem_new(query, di, GW_TARGET_CONSOLE);
-    if (item == NULL){
-    	//TODO: Use GError instead
-    	printf("Out of memory. Exiting.");
-    	exit (EXIT_FAILURE);
-    }
-
-    item->show_less_relevant_results = !exact_switch;
-
-    if (item != NULL )
-    {
-      gw_search_get_results (item);
-
-      if (quiet_switch == FALSE)
-      {
-        printf("");
-        printf("\n%s", gettext("Found "));
-        printf("%d", item->total_results);
-        printf("%s", gettext(" Results"));
-
-        if (item->total_relevant_results != item->total_results)
-        {
-          printf("%s", gettext(" ("));
-          printf("%d", item->total_relevant_results);
-          printf("%s", gettext(" Relevant)"));
-        }
-        printf("[0m\n");
-      }
-    }
-    else
-    {
-      printf(gettext("Results seem to have incorrect formatting. Did you "
-                     "close all of your\nparenthesis?  You may want to tr"
-                     "y quotes too.\n"));
-    }
-  }
+	return;
 }
 
 
-void gw_console_append_normal_results (GwSearchItem *item, gboolean unused)
-{
+/*
+ *
+ */
+void gw_console_append_normal_results (GwSearchItem *item, gboolean unused) {
+
+	//Definitions
+	int cont = 0;
     GwResultLine *resultline = item->resultline;
+
     //Kanji
     printf("[32m%s", resultline->kanji_start);
     //Furigana
     if (resultline->furigana_start)
-    {
       printf(" [%s]", resultline->furigana_start);
-    }
     //Other info
     if (resultline->classification_start)
-    {
       printf("[0m %s", resultline->classification_start);
-    }
+    //Important Flag
     if (resultline->important)
-    {
       printf("[0m %s", "P");
-    }
+
     printf("\n");
-    //Definitions
-    int i = 0;
-    while (i < resultline->def_total)
-    {
-      printf("[0m      [35m%s [0m%s\n", resultline->number[i], resultline->def_start[i]);
-      i++;
+    while (cont < resultline->def_total) {
+      printf("[0m      [35m%s [0m%s\n", resultline->number[cont], resultline->def_start[cont]);
+      cont++;
     }
     printf("\n");
 
+    return;
 }
 
-void gw_console_append_kanji_results (GwSearchItem *item, gboolean unused)
-{
+void gw_console_append_kanji_results (GwSearchItem *item, gboolean unused) {
+
+	char line_started = FALSE;
     GwResultLine *resultline = item->resultline;
+
     //Kanji
     printf("[32;1m%s[0m\n", resultline->kanji);
-    if (resultline->radicals) printf("%s%s\n", gettext("[35mRadicals:[0m"), resultline->radicals);
 
-    char line_started = FALSE;
-    if (resultline->strokes)
-    {
+    if (resultline->radicals)
+    	printf("%s%s\n", gettext("[35mRadicals:[0m"), resultline->radicals);
+
+    if (resultline->strokes) {
       line_started = TRUE;
       printf("%s%s", gettext("[35mStroke:[0m"), resultline->strokes);
     }
-    if (resultline->frequency)
-    {
+
+    if (resultline->frequency) {
       if (line_started) printf(" ");
       line_started = TRUE;
       printf("%s%s", gettext("[35mFreq:[0m"), resultline->frequency);
     }
-    if (resultline->grade)
-    {
-      if (line_started) printf(" ");
+
+    if (resultline->grade) {
+      if (line_started)
+    	  printf(" ");
       line_started = TRUE;
       printf("%s%s", gettext("[35mGrade:[0m"), resultline->grade);
     }
-    if (resultline->jlpt)
-    {
-      if (line_started) printf(" ");
+
+    if (resultline->jlpt) {
+      if (line_started)
+    	  printf(" ");
       line_started = TRUE;
       printf("%s%s", gettext("[35mJLPT:[0m"), resultline->jlpt);
     }
-    if (line_started) printf("\n");
-    if (resultline->readings[0]) printf("%s%s", gettext("[35mReadings:[0m"), resultline->readings[0]);
-    if (resultline->readings[1]) printf("%s", resultline->readings[1]);
+
+    if (line_started)
+    	printf("\n");
+
+    if (resultline->readings[0])
+    	printf("%s%s", gettext("[35mReadings:[0m"), resultline->readings[0]);
+    if (resultline->readings[1])
+    	printf("%s", resultline->readings[1]);
+
     printf("\n");
-
-    if (resultline->meanings) printf("%s%s\n", gettext("[35mMeanings:[0m"), resultline->meanings);
-    printf("\n");
-
-}
-
-void gw_console_append_radical_results (GwSearchItem *item, gboolean unused)
-{
-    GwResultLine *resultline = item->resultline;
-    printf("[32;1m%s:[0m %s\n\n", resultline->kanji, resultline->radicals);
-}
-
-void gw_console_append_examples_results (GwSearchItem *item, gboolean unused)
-{
-    GwResultLine *resultline = item->resultline;
-    int i = 0;
-    while (resultline->number[i] != NULL && resultline->def_start[i] != NULL)
-    {
-      if (resultline->number[i][0] == 'A' || resultline->number[i][0] == 'B')
-        printf("[32;1m%s:[0m\t%s\n", resultline->number[i], resultline->def_start[i]);
-      else
-        printf("\t%s\n", resultline->def_start[i]);
-      i++;
-    }
+    if (resultline->meanings)
+    	printf("%s%s\n", gettext("[35mMeanings:[0m"), resultline->meanings);
     printf("\n");
 }
 
-void gw_console_append_unknown_results (GwSearchItem *item, gboolean unused)
-{
-    GwResultLine *resultline = item->resultline;
-    printf("%s\n", resultline->string);
+/*
+ *
+ */
+void gw_console_append_radical_results (GwSearchItem *item, gboolean unused) {
+	if (item != NULL)
+	    printf("[32;1m%s:[0m %s\n\n", item->resultline->kanji, item->resultline->radicals);
+	else
+		printf("ERROR (gw_console_append_radical_results): NULL POINTER!");
+}
+
+/*
+ *
+ */
+void gw_console_append_examples_results (GwSearchItem *item, gboolean unused) {
+
+	if (item != NULL) {
+	    GwResultLine *resultline = item->resultline;
+	    int i = 0;
+
+	    while (resultline->number[i] != NULL && resultline->def_start[i] != NULL) {
+	      if (resultline->number[i][0] == 'A' || resultline->number[i][0] == 'B')
+	        printf("[32;1m%s:[0m\t%s\n", resultline->number[i], resultline->def_start[i]);
+	      else
+	        printf("\t%s\n", resultline->def_start[i]);
+	      i++;
+	    }
+
+	    printf("\n");
+	}
+	else
+		printf("ERROR (gw_console_append_examples_results): NULL POINTER!");
+}
+
+/*
+ *
+ */
+void gw_console_append_unknown_results (GwSearchItem *item, gboolean unused) {
+	if (item != NULL)
+	    printf("%s\n", item->resultline->string);
+	else
+		printf("ERROR (gw_console_append_unknown_results): NULL POINTER!");
 }
