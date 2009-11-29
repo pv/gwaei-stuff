@@ -36,7 +36,9 @@
 
 #include <glib.h>
 
+#include <gwaei/definitions.h>
 #include <gwaei/regex.h>
+
 
 
 regex_t re_english;
@@ -59,19 +61,6 @@ regex_t re_na_adj_negative;
 regex_t re_na_adj_te_form;
 regex_t re_na_adj_causative;
 regex_t re_na_adj_conditional;
-/*
-regex_t re_verb_presentform;
-regex_t re_verb_pastform_negative;
-regex_t re_verb_pastform;
-regex_t re_verb_te_form;
-regex_t re_verb_potention;
-regex_t re_verb_causative;
-regex_t re_conditional;
-regex_t re_negative_conditional;
-regex_t re_verb_imperative;
-regex_t re_verb_passive;
-regex_t re_verb_volitional;
-*/
 
 
 //!
@@ -81,56 +70,52 @@ regex_t re_verb_volitional;
 //!
 void gw_regex_initialize_constant_regular_expressions ()
 {
-    int eflags_exist = REG_EXTENDED | REG_ICASE | REG_NOSUB;
-    if (regcomp (&re_english, "English", eflags_exist) != 0)
-      printf ("A problem occured while setting the regular expression for English\n");
-    if (regcomp (&re_radical, "Radical", eflags_exist) != 0)
-      printf ("A problem occured while setting the regular expression for Radical\n");
-    if (regcomp (&re_kanji, "Kanji", eflags_exist) != 0)
-      printf ("A problem occured while setting the regular expression for Kanji\n");
-    if (regcomp (&re_names, "Names", eflags_exist) != 0)
-      printf ("A problem occured while setting the regular expression for Names\n");
-    if (regcomp (&re_places, "Places", eflags_exist) != 0)
-      printf ("A problem occured while setting the regular expression for Places\n");
-    if (regcomp (&re_mix, "Mix", eflags_exist) != 0)
-      printf ("A problem occured while setting the regular expression for Mix\n");
-    if (regcomp (&re_gz, "\\.gz", eflags_exist) != 0)
-      printf ("A problem occured while setting the regular expression for .gz\n");
-    if (regcomp (&re_hexcolor, "^#[0-9A-Fa-f]{6,6}$", eflags_exist) != 0)
-      printf ("A problem occured while setting the regular expression for hexcolor\n");
-    if (regcomp (&re_hexcolor, "^#[0-9A-Fa-f]{6,6}$", eflags_exist) != 0)
-      printf ("A problem occured while setting the regular expression for hexcolor\n");
+    regcomp (&re_english, "English", GW_REGEX_EFLAGS_EXIST);
+    regcomp (&re_radical, "Radical", GW_REGEX_EFLAGS_EXIST);
+    regcomp (&re_kanji, "Kanji", GW_REGEX_EFLAGS_EXIST);
+    regcomp (&re_names, "Names", GW_REGEX_EFLAGS_EXIST);
+    regcomp (&re_places, "Places", GW_REGEX_EFLAGS_EXIST);
+    regcomp (&re_mix, "Mix", GW_REGEX_EFLAGS_EXIST);
+    regcomp (&re_gz, "\\.gz", GW_REGEX_EFLAGS_EXIST);
+    regcomp (&re_hexcolor, "^#[0-9A-Fa-f]{6,6}$", GW_REGEX_EFLAGS_EXIST);
+    regcomp (&re_hexcolor, "^#[0-9A-Fa-f]{6,6}$", GW_REGEX_EFLAGS_EXIST);
+
+
+    regcomp (&gw_re[GW_RE_QUERY_STROKES],   "\\bS[0-9]{1,2}\\b", GW_REGEX_EFLAGS_LOCATE);
+    regcomp (&gw_re[GW_RE_QUERY_FREQUENCY], "\\bF[0-9]{1,4}\\b", GW_REGEX_EFLAGS_LOCATE);
+    regcomp (&gw_re[GW_RE_QUERY_GRADE],     "\\bG[0-4]{1,1}\\b", GW_REGEX_EFLAGS_LOCATE);
+    regcomp (&gw_re[GW_RE_QUERY_JLPT],      "\\bJ[0-4]{1,1}\\b", GW_REGEX_EFLAGS_LOCATE);
 
 
     //Adjective forms
-    regcomp (&re_i_adj_past,         "\\B((かった))$", eflags_exist);
-    regcomp (&re_i_adj_negative,     "\\B((くない))$", eflags_exist);
-    regcomp (&re_i_adj_te,           "\\B((くて))$", eflags_exist);
-    regcomp (&re_i_adj_causative,    "\\B((くさせる))$", eflags_exist);
-    regcomp (&re_i_adj_conditional,  "\\B((ければ))$", eflags_exist);
+    regcomp (&re_i_adj_past,         "\\B((かった))$",              GW_REGEX_EFLAGS_LOCATE);
+    regcomp (&re_i_adj_negative,     "\\B((くない))$",              GW_REGEX_EFLAGS_LOCATE);
+    regcomp (&re_i_adj_te,           "\\B((くて))$",                GW_REGEX_EFLAGS_LOCATE);
+    regcomp (&re_i_adj_causative,    "\\B((くさせる))$",            GW_REGEX_EFLAGS_LOCATE);
+    regcomp (&re_i_adj_conditional,  "\\B((ければ))$",              GW_REGEX_EFLAGS_LOCATE);
 
-    regcomp (&re_na_adj_past,        "\\B((だった))$", eflags_exist);
-    regcomp (&re_na_adj_negative,    "\\B((くない)|(ではない)|(じゃない))$", eflags_exist);
-    regcomp (&re_na_adj_te,          "\\B((で))$", eflags_exist);
-    regcomp (&re_na_adj_causative,   "\\B((にさせる))$", eflags_exist);
-    regcomp (&re_na_adj_conditional, "\\B((であれば))$", eflags_exist);
+    regcomp (&re_na_adj_past,        "\\B((だった))$",              GW_REGEX_EFLAGS_LOCATE);
+    regcomp (&re_na_adj_negative,    "\\B((ではない)|(じゃない))$", GW_REGEX_EFLAGS_LOCATE);
+    regcomp (&re_na_adj_te,          "\\B((で))$",                  GW_REGEX_EFLAGS_LOCATE);
+    regcomp (&re_na_adj_causative,   "\\B((にさせる))$",            GW_REGEX_EFLAGS_LOCATE);
+    regcomp (&re_na_adj_conditional, "\\B((であれば))$",            GW_REGEX_EFLAGS_LOCATE);
 
 
     //Verb forms
 /*
-    regcomp (&re_verb_presentform, "\\B((ます))$", eflags_exist);
-    regcomp (&re_verb_politepast, "\\B((ました))$", eflags_exist);
-    regcomp (&re_verb_pastform_negative, "\\B((なかった))$", eflags_exist);
-    regcomp (&re_verb_pastform, "\\B((った)|(いた)|(いだ)|(した)|(んだ)|(えた))$", eflags_exist);
-    regcomp (&re_verb_negative, "\\B((わない)|(かない)|(がない)|(さない)|(たない)|(なない)|(まない)|(いない))$", eflags_exist);
-    regcomp (&re_verb_te_form, "\\B((って)|(いて)|(いで)|(して)|(んで))$", eflags_exist);
-    regcomp (&re_verb_potention, "\\B((える)|(ける)|(げる)|(せる)|(てる)|(ねる)|(べる)|(める)|(れる)|(いられる)|(えられる)|(いれる))$", eflags_exist);
-    regcomp (&re_verb_causative, "\\B((させる)|(わせる)|(かせる)|(がせる)|(なせる)|(たせる)|(ばせる)|ませる(らせる)|(いさせる)|())$", eflags_exist);
-    regcomp (&re_conditional, "\\B((すれば)|(くれば)|(であれば)|(えば)|(けば)|(げば)|(せば)|(てば)|(ねば)|(べば)|(めば)|(れば)|(いれば)|(れば))$", eflags_exist);
-    regcomp (&re_negative_conditional, "\\B((なければ))$", eflags_exist);
-    regcomp (&re_verb_imperative, "\\B((しろ)|(せよ)|(こい)|(くれ)|(ませ)|(であれ)|(え)|(け)|(せ)|(て)|(ね)|(べ)|(め)|(れ)|(いろ)|(えろ))$", eflags_exist);
-    regcomp (&re_verb_passive, "\\B((される)|(こられる)|(われる)|(かれる)|(がれる)|(される)|(たれる)|(なれる)|(ばれる)|(まれる)|(られる)|(いられる)|(えられる))$", eflags_exist);
-    regcomp (&re_verb_volitional, "\\B((しよう)|(せよう)|(こよう)|(だろう)|(ましょう)|(おう)|(こう)|(ごう)|(そう)|(とう)|(のう)|(ぼう)|(もう)|(ろう)|(いよう)|(よう))$", eflags_exist);
+    regcomp (&re_verb_presentform, "\\B((ます))$", GW_REGEX_EFLAGS_EXIST);
+    regcomp (&re_verb_politepast, "\\B((ました))$", GW_REGEX_EFLAGS_EXIST);
+    regcomp (&re_verb_pastform_negative, "\\B((なかった))$", GW_REGEX_EFLAGS_EXIST);
+    regcomp (&re_verb_pastform, "\\B((った)|(いた)|(いだ)|(した)|(んだ)|(えた))$", GW_REGEX_EFLAGS_EXIST);
+    regcomp (&re_verb_negative, "\\B((わない)|(かない)|(がない)|(さない)|(たない)|(なない)|(まない)|(いない))$", GW_REGEX_EFLAGS_EXIST);
+    regcomp (&re_verb_te_form, "\\B((って)|(いて)|(いで)|(して)|(んで))$", GW_REGEX_EFLAGS_EXIST);
+    regcomp (&re_verb_potention, "\\B((える)|(ける)|(げる)|(せる)|(てる)|(ねる)|(べる)|(める)|(れる)|(いられる)|(えられる)|(いれる))$", GW_REGEX_EFLAGS_EXIST);
+    regcomp (&re_verb_causative, "\\B((させる)|(わせる)|(かせる)|(がせる)|(なせる)|(たせる)|(ばせる)|ませる(らせる)|(いさせる)|())$", GW_REGEX_EFLAGS_EXIST);
+    regcomp (&re_conditional, "\\B((すれば)|(くれば)|(であれば)|(えば)|(けば)|(げば)|(せば)|(てば)|(ねば)|(べば)|(めば)|(れば)|(いれば)|(れば))$", GW_REGEX_EFLAGS_EXIST);
+    regcomp (&re_negative_conditional, "\\B((なければ))$", GW_REGEX_EFLAGS_EXIST);
+    regcomp (&re_verb_imperative, "\\B((しろ)|(せよ)|(こい)|(くれ)|(ませ)|(であれ)|(え)|(け)|(せ)|(て)|(ね)|(べ)|(め)|(れ)|(いろ)|(えろ))$", GW_REGEX_EFLAGS_EXIST);
+    regcomp (&re_verb_passive, "\\B((される)|(こられる)|(われる)|(かれる)|(がれる)|(される)|(たれる)|(なれる)|(ばれる)|(まれる)|(られる)|(いられる)|(えられる))$", GW_REGEX_EFLAGS_EXIST);
+    regcomp (&re_verb_volitional, "\\B((しよう)|(せよう)|(こよう)|(だろう)|(ましょう)|(おう)|(こう)|(ごう)|(そう)|(とう)|(のう)|(ぼう)|(もう)|(ろう)|(いよう)|(よう))$", GW_REGEX_EFLAGS_EXIST);
 */
 }
 
@@ -215,4 +200,180 @@ char* gw_regex_locate_offset (char *string, char *line_start, regex_t *re_locate
     }
 }
 
+
+//!
+//! @brief Regex for determining highly relevent kanji atoms
+//!
+//! Builds the regex used in engine.c for determining the relevance
+//! of a returned result when the query is a kanji one.
+//!
+//! @param regex A passed regex_t to assign an allocated regext to
+//! @param strang The regex pattern to use
+//! @param flags The regex flags to use
+//! 
+gboolean gw_regex_create_kanji_high_regex (regex_t *regex, char *string, int flags)
+{
+    char expression[MAX_LINE * 2];
+    strcpy (expression, "((^無)|(^不)|(^非)|(^)|(^お)|(^御))(");
+    strcat (expression, string);
+    strcat (expression, ")(($))");
+    return regcomp (regex, expression, flags);
+}
+
+
+//!
+//! @brief Regex for determining mediumly relevent kanji atoms
+//!
+//! Builds the regex used in engine.c for determining the relevance
+//! of a returned result when the query is a kanji one.
+//!
+//! @param regex A passed regex_t to assign an allocated regext to
+//! @param strang The regex pattern to use
+//! @param flags The regex flags to use
+//! 
+gboolean gw_regex_create_kanji_med_regex (regex_t *regex, char *string, int flags)
+{
+    char expression[MAX_LINE * 2];
+    strcpy (expression, "((^)|(^お)|(を)|(に)|(で)|(は)|(と))(");
+    strcat (expression, string);
+    strcat (expression, ")((で)|(が)|(の)|(を)|(に)|(で)|(は)|(と)|($))");
+    return regcomp (regex, expression, flags);
+}
+
+
+//!
+//! @brief Regex for determining highly relevent furigana atoms
+//!
+//! Builds the regex used in engine.c for determining the relevance
+//! of a returned result when the query is a furigana one.
+//!
+//! @param regex A passed regex_t to assign an allocated regext to
+//! @param strang The regex pattern to use
+//! @param flags The regex flags to use
+//! 
+gboolean gw_regex_create_furi_high_regex (regex_t *regex, char *string, int flags)
+{
+    char expression[MAX_LINE * 2];
+    strcpy (expression, "^((お)|())(");
+    strcat (expression, string);
+    strcat (expression, ")$");
+    return regcomp (regex, expression, flags);
+}
+
+
+//!
+//! @brief Regex for determining mediumly relevent furigana atoms
+//!
+//! Builds the regex used in engine.c for determining the relevance
+//! of a returned result when the query is a furigana one.
+//!
+//! @param regex A passed regex_t to assign an allocated regext to
+//! @param strang The regex pattern to use
+//! @param flags The regex flags to use
+//! 
+gboolean gw_regex_create_furi_med_regex (regex_t *regex, char *string, int flags)
+{
+    char expression[MAX_LINE * 2];
+    strcpy (expression, "((^)|(^お)|(を)|(に)|(で)|(は)|(と))(");
+    strcat (expression, string);
+    strcat (expression, ")((で)|(が)|(の)|(を)|(に)|(で)|(は)|(と)|($))");
+    return regcomp (regex, expression, flags);
+}
+
+
+//!
+//! @brief Regex for determining highly relevent romaji atoms
+//!
+//! Builds the regex used in engine.c for determining the relevance
+//! of a returned result when the query is a romaji one.
+//!
+//! @param regex A passed regex_t to assign an allocated regext to
+//! @param strang The regex pattern to use
+//! @param flags The regex flags to use
+//! 
+gboolean gw_regex_create_roma_high_regex (regex_t *regex, char *string, int flags)
+{
+    char expression[MAX_LINE * 2];
+    strcpy (expression, "(^|\\)|(/)|(to ))\\b(");
+    strcat (expression, string);
+    strcat (expression, ")\\b(\\(|/|$)");
+    printf("%s\n", expression);
+    return regcomp (regex, expression, flags);
+}
+
+
+//!
+//! @brief Regex for determining mediumly relevent romaji atoms
+//!
+//! Builds the regex used in engine.c for determining the relevance
+//! of a returned result when the query is a romaji one.
+//!
+//! @param regex A passed regex_t to assign an allocated regext to
+//! @param strang The regex pattern to use
+//! @param flags The regex flags to use
+//! 
+gboolean gw_regex_create_roma_med_regex (regex_t *regex, char *string, int flags)
+{
+    char expression[MAX_LINE * 2];
+    strcpy (expression, "\\{(");
+    strcat (expression, string);
+    strcat (expression, ")\\}|(\\) |/)((to )|(to be )|())(");
+    strcat (expression, string);
+    strcat (expression, ")(( \\([^/]+\\)/)|(/))|(\\[)(");
+    strcat (expression, string);
+    strcat (expression, ")(\\])|^(");
+    strcat (expression, string);
+    strcat (expression, ")\\b");
+    return regcomp (regex, expression, flags);
+}
+
+
+//!
+//! @brief Regex for determining highly relevent mix atoms
+//!
+//! Builds the regex used in engine.c for determining the relevance
+//! of a returned result when the query is a mix one. This means
+//! there is kanji/hiragana/romaji mingled throughout.
+//!
+//! @param regex A passed regex_t to assign an allocated regext to
+//! @param strang The regex pattern to use
+//! @param flags The regex flags to use
+//! 
+gboolean gw_regex_create_mix_high_regex (regex_t *regex, char *string, int flags)
+{
+    char expression[MAX_LINE * 2];
+    strcpy (expression, "(\\b(");
+    strcat (expression, string);
+    strcat (expression, ")\\b|^(");
+    strcat (expression, string);
+    strcat (expression, "))");
+    return regcomp (regex, expression, flags);
+}
+
+
+//!
+//! @brief Regex for determining mediumly relevent mix atoms
+//!
+//! Builds the regex used in engine.c for determining the relevance
+//! of a returned result when the query is a mix one. This means
+//! there is kanji/hiragana/romaji mingled throughout.
+//!
+//! @param regex A passed regex_t to assign an allocated regext to
+//! @param strang The regex pattern to use
+//! @param flags The regex flags to use
+//! 
+gboolean gw_regex_create_mix_med_regex (regex_t *regex, char *string, int flags)
+{
+    char expression[MAX_LINE * 2];
+    strcpy (expression, "\\{(");
+    strcat (expression, string);
+    strcat (expression, ")\\}|(\\) |/)((to )|(to be )|())(");
+    strcat (expression, string);
+    strcat (expression, ")(( \\([^/]+\\)/)|(/))|(\\[)(");
+    strcat (expression, string);
+    strcat (expression, ")(\\])|^(");
+    strcat (expression, string);
+    strcat (expression, ")\\b");
+    return regcomp (regex, expression, flags);
+}
 

@@ -59,6 +59,7 @@
 //!
 gboolean gw_fmt_strcpy_with_query_preformatting (char* output, char* input, GwSearchItem *item)
 {
+    gw_queryline_parse_string (item->queryline, input);
     char buffer[MAX_QUERY];
     strncpy(buffer, input, MAX_QUERY);
     buffer[MAX_QUERY - 1] = '\0';

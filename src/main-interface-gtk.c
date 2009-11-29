@@ -119,8 +119,22 @@ void gw_ui_close_suggestion_box ()
 
 void gw_ui_verb_check_with_suggestion (GwSearchItem *item)
 {
-  char *query = item->query;
+  char *query = item->queryline->string;
   GwResultLine *line = item->resultline;
+
+  gunichar query_first_letter;
+  query_first_letter = g_utf8_get_char (item->queryline->string);
+  gunichar result_kanji_first_letter;
+  result_kanji_first_letter = g_utf8_get_char (line->kanji_start);
+  gunichar result_furigana_first_letter; 
+  if (line->furigana_start != NULL)
+    result_furigana_first_letter = g_utf8_get_char (line->furigana_start);
+  else
+    result_furigana_first_letter = result_kanji_first_letter;
+
+  //Make sure the query and the search result start similarly
+  if (line->classification_start == NULL || (query_first_letter != result_kanji_first_letter && query_first_letter != result_furigana_first_letter))
+    return;
 
   GtkWidget *suggestion_label;
   suggestion_label = GTK_WIDGET (gtk_builder_get_object (builder, "suggestion_label"));
@@ -140,52 +154,59 @@ void gw_ui_verb_check_with_suggestion (GwSearchItem *item)
   gtk_widget_modify_bg (suggestion_eventbox, GTK_STATE_NORMAL, &bgcolor);
 
 
-  gunichar query_first_letter;
-  query_first_letter = g_utf8_get_char (item->raw_query);
-  gunichar result_kanji_first_letter;
-  result_kanji_first_letter = g_utf8_get_char (line->kanji_start);
-  gunichar result_furigana_first_letter; 
-  if (line->furigana_start)
-    result_furigana_first_letter = g_utf8_get_char (line->furigana_start);
-  else
-    result_furigana_first_letter = result_kanji_first_letter;
-
-    printf("entering... %s %s\n", query, line->kanji_start);
-
-  //Make sure the query and the search result start similarly
-  if (query_first_letter != result_kanji_first_letter && query_first_letter != result_furigana_first_letter)
-    return;
-
-    printf("first letter same\n");
-
-
   //i-adjective stuffs
   if (strstr(line->classification_start, "adj-i"))
   {
-    printf("i adjective\n");
-    if (regexec(&re_i_adj_past, query, 1, NULL, 0) == 0)
+    int nmatch = 1;
+    regmatch_t pmatch[nmatch];
+    if (regexec (&re_i_adj_past, query, nmatch, pmatch, 0) == 0)
     {
-      gtk_label_set_text (GTK_LABEL (suggestion_label), gettext ("Your query is possibly a past-form i-adjective."));
+      char message[1000];
+      strcpy  (message, gettext ("Your query is possibly a past-form i-adjective. "));
+      strcat  (message, " (");
+      strncat (message, query, pmatch[0].rm_so);
+      strcat  (message, "い)");
+      gtk_label_set_text (GTK_LABEL (suggestion_label), message);
       gtk_widget_show (suggestion_hbox);
     }
-    else if (regexec(&re_i_adj_negative, query, 1, NULL, 0) == 0)
+    else if (regexec (&re_i_adj_negative, query, nmatch, pmatch, 0) == 0)
     {
-      gtk_label_set_text (GTK_LABEL (suggestion_label), gettext ("Your query is possibly a negative i-adjective."));
+      char message[1000];
+      strcpy  (message, gettext ("Your query is possibly a negative i-adjective."));
+      strcat  (message, " (");
+      strncat (message, query, pmatch[0].rm_so);
+      strcat  (message, "い)");
+      gtk_label_set_text (GTK_LABEL (suggestion_label), message);
       gtk_widget_show (suggestion_hbox);
     }
-    else if (regexec(&re_i_adj_te, query, 1, NULL, 0) == 0)
+    else if (regexec (&re_i_adj_te, query, nmatch, pmatch, 0) == 0)
     {
-      gtk_label_set_text (GTK_LABEL (suggestion_label), gettext ("Your query is possibly a te-form i-adjective."));
+      char message[1000];
+      strcpy  (message, gettext ("Your query is possibly a te-form i-adjective. "));
+      strcat  (message, " (");
+      strncat (message, query, pmatch[0].rm_so);
+      strcat  (message, "い)");
+      gtk_label_set_text (GTK_LABEL (suggestion_label), message);
       gtk_widget_show (suggestion_hbox);
     }
-    else if (regexec(&re_i_adj_causative, query, 1, NULL, 0) == 0)
+    else if (regexec (&re_i_adj_causative, query, nmatch, pmatch, 0) == 0)
     {
-      gtk_label_set_text (GTK_LABEL (suggestion_label), gettext ("Your query is possibly a causitive-form i-adjective."));
+      char message[1000];
+      strcpy  (message, gettext ("Your query is possibly a causitive-form i-adjective. "));
+      strcat  (message, " (");
+      strncat (message, query, pmatch[0].rm_so);
+      strcat  (message, "い)");
+      gtk_label_set_text (GTK_LABEL (suggestion_label), message);
       gtk_widget_show (suggestion_hbox);
     }
-    else if (regexec(&re_i_adj_conditional, query, 1, NULL, 0) == 0)
+    else if (regexec (&re_i_adj_conditional, query, nmatch, pmatch, 0) == 0)
     {
-      gtk_label_set_text (GTK_LABEL (suggestion_label), gettext ("Your query is possibly a conditional-form i-adjective."));
+      char message[1000];
+      strcpy  (message, gettext ("Your query is possibly a conditional-form i-adjective. "));
+      strcat  (message, " (");
+      strncat (message, query, pmatch[0].rm_so);
+      strcat  (message, "い)");
+      gtk_label_set_text (GTK_LABEL (suggestion_label), message);
       gtk_widget_show (suggestion_hbox);
     }
   }
@@ -193,30 +214,56 @@ void gw_ui_verb_check_with_suggestion (GwSearchItem *item)
   //na-adjective stuffs
   else if (strstr(line->classification_start, "adj-na"))
   {
-    printf("na adjective\n");
-    if (regexec(&re_na_adj_past, query, 1, NULL, 0) == 0)
+    int nmatch = 1;
+    regmatch_t pmatch[nmatch];
+    if (regexec(&re_na_adj_past, query, nmatch, pmatch, 0) == 0)
     {
-      gtk_label_set_text (GTK_LABEL (suggestion_label), gettext ("Your query is possibly a past-form na-adjective"));
+      char message[1000];
+      strcpy  (message, gettext ("Your query is possibly a past-form na-adjective. "));
+      strcat  (message, " (");
+      strncat (message, query, pmatch[0].rm_so);
+      strcat  (message, ")");
+      gtk_label_set_text (GTK_LABEL (suggestion_label), message);
       gtk_widget_show (suggestion_hbox);
     }
-    else if (regexec(&re_na_adj_negative, query, 1, NULL, 0) == 0)
+    else if (regexec(&re_na_adj_negative, query, nmatch, pmatch, 0) == 0)
     {
-      gtk_label_set_text (GTK_LABEL (suggestion_label), gettext ("Your query is possibly a negative na-adjective."));
+      char message[1000];
+      strcpy  (message, gettext ("Your query is possibly a negative na-adjective. "));
+      strcat  (message, " (");
+      strncat (message, query, pmatch[0].rm_so);
+      strcat  (message, ")");
+      gtk_label_set_text (GTK_LABEL (suggestion_label), message);
       gtk_widget_show (suggestion_hbox);
     }
-    else if (regexec(&re_na_adj_te, query, 1, NULL, 0) == 0)
+    else if (regexec(&re_na_adj_te, query, nmatch, pmatch, 0) == 0)
     {
-      gtk_label_set_text (GTK_LABEL (suggestion_label), gettext ("Your query is possibly a te-form na-adjective."));
+      char message[1000];
+      strcpy  (message, gettext ("Your query is possibly a te-form na-adjective. "));
+      strcat  (message, " (");
+      strncat (message, query, pmatch[0].rm_so);
+      strcat  (message, ")");
+      gtk_label_set_text (GTK_LABEL (suggestion_label), message);
       gtk_widget_show (suggestion_hbox);
     }
-    else if (regexec(&re_na_adj_causative, query, 1, NULL, 0) == 0)
+    else if (regexec(&re_na_adj_causative, query, nmatch, pmatch, 0) == 0)
     {
-      gtk_label_set_text (GTK_LABEL (suggestion_label), gettext ("Your query is possibly a causitive-form na-adjective."));
+      char message[1000];
+      strcpy  (message, gettext ("Your query is possibly a causitive na-adjective. "));
+      strcat  (message, " (");
+      strncat (message, query, pmatch[0].rm_so);
+      strcat  (message, ")");
+      gtk_label_set_text (GTK_LABEL (suggestion_label), message);
       gtk_widget_show (suggestion_hbox);
     }
-    else if (regexec(&re_na_adj_conditional, query, 1, NULL, 0) == 0)
+    else if (regexec(&re_na_adj_conditional, query, nmatch, pmatch, 0) == 0)
     {
-      gtk_label_set_text (GTK_LABEL (suggestion_label), gettext ("Your query is possibly a form-conditional na-adjective."));
+      char message[1000];
+      strcpy  (message, gettext ("Your query is possibly a conditional-form na-adjective. "));
+      strcat  (message, " (");
+      strncat (message, query, pmatch[0].rm_so);
+      strcat  (message, ")");
+      gtk_label_set_text (GTK_LABEL (suggestion_label), message);
       gtk_widget_show (suggestion_hbox);
     }
   }
@@ -1810,7 +1857,7 @@ void gw_ui_close_kanji_results()
     GtkWidget *hpaned;
     hpaned = GTK_WIDGET (gtk_builder_get_object( builder, "results_hpaned" ));
     gtk_paned_set_position (GTK_PANED (hpaned), window_width); 
-    //gw_ui_close_suggestion_box ();
+    gw_ui_close_suggestion_box ();
 }
 
 
@@ -2510,8 +2557,9 @@ void gw_ui_add_match_highlights (gint line, gint start_offset, gint end_offset, 
 {
     GtkTextBuffer *tb;
     tb = GTK_TEXT_BUFFER (get_gobject_from_target(item->target));
+    GwQueryLine *ql = item->queryline;
     
-    int re, i;
+    int i;
     int match_so, match_eo;
     GtkTextIter si, ei;
     gtk_text_buffer_get_iter_at_line_offset (tb, &si, line, start_offset);
@@ -2519,12 +2567,31 @@ void gw_ui_add_match_highlights (gint line, gint start_offset, gint end_offset, 
     char *text = gtk_text_buffer_get_slice (tb, &si, &ei, FALSE);
     char *pos = text;
 
-    for(i = 0; i < item->total_re; i++) {
+    //Look for kanji atoms
+    for(i = 0; ql->kanji_atom[i] != NULL; i++) {
        pos = text;
-       while ((pos = gw_regex_locate_offset (pos, text, &item->re_locate[i],
-                                             &match_so, &match_eo)) != NULL )
+       while ((pos = gw_regex_locate_offset (pos, text, &(ql->kanji_regex[GW_QUERYLINE_LOCATE][i]), &match_so, &match_eo)) != NULL )
        {
-          //Apply the tag
+          gtk_text_buffer_get_iter_at_line_offset (tb, &si, line, match_so + start_offset);
+          gtk_text_buffer_get_iter_at_line_offset (tb, &ei, line, match_eo + start_offset);
+          gtk_text_buffer_apply_tag_by_name (tb, "match", &si, &ei);
+       }
+    }
+    //Look for furigana atoms
+    for(i = 0; ql->furi_atom[i] != NULL; i++) {
+       pos = text;
+       while ((pos = gw_regex_locate_offset (pos, text, &(ql->furi_regex[GW_QUERYLINE_LOCATE][i]), &match_so, &match_eo)) != NULL )
+       {
+          gtk_text_buffer_get_iter_at_line_offset (tb, &si, line, match_so + start_offset);
+          gtk_text_buffer_get_iter_at_line_offset (tb, &ei, line, match_eo + start_offset);
+          gtk_text_buffer_apply_tag_by_name (tb, "match", &si, &ei);
+       }
+    }
+    //Look for romaji atoms
+    for(i = 0; ql->roma_atom[i] != NULL; i++) {
+       pos = text;
+       while ((pos = gw_regex_locate_offset (pos, text, &(ql->roma_regex[GW_QUERYLINE_LOCATE][i]), &match_so, &match_eo)) != NULL )
+       {
           gtk_text_buffer_get_iter_at_line_offset (tb, &si, line, match_so + start_offset);
           gtk_text_buffer_get_iter_at_line_offset (tb, &ei, line, match_eo + start_offset);
           gtk_text_buffer_apply_tag_by_name (tb, "match", &si, &ei);
@@ -2562,7 +2629,7 @@ void gw_ui_shift_append_mark (char *stay_name, char *append_name)
 
 void gw_ui_append_normal_results_to_buffer (GwSearchItem *item, gboolean remove_last_linebreak)
 {
-    GwResultLine* resultline = item->resultline;
+    GwResultLine* rl = item->resultline;
 
     GtkTextBuffer *tb = GTK_TEXT_BUFFER (get_gobject_from_target(item->target));
     GtkTextMark *mark;
@@ -2595,21 +2662,22 @@ void gw_ui_append_normal_results_to_buffer (GwSearchItem *item, gboolean remove_
     gtk_text_buffer_get_iter_at_mark (tb, &iter, mark);
     line = gtk_text_iter_get_line (&iter);
     //Kanji
-    gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->kanji_start, -1, "important", NULL);
+    if (rl->kanji_start != NULL)
+      gtk_text_buffer_insert_with_tags_by_name (tb, &iter, rl->kanji_start, -1, "important", NULL);
     //Furigana
-    if (resultline->furigana_start)
+    if (rl->furigana_start != NULL)
     {
       gtk_text_buffer_insert_with_tags_by_name (tb, &iter, " [", -1, "important", NULL);
-      gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->furigana_start, -1, "important", NULL);
+      gtk_text_buffer_insert_with_tags_by_name (tb, &iter, rl->furigana_start, -1, "important", NULL);
       gtk_text_buffer_insert_with_tags_by_name (tb, &iter, "]", -1, "important", NULL);
     }
     //Other info
-    if (resultline->classification_start)
+    if (rl->classification_start != NULL)
     {
       gtk_text_buffer_insert (tb, &iter, " ", -1);
-      gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->classification_start, -1, "gray", "italic", NULL);
+      gtk_text_buffer_insert_with_tags_by_name (tb, &iter, rl->classification_start, -1, "gray", "italic", NULL);
     }
-    if (resultline->important)
+    if (rl->important == TRUE)
     {
       gtk_text_buffer_insert (tb, &iter, " ", -1);
       gtk_text_buffer_insert_with_tags_by_name (tb, &iter, gettext("Pop"), -1, "small", NULL);
@@ -2621,13 +2689,13 @@ void gw_ui_append_normal_results_to_buffer (GwSearchItem *item, gboolean remove_
     gw_ui_add_match_highlights (line, start_offset, end_offset, item);
     //Definitions
     int i = 0;
-    while (i < resultline->def_total)
+    while (rl->def_start[i] != NULL)
     {
       gtk_text_buffer_insert (tb, &iter, "      ", -1);
 
-      gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->number[i], -1, "comment", NULL);
+      gtk_text_buffer_insert_with_tags_by_name (tb, &iter, rl->number[i], -1, "comment", NULL);
       gtk_text_buffer_insert                   (tb, &iter, " ", -1);
-      gtk_text_buffer_insert                   (tb, &iter, resultline->def_start[i], -1);
+      gtk_text_buffer_insert                   (tb, &iter, rl->def_start[i], -1);
       end_offset = gtk_text_iter_get_line_offset (&iter);
       line = gtk_text_iter_get_line (&iter);
       gw_ui_add_match_highlights (line, start_offset, end_offset, item);
@@ -2656,16 +2724,17 @@ void gw_ui_append_def_same_to_buffer (GwSearchItem* item, gboolean UNUSED)
       gtk_text_buffer_insert_with_tags_by_name (tb, &iter, " /", -1, "important", NULL);
       gtk_text_buffer_insert (tb, &iter, " ", -1);
       //Kanji
-      gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->kanji_start, -1, "important", NULL);
+      if (resultline->kanji_start != NULL)
+        gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->kanji_start, -1, "important", NULL);
       //Furigana
-      if (resultline->furigana_start)
+      if (resultline->furigana_start != NULL)
       {
         gtk_text_buffer_insert_with_tags_by_name (tb, &iter, " [", -1, "important", NULL);
         gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->furigana_start, -1, "important", NULL);
         gtk_text_buffer_insert_with_tags_by_name (tb, &iter, "]", -1, "important", NULL);
       }
       //Other info
-      if (resultline->classification_start)
+      if (resultline->classification_start != NULL)
       {
         gtk_text_buffer_insert                   (tb, &iter, " ", -1);
         GtkTextIter copy = iter;
@@ -2673,7 +2742,7 @@ void gw_ui_append_def_same_to_buffer (GwSearchItem* item, gboolean UNUSED)
         gtk_text_buffer_remove_tag_by_name (tb, "important", &copy, &iter);
         gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->classification_start, -1, "gray", "italic", NULL);
       }
-      if (resultline->important)
+      if (resultline->important == TRUE)
       {
         gtk_text_buffer_insert                   (tb, &iter, " ", -1);
         gtk_text_buffer_insert_with_tags_by_name (tb, &iter, gettext("Pop"), -1, "small", NULL);

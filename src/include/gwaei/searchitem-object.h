@@ -31,6 +31,7 @@
 //! Historylist targets
 //!
 
+#include <gwaei/queryline-object.h>
 #include <gwaei/resultline-object.h>
 
 
@@ -49,15 +50,12 @@ enum search_states
 //! @brief Primitive for storing search item information
 //!
 typedef struct GwSearchItem {
-    char raw_query[MAX_QUERY];              //!< Query of the search
     char query[MAX_QUERY];                  //!< Query of the search
     GwDictInfo* dictionary;                 //!< Pointer to the dictionary used
 
     FILE* fd;                               //!< File descriptor for file search position
     int status;                             //!< Used to test if a search is in progress.
-    char *scratch_buffer1;                  //!< Scratch space
-    char *scratch_buffer2;                  //!< Scratch space
-    char *comparison_buffer;                //!< Saves the previously loaded result for comparison
+    char *scratch_buffer;                  //!< Scratch space
     int target;                             //!< What gui element should be outputted to
     long current_line;                      //!< Current line in teh dictionary file
     gboolean show_less_relevant_results;    //!< Saved search display format
@@ -66,21 +64,16 @@ typedef struct GwSearchItem {
     int total_irrelevant_results;           //!< Total results guessed to be vaguely relevant to the query
     int total_results;                      //!< Total results returned from the search
 
-    regex_t re_exist[MAX_QUERY];            //!< Parsed regex atoms for checking of a needle exists
-    regex_t re_locate[MAX_QUERY];           //!< Parsed regex atoms for pulling the needle out of the haystack.
-
-    regex_t re_relevance_medium[MAX_QUERY]; //!< Parsed regex atoms for testing medium relevance on a result
-    regex_t re_relevance_high[MAX_QUERY];   //!< Parsed regex atoms for testing high relevance on a result
     GList *results_medium;                  //!< Buffer storing mediumly relevant result for later display
     GList *results_low;                     //!< Buffer storing lowly relevant result for later display
-    int total_re;                           //!< The total regex atoms that were created.
 
     GwResultLine* resultline;               //!< Result line to store parsed result
     GwResultLine* backup_resultline;        //!< Result line kept for comparison purposes from previosu result line
     GwResultLine* swap_resultline;          //!< Swap space for swapping result line and backup_resultline
+    GwQueryLine* queryline;               //!< Result line to store parsed result
 
 
-    void (*gw_searchitem_parse_result_string)(GwResultLine*, char*);
+    void (*gw_searchitem_parse_result_string)(GwResultLine*);
     void (*gw_searchitem_append_results_to_output)(struct GwSearchItem*, gboolean);
 } GwSearchItem;
 

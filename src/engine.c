@@ -62,7 +62,7 @@ static gboolean less_relevant_title_inserted = FALSE;
 //!
 //! @param item a GwSearchItem to get the result from
 //!
-static void append_result_to_output (GwSearchItem *item, GwResultLine *UNUSED)
+static void append_result_to_output (GwSearchItem *item)
 {
     if (item->dictionary->type == GW_DICT_OTHER && gw_util_get_runmode() == GW_GTK_RUNMODE)
     {
@@ -159,14 +159,23 @@ static void append_less_relevant_header_to_output(GwSearchItem *item)
 //!
 static void append_stored_result_to_output (GwSearchItem *item, GList **results, GwResultLine *UNUSED)
 {
+    //Swap the lines
+    item->swap_resultline = item->backup_resultline;
+    item->backup_resultline = item->resultline;
+    item->resultline = item->swap_resultline;
+    item->swap_resultline = NULL;
+
+    //Replace the current result line with the stored one
+    if (item->resultline != NULL)
+      gw_resultline_free (item->resultline);
+    item->resultline = (GwResultLine*)(*results)->data;
+    *results = g_list_delete_link(*results, *results);
+      
+    //Append to the buffer 
     if (item->show_less_relevant_results || item->total_relevant_results == 0)
     {
-      (*item->gw_searchitem_parse_result_string)(item->resultline, (char*)(*results)->data);
-      append_result_to_output (item, item->resultline);
+      append_result_to_output (item);
     }
-
-    free(((*results)->data));
-    *results = g_list_delete_link(*results, *results);
 }
 
 
@@ -181,21 +190,13 @@ static void append_stored_result_to_output (GwSearchItem *item, GList **results,
 //! @param item a search item to grab the regrexes from
 //! @return Returns one of the integers: LOW_RELEVANCE, MEDIUM_RELEVANCE, or HIGH_RELEVANCE.
 //!
-static int get_relevance (char* text, GwSearchItem *item) {
-    int i;
-
-    //The search results is freakin' gold :-D
-    for (i = 0; i < item->total_re; i++)
-      if (regexec(&(item->re_relevance_high[i]), text, 1, NULL, 0) == 0)
-        return HIGH_RELEVANCE;
-
-    //Blarg.  A search result that may come in useful. :-)
-    for (i = 0; i < item->total_re; i++)
-      if (regexec(&(item->re_relevance_medium[i]), text, 1, NULL, 0) == 0)
-        return MEDIUM_RELEVANCE;
-
-    //Search result wasn't relevent. :-(
-    return LOW_RELEVANCE;
+static int get_relevance (GwSearchItem *item) {
+    if (gw_searchitem_existance_generic_comparison (item, GW_QUERYLINE_HIGH))
+      return HIGH_RELEVANCE;
+    else if (gw_searchitem_existance_generic_comparison (item, GW_QUERYLINE_MED))
+      return MEDIUM_RELEVANCE;
+    else
+      return LOW_RELEVANCE;
 }
 
 
@@ -211,95 +212,75 @@ static int get_relevance (char* text, GwSearchItem *item) {
 //!
 static gboolean stream_results_thread (GwSearchItem *item)
 {
-    char *dictionary = item->dictionary->name;
-    int dictionary_type = item->dictionary->type;
     int chunk = 0;
 
     //We loop, processing lines of the file until the max chunk size has been
     //reached or we reach the end of the file or a cancel request is recieved.
     while (chunk < MAX_CHUNK               &&
            item->status != GW_SEARCH_GW_DICT_STATUS_CANCELING &&
-           fgets(item->scratch_buffer1, MAX_LINE, item->fd) != NULL)
+           fgets(item->resultline->string, MAX_LINE, item->fd) != NULL)
     {
       chunk++;
       item->current_line++;
 
-      if (item->scratch_buffer1[0] == 'A' && item->scratch_buffer1[1] == ':' &&
-          fgets(item->scratch_buffer2, MAX_LINE, item->fd) != NULL             )
+      //Commented input in the dictionary...we should skip over it
+      if(item->resultline->string[0] == '#' || g_utf8_get_char(item->resultline->string) == L'？') 
+        continue;
+
+      else if (item->resultline->string[0] == 'A' && item->resultline->string[1] == ':' &&
+               fgets(item->scratch_buffer, MAX_LINE, item->fd) != NULL             )
       {
         char *eraser = NULL;
-        if (eraser = g_utf8_strchr (item->scratch_buffer1, -1, L'\n')) { *eraser = '\0'; }
-        if (eraser = g_utf8_strchr (item->scratch_buffer2, -1, L'\n')) { *eraser = '\0'; }
-        if (eraser = g_utf8_strrchr (item->scratch_buffer1, -1, L'#')) { *eraser = '\0'; }
-        strcat(item->scratch_buffer1, ":");
-        strcat(item->scratch_buffer1, item->scratch_buffer2);
+        if ((eraser = g_utf8_strchr (item->resultline->string, -1, L'\n')) != NULL) { *eraser = '\0'; }
+        if ((eraser = g_utf8_strchr (item->scratch_buffer, -1, L'\n')) != NULL) { *eraser = '\0'; }
+        if ((eraser = g_utf8_strrchr (item->resultline->string, -1, L'#')) != NULL) { *eraser = '\0'; }
+        strcat(item->resultline->string, ":");
+        strcat(item->resultline->string, item->scratch_buffer);
       }
-      //Commented input in the dictionary...we should skip over it
-      if(item->scratch_buffer1[0] == '#' || g_utf8_get_char(item->scratch_buffer1) == L'？') 
-      { } 
-      //Search engine for the kanji sidebar 
-      else if (item->target == GW_TARGET_KANJI)
-      {
-        if (regexec(&(item->re_exist[0]), item->scratch_buffer1, 1, NULL, 0) == 0)
-        {
-          (*item->gw_searchitem_parse_result_string)(item->resultline, item->scratch_buffer1);
-          append_result_to_output (item, item->resultline);
-          chunk = 0;
-        }
-      }
+      (*item->gw_searchitem_parse_result_string)(item->resultline);
+      //gw_ui_verb_check_with_suggestion (item);
 
-      //Search engine for other dictionaries
-      else
+      //Results match, add to the text buffer
+      if (gw_searchitem_existance_generic_comparison (item, GW_QUERYLINE_EXIST))
       {
-        //Search for existance of every atom in the query.
-        int i;
-        gboolean missing_an_atom = FALSE;
-        for(i = 0; i < item->total_re && !missing_an_atom; i++)
-          if (regexec(&(item->re_exist[i]), item->scratch_buffer1, 1, NULL, 0) != 0)
-            missing_an_atom = TRUE;
-
-        //Results match, add to the text buffer
-        if (!missing_an_atom)
+        int relevance = get_relevance(item);
+        switch(relevance)
         {
-          int relevance = get_relevance(item->scratch_buffer1, item);
-          char *result = NULL;
-          switch(relevance)
-          {
-            case HIGH_RELEVANCE:
-                item->total_results++;
-                item->total_relevant_results++;
-                append_more_relevant_header_to_output(item);
-                gw_ui_update_total_results_label(item);
-                if (item->resultline != NULL)
-                {
-                  //Pull a switcheroo
-                  item->swap_resultline = item->backup_resultline;
-                  item->backup_resultline = item->resultline;
-                  item->resultline = item->swap_resultline;
-                  item->swap_resultline = NULL;
-                }
-                (*item->gw_searchitem_parse_result_string)(item->resultline, item->scratch_buffer1);
-                append_result_to_output(item, item->resultline);
-                break;
-            case MEDIUM_RELEVANCE:
-                if ((item->dictionary->type == GW_DICT_KANJI || item->total_irrelevant_results < MAX_MEDIUM_IRRELIVENT_RESULTS) &&
-                     (result = (char*)malloc(strlen(item->scratch_buffer1) + 2)))
-                {
-                  item->total_irrelevant_results++;
-                  strcpy(result, item->scratch_buffer1);
-                  item->results_medium =  g_list_append(item->results_medium, result);
-                }
-                break;
-            default:
-                if ((item->dictionary->type == GW_DICT_KANJI || item->total_irrelevant_results < MAX_LOW_IRRELIVENT_RESULTS) &&
-                     (result = (char*)malloc(strlen(item->scratch_buffer1) + 2)))
-                {
-                  item->total_irrelevant_results++;
-                  strcpy(result, item->scratch_buffer1);
-                  item->results_low = g_list_append(item->results_low, result);
-                }
-                break;
-          }
+          case HIGH_RELEVANCE:
+              item->total_results++;
+              item->total_relevant_results++;
+              append_more_relevant_header_to_output(item);
+              gw_ui_update_total_results_label(item);
+              append_result_to_output(item);
+
+              //Swap the result lines
+              item->swap_resultline = item->backup_resultline;
+              item->backup_resultline = item->resultline;
+              item->resultline = item->swap_resultline;
+              item->swap_resultline = NULL;
+              break;
+          case MEDIUM_RELEVANCE:
+              if ((item->dictionary->type == GW_DICT_KANJI || item->total_irrelevant_results < MAX_MEDIUM_IRRELIVENT_RESULTS) &&
+                   (item->swap_resultline = gw_resultline_new ()) != NULL)
+              {
+                //Store the result line and create an empty one in its place
+                item->total_irrelevant_results++;
+                item->results_medium =  g_list_append(item->results_medium, item->resultline);
+                item->resultline = item->swap_resultline;
+                item->swap_resultline = NULL;
+              }
+              break;
+          default:
+              if ((item->dictionary->type == GW_DICT_KANJI || item->total_irrelevant_results < MAX_LOW_IRRELIVENT_RESULTS) &&
+                   (item->swap_resultline = gw_resultline_new ()) != NULL)
+              {
+                //Store the result line and create an empty one in its place
+                item->total_irrelevant_results++;
+                item->results_low = g_list_append(item->results_low, item->resultline);
+                item->resultline = item->swap_resultline;
+                item->swap_resultline = NULL;
+              }
+              break;
         }
       }
       continue;
@@ -327,10 +308,6 @@ static gboolean stream_results_thread (GwSearchItem *item)
     if (item->results_medium != NULL) {
       for (chunk = 0; item->results_medium != NULL && chunk < MAX_CHUNK; chunk++) {
         item->total_results++;
-        item->swap_resultline = item->backup_resultline;
-        item->backup_resultline = item->resultline;
-        item->resultline = item->swap_resultline;
-        item->swap_resultline = NULL;
         append_stored_result_to_output(item, &(item->results_medium), item->resultline);
       }
       gw_ui_update_total_results_label(item);
@@ -341,10 +318,6 @@ static gboolean stream_results_thread (GwSearchItem *item)
     if (item->results_low != NULL) {
       for (chunk = 0; item->results_low != NULL && chunk < MAX_CHUNK; chunk++) {
         item->total_results++;
-        item->swap_resultline = item->backup_resultline;
-        item->backup_resultline = item->resultline;
-        item->resultline = item->swap_resultline;
-        item->swap_resultline = NULL;
         append_stored_result_to_output(item, &(item->results_low), item->resultline);
       }
       gw_ui_update_total_results_label(item);

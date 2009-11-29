@@ -275,6 +275,44 @@ gboolean gw_util_is_katakana_str (char input[])
 
 
 //!
+//! @brief Convenience function for seeing if a string is furigana
+//!
+//! Furigana are the characters containing both hiragana and katakana.
+//!
+//! @param input The string to check
+//! @return Returns true if it is in the range
+//! @see gw_util_all_chars_are_in_range ()
+//! @see gw_util_is_hiragana_str ()
+//! @see gw_util_is_kanji_str ()
+//! @see gw_util_is_romaji_str ()
+//!
+gboolean gw_util_is_furigana_str (char input[])
+{
+    return gw_util_all_chars_are_in_range (input, L'ぁ', L'ー');
+}
+
+
+
+//!
+//! @brief Convenience function for seeing if a string *starts* with kanji
+//!
+//! The point of the function is to find a word that starts with kanji but
+//! may also have hiragana in it somewheres.
+//!
+//! @param input The string to check
+//! @return Returns true if the function things this is a kanji string
+//! @see gw_util_all_chars_are_in_range ()
+//! @see gw_util_is_hiragana_str ()
+//! @see gw_util_is_katakana_str ()
+//! @see gw_util_is_romaji_str ()
+//!
+gboolean gw_util_is_kanji_ish_str (char input[])
+{
+    char *next = g_utf8_next_char (input);
+    return (g_utf8_get_char(input) >= L'ー' || g_utf8_get_char(next) >= L'ー');
+}
+
+//!
 //! @brief Convenience function for seeing if a string is kanji
 //!
 //! @param input The string to check
