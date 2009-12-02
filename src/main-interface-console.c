@@ -353,6 +353,7 @@ static void get_search (GwDictInfo *dictionary){
 	char query[MAX_QUERY];
 	int cont, loop;
 	char *fgetsTest;
+	char *thisArg;
 
 	loop = TRUE;
 
@@ -384,7 +385,6 @@ static void get_search (GwDictInfo *dictionary){
 			break;
 		}
 
-		/* remove the null terminator */
 		for (cont = 0; cont < sizeof(query); ++cont) {
 			if (query[cont] == '\n') {
 				query[cont] = '\0';
@@ -392,21 +392,37 @@ static void get_search (GwDictInfo *dictionary){
 			}
 		}
 
-		//TODO: Search for all!
-		//TODO: Search for a sustring and extract it
-		if (is_switch (query, "-e", "--exact")) {
-			exact_switch = TRUE;
+		/* Search for keyword... */
+		//printf ("Split \"%s\" in tokens:\n", query);
+		thisArg = NULL;
+		thisArg = strtok (query," ");
+		while (thisArg != NULL) {
+
+			//printf ("Found: %s\n", thisArg);
+
+			if (is_switch (thisArg, "-e", "--exact"))
+				exact_switch = TRUE;
+			else if (is_switch (thisArg, "-q", "--quiet"))
+				quiet_switch = TRUE;
+			else
+				break; /* Search only the first word inserted */
+
+			thisArg = strtok (NULL, " ,");
 		}
-		else if (is_switch (query, "-q", "--quiet")) {
-			quiet_switch = TRUE;
-		} /*
+
+		  /* TODO:
 		else if (is_switch (query, "-d", "--dictionary")) {
 			dictionary = gw_dictlist_get_dictionary_by_alias(query); //TODO: FIXME
 		} */ 		//TODO: Exstract all the spaces
-		else {
-			print_search_start_banner(query, dictionary->name);
 
-			item = gw_searchitem_new(query, dictionary, GW_TARGET_CONSOLE);
+		if(thisArg == NULL){
+			/* No word to search, only option */
+			printf("No word insert, only option...\n");
+		}
+		else {
+			print_search_start_banner(thisArg, dictionary->name);
+
+			item = gw_searchitem_new(thisArg, dictionary, GW_TARGET_CONSOLE);
 			if (item == NULL){
 				//TODO: Use GError instead. TODO
 				printf(gettext("Results seem to have incorrect formatting. Did you "
