@@ -663,7 +663,7 @@ void initialize_console_interface(int argc, char **argv) {
 /*
  *
  */
-void gw_console_append_normal_results (GwSearchItem *item, gboolean unused) {
+void gw_console_append_edict_results (GwSearchItem *item, gboolean unused) {
 
 	//Definitions
 	int cont = 0;
@@ -691,7 +691,7 @@ void gw_console_append_normal_results (GwSearchItem *item, gboolean unused) {
     return;
 }
 
-void gw_console_append_kanji_results (GwSearchItem *item, gboolean unused) {
+void gw_console_append_kanjidict_results (GwSearchItem *item, gboolean unused) {
 
 	char line_started = FALSE;
     GwResultLine *resultline = item->resultline;
@@ -744,7 +744,7 @@ void gw_console_append_kanji_results (GwSearchItem *item, gboolean unused) {
 /*
  *
  */
-void gw_console_append_radical_results (GwSearchItem *item, gboolean unused) {
+void gw_console_append_radicalsdict_results (GwSearchItem *item, gboolean unused) {
 	if (item != NULL)
 	    printf("[32;1m%s:[0m %s\n\n", item->resultline->kanji, item->resultline->radicals);
 	else
@@ -754,7 +754,7 @@ void gw_console_append_radical_results (GwSearchItem *item, gboolean unused) {
 /*
  *
  */
-void gw_console_append_examples_results (GwSearchItem *item, gboolean unused) {
+void gw_console_append_examplesdict_results (GwSearchItem *item, gboolean unused) {
 
 	if (item != NULL) {
 	    GwResultLine *resultline = item->resultline;
@@ -777,7 +777,7 @@ void gw_console_append_examples_results (GwSearchItem *item, gboolean unused) {
 /*
  *
  */
-void gw_console_append_unknown_results (GwSearchItem *item, gboolean unused) {
+void gw_console_append_unknowndict_results (GwSearchItem *item, gboolean unused) {
 	if (item != NULL)
 	    printf("%s\n", item->resultline->string);
 	else

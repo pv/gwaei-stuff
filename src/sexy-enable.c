@@ -35,6 +35,8 @@
 #include <stdlib.h>
 #include <regex.h>
 #include <string.h>
+#include <locale.h>
+#include <libintl.h>
 
 #include <gtk/gtk.h>
 #include <libsexy/sexy.h>
@@ -59,8 +61,6 @@
 //! @param widget Unused GtkWidget
 //! @param data Unused gpointer
 //!
-#include <locale.h>
-#include <libintl.h>
 void do_conditionally_enable_spellcheck (GtkWidget *widget, gpointer data)
 {
      char id[50];
@@ -78,27 +78,9 @@ void do_conditionally_enable_spellcheck (GtkWidget *widget, gpointer data)
      char *text = gtk_editable_get_chars (GTK_EDITABLE (entry), 0, -1);
      if (text == NULL) return;
 
-     char *input_ptr = text;
      char kana[MAX_QUERY];
-     char *kana_ptr = kana;
-     *kana_ptr = '\0';
-
-     int leftover;
-     leftover = MAX_QUERY;
-     while (leftover-- > 0)
-     {
-       kana_ptr = gw_util_roma_to_hira (input_ptr, kana_ptr);
-       if (kana_ptr == NULL || input_ptr == NULL)
-         break;
-       input_ptr = gw_util_next_hira_char_from_roma (input_ptr);
-       if (kana_ptr == NULL || input_ptr == NULL)
-         break;
-
-       kana_ptr = &kana_ptr[strlen(kana_ptr)];
-     }
-
      gboolean is_convertable_to_hiragana;
-     is_convertable_to_hiragana= (input_ptr != NULL && strlen (input_ptr) == 0 && want_conv);
+     is_convertable_to_hiragana = (want_conv && gw_util_str_roma_to_hira (text, kana, MAX_QUERY));
 
      if (gw_util_all_chars_are_in_range (text, L' ', L'|') == TRUE &&
          is_convertable_to_hiragana == FALSE                     &&

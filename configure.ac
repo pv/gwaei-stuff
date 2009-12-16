@@ -20,6 +20,7 @@ GDU_REQUIRED_VERSION=0.13.0
 LIBUNIQUE_REQUIRED_VERSION=1.0.0
 
 PKG_CHECK_MODULES(DEPS, glib-2.0           >= $GLIB_REQUIRED_VERSION
+                        gobject-2.0        >= $GLIB_REQUIRED_VERSION
                         libcurl            >= $LIBCURL_REQUIRED_VERSION
                         gmodule-2.0        >= $GMODULE_EXPORT_REQUIRED_VERSION 
                         gthread-2.0        >= $GTHREAD_REQUIRED_VERSION       )

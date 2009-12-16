@@ -95,39 +95,39 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary,
   switch (temp->dictionary->type)
   {
       case GW_DICT_OTHER:
-        temp->gw_searchitem_parse_result_string = &gw_resultline_parse_normal_result_string;
+        temp->gw_searchitem_parse_result_string = &gw_resultline_parse_edict_result_string;
         if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
-          temp->gw_searchitem_append_results_to_output = &gw_console_append_normal_results;
+          temp->gw_searchitem_append_results_to_output = &gw_console_append_edict_results;
         else
-          temp->gw_searchitem_append_results_to_output = &gw_ui_append_normal_results_to_buffer;
+          temp->gw_searchitem_append_results_to_output = &gw_ui_append_edict_results_to_buffer;
         break;
       case GW_DICT_RADICALS:
-        temp->gw_searchitem_parse_result_string = &gw_resultline_parse_radical_result_string;
+        //temp->gw_searchitem_parse_result_string = &gw_resultline_parse_radical_result_string;
         if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
-          temp->gw_searchitem_append_results_to_output = &gw_console_append_radical_results;
+          temp->gw_searchitem_append_results_to_output = &gw_console_append_radicalsdict_results;
         else
-          temp->gw_searchitem_append_results_to_output = &gw_ui_append_radicals_results_to_buffer;
+          temp->gw_searchitem_append_results_to_output = &gw_ui_append_radicalsdict_results_to_buffer;
         break;
       case GW_DICT_KANJI:
-        temp->gw_searchitem_parse_result_string = &gw_resultline_parse_kanji_result_string;
+        //temp->gw_searchitem_parse_result_string = &gw_resultline_parse_kanji_result_string;
         if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
-          temp->gw_searchitem_append_results_to_output = gw_console_append_kanji_results;
+          temp->gw_searchitem_append_results_to_output = gw_console_append_kanjidict_results;
         else
-          temp->gw_searchitem_append_results_to_output = &gw_ui_append_kanji_results_to_buffer;
+          temp->gw_searchitem_append_results_to_output = &gw_ui_append_kanjidict_results_to_buffer;
         break;
       case GW_DICT_EXAMPLES:
-        temp->gw_searchitem_parse_result_string = &gw_resultline_parse_examples_result_string;
+        //temp->gw_searchitem_parse_result_string = &gw_resultline_parse_examples_result_string;
         if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
-          temp->gw_searchitem_append_results_to_output = &gw_console_append_examples_results;
+          temp->gw_searchitem_append_results_to_output = &gw_console_append_examplesdict_results;
         else
-          temp->gw_searchitem_append_results_to_output = &gw_ui_append_examples_results_to_buffer;
+          temp->gw_searchitem_append_results_to_output = &gw_ui_append_examplesdict_results_to_buffer;
         break;
       default:
-        temp->gw_searchitem_parse_result_string = &gw_resultline_parse_unknown_result_string;
+        //temp->gw_searchitem_parse_result_string = &gw_resultline_parse_unknown_result_string;
         if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
-          temp->gw_searchitem_append_results_to_output = &gw_console_append_unknown_results;
+          temp->gw_searchitem_append_results_to_output = &gw_console_append_unknowndict_results;
         else
-          temp->gw_searchitem_append_results_to_output = &gw_ui_append_unknown_results_to_buffer;
+          temp->gw_searchitem_append_results_to_output = &gw_ui_append_unknowndict_results_to_buffer;
         break;
   }
 
@@ -300,7 +300,7 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
       int j;
       //Compare kanji atoms
       i = 0;
-      while (ql->kanji_atom[i] != NULL && rl->kanji_start != NULL)
+      while (i < ql->kanji_total && rl->kanji_start != NULL)
       {
         if (regexec(&(ql->kanji_regex[REGEX_TYPE][i]), rl->kanji_start, 1, NULL, 0) == 0)
           return TRUE;
@@ -308,7 +308,7 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
       }
       //Compare furigana atoms
       i = 0;
-      while (ql->furi_atom[i] != NULL && rl->furigana_start != NULL)
+      while (i < ql->furi_total && rl->furigana_start != NULL)
       {
         if (regexec(&(ql->furi_regex[REGEX_TYPE][i]), rl->furigana_start, 1, NULL, 0) == 0)
           return TRUE;
@@ -316,7 +316,7 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
       }
       //Compare romaji atoms
       i = 0;
-      while (ql->roma_atom[i] != NULL)
+      while (i < ql->roma_total)
       {
         j = 0;
         while (rl->def_start[j] != NULL)
@@ -327,9 +327,10 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
         }
         i++;  
       }
+
       //Compare mix atoms
       i = 0;
-      while (ql->mix_atom[i] != NULL)
+      while (i < ql->mix_total)
       {
         if (regexec(&(ql->mix_regex[REGEX_TYPE][i]), rl->string, 1, NULL, 0) == 0)
           return TRUE;

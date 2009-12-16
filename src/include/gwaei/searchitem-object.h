@@ -50,12 +50,12 @@ enum search_states
 //! @brief Primitive for storing search item information
 //!
 typedef struct GwSearchItem {
-    char query[MAX_QUERY];                  //!< Query of the search
+    GwQueryLine* queryline;                 //!< Result line to store parsed result
     GwDictInfo* dictionary;                 //!< Pointer to the dictionary used
 
     FILE* fd;                               //!< File descriptor for file search position
     int status;                             //!< Used to test if a search is in progress.
-    char *scratch_buffer;                  //!< Scratch space
+    char *scratch_buffer;                   //!< Scratch space
     int target;                             //!< What gui element should be outputted to
     long current_line;                      //!< Current line in teh dictionary file
     gboolean show_less_relevant_results;    //!< Saved search display format
@@ -70,7 +70,6 @@ typedef struct GwSearchItem {
     GwResultLine* resultline;               //!< Result line to store parsed result
     GwResultLine* backup_resultline;        //!< Result line kept for comparison purposes from previosu result line
     GwResultLine* swap_resultline;          //!< Swap space for swapping result line and backup_resultline
-    GwQueryLine* queryline;               //!< Result line to store parsed result
 
 
     void (*gw_searchitem_parse_result_string)(GwResultLine*);

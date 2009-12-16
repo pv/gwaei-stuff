@@ -10,14 +10,14 @@
 typedef struct GwQueryLine {
     char string[MAX_QUERY];
 
-    char   *kanji_atom[MAX_ATOMS];
     regex_t kanji_regex[5][MAX_ATOMS];
-    char   *furi_atom[MAX_ATOMS];
+    int kanji_total;
     regex_t furi_regex[5][MAX_ATOMS];
-    char   *roma_atom[MAX_ATOMS];
+    int furi_total;
     regex_t roma_regex[5][MAX_ATOMS];
-    char   *mix_atom[MAX_ATOMS];
+    int roma_total;
     regex_t mix_regex[5][MAX_ATOMS];
+    int mix_total;
 
     //Kanji things
     char strokes[10];

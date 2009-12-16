@@ -394,7 +394,7 @@ G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
 
     //Set the search string in the GtkEntry
     gw_ui_clear_search_entry ();
-    gw_ui_search_entry_insert ((hl->current)->query);
+    gw_ui_search_entry_insert ((hl->current)->queryline->string);
     gw_ui_text_select_all_by_target (GW_TARGET_ENTRY);
     gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
 
@@ -1291,7 +1291,7 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
       return;
 
     if (hl->current != NULL &&
-        strcmp (query, hl->current->query) == 0 &&
+        strcmp (query, hl->current->queryline->string) == 0 &&
         dictionary->id == hl->current->dictionary->id &&
         show_less_relevant == hl->current->show_less_relevant_results)
       return;

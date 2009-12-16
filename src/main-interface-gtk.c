@@ -1108,7 +1108,7 @@ void gw_ui_update_history_menu_popup()
 
       accel_label = gtk_label_new (item->dictionary->long_name);
       gtk_widget_set_sensitive (GTK_WIDGET (accel_label), FALSE);
-      label = gtk_label_new (item->query);
+      label = gtk_label_new (item->queryline->string);
 
       GtkWidget *hbox;
       hbox = gtk_hbox_new (FALSE, 0);
@@ -1166,14 +1166,11 @@ void rebuild_history_button_popup(char* id, GList* list) {
     {
       item = children->data;
 
+      //Ensure a minimuim width of the menu
       int leftover = 200;
       char label[leftover];
-      /*
-      strncpy (label, gettext("Searched for \""), leftover);
-      leftover -= 1;
-      */
-      strncpy (label, item->query, leftover);
-      leftover -= strlen (item->query);
+      strncpy (label, item->queryline->string, leftover);
+      leftover -= strlen (item->queryline->string);
       while (leftover > 180)
       {
         strncat (label, " ", leftover);
@@ -2568,7 +2565,7 @@ void gw_ui_add_match_highlights (gint line, gint start_offset, gint end_offset, 
     char *pos = text;
 
     //Look for kanji atoms
-    for(i = 0; ql->kanji_atom[i] != NULL; i++) {
+    for(i = 0; i < ql->kanji_total != NULL; i++) {
        pos = text;
        while ((pos = gw_regex_locate_offset (pos, text, &(ql->kanji_regex[GW_QUERYLINE_LOCATE][i]), &match_so, &match_eo)) != NULL )
        {
@@ -2578,7 +2575,7 @@ void gw_ui_add_match_highlights (gint line, gint start_offset, gint end_offset, 
        }
     }
     //Look for furigana atoms
-    for(i = 0; ql->furi_atom[i] != NULL; i++) {
+    for(i = 0; i < ql->furi_total != NULL; i++) {
        pos = text;
        while ((pos = gw_regex_locate_offset (pos, text, &(ql->furi_regex[GW_QUERYLINE_LOCATE][i]), &match_so, &match_eo)) != NULL )
        {
@@ -2588,7 +2585,7 @@ void gw_ui_add_match_highlights (gint line, gint start_offset, gint end_offset, 
        }
     }
     //Look for romaji atoms
-    for(i = 0; ql->roma_atom[i] != NULL; i++) {
+    for(i = 0; i < ql->roma_total != NULL; i++) {
        pos = text;
        while ((pos = gw_regex_locate_offset (pos, text, &(ql->roma_regex[GW_QUERYLINE_LOCATE][i]), &match_so, &match_eo)) != NULL )
        {
@@ -2627,7 +2624,7 @@ void gw_ui_shift_append_mark (char *stay_name, char *append_name)
 }
 
 
-void gw_ui_append_normal_results_to_buffer (GwSearchItem *item, gboolean remove_last_linebreak)
+void gw_ui_append_edict_results_to_buffer (GwSearchItem *item, gboolean remove_last_linebreak)
 {
     GwResultLine* rl = item->resultline;
 
@@ -2753,7 +2750,7 @@ void gw_ui_append_def_same_to_buffer (GwSearchItem* item, gboolean UNUSED)
 }
 
 
-void gw_ui_append_kanji_results_to_buffer (GwSearchItem *item, gboolean unused)
+void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item, gboolean unused)
 {
       GwResultLine* resultline = item->resultline;
       GtkTextBuffer *tb = GTK_TEXT_BUFFER (get_gobject_from_target(item->target));
@@ -2868,7 +2865,7 @@ void gw_ui_append_kanji_results_to_buffer (GwSearchItem *item, gboolean unused)
 }
 
 
-void gw_ui_append_radicals_results_to_buffer (GwSearchItem *item, gboolean unused)
+void gw_ui_append_radicalsdict_results_to_buffer (GwSearchItem *item, gboolean unused)
 {
       GwResultLine* resultline = item->resultline;
       GtkTextBuffer *tb = GTK_TEXT_BUFFER (get_gobject_from_target(item->target));
@@ -2907,7 +2904,7 @@ void gw_ui_append_radicals_results_to_buffer (GwSearchItem *item, gboolean unuse
 }
 
 
-void gw_ui_append_examples_results_to_buffer (GwSearchItem *item, gboolean unused)
+void gw_ui_append_examplesdict_results_to_buffer (GwSearchItem *item, gboolean unused)
 {
       GwResultLine* resultline = item->resultline;
       GtkTextBuffer *tb = GTK_TEXT_BUFFER (get_gobject_from_target(item->target));
@@ -2955,7 +2952,7 @@ void gw_ui_append_examples_results_to_buffer (GwSearchItem *item, gboolean unuse
       gtk_text_buffer_insert (tb, &iter, "\n", -1);
 }
 
-void gw_ui_append_unknown_results_to_buffer (GwSearchItem *item, gboolean unused)
+void gw_ui_append_unknowndict_results_to_buffer (GwSearchItem *item, gboolean unused)
 {
       GwResultLine* resultline = item->resultline;
       GtkTextBuffer *tb = GTK_TEXT_BUFFER (get_gobject_from_target(item->target));

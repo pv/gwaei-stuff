@@ -46,6 +46,7 @@
 #include <gwaei/preferences.h>
 
 
+/*
 //!
 //! @brief Copies a string while adding some special formatting
 //!
@@ -427,4 +428,4 @@ void gw_fmt_strcpy_with_query_formatting (char* output, char* input, GwSearchIte
       strcat(output, DELIMITOR_STR);
     }
 }
-
+*/

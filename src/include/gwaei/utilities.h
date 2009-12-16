@@ -8,6 +8,7 @@ void initialize_gconf_schemas(void);
 gboolean gw_util_itohexstr(char*, guint);
 char* gw_util_next_hira_char_from_roma(char*);
 char* gw_util_roma_to_hira(char*, char*);
+gboolean gw_util_str_roma_to_hira (char*, char*, int);
 gboolean gw_util_is_japanese_locale(void);
 gboolean gw_util_is_japanese_ctype(void);
 

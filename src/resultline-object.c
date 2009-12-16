@@ -53,7 +53,6 @@ GwResultLine* gw_resultline_new ()
     temp->kanji_start = NULL;
     temp->furigana_start = NULL;
     temp->classification_start = NULL;
-    strcpy(temp->first, "(1)");
     temp->important = FALSE;
 
     //Kanji things
@@ -81,7 +80,6 @@ void gw_resultline_clear_variables (GwResultLine *temp)
     temp->kanji_start = NULL;
     temp->furigana_start = NULL;
     temp->classification_start = NULL;
-    strcpy(temp->first, "(1)");
     temp->important = FALSE;
 
     //Kanji things
@@ -110,7 +108,7 @@ void gw_resultline_free (GwResultLine *item)
 //! @param line line
 //! @param string string
 //!
-void gw_resultline_parse_normal_result_string (GwResultLine *rl)
+void gw_resultline_parse_edict_result_string (GwResultLine *rl)
 {
     //Reinitialize Variables to help prevent craziness
     rl->def_start[0] = NULL;
@@ -179,7 +177,7 @@ void gw_resultline_parse_normal_result_string (GwResultLine *rl)
     ptr++;
     ptr = g_utf8_next_char(ptr);
     rl->def_start[0] = ptr;
-    rl->number[0] = rl->first;
+    rl->number[0] = FIRST_DEFINITION_PREFIX_STR;
     int i = 1;
 
     temp = ptr;
@@ -222,7 +220,7 @@ void gw_resultline_parse_normal_result_string (GwResultLine *rl)
     }
 }
 
-
+/*
 //!
 //! @brief Parses a string for a Kanjidic format string
 //!
@@ -492,3 +490,4 @@ void gw_resultline_parse_unknown_result_string (GwResultLine *rl)
       *temp = '\0';
     }
 }
+*/

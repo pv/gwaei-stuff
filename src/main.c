@@ -38,6 +38,7 @@
 
 #include <curl/curl.h>
 #include <glib.h>
+#include <glib-object.h>
 
 #include <gwaei/definitions.h>
 #include <gwaei/regex.h>

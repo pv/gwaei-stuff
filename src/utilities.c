@@ -234,7 +234,7 @@ gboolean gw_util_all_chars_are_in_range (char input[],
     {
       input_ptr = g_utf8_next_char(input_ptr);
       unic = g_utf8_get_char(input_ptr);
-      is_in_boundary = (unic >= start_unic_boundary && unic <= end_unic_boundary);
+      is_in_boundary = ((unic >= start_unic_boundary && unic <= end_unic_boundary) || unic == '.' || unic == '*');
     }
 
     //Return Results
@@ -498,7 +498,7 @@ char* gw_util_next_hira_char_from_roma (char *input)
 //! @param input The string to write the hiragana equivalent to
 //! @return Returns null on error/end
 //!
-char* gw_util_roma_to_hira (char *input, char *output)
+char* gw_util_roma_char_to_hira (char *input, char *output)
 {
     //Set up the input pointer
     char *input_ptr;
@@ -880,6 +880,36 @@ char* gw_util_roma_to_hira (char *input, char *output)
 
 
 //!
+//! @brief Convenience function to convert romaji to hiragana
+//!
+//! @param input The string to shift
+//! @see gw_util_shift_all_chars_in_str_by ()
+//! @see gw_util_str_shift_hira_to_kata ()
+//!
+gboolean gw_util_str_roma_to_hira (char* input, char* output, int max)
+{
+    //Try converting to hiragana
+    char *input_ptr = input;
+    char *kana_ptr = output;
+    *kana_ptr = '\0';
+    int leftover = max;
+    while (leftover-- > 0)
+    {
+      kana_ptr = gw_util_roma_char_to_hira (input_ptr, kana_ptr);
+      if (kana_ptr == NULL || input_ptr == NULL)
+        break;
+      input_ptr = gw_util_next_hira_char_from_roma (input_ptr);
+      if (kana_ptr == NULL || input_ptr == NULL)
+        break;
+
+      kana_ptr = &kana_ptr[strlen(kana_ptr)];
+    }
+
+    return (input_ptr != NULL && strlen (input_ptr) == 0);
+}
+
+
+//!
 //! @brief Checks for a Japanese ctype localization setting
 //!
 //! @return Returns true if it is a japanese ctype
@@ -898,6 +928,7 @@ gboolean gw_util_is_japanese_ctype ()
             )
            );
 }
+
 
 //!
 //! @brief Checks for a Japanese local messages setting
