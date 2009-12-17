@@ -55,18 +55,16 @@ static WINDOW *results;
 static WINDOW *search;
 static WINDOW *screen;
 int current_row = 0;
-
-int cursesFlag = false;
-
-//char stri[251];
-//char* stringa = stri;
-
 int maxY;
 int maxX;
+int cursesFlag = false;
 
 
-void gw_console_uninstall_dictionary_by_name(char *name)
-{
+/**
+ *
+ */
+void gw_console_uninstall_dictionary_by_name(char *name) {
+
     GwDictInfo* di;
     di = gw_dictlist_get_dictionary_by_name (name);
     if (di == NULL) return;
@@ -82,8 +80,8 @@ void gw_console_uninstall_dictionary_by_name(char *name)
 }
 
 
-gboolean gw_console_install_dictionary_by_name(char *name)
-{
+gboolean gw_console_install_dictionary_by_name(char *name) {
+
     GwDictInfo* di;
     di = gw_dictlist_get_dictionary_by_alias(name);
 
@@ -167,8 +165,8 @@ static void print_about_program ()
 }
 
 
-static void print_search_start_banner(char *query, char *dictionary)
-{
+static void print_search_start_banner(char *query, char *dictionary) {
+	/*
     printf("");
     printf("%s", gettext("Searching for \""));
     printf("[1;31m%s[0m", query);
@@ -176,6 +174,7 @@ static void print_search_start_banner(char *query, char *dictionary)
     printf("[1;31m%s[0m", dictionary);
     printf("%s", gettext(" dictionary..."));
     printf("[0m\n\n");
+    */
 
     #ifdef G_OS_UNIX
     sleep(1);
@@ -361,10 +360,6 @@ static gboolean is_switch (char *arg, char *short_switch, char *long_switch) {
   return (strcmp(arg, short_switch) == 0 || strcmp(arg, long_switch) == 0);
 }
 
-
-/**
- *
- */
 void screen_init(void) {
 
 	mainWindows = initscr();
@@ -374,11 +369,11 @@ void screen_init(void) {
 	wrefresh(mainWindows);
 }
 
-/**
- *
- */
+
+
 void addIntro (WINDOW* thisWin, char* intro){
-	//altezza rettangolo, larghezza rettangolo, quanto in basso, quanto a destra
+	//altezza rettangolo, larghezza rettangolo, quanto in basso,quanto a destra
+	//thisWin = newwin(altezza, larghezza, posY, posX);
 	//Crea un bordo
 	//box(thisWin, ACS_VLINE, ACS_HLINE);
 	mvwprintw(thisWin,0,2,intro);
@@ -387,12 +382,11 @@ void addIntro (WINDOW* thisWin, char* intro){
 }
 
 /*
- * NCURSES INTERFACE MAIN LOOP
+ * NCURSES
+ *
  * TODO: Colors
  * TODO: Indentation
- * TODO: Dinamic resize
  * TODO: Scrolling
- * TODO: Accept !quit/!q
  */
 static void ncursesInterface (GwDictInfo *dictionary){
 
@@ -404,51 +398,41 @@ static void ncursesInterface (GwDictInfo *dictionary){
 	char *thisArg;
 
 	loop = TRUE;
-	cursesFlag = true;
+	cursesFlag = TRUE;
 
 	screen_init();
 
-	//CURSERS INITIALIZATION
-
 	getmaxyx(mainWindows, maxY, maxX);
 
-	//altezza rettangolo, larghezza rettangolo, quanto in basso,quanto a destra
+	//alt rett, larg rett, quanto in basso, quanto a destra
 	search = newwin(3, maxX, (maxY - 3), 0);
 	box(search, ACS_VLINE, ACS_HLINE);
 
 	screen = newwin((maxY - 3), maxX, 0, 0);
 	box(screen, ACS_VLINE, ACS_HLINE);
 
-	results = newwin((maxY - 5), (maxX - 2), 2, 2);
-	scrollok(results, true);
-	idlok(results, true);
-	wsetscrreg(results, 9, 14);
 
 	addIntro(search,"Search:");
 	addIntro(screen,"Results:");
 
 	while(loop) {
 
-		printf ("\nNew search (");
-		if (exact_switch == TRUE)
-			printRed ("--exact ");
-		else
-			printRed ("--allResult ");
-		if (quiet_switch == TRUE)
-			printRed ("--quiet ");
-		else
-			printRed ("--verbose ");
-	    printf ("in [1;31m%s[0m dictionary): ", dictionary->name);
+		//TODO: Accept a !quit/!q like vim?
 
-		fgetsTest = fgets (query, MAX_QUERY, stdin);
-		if (fgetsTest == NULL){
-			printf("ERROR (get_search): Input error!");
+		wmove(search, 1, 2);
+
+	    wgetnstr(search, query, 250);
+
+	    wmove(search, 1, 2);
+
+		if (false){ //TODO: Check
+			//TODO: print
 			loop = FALSE;
 			break;
 		}
 
 		if (query[0] == '\n') {
-			printf("Exiting...\n");
+			//TODO: Print
 			loop = FALSE;
 			break;
 		}
@@ -461,59 +445,85 @@ static void ncursesInterface (GwDictInfo *dictionary){
 		}
 
 		/* Search for keyword... */
-		//printf ("Split \"%s\" in tokens:\n", query);
+
 		thisArg = NULL;
 		thisArg = strtok (query," ");
 		while (thisArg != NULL) {
-
-			//printf ("Found: %s\n", thisArg);
 
 			if (is_switch (thisArg, "-e", "--exact"))
 				exact_switch = TRUE;
 			else if (is_switch (thisArg, "-q", "--quiet"))
 				quiet_switch = TRUE;
 			else
-				break; /* Search only the first word inserted */
+				break; //Search only the first word inserted
 
 			thisArg = strtok (NULL, " ,");
 		}
 
-		  /* TODO:
+		/* TODO:
 		else if (is_switch (query, "-d", "--dictionary")) {
 			dictionary = gw_dictlist_get_dictionary_by_alias(query); //TODO: FIXME
-		} */ 		//TODO: Exstract all the spaces
+		}
+		*/
+		//TODO: Extract all the spaces
 
 		if(thisArg == NULL){
 			/* No word to search, only option */
-			printf("No word insert, only option...\n");
+			//TODO: print
 		}
 		else {
 			print_search_start_banner(thisArg, dictionary->name);
 
 			item = gw_searchitem_new(thisArg, dictionary, GW_TARGET_CONSOLE);
 			if (item == NULL){
-				//TODO: Use GError instead. TODO
-				printf(gettext("Results seem to have incorrect formatting. Did you "
-								"close all of your\nparenthesis?  You may want to tr"
-								"y quotes too.\n"));
-				printf("Or\n");
-				printf("Out of memory.\n Exiting.\n");
+				//TODO: Use GError instead
 				exit (EXIT_FAILURE);
 			}
 
+
 			item->show_less_relevant_results = !exact_switch;
+
+			/*
+			WINDOW* subWin;
+			subWin = subwin(results, (maxY - 10), (maxX - 10), 2, 2);
+			scrollok(subWin,1);
+			touchwin(results);
+			refresh();
+			werase(subWin);
+			results = subWin; //Fin qui funziona
+			*/
+
+			WINDOW *pad = newpad(500, (maxX - 2));
+			int     i;
+
+			/*
+			WINDOW *subbb = subpad(pad, (maxY - 10), (maxX - 10), 2, 2);
+			scrollok(subbb,1);
+			touchwin(pad);
+			refresh();
+			*/
+
+			results = pad;
+
 			gw_search_get_results (item); //TODO: Print here?? <---
 
+			if (pad != NULL) {
+
+				scrollok(pad,TRUE);
+
+				for (i = 0 ; i <= 100; i++) {
+						prefresh(pad,i,0,2,2,(maxY - 5), (maxX - 2));
+						sleep(1);
+				}
+			}
+
+
 			//Print the number of results
-
 			if (quiet_switch == FALSE) {
-				printf("");
-				printf("\n%s%d%s", gettext("Found "), item->total_results, gettext(" Results"));
-
-				if (item->total_relevant_results != item->total_results)
-					printf("%s%d%s", gettext(" ("), item->total_relevant_results, gettext(" Relevant)"));
-
-				printf("[0m\n");
+				//TODO
+				if (item->total_relevant_results != item->total_results){
+					//TODO
+				}
 			}
 
 			free(item);
@@ -753,117 +763,60 @@ void gw_console_append_normal_results (GwSearchItem *item, gboolean unused) {
 	int cont = 0;
     GwResultLine *resultline = item->resultline;
 
+
+    wprintw(results,"%s", resultline->kanji_start);
+
     //Kanji
-    printf("[32m%s", resultline->kanji_start);
+    wprintw(results,"[32m%s", resultline->kanji_start);
     //Furigana
     if (resultline->furigana_start)
-      printf(" [%s]", resultline->furigana_start);
+      wprintw(results," [%s]", resultline->furigana_start);
     //Other info
     if (resultline->classification_start)
-      printf("[0m %s", resultline->classification_start);
+      wprintw(results,"[0m %s", resultline->classification_start);
     //Important Flag
     if (resultline->important)
-      printf("[0m %s", "P");
+      wprintw(results,"[0m %s", "P");
 
-    printf("\n");
+
+    wprintw(results,"\n");
     while (cont < resultline->def_total) {
-      printf("[0m      [35m%s [0m%s\n", resultline->number[cont], resultline->def_start[cont]);
-      cont++;
+    	wprintw(results,"%s %s\n", resultline->number[cont], resultline->def_start[cont]);
+    	cont++;
     }
-    printf("\n");
+    wprintw(results,"\n");
+
+    wrefresh(screen);
+    wrefresh(results);
+    refresh();
 
     return;
 }
 
+/**
+ *
+ */
 void gw_console_append_kanji_results (GwSearchItem *item, gboolean unused) {
-
-	char line_started = FALSE;
-    GwResultLine *resultline = item->resultline;
-
-    //Kanji
-    printf("[32;1m%s[0m\n", resultline->kanji);
-
-    if (resultline->radicals)
-    	printf("%s%s\n", gettext("[35mRadicals:[0m"), resultline->radicals);
-
-    if (resultline->strokes) {
-      line_started = TRUE;
-      printf("%s%s", gettext("[35mStroke:[0m"), resultline->strokes);
-    }
-
-    if (resultline->frequency) {
-      if (line_started) printf(" ");
-      line_started = TRUE;
-      printf("%s%s", gettext("[35mFreq:[0m"), resultline->frequency);
-    }
-
-    if (resultline->grade) {
-      if (line_started)
-    	  printf(" ");
-      line_started = TRUE;
-      printf("%s%s", gettext("[35mGrade:[0m"), resultline->grade);
-    }
-
-    if (resultline->jlpt) {
-      if (line_started)
-    	  printf(" ");
-      line_started = TRUE;
-      printf("%s%s", gettext("[35mJLPT:[0m"), resultline->jlpt);
-    }
-
-    if (line_started)
-    	printf("\n");
-
-    if (resultline->readings[0])
-    	printf("%s%s", gettext("[35mReadings:[0m"), resultline->readings[0]);
-    if (resultline->readings[1])
-    	printf("%s", resultline->readings[1]);
-
-    printf("\n");
-    if (resultline->meanings)
-    	printf("%s%s\n", gettext("[35mMeanings:[0m"), resultline->meanings);
-    printf("\n");
+	//
 }
 
 /*
  *
  */
 void gw_console_append_radical_results (GwSearchItem *item, gboolean unused) {
-	if (item != NULL)
-	    printf("[32;1m%s:[0m %s\n\n", item->resultline->kanji, item->resultline->radicals);
-	else
-		printf("ERROR (gw_console_append_radical_results): NULL POINTER!");
+	//
 }
 
 /*
  *
  */
 void gw_console_append_examples_results (GwSearchItem *item, gboolean unused) {
-
-	if (item != NULL) {
-	    GwResultLine *resultline = item->resultline;
-	    int i = 0;
-
-	    while (resultline->number[i] != NULL && resultline->def_start[i] != NULL) {
-	      if (resultline->number[i][0] == 'A' || resultline->number[i][0] == 'B')
-	        printf("[32;1m%s:[0m\t%s\n", resultline->number[i], resultline->def_start[i]);
-	      else
-	        printf("\t%s\n", resultline->def_start[i]);
-	      i++;
-	    }
-
-	    printf("\n");
-	}
-	else
-		printf("ERROR (gw_console_append_examples_results): NULL POINTER!");
+	//
 }
 
 /*
  *
  */
 void gw_console_append_unknown_results (GwSearchItem *item, gboolean unused) {
-	if (item != NULL)
-	    printf("%s\n", item->resultline->string);
-	else
-		printf("ERROR (gw_console_append_unknown_results): NULL POINTER!");
+	//
 }
