@@ -46,6 +46,25 @@
 gboolean quiet_switch = FALSE;
 gboolean exact_switch = FALSE;
 
+/* NCURSES */
+
+#include <curses.h>
+
+static WINDOW *mainWindows;
+static WINDOW *results;
+static WINDOW *search;
+static WINDOW *screen;
+int current_row = 0;
+
+int cursesFlag = false;
+
+//char stri[251];
+//char* stringa = stri;
+
+int maxY;
+int maxX;
+
+
 void gw_console_uninstall_dictionary_by_name(char *name)
 {
     GwDictInfo* di;
@@ -343,10 +362,39 @@ static gboolean is_switch (char *arg, char *short_switch, char *long_switch) {
 }
 
 
-/*
- * FIXME FIXME FIXME
+/**
+ *
  */
-static void get_search (GwDictInfo *dictionary){
+void screen_init(void) {
+
+	mainWindows = initscr();
+	cbreak();
+	nodelay(mainWindows, TRUE);
+	refresh(); // 1)
+	wrefresh(mainWindows);
+}
+
+/**
+ *
+ */
+void addIntro (WINDOW* thisWin, char* intro){
+	//altezza rettangolo, larghezza rettangolo, quanto in basso, quanto a destra
+	//Crea un bordo
+	//box(thisWin, ACS_VLINE, ACS_HLINE);
+	mvwprintw(thisWin,0,2,intro);
+	wrefresh(thisWin);
+	refresh();
+}
+
+/*
+ * NCURSES INTERFACE MAIN LOOP
+ * TODO: Colors
+ * TODO: Indentation
+ * TODO: Dinamic resize
+ * TODO: Scrolling
+ * TODO: Accept !quit/!q
+ */
+static void ncursesInterface (GwDictInfo *dictionary){
 
 	GError *error = NULL;
 	GwSearchItem *item;
@@ -356,10 +404,30 @@ static void get_search (GwDictInfo *dictionary){
 	char *thisArg;
 
 	loop = TRUE;
+	cursesFlag = true;
+
+	screen_init();
+
+	//CURSERS INITIALIZATION
+
+	getmaxyx(mainWindows, maxY, maxX);
+
+	//altezza rettangolo, larghezza rettangolo, quanto in basso,quanto a destra
+	search = newwin(3, maxX, (maxY - 3), 0);
+	box(search, ACS_VLINE, ACS_HLINE);
+
+	screen = newwin((maxY - 3), maxX, 0, 0);
+	box(screen, ACS_VLINE, ACS_HLINE);
+
+	results = newwin((maxY - 5), (maxX - 2), 2, 2);
+	scrollok(results, true);
+	idlok(results, true);
+	wsetscrreg(results, 9, 14);
+
+	addIntro(search,"Search:");
+	addIntro(screen,"Results:");
 
 	while(loop) {
-
-		//TODO: Accept a !quit/!q like vim?
 
 		printf ("\nNew search (");
 		if (exact_switch == TRUE)
@@ -510,7 +578,7 @@ void initialize_console_interface(int argc, char **argv) {
 
 		//TODO: STUB
 		if (is_switch (args[0], "-m", "--multisearch")){
-			get_search(di);
+			ncursesInterface(di);
 			return;
 		}
 
