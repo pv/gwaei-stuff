@@ -450,14 +450,27 @@ void force_gtk_builder_translation_for_gtk_actions_hack ()
 GObject* get_gobject_from_target(const int TARGET)
 {
     GObject *gobject;
+    GtkWidget *notebook;
+    GtkWidget *page;
+    int page_number;
+    GObject *tb;
+    GtkWidget *view;
+
     switch (TARGET)
     {
       case GW_TARGET_RESULTS:
-        return results_tb;
+          notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+          page_number =  gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+          page = gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), page_number);
+          view = gtk_bin_get_child (GTK_BIN (page));
+          //widget = GTK_WIDGET (gtk_builder_get_object (builder, "search_entry_submit_button"));
+          tb = gtk_text_view_get_buffer (GTK_TEXT_VIEW (view));
+          return tb;
+          //return results_tb;
       case GW_TARGET_KANJI:
-        return kanji_tb;
+          return kanji_tb;
       default:
-        return NULL;
+          return NULL;
     }
 }
 
