@@ -274,19 +274,18 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
         if (regexec(&(ql->furi_regex[REGEX_TYPE][i]), rl->readings[0], 1, NULL, 0) != 0)
           return FALSE;
 
-      for (i = 0; i < ql->kanji_total; i++)
+      gboolean found_kanji, found_radical;
+      for (i = 0; i < ql->kanji_total && !found_kanji; i++)
       {
-        if (rl->kanji != NULL && regexec(&(ql->kanji_regex[REGEX_TYPE][i]), rl->kanji, 1, NULL, 0) != 0)
-          return FALSE;
+        found_kanji = (rl->kanji != NULL && regexec(&(ql->kanji_regex[REGEX_TYPE][i]), rl->kanji, 1, NULL, 0) == 0);
         i++;
       }
-      for (i = 0; i < ql->kanji_total; i++)
+      for (i = 0; i < ql->kanji_total && !found_radical; i++)
       {
-        if (rl->radicals != NULL && regexec(&(ql->kanji_regex[REGEX_TYPE][i]), rl->radicals, 1, NULL, 0) != 0)
-          return FALSE;
+        found_radical = (rl->radicals != NULL && regexec(&(ql->kanji_regex[REGEX_TYPE][i]), rl->radicals, 1, NULL, 0) == 0);
         i++;
       }
-      return TRUE;
+      return (found_kanji | found_radical);
     }
 
     //Standard dictionary search
