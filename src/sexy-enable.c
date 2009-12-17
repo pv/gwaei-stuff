@@ -207,6 +207,8 @@ void gw_sexy_initialize_libsexy ()
     gtk_entry_set_max_length (GTK_ENTRY (entry), 50);
     gtk_widget_show (entry);
 
+    GtkWidget* results_tv = get_widget_from_target(GW_TARGET_RESULTS);
+
     //Mimic original callbacks from the original search entry
     g_signal_connect( G_OBJECT (entry),       "activate",
                       G_CALLBACK (do_search), NULL);

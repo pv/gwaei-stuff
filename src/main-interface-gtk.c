@@ -52,9 +52,9 @@
 
 
 //Convenience pointers
-GtkWidget *results_tv   = NULL;
+//GtkWidget *results_tv   = NULL;
 GtkWidget *kanji_tv     = NULL;
-GObject   *results_tb   = NULL;
+//GObject   *results_tb   = NULL;
 GObject   *kanji_tb     = NULL;
 GtkWidget *search_entry = NULL;
 
@@ -463,10 +463,8 @@ GObject* get_gobject_from_target(const int TARGET)
           page_number =  gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
           page = gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), page_number);
           view = gtk_bin_get_child (GTK_BIN (page));
-          //widget = GTK_WIDGET (gtk_builder_get_object (builder, "search_entry_submit_button"));
-          tb = gtk_text_view_get_buffer (GTK_TEXT_VIEW (view));
+          tb = G_OBJECT (gtk_text_view_get_buffer (GTK_TEXT_VIEW (view)));
           return tb;
-          //return results_tb;
       case GW_TARGET_KANJI:
           return kanji_tb;
       default:
@@ -478,10 +476,20 @@ GObject* get_gobject_from_target(const int TARGET)
 GtkWidget* get_widget_from_target(const int TARGET)
 {
     GtkWidget *widget;
+    GtkWidget *notebook;
+    GtkWidget *page;
+    int page_number;
+    GObject *tb;
+    GtkWidget *view;
+
     switch (TARGET)
     {
       case GW_TARGET_RESULTS:
-        return results_tv;
+        notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+        page_number =  gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+        page = gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), page_number);
+        view = gtk_bin_get_child (GTK_BIN (page));
+        return view;
       case GW_TARGET_KANJI:
         return kanji_tv;
       case GW_TARGET_ENTRY:
@@ -505,9 +513,11 @@ void initialize_global_widget_pointers ()
     char id[50];
 
     //Setup our text view and text buffer references
+/*
     strncpy (id, "results_text_view", 50);
     results_tv = GTK_WIDGET (gtk_builder_get_object(builder, id));
     results_tb = G_OBJECT (gtk_text_view_get_buffer(GTK_TEXT_VIEW (results_tv)));
+*/
     strncpy (id, "kanji_text_view", 50);
     kanji_tv = GTK_WIDGET (gtk_builder_get_object(builder, id));
     kanji_tb   = G_OBJECT (gtk_text_view_get_buffer(GTK_TEXT_VIEW (kanji_tv)));
@@ -739,6 +749,7 @@ void gw_ui_update_toolbar_buttons()
       action = GTK_ACTION (gtk_builder_get_object (builder, id));
       gtk_action_set_sensitive (action, sensitive);
     }
+/*
     else if (GTK_WIDGET_HAS_FOCUS(results_tv))
     {
       sensitive = (gw_ui_has_selection_by_target (GW_TARGET_RESULTS));
@@ -749,7 +760,7 @@ void gw_ui_update_toolbar_buttons()
       action = GTK_ACTION (gtk_builder_get_object (builder, id));
       gtk_action_set_sensitive (action, FALSE);
     }
-
+*/
     else if (GTK_WIDGET_HAS_FOCUS(kanji_tv))
     {
       sensitive = (gw_ui_has_selection_by_target (GW_TARGET_KANJI));
@@ -1234,6 +1245,7 @@ void gw_ui_set_font(char *family, int size)
 
     if ((desc = pango_font_description_from_string (font)) != NULL)
     {
+      GtkWidget* results_tv = get_widget_from_target(GW_TARGET_RESULTS);
       gtk_widget_modify_font (GTK_WIDGET (results_tv), desc);
       gtk_widget_modify_font (GTK_WIDGET (kanji_tv), desc);
       pango_font_description_free (desc);
@@ -1419,9 +1431,12 @@ void gw_ui_append_image_to_buffer (const int TARGET, char *name)
       g_assert("gWaei was unable to find the character.png image\n");
     }
 
+    GObject *tb;
+    tb = get_gobject_from_target (GW_TARGET_RESULTS);
+
     GtkTextIter iter;
-    gtk_text_buffer_get_end_iter(GTK_TEXT_BUFFER(results_tb), &iter);
-    gtk_text_buffer_insert_pixbuf (GTK_TEXT_BUFFER (results_tb), &iter, pixbuf);
+    gtk_text_buffer_get_end_iter(GTK_TEXT_BUFFER(tb), &iter);
+    gtk_text_buffer_insert_pixbuf (GTK_TEXT_BUFFER (tb), &iter, pixbuf);
     g_object_unref(pixbuf);
 }
 
@@ -1613,6 +1628,8 @@ guint gw_ui_get_current_widget_focus (char *window_id)
     GtkWidget *widget;
     widget = GTK_WIDGET (gtk_window_get_focus (GTK_WINDOW (window))); 
 
+    GtkWidget* results_tv = get_widget_from_target(GW_TARGET_RESULTS);
+
     if (widget == results_tv)
       return GW_TARGET_RESULTS;
     if (widget == kanji_tv)
@@ -1627,6 +1644,8 @@ guint gw_ui_get_current_widget_focus (char *window_id)
 void gw_ui_copy_text(guint TARGET)
 {
     GtkClipboard *clipbd;
+    GObject *results_tb;
+    results_tb = get_gobject_from_target (GW_TARGET_RESULTS);
 
     switch (TARGET)
     {
@@ -1815,6 +1834,7 @@ char* gw_ui_get_text_slice_from_buffer (int TARGET, int sl, int el)
 gunichar gw_get_hovered_character(int *x, int *y)
 {
     gint trailing = 0;
+    GtkWidget* results_tv = get_widget_from_target(GW_TARGET_RESULTS);
 
     gtk_text_view_window_to_buffer_coords (GTK_TEXT_VIEW(results_tv), 
                                            GTK_TEXT_WINDOW_TEXT, 
@@ -1831,6 +1851,8 @@ gunichar gw_get_hovered_character(int *x, int *y)
 
 void gw_ui_set_cursor(const int CURSOR)
 {
+    GtkWidget* results_tv = get_widget_from_target(GW_TARGET_RESULTS);
+
     GdkWindow* gdk_window;
     gdk_window = gtk_text_view_get_window( GTK_TEXT_VIEW (results_tv), 
                                            GTK_TEXT_WINDOW_TEXT        );
@@ -1843,31 +1865,17 @@ void gw_ui_set_cursor(const int CURSOR)
 
 void gw_ui_open_kanji_results()
 {
-      //Open the hpane so the kanji results are visible
-      gint window_height, window_width;
-
-      GtkWidget *window;
-      window = GTK_WIDGET (gtk_builder_get_object( builder, "main_window" ));
-      gtk_window_get_size (GTK_WINDOW (window), &window_width, &window_height);
-
-      GtkWidget *hpaned;
-      hpaned= GTK_WIDGET (gtk_builder_get_object( builder, "results_hpaned" ));
-      gtk_paned_set_position (GTK_PANED (hpaned), (window_width - 250)); 
+    GtkWidget *window;
+    window = GTK_WIDGET (gtk_builder_get_object( builder, "kanji-viewport" ));
+    gtk_widget_show (window);
 }
 
 
 void gw_ui_close_kanji_results()
 {
-    gint window_height, window_width;
-
     GtkWidget *window;
-    window = GTK_WIDGET (gtk_builder_get_object( builder, "main_window" ));
-    gtk_window_get_size (GTK_WINDOW (window), &window_width, &window_height);
-
-    GtkWidget *hpaned;
-    hpaned = GTK_WIDGET (gtk_builder_get_object( builder, "results_hpaned" ));
-    gtk_paned_set_position (GTK_PANED (hpaned), window_width); 
-    gw_ui_close_suggestion_box ();
+    window = GTK_WIDGET (gtk_builder_get_object( builder, "kanji-viewport" ));
+    gtk_widget_hide (window);
 }
 
 
@@ -2423,6 +2431,9 @@ void gw_ui_initialize_buffer_marks()
 
 void gw_ui_set_header (GwSearchItem *item, char* text, char* mark_name)
 {
+    GObject *results_tb;
+    results_tb = get_gobject_from_target (GW_TARGET_RESULTS);
+
     GtkTextIter iter;
     GtkTextMark *mark;
     gint line;
@@ -2612,6 +2623,9 @@ void gw_ui_add_match_highlights (gint line, gint start_offset, gint end_offset, 
 
 void gw_ui_shift_stay_mark (char *name)
 {
+    GObject *results_tb;
+    results_tb = get_gobject_from_target (GW_TARGET_RESULTS);
+
     GtkTextMark *mark;
     GtkTextIter iter;
     mark = gtk_text_buffer_get_mark (GTK_TEXT_BUFFER (results_tb), "content_insertion_mark");
@@ -2624,6 +2638,9 @@ void gw_ui_shift_stay_mark (char *name)
 
 void gw_ui_shift_append_mark (char *stay_name, char *append_name)
 {
+    GObject *results_tb;
+    results_tb = get_gobject_from_target (GW_TARGET_RESULTS);
+
     GtkTextIter iter;
     GtkTextMark *stay_mark, *append_mark;
 
