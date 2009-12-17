@@ -60,6 +60,21 @@ int maxX;
 int cursesFlag = false;
 
 
+void gw_console_append_less_relevant_header_to_output(){
+	if (cursesFlag)
+		wprintw(results,"\n*** %s ***************************\n\n\n", gettext("Other Results"));
+	else
+		printf("\n[0;31m***[0m[1m%s[0;31m***************************[0m\n\n\n", gettext("Other Results"));
+}
+
+void gw_console_no_result(){
+	if (cursesFlag)
+		wprintw(results,"%s\n\n", gettext("No results found!"));
+	else
+		printf("%s\n\n", gettext("No results found!"));
+}
+
+
 /**
  *
  */

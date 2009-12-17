@@ -129,12 +129,10 @@ static void append_more_relevant_header_to_output(GwSearchItem *item)
 //!
 //! @param item a GwSearchItem to get the result numbers from
 //!
-static void append_less_relevant_header_to_output(GwSearchItem *item)
-{
-    if (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
-    {
-      printf("\n[0;31m***[0m[1m%s[0;31m***************************[0m\n\n\n", gettext("Other Results"));
-    }
+static void append_less_relevant_header_to_output(GwSearchItem *item) {
+
+	if (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
+		gw_console_append_less_relevant_header_to_output();
     else
     {
       char number[14];
@@ -357,9 +355,7 @@ static gboolean stream_results_thread (GwSearchItem *item)
         item->status == GW_SEARCH_SEARCHING)
     {
       if (gw_util_get_runmode () == GW_CONSOLE_RUNMODE)
-      {
-        printf("%s\n\n", gettext("No results found!"));
-      }
+    	  gw_console_no_result();
       else
       {
         gw_ui_clear_buffer_by_target (GW_TARGET_RESULTS);
