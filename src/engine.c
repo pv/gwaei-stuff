@@ -261,7 +261,7 @@ static gboolean stream_results_thread (GwSearchItem *item)
               break;
           case MEDIUM_RELEVANCE:
               if ((item->dictionary->type == GW_DICT_KANJI || item->total_irrelevant_results < MAX_MEDIUM_IRRELIVENT_RESULTS) &&
-                   (item->swap_resultline = gw_resultline_new ()) != NULL)
+                   (item->swap_resultline = gw_resultline_new ()) != NULL && item->target != GW_TARGET_KANJI)
               {
                 //Store the result line and create an empty one in its place
                 item->total_irrelevant_results++;
@@ -272,7 +272,7 @@ static gboolean stream_results_thread (GwSearchItem *item)
               break;
           default:
               if ((item->dictionary->type == GW_DICT_KANJI || item->total_irrelevant_results < MAX_LOW_IRRELIVENT_RESULTS) &&
-                   (item->swap_resultline = gw_resultline_new ()) != NULL)
+                   (item->swap_resultline = gw_resultline_new ()) != NULL && item->target != GW_TARGET_KANJI)
               {
                 //Store the result line and create an empty one in its place
                 item->total_irrelevant_results++;
