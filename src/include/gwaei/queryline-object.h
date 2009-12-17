@@ -20,15 +20,17 @@ typedef struct GwQueryLine {
     int mix_total;
 
     //Kanji things
-    char strokes[10];
-    char frequency[10];
-    char readings[100];
-    char meanings[100];
-    char grade[10];
-    char jlpt[10];
-    char kanji[MAX_ATOMS][5];
+    regex_t strokes_regex[5][MAX_ATOMS];
+    int strokes_total;
+    regex_t frequency_regex[5][MAX_ATOMS];
+    int frequency_total;
+    regex_t grade_regex[5][MAX_ATOMS];
+    int grade_total;
+    regex_t jlpt_regex[5][MAX_ATOMS];
+    int jlpt_total;
 } GwQueryLine;
 
 
 GwQueryLine* gw_queryline_new (void );
 void gw_queryline_free (GwQueryLine*);
+

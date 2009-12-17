@@ -37,6 +37,7 @@ gboolean gw_regex_create_roma_high_regex (regex_t*, char*, int);
 gboolean gw_regex_create_roma_med_regex (regex_t*, char*, int);
 gboolean gw_regex_create_mix_high_regex (regex_t*, char*, int);
 gboolean gw_regex_create_mix_med_regex (regex_t*, char*, int);
+gboolean gw_regex_create_exact_regex (regex_t*, char*, int);
 
 
 enum initial_dictionary_regexes {

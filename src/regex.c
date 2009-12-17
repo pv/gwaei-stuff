@@ -377,3 +377,20 @@ gboolean gw_regex_create_mix_med_regex (regex_t *regex, char *string, int flags)
     return regcomp (regex, expression, flags);
 }
 
+//!
+//! @brief Regex for determining exact regexes
+//!
+//! To be written
+//!
+//! @param regex A passed regex_t to assign an allocated regext to
+//! @param strang The regex pattern to use
+//! @param flags The regex flags to use
+//! 
+gboolean gw_regex_create_exact_regex (regex_t *regex, char *string, int flags)
+{
+    char expression[MAX_LINE * 2];
+    strcpy (expression, "^(");
+    strcat (expression, string);
+    strcat (expression, ")$");
+    return regcomp (regex, expression, flags);
+}

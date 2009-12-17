@@ -84,8 +84,6 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary,
   temp->backup_resultline = NULL;
   temp->swap_resultline = NULL;
   temp->queryline = gw_queryline_new ();
-  if (gw_queryline_parse_string (temp->queryline, query))
-      printf("Success creating parsing queryline!\n");
 
   char *key = GCKEY_GW_LESS_RELEVANT_SHOW; 
   temp->show_less_relevant_results = gw_pref_get_boolean (key, TRUE);
@@ -95,6 +93,7 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary,
   switch (temp->dictionary->type)
   {
       case GW_DICT_OTHER:
+        if (!gw_queryline_parse_edict_string (temp->queryline, query)) return;
         temp->gw_searchitem_parse_result_string = &gw_resultline_parse_edict_result_string;
         if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
           temp->gw_searchitem_append_results_to_output = &gw_console_append_edict_results;
@@ -102,6 +101,7 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary,
           temp->gw_searchitem_append_results_to_output = &gw_ui_append_edict_results_to_buffer;
         break;
       case GW_DICT_RADICALS:
+        if (!gw_queryline_parse_edict_string (temp->queryline, query)) return;
         //temp->gw_searchitem_parse_result_string = &gw_resultline_parse_radical_result_string;
         if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
           temp->gw_searchitem_append_results_to_output = &gw_console_append_radicalsdict_results;
@@ -109,13 +109,15 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary,
           temp->gw_searchitem_append_results_to_output = &gw_ui_append_radicalsdict_results_to_buffer;
         break;
       case GW_DICT_KANJI:
-        //temp->gw_searchitem_parse_result_string = &gw_resultline_parse_kanji_result_string;
+        if (!gw_queryline_parse_kanjidict_string (temp->queryline, query)) return;
+        temp->gw_searchitem_parse_result_string = &gw_resultline_parse_kanjidict_result_string;
         if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
           temp->gw_searchitem_append_results_to_output = gw_console_append_kanjidict_results;
         else
           temp->gw_searchitem_append_results_to_output = &gw_ui_append_kanjidict_results_to_buffer;
         break;
       case GW_DICT_EXAMPLES:
+        if (!gw_queryline_parse_edict_string (temp->queryline, query)) return;
         //temp->gw_searchitem_parse_result_string = &gw_resultline_parse_examples_result_string;
         if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
           temp->gw_searchitem_append_results_to_output = &gw_console_append_examplesdict_results;
@@ -123,6 +125,7 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary,
           temp->gw_searchitem_append_results_to_output = &gw_ui_append_examplesdict_results_to_buffer;
         break;
       default:
+        if (!gw_queryline_parse_edict_string (temp->queryline, query)) return;
         //temp->gw_searchitem_parse_result_string = &gw_resultline_parse_unknown_result_string;
         if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
           temp->gw_searchitem_append_results_to_output = &gw_console_append_unknowndict_results;
@@ -237,6 +240,7 @@ void gw_searchitem_free(GwSearchItem* item) {
 //! @brief Comparison function that should be moved to the GwSearchItem file when it matures
 //!
 //! @param item A GwSearchItem to get search information from
+//! @param REGEX_TYPE A constant int representing the regex type to test
 //!
 gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const int REGEX_TYPE)
 {
@@ -246,48 +250,40 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
     ql = item->queryline;
 
     //Kanji radical dictionary search
+    int i = 0;
     if (item->dictionary->type == GW_DICT_KANJI || item->dictionary->type == GW_DICT_RADICALS)
     {
-      if (ql->strokes[0] != '\0' && rl->strokes != NULL)
-        if (strcmp(ql->strokes, rl->strokes) != 0)
+      if (ql->strokes_total > 0 && rl->strokes != NULL)
+        if (regexec(&(ql->strokes_regex[REGEX_TYPE][i]), rl->strokes, 1, NULL, 0) != 0)
           return FALSE;
-      if (ql->frequency[0] != '\0' && rl->frequency != NULL)
-        if (strcmp(ql->frequency, rl->frequency) != 0)
+      if (ql->frequency_total > 0 && rl->frequency != NULL)
+        if (regexec(&(ql->frequency_regex[REGEX_TYPE][i]), rl->frequency, 1, NULL, 0) != 0)
           return FALSE;
-      if (ql->grade[0] != '\0' && rl->grade != NULL)
-        if (strcmp(ql->grade, rl->grade) != 0)
+      if (ql->grade_total > 0 && rl->grade != NULL)
+        if (regexec(&(ql->grade_regex[REGEX_TYPE][i]), rl->grade, 1, NULL, 0) != 0)
           return FALSE;
-      if (ql->jlpt[0] != '\0' && rl->jlpt != NULL)
-        if (strcmp(ql->jlpt, rl->jlpt) != 0)
-          return FALSE;
-
-      if (ql->meanings[0] != '\0' && rl->meanings != NULL)
-        if (strstr(rl->meanings, ql->meanings) == NULL)
-          return FALSE;
-      if (ql->readings[0] != '\0' && rl->readings[0] != NULL)
-        if (strstr(ql->readings, rl->readings[0]) == NULL)
+      if (ql->jlpt_total > 0 && rl->jlpt != NULL)
+        if (regexec(&(ql->jlpt_regex[REGEX_TYPE][i]), rl->jlpt, 1, NULL, 0) != 0)
           return FALSE;
 
-      int i = 0;
-      int j = 0;
-      while (ql->kanji[i][0] != '\0')
+      if (ql->roma_total > 0 && rl->meanings != NULL)
+        if (regexec(&(ql->roma_regex[REGEX_TYPE][i]), rl->meanings, 1, NULL, 0) != 0)
+          return FALSE;
+
+      if (ql->furi_total > 0 && rl->readings[0] != NULL)
+        if (regexec(&(ql->furi_regex[REGEX_TYPE][i]), rl->readings[0], 1, NULL, 0) != 0)
+          return FALSE;
+
+      for (i = 0; i < ql->kanji_total; i++)
       {
-        if (rl->kanji != NULL)
-        {
-          if (strstr (rl->kanji, ql->kanji[i]) == NULL)
-            return FALSE;
-        }
+        if (rl->kanji != NULL && regexec(&(ql->kanji_regex[REGEX_TYPE][i]), rl->kanji, 1, NULL, 0) != 0)
+          return FALSE;
         i++;
       }
-      i = 0;
-      j = 0;
-      while (ql->kanji[i][0] != '\0')
+      for (i = 0; i < ql->kanji_total; i++)
       {
-        if (rl->radicals != NULL)
-        {
-          if (strstr (rl->radicals, ql->kanji[i]) == NULL)
-            return FALSE;
-        }
+        if (rl->radicals != NULL && regexec(&(ql->kanji_regex[REGEX_TYPE][i]), rl->radicals, 1, NULL, 0) != 0)
+          return FALSE;
         i++;
       }
       return TRUE;

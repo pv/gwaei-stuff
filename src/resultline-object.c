@@ -220,7 +220,7 @@ void gw_resultline_parse_edict_result_string (GwResultLine *rl)
     }
 }
 
-/*
+
 //!
 //! @brief Parses a string for a Kanjidic format string
 //!
@@ -230,7 +230,7 @@ void gw_resultline_parse_edict_result_string (GwResultLine *rl)
 //! @param line line
 //! @param string string
 //!
-void gw_resultline_parse_kanji_result_string (GwResultLine *rl)
+void gw_resultline_parse_kanjidict_result_string (GwResultLine *rl)
 {
     size_t nmatch = 1;
     regmatch_t pmatch[nmatch];
@@ -342,7 +342,7 @@ void gw_resultline_parse_kanji_result_string (GwResultLine *rl)
       *end[JLPT] = '\0';
 }
 
-
+/*
 //!
 //! @brief Parses a string for an radical format string
 //!
