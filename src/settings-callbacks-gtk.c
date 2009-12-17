@@ -339,7 +339,6 @@ static void *install_thread (gpointer dictionary)
     }
 
     gdk_threads_enter();
-    gw_settings_initialize_enabled_features_list();
     gw_ui_update_settings_interface();
     rebuild_combobox_dictionary_list();
     gdk_threads_leave();
@@ -449,7 +448,6 @@ G_MODULE_EXPORT void do_dictionary_remove (GtkWidget* widget, gpointer* dictiona
     name[0] = '\0';
     gw_parse_widget_name (name, widget, FALSE);
     gw_ui_set_install_line_status (name, "install", NULL);
-    gw_settings_initialize_enabled_features_list ();
     rebuild_combobox_dictionary_list();
 }
 

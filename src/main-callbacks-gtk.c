@@ -77,7 +77,6 @@ G_MODULE_EXPORT void do_settings (GtkWidget *widget, gpointer data)
     gw_ui_cancel_search_by_target (GW_TARGET_KANJI);
 
     //Prepare the interface
-    gw_settings_initialize_enabled_features_list ();
     gw_settings_initialize_installed_dictionary_list ();
     gw_ui_update_settings_interface ();
 

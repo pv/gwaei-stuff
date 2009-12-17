@@ -143,42 +143,6 @@ void gw_ui_set_dictionary_source(const char* id, const char* value)
 }
 
 
-//Sets the status of an individual feature
-void gw_ui_set_feature_line_status(char* name, char* status)
-{
-    char id[100];
-    strcpy(id, name);
-    char* suffix = &id[strlen(id)];
-
-    //Get the widget pointers
-    GtkWidget *label        = NULL;
-    GtkWidget *icon_enabled = NULL;
-    GtkWidget *icon_warning = NULL;
-
-    strcpy(suffix, "_enabled_label");
-    label = GTK_WIDGET (gtk_builder_get_object(builder, id));
-    strcpy(suffix, "_enabled_icon");
-    icon_enabled = GTK_WIDGET (gtk_builder_get_object(builder, id));
-    if (strcmp(name, "general") == 0) {
-      strcpy(suffix, "_warning_icon");
-      icon_warning = GTK_WIDGET (gtk_builder_get_object(builder, id));
-    }
-
-    //Set the show/hide states of the widgets
-    if (strcmp(status, "enabled") == 0) {
-      if (icon_warning != NULL)
-        gtk_widget_hide( icon_warning );
-      gtk_widget_show( icon_enabled );
-      gtk_label_set_text( GTK_LABEL (label), gettext("Enabled"));
-    }
-    else if (strcmp(status, "disabled") == 0) {
-      gtk_widget_hide( icon_enabled );
-      if (icon_warning != NULL)
-        gtk_widget_show( icon_warning );
-      gtk_label_set_text( GTK_LABEL (label), gettext("Disabled"));
-    }
-}
-
 int gw_ui_get_install_line_status(char *name)
 {
     GtkWidget *button;
@@ -435,39 +399,6 @@ void gw_ui_set_progressbar (char *name, double percent, char *message)
 
     if (message != NULL)
       gtk_progress_bar_set_text(GTK_PROGRESS_BAR (progressbar), message);
-}
-
-void gw_settings_initialize_enabled_features_list ()
-{
-    //General search
-    if (gw_dictlist_get_total_with_status(GW_DICT_STATUS_INSTALLED) > 0)
-      gw_ui_set_feature_line_status("general", "enabled");
-    else
-      gw_ui_set_feature_line_status("general", "disabled");
-
-    //Combined dictionary
-    if (gw_dictlist_dictionary_get_status_by_id(GW_DICT_MIX) == GW_DICT_STATUS_INSTALLED)
-      gw_ui_set_feature_line_status("mix", "enabled");
-    else
-      gw_ui_set_feature_line_status("mix", "disabled");
-
-    //Radical search tool
-    if (gw_dictlist_dictionary_get_status_by_id(GW_DICT_RADICALS) == GW_DICT_STATUS_INSTALLED)
-      gw_ui_set_feature_line_status("radical", "enabled");
-    else
-      gw_ui_set_feature_line_status("radical", "disabled");
-
-    //Kanji lookup tool
-    if (gw_dictlist_dictionary_get_status_by_id(GW_DICT_KANJI) == GW_DICT_STATUS_INSTALLED)
-      gw_ui_set_feature_line_status("kanji", "enabled");
-    else
-      gw_ui_set_feature_line_status("kanji", "disabled");
-
-    GtkWidget *label;
-    label = GTK_WIDGET (gtk_builder_get_object(builder, "update_install_label"));
-    if (!gw_io_check_for_rsync())
-      gtk_label_set_text(GTK_LABEL (label), gettext("Requires rsync to be installed"));
-
 }
 
 
