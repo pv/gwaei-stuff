@@ -60,6 +60,9 @@ int maxX;
 int cursesFlag = false;
 
 
+/**
+ * Print the "less relevant" header where necessary.
+ */
 void gw_console_append_less_relevant_header_to_output(){
 	if (cursesFlag)
 		wprintw(results,"\n*** %s ***************************\n\n\n", gettext("Other Results"));
@@ -67,6 +70,9 @@ void gw_console_append_less_relevant_header_to_output(){
 		printf("\n[0;31m***[0m[1m%s[0;31m***************************[0m\n\n\n", gettext("Other Results"));
 }
 
+/**
+ * Print the "no result" message where necessary.
+ */
 void gw_console_no_result(){
 	if (cursesFlag)
 		wprintw(results,"%s\n\n", gettext("No results found!"));
@@ -375,7 +381,9 @@ static gboolean is_switch (char *arg, char *short_switch, char *long_switch) {
   return (strcmp(arg, short_switch) == 0 || strcmp(arg, long_switch) == 0);
 }
 
-void screen_init(void) {
+/*** NCURSES ***/
+
+void ncurses_scree_init(void) {
 
 	mainWindows = initscr();
 	cbreak();
@@ -386,18 +394,46 @@ void screen_init(void) {
 
 
 
-void addIntro (WINDOW* thisWin, char* intro){
+void ncurses_add_intro_and_box (WINDOW* thisWin, char* intro){
 	//altezza rettangolo, larghezza rettangolo, quanto in basso,quanto a destra
 	//thisWin = newwin(altezza, larghezza, posY, posX);
 	//Crea un bordo
-	//box(thisWin, ACS_VLINE, ACS_HLINE);
+	box(thisWin, ACS_VLINE, ACS_HLINE);
 	mvwprintw(thisWin,0,2,intro);
 	wrefresh(thisWin);
 	refresh();
 }
 
+void ncurses_scrolling(){
+	/* Get all the mouse events */
+	//mousemask(ALL_MOUSE_EVENTS, NULL);
+	int cont = 0;
+	keypad(search, TRUE);
+
+	while(true) {
+		noecho();
+		cbreak();
+		int c = wgetch(search);
+		switch(c) {
+			case KEY_UP:
+				cont--;
+				if (cont < 0)
+					cont = 0;
+				prefresh(results,cont,0,2,2,(maxY - 5), (maxX - 2));
+				break;
+			case KEY_DOWN:
+				cont++;
+				prefresh(results,cont,0,2,2,(maxY - 5), (maxX - 2));
+				break;
+			default:
+				echo();
+				return;
+		}
+	}
+}
+
 /*
- * NCURSES
+ * NCURSES MAIN
  *
  * TODO: Colors
  * TODO: Indentation
@@ -415,20 +451,16 @@ static void ncursesInterface (GwDictInfo *dictionary){
 	loop = TRUE;
 	cursesFlag = TRUE;
 
-	screen_init();
+	ncurses_scree_init();
 
 	getmaxyx(mainWindows, maxY, maxX);
 
 	//alt rett, larg rett, quanto in basso, quanto a destra
 	search = newwin(3, maxX, (maxY - 3), 0);
-	box(search, ACS_VLINE, ACS_HLINE);
+	ncurses_add_intro_and_box(search,"Search:");
 
 	screen = newwin((maxY - 3), maxX, 0, 0);
-	box(screen, ACS_VLINE, ACS_HLINE);
-
-
-	addIntro(search,"Search:");
-	addIntro(screen,"Results:");
+	ncurses_add_intro_and_box(screen,"Results:");
 
 	while(loop) {
 
@@ -499,39 +531,29 @@ static void ncursesInterface (GwDictInfo *dictionary){
 			item->show_less_relevant_results = !exact_switch;
 
 			/*
-			WINDOW* subWin;
-			subWin = subwin(results, (maxY - 10), (maxX - 10), 2, 2);
-			scrollok(subWin,1);
-			touchwin(results);
-			refresh();
-			werase(subWin);
-			results = subWin; //Fin qui funziona
+				WINDOW* subWin;
+				subWin = subwin(results, (maxY - 10), (maxX - 10), 2, 2);
+				scrollok(subWin,1);
+				touchwin(results);
+				refresh();
+				werase(subWin);
+				results = subWin; //Fin qui funziona
+
+				WINDOW *subbb = subpad(pad, (maxY - 10), (maxX - 10), 2, 2);
+				scrollok(subbb,1);
+				touchwin(pad);
+				refresh();
 			*/
 
-			WINDOW *pad = newpad(500, (maxX - 2));
-			int     i;
-
-			/*
-			WINDOW *subbb = subpad(pad, (maxY - 10), (maxX - 10), 2, 2);
-			scrollok(subbb,1);
-			touchwin(pad);
-			refresh();
-			*/
-
-			results = pad;
+			results = newpad(500, (maxX - 2));
 
 			gw_search_get_results (item); //TODO: Print here?? <---
 
-			if (pad != NULL) {
+			if (results != NULL) { //TODO: Before
 
-				scrollok(pad,TRUE);
-
-				for (i = 0 ; i <= 100; i++) {
-						prefresh(pad,i,0,2,2,(maxY - 5), (maxX - 2));
-						sleep(1);
-				}
+				scrollok(results,TRUE);
+				prefresh(results,0,0,2,2,(maxY - 5), (maxX - 2));
 			}
-
 
 			//Print the number of results
 			if (quiet_switch == FALSE) {
@@ -540,6 +562,11 @@ static void ncursesInterface (GwDictInfo *dictionary){
 					//TODO
 				}
 			}
+
+			ncurses_scrolling();
+
+			wclear(search);
+			ncurses_add_intro_and_box(search,"Search:");
 
 			free(item);
 		}
