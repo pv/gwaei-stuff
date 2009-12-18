@@ -48,21 +48,80 @@
 #include <gwaei/callbacks.h>
 #include <gwaei/interface.h>
 #include <gwaei/preferences.h>
+#include <gwaei/callbacks.h>
 
 G_MODULE_EXPORT void do_tab_remove (GtkWidget *widget, gpointer data);
+
+
+void gw_tab_update_appearance ()
+{
+  GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+  int pages = gtk_notebook_get_n_pages (GTK_NOTEBOOK (notebook));
+  int current_page = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+  GtkWidget *scrolledwindow = GTK_WIDGET (gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), current_page));
+
+  gtk_notebook_set_show_tabs (GTK_NOTEBOOK (notebook), (pages > 1));
+  if (pages > 1)
+    gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow), GTK_SHADOW_NONE);
+  else
+    gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow), GTK_SHADOW_IN);
+}
+
+
+void gw_guarantee_first_tab ()
+{
+  GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+  int pages = gtk_notebook_get_n_pages (GTK_NOTEBOOK (notebook));
+  if (pages == 0)
+  {
+    gw_tab_new ();
+    gw_tab_update_appearance ();
+  }
+}
+
+
+void gw_tab_set_current_tab_text (const char* string)
+{
+  GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+  int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+  GtkWidget *container = gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), page_num);
+  GtkWidget *hbox = GTK_WIDGET (gtk_notebook_get_tab_label(GTK_NOTEBOOK (notebook), GTK_WIDGET (container)));
+  GList *children = gtk_container_get_children (GTK_CONTAINER (hbox));
+  GtkWidget *label = GTK_WIDGET (children->data);
+  gtk_label_set_text (GTK_LABEL (label), string);
+}
+
 
 int gw_tab_new ()
 {
   //Create contents
-  GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
   GtkWidget *scrolledwindow = GTK_WIDGET (gtk_scrolled_window_new (NULL, NULL));
+  GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
   GtkWidget *textview = GTK_WIDGET (gtk_text_view_new ());
+  gtk_text_view_set_right_margin (GTK_TEXT_VIEW (textview), 10);
+  gtk_text_view_set_left_margin (GTK_TEXT_VIEW (textview), 10);
+  gtk_text_view_set_cursor_visible (GTK_TEXT_VIEW (textview), FALSE);
+  gtk_text_view_set_editable (GTK_TEXT_VIEW (textview), FALSE);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
+  gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (textview), GTK_WRAP_WORD);
+
+  g_signal_connect( G_OBJECT (textview), "drag_motion", G_CALLBACK (do_drag_motion_1), NULL);
+  g_signal_connect( G_OBJECT (textview), "focus_in_event", G_CALLBACK (do_update_clipboard_on_focus_change), textview);
+  g_signal_connect( G_OBJECT (textview), "button_press_event", G_CALLBACK (do_get_position_for_button_press), NULL);
+  g_signal_connect( G_OBJECT (textview), "motion_notify_event", G_CALLBACK (do_get_iter_for_motion), NULL);
+  g_signal_connect( G_OBJECT (textview), "drag_drop", G_CALLBACK (do_drag_drop_1), NULL);
+  g_signal_connect( G_OBJECT (textview), "button_release_event", G_CALLBACK (do_get_iter_for_button_release), NULL);
+  g_signal_connect( G_OBJECT (textview), "drag_leave", G_CALLBACK (do_drag_leave_1), NULL);
+  g_signal_connect( G_OBJECT (textview), "drag_data_received", G_CALLBACK (do_search_drag_data_recieved), NULL);
+  g_signal_connect( G_OBJECT (textview), "key_press_event", G_CALLBACK (do_focus_change_on_key_press), NULL);
+  g_signal_connect( G_OBJECT (textview), "event_after", G_CALLBACK (do_update_icons_for_selection), NULL);
+
   gtk_container_add (GTK_CONTAINER (scrolledwindow), textview);
   gtk_widget_show_all (GTK_WIDGET (scrolledwindow));
 
   //Create create tab label
   GtkWidget *hbox = GTK_WIDGET (gtk_hbox_new(FALSE, 0));
-  GtkWidget *label = GTK_WIDGET (gtk_label_new("CLOSE"));
+  GtkWidget *label = GTK_WIDGET (gtk_label_new(gettext("(Empty)")));
   GtkWidget *close_button = GTK_WIDGET (gtk_button_new ());
   gtk_button_set_relief (GTK_BUTTON (close_button), GTK_RELIEF_NONE);
   GtkWidget *button_image = GTK_WIDGET (gtk_image_new_from_stock (GTK_STOCK_CLOSE, GTK_ICON_SIZE_MENU));
@@ -78,6 +137,7 @@ int gw_tab_new ()
   gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), position);
   gw_ui_initialize_tags();
   gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), current);
+  gw_tab_update_appearance ();
 
   return position;
 }
@@ -109,9 +169,32 @@ G_MODULE_EXPORT void do_new_tab (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void do_tab_remove (GtkWidget *widget, gpointer data)
 {
   GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
-  int page_num = gtk_notebook_page_num (GTK_WIDGET (notebook), GTK_WIDGET (data));
+  int pages = gtk_notebook_get_n_pages (GTK_NOTEBOOK (notebook));
+  if (pages < 2) return;
+  int page_num = gtk_notebook_page_num (GTK_NOTEBOOK (notebook), GTK_WIDGET (data));
   gtk_notebook_remove_page (GTK_NOTEBOOK (notebook), page_num);
+
+  gw_tab_update_appearance ();
 }
+
+
+//!
+//! @brief Remove the tab where the close button is clicked
+//!
+//! @param widget Currently unused widget pointer
+//! @param data Currently unused gpointer
+//!
+G_MODULE_EXPORT void do_tab_remove_current (GtkWidget *widget, gpointer data)
+{
+  GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+  int pages = gtk_notebook_get_n_pages (GTK_NOTEBOOK (notebook));
+  if (pages < 2) return;
+  int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+  gtk_notebook_remove_page (GTK_NOTEBOOK (notebook), page_num);
+
+  gw_tab_update_appearance ();
+}
+
 
 
 //!

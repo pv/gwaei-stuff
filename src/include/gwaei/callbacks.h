@@ -49,3 +49,21 @@ void do_source_entry_changed_action (GtkWidget*, gpointer);
 void do_radical_search (GtkWidget*, gpointer);
 void do_move_dictionary_up (GtkWidget*, gpointer);
 void do_move_dictionary_down (GtkWidget*, gpointer);
+gboolean do_drag_motion_1 (GtkWidget*, GdkDragContext*, gint, gint, guint, gpointer);
+gboolean do_update_clipboard_on_focus_change (GtkWidget*, GtkDirectionType, gpointer);
+gboolean do_get_position_for_button_press (GtkWidget*, GdkEventButton*, gpointer);
+gboolean do_get_iter_for_motion (GtkWidget*, GdkEventButton*, gpointer);
+gboolean do_drag_drop_1 (GtkWidget*, GdkDragContext*, gint, gint, guint, gpointer);
+gboolean do_get_iter_for_button_release (GtkWidget*, GdkEventButton*, gpointer);
+void do_drag_leave_1 (GtkWidget*, GdkDragContext*, guint, gpointer);
+void do_search_drag_data_recieved (GtkWidget*, GdkDragContext*, gint, gint , GtkSelectionData*, guint, guint, gpointer);
+gboolean do_focus_change_on_key_press (GtkWidget*, GdkEvent*, gpointer*);
+gboolean do_update_icons_for_selection (GtkWidget*, GdkEvent*, gpointer); 
+
+
+
+
+
+
+
+

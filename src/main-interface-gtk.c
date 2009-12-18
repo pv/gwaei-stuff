@@ -2520,6 +2520,8 @@ void initialize_gui_interface(int *argc, char ***argv)
       gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
       gw_ui_clear_buffer_by_target (GW_TARGET_RESULTS);
 
+      gw_tab_new ();
+
       //Enter the main loop
       gdk_threads_enter();
       gtk_main ();

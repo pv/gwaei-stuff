@@ -387,6 +387,10 @@ G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
         gw_historylist_go_forward_by_target (GW_HISTORYLIST_RESULTS);
     }
 
+    //Set tab text
+    gw_guarantee_first_tab ();
+    gw_tab_set_current_tab_text (hl->current->queryline->string);
+
     gw_search_get_results (hl->current);
     gw_ui_update_history_popups ();
     gw_ui_update_toolbar_buttons ();
@@ -1319,6 +1323,9 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
     }
 
     //Start the search
+    //Set tab text
+    gw_guarantee_first_tab ();
+    gw_tab_set_current_tab_text (query);
     gw_search_get_results (hl->current);
 
     //Set the colors of the entry to the current match highlight colors
