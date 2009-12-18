@@ -462,7 +462,9 @@ GObject* get_gobject_from_target(const int TARGET)
       case GW_TARGET_RESULTS:
           notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
           page_number =  gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+          if (page_number == -1) return NULL;
           page = gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), page_number);
+          if (page == NULL) return NULL;
           view = gtk_bin_get_child (GTK_BIN (page));
           tb = G_OBJECT (gtk_text_view_get_buffer (GTK_TEXT_VIEW (view)));
           return tb;
@@ -799,24 +801,29 @@ void gw_ui_reinitialize_results_label (GwSearchItem *item)
 
 void gw_ui_update_total_results_label (GwSearchItem* item)
 {
-    if (gw_util_get_runmode () == GW_CONSOLE_RUNMODE) return;
-    if (item->target == GW_TARGET_KANJI) return;
-
     char id[50];
-
-    //Get the gtk widgets from gtkbuilder
     GtkWidget *results;
+    GtkWidget *number;
+    GtkWidget *no_results;
     strcpy(id, "results_label_hbox");
     results = GTK_WIDGET (gtk_builder_get_object(builder, id));
-
-    GtkWidget *number;
     strcpy(id, "results_label_number");
     number = GTK_WIDGET (gtk_builder_get_object(builder, id));
-
-    GtkWidget *no_results;
     strcpy(id, "no_results_label");
     no_results = GTK_WIDGET (gtk_builder_get_object(builder, id));
 
+    if (item == NULL)
+    {
+      //Get the gtk widgets from gtkbuilder
+      gtk_label_set_text(GTK_LABEL (results), "");
+      gtk_label_set_text(GTK_LABEL (number), "");
+      gtk_label_set_text(GTK_LABEL (no_results), "");
+    }
+
+    if (gw_util_get_runmode () == GW_CONSOLE_RUNMODE) return;
+    if (item->target == GW_TARGET_KANJI) return;
+
+    //Get the gtk widgets from gtkbuilder
     int number_int = item->total_results;
     char number_string[14];
     gw_util_itoa(number_int, number_string, 14);

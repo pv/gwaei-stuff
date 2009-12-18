@@ -229,6 +229,7 @@ void gw_searchitem_do_post_search_clean (GwSearchItem* item)
 //! @param item The GwSearchItem to have it's memory freed.
 //!
 void gw_searchitem_free(GwSearchItem* item) {
+  gw_ui_cancel_search_by_searchitem (item);
   gw_searchitem_do_post_search_clean (item);
   free (item->queryline);
   free (item);

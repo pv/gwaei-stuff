@@ -818,6 +818,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="tab_vborder">0</property>
+                        <signal name="switch_page" handler="do_tab_switch"/>
                       </object>
                       <packing>
                         <property name="position">0</property>
