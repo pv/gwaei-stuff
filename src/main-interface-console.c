@@ -55,9 +55,9 @@ static WINDOW *results;
 static WINDOW *search;
 static WINDOW *screen;
 int current_row = 0;
-int maxY;
-int maxX;
+int maxY, maxX;
 int cursesFlag = false;
+int cursesSupportColorFlag = true;
 
 
 /**
@@ -383,11 +383,26 @@ static gboolean is_switch (char *arg, char *short_switch, char *long_switch) {
 
 /*** NCURSES ***/
 
-void ncurses_scree_init(void) {
+void ncurses_color_init(bool hasColors) {
+
+	if (hasColors) {
+		start_color();
+		init_pair(1, COLOR_GREEN, COLOR_BLACK);
+		init_pair(2, COLOR_BLUE, COLOR_BLACK);
+		init_pair(3, COLOR_RED, COLOR_BLACK);
+	}
+	else
+		cursesSupportColorFlag = false;
+}
+
+void ncurses_screen_init(void) {
 
 	mainWindows = initscr();
 	cbreak();
 	nodelay(mainWindows, TRUE);
+
+	ncurses_color_init(has_colors());
+
 	refresh(); // 1)
 	wrefresh(mainWindows);
 }
@@ -451,7 +466,7 @@ static void ncursesInterface (GwDictInfo *dictionary){
 	loop = TRUE;
 	cursesFlag = TRUE;
 
-	ncurses_scree_init();
+	ncurses_screen_init();
 
 	getmaxyx(mainWindows, maxY, maxX);
 
@@ -805,25 +820,30 @@ void gw_console_append_normal_results (GwSearchItem *item, gboolean unused) {
 	int cont = 0;
     GwResultLine *resultline = item->resultline;
 
-
-    wprintw(results,"%s", resultline->kanji_start);
+    wattron(results, COLOR_PAIR(1));
 
     //Kanji
-    wprintw(results,"[32m%s", resultline->kanji_start);
+    wprintw(results,"%s", resultline->kanji_start);
     //Furigana
     if (resultline->furigana_start)
       wprintw(results," [%s]", resultline->furigana_start);
+
+    wattroff(results, COLOR_PAIR(1));
+
     //Other info
     if (resultline->classification_start)
-      wprintw(results,"[0m %s", resultline->classification_start);
+      wprintw(results," %s", resultline->classification_start);
     //Important Flag
     if (resultline->important)
-      wprintw(results,"[0m %s", "P");
+      wprintw(results," %s", "P");
 
 
     wprintw(results,"\n");
     while (cont < resultline->def_total) {
-    	wprintw(results,"%s %s\n", resultline->number[cont], resultline->def_start[cont]);
+    	wattron(results, COLOR_PAIR(2));
+    	wprintw(results,"%s ", resultline->number[cont]);
+    	wattroff(results, COLOR_PAIR(2));
+    	wprintw(results,"%s\n", resultline->def_start[cont]);
     	cont++;
     }
     wprintw(results,"\n");
