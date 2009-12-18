@@ -2420,7 +2420,7 @@ void gw_ui_initialize_buffer_marks(gpointer tb)
 
 void gw_ui_set_header (GwSearchItem *item, char* text, char* mark_name)
 {
-    GObject *results_tb = item->target_tb;
+    GObject *results_tb = G_OBJECT (item->target_tb);
 
     GtkTextIter iter;
     GtkTextMark *mark;
@@ -2565,7 +2565,7 @@ gboolean gw_ui_has_selection_by_target (const int TARGET)
 void gw_ui_add_match_highlights (gint line, gint start_offset, gint end_offset, GwSearchItem* item)
 {
     GtkTextBuffer *tb;
-    tb = GTK_TEXT_BUFFER (item->target);
+    tb = GTK_TEXT_BUFFER (item->target_tb);
     GwQueryLine *ql = item->queryline;
     
     int i;
