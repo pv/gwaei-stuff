@@ -249,7 +249,8 @@ static gboolean stream_results_thread (GwSearchItem *item)
           case HIGH_RELEVANCE:
               item->total_results++;
               item->total_relevant_results++;
-              append_more_relevant_header_to_output(item);
+              if (item->target != GW_TARGET_KANJI)
+                append_more_relevant_header_to_output(item);
               if (item->target_tb == (gpointer*) get_gobject_from_target(item->target))
                 gw_ui_update_total_results_label(item);
               append_result_to_output(item);
@@ -366,9 +367,9 @@ static gboolean stream_results_cleanup (GwSearchItem *item)
     }
     else
     {
-      gw_ui_remove_whitespace_from_buffer (item->target_tb);
       if (item->target == GW_TARGET_RESULTS)
       {
+        gw_ui_remove_whitespace_from_buffer (item->target_tb);
         gw_ui_finalize_total_results_label (item);
         gw_ui_update_search_progressbar (0, 0);
       }

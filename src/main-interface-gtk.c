@@ -1806,8 +1806,14 @@ void  gw_ui_set_tag_to_tagtable (char *id,   int      TARGET,
     //Assertain the target text buffer
     GObject *tb;
     tb = get_gobject_from_target(TARGET);
-    GtkTextTag *tag;
-    tag = gtk_text_buffer_create_tag (GTK_TEXT_BUFFER (tb), id, atr, val, NULL);
+
+    GtkTextTagTable* table = gtk_text_buffer_get_tag_table (tb); 
+    GtkTextTag* tag = gtk_text_tag_table_lookup (table, id);
+
+    if (tag == NULL)
+    {
+      tag = gtk_text_buffer_create_tag (GTK_TEXT_BUFFER (tb), id, atr, val, NULL);
+    }
 }
 
 
@@ -2879,8 +2885,8 @@ void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item, gboolean unus
       if (item->target == GW_TARGET_RESULTS)
         gw_ui_add_match_highlights (line, start_offset, end_offset, item);
 
-      if (item->target == GW_TARGET_RESULTS)
-        gtk_text_buffer_insert (tb, &iter, "\n\n", -1);
+      gtk_text_buffer_insert (tb, &iter, "\n\n", -1);
+
 }
 
 
