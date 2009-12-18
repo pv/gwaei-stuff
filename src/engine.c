@@ -250,7 +250,8 @@ static gboolean stream_results_thread (GwSearchItem *item)
               item->total_results++;
               item->total_relevant_results++;
               append_more_relevant_header_to_output(item);
-              gw_ui_update_total_results_label(item);
+              if (item->target_tb == (gpointer*) get_gobject_from_target(item->target))
+                gw_ui_update_total_results_label(item);
               append_result_to_output(item);
 
               //Swap the result lines
@@ -287,7 +288,7 @@ static gboolean stream_results_thread (GwSearchItem *item)
     }
 
     //Update the progressbar
-    if (item->target == GW_TARGET_RESULTS)
+    if (item->target == GW_TARGET_RESULTS && item->target_tb == (gpointer*) get_gobject_from_target(item->target))
       gw_ui_update_search_progressbar (item->current_line, item->dictionary->total_lines);
 
     //If the chunk reached the max chunk size, there is still file left to load
@@ -310,7 +311,8 @@ static gboolean stream_results_thread (GwSearchItem *item)
         item->total_results++;
         append_stored_result_to_output(item, &(item->results_medium), item->resultline);
       }
-      gw_ui_update_total_results_label(item);
+      if (item->target_tb == (gpointer*) get_gobject_from_target(item->target))
+        gw_ui_update_total_results_label(item);
       return TRUE;
     }
 
@@ -320,7 +322,8 @@ static gboolean stream_results_thread (GwSearchItem *item)
         item->total_results++;
         append_stored_result_to_output(item, &(item->results_low), item->resultline);
       }
-      gw_ui_update_total_results_label(item);
+      if (item->target_tb == (gpointer*) get_gobject_from_target(item->target))
+        gw_ui_update_total_results_label(item);
       return TRUE;
     }
 
@@ -335,8 +338,8 @@ static gboolean stream_results_thread (GwSearchItem *item)
       }
       else
       {
-        gw_ui_clear_buffer_by_target (GW_TARGET_RESULTS);
-        gw_ui_display_no_results_found_page();
+        gw_ui_clear_buffer_by_target (item->target_tb);
+        //gw_ui_display_no_results_found_page();
       }
     }
     
@@ -363,10 +366,12 @@ static gboolean stream_results_cleanup (GwSearchItem *item)
     }
     else
     {
-      gw_ui_remove_whitespace_from_buffer (GW_TARGET_RESULTS);
-      gw_ui_finalize_total_results_label (item);
+      gw_ui_remove_whitespace_from_buffer (item->target_tb);
       if (item->target == GW_TARGET_RESULTS)
+      {
+        gw_ui_finalize_total_results_label (item);
         gw_ui_update_search_progressbar (0, 0);
+      }
     }     
 }
 
@@ -388,7 +393,7 @@ void gw_search_get_results (GwSearchItem *item)
       item->show_less_relevant_results = TRUE;
 
     if (gw_util_get_runmode () != GW_CONSOLE_RUNMODE)
-      gw_ui_initialize_buffer_by_target (item->target);
+      gw_ui_initialize_buffer_by_searchitem (item);
 
     if (gw_searchitem_do_pre_search_prep (item) == FALSE)
     {

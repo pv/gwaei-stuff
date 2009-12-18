@@ -1376,12 +1376,12 @@ void gw_ui_set_color_to_swatch(const char *widget_id, guint r, guint g, guint b)
 }
 
 
-void gw_ui_append_to_buffer (const int TARGET, char *text, char *tag1,
+void gw_ui_append_to_buffer (GwSearchItem *item, char *text, char *tag1,
                                 char *tag2, int *start_line, int *end_line)
 {
     //Assertain the target text buffer
     GObject *tb;
-    tb = get_gobject_from_target(TARGET);
+    tb = G_OBJECT (item->target_tb);
 
     GtkTextIter iter;
     gtk_text_buffer_get_end_iter(GTK_TEXT_BUFFER (tb), &iter);
@@ -1410,7 +1410,7 @@ void gw_ui_append_to_buffer (const int TARGET, char *text, char *tag1,
 }
 
 
-void gw_ui_append_image_to_buffer (const int TARGET, char *name)
+void gw_ui_append_image_to_buffer (GwSearchItem *item, char *name)
 {
     //Insert the pixbuf
     int leftover = FILENAME_MAX;
@@ -1432,7 +1432,7 @@ void gw_ui_append_image_to_buffer (const int TARGET, char *name)
     }
 
     GObject *tb;
-    tb = get_gobject_from_target (GW_TARGET_RESULTS);
+    tb = G_OBJECT (item->target_tb);
 
     GtkTextIter iter;
     gtk_text_buffer_get_end_iter(GTK_TEXT_BUFFER(tb), &iter);
@@ -1441,25 +1441,20 @@ void gw_ui_append_image_to_buffer (const int TARGET, char *name)
 }
 
 
-void gw_ui_clear_buffer_by_target (const int TARGET)
+void gw_ui_clear_buffer_by_target (gpointer* tb)
 {
-    //Assertain the target text buffer
-    GObject *tb;
-    tb = get_gobject_from_target (TARGET);
-
     gtk_text_buffer_set_text (GTK_TEXT_BUFFER (tb), "", -1);
 }
 
 
-void gw_ui_initialize_buffer_by_target (const int TARGET)
+void gw_ui_initialize_buffer_by_searchitem (GwSearchItem *item)
 {
-    gw_ui_clear_buffer_by_target (TARGET);
+    gw_ui_clear_buffer_by_target (item->target_tb);
 
-    if (TARGET == GW_TARGET_RESULTS)
+    if (item->target == GW_TARGET_RESULTS)
     {
       //Assertain the target text buffer
-      GObject *tb;
-      tb = get_gobject_from_target (TARGET);
+      GObject *tb = G_OBJECT (item->target_tb);
 
       //Clear the target text buffer
       GtkTextIter iter;
@@ -2400,14 +2395,8 @@ void gw_ui_initialize_tags()
 }
 
 
-void gw_ui_initialize_buffer_marks()
+void gw_ui_initialize_buffer_marks(gpointer tb)
 {
-    GtkWidget *tv;
-    tv = GTK_WIDGET (gtk_builder_get_object (builder, "results_text_view"));
-
-    GObject *tb;
-    tb = G_OBJECT (gtk_text_view_get_buffer (GTK_TEXT_VIEW (tv)));
-
     GtkTextIter iter;
 
     gtk_text_buffer_get_start_iter (GTK_TEXT_BUFFER (tb), &iter);
@@ -2431,8 +2420,7 @@ void gw_ui_initialize_buffer_marks()
 
 void gw_ui_set_header (GwSearchItem *item, char* text, char* mark_name)
 {
-    GObject *results_tb;
-    results_tb = get_gobject_from_target (GW_TARGET_RESULTS);
+    GObject *results_tb = item->target_tb;
 
     GtkTextIter iter;
     GtkTextMark *mark;
@@ -2502,7 +2490,7 @@ void initialize_gui_interface(int *argc, char ***argv)
 
       //Initialize some component and variables
       initialize_global_widget_pointers();
-      gw_ui_initialize_tags();
+      gw_tab_new ();
       initialize_kanjipad();
 
       gw_sexy_initialize_libsexy();
@@ -2510,7 +2498,6 @@ void initialize_gui_interface(int *argc, char ***argv)
       gw_ui_show_window ("main_window");
 
       gw_prefs_initialize_preferences();
-      gw_ui_initialize_buffer_marks();
 
       if (rebuild_combobox_dictionary_list() == 0) {
         do_settings(NULL, NULL);
@@ -2518,9 +2505,8 @@ void initialize_gui_interface(int *argc, char ***argv)
 
       //Set the initial focus to the search bar
       gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
-      gw_ui_clear_buffer_by_target (GW_TARGET_RESULTS);
-
-      gw_tab_new ();
+      GObject *tb = G_OBJECT (get_gobject_from_target (GW_TARGET_RESULTS));
+      gw_ui_clear_buffer_by_target ((gpointer)tb);
 
       //Enter the main loop
       gdk_threads_enter();
@@ -2579,7 +2565,7 @@ gboolean gw_ui_has_selection_by_target (const int TARGET)
 void gw_ui_add_match_highlights (gint line, gint start_offset, gint end_offset, GwSearchItem* item)
 {
     GtkTextBuffer *tb;
-    tb = GTK_TEXT_BUFFER (get_gobject_from_target(item->target));
+    tb = GTK_TEXT_BUFFER (item->target);
     GwQueryLine *ql = item->queryline;
     
     int i;
@@ -2591,7 +2577,7 @@ void gw_ui_add_match_highlights (gint line, gint start_offset, gint end_offset, 
     char *pos = text;
 
     //Look for kanji atoms
-    for(i = 0; i < ql->kanji_total != NULL; i++) {
+    for(i = 0; i < ql->kanji_total; i++) {
        pos = text;
        while ((pos = gw_regex_locate_offset (pos, text, &(ql->kanji_regex[GW_QUERYLINE_LOCATE][i]), &match_so, &match_eo)) != NULL )
        {
@@ -2601,7 +2587,7 @@ void gw_ui_add_match_highlights (gint line, gint start_offset, gint end_offset, 
        }
     }
     //Look for furigana atoms
-    for(i = 0; i < ql->furi_total != NULL; i++) {
+    for(i = 0; i < ql->furi_total; i++) {
        pos = text;
        while ((pos = gw_regex_locate_offset (pos, text, &(ql->furi_regex[GW_QUERYLINE_LOCATE][i]), &match_so, &match_eo)) != NULL )
        {
@@ -2611,7 +2597,7 @@ void gw_ui_add_match_highlights (gint line, gint start_offset, gint end_offset, 
        }
     }
     //Look for romaji atoms
-    for(i = 0; i < ql->roma_total != NULL; i++) {
+    for(i = 0; i < ql->roma_total; i++) {
        pos = text;
        while ((pos = gw_regex_locate_offset (pos, text, &(ql->roma_regex[GW_QUERYLINE_LOCATE][i]), &match_so, &match_eo)) != NULL )
        {
@@ -2623,10 +2609,10 @@ void gw_ui_add_match_highlights (gint line, gint start_offset, gint end_offset, 
     g_free (text);
 }
 
-void gw_ui_shift_stay_mark (char *name)
+void gw_ui_shift_stay_mark (GwSearchItem *item, char *name)
 {
     GObject *results_tb;
-    results_tb = get_gobject_from_target (GW_TARGET_RESULTS);
+    results_tb = G_OBJECT (item->target_tb);
 
     GtkTextMark *mark;
     GtkTextIter iter;
@@ -2638,10 +2624,10 @@ void gw_ui_shift_stay_mark (char *name)
       gtk_text_buffer_move_mark (GTK_TEXT_BUFFER (results_tb), mark, &iter);
 }
 
-void gw_ui_shift_append_mark (char *stay_name, char *append_name)
+void gw_ui_shift_append_mark (GwSearchItem *item, char *stay_name, char *append_name)
 {
     GObject *results_tb;
-    results_tb = get_gobject_from_target (GW_TARGET_RESULTS);
+    results_tb = G_OBJECT (item->target_tb);
 
     GtkTextIter iter;
     GtkTextMark *stay_mark, *append_mark;
@@ -2660,7 +2646,7 @@ void gw_ui_append_edict_results_to_buffer (GwSearchItem *item, gboolean remove_l
 {
     GwResultLine* rl = item->resultline;
 
-    GtkTextBuffer *tb = GTK_TEXT_BUFFER (get_gobject_from_target(item->target));
+    GtkTextBuffer *tb = GTK_TEXT_BUFFER (item->target_tb);
     GtkTextMark *mark;
     mark = gtk_text_buffer_get_mark (tb, "content_insertion_mark");
 
@@ -2711,11 +2697,12 @@ void gw_ui_append_edict_results_to_buffer (GwSearchItem *item, gboolean remove_l
       gtk_text_buffer_insert (tb, &iter, " ", -1);
       gtk_text_buffer_insert_with_tags_by_name (tb, &iter, gettext("Pop"), -1, "small", NULL);
     }
-    gw_ui_shift_stay_mark ("previous_result");
+    gw_ui_shift_stay_mark (item, "previous_result");
     start_offset = 0;
     end_offset = gtk_text_iter_get_line_offset (&iter);
     if (!remove_last_linebreak) gtk_text_buffer_insert (tb, &iter, "\n", -1);
     gw_ui_add_match_highlights (line, start_offset, end_offset, item);
+
     //Definitions
     int i = 0;
     while (rl->def_start[i] != NULL)
@@ -2739,9 +2726,9 @@ void gw_ui_append_def_same_to_buffer (GwSearchItem* item, gboolean UNUSED)
 {
     GwResultLine* resultline = item->resultline;
 
-    GtkTextBuffer *tb = GTK_TEXT_BUFFER (get_gobject_from_target(item->target));
+    GtkTextBuffer *tb = GTK_TEXT_BUFFER (item->target_tb);
 
-    gw_ui_shift_append_mark ("previous_result", "new_result");
+    gw_ui_shift_append_mark (item, "previous_result", "new_result");
     GtkTextMark *mark;
     if ((mark = gtk_text_buffer_get_mark (tb, "previous_result")) != NULL)
     {
@@ -2785,7 +2772,7 @@ void gw_ui_append_def_same_to_buffer (GwSearchItem* item, gboolean UNUSED)
 void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item, gboolean unused)
 {
       GwResultLine* resultline = item->resultline;
-      GtkTextBuffer *tb = GTK_TEXT_BUFFER (get_gobject_from_target(item->target));
+      GtkTextBuffer *tb = GTK_TEXT_BUFFER (item->target_tb);
       GtkTextIter iter;
       GtkTextMark *mark;
       mark = gtk_text_buffer_get_mark (tb, "content_insertion_mark");
@@ -2900,7 +2887,7 @@ void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item, gboolean unus
 void gw_ui_append_radicalsdict_results_to_buffer (GwSearchItem *item, gboolean unused)
 {
       GwResultLine* resultline = item->resultline;
-      GtkTextBuffer *tb = GTK_TEXT_BUFFER (get_gobject_from_target(item->target));
+      GtkTextBuffer *tb = GTK_TEXT_BUFFER (item->target_tb);
 
       int line, start_offset, end_offset;
       GtkTextMark *mark;
@@ -2939,7 +2926,7 @@ void gw_ui_append_radicalsdict_results_to_buffer (GwSearchItem *item, gboolean u
 void gw_ui_append_examplesdict_results_to_buffer (GwSearchItem *item, gboolean unused)
 {
       GwResultLine* resultline = item->resultline;
-      GtkTextBuffer *tb = GTK_TEXT_BUFFER (get_gobject_from_target(item->target));
+      GtkTextBuffer *tb = GTK_TEXT_BUFFER (item->target_tb);
 
       int line, start_offset, end_offset;
       GtkTextMark *mark;
@@ -2987,7 +2974,7 @@ void gw_ui_append_examplesdict_results_to_buffer (GwSearchItem *item, gboolean u
 void gw_ui_append_unknowndict_results_to_buffer (GwSearchItem *item, gboolean unused)
 {
       GwResultLine* resultline = item->resultline;
-      GtkTextBuffer *tb = GTK_TEXT_BUFFER (get_gobject_from_target(item->target));
+      GtkTextBuffer *tb = GTK_TEXT_BUFFER (item->target_tb);
       GtkTextIter iter;
       GtkTextMark *mark;
       mark = gtk_text_buffer_get_mark (tb, "content_insertion_mark");
@@ -3017,15 +3004,13 @@ void gw_ui_append_unknowndict_results_to_buffer (GwSearchItem *item, gboolean un
 //!
 //! @param TARGET A contast int representing a target
 //!
-void gw_ui_remove_whitespace_from_buffer (const int TARGET)
+void gw_ui_remove_whitespace_from_buffer (gpointer *tb)
 {
-      GtkTextBuffer *tb;
-      tb = GTK_TEXT_BUFFER (get_gobject_from_target(TARGET));
       GtkTextIter iter, iter2;
       gunichar c;
 
       //Remove end whitespace
-      gtk_text_buffer_get_end_iter (tb, &iter);
+      gtk_text_buffer_get_end_iter (GTK_TEXT_BUFFER (tb), &iter);
       gtk_text_iter_backward_char (&iter);
       c = gtk_text_iter_get_char (&iter);
       while ((c == L' ' || c == L'\n') && c != 0 && gtk_text_iter_backward_char (&iter))
@@ -3034,23 +3019,23 @@ void gw_ui_remove_whitespace_from_buffer (const int TARGET)
       }
       gtk_text_iter_forward_char (&iter);
       
-      gtk_text_buffer_get_end_iter (tb, &iter2);
+      gtk_text_buffer_get_end_iter (GTK_TEXT_BUFFER (tb), &iter2);
       gtk_text_iter_backward_char (&iter2);
 
-      gtk_text_buffer_delete (tb, &iter, &iter2);
+      gtk_text_buffer_delete (GTK_TEXT_BUFFER (tb), &iter, &iter2);
 
       //Remove start whitespace
-      gtk_text_buffer_get_start_iter (tb, &iter);
+      gtk_text_buffer_get_start_iter (GTK_TEXT_BUFFER (tb), &iter);
       gtk_text_iter_forward_char (&iter);
 
-      gtk_text_buffer_get_start_iter (tb, &iter2);
+      gtk_text_buffer_get_start_iter (GTK_TEXT_BUFFER (tb), &iter2);
       gtk_text_iter_forward_char (&iter2);
       c = gtk_text_iter_get_char (&iter2);
       while ((c == L' ' || c == L'\n') && c != 0 && gtk_text_iter_forward_char (&iter2))
       {
         c = gtk_text_iter_get_char (&iter2);
       }
-      gtk_text_buffer_delete (tb, &iter, &iter2);
+      gtk_text_buffer_delete (GTK_TEXT_BUFFER (tb), &iter, &iter2);
 }
 
 

@@ -76,6 +76,7 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary,
   temp->scratch_buffer = NULL;
   temp->dictionary = dictionary;
   temp->target = TARGET;
+  temp->target_tb = get_gobject_from_target(TARGET);
   temp->total_relevant_results = 0;
   temp->total_irrelevant_results = 0;
   temp->total_results = 0;

@@ -101,6 +101,7 @@ int gw_tab_new ()
   GtkWidget *scrolledwindow = GTK_WIDGET (gtk_scrolled_window_new (NULL, NULL));
   GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
   GtkWidget *textview = GTK_WIDGET (gtk_text_view_new ());
+  GObject *textbuffer = G_OBJECT (gtk_text_view_get_buffer (GTK_TEXT_VIEW (textview)));
   gtk_text_view_set_right_margin (GTK_TEXT_VIEW (textview), 10);
   gtk_text_view_set_left_margin (GTK_TEXT_VIEW (textview), 10);
   gtk_text_view_set_cursor_visible (GTK_TEXT_VIEW (textview), FALSE);
@@ -142,6 +143,7 @@ int gw_tab_new ()
   gw_ui_initialize_tags();
   gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), current);
   gw_tab_update_appearance ();
+  gw_ui_initialize_buffer_marks(textbuffer);
 
   return position;
 }
