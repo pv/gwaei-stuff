@@ -30,6 +30,7 @@
 
 
 #include <string.h>
+#include <stdlib.h>
 #include <regex.h>
 #include <locale.h>
 #include <libintl.h>
@@ -61,10 +62,12 @@ void gw_tab_update_appearance ()
   GtkWidget *scrolledwindow = GTK_WIDGET (gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), current_page));
 
   gtk_notebook_set_show_tabs (GTK_NOTEBOOK (notebook), (pages > 1));
+  /*
   if (pages > 1)
     gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow), GTK_SHADOW_NONE);
   else
     gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow), GTK_SHADOW_IN);
+  */
 }
 
 
@@ -103,6 +106,7 @@ int gw_tab_new ()
   gtk_text_view_set_cursor_visible (GTK_TEXT_VIEW (textview), FALSE);
   gtk_text_view_set_editable (GTK_TEXT_VIEW (textview), FALSE);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
+  gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow), GTK_SHADOW_IN);
   gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (textview), GTK_WRAP_WORD);
 
   g_signal_connect( G_OBJECT (textview), "drag_motion", G_CALLBACK (do_drag_motion_1), NULL);
@@ -188,7 +192,7 @@ G_MODULE_EXPORT void do_tab_remove_current (GtkWidget *widget, gpointer data)
 {
   GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
   int pages = gtk_notebook_get_n_pages (GTK_NOTEBOOK (notebook));
-  if (pages < 2) return;
+  if (pages < 2) exit (EXIT_SUCCESS);
   int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
   gtk_notebook_remove_page (GTK_NOTEBOOK (notebook), page_num);
 
@@ -206,7 +210,22 @@ G_MODULE_EXPORT void do_tab_remove_current (GtkWidget *widget, gpointer data)
 //! @param widget Currently unused widget pointer
 //! @param data Currently unused gpointer
 //!
-G_MODULE_EXPORT void do_tab_switch (GtkWidget *wwidget, gpointer data)
+G_MODULE_EXPORT void do_tab_switch (GtkWidget *widget, gpointer data)
 {
 }
+
+
+G_MODULE_EXPORT void do_next_tab (GtkWidget *widget, gpointer data)
+{
+  GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+  gtk_notebook_next_page (GTK_NOTEBOOK (notebook));
+}
+
+
+G_MODULE_EXPORT void do_previous_tab (GtkWidget *widget, gpointer data)
+{
+  GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+  gtk_notebook_prev_page (GTK_NOTEBOOK (notebook));
+}
+
 
