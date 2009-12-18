@@ -118,13 +118,33 @@ void gw_ui_close_suggestion_box ()
 }
 
 
+void gw_ui_set_inforation_box_label (const char* string, const char* query, int query_length, const char* extension)
+{
+    char query_short[300];
+    strncpy(query_short, query, query_length);
+    query_short[query_length] = '\0';
+
+    GtkWidget *suggestion_label;
+    suggestion_label = GTK_WIDGET (gtk_builder_get_object (builder, "suggestion_label"));
+    char *label_text = g_strdup_printf (string, query_short, extension);
+    gtk_label_set_text (GTK_LABEL (suggestion_label), label_text);
+    g_free (label_text);
+
+    GtkWidget *suggestion_hbox;
+    suggestion_hbox = GTK_WIDGET (gtk_builder_get_object (builder, "suggestion_hbox"));
+    gtk_widget_show (suggestion_hbox);
+}
+
+
 void gw_ui_verb_check_with_suggestion (GwSearchItem *item)
 {
-  char *query = item->queryline->string;
+  char *query = item->queryline->hira_string;
+  if (query[0] == '\0')
+    return;
   GwResultLine *line = item->resultline;
 
   gunichar query_first_letter;
-  query_first_letter = g_utf8_get_char (item->queryline->string);
+  query_first_letter = g_utf8_get_char (query);
   gunichar result_kanji_first_letter;
   result_kanji_first_letter = g_utf8_get_char (line->kanji_start);
   gunichar result_furigana_first_letter; 
@@ -162,53 +182,28 @@ void gw_ui_verb_check_with_suggestion (GwSearchItem *item)
     regmatch_t pmatch[nmatch];
     if (regexec (&re_i_adj_past, query, nmatch, pmatch, 0) == 0)
     {
-      char message[1000];
-      strcpy  (message, gettext ("Your query is possibly a past-form i-adjective. "));
-      strcat  (message, " (");
-      strncat (message, query, pmatch[0].rm_so);
-      strcat  (message, "い)");
-      gtk_label_set_text (GTK_LABEL (suggestion_label), message);
-      gtk_widget_show (suggestion_hbox);
+      char *message = gettext("Your query is possibly a past-form i-adjective.  (Try searching for %s%s?)");
+      gw_ui_set_inforation_box_label (message, query, pmatch[0].rm_so, "い");
     }
     else if (regexec (&re_i_adj_negative, query, nmatch, pmatch, 0) == 0)
     {
-      char message[1000];
-      strcpy  (message, gettext ("Your query is possibly a negative i-adjective."));
-      strcat  (message, " (");
-      strncat (message, query, pmatch[0].rm_so);
-      strcat  (message, "い)");
-      gtk_label_set_text (GTK_LABEL (suggestion_label), message);
-      gtk_widget_show (suggestion_hbox);
+      char *message = gettext("Your query is possibly a negative i-adjective.  (Try searching for %s%s?)");
+      gw_ui_set_inforation_box_label (message, query, pmatch[0].rm_so, "い");
     }
     else if (regexec (&re_i_adj_te, query, nmatch, pmatch, 0) == 0)
     {
-      char message[1000];
-      strcpy  (message, gettext ("Your query is possibly a te-form i-adjective. "));
-      strcat  (message, " (");
-      strncat (message, query, pmatch[0].rm_so);
-      strcat  (message, "い)");
-      gtk_label_set_text (GTK_LABEL (suggestion_label), message);
-      gtk_widget_show (suggestion_hbox);
+      char *message = gettext("Your query is possibly a te-form i-adjective.  (Try searching for %s%s?)");
+      gw_ui_set_inforation_box_label (message, query, pmatch[0].rm_so, "い");
     }
     else if (regexec (&re_i_adj_causative, query, nmatch, pmatch, 0) == 0)
     {
-      char message[1000];
-      strcpy  (message, gettext ("Your query is possibly a causitive-form i-adjective. "));
-      strcat  (message, " (");
-      strncat (message, query, pmatch[0].rm_so);
-      strcat  (message, "い)");
-      gtk_label_set_text (GTK_LABEL (suggestion_label), message);
-      gtk_widget_show (suggestion_hbox);
+      char *message = gettext("Your query is possibly a causitive i-adjective.  (Try searching for %s%s?)");
+      gw_ui_set_inforation_box_label (message, query, pmatch[0].rm_so, "い");
     }
     else if (regexec (&re_i_adj_conditional, query, nmatch, pmatch, 0) == 0)
     {
-      char message[1000];
-      strcpy  (message, gettext ("Your query is possibly a conditional-form i-adjective. "));
-      strcat  (message, " (");
-      strncat (message, query, pmatch[0].rm_so);
-      strcat  (message, "い)");
-      gtk_label_set_text (GTK_LABEL (suggestion_label), message);
-      gtk_widget_show (suggestion_hbox);
+      char *message = gettext("Your query is possibly a conditional-form i-adjective.  (Try searching for %s%s?)");
+      gw_ui_set_inforation_box_label (message, query, pmatch[0].rm_so, "い");
     }
   }
 
@@ -219,53 +214,28 @@ void gw_ui_verb_check_with_suggestion (GwSearchItem *item)
     regmatch_t pmatch[nmatch];
     if (regexec(&re_na_adj_past, query, nmatch, pmatch, 0) == 0)
     {
-      char message[1000];
-      strcpy  (message, gettext ("Your query is possibly a past-form na-adjective. "));
-      strcat  (message, " (");
-      strncat (message, query, pmatch[0].rm_so);
-      strcat  (message, ")");
-      gtk_label_set_text (GTK_LABEL (suggestion_label), message);
-      gtk_widget_show (suggestion_hbox);
+      char *message = gettext("Your query is possibly a past-form na-adjective.  (Try searching for %s%s?)");
+      gw_ui_set_inforation_box_label (message, query, pmatch[0].rm_so, "");
     }
     else if (regexec(&re_na_adj_negative, query, nmatch, pmatch, 0) == 0)
     {
-      char message[1000];
-      strcpy  (message, gettext ("Your query is possibly a negative na-adjective. "));
-      strcat  (message, " (");
-      strncat (message, query, pmatch[0].rm_so);
-      strcat  (message, ")");
-      gtk_label_set_text (GTK_LABEL (suggestion_label), message);
-      gtk_widget_show (suggestion_hbox);
+      char *message = gettext("Your query is possibly a negative na-adjective.  (Try searching for %s%s?)");
+      gw_ui_set_inforation_box_label (message, query, pmatch[0].rm_so, "");
     }
     else if (regexec(&re_na_adj_te, query, nmatch, pmatch, 0) == 0)
     {
-      char message[1000];
-      strcpy  (message, gettext ("Your query is possibly a te-form na-adjective. "));
-      strcat  (message, " (");
-      strncat (message, query, pmatch[0].rm_so);
-      strcat  (message, ")");
-      gtk_label_set_text (GTK_LABEL (suggestion_label), message);
-      gtk_widget_show (suggestion_hbox);
+      char *message = gettext("Your query is possibly a te-form na-adjective.  (Try searching for %s%s?)");
+      gw_ui_set_inforation_box_label (message, query, pmatch[0].rm_so, "");
     }
     else if (regexec(&re_na_adj_causative, query, nmatch, pmatch, 0) == 0)
     {
-      char message[1000];
-      strcpy  (message, gettext ("Your query is possibly a causitive na-adjective. "));
-      strcat  (message, " (");
-      strncat (message, query, pmatch[0].rm_so);
-      strcat  (message, ")");
-      gtk_label_set_text (GTK_LABEL (suggestion_label), message);
-      gtk_widget_show (suggestion_hbox);
+      char *message = gettext("Your query is possibly a causitive na-adjective.  (Try searching for %s%s?)");
+      gw_ui_set_inforation_box_label (message, query, pmatch[0].rm_so, "");
     }
     else if (regexec(&re_na_adj_conditional, query, nmatch, pmatch, 0) == 0)
     {
-      char message[1000];
-      strcpy  (message, gettext ("Your query is possibly a conditional-form na-adjective. "));
-      strcat  (message, " (");
-      strncat (message, query, pmatch[0].rm_so);
-      strcat  (message, ")");
-      gtk_label_set_text (GTK_LABEL (suggestion_label), message);
-      gtk_widget_show (suggestion_hbox);
+      char *message = gettext("Your query is possibly a conditional-form na-adjective.  (Try searching for %s%s?)");
+      gw_ui_set_inforation_box_label (message, query, pmatch[0].rm_so, "");
     }
   }
 }

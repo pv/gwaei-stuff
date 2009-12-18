@@ -873,6 +873,7 @@ G_MODULE_EXPORT gboolean do_update_clipboard_on_focus_change (GtkWidget        *
                                                               GtkDirectionType  arg1,
                                                               gpointer          data   ) 
 {
+    gw_ui_close_suggestion_box ();
     guint TARGET;
     TARGET = gw_ui_get_current_widget_focus ("main_window");
 
@@ -1198,6 +1199,7 @@ G_MODULE_EXPORT gboolean do_focus_change_on_key_press (GtkWidget *widget,
                                                        GdkEvent  *event,
                                                        gpointer  *focus  )
 {
+    gw_ui_close_suggestion_box ();
     guint state = ((GdkEventKey*)event)->state;
     guint keyval = ((GdkEventKey*)event)->keyval;
     guint modifiers = ( 
