@@ -50,6 +50,7 @@
 #include <gwaei/settings.h>
 #include <gwaei/interface.h>
 #include <gwaei/preferences.h>
+#include <gwaei/tabs.h>
 
 #include "kanjipad/kanjipad.h"
 
@@ -73,7 +74,7 @@ static gulong select_all_handler_id = 0;
 //!
 G_MODULE_EXPORT void do_settings (GtkWidget *widget, gpointer data)
 {
-    gw_ui_cancel_search_by_target (GW_TARGET_RESULTS);
+    g_list_foreach (gw_tab_searchitems, (GFunc) gw_ui_cancel_search_by_searchitem, NULL);
     gw_ui_cancel_search_by_target (GW_TARGET_KANJI);
 
     //Prepare the interface
@@ -372,7 +373,10 @@ G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
     item = (GwSearchItem*) data;
 
     //Checks to make sure everything is sane
-    if (gw_ui_cancel_search_by_target (GW_TARGET_RESULTS) == FALSE) return;
+    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+    if (gw_ui_cancel_search (gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), page_num)) == FALSE)
+      return;
     if (item->dictionary->status != GW_DICT_STATUS_INSTALLED) return;
 
     //Start setting things up;
@@ -390,6 +394,10 @@ G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
     //Set tab text
     gw_guarantee_first_tab ();
     gw_tab_set_current_tab_text (hl->current->queryline->string);
+
+    //Add tab reference to searchitem
+    GList *listitem = g_list_nth(gw_tab_searchitems, page_num);
+    listitem->data = hl->current;
 
     gw_search_get_results (hl->current);
     gw_ui_update_history_popups ();
@@ -945,7 +953,7 @@ G_MODULE_EXPORT gboolean do_update_clipboard_on_focus_change (GtkWidget        *
 //!
 G_MODULE_EXPORT void do_print (GtkWidget *widget, gpointer data)
 {
-    gw_ui_cancel_search_by_target (GW_TARGET_RESULTS);
+    g_list_foreach (gw_tab_searchitems, (GFunc) gw_ui_cancel_search_by_searchitem, NULL);
     gw_print ();
     printf ("Print button was clicked\n");
 }
@@ -1299,7 +1307,9 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
         show_less_relevant == hl->current->show_less_relevant_results)
       return;
 
-    if (gw_ui_cancel_search_by_target (GW_TARGET_RESULTS) == FALSE)
+    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+    if (gw_ui_cancel_search (gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), page_num)) == FALSE)
       return;
 
     if (hl->current != NULL && (hl->current)->total_results) 
@@ -1321,6 +1331,10 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
       g_warning ("There was an error creating the searchitem variable.  I will cancel this search.  Please eat some cheese.\n");
       return;
     }
+
+    //Add tab reference to searchitem
+    GList *listitem = g_list_nth(gw_tab_searchitems, page_num);
+    listitem->data = hl->current;
 
     //Start the search
     //Set tab text

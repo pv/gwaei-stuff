@@ -49,6 +49,7 @@
 #include <gwaei/callbacks.h>
 #include <gwaei/interface.h>
 #include <gwaei/preferences.h>
+#include <gwaei/tabs.h>
 
 
 //Convenience pointers
@@ -57,7 +58,7 @@ GtkWidget *kanji_tv     = NULL;
 //GObject   *results_tb   = NULL;
 GObject   *kanji_tb     = NULL;
 GtkWidget *search_entry = NULL;
-
+GList *gw_tab_searchitems = NULL;
 
 static UniqueResponse message_received_cb (UniqueApp         *app,
                                            UniqueCommand      command,
@@ -1807,7 +1808,7 @@ void  gw_ui_set_tag_to_tagtable (char *id,   int      TARGET,
     GObject *tb;
     tb = get_gobject_from_target(TARGET);
 
-    GtkTextTagTable* table = gtk_text_buffer_get_tag_table (tb); 
+    GtkTextTagTable* table = gtk_text_buffer_get_tag_table (GTK_TEXT_BUFFER (tb)); 
     GtkTextTag* tag = gtk_text_tag_table_lookup (table, id);
 
     if (tag == NULL)
@@ -2524,13 +2525,8 @@ void initialize_gui_interface(int *argc, char ***argv)
 }
 
 
-gboolean gw_ui_cancel_search_by_target(const int TARGET)
+gboolean gw_ui_cancel_search_by_searchitem (GwSearchItem *item)
 {
-    GwHistoryList* hl = gw_historylist_get_list(GW_HISTORYLIST_RESULTS);
-    GwSearchItem *item = hl->current;
-
-    if (item != NULL && item->status == GW_SEARCH_GW_DICT_STATUS_CANCELING) return FALSE;
-
     if (item == NULL || item->status == GW_SEARCH_IDLE) return TRUE;
 
     item->status = GW_SEARCH_GW_DICT_STATUS_CANCELING;
@@ -2542,6 +2538,27 @@ gboolean gw_ui_cancel_search_by_target(const int TARGET)
       gdk_threads_enter();
     }
     return TRUE;
+}
+
+
+gboolean gw_ui_cancel_search (gpointer container)
+{
+    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    int position = gtk_notebook_page_num (GTK_NOTEBOOK (notebook), container);
+    if (position != -1)
+    {
+      GwSearchItem *item = g_list_nth_data (gw_tab_searchitems, position);
+      return  gw_ui_cancel_search_by_searchitem (item);
+    }
+    printf("WARNING: Could not find search to cancel. Something went wrong.\n");
+    return FALSE;
+}
+
+gboolean gw_ui_cancel_search_by_target(const int TARGET)
+{
+    GwHistoryList* hl = gw_historylist_get_list(GW_HISTORYLIST_RESULTS);
+    GwSearchItem *item = hl->current;
+    return  gw_ui_cancel_search_by_searchitem (item);
 }
 
 

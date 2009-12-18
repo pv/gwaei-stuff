@@ -40,6 +40,7 @@
 #include <gwaei/search-objects.h>
 #include <gwaei/engine.h>
 #include <gwaei/interface.h>
+#include <gwaei/gtk.h>
 
 
 //!
@@ -53,8 +54,11 @@ G_MODULE_EXPORT void do_radical_clear (GtkWidget *widget, gpointer data)
   gw_ui_deselect_all_radicals ();
   gw_ui_set_strokes_checkbox_state (FALSE);
 
-  //Make the search stop that automatically starts
-  gw_ui_cancel_search_by_target(GW_TARGET_RESULTS);
+  //Checks to make sure everything is sane
+  GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+  int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+  if (gw_ui_cancel_search (gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), page_num)) == FALSE)
+    return;
 }
 
 
@@ -87,8 +91,12 @@ G_MODULE_EXPORT void do_radical_search (GtkWidget *widget, gpointer data)
 
     GwDictInfo *dictionary;
     dictionary = gw_dictlist_get_dictionary_by_alias ("Radicals");
+    if (dictionary == NULL || dictionary->status != GW_DICT_STATUS_INSTALLED) return;
 
-    if (gw_ui_cancel_search_by_target(GW_TARGET_RESULTS) == FALSE)
+    //Checks to make sure everything is sane
+    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+    if (gw_ui_cancel_search (gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), page_num)) == FALSE)
       return;
 
     if (hl->current != NULL && (hl->current)->total_results > 0) 

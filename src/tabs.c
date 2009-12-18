@@ -50,6 +50,7 @@
 #include <gwaei/interface.h>
 #include <gwaei/preferences.h>
 #include <gwaei/callbacks.h>
+#include <gwaei/tabs.h>
 
 G_MODULE_EXPORT void do_tab_remove (GtkWidget *widget, gpointer data);
 
@@ -144,6 +145,7 @@ int gw_tab_new ()
   gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), current);
   gw_tab_update_appearance ();
   gw_ui_initialize_buffer_marks(textbuffer);
+  gw_tab_searchitems = g_list_append(gw_tab_searchitems, NULL);
 
   return position;
 }
@@ -178,7 +180,13 @@ G_MODULE_EXPORT void do_tab_remove (GtkWidget *widget, gpointer data)
   int pages = gtk_notebook_get_n_pages (GTK_NOTEBOOK (notebook));
   if (pages < 2) return;
   int page_num = gtk_notebook_page_num (GTK_NOTEBOOK (notebook), GTK_WIDGET (data));
+  GtkWidget *content = gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), page_num);
+  gw_ui_cancel_search (content);
   gtk_notebook_remove_page (GTK_NOTEBOOK (notebook), page_num);
+
+  GwSearchItem *item = g_list_nth_data(gw_tab_searchitems, page_num);
+  GList *listitem = g_list_nth(gw_tab_searchitems, page_num);
+  listitem = g_list_remove (listitem, item);
 
   gw_tab_update_appearance ();
 }
@@ -196,7 +204,14 @@ G_MODULE_EXPORT void do_tab_remove_current (GtkWidget *widget, gpointer data)
   int pages = gtk_notebook_get_n_pages (GTK_NOTEBOOK (notebook));
   if (pages < 2) exit (EXIT_SUCCESS);
   int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+  GtkWidget *content = gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), page_num);
+  gw_ui_cancel_search (content);
   gtk_notebook_remove_page (GTK_NOTEBOOK (notebook), page_num);
+
+  GwSearchItem *item = g_list_nth_data(gw_tab_searchitems, page_num);
+  GList *listitem = g_list_nth(gw_tab_searchitems, page_num);
+  listitem = g_list_remove (listitem, item);
+
 
   gw_tab_update_appearance ();
 }
