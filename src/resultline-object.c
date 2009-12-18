@@ -342,7 +342,7 @@ void gw_resultline_parse_kanjidict_result_string (GwResultLine *rl)
       *end[JLPT] = '\0';
 }
 
-/*
+
 //!
 //! @brief Parses a string for an radical format string
 //!
@@ -351,7 +351,7 @@ void gw_resultline_parse_kanjidict_result_string (GwResultLine *rl)
 //! @param line line
 //! @param string string
 //!
-void gw_resultline_parse_radical_result_string (GwResultLine *rl)
+void gw_resultline_parse_radicaldict_result_string (GwResultLine *rl)
 {
     //Reinitialize Variables to help prevent craziness
     rl->def_start[0] = NULL;
@@ -396,7 +396,7 @@ void gw_resultline_parse_radical_result_string (GwResultLine *rl)
 //! @param line line
 //! @param string string
 //!
-void gw_resultline_parse_examples_result_string (GwResultLine *rl)
+void gw_resultline_parse_examplesdict_result_string (GwResultLine *rl)
 {
     //Reinitialize Variables to help prevent craziness
     rl->def_start[0] = NULL;
@@ -465,7 +465,7 @@ void gw_resultline_parse_examples_result_string (GwResultLine *rl)
 //! @param line line
 //! @param string string
 //!
-void gw_resultline_parse_unknown_result_string (GwResultLine *rl)
+void gw_resultline_parse_unknowndict_result_string (GwResultLine *rl)
 {
     //Reinitialize Variables to help prevent craziness
     rl->def_start[0] = NULL;
@@ -490,4 +490,4 @@ void gw_resultline_parse_unknown_result_string (GwResultLine *rl)
       *temp = '\0';
     }
 }
-*/
+
