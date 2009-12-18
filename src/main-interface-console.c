@@ -526,12 +526,19 @@ static void initialize_ncurses_interface (GwDictInfo *dictionary){
 
 		thisArg = NULL;
 		thisArg = strtok (query," ");
+		int test = false;
 		while (thisArg != NULL) {
-
-			if (is_switch (thisArg, "-e", "--exact"))
+			if (test){
+				test = false;
+				dictionary = gw_dictlist_get_dictionary_by_alias(thisArg);
+			}
+			else if (is_switch (thisArg, "-e", "--exact"))
 				exact_switch = TRUE;
 			else if (is_switch (thisArg, "-q", "--quiet"))
 				quiet_switch = TRUE;
+			else if (is_switch (thisArg, "-d", "--dictionary")) {
+				  test = true;
+			}
 			else
 				break; //Search only the first word inserted
 
@@ -606,7 +613,9 @@ static void initialize_ncurses_interface (GwDictInfo *dictionary){
 	return;
 }
 
-/*
+/**
+ *
+ *
  *
  */
 void initialize_console_interface(int argc, char **argv) {
