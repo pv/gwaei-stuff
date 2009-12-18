@@ -340,7 +340,7 @@ static gboolean stream_results_thread (GwSearchItem *item)
       else
       {
         gw_ui_clear_buffer_by_target (item->target_tb);
-        //gw_ui_display_no_results_found_page();
+        gw_ui_display_no_results_found_page(item);
       }
     }
     

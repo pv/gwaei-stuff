@@ -1882,7 +1882,7 @@ void gw_ui_close_kanji_results()
 
 
 gint32 gw_previous_tip = 0;
-void gw_ui_display_no_results_found_page()
+void gw_ui_display_no_results_found_page(GwSearchItem *item)
 {
     gint32 temp = g_random_int_range(0,9);
     while (temp == gw_previous_tip)
@@ -1894,13 +1894,13 @@ void gw_ui_display_no_results_found_page()
 
 
     //Add the title
-    gw_ui_append_to_buffer (GW_TARGET_RESULTS, "\n", "small", NULL, NULL, NULL);
-    gw_ui_append_to_buffer (GW_TARGET_RESULTS, gettext("No results found!"),
+    gw_ui_append_to_buffer (item, "\n", "small", NULL, NULL, NULL);
+    gw_ui_append_to_buffer (item, gettext("No results found!"),
                             "important", "larger", NULL, NULL    );
 
 
     //Linebreak before the image
-    gw_ui_append_to_buffer (GW_TARGET_RESULTS, "\n", NULL, NULL, NULL, NULL);
+    gw_ui_append_to_buffer (item, "\n", NULL, NULL, NULL, NULL);
 
     char image_name[100];
     strcpy(image_name, "character");
@@ -1908,127 +1908,127 @@ void gw_ui_display_no_results_found_page()
       strcat(image_name, "3");
     strcat(image_name, ".png");
     
-    gw_ui_append_image_to_buffer(GW_TARGET_RESULTS, image_name);
+    gw_ui_append_image_to_buffer(item, image_name);
 
 
     //Insert the instruction text
-    gw_ui_append_to_buffer (GW_TARGET_RESULTS, "\n\n", NULL, NULL, NULL, NULL);
+    gw_ui_append_to_buffer (item, "\n\n", NULL, NULL, NULL, NULL);
 
-    gw_ui_append_to_buffer (GW_TARGET_RESULTS, gettext("gWaei Usage Tip #"),
+    gw_ui_append_to_buffer (item, gettext("gWaei Usage Tip #"),
                             "important", NULL, NULL, NULL         );
-    gw_ui_append_to_buffer (GW_TARGET_RESULTS, tip_number_str,
+    gw_ui_append_to_buffer (item, tip_number_str,
                             "important", NULL, NULL, NULL         );
-    gw_ui_append_to_buffer (GW_TARGET_RESULTS, gettext(": "),
+    gw_ui_append_to_buffer (item, gettext(": "),
                             "important", NULL, NULL, NULL         );
                             
     switch (TIP_NUMBER)
     {
       case 0:
         //Tip 1
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("Inputting Unknown Kanji"),
                                    "header", "important", NULL, NULL         );
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    "\n\n",
                                    NULL, NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("Use the "),
                                    NULL, NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("Unknown Character"),
                                    "important", NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext(" from the Insert menu or toolbar in place of unknown Kanji.  "),
                                    NULL, NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    "日.語",
                                    "important", NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext(" will return results like "),
                                    NULL, NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    "日本語",
                                    "important", NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext(".\n\nKanjipad"),
                                    "important", NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext(" is another option for inputting Kanji characters.  Because of how the innards of Kanjipad works, drawing with the correct number of strokes and drawing the strokes in the correct direction is very important."),
                                    NULL, NULL, NULL, NULL         );
         break;
 
      case 1:
         //Tip 2
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("Getting More Exact Matches"),
                                    "important", "header", NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    "\n\n",
                                    NULL, NULL, NULL, NULL         );
 
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("Use the "),
                                    NULL, NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("Word-edge Mark"),
                                    "important", NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext(" and the "),
                                    NULL, NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("Not-word-edge Mark"),
                                    "important", NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext(" from the insert menu to get more relevant results.  "),
                                    NULL, NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("fish\\b"),
                                    "important", NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext(" will return results like "),
                                    "important", NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    "fish",
                                    "important", "match", NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext(" and "),
                                    NULL, NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    "sel",
                                    "important", NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    "fish",
                                    "important", "match", NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext(", but not "),
                                    NULL, NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    "fish",
                                    "important", "match", NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    "erman", 
                                    "important", NULL, NULL, NULL         );
 
@@ -2036,115 +2036,115 @@ void gw_ui_display_no_results_found_page()
 
      case 2:
         //Tip 3
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("Searching for Multiple Words"),
                                    "important", "header", NULL, NULL);
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    "\n\n",
                                    NULL, NULL, NULL, NULL         );
 
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("Use the "),
                                    NULL, NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("And Character"),
                                    "important", NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext(" or "),
                                    NULL, NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("Or Character"),
                                    "important", NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext(" to search for results that contain a combination of words that might not be right next to each other.  "),
                                    NULL, NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("cats&dogs"), 
                                    "important", NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext(" will return only results that contain both the words cats and dogs like "),
                                    NULL, NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    "犬猫", 
                                    "important", "match", NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    " does.", 
                                    NULL, NULL, NULL, NULL         );
         break;
 
      case 3:
         //Tip 4
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("Make a Vocabulary List"),
                                    "important", "header", NULL, NULL);
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    "\n\n",
                                    NULL, NULL, NULL, NULL         );
 
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
             gettext("Specific sections of results can be printed or saved by dragging the mouse to highlight them.  Using this in combination with the "),
                                    NULL, NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("Append"),
                                    "important", NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext(" command from the File menu or toolbar, quick and easy creation of a vocabulary lists is possible."),
                                    NULL, NULL, NULL, NULL         );
         break;
 
      case 4:
         //Tip 5
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("Why Use the Mouse?"),
                                    "important", "header", NULL, NULL);
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    "\n\n",
                                    NULL, NULL, NULL, NULL         );
 
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("Typing something"),
                                    "important", NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext(" will move the focus to the search input box.  Hitting the "),
                                    NULL, NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("Up or Down arrow key"),
                                    "important", NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext(" will move the focus to the results pane so you can scroll the results.  Hitting "),
                                    NULL, NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("Alt-Up"),
                                    "important", NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext(" or "),
                                    NULL, NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("Alt-Down"),
                                    "important", NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext(" will cycle the currently installed dictionaries."),
                                    NULL, NULL, NULL, NULL         );
 
@@ -2152,38 +2152,38 @@ void gw_ui_display_no_results_found_page()
 
      case 5:
         //Tip 6
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("Get Ready for the JLPT"),
                                    "important", "header", NULL, NULL);
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    "\n\n",
                                    NULL, NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("The Kanji dictionary has some hidden features.  One such one is the ability to filter out Kanji that don't meet a certain criteria.  If you are planning on taking the Japanese Language Proficiency Test, using the phrase "),
                                    NULL, NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("J#"),
                                    "important", NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext(" will filter out Kanji not of that level for easy study.  For example, "),
                                    NULL, NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("J4"),
                                    "important", NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext(" will only show Kanji that appears on the forth level test.\n\nAlso of interest, the phrase "),
                                    NULL, NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("G#"),
                                    "important", NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext(" will filter out Kanji for the grade level a Japanese person would study it at in school."),
                                    NULL, NULL, NULL, NULL         );
 
@@ -2191,30 +2191,30 @@ void gw_ui_display_no_results_found_page()
 
      case 6:
         //Tip 7
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("Just drag words in!"),
                                 "important", "header", NULL, NULL);
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    "\n\n",
                                    NULL, NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("If you drag and drop a highlighted word into "),
                                    NULL, NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("gWaei"),
                                    "important", NULL, NULL, NULL         );
             
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("'s search query input, "),
                                    NULL, NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("gWaei"),
                                    "important", NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext(" will automatically start a search using that text.  This can be a nice way to quickly look up words while browsing webpages."),
                                    NULL, NULL, NULL, NULL         );
 
@@ -2222,38 +2222,38 @@ void gw_ui_display_no_results_found_page()
 
      case 7:
         //Tip 8
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("What does (adj-i) mean?"),
                                    "important", "header", NULL, NULL);
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    "\n\n",
                                    NULL, NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("It is part of the terminalogy used by the EDICT group of dictionaries to categorize words.  Some are obvious, but there are a number that there is no way to know the meaning other than by looking it up.\n\n"),
                                    NULL, NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("gWaei"),
                                    "important", NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext(" includes some of the EDICT documentation in its help manual.  Click the "),
                                    NULL, NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("Dictionary Terminology Glossary menuitem"),
                                    "important", NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext(" in the "),
                                    NULL, NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("Help menu"),
                                    "important", NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext(" to get to it."),
                                    NULL, NULL, NULL, NULL         );
 
@@ -2261,20 +2261,20 @@ void gw_ui_display_no_results_found_page()
 
      case 8:
         //Tip 9
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("Books are Heavy"),
                                    "important", "header", NULL, NULL);
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    "\n\n",
                                    NULL, NULL, NULL, NULL         );
 
-        gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+        gw_ui_append_to_buffer (item,
                                    gettext("Aways wear a construction helmet when working with books.  They are dangerous heavy objects that can at any point fall on and injure you.  Please all urge all of your friends to, too.  They will thank you later.  Really."),
                                    NULL, NULL, NULL, NULL         );
        break;
     }
 
-    gw_ui_append_to_buffer (GW_TARGET_RESULTS,
+    gw_ui_append_to_buffer (item,
                                "\n\n",
                                NULL, NULL, NULL, NULL         );
 }
