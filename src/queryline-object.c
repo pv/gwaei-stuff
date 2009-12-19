@@ -177,6 +177,7 @@ int gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
    int mix_pos   = ql->mix_total;
    int roma_pos  = ql->roma_total;
    char temp[300];
+   gboolean want_conv;
 
    while (generic_atoms[i] != NULL && i < MAX_ATOMS)
    {
@@ -235,7 +236,7 @@ int gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
        ql->roma_total++;
 
        //Add coversions to search on success
-       if (gw_util_str_roma_to_hira (generic_atoms[i], temp, 300))
+       if (gw_util_str_roma_to_hira (generic_atoms[i], temp, 300)  && want_rk_conv)
        {
          //Hiragana
          strcpy(ql->hira_string, temp);
