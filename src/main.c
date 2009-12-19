@@ -65,33 +65,7 @@ int main( int argc, char *argv[] )
     setlocale(LC_MESSAGES, "");
     //Check if it's the correct locale
     if (gw_util_is_japanese_ctype() == FALSE)
-    {
-      //Try forcing a correct or better setting
-      //This will have nice effects like antialiased text
-      if ( setlocale(LC_CTYPE, "ja_JP.UTF8")  == NULL &&
-           setlocale(LC_CTYPE, "ja_JP.utf8")  == NULL &&
-           setlocale(LC_CTYPE, "ja_JP.UTF-8") == NULL &&
-           setlocale(LC_CTYPE, "ja_JP.utf-8") == NULL &&
-           setlocale(LC_CTYPE, "ja_JP")       == NULL &&
-           setlocale(LC_CTYPE, "ja")          == NULL &&
-           setlocale(LC_CTYPE, "japanese")    == NULL    )
-        //All failed, go for the default
-        setlocale(LC_CTYPE, "");
-
-      //printf("Set CTYPE locale to %s\n", setlocale(LC_CTYPE, NULL));
-
-      if ( setlocale(LC_COLLATE, "ja_JP.UTF8")  == NULL &&
-           setlocale(LC_COLLATE, "ja_JP.utf8")  == NULL &&
-           setlocale(LC_COLLATE, "ja_JP.UTF-8") == NULL &&
-           setlocale(LC_COLLATE, "ja_JP.utf-8") == NULL &&
-           setlocale(LC_COLLATE, "ja_JP")       == NULL &&
-           setlocale(LC_COLLATE, "ja")          == NULL &&
-           setlocale(LC_COLLATE, "japanese")    == NULL    )
-        //All failed, go for the default
-        setlocale(LC_COLLATE, "");
-
-      //printf("Set COLLATE locale to %s\n", setlocale(LC_COLLATE, NULL));
-    }
+      gw_util_force_japanese_locale();
 
     if (!g_thread_supported ())
       g_thread_init (NULL);
