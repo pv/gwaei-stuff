@@ -109,6 +109,97 @@ static UniqueResponse message_received_cb (UniqueApp         *app,
 }
 
 
+//!
+//! @brief Sets the query text of the program using the informtion from the searchitem
+//!
+//! @param item a GwSearchItem argument.
+//!
+void gw_ui_set_query_entry_text_by_searchitem (GwSearchItem *item)
+{
+    //Set the colors of the entry to the current match highlight colors
+    char key[100];
+    char *key_ptr;
+    strcpy (key, GCPATH_GW);
+    strcat (key, "/highlighting/match");
+    key_ptr = &key[strlen (key)];
+    char fg_color[100], bg_color[100], fallback[100];
+    char *ret;
+    strcpy (key_ptr, "_foreground");
+    gw_util_strncpy_fallback_from_key (fallback, key, 100);
+    ret = gw_pref_get_string (fg_color, key, fallback, 100);
+    if (IS_HEXCOLOR(fg_color) == FALSE)
+    {
+      if (ret != NULL) gw_pref_set_string (key, fallback);
+      strncpy (fg_color, fallback, 100);
+    }
+    strcpy (key_ptr, "_background");
+    gw_util_strncpy_fallback_from_key (fallback, key, 100);
+    ret = gw_pref_get_string (bg_color, key, fallback, 100);
+    if (IS_HEXCOLOR(bg_color) == FALSE)
+    {
+      if (ret != NULL) gw_pref_set_string (key, fallback);
+      strncpy (bg_color, fallback, 100);
+    }
+
+
+    if (item == NULL)
+    {
+      gtk_entry_set_text (GTK_ENTRY (search_entry), "");
+      gtk_widget_modify_base (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
+      gtk_widget_modify_text (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
+    }
+    else
+    {
+      if (item->queryline != NULL && strlen(item->queryline->string) > 1)
+        gtk_entry_set_text (GTK_ENTRY (search_entry), item->queryline->string);
+      else
+        gtk_entry_set_text (GTK_ENTRY (search_entry), "");
+
+      GdkColor forground, background;
+      gdk_color_parse (fg_color, &forground);
+      gdk_color_parse (bg_color, &background);
+      gtk_widget_modify_base (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, &background);
+      gtk_widget_modify_text (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, &forground);
+    }
+}
+
+
+//!
+//! @brief Sets the main window title text of the program using the informtion from the searchitem
+//!
+//! @param item a GwSearchItem argument.
+//!
+void gw_ui_set_main_window_title_by_searchitem (GwSearchItem *item)
+{
+    //Declarations
+    char *full_title = NULL;
+    char *base_title = gettext("gWaei Japanese-English Dictionary");
+    gboolean required_objects_exist = (item != NULL && item->queryline != NULL);
+    GtkWidget *window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
+    int relevant;
+    int total;
+
+    //Initializations
+    if (required_objects_exist)
+    {
+      char *query = item->queryline->string;
+      int relevant = item->total_relevant_results;
+      int total = item->total_results;
+      full_title = g_strdup_printf ("%s [%d/%d] - %s", query, relevant, total, base_title);
+    }
+
+    //Work
+    if (required_objects_exist && full_title != NULL)
+    {
+      gtk_window_set_title (GTK_WINDOW (window), full_title);
+      g_free (full_title);
+    }
+    else
+    {
+      gtk_window_set_title (GTK_WINDOW (window), base_title);
+    }
+}
+
 
 void gw_ui_close_suggestion_box ()
 {
@@ -120,19 +211,25 @@ void gw_ui_close_suggestion_box ()
 
 void gw_ui_set_inforation_box_label (const char* string, const char* query, int query_length, const char* extension)
 {
-    char query_short[300];
-    strncpy(query_short, query, query_length);
-    query_short[query_length] = '\0';
+    if (query_length > 1)
+    {
+      char query_short[300];
+      strncpy(query_short, query, query_length);
+      query_short[query_length] = '\0';
 
-    GtkWidget *suggestion_label;
-    suggestion_label = GTK_WIDGET (gtk_builder_get_object (builder, "suggestion_label"));
-    char *label_text = g_strdup_printf (string, query_short, extension);
-    gtk_label_set_text (GTK_LABEL (suggestion_label), label_text);
-    g_free (label_text);
+      GtkWidget *suggestion_label;
+      suggestion_label = GTK_WIDGET (gtk_builder_get_object (builder, "suggestion_label"));
+      char *label_text = g_strdup_printf (string, query_short, extension);
+      if (label_text != NULL)
+      {
+        gtk_label_set_text (GTK_LABEL (suggestion_label), label_text);
+        g_free (label_text);
 
-    GtkWidget *suggestion_hbox;
-    suggestion_hbox = GTK_WIDGET (gtk_builder_get_object (builder, "suggestion_hbox"));
-    gtk_widget_show (suggestion_hbox);
+        GtkWidget *suggestion_hbox;
+        suggestion_hbox = GTK_WIDGET (gtk_builder_get_object (builder, "suggestion_hbox"));
+        gtk_widget_show (suggestion_hbox);
+      }
+    }
 }
 
 
@@ -563,8 +660,7 @@ void initialize_window_attributes(char* window_id)
 }
 
 
-
-void save_window_attributes_and_hide(char* window_id)
+void save_window_attributes_and_hide (char* window_id)
 {
     GtkWidget *window;
     window = GTK_WIDGET (gtk_builder_get_object(builder, window_id));
@@ -748,89 +844,63 @@ void gw_ui_update_toolbar_buttons()
 }
 
 
-void gw_ui_reinitialize_results_label (GwSearchItem *item)
+//!
+//! @brief Set's the progress label of the program using the inforamtion from the searchitem
+//!
+//! @param item a GwSearchItem argument.
+//!
+void gw_ui_set_total_results_label_by_searchitem (GwSearchItem* item)
 {
-    if (item->target == GW_TARGET_KANJI) return;
-
-    char id[50];
-    GtkWidget *label;
-    strcpy(id, "results_label_start");
-    label = GTK_WIDGET (gtk_builder_get_object(builder, id));
-    gtk_label_set_text(GTK_LABEL (label), gettext("Searching... "));
-
-    GtkWidget *hbox;
-    strcpy(id, "results_relevant_hbox");
-    hbox = GTK_WIDGET (gtk_builder_get_object(builder, id));
-    gtk_widget_hide (GTK_WIDGET (hbox));
-
-    item->total_results = 0;
-    item->total_relevant_results = 0;
-    gw_ui_update_total_results_label(item);
-}
-
-
-void gw_ui_update_total_results_label (GwSearchItem* item)
-{
-    char id[50];
-    GtkWidget *results;
-    GtkWidget *number;
-    GtkWidget *no_results;
-    strcpy(id, "results_label_hbox");
-    results = GTK_WIDGET (gtk_builder_get_object(builder, id));
-    strcpy(id, "results_label_number");
-    number = GTK_WIDGET (gtk_builder_get_object(builder, id));
-    strcpy(id, "no_results_label");
-    no_results = GTK_WIDGET (gtk_builder_get_object(builder, id));
+    GtkWidget *label = GTK_WIDGET (gtk_builder_get_object(builder, "progress_label"));
 
     if (item == NULL)
     {
-      //Get the gtk widgets from gtkbuilder
-      gtk_label_set_text(GTK_LABEL (results), "");
-      gtk_label_set_text(GTK_LABEL (number), "");
-      gtk_label_set_text(GTK_LABEL (no_results), "");
+      gtk_label_set_text(GTK_LABEL (label), "");
     }
-
-    if (gw_util_get_runmode () == GW_CONSOLE_RUNMODE) return;
-    if (item->target == GW_TARGET_KANJI) return;
-
-    //Get the gtk widgets from gtkbuilder
-    int number_int = item->total_results;
-    char number_string[14];
-    gw_util_itoa(number_int, number_string, 14);
-
-    //Finish
-    gtk_widget_hide(no_results);
-    gtk_label_set_text(GTK_LABEL (number), number_string);
-    gtk_widget_show(results);
-
-    if (item->total_results != item->total_relevant_results &&
-        item->total_relevant_results != 0                     )
+    else
     {
-      strcpy(id, "results_relevant_hbox");
-      results = GTK_WIDGET (gtk_builder_get_object(builder, id));
+      //Declarations
+      char *idle_message_none = "";
+      char *idle_message_both = gettext("Found %d results (%d Relevant)");
+      char *idle_message = gettext("Found %d results");
 
-      strcpy(id, "results_relevant_number");
-      number = GTK_WIDGET (gtk_builder_get_object(builder, id));
-      gtk_widget_show (GTK_WIDGET (results));
+      char *searching_message_none = gettext("Searching...");
+      char *searching_message_both = gettext("Searching... %d results (%d Relevant)");
+      char *searching_message = gettext("Searching... %d results");
 
-      number_int = item->total_relevant_results;
-      number_string[0] = '\0';
-      gw_util_itoa(number_int, number_string, 14);
+      char *status_message = NULL;
+      int relevant = item->total_relevant_results;
+      int irrelevant = item->total_irrelevant_results;
+      int total = item->total_results;
 
-      gtk_label_set_text(GTK_LABEL (number), number_string);
-      gtk_widget_show(results);
+      //Initializations
+      switch (item->status)
+      {
+        case GW_SEARCH_IDLE:
+            if (item->current_line == 0)
+              gtk_label_set_text(GTK_LABEL (label), idle_message_none);
+            else if (relevant == total)
+              status_message = g_strdup_printf (idle_message, relevant);
+            else
+              status_message = g_strdup_printf (idle_message_both, total, relevant);
+            break;
+        case GW_SEARCH_SEARCHING:
+            if (item->current_line == 0)
+              gtk_label_set_text(GTK_LABEL (label), searching_message_none);
+            else if (relevant == total)
+              status_message = g_strdup_printf (searching_message, relevant);
+            else
+              status_message = g_strdup_printf (searching_message_both, total, relevant);
+            break;
+      }
+
+      //Finalize
+      if (status_message != NULL)
+      {
+        gtk_label_set_text(GTK_LABEL (label), status_message);
+        g_free (status_message);
+      }
     }
-}
-
-void gw_ui_finalize_total_results_label (GwSearchItem* item)
-{
-    if (item->target == GW_TARGET_KANJI) return;
-
-    char id[50];
-    GtkWidget *label;
-    strcpy(id, "results_label_start");
-    label = GTK_WIDGET (gtk_builder_get_object(builder, id));
-    gtk_label_set_text(GTK_LABEL (label), gettext("Found "));
 }
 
 
@@ -1036,25 +1106,28 @@ int rebuild_combobox_dictionary_list()
 }
 
 
-void gw_ui_update_search_progressbar (long current, long total)
+void gw_ui_set_search_progressbar_by_searchitem (GwSearchItem *item)
 {
-    const int id_length = 50;
-    char id[id_length];
+    GtkWidget *progress = GTK_WIDGET (gtk_builder_get_object(builder, "search_progressbar"));
+    long current = 0;
+    long total = 0;
 
-    GtkWidget *progress;
-    strncpy (id, "search_progressbar", id_length);
-    progress = GTK_WIDGET (gtk_builder_get_object(builder, id));
-
-    if (((double)current/(double)total) > 1.0)
-      return;
-    else if (total == 0)
+    if (item != NULL && item->dictionary != NULL)
     {
-      gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR (progress), 0.0);
-      return;
+      current = item->current_line;
+      total = item->dictionary->total_lines;
     }
 
-    gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR (progress), ((double)current/(double)total));
-    gtk_widget_show (GTK_WIDGET (progress));
+    if (total == 0 || ((double)current/(double)total) > 1.0 || item->status == GW_SEARCH_IDLE)
+    {
+      gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR (progress), 0.0);
+      gtk_widget_show (GTK_WIDGET (progress));
+    }
+    else
+    {
+      gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR (progress), ((double)current/(double)total));
+      gtk_widget_show (GTK_WIDGET (progress));
+    }
 }
 
 

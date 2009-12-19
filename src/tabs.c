@@ -231,36 +231,9 @@ G_MODULE_EXPORT void do_tab_switch (GtkNotebook *notebook, GtkNotebookPage *page
 {
     GwSearchItem *item = g_list_nth_data(gw_tab_searchitems, page_num);
 
-    //Set the colors of the entry to the current match highlight colors
-    char key[100];
-    char *key_ptr;
-    strcpy (key, GCPATH_GW);
-    strcat (key, "/highlighting/match");
-    key_ptr = &key[strlen (key)];
-    char fg_color[100], bg_color[100], fallback[100];
-    char *ret;
-    strcpy (key_ptr, "_foreground");
-    gw_util_strncpy_fallback_from_key (fallback, key, 100);
-    ret = gw_pref_get_string (fg_color, key, fallback, 100);
-    if (IS_HEXCOLOR(fg_color) == FALSE)
-    {
-      if (ret != NULL) gw_pref_set_string (key, fallback);
-      strncpy (fg_color, fallback, 100);
-    }
-    strcpy (key_ptr, "_background");
-    gw_util_strncpy_fallback_from_key (fallback, key, 100);
-    ret = gw_pref_get_string (bg_color, key, fallback, 100);
-    if (IS_HEXCOLOR(bg_color) == FALSE)
-    {
-      if (ret != NULL) gw_pref_set_string (key, fallback);
-      strncpy (bg_color, fallback, 100);
-    }
-
-
+/*
     if (item == NULL)
     {
-      gtk_entry_set_text (GTK_ENTRY (search_entry), "");
-      gw_ui_update_search_progressbar (0, 1);
       GList *dl = gw_dictlist_get_selected ();
       GwDictInfo *di = dl->data;
 
@@ -269,34 +242,23 @@ G_MODULE_EXPORT void do_tab_switch (GtkNotebook *notebook, GtkNotebookPage *page
       strcpy(id, "results_label_hbox");
       results = GTK_WIDGET (gtk_builder_get_object(builder, id));
       gtk_widget_hide (GTK_WIDGET (results));
-
-      gtk_widget_modify_base (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
-      gtk_widget_modify_text (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
     }
     else
     {
-      GwDictInfo *di;
-      di = gw_dictlist_get_dictionary_by_alias ("Kanji");
-      gtk_entry_set_text (GTK_ENTRY (search_entry), item->queryline->string);
-
       if (item->status == GW_SEARCH_IDLE)
       {
         gw_ui_update_total_results_label(item);
         gw_ui_finalize_total_results_label (item);
-        gw_ui_update_search_progressbar (0, item->dictionary->total_lines);
       }
       else
       {
-        gw_ui_update_search_progressbar (item->current_line, item->dictionary->total_lines);
         gw_ui_update_total_results_label(item);
       }
-
-      GdkColor forground, background;
-      gdk_color_parse (fg_color, &forground);
-      gdk_color_parse (bg_color, &background);
-      gtk_widget_modify_base (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, &background);
-      gtk_widget_modify_text (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, &forground);
     }
+*/
+    gw_ui_set_search_progressbar_by_searchitem (item);
+    gw_ui_set_query_entry_text_by_searchitem (item);
+    gw_ui_set_main_window_title_by_searchitem (item);
 }
 
 
