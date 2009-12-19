@@ -267,7 +267,7 @@ void gw_resultline_parse_kanjidict_result_string (GwResultLine *rl)
     rl->frequency = NULL;
     if (found[FREQUENCY] = (regexec(&gw_re[GW_RE_QUERY_FREQUENCY], ptr, nmatch, pmatch, 0) == 0))
     {
-      rl->frequency = ptr + pmatch[0].rm_so;
+      rl->frequency = ptr + pmatch[0].rm_so + 1;
       end[FREQUENCY] = ptr + pmatch[0].rm_eo;
     }
 
@@ -275,7 +275,7 @@ void gw_resultline_parse_kanjidict_result_string (GwResultLine *rl)
     rl->grade = NULL;
     if (found[GRADE] = (regexec(&gw_re[GW_RE_QUERY_GRADE], ptr, nmatch, pmatch, 0) == 0))
     {
-      rl->grade = ptr + pmatch[0].rm_so;
+      rl->grade = ptr + pmatch[0].rm_so + 1;
       end[GRADE] = ptr + pmatch[0].rm_eo;
     }
 
@@ -283,7 +283,7 @@ void gw_resultline_parse_kanjidict_result_string (GwResultLine *rl)
     rl->jlpt = NULL;
     if (found[JLPT] = (regexec(&gw_re[GW_RE_QUERY_JLPT], ptr, nmatch, pmatch, 0) == 0))
     {
-      rl->jlpt = ptr + pmatch[0].rm_so;
+      rl->jlpt = ptr + pmatch[0].rm_so + 1;
       end[JLPT] = ptr + pmatch[0].rm_eo;
     }
 

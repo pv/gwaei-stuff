@@ -240,7 +240,7 @@ void gw_ui_verb_check_with_suggestion (GwSearchItem *item)
   char *query = item->queryline->hira_string;
   GwResultLine *rl = item->resultline;
 
-  if (query[0] == '\0' || rl->kanji_start == NULL || rl->furigana_start == NULL)
+  if (query[0] == '\0' || rl->kanji_start == NULL)
     return;
 
   gunichar query_first_letter;
