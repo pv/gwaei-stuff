@@ -166,6 +166,8 @@ G_MODULE_EXPORT void do_new_tab (GtkWidget *widget, gpointer data)
   int position = gw_tab_new ();
   GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
   gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), position);
+  gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
+  gw_ui_set_dictionary(0);
 }
 
 //!

@@ -753,7 +753,7 @@ G_MODULE_EXPORT void do_dictionary_changed_action (GtkWidget *widget, gpointer d
 
     //Finish up
     gw_ui_set_dictionary (active);
-    gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
+    //gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
 }
 
 
