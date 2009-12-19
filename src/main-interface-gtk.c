@@ -1126,7 +1126,7 @@ void gw_ui_set_search_progressbar_by_searchitem (GwSearchItem *item)
       total = item->dictionary->total_lines;
     }
 
-    if (item== NULL || item->dictionary == NULL || total == 0 || ((double)current/(double)total) > 1.0 || item->status == GW_SEARCH_IDLE)
+    if (item == NULL || item->dictionary == NULL || total == 0 || ((double)current/(double)total) > 1.0 || item->status == GW_SEARCH_IDLE)
     {
       gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR (progress), 0.0);
       gtk_widget_show (GTK_WIDGET (progress));

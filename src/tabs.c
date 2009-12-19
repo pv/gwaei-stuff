@@ -186,16 +186,8 @@ G_MODULE_EXPORT void do_tab_remove (GtkWidget *widget, gpointer data)
   gw_ui_cancel_search (content);
   gtk_notebook_remove_page (GTK_NOTEBOOK (notebook), page_num);
 
-  GwSearchItem *item = g_list_nth_data(gw_tab_searchitems, page_num);
-  if (page_num == 0)
-  {
-    gw_tab_searchitems = g_list_remove (gw_tab_searchitems, item);
-  }
-  else
-  {
-    GList *listitem = g_list_nth(gw_tab_searchitems, page_num);
-    listitem = g_list_remove (listitem, item);
-  }
+  GwSearchItem *item = g_list_nth (gw_tab_searchitems, page_num);
+  gw_tab_searchitems = g_list_delete_link (gw_tab_searchitems, item);
 
   gw_tab_update_appearance ();
 }
@@ -217,16 +209,8 @@ G_MODULE_EXPORT void do_tab_remove_current (GtkWidget *widget, gpointer data)
   gw_ui_cancel_search (content);
   gtk_notebook_remove_page (GTK_NOTEBOOK (notebook), page_num);
 
-  GwSearchItem *item = g_list_nth_data(gw_tab_searchitems, page_num);
-  if (page_num == 0)
-  {
-    gw_tab_searchitems = g_list_remove (gw_tab_searchitems, item);
-  }
-  else
-  {
-    GList *listitem = g_list_nth(gw_tab_searchitems, page_num);
-    listitem = g_list_remove (listitem, item);
-  }
+  GwSearchItem *item = g_list_nth (gw_tab_searchitems, page_num);
+  gw_tab_searchitems = g_list_delete_link (gw_tab_searchitems, item);
 
   gw_tab_update_appearance ();
 }
