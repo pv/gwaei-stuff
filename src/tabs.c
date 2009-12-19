@@ -235,6 +235,7 @@ G_MODULE_EXPORT void do_tab_switch (GtkNotebook *notebook, GtkNotebookPage *page
     gw_ui_set_search_progressbar_by_searchitem (item);
     gw_ui_set_query_entry_text_by_searchitem (item);
     gw_ui_set_main_window_title_by_searchitem (item);
+    gw_ui_set_dictionary_by_searchitem (item);
 }
 
 

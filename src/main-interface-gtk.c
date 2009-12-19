@@ -909,7 +909,8 @@ void gw_ui_set_total_results_label_by_searchitem (GwSearchItem* item)
 void gw_ui_set_dictionary(int request)
 {
     //Set the correct dictionary in the dictionary list
-    gw_dictlist_set_selected_by_load_position(request);
+    if (gw_dictlist_set_selected_by_load_position(request) == NULL)
+      return;
 
     //Time to make sure everything matches up in the gui
     GtkWidget *combobox;
@@ -934,6 +935,11 @@ void gw_ui_set_dictionary(int request)
     }
 }
 
+void gw_ui_set_dictionary_by_searchitem (GwSearchItem *item)
+{
+    if (item != NULL && item->dictionary != NULL)
+      gw_ui_set_dictionary(item->dictionary->load_position);
+}
 
 int rebuild_combobox_dictionary_list() 
 {
