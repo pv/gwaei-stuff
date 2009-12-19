@@ -231,31 +231,7 @@ G_MODULE_EXPORT void do_tab_switch (GtkNotebook *notebook, GtkNotebookPage *page
 {
     GwSearchItem *item = g_list_nth_data(gw_tab_searchitems, page_num);
 
-/*
-    if (item == NULL)
-    {
-      GList *dl = gw_dictlist_get_selected ();
-      GwDictInfo *di = dl->data;
-
-      char id[50];
-      GtkWidget *results;
-      strcpy(id, "results_label_hbox");
-      results = GTK_WIDGET (gtk_builder_get_object(builder, id));
-      gtk_widget_hide (GTK_WIDGET (results));
-    }
-    else
-    {
-      if (item->status == GW_SEARCH_IDLE)
-      {
-        gw_ui_update_total_results_label(item);
-        gw_ui_finalize_total_results_label (item);
-      }
-      else
-      {
-        gw_ui_update_total_results_label(item);
-      }
-    }
-*/
+    gw_ui_set_total_results_label_by_searchitem (item);
     gw_ui_set_search_progressbar_by_searchitem (item);
     gw_ui_set_query_entry_text_by_searchitem (item);
     gw_ui_set_main_window_title_by_searchitem (item);

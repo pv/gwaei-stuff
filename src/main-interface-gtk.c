@@ -235,23 +235,26 @@ void gw_ui_set_inforation_box_label (const char* string, const char* query, int 
 
 void gw_ui_verb_check_with_suggestion (GwSearchItem *item)
 {
+  if (item == NULL || item->queryline == NULL || item->resultline == NULL || item->target != GW_TARGET_RESULTS) return;
+
   char *query = item->queryline->hira_string;
-  if (query[0] == '\0')
+  GwResultLine *rl = item->resultline;
+
+  if (query[0] == '\0' || rl->kanji_start == NULL || rl->furigana_start == NULL)
     return;
-  GwResultLine *line = item->resultline;
 
   gunichar query_first_letter;
   query_first_letter = g_utf8_get_char (query);
   gunichar result_kanji_first_letter;
-  result_kanji_first_letter = g_utf8_get_char (line->kanji_start);
+  result_kanji_first_letter = g_utf8_get_char (rl->kanji_start);
   gunichar result_furigana_first_letter; 
-  if (line->furigana_start != NULL)
-    result_furigana_first_letter = g_utf8_get_char (line->furigana_start);
+  if (rl->furigana_start != NULL)
+    result_furigana_first_letter = g_utf8_get_char (rl->furigana_start);
   else
     result_furigana_first_letter = result_kanji_first_letter;
 
   //Make sure the query and the search result start similarly
-  if (line->classification_start == NULL || (query_first_letter != result_kanji_first_letter && query_first_letter != result_furigana_first_letter))
+  if (rl->classification_start == NULL || (query_first_letter != result_kanji_first_letter && query_first_letter != result_furigana_first_letter))
     return;
 
   GtkWidget *suggestion_label;
@@ -271,9 +274,8 @@ void gw_ui_verb_check_with_suggestion (GwSearchItem *item)
   gtk_widget_modify_fg (suggestion_eventbox, GTK_STATE_NORMAL, &fgcolor);
   gtk_widget_modify_bg (suggestion_eventbox, GTK_STATE_NORMAL, &bgcolor);
 
-
   //i-adjective stuffs
-  if (strstr(line->classification_start, "adj-i"))
+  if (strstr(rl->classification_start, "adj-i"))
   {
     int nmatch = 1;
     regmatch_t pmatch[nmatch];
@@ -305,7 +307,7 @@ void gw_ui_verb_check_with_suggestion (GwSearchItem *item)
   }
 
   //na-adjective stuffs
-  else if (strstr(line->classification_start, "adj-na"))
+  else if (strstr(rl->classification_start, "adj-na"))
   {
     int nmatch = 1;
     regmatch_t pmatch[nmatch];

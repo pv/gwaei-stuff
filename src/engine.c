@@ -104,19 +104,15 @@ static void append_result_to_output (GwSearchItem *item)
 //!
 static void append_more_relevant_header_to_output(GwSearchItem *item)
 {
-    if (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
+    if (gw_util_get_runmode() != GW_CONSOLE_RUNMODE)
     {
-    }
-    else
-    {
-      char number[14];
-      gw_util_itoa(item->total_relevant_results, number, 14);
-
-      char text[100];
-      strncpy(text, gettext("Main Results "), 100);
-      strncat(text, number, 100 - strlen(text));
-
-      gw_ui_set_header (item, text, "more_relevant_header_mark");
+      int relevant = item->total_relevant_results;
+      char *message = g_strdup_printf (gettext("Main Results %d"), relevant);
+      if (message != NULL)
+      {
+        gw_ui_set_header (item, message, "more_relevant_header_mark");
+        g_free (message);
+      }
     }
 }
 
@@ -131,18 +127,19 @@ static void append_more_relevant_header_to_output(GwSearchItem *item)
 //!
 static void append_less_relevant_header_to_output(GwSearchItem *item)
 {
-    if (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
+    if (gw_util_get_runmode() != GW_CONSOLE_RUNMODE)
     {
-      printf("\n[0;31m***[0m[1m%s[0;31m***************************[0m\n\n\n", gettext("Other Results"));
+      int irrelevant = item->total_irrelevant_results;
+      char *message = g_strdup_printf (gettext("Other Results %d"), irrelevant);
+      if (message != NULL)
+      {
+        gw_ui_set_header (item, message, "less_relevant_header_mark");
+        g_free (message);
+      }
     }
     else
     {
-      char number[14];
-      gw_util_itoa(item->total_irrelevant_results, number, 14);
-      char text[100];
-      strncpy(text, gettext("Other Results "), 100);
-      strncat(text, number, 100 - strlen(text));
-      gw_ui_set_header (item, text, "less_relevant_header_mark");
+      printf("\n[0;31m***[0m[1m%s[0;31m***************************[0m\n\n\n", gettext("Other Results"));
     }
 }
 
@@ -352,9 +349,10 @@ static gboolean stream_results_thread (GwSearchItem *item)
       {
         gw_ui_clear_buffer_by_target (item->target_tb);
         gw_ui_display_no_results_found_page(item);
+        gw_ui_set_main_window_title_by_searchitem (item);
       }
     }
-    
+
     return FALSE;
 }
 
@@ -382,7 +380,7 @@ static gboolean stream_results_cleanup (GwSearchItem *item)
       {
         gw_ui_remove_whitespace_from_buffer (item->target_tb);
         gw_ui_set_total_results_label_by_searchitem(item);
-        gw_ui_set_search_progressbar_by_searchitem (0, 0);
+        gw_ui_set_search_progressbar_by_searchitem (item);
       }
     }     
 }
