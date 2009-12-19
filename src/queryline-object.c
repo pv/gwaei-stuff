@@ -147,10 +147,8 @@ int gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
    strncpy(ql->string, string, MAX_QUERY); 
 
    //Load the preference settings
-   int rk_conv_pref;
-   rk_conv_pref = gw_pref_get_int (GCKEY_GW_ROMAN_KANA, 0);
-   gboolean want_rk_conv;
-   want_rk_conv = (rk_conv_pref == 0 || (rk_conv_pref == 2 && !gw_util_is_japanese_locale()));
+   int rk_conv_pref = gw_pref_get_int (GCKEY_GW_ROMAN_KANA, 0);
+   gboolean want_rk_conv = (rk_conv_pref == 0 || (rk_conv_pref == 2 && !gw_util_is_japanese_locale()));
    gboolean want_hk_conv;
    want_hk_conv = gw_pref_get_boolean (GCKEY_GW_HIRA_KATA, TRUE);
    gboolean want_kh_conv;
@@ -298,12 +296,15 @@ int gw_queryline_parse_kanjidict_string (GwQueryLine *ql, const char* string)
     //Variable preparations
     char *ptr = ql->string;
     char *next = NULL;
+    char temp[300];
     gunichar character;
     size_t nmatch = 1;
     char *start;
     int length;
     char atom[MAX_QUERY];
     regmatch_t pmatch[nmatch];
+    int rk_conv_pref = gw_pref_get_int (GCKEY_GW_ROMAN_KANA, 0);
+    gboolean want_rk_conv = (rk_conv_pref == 0 || (rk_conv_pref == 2 && !gw_util_is_japanese_locale()));
 
     //Get stroke
     if (regexec(&gw_re[GW_RE_QUERY_STROKES], ptr, nmatch, pmatch, 0) == 0)
@@ -411,6 +412,18 @@ int gw_queryline_parse_kanjidict_string (GwQueryLine *ql, const char* string)
       if (gw_regex_create_roma_high_regex (&(ql->roma_regex [GW_QUERYLINE_HIGH]  [ql->roma_total]), atom, EFLAGS_EXIST)  != 0) return FALSE;
       if (gw_regex_create_roma_med_regex  (&(ql->roma_regex [GW_QUERYLINE_MED]   [ql->roma_total]), atom, EFLAGS_EXIST)  != 0) return FALSE;
       ql->roma_total++;
+
+      //Add coversions to search on success
+      if (gw_util_str_roma_to_hira (atom, temp, 300) && want_rk_conv)
+      {
+        //Hiragana
+        strcpy(ql->hira_string, temp);
+        if (regcomp (&(ql->furi_regex                        [GW_QUERYLINE_EXIST] [ql->furi_total]), temp            , EFLAGS_EXIST)  != 0)  return FALSE;
+        if (regcomp (&(ql->furi_regex                        [GW_QUERYLINE_LOCATE][ql->furi_total]), temp            , EFLAGS_LOCATE) != 0)  return FALSE;
+        if (gw_regex_create_furi_high_regex (&(ql->furi_regex[GW_QUERYLINE_HIGH]  [ql->furi_total]), temp            , EFLAGS_EXIST)  != 0)  return FALSE;
+        if (gw_regex_create_furi_med_regex  (&(ql->furi_regex[GW_QUERYLINE_MED]   [ql->furi_total]), temp            , EFLAGS_EXIST)  != 0)  return FALSE;
+        ql->furi_total++;
+      }
     }
 
     return TRUE;

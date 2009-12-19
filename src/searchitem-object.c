@@ -250,6 +250,7 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
     GwQueryLine *ql;
     rl = item->resultline;
     ql = item->queryline;
+    int roma_check = 0, furi_check = 0;
 
     //Kanji radical dictionary search
     int i = 0;
@@ -267,14 +268,22 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
       if (ql->jlpt_total > 0 && rl->jlpt != NULL)
         if (regexec(&(ql->jlpt_regex[REGEX_TYPE][i]), rl->jlpt, 1, NULL, 0) != 0)
           return FALSE;
-
       if (ql->roma_total > 0 && rl->meanings != NULL)
-        if (regexec(&(ql->roma_regex[REGEX_TYPE][i]), rl->meanings, 1, NULL, 0) != 0)
-          return FALSE;
-
+      {
+        roma_check = 1;
+        if (regexec(&(ql->roma_regex[REGEX_TYPE][i]), rl->meanings, 1, NULL, 0) == 0)
+          roma_check = 2;
+      }
       if (ql->furi_total > 0 && rl->readings[0] != NULL)
-        if (regexec(&(ql->furi_regex[REGEX_TYPE][i]), rl->readings[0], 1, NULL, 0) != 0)
-          return FALSE;
+      {
+        furi_check = 1;
+        if (regexec(&(ql->furi_regex[REGEX_TYPE][i]), rl->readings[0], 1, NULL, 0) == 0)
+          furi_check = 2;
+      }
+
+      //Trick code to allow romaji converted to furigana test to pass for the query...
+      if ((roma_check == 1 && furi_check == 2) || roma_check == 2 && furi_check == 1) return TRUE;
+      else if ((roma_check == 1 || furi_check == 1)) return FALSE;
 
       gboolean found_kanji, found_radical;
       for (i = 0; i < ql->kanji_total && !found_kanji; i++)
