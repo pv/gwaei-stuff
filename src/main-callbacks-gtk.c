@@ -1291,6 +1291,10 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
 {
     GwHistoryList* hl = gw_historylist_get_list (GW_HISTORYLIST_RESULTS);
 
+    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+    GwSearchItem *tabitem = g_list_nth_data(gw_tab_searchitems, page_num);
+
     GList *list = gw_dictlist_get_selected ();
     GwDictInfo *dictionary = list->data;
 
@@ -1303,14 +1307,13 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
     if (strlen (query) == 0)
       return;
 
-    if (hl->current != NULL &&
-        strcmp (query, hl->current->queryline->string) == 0 &&
-        dictionary->id == hl->current->dictionary->id &&
-        show_less_relevant == hl->current->show_less_relevant_results)
+    if (tabitem != NULL &&
+        tabitem->queryline != NULL &&
+        strcmp (query, tabitem->queryline->string) == 0 &&
+        dictionary->id == tabitem->dictionary->id &&
+        show_less_relevant == tabitem->show_less_relevant_results)
       return;
 
-    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
-    int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
     if (gw_ui_cancel_search (gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), page_num)) == FALSE)
       return;
 
@@ -1342,37 +1345,8 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
     //Set tab text
     gw_guarantee_first_tab ();
     gw_tab_set_current_tab_text (query);
+    gw_ui_set_query_entry_text_by_searchitem (hl->current);
     gw_search_get_results (hl->current);
-
-    //Set the colors of the entry to the current match highlight colors
-    char key[100];
-    char *key_ptr;
-    strcpy (key, GCPATH_GW);
-    strcat (key, "/highlighting/match");
-    key_ptr = &key[strlen (key)];
-    char fg_color[100], bg_color[100], fallback[100];
-    char *ret;
-    strcpy (key_ptr, "_foreground");
-    gw_util_strncpy_fallback_from_key (fallback, key, 100);
-    ret = gw_pref_get_string (fg_color, key, fallback, 100);
-    if (IS_HEXCOLOR(fg_color) == FALSE)
-    {
-      if (ret != NULL) gw_pref_set_string (key, fallback);
-      strncpy (fg_color, fallback, 100);
-    }
-    strcpy (key_ptr, "_background");
-    gw_util_strncpy_fallback_from_key (fallback, key, 100);
-    ret = gw_pref_get_string (bg_color, key, fallback, 100);
-    if (IS_HEXCOLOR(bg_color) == FALSE)
-    {
-      if (ret != NULL) gw_pref_set_string (key, fallback);
-      strncpy (bg_color, fallback, 100);
-    }
-    GdkColor forground, background;
-    gdk_color_parse (fg_color, &forground);
-    gdk_color_parse (bg_color, &background);
-    gtk_widget_modify_base (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, &background);
-    gtk_widget_modify_text (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, &forground);
 
     //Update the toolbar buttons
     gw_ui_update_toolbar_buttons ();

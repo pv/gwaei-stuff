@@ -397,8 +397,6 @@ static gboolean stream_results_cleanup (GwSearchItem *item)
 //!
 void gw_search_get_results (GwSearchItem *item)
 {
-    gw_util_force_japanese_locale();
-
     //Misc preparations
     if (item->target != GW_TARGET_CONSOLE &&
         (item->dictionary->type == GW_DICT_KANJI || item->dictionary->type == GW_DICT_RADICALS))
