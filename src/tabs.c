@@ -206,7 +206,6 @@ G_MODULE_EXPORT void do_tab_remove_current (GtkWidget *widget, gpointer data)
 }
 
 
-
 //!
 //! @brief Do the side actions required when a tab switch takes place
 //!

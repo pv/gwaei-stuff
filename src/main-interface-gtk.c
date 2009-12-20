@@ -747,8 +747,12 @@ void gw_ui_update_toolbar_buttons()
     GtkWidget *menuitem;
     gboolean enable;
 
-    GwSearchItem* current;
-    current = gw_historylist_get_current (GW_TARGET_RESULTS);
+    GwSearchItem* history_search_item = gw_historylist_get_current (GW_TARGET_RESULTS);
+    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+    int pages = gtk_notebook_get_n_pages (GTK_NOTEBOOK (notebook));
+    GwSearchItem *tab_search_item = g_list_nth_data(gw_tab_searchitems, page_num);
+
 
     int current_font_size;
     current_font_size = gw_pref_get_int (GCKEY_GW_FONT_SIZE, 12);
@@ -758,13 +762,13 @@ void gw_ui_update_toolbar_buttons()
     //Update Zoom in sensitivity state
     strncpy(id, "view_zoom_in_action", id_length);
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
-    enable = (current != NULL && current_font_size < MAX_FONT_SIZE);
+    enable = (tab_search_item != NULL && current_font_size < MAX_FONT_SIZE);
     gtk_action_set_sensitive(action, enable);
 
     //Update Zoom out sensitivity state
     strncpy(id, "view_zoom_out_action", id_length);
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
-    enable = (current != NULL && current_font_size > MIN_FONT_SIZE);
+    enable = (tab_search_item != NULL && current_font_size > MIN_FONT_SIZE);
     gtk_action_set_sensitive(action, enable);
 
     //Update Zoom 100 sensitivity state
@@ -772,25 +776,25 @@ void gw_ui_update_toolbar_buttons()
     action = GTK_ACTION (gtk_builder_get_object(builder, id));
     int default_font_size;
     default_font_size = gw_pref_get_default_int (GCKEY_GW_FONT_SIZE, 12);
-    enable = (current != NULL && current_font_size != default_font_size);
+    enable = (tab_search_item != NULL && current_font_size != default_font_size);
     gtk_action_set_sensitive(action, enable);
 
     //Update Save sensitivity state
     strncpy(id, "file_append_action", id_length);
     action = GTK_ACTION (gtk_builder_get_object(builder, id));
-    enable = (current != NULL);
+    enable = (tab_search_item != NULL);
     gtk_action_set_sensitive(action, enable);
 
     //Update Save as sensitivity state
     strncpy(id, "file_save_as_action", id_length);
     action = GTK_ACTION (gtk_builder_get_object(builder, id));
-    enable = (current != NULL);
+    enable = (tab_search_item != NULL);
     gtk_action_set_sensitive(action, enable);
 
     //Update Print sensitivity state
     strncpy(id, "file_print_action", id_length);
     action = GTK_ACTION (gtk_builder_get_object(builder, id));
-    enable = (current != NULL);
+    enable = (tab_search_item != NULL);
     gtk_action_set_sensitive(action, enable);
 
     //Update radicals search tool menuitem
@@ -841,9 +845,6 @@ void gw_ui_update_toolbar_buttons()
       action = GTK_ACTION (gtk_builder_get_object (builder, id));
       gtk_action_set_sensitive (action, FALSE);
     }
-
-    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
-    int pages = gtk_notebook_get_n_pages (GTK_NOTEBOOK (notebook));
 
     strncpy(id, "previous_tab_menuitem", id_length);
     menuitem = GTK_WIDGET (gtk_builder_get_object (builder, id));
