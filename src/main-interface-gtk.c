@@ -386,6 +386,11 @@ void force_gtk_builder_translation_for_gtk_actions_hack ()
     gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "select_all_menuitem")), "activate", accel_group, GDK_a, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
     gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "cut_menuitem")), "activate", accel_group, GDK_x, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 
+    //New tab action
+    action = GTK_ACTION (gtk_builder_get_object (builder, "new_tab_action"));
+    gtk_action_set_label (action, gettext("_New Tab"));
+    gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "new_tab_menuitem")), "activate", accel_group, GDK_t, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+
     //Edit action
     action = GTK_ACTION (gtk_builder_get_object (builder, "file_edit_action"));
     gtk_action_set_tooltip (action, gettext("Edit the current vocabulary list"));
@@ -858,6 +863,10 @@ void gw_ui_set_total_results_label_by_searchitem (GwSearchItem* item)
     if (item == NULL)
     {
       gtk_label_set_text(GTK_LABEL (label), "");
+    }
+    else if (item->target != GW_TARGET_RESULTS)
+    {
+      return;
     }
     else
     {

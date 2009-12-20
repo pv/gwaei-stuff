@@ -75,32 +75,38 @@ GwDictInfo* gw_dictinfo_new (char *name)
     remaining = MAX_DICTIONARY;
     strncpy(temp->name, name, remaining);
 
+    char *english = gettext("English Dictionary");
+    char *spanish = gettext("Spanish Dictionary");
+    char *kanji = gettext("Kanji Dictionary");
+    char *radicals = gettext("Radicals Dictionary");
+    char *places = gettext("Places Dictionary");
+    char *names = gettext("Names Dictionary");
+    char *examples = gettext("Examples Dictionary");
+    char *french = gettext("French Dictionary");
+    char *german = gettext("German Dictionary");
+
     if (strcmp(name, "English") == 0)
-      strncpy(temp->long_name, gettext ("English"), 100);
+      strncpy(temp->long_name, english, 100);
     else if (strcmp(name, "Spanish") == 0)
-      strncpy(temp->long_name, gettext ("Spanish"), 100);
+      strncpy(temp->long_name, spanish, 100);
     else if (strcmp(name, "Mix") == 0)
-      strncpy(temp->long_name, gettext ("Kanji"), 100);
+      strncpy(temp->long_name, kanji, 100);
     else if (strcmp(name, "Kanji") == 0)
-      strncpy(temp->long_name, gettext ("Kanji"), 100);
+      strncpy(temp->long_name, kanji, 100);
     else if (strcmp(name, "Radicals") == 0)
-      strncpy(temp->long_name, gettext ("Radicals"), 100);
+      strncpy(temp->long_name, kanji, 100);
     else if (strcmp(name, "Places") == 0)
-      strncpy(temp->long_name, gettext ("Places"), 100);
+      strncpy(temp->long_name, places, 100);
     else if (strcmp(name, "Names") == 0)
-      strncpy(temp->long_name, gettext ("Names"), 100);
+      strncpy(temp->long_name, names, 100);
     else if (strcmp(name, "Examples") == 0)
-      strncpy(temp->long_name, gettext ("Examples"), 100);
+      strncpy(temp->long_name, examples, 100);
     else if (strcmp(name, "French") == 0)
-      strncpy(temp->long_name, gettext ("French"), 100);
+      strncpy(temp->long_name, french, 100);
     else if (strcmp(name, "German") == 0)
-      strncpy(temp->long_name, gettext ("German"), 100);
-    else if (strcmp(name, "Spanish") == 0)
-      strncpy(temp->long_name, gettext ("Spanish"), 100);
+      strncpy(temp->long_name, german, 100);
     else
       strncpy(temp->long_name, name, 100);
-
-    strncat(temp->long_name, gettext(" Dictionary"),  100 - strlen(temp->long_name));
 
     //Calculate the path to the used dictionary file
     remaining = PATH_MAX;

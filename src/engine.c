@@ -375,6 +375,7 @@ static gboolean stream_results_cleanup (GwSearchItem *item)
     less_relevant_title_inserted = FALSE;
     if (gw_util_get_runmode () == GW_CONSOLE_RUNMODE)
     {
+       item->status = GW_SEARCH_IDLE;
     }
     else
     {
