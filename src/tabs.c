@@ -160,6 +160,7 @@ G_MODULE_EXPORT void do_new_tab (GtkWidget *widget, gpointer data)
     gw_ui_set_dictionary(0);
 }
 
+
 //!
 //! @brief Remove the tab where the close button is clicked
 //!

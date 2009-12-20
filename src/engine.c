@@ -235,6 +235,7 @@ static gboolean stream_results_thread (GwSearchItem *item)
         strcat(item->resultline->string, item->scratch_buffer);
       }
       (*item->gw_searchitem_parse_result_string)(item->resultline);
+
       if (item->target_tb == (gpointer*) get_gobject_from_target(item->target))
         gw_ui_verb_check_with_suggestion (item);
 
@@ -398,10 +399,7 @@ static gboolean stream_results_cleanup (GwSearchItem *item)
 //!
 void gw_search_get_results (GwSearchItem *item)
 {
-/*
-    if (gw_util_is_japanese_ctype() == FALSE)
-      gw_util_force_japanese_locale();
-      */
+    gw_util_force_japanese_locale();
 
     //Misc preparations
     if (item->target != GW_TARGET_CONSOLE &&

@@ -2525,7 +2525,6 @@ void initialize_gui_interface(int *argc, char ***argv)
     gtk_init (argc, argv);
 
     app = unique_app_new ("org.dictionary.gWaei", NULL);
-
     
     //Activate the main window in the program is already open
     if (unique_app_is_running (app))
@@ -2547,7 +2546,6 @@ void initialize_gui_interface(int *argc, char ***argv)
       main_window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
       unique_app_watch_window (app, GTK_WINDOW (main_window));
       g_signal_connect (app, "message-received", G_CALLBACK (message_received_cb), NULL);
-
 
 
       //HACK!!!!!!!!!!!!!!
