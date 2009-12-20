@@ -171,6 +171,9 @@ void gw_ui_set_query_entry_text_by_searchitem (GwSearchItem *item)
 //!
 void gw_ui_set_main_window_title_by_searchitem (GwSearchItem *item)
 {
+    if (gw_util_get_runmode () == GW_CONSOLE_RUNMODE) return;
+    if (item != NULL && item->target_tb != (gpointer*) get_gobject_from_target(item->target)) return;
+
     //Declarations
     char *full_title = NULL;
     char *base_title = gettext("gWaei Japanese-English Dictionary");
@@ -863,6 +866,9 @@ void gw_ui_update_toolbar_buttons()
 //!
 void gw_ui_set_total_results_label_by_searchitem (GwSearchItem* item)
 {
+    if (gw_util_get_runmode () == GW_CONSOLE_RUNMODE) return;
+    if (item != NULL && item->target_tb != (gpointer*) get_gobject_from_target(item->target)) return;
+
     GtkWidget *label = GTK_WIDGET (gtk_builder_get_object(builder, "progress_label"));
 
     if (item == NULL)
@@ -1130,6 +1136,9 @@ int rebuild_combobox_dictionary_list()
 
 void gw_ui_set_search_progressbar_by_searchitem (GwSearchItem *item)
 {
+    if (gw_util_get_runmode () == GW_CONSOLE_RUNMODE) return;
+    if (item != NULL && item->target_tb != (gpointer*) get_gobject_from_target(item->target)) return;
+
     GtkWidget *progress = GTK_WIDGET (gtk_builder_get_object(builder, "search_progressbar"));
     long current = 0;
     long total = 0;
@@ -1522,6 +1531,8 @@ void gw_ui_clear_buffer_by_target (gpointer* tb)
 
 void gw_ui_initialize_buffer_by_searchitem (GwSearchItem *item)
 {
+    if (gw_util_get_runmode () == GW_CONSOLE_RUNMODE) return;
+
     gw_ui_clear_buffer_by_target (item->target_tb);
 
     if (item->target == GW_TARGET_RESULTS)
