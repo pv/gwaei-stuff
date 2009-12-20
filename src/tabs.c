@@ -217,8 +217,16 @@ G_MODULE_EXPORT void do_tab_remove_current (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void do_tab_switch (GtkNotebook *notebook, GtkNotebookPage *page, int page_num, gpointer data)
 {
-    GwSearchItem *item = g_list_nth_data(gw_tab_searchitems, page_num);
+}
 
+
+G_MODULE_EXPORT void do_next_tab (GtkWidget *widget, gpointer data)
+{
+    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    gtk_notebook_next_page (GTK_NOTEBOOK (notebook));
+
+    int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+    GwSearchItem *item = g_list_nth_data(gw_tab_searchitems, page_num);
     gw_ui_set_total_results_label_by_searchitem (item);
     gw_ui_set_search_progressbar_by_searchitem (item);
     gw_ui_set_query_entry_text_by_searchitem (item);
@@ -227,17 +235,18 @@ G_MODULE_EXPORT void do_tab_switch (GtkNotebook *notebook, GtkNotebookPage *page
 }
 
 
-G_MODULE_EXPORT void do_next_tab (GtkWidget *widget, gpointer data)
-{
-    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
-    gtk_notebook_next_page (GTK_NOTEBOOK (notebook));
-}
-
-
 G_MODULE_EXPORT void do_previous_tab (GtkWidget *widget, gpointer data)
 {
     GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
     gtk_notebook_prev_page (GTK_NOTEBOOK (notebook));
+
+    int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+    GwSearchItem *item = g_list_nth_data(gw_tab_searchitems, page_num);
+    gw_ui_set_total_results_label_by_searchitem (item);
+    gw_ui_set_search_progressbar_by_searchitem (item);
+    gw_ui_set_query_entry_text_by_searchitem (item);
+    gw_ui_set_main_window_title_by_searchitem (item);
+    gw_ui_set_dictionary_by_searchitem (item);
 }
 
 
