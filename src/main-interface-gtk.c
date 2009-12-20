@@ -237,6 +237,11 @@ void gw_ui_verb_check_with_suggestion (GwSearchItem *item)
 {
   if (item == NULL || item->queryline == NULL || item->resultline == NULL || item->target != GW_TARGET_RESULTS) return;
 
+  //It's already shown.  No need to do anything.
+  GtkWidget *suggestion_hbox;
+  suggestion_hbox = GTK_WIDGET (gtk_builder_get_object (builder, "suggestion_hbox"));
+  if (GTK_WIDGET_VISIBLE(suggestion_hbox) == TRUE) return;
+
   char *query = item->queryline->hira_string;
   GwResultLine *rl = item->resultline;
 
@@ -261,8 +266,6 @@ void gw_ui_verb_check_with_suggestion (GwSearchItem *item)
   suggestion_label = GTK_WIDGET (gtk_builder_get_object (builder, "suggestion_label"));
   GtkWidget *suggestion_eventbox;
   suggestion_eventbox = GTK_WIDGET (gtk_builder_get_object (builder, "suggestion_eventbox"));
-  GtkWidget *suggestion_hbox;
-  suggestion_hbox = GTK_WIDGET (gtk_builder_get_object (builder, "suggestion_hbox"));
   GtkWidget *window;
   window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
   GdkColor fgcolor;
