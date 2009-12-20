@@ -140,6 +140,7 @@ int gw_tab_new ()
     gw_tab_update_appearance ();
     gw_ui_initialize_buffer_marks(textbuffer);
     gw_tab_searchitems = g_list_append(gw_tab_searchitems, NULL);
+    gw_ui_update_toolbar_buttons();
 
     return position;
 }

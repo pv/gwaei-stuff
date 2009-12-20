@@ -389,11 +389,6 @@ void force_gtk_builder_translation_for_gtk_actions_hack ()
     gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "select_all_menuitem")), "activate", accel_group, GDK_a, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
     gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "cut_menuitem")), "activate", accel_group, GDK_x, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 
-    //New tab action
-    action = GTK_ACTION (gtk_builder_get_object (builder, "new_tab_action"));
-    gtk_action_set_label (action, gettext("_New Tab"));
-    gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "new_tab_menuitem")), "activate", accel_group, GDK_t, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
-
     //Edit action
     action = GTK_ACTION (gtk_builder_get_object (builder, "file_edit_action"));
     gtk_action_set_tooltip (action, gettext("Edit the current vocabulary list"));
@@ -593,11 +588,6 @@ void initialize_global_widget_pointers ()
     char id[50];
 
     //Setup our text view and text buffer references
-/*
-    strncpy (id, "results_text_view", 50);
-    results_tv = GTK_WIDGET (gtk_builder_get_object(builder, id));
-    results_tb = G_OBJECT (gtk_text_view_get_buffer(GTK_TEXT_VIEW (results_tv)));
-*/
     strncpy (id, "kanji_text_view", 50);
     kanji_tv = GTK_WIDGET (gtk_builder_get_object(builder, id));
     kanji_tb   = G_OBJECT (gtk_text_view_get_buffer(GTK_TEXT_VIEW (kanji_tv)));
@@ -754,6 +744,7 @@ void gw_ui_update_toolbar_buttons()
 
     //Delarations
     GtkAction *action;
+    GtkWidget *menuitem;
     gboolean enable;
 
     GwSearchItem* current;
@@ -761,6 +752,8 @@ void gw_ui_update_toolbar_buttons()
 
     int current_font_size;
     current_font_size = gw_pref_get_int (GCKEY_GW_FONT_SIZE, 12);
+
+    GtkWidget *results_tv = get_widget_from_target(GW_TARGET_RESULTS);
 
     //Update Zoom in sensitivity state
     strncpy(id, "view_zoom_in_action", id_length);
@@ -828,7 +821,6 @@ void gw_ui_update_toolbar_buttons()
       action = GTK_ACTION (gtk_builder_get_object (builder, id));
       gtk_action_set_sensitive (action, sensitive);
     }
-/*
     else if (GTK_WIDGET_HAS_FOCUS(results_tv))
     {
       sensitive = (gw_ui_has_selection_by_target (GW_TARGET_RESULTS));
@@ -839,7 +831,6 @@ void gw_ui_update_toolbar_buttons()
       action = GTK_ACTION (gtk_builder_get_object (builder, id));
       gtk_action_set_sensitive (action, FALSE);
     }
-*/
     else if (GTK_WIDGET_HAS_FOCUS(kanji_tv))
     {
       sensitive = (gw_ui_has_selection_by_target (GW_TARGET_KANJI));
@@ -851,6 +842,16 @@ void gw_ui_update_toolbar_buttons()
       gtk_action_set_sensitive (action, FALSE);
     }
 
+    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    int pages = gtk_notebook_get_n_pages (GTK_NOTEBOOK (notebook));
+
+    strncpy(id, "previous_tab_menuitem", id_length);
+    menuitem = GTK_WIDGET (gtk_builder_get_object (builder, id));
+    gtk_widget_set_sensitive (menuitem, (pages > 1));
+
+    strncpy(id, "next_tab_menuitem", id_length);
+    menuitem = GTK_WIDGET (gtk_builder_get_object (builder, id));
+    gtk_widget_set_sensitive (menuitem, (pages > 1));
 }
 
 
