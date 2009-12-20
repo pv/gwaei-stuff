@@ -422,39 +422,60 @@ void gw_resultline_parse_examplesdict_result_string (GwResultLine *rl)
     char *eraser = NULL;
     int i = 0;
 
-    //Example sentence:    A:日本語English:B:読み解説
+    //Normal Japanese:    B:日本語[tab]English:B:読み解説
     temp = rl->string;
-    while ((temp = g_utf8_strchr (temp, -1, L':')) != NULL)
+    if ((temp = strstr(temp, "A:")) != NULL)
     {
-      //Get the letter bullet 
-      if (g_utf8_get_char(temp - 1) == L'A' || g_utf8_get_char(temp - 1) == L'B')
-      {
-         rl->number[i] = temp - 1;
-         *temp = '\0';
-         temp++;
-         temp++;
-         rl->def_start[i] = temp;
-         i++;
-         if (eraser = g_utf8_strchr (temp, -1, L'\t'))
-         {
-             temp = eraser;
-             *temp = '\0';
-             rl->number[i] = temp;
-             temp++;
-             rl->def_start[i] = temp;
-             i++;
-         }
-      }
-      //Get the example
-      else
-      {
-         *temp = '\0';
-         temp++;
-      }
+      *temp = '\0';
+      temp++;
+      *temp = '\0';
+      temp++;
+      *temp = '\0';
+      temp++;
+      rl->kanji_start = temp;
     }
-    rl->def_start[i] = NULL;
-    rl->number[i] = NULL;
+    else
+    {
+      rl->kanji_start = NULL;
+      temp = rl->string;
+    }
+
+    //English explanation:    A:日本語[tab]English:B:読み解説
+    if ((temp = strstr(temp, "\t")) != NULL)
+    {
+      *temp = '\0';
+      temp++;
+      rl->def_start[0] = temp;
+      rl->def_start[1] = NULL;
+    }
+    else
+    {
+      rl->def_start[0] = NULL;
+      temp = rl->string;
+    }
+
+    //Explained Japanese:    日本語[tab]English:B:読み解説
+    if ((temp = strstr(temp, ":B:")) != NULL)
+    {
+      *temp = '\0';
+      temp++;
+      *temp = '\0';
+      temp++;
+      *temp = '\0';
+      temp++;
+      *temp = '\0';
+      temp++;
+      rl->furigana_start = temp;
+    }
+    else
+    {
+      rl->furigana_start = NULL;
+      temp = rl->string;
+    }
+    //Meh.  Deciding not to show this line from the dictionary for now.
+    rl->furigana_start = NULL;
 }
+
 
 //!
 //! @brief Parses a string for an unknown format string

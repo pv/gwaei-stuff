@@ -118,7 +118,7 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary,
           temp->gw_searchitem_append_results_to_output = &gw_ui_append_kanjidict_results_to_buffer;
         break;
       case GW_DICT_EXAMPLES:
-        if (!gw_queryline_parse_edict_string (temp->queryline, query)) return;
+        if (!gw_queryline_parse_exampledict_string (temp->queryline, query)) return;
         temp->gw_searchitem_parse_result_string = &gw_resultline_parse_examplesdict_result_string;
         if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
           temp->gw_searchitem_append_results_to_output = &gw_console_append_examplesdict_results;

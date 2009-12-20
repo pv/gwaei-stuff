@@ -3038,41 +3038,38 @@ void gw_ui_append_examplesdict_results_to_buffer (GwSearchItem *item, gboolean u
       GtkTextIter iter;
       gtk_text_buffer_get_iter_at_mark (tb, &iter, mark);
 
-      int i = 0;
-      while (resultline->number[i] != NULL && resultline->def_start[i] != NULL)
+      if (resultline->def_start[0] != NULL)
       {
-        //Bullet
-        if (resultline->number[i][0] != '\0')
-        {
-          gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->number[i], -1, "important", "comment", NULL);
-          gtk_text_buffer_get_iter_at_mark (tb, &iter, mark);
-          gtk_text_buffer_insert_with_tags_by_name (tb, &iter, ":\t", -1, "important", "comment", NULL);
-          gtk_text_buffer_get_iter_at_mark (tb, &iter, mark);
-        }
-        else
-        {
-          gtk_text_buffer_get_iter_at_mark (tb, &iter, mark);
-          gtk_text_buffer_insert_with_tags_by_name (tb, &iter, "\t", -1, "important", "comment", NULL);
-        }
-        //Sentence
+        gtk_text_buffer_insert_with_tags_by_name (tb, &iter, gettext("E:\t"), -1, "important", "comment", NULL);
         gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); start_offset = gtk_text_iter_get_line_offset (&iter);
-        gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); line = gtk_text_iter_get_line (&iter);
-        if (resultline->number[i][0] == 'A' || resultline->number[i][0] == '\0')
-          gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->def_start[i], -1, "important", NULL);
-        else
-          gtk_text_buffer_insert (tb, &iter, resultline->def_start[i], -1);
+        gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->def_start[0], -1, "important", NULL, NULL);
         gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
-        gw_ui_add_match_highlights (line, start_offset, end_offset, item);
-
-        gtk_text_buffer_get_iter_at_mark (tb, &iter, mark);
-        gtk_text_buffer_insert_with_tags_by_name (tb, &iter, "\n", -1, "small", NULL);
         gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); line = gtk_text_iter_get_line (&iter);
-        i++;
+        gw_ui_add_match_highlights (line, start_offset, end_offset, item);
       }
+
+      if (resultline->kanji_start != NULL)
+      {
+        gtk_text_buffer_insert_with_tags_by_name (tb, &iter, gettext("\nJ:\t"), -1, "important", "comment", NULL);
+        gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); start_offset = gtk_text_iter_get_line_offset (&iter);
+        gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->kanji_start, -1, NULL, NULL, NULL);
+        gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
+        gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); line = gtk_text_iter_get_line (&iter);
+        gw_ui_add_match_highlights (line, start_offset, end_offset, item);
+      }
+
+      if (resultline->furigana_start != NULL)
+      {
+        gtk_text_buffer_insert_with_tags_by_name (tb, &iter, gettext("\nD:\t"), -1, "important", "comment", NULL);
+        gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); start_offset = gtk_text_iter_get_line_offset (&iter);
+        gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->furigana_start, -1, NULL, NULL, NULL);
+        gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
+        gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); line = gtk_text_iter_get_line (&iter);
+        gw_ui_add_match_highlights (line, start_offset, end_offset, item);
+      }
+
       gtk_text_buffer_get_iter_at_mark (tb, &iter, mark);
-      gtk_text_buffer_insert (tb, &iter, "\n", -1);
-      gtk_text_buffer_get_iter_at_mark (tb, &iter, mark);
-      gtk_text_buffer_insert (tb, &iter, "\n", -1);
+      gtk_text_buffer_insert (tb, &iter, "\n\n", -1);
 }
 
 void gw_ui_append_unknowndict_results_to_buffer (GwSearchItem *item, gboolean unused)
