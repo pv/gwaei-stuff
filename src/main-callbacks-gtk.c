@@ -373,9 +373,7 @@ G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
     item = (GwSearchItem*) data;
 
     //Checks to make sure everything is sane
-    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
-    int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
-    if (gw_ui_cancel_search (gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), page_num)) == FALSE)
+    if (gw_ui_cancel_search_for_current_tab () == FALSE)
       return;
     if (item->dictionary->status != GW_DICT_STATUS_INSTALLED) return;
 
@@ -396,6 +394,8 @@ G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
     gw_tab_set_current_tab_text (hl->current->queryline->string);
 
     //Add tab reference to searchitem
+    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
     GList *listitem = g_list_nth(gw_tab_searchitems, page_num);
     listitem->data = hl->current;
 
@@ -1304,9 +1304,11 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
     char *gckey = GCKEY_GW_LESS_RELEVANT_SHOW; 
     gboolean show_less_relevant = gw_pref_get_boolean (gckey, TRUE);
 
+    //Stop empty searches
     if (strlen (query) == 0)
       return;
 
+    //Stop duplicate searches
     if (tabitem != NULL &&
         tabitem->queryline != NULL &&
         strcmp (query, tabitem->queryline->string) == 0 &&
@@ -1314,7 +1316,7 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
         show_less_relevant == tabitem->show_less_relevant_results)
       return;
 
-    if (gw_ui_cancel_search (gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), page_num)) == FALSE)
+    if (gw_ui_cancel_search_for_current_tab () == FALSE)
       return;
 
     if (hl->current != NULL && (hl->current)->total_results) 

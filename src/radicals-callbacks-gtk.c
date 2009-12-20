@@ -55,9 +55,7 @@ G_MODULE_EXPORT void do_radical_clear (GtkWidget *widget, gpointer data)
   gw_ui_set_strokes_checkbox_state (FALSE);
 
   //Checks to make sure everything is sane
-  GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
-  int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
-  if (gw_ui_cancel_search (gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), page_num)) == FALSE)
+  if (gw_ui_cancel_search_for_current_tab () == FALSE)
     return;
 }
 
@@ -94,9 +92,7 @@ G_MODULE_EXPORT void do_radical_search (GtkWidget *widget, gpointer data)
     if (dictionary == NULL || dictionary->status != GW_DICT_STATUS_INSTALLED) return;
 
     //Checks to make sure everything is sane
-    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
-    int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
-    if (gw_ui_cancel_search (gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), page_num)) == FALSE)
+    if (gw_ui_cancel_search_for_current_tab () == FALSE)
       return;
 
     if (hl->current != NULL && (hl->current)->total_results > 0) 

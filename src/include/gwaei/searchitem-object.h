@@ -38,7 +38,7 @@
 //!
 //! Search status types
 //!
-enum search_states
+enum GwSearchState 
 {
   GW_SEARCH_IDLE,
   GW_SEARCH_SEARCHING,

@@ -2599,24 +2599,49 @@ gboolean gw_ui_cancel_search_by_searchitem (GwSearchItem *item)
 }
 
 
-gboolean gw_ui_cancel_search (gpointer container)
+gboolean gw_ui_cancel_search_by_tab_content (gpointer container)
 {
     GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
     int position = gtk_notebook_page_num (GTK_NOTEBOOK (notebook), container);
     if (position != -1)
     {
       GwSearchItem *item = g_list_nth_data (gw_tab_searchitems, position);
-      return  gw_ui_cancel_search_by_searchitem (item);
+      if (item == NULL)
+        return TRUE;
+      else
+        return  gw_ui_cancel_search_by_searchitem (item);
     }
     printf("WARNING: Could not find search to cancel. Something went wrong.\n");
     return FALSE;
 }
 
-gboolean gw_ui_cancel_search_by_target(const int TARGET)
+gboolean gw_ui_cancel_search_by_tab_number (const int page_num)
 {
-    GwHistoryList* hl = gw_historylist_get_list(GW_HISTORYLIST_RESULTS);
-    GwSearchItem *item = hl->current;
-    return  gw_ui_cancel_search_by_searchitem (item);
+    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    GtkWidget *content = gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), page_num);
+    if (content != NULL)
+      return gw_ui_cancel_search_by_tab_content (content);
+    else
+      return TRUE;
+}
+
+gboolean gw_ui_cancel_search_for_current_tab ()
+{
+    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+    gw_ui_cancel_search_by_tab_number (page_num);
+}
+
+
+gboolean gw_ui_cancel_search_by_target (const int TARGET)
+{
+    printf("Cancel search by target was called...shady\n");
+    if (TARGET == GW_TARGET_KANJI)
+    {
+      GwHistoryList* hl = gw_historylist_get_list(GW_HISTORYLIST_RESULTS);
+      GwSearchItem *item = hl->current;
+      return  gw_ui_cancel_search_by_searchitem (item);
+    }
 }
 
 
