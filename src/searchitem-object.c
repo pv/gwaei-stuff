@@ -296,6 +296,7 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
         found_radical = (rl->radicals != NULL && regexec(&(ql->kanji_regex[REGEX_TYPE][i]), rl->radicals, 1, NULL, 0) == 0);
         i++;
       }
+      if (REGEX_TYPE == GW_QUERYLINE_HIGH && found_kanji == FALSE) return FALSE;
       return (found_kanji | found_radical);
     }
 
