@@ -209,7 +209,7 @@ static int get_relevance (GwSearchItem *item) {
 //!
 static gboolean stream_results_thread (GwSearchItem *item)
 {
-    gboolean buffer_is_focused = (item != NULL && item->target_tb != (gpointer*) get_gobject_from_target(item->target));
+    gboolean buffer_is_focused = (item != NULL && item->target_tb == (gpointer*) get_gobject_from_target(item->target));
     int chunk = 0;
 
     //We loop, processing lines of the file until the max chunk size has been
