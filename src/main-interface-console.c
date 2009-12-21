@@ -466,9 +466,9 @@ void ncurses_scrolling(){
  * NCURSES MAIN
  *
  * TODO: Indentation
- * TODO: Accept other dictionaries
  * TODO: Scrolling when you want
  * TODO: Use the first letter inserted in scrolling
+ * TODO: Show the chosen dictionary and serch option
  */
 static void initialize_ncurses_interface (GwDictInfo *dictionary){
 
@@ -493,14 +493,16 @@ static void initialize_ncurses_interface (GwDictInfo *dictionary){
 	screen = newwin((maxY - 3), maxX, 0, 0);
 	ncurses_add_intro_and_box(screen,"Results:");
 
+	results = newpad(500, (maxX - 2));
+
 	while(loop) {
 
 		//TODO: Accept a !quit/!q like vim?
 
+		wclear(results);
+
 		wmove(search, 1, 2);
-
 	    wgetnstr(search, query, 250);
-
 	    wmove(search, 1, 2);
 
 		if (false){ //TODO: Check
@@ -531,6 +533,16 @@ static void initialize_ncurses_interface (GwDictInfo *dictionary){
 			if (test){
 				test = false;
 				dictionary = gw_dictlist_get_dictionary_by_alias(thisArg);
+				if (dictionary == NULL || dictionary->status != GW_DICT_STATUS_INSTALLED) {
+					wattron(results, COLOR_PAIR(REDONBLACK));
+					wprintw(results, gettext("Requested dictionary not found!\n"));
+					wprintw(results, gettext("Press any key to exit.\n"));
+					wattroff(results, COLOR_PAIR(REDONBLACK));
+					prefresh(results,0,0,2,2,(maxY - 5), (maxX - 2));
+					wgetch(search);
+					endwin();
+					return;
+				}
 			}
 			else if (is_switch (thisArg, "-e", "--exact"))
 				exact_switch = TRUE;
@@ -545,16 +557,15 @@ static void initialize_ncurses_interface (GwDictInfo *dictionary){
 			thisArg = strtok (NULL, " ,");
 		}
 
-		/* TODO:
-		else if (is_switch (query, "-d", "--dictionary")) {
-			dictionary = gw_dictlist_get_dictionary_by_alias(query); //TODO: FIXME
-		}
-		*/
+
 		//TODO: Extract all the spaces
 
 		if(thisArg == NULL){
 			/* No word to search, only option */
-			//TODO: print
+			wattron(results, COLOR_PAIR(REDONBLACK));
+			wprintw(results, gettext("No word inserted. Only option."));
+			wattroff(results, COLOR_PAIR(REDONBLACK));
+			prefresh(results,0,0,2,2,(maxY - 5), (maxX - 2));
 		}
 		else {
 			print_search_start_banner(thisArg, dictionary->name);
@@ -583,8 +594,6 @@ static void initialize_ncurses_interface (GwDictInfo *dictionary){
 				refresh();
 			*/
 
-			results = newpad(500, (maxX - 2));
-
 			gw_search_get_results (item); //TODO: Print here?? <---
 
 			if (results != NULL) { //TODO: Before
@@ -609,6 +618,8 @@ static void initialize_ncurses_interface (GwDictInfo *dictionary){
 			free(item);
 		}
 	}
+
+	endwin();
 
 	return;
 }
@@ -649,6 +660,10 @@ void initialize_console_interface(int argc, char **argv) {
 		else if (is_switch (argv[thisArg], "-d", "--dictionary")) {
 		  thisArg++;
 		  di = gw_dictlist_get_dictionary_by_alias(argv[thisArg]);
+		  if (di == NULL || di->status != GW_DICT_STATUS_INSTALLED) {
+			printf(gettext("Requested dictionary not found!\n"));
+			return;
+		  }
 		}
 
 		else {
