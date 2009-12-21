@@ -58,11 +58,27 @@ G_MODULE_EXPORT void do_tab_remove (GtkWidget *widget, gpointer data);
 void gw_tab_update_appearance ()
 {
     GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
-    int pages = gtk_notebook_get_n_pages (GTK_NOTEBOOK (notebook));
     int current_page = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
-    GtkWidget *scrolledwindow = GTK_WIDGET (gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), current_page));
+    GwSearchItem *item = g_list_nth_data (gw_tab_searchitems, current_page);
+    gw_tab_update_appearance_with_searchitem (item);
+}
 
+
+void gw_tab_update_appearance_with_searchitem (GwSearchItem *item)
+{
+    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    int pages = gtk_notebook_get_n_pages (GTK_NOTEBOOK (notebook));
+
+    //Set display status of tabs
     gtk_notebook_set_show_tabs (GTK_NOTEBOOK (notebook), (pages > 1));
+
+    //Force correct querytext
+    gw_ui_set_query_entry_text_by_searchitem (item);
+    gw_ui_set_total_results_label_by_searchitem (item);
+    gw_ui_set_search_progressbar_by_searchitem (item);
+    gw_ui_set_query_entry_text_by_searchitem (item);
+    gw_ui_set_main_window_title_by_searchitem (item);
+    gw_ui_set_dictionary_by_searchitem (item);
 }
 
 
@@ -137,9 +153,9 @@ int gw_tab_new ()
     gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), position);
     gw_ui_initialize_tags();
     gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), current);
-    gw_tab_update_appearance ();
     gw_ui_initialize_buffer_marks(textbuffer);
     gw_tab_searchitems = g_list_append(gw_tab_searchitems, NULL);
+    gw_tab_update_appearance ();
     gw_ui_update_toolbar_buttons();
 
     return position;
@@ -157,8 +173,10 @@ G_MODULE_EXPORT void do_new_tab (GtkWidget *widget, gpointer data)
     int position = gw_tab_new ();
     GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
     gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), position);
+    gw_ui_set_query_entry_text_by_searchitem (NULL);
     gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
     gw_ui_set_dictionary(0);
+    gw_tab_update_appearance ();
 }
 
 
@@ -217,6 +235,8 @@ G_MODULE_EXPORT void do_tab_remove_current (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void do_tab_switch (GtkNotebook *notebook, GtkNotebookPage *page, int page_num, gpointer data)
 {
+    GwSearchItem *item = g_list_nth_data (gw_tab_searchitems, page_num);
+    gw_tab_update_appearance_with_searchitem (item);
 }
 
 
@@ -224,14 +244,7 @@ G_MODULE_EXPORT void do_next_tab (GtkWidget *widget, gpointer data)
 {
     GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
     gtk_notebook_next_page (GTK_NOTEBOOK (notebook));
-
-    int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
-    GwSearchItem *item = g_list_nth_data(gw_tab_searchitems, page_num);
-    gw_ui_set_total_results_label_by_searchitem (item);
-    gw_ui_set_search_progressbar_by_searchitem (item);
-    gw_ui_set_query_entry_text_by_searchitem (item);
-    gw_ui_set_main_window_title_by_searchitem (item);
-    gw_ui_set_dictionary_by_searchitem (item);
+    gw_tab_update_appearance ();
 }
 
 
@@ -239,14 +252,7 @@ G_MODULE_EXPORT void do_previous_tab (GtkWidget *widget, gpointer data)
 {
     GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
     gtk_notebook_prev_page (GTK_NOTEBOOK (notebook));
-
-    int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
-    GwSearchItem *item = g_list_nth_data(gw_tab_searchitems, page_num);
-    gw_ui_set_total_results_label_by_searchitem (item);
-    gw_ui_set_search_progressbar_by_searchitem (item);
-    gw_ui_set_query_entry_text_by_searchitem (item);
-    gw_ui_set_main_window_title_by_searchitem (item);
-    gw_ui_set_dictionary_by_searchitem (item);
+    gw_tab_update_appearance ();
 }
 
 

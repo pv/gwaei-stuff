@@ -209,6 +209,7 @@ static int get_relevance (GwSearchItem *item) {
 //!
 static gboolean stream_results_thread (GwSearchItem *item)
 {
+    gboolean buffer_is_focused = (item != NULL && item->target_tb != (gpointer*) get_gobject_from_target(item->target));
     int chunk = 0;
 
     //We loop, processing lines of the file until the max chunk size has been
@@ -250,8 +251,11 @@ static gboolean stream_results_thread (GwSearchItem *item)
               item->total_relevant_results++;
               if (item->target != GW_TARGET_KANJI)
                 append_more_relevant_header_to_output(item);
-              gw_ui_set_total_results_label_by_searchitem (item);
-              gw_ui_set_main_window_title_by_searchitem (item);
+              if (buffer_is_focused)
+              {
+                gw_ui_set_total_results_label_by_searchitem (item);
+                gw_ui_set_main_window_title_by_searchitem (item);
+              }
               append_result_to_output(item);
 
               //Swap the result lines
@@ -288,7 +292,10 @@ static gboolean stream_results_thread (GwSearchItem *item)
     }
 
     //Update the progressbar
-    gw_ui_set_search_progressbar_by_searchitem (item);
+    if (buffer_is_focused)
+    {
+      gw_ui_set_search_progressbar_by_searchitem (item);
+    }
 
     //If the chunk reached the max chunk size, there is still file left to load
     if ( chunk == MAX_CHUNK ) {
@@ -310,8 +317,11 @@ static gboolean stream_results_thread (GwSearchItem *item)
         item->total_results++;
         append_stored_result_to_output(item, &(item->results_medium), item->resultline);
       }
-      gw_ui_set_total_results_label_by_searchitem(item);
-      gw_ui_set_main_window_title_by_searchitem (item);
+      if (buffer_is_focused)
+      {
+        gw_ui_set_total_results_label_by_searchitem(item);
+        gw_ui_set_main_window_title_by_searchitem (item);
+      }
       return TRUE;
     }
 
@@ -321,8 +331,11 @@ static gboolean stream_results_thread (GwSearchItem *item)
         item->total_results++;
         append_stored_result_to_output(item, &(item->results_low), item->resultline);
       }
-      gw_ui_set_total_results_label_by_searchitem (item);
-      gw_ui_set_main_window_title_by_searchitem (item);
+      if (buffer_is_focused)
+      {
+        gw_ui_set_total_results_label_by_searchitem (item);
+        gw_ui_set_main_window_title_by_searchitem (item);
+      }
       return TRUE;
     }
 
@@ -339,7 +352,10 @@ static gboolean stream_results_thread (GwSearchItem *item)
       {
         gw_ui_clear_buffer_by_target (item->target_tb);
         gw_ui_display_no_results_found_page(item);
-        gw_ui_set_main_window_title_by_searchitem (item);
+        if (buffer_is_focused)
+        {
+          gw_ui_set_main_window_title_by_searchitem (item);
+        }
       }
     }
 
