@@ -465,10 +465,9 @@ void ncurses_scrolling(){
 /*
  * NCURSES MAIN
  *
- * TODO: Indentation
  * TODO: Scrolling when you want
  * TODO: Use the first letter inserted in scrolling
- * TODO: Show the chosen dictionary and serch option
+ * TODO: Show the chosen dictionary and search option
  */
 static void initialize_ncurses_interface (GwDictInfo *dictionary){
 
@@ -502,7 +501,7 @@ static void initialize_ncurses_interface (GwDictInfo *dictionary){
 		wclear(results);
 
 		wmove(search, 1, 2);
-	    wgetnstr(search, query, 250);
+	    wgetnstr(search, query, 250); //TODO: Check the results?
 	    wmove(search, 1, 2);
 
 		if (false){ //TODO: Check
@@ -948,45 +947,45 @@ void gw_console_append_kanji_results (GwSearchItem *item, gboolean unused) {
 			wattroff(results, COLOR_PAIR(REDONBLACK));
 
 			if (resultline->radicals)
-				wprintw(results,"%s%s\n", gettext("[35mRadicals:[0m"), resultline->radicals);
+				wprintw(results,"%s%s\n", gettext("Radicals:"), resultline->radicals);
 
 			if (resultline->strokes) {
 			  line_started = TRUE;
-			  wprintw(results,"%s%s", gettext("[35mStroke:[0m"), resultline->strokes);
+			  wprintw(results,"%s%s", gettext("Stroke:"), resultline->strokes);
 			}
 
 			if (resultline->frequency) {
 			  if (line_started)
 				  wprintw(results," ");
 			  line_started = TRUE;
-			  wprintw(results,"%s%s", gettext("[35mFreq:[0m"), resultline->frequency);
+			  wprintw(results,"%s%s", gettext("Freq:"), resultline->frequency);
 			}
 
 			if (resultline->grade) {
 			  if (line_started)
 				  wprintw(results," ");
 			  line_started = TRUE;
-			  wprintw(results,"%s%s", gettext("[35mGrade:[0m"), resultline->grade);
+			  wprintw(results,"%s%s", gettext("Grade:"), resultline->grade);
 			}
 
 			if (resultline->jlpt) {
 			  if (line_started)
 				  wprintw(results," ");
 			  line_started = TRUE;
-			  wprintw(results,"%s%s", gettext("[35mJLPT:[0m"), resultline->jlpt);
+			  wprintw(results,"%s%s", gettext("JLPT:"), resultline->jlpt);
 			}
 
 			if (line_started)
 				wprintw(results,"\n");
 
 			if (resultline->readings[0])
-				wprintw(results,"%s%s", gettext("[35mReadings:[0m"), resultline->readings[0]);
+				wprintw(results,"%s%s", gettext("Readings:"), resultline->readings[0]);
 			if (resultline->readings[1])
 				wprintw(results,"%s", resultline->readings[1]);
 
 			wprintw(results,"\n");
 			if (resultline->meanings)
-				wprintw(results,"%s%s\n", gettext("[35mMeanings:[0m"), resultline->meanings);
+				wprintw(results,"%s%s\n", gettext("Meanings:"), resultline->meanings);
 			wprintw(results,"\n");
 		}
 		else {
@@ -994,44 +993,44 @@ void gw_console_append_kanji_results (GwSearchItem *item, gboolean unused) {
 			printf("[32;1m%s[0m\n", resultline->kanji);
 
 			if (resultline->radicals)
-				printf("%s%s\n", gettext("[35mRadicals:[0m"), resultline->radicals);
+				printf("%s%s\n", gettext("Radicals:"), resultline->radicals);
 
 			if (resultline->strokes) {
 			  line_started = TRUE;
-			  printf("%s%s", gettext("[35mStroke:[0m"), resultline->strokes);
+			  printf("%s%s", gettext("Stroke:"), resultline->strokes);
 			}
 
 			if (resultline->frequency) {
 			  if (line_started) printf(" ");
 			  line_started = TRUE;
-			  printf("%s%s", gettext("[35mFreq:[0m"), resultline->frequency);
+			  printf("%s%s", gettext("Freq:"), resultline->frequency);
 			}
 
 			if (resultline->grade) {
 			  if (line_started)
 				  printf(" ");
 			  line_started = TRUE;
-			  printf("%s%s", gettext("[35mGrade:[0m"), resultline->grade);
+			  printf("%s%s", gettext("Grade:"), resultline->grade);
 			}
 
 			if (resultline->jlpt) {
 			  if (line_started)
 				  printf(" ");
 			  line_started = TRUE;
-			  printf("%s%s", gettext("[35mJLPT:[0m"), resultline->jlpt);
+			  printf("%s%s", gettext("JLPT:"), resultline->jlpt);
 			}
 
 			if (line_started)
 				printf("\n");
 
 			if (resultline->readings[0])
-				printf("%s%s", gettext("[35mReadings:[0m"), resultline->readings[0]);
+				printf("%s%s", gettext("Readings:"), resultline->readings[0]);
 			if (resultline->readings[1])
 				printf("%s", resultline->readings[1]);
 
 			printf("\n");
 			if (resultline->meanings)
-				printf("%s%s\n", gettext("[35mMeanings:[0m"), resultline->meanings);
+				printf("%s%s\n", gettext("Meanings:"), resultline->meanings);
 			printf("\n");
 		}
 	}
