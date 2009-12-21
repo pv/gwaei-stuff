@@ -55,15 +55,12 @@
 G_MODULE_EXPORT void do_tab_remove (GtkWidget *widget, gpointer data);
 
 
-void gw_tab_update_appearance ()
-{
-    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
-    int current_page = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
-    GwSearchItem *item = g_list_nth_data (gw_tab_searchitems, current_page);
-    gw_tab_update_appearance_with_searchitem (item);
-}
 
-
+//!
+//! @brief Updates the tab and surrounding interface to reflect the current tab
+//!
+//! @param item pointer to a GwSearchItem to use to update the interface.
+//!
 void gw_tab_update_appearance_with_searchitem (GwSearchItem *item)
 {
     GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
@@ -82,6 +79,43 @@ void gw_tab_update_appearance_with_searchitem (GwSearchItem *item)
 }
 
 
+//!
+//! @brief Updates the tab and surrounding interface to reflect the current tab
+//!
+void gw_tab_update_appearance ()
+{
+    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    int current_page = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+    GwSearchItem *item = g_list_nth_data (gw_tab_searchitems, current_page);
+    gw_tab_update_appearance_with_searchitem (item);
+}
+
+
+//!
+//! @brief Sets the current SearchItem in the historylist to the one in the argument
+//!
+void gw_tab_update_on_deck_historylist_by_searchitem (GwSearchItem *item)
+{
+    GwHistoryList *hl = gw_historylist_get_list (GW_TARGET_RESULTS);
+    hl->current = item;
+}
+
+
+//!
+//! @brief Sets the current SearchItem in the HistoryList to the one in the current tab
+//!
+void gw_tab_update_on_deck_historylist_item_by_current_tab ()
+{
+    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+    GwSearchItem *item = g_list_nth_data (gw_tab_searchitems, page_num);
+    gw_tab_update_on_deck_historylist_by_searchitem (item);
+}
+
+
+//!
+//! @brief Makes sure that at least one tab is available to output search results.
+//!
 void gw_guarantee_first_tab ()
 {
     GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
@@ -94,6 +128,9 @@ void gw_guarantee_first_tab ()
 }
 
 
+//!
+//! @brief Sets the title text of the current tab.
+//!
 void gw_tab_set_current_tab_text (const char* string)
 {
     GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
@@ -106,6 +143,9 @@ void gw_tab_set_current_tab_text (const char* string)
 }
 
 
+//!
+//! @brief Creats a new tab.  The focus and other details are handled by do_new_tab()
+//!
 int gw_tab_new ()
 {
     //Create contents
@@ -176,6 +216,7 @@ G_MODULE_EXPORT void do_new_tab (GtkWidget *widget, gpointer data)
     gw_ui_set_query_entry_text_by_searchitem (NULL);
     gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
     gw_ui_set_dictionary(0);
+    gw_tab_update_on_deck_historylist_item_by_current_tab ();
     gw_tab_update_appearance ();
 }
 
@@ -198,6 +239,7 @@ G_MODULE_EXPORT void do_tab_remove (GtkWidget *widget, gpointer data)
     GList *listitem = g_list_nth (gw_tab_searchitems, page_num);
     gw_tab_searchitems = g_list_delete_link (gw_tab_searchitems, listitem);
 
+    gw_tab_update_on_deck_historylist_item_by_current_tab ();
     gw_tab_update_appearance ();
 }
 
@@ -220,6 +262,7 @@ G_MODULE_EXPORT void do_tab_remove_current (GtkWidget *widget, gpointer data)
     GList *listitem = g_list_nth (gw_tab_searchitems, page_num);
     gw_tab_searchitems = g_list_delete_link (gw_tab_searchitems, listitem);
 
+    gw_tab_update_on_deck_historylist_item_by_current_tab ();
     gw_tab_update_appearance ();
 }
 
@@ -237,6 +280,7 @@ G_MODULE_EXPORT void do_tab_switch (GtkNotebook *notebook, GtkNotebookPage *page
 {
     GwSearchItem *item = g_list_nth_data (gw_tab_searchitems, page_num);
     gw_tab_update_appearance_with_searchitem (item);
+    gw_tab_update_on_deck_historylist_by_searchitem (item);
 }
 
 
@@ -245,6 +289,7 @@ G_MODULE_EXPORT void do_next_tab (GtkWidget *widget, gpointer data)
     GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
     gtk_notebook_next_page (GTK_NOTEBOOK (notebook));
     gw_tab_update_appearance ();
+    gw_tab_update_on_deck_historylist_item_by_current_tab ();
 }
 
 
@@ -253,6 +298,7 @@ G_MODULE_EXPORT void do_previous_tab (GtkWidget *widget, gpointer data)
     GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
     gtk_notebook_prev_page (GTK_NOTEBOOK (notebook));
     gw_tab_update_appearance ();
+    gw_tab_update_on_deck_historylist_item_by_current_tab ();
 }
 
 

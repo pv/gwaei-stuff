@@ -1319,6 +1319,7 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
     if (gw_ui_cancel_search_for_current_tab () == FALSE)
       return;
 
+/*
     if (hl->current != NULL && (hl->current)->total_results) 
     {
       gw_historylist_add_searchitem_to_history (GW_HISTORYLIST_RESULTS, hl->current);
@@ -1330,7 +1331,22 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
       gw_searchitem_free (hl->current);
       hl->current = NULL;
     }
-    
+ */   
+
+//////////////////////////////////////////////////////
+    if (hl->current != NULL && (hl->current)->total_results) 
+    {
+      gw_historylist_add_searchitem_to_history (GW_HISTORYLIST_RESULTS, hl->current);
+      hl->current = NULL;
+      gw_ui_update_history_popups ();
+    }
+    else if (hl->current != NULL)
+    {
+      gw_searchitem_free (hl->current);
+      hl->current = NULL;
+    }
+/////////////////////////////////////////////////////
+
     //in add_to_history() rather than here
     hl->current = gw_searchitem_new (query, dictionary, GW_TARGET_RESULTS);
     if (hl->current == NULL)
