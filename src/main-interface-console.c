@@ -468,6 +468,7 @@ void ncurses_scrolling(){
  * TODO: Scrolling when you want
  * TODO: Use the first letter inserted in scrolling
  * TODO: Show the chosen dictionary and search option
+ * TODO: Accept a !quit/!q like vim?
  */
 static void initialize_ncurses_interface (GwDictInfo *dictionary){
 
@@ -495,8 +496,6 @@ static void initialize_ncurses_interface (GwDictInfo *dictionary){
 	results = newpad(500, (maxX - 2));
 
 	while(loop) {
-
-		//TODO: Accept a !quit/!q like vim?
 
 		wclear(results);
 
@@ -570,11 +569,8 @@ static void initialize_ncurses_interface (GwDictInfo *dictionary){
 			print_search_start_banner(thisArg, dictionary->name);
 
 			item = gw_searchitem_new(thisArg, dictionary, GW_TARGET_CONSOLE);
-			if (item == NULL){
-				//TODO: Use GError instead
-				exit (EXIT_FAILURE);
-			}
-
+			if (item == NULL)
+				exit (EXIT_FAILURE);	//TODO: Use GError instead
 
 			item->show_less_relevant_results = !exact_switch;
 
@@ -596,7 +592,6 @@ static void initialize_ncurses_interface (GwDictInfo *dictionary){
 			gw_search_get_results (item); //TODO: Print here?? <---
 
 			if (results != NULL) { //TODO: Before
-
 				scrollok(results,TRUE);
 				prefresh(results,0,0,2,2,(maxY - 5), (maxX - 2));
 			}
