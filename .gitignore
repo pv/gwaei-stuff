@@ -31,6 +31,7 @@ help/gwaei-C.omf
 help/gwaei.omf
 
 po/Makefile
+po/Makefile.in
 po/en@boldquot.insert-header
 po/en@quot.insert-header
 po/en@boldquot.po
@@ -74,4 +75,8 @@ src/img/Makefile.in
 src/kpengine/Makefile.in
 src/schemas/Makefile.in
 src/xml/Makefile.in
+
+
+config.h.in
+configure
 
