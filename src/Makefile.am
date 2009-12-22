@@ -31,7 +31,7 @@ DEFS = -DLOCALEDIR=\"$(localedir)\" -DVERSION=\"$(VERSION)\" -DPACKAGE=\"$(PACKA
 
 gwaei_SOURCES = main.c dictinfo-object.c dictlist-object.c queryline-object.c engine.c utilities.c io.c regex.c main-interface-console.c formatting.c searchitem-object.c historylist-object.c resultline-object.c include/gwaei/main.h include/gwaei/dictinfo-object.h include/gwaei/dictlist-object.h include/gwaei/utilities.h include/gwaei/io.h include/gwaei/regex.h include/gwaei/engine.h include/gwaei/formatting.h include/gwaei/definitions.h include/gwaei/preferences.h include/gwaei/resultline-object.h include/gwaei/historylist-object.h include/gwaei/searchitem-object.h include/gwaei/search-objects.h include/gwaei/dictionary-objects.h include/gwaei/queryline-object.h
 gwaei_LDADD =  $(DEPS_LIBS) @LIBINTL@
-gwaei_LDFLAGS = -Wall -Wextra -pedantic
+gwaei_LDFLAGS = -Wall -Wextra -pedantic -lncursesw
 
 AM_CFLAGS = $(DEPS_CFLAGS)
 INCLUDES = -I $(top_srcdir)/src/include

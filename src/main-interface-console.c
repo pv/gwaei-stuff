@@ -46,8 +46,56 @@
 gboolean quiet_switch = FALSE;
 gboolean exact_switch = FALSE;
 
-void gw_console_uninstall_dictionary_by_name(char *name)
-{
+/* NCURSES */
+
+#include <curses.h>
+
+static WINDOW *mainWindows;
+static WINDOW *results;
+static WINDOW *search;
+static WINDOW *screen;
+int current_row = 0;
+int maxY, maxX;
+int cursesFlag = false;
+int cursesSupportColorFlag = true;
+
+#define GREENONBLACK	1
+#define BLUEONBLACK		2
+#define REDONBLACK		3
+
+/**
+ * Print the "less relevant" header where necessary.
+ */
+void gw_console_append_less_relevant_header_to_output(){
+	if (cursesFlag) {
+		wattron(results, COLOR_PAIR(REDONBLACK));
+		wprintw(results,"\n*** ");
+		wattroff(results, COLOR_PAIR(REDONBLACK));
+		wprintw(results,"%s ", gettext("Other Results"));
+		wattron(results, COLOR_PAIR(REDONBLACK));
+		wprintw(results,"***************************\n\n\n");
+		wattroff(results, COLOR_PAIR(REDONBLACK));
+	}
+	else
+		printf("\n[0;31m***[0m[1m%s[0;31m***************************[0m\n\n\n", gettext("Other Results"));
+}
+
+/**
+ * Print the "no result" message where necessary.
+ */
+void gw_console_no_result(){
+	if (cursesFlag)
+		wprintw(results,"%s\n\n", gettext("No results found!"));
+	else
+		printf("%s\n\n", gettext("No results found!"));
+}
+
+
+/**
+ *
+ */
+void gw_console_uninstall_dictionary_by_name(char *name) {
+
     GwDictInfo* di;
     di = gw_dictlist_get_dictionary_by_name (name);
     if (di == NULL) return;
@@ -63,8 +111,8 @@ void gw_console_uninstall_dictionary_by_name(char *name)
 }
 
 
-gboolean gw_console_install_dictionary_by_name(char *name)
-{
+gboolean gw_console_install_dictionary_by_name(char *name) {
+
     GwDictInfo* di;
     di = gw_dictlist_get_dictionary_by_alias(name);
 
@@ -148,8 +196,8 @@ static void print_about_program ()
 }
 
 
-static void print_search_start_banner(char *query, char *dictionary)
-{
+static void print_search_start_banner(char *query, char *dictionary) {
+	/*
     printf("");
     printf("%s", gettext("Searching for \""));
     printf("[1;31m%s[0m", query);
@@ -157,6 +205,7 @@ static void print_search_start_banner(char *query, char *dictionary)
     printf("[1;31m%s[0m", dictionary);
     printf("%s", gettext(" dictionary..."));
     printf("[0m\n\n");
+    */
 
     #ifdef G_OS_UNIX
     sleep(1);
@@ -342,49 +391,130 @@ static gboolean is_switch (char *arg, char *short_switch, char *long_switch) {
   return (strcmp(arg, short_switch) == 0 || strcmp(arg, long_switch) == 0);
 }
 
+/*** NCURSES ***/
+
+void ncurses_color_init(bool hasColors) {
+
+	if (hasColors) {
+		start_color();
+		init_pair(GREENONBLACK, COLOR_GREEN, COLOR_BLACK);
+		init_pair(BLUEONBLACK, COLOR_BLUE, COLOR_BLACK);
+		init_pair(REDONBLACK, COLOR_RED, COLOR_BLACK);
+	}
+	else
+		cursesSupportColorFlag = false; //TODO: Use this
+}
+
+void ncurses_screen_init(void) {
+
+	mainWindows = initscr();
+	cbreak();
+	nodelay(mainWindows, TRUE);
+
+	ncurses_color_init(has_colors());
+
+	refresh();
+	wrefresh(mainWindows);
+}
+
+
+
+void ncurses_add_intro_and_box (WINDOW* thisWin, char* intro){
+	//altezza rettangolo, larghezza rettangolo, quanto in basso,quanto a destra
+	//thisWin = newwin(altezza, larghezza, posY, posX);
+	//Crea un bordo
+	box(thisWin, ACS_VLINE, ACS_HLINE);
+	wattron(thisWin,A_BOLD);
+	mvwprintw(thisWin,0,2,intro);
+	wattroff(thisWin,A_BOLD);
+	wrefresh(thisWin);
+	refresh();
+}
+
+/**
+ *
+ */
+void ncurses_scrolling(){
+	//mousemask(ALL_MOUSE_EVENTS, NULL); //IT WORKS
+	int cont = 0;
+	int c;
+	keypad(search, TRUE);
+
+	while(true) {
+		noecho();
+		cbreak();
+		c = wgetch(search);
+		switch(c) {
+			case KEY_UP:
+				cont--;
+				if (cont < 0)
+					cont = 0;
+				prefresh(results,cont,0,2,2,(maxY - 5), (maxX - 2));
+				break;
+			case KEY_DOWN:
+				cont++;
+				prefresh(results,cont,0,2,2,(maxY - 5), (maxX - 2));
+				break;
+			default:
+				echo();
+				return;
+		}
+	}
+}
 
 /*
- * FIXME FIXME FIXME
+ * NCURSES MAIN
+ *
+ * TODO: Scrolling when you want
+ * TODO: Use the first letter inserted in scrolling
+ * TODO: Show the chosen dictionary and search option
+ * TODO: Accept a !quit/!q like vim?
  */
-static void get_search (GwDictInfo *dictionary){
+static void initialize_ncurses_interface (GwDictInfo *dictionary){
 
 	GError *error = NULL;
 	GwSearchItem *item;
 	char query[MAX_QUERY];
 	int cont, loop;
 	char *fgetsTest;
+	char *thisArg;
 
 	loop = TRUE;
+	cursesFlag = TRUE;
+
+	ncurses_screen_init();
+
+	getmaxyx(mainWindows, maxY, maxX);
+
+	//alt rett, larg rett, quanto in basso, quanto a destra
+	search = newwin(3, maxX, (maxY - 3), 0);
+	ncurses_add_intro_and_box(search,"Search:");
+
+	screen = newwin((maxY - 3), maxX, 0, 0);
+	ncurses_add_intro_and_box(screen,"Results:");
+
+	results = newpad(500, (maxX - 2));
 
 	while(loop) {
 
-		//TODO: Accept a !quit/!q like vim?
+		wclear(results);
 
-		printf ("\nNew search (");
-		if (exact_switch == TRUE)
-			printRed ("--exact ");
-		else
-			printRed ("--allResult ");
-		if (quiet_switch == TRUE)
-			printRed ("--quiet ");
-		else
-			printRed ("--verbose ");
-	    printf ("in [1;31m%s[0m dictionary): ", dictionary->name);
+		wmove(search, 1, 2);
+	    wgetnstr(search, query, 250); //TODO: Check the results?
+	    wmove(search, 1, 2);
 
-		fgetsTest = fgets (query, MAX_QUERY, stdin);
-		if (fgetsTest == NULL){
-			printf("ERROR (get_search): Input error!");
+		if (false){ //TODO: Check
+			//TODO: print
 			loop = FALSE;
 			break;
 		}
 
 		if (query[0] == '\n') {
-			printf("Exiting...\n");
+			//TODO: Print
 			loop = FALSE;
 			break;
 		}
 
-		/* remove the null terminator */
 		for (cont = 0; cont < sizeof(query); ++cont) {
 			if (query[cont] == '\n') {
 				query[cont] = '\0';
@@ -392,54 +522,105 @@ static void get_search (GwDictInfo *dictionary){
 			}
 		}
 
-		//TODO: Search for all!
-		//TODO: Search for a sustring and extract it
-		if (is_switch (query, "-e", "--exact")) {
-			exact_switch = TRUE;
-		}
-		else if (is_switch (query, "-q", "--quiet")) {
-			quiet_switch = TRUE;
-		} /*
-		else if (is_switch (query, "-d", "--dictionary")) {
-			dictionary = gw_dictlist_get_dictionary_by_alias(query); //TODO: FIXME
-		} */ 		//TODO: Exstract all the spaces
-		else {
-			print_search_start_banner(query, dictionary->name);
+		/* Search for keyword... */
 
-			item = gw_searchitem_new(query, dictionary, GW_TARGET_CONSOLE);
-			if (item == NULL){
-				//TODO: Use GError instead. TODO
-				printf(gettext("Results seem to have incorrect formatting. Did you "
-								"close all of your\nparenthesis?  You may want to tr"
-								"y quotes too.\n"));
-				printf("Or\n");
-				printf("Out of memory.\n Exiting.\n");
-				exit (EXIT_FAILURE);
+		thisArg = NULL;
+		thisArg = strtok (query," ");
+		int test = false;
+		while (thisArg != NULL) {
+			if (test){
+				test = false;
+				dictionary = gw_dictlist_get_dictionary_by_alias(thisArg);
+				if (dictionary == NULL || dictionary->status != GW_DICT_STATUS_INSTALLED) {
+					wattron(results, COLOR_PAIR(REDONBLACK));
+					wprintw(results, gettext("Requested dictionary not found!\n"));
+					wprintw(results, gettext("Press any key to exit.\n"));
+					wattroff(results, COLOR_PAIR(REDONBLACK));
+					prefresh(results,0,0,2,2,(maxY - 5), (maxX - 2));
+					wgetch(search);
+					endwin();
+					return;
+				}
 			}
+			else if (is_switch (thisArg, "-e", "--exact"))
+				exact_switch = TRUE;
+			else if (is_switch (thisArg, "-q", "--quiet"))
+				quiet_switch = TRUE;
+			else if (is_switch (thisArg, "-d", "--dictionary")) {
+				  test = true;
+			}
+			else
+				break; //Search only the first word inserted
+
+			thisArg = strtok (NULL, " ,");
+		}
+
+
+		//TODO: Extract all the spaces
+
+		if(thisArg == NULL){
+			/* No word to search, only option */
+			wattron(results, COLOR_PAIR(REDONBLACK));
+			wprintw(results, gettext("No word inserted. Only option."));
+			wattroff(results, COLOR_PAIR(REDONBLACK));
+			prefresh(results,0,0,2,2,(maxY - 5), (maxX - 2));
+		}
+		else {
+			print_search_start_banner(thisArg, dictionary->name);
+
+			item = gw_searchitem_new(thisArg, dictionary, GW_TARGET_CONSOLE);
+			if (item == NULL)
+				exit (EXIT_FAILURE);	//TODO: Use GError instead
 
 			item->show_less_relevant_results = !exact_switch;
+
+			/*
+				WINDOW* subWin;
+				subWin = subwin(results, (maxY - 10), (maxX - 10), 2, 2);
+				scrollok(subWin,1);
+				touchwin(results);
+				refresh();
+				werase(subWin);
+				results = subWin; //Fin qui funziona
+
+				WINDOW *subbb = subpad(pad, (maxY - 10), (maxX - 10), 2, 2);
+				scrollok(subbb,1);
+				touchwin(pad);
+				refresh();
+			*/
+
 			gw_search_get_results (item); //TODO: Print here?? <---
 
-			//Print the number of results
-
-			if (quiet_switch == FALSE) {
-				printf("");
-				printf("\n%s%d%s", gettext("Found "), item->total_results, gettext(" Results"));
-
-				if (item->total_relevant_results != item->total_results)
-					printf("%s%d%s", gettext(" ("), item->total_relevant_results, gettext(" Relevant)"));
-
-				printf("[0m\n");
+			if (results != NULL) { //TODO: Before
+				scrollok(results,TRUE);
+				prefresh(results,0,0,2,2,(maxY - 5), (maxX - 2));
 			}
+
+			//Print the number of results
+			if (quiet_switch == FALSE) {
+				//TODO
+				if (item->total_relevant_results != item->total_results){
+					//TODO
+				}
+			}
+
+			ncurses_scrolling();
+
+			wclear(search);
+			ncurses_add_intro_and_box(search,"Search:");
 
 			free(item);
 		}
 	}
 
+	endwin();
+
 	return;
 }
 
-/*
+/**
+ *
+ *
  *
  */
 void initialize_console_interface(int argc, char **argv) {
@@ -473,6 +654,10 @@ void initialize_console_interface(int argc, char **argv) {
 		else if (is_switch (argv[thisArg], "-d", "--dictionary")) {
 		  thisArg++;
 		  di = gw_dictlist_get_dictionary_by_alias(argv[thisArg]);
+		  if (di == NULL || di->status != GW_DICT_STATUS_INSTALLED) {
+			printf(gettext("Requested dictionary not found!\n"));
+			return;
+		  }
 		}
 
 		else {
@@ -494,7 +679,7 @@ void initialize_console_interface(int argc, char **argv) {
 
 		//TODO: STUB
 		if (is_switch (args[0], "-m", "--multisearch")){
-			get_search(di);
+			initialize_ncurses_interface(di);
 			return;
 		}
 
@@ -660,126 +845,294 @@ void initialize_console_interface(int argc, char **argv) {
 }
 
 
-/*
+/**
  *
  */
 void gw_console_append_edict_results (GwSearchItem *item, gboolean unused) {
 
-	//Definitions
-	int cont = 0;
-    GwResultLine *resultline = item->resultline;
+	if (item != NULL){
 
-    //Kanji
-    printf("[32m%s", resultline->kanji_start);
-    //Furigana
-    if (resultline->furigana_start)
-      printf(" [%s]", resultline->furigana_start);
-    //Other info
-    if (resultline->classification_start)
-      printf("[0m %s", resultline->classification_start);
-    //Important Flag
-    if (resultline->important)
-      printf("[0m %s", "P");
+		//Definitions
+		int cont = 0;
+		GwResultLine *resultline = item->resultline;
 
-    printf("\n");
-    while (cont < resultline->def_total) {
-      printf("[0m      [35m%s [0m%s\n", resultline->number[cont], resultline->def_start[cont]);
-      cont++;
-    }
-    printf("\n");
+		if (cursesFlag) {
+
+			wattron(results, COLOR_PAIR(1));
+
+			//Kanji
+			wprintw(results,"%s", resultline->kanji_start);
+			//Furigana
+			if (resultline->furigana_start)
+			  wprintw(results," [%s]", resultline->furigana_start);
+
+			wattroff(results, COLOR_PAIR(1));
+
+			//Other info
+			if (resultline->classification_start)
+			  wprintw(results," %s", resultline->classification_start);
+			//Important Flag
+			if (resultline->important)
+			  wprintw(results," %s", "P");
+
+
+			wprintw(results,"\n");
+			while (cont < resultline->def_total) {
+				wattron(results, COLOR_PAIR(2));
+				wprintw(results,"\t%s ", resultline->number[cont]);
+				wattroff(results, COLOR_PAIR(2));
+				wprintw(results,"%s\n", resultline->def_start[cont]);
+				cont++;
+			}
+			wprintw(results,"\n");
+
+			wrefresh(screen);
+			wrefresh(results);
+			refresh();
+		}
+		else {
+
+			//Kanji
+			printf("[32m%s", resultline->kanji_start);
+			//Furigana
+			if (resultline->furigana_start)
+			  printf(" [%s]", resultline->furigana_start);
+			//Other info
+			if (resultline->classification_start)
+			  printf("[0m %s", resultline->classification_start);
+			//Important Flag
+			if (resultline->important)
+			  printf("[0m %s", "P");
+
+			printf("\n");
+			while (cont < resultline->def_total) {
+			  printf("[0m      [35m%s [0m%s\n", resultline->number[cont], resultline->def_start[cont]);
+			  cont++;
+			}
+			printf("\n");
+		}
+	}
+	else {
+		if (cursesFlag) {
+			wattron(results, COLOR_PAIR(REDONBLACK));
+			wprintw(results,"INTERNAL ERROR (gw_console_append_normal_results): NULL POINTER!");
+			wattroff(results, COLOR_PAIR(REDONBLACK));
+		}
+		else
+			printf("INTERNAL ERROR (gw_console_append_normal_results): NULL POINTER!");
+	}
 
     return;
 }
 
-void gw_console_append_kanjidict_results (GwSearchItem *item, gboolean unused) {
 
-	char line_started = FALSE;
-    GwResultLine *resultline = item->resultline;
+void gw_console_append_kanjidict_results (GwSearchItem *item, gboolean unused)
+{
+	if (item != NULL){
 
-    //Kanji
-    printf("[32;1m%s[0m\n", resultline->kanji);
+		char line_started = FALSE;
+	    GwResultLine *resultline = item->resultline;
 
-    if (resultline->radicals)
-    	printf("%s%s\n", gettext("[35mRadicals:[0m"), resultline->radicals);
+		if (cursesFlag) {
+			//Kanji
+			wattron(results, COLOR_PAIR(GREENONBLACK));
+			wprintw(results,"%s\n", resultline->kanji);
+			wattroff(results, COLOR_PAIR(REDONBLACK));
 
-    if (resultline->strokes) {
-      line_started = TRUE;
-      printf("%s%s", gettext("[35mStroke:[0m"), resultline->strokes);
-    }
+			if (resultline->radicals)
+				wprintw(results,"%s%s\n", gettext("Radicals:"), resultline->radicals);
 
-    if (resultline->frequency) {
-      if (line_started) printf(" ");
-      line_started = TRUE;
-      printf("%s%s", gettext("[35mFreq:[0m"), resultline->frequency);
-    }
+			if (resultline->strokes) {
+			  line_started = TRUE;
+			  wprintw(results,"%s%s", gettext("Stroke:"), resultline->strokes);
+			}
 
-    if (resultline->grade) {
-      if (line_started)
-    	  printf(" ");
-      line_started = TRUE;
-      printf("%s%s", gettext("[35mGrade:[0m"), resultline->grade);
-    }
+			if (resultline->frequency) {
+			  if (line_started)
+				  wprintw(results," ");
+			  line_started = TRUE;
+			  wprintw(results,"%s%s", gettext("Freq:"), resultline->frequency);
+			}
 
-    if (resultline->jlpt) {
-      if (line_started)
-    	  printf(" ");
-      line_started = TRUE;
-      printf("%s%s", gettext("[35mJLPT:[0m"), resultline->jlpt);
-    }
+			if (resultline->grade) {
+			  if (line_started)
+				  wprintw(results," ");
+			  line_started = TRUE;
+			  wprintw(results,"%s%s", gettext("Grade:"), resultline->grade);
+			}
 
-    if (line_started)
-    	printf("\n");
+			if (resultline->jlpt) {
+			  if (line_started)
+				  wprintw(results," ");
+			  line_started = TRUE;
+			  wprintw(results,"%s%s", gettext("JLPT:"), resultline->jlpt);
+			}
 
-    if (resultline->readings[0])
-    	printf("%s%s", gettext("[35mReadings:[0m"), resultline->readings[0]);
-    if (resultline->readings[1])
-    	printf("%s", resultline->readings[1]);
+			if (line_started)
+				wprintw(results,"\n");
 
-    printf("\n");
-    if (resultline->meanings)
-    	printf("%s%s\n", gettext("[35mMeanings:[0m"), resultline->meanings);
-    printf("\n");
+			if (resultline->readings[0])
+				wprintw(results,"%s%s", gettext("Readings:"), resultline->readings[0]);
+			if (resultline->readings[1])
+				wprintw(results,"%s", resultline->readings[1]);
+
+			wprintw(results,"\n");
+			if (resultline->meanings)
+				wprintw(results,"%s%s\n", gettext("Meanings:"), resultline->meanings);
+			wprintw(results,"\n");
+		}
+		else {
+			//Kanji
+			printf("[32;1m%s[0m\n", resultline->kanji);
+
+			if (resultline->radicals)
+				printf("%s%s\n", gettext("Radicals:"), resultline->radicals);
+
+			if (resultline->strokes) {
+			  line_started = TRUE;
+			  printf("%s%s", gettext("Stroke:"), resultline->strokes);
+			}
+
+			if (resultline->frequency) {
+			  if (line_started) printf(" ");
+			  line_started = TRUE;
+			  printf("%s%s", gettext("Freq:"), resultline->frequency);
+			}
+
+			if (resultline->grade) {
+			  if (line_started)
+				  printf(" ");
+			  line_started = TRUE;
+			  printf("%s%s", gettext("Grade:"), resultline->grade);
+			}
+
+			if (resultline->jlpt) {
+			  if (line_started)
+				  printf(" ");
+			  line_started = TRUE;
+			  printf("%s%s", gettext("JLPT:"), resultline->jlpt);
+			}
+
+			if (line_started)
+				printf("\n");
+
+			if (resultline->readings[0])
+				printf("%s%s", gettext("Readings:"), resultline->readings[0]);
+			if (resultline->readings[1])
+				printf("%s", resultline->readings[1]);
+
+			printf("\n");
+			if (resultline->meanings)
+				printf("%s%s\n", gettext("Meanings:"), resultline->meanings);
+			printf("\n");
+		}
+	}
+	else {
+		if (cursesFlag) {
+			wattron(results, COLOR_PAIR(REDONBLACK));
+			wprintw(results,"INTERNAL ERROR (gw_console_append_kanji_results): NULL POINTER!");
+			wattroff(results, COLOR_PAIR(REDONBLACK));
+		}
+		else
+			printf("INTERNAL ERROR (gw_console_append_kanji_results): NULL POINTER!");
+	}
+
+	return;
 }
 
-/*
+/**
  *
  */
 void gw_console_append_radicalsdict_results (GwSearchItem *item, gboolean unused) {
-	if (item != NULL)
-	    printf("[32;1m%s:[0m %s\n\n", item->resultline->kanji, item->resultline->radicals);
-	else
-		printf("ERROR (gw_console_append_radical_results): NULL POINTER!");
+	if (item != NULL){
+		if (cursesFlag) {
+			wattron(results, COLOR_PAIR(GREENONBLACK));
+			wprintw(results,"%s:", item->resultline->kanji);
+			wattron(results, COLOR_PAIR(GREENONBLACK));
+			wprintw(results," %s\n\n", item->resultline->radicals);
+		}
+		else
+			printf("[32;1m%s:[0m %s\n\n", item->resultline->kanji, item->resultline->radicals);
+	}
+	else {
+		if (cursesFlag) {
+			wattron(results, COLOR_PAIR(REDONBLACK));
+			wprintw(results,"INTERNAL ERROR (gw_console_append_radical_results): NULL POINTER!");
+			wattroff(results, COLOR_PAIR(REDONBLACK));
+		}
+		else
+			printf("INTERNAL ERROR (gw_console_append_radical_results): NULL POINTER!");
+	}
+	return;
 }
 
-/*
+/**
  *
  */
 void gw_console_append_examplesdict_results (GwSearchItem *item, gboolean unused) {
 
-	if (item != NULL) {
-	    GwResultLine *resultline = item->resultline;
-	    int i = 0;
+	if (item != NULL){
 
-	    while (resultline->number[i] != NULL && resultline->def_start[i] != NULL) {
-	      if (resultline->number[i][0] == 'A' || resultline->number[i][0] == 'B')
-	        printf("[32;1m%s:[0m\t%s\n", resultline->number[i], resultline->def_start[i]);
-	      else
-	        printf("\t%s\n", resultline->def_start[i]);
-	      i++;
-	    }
+		GwResultLine *resultline = item->resultline;
+		int i = 0;
 
-	    printf("\n");
+		if (cursesFlag) {
+			while (resultline->number[i] != NULL && resultline->def_start[i] != NULL) {
+			  if (resultline->number[i][0] == 'A' || resultline->number[i][0] == 'B') {
+				  wattron(results, COLOR_PAIR(BLUEONBLACK));
+				  wprintw(results,"%s:\t", resultline->number[i]);
+				  wattroff(results, COLOR_PAIR(BLUEONBLACK));
+				  wprintw(results,"%s\n", resultline->def_start[i]);
+			  }
+			  else
+				  wprintw(results,"\t%s\n", resultline->def_start[i]);
+			  i++;
+			}
+			wprintw(results,"\n");
+		}
+		else {
+			while (resultline->number[i] != NULL && resultline->def_start[i] != NULL) {
+			  if (resultline->number[i][0] == 'A' || resultline->number[i][0] == 'B')
+				printf("[32;1m%s:[0m\t%s\n", resultline->number[i], resultline->def_start[i]);
+			  else
+				printf("\t%s\n", resultline->def_start[i]);
+			  i++;
+			}
+			printf("\n");
+		}
 	}
-	else
-		printf("ERROR (gw_console_append_examples_results): NULL POINTER!");
+	else {
+		if (cursesFlag) {
+			wattron(results, COLOR_PAIR(REDONBLACK));
+			wprintw(results,"INTERNAL ERROR (gw_console_append_examples_results): NULL POINTER!");
+			wattroff(results, COLOR_PAIR(REDONBLACK));
+		}
+		else
+			printf("INTERNAL ERROR (gw_console_append_examples_results): NULL POINTER!");
+	}
+	return;
 }
 
-/*
+
+/**
  *
  */
 void gw_console_append_unknowndict_results (GwSearchItem *item, gboolean unused) {
-	if (item != NULL)
-	    printf("%s\n", item->resultline->string);
-	else
-		printf("ERROR (gw_console_append_unknown_results): NULL POINTER!");
+	if (item != NULL){
+		if (cursesFlag)
+			wprintw(results,"%s\n", item->resultline->string);
+		else
+			printf("%s\n", item->resultline->string);
+	}
+	else {
+		if (cursesFlag) {
+			wattron(results, COLOR_PAIR(REDONBLACK));
+			wprintw(results,"INTERNAL ERROR (gw_console_append_unknown_results): NULL POINTER!");
+			wattroff(results, COLOR_PAIR(REDONBLACK));
+		}
+		else
+			printf("INTERNAL ERROR (gw_console_append_unknown_results): NULL POINTER!");
+	}
+	return;
 }
+
