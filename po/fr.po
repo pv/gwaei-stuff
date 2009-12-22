@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 1.2.0\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2009-12-21 02:44-0500\n"
+"POT-Creation-Date: 2009-12-22 06:23-0500\n"
 "PO-Revision-Date: 2009-11-14 18:09+0100\n"
 "Last-Translator: Nicolas (aka FoeNyx)\n"
 "Language-Team: none\n"
@@ -18,70 +18,71 @@ msgstr ""
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
 
-#: src/main-interface-console.c:98
+#: src/tabs.c:180
+msgid "(Empty)"
+msgstr ""
+
+#: src/main-interface-console.c:74 src/main-interface-console.c:80
+msgid "Other Results"
+msgstr "Autres résultats"
+
+#: src/main-interface-console.c:88 src/main-interface-console.c:90
+#: src/main-interface-gtk.c:1979
+msgid "No results found!"
+msgstr "Aucun résultat trouvé."
+
+#: src/main-interface-console.c:146
 msgid "Coping file..."
 msgstr "Copie du fichier ..."
 
-#: src/main-interface-console.c:103
+#: src/main-interface-console.c:151
 msgid "Downloading file..."
 msgstr "Téléchargement du fichier ..."
 
-#: src/main-interface-console.c:109
+#: src/main-interface-console.c:157
 msgid "Gunzipping file..."
 msgstr "Décompression gzip du fichier ..."
 
-#: src/main-interface-console.c:115 src/settings-callbacks-gtk.c:293
+#: src/main-interface-console.c:163 src/settings-callbacks-gtk.c:293
 msgid "Converting encoding..."
 msgstr "Conversion de l'encodage ..."
 
-#: src/main-interface-console.c:127 src/settings-callbacks-gtk.c:306
+#: src/main-interface-console.c:175 src/settings-callbacks-gtk.c:306
 msgid "Postprocessing..."
 msgstr "Traitements ..."
 
-#: src/main-interface-console.c:154
-msgid "Searching for \""
-msgstr "Recherche de \""
-
-#: src/main-interface-console.c:156
-msgid "\" in the "
-msgstr "\" dans le dictionnaire "
-
-#: src/main-interface-console.c:158
-msgid " dictionary..."
-msgstr " ..."
-
-#: src/main-interface-console.c:171
+#: src/main-interface-console.c:220
 msgid "Installable:"
 msgstr "Pouvant être installé : "
 
-#: src/main-interface-console.c:192
+#: src/main-interface-console.c:241
 #, c-format
 msgid "All dictionaries are already installed"
 msgstr "Tous les dictionnaires sont déjà installés."
 
-#: src/main-interface-console.c:213
+#: src/main-interface-console.c:262
 msgid "Uninstallable:"
 msgstr "Pouvant être désinstallé : "
 
-#: src/main-interface-console.c:230
+#: src/main-interface-console.c:279
 #, c-format
 msgid "There are no dictionaries installed"
 msgstr "Il n'y a pas de dictionnaire installé."
 
-#: src/main-interface-console.c:247
+#: src/main-interface-console.c:296
 msgid "Available:"
 msgstr "Disponible :"
 
-#: src/main-interface-console.c:260
+#: src/main-interface-console.c:309
 #, c-format
 msgid " There are no dictionaries available"
 msgstr "Il n'y a pas de dictionnaire disponible"
 
-#: src/main-interface-console.c:268
+#: src/main-interface-console.c:317
 msgid "waei [options]... pattern"
 msgstr "waei [options]... motif"
 
-#: src/main-interface-console.c:269
+#: src/main-interface-console.c:318
 msgid ""
 "This is a Japanese-English dictionary program that allows regex style "
 "searches.\n"
@@ -96,141 +97,193 @@ msgstr ""
 "Le caractère point (\".\") peut-être utilisé dans les recherches à la place "
 "de kanjis inconnus."
 
-#: src/main-interface-console.c:271
+#: src/main-interface-console.c:320
 msgid "OPTIONS:"
 msgstr "OPTIONS : "
 
-#: src/main-interface-console.c:272
+#: src/main-interface-console.c:321
 msgid "  -e, --exact                Do not display less relevant results"
 msgstr "  -e, --exact                N'afficher que les correspondance exactes"
 
-#: src/main-interface-console.c:275
+#: src/main-interface-console.c:324
 msgid "  -d, --dictionary name      Search using a chosen dictionary"
 msgstr "  -d, --dictionary name      Rechercher dans un dictionnaire précis"
 
-#: src/main-interface-console.c:278
+#: src/main-interface-console.c:327
 msgid "  -l, --list                 Show available dictionaries for searches"
 msgstr ""
 "  -l, --list                 Lister les dictionnaires disponibles pour les "
 "recherches"
 
-#: src/main-interface-console.c:281
+#: src/main-interface-console.c:330
 msgid "  -i, --install              List installable dictionaries"
 msgstr ""
 "  -i, --install              Lister les dictionnaires qui peuvent être "
 "installés"
 
-#: src/main-interface-console.c:284
+#: src/main-interface-console.c:333
 msgid "  -i, --install dictionary   Install dictionary"
 msgstr "  -i, --install dictionary   Installer un dictionnaire"
 
-#: src/main-interface-console.c:287
+#: src/main-interface-console.c:336
 msgid "  -u, --uninstall            List uninstallable dictionaries"
 msgstr ""
 "  -u, --uninstall            Lister les dictionnaires qui peuvent-être "
 "désinstallés"
 
-#: src/main-interface-console.c:290
+#: src/main-interface-console.c:339
 msgid "  -u, --uninstall dictionary Uninstall dictionary"
 msgstr "  -u, --uninstall dictionary Désinstaller un dictionnaire"
 
-#: src/main-interface-console.c:293
+#: src/main-interface-console.c:342
 msgid "  -s, --sync                 Sync installed dictionaries using rsync"
 msgstr ""
 "  -s, --sync                 Synchroniser les dictionnaires installés en "
 "utilisant 'rsync'"
 
-#: src/main-interface-console.c:296
+#: src/main-interface-console.c:345
 msgid "  -v, --version              Check the waei version info"
 msgstr ""
 "  -v, --version              Afficher les informations sur la version de waei"
 
-#: src/main-interface-console.c:299
+#: src/main-interface-console.c:348
 msgid "  -q, --quiet                Display less information"
 msgstr "  -q, --quiet                Afficher moins d'information"
 
-#: src/main-interface-console.c:302
+#: src/main-interface-console.c:351
 msgid "  -h, --help                 Display this help"
 msgstr "  -h, --help                 Afficher cette aide"
 
-#: src/main-interface-console.c:305
+#: src/main-interface-console.c:354
 msgid "EXAMPLES:"
 msgstr "EXEMPLES : "
 
-#: src/main-interface-console.c:307
+#: src/main-interface-console.c:356
 msgid "  waei English               Search for the english word English"
 msgstr "  waei English               Rechercher le mot anglais \"English\""
 
-#: src/main-interface-console.c:310
+#: src/main-interface-console.c:359
 msgid ""
 "  waei \"cats&dogs\"           Search for results containing cats and dogs"
 msgstr ""
 "  waei \"chats&chiens\"        Rechercher les résultats contenant à la fois "
 "les mots \"chats\" et \"chiens\""
 
-#: src/main-interface-console.c:313
+#: src/main-interface-console.c:362
 msgid ""
 "  waei \"cats|dogs\"           Search for results containing cats or dogs"
 msgstr ""
 "  waei \"chats|chiens\"        Rechercher les résultats contenant le mot "
 "\"chats\" ou alors le mot \"chiens\""
 
-#: src/main-interface-console.c:316
+#: src/main-interface-console.c:365
 msgid ""
 "  waei cats dogs             Search for results containing \"cats dogs\""
 msgstr ""
 "  waei chats chiens          Rechercher les résultats contenant le terme "
 "\"chats chiens\""
 
-#: src/main-interface-console.c:319 src/main-interface-console.c:325
+#: src/main-interface-console.c:368 src/main-interface-console.c:374
 msgid "  waei "
 msgstr "  waei "
 
-#: src/main-interface-console.c:319
+#: src/main-interface-console.c:368
 msgid "                Search for the Japanese word "
 msgstr "                Rechercher le mot japonais "
 
-#: src/main-interface-console.c:322
+#: src/main-interface-console.c:371
 msgid "  waei -e "
 msgstr "  waei -e "
 
-#: src/main-interface-console.c:322
+#: src/main-interface-console.c:371
 msgid "               Search for "
 msgstr "               Rechercher uniquement le mot "
 
-#: src/main-interface-console.c:323
+#: src/main-interface-console.c:372
 msgid " ignoring similar results"
 msgstr "en ignorant les résultats similaires"
 
-#: src/main-interface-console.c:325
+#: src/main-interface-console.c:374
 msgid "                 When you don't know the middle character"
 msgstr "                 Quand vous ignorez le caractère au milieu du mot"
 
-#: src/main-interface-console.c:328
+#: src/main-interface-console.c:377
 msgid "  waei -d Kanji "
 msgstr "  waei -d Kanji "
 
-#: src/main-interface-console.c:328
+#: src/main-interface-console.c:377
 msgid "           Find a kanji character in the kanji database"
 msgstr "           Trouver un kanji dans la base de données des kanjis"
 
-#: src/main-interface-console.c:331
+#: src/main-interface-console.c:380
 msgid "  waei -d Names "
 msgstr "  waei -d Names "
 
-#: src/main-interface-console.c:331
+#: src/main-interface-console.c:380
 msgid "         Look up a name in the name database"
 msgstr "         Rechercher un nom dans la base de données des noms"
 
-#: src/main-interface-console.c:334
+#: src/main-interface-console.c:383
 msgid "  waei -d Places "
 msgstr "  waei -d Places "
 
-#: src/main-interface-console.c:334
+#: src/main-interface-console.c:383
 msgid "      Look up a place in the place database"
 msgstr "      Rechercher un nom de lieu dans la base de données des lieux"
 
-#: src/main-interface-console.c:412 src/main-interface-console.c:635
+#: src/main-interface-console.c:536 src/main-interface-console.c:639
+#: src/main-interface-console.c:658
+#, c-format
+msgid "Requested dictionary not found!\n"
+msgstr "Le dictionnaire indiqué n'a pas été trouvé !\n"
+
+#: src/main-interface-console.c:537
+msgid "Press any key to exit.\n"
+msgstr ""
+
+#: src/main-interface-console.c:564
+msgid "No word inserted. Only option."
+msgstr ""
+
+#: src/main-interface-console.c:713
+#, c-format
+msgid "Syncing possible installed dictionaries..."
+msgstr "Synchronisation des dictionnaires potentiellement installés ..."
+
+#: src/main-interface-console.c:727 src/main-interface-console.c:765
+#: src/main-interface-console.c:785
+#, c-format
+msgid "Finished"
+msgstr "Fini"
+
+#: src/main-interface-console.c:748
+#, c-format
+msgid "%sTrying to install %s%s%s...%s"
+msgstr "%sTentative d'installation de %s%s%s...%s"
+
+#: src/main-interface-console.c:754
+msgid "Already Installed"
+msgstr "Déjà installé"
+
+#: src/main-interface-console.c:759
+msgid "That dictionary is not installable with this mechanism"
+msgstr "Ce dictionnaire ne peut-être installé de cette façon"
+
+#: src/main-interface-console.c:770
+#, c-format
+msgid "Failed"
+msgstr "Échec"
+
+#: src/main-interface-console.c:780
+#, c-format
+msgid "%sTrying to uninstall %s%s%s...%s"
+msgstr "%sTentative de désinstallation de %s%s%s...%s"
+
+#: src/main-interface-console.c:789
+msgid "Is not installed"
+msgstr "N'est pas installé"
+
+#: src/main-interface-console.c:820
 #, c-format
 msgid ""
 "Results seem to have incorrect formatting. Did you close all of your\n"
@@ -240,92 +293,57 @@ msgstr ""
 "Avez-vous fermé toutes vos parenthèses ? \n"
 "Peut-être voudrez-vous aussi mettre des guillemets.\n"
 
-#: src/main-interface-console.c:427 src/main-interface-console.c:649
+#: src/main-interface-console.c:834
 msgid "Found "
 msgstr "Trouvé(s) : "
 
-#: src/main-interface-console.c:427 src/main-interface-console.c:649
+#: src/main-interface-console.c:834
 msgid " Results"
 msgstr " Résultats"
 
-#: src/main-interface-console.c:430 src/main-interface-console.c:652
+#: src/main-interface-console.c:837
 msgid " ("
 msgstr " ("
 
-#: src/main-interface-console.c:430 src/main-interface-console.c:652
+#: src/main-interface-console.c:837
 msgid " Relevant)"
 msgstr " pertinents)"
 
-#: src/main-interface-console.c:458
-#, c-format
-msgid "Requested dictionary not found!\n"
-msgstr "Le dictionnaire indiqué n'a pas été trouvé !\n"
+#: src/main-interface-console.c:943 src/main-interface-console.c:989
+#: src/main-interface-gtk.c:2936 src/main-interface-gtk.c:3038
+#: src/xml/settings.glade:1213
+msgid "Radicals:"
+msgstr "Radicaux :"
 
-#: src/main-interface-console.c:528
-#, c-format
-msgid "Syncing possible installed dictionaries..."
-msgstr "Synchronisation des dictionnaires potentiellement installés ..."
+#: src/main-interface-console.c:947 src/main-interface-console.c:993
+#: src/main-interface-gtk.c:2973
+msgid "Stroke:"
+msgstr "Traits :"
 
-#: src/main-interface-console.c:542 src/main-interface-console.c:580
-#: src/main-interface-console.c:600
-#, c-format
-msgid "Finished"
-msgstr "Fini"
+#: src/main-interface-console.c:954 src/main-interface-console.c:999
+#: src/main-interface-gtk.c:2980
+msgid "Freq:"
+msgstr "Fréq. :"
 
-#: src/main-interface-console.c:563
-#, c-format
-msgid "%sTrying to install %s%s%s...%s"
-msgstr "%sTentative d'installation de %s%s%s...%s"
+#: src/main-interface-console.c:961 src/main-interface-console.c:1006
+#: src/main-interface-gtk.c:2987
+msgid "Grade:"
+msgstr "Niveau :"
 
-#: src/main-interface-console.c:569
-msgid "Already Installed"
-msgstr "Déjà installé"
+#: src/main-interface-console.c:968 src/main-interface-console.c:1013
+#: src/main-interface-gtk.c:2993
+msgid "JLPT:"
+msgstr "JLPT :"
 
-#: src/main-interface-console.c:574
-msgid "That dictionary is not installable with this mechanism"
-msgstr "Ce dictionnaire ne peut-être installé de cette façon"
+#: src/main-interface-console.c:975 src/main-interface-console.c:1020
+#: src/main-interface-gtk.c:2953
+msgid "Readings:"
+msgstr "Lectures :"
 
-#: src/main-interface-console.c:585
-#, c-format
-msgid "Failed"
-msgstr "Échec"
-
-#: src/main-interface-console.c:595
-#, c-format
-msgid "%sTrying to uninstall %s%s%s...%s"
-msgstr "%sTentative de désinstallation de %s%s%s...%s"
-
-#: src/main-interface-console.c:604
-msgid "Is not installed"
-msgstr "N'est pas installé"
-
-#: src/main-interface-console.c:703
-msgid "[35mRadicals:[0m"
-msgstr "[35mRadicaux : [0m"
-
-#: src/main-interface-console.c:707
-msgid "[35mStroke:[0m"
-msgstr "[35mTraits : [0m"
-
-#: src/main-interface-console.c:713
-msgid "[35mFreq:[0m"
-msgstr "[35mFréq. : [0m"
-
-#: src/main-interface-console.c:720
-msgid "[35mGrade:[0m"
-msgstr "[35mNiveau : [0m"
-
-#: src/main-interface-console.c:727
-msgid "[35mJLPT:[0m"
-msgstr "[35mJLPT : [0m"
-
-#: src/main-interface-console.c:734
-msgid "[35mReadings:[0m"
-msgstr "[35mLectures : [0m"
-
-#: src/main-interface-console.c:740
-msgid "[35mMeanings:[0m"
-msgstr "[35mSignifications : [0m"
+#: src/main-interface-console.c:981 src/main-interface-console.c:1026
+#: src/main-interface-gtk.c:3002
+msgid "Meanings:"
+msgstr "Signification : "
 
 #: src/main-interface-gtk.c:178 src/xml/main.glade:13
 msgid "gWaei Japanese-English Dictionary"
@@ -637,10 +655,6 @@ msgstr "Passer au _suivant"
 #, c-format
 msgid "%d dictionaries are being used.\n"
 msgstr "%d dictionnaires sont utilisés.\n"
-
-#: src/main-interface-gtk.c:1979 src/engine.c:349
-msgid "No results found!"
-msgstr "Aucun résultat trouvé."
 
 #: src/main-interface-gtk.c:1998
 msgid "gWaei Usage Tip #"
@@ -958,35 +972,6 @@ msgstr ""
 msgid "Pop"
 msgstr "Pop."
 
-#: src/main-interface-gtk.c:2936 src/main-interface-gtk.c:3038
-#: src/xml/settings.glade:1213
-msgid "Radicals:"
-msgstr "Radicaux :"
-
-#: src/main-interface-gtk.c:2953
-msgid "Readings:"
-msgstr "Lectures :"
-
-#: src/main-interface-gtk.c:2973
-msgid "Stroke:"
-msgstr "Traits :"
-
-#: src/main-interface-gtk.c:2980
-msgid "Freq:"
-msgstr "Fréq. :"
-
-#: src/main-interface-gtk.c:2987
-msgid "Grade:"
-msgstr "Niveau :"
-
-#: src/main-interface-gtk.c:2993
-msgid "JLPT:"
-msgstr "JLPT :"
-
-#: src/main-interface-gtk.c:3002
-msgid "Meanings:"
-msgstr "Signification : "
-
 #: src/main-interface-gtk.c:3065
 msgid "E:\t"
 msgstr ""
@@ -1071,10 +1056,6 @@ msgstr "Résultats principaux "
 #, fuzzy, c-format
 msgid "Other Results %d"
 msgstr "Autres résultats "
-
-#: src/engine.c:142
-msgid "Other Results"
-msgstr "Autres résultats"
 
 #: src/printing-gtk.c:316
 msgid "Page "
@@ -1554,6 +1535,36 @@ msgstr "gWaei Kanjipad"
 #: src/kanjipad/kanjipad.glade:75
 msgid "_Annotate Strokes"
 msgstr "_Annoter les traits"
+
+#~ msgid "Searching for \""
+#~ msgstr "Recherche de \""
+
+#~ msgid "\" in the "
+#~ msgstr "\" dans le dictionnaire "
+
+#~ msgid " dictionary..."
+#~ msgstr " ..."
+
+#~ msgid "[35mRadicals:[0m"
+#~ msgstr "[35mRadicaux : [0m"
+
+#~ msgid "[35mStroke:[0m"
+#~ msgstr "[35mTraits : [0m"
+
+#~ msgid "[35mFreq:[0m"
+#~ msgstr "[35mFréq. : [0m"
+
+#~ msgid "[35mGrade:[0m"
+#~ msgstr "[35mNiveau : [0m"
+
+#~ msgid "[35mJLPT:[0m"
+#~ msgstr "[35mJLPT : [0m"
+
+#~ msgid "[35mReadings:[0m"
+#~ msgstr "[35mLectures : [0m"
+
+#~ msgid "[35mMeanings:[0m"
+#~ msgstr "[35mSignifications : [0m"
 
 #~ msgid "Your query is possibly a form-conditional na-adjective."
 #~ msgstr ""

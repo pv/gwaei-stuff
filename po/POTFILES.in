@@ -2,6 +2,7 @@ src/preferences-gconf.c
 src/preferences-none.c
 src/formatting.c
 src/main.c
+src/tabs.c
 src/main-interface-console.c
 src/main-interface-gtk.c
 src/main-callbacks-gtk.c
