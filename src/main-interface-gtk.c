@@ -880,18 +880,20 @@ void gw_ui_set_total_results_label_by_searchitem (GwSearchItem* item)
     else
     {
       //Declarations
-      char *idle_message_none = "";
-      char *idle_message_both = gettext("Found %d results (%d Relevant)");
-      char *idle_message = gettext("Found %d results");
-
-      char *searching_message_none = gettext("Searching...");
-      char *searching_message_both = gettext("Searching... %d results (%d Relevant)");
-      char *searching_message = gettext("Searching... %d results");
-
-      char *status_message = NULL;
       int relevant = item->total_relevant_results;
       int irrelevant = item->total_irrelevant_results;
       int total = item->total_results;
+
+      char *idle_message_none = "";
+      char *searching_message_none = gettext("Searching...");
+
+      char *idle_message_total = ngettext("Found %d result", "Found %d results", relevant);
+      char *searching_message_total = ngettext("Searching... %d result", "Searching... %d results", total);
+
+      char *message_relevant = ngettext("(%d Relevant)", "(%d Relevant)", relevant);
+
+      char *base_message = NULL;
+      char *final_message = NULL;
 
       //Initializations
       switch (item->status)
@@ -900,25 +902,35 @@ void gw_ui_set_total_results_label_by_searchitem (GwSearchItem* item)
             if (item->current_line == 0)
               gtk_label_set_text(GTK_LABEL (label), idle_message_none);
             else if (relevant == total)
-              status_message = g_strdup_printf (idle_message, relevant);
+              final_message = g_strdup_printf (idle_message_total, total);
             else
-              status_message = g_strdup_printf (idle_message_both, total, relevant);
+            {
+              base_message = g_strdup_printf ("%s %s", idle_message_total, message_relevant);
+              if (base_message != NULL)
+                final_message = g_strdup_printf (base_message, total, relevant);
+            }
             break;
         case GW_SEARCH_SEARCHING:
             if (item->current_line == 0)
               gtk_label_set_text(GTK_LABEL (label), searching_message_none);
             else if (relevant == total)
-              status_message = g_strdup_printf (searching_message, relevant);
+              final_message = g_strdup_printf (searching_message_total, total);
             else
-              status_message = g_strdup_printf (searching_message_both, total, relevant);
+            {
+              base_message = g_strdup_printf ("%s %s", searching_message_total, message_relevant);
+              if (base_message != NULL)
+                final_message = g_strdup_printf (base_message, total, relevant);
+            }
             break;
       }
 
       //Finalize
-      if (status_message != NULL)
+      if (base_message != NULL)
+        g_free (base_message);
+      if (final_message != NULL)
       {
-        gtk_label_set_text(GTK_LABEL (label), status_message);
-        g_free (status_message);
+        gtk_label_set_text(GTK_LABEL (label), final_message);
+        g_free (final_message);
       }
     }
 }
