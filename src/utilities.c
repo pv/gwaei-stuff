@@ -234,7 +234,26 @@ gboolean gw_util_all_chars_are_in_range (char input[],
     {
       input_ptr = g_utf8_next_char(input_ptr);
       unic = g_utf8_get_char(input_ptr);
-      is_in_boundary = ((unic >= start_unic_boundary && unic <= end_unic_boundary) || unic == '.' || unic == '*');
+      is_in_boundary = ((unic >= start_unic_boundary && unic <= end_unic_boundary) || unic == '.'
+                                                                                   || unic == '*'
+                                                                                   || (unic >= 0 && unic <= 9)
+                                                                                   || unic == '-'
+                                                                                   || unic == '^'
+                                                                                   || unic == '$'
+                                                                                   || unic == '+'
+                                                                                   || unic == '?'
+                                                                                   || unic == '{'
+                                                                                   || unic == '/'
+                                                                                   || unic == '\\'
+                                                                                   || unic == '!'
+                                                                                   || unic == '{'
+                                                                                   || unic == '}'
+                                                                                   || unic == '['
+                                                                                   || unic == ']'
+                                                                                   || unic == '&'
+                                                                                   || unic == '|'
+                                                                                   || unic == '('
+                                                                                   || unic == ')');
     }
 
     //Return Results
