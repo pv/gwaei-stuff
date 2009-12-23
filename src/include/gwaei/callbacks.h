@@ -1,3 +1,5 @@
+#define GW_CALLBACKS_INCLUDED
+
 //Main
 void do_back (GtkWidget *widget, gpointer data);
 void do_forward (GtkWidget *widget, gpointer data);

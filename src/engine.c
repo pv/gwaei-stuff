@@ -48,7 +48,6 @@
 #include <gwaei/search-objects.h>
 #include <gwaei/engine.h>
 #include <gwaei/utilities.h>
-#include <gwaei/formatting.h>
 
 static gboolean less_relevant_title_inserted = FALSE;
 

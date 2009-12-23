@@ -1,3 +1,4 @@
+#define GW_DICTINFO_OBJECT_INCLUDED
 /******************************************************************************
     AUTHOR:
     File written and Copyrighted by Zachary Dovel. All Rights Reserved.
@@ -26,6 +27,10 @@
 //!
 //! To be written.
 //!
+
+#ifndef GW_RESULTLINE_OBJECT_INCLUDED
+#include <gwaei/resultline-object.h>
+#endif
 
 //!
 //! @brief Enumeration of dictionary statuses
@@ -86,6 +91,8 @@ struct GwDictInfo
     char rsync[FILENAME_MAX];      //!< rsync command in full with arguments for sync
     char gckey[100];               //!< gckey for the download source
     int load_position;             //!< load position in the GUI
+    GwResultLine *cached_resultlines;
+    GwResultLine *current_resultline;
 };
 typedef struct GwDictInfo GwDictInfo;
 

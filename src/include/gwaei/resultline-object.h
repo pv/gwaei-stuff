@@ -1,3 +1,4 @@
+#define GW_RESULTLINE_OBJECT_INCLUDED
 /******************************************************************************
     AUTHOR:
     File written and Copyrighted by Zachary Dovel. All Rights Reserved.

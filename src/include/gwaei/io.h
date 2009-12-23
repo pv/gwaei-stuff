@@ -1,3 +1,5 @@
+#define GW_IO_INCLUDED
+
 char save_path[FILENAME_MAX];
 
 void gw_io_write_file(const char*, gchar*);

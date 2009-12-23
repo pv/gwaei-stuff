@@ -1,3 +1,5 @@
+#define GW_UTILITIES_INCLUDED
+
 #define GW_CONSOLE_RUNMODE 0
 #define GW_GTK_RUNMODE     1
 #define GW_QT_RUNMODE      2

@@ -1,3 +1,5 @@
+#define GW_PREFERENCES_INCLUDED
+
 void gw_pref_set_int (char*, int);
 int gw_pref_get_int (char*, int);
 int gw_pref_get_default_int (char*, int);

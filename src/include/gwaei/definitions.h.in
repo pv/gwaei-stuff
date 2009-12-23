@@ -1,3 +1,5 @@
+#define GW_DEFINITIONS_INCLUDED
+
 #define MAX_QUERY        250
 #define MAX_DICTIONARIES 20
 #define MAX_DICTIONARY   100

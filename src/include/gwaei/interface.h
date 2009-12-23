@@ -1,3 +1,5 @@
+#define GW_INTERFACE_INCLUDED
+
 void initialize_text_views (void);
 
 void initialize_window_attributes (char* window_id);

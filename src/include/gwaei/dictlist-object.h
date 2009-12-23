@@ -1,3 +1,4 @@
+#define GW_DICTLIST_OBJECT_INCLUDED
 /******************************************************************************
     AUTHOR:
     File written and Copyrighted by Zachary Dovel. All Rights Reserved.
@@ -27,7 +28,9 @@
 //! To be written.
 //!
 
+#ifndef GW_DICTINFO_OBJECT_INCLUDED
 #include <gwaei/dictinfo-object.h>
+#endif
 
 //!
 //! @brief Primitive for storing lists of dictionaries
