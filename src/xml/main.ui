@@ -17,9 +17,11 @@
     <accel-groups>
       <group name="main_accelgroup"/>
     </accel-groups>
+    <signal name="key_press_event" handler="do_key_press_modify_status_update"/>
     <signal name="style_set" handler="do_update_styles"/>
     <signal name="event_after" handler="do_update_icons_for_selection"/>
     <signal name="delete_event" handler="do_delete_event_action"/>
+    <signal name="key_release_event" handler="do_key_release_modify_status_update"/>
     <child>
       <object class="GtkVBox" id="main_vbox">
         <property name="visible">True</property>

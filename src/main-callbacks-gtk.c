@@ -61,6 +61,7 @@ static gulong copy_handler_id = 0;
 static gulong cut_handler_id = 0;
 static gulong paste_handler_id = 0;
 static gulong select_all_handler_id = 0;
+static gboolean start_search_in_new_window = FALSE; 
 
 
 //!
@@ -1184,6 +1185,59 @@ G_MODULE_EXPORT void do_cycle_dictionaries_backward (GtkWidget *widget, gpointer
 
 
 //!
+//! @brief Update the special key press status
+//!
+//! Currently used to determine if a search should be opened in a new tab.
+//!
+//! @param widget Unused GtkWidget pointer
+//! @param event the event data to get the specific key that had it's status modified
+//! @param data Currently unused gpointer
+//! @return Always returns FALSE
+//!
+G_MODULE_EXPORT gboolean do_key_press_modify_status_update (GtkWidget *widget,
+                                                            GdkEvent  *event,
+                                                            gpointer  *data  )
+{
+    guint keyval = ((GdkEventKey*)event)->keyval;
+
+    if ((keyval == GDK_ISO_Enter || keyval == GDK_Return) && gtk_widget_is_focus (search_entry))
+    {
+      gtk_widget_activate (search_entry);
+      return TRUE;
+    }
+
+    if (keyval == GDK_Shift_L || keyval == GDK_Shift_R || keyval == GDK_ISO_Next_Group || keyval == GDK_ISO_Prev_Group)
+    {
+      start_search_in_new_window = TRUE;
+    }
+    return FALSE;
+}
+
+
+//!
+//! @brief Update the special key release status
+//!
+//! Currently used to determine if a search should be opened in a new tab.
+//!
+//! @param widget Unused GtkWidget pointer
+//! @param event the event data to get the specific key that had it's status modified
+//! @param data Currently unused gpointer
+//! @return Always returns FALSE
+//!
+G_MODULE_EXPORT gboolean do_key_release_modify_status_update (GtkWidget *widget,
+                                                              GdkEvent  *event,
+                                                              gpointer  *data  )
+{
+    guint keyval = ((GdkEventKey*)event)->keyval;
+    if (keyval == GDK_Shift_L || keyval == GDK_Shift_R || keyval == GDK_ISO_Next_Group || keyval == GDK_ISO_Prev_Group)
+    {
+      start_search_in_new_window = FALSE;
+    }
+    return FALSE;
+}
+
+
+//!
 //! @brief Function handles automatic focus changes on key presses
 //!
 //! When the user types a letter, the focus will move to the search entry and
@@ -1254,6 +1308,7 @@ G_MODULE_EXPORT gboolean do_focus_change_on_key_press (GtkWidget *widget,
       {
         gw_ui_text_select_none_by_target (GW_TARGET_ENTRY);
         gw_ui_grab_focus_by_target (GW_TARGET_RESULTS);
+        return FALSE;
         return TRUE;
       }
 
@@ -1268,6 +1323,7 @@ G_MODULE_EXPORT gboolean do_focus_change_on_key_press (GtkWidget *widget,
       {
         gw_ui_text_select_all_by_target (GW_TARGET_ENTRY);
         gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
+        return FALSE;
         return TRUE;
       }
     }
@@ -1289,6 +1345,12 @@ G_MODULE_EXPORT gboolean do_focus_change_on_key_press (GtkWidget *widget,
 //!
 G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
 {
+    gchar query[MAX_QUERY];
+    gw_ui_strcpy_from_widget (query, MAX_QUERY, GW_TARGET_ENTRY);
+
+    if (start_search_in_new_window == TRUE)
+      do_new_tab (NULL, NULL);
+
     GwHistoryList* hl = gw_historylist_get_list (GW_HISTORYLIST_RESULTS);
 
     GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
@@ -1297,9 +1359,6 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
 
     GList *list = gw_dictlist_get_selected ();
     GwDictInfo *dictionary = list->data;
-
-    gchar query[MAX_QUERY];
-    gw_ui_strcpy_from_widget (query, MAX_QUERY, GW_TARGET_ENTRY);
 
     char *gckey = GCKEY_GW_LESS_RELEVANT_SHOW; 
     gboolean show_less_relevant = gw_pref_get_boolean (gckey, TRUE);
@@ -1319,7 +1378,6 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
     if (gw_ui_cancel_search_for_current_tab () == FALSE)
       return;
 
-/*
     if (hl->current != NULL && (hl->current)->total_results) 
     {
       gw_historylist_add_searchitem_to_history (GW_HISTORYLIST_RESULTS, hl->current);
@@ -1331,21 +1389,6 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
       gw_searchitem_free (hl->current);
       hl->current = NULL;
     }
- */   
-
-//////////////////////////////////////////////////////
-    if (hl->current != NULL && (hl->current)->total_results) 
-    {
-      gw_historylist_add_searchitem_to_history (GW_HISTORYLIST_RESULTS, hl->current);
-      hl->current = NULL;
-      gw_ui_update_history_popups ();
-    }
-    else if (hl->current != NULL)
-    {
-      gw_searchitem_free (hl->current);
-      hl->current = NULL;
-    }
-/////////////////////////////////////////////////////
 
     //in add_to_history() rather than here
     hl->current = gw_searchitem_new (query, dictionary, GW_TARGET_RESULTS);
