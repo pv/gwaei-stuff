@@ -36,9 +36,15 @@
                   <object class="GtkMenu" id="file_popup">
                     <property name="visible">True</property>
                     <child>
-                      <object class="GtkSeparatorMenuItem" id="new_tab_menuitem">
+                      <object class="GtkImageMenuItem" id="new_tab_menuitem">
                         <property name="visible">True</property>
-                        <accelerator key="t" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                        <property name="use_underline">True</property>
+                        <property name="use_stock">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkSeparatorMenuItem" id="menuitem3">
+                        <property name="visible">True</property>
                       </object>
                     </child>
                     <child>

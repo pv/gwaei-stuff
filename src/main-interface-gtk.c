@@ -377,19 +377,12 @@ void force_gtk_builder_translation_for_gtk_actions_hack ()
     GtkWidget *menuitem;
 
 
-    //File menu setup
-    menu = GTK_WIDGET (gtk_builder_get_object (builder, "file_popup"));
-
     action = gtk_action_new ("new_tab_action", gettext("_New Tab"), NULL, GTK_STOCK_NEW);
     g_signal_connect( G_OBJECT (action), "activate", G_CALLBACK (do_new_tab), NULL);
     gtk_action_set_accel_group (action, accel_group);
     gtk_action_group_add_action_with_accel (action_group, action, "<control>t");
     menuitem = GTK_WIDGET (gtk_builder_get_object (builder, "new_tab_menuitem"));
-//    gtk_activatable_set_related_action (GTK_ACTIVATABLE (menuitem), action);
-//    gtk_activatable_set_use_action_appearance (GTK_ACTIVATABLE (menuitem), TRUE);
-    menuitem = gtk_action_create_menu_item (action);
-    gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), menuitem);
-
+    gtk_activatable_set_related_action (GTK_ACTIVATABLE (menuitem), action);
 
     char *temp = gettext("Only for Non-Japanese Locals");
     char *temp1  = gettext("When Possible");
