@@ -67,12 +67,15 @@ TABLE OF CONTENTS
   choose the wrong location for the schemas, installation will usually fail. 
   Most users will install using steps similar to below.
 
-  2.1 BUILDING AND INSTALLING FROM THE SOURCE:
+  2.2 CREATION OF MISSING FILES FOR GIT REPO VERSION
+    $ ./autogen.sh
+
+  2.3 BUILDING AND INSTALLING FROM THE SOURCE:
     $ ./configure --prefix /usr --sysconfdir /etc
     $ make
     $ sudo make install
 
-  2.2 UNINSTALL:
+  2.3 UNINSTALL:
     $ sudo make uninstall
 
 
@@ -83,7 +86,8 @@ TABLE OF CONTENTS
   mean time, you can run:
     $ git clone git://gwaei.git.sourceforge.net/gitroot/gwaei/debian debian
 
-  to get a copy of the debian folder.  Then run:
+  to get a copy of the debian folder.  You may need to run ./autogen.sh if you
+  got gWaei from the git repositiories.  You then run:
     $ ./configure
     $ make deb
 
@@ -100,7 +104,9 @@ TABLE OF CONTENTS
   You will need to configure the installer with any needed options using "./configure".
   It will do the work of setting up the spec file correctly for you.  Then run
   "make rpm" to actually build the rpm for your architecture. The newly created
-  rpm will appear at the base of the gwaei folder.
+  rpm will appear at the base of the gwaei folder.  You may need to run ./autogen.sh
+  to make sure some missing files are generated if you got gWaei from the git
+  repositories.
 
   Most users will get their rpm by doing something similar to this:
     $ ./configure --prefix /usr --sysconf /etc
