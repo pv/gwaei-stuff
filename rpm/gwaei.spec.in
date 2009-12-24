@@ -14,13 +14,12 @@ Requires: ttf-kanjistrokeorders, ttf-arphic-ukai
 URL: http://gwaei.sourceforge.net
 BuildRoot: /var/tmp/gwaei-%{PACKAGE_VERSION}-root
 %description
-gWaei is an easy to use and yet full-featured and powerful
+gWaei is an easy to use and yet powerful full-featured
 dictionary program for Japanese to English translation.
 It organizes results by relevance, supports regex searches,
-tabs, spellchecking, and kanji handwriting through a builtin
-custom kanjipad implimentation. It also comes with the accompanying
-console version, Waei, which allows quick lookups from the terminal when
-no window manager is available.
+tabs, spell checking, kanji handwriting recognition and
+an accompanying console version for searches through
+the terminal.
 %prep
 %setup -q
 ./configure --prefix @prefix@ --sysconfdir=@sysconfdir@ --disable-schemas-install
