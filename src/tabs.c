@@ -68,6 +68,10 @@ void gw_tab_update_appearance_with_searchitem (GwSearchItem *item)
 
     //Set display status of tabs
     gtk_notebook_set_show_tabs (GTK_NOTEBOOK (notebook), (pages > 1));
+    
+    GtkWidget *close_menuitem = GTK_WIDGET (gtk_builder_get_object (builder, "close_menuitem"));
+    if (pages > 1) gtk_menu_item_set_label (GTK_MENU_ITEM (close_menuitem), gettext("_Close Tab"));
+    else gtk_menu_item_set_label (GTK_MENU_ITEM (close_menuitem), gettext("_Close"));
 
     //Force correct querytext
     gw_ui_set_query_entry_text_by_searchitem (item);
