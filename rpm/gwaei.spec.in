@@ -14,10 +14,13 @@ Requires: ttf-kanjistrokeorders, ttf-arphic-ukai
 URL: http://gwaei.sourceforge.net
 BuildRoot: /var/tmp/gwaei-%{PACKAGE_VERSION}-root
 %description
-gWaei is a drop-in replacement for Gjiten. The main
-feature of this dictonary program is regular expression
-support. For example, you can use periods in place of
-unknown Kanji of a word to search for it.
+gWaei is an easy to use and yet full-featured and powerful
+dictionary program for Japanese to English translation.
+It organizes results by relevance, supports regex searches,
+tabs, spellchecking, and kanji handwriting through a builtin
+custom kanjipad implimentation. It also comes with the accompanying
+console version, Waei, which allows quick lookups from the terminal when
+no window manager is available.
 %prep
 %setup -q
 ./configure --prefix @prefix@ --sysconfdir=@sysconfdir@ --disable-schemas-install
