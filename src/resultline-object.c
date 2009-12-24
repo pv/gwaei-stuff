@@ -147,7 +147,7 @@ void gw_resultline_parse_edict_result_string (GwResultLine *rl)
 
     //Set the furigana pointer
     ptr++;
-    if (g_utf8_get_char(ptr) == L'[')
+    if (g_utf8_get_char(ptr) == L'[' && g_utf8_strchr (ptr, -1, L']') != NULL)
     {
       ptr = g_utf8_next_char(ptr);
       rl->furigana_start = ptr;
@@ -160,12 +160,11 @@ void gw_resultline_parse_edict_result_string (GwResultLine *rl)
       ptr--;
     }
 
-
     //Find if there is a type description classification
     temp = ptr;
     temp++;
     temp = g_utf8_strchr (temp, -1, L'/');
-    if (g_utf8_get_char(temp + 1) == L'(')
+    if (temp != NULL && g_utf8_get_char(temp + 1) == L'(')
     {
       rl->classification_start = temp + 2;
       temp = g_utf8_strchr (temp, -1, L')');

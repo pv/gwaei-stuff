@@ -285,7 +285,7 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
       if ((roma_check == 1 && furi_check == 2) || roma_check == 2 && furi_check == 1) return TRUE;
       else if ((roma_check == 1 || furi_check == 1)) return FALSE;
 
-      gboolean found_kanji, found_radical;
+      gboolean found_kanji = FALSE, found_radical = FALSE;
       for (i = 0; i < ql->kanji_total && !found_kanji; i++)
       {
         found_kanji = (rl->kanji != NULL && regexec(&(ql->kanji_regex[REGEX_TYPE][i]), rl->kanji, 1, NULL, 0) == 0);
@@ -296,8 +296,11 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
         found_radical = (rl->radicals != NULL && regexec(&(ql->kanji_regex[REGEX_TYPE][i]), rl->radicals, 1, NULL, 0) == 0);
         i++;
       }
+
+      //Make sure found radicals do not force a result into relevance
       if (REGEX_TYPE == GW_QUERYLINE_HIGH && found_kanji == FALSE) return FALSE;
-      return (found_kanji | found_radical);
+
+      return (found_kanji | found_radical || roma_check == 2 || furi_check == 2);
     }
 
     //Standard dictionary search
