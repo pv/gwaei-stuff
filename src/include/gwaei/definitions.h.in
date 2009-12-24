@@ -19,6 +19,7 @@
 //GConfig
 #define GCPATH_INTERFACE           "/desktop/gnome/interface"
 #define GCKEY_TOOLBAR_STYLE        "/desktop/gnome/interface/toolbar_style"
+#define GCKEY_DOCUMENT_FONT_NAME   "/desktop/gnome/interface/document_font_name"
 
 #define GCPATH_GW               "/apps/gwaei"
 #define GCKEY_GW_TOOLBAR_SHOW   "/apps/gwaei/toolbar_show"

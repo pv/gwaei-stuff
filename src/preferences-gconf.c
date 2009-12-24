@@ -162,7 +162,10 @@ void gw_pref_set_boolean (char *key, gboolean request)
     g_object_unref (client);
 }
 
-
+//!
+//! Returns a preferenc string, using a specified backup if
+//! there is an error with up to n characters copied.
+//!
 char* gw_pref_get_string (char *output, char *key, char* backup, int n)
 {
     GConfClient *client;
@@ -299,6 +302,12 @@ void do_font_size_pref_changed_action ( GConfClient* client,
     int size;
     size = gconf_client_get_int ( client, GCKEY_GW_FONT_SIZE, NULL);
 
+    char font[100];
+    gw_pref_get_string (font, GCKEY_DOCUMENT_FONT_NAME, "Sans 10", 100);
+    char *pos = strrchr(font, ' ');
+    if (pos != NULL)
+      *pos = '\0';
+
     //If the value is strange, get the default value
     if (size < MIN_FONT_SIZE | size > MAX_FONT_SIZE)
     {
@@ -315,7 +324,7 @@ void do_font_size_pref_changed_action ( GConfClient* client,
       return;
     }
 
-    gw_ui_set_font("Sans", size);
+    gw_ui_set_font(font, size);
 
     gw_ui_update_toolbar_buttons ();
 }
@@ -489,6 +498,9 @@ void gw_prefs_initialize_preferences()
                              NULL, NULL, NULL                );
 
     gconf_client_notify_add (client, GCKEY_GW_FONT_SIZE, 
+                             do_font_size_pref_changed_action,
+                             NULL, NULL, NULL               );
+    gconf_client_notify_add (client, GCKEY_DOCUMENT_FONT_NAME,
                              do_font_size_pref_changed_action,
                              NULL, NULL, NULL               );
 
