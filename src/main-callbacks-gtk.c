@@ -1203,7 +1203,7 @@ G_MODULE_EXPORT gboolean do_key_press_modify_status_update (GtkWidget *widget,
     if ((keyval == GDK_ISO_Enter || keyval == GDK_Return) && gtk_widget_is_focus (search_entry))
     {
       gtk_widget_activate (search_entry);
-      return TRUE;
+      return FALSE;
     }
 
     if (keyval == GDK_Shift_L || keyval == GDK_Shift_R || keyval == GDK_ISO_Next_Group || keyval == GDK_ISO_Prev_Group)
