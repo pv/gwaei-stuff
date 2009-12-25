@@ -222,7 +222,6 @@ G_MODULE_EXPORT gboolean do_get_iter_for_button_release (GtkWidget      *widget,
         gchar query[7];
         gint length = g_unichar_to_utf8 (unic, query);
         query[length] = '\0'; 
-        printf ("Kanji lookup: %s\n", query);
 
         //Start the search
         GwSearchItem *item;
@@ -348,7 +347,6 @@ G_MODULE_EXPORT gboolean do_close_on_escape (GtkWidget *widget,
 //!
 G_MODULE_EXPORT void do_quit (GtkWidget *widget, gpointer data)
 {
-    printf ("Quitting...\n");
     do_close (widget, data);
     gtk_main_quit ();
 }
@@ -438,7 +436,6 @@ G_MODULE_EXPORT void do_back (GtkWidget *widget, gpointer data)
     if (hl->back != NULL)
     {
       do_search_from_history (NULL, hl->back->data);
-      printf ("Back button clicked\n");
     }
 }
 
@@ -461,7 +458,6 @@ G_MODULE_EXPORT void do_forward (GtkWidget *widget, gpointer data)
     if (hl->forward != NULL)
     {
       do_search_from_history (NULL, hl->forward->data);
-      printf ("Forward button clicked\n");
     }
 }
 
@@ -531,7 +527,6 @@ G_MODULE_EXPORT void do_save_as (GtkWidget *widget, gpointer data)
     gtk_widget_destroy (dialog);
     g_free (text);
     text = NULL;
-    printf ("Save as button was clicked\n");
 }
 
 
@@ -604,7 +599,6 @@ G_MODULE_EXPORT void do_save (GtkWidget *widget, gpointer data)
 
     g_free (text);
     text = NULL;
-    printf ("Save button was clicked\n");
 }
 
 
@@ -625,8 +619,6 @@ G_MODULE_EXPORT void do_zoom_in (GtkWidget *widget, gpointer data)
     size = gw_pref_get_int (GCKEY_GW_FONT_SIZE, 12) + 2;
     if (size >= MIN_FONT_SIZE && size <= MAX_FONT_SIZE)
       gw_pref_set_int (GCKEY_GW_FONT_SIZE, size);
-
-    printf ("Zoom in button was clicked\n");
 }
 
 
@@ -647,8 +639,6 @@ G_MODULE_EXPORT void do_zoom_out (GtkWidget *widget, gpointer data)
     size = gw_pref_get_int (GCKEY_GW_FONT_SIZE, 12) - 2;
     if (size >= MIN_FONT_SIZE | size <= MAX_FONT_SIZE)
       gw_pref_set_int (GCKEY_GW_FONT_SIZE, size);
-
-    printf ("Zoom out button was clicked\n");
 }
 
 
@@ -668,8 +658,6 @@ G_MODULE_EXPORT void do_zoom_100 (GtkWidget *widget, gpointer data)
     int size;
     size = gw_pref_get_default_int (GCKEY_GW_FONT_SIZE, 12);
     gw_pref_set_int (GCKEY_GW_FONT_SIZE, size);
-
-    printf ("Zoom 100 button was clicked\n");
 }
 
 
@@ -690,8 +678,6 @@ G_MODULE_EXPORT void do_less_relevant_results_toggle (GtkWidget *widget, gpointe
     gboolean state;
     state = gw_pref_get_boolean (GCKEY_GW_LESS_RELEVANT_SHOW, TRUE);
     gw_pref_set_boolean (GCKEY_GW_LESS_RELEVANT_SHOW, !state);
-
-    printf ("Toggle less relevent results button was clicked\n");
 }
 
 
@@ -711,8 +697,6 @@ G_MODULE_EXPORT void do_toolbar_toggle (GtkWidget *widget, gpointer data)
     gboolean state;
     state = gw_pref_get_boolean (GCKEY_GW_TOOLBAR_SHOW, TRUE);
     gw_pref_set_boolean (GCKEY_GW_TOOLBAR_SHOW, !state);
-
-    printf ("Toolbar toggle button was clicked\n");
 }
 
 
@@ -778,8 +762,6 @@ G_MODULE_EXPORT void do_select_all (GtkWidget *widget, gpointer data)
     TARGET = gw_ui_get_current_widget_focus ("main_window");
 
     gw_ui_text_select_all_by_target (TARGET);
-
-    printf ("Select All button was clicked\n");
 }
 
 
@@ -802,8 +784,6 @@ G_MODULE_EXPORT void do_paste (GtkWidget *widget, gpointer data)
     guint TARGET;
     TARGET = gw_ui_get_current_widget_focus ("main_window");
     gw_ui_paste_text (TARGET);
-
-    printf ("Paste button was clicked\n");
 }
 
 
@@ -826,8 +806,6 @@ G_MODULE_EXPORT void do_cut (GtkWidget *widget, gpointer data)
     guint TARGET;
     TARGET = gw_ui_get_current_widget_focus ("main_window");
     gw_ui_cut_text (TARGET);
-
-    printf ("Cut button was clicked\n");
 }
 
 
@@ -850,8 +828,6 @@ G_MODULE_EXPORT void do_copy (GtkWidget *widget, gpointer data)
     guint TARGET;
     TARGET = gw_ui_get_current_widget_focus ("main_window");
     gw_ui_copy_text (TARGET);
-
-    printf ("Copy button was clicked\n");
 }
 
 
@@ -957,7 +933,6 @@ G_MODULE_EXPORT void do_print (GtkWidget *widget, gpointer data)
 {
     g_list_foreach (gw_tab_searchitems, (GFunc) gw_ui_cancel_search_by_searchitem, NULL);
     gw_print ();
-    printf ("Print button was clicked\n");
 }
 
 
@@ -1563,7 +1538,6 @@ G_MODULE_EXPORT void do_open_dictionary_folder (GtkWidget *widget, gpointer data
 {
     char directory[FILENAME_MAX];
     gw_util_get_waei_directory (directory);
-    printf ("%s\n",directory);
 
     char *uri = g_build_filename ("file://", directory, NULL);
 

@@ -1,5 +1,6 @@
 #define GW_INTERFACE_INCLUDED
 
+gpointer get_gobject_from_target (const int);
 void initialize_text_views (void);
 
 void initialize_window_attributes (char* window_id);

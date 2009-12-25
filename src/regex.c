@@ -297,7 +297,6 @@ gboolean gw_regex_create_roma_high_regex (regex_t *regex, char *string, int flag
     strcpy (expression, "(^|\\)|(/)|(\\bto ))(");
     strcat (expression, string);
     strcat (expression, ")(\\(|/|$|!)");
-    printf("%s\n", expression);
     return regcomp (regex, expression, flags);
 }
 

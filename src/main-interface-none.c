@@ -284,9 +284,8 @@ void gw_ui_display_no_results_found_page()
 }
 
 
-void gw_ui_cancel_search_status_by_target(const int TARGET)
-{
-}
+void gw_ui_cancel_search_status_by_target (const int TARGET) {}
+gboolean gw_ui_cancel_search_by_searchitem (GwSearchItem *item) {}
 
 
 const char* gw_ui_get_active_dictionary ()
@@ -380,15 +379,22 @@ void gw_ui_update_search_progressbar (long current, long total)
 void gw_ui_set_header (GwSearchItem *item, char* text, char* mark_name)
 {}
 
-void gw_ui_append_normal_results_to_buffer (GwSearchItem* a, gboolean b) {}
-void gw_ui_append_kanji_results_to_buffer (GwSearchItem* a, gboolean b) {}
-void gw_ui_append_radicals_results_to_buffer (GwSearchItem* a, gboolean b) {}
-void gw_ui_append_examples_results_to_buffer (GwSearchItem* a, gboolean b) {}
-void gw_ui_append_unknown_results_to_buffer (GwSearchItem* a, gboolean b) {}
+void gw_ui_append_edict_results_to_buffer (GwSearchItem* a, gboolean b) {}
+void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem* a, gboolean b) {}
+void gw_ui_append_radicalsdict_results_to_buffer (GwSearchItem* a, gboolean b) {}
+void gw_ui_append_examplesdict_results_to_buffer (GwSearchItem* a, gboolean b) {}
+void gw_ui_append_unknowndict_results_to_buffer (GwSearchItem* a, gboolean b) {}
 
 
 void gw_ui_append_def_same_to_buffer (GwSearchItem* item, gboolean UNUSED) {}
 void gw_ui_remove_whitespace_from_buffer (const int TARGET) {}
 void gw_ui_initialize_buffer_by_target (const int TARGET) {}
+void gw_ui_initialize_buffer_by_searchitem (GwSearchItem *item) {}
 
+
+gpointer get_gobject_from_target (const int TARGET) {}
+void gw_ui_set_total_results_label_by_searchitem (GwSearchItem* item) {}
+void gw_ui_set_main_window_title_by_searchitem (GwSearchItem* item) {}
+void gw_ui_verb_check_with_suggestion (GwSearchItem* item) {}
+void gw_ui_set_search_progressbar_by_searchitem (GwSearchItem* item) {}
 
