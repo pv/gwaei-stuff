@@ -532,7 +532,7 @@ void force_gtk_builder_translation_for_gtk_actions_hack ()
     gtk_widget_set_tooltip_text (GTK_WIDGET (widget), gettext("Click to start search"));
 }
 
-GObject* get_gobject_from_target(const int TARGET)
+gpointer get_gobject_from_target(const int TARGET)
 {
     GObject *gobject;
     GtkWidget *notebook;
