@@ -338,6 +338,15 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
         i++;  
       }
 
+      //Compare word classification atoms
+      i = 0;
+      while (i < ql->roma_total)
+      {
+        if (regexec(&(ql->roma_regex[REGEX_TYPE][i]), rl->classification_start, 1, NULL, 0) == 0)
+          return TRUE;
+        i++;  
+      }
+
       //Compare mix atoms
       i = 0;
       while (i < ql->mix_total)
