@@ -175,6 +175,7 @@ int gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
    int mix_pos   = ql->mix_total;
    int roma_pos  = ql->roma_total;
    char temp[300];
+   char *temp_ptr = NULL;
    gboolean want_conv;
 
    while (generic_atoms[i] != NULL && i < MAX_ATOMS)
@@ -188,6 +189,31 @@ int gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
        if (gw_regex_create_kanji_med_regex (&(ql->kanji_regex [GW_QUERYLINE_MED]   [kanji_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0) return FALSE;
        kanji_pos++;
        ql->kanji_total++;
+       if (g_utf8_strlen (ql->hira_string, -1) == 4)
+       {
+          g_utf8_strncpy (temp, ql->hira_string, 2);
+          temp_ptr = temp;
+          temp_ptr = g_utf8_find_next_char (temp_ptr, NULL);
+          temp_ptr = g_utf8_find_next_char (temp_ptr, NULL);
+          *temp_ptr = '\0';
+          if (regcomp (&(ql->kanji_regex                         [GW_QUERYLINE_EXIST] [kanji_pos]), temp, EFLAGS_EXIST)  != 0) return FALSE;
+          if (regcomp (&(ql->kanji_regex                         [GW_QUERYLINE_LOCATE][kanji_pos]), temp, EFLAGS_LOCATE) != 0) return FALSE;
+          if (gw_regex_create_kanji_high_regex (&(ql->kanji_regex[GW_QUERYLINE_HIGH]  [kanji_pos]), temp, EFLAGS_EXIST)  != 0) return FALSE;
+          if (gw_regex_create_kanji_med_regex (&(ql->kanji_regex [GW_QUERYLINE_MED]   [kanji_pos]), temp, EFLAGS_EXIST)  != 0) return FALSE;
+          kanji_pos++;
+          ql->kanji_total++;
+
+          temp_ptr = ql->hira_string;
+          temp_ptr = g_utf8_find_next_char (temp_ptr, NULL);
+          temp_ptr = g_utf8_find_next_char (temp_ptr, NULL);
+          strcpy (temp, ql->hira_string);
+          if (regcomp (&(ql->kanji_regex                         [GW_QUERYLINE_EXIST] [kanji_pos]), temp, EFLAGS_EXIST)  != 0) return FALSE;
+          if (regcomp (&(ql->kanji_regex                         [GW_QUERYLINE_LOCATE][kanji_pos]), temp, EFLAGS_LOCATE) != 0) return FALSE;
+          if (gw_regex_create_kanji_high_regex (&(ql->kanji_regex[GW_QUERYLINE_HIGH]  [kanji_pos]), temp, EFLAGS_EXIST)  != 0) return FALSE;
+          if (gw_regex_create_kanji_med_regex (&(ql->kanji_regex [GW_QUERYLINE_MED]   [kanji_pos]), temp, EFLAGS_EXIST)  != 0) return FALSE;
+          kanji_pos++;
+          ql->kanji_total++;
+       }
      }
 
      else if (gw_util_is_furigana_str (generic_atoms[i]))
