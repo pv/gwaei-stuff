@@ -89,7 +89,6 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary,
   char *key = GCKEY_GW_LESS_RELEVANT_SHOW; 
   temp->show_less_relevant_results = gw_pref_get_boolean (key, TRUE);
 
-
   //Set function pointers
   switch (temp->dictionary->type)
   {
@@ -340,12 +339,13 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
 
       //Compare word classification atoms
       i = 0;
-      while (i < ql->roma_total)
+      while (i < ql->roma_total && rl->classification_start != NULL)
       {
         if (regexec(&(ql->roma_regex[REGEX_TYPE][i]), rl->classification_start, 1, NULL, 0) == 0)
           return TRUE;
         i++;  
       }
+    return FALSE;
 
       //Compare mix atoms
       i = 0;

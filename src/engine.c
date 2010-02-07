@@ -417,7 +417,6 @@ void gw_search_get_results (GwSearchItem *item)
     if (item->target == GW_TARGET_RESULTS)
       gw_ui_close_kanji_results();
 
-
     //Start the search
     if (gw_util_get_runmode () == GW_CONSOLE_RUNMODE)
     {
