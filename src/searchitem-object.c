@@ -349,7 +349,7 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
 
       //Compare mix atoms
       i = 0;
-      while (i < ql->mix_total)
+      while (i < ql->mix_total && rl->string != NULL)
       {
         if (regexec(&(ql->mix_regex[REGEX_TYPE][i]), rl->string, 1, NULL, 0) == 0)
           return TRUE;

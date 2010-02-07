@@ -92,6 +92,11 @@ void gw_tab_update_appearance ()
     int current_page = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
     GwSearchItem *item = g_list_nth_data (gw_tab_searchitems, current_page);
     gw_tab_update_appearance_with_searchitem (item);
+
+    int size;
+    size = gw_pref_get_int (GCKEY_GW_FONT_SIZE, 12);
+    if (size >= MIN_FONT_SIZE | size <= MAX_FONT_SIZE)
+      gw_pref_set_int (GCKEY_GW_FONT_SIZE, size);
 }
 
 
