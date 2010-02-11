@@ -99,20 +99,130 @@ void do_conditionally_enable_spellcheck (GtkWidget *widget, gpointer data)
        //Default to the english dictionary when using the english-japanese dict
        char *active;
        active = gtk_combo_box_get_active_text (GTK_COMBO_BOX (combobox));
-       if (strcmp (active, "English") == 0 || strcmp (active, "english") == 0)
+       GError *err;
+       err = NULL;
+       GwDictInfo *di = gw_dictlist_get_selected()->data;
+
+
+       if ((strcmp ("Radicals", di->name) == 0) ||
+           (strcmp ("Names",    di->name) == 0)   )
+       {
+         //No spell checking needed
+         sexy_spell_entry_set_checked (SEXY_SPELL_ENTRY (entry), FALSE);
+       }
+       else if ((strcmp ("English",  di->name) == 0) ||
+                (strcmp ("Kanji",    di->name) == 0) ||
+                (strcmp ("Mix",      di->name) == 0) ||
+                (strcmp ("Examples", di->name) == 0) ||
+                (strcmp ("Places",   di->name) == 0)   )
        {
          //Set the spellchecked language to english
-         GError *err;
-         err = NULL;
-         sexy_spell_entry_activate_language (SEXY_SPELL_ENTRY (entry), "en", &err);
+         if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (entry), "en") == FALSE)
+           sexy_spell_entry_activate_language (SEXY_SPELL_ENTRY (entry), "en", &err);
          if (err != NULL)
          {
            g_error_free (err);
            err = NULL;
          }
          sexy_spell_entry_set_checked (SEXY_SPELL_ENTRY (entry), TRUE);
+	 
+         if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (entry), "fr") == TRUE)
+           sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (entry), "fr");
+         if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (entry), "de") == TRUE)
+           sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (entry), "de");
+         if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (entry), "es") == TRUE)
+           sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (entry), "es");
+         if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (entry), "it") == TRUE)
+           sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (entry), "it");
        }
+       else if (strcmp ("French", di->name) == 0)
+       {
+         //Set the spellchecked language to french
+         if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (entry), "fr") == FALSE)
+           sexy_spell_entry_activate_language (SEXY_SPELL_ENTRY (entry), "fr", &err);
 
+         if (err != NULL)
+         {
+           g_error_free (err);
+           err = NULL;
+         }
+         sexy_spell_entry_set_checked (SEXY_SPELL_ENTRY (entry), TRUE);
+	 
+         if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (entry), "en") == TRUE)
+           sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (entry), "en");
+         if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (entry), "de") == TRUE)
+           sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (entry), "de");
+         if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (entry), "es") == TRUE)
+           sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (entry), "es");
+         if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (entry), "it") == TRUE)
+           sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (entry), "it");
+       }
+       else if (strcmp ("German", di->name) == 0)
+       {
+         //Set the spellchecked language to german
+         if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (entry), "de") == TRUE)
+           sexy_spell_entry_activate_language (SEXY_SPELL_ENTRY (entry), "de", &err);
+
+         if (err != NULL)
+         {
+           g_error_free (err);
+           err = NULL;
+         }
+         sexy_spell_entry_set_checked (SEXY_SPELL_ENTRY (entry), TRUE);
+	 
+         if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (entry), "fr") == TRUE)
+           sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (entry), "fr");
+         if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (entry), "en") == TRUE)
+           sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (entry), "en");
+         if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (entry), "es") == TRUE)
+           sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (entry), "es");
+         if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (entry), "it") == TRUE)
+           sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (entry), "it");
+       }
+       else if (strcmp ("Spanish", di->name) == 0)
+       {
+         //Set the spellchecked language to spanish
+         if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (entry), "es") == TRUE)
+           sexy_spell_entry_activate_language (SEXY_SPELL_ENTRY (entry), "es", &err);
+
+         if (err != NULL)
+         {
+           g_error_free (err);
+           err = NULL;
+         }
+         sexy_spell_entry_set_checked (SEXY_SPELL_ENTRY (entry), TRUE);
+	 
+         if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (entry), "fr") == TRUE)
+           sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (entry), "fr");
+         if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (entry), "de") == TRUE)
+           sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (entry), "de");
+         if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (entry), "en") == TRUE)
+           sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (entry), "en");
+         if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (entry), "it") == TRUE)
+           sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (entry), "it");
+       }
+       else if (strcmp ("Italian", di->name) == 0)
+       {
+         //Set the spellchecked language to italian
+         if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (entry), "it") == TRUE)
+           sexy_spell_entry_activate_language (SEXY_SPELL_ENTRY (entry), "it", &err);
+
+         if (err != NULL)
+         {
+           g_error_free (err);
+           err = NULL;
+         }
+         sexy_spell_entry_set_checked (SEXY_SPELL_ENTRY (entry), TRUE);
+	 
+         if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (entry), "fr") == TRUE)
+           sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (entry), "fr");
+         if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (entry), "de") == TRUE)
+           sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (entry), "de");
+         if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (entry), "es") == TRUE)
+           sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (entry), "es");
+         if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (entry), "en") == TRUE)
+           sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (entry), "en");
+       }
        //Default to the system default otherwise
        else
        {
