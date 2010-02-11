@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2009-12-23 23:14-0500\n"
+"POT-Creation-Date: 2010-02-10 20:20-0500\n"
 "PO-Revision-Date: 2008-11-30 02:35+0500\n"
 "Last-Translator: Zachary Dovel pizzach@gmail.com\n"
 "Language-Team: Not Applicable\n"
@@ -24,7 +24,7 @@ msgstr "タブを閉じる(_C)"
 msgid "_Close"
 msgstr "閉じる(_C)"
 
-#: src/tabs.c:184
+#: src/tabs.c:189
 msgid "(Empty)"
 msgstr "(空っぽ)"
 
@@ -430,7 +430,7 @@ msgstr "主な辞書"
 msgid "Edit the current vocabulary list"
 msgstr "現在語彙リストを編集する"
 
-#: src/main-interface-gtk.c:410 src/main-callbacks-gtk.c:1751
+#: src/main-interface-gtk.c:410 src/main-callbacks-gtk.c:1725
 msgid "A_ppend"
 msgstr "追加(_P)"
 
@@ -927,35 +927,35 @@ msgid ""
 "D:\t"
 msgstr ""
 
-#: src/main-callbacks-gtk.c:485
+#: src/main-callbacks-gtk.c:481
 msgid "Save As"
 msgstr "別名で保存"
 
-#: src/main-callbacks-gtk.c:497 src/main-callbacks-gtk.c:572
+#: src/main-callbacks-gtk.c:493 src/main-callbacks-gtk.c:567
 msgid "vocabulary.txt"
 msgstr "語彙.txt"
 
-#: src/main-callbacks-gtk.c:562
+#: src/main-callbacks-gtk.c:557
 msgid "Save"
 msgstr "保存"
 
-#: src/main-callbacks-gtk.c:1116
+#: src/main-callbacks-gtk.c:1091
 msgid "Italian: "
 msgstr "イタリア語: "
 
-#: src/main-callbacks-gtk.c:1117
+#: src/main-callbacks-gtk.c:1092
 msgid "Japanese: "
 msgstr "日本語: "
 
-#: src/main-callbacks-gtk.c:1118
+#: src/main-callbacks-gtk.c:1093
 msgid "Spanish: "
 msgstr "和西: "
 
-#: src/main-callbacks-gtk.c:1119
+#: src/main-callbacks-gtk.c:1094
 msgid "French: "
 msgstr "フランス語:"
 
-#: src/main-callbacks-gtk.c:1142
+#: src/main-callbacks-gtk.c:1117
 msgid ""
 "gWaei (C) 2008-2009 Zachary Dovel\n"
 "Kanjipad backend (C) 2002 Owen Taylor\n"
@@ -965,7 +965,7 @@ msgstr ""
 "漢字パッド バックエンド (C) 2002 Owen Taylor\n"
 "JStroke バックエンド(C) 1997 Robert Wells"
 
-#: src/main-callbacks-gtk.c:1143
+#: src/main-callbacks-gtk.c:1118
 msgid ""
 "Program for Japanese translation and reference. The\n"
 "dictionaries are supplied by Jim Breen's WWWJDIC."
@@ -973,15 +973,15 @@ msgstr ""
 "日本語の翻訳や参照の為に作られたプログラムです. 辞書ファイルがJim Breenの"
 "WWWJDICから取られています."
 
-#: src/main-callbacks-gtk.c:1740
+#: src/main-callbacks-gtk.c:1714
 msgid "A_ppend Selected"
 msgstr "選択のを追加(_P)"
 
-#: src/main-callbacks-gtk.c:1742
+#: src/main-callbacks-gtk.c:1716
 msgid "Save Selected _As"
 msgstr "選択のを別名で保存"
 
-#: src/main-callbacks-gtk.c:1744
+#: src/main-callbacks-gtk.c:1718
 msgid "_Print Selected"
 msgstr "選択のを印刷"
 
@@ -1107,39 +1107,39 @@ msgstr "ファイル読み込み失敗"
 msgid "Success"
 msgstr "成功"
 
-#: src/dictinfo-object.c:153
+#: src/dictinfo-object.c:79
 msgid "English Dictionary"
 msgstr "和英辞書"
 
-#: src/dictinfo-object.c:154
+#: src/dictinfo-object.c:80
 msgid "Spanish Dictionary"
 msgstr "和西辞書"
 
-#: src/dictinfo-object.c:155
+#: src/dictinfo-object.c:81
 msgid "Kanji Dictionary"
 msgstr "漢字辞書"
 
-#: src/dictinfo-object.c:156
+#: src/dictinfo-object.c:82
 msgid "Radicals Dictionary"
 msgstr "部首辞書"
 
-#: src/dictinfo-object.c:157
+#: src/dictinfo-object.c:83
 msgid "Places Dictionary"
 msgstr "場所辞書"
 
-#: src/dictinfo-object.c:158
+#: src/dictinfo-object.c:84
 msgid "Names Dictionary"
 msgstr "名前辞書"
 
-#: src/dictinfo-object.c:159
+#: src/dictinfo-object.c:85
 msgid "Examples Dictionary"
 msgstr "例文辞書"
 
-#: src/dictinfo-object.c:160
+#: src/dictinfo-object.c:86
 msgid "French Dictionary"
 msgstr "和払辞書"
 
-#: src/dictinfo-object.c:161
+#: src/dictinfo-object.c:87
 msgid "German Dictionary"
 msgstr "和独辞書"
 
@@ -1164,12 +1164,12 @@ msgid "_View"
 msgstr "表示(_V)"
 
 #: src/xml/main.glade:286
-msgid "Previous Tab"
-msgstr "前のタブ"
+msgid "_Previous Tab"
+msgstr "前のタブ(_P)"
 
 #: src/xml/main.glade:295
-msgid "Next Tab"
-msgstr "次のタブ"
+msgid "Ne_xt Tab"
+msgstr "次のタブ(_X)"
 
 #: src/xml/main.glade:308
 msgid "_Insert"

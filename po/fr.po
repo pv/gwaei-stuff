@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 1.2.0\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2009-12-23 23:14-0500\n"
+"POT-Creation-Date: 2010-02-10 20:20-0500\n"
 "PO-Revision-Date: 2009-11-14 18:09+0100\n"
 "Last-Translator: Nicolas (aka FoeNyx)\n"
 "Language-Team: none\n"
@@ -26,7 +26,7 @@ msgstr ""
 msgid "_Close"
 msgstr ""
 
-#: src/tabs.c:184
+#: src/tabs.c:189
 msgid "(Empty)"
 msgstr ""
 
@@ -457,7 +457,7 @@ msgstr "Dictionnaires principaux"
 msgid "Edit the current vocabulary list"
 msgstr "Modifier la liste de vocabulaire courante"
 
-#: src/main-interface-gtk.c:410 src/main-callbacks-gtk.c:1751
+#: src/main-interface-gtk.c:410 src/main-callbacks-gtk.c:1725
 msgid "A_ppend"
 msgstr "A_jouter"
 
@@ -1001,36 +1001,36 @@ msgid ""
 "D:\t"
 msgstr ""
 
-#: src/main-callbacks-gtk.c:485
+#: src/main-callbacks-gtk.c:481
 msgid "Save As"
 msgstr "Enregistrer sous"
 
-#: src/main-callbacks-gtk.c:497 src/main-callbacks-gtk.c:572
+#: src/main-callbacks-gtk.c:493 src/main-callbacks-gtk.c:567
 msgid "vocabulary.txt"
 msgstr "vocabulaire.txt"
 
-#: src/main-callbacks-gtk.c:562
+#: src/main-callbacks-gtk.c:557
 msgid "Save"
 msgstr "Enregistrer"
 
-#: src/main-callbacks-gtk.c:1116
+#: src/main-callbacks-gtk.c:1091
 msgid "Italian: "
 msgstr "Italien : "
 
-#: src/main-callbacks-gtk.c:1117
+#: src/main-callbacks-gtk.c:1092
 msgid "Japanese: "
 msgstr "Japonais : "
 
-#: src/main-callbacks-gtk.c:1118
+#: src/main-callbacks-gtk.c:1093
 msgid "Spanish: "
 msgstr "Espagnol : "
 
-#: src/main-callbacks-gtk.c:1119
+#: src/main-callbacks-gtk.c:1094
 #, fuzzy
 msgid "French: "
 msgstr "Français : "
 
-#: src/main-callbacks-gtk.c:1142
+#: src/main-callbacks-gtk.c:1117
 msgid ""
 "gWaei (C) 2008-2009 Zachary Dovel\n"
 "Kanjipad backend (C) 2002 Owen Taylor\n"
@@ -1040,7 +1040,7 @@ msgstr ""
 "Kanjipad backend (C) 2002 Owen Taylor\n"
 "JStroke backend (C) 1997 Robert Wells"
 
-#: src/main-callbacks-gtk.c:1143
+#: src/main-callbacks-gtk.c:1118
 msgid ""
 "Program for Japanese translation and reference. The\n"
 "dictionaries are supplied by Jim Breen's WWWJDIC."
@@ -1048,15 +1048,15 @@ msgstr ""
 "Logiciel pour la traduction et l'apprentissage du Japonais. \n"
 "Les dictionnaires sont fournis par WWWJDIC de Jim Breen."
 
-#: src/main-callbacks-gtk.c:1740
+#: src/main-callbacks-gtk.c:1714
 msgid "A_ppend Selected"
 msgstr "A_jouter la sélection dans"
 
-#: src/main-callbacks-gtk.c:1742
+#: src/main-callbacks-gtk.c:1716
 msgid "Save Selected _As"
 msgstr "Enregister la sélection _sous"
 
-#: src/main-callbacks-gtk.c:1744
+#: src/main-callbacks-gtk.c:1718
 msgid "_Print Selected"
 msgstr "_Imprimer la sélection"
 
@@ -1182,40 +1182,40 @@ msgstr "Échec de lecture du fichier"
 msgid "Success"
 msgstr "Succès"
 
-#: src/dictinfo-object.c:153
+#: src/dictinfo-object.c:79
 msgid "English Dictionary"
 msgstr "Dictionnaire Anglais"
 
-#: src/dictinfo-object.c:154
+#: src/dictinfo-object.c:80
 msgid "Spanish Dictionary"
 msgstr "Dictionnaire Espagnol"
 
-#: src/dictinfo-object.c:155
+#: src/dictinfo-object.c:81
 #, fuzzy
 msgid "Kanji Dictionary"
 msgstr "Dictionnaire Espagnol"
 
-#: src/dictinfo-object.c:156
+#: src/dictinfo-object.c:82
 msgid "Radicals Dictionary"
 msgstr "Dictionnaire des radicaux"
 
-#: src/dictinfo-object.c:157
+#: src/dictinfo-object.c:83
 msgid "Places Dictionary"
 msgstr "Dictionnaire des lieux"
 
-#: src/dictinfo-object.c:158
+#: src/dictinfo-object.c:84
 msgid "Names Dictionary"
 msgstr "Dictionnaire des noms"
 
-#: src/dictinfo-object.c:159
+#: src/dictinfo-object.c:85
 msgid "Examples Dictionary"
 msgstr "Dictionnaire des exemples"
 
-#: src/dictinfo-object.c:160
+#: src/dictinfo-object.c:86
 msgid "French Dictionary"
 msgstr "Dictionnaire Français"
 
-#: src/dictinfo-object.c:161
+#: src/dictinfo-object.c:87
 msgid "German Dictionary"
 msgstr "Dictionnaire Allemand"
 
@@ -1241,12 +1241,12 @@ msgstr "_Affichage"
 
 #: src/xml/main.glade:286
 #, fuzzy
-msgid "Previous Tab"
+msgid "_Previous Tab"
 msgstr "Précédent"
 
 #: src/xml/main.glade:295
 #, fuzzy
-msgid "Next Tab"
+msgid "Ne_xt Tab"
 msgstr "Suivant"
 
 #: src/xml/main.glade:308

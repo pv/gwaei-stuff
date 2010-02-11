@@ -29,7 +29,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 0.15.1\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2009-12-23 23:14-0500\n"
+"POT-Creation-Date: 2010-02-10 20:20-0500\n"
 "PO-Revision-Date: 2009-10-10 01:05-0500\n"
 "Last-Translator: dean <3dx@live.com>\n"
 "Language-Team: none\n"
@@ -46,7 +46,7 @@ msgstr ""
 msgid "_Close"
 msgstr ""
 
-#: src/tabs.c:184
+#: src/tabs.c:189
 msgid "(Empty)"
 msgstr ""
 
@@ -468,7 +468,7 @@ msgstr "_Diccionarios"
 msgid "Edit the current vocabulary list"
 msgstr "Editar la lista de vocabulario actual"
 
-#: src/main-interface-gtk.c:410 src/main-callbacks-gtk.c:1751
+#: src/main-interface-gtk.c:410 src/main-callbacks-gtk.c:1725
 msgid "A_ppend"
 msgstr "A_nexo"
 
@@ -1007,36 +1007,36 @@ msgid ""
 "D:\t"
 msgstr ""
 
-#: src/main-callbacks-gtk.c:485
+#: src/main-callbacks-gtk.c:481
 msgid "Save As"
 msgstr "Guardar como"
 
-#: src/main-callbacks-gtk.c:497 src/main-callbacks-gtk.c:572
+#: src/main-callbacks-gtk.c:493 src/main-callbacks-gtk.c:567
 msgid "vocabulary.txt"
 msgstr "vocabulario.txt"
 
-#: src/main-callbacks-gtk.c:562
+#: src/main-callbacks-gtk.c:557
 msgid "Save"
 msgstr "Guardar"
 
-#: src/main-callbacks-gtk.c:1116
+#: src/main-callbacks-gtk.c:1091
 msgid "Italian: "
 msgstr "Italiano: "
 
-#: src/main-callbacks-gtk.c:1117
+#: src/main-callbacks-gtk.c:1092
 msgid "Japanese: "
 msgstr "Japonés: "
 
-#: src/main-callbacks-gtk.c:1118
+#: src/main-callbacks-gtk.c:1093
 msgid "Spanish: "
 msgstr "Español: "
 
-#: src/main-callbacks-gtk.c:1119
+#: src/main-callbacks-gtk.c:1094
 #, fuzzy
 msgid "French: "
 msgstr "Freq:"
 
-#: src/main-callbacks-gtk.c:1142
+#: src/main-callbacks-gtk.c:1117
 msgid ""
 "gWaei (C) 2008-2009 Zachary Dovel\n"
 "Kanjipad backend (C) 2002 Owen Taylor\n"
@@ -1046,7 +1046,7 @@ msgstr ""
 "Kanjipad backend (C) 2002 Owen Taylor\n"
 "JStroke backend (C) 1997 Robert Wells"
 
-#: src/main-callbacks-gtk.c:1143
+#: src/main-callbacks-gtk.c:1118
 msgid ""
 "Program for Japanese translation and reference. The\n"
 "dictionaries are supplied by Jim Breen's WWWJDIC."
@@ -1054,15 +1054,15 @@ msgstr ""
 "Aplicación para traducción y referencia del japonés. Los\n"
 "diccionarios son suministrados por Jim Breen's WWWJDIC."
 
-#: src/main-callbacks-gtk.c:1740
+#: src/main-callbacks-gtk.c:1714
 msgid "A_ppend Selected"
 msgstr "A_nexo seleccionado"
 
-#: src/main-callbacks-gtk.c:1742
+#: src/main-callbacks-gtk.c:1716
 msgid "Save Selected _As"
 msgstr "Guardar selección _Como"
 
-#: src/main-callbacks-gtk.c:1744
+#: src/main-callbacks-gtk.c:1718
 msgid "_Print Selected"
 msgstr "_Imprimir selección"
 
@@ -1188,47 +1188,47 @@ msgstr "Falló lectura del archivo"
 msgid "Success"
 msgstr "Éxito"
 
-#: src/dictinfo-object.c:153
+#: src/dictinfo-object.c:79
 #, fuzzy
 msgid "English Dictionary"
 msgstr "Diccionario:"
 
-#: src/dictinfo-object.c:154
+#: src/dictinfo-object.c:80
 #, fuzzy
 msgid "Spanish Dictionary"
 msgstr "Diccionario:"
 
-#: src/dictinfo-object.c:155
+#: src/dictinfo-object.c:81
 #, fuzzy
 msgid "Kanji Dictionary"
 msgstr "Diccionario:"
 
-#: src/dictinfo-object.c:156
+#: src/dictinfo-object.c:82
 #, fuzzy
 msgid "Radicals Dictionary"
 msgstr "Diccionario:"
 
-#: src/dictinfo-object.c:157
+#: src/dictinfo-object.c:83
 #, fuzzy
 msgid "Places Dictionary"
 msgstr "Diccionario:"
 
-#: src/dictinfo-object.c:158
+#: src/dictinfo-object.c:84
 #, fuzzy
 msgid "Names Dictionary"
 msgstr "Diccionario:"
 
-#: src/dictinfo-object.c:159
+#: src/dictinfo-object.c:85
 #, fuzzy
 msgid "Examples Dictionary"
 msgstr "Diccionario:"
 
-#: src/dictinfo-object.c:160
+#: src/dictinfo-object.c:86
 #, fuzzy
 msgid "French Dictionary"
 msgstr "Diccionario:"
 
-#: src/dictinfo-object.c:161
+#: src/dictinfo-object.c:87
 #, fuzzy
 msgid "German Dictionary"
 msgstr "Diccionario:"
@@ -1255,12 +1255,12 @@ msgstr "_Ver"
 
 #: src/xml/main.glade:286
 #, fuzzy
-msgid "Previous Tab"
+msgid "_Previous Tab"
 msgstr "Previo"
 
 #: src/xml/main.glade:295
 #, fuzzy
-msgid "Next Tab"
+msgid "Ne_xt Tab"
 msgstr "Siguiente"
 
 #: src/xml/main.glade:308

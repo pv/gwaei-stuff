@@ -359,7 +359,7 @@ gboolean gw_util_is_kanji_str (char input[])
 //!
 gboolean gw_util_is_romaji_str (char input[])
 {
-    return gw_util_all_chars_are_in_range (input, L'A', L'z');
+    return gw_util_all_chars_are_in_range (input, L'A', L'ž');
 }
 
 
