@@ -316,7 +316,7 @@ gboolean gw_regex_create_roma_med_regex (regex_t *regex, char *string, int flags
     char expression[MAX_LINE * 2];
     strcpy (expression, "\\{(");
     strcat (expression, string);
-    strcat (expression, ")\\}|(\\) |/)((\\bto )|(\\bto be )|())(");
+    strcat (expression, ")\\}|(\\) |/)((\\bto )|(\\bto be )|(\\b))(");
     strcat (expression, string);
     strcat (expression, ")(( \\([^/]+\\)/)|(/))|(\\[)(");
     strcat (expression, string);
