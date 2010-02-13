@@ -52,30 +52,6 @@ enum gw_dictionary_statuses {
 };
 
 //!
-//! @brief Enumeration of dictionary types
-//!
-//! These are used for simple identification of known dictionaries.  Other
-//! is not used for known dictionaries, but a unique id number generated
-//! dynamically using gw_dictlist_make_dictionary_id().  Other is used for
-//! in the dictionary type classificaton which falls into GW_DICT_OTHER,
-//! GW_DICT_RADICAL, and GW_DICT_KANJI.
-//!
-/*
-enum gw_dictionary_types {  
-  GW_DICT_ENGLISH,
-  GW_DICT_KANJI,
-  GW_DICT_RADICALS,
-  GW_DICT_NAMES,
-  GW_DICT_PLACES,
-  GW_DICT_MIX,
-  GW_DICT_EXAMPLES,
-  GW_DICT_FRENCH,
-  GW_DICT_GERMAN,
-  GW_DICT_SPANISH,
-  GW_DICT_OTHER
-};
-*/
-//!
 //! @brief Dictionary type assigned by the program.  It determines the parsing algorithm
 //!
 enum gw_dictionary_type {  

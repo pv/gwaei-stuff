@@ -3126,16 +3126,15 @@ void gw_ui_append_unknowndict_results_to_buffer (GwSearchItem *item, gboolean un
 
       int line, start_offset, end_offset;
 
-      //Kanji
       gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); start_offset = gtk_text_iter_get_line_offset (&iter);
-      gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->string, -1, "large", NULL);
-      if (item->target == GW_TARGET_RESULTS) gtk_text_buffer_insert_with_tags_by_name (tb, &iter, " ", -1, "large", NULL);
+      gtk_text_buffer_insert (tb, &iter, resultline->string, -1);
+      if (item->target == GW_TARGET_RESULTS) gtk_text_buffer_insert (tb, &iter, " ", -1);
       gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
       gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); line = gtk_text_iter_get_line (&iter);
       gw_ui_add_match_highlights (line, start_offset, end_offset, item);
 
       gtk_text_buffer_get_iter_at_mark (tb, &iter, mark);
-      gtk_text_buffer_insert (tb, &iter, "\n", -1);
+      gtk_text_buffer_insert (tb, &iter, "\n\n", -1);
       gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); line = gtk_text_iter_get_line (&iter);
 }
 

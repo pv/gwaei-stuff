@@ -509,5 +509,11 @@ void gw_resultline_parse_unknowndict_result_string (GwResultLine *rl)
     {
       *temp = '\0';
     }
+
+    rl->def_start[0] = rl->string;
+    rl->def_start[1] = NULL;
+    rl->def_total = 1;
+    rl->kanji_start = rl->string;
+    rl->furigana_start = rl->string;
 }
 

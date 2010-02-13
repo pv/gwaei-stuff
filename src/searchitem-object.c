@@ -301,7 +301,6 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
 
       return (found_kanji | found_radical || roma_check == 2 || furi_check == 2);
     }
-
     //Standard dictionary search
     else
     {
