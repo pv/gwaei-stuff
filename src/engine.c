@@ -63,7 +63,7 @@ static gboolean less_relevant_title_inserted = FALSE;
 //!
 static void append_result_to_output (GwSearchItem *item)
 {
-    if (item->dictionary->type == GW_DICT_OTHER && gw_util_get_runmode() == GW_GTK_RUNMODE)
+    if (item->dictionary->type == GW_DICT_TYPE_EDICT && gw_util_get_runmode() == GW_GTK_RUNMODE)
     {
       gboolean furigana_exists, kanji_exists;
       gboolean same_def_totals, same_first_def, same_furigana, same_kanji, skip;
@@ -262,7 +262,7 @@ static gboolean stream_results_thread (GwSearchItem *item)
               item->swap_resultline = NULL;
               break;
           case MEDIUM_RELEVANCE:
-              if ((item->dictionary->type == GW_DICT_KANJI || item->total_irrelevant_results < MAX_MEDIUM_IRRELIVENT_RESULTS) &&
+              if ((item->dictionary->type == GW_DICT_TYPE_KANJI || item->total_irrelevant_results < MAX_MEDIUM_IRRELIVENT_RESULTS) &&
                    (item->swap_resultline = gw_resultline_new ()) != NULL && item->target != GW_TARGET_KANJI)
               {
                 //Store the result line and create an empty one in its place
@@ -273,7 +273,7 @@ static gboolean stream_results_thread (GwSearchItem *item)
               }
               break;
           default:
-              if ((item->dictionary->type == GW_DICT_KANJI || item->total_irrelevant_results < MAX_LOW_IRRELIVENT_RESULTS) &&
+              if ((item->dictionary->type == GW_DICT_TYPE_KANJI || item->total_irrelevant_results < MAX_LOW_IRRELIVENT_RESULTS) &&
                    (item->swap_resultline = gw_resultline_new ()) != NULL && item->target != GW_TARGET_KANJI)
               {
                 //Store the result line and create an empty one in its place
@@ -403,7 +403,7 @@ void gw_search_get_results (GwSearchItem *item)
 
     //Misc preparations
     if (item->target != GW_TARGET_CONSOLE &&
-        (item->dictionary->type == GW_DICT_KANJI || item->dictionary->type == GW_DICT_RADICALS))
+        (item->dictionary->type == GW_DICT_TYPE_KANJI || item->dictionary->type == GW_DICT_TYPE_RADICALS))
       item->show_less_relevant_results = TRUE;
 
     gw_ui_initialize_buffer_by_searchitem (item);

@@ -137,8 +137,8 @@ GwDictInfo* gw_dictinfo_new (char *name)
     //Create id (to show special built in dictionaries)
     if      (strcmp(name, "English") == 0)
     {
-      temp->id = GW_DICT_ENGLISH;
-      temp->type = GW_DICT_OTHER;
+      temp->id = GW_DICT_ID_ENGLISH;
+      temp->type = GW_DICT_TYPE_EDICT;
       strncpy (temp->gckey, GCKEY_GW_ENGLISH_SOURCE, 100);
       strcpy (temp->rsync, RSYNC);
       strcat (temp->rsync, " -v ftp.monash.edu.au::nihongo/edict ");
@@ -146,8 +146,8 @@ GwDictInfo* gw_dictinfo_new (char *name)
     }
     else if (strcmp (name, "Kanji") == 0)
     {
-      temp->id = GW_DICT_KANJI;
-      temp->type = GW_DICT_KANJI;
+      temp->id = GW_DICT_ID_KANJI;
+      temp->type = GW_DICT_TYPE_KANJI;
       strncpy (temp->gckey, GCKEY_GW_KANJI_SOURCE, 100);
       strcpy (temp->rsync, RSYNC);
       strcat (temp->rsync, " -v ftp.monash.edu.au::nihongo/kanjidic ");
@@ -155,15 +155,15 @@ GwDictInfo* gw_dictinfo_new (char *name)
     }
     else if (strcmp (name, "Radicals") == 0)
     {
-      temp->id = GW_DICT_RADICALS;
-      temp->type = GW_DICT_RADICALS;
+      temp->id = GW_DICT_ID_RADICALS;
+      temp->type = GW_DICT_TYPE_RADICALS;
       strncpy (temp->gckey, GCKEY_GW_RADICALS_SOURCE, 100);
       strcpy (temp->rsync, "");
     }
     else if (strcmp (name, "Names") == 0)
     {
-      temp->id = GW_DICT_NAMES;
-      temp->type = GW_DICT_OTHER;
+      temp->id = GW_DICT_ID_NAMES;
+      temp->type = GW_DICT_TYPE_EDICT;
       strncpy (temp->gckey, GCKEY_GW_NAMES_SOURCE, 100);
       strcpy (temp->rsync, RSYNC);
       strcat (temp->rsync, " -v ftp.monash.edu.au::nihongo/enamdict ");
@@ -171,23 +171,23 @@ GwDictInfo* gw_dictinfo_new (char *name)
     }
     else if (strcmp (name, "Places") == 0)
     {
-      temp->id = GW_DICT_PLACES;
-      temp->type = GW_DICT_OTHER;
+      temp->id = GW_DICT_ID_PLACES;
+      temp->type = GW_DICT_TYPE_EDICT;
       strncpy(temp->gckey, "", 100);
       strcpy (temp->rsync, "");
     }
     else if (strcmp (name, "Examples") == 0)
     {
-      temp->id = GW_DICT_EXAMPLES;
-      temp->type = GW_DICT_EXAMPLES;
+      temp->id = GW_DICT_ID_EXAMPLES;
+      temp->type = GW_DICT_TYPE_EXAMPLES;
       strncpy(temp->gckey, GCKEY_GW_EXAMPLES_SOURCE, 100);
       strcpy (temp->rsync, "");
       temp->total_lines =  temp->total_lines / 2;
     }
     else if (strcmp (name, "French") == 0)
     {
-      temp->id = GW_DICT_FRENCH;
-      temp->type = GW_DICT_OTHER;
+      temp->id = GW_DICT_ID_FRENCH;
+      temp->type = GW_DICT_TYPE_EDICT;
       strncpy(temp->gckey, GCKEY_GW_FRENCH_SOURCE, 100);
       strcpy (temp->rsync, "");
 
@@ -204,15 +204,15 @@ GwDictInfo* gw_dictinfo_new (char *name)
 }
     else if (strcmp (name, "German") == 0)
     {
-      temp->id = GW_DICT_GERMAN;
-      temp->type = GW_DICT_OTHER;
+      temp->id = GW_DICT_ID_GERMAN;
+      temp->type = GW_DICT_TYPE_EDICT;
       strncpy(temp->gckey, GCKEY_GW_GERMAN_SOURCE, 100);
       strcpy (temp->rsync, "");
     }
     else if (strcmp (name, "Spanish") == 0)
     {
-      temp->id = GW_DICT_SPANISH;
-      temp->type = GW_DICT_OTHER;
+      temp->id = GW_DICT_ID_SPANISH;
+      temp->type = GW_DICT_TYPE_EDICT;
       strncpy(temp->gckey, GCKEY_GW_SPANISH_SOURCE, 100);
       strcpy (temp->rsync, "");
       strcpy(temp->gz_path, temp->sync_path);
@@ -232,15 +232,15 @@ GwDictInfo* gw_dictinfo_new (char *name)
     }
     else if (strcmp (name, "Mix") == 0)
     {
-      temp->id = GW_DICT_MIX;
-      temp->type = GW_DICT_KANJI;
+      temp->id = GW_DICT_ID_MIX;
+      temp->type = GW_DICT_TYPE_KANJI;
       strncpy(temp->gckey, "", 100);
       strcpy (temp->rsync, "");
     }
     else
     {
       temp->id = gw_dictinfo_make_dictionary_id ();
-      temp->type = GW_DICT_OTHER;
+      temp->type = GW_DICT_TYPE_OTHER;
       strncpy(temp->gckey, "", 100);
       strcpy (temp->rsync, "");
     }

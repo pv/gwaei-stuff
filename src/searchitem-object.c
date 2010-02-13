@@ -91,7 +91,7 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary, const int 
   //Set function pointers
   switch (temp->dictionary->type)
   {
-      case GW_DICT_OTHER:
+      case GW_DICT_TYPE_EDICT:
         if (!gw_queryline_parse_edict_string (temp->queryline, query)) return;
         temp->gw_searchitem_parse_result_string = &gw_resultline_parse_edict_result_string;
         if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
@@ -99,7 +99,7 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary, const int 
         else
           temp->gw_searchitem_append_results_to_output = &gw_ui_append_edict_results_to_buffer;
         break;
-      case GW_DICT_RADICALS:
+      case GW_DICT_TYPE_RADICALS:
         if (!gw_queryline_parse_edict_string (temp->queryline, query)) return;
         temp->gw_searchitem_parse_result_string = &gw_resultline_parse_radicaldict_result_string;
         if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
@@ -107,7 +107,7 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary, const int 
         else
           temp->gw_searchitem_append_results_to_output = &gw_ui_append_radicalsdict_results_to_buffer;
         break;
-      case GW_DICT_KANJI:
+      case GW_DICT_TYPE_KANJI:
         if (!gw_queryline_parse_kanjidict_string (temp->queryline, query)) return;
         temp->gw_searchitem_parse_result_string = &gw_resultline_parse_kanjidict_result_string;
         if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
@@ -115,7 +115,7 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary, const int 
         else
           temp->gw_searchitem_append_results_to_output = &gw_ui_append_kanjidict_results_to_buffer;
         break;
-      case GW_DICT_EXAMPLES:
+      case GW_DICT_TYPE_EXAMPLES:
         if (!gw_queryline_parse_exampledict_string (temp->queryline, query)) return;
         temp->gw_searchitem_parse_result_string = &gw_resultline_parse_examplesdict_result_string;
         if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
@@ -253,7 +253,7 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
 
     //Kanji radical dictionary search
     int i = 0;
-    if (item->dictionary->type == GW_DICT_KANJI || item->dictionary->type == GW_DICT_RADICALS)
+    if (item->dictionary->type == GW_DICT_TYPE_KANJI || item->dictionary->type == GW_DICT_TYPE_RADICALS)
     {
       if (ql->strokes_total > 0 && rl->strokes != NULL)
         if (regexec(&(ql->strokes_regex[REGEX_TYPE][i]), rl->strokes, 1, NULL, 0) != 0)

@@ -60,6 +60,7 @@ enum gw_dictionary_statuses {
 //! in the dictionary type classificaton which falls into GW_DICT_OTHER,
 //! GW_DICT_RADICAL, and GW_DICT_KANJI.
 //!
+/*
 enum gw_dictionary_types {  
   GW_DICT_ENGLISH,
   GW_DICT_KANJI,
@@ -73,14 +74,43 @@ enum gw_dictionary_types {
   GW_DICT_SPANISH,
   GW_DICT_OTHER
 };
+*/
+//!
+//! @brief Dictionary type assigned by the program.  It determines the parsing algorithm
+//!
+enum gw_dictionary_type {  
+  GW_DICT_TYPE_EDICT,         //!< Standard edict format dictionary
+  GW_DICT_TYPE_KANJI,         //!< Kanjidic format dictionary
+  GW_DICT_TYPE_RADICALS,      //!< Simple radical/kanji reference dictionary format
+  GW_DICT_TYPE_NAMES_PLACES,  //!< Edictish in style names/places dictionary
+  GW_DICT_TYPE_MIX,           //!< gWaei special format for combined kanji/radicals dictionary
+  GW_DICT_TYPE_EXAMPLES,      //!< Examples format dictionary
+  GW_DICT_TYPE_OTHER          //!< Unkown format which should use safe parsing
+};
+
+//!
+//! @brief Original IDs to known dictionaries to gWaei
+//!
+enum gw_dictionary_id {  
+  GW_DICT_ID_ENGLISH,    //!< Edict English dictionary
+  GW_DICT_ID_KANJI,      //!< Kanjidic Kanji dictionary
+  GW_DICT_ID_RADICALS,   //!< Radic Radical<->Kanji dictionary
+  GW_DICT_ID_NAMES,      //!< Names dictionary 
+  GW_DICT_ID_PLACES,     //!< Places dictionary which is parsed from the Names dictionary
+  GW_DICT_ID_MIX,        //!< Mix dictionary which is produced from the Kanji and Radicals dictionaries
+  GW_DICT_ID_EXAMPLES,   //!< Examples dictionary
+  GW_DICT_ID_FRENCH,     //!< French dictionary
+  GW_DICT_ID_GERMAN,     //!< Wadoku German dictionary
+  GW_DICT_ID_SPANISH     //!< Espandic Spanish dictionary
+};
 
 //!
 //! @brief Primitive for storing dictionary information
 //!
 struct GwDictInfo
 {
-    int id;                        //!< Unique dictionary id number
-    int type;                      //!< classification of dictionary
+    enum gw_dictionary_id id;      //!< Unique dictionary id number
+    enum gw_dictionary_type type;  //!< classification of dictionary
     int status;                    //!< install status of the dictionary
     long total_lines;              //!< total lines in the file
     char name[100];                //!< name of the file in the .waei folder

@@ -104,9 +104,9 @@ void gw_console_uninstall_dictionary_by_name(char *name) {
     di->status = GW_DICT_STATUS_NOT_INSTALLED;
     di->load_position = -1;
 
-    if (di->id == GW_DICT_KANJI || di->id == GW_DICT_RADICALS)
+    if (di->id == GW_DICT_ID_KANJI || di->id == GW_DICT_ID_RADICALS)
       gw_console_uninstall_dictionary_by_name ("Mix");
-    else if (di->id == GW_DICT_NAMES)
+    else if (di->id == GW_DICT_ID_NAMES)
       gw_console_uninstall_dictionary_by_name ("Places");
 }
 
@@ -120,7 +120,7 @@ gboolean gw_console_install_dictionary_by_name(char *name) {
     char *sync_path = di->sync_path;
     char *gz_path = di->gz_path;
 
-    if (di->status != GW_DICT_STATUS_NOT_INSTALLED || di->id == GW_DICT_PLACES) return FALSE;
+    if (di->status != GW_DICT_STATUS_NOT_INSTALLED || di->id == GW_DICT_ID_PLACES) return FALSE;
     di->status = GW_DICT_STATUS_INSTALLING;
     
     char fallback_uri[100];

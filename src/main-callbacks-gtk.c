@@ -964,7 +964,7 @@ G_MODULE_EXPORT void do_radical_search_tool (GtkWidget *widget, gpointer data)
     do_radical_clear (NULL, NULL);
 
     //Hide the togglebox if the Mix dictionary is not present
-    if (gw_dictlist_dictionary_get_status_by_id (GW_DICT_MIX) != GW_DICT_STATUS_INSTALLED)
+    if (gw_dictlist_dictionary_get_status_by_id (GW_DICT_ID_MIX) != GW_DICT_STATUS_INSTALLED)
       gtk_widget_hide (hbox); 
     else
       gtk_widget_show (hbox); 
@@ -1114,7 +1114,7 @@ G_MODULE_EXPORT void do_about (GtkWidget *widget, gpointer data)
   GtkWidget *about = g_object_new (GTK_TYPE_ABOUT_DIALOG,
                "program-name", "gWaei", 
                "version", VERSION,
-               "copyright", gettext("gWaei (C) 2008-2009 Zachary Dovel\nKanjipad backend (C) 2002 Owen Taylor\nJStroke backend (C) 1997 Robert Wells"),
+               "copyright", gettext("gWaei (C) 2008-2010 Zachary Dovel\nKanjipad backend (C) 2002 Owen Taylor\nJStroke backend (C) 1997 Robert Wells"),
                "comments", gettext("Program for Japanese translation and reference. The\ndictionaries are supplied by Jim Breen's WWWJDIC."),
                "license", "This software is GPL Licensed.\n\ngWaei is free software: you can redistribute it and/or modify\nit under the terms of the GNU General Public License as published by\n the Free Software Foundation, either version 3 of the License, or\n(at your option) any later version.\n\ngWaei is distributed in the hope that it will be useful,\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\nMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\nGNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License\nalong with gWaei.  If not, see <http://www.gnu.org/licenses/>.",
                "logo", logo,

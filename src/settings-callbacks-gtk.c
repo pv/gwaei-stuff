@@ -59,11 +59,11 @@ static void *update_thread(void *nothing)
     char text[200];
 
     GwDictInfo* kanji;
-    kanji = gw_dictlist_get_dictionary_by_id (GW_DICT_KANJI);
+    kanji = gw_dictlist_get_dictionary_by_id (GW_DICT_ID_KANJI);
     GwDictInfo* names;
-    names = gw_dictlist_get_dictionary_by_id (GW_DICT_NAMES);
+    names = gw_dictlist_get_dictionary_by_id (GW_DICT_ID_NAMES);
     GwDictInfo* radicals;
-    radicals = gw_dictlist_get_dictionary_by_id (GW_DICT_RADICALS);
+    radicals = gw_dictlist_get_dictionary_by_id (GW_DICT_ID_RADICALS);
 
     //Find out how many dictionaries need updating
     gdouble total_dictionary_updates = 0.0;
@@ -82,9 +82,9 @@ static void *update_thread(void *nothing)
         di->status = GW_DICT_STATUS_UPDATING;
         total_dictionary_updates++;
 
-        if (di->id == GW_DICT_KANJI && radicals->status == GW_DICT_STATUS_INSTALLED)
+        if (di->id == GW_DICT_ID_KANJI && radicals->status == GW_DICT_STATUS_INSTALLED)
           extra_processing_jobs++;
-        else if (di->id == GW_DICT_NAMES)
+        else if (di->id == GW_DICT_ID_NAMES)
           extra_processing_jobs++;
       }
       dictionarylist = dictionarylist->next;
@@ -144,8 +144,8 @@ static void *update_thread(void *nothing)
       //Special dictionary post processing
       if (error == NULL)
       {
-        if (di->id == GW_DICT_KANJI && 
-            gw_dictlist_dictionary_get_status_by_id(GW_DICT_RADICALS) == GW_DICT_STATUS_INSTALLED)
+        if (di->id == GW_DICT_ID_KANJI && 
+            gw_dictlist_dictionary_get_status_by_id(GW_DICT_ID_RADICALS) == GW_DICT_STATUS_INSTALLED)
         {
           gdk_threads_enter ();
           strcpy(text, gettext("Recreating Mixed dictionary..."));
@@ -154,7 +154,7 @@ static void *update_thread(void *nothing)
           gw_dictlist_preform_postprocessing_by_name (di->name, &error);
           progress += increment;
         }
-        else if (di->id == GW_DICT_NAMES && error == NULL)
+        else if (di->id == GW_DICT_ID_NAMES && error == NULL)
         {
           gdk_threads_enter ();
           strcpy(text, gettext("Resplitting Names dictionary..."));
@@ -653,8 +653,8 @@ G_MODULE_EXPORT void do_force_mix_rebuild(GtkWidget *widget, gpointer data)
     GwDictInfo* di;
     di = gw_dictlist_get_dictionary_by_alias("Mix");
 
-    if (gw_dictlist_dictionary_get_status_by_id (GW_DICT_KANJI)    == GW_DICT_STATUS_INSTALLED &&
-        gw_dictlist_dictionary_get_status_by_id (GW_DICT_RADICALS) == GW_DICT_STATUS_INSTALLED   )
+    if (gw_dictlist_dictionary_get_status_by_id (GW_DICT_ID_KANJI)    == GW_DICT_STATUS_INSTALLED &&
+        gw_dictlist_dictionary_get_status_by_id (GW_DICT_ID_RADICALS) == GW_DICT_STATUS_INSTALLED   )
     {
       di->status = GW_DICT_STATUS_REBUILDING;
       gw_dictlist_preform_postprocessing_by_name("Mix", &error);

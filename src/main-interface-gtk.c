@@ -812,7 +812,7 @@ void gw_ui_update_toolbar_buttons()
     //Update radicals search tool menuitem
     strncpy(id, "insert_radicals_action", id_length);
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
-    enable = (gw_dictlist_dictionary_get_status_by_id (GW_DICT_RADICALS) == GW_DICT_STATUS_INSTALLED);
+    enable = (gw_dictlist_dictionary_get_status_by_id (GW_DICT_ID_RADICALS) == GW_DICT_STATUS_INSTALLED);
     gtk_action_set_sensitive(action, enable);
 
     //Update back button

@@ -404,45 +404,45 @@ void gw_ui_set_progressbar (char *name, double percent, char *message)
 
 void gw_settings_initialize_installed_dictionary_list() 
 {
-    if (gw_dictlist_dictionary_get_status_by_id(GW_DICT_ENGLISH) == GW_DICT_STATUS_INSTALLED)
-      gw_ui_set_install_line_status("english", "remove", NULL);
+    if (gw_dictlist_dictionary_get_status_by_id (GW_DICT_ID_ENGLISH) == GW_DICT_STATUS_INSTALLED)
+      gw_ui_set_install_line_status ("english", "remove", NULL);
     else
-      gw_ui_set_install_line_status("english", "install", NULL);
+      gw_ui_set_install_line_status ("english", "install", NULL);
 
-    if (gw_dictlist_dictionary_get_status_by_id(GW_DICT_KANJI) == GW_DICT_STATUS_INSTALLED)
-      gw_ui_set_install_line_status("kanji", "remove", NULL);
+    if (gw_dictlist_dictionary_get_status_by_id (GW_DICT_ID_KANJI) == GW_DICT_STATUS_INSTALLED)
+      gw_ui_set_install_line_status ("kanji", "remove", NULL);
     else
-      gw_ui_set_install_line_status("kanji", "install", NULL);
+      gw_ui_set_install_line_status ("kanji", "install", NULL);
 
-    if (gw_dictlist_dictionary_get_status_by_id(GW_DICT_NAMES) == GW_DICT_STATUS_INSTALLED)
-      gw_ui_set_install_line_status("names", "remove", NULL);
+    if (gw_dictlist_dictionary_get_status_by_id (GW_DICT_ID_NAMES) == GW_DICT_STATUS_INSTALLED)
+      gw_ui_set_install_line_status ("names", "remove", NULL);
     else
-      gw_ui_set_install_line_status("names", "install", NULL);
+      gw_ui_set_install_line_status ("names", "install", NULL);
 
-    if (gw_dictlist_dictionary_get_status_by_id(GW_DICT_RADICALS) == GW_DICT_STATUS_INSTALLED)
-      gw_ui_set_install_line_status("radicals", "remove", NULL);
+    if (gw_dictlist_dictionary_get_status_by_id (GW_DICT_ID_RADICALS) == GW_DICT_STATUS_INSTALLED)
+      gw_ui_set_install_line_status ("radicals", "remove", NULL);
     else
-      gw_ui_set_install_line_status("radicals", "install", NULL);
+      gw_ui_set_install_line_status ("radicals", "install", NULL);
 
-    if (gw_dictlist_dictionary_get_status_by_id(GW_DICT_EXAMPLES) == GW_DICT_STATUS_INSTALLED)
-      gw_ui_set_install_line_status("examples", "remove", NULL);
+    if (gw_dictlist_dictionary_get_status_by_id (GW_DICT_ID_EXAMPLES) == GW_DICT_STATUS_INSTALLED)
+      gw_ui_set_install_line_status ("examples", "remove", NULL);
     else
-      gw_ui_set_install_line_status("examples", "install", NULL);
+      gw_ui_set_install_line_status ("examples", "install", NULL);
 
-    if (gw_dictlist_dictionary_get_status_by_id(GW_DICT_FRENCH) == GW_DICT_STATUS_INSTALLED)
-      gw_ui_set_install_line_status("french", "remove", NULL);
+    if (gw_dictlist_dictionary_get_status_by_id (GW_DICT_ID_FRENCH) == GW_DICT_STATUS_INSTALLED)
+      gw_ui_set_install_line_status ("french", "remove", NULL);
     else
-      gw_ui_set_install_line_status("french", "install", NULL);
+      gw_ui_set_install_line_status ("french", "install", NULL);
 
-    if (gw_dictlist_dictionary_get_status_by_id(GW_DICT_GERMAN) == GW_DICT_STATUS_INSTALLED)
-      gw_ui_set_install_line_status("german", "remove", NULL);
+    if (gw_dictlist_dictionary_get_status_by_id (GW_DICT_ID_GERMAN) == GW_DICT_STATUS_INSTALLED)
+      gw_ui_set_install_line_status ("german", "remove", NULL);
     else
-      gw_ui_set_install_line_status("german", "install", NULL);
+      gw_ui_set_install_line_status ("german", "install", NULL);
 
-    if (gw_dictlist_dictionary_get_status_by_id(GW_DICT_SPANISH) == GW_DICT_STATUS_INSTALLED)
-      gw_ui_set_install_line_status("spanish", "remove", NULL);
+    if (gw_dictlist_dictionary_get_status_by_id (GW_DICT_ID_SPANISH) == GW_DICT_STATUS_INSTALLED)
+      gw_ui_set_install_line_status ("spanish", "remove", NULL);
     else
-      gw_ui_set_install_line_status("spanish", "install", NULL);
+      gw_ui_set_install_line_status ("spanish", "install", NULL);
 }
 
 
