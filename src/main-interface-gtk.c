@@ -53,9 +53,7 @@
 
 
 //Convenience pointers
-//GtkWidget *results_tv   = NULL;
 GtkWidget *kanji_tv     = NULL;
-//GObject   *results_tb   = NULL;
 GObject   *kanji_tb     = NULL;
 GtkWidget *search_entry = NULL;
 GList *gw_tab_searchitems = NULL;
@@ -107,6 +105,18 @@ static UniqueResponse message_received_cb (UniqueApp         *app,
     }
     return res;
 }
+
+
+static gchar *arg_dictionary = NULL;
+static gboolean arg_exact = FALSE;
+
+static GOptionEntry entries[] =
+{
+  { "dictionary", 'd', 0, G_OPTION_ARG_STRING, &arg_dictionary, "Choose the dictionary to use",              "English" },
+  /*{ "exact",      'e', 0, G_OPTION_ARG_NONE, &arg_exact,        "Set to only show exactly matching results", NULL },*/
+  { NULL }
+};
+
 
 
 //!
@@ -560,7 +570,7 @@ gpointer get_gobject_from_target(const int TARGET)
 }
 
 
-GtkWidget* get_widget_from_target(const int TARGET)
+GtkWidget* get_widget_from_target (const int TARGET)
 {
     GtkWidget *widget;
     GtkWidget *notebook;
@@ -731,7 +741,7 @@ void gw_ui_show_window (char *id)
       settings_window = GTK_WIDGET (gtk_builder_get_object(builder, id));
 
       //Show the window
-      gtk_window_set_transient_for(GTK_WINDOW (settings_window), GTK_WINDOW (main_window));
+      gtk_window_set_transient_for (GTK_WINDOW (settings_window), GTK_WINDOW (main_window));
       gtk_window_set_position (GTK_WINDOW (settings_window), GTK_WIN_POS_CENTER);
       gtk_widget_show(settings_window);
     }
@@ -749,7 +759,7 @@ void gw_ui_show_window (char *id)
 }
 
 
-void gw_ui_update_toolbar_buttons()
+void gw_ui_update_toolbar_buttons ()
 {
     const int id_length = 50;
     char id[id_length];
@@ -2581,10 +2591,10 @@ void initialize_gui_interface(int *argc, char ***argv)
     {
       //Setup the main windows xml
       builder = gtk_builder_new ();
-      gw_ui_load_gtk_builder_xml("main.ui");
-      gw_ui_load_gtk_builder_xml("radicals.ui");
-      gw_ui_load_gtk_builder_xml("settings.ui");
-      gw_ui_load_gtk_builder_xml("kanjipad.ui");
+      gw_ui_load_gtk_builder_xml ("main.ui");
+      gw_ui_load_gtk_builder_xml ("radicals.ui");
+      gw_ui_load_gtk_builder_xml ("settings.ui");
+      gw_ui_load_gtk_builder_xml ("kanjipad.ui");
 
       GtkWidget *main_window;
       main_window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
@@ -2596,24 +2606,59 @@ void initialize_gui_interface(int *argc, char ***argv)
       force_gtk_builder_translation_for_gtk_actions_hack ();
 
       //Initialize some component and variables
-      initialize_global_widget_pointers();
+      initialize_global_widget_pointers ();
       gw_tab_new ();
-      initialize_kanjipad();
+      initialize_kanjipad ();
 
-      gw_sexy_initialize_libsexy();
-      gw_ui_update_history_popups();
+      gw_sexy_initialize_libsexy ();
+      gw_ui_update_history_popups ();
       gw_ui_show_window ("main_window");
 
-      gw_prefs_initialize_preferences();
+      gw_prefs_initialize_preferences ();
 
-      if (rebuild_combobox_dictionary_list() == 0) {
+      if (rebuild_combobox_dictionary_list () == 0) {
         do_settings(NULL, NULL);
       }
 
       //Set the initial focus to the search bar
       gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
       GObject *tb = G_OBJECT (get_gobject_from_target (GW_TARGET_RESULTS));
-      gw_ui_clear_buffer_by_target ((gpointer)tb);
+      gw_ui_clear_buffer_by_target ((gpointer) tb);
+
+
+      GError *error = NULL;
+
+      GOptionContext *context = g_option_context_new (gettext("- A dictionary program for Japanese-English translation."));
+      g_option_context_add_main_entries (context, entries, PACKAGE);
+      g_option_context_add_group (context, gtk_get_option_group (TRUE));
+      g_option_context_parse (context, argc, argv, &error);
+      g_option_context_free (context);
+
+      /*Set initial dictionary*/
+      if (arg_dictionary != NULL)
+      {
+        GwDictInfo *di = gw_dictlist_get_dictionary_by_alias (arg_dictionary);
+        if (di != NULL)
+        {
+          gw_ui_set_dictionary (di->load_position);
+        }
+      }
+
+      /*Set initial search in arguments were given with the application*/
+      char query_text[200] = "\0";
+      if (*argc > 1)
+      {
+        int i = 1;
+        while (i < *argc)
+        {
+          strcat(query_text, argv[0][i]);
+          i++;
+          if (i < *argc)
+             strcat(query_text, " ");
+        }
+        gtk_entry_set_text (GTK_ENTRY (search_entry), query_text);
+        do_search (NULL, NULL);
+      }
 
       //Enter the main loop
       gdk_threads_enter();

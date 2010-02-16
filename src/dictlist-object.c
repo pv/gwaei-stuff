@@ -330,7 +330,7 @@ int gw_dictlist_dictionary_get_status_by_id(int id)
 //! @param id Id attribute of the wanted dictionary
 //! @return Returns a pointer to the dictionary if available
 //!
-GwDictInfo* gw_dictlist_get_dictionary_by_id(int id)
+GwDictInfo* gw_dictlist_get_dictionary_by_id (int id)
 {
     GList *current = dictionaries->list;
     GwDictInfo *di = (GwDictInfo*) current->data;
@@ -555,7 +555,7 @@ static gboolean split_places_from_names_dictionary(GError **error)
 //! @param error set a GError to the pointer when an error occurs
 //! @returns Returns true on success
 //!
-void gw_dictlist_preform_postprocessing_by_name(char* name, GError **error)
+void gw_dictlist_preform_postprocessing_by_name (char* name, GError **error)
 {
     //Sanity check
     GwDictInfo* di;
