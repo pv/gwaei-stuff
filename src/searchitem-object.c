@@ -326,6 +326,16 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
       }
       if (i > 0 && i == ql->furi_total) return TRUE;
 
+      //Compare furigana atoms
+      i = 0;
+      while (i < ql->furi_total && rl->kanji_start != NULL && rl->furigana_start == NULL)
+      {
+        if (regexec(&(ql->furi_regex[REGEX_TYPE][i]), rl->kanji_start, 1, NULL, 0) != 0)
+	  break;
+        i++;  
+      }
+      if (i > 0 && i == ql->furi_total) return TRUE;
+
       //Compare romaji atoms
       j = 0;
       while (rl->def_start[j] != NULL)
