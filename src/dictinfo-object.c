@@ -132,7 +132,10 @@ GwDictInfo* gw_dictinfo_new (char *name)
     strncat(temp->gz_path, ".gz", remaining);
 
     //Update the line count
-    temp->total_lines =  gw_io_get_total_lines_for_path (temp->path);
+    if (gw_util_get_runmode () == GW_CONSOLE_RUNMODE)
+      temp->total_lines = 1;
+    else
+      temp->total_lines =  gw_io_get_total_lines_for_path (temp->path);
 
     //Create id (to show special built in dictionaries)
     if      (strcmp(name, "English") == 0)
