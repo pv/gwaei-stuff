@@ -2589,6 +2589,14 @@ void initialize_gui_interface(int *argc, char ***argv)
     //Fresh instance startup
     else
     {
+      //Program flags setup
+      GError *error = NULL;
+      GOptionContext *context = g_option_context_new (gettext("- A dictionary program for Japanese-English translation."));
+      g_option_context_add_main_entries (context, entries, PACKAGE);
+      g_option_context_add_group (context, gtk_get_option_group (TRUE));
+      g_option_context_parse (context, argc, argv, &error);
+      g_option_context_free (context);
+
       //Setup the main windows xml
       builder = gtk_builder_new ();
       gw_ui_load_gtk_builder_xml ("main.ui");
@@ -2624,15 +2632,6 @@ void initialize_gui_interface(int *argc, char ***argv)
       gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
       GObject *tb = G_OBJECT (get_gobject_from_target (GW_TARGET_RESULTS));
       gw_ui_clear_buffer_by_target ((gpointer) tb);
-
-
-      GError *error = NULL;
-
-      GOptionContext *context = g_option_context_new (gettext("- A dictionary program for Japanese-English translation."));
-      g_option_context_add_main_entries (context, entries, PACKAGE);
-      g_option_context_add_group (context, gtk_get_option_group (TRUE));
-      g_option_context_parse (context, argc, argv, &error);
-      g_option_context_free (context);
 
       /*Set initial dictionary*/
       if (arg_dictionary != NULL)
