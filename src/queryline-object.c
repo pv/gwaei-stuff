@@ -239,10 +239,11 @@ int gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
      }
      else if (gw_util_is_romaji_str (generic_atoms[i]))
      {
-       if (regcomp (&(ql->roma_regex                        [GW_QUERYLINE_EXIST] [roma_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0)  return FALSE;
-       if (regcomp (&(ql->roma_regex                        [GW_QUERYLINE_LOCATE][roma_pos]), generic_atoms[i], EFLAGS_LOCATE) != 0)  return FALSE;
-       if (gw_regex_create_roma_high_regex (&(ql->roma_regex[GW_QUERYLINE_HIGH]  [roma_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0)  return FALSE;
-       if (gw_regex_create_roma_med_regex  (&(ql->roma_regex[GW_QUERYLINE_MED]   [roma_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0)  return FALSE;
+       strcpy(ql->hira_string, generic_atoms[i]);
+       if (regcomp (&(ql->roma_regex                        [GW_QUERYLINE_EXIST] [roma_pos]), ql->hira_string, EFLAGS_EXIST)  != 0)  return FALSE;
+       if (regcomp (&(ql->roma_regex                        [GW_QUERYLINE_LOCATE][roma_pos]), ql->hira_string, EFLAGS_LOCATE) != 0)  return FALSE;
+       if (gw_regex_create_roma_high_regex (&(ql->roma_regex[GW_QUERYLINE_HIGH]  [roma_pos]), ql->hira_string, EFLAGS_EXIST)  != 0)  return FALSE;
+       if (gw_regex_create_roma_med_regex  (&(ql->roma_regex[GW_QUERYLINE_MED]   [roma_pos]), ql->hira_string, EFLAGS_EXIST)  != 0)  return FALSE;
        roma_pos++;
        ql->roma_total++;
 
@@ -251,25 +252,22 @@ int gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
        {
          //Hiragana
          strcpy(ql->hira_string, temp);
-         if (regcomp (&(ql->furi_regex                        [GW_QUERYLINE_EXIST] [furi_pos]), temp            , EFLAGS_EXIST)  != 0)  return FALSE;
-         if (regcomp (&(ql->furi_regex                        [GW_QUERYLINE_LOCATE][furi_pos]), temp            , EFLAGS_LOCATE) != 0)  return FALSE;
-         if (gw_regex_create_furi_high_regex (&(ql->furi_regex[GW_QUERYLINE_HIGH]  [furi_pos]), temp            , EFLAGS_EXIST)  != 0)  return FALSE;
-         if (gw_regex_create_furi_med_regex  (&(ql->furi_regex[GW_QUERYLINE_MED]   [furi_pos]), temp            , EFLAGS_EXIST)  != 0)  return FALSE;
-         furi_pos++;
-         ql->furi_total++;
 
          if (want_hk_conv)
          {
            //Katakana
+	   strcat(ql->hira_string, "|");
            gw_util_str_shift_hira_to_kata (temp);
-           if (regcomp (&(ql->furi_regex                        [GW_QUERYLINE_EXIST] [furi_pos]), temp            , EFLAGS_EXIST)  != 0)  return FALSE;
-           if (regcomp (&(ql->furi_regex                        [GW_QUERYLINE_LOCATE][furi_pos]), temp            , EFLAGS_LOCATE) != 0)  return FALSE;
-           if (gw_regex_create_furi_high_regex (&(ql->furi_regex[GW_QUERYLINE_HIGH]  [furi_pos]), temp            , EFLAGS_EXIST)  != 0)  return FALSE;
-           if (gw_regex_create_furi_med_regex  (&(ql->furi_regex[GW_QUERYLINE_MED]   [furi_pos]), temp            , EFLAGS_EXIST)  != 0)  return FALSE;
-           furi_pos++;
-           ql->furi_total++;
+           strcat(ql->hira_string, temp);
          }
        }
+       if (regcomp (&(ql->furi_regex                        [GW_QUERYLINE_EXIST] [furi_pos]), ql->hira_string, EFLAGS_EXIST)  != 0)  return FALSE;
+       if (regcomp (&(ql->furi_regex                        [GW_QUERYLINE_LOCATE][furi_pos]), ql->hira_string, EFLAGS_LOCATE) != 0)  return FALSE;
+       if (gw_regex_create_furi_high_regex (&(ql->furi_regex[GW_QUERYLINE_HIGH]
+       [furi_pos]), ql->hira_string, EFLAGS_EXIST)  != 0)  return FALSE;
+       if (gw_regex_create_furi_med_regex  (&(ql->furi_regex[GW_QUERYLINE_MED]   [furi_pos]), ql->hira_string, EFLAGS_EXIST)  != 0)  return FALSE;
+       furi_pos++;
+       ql->furi_total++;
      }
      else
      {

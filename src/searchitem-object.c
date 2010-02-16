@@ -312,7 +312,6 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
       {
         if (regexec(&(ql->kanji_regex[REGEX_TYPE][i]), rl->kanji_start, 1, NULL, 0) != 0)
 	  break;
-          //return TRUE;
         i++;  
       }
       if (i > 0 && i == ql->kanji_total) return TRUE;
@@ -323,25 +322,23 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
       {
         if (regexec(&(ql->furi_regex[REGEX_TYPE][i]), rl->furigana_start, 1, NULL, 0) != 0)
 	  break;
-          //return TRUE;
         i++;  
       }
       if (i > 0 && i == ql->furi_total) return TRUE;
 
       //Compare romaji atoms
-      i = 0;
-      while (i < ql->roma_total)
+      j = 0;
+      while (rl->def_start[j] != NULL)
       {
-        j = 0;
-        while (rl->def_start[j] != NULL)
+        i = 0;
+        while (i < ql->roma_total)
         {
           if (regexec(&(ql->roma_regex[REGEX_TYPE][i]), rl->def_start[j], 1, NULL, 0) != 0)
 	    break;
-            //return TRUE;
-          j++;
+          i++;
         }
-      	if (j > 0 && j == ql->roma_total) return TRUE;
-        i++;  
+      	if (i > 0 && i == ql->roma_total) return TRUE;
+        j++;  
       }
 
       //Compare word classification atoms
@@ -350,7 +347,6 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
       {
         if (regexec(&(ql->roma_regex[REGEX_TYPE][i]), rl->classification_start, 1, NULL, 0) != 0)
           break;
-          //return TRUE;
         i++;  
       }
       if (i > 0 && i == ql->roma_total) return TRUE;
