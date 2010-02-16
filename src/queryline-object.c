@@ -186,9 +186,9 @@ int gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
        strcat(ql->hira_string, generic_atoms[i]);
        strcat(ql->hira_string, ")");
 
-       if (g_utf8_strlen (ql->hira_string, -1) == 4)
+       if (g_utf8_strlen (generic_atoms[i], -1) == 4)
        {
-          g_utf8_strncpy (temp, ql->hira_string, 2);
+          g_utf8_strncpy (temp, generic_atoms[i], 2);
           temp_ptr = temp;
           temp_ptr = g_utf8_find_next_char (temp_ptr, NULL);
           temp_ptr = g_utf8_find_next_char (temp_ptr, NULL);
@@ -231,7 +231,6 @@ int gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
          strcat(generic_atoms[i], "(");
          strcat(generic_atoms[i], temp);
          strcat(generic_atoms[i], ")");
-         printf("%s\n", generic_atoms[i]);
        }
        else if (want_kh_conv && gw_util_is_katakana_str (ql->hira_string))
        {
@@ -242,7 +241,6 @@ int gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
          strcat(generic_atoms[i], temp);
          strcat(generic_atoms[i], ")");
        }
-       printf("%s\n", generic_atoms[i]);
 
        if (regcomp (&(ql->furi_regex                        [GW_QUERYLINE_EXIST] [furi_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0)  return FALSE;
        if (regcomp (&(ql->furi_regex                        [GW_QUERYLINE_LOCATE][furi_pos]), generic_atoms[i], EFLAGS_LOCATE) != 0)  return FALSE;
