@@ -310,18 +310,24 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
       i = 0;
       while (i < ql->kanji_total && rl->kanji_start != NULL)
       {
-        if (regexec(&(ql->kanji_regex[REGEX_TYPE][i]), rl->kanji_start, 1, NULL, 0) == 0)
-          return TRUE;
+        if (regexec(&(ql->kanji_regex[REGEX_TYPE][i]), rl->kanji_start, 1, NULL, 0) != 0)
+	  break;
+          //return TRUE;
         i++;  
       }
+      if (i > 0 && i == ql->kanji_total) return TRUE;
+
       //Compare furigana atoms
       i = 0;
       while (i < ql->furi_total && rl->furigana_start != NULL)
       {
-        if (regexec(&(ql->furi_regex[REGEX_TYPE][i]), rl->furigana_start, 1, NULL, 0) == 0)
-          return TRUE;
+        if (regexec(&(ql->furi_regex[REGEX_TYPE][i]), rl->furigana_start, 1, NULL, 0) != 0)
+	  break;
+          //return TRUE;
         i++;  
       }
+      if (i > 0 && i == ql->furi_total) return TRUE;
+
       //Compare romaji atoms
       i = 0;
       while (i < ql->roma_total)
@@ -329,10 +335,12 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
         j = 0;
         while (rl->def_start[j] != NULL)
         {
-          if (regexec(&(ql->roma_regex[REGEX_TYPE][i]), rl->def_start[j], 1, NULL, 0) == 0)
-            return TRUE;
+          if (regexec(&(ql->roma_regex[REGEX_TYPE][i]), rl->def_start[j], 1, NULL, 0) != 0)
+	    break;
+            //return TRUE;
           j++;
         }
+      	if (j > 0 && j == ql->roma_total) return TRUE;
         i++;  
       }
 
@@ -340,11 +348,14 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
       i = 0;
       while (i < ql->roma_total && rl->classification_start != NULL)
       {
-        if (regexec(&(ql->roma_regex[REGEX_TYPE][i]), rl->classification_start, 1, NULL, 0) == 0)
-          return TRUE;
+        if (regexec(&(ql->roma_regex[REGEX_TYPE][i]), rl->classification_start, 1, NULL, 0) != 0)
+          break;
+          //return TRUE;
         i++;  
       }
-    return FALSE;
+      if (i > 0 && i == ql->roma_total) return TRUE;
+
+      return FALSE;
 
       //Compare mix atoms
       i = 0;
