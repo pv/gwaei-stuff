@@ -240,6 +240,7 @@ gboolean gw_util_all_chars_are_in_range (char input[],
                                                                                    || unic == '-'
                                                                                    || unic == '^'
                                                                                    || unic == '$'
+                                                                                   || unic == L'ー'
                                                                                    || unic == '+'
                                                                                    || unic == '?'
                                                                                    || unic == '{'

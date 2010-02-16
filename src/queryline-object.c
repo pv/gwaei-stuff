@@ -182,7 +182,9 @@ int gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
    {
      if (gw_util_is_kanji_ish_str (generic_atoms[i]))
      {
-       strcpy(ql->hira_string, generic_atoms[i]);
+       strcpy(ql->hira_string, "(");
+       strcat(ql->hira_string, generic_atoms[i]);
+       strcat(ql->hira_string, ")");
 
        if (g_utf8_strlen (ql->hira_string, -1) == 4)
        {
@@ -192,14 +194,18 @@ int gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
           temp_ptr = g_utf8_find_next_char (temp_ptr, NULL);
           *temp_ptr = '\0';
 
-	  strcat (ql->hira_string, "|");
-	  strcat (ql->hira_string, temp);
-	  strcat (ql->hira_string, "|");
+          strcat (ql->hira_string, "|");
+          strcat(ql->hira_string, "(");
+          strcat (ql->hira_string, temp);
+          strcat(ql->hira_string, ")");
+          strcat (ql->hira_string, "|");
 
           temp_ptr = generic_atoms[i];
           temp_ptr = g_utf8_find_next_char (temp_ptr, NULL);
           temp_ptr = g_utf8_find_next_char (temp_ptr, NULL);
+          strcat(ql->hira_string, "(");
           strcat (ql->hira_string, temp_ptr);
+          strcat(ql->hira_string, ")");
        }
 
        if (regcomp (&(ql->kanji_regex                         [GW_QUERYLINE_EXIST] [kanji_pos]), ql->hira_string, EFLAGS_EXIST)  != 0) return FALSE;
@@ -213,21 +219,30 @@ int gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
      else if (gw_util_is_furigana_str (generic_atoms[i]))
      {
        strcpy(ql->hira_string, generic_atoms[i]);
+       strcpy(generic_atoms[i], "(");
+       strcat(generic_atoms[i], ql->hira_string);
+       strcat(generic_atoms[i], ")");
 
-       if (want_hk_conv && gw_util_is_hiragana_str (generic_atoms[i]))
+       if (want_hk_conv && gw_util_is_hiragana_str (ql->hira_string))
        {
-         strcpy(temp, generic_atoms[i]);
+         strcpy(temp, ql->hira_string);
          gw_util_str_shift_hira_to_kata (temp);
-	 strcat(generic_atoms[i], "|");
+	       strcat(generic_atoms[i], "|");
+         strcat(generic_atoms[i], "(");
          strcat(generic_atoms[i], temp);
+         strcat(generic_atoms[i], ")");
+         printf("%s\n", generic_atoms[i]);
        }
-       else if (want_kh_conv && gw_util_is_katakana_str (generic_atoms[i]))
+       else if (want_kh_conv && gw_util_is_katakana_str (ql->hira_string))
        {
-         strcpy(temp, generic_atoms[i]);
+         strcpy(temp, ql->hira_string);
          gw_util_str_shift_kata_to_hira (temp);
-	 strcat(generic_atoms[i], "|");
+	       strcat(generic_atoms[i], "|");
+         strcat(generic_atoms[i], "(");
          strcat(generic_atoms[i], temp);
+         strcat(generic_atoms[i], ")");
        }
+       printf("%s\n", generic_atoms[i]);
 
        if (regcomp (&(ql->furi_regex                        [GW_QUERYLINE_EXIST] [furi_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0)  return FALSE;
        if (regcomp (&(ql->furi_regex                        [GW_QUERYLINE_LOCATE][furi_pos]), generic_atoms[i], EFLAGS_LOCATE) != 0)  return FALSE;
@@ -248,17 +263,21 @@ int gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
        ql->roma_total++;
 
        //Add coversions to search on success
-       if (gw_util_str_roma_to_hira (generic_atoms[i], temp, 300)  && want_rk_conv)
+       if (gw_util_str_roma_to_hira (generic_atoms[i], temp, 300) && want_rk_conv)
        {
          //Hiragana
-         strcpy(ql->hira_string, temp);
+         strcpy(ql->hira_string, "(");
+         strcat(ql->hira_string, temp);
+         strcat(ql->hira_string, ")");
 
          if (want_hk_conv)
          {
            //Katakana
-	   strcat(ql->hira_string, "|");
+	         strcat(ql->hira_string, "|");
+           strcat(ql->hira_string, "(");
            gw_util_str_shift_hira_to_kata (temp);
            strcat(ql->hira_string, temp);
+           strcat(ql->hira_string, ")");
          }
        }
        if (regcomp (&(ql->furi_regex                        [GW_QUERYLINE_EXIST] [furi_pos]), ql->hira_string, EFLAGS_EXIST)  != 0)  return FALSE;
