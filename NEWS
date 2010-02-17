@@ -1,5 +1,4 @@
-2009-11-14: Released gWaei 1.2.1
-  A bug fix release.  People sent in problems and various things were fixed.
-  A few random crashers when waei was used with no running gtk using environment
-  and when starting gwaei.  Also, the installation prodecure was fixed when doing
-  --disable-schemas-install.  Sorry packagers!
+2010-02-17: Released gWaei 1.3.0
+  New major release.  It should hopefully be more bugfree than 1.2.0 was.  Significant changes include a newly implimented backend for searches, tabs, a multisearch interface implimented by fabrizio for the console implimented using ncurses and simplified preferences dialog.
+
+  Smaller but noticable improvements include more intelligent choosing of spellcheck dictionaries for different languages, various bugfixes to the engine, and improved localization code.
