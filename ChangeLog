@@ -24,3 +24,5 @@
 	                            through an interface build with ncurses.
 	* main.c: gobject dependency was missing for some linux distros as glib.h
 	          didn't automatically import it without gtk.h
+	* main-interface-gtk.c: Added flag to force a new instance of the program
+	                        when wanted.

@@ -109,10 +109,12 @@ static UniqueResponse message_received_cb (UniqueApp         *app,
 
 static gchar *arg_dictionary = NULL;
 static gboolean arg_exact = FALSE;
+static gboolean arg_new_instance = FALSE;
 
 static GOptionEntry entries[] =
 {
-  { "dictionary", 'd', 0, G_OPTION_ARG_STRING, &arg_dictionary, "Choose the dictionary to use",              "English" },
+  { "dictionary", 'd', 0, G_OPTION_ARG_STRING, &arg_dictionary, "Choose the dictionary to use", "English" },
+  { "new-instance", 'n', 0, G_OPTION_ARG_NONE, &arg_new_instance, "Open a new instance of gWaei", NULL },
   /*{ "exact",      'e', 0, G_OPTION_ARG_NONE, &arg_exact,        "Set to only show exactly matching results", NULL },*/
   { NULL }
 };
@@ -2580,8 +2582,16 @@ void initialize_gui_interface(int *argc, char ***argv)
 
     app = unique_app_new ("org.dictionary.gWaei", NULL);
     
+    //Program flags setup
+    GError *error = NULL;
+    GOptionContext *context = g_option_context_new (gettext("- A dictionary program for Japanese-English translation."));
+    g_option_context_add_main_entries (context, entries, PACKAGE);
+    g_option_context_add_group (context, gtk_get_option_group (TRUE));
+    g_option_context_parse (context, argc, argv, &error);
+    g_option_context_free (context);
+
     //Activate the main window in the program is already open
-    if (unique_app_is_running (app))
+    if (arg_new_instance == FALSE && unique_app_is_running (app))
     {
       UniqueResponse response;
       response = unique_app_send_message (app, UNIQUE_ACTIVATE, NULL);
@@ -2589,14 +2599,6 @@ void initialize_gui_interface(int *argc, char ***argv)
     //Fresh instance startup
     else
     {
-      //Program flags setup
-      GError *error = NULL;
-      GOptionContext *context = g_option_context_new (gettext("- A dictionary program for Japanese-English translation."));
-      g_option_context_add_main_entries (context, entries, PACKAGE);
-      g_option_context_add_group (context, gtk_get_option_group (TRUE));
-      g_option_context_parse (context, argc, argv, &error);
-      g_option_context_free (context);
-
       //Setup the main windows xml
       builder = gtk_builder_new ();
       gw_ui_load_gtk_builder_xml ("main.ui");
@@ -2608,7 +2610,6 @@ void initialize_gui_interface(int *argc, char ***argv)
       main_window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
       unique_app_watch_window (app, GTK_WINDOW (main_window));
       g_signal_connect (app, "message-received", G_CALLBACK (message_received_cb), NULL);
-
 
       //HACK!!!!!!!!!!!!!!
       force_gtk_builder_translation_for_gtk_actions_hack ();
