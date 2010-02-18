@@ -431,47 +431,82 @@ void ncurses_add_intro_and_box (WINDOW* thisWin, char* intro){
 	refresh();
 }
 
-/**
- *
- */
-void ncurses_scrolling(){
-	//mousemask(ALL_MOUSE_EVENTS, NULL); //IT WORKS
-	int cont = 0;
-	int c;
+//!
+//! @brief Manage the scrolling and the search input
+//!
+//! This function controls how the scrolling work and the
+//! data insertion.
+//!
+//!	TODO: Manage the scrolling DOWN
+//!
+//! @param query Pointer to the query string
+//!
+void ncurses_input_and_scrolling(char *query)
+{
+	/*
+	 * mousemask(ALL_MOUSE_EVENTS, NULL);	<-- IT WORKS WITHOUT THIS
+	 * wgetnstr(search, query, 250);		<-- If we use this we cannot scroll
+	 */
+	int scrollingControl = 0;	/*< Needed to check the scrolling up */
+	int stringControl = 0;		/*< Segfault control */
+ 	chtype singleChar;
 	keypad(search, TRUE);
 
-	while(true) {
+	while(true)
+	{
+		if (stringControl == (MAX_QUERY - 1))
+		{
+			query[stringControl] = '\0';
+			return;
+		}
 		noecho();
 		cbreak();
-		c = wgetch(search);
-		switch(c) {
+		singleChar = wgetch(search);
+		switch(singleChar)
+		{
 			case KEY_UP:
-				cont--;
-				if (cont < 0)
-					cont = 0;
-				prefresh(results,cont,0,2,2,(maxY - 5), (maxX - 2));
+				scrollingControl--;
+				if (scrollingControl < 0)
+					scrollingControl = 0;
+				prefresh(results,scrollingControl,0,2,2,(maxY - 5), (maxX - 2));
 				break;
 			case KEY_DOWN:
-				cont++;
-				prefresh(results,cont,0,2,2,(maxY - 5), (maxX - 2));
+				scrollingControl++;
+				prefresh(results,scrollingControl,0,2,2,(maxY - 5), (maxX - 2));
+				break;
+			case KEY_BACKSPACE:
+				if (stringControl > 0){ //SEGFAULT CHECK
+					stringControl--;
+					query[stringControl] = '\0';
+					//wdelch(search); <--- Doesn't work well. So... let's ack!
+					wclear(search);
+					ncurses_add_intro_and_box(search,"Search:");
+					wmove(search, 1, 2);
+					wprintw(search,query);
+				}
 				break;
 			default:
 				echo();
-				return;
+				waddch(search, singleChar);
+				query[stringControl] = singleChar;
+				if (singleChar == '\n' || singleChar == '\0')
+					return;
+				stringControl++;
 		}
 	}
 }
 
-/*
- * NCURSES MAIN
- *
- * TODO: Scrolling when you want
- * TODO: Use the first letter inserted in scrolling
- * TODO: Show the chosen dictionary and search option
- * TODO: Accept a !quit/!q like vim?
- */
-static void initialize_ncurses_interface (GwDictInfo *dictionary){
 
+//!
+//! @brief NCURSES Main function
+//!
+//! TODO: Show the chosen dictionary and search option
+//! TODO: Accept a !quit/!q like vim?
+//!
+//! @param dictionary The dictionary we want to use
+//!
+static void initialize_ncurses_interface (GwDictInfo *dictionary)
+{
 	GError *error = NULL;
 	GwSearchItem *item;
 	char query[MAX_QUERY];
@@ -497,11 +532,11 @@ static void initialize_ncurses_interface (GwDictInfo *dictionary){
 
 	while(loop) {
 
-		wclear(results);
-
 		wmove(search, 1, 2);
-	    wgetnstr(search, query, 250); //TODO: Check the results?
+		ncurses_input_and_scrolling(query);
 	    wmove(search, 1, 2);
+
+		wclear(results);
 
 		if (false){ //TODO: Check
 			//TODO: print
@@ -603,8 +638,6 @@ static void initialize_ncurses_interface (GwDictInfo *dictionary){
 					//TODO
 				}
 			}
-
-			ncurses_scrolling();
 
 			wclear(search);
 			ncurses_add_intro_and_box(search,"Search:");
