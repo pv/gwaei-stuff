@@ -24,6 +24,7 @@ PKG_CHECK_MODULES(DEPS, glib-2.0           >= $GLIB_REQUIRED_VERSION
                         libcurl            >= $LIBCURL_REQUIRED_VERSION
                         gmodule-2.0        >= $GMODULE_EXPORT_REQUIRED_VERSION 
                         gthread-2.0        >= $GTHREAD_REQUIRED_VERSION       )
+AC_CHECK_LIB(m, sqrt)
 AC_SUBST(DEPS_CFLAGS)
 AC_SUBST(DEPS_LIBS)
 

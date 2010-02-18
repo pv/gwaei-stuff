@@ -21,9 +21,9 @@ TABLE OF CONTENTS
 1.0 PREREQUISITES:
 
   To run gWaei 1.2, an environment with at least gtk+-2.16/glib-2.9.0,
-  gconf-2.24.0, curl 7.19.6, gnome-doc-utils-0.14.0 and libsexy-0.1.11 are
-  required.  Additionally, you will want to have rsync, gzip and
-  kanjistrokeorders  available.  Most of these are satisfied with a
+  gconf-2.24.0, curl 7.19.6, gnome-doc-utils-0.14.0, libncursesw5-5.7, and
+  libsexy-0.1.11 are required.  Additionally, you will want to have rsync, gzip
+  and kanjistrokeorders  available.  Most of these are satisfied with a
   default install of Gnome 2.26 or newer which should come with Ubuntu 9.04
   and Fedora 11. If you want to be able to see kanji stroke orders in the program,
   it is recommended you install ttf-kanjistrokeorders along with gWaei.
@@ -32,11 +32,11 @@ TABLE OF CONTENTS
   required runtime dependancies is:
 
   sudo apt-get install libcurl3 libgtk2.0-0 libsexy2 libgconf2-4\ 
-  ttf-kanjistrokeorders ttf-arphic-ukai gnome-doc-utils
+  ttf-kanjistrokeorders gnome-doc-utils libncursesw5
 
   To compile the program, you will have to have the dev files for  GCONF2,
-  GTK+, CURL3 and LIBSEXY and available. Users with binary based distributions
-  should install the approprate "dev" or "devel" files for the above
+  GTK+, CURL3, NCURSES and LIBSEXY and available. Users with binary based
+  distributions should install the approprate "dev" or "devel" files for the above
   dependencies using their package manager. Automake and GCC will come in handy
   too, as they are standard build tools for GNU systems.  If you want rsync
   update functionality available for the dictionaries, you will need to make
@@ -47,7 +47,7 @@ TABLE OF CONTENTS
   required compilation dependancies is:
 
   sudo apt-get install libcurl4-gnutls-dev libgtk2.0-dev libsexy-dev\
-  libgconf2-dev build-essential gnome-doc-utils libunique-dev
+  libgconf2-dev build-essential gnome-doc-utils libunique-dev libncursesw5-dev
 
   For inputing Japanese queries, installing some software for Japanese
   conversion is highly recommended.  Currently, the two main linux methods are
