@@ -414,6 +414,7 @@ void ncurses_screen_init(void) {
 	ncurses_color_init(has_colors());
 
 	refresh();
+	curs_set(0);						/*< No cursor */
 	wrefresh(mainWindows);
 }
 
@@ -449,8 +450,8 @@ void ncurses_input_and_scrolling(char *query)
 	 */
 	int scrollingControl = 0;	/*< Needed to check the scrolling up */
 	int stringControl = 0;		/*< Segfault control */
- 	chtype singleChar;
-	keypad(search, TRUE);
+	wchar_t singleChar;
+	keypad(search, TRUE);		/*<  */
 
 	while(true)
 	{
@@ -460,22 +461,26 @@ void ncurses_input_and_scrolling(char *query)
 			return;
 		}
 		noecho();
-		cbreak();
+		cbreak(); //characters will be returned one at a time instead of waiting for a newline character
 		singleChar = wgetch(search);
 		switch(singleChar)
 		{
+			case KEY_PPAGE:
 			case KEY_UP:
 				scrollingControl--;
 				if (scrollingControl < 0)
 					scrollingControl = 0;
 				prefresh(results,scrollingControl,0,2,2,(maxY - 5), (maxX - 2));
 				break;
+			case KEY_NPAGE:
 			case KEY_DOWN:
 				scrollingControl++;
 				prefresh(results,scrollingControl,0,2,2,(maxY - 5), (maxX - 2));
 				break;
+			case KEY_DC:
 			case KEY_BACKSPACE:
-				if (stringControl > 0){ //SEGFAULT CHECK
+				if (stringControl > 0)
+				{ //SEGFAULT CHECK
 					stringControl--;
 					query[stringControl] = '\0';
 					//wdelch(search); <--- Doesn't work well. So... let's ack!
@@ -536,6 +541,7 @@ static void initialize_ncurses_interface (GwDictInfo *dictionary)
 		ncurses_input_and_scrolling(query);
 	    wmove(search, 1, 2);
 
+		ncurses_add_intro_and_box(screen,"Results:");
 		wclear(results);
 
 		if (false){ //TODO: Check
@@ -626,17 +632,30 @@ static void initialize_ncurses_interface (GwDictInfo *dictionary)
 
 			gw_search_get_results (item); //TODO: Print here?? <---
 
-			if (results != NULL) { //TODO: Before
-				scrollok(results,TRUE);
-				prefresh(results,0,0,2,2,(maxY - 5), (maxX - 2));
-			}
-
 			//Print the number of results
 			if (quiet_switch == FALSE) {
 				//TODO
 				if (item->total_relevant_results != item->total_results){
 					//TODO
 				}
+			}
+
+			//Print the number of results
+			if (quiet_switch == FALSE) {
+
+				wprintw(screen, " %s%d%s", gettext("Found "), item->total_results, gettext(" Results"));
+
+				if (item->total_relevant_results != item->total_results)
+					wprintw(screen, "%s%d%s", gettext(" ("), item->total_relevant_results, gettext(" Relevant)"));
+
+				wrefresh(screen);
+				refresh();
+			}
+
+
+			if (results != NULL) { //TODO: Before
+				scrollok(results,TRUE);
+				prefresh(results,0,0,2,2,(maxY - 5), (maxX - 2));
 			}
 
 			wclear(search);
