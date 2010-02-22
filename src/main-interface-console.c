@@ -49,6 +49,7 @@ gboolean exact_switch = FALSE;
 /* NCURSES */
 
 #include <curses.h>
+#include <errno.h>
 
 static WINDOW *mainWindows;
 static WINDOW *results;
@@ -57,7 +58,7 @@ static WINDOW *screen;
 int current_row = 0;
 int maxY, maxX;
 int cursesFlag = false;
-int cursesSupportColorFlag = true;
+int cursesSupportColorFlag = true;	//TODO: use this
 
 #define GREENONBLACK	1
 #define BLUEONBLACK		2
@@ -391,46 +392,123 @@ static gboolean is_switch (char *arg, char *short_switch, char *long_switch) {
   return (strcmp(arg, short_switch) == 0 || strcmp(arg, long_switch) == 0);
 }
 
+
+
+
 /*** NCURSES ***/
 
-void ncurses_color_init(bool hasColors) {
 
-	if (hasColors) {
-		start_color();
+//!
+//! @brief Color Initialization
+//!
+//! The pairs of colors that will be used in the printing
+//! functions are initialized here.
+//!
+//! @param hasColors True if the shell support colors
+//!
+static void ncurses_color_init(bool hasColors)
+{
+	int check;	//Check flag
+	if (hasColors)
+	{
+		check = start_color();
+		if (check == ERR){
+			cursesSupportColorFlag = false;
+			return;
+		}
 		init_pair(GREENONBLACK, COLOR_GREEN, COLOR_BLACK);
 		init_pair(BLUEONBLACK, COLOR_BLUE, COLOR_BLACK);
 		init_pair(REDONBLACK, COLOR_RED, COLOR_BLACK);
 	}
 	else
-		cursesSupportColorFlag = false; //TODO: Use this
-}
+		cursesSupportColorFlag = false;
 
-void ncurses_screen_init(void) {
-
-	mainWindows = initscr();
-	cbreak();
-	nodelay(mainWindows, TRUE);
-
-	ncurses_color_init(has_colors());
-
-	refresh();
-	curs_set(0);						/*< No cursor */
-	wrefresh(mainWindows);
+	return;
 }
 
 
-
-void ncurses_add_intro_and_box (WINDOW* thisWin, char* intro){
-	//altezza rettangolo, larghezza rettangolo, quanto in basso,quanto a destra
-	//thisWin = newwin(altezza, larghezza, posY, posX);
-	//Crea un bordo
+//!
+//! @brief Create a box around a WINDOW and write a title
+//!
+//! Create a box around a WINDOW and write a title
+//!
+//! @param thisWin The window we want a box around
+//! @param intro A string that we want to be title of the box
+//!
+static void ncurses_add_intro_and_box (WINDOW* thisWin, char* intro)
+{
+	//Draw  a box around the edges of a window
 	box(thisWin, ACS_VLINE, ACS_HLINE);
+
 	wattron(thisWin,A_BOLD);
 	mvwprintw(thisWin,0,2,intro);
 	wattroff(thisWin,A_BOLD);
+
 	wrefresh(thisWin);
-	refresh();
+	wrefresh(stdscr);
+
+	return;
 }
+
+
+//!
+//! @brief Screen Initialization
+//!
+//! The main screen is initialized and configured.
+//!
+static int ncurses_screen_init()
+{
+
+	int check, checkSecond;	//Check flag
+
+	mainWindows = initscr();
+	if (mainWindows == NULL)
+	{
+		printf("The main screen cannot be initialized. Exiting...\n");
+		return(ERR);
+	}
+
+	check = cbreak();
+	checkSecond = nodelay(mainWindows, TRUE);
+	if ((check == ERR) || (checkSecond == ERR))
+	{
+		printf("The main screen cannot be configured. Exiting...\n");
+		return(ERR);
+	}
+
+	ncurses_color_init(has_colors());
+	curs_set(0);						/*< No cursor */
+
+	wrefresh(mainWindows);
+
+	getmaxyx(mainWindows, maxY, maxX);
+
+	//alt rett, larg rett, quanto in basso, quanto a destra
+	search = newwin(3, maxX, (maxY - 3), 0);
+	screen = newwin((maxY - 3), maxX, 0, 0);
+	if ((search == NULL) || (screen == NULL))
+	{
+		printf("The secondary screens cannot be initialized. Exiting...\n");
+		return(ERR);
+	}
+
+	ncurses_add_intro_and_box(search,"Search:");
+	ncurses_add_intro_and_box(screen,"Results:");
+
+	results = newpad(500, (maxX - 2));
+	if (results == NULL)
+	{
+		printf("The pad cannot be initialized.\n");
+		if (errno == ENOMEM)
+			strerror(errno);
+		return(ERR);
+	}
+
+	cursesFlag = TRUE;	//All good. We are using the ncurses now.
+
+	return (OK);
+}
+
 
 //!
 //! @brief Manage the scrolling and the search input
@@ -439,15 +517,15 @@ void ncurses_add_intro_and_box (WINDOW* thisWin, char* intro){
 //! data insertion.
 //!
 //!	TODO: Manage the scrolling DOWN
+//! TODO: Check result
 //!
 //! @param query Pointer to the query string
 //!
-void ncurses_input_and_scrolling(char *query)
+static void ncurses_input_and_scrolling(char *query)
 {
-	/*
-	 * mousemask(ALL_MOUSE_EVENTS, NULL);	<-- IT WORKS WITHOUT THIS
-	 * wgetnstr(search, query, 250);		<-- If we use this we cannot scroll
-	 */
+	// mousemask(ALL_MOUSE_EVENTS, NULL);	<-- IT WORKS WITHOUT THIS
+	// wgetnstr(search, query, 250);		<-- If we use this we cannot scroll
+
 	int scrollingControl = 0;	/*< Needed to check the scrolling up */
 	int stringControl = 0;		/*< Segfault control */
 	wchar_t singleChar;
@@ -510,33 +588,24 @@ void ncurses_input_and_scrolling(char *query)
 //!
 //! TODO: Show the chosen dictionary and search option
 //! TODO: Accept a !quit/!q like vim?
+//! TODO: Check result
 //!
 //! @param dictionary The dictionary we want to use
 //!
-static void initialize_ncurses_interface (GwDictInfo *dictionary)
+void initialize_ncurses_interface (GwDictInfo *dictionary)
 {
-	GError *error = NULL;
+	GError *error = NULL;	//UNUSED
 	GwSearchItem *item;
 	char query[MAX_QUERY];
-	int cont, loop;
+	int cont, loop, test;
 	char *fgetsTest;
-	char *thisArg;
+	char *thisArg = NULL;
 
-	loop = TRUE;
-	cursesFlag = TRUE;
+	test = ncurses_screen_init();
+	if (test == ERR)
+		return;
 
-	ncurses_screen_init();
-
-	getmaxyx(mainWindows, maxY, maxX);
-
-	//alt rett, larg rett, quanto in basso, quanto a destra
-	search = newwin(3, maxX, (maxY - 3), 0);
-	ncurses_add_intro_and_box(search,"Search:");
-
-	screen = newwin((maxY - 3), maxX, 0, 0);
-	ncurses_add_intro_and_box(screen,"Results:");
-
-	results = newpad(500, (maxX - 2));
+	loop = TRUE;		//When False close the program
 
 	while(loop) {
 
@@ -547,14 +616,8 @@ static void initialize_ncurses_interface (GwDictInfo *dictionary)
 		ncurses_add_intro_and_box(screen,"Results:");
 		wclear(results);
 
-		if (false){ //TODO: Check
-			//TODO: print
-			loop = FALSE;
-			break;
-		}
-
-		if (query[0] == '\n') {
-			//TODO: Print
+		//If there is nothing, exit
+		if ((query[0] == '\n') || (query[0] == '\0')) {
 			loop = FALSE;
 			break;
 		}
@@ -566,11 +629,11 @@ static void initialize_ncurses_interface (GwDictInfo *dictionary)
 			}
 		}
 
-		/* Search for keyword... */
+		// Search for keyword...
 
 		thisArg = NULL;
 		thisArg = strtok (query," ");
-		int test = false;
+		test = false;
 		while (thisArg != NULL) {
 			if (test){
 				test = false;
@@ -613,25 +676,29 @@ static void initialize_ncurses_interface (GwDictInfo *dictionary)
 			print_search_start_banner(thisArg, dictionary->name);
 
 			item = gw_searchitem_new(thisArg, dictionary, GW_TARGET_CONSOLE);
-			if (item == NULL)
-				exit (EXIT_FAILURE);	//TODO: Use GError instead
+			if (item == NULL) {
+				wprintw(screen, "Insufficient storage space is available. Please close something and retry.");
+				wrefresh(screen);
+				cbreak(); wgetch(search); endwin();
+				exit (EXIT_FAILURE);
+			}
 
 			item->show_less_relevant_results = !exact_switch;
 
-			/*
-				WINDOW* subWin;
-				subWin = subwin(results, (maxY - 10), (maxX - 10), 2, 2);
-				scrollok(subWin,1);
-				touchwin(results);
-				refresh();
-				werase(subWin);
-				results = subWin; //Fin qui funziona
+								/*
+									WINDOW* subWin;
+									subWin = subwin(results, (maxY - 10), (maxX - 10), 2, 2);
+									scrollok(subWin,1);
+									touchwin(results);
+									refresh();
+									werase(subWin);
+									results = subWin; //Fin qui funziona
 
-				WINDOW *subbb = subpad(pad, (maxY - 10), (maxX - 10), 2, 2);
-				scrollok(subbb,1);
-				touchwin(pad);
-				refresh();
-			*/
+									WINDOW *subbb = subpad(pad, (maxY - 10), (maxX - 10), 2, 2);
+									scrollok(subbb,1);
+									touchwin(pad);
+									refresh();
+								*/
 
 			gw_search_get_results (item); //TODO: Print here?? <---
 
@@ -661,6 +728,8 @@ static void initialize_ncurses_interface (GwDictInfo *dictionary)
 	}
 
 	endwin();
+
+	printf("Bye...\n");
 
 	return;
 }
