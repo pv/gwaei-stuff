@@ -478,6 +478,9 @@ void ncurses_input_and_scrolling(char *query)
 				prefresh(results,scrollingControl,0,2,2,(maxY - 5), (maxX - 2));
 				break;
 			case KEY_DC:
+			case KEY_LEFT:
+			case KEY_RIGHT:
+				break;
 			case KEY_BACKSPACE:
 				if (stringControl > 0)
 				{ //SEGFAULT CHECK
@@ -631,14 +634,6 @@ static void initialize_ncurses_interface (GwDictInfo *dictionary)
 			*/
 
 			gw_search_get_results (item); //TODO: Print here?? <---
-
-			//Print the number of results
-			if (quiet_switch == FALSE) {
-				//TODO
-				if (item->total_relevant_results != item->total_results){
-					//TODO
-				}
-			}
 
 			//Print the number of results
 			if (quiet_switch == FALSE) {
