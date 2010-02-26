@@ -196,17 +196,43 @@ static void print_about_program ()
     printf ("Copyright (C) 2008 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\nThis is free software: you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.\n\n");
 }
 
+//!
+//! @brief This function print the start banner
+//!
+//! This function print the start banner in both
+//! simple and ncurses interface.
+//!
+//! @param query The query string we are searching
+//! @param dictionary The name (string) of the dictionary used
+//!
+static void print_search_start_banner(char *query, char *dictionary)
+{
+	if (cursesFlag)
+	{
+		wprintw(screen, " ");
+		wprintw(screen, gettext("Searching for \""));
+		wattron(screen, COLOR_PAIR(REDONBLACK));
+		wprintw(screen,"%s", query);
+		wattroff(screen, COLOR_PAIR(REDONBLACK));
+		wprintw(screen, gettext("\" in the "));
+		wattron(screen, COLOR_PAIR(REDONBLACK));
+		wprintw(screen,"%s", dictionary);
+		wattroff(screen, COLOR_PAIR(REDONBLACK));
+		wprintw(screen, gettext(" dictionary..."));
 
-static void print_search_start_banner(char *query, char *dictionary) {
-	/*
-    printf("");
-    printf("%s", gettext("Searching for \""));
-    printf("[1;31m%s[0m", query);
-    printf("%s", gettext("\" in the "));
-    printf("[1;31m%s[0m", dictionary);
-    printf("%s", gettext(" dictionary..."));
-    printf("[0m\n\n");
-    */
+		wrefresh(screen);
+		refresh();
+	}
+	else
+	{
+		printf("");
+		printf("%s", gettext("Searching for \""));
+		printf("[1;31m%s[0m", query);
+		printf("%s", gettext("\" in the "));
+		printf("[1;31m%s[0m", dictionary);
+		printf("%s", gettext(" dictionary..."));
+		printf("[0m\n\n");
+	}
 
     #ifdef G_OS_UNIX
     sleep(1);
@@ -607,7 +633,8 @@ void initialize_ncurses_interface (GwDictInfo *dictionary)
 
 	loop = TRUE;		//When False close the program
 
-	while(loop) {
+	while(loop)
+	{
 
 		wmove(search, 1, 2);
 		ncurses_input_and_scrolling(query);
@@ -617,13 +644,16 @@ void initialize_ncurses_interface (GwDictInfo *dictionary)
 		wclear(results);
 
 		//If there is nothing, exit
-		if ((query[0] == '\n') || (query[0] == '\0')) {
+		if ((query[0] == '\n') || (query[0] == '\0'))
+		{
 			loop = FALSE;
 			break;
 		}
 
-		for (cont = 0; cont < sizeof(query); ++cont) {
-			if (query[cont] == '\n') {
+		for (cont = 0; cont < sizeof(query); ++cont)
+		{
+			if (query[cont] == '\n')
+			{
 				query[cont] = '\0';
 				break;
 			}
@@ -634,11 +664,14 @@ void initialize_ncurses_interface (GwDictInfo *dictionary)
 		thisArg = NULL;
 		thisArg = strtok (query," ");
 		test = false;
-		while (thisArg != NULL) {
-			if (test){
+		while (thisArg != NULL)
+		{
+			if (test)
+			{
 				test = false;
 				dictionary = gw_dictlist_get_dictionary_by_alias(thisArg);
-				if (dictionary == NULL || dictionary->status != GW_DICT_STATUS_INSTALLED) {
+				if (dictionary == NULL || dictionary->status != GW_DICT_STATUS_INSTALLED)
+				{
 					wattron(results, COLOR_PAIR(REDONBLACK));
 					wprintw(results, gettext("Requested dictionary not found!\n"));
 					wprintw(results, gettext("Press any key to exit.\n"));
@@ -653,7 +686,8 @@ void initialize_ncurses_interface (GwDictInfo *dictionary)
 				exact_switch = TRUE;
 			else if (is_switch (thisArg, "-q", "--quiet"))
 				quiet_switch = TRUE;
-			else if (is_switch (thisArg, "-d", "--dictionary")) {
+			else if (is_switch (thisArg, "-d", "--dictionary"))
+			{
 				  test = true;
 			}
 			else
@@ -665,18 +699,23 @@ void initialize_ncurses_interface (GwDictInfo *dictionary)
 
 		//TODO: Extract all the spaces
 
-		if(thisArg == NULL){
+		if(thisArg == NULL)
+		{
 			/* No word to search, only option */
 			wattron(results, COLOR_PAIR(REDONBLACK));
 			wprintw(results, gettext("No word inserted. Only option."));
 			wattroff(results, COLOR_PAIR(REDONBLACK));
 			prefresh(results,0,0,2,2,(maxY - 5), (maxX - 2));
 		}
-		else {
-			print_search_start_banner(thisArg, dictionary->name);
+		else
+		{
+
+			if (quiet_switch == FALSE)
+				print_search_start_banner(thisArg, dictionary->name);
 
 			item = gw_searchitem_new(thisArg, dictionary, GW_TARGET_CONSOLE);
-			if (item == NULL) {
+			if (item == NULL)
+			{
 				wprintw(screen, "Insufficient storage space is available. Please close something and retry.");
 				wrefresh(screen);
 				cbreak(); wgetch(search); endwin();
@@ -701,29 +740,38 @@ void initialize_ncurses_interface (GwDictInfo *dictionary)
 								*/
 
 			gw_search_get_results (item); //TODO: Print here?? <---
+			if (item == NULL)
+				wprintw(results, "Something went wrong. Please repeat the search");
+			else
+			{
 
-			//Print the number of results
-			if (quiet_switch == FALSE) {
+				//Print the number of results
+				if (quiet_switch == FALSE)
+				{
+					wclear(screen);
+					ncurses_add_intro_and_box(screen,"Results:");
+					wprintw(screen, " %s%d%s", gettext("Found "), item->total_results, gettext(" Results"));
 
-				wprintw(screen, " %s%d%s", gettext("Found "), item->total_results, gettext(" Results"));
+					if (item->total_relevant_results != item->total_results)
+						wprintw(screen, "%s%d%s", gettext(" ("), item->total_relevant_results, gettext(" Relevant)"));
 
-				if (item->total_relevant_results != item->total_results)
-					wprintw(screen, "%s%d%s", gettext(" ("), item->total_relevant_results, gettext(" Relevant)"));
+					wrefresh(screen);
+					refresh();
+				}
 
-				wrefresh(screen);
-				refresh();
-			}
-
-
-			if (results != NULL) { //TODO: Before
 				scrollok(results,TRUE);
 				prefresh(results,0,0,2,2,(maxY - 5), (maxX - 2));
+
+				wclear(search);
+				ncurses_add_intro_and_box(search,"Search:");
+
+				if (exact_switch == TRUE)
+					wprintw(search, " EXACT ");
+				if (quiet_switch == TRUE)
+					wprintw(search, " QUIET ");
+
+				gw_searchitem_free(item);
 			}
-
-			wclear(search);
-			ncurses_add_intro_and_box(search,"Search:");
-
-			free(item);
 		}
 	}
 
@@ -734,12 +782,17 @@ void initialize_ncurses_interface (GwDictInfo *dictionary)
 	return;
 }
 
-/**
- *
- *
- *
- */
-void initialize_console_interface(int argc, char **argv) {
+//!
+//! @brief CONSOLE Main function
+//!
+//! This function will NOT use GError because it have
+//! nobody to report to.
+//!
+//! @param argc Standard argc from main
+//! @param argv Standard argv from main
+//!
+void initialize_console_interface(int argc, char **argv)
+{
 
 	GError *error = NULL;
 
@@ -747,7 +800,6 @@ void initialize_console_interface(int argc, char **argv) {
 	char query[MAX_QUERY];
 	char *args[argc];
 
-	//TODO: Why this check?
 	GwDictInfo *di;
 	di = gw_dictlist_get_dictionary_by_alias("English");
 	//Make sure the selected dictionary exists
@@ -794,7 +846,7 @@ void initialize_console_interface(int argc, char **argv) {
 	if (total_args == 1){
 
 		//TODO: STUB
-		if (is_switch (args[0], "-m", "--multisearch")){
+		if (is_switch (args[0], "-n", "--ncurses")){
 			initialize_ncurses_interface(di);
 			return;
 		}
@@ -932,7 +984,6 @@ void initialize_console_interface(int argc, char **argv) {
 	GwSearchItem *item;
 	item = gw_searchitem_new(query, di, GW_TARGET_CONSOLE);
 	if (item == NULL){
-		//TODO: Use GError instead. TODO
 		printf(gettext("Results seem to have incorrect formatting. Did you "
 						"close all of your\nparenthesis?  You may want to tr"
 						"y quotes too.\n"));
@@ -942,28 +993,29 @@ void initialize_console_interface(int argc, char **argv) {
 	}
 
 	item->show_less_relevant_results = !exact_switch;
-	gw_search_get_results (item); //TODO: Print here?? <---
-
-	//Print the number of results
-	if (quiet_switch == FALSE) {
-		printf("");
-		printf("\n%s%d%s", gettext("Found "), item->total_results, gettext(" Results"));
-
-		if (item->total_relevant_results != item->total_results)
-			printf("%s%d%s", gettext(" ("), item->total_relevant_results, gettext(" Relevant)"));
-
-		printf("[0m\n");
+	gw_search_get_results (item);
+	if (item == NULL){
+		printf("Sorry. Something went wrong. Please try again.");
 	}
+	else
+	{
+		//Print the number of results
+		if (quiet_switch == FALSE) {
+			printf("");
+			printf("\n%s%d%s", gettext("Found "), item->total_results, gettext(" Results"));
 
-	free(item);
+			if (item->total_relevant_results != item->total_results)
+				printf("%s%d%s", gettext(" ("), item->total_relevant_results, gettext(" Relevant)"));
 
+			printf("[0m\n");
+		}
+
+		gw_searchitem_free(item);
+	}
 	return;
 }
 
 
-/**
- *
- */
 void gw_console_append_edict_results (GwSearchItem *item, gboolean unused) {
 
 	if (item != NULL){
@@ -1156,9 +1208,7 @@ void gw_console_append_kanjidict_results (GwSearchItem *item, gboolean unused)
 	return;
 }
 
-/**
- *
- */
+
 void gw_console_append_radicalsdict_results (GwSearchItem *item, gboolean unused) {
 	if (item != NULL){
 		if (cursesFlag) {
@@ -1182,9 +1232,7 @@ void gw_console_append_radicalsdict_results (GwSearchItem *item, gboolean unused
 	return;
 }
 
-/**
- *
- */
+
 void gw_console_append_examplesdict_results (GwSearchItem *item, gboolean unused) {
 
 	if (item != NULL){
@@ -1230,9 +1278,6 @@ void gw_console_append_examplesdict_results (GwSearchItem *item, gboolean unused
 }
 
 
-/**
- *
- */
 void gw_console_append_unknowndict_results (GwSearchItem *item, gboolean unused) {
 	if (item != NULL){
 		if (cursesFlag)
@@ -1251,4 +1296,3 @@ void gw_console_append_unknowndict_results (GwSearchItem *item, gboolean unused)
 	}
 	return;
 }
-
