@@ -402,7 +402,7 @@ void gw_ui_set_progressbar (char *name, double percent, char *message)
 }
 
 
-void gw_settings_initialize_installed_dictionary_list() 
+void gw_settings_initialize_installed_dictionary_list () 
 {
     if (gw_dictlist_dictionary_get_status_by_id (GW_DICT_ID_ENGLISH) == GW_DICT_STATUS_INSTALLED)
       gw_ui_set_install_line_status ("english", "remove", NULL);

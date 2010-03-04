@@ -143,7 +143,7 @@ gboolean gw_console_install_dictionary_by_name(char *name) {
     //Copy the file if it is a local file
     if (ret && g_file_test (uri, G_FILE_TEST_IS_REGULAR))
     {
-      printf("  %s\n", gettext("Coping file..."));
+      printf("  %s\n", gettext("Copying file..."));
       ret = gw_io_copy_dictionary_file (uri, gz_path, NULL);
     }
     else if (ret)
