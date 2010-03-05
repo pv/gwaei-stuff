@@ -28,27 +28,24 @@
 //! maintenance.
 //!
 
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <locale.h>
+#include <libintl.h>
+#include <regex.h>
 
-struct GwUiDictInstallLine {
-    GtkWidget *status_icon_check
-    GtkWidget *status_icon_error
-    GtkWidget *status_message
-    GtkWidget *status_progressbar;
-    GtkWidget *status_container;
+#include <gtk/gtk.h>
 
-    GtkWidget *button_cancel;
-    GtkWidget *button_install;
-    GtkWidget *button_remove;
-    GtkWidget *button_container;
+#include <gwaei/gtk.h>
+#include <gwaei/definitions.h>
+#include <gwaei/utilities.h>
+#include <gwaei/dictionary-objects.h>
+#include <gwaei/search-objects.h>
 
-    GtkWidget *source_uri_entry;
-    GtkWidget *source_browse;
-    GtkWidget *source_reset;
-    GtkWidget *source_container;
-
-    GtkWidget *advanced_expander;
-    GtkWidget *advanced_container;
-};
+#include <gwaei/engine.h>
+#include <gwaei/printing.h>
+#include <gwaei/interface.h>
 
 
 //!
@@ -61,51 +58,51 @@ GwUiDictInstallLine *gw_ui_new_dict_install_line (GwDictInfo *di)
     GwUiDictInstallLine *temp = NULL;
     GtkWidget *temp_hbox = NULL;
 
-    if (temp = malloc(sizeof(GwUiDictInstallLine)) != NULL)
+    if ((temp = (GwUiDictInstallLine*)malloc(sizeof(GwUiDictInstallLine))) != NULL)
     {
       //Row 1 Column 1 Expander with name
-      advanced_expander = gtk_expander_new (di->name);
-      advanced_hbox = gtk_hbox_new (FALSE, 0);
+      temp->advanced_expander = gtk_expander_new (di->name);
+      temp->advanced_hbox = gtk_hbox_new (FALSE, 0);
 
       //Row 1 Column 2 Status messages area
-      status_icon_check = gtk_image_new_from_stock (GTK_STOCK_APPLY, GTK_ICON_SIZE_SMALL_TOOLBAR);
-      status_icon_error = gtk_image_new_from_stock (GTK_STOCK_DIALOG_ERROR, GTK_ICON_SIZE_SMALL_TOOLBAR);
-      status_icon_message = gtk_label_new ("Installing...");
-      status_progressbar = gtk_progressbar_new ();
+      temp->status_icon_check = gtk_image_new_from_stock (GTK_STOCK_APPLY, GTK_ICON_SIZE_SMALL_TOOLBAR);
+      temp->status_icon_error = gtk_image_new_from_stock (GTK_STOCK_DIALOG_ERROR, GTK_ICON_SIZE_SMALL_TOOLBAR);
+      temp->status_message = gtk_label_new ("Installing...");
+      temp->status_progressbar = gtk_progress_bar_new ();
 
-      status_hbox = gtk_hbox_new (FALSE, 0);
+      temp->status_hbox = gtk_hbox_new (FALSE, 0);
 
-      gtk_container_add (GTK_CONTAINER (status_hbox), status_progressbar);
-
-      temp_hbox = gtk_hbox_new (FALSE, 0); //for vertical alignment
-      gtk_container_add (GTK_CONTAINER (status_hbox), temp_hbox);
-      gtk_container_add (GTK_CONTAINER (temp_hbox), status_icon_check);
-      gtk_container_add (GTK_CONTAINER (temp_hbox), status_icon_error);
+      gtk_container_add (GTK_CONTAINER (temp->status_hbox), temp->status_progressbar);
 
       temp_hbox = gtk_hbox_new (FALSE, 0); //for vertical alignment
-      gtk_container_add (GTK_CONTAINER (status_hbox), temp_hbox); 
-      gtk_container_add (GTK_CONTAINER (temp_hbox), status_icon_message);
-      gtk_container_add (GTK_CONTAINER (temp_hbox), status_progressbar);
+      gtk_container_add (GTK_CONTAINER (temp->status_hbox), temp_hbox);
+      gtk_container_add (GTK_CONTAINER (temp_hbox), temp->status_icon_check);
+      gtk_container_add (GTK_CONTAINER (temp_hbox), temp->status_icon_error);
+
+      temp_hbox = gtk_hbox_new (FALSE, 0); //for vertical alignment
+      gtk_container_add (GTK_CONTAINER (temp->status_hbox), temp_hbox); 
+      gtk_container_add (GTK_CONTAINER (temp_hbox), temp->status_message);
+      gtk_container_add (GTK_CONTAINER (temp_hbox), temp->status_progressbar);
 
       //Row 1 Column 3 Button action area to do things to dictionaries
-      action_cancel_button = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
-      action_install_button = gtk_button_new_from_stock (GTK_STOCK_ADD);
-      action_remove_button = gtk_button_new_from_stock (GTK_STOCK_DELETE);
+      temp->action_cancel_button = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
+      temp->action_install_button = gtk_button_new_from_stock (GTK_STOCK_ADD);
+      temp->action_remove_button = gtk_button_new_from_stock (GTK_STOCK_DELETE);
 
-      button_hbox = gtk_hbox_new (FALSE, 0);
-      gtk_container_add (GTK_CONTAINER (button_hbox), action_cancel_button);
-      gtk_container_add (GTK_CONTAINER (button_hbox), action_install_button);
-      gtk_container_add (GTK_CONTAINER (button_hbox), action_remove_button);
+      temp->action_button_hbox = gtk_hbox_new (FALSE, 0);
+      gtk_container_add (GTK_CONTAINER (temp->action_button_hbox), temp->action_cancel_button);
+      gtk_container_add (GTK_CONTAINER (temp->action_button_hbox), temp->action_install_button);
+      gtk_container_add (GTK_CONTAINER (temp->action_button_hbox), temp->action_remove_button);
 
       //Row 2 Area for other less general options such as install URI selection
-      source_uri_entry = gtk_entry_new ();
-      source_browse_button = gtk_button_new_width_label (gettext("Browse..."));
-      source_reset_button = gtk_button_new_width_label (gettext("Reset"));
+      temp->source_uri_entry = gtk_entry_new ();
+      temp->source_browse_button = gtk_button_new_with_label (gettext("Browse..."));
+      temp->source_reset_button = gtk_button_new_with_label (gettext("Reset"));
 
-      source_hbox = gtk_hbox_new (FALSE, 0);
-      gtk_container_add (GTK_CONTAINER (source_hbox), source_uri_entry);
-      gtk_container_add (GTK_CONTAINER (source_hbox), source_browse_button);
-      gtk_container_add (GTK_CONTAINER (source_hbox), source_reset_button);
+      temp->source_hbox = gtk_hbox_new (FALSE, 0);
+      gtk_container_add (GTK_CONTAINER (temp->source_hbox), temp->source_uri_entry);
+      gtk_container_add (GTK_CONTAINER (temp->source_hbox), temp->source_browse_button);
+      gtk_container_add (GTK_CONTAINER (temp->source_hbox), temp->source_reset_button);
 
       return temp;
     }
@@ -113,3 +110,45 @@ GwUiDictInstallLine *gw_ui_new_dict_install_line (GwDictInfo *di)
     return NULL;
 }
 
+
+void gw_ui_add_dict_install_line_to_table (GtkTable *table, GwUiDictInstallLine *il)
+{
+  if (table->ncols < 3) table->ncols = 3;
+
+  int row = table->nrows;
+  table->nrows++;
+
+  gtk_table_attach_defaults (table, il->advanced_hbox, 0, 0, row, row);
+  gtk_table_attach_defaults (table, il->status_hbox, 1, 1, row, row);
+  gtk_table_attach_defaults (table, il->action_button_hbox, 2, 2, row, row);
+
+  table->rows++;
+  row++;
+  gtk_table_attach_defaults (table, il->action_button_hbox, 1, 2, row, row);
+}
+
+
+void gw_ui_destroy_dict_install_line (GwUiDictInstallLine *il)
+{
+    gtk_widget_destroy (il->status_hbox);
+    il->status_hbox = NULL;
+    il->status_icon_check = NULL;
+    il->status_icon_error = NULL;
+    il->status_message = NULL;
+    il->status_progressbar = NULL;
+
+    gtk_widget_destroy (il->action_button_hbox);
+    il->action_button_hbox = NULL;
+    il->action_cancel_button = NULL;
+    il->action_install_button = NULL;
+    il->action_remove_button = NULL;
+
+    gtk_widget_destroy (il->source_hbox);
+    il->source_uri_entry = NULL;
+    il->source_browse_button = NULL;
+    il->source_reset_button = NULL;
+
+    gtk_widget_destroy (il->advanced_hbox);
+    il->advanced_hbox = NULL;
+    il->advanced_expander = NULL;
+}
