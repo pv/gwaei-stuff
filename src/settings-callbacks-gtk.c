@@ -440,6 +440,7 @@ G_MODULE_EXPORT void do_color_reset_for_swatches (GtkWidget *widget, gpointer da
 
 G_MODULE_EXPORT void do_dictionary_remove (GtkWidget* widget, gpointer* dictionary)
 {
+  /*
     char name[100];
     name[0] = '\0';
     gw_parse_widget_name (name, widget, TRUE);
@@ -449,21 +450,25 @@ G_MODULE_EXPORT void do_dictionary_remove (GtkWidget* widget, gpointer* dictiona
     gw_parse_widget_name (name, widget, FALSE);
     gw_ui_set_install_line_status (name, "install", NULL);
     rebuild_combobox_dictionary_list();
+    */
 }
 
 
 G_MODULE_EXPORT void do_cancel_dictionary_install (GtkWidget *widget, gpointer data)
 {
+  /*
     char name[100];
 
     name[0] = '\0';
     gw_parse_widget_name (name, widget, FALSE);
     gw_ui_set_install_line_status (name, "cancelling", NULL);
+    */
 }
 
 
 G_MODULE_EXPORT void do_dictionary_install (GtkWidget *widget, gpointer data)
 {
+  /*
     //Make sure the files are clean
     do_dictionary_remove(widget, data);
 
@@ -479,69 +484,13 @@ G_MODULE_EXPORT void do_dictionary_install (GtkWidget *widget, gpointer data)
       g_warning("couldn't create the thread");
       return;
     }
-}
-
-
-G_MODULE_EXPORT void do_toggle_advanced_show(GtkWidget *widget, gpointer data)
-{
-    //show the one advanced hbox if it should be
-    gboolean expanded;
-    expanded = gtk_expander_get_expanded(GTK_EXPANDER (widget));
-
-    //Reset all advanced boxes to their default closed states
-    static char *expander_name[] = {
-      "english_expander",
-      "kanji_expander",
-      "names_expander",
-      "radicals_expander",
-      "examples_expander",
-      "french_expander",
-      "german_expander",
-      "spanish_expander"
-    };
-    static char *hbox_name[] = {
-      "english_advanced_hbox",
-      "kanji_advanced_hbox",
-      "names_advanced_hbox",
-      "radicals_advanced_hbox",
-      "examples_advanced_hbox",
-      "french_advanced_hbox",
-      "german_advanced_hbox",
-      "spanish_advanced_hbox"
-    };
-
-    int i;
-    GtkWidget *hbox, *expander;
-    for (i = 0; i < 8; i++) {
-      hbox = GTK_WIDGET (gtk_builder_get_object(builder, hbox_name[i]));
-      gtk_widget_hide(hbox);
-      expander = GTK_WIDGET (gtk_builder_get_object(builder, expander_name[i]));
-
-      g_signal_handlers_block_by_func(widget, do_toggle_advanced_show, NULL);
-      gtk_expander_set_expanded(GTK_EXPANDER (expander), FALSE);
-      g_signal_handlers_unblock_by_func(widget, do_toggle_advanced_show, NULL);
-    }
-
-    if (!expanded) {
-      char id[100];
-      gw_parse_widget_name(id, widget, FALSE);
-      strcat(id, "_advanced_hbox");
-
-      GtkWidget *target_advanced_hbox;
-      target_advanced_hbox = GTK_WIDGET (gtk_builder_get_object(builder, id));
-      gtk_widget_show(target_advanced_hbox);
-    }
-
-    else {
-      g_signal_handlers_block_by_func(widget, do_toggle_advanced_show, NULL);
-      gtk_expander_set_expanded(GTK_EXPANDER (widget), TRUE);
-      g_signal_handlers_unblock_by_func(widget, do_toggle_advanced_show, NULL);
-    }
+    */
 }
 
 
 G_MODULE_EXPORT void do_source_entry_changed_action (GtkWidget *widget, gpointer data)
 {
+  /*
     //Prepare some variables
     char name[100];
     gw_parse_widget_name(name, widget, FALSE);
@@ -556,10 +505,13 @@ G_MODULE_EXPORT void do_source_entry_changed_action (GtkWidget *widget, gpointer
     strcpy(value, gtk_entry_get_text(GTK_ENTRY (widget)));
 
     gw_pref_set_string (key, value);
+    */
 }
 
 
-G_MODULE_EXPORT void do_dictionary_source_reset(GtkWidget *widget, gpointer data) {
+G_MODULE_EXPORT void do_dictionary_source_reset(GtkWidget *widget, gpointer data)
+{
+  /*
     //Prepare some variables
     char name[100];
     gw_parse_widget_name (name, widget, FALSE);
@@ -573,6 +525,7 @@ G_MODULE_EXPORT void do_dictionary_source_reset(GtkWidget *widget, gpointer data
     const char *string = gw_pref_get_default_string (key, NULL);
     if (string != NULL)
       gw_pref_set_string (key, string);
+*/
 }
 
 
@@ -608,6 +561,7 @@ G_MODULE_EXPORT void do_dictionary_source_browse(GtkWidget *widget, gpointer dat
 
 G_MODULE_EXPORT void do_update_installed_dictionaries(GtkWidget *widget, gpointer data)
 {
+  /*
     char name[100];
     gw_parse_widget_name(name, widget, TRUE);
 
@@ -619,6 +573,7 @@ G_MODULE_EXPORT void do_update_installed_dictionaries(GtkWidget *widget, gpointe
       g_warning("couldn't create the thread");
       return;
     }
+    */
 }
 
 

@@ -50,34 +50,9 @@
 
 
 
-
-
-char* gw_parse_widget_name (char *output, GtkWidget *widget,
-                               gboolean capitalize             )
-{
-    //Declarations
-    const char* input = gtk_widget_get_name(widget);
-    const char *input_ptr = input;
-    char *output_ptr = output;
-
-    //Copy up to the underscore
-    while (*input_ptr != '\0' && *input_ptr != '_') {
-      *output_ptr = *input_ptr;
-      output_ptr++;
-      input_ptr++;
-    }
-    *output_ptr = '\0';
-
-    //Capitalize the first letter
-    if (capitalize == TRUE) output[0] -= 0x20;
-
-    //Finish
-    return output;
-}
-
-
 void gw_ui_update_settings_interface()
 {
+  /*
   char id[50];
 
   //Set the install interface
@@ -130,21 +105,25 @@ void gw_ui_update_settings_interface()
     gtk_widget_set_sensitive (update_button,  TRUE );
     gtk_widget_set_sensitive (updated_button, TRUE );
   }
+  */
 }
 
 void gw_ui_set_dictionary_source(const char* id, const char* value)
 {
+  /*
     GtkWidget *widget;
     widget = GTK_WIDGET (gtk_builder_get_object(builder, id));
 
     g_signal_handlers_block_by_func(widget, do_source_entry_changed_action, NULL);
     gtk_entry_set_text(GTK_ENTRY (widget), value);
     g_signal_handlers_unblock_by_func(widget, do_source_entry_changed_action, NULL);
+    */
 }
 
 
 int gw_ui_get_install_line_status(char *name)
 {
+  /*
     GtkWidget *button;
 
     char id[100];
@@ -167,12 +146,14 @@ int gw_ui_get_install_line_status(char *name)
       return GW_DICT_STATUS_INSTALLING;
     if (GTK_WIDGET_VISIBLE (button) == TRUE && GTK_WIDGET_SENSITIVE (button) == FALSE)
       return GW_DICT_STATUS_CANCELING;
+      */
 
 }
 
 //Sets the install status of an individual dictionary
 void gw_ui_set_install_line_status(char *name, char *status, char *message)
 {
+  /*
     GtkWidget *install_button, *remove_button, *cancel_button;
     GtkWidget *hbox, *label, *icon_installed, *icon_errored, *progressbar;
     GtkWidget *advanced_hbox;
@@ -350,6 +331,7 @@ void gw_ui_set_install_line_status(char *name, char *status, char *message)
     strcpy(id, "update_remove_button");
     button = GTK_WIDGET (gtk_builder_get_object(builder, id));
     gtk_widget_set_sensitive(button, sensitive);
+    */
 }
 
 
@@ -404,6 +386,7 @@ void gw_ui_set_progressbar (char *name, double percent, char *message)
 
 void gw_settings_initialize_installed_dictionary_list () 
 {
+  /*
     if (gw_dictlist_dictionary_get_status_by_id (GW_DICT_ID_ENGLISH) == GW_DICT_STATUS_INSTALLED)
       gw_ui_set_install_line_status ("english", "remove", NULL);
     else
@@ -443,6 +426,7 @@ void gw_settings_initialize_installed_dictionary_list ()
       gw_ui_set_install_line_status ("spanish", "remove", NULL);
     else
       gw_ui_set_install_line_status ("spanish", "install", NULL);
+      */
 }
 
 
