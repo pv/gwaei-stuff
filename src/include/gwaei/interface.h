@@ -38,4 +38,3 @@ void gw_console_append_unknowndict_results (GwSearchItem*, gboolean);
 void gw_ui_deselect_all_radicals (void);
 gboolean gw_ui_cancel_search (gpointer);
 gboolean gw_ui_cancel_search_by_searchitem (GwSearchItem*);
-

@@ -37,13 +37,13 @@
 
 #include <gtk/gtk.h>
 
-#include <gwaei/gtk.h>
 #include <gwaei/definitions.h>
 #include <gwaei/regex.h>
 #include <gwaei/utilities.h>
 #include <gwaei/io.h>
 #include <gwaei/dictionary-objects.h>
 #include <gwaei/search-objects.h>
+#include <gwaei/gtk.h>
 
 #include <gwaei/engine.h>
 #include <gwaei/callbacks.h>

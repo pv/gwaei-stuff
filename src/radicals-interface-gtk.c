@@ -36,12 +36,12 @@
 
 #include <gtk/gtk.h>
 
-#include <gwaei/gtk.h>
 #include <gwaei/definitions.h>
 #include <gwaei/dictionary-objects.h>
 #include <gwaei/search-objects.h>
 #include <gwaei/interface.h>
 #include <gwaei/callbacks.h>
+#include <gwaei/gtk.h>
 
 
 static char radical_cache[300 * 3];

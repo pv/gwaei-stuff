@@ -37,13 +37,13 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
-#include <gwaei/gtk.h>
 #include <gwaei/definitions.h>
 #include <gwaei/regex.h>
+#include <gwaei/dictionary-objects.h>
 #include <gwaei/utilities.h>
 #include <gwaei/io.h>
-#include <gwaei/dictionary-objects.h>
 #include <gwaei/search-objects.h>
+#include <gwaei/gtk.h>
 
 #include <gwaei/engine.h>
 #include <gwaei/callbacks.h>
@@ -622,7 +622,7 @@ void initialize_global_widget_pointers ()
 
 
 
-void initialize_window_attributes(char* window_id)
+void initialize_window_attributes (char* window_id)
 {
     int leftover;
 
@@ -2628,6 +2628,21 @@ void initialize_gui_interface(int *argc, char ***argv)
       if (rebuild_combobox_dictionary_list () == 0) {
         do_settings(NULL, NULL);
       }
+
+GtkWidget *table = GTK_WIDGET (gtk_builder_get_object (builder, "dictionaries_table"));
+GwDictInfo *di =  gw_dictlist_get_dictionary_by_name ("English");
+GwUiDictInstallLine *il = gw_ui_new_dict_install_line (di);
+gw_ui_add_dict_install_line_to_table (GTK_TABLE (table), il);
+gw_ui_dict_install_set_action_button (il, GTK_STOCK_CANCEL, FALSE);
+gw_ui_dict_install_set_message (il, GTK_STOCK_APPLY, "Test Message");
+gw_ui_dict_install_line_progress_bar_set_fraction (il, 0.3);
+
+di =  gw_dictlist_get_dictionary_by_name ("Kanji");
+il = gw_ui_new_dict_install_line (di);
+gw_ui_add_dict_install_line_to_table (GTK_TABLE (table), il);
+gw_ui_dict_install_set_action_button (il, GTK_STOCK_APPLY, FALSE);
+gw_ui_dict_install_line_progress_bar_set_fraction (il, 0.7);
+gw_ui_dict_install_set_message (il, GTK_STOCK_APPLY, "Test Message");
 
       //Set the initial focus to the search bar
       gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);

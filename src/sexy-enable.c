@@ -41,11 +41,11 @@
 #include <gtk/gtk.h>
 #include <libsexy/sexy.h>
 
+#include <gwaei/definitions.h>
+#include <gwaei/dictionary-objects.h>
 #include <gwaei/gtk.h>
 #include <gwaei/sexy.h>
-#include <gwaei/definitions.h>
 #include <gwaei/utilities.h>
-#include <gwaei/dictionary-objects.h>
 #include <gwaei/search-objects.h>
 #include <gwaei/interface.h>
 #include <gwaei/callbacks.h>

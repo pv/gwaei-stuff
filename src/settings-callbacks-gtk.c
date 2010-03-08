@@ -37,7 +37,6 @@
 
 #include <gtk/gtk.h>
 
-#include <gwaei/gtk.h>
 #include <gwaei/definitions.h>
 #include <gwaei/regex.h>
 #include <gwaei/utilities.h>
@@ -47,6 +46,7 @@
 #include <gwaei/search-objects.h>
 #include <gwaei/interface.h>
 #include <gwaei/preferences.h>
+#include <gwaei/gtk.h>
 
 
 
@@ -824,4 +824,16 @@ G_MODULE_EXPORT void do_move_dictionary_down (GtkWidget *widget, gpointer data)
     }
     output[strlen(output) - 1] = '\0';
     gw_pref_set_string (GCKEY_GW_LOAD_ORDER, output);
+}
+
+
+G_MODULE_EXPORT do_toggle_advanced_source (GtkWidget *widget, gpointer data)
+{
+    gboolean expanded;
+    expanded = gtk_expander_get_expanded(GTK_EXPANDER (widget));
+    
+    if (expanded == TRUE)
+      gtk_widget_hide (GTK_WIDGET (data));
+    else
+      gtk_widget_show_all (GTK_WIDGET (data));
 }
