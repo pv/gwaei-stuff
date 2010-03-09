@@ -56,15 +56,16 @@
 GwUiDictInstallLine *gw_ui_new_dict_install_line (GwDictInfo *di)
 {
     GwUiDictInstallLine *temp = NULL;
-    GtkWidget *temp_hbox = NULL;
 
     if ((temp = (GwUiDictInstallLine*) malloc(sizeof(GwUiDictInstallLine))) != NULL)
     {
       //Row 1 Column 1 Expander with name
-      temp->advanced_expander = gtk_expander_new (di->long_name);
-      temp->advanced_hbox = gtk_hbox_new (TRUE, 0);
+      char *name = g_strdup_printf ("%s: ", di->long_name);
+      temp->advanced_expander = gtk_expander_new (name);
+      g_free (name);
+      temp->advanced_hbox = gtk_hbox_new (FALSE, 0);
 
-      gtk_container_add (GTK_CONTAINER (temp->advanced_hbox), temp->advanced_expander);
+      gtk_box_pack_start (GTK_BOX (temp->advanced_hbox), temp->advanced_expander, FALSE, FALSE, 0);
 
       //Row 1 Column 2 Status messages area
       temp->status_icon = gtk_image_new_from_stock (GTK_STOCK_APPLY, GTK_ICON_SIZE_SMALL_TOOLBAR);
@@ -73,24 +74,18 @@ GwUiDictInstallLine *gw_ui_new_dict_install_line (GwDictInfo *di)
       gtk_progress_bar_set_text (GTK_PROGRESS_BAR (temp->status_progressbar), gettext("Downloading..."));
 
       temp->status_hbox = gtk_hbox_new (FALSE, 0);
+      temp->message_hbox = gtk_hbox_new (FALSE, 0);
 
-      gtk_container_add (GTK_CONTAINER (temp->status_hbox), temp->status_progressbar);
-
-      temp_hbox = gtk_hbox_new (FALSE, 0); //for vertical alignment
-      //gtk_container_add (GTK_CONTAINER (temp->status_hbox), temp_hbox);
-      gtk_box_pack_start (GTK_BOX (temp->status_hbox), temp_hbox, TRUE, TRUE, 0);
-      gtk_box_pack_end (GTK_BOX (temp_hbox), temp->status_icon, FALSE, TRUE, 0);
-
-      temp_hbox = gtk_hbox_new (FALSE, 0); //for vertical alignment
-      //gtk_container_add (GTK_CONTAINER (temp->status_hbox), temp_hbox); 
-      gtk_box_pack_start (GTK_BOX (temp->status_hbox), temp_hbox, TRUE, TRUE, 1);
-      gtk_box_pack_start (GTK_BOX (temp_hbox), temp->status_message, FALSE, TRUE, 0);
+      gtk_box_pack_start (GTK_BOX (temp->status_hbox), temp->status_progressbar, TRUE, TRUE, 0);
+      gtk_box_pack_start (GTK_BOX (temp->message_hbox), temp->status_icon, FALSE, FALSE, 1);
+      gtk_box_pack_start (GTK_BOX (temp->message_hbox), temp->status_message, FALSE, FALSE, 0);
+      gtk_box_pack_start (GTK_BOX (temp->status_hbox), temp->message_hbox, TRUE, FALSE, 0);
 
       //Row 1 Column 3 Button action area to do things to dictionaries
       temp->action_button = gtk_button_new_from_stock (GTK_STOCK_ADD);
 
       temp->action_button_hbox = gtk_hbox_new (FALSE, 0);
-      gtk_container_add (GTK_CONTAINER (temp->action_button_hbox), temp->action_button);
+      gtk_box_pack_start (GTK_BOX (temp->action_button_hbox), temp->action_button, TRUE, TRUE, 0);
 
       //Row 2 Area for other less general options such as install URI selection
       temp->source_uri_entry = gtk_entry_new ();
@@ -130,16 +125,16 @@ void gw_ui_add_dict_install_line_to_table (GtkTable *table, GwUiDictInstallLine 
   int row = table->nrows;
   gtk_table_resize (table, table->nrows + 2, table->ncols);
 
-  gtk_table_attach (table, il->advanced_hbox, 0, 1, row, row + 1, GTK_EXPAND, 0, 0, 0);
-  gtk_table_attach_defaults (table, il->status_hbox, 1, 2, row, row + 1);
-  gtk_table_attach_defaults (table, il->action_button_hbox, 2, 3, row, row + 1);
+  gtk_table_attach (table, il->advanced_hbox, 0, 1, row, row + 1, GTK_FILL, 0, 0, 0);
+  gtk_table_attach (table, il->status_hbox, 1, 2, row, row + 1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0 ,0);
+  gtk_table_attach (table, il->action_button_hbox, 2, 3, row, row + 1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
   gtk_widget_show_all (il->advanced_hbox);
   gtk_widget_show_all (il->status_hbox);
   gtk_widget_show_all (il->action_button_hbox);
 
   row++;
 
-  gtk_table_attach_defaults (table, il->source_hbox, 0, 3, row, row + 1);
+  gtk_table_attach (table, il->source_hbox, 0, 3, row, row + 1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
   g_signal_connect (G_OBJECT (il->advanced_expander), "activate", G_CALLBACK (do_toggle_advanced_source), il->source_hbox);
 }
 
@@ -153,6 +148,7 @@ void gw_ui_destroy_dict_install_line (GwUiDictInstallLine *il)
 {
     gtk_widget_destroy (il->status_hbox);
     il->status_hbox = NULL;
+    il->message_hbox = NULL;
     il->status_icon = NULL;
     il->status_message = NULL;
     il->status_progressbar = NULL;
@@ -173,6 +169,7 @@ void gw_ui_destroy_dict_install_line (GwUiDictInstallLine *il)
     free (il);
 }
 
+
 //!
 //! @brief Sets the state of the install line action button.
 //!
@@ -190,7 +187,7 @@ void gw_ui_dict_install_set_action_button (GwUiDictInstallLine *il, const gchar 
   il->action_button = gtk_button_new_from_stock (STOCK_ID);
   if (parent != NULL)
   {
-    gtk_container_add (GTK_CONTAINER (parent), il->action_button);
+    gtk_box_pack_start (GTK_BOX (parent), il->action_button, TRUE, TRUE, 0);
     gtk_widget_show (il->action_button);
 
 /*
@@ -206,6 +203,7 @@ void gw_ui_dict_install_set_action_button (GwUiDictInstallLine *il, const gchar 
   }
 }
 
+
 //!
 //! @brief Sets the progress of a GwUiDictInstallLIne progressbar
 //!
@@ -218,8 +216,7 @@ void gw_ui_dict_install_set_action_button (GwUiDictInstallLine *il, const gchar 
 void gw_ui_dict_install_line_progress_bar_set_fraction (GwUiDictInstallLine *il, const gdouble FRACTION)
 {
   gtk_widget_show (il->status_progressbar);
-  gtk_widget_hide (il->status_icon);
-  gtk_widget_hide (il->status_message);
+  gtk_widget_hide (il->message_hbox);
 
   if (FRACTION < 0.0)
     gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (il->status_progressbar), 0.0);
@@ -228,6 +225,7 @@ void gw_ui_dict_install_line_progress_bar_set_fraction (GwUiDictInstallLine *il,
   else
     gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (il->status_progressbar), FRACTION);
 }
+
 
 //!
 //! @brief Sets the a wanted message to the status message area with an optional icon.
@@ -250,6 +248,7 @@ void gw_ui_dict_install_set_message (GwUiDictInstallLine *il, const gchar* STOCK
     gtk_widget_hide (il->status_progressbar);
     gtk_image_set_from_stock (GTK_IMAGE (il->status_icon), STOCK_ICON_ID, GTK_ICON_SIZE_SMALL_TOOLBAR);
     gtk_widget_show (il->status_icon);
+    gtk_widget_show (il->message_hbox);
   }
 
   //Take care of the message text
@@ -262,6 +261,7 @@ void gw_ui_dict_install_set_message (GwUiDictInstallLine *il, const gchar* STOCK
     gtk_widget_hide (il->status_progressbar);
     gtk_label_set_text (GTK_LABEL (il->status_message), message_text);
     gtk_widget_show (il->status_message);
+    gtk_widget_show (il->message_hbox);
   }
 }
 

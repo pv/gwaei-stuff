@@ -39,6 +39,7 @@ struct GwUiDictInstallLine {
     GtkWidget *status_message;
     GtkWidget *status_progressbar;
     GtkWidget *status_hbox;
+    GtkWidget *message_hbox;
 
     GtkWidget *action_button;
     GtkWidget *action_button_hbox;
