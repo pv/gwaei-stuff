@@ -93,6 +93,7 @@ GwUiDictInstallLine *gw_ui_new_dict_install_line (GwDictInfo *di)
       GtkWidget *alignment = gtk_alignment_new (0, 0, 1, 1);
       gtk_widget_set_size_request (GTK_WIDGET (alignment), 50, -1);
       temp->source_browse_button = gtk_button_new_with_label (gettext("Browse..."));
+      g_signal_connect (G_OBJECT (temp->source_browse_button), "clicked", G_CALLBACK (do_dictionary_source_browse), temp->source_uri_entry);
       temp->source_reset_button = gtk_button_new_with_label (gettext("Reset"));
 
       temp->source_hbox = gtk_hbox_new (FALSE, 0);

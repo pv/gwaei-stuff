@@ -47,6 +47,7 @@
 #include <gwaei/interface.h>
 #include <gwaei/preferences.h>
 #include <gwaei/gtk.h>
+#include <gwaei/callbacks.h>
 
 
 
@@ -529,11 +530,11 @@ G_MODULE_EXPORT void do_dictionary_source_reset(GtkWidget *widget, gpointer data
 }
 
 
-G_MODULE_EXPORT void do_dictionary_source_browse(GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void do_dictionary_source_browse (GtkWidget *widget, gpointer data)
 {
     //Declarations
     GtkWidget *dialog, *window;
-    window = GTK_WIDGET (gtk_builder_get_object(builder, "settings_window"));
+    window = GTK_WIDGET (gtk_builder_get_object (builder, "settings_window"));
     dialog = gtk_file_chooser_dialog_new (gettext("Dictionary File Select"),
                 GTK_WINDOW (window),
                 GTK_FILE_CHOOSER_ACTION_OPEN,
@@ -546,10 +547,7 @@ G_MODULE_EXPORT void do_dictionary_source_browse(GtkWidget *widget, gpointer dat
     if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
         char *filename;
         filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
-
-        const char *widget_id = gtk_widget_get_name (widget);
-
-        gw_ui_set_dictionary_source(widget_id, filename);
+        gw_ui_set_dictionary_source(GTK_WIDGET (data), filename);
 
         g_free (filename);
         filename = NULL;

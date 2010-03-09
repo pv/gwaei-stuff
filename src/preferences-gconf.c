@@ -246,6 +246,7 @@ void do_dictionary_source_gconf_key_changed_action (GConfClient* client,
                                                     GConfEntry *entry,
                                                     gpointer data        )
 {
+  /*
     GConfValue *value;
     value = gconf_entry_get_value(entry);
 
@@ -253,13 +254,19 @@ void do_dictionary_source_gconf_key_changed_action (GConfClient* client,
     {
       //The last portion of the key happens to be the widget id
       const char *key = gconf_entry_get_key(entry);
-      const char *key_ptr = &key[strlen(key)];
-      while (*key_ptr != '/')
-        key_ptr--;
-      key_ptr++;
+      if (key != NULL)
+      {
+        const char *key_ptr = &key[strlen(key)];
+        while (*key_ptr != '/' && key_ptr > key)
+          key_ptr--;
+        if (*key_ptr != '\0')
+          key_ptr++;
 
-      gw_ui_set_dictionary_source(key_ptr, gconf_value_get_string(value));
+        if (*key_ptr != '\0')
+          gw_ui_set_dictionary_source (key_ptr, gconf_value_get_string(value));
+      }
     }
+    */
 }
 
 

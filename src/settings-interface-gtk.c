@@ -108,16 +108,14 @@ void gw_ui_update_settings_interface()
   */
 }
 
-void gw_ui_set_dictionary_source(const char* id, const char* value)
+void gw_ui_set_dictionary_source (GtkWidget *widget, const char* value)
 {
-  /*
-    GtkWidget *widget;
-    widget = GTK_WIDGET (gtk_builder_get_object(builder, id));
-
-    g_signal_handlers_block_by_func(widget, do_source_entry_changed_action, NULL);
-    gtk_entry_set_text(GTK_ENTRY (widget), value);
-    g_signal_handlers_unblock_by_func(widget, do_source_entry_changed_action, NULL);
-    */
+    if (widget != NULL && value != NULL)
+    {
+      g_signal_handlers_block_by_func (widget, do_source_entry_changed_action, NULL);
+      gtk_entry_set_text (GTK_ENTRY (widget), value);
+      g_signal_handlers_unblock_by_func (widget, do_source_entry_changed_action, NULL);
+    }
 }
 
 
