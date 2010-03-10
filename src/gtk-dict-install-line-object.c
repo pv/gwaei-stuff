@@ -46,6 +46,7 @@
 #include <gwaei/engine.h>
 #include <gwaei/interface.h>
 #include <gwaei/callbacks.h>
+#include <gwaei/preferences.h>
 
 
 //!
@@ -59,6 +60,8 @@ GwUiDictInstallLine *gw_ui_new_dict_install_line (GwDictInfo *di)
 
     if ((temp = (GwUiDictInstallLine*) malloc(sizeof(GwUiDictInstallLine))) != NULL)
     {
+      temp->di = di;
+
       //Row 1 Column 1 Expander with name
       char *name = g_strdup_printf ("%s: ", di->long_name);
       temp->advanced_expander = gtk_expander_new (name);
@@ -89,12 +92,15 @@ GwUiDictInstallLine *gw_ui_new_dict_install_line (GwDictInfo *di)
 
       //Row 2 Area for other less general options such as install URI selection
       temp->source_uri_entry = gtk_entry_new ();
+      g_signal_connect (G_OBJECT (temp->source_uri_entry), "changed", G_CALLBACK (do_source_entry_changed_action), temp);
       GtkWidget *label = gtk_label_new (gettext("Source: "));
       GtkWidget *alignment = gtk_alignment_new (0, 0, 1, 1);
       gtk_widget_set_size_request (GTK_WIDGET (alignment), 50, -1);
       temp->source_browse_button = gtk_button_new_with_label (gettext("Browse..."));
-      g_signal_connect (G_OBJECT (temp->source_browse_button), "clicked", G_CALLBACK (do_dictionary_source_browse), temp->source_uri_entry);
+      g_signal_connect (G_OBJECT (temp->source_browse_button), "clicked", G_CALLBACK (do_dictionary_source_browse), temp);
+      gw_prefs_add_change_listener (di->gckey, (gpointer) do_dictionary_source_gconf_key_changed_action, temp->source_uri_entry);
       temp->source_reset_button = gtk_button_new_with_label (gettext("Reset"));
+      g_signal_connect (G_OBJECT (temp->source_reset_button), "clicked", G_CALLBACK (do_dictionary_source_reset), temp);
 
       temp->source_hbox = gtk_hbox_new (FALSE, 0);
       gtk_box_pack_start (GTK_BOX (temp->source_hbox), alignment, FALSE, TRUE, 0);
@@ -128,7 +134,7 @@ void gw_ui_add_dict_install_line_to_table (GtkTable *table, GwUiDictInstallLine 
 
   gtk_table_attach (table, il->advanced_hbox, 0, 1, row, row + 1, GTK_FILL, 0, 0, 0);
   gtk_table_attach (table, il->status_hbox, 1, 2, row, row + 1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0 ,0);
-  gtk_table_attach (table, il->action_button_hbox, 2, 3, row, row + 1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+  gtk_table_attach (table, il->action_button_hbox, 2, 3, row, row + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
   gtk_widget_show_all (il->advanced_hbox);
   gtk_widget_show_all (il->status_hbox);
   gtk_widget_show_all (il->action_button_hbox);
@@ -201,6 +207,10 @@ void gw_ui_dict_install_set_action_button (GwUiDictInstallLine *il, const gchar 
 */
 
     gtk_widget_set_sensitive (il->action_button, SENSITIVE);
+
+    gboolean advanced_hbox_is_sensitive;
+    advanced_hbox_is_sensitive = (strcmp (STOCK_ID, GTK_STOCK_ADD) == 0);
+    gtk_widget_set_sensitive(il->source_hbox, advanced_hbox_is_sensitive);
   }
 }
 

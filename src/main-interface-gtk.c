@@ -2640,7 +2640,7 @@ gw_ui_dict_install_line_progress_bar_set_fraction (il, 0.3);
 di =  gw_dictlist_get_dictionary_by_name ("Kanji");
 il = gw_ui_new_dict_install_line (di);
 gw_ui_add_dict_install_line_to_table (GTK_TABLE (table), il);
-gw_ui_dict_install_set_action_button (il, GTK_STOCK_APPLY, FALSE);
+gw_ui_dict_install_set_action_button (il, GTK_STOCK_ADD, TRUE);
 gw_ui_dict_install_line_progress_bar_set_fraction (il, 0.7);
 gw_ui_dict_install_set_message (il, GTK_STOCK_APPLY, "Test Message");
 

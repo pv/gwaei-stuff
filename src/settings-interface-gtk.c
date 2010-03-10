@@ -112,9 +112,9 @@ void gw_ui_set_dictionary_source (GtkWidget *widget, const char* value)
 {
     if (widget != NULL && value != NULL)
     {
-      g_signal_handlers_block_by_func (widget, do_source_entry_changed_action, NULL);
+      g_signal_handlers_block_by_func (GTK_WIDGET (widget), do_source_entry_changed_action, NULL);
       gtk_entry_set_text (GTK_ENTRY (widget), value);
-      g_signal_handlers_unblock_by_func (widget, do_source_entry_changed_action, NULL);
+      g_signal_handlers_unblock_by_func (GTK_WIDGET (widget), do_source_entry_changed_action, NULL);
     }
 }
 

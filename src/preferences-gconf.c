@@ -241,32 +241,22 @@ void gw_pref_set_string (char *key, const char* request)
 //Actions taken when a gconf value changes
 //
 
+void do_dictionary_source_gconf_key_changed_action (gpointer client,
+                                                    guint cnxn_id,
+                                                    gpointer entry,
+                                                    gpointer data   )
+/*
 void do_dictionary_source_gconf_key_changed_action (GConfClient* client,
                                                     guint cnxn_id,
                                                     GConfEntry *entry,
                                                     gpointer data        )
+*/
 {
-  /*
     GConfValue *value;
     value = gconf_entry_get_value(entry);
 
     if (value != NULL && value->type == GCONF_VALUE_STRING)
-    {
-      //The last portion of the key happens to be the widget id
-      const char *key = gconf_entry_get_key(entry);
-      if (key != NULL)
-      {
-        const char *key_ptr = &key[strlen(key)];
-        while (*key_ptr != '/' && key_ptr > key)
-          key_ptr--;
-        if (*key_ptr != '\0')
-          key_ptr++;
-
-        if (*key_ptr != '\0')
-          gw_ui_set_dictionary_source (key_ptr, gconf_value_get_string(value));
-      }
-    }
-    */
+      gw_ui_set_dictionary_source (data, gconf_value_get_string(value));
 }
 
 
@@ -373,7 +363,7 @@ void do_roman_kana_conv_pref_changed_action( GConfClient* client,
 }
 
 
-void do_hira_kata_conv_pref_changed_action( GConfClient* client, 
+void do_hira_kata_conv_pref_changed_action (GConfClient* client, 
                                             guint        cnxn_id,
                                             GConfEntry*  entry,
                                             gpointer     data     )
@@ -472,6 +462,14 @@ void do_update_dictionary_order_list_changed_action ()
 //Preference initializations
 //
 
+void gw_prefs_add_change_listener (const char *KEY, GConfClientNotifyFunc callback_function, gpointer data)
+{
+  GConfClient *client;
+  client = gconf_client_get_default ();
+
+  gconf_client_notify_add (client, KEY, callback_function, data, NULL, NULL);
+  gconf_client_notify (client, KEY);
+}
 
 
 void gw_prefs_initialize_preferences()
@@ -482,141 +480,31 @@ void gw_prefs_initialize_preferences()
 
   GConfClient *client;
   client = gconf_client_get_default ();
-    
-    //Add directory listeners gwaei will be using
-    gconf_client_add_dir   ( client, GCPATH_INTERFACE, 
-                             GCONF_CLIENT_PRELOAD_NONE,
-                             NULL                             );
-    gconf_client_add_dir   ( client, GCPATH_GW, 
-                             GCONF_CLIENT_PRELOAD_NONE,
-                             NULL                            );
+  
+  //Add directory listeners gwaei will be using
+  gconf_client_add_dir   ( client, GCPATH_INTERFACE, 
+                           GCONF_CLIENT_PRELOAD_NONE,
+                           NULL                             );
+  gconf_client_add_dir   ( client, GCPATH_GW, 
+                           GCONF_CLIENT_PRELOAD_NONE,
+                           NULL                            );
 
-    //Add preference change notifiers
-    gconf_client_notify_add (client, GCKEY_GW_LESS_RELEVANT_SHOW, 
-                             do_less_relevant_show_pref_changed_action,
-                             NULL, NULL, NULL                );
-
-    gconf_client_notify_add (client, GCKEY_TOOLBAR_STYLE, 
-                             do_toolbar_style_pref_changed_action,
-                             NULL, NULL, NULL                 );
-
-    gconf_client_notify_add (client, GCKEY_GW_TOOLBAR_SHOW, 
-                             do_toolbar_show_pref_changed_action,
-                             NULL, NULL, NULL                );
-
-    gconf_client_notify_add (client, GCKEY_GW_FONT_SIZE, 
-                             do_font_size_pref_changed_action,
-                             NULL, NULL, NULL               );
-    gconf_client_notify_add (client, GCKEY_DOCUMENT_FONT_NAME,
-                             do_font_size_pref_changed_action,
-                             NULL, NULL, NULL               );
-
-    gconf_client_notify_add (client, GCKEY_GW_ROMAN_KANA, 
-                             do_roman_kana_conv_pref_changed_action,
-                             NULL, NULL, NULL                );
-
-    gconf_client_notify_add (client, GCKEY_GW_HIRA_KATA, 
-                             do_hira_kata_conv_pref_changed_action,
-                             NULL, NULL, NULL                );
-
-    gconf_client_notify_add (client, GCKEY_GW_KATA_HIRA, 
-                             do_kata_hira_conv_pref_changed_action,
-                             NULL, NULL, NULL                );
-
-    gconf_client_notify_add (client, GCKEY_GW_SPELLCHECK, 
-                             do_spellcheck_pref_changed_action,
-                             NULL, NULL, NULL                );
-
-    gconf_client_notify_add (client, GCKEY_GW_MATCH_FG, 
-                             do_color_value_changed_action,
-                             NULL, NULL, NULL                );
-
-    gconf_client_notify_add (client, GCKEY_GW_MATCH_BG, 
-                             do_color_value_changed_action,
-                             NULL, NULL, NULL                );
-
-    gconf_client_notify_add (client, GCKEY_GW_HEADER_FG, 
-                             do_color_value_changed_action,
-                             NULL, NULL, NULL                );
-
-    gconf_client_notify_add (client, GCKEY_GW_HEADER_BG, 
-                             do_color_value_changed_action,
-                             NULL, NULL, NULL                );
-
-    gconf_client_notify_add (client, GCKEY_GW_COMMENT_FG, 
-                             do_color_value_changed_action,
-                             NULL, NULL, NULL                );
-
-    gconf_client_notify_add (client,
-                             GCKEY_GW_ENGLISH_SOURCE, 
-                             do_dictionary_source_gconf_key_changed_action,
-                             NULL, NULL, NULL                 );
-
-    gconf_client_notify_add (client,
-                             GCKEY_GW_KANJI_SOURCE, 
-                             do_dictionary_source_gconf_key_changed_action,
-                             NULL, NULL, NULL                 );
-
-    gconf_client_notify_add (client,
-                             GCKEY_GW_NAMES_SOURCE, 
-                             do_dictionary_source_gconf_key_changed_action,
-                             NULL, NULL, NULL                 );
-
-    gconf_client_notify_add (client,
-                             GCKEY_GW_RADICALS_SOURCE, 
-                             do_dictionary_source_gconf_key_changed_action,
-                             NULL, NULL, NULL                 );
-
-    gconf_client_notify_add (client,
-                             GCKEY_GW_EXAMPLES_SOURCE, 
-                             do_dictionary_source_gconf_key_changed_action,
-                             NULL, NULL, NULL                 );
-
-    gconf_client_notify_add (client,
-                             GCKEY_GW_FRENCH_SOURCE, 
-                             do_dictionary_source_gconf_key_changed_action,
-                             NULL, NULL, NULL                 );
-
-    gconf_client_notify_add (client,
-                             GCKEY_GW_GERMAN_SOURCE, 
-                             do_dictionary_source_gconf_key_changed_action,
-                             NULL, NULL, NULL                 );
-
-    gconf_client_notify_add (client,
-                             GCKEY_GW_SPANISH_SOURCE, 
-                             do_dictionary_source_gconf_key_changed_action,
-                             NULL, NULL, NULL                 );
-
-    gconf_client_notify_add (client,
-                             GCKEY_GW_LOAD_ORDER, 
-                             do_update_dictionary_order_list_changed_action,
-                             NULL, NULL, NULL                 );
-
-
-    //Do an initial trigger of the notifications to set an initial state
-    gconf_client_notify (client, GCKEY_GW_TOOLBAR_SHOW);
-    gconf_client_notify (client, GCKEY_TOOLBAR_STYLE);
-    gconf_client_notify (client, GCKEY_GW_FONT_SIZE);
-    gconf_client_notify (client, GCKEY_GW_KATA_HIRA);
-    gconf_client_notify (client, GCKEY_GW_HIRA_KATA);
-    gconf_client_notify (client, GCKEY_GW_ROMAN_KANA);
-    gconf_client_notify (client, GCKEY_GW_SPELLCHECK);
-    gconf_client_notify (client, GCKEY_GW_LESS_RELEVANT_SHOW);
-    gconf_client_notify (client, GCKEY_GW_MATCH_FG);
-    gconf_client_notify (client, GCKEY_GW_MATCH_BG);
-    gconf_client_notify (client, GCKEY_GW_HEADER_FG);
-    gconf_client_notify (client, GCKEY_GW_HEADER_BG);
-    gconf_client_notify (client, GCKEY_GW_COMMENT_FG);
-    gconf_client_notify (client, GCKEY_GW_ENGLISH_SOURCE);
-    gconf_client_notify (client, GCKEY_GW_KANJI_SOURCE);
-    gconf_client_notify (client, GCKEY_GW_NAMES_SOURCE);
-    gconf_client_notify (client, GCKEY_GW_PLACES_SOURCE);
-    gconf_client_notify (client, GCKEY_GW_RADICALS_SOURCE);
-    gconf_client_notify (client, GCKEY_GW_EXAMPLES_SOURCE);
-    gconf_client_notify (client, GCKEY_GW_FRENCH_SOURCE);
-    gconf_client_notify (client, GCKEY_GW_GERMAN_SOURCE);
-    gconf_client_notify (client, GCKEY_GW_SPANISH_SOURCE);
-    gconf_client_notify (client, GCKEY_GW_LOAD_ORDER);
+  //Add preference change notifiers
+  gw_prefs_add_change_listener (GCKEY_GW_LESS_RELEVANT_SHOW, do_less_relevant_show_pref_changed_action, NULL);
+  gw_prefs_add_change_listener (GCKEY_TOOLBAR_STYLE, do_toolbar_style_pref_changed_action, NULL);
+  gw_prefs_add_change_listener (GCKEY_GW_TOOLBAR_SHOW, do_toolbar_show_pref_changed_action, NULL);
+  gw_prefs_add_change_listener (GCKEY_GW_FONT_SIZE, do_font_size_pref_changed_action, NULL);
+  gw_prefs_add_change_listener (GCKEY_DOCUMENT_FONT_NAME, do_font_size_pref_changed_action, NULL);
+  gw_prefs_add_change_listener (GCKEY_GW_ROMAN_KANA, do_roman_kana_conv_pref_changed_action, NULL);
+  gw_prefs_add_change_listener (GCKEY_GW_HIRA_KATA, do_hira_kata_conv_pref_changed_action, NULL);
+  gw_prefs_add_change_listener (GCKEY_GW_KATA_HIRA, do_kata_hira_conv_pref_changed_action, NULL);
+  gw_prefs_add_change_listener (GCKEY_GW_SPELLCHECK, do_spellcheck_pref_changed_action, NULL);
+  gw_prefs_add_change_listener (GCKEY_GW_MATCH_FG, do_color_value_changed_action, NULL);
+  gw_prefs_add_change_listener (GCKEY_GW_MATCH_BG, do_color_value_changed_action, NULL);
+  gw_prefs_add_change_listener (GCKEY_GW_HEADER_FG, do_color_value_changed_action, NULL);
+  gw_prefs_add_change_listener (GCKEY_GW_HEADER_BG, do_color_value_changed_action, NULL);
+  gw_prefs_add_change_listener (GCKEY_GW_COMMENT_FG, do_color_value_changed_action, NULL);
+  gw_prefs_add_change_listener (GCKEY_GW_LOAD_ORDER, do_dictionary_source_gconf_key_changed_action, NULL);
 
   g_object_unref(client);
 }

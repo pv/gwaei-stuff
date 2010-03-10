@@ -50,7 +50,11 @@
 #include <gwaei/callbacks.h>
 
 
-
+//!
+//! @brief The thread used while rsync is running, updating the dictionaries
+//!
+//! @param nothing A void pionter that currently does nothing
+//!
 static void *update_thread(void *nothing)
 {
     GQuark quark;
@@ -217,6 +221,11 @@ static void *update_thread(void *nothing)
 }
 
 
+//!
+//! @brief The thread used while libcurl is running, downloading the dictionariues
+//!
+//! @param dictionary A gpointer to a dictionary
+//!
 static void *install_thread (gpointer dictionary)
 {
     GQuark quark;
@@ -489,49 +498,51 @@ G_MODULE_EXPORT void do_dictionary_install (GtkWidget *widget, gpointer data)
 }
 
 
+//!
+//! @brief Updates the gconf source entry for the dictionary when the user types into the text entry
+//!
+//! @param widget Pointer to the GtkWidget containing the source URI to copy
+//! @param data il A pointer to a GwUiDictInstallLine to use to get the gconf key from
+//!
 G_MODULE_EXPORT void do_source_entry_changed_action (GtkWidget *widget, gpointer data)
 {
-  /*
-    //Prepare some variables
-    char name[100];
-    gw_parse_widget_name(name, widget, FALSE);
-
-    char key[100];
-    strcpy(key, GCPATH_GW);
-    strcat(key, "/dictionary/");
-    strcat(key, name);
-    strcat(key, "_source");
-
-    char value[FILENAME_MAX];
-    strcpy(value, gtk_entry_get_text(GTK_ENTRY (widget)));
-
-    gw_pref_set_string (key, value);
-    */
+    if (widget != NULL && data != NULL)
+    {
+      GwUiDictInstallLine *il = (GwUiDictInstallLine*) data;
+      char value[FILENAME_MAX];
+      strcpy(value, gtk_entry_get_text(GTK_ENTRY (widget)));
+      gw_pref_set_string (il->di->gckey, value);
+    }
 }
 
 
-G_MODULE_EXPORT void do_dictionary_source_reset(GtkWidget *widget, gpointer data)
+//!
+//! @brief gtk callback that resets the dictionary install url to the default
+//!
+//! @param widget Unused GtkWidget pointer 
+//! @param data il A pointer to a GwUiDictInstallLine to use to get the gconf key from
+//!
+G_MODULE_EXPORT void do_dictionary_source_reset (GtkWidget *widget, gpointer data)
 {
-  /*
-    //Prepare some variables
-    char name[100];
-    gw_parse_widget_name (name, widget, FALSE);
-
-    char key[100];
-    strcpy (key, GCPATH_GW);
-    strcat (key, "/dictionary/");
-    strcat (key, name);
-    strcat (key, "_source");
-
-    const char *string = gw_pref_get_default_string (key, NULL);
-    if (string != NULL)
-      gw_pref_set_string (key, string);
-*/
+    if (widget != NULL && data != NULL)
+    {
+      GwUiDictInstallLine *il = (GwUiDictInstallLine*) data;
+      const char *string = gw_pref_get_default_string (il->di->gckey, NULL);
+      if (string != NULL)
+        gw_pref_set_string (il->di->gckey, string);
+    }
 }
 
 
+//!
+//! @brief gtk callback that lets the user select an install uri
+//!
+//! @param widget Unused GtkWidget pointer 
+//! @param data il A pointer to a GwUiDictInstallLine to use to get the correct uri source entry from
+//!
 G_MODULE_EXPORT void do_dictionary_source_browse (GtkWidget *widget, gpointer data)
 {
+    GwUiDictInstallLine *il = (GwUiDictInstallLine*) data;
     //Declarations
     GtkWidget *dialog, *window;
     window = GTK_WIDGET (gtk_builder_get_object (builder, "settings_window"));
@@ -547,7 +558,7 @@ G_MODULE_EXPORT void do_dictionary_source_browse (GtkWidget *widget, gpointer da
     if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
         char *filename;
         filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
-        gw_ui_set_dictionary_source(GTK_WIDGET (data), filename);
+        gw_ui_set_dictionary_source(il->source_uri_entry, filename);
 
         g_free (filename);
         filename = NULL;
@@ -581,6 +592,12 @@ G_MODULE_EXPORT void do_cancel_update_installed_dictionaries(GtkWidget *widget, 
 }
 
 
+//!
+//! @brief Callback for the button that allows users to manually resplit the Names from the Places dictionary
+//!
+//! @param widget Currently unused GtkWidget pointer
+//! @param data A currently unused gpointer
+//!
 G_MODULE_EXPORT void do_force_names_resplit(GtkWidget *widget, gpointer data)
 {
     GError *error = NULL;
@@ -599,7 +616,13 @@ G_MODULE_EXPORT void do_force_names_resplit(GtkWidget *widget, gpointer data)
 }
 
 
-G_MODULE_EXPORT void do_force_mix_rebuild(GtkWidget *widget, gpointer data)
+//!
+//! @brief Callback for the button that allows users to manually force a rebuild of the "Mix" dictionary.
+//!
+//! @param widget Currently unused GtkWidget pointer
+//! @param data A currently unused gpointer
+//!
+G_MODULE_EXPORT void do_force_mix_rebuild (GtkWidget *widget, gpointer data)
 {
     GError *error = NULL;
 
@@ -620,6 +643,12 @@ G_MODULE_EXPORT void do_force_mix_rebuild(GtkWidget *widget, gpointer data)
 }
 
 
+//!
+//! @brief The callback for links leading to the "Where to get other dictionaries" homepage
+//!
+//! @param widget Currently unused GtkWidget pointer
+//! @param data A currently unused gpointer
+//!
 G_MODULE_EXPORT void do_other_dictionaries_help (GtkWidget *widget, gpointer data)
 {
     char *uri = "http://gwaei.sourceforge.net/dictionaries.html";
@@ -631,6 +660,12 @@ G_MODULE_EXPORT void do_other_dictionaries_help (GtkWidget *widget, gpointer dat
 }
 
 
+//!
+//! @brief Callback to switch the dictionary install table shown in the preferences
+//!
+//! @param widget The GtkComboBox where the user selects the dictionary table the wish to you
+//! @param data A currently unused gpointer
+//!
 G_MODULE_EXPORT void do_switch_displayed_dictionaries_action (GtkWidget *widget, gpointer data)
 {
     int active;
@@ -650,6 +685,12 @@ G_MODULE_EXPORT void do_switch_displayed_dictionaries_action (GtkWidget *widget,
 }
 
 
+//!
+//! @brief Callback for to move the current dictionary higher in the list order
+//!
+//! @param widget A currently unused GtkWidget pointer
+//! @param data A pointer to an INT where the dictionary should be moved
+//!
 G_MODULE_EXPORT void do_move_dictionary_up (GtkWidget *widget, gpointer data)
 {
     printf("Moving up...\n");
@@ -715,6 +756,12 @@ G_MODULE_EXPORT void do_move_dictionary_up (GtkWidget *widget, gpointer data)
 }
 
 
+//!
+//! @brief Callback for to move the current dictionary lower in the list order
+//!
+//! @param widget A currently unused GtkWidget pointer
+//! @param data A pointer to an INT where the dictionary should be moved
+//!
 G_MODULE_EXPORT void do_move_dictionary_down (GtkWidget *widget, gpointer data)
 {
     printf("Moving down...\n");
@@ -780,6 +827,12 @@ G_MODULE_EXPORT void do_move_dictionary_down (GtkWidget *widget, gpointer data)
 }
 
 
+//!
+//! @brief Opens and closes the advanced toggle button for the dictionary install screen
+//!
+//! @param widget A pointer to the GtkExpander widget that was toggled
+//! @param data An unused gpointer
+//!
 G_MODULE_EXPORT do_toggle_advanced_source (GtkWidget *widget, gpointer data)
 {
     gboolean expanded;
@@ -790,3 +843,4 @@ G_MODULE_EXPORT do_toggle_advanced_source (GtkWidget *widget, gpointer data)
     else
       gtk_widget_show_all (GTK_WIDGET (data));
 }
+
