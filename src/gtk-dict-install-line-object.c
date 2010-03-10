@@ -197,14 +197,12 @@ void gw_ui_dict_install_set_action_button (GwUiDictInstallLine *il, const gchar 
     gtk_box_pack_start (GTK_BOX (parent), il->action_button, TRUE, TRUE, 0);
     gtk_widget_show (il->action_button);
 
-/*
   if (STOCK_ID == GTK_STOCK_ADD)
-    g_signal_connect(il->action_button, "click", add_dictionary_action, il->di);
+    g_signal_connect(il->action_button, "clicked", do_dictionary_install, (gpointer) il);
   if (STOCK_ID == GTK_STOCK_DELETE)
-    g_signal_connect(il->action_button, "click", remove_dictionary_action, il->di);
+    g_signal_connect(il->action_button, "clicked", do_dictionary_remove, (gpointer) il);
   if (STOCK_ID = GTK_STOCK_CANCEL)
-    g_signal_connect(il->action_button, "click", cancel_dictionary_action, il->di);
-*/
+    g_signal_connect(il->action_button, "clicked", do_cancel_dictionary_install, (gpointer) il);
 
     gtk_widget_set_sensitive (il->action_button, SENSITIVE);
 

@@ -119,222 +119,9 @@ void gw_ui_set_dictionary_source (GtkWidget *widget, const char* value)
 }
 
 
-int gw_ui_get_install_line_status(char *name)
-{
-  /*
-    GtkWidget *button;
-
-    char id[100];
-    strcpy(id, name);
-    char *suffix = &id[strlen(id)];
-
-    strcpy(suffix, "_install_button");
-    button = GTK_WIDGET (gtk_builder_get_object (builder, id));
-    if (GTK_WIDGET_VISIBLE (button) == TRUE)
-      return GW_DICT_STATUS_NOT_INSTALLED;
-
-    strcpy(suffix, "_remove_button");
-    button = GTK_WIDGET (gtk_builder_get_object (builder, id));
-    if (GTK_WIDGET_VISIBLE (button) == TRUE)
-      return GW_DICT_STATUS_INSTALLED;
-
-    strcpy(suffix, "_cancel_button");
-    button = GTK_WIDGET (gtk_builder_get_object (builder, id));
-    if (GTK_WIDGET_VISIBLE (button) == TRUE && GTK_WIDGET_SENSITIVE(button) == TRUE)
-      return GW_DICT_STATUS_INSTALLING;
-    if (GTK_WIDGET_VISIBLE (button) == TRUE && GTK_WIDGET_SENSITIVE (button) == FALSE)
-      return GW_DICT_STATUS_CANCELING;
-      */
-
-}
-
-//Sets the install status of an individual dictionary
-void gw_ui_set_install_line_status(char *name, char *status, char *message)
-{
-  /*
-    GtkWidget *install_button, *remove_button, *cancel_button;
-    GtkWidget *hbox, *label, *icon_installed, *icon_errored, *progressbar;
-    GtkWidget *advanced_hbox;
-
-    char id[100];
-    strcpy(id, name);
-    char *suffix = &id[strlen(id)];
-
-    strcpy(suffix, "_install_button");
-    install_button = GTK_WIDGET (gtk_builder_get_object (builder, id));
-
-    strcpy(suffix, "_remove_button");
-    remove_button = GTK_WIDGET (gtk_builder_get_object (builder, id));
-
-    strcpy(suffix, "_cancel_button");
-    cancel_button = GTK_WIDGET (gtk_builder_get_object (builder, id));
-
-    strcpy(suffix, "_install_progressbar");
-    progressbar = GTK_WIDGET (gtk_builder_get_object (builder, id));
-
-    strcpy(suffix, "_install_hbox");
-    hbox = GTK_WIDGET (gtk_builder_get_object (builder, id));
-
-    strcpy(suffix, "_install_label");
-    label = GTK_WIDGET (gtk_builder_get_object (builder, id));
-
-    strcpy(suffix, "_icon_installed");
-    icon_installed = GTK_WIDGET (gtk_builder_get_object (builder, id));
-
-    strcpy(suffix, "_icon_errored");
-    icon_errored = GTK_WIDGET (gtk_builder_get_object (builder, id));
-
-    //advanced settings items
-    strcpy(suffix, "_advanced_hbox");
-    if (strcmp(name, "update") != 0)
-      advanced_hbox = GTK_WIDGET (gtk_builder_get_object (builder, id));
-
-    if (strcmp(status, "finishing") == 0)
-    {
-      gtk_widget_hide(remove_button);
-      gtk_widget_show(cancel_button);
-      gtk_widget_set_sensitive(cancel_button, FALSE);
-      gtk_widget_hide(install_button);
-
-      gtk_label_set_text(GTK_LABEL (label), gettext("Finishing...")); 
-      gtk_widget_show(label);
-      gtk_widget_hide(icon_errored);
-      gtk_widget_hide(icon_installed);
-      gtk_widget_hide(progressbar);
-      gtk_widget_show(hbox);
-    }
-    if (strcmp(status, "cancelling") == 0)
-    {
-      gtk_widget_hide(remove_button);
-      gtk_widget_show(cancel_button);
-      gtk_widget_set_sensitive(cancel_button, FALSE);
-      gtk_widget_hide(install_button);
-
-      gtk_label_set_text(GTK_LABEL (label), gettext("Cancelling...")); 
-      gtk_widget_show(label);
-      gtk_widget_hide(icon_errored);
-      gtk_widget_hide(icon_installed);
-      gtk_widget_hide(progressbar);
-      gtk_widget_show(hbox);
-    }
-    else if (strcmp(status, "cancel") == 0)
-    {
-      gtk_widget_hide(remove_button);
-      gtk_widget_show(cancel_button);
-      gtk_widget_set_sensitive(cancel_button, TRUE);
-      gtk_widget_hide(install_button);
-
-      char text[100];
-      if (message != NULL)
-      {
-        strcpy(text, message);
-        gtk_progress_bar_set_text(GTK_PROGRESS_BAR (progressbar), text);
-      }
-      else
-      {
-        gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR (progressbar), 0.0);
-      }
-      gtk_widget_hide(hbox);
-      gtk_widget_show(progressbar);
-
-      if (strcmp(name, "update") != 0)
-        gtk_widget_set_sensitive(advanced_hbox, FALSE);
-    }
-    else if (strcmp(status, "install") == 0)
-    {
-      gtk_widget_hide(remove_button);
-      gtk_widget_hide(cancel_button);
-      gtk_widget_show(install_button);
-
-      char text[100];
-      if (message != NULL)
-      {
-        strcpy(text, message);
-      }
-      else {
-        strcpy(text, gettext("Not Installed"));
-      }
-      gtk_label_set_text(GTK_LABEL (label), text); 
-      gtk_widget_show(label);
-      gtk_widget_hide(icon_errored);
-      gtk_widget_hide(icon_installed);
-      gtk_widget_hide(progressbar);
-      gtk_widget_show(hbox);
-
-      if (strcmp(name, "update") != 0)
-        gtk_widget_set_sensitive(advanced_hbox, TRUE);
-    }
-    else if (strcmp(status, "remove") == 0)
-    {
-      gtk_widget_show(remove_button);
-      gtk_widget_hide(cancel_button);  
-      gtk_widget_hide(install_button);
-
-      char text[100];
-      if (message != NULL)
-      {
-        strcpy(text, message);
-        gtk_label_set_text(GTK_LABEL (label), text); 
-      }
-      else
-      {
-        gtk_label_set_text(GTK_LABEL (label), gettext("Installed")); 
-      }
-
-      gtk_widget_show(label);
-      gtk_widget_hide(icon_errored);
-      gtk_widget_show(icon_installed);
-      gtk_widget_hide(progressbar);
-      gtk_widget_show(hbox);
-
-      if (strcmp(name, "update") != 0)
-        gtk_widget_set_sensitive(advanced_hbox, FALSE);
-    }
-    else if (strcmp(status, "error") == 0)
-    {
-      //Prepare the message text
-      char text[100];
-      strcpy(text, gettext("Errored"));
-      if (message != NULL)
-      {
-        strcat(text, ": ");
-        strcat(text, message);
-      }
-
-      gtk_widget_hide(remove_button);
-      gtk_widget_hide(cancel_button);  
-      gtk_widget_show(install_button);
-
-      gtk_widget_show(label);
-      gtk_label_set_text(GTK_LABEL (label), text); 
-      gtk_widget_show(icon_errored);
-      gtk_widget_hide(icon_installed);
-      gtk_widget_hide(progressbar);
-      gtk_widget_show(hbox);
-
-      if (strcmp(name, "update") != 0)
-        gtk_widget_set_sensitive(advanced_hbox, TRUE);
-    }
-
-    GtkWidget *button;
-    gboolean sensitive;
-
-    sensitive = (gw_io_check_for_rsync() && gw_dictlist_get_total() &&
-                 gw_dictlist_get_total_with_status(GW_DICT_STATUS_INSTALLING) == 0);
-
-    strcpy(id, "update_install_button");
-    button = GTK_WIDGET (gtk_builder_get_object(builder, id));
-    gtk_widget_set_sensitive(button, sensitive);
-
-    strcpy(id, "update_remove_button");
-    button = GTK_WIDGET (gtk_builder_get_object(builder, id));
-    gtk_widget_set_sensitive(button, sensitive);
-    */
-}
-
 
 //The layout of this function is specifically for a libcurl callback
-int gw_ui_update_progressbar (void   *id,
+int gw_ui_update_progressbar (void   *data,
                               double  dltotal,
                               double  dlnow,
                               double  ultotal,
@@ -342,43 +129,25 @@ int gw_ui_update_progressbar (void   *id,
 {
     gdk_threads_enter();
 
-    GtkWidget *progressbar;
-    progressbar = GTK_WIDGET (gtk_builder_get_object(builder, (char*) id));
+    GwUiDictInstallLine *il = (GwUiDictInstallLine*) data;
+    GtkWidget *progressbar = il->status_progressbar;
 
-    if (GTK_WIDGET_VISIBLE (progressbar) == TRUE) {
+    if (il->di->status != GW_DICT_STATUS_CANCELING) {
       if (dlnow == 0.0) {
-        gtk_progress_bar_pulse (GTK_PROGRESS_BAR (progressbar));  
-        gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progressbar), " ");
+        gw_ui_dict_install_line_progress_bar_set_fraction (il, 0.0);
       }
       else {
         double ratio = dlnow / dltotal;
-        char *text = gettext("Downloading...");
-        gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR (progressbar), ratio);
-        gtk_progress_bar_set_text(GTK_PROGRESS_BAR (progressbar), text);
+        gw_ui_dict_install_line_progress_bar_set_fraction (il, ratio);
       }
 
       gdk_threads_leave ();
       return FALSE;
     }
+    il->di->status = GW_DICT_STATUS_CANCELED;
 
     gdk_threads_leave ();
     return TRUE;
-}
-
-
-void gw_ui_set_progressbar (char *name, double percent, char *message)
-{
-    char id[50];
-    strcpy (id, name);
-    strcat(id, "_install_progressbar");
-
-    GtkWidget *progressbar;
-    progressbar = GTK_WIDGET (gtk_builder_get_object (builder, id));
-
-    gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR (progressbar), percent);
-
-    if (message != NULL)
-      gtk_progress_bar_set_text(GTK_PROGRESS_BAR (progressbar), message);
 }
 
 

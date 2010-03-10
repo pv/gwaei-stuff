@@ -65,6 +65,9 @@ void do_dictionary_source_browse (GtkWidget*, gpointer);
 void do_dictionary_source_reset (GtkWidget*, gpointer);
 void do_toggle_advanced_source (GtkWidget*, gpointer);
 
+void do_dictionary_install (GtkWidget*, gpointer);
+void do_cancel_dictionary_install (GtkWidget*, gpointer);
+void do_dictionary_remove (GtkWidget*, gpointer);
 
 
 

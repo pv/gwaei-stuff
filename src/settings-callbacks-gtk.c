@@ -106,7 +106,7 @@ static void *update_thread(void *nothing)
     gdouble progress = 0.0;
 
     gdk_threads_enter();
-    gw_ui_set_install_line_status("update",  "cancel",  NULL);
+    //gw_ui_set_install_line_status("update",  "cancel",  NULL);
     gw_ui_update_settings_interface();
     gdk_threads_leave();
 
@@ -196,7 +196,7 @@ static void *update_thread(void *nothing)
       gw_dictlist_normalize_all_status_from_to (GW_DICT_STATUS_ERRORED, GW_DICT_STATUS_INSTALLED);
       gw_dictlist_normalize_all_status_from_to (GW_DICT_STATUS_UPDATING, GW_DICT_STATUS_INSTALLED);
       gw_dictlist_normalize_all_status_from_to (GW_DICT_STATUS_UPDATED, GW_DICT_STATUS_INSTALLED);
-      gw_ui_set_install_line_status ("update",  "error", error->message);
+      //gw_ui_set_install_line_status ("update",  "error", error->message);
       g_error_free(error);
       error = NULL;
     }
@@ -206,14 +206,14 @@ static void *update_thread(void *nothing)
       gw_dictlist_normalize_all_status_from_to (GW_DICT_STATUS_UPDATING, GW_DICT_STATUS_INSTALLED);
       gw_dictlist_normalize_all_status_from_to (GW_DICT_STATUS_UPDATED, GW_DICT_STATUS_INSTALLED);
       gw_dictlist_normalize_all_status_from_to (GW_DICT_STATUS_CANCELING, GW_DICT_STATUS_INSTALLED);
-      gw_ui_set_install_line_status ("update",  "install", text);
+      //gw_ui_set_install_line_status ("update",  "install", text);
     }
     else
     {
       strcpy(text, gettext("Dictionary update finished"));
       gw_dictlist_normalize_all_status_from_to (GW_DICT_STATUS_UPDATING, GW_DICT_STATUS_INSTALLED);
       gw_dictlist_normalize_all_status_from_to (GW_DICT_STATUS_UPDATED, GW_DICT_STATUS_INSTALLED);
-      gw_ui_set_install_line_status ("update", "remove", text);
+      //gw_ui_set_install_line_status ("update", "remove", text);
     }
 
     gw_ui_update_settings_interface ();
@@ -226,13 +226,14 @@ static void *update_thread(void *nothing)
 //!
 //! @param dictionary A gpointer to a dictionary
 //!
-static void *install_thread (gpointer dictionary)
+static void *install_thread (gpointer data)
 {
     GQuark quark;
     quark = g_quark_from_string (GW_GENERIC_ERROR);
     GError *error = NULL;
 
-    GwDictInfo *di = (GwDictInfo*) dictionary;
+    GwUiDictInstallLine *il = (GwUiDictInstallLine*) data;
+    GwDictInfo *di = (GwDictInfo*) il->di;
     char *name;
     name = g_utf8_strdown(di->name, -1);
 
@@ -246,7 +247,7 @@ static void *install_thread (gpointer dictionary)
     //If everything succeeded, update the interface
     di->status = GW_DICT_STATUS_INSTALLING;
     gdk_threads_enter ();
-    gw_ui_set_install_line_status(name, "cancel", NULL);
+    gw_ui_dict_install_set_action_button (il, GTK_STOCK_CANCEL, TRUE);
     gw_ui_update_settings_interface();
     gdk_threads_leave ();
     
@@ -256,10 +257,6 @@ static void *install_thread (gpointer dictionary)
     char uri[100];
     gw_pref_get_string (uri, di->gckey, fallback_uri, 100);
     printf("%s\n", uri);
-
-    char progressbar_id[100];
-    strcpy(progressbar_id, name);
-    strcat(progressbar_id, "_install_progressbar");
 
     //Make sure the download folder exits
     char download_path[FILENAME_MAX] = "";
@@ -275,7 +272,7 @@ static void *install_thread (gpointer dictionary)
     else if (ret)
     {
       ret = gw_io_download_dictionary_file (uri, gz_path,
-                                   gw_ui_update_progressbar, progressbar_id);
+                                   gw_ui_update_progressbar, il);
       if (ret == FALSE)
       {
         const char *message = gettext("Connection failure\n");
@@ -287,20 +284,20 @@ static void *install_thread (gpointer dictionary)
     {
     printf("gunzipping...\n");
       gdk_threads_enter();
-      gw_ui_set_install_line_status(name, "finishing", gettext("Decompressing..."));
+      gw_ui_dict_install_set_message (il, NULL, gettext("Decompressing..."));
       gdk_threads_leave();
       ret = gw_io_gunzip_dictionary_file(gz_path, &error);
     }
     else if (strstr(gz_path, ".zip") && ret && error == NULL)
     {
-    printf("unzipping...\n");
+      printf("unzipping...\n");
       ret = gw_io_unzip_dictionary_file(gz_path, &error);
     }
    
     if (strstr(sync_path, "UTF") == NULL && ret && error == NULL)
     {
       gdk_threads_enter();
-      gw_ui_set_install_line_status(name, "finishing", gettext("Converting encoding..."));
+      gw_ui_dict_install_set_message (il, NULL, gettext("Converting encoding..."));
       gdk_threads_leave();
       ret = gw_io_copy_with_encoding(sync_path, path, "EUC-JP","UTF-8", &error);
     }
@@ -313,17 +310,17 @@ static void *install_thread (gpointer dictionary)
     if (ret && error == NULL)
     {
       gdk_threads_enter();
-      gw_ui_set_install_line_status(name, "finishing", gettext("Postprocessing..."));
+      gw_ui_dict_install_set_message (il, NULL, gettext("Postprocessing..."));
       gdk_threads_leave();
       gw_dictlist_preform_postprocessing_by_name(di->name, &error);
     }
      
     //Was canceled
-    if (error != NULL && gw_ui_get_install_line_status(name) == GW_DICT_STATUS_CANCELING)
+    if (error != NULL && di->status == GW_DICT_STATUS_CANCELING)
     {
       gdk_threads_enter();
       di->status = GW_DICT_STATUS_NOT_INSTALLED;
-      gw_ui_set_install_line_status(name, "install", NULL);
+      gw_ui_dict_install_set_action_button (il, GTK_STOCK_ADD, TRUE);
       gdk_threads_leave();
       g_error_free(error);
       error = NULL;
@@ -333,7 +330,8 @@ static void *install_thread (gpointer dictionary)
     {
       gdk_threads_enter();
       di->status = GW_DICT_STATUS_NOT_INSTALLED;
-      gw_ui_set_install_line_status(name, "error", error->message);
+      gw_ui_dict_install_set_message (il, GTK_STOCK_DIALOG_ERROR, error->message);
+      gw_ui_dict_install_set_action_button (il, GTK_STOCK_ADD, TRUE);
       gdk_threads_leave();
       g_error_free(error);
       error = NULL;
@@ -344,7 +342,7 @@ static void *install_thread (gpointer dictionary)
       gdk_threads_enter();
       di->status = GW_DICT_STATUS_INSTALLED;
       di->total_lines =  gw_io_get_total_lines_for_path (di->path);
-      gw_ui_set_install_line_status(name, "remove", NULL);
+      gw_ui_dict_install_set_action_button (il, GTK_STOCK_REMOVE, TRUE);
       gdk_threads_leave();
     }
 
@@ -448,53 +446,36 @@ G_MODULE_EXPORT void do_color_reset_for_swatches (GtkWidget *widget, gpointer da
 
 
 
-G_MODULE_EXPORT void do_dictionary_remove (GtkWidget* widget, gpointer* dictionary)
+G_MODULE_EXPORT void do_dictionary_remove (GtkWidget* widget, gpointer data)
 {
-  /*
-    char name[100];
-    name[0] = '\0';
-    gw_parse_widget_name (name, widget, TRUE);
-    gw_console_uninstall_dictionary_by_name (name);
-
-    name[0] = '\0';
-    gw_parse_widget_name (name, widget, FALSE);
-    gw_ui_set_install_line_status (name, "install", NULL);
+    GwUiDictInstallLine *il = (GwUiDictInstallLine*) data;
+    gw_console_uninstall_dictionary_by_name (il->di->name);
+    gw_ui_dict_install_set_action_button (il, GTK_STOCK_ADD, TRUE);
     rebuild_combobox_dictionary_list();
-    */
 }
 
 
 G_MODULE_EXPORT void do_cancel_dictionary_install (GtkWidget *widget, gpointer data)
 {
-  /*
-    char name[100];
-
-    name[0] = '\0';
-    gw_parse_widget_name (name, widget, FALSE);
-    gw_ui_set_install_line_status (name, "cancelling", NULL);
-    */
+    GwUiDictInstallLine *il = (GwUiDictInstallLine*) data;
+    gw_ui_dict_install_set_action_button (il, GTK_STOCK_CANCEL, FALSE);
 }
 
 
 G_MODULE_EXPORT void do_dictionary_install (GtkWidget *widget, gpointer data)
 {
-  /*
+    GwUiDictInstallLine *il = (GwUiDictInstallLine*) data;
+
     //Make sure the files are clean
-    do_dictionary_remove(widget, data);
+    do_dictionary_remove (widget, data);
 
-    //Create the name string
-    char name[100];
-    gw_parse_widget_name(name, widget, TRUE);
-
-    GwDictInfo *dictionary;
-    dictionary = gw_dictlist_get_dictionary_by_alias (name);
+    gw_ui_dict_install_set_action_button (il, GTK_STOCK_CANCEL, TRUE);
 
     //Create the thread
-    if (g_thread_create(&install_thread, dictionary, FALSE, NULL) == NULL) {
+    if (g_thread_create(&install_thread, il, FALSE, NULL) == NULL) {
       g_warning("couldn't create the thread");
       return;
     }
-    */
 }
 
 
@@ -588,7 +569,7 @@ G_MODULE_EXPORT void do_update_installed_dictionaries(GtkWidget *widget, gpointe
 
 G_MODULE_EXPORT void do_cancel_update_installed_dictionaries(GtkWidget *widget, gpointer data)
 {
-    gw_ui_set_install_line_status("update", "cancelling", NULL);
+    //gw_ui_set_install_line_status("update", "cancelling", NULL);
 }
 
 
