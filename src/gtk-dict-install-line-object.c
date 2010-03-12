@@ -50,6 +50,25 @@
 
 
 //!
+//! @brief Sets the initial default install state of the GwUiDictInstallLine object.
+//!
+//! @param di A GwuiDictInstallLine to set the state of
+//!
+void gw_settings_initialize_dictionary_ui_status (GwUiDictInstallLine *il) 
+{
+    if (gw_dictlist_dictionary_get_status_by_id (il->di->id) == GW_DICT_STATUS_INSTALLED)
+    {
+      gw_ui_dict_install_set_action_button (il, GTK_STOCK_DELETE, TRUE);
+      gw_ui_dict_install_set_message (il, GTK_STOCK_APPLY, gettext("Installed"));
+    }
+    else
+    {
+      gw_ui_dict_install_set_action_button (il, GTK_STOCK_ADD, TRUE);
+      gw_ui_dict_install_set_message (il, NULL, gettext("Not Installed"));
+    }
+}
+
+//!
 //! @brief Allocates and creates a new GwUiDictInstallLine object.
 //!
 //! @param di A GwDictInfo object to get information from
@@ -109,6 +128,8 @@ GwUiDictInstallLine *gw_ui_new_dict_install_line (GwDictInfo *di)
       gtk_box_pack_start (GTK_BOX (temp->source_hbox), temp->source_browse_button, FALSE, TRUE, 0);
       gtk_box_pack_start (GTK_BOX (temp->source_hbox), temp->source_reset_button, FALSE, TRUE, 0);
 
+      g_signal_connect (G_OBJECT (temp->advanced_expander), "activate", G_CALLBACK (do_toggle_advanced_source), temp->source_hbox);
+
       return temp;
     }
     printf("Error creating dictionary install line gui object.");
@@ -142,7 +163,8 @@ void gw_ui_add_dict_install_line_to_table (GtkTable *table, GwUiDictInstallLine 
   row++;
 
   gtk_table_attach (table, il->source_hbox, 0, 3, row, row + 1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-  g_signal_connect (G_OBJECT (il->advanced_expander), "activate", G_CALLBACK (do_toggle_advanced_source), il->source_hbox);
+
+  gw_settings_initialize_dictionary_ui_status (il);
 }
 
 

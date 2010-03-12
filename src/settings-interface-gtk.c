@@ -153,47 +153,47 @@ int gw_ui_update_progressbar (void   *data,
 
 void gw_settings_initialize_installed_dictionary_list () 
 {
-  /*
-    if (gw_dictlist_dictionary_get_status_by_id (GW_DICT_ID_ENGLISH) == GW_DICT_STATUS_INSTALLED)
-      gw_ui_set_install_line_status ("english", "remove", NULL);
-    else
-      gw_ui_set_install_line_status ("english", "install", NULL);
+    GtkWidget *table;
+    GwDictInfo *di;
+    GwUiDictInstallLine *il;
 
-    if (gw_dictlist_dictionary_get_status_by_id (GW_DICT_ID_KANJI) == GW_DICT_STATUS_INSTALLED)
-      gw_ui_set_install_line_status ("kanji", "remove", NULL);
-    else
-      gw_ui_set_install_line_status ("kanji", "install", NULL);
+    table = GTK_WIDGET (gtk_builder_get_object (builder, "dictionaries_table"));
 
-    if (gw_dictlist_dictionary_get_status_by_id (GW_DICT_ID_NAMES) == GW_DICT_STATUS_INSTALLED)
-      gw_ui_set_install_line_status ("names", "remove", NULL);
-    else
-      gw_ui_set_install_line_status ("names", "install", NULL);
+    di =  gw_dictlist_get_dictionary_by_name ("English");
+    il = gw_ui_new_dict_install_line (di);
+    gw_ui_add_dict_install_line_to_table (GTK_TABLE (table), il);
 
-    if (gw_dictlist_dictionary_get_status_by_id (GW_DICT_ID_RADICALS) == GW_DICT_STATUS_INSTALLED)
-      gw_ui_set_install_line_status ("radicals", "remove", NULL);
-    else
-      gw_ui_set_install_line_status ("radicals", "install", NULL);
+    di =  gw_dictlist_get_dictionary_by_name ("Kanji");
+    il = gw_ui_new_dict_install_line (di);
+    gw_ui_add_dict_install_line_to_table (GTK_TABLE (table), il);
 
-    if (gw_dictlist_dictionary_get_status_by_id (GW_DICT_ID_EXAMPLES) == GW_DICT_STATUS_INSTALLED)
-      gw_ui_set_install_line_status ("examples", "remove", NULL);
-    else
-      gw_ui_set_install_line_status ("examples", "install", NULL);
+    di =  gw_dictlist_get_dictionary_by_name ("Names");
+    il = gw_ui_new_dict_install_line (di);
+    gw_ui_add_dict_install_line_to_table (GTK_TABLE (table), il);
 
-    if (gw_dictlist_dictionary_get_status_by_id (GW_DICT_ID_FRENCH) == GW_DICT_STATUS_INSTALLED)
-      gw_ui_set_install_line_status ("french", "remove", NULL);
-    else
-      gw_ui_set_install_line_status ("french", "install", NULL);
+    di =  gw_dictlist_get_dictionary_by_name ("Radicals");
+    il = gw_ui_new_dict_install_line (di);
+    gw_ui_add_dict_install_line_to_table (GTK_TABLE (table), il);
 
-    if (gw_dictlist_dictionary_get_status_by_id (GW_DICT_ID_GERMAN) == GW_DICT_STATUS_INSTALLED)
-      gw_ui_set_install_line_status ("german", "remove", NULL);
-    else
-      gw_ui_set_install_line_status ("german", "install", NULL);
+    di =  gw_dictlist_get_dictionary_by_name ("Examples");
+    il = gw_ui_new_dict_install_line (di);
+    gw_ui_add_dict_install_line_to_table (GTK_TABLE (table), il);
 
-    if (gw_dictlist_dictionary_get_status_by_id (GW_DICT_ID_SPANISH) == GW_DICT_STATUS_INSTALLED)
-      gw_ui_set_install_line_status ("spanish", "remove", NULL);
-    else
-      gw_ui_set_install_line_status ("spanish", "install", NULL);
-      */
+    table = GTK_WIDGET (gtk_builder_get_object (builder, "other_dictionaries_table"));
+
+    di =  gw_dictlist_get_dictionary_by_name ("French");
+    il = gw_ui_new_dict_install_line (di);
+    gw_ui_add_dict_install_line_to_table (GTK_TABLE (table), il);
+
+    di =  gw_dictlist_get_dictionary_by_name ("German");
+    il = gw_ui_new_dict_install_line (di);
+    gw_ui_add_dict_install_line_to_table (GTK_TABLE (table), il);
+
+    di =  gw_dictlist_get_dictionary_by_name ("Spanish");
+    il = gw_ui_new_dict_install_line (di);
+    gw_ui_add_dict_install_line_to_table (GTK_TABLE (table), il);
+
+    gw_ui_update_settings_interface ();
 }
 
 

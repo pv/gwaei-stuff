@@ -207,8 +207,10 @@ gboolean gw_io_download_dictionary_file(char *source_path, char *save_path, gpoi
     fclose(outfile);
     curl_easy_cleanup(curl);
 
-    //If curl didn't write a clean file for some reason, end the function here
-    if (res != 0) g_remove(save_path);
+    if (res != 0)
+    {
+      g_remove(save_path);
+    }
 
     return (res == 0);
 }

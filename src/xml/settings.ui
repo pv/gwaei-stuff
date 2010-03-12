@@ -31,128 +31,12 @@
                 <property name="visible">True</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkFrame" id="frame1">
-                    <property name="visible">True</property>
-                    <property name="border_width">6</property>
-                    <property name="label_xalign">0</property>
-                    <property name="shadow_type">in</property>
-                    <child>
-                      <object class="GtkVBox" id="vbox4">
-                        <property name="visible">True</property>
-                        <property name="orientation">vertical</property>
-                        <child>
-                          <object class="GtkTable" id="dictionaries_table">
-                            <property name="visible">True</property>
-                            <property name="border_width">8</property>
-                            <property name="n_columns">3</property>
-                            <property name="column_spacing">10</property>
-                            <property name="row_spacing">6</property>
-                            <child>
-                              <placeholder/>
-                            </child>
-                            <child>
-                              <placeholder/>
-                            </child>
-                            <child>
-                              <placeholder/>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkTable" id="other_dictionaries_table">
-                            <property name="border_width">8</property>
-                            <property name="n_columns">3</property>
-                            <property name="column_spacing">10</property>
-                            <property name="row_spacing">6</property>
-                            <child>
-                              <placeholder/>
-                            </child>
-                            <child>
-                              <placeholder/>
-                            </child>
-                            <child>
-                              <placeholder/>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkAlignment" id="alignment1">
-                            <property name="visible">True</property>
-                            <child>
-                              <placeholder/>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="position">2</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkHBox" id="get_dictionaries_linkbutton_hbox">
-                            <property name="visible">True</property>
-                            <child>
-                              <object class="GtkLinkButton" id="linkbutton1">
-                                <property name="label" translatable="yes">Where can I get other dictionaries?</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="relief">none</property>
-                                <signal name="clicked" handler="do_other_dictionaries_help"/>
-                                <signal name="activate" handler="do_other_dictionaries_help"/>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
-                            <property name="padding">6</property>
-                            <property name="position">3</property>
-                          </packing>
-                        </child>
-                      </object>
-                    </child>
-                    <child type="label">
-                      <object class="GtkComboBox" id="dictionary_languages_combobox">
-                        <property name="visible">True</property>
-                        <property name="model">dictionary_languages</property>
-                        <property name="active">0</property>
-                        <signal name="changed" handler="do_switch_displayed_dictionaries_action"/>
-                        <child>
-                          <object class="GtkCellRendererText" id="dictionary_language_renderer"/>
-                          <attributes>
-                            <attribute name="text">0</attribute>
-                          </attributes>
-                        </child>
-                      </object>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
                   <object class="GtkHBox" id="hbox12">
-                    <property name="visible">True</property>
-                    <property name="border_width">8</property>
                     <property name="homogeneous">True</property>
                     <child>
                       <object class="GtkHBox" id="hbox14">
                         <property name="visible">True</property>
-                        <property name="border_width">8</property>
+                        <property name="border_width">1</property>
                         <child>
                           <object class="GtkProgressBar" id="update_install_progressbar">
                             <property name="no_show_all">True</property>
@@ -382,6 +266,120 @@
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkFrame" id="frame1">
+                    <property name="visible">True</property>
+                    <property name="border_width">3</property>
+                    <property name="label_xalign">0</property>
+                    <property name="shadow_type">in</property>
+                    <child>
+                      <object class="GtkVBox" id="vbox4">
+                        <property name="visible">True</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkTable" id="dictionaries_table">
+                            <property name="visible">True</property>
+                            <property name="border_width">8</property>
+                            <property name="n_columns">3</property>
+                            <property name="column_spacing">10</property>
+                            <property name="row_spacing">6</property>
+                            <child>
+                              <placeholder/>
+                            </child>
+                            <child>
+                              <placeholder/>
+                            </child>
+                            <child>
+                              <placeholder/>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkTable" id="other_dictionaries_table">
+                            <property name="border_width">8</property>
+                            <property name="n_columns">3</property>
+                            <property name="column_spacing">10</property>
+                            <property name="row_spacing">6</property>
+                            <child>
+                              <placeholder/>
+                            </child>
+                            <child>
+                              <placeholder/>
+                            </child>
+                            <child>
+                              <placeholder/>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkAlignment" id="alignment1">
+                            <property name="visible">True</property>
+                            <child>
+                              <placeholder/>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkHBox" id="get_dictionaries_linkbutton_hbox">
+                            <property name="visible">True</property>
+                            <child>
+                              <object class="GtkLinkButton" id="linkbutton1">
+                                <property name="label" translatable="yes">Where can I get other dictionaries?</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="relief">none</property>
+                                <signal name="clicked" handler="do_other_dictionaries_help"/>
+                                <signal name="activate" handler="do_other_dictionaries_help"/>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="padding">6</property>
+                            <property name="position">3</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
+                    <child type="label">
+                      <object class="GtkComboBox" id="dictionary_languages_combobox">
+                        <property name="visible">True</property>
+                        <property name="model">dictionary_languages</property>
+                        <property name="active">0</property>
+                        <signal name="changed" handler="do_switch_displayed_dictionaries_action"/>
+                        <child>
+                          <object class="GtkCellRendererText" id="dictionary_language_renderer"/>
+                          <attributes>
+                            <attribute name="text">0</attribute>
+                          </attributes>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
                     <property name="position">1</property>
                   </packing>
                 </child>
