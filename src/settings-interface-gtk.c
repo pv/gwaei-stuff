@@ -49,7 +49,9 @@
 #include <gwaei/interface.h>
 
 
-
+//!
+//! @brief Disables portions of the interface depending on the currently queued jobs.
+//!
 void gw_ui_update_settings_interface()
 {
   /*
@@ -108,6 +110,13 @@ void gw_ui_update_settings_interface()
   */
 }
 
+
+//!
+//! @brief Sets the text in the source gtkentry for the appropriate dictionary
+//!
+//! @param widget Pointer to a GtkEntry to set the text of
+//! @param value The constant string to use as the source for the text
+//!
 void gw_ui_set_dictionary_source (GtkWidget *widget, const char* value)
 {
     if (widget != NULL && value != NULL)
@@ -119,8 +128,15 @@ void gw_ui_set_dictionary_source (GtkWidget *widget, const char* value)
 }
 
 
-
-//The layout of this function is specifically for a libcurl callback
+//!
+//! @brief A progressbar update function made specifially to be used with curl when downloading
+//!
+//! @param data A GwUiDictInstallLine to use as a base for updating the interface
+//! @param dltotal the amount to be downloaded
+//! @param dlnow the current amount downloaded
+//! @param ultotal The upload total (unused)
+//! @param ulnow The current amount upload (unused)
+//!
 int gw_ui_update_progressbar (void   *data,
                               double  dltotal,
                               double  dlnow,
@@ -151,6 +167,9 @@ int gw_ui_update_progressbar (void   *data,
 }
 
 
+//!
+//! @brief Sets teh initial status of the dictionaries in the settings dialog
+//!
 void gw_settings_initialize_installed_dictionary_list () 
 {
     GtkWidget *table;
@@ -197,6 +216,9 @@ void gw_settings_initialize_installed_dictionary_list ()
 }
 
 
+//!
+//! @brief Updates the dictionary orders for the dictionary order tab
+//!
 void gw_ui_update_dictionary_orders ()
 {
     GtkWidget *container;
