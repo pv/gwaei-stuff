@@ -236,7 +236,6 @@ void gw_searchitem_free (GwSearchItem* item)
 }
 
 
-
 //!
 //! @brief Comparison function that should be moved to the GwSearchItem file when it matures
 //!
@@ -249,83 +248,100 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
     GwQueryLine *ql;
     rl = item->resultline;
     ql = item->queryline;
-    int roma_check = 0, furi_check = 0;
-    gboolean other_match = FALSE;
-    gboolean main_match = FALSE;
 
     //Kanji radical dictionary search
     int i = 0;
     if (item->dictionary->type == GW_DICT_TYPE_KANJI || item->dictionary->type == GW_DICT_TYPE_RADICALS)
     {
+      gboolean strokes_check_passed = TRUE;
+      gboolean frequency_check_passed = TRUE;
+      gboolean grade_check_passed = TRUE;
+      gboolean jlpt_check_passed = TRUE;
+      gboolean romaji_check_passed = TRUE;
+      gboolean furigana_check_passed = TRUE;
+      gboolean kanji_check_passed = TRUE;
+      gboolean radical_check_passed = TRUE;
+
+      //Calculate the strokes check
       if (ql->strokes_total > 0 && rl->strokes != NULL)
       {
         if (regexec(&(ql->strokes_regex[REGEX_TYPE][i]), rl->strokes, 1, NULL, 0) != 0)
-          return FALSE;
-        else
-          other_match = TRUE;
+          strokes_check_passed = FALSE;
       }
+
+      //Calculate the frequency check
       if (ql->frequency_total > 0 && rl->frequency != NULL)
       {
         if (regexec(&(ql->frequency_regex[REGEX_TYPE][i]), rl->frequency, 1, NULL, 0) != 0)
-          return FALSE;
-        else
-          other_match = TRUE;
+          frequency_check_passed = FALSE;
       }
+
+      //Calculate the grade check
       if (ql->grade_total > 0 && rl->grade != NULL)
       {
         if (regexec(&(ql->grade_regex[REGEX_TYPE][i]), rl->grade, 1, NULL, 0) != 0)
-          return FALSE;
-        else
-          other_match = TRUE;
+          grade_check_passed = FALSE;
       }
+
+      //Calculate the jlpt check
       if (ql->jlpt_total > 0 && rl->jlpt != NULL)
       {
         if (regexec(&(ql->jlpt_regex[REGEX_TYPE][i]), rl->jlpt, 1, NULL, 0) != 0)
-          return FALSE;
-        else
-          other_match = TRUE;
+          jlpt_check_passed = FALSE;
       }
+
+      //Calculate the romaji check
       if (ql->roma_total > 0 && rl->meanings != NULL)
       {
-        roma_check = 1;
-        if (regexec(&(ql->roma_regex[REGEX_TYPE][i]), rl->meanings, 1, NULL, 0) == 0)
-        {
-          roma_check = 2;
-          main_match = TRUE;
-        }
+        if (regexec(&(ql->roma_regex[REGEX_TYPE][i]), rl->meanings, 1, NULL, 0) != 0)
+          romaji_check_passed = FALSE;
       }
+
+      //Calculate the furigana check
       if (ql->furi_total > 0 && rl->readings[0] != NULL)
       {
-        furi_check = 1;
-        if (regexec(&(ql->furi_regex[REGEX_TYPE][i]), rl->readings[0], 1, NULL, 0) == 0)
+        if (regexec(&(ql->furi_regex[REGEX_TYPE][i]), rl->readings[0], 1, NULL, 0) != 0)
+          furigana_check_passed = FALSE;
+      }
+
+      //Calculate the kanji check
+      for (i = 0; i < ql->kanji_total && rl->kanji != NULL; i++)
+      {
+        if (regexec(&(ql->kanji_regex[REGEX_TYPE][i]), rl->kanji, 1, NULL, 0) != 0)
+          kanji_check_passed = FALSE;
+      }
+      if (kanji_check_passed) printf("%s\n", rl->kanji);
+
+      //Calculate the radical check
+      if (rl->radicals == NULL)
+      {
+        radical_check_passed = FALSE;
+      }
+      for (i = 0; i < ql->kanji_total && radical_check_passed; i++)
+      {
+        if (regexec(&(ql->kanji_regex[REGEX_TYPE][i]), rl->radicals, 1, NULL, 0) != 0)
+          radical_check_passed = FALSE;
+      }
+
+      //Return our results
+      if (REGEX_TYPE == GW_QUERYLINE_HIGH)
+      {
+        if (kanji_check_passed)
         {
-          furi_check = 2;
-          main_match = TRUE;
+          printf("returned true for: %s\n", rl->kanji);
         }
+        return (kanji_check_passed);
       }
-
-      //Trick code to allow romaji converted to furigana test to pass for the query...
-      if ((roma_check == 1 && furi_check == 2) || roma_check == 2 && furi_check == 1) return TRUE;
-      else if ((roma_check == 1 || furi_check == 1)) return FALSE;
-
-      gboolean found_kanji = FALSE, found_radical = FALSE;
-      for (i = 0; i < ql->kanji_total && !found_kanji; i++)
+      else
       {
-        found_kanji = (rl->kanji != NULL && regexec(&(ql->kanji_regex[REGEX_TYPE][i]), rl->kanji, 1, NULL, 0) == 0);
-        i++;
+        return (strokes_check_passed &&
+                frequency_check_passed &&
+                grade_check_passed &&
+                jlpt_check_passed &&
+                romaji_check_passed &&
+                furigana_check_passed &&
+                (radical_check_passed | kanji_check_passed));
       }
-      for (i = 0; i < ql->kanji_total && !found_radical; i++)
-      {
-        found_radical = (rl->radicals != NULL && regexec(&(ql->kanji_regex[REGEX_TYPE][i]), rl->radicals, 1, NULL, 0) == 0);
-        i++;
-      }
-      if (found_kanji || found_radical)
-          main_match = TRUE;
-
-      //Make sure found radicals do not force a result into relevance
-      if (REGEX_TYPE == GW_QUERYLINE_HIGH && found_kanji == FALSE) return FALSE;
-
-      return (((found_kanji || found_radical) && (roma_check == 0 && furi_check == 0)) || roma_check == 2 || furi_check == 2 || (ql->kanji_total == 0 && ql->roma_total == 0 && ql->furi_total == 0 && other_match));
     }
     //Standard dictionary search
     else
