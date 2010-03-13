@@ -61,18 +61,10 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkImage" id="update_icon_errored">
-                                <property name="no_show_all">True</property>
-                                <property name="stock">gtk-dialog-error</property>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="padding">1</property>
-                                <property name="position">1</property>
-                              </packing>
+                              <placeholder/>
                             </child>
                             <child>
-                              <object class="GtkImage" id="update_icon_installed">
+                              <object class="GtkImage" id="update_icon">
                                 <property name="no_show_all">True</property>
                                 <property name="stock">gtk-apply</property>
                               </object>
@@ -178,83 +170,6 @@
                           <packing>
                             <property name="expand">False</property>
                             <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkButton" id="update_cancel_button">
-                            <property name="label">gtk-cancel</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
-                            <property name="no_show_all">True</property>
-                            <property name="use_stock">True</property>
-                            <signal name="clicked" handler="do_cancel_update_installed_dictionaries"/>
-                            <signal name="activate" handler="do_cancel_update_installed_dictionaries"/>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkButton" id="update_install_button">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
-                            <signal name="clicked" handler="do_update_installed_dictionaries"/>
-                            <signal name="activate" handler="do_update_installed_dictionaries"/>
-                            <child>
-                              <object class="GtkHBox" id="hbox13">
-                                <property name="visible">True</property>
-                                <child>
-                                  <object class="GtkAlignment" id="alignment3">
-                                    <property name="visible">True</property>
-                                    <child>
-                                      <placeholder/>
-                                    </child>
-                                  </object>
-                                  <packing>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkImage" id="image8">
-                                    <property name="visible">True</property>
-                                    <property name="stock">gtk-refresh</property>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="label22">
-                                    <property name="visible">True</property>
-                                    <property name="label" translatable="yes">_Update Installed Dictionaries</property>
-                                    <property name="use_underline">True</property>
-                                    <property name="mnemonic_widget">update_install_button</property>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="position">2</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkAlignment" id="alignment4">
-                                    <property name="visible">True</property>
-                                    <child>
-                                      <placeholder/>
-                                    </child>
-                                  </object>
-                                  <packing>
-                                    <property name="position">3</property>
-                                  </packing>
-                                </child>
-                              </object>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="position">2</property>
                           </packing>
                         </child>
                       </object>

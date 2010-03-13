@@ -160,7 +160,6 @@ int gw_ui_update_progressbar (void   *data,
       gdk_threads_leave ();
       return FALSE;
     }
-    il->di->status = GW_DICT_STATUS_CANCELED;
 
     gdk_threads_leave ();
     return TRUE;

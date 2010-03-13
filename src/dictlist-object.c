@@ -564,6 +564,8 @@ void gw_dictlist_preform_postprocessing_by_name (char* name, GError **error)
         di->status != GW_DICT_STATUS_UPDATING &&
         di->status != GW_DICT_STATUS_REBUILDING)
       return;
+    if (di->status == GW_DICT_STATUS_CANCELING)
+      return;
 
     //Setup some pointers
     GwDictInfo* k_di = gw_dictlist_get_dictionary_by_id (GW_DICT_ID_KANJI);
@@ -588,8 +590,12 @@ void gw_dictlist_preform_postprocessing_by_name (char* name, GError **error)
       di->status = GW_DICT_STATUS_REBUILDING;
       split_places_from_names_dictionary(error);
     }
-    //Cleanup
-    di->status = restore_status;
+
+    //Restore the previous state if the install wasn't canceled
+    if (di->status != GW_DICT_STATUS_CANCELING)
+    {
+      di->status = restore_status;
+    }
 }
 
 

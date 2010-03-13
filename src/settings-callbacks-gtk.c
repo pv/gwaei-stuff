@@ -270,7 +270,7 @@ static void *install_thread (gpointer data)
     if (ret)
       ret = ((g_mkdir_with_parents(download_path, 0755)) == 0);
     //Copy the file if it is a local file
-    if (ret && g_file_test (uri, G_FILE_TEST_IS_REGULAR))
+    if (ret && g_file_test (uri, G_FILE_TEST_IS_REGULAR) && di->status != GW_DICT_STATUS_CANCELING)
     {
       ret = gw_io_copy_dictionary_file (uri, gz_path);
     }
@@ -278,41 +278,41 @@ static void *install_thread (gpointer data)
     else if (ret)
     {
       ret = gw_io_download_dictionary_file (uri, gz_path, gw_ui_update_progressbar, il);
-      if (ret == FALSE)
+      if (ret == FALSE && di->status != GW_DICT_STATUS_CANCELING)
       {
         const char *message = gettext("Connection failure");
         error = g_error_new_literal (quark, GW_FILE_ERROR, message);
       }
     }
 
-    if (strstr(gz_path, ".gz") && ret && error == NULL)
+    if (strstr(gz_path, ".gz") && ret && error == NULL && di->status != GW_DICT_STATUS_CANCELING)
     {
-    printf("Gunzipping...\n");
+      printf("Gunzipping...\n");
       gdk_threads_enter();
       gw_ui_dict_install_set_message (il, NULL, gettext("Decompressing..."));
       gdk_threads_leave();
       ret = gw_io_gunzip_dictionary_file(gz_path, &error);
     }
-    else if (strstr(gz_path, ".zip") && ret && error == NULL)
+    else if (strstr(gz_path, ".zip") && ret && error == NULL && di->status != GW_DICT_STATUS_CANCELING)
     {
       printf("Unzipping...\n");
       ret = gw_io_unzip_dictionary_file(gz_path, &error);
     }
    
-    if (strstr(sync_path, "UTF") == NULL && ret && error == NULL)
+    if (strstr(sync_path, "UTF") == NULL && ret && error == NULL && di->status != GW_DICT_STATUS_CANCELING)
     {
       gdk_threads_enter();
       gw_ui_dict_install_set_message (il, NULL, gettext("Converting encoding..."));
       gdk_threads_leave();
       ret = gw_io_copy_with_encoding(sync_path, path, "EUC-JP","UTF-8", &error);
     }
-    else if (error == NULL)
+    else if (ret && error == NULL && di->status != GW_DICT_STATUS_CANCELING)
     {
       gw_io_copy_dictionary_file(sync_path, path, &error);
     }
 
     //Special dictionary post processing
-    if (ret && error == NULL)
+    if (ret && error == NULL && di->status != GW_DICT_STATUS_CANCELING)
     {
       gdk_threads_enter();
       gw_ui_dict_install_set_message (il, NULL, gettext("Postprocessing..."));
@@ -321,14 +321,14 @@ static void *install_thread (gpointer data)
     }
      
     //Was canceled
-    if (error != NULL && di->status == GW_DICT_STATUS_CANCELING)
+    if (di->status == GW_DICT_STATUS_CANCELING)
     {
       gdk_threads_enter();
       di->status = GW_DICT_STATUS_NOT_INSTALLED;
-      gw_ui_dict_install_set_action_button (il, GTK_STOCK_ADD, TRUE);
       gdk_threads_leave();
       g_error_free(error);
       error = NULL;
+      do_dictionary_remove (il->action_button, il);
     }
     //Errored
     else if (error != NULL)
@@ -336,10 +336,6 @@ static void *install_thread (gpointer data)
       gdk_threads_enter();
       di->status = GW_DICT_STATUS_NOT_INSTALLED;
       gw_ui_dict_install_set_message (il, GTK_STOCK_DIALOG_ERROR, error->message);
-      printf("%s\n", error->message);
-      printf("%s\n", error->message);
-      printf("%s\n", error->message);
-      printf("%s\n", error->message);
       gw_ui_dict_install_set_action_button (il, GTK_STOCK_ADD, TRUE);
       gdk_threads_leave();
       g_error_free(error);
@@ -351,7 +347,8 @@ static void *install_thread (gpointer data)
       gdk_threads_enter();
       di->status = GW_DICT_STATUS_INSTALLED;
       di->total_lines =  gw_io_get_total_lines_for_path (di->path);
-      gw_ui_dict_install_set_action_button (il, GTK_STOCK_REMOVE, TRUE);
+      gw_ui_dict_install_set_action_button (il, GTK_STOCK_DELETE, TRUE);
+      gw_ui_dict_install_set_message (il, GTK_STOCK_APPLY, gettext("Installed"));
       gdk_threads_leave();
     }
 

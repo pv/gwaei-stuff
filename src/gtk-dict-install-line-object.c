@@ -155,7 +155,7 @@ void gw_ui_add_dict_install_line_to_table (GtkTable *table, GwUiDictInstallLine 
 
   gtk_table_attach (table, il->advanced_hbox, 0, 1, row, row + 1, GTK_FILL, 0, 0, 0);
   gtk_table_attach (table, il->status_hbox, 1, 2, row, row + 1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0 ,0);
-  gtk_table_attach (table, il->action_button_hbox, 2, 3, row, row + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+  gtk_table_attach (table, il->action_button_hbox, 2, 3, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
   gtk_widget_show_all (il->advanced_hbox);
   gtk_widget_show_all (il->status_hbox);
   gtk_widget_show_all (il->action_button_hbox);
@@ -219,18 +219,19 @@ void gw_ui_dict_install_set_action_button (GwUiDictInstallLine *il, const gchar 
     gtk_box_pack_start (GTK_BOX (parent), il->action_button, TRUE, TRUE, 0);
     gtk_widget_show (il->action_button);
 
-  if (STOCK_ID == GTK_STOCK_ADD)
-    g_signal_connect(il->action_button, "clicked", do_dictionary_install, (gpointer) il);
-  if (STOCK_ID == GTK_STOCK_DELETE)
-    g_signal_connect(il->action_button, "clicked", do_dictionary_remove, (gpointer) il);
-  if (STOCK_ID = GTK_STOCK_CANCEL)
-    g_signal_connect(il->action_button, "clicked", do_cancel_dictionary_install, (gpointer) il);
+    if (STOCK_ID == GTK_STOCK_ADD)
+      g_signal_connect(il->action_button, "clicked", do_dictionary_install, (gpointer) il);
+    if (STOCK_ID == GTK_STOCK_DELETE)
+      g_signal_connect(il->action_button, "clicked", do_dictionary_remove, (gpointer) il);
+    if (STOCK_ID = GTK_STOCK_CANCEL)
+      g_signal_connect(il->action_button, "clicked", do_cancel_dictionary_install, (gpointer) il);
 
     gtk_widget_set_sensitive (il->action_button, SENSITIVE);
 
     gboolean advanced_hbox_is_sensitive;
     advanced_hbox_is_sensitive = (strcmp (STOCK_ID, GTK_STOCK_ADD) == 0);
     gtk_widget_set_sensitive(il->source_hbox, advanced_hbox_is_sensitive);
+    gtk_widget_set_size_request (il->action_button, 150, -1);
   }
 }
 

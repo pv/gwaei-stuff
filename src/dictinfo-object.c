@@ -95,7 +95,7 @@ GwDictInfo* gw_dictinfo_new (char *name)
     else if (strcmp(name, "Kanji") == 0)
       strncpy(temp->long_name, kanji, 100);
     else if (strcmp(name, "Radicals") == 0)
-      strncpy(temp->long_name, kanji, 100);
+      strncpy(temp->long_name, radicals, 100);
     else if (strcmp(name, "Places") == 0)
       strncpy(temp->long_name, places, 100);
     else if (strcmp(name, "Names") == 0)
