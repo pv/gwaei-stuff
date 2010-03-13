@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-02-21 06:16-0500\n"
+"POT-Creation-Date: 2010-03-13 06:52-0500\n"
 "PO-Revision-Date: 2008-11-30 02:35+0500\n"
 "Last-Translator: Zachary Dovel pizzach@gmail.com\n"
 "Language-Team: Not Applicable\n"
@@ -28,67 +28,79 @@ msgstr "閉じる(_C)"
 msgid "(Empty)"
 msgstr "(空っぽ)"
 
-#: src/main-interface-console.c:74 src/main-interface-console.c:80
+#: src/main-interface-console.c:75 src/main-interface-console.c:81
 msgid "Other Results"
 msgstr "他の候補"
 
-#: src/main-interface-console.c:88 src/main-interface-console.c:90
+#: src/main-interface-console.c:89 src/main-interface-console.c:91
 #: src/main-interface-gtk.c:2013
 msgid "No results found!"
 msgstr "検討がありません!"
 
-#: src/main-interface-console.c:146
+#: src/main-interface-console.c:147
 msgid "Copying file..."
 msgstr "ファイルをコピー中..."
 
-#: src/main-interface-console.c:151
+#: src/main-interface-console.c:152
 msgid "Downloading file..."
 msgstr "ファイルをダウンロード中..."
 
-#: src/main-interface-console.c:157
+#: src/main-interface-console.c:158
 msgid "Gunzipping file..."
 msgstr "gzipファイルを展開中..."
 
-#: src/main-interface-console.c:163 src/settings-callbacks-gtk.c:293
+#: src/main-interface-console.c:164 src/settings-callbacks-gtk.c:305
 msgid "Converting encoding..."
 msgstr "エンコーディング切り替え中..."
 
-#: src/main-interface-console.c:175 src/settings-callbacks-gtk.c:306
+#: src/main-interface-console.c:176 src/settings-callbacks-gtk.c:318
 msgid "Postprocessing..."
 msgstr "ポストプロせスイング中..."
 
-#: src/main-interface-console.c:220
+#: src/main-interface-console.c:213 src/main-interface-console.c:229
+msgid "Searching for \""
+msgstr "「"
+
+#: src/main-interface-console.c:217 src/main-interface-console.c:231
+msgid "\" in the "
+msgstr "」を"
+
+#: src/main-interface-console.c:221 src/main-interface-console.c:233
+msgid " dictionary..."
+msgstr "の辞書で検索中..."
+
+#: src/main-interface-console.c:247
 msgid "Installable:"
 msgstr "インストール可能:"
 
-#: src/main-interface-console.c:241
+#: src/main-interface-console.c:268
 #, c-format
 msgid "All dictionaries are already installed"
 msgstr "すべての辞書がすでにインストールされている"
 
-#: src/main-interface-console.c:262
+#: src/main-interface-console.c:289
 msgid "Uninstallable:"
 msgstr "アンインストール可能:"
 
-#: src/main-interface-console.c:279
+#: src/main-interface-console.c:306
 #, c-format
 msgid "There are no dictionaries installed"
 msgstr "インストールせれている辞書がありません"
 
-#: src/main-interface-console.c:296
+#: src/main-interface-console.c:323
 msgid "Available:"
 msgstr "現在の辞書:"
 
-#: src/main-interface-console.c:309
+#: src/main-interface-console.c:336
 #, c-format
 msgid " There are no dictionaries available"
 msgstr " 使う可能な辞書がありません"
 
-#: src/main-interface-console.c:317
+#: src/main-interface-console.c:344
 msgid "waei [options]... pattern"
 msgstr "waei [オプション]... パータン"
 
-#: src/main-interface-console.c:318
+#: src/main-interface-console.c:345
 msgid ""
 "This is a Japanese-English dictionary program that allows regex style "
 "searches.\n"
@@ -97,234 +109,234 @@ msgid ""
 "can be used in place of unknown kanji."
 msgstr ""
 
-#: src/main-interface-console.c:320
+#: src/main-interface-console.c:347
 msgid "OPTIONS:"
 msgstr "オプション:"
 
-#: src/main-interface-console.c:321
+#: src/main-interface-console.c:348
 msgid "  -e, --exact                Do not display less relevant results"
 msgstr "  -e, --exact                不適当な候補を表示しない"
 
-#: src/main-interface-console.c:324
+#: src/main-interface-console.c:351
 msgid "  -d, --dictionary name      Search using a chosen dictionary"
 msgstr "  -d, --dictionary 名前      指定した辞書で検索を行う"
 
-#: src/main-interface-console.c:327
+#: src/main-interface-console.c:354
 msgid "  -l, --list                 Show available dictionaries for searches"
 msgstr "  -l, --list                 使う可能の辞書を表示する"
 
-#: src/main-interface-console.c:330
+#: src/main-interface-console.c:357
 msgid "  -i, --install              List installable dictionaries"
 msgstr "  -i, --install              インストール可能な辞書を表示する"
 
-#: src/main-interface-console.c:333
+#: src/main-interface-console.c:360
 msgid "  -i, --install dictionary   Install dictionary"
 msgstr "  -i, --install 辞書         指定した辞書のインストールを行う"
 
-#: src/main-interface-console.c:336
+#: src/main-interface-console.c:363
 msgid "  -u, --uninstall            List uninstallable dictionaries"
 msgstr "  -u, --uninstall            アンインストール可能な辞書を表示する"
 
-#: src/main-interface-console.c:339
+#: src/main-interface-console.c:366
 msgid "  -u, --uninstall dictionary Uninstall dictionary"
 msgstr "  -u, --uninstall 辞書       指定した辞書のアンインストールを行う"
 
-#: src/main-interface-console.c:342
+#: src/main-interface-console.c:369
 msgid "  -s, --sync                 Sync installed dictionaries using rsync"
 msgstr ""
 "  -s, --sync                 rsyncを使って辞書すべてをサーバとシンクする"
 
-#: src/main-interface-console.c:345
+#: src/main-interface-console.c:372
 msgid "  -v, --version              Check the waei version info"
 msgstr "  -v, --version              waeiヴァージョン情報を表示する"
 
-#: src/main-interface-console.c:348
+#: src/main-interface-console.c:375
 msgid "  -q, --quiet                Display less information"
 msgstr "  -q, --quiet                verboseをオフにする"
 
-#: src/main-interface-console.c:351
+#: src/main-interface-console.c:378
 msgid "  -h, --help                 Display this help"
 msgstr "  -h, --help                 このヘルプを表示する"
 
-#: src/main-interface-console.c:354
+#: src/main-interface-console.c:381
 msgid "EXAMPLES:"
 msgstr "例："
 
-#: src/main-interface-console.c:356
+#: src/main-interface-console.c:383
 msgid "  waei English               Search for the english word English"
 msgstr ""
 
-#: src/main-interface-console.c:359
+#: src/main-interface-console.c:386
 msgid ""
 "  waei \"cats&dogs\"           Search for results containing cats and dogs"
 msgstr ""
 
-#: src/main-interface-console.c:362
+#: src/main-interface-console.c:389
 msgid ""
 "  waei \"cats|dogs\"           Search for results containing cats or dogs"
 msgstr ""
 
-#: src/main-interface-console.c:365
+#: src/main-interface-console.c:392
 msgid ""
 "  waei cats dogs             Search for results containing \"cats dogs\""
 msgstr ""
 
-#: src/main-interface-console.c:368 src/main-interface-console.c:374
+#: src/main-interface-console.c:395 src/main-interface-console.c:401
 msgid "  waei "
 msgstr ""
 
-#: src/main-interface-console.c:368
+#: src/main-interface-console.c:395
 msgid "                Search for the Japanese word "
 msgstr ""
 
-#: src/main-interface-console.c:371
+#: src/main-interface-console.c:398
 msgid "  waei -e "
 msgstr ""
 
-#: src/main-interface-console.c:371
+#: src/main-interface-console.c:398
 msgid "               Search for "
 msgstr ""
 
-#: src/main-interface-console.c:372
+#: src/main-interface-console.c:399
 msgid " ignoring similar results"
 msgstr ""
 
-#: src/main-interface-console.c:374
+#: src/main-interface-console.c:401
 msgid "                 When you don't know the middle character"
 msgstr ""
 
-#: src/main-interface-console.c:377
+#: src/main-interface-console.c:404
 msgid "  waei -d Kanji "
 msgstr " waei -d Kanji "
 
-#: src/main-interface-console.c:377
+#: src/main-interface-console.c:404
 msgid "           Find a kanji character in the kanji database"
 msgstr ""
 
-#: src/main-interface-console.c:380
+#: src/main-interface-console.c:407
 msgid "  waei -d Names "
 msgstr ""
 
-#: src/main-interface-console.c:380
+#: src/main-interface-console.c:407
 msgid "         Look up a name in the name database"
 msgstr ""
 
-#: src/main-interface-console.c:383
+#: src/main-interface-console.c:410
 msgid "  waei -d Places "
 msgstr ""
 
-#: src/main-interface-console.c:383
+#: src/main-interface-console.c:410
 msgid "      Look up a place in the place database"
 msgstr ""
 
-#: src/main-interface-console.c:577 src/main-interface-console.c:691
-#: src/main-interface-console.c:710
+#: src/main-interface-console.c:676 src/main-interface-console.c:807
+#: src/main-interface-console.c:826
 #, c-format
 msgid "Requested dictionary not found!\n"
 msgstr "望みの辞書が存在しない!\n"
 
-#: src/main-interface-console.c:578
+#: src/main-interface-console.c:677
 msgid "Press any key to exit.\n"
 msgstr ""
 
-#: src/main-interface-console.c:605
+#: src/main-interface-console.c:706
 msgid "No word inserted. Only option."
 msgstr ""
 
-#: src/main-interface-console.c:646 src/main-interface-console.c:886
+#: src/main-interface-console.c:753 src/main-interface-console.c:1005
 msgid "Found "
 msgstr "候補を"
 
-#: src/main-interface-console.c:646 src/main-interface-console.c:886
+#: src/main-interface-console.c:753 src/main-interface-console.c:1005
 msgid " Results"
 msgstr "つ見出した"
 
-#: src/main-interface-console.c:649 src/main-interface-console.c:889
+#: src/main-interface-console.c:756 src/main-interface-console.c:1008
 msgid " ("
 msgstr " ("
 
-#: src/main-interface-console.c:649 src/main-interface-console.c:889
+#: src/main-interface-console.c:756 src/main-interface-console.c:1008
 msgid " Relevant)"
 msgstr "つが一致する)"
 
-#: src/main-interface-console.c:765
+#: src/main-interface-console.c:881
 #, c-format
 msgid "Syncing possible installed dictionaries..."
 msgstr "可能な辞書をシンク中..."
 
-#: src/main-interface-console.c:779 src/main-interface-console.c:817
-#: src/main-interface-console.c:837
+#: src/main-interface-console.c:895 src/main-interface-console.c:933
+#: src/main-interface-console.c:953
 #, c-format
 msgid "Finished"
 msgstr "完了"
 
-#: src/main-interface-console.c:800
+#: src/main-interface-console.c:916
 #, c-format
 msgid "%sTrying to install %s%s%s...%s"
 msgstr "%s%s%s%sをインストールとしている...%s"
 
-#: src/main-interface-console.c:806
+#: src/main-interface-console.c:922
 msgid "Already Installed"
 msgstr "既にインストールされている"
 
-#: src/main-interface-console.c:811
+#: src/main-interface-console.c:927
 msgid "That dictionary is not installable with this mechanism"
 msgstr "このメカニズムでインストールできるような辞書ではありません"
 
-#: src/main-interface-console.c:822
+#: src/main-interface-console.c:938
 #, c-format
 msgid "Failed"
 msgstr "失敗"
 
-#: src/main-interface-console.c:832
+#: src/main-interface-console.c:948
 #, c-format
 msgid "%sTrying to uninstall %s%s%s...%s"
 msgstr "%s%s%s%sをアンインストールとしている...%s"
 
-#: src/main-interface-console.c:841
+#: src/main-interface-console.c:957
 msgid "Is not installed"
 msgstr "インストールされていない"
 
-#: src/main-interface-console.c:872
+#: src/main-interface-console.c:987
 #, c-format
 msgid ""
 "Results seem to have incorrect formatting. Did you close all of your\n"
 "parenthesis?  You may want to try quotes too.\n"
 msgstr ""
 
-#: src/main-interface-console.c:995 src/main-interface-console.c:1041
-#: src/main-interface-gtk.c:3003 src/main-interface-gtk.c:3105
+#: src/main-interface-console.c:1111 src/main-interface-console.c:1157
+#: src/main-interface-gtk.c:3004 src/main-interface-gtk.c:3106
 #: src/xml/settings.glade:1213
 msgid "Radicals:"
 msgstr "部首:"
 
-#: src/main-interface-console.c:999 src/main-interface-console.c:1045
-#: src/main-interface-gtk.c:3040
+#: src/main-interface-console.c:1115 src/main-interface-console.c:1161
+#: src/main-interface-gtk.c:3041
 msgid "Stroke:"
 msgstr "画数:"
 
-#: src/main-interface-console.c:1006 src/main-interface-console.c:1051
-#: src/main-interface-gtk.c:3047
+#: src/main-interface-console.c:1122 src/main-interface-console.c:1167
+#: src/main-interface-gtk.c:3048
 msgid "Freq:"
 msgstr "頻数:"
 
-#: src/main-interface-console.c:1013 src/main-interface-console.c:1058
-#: src/main-interface-gtk.c:3054
+#: src/main-interface-console.c:1129 src/main-interface-console.c:1174
+#: src/main-interface-gtk.c:3055
 msgid "Grade:"
 msgstr "段階:"
 
-#: src/main-interface-console.c:1020 src/main-interface-console.c:1065
-#: src/main-interface-gtk.c:3060
+#: src/main-interface-console.c:1136 src/main-interface-console.c:1181
+#: src/main-interface-gtk.c:3061
 msgid "JLPT:"
 msgstr "JLPT:"
 
-#: src/main-interface-console.c:1027 src/main-interface-console.c:1072
-#: src/main-interface-gtk.c:3020
+#: src/main-interface-console.c:1143 src/main-interface-console.c:1188
+#: src/main-interface-gtk.c:3021
 msgid "Readings:"
 msgstr "読み:"
 
-#: src/main-interface-console.c:1033 src/main-interface-console.c:1078
-#: src/main-interface-gtk.c:3069
+#: src/main-interface-console.c:1149 src/main-interface-console.c:1194
+#: src/main-interface-gtk.c:3070
 msgid "Meanings:"
 msgstr "意味:"
 
@@ -430,7 +442,7 @@ msgstr "主な辞書"
 msgid "Edit the current vocabulary list"
 msgstr "現在語彙リストを編集する"
 
-#: src/main-interface-gtk.c:422 src/main-callbacks-gtk.c:1725
+#: src/main-interface-gtk.c:422 src/main-callbacks-gtk.c:1723
 msgid "A_ppend"
 msgstr "追加(_P)"
 
@@ -911,56 +923,55 @@ msgstr ""
 msgid "- A dictionary program for Japanese-English translation."
 msgstr ""
 
-#: src/main-interface-gtk.c:2891 src/main-interface-gtk.c:2957
+#: src/main-interface-gtk.c:2892 src/main-interface-gtk.c:2958
 msgid "Pop"
 msgstr ""
 
-#: src/main-interface-gtk.c:3132
+#: src/main-interface-gtk.c:3133
 msgid "E:\t"
 msgstr ""
 
-#: src/main-interface-gtk.c:3142
+#: src/main-interface-gtk.c:3143
 msgid ""
 "\n"
 "J:\t"
 msgstr ""
 
-#: src/main-interface-gtk.c:3152
+#: src/main-interface-gtk.c:3153
 msgid ""
 "\n"
 "D:\t"
 msgstr ""
 
-#: src/main-callbacks-gtk.c:481
+#: src/main-callbacks-gtk.c:479
 msgid "Save As"
 msgstr "別名で保存"
 
-#: src/main-callbacks-gtk.c:493 src/main-callbacks-gtk.c:567
+#: src/main-callbacks-gtk.c:491 src/main-callbacks-gtk.c:565
 msgid "vocabulary.txt"
 msgstr "語彙.txt"
 
-#: src/main-callbacks-gtk.c:557
+#: src/main-callbacks-gtk.c:555
 msgid "Save"
 msgstr "保存"
 
-#: src/main-callbacks-gtk.c:1091
+#: src/main-callbacks-gtk.c:1089
 msgid "Italian: "
 msgstr "イタリア語: "
 
-#: src/main-callbacks-gtk.c:1092
+#: src/main-callbacks-gtk.c:1090
 msgid "Japanese: "
 msgstr "日本語: "
 
-#: src/main-callbacks-gtk.c:1093
+#: src/main-callbacks-gtk.c:1091
 msgid "Spanish: "
 msgstr "和西: "
 
-#: src/main-callbacks-gtk.c:1094
+#: src/main-callbacks-gtk.c:1092
 msgid "French: "
 msgstr "フランス語:"
 
-#: src/main-callbacks-gtk.c:1117
-#, fuzzy
+#: src/main-callbacks-gtk.c:1115
 msgid ""
 "gWaei (C) 2008-2010 Zachary Dovel\n"
 "Kanjipad backend (C) 2002 Owen Taylor\n"
@@ -970,7 +981,7 @@ msgstr ""
 "漢字パッド バックエンド (C) 2002 Owen Taylor\n"
 "JStroke バックエンド(C) 1997 Robert Wells"
 
-#: src/main-callbacks-gtk.c:1118
+#: src/main-callbacks-gtk.c:1116
 msgid ""
 "Program for Japanese translation and reference. The\n"
 "dictionaries are supplied by Jim Breen's WWWJDIC."
@@ -978,15 +989,15 @@ msgstr ""
 "日本語の翻訳や参照の為に作られたプログラムです. 辞書ファイルがJim Breenの"
 "WWWJDICから取られています."
 
-#: src/main-callbacks-gtk.c:1714
+#: src/main-callbacks-gtk.c:1712
 msgid "A_ppend Selected"
 msgstr "選択のを追加(_P)"
 
-#: src/main-callbacks-gtk.c:1716
+#: src/main-callbacks-gtk.c:1714
 msgid "Save Selected _As"
 msgstr "選択のを別名で保存"
 
-#: src/main-callbacks-gtk.c:1718
+#: src/main-callbacks-gtk.c:1716
 msgid "_Print Selected"
 msgstr "選択のを印刷"
 
@@ -1004,42 +1015,72 @@ msgstr "他の候補 %d"
 msgid "Page "
 msgstr "ページ "
 
-#: src/io.c:220 src/io.c:224 src/io.c:231 src/io.c:238
+#: src/io.c:222 src/io.c:226 src/io.c:233 src/io.c:240
 #, c-format
 msgid "Removing %s..."
 msgstr "%sを削除中..."
 
-#: src/io.c:260
+#: src/io.c:262
 msgid "File copy error"
 msgstr ""
 
-#: src/io.c:274
+#: src/io.c:276
 #, c-format
 msgid "  Recreating mixed dictionary..."
 msgstr "  統合辞書を再生成中..."
 
-#: src/io.c:358
+#: src/io.c:360
 #, c-format
 msgid "success\n"
 msgstr "成功\n"
 
-#: src/io.c:486 src/io.c:517
+#: src/io.c:488 src/io.c:519
 msgid "gunzip error"
 msgstr ""
 
-#: src/settings-interface-gtk.c:220 src/settings-callbacks-gtk.c:181
+#: src/settings-callbacks-gtk.c:123
+#, c-format
+msgid "Syncing %s dictionary with server..."
+msgstr "%s辞書をシンク中..."
+
+#: src/settings-callbacks-gtk.c:131
+msgid "Connection failure\n"
+msgstr "接続失敗\n"
+
+#: src/settings-callbacks-gtk.c:140
+#, c-format
+msgid "Finalizing %s changes..."
+msgstr "%sを仕上げ中..."
+
+#: src/settings-callbacks-gtk.c:156
+msgid "Recreating Mixed dictionary..."
+msgstr "統合辞書を再生成中..."
+
+#: src/settings-callbacks-gtk.c:167
+msgid "Resplitting Names dictionary..."
+msgstr "名前辞書を再分割中..."
+
+#: src/settings-callbacks-gtk.c:190
 msgid "Finishing..."
 msgstr "お仕上げ中..."
 
-#: src/settings-interface-gtk.c:234
-msgid "Cancelling..."
-msgstr "キャンセル中..."
+#: src/settings-callbacks-gtk.c:205
+msgid "Update was cancelled"
+msgstr "アップデートがキャンセルされた"
 
-#: src/settings-interface-gtk.c:276
-msgid "Not Installed"
-msgstr "インストールされていない"
+#: src/settings-callbacks-gtk.c:215
+msgid "Dictionary update finished"
+msgstr "アップデート完了"
 
-#: src/settings-interface-gtk.c:302 src/xml/settings.glade:800
+#: src/settings-callbacks-gtk.c:283
+msgid "Connection failure"
+msgstr "接続失敗"
+
+#: src/settings-callbacks-gtk.c:292
+msgid "Decompressing..."
+msgstr ""
+
+#: src/settings-callbacks-gtk.c:351 src/xml/settings.glade:800
 #: src/xml/settings.glade:1528 src/xml/settings.glade:1608
 #: src/xml/settings.glade:1688 src/xml/settings.glade:1768
 #: src/xml/settings.glade:2320 src/xml/settings.glade:2398
@@ -1047,68 +1088,36 @@ msgstr "インストールされていない"
 msgid "Installed"
 msgstr "インストールされた"
 
-#: src/settings-interface-gtk.c:318
-msgid "Errored"
-msgstr "エラー"
+#: src/settings-callbacks-gtk.c:501
+msgid "Not Installed"
+msgstr "インストールされていない"
 
-#: src/settings-interface-gtk.c:375
-msgid "Downloading..."
-msgstr "ダウンロード中..."
+#: src/settings-callbacks-gtk.c:517
+msgid "Cancelling..."
+msgstr "キャンセル中..."
 
-#: src/settings-callbacks-gtk.c:118
-msgid "Syncing "
-msgstr " "
+#: src/settings-callbacks-gtk.c:535 src/xml/settings.glade:753
+#: src/xml/settings.glade:1481 src/xml/settings.glade:1561
+#: src/xml/settings.glade:1641 src/xml/settings.glade:1721
+#: src/xml/settings.glade:2273 src/xml/settings.glade:2351
+#: src/xml/settings.glade:2431
+msgid "Installing..."
+msgstr "インストール中..."
 
-#: src/settings-callbacks-gtk.c:120
-msgid " dictionary with server..."
-msgstr "辞書をシンク中..."
-
-#: src/settings-callbacks-gtk.c:126 src/settings-callbacks-gtk.c:271
-msgid "Connection failure\n"
-msgstr "接続失敗\n"
-
-#: src/settings-callbacks-gtk.c:135
-msgid "Finalizing "
-msgstr " "
-
-#: src/settings-callbacks-gtk.c:137
-msgid " dictionary changes..."
-msgstr "辞書をお仕上げ中..."
-
-#: src/settings-callbacks-gtk.c:151
-msgid "Recreating Mixed dictionary..."
-msgstr "統合辞書を再生成中..."
-
-#: src/settings-callbacks-gtk.c:160
-msgid "Resplitting Names dictionary..."
-msgstr "名前辞書を再分割中..."
-
-#: src/settings-callbacks-gtk.c:200
-msgid "Update was cancelled"
-msgstr "アップデートがキャンセルされた"
-
-#: src/settings-callbacks-gtk.c:208
-msgid "Dictionary update finished"
-msgstr "アップデート完了"
-
-#: src/settings-callbacks-gtk.c:280
-msgid "Decompressing..."
-msgstr ""
-
-#: src/settings-callbacks-gtk.c:584
+#: src/settings-callbacks-gtk.c:593
 msgid "Dictionary File Select"
 msgstr "辞書ファイルの選択"
 
-#: src/dictlist-object.c:646
+#: src/dictlist-object.c:652
 #, c-format
 msgid "Syncing %s dictionary"
 msgstr "%sの辞書をシンク中"
 
-#: src/dictlist-object.c:651
+#: src/dictlist-object.c:657
 msgid "File read failed"
 msgstr "ファイル読み込み失敗"
 
-#: src/dictlist-object.c:676
+#: src/dictlist-object.c:682
 msgid "Success"
 msgstr "成功"
 
@@ -1314,13 +1323,6 @@ msgstr ""
 "とだけで充分です。ファイルはJim BreenのWWWJDICのサーバーからダウンロードされ"
 "ます。他のソースが好ましいのなら三角形をクリックして変更する事ができます。"
 
-#: src/xml/settings.glade:753 src/xml/settings.glade:1481
-#: src/xml/settings.glade:1561 src/xml/settings.glade:1641
-#: src/xml/settings.glade:1721 src/xml/settings.glade:2273
-#: src/xml/settings.glade:2351 src/xml/settings.glade:2431
-msgid "Installing..."
-msgstr "インストール中..."
-
 #: src/xml/settings.glade:895 src/xml/settings.glade:968
 #: src/xml/settings.glade:1041 src/xml/settings.glade:1256
 #: src/xml/settings.glade:1420 src/xml/settings.glade:1828
@@ -1464,20 +1466,23 @@ msgstr "gWaei 漢字パッド"
 msgid "_Annotate Strokes"
 msgstr "画数付き(_A)"
 
+#~ msgid "Errored"
+#~ msgstr "エラー"
+
+#~ msgid "Downloading..."
+#~ msgstr "ダウンロード中..."
+
+#~ msgid "Syncing "
+#~ msgstr " "
+
+#~ msgid " dictionary changes..."
+#~ msgstr "辞書をお仕上げ中..."
+
 #~ msgid "Found %d results (%d Relevant)"
 #~ msgstr "候補を%dつ見出した。(%dつがマッチする)"
 
 #~ msgid "Searching... %d results (%d Relevant)"
 #~ msgstr "検索中... %dつの候補 (%dつが一致する)"
-
-#~ msgid "Searching for \""
-#~ msgstr "「"
-
-#~ msgid "\" in the "
-#~ msgstr "」を"
-
-#~ msgid " dictionary..."
-#~ msgstr "の辞書で検索中..."
 
 #~ msgid "[35mRadicals:[0m"
 #~ msgstr "部首:"

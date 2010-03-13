@@ -354,12 +354,18 @@ static void *install_thread (gpointer data)
 
     gdk_threads_enter();
     gw_ui_update_settings_interface();
+    gw_ui_update_dictionary_orders ();
     rebuild_combobox_dictionary_list();
     gdk_threads_leave();
 }
 
 
-
+//!
+//! @brief Callback to toggle the hiragana-katakana conversion setting for the search entry
+//!
+//! @param widget Unused pointer to a GtkWidget
+//! @param data Unused gpointer
+//!
 G_MODULE_EXPORT void do_hiragana_katakana_conv_toggle (GtkWidget *widget, gpointer data)
 {
     gboolean state;
@@ -368,6 +374,12 @@ G_MODULE_EXPORT void do_hiragana_katakana_conv_toggle (GtkWidget *widget, gpoint
 }
 
 
+//!
+//! @brief Callback to toggle the katakana-hiragana conversion setting for the search entry
+//!
+//! @param widget Unused pointer to a GtkWidget
+//! @param data Unused gpointer
+//!
 G_MODULE_EXPORT void do_katakana_hiragana_conv_toggle (GtkWidget *widget, gpointer data)
 {
     gboolean state;
@@ -376,6 +388,12 @@ G_MODULE_EXPORT void do_katakana_hiragana_conv_toggle (GtkWidget *widget, gpoint
 }
 
 
+//!
+//! @brief Callback to toggle spellcheck in the search entry
+//!
+//! @param widget Unused pointer to a GtkWidget
+//! @param data Unused gpointer
+//!
 G_MODULE_EXPORT void do_spellcheck_toggle (GtkWidget *widget, gpointer data)
 {
     gboolean state;
@@ -384,6 +402,12 @@ G_MODULE_EXPORT void do_spellcheck_toggle (GtkWidget *widget, gpointer data)
 }
 
 
+//!
+//! @brief Callback to toggle romaji-kana conversion
+//!
+//! @param widget Unused pointer to a GtkWidget
+//! @param data Unused gpointer
+//!
 G_MODULE_EXPORT void do_romaji_kana_conv_change (GtkWidget *widget, gpointer data)
 {
     int active;
@@ -392,6 +416,12 @@ G_MODULE_EXPORT void do_romaji_kana_conv_change (GtkWidget *widget, gpointer dat
 }
 
 
+//!
+//! @brief Callback to set the user selected color to the color swatch for text highlighting
+//!
+//! @param widget Unused pointer to a GtkWidget
+//! @param data Unused gpointer
+//!
 G_MODULE_EXPORT void do_set_color_to_swatch (GtkWidget *widget, gpointer data)
 {
     GdkColor color;
@@ -418,6 +448,12 @@ G_MODULE_EXPORT void do_set_color_to_swatch (GtkWidget *widget, gpointer data)
 }
 
 
+//!
+//! @brief Callback to reset all the colors for all the swatches to the default in the preferences
+//!
+//! @param widget Unused pointer to a GtkWidget
+//! @param data Unused gpointer
+//!
 G_MODULE_EXPORT void do_color_reset_for_swatches (GtkWidget *widget, gpointer data)
 {
     char key[100];
@@ -451,17 +487,29 @@ G_MODULE_EXPORT void do_color_reset_for_swatches (GtkWidget *widget, gpointer da
 }
 
 
-
+//!
+//! @brief Callback to uninstall the selected dictionary
+//!
+//! @param widget Unused pointer to a GtkWidget
+//! @param data Used as a gpointer to a GwUiDictInstallLine to get needed uninstall information from
+//!
 G_MODULE_EXPORT void do_dictionary_remove (GtkWidget* widget, gpointer data)
 {
     GwUiDictInstallLine *il = (GwUiDictInstallLine*) data;
     gw_console_uninstall_dictionary_by_name (il->di->name);
     gw_ui_dict_install_set_action_button (il, GTK_STOCK_ADD, TRUE);
     gw_ui_dict_install_set_message (il, NULL, gettext ("Not Installed"));
-    rebuild_combobox_dictionary_list();
+    rebuild_combobox_dictionary_list ();
+    gw_ui_update_dictionary_orders ();
 }
 
 
+//!
+//! @brief Callback to cancel the installion of the selected dictionary
+//!
+//! @param widget Unused pointer to a GtkWidget
+//! @param data Used as a gpointer to a GwUiDictInstallLine to get needed uninstall information from
+//!
 G_MODULE_EXPORT void do_cancel_dictionary_install (GtkWidget *widget, gpointer data)
 {
     GwUiDictInstallLine *il = (GwUiDictInstallLine*) data;
@@ -470,7 +518,12 @@ G_MODULE_EXPORT void do_cancel_dictionary_install (GtkWidget *widget, gpointer d
     il->di->status = GW_DICT_STATUS_CANCELING;
 }
 
-
+//!
+//! @brief Callback to install the selected dictionary
+//!
+//! @param widget Unused pointer to a GtkWidget
+//! @param data Used as a gpointer to a GwUiDictInstallLine to get needed uninstall information from
+//!
 G_MODULE_EXPORT void do_dictionary_install (GtkWidget *widget, gpointer data)
 {
     GwUiDictInstallLine *il = (GwUiDictInstallLine*) data;
@@ -559,6 +612,14 @@ G_MODULE_EXPORT void do_dictionary_source_browse (GtkWidget *widget, gpointer da
 }
 
 
+//!
+//! @brief Callback to use rsync to update the installed dictionaries
+//!
+//! This function is currently unused until a rewrite
+//
+//! @param widget Unused pointer to a GtkWidget
+//! @param data Used as a gpointer to a GwUiDictInstallLine to get needed uninstall information from
+//!
 G_MODULE_EXPORT void do_update_installed_dictionaries(GtkWidget *widget, gpointer data)
 {
   /*
@@ -577,6 +638,14 @@ G_MODULE_EXPORT void do_update_installed_dictionaries(GtkWidget *widget, gpointe
 }
 
 
+//!
+//! @brief Callback to cancel the update of the installed dictionaries
+//!
+//! This function is curretly unused until a rewrite
+//!
+//! @param widget Unused pointer to a GtkWidget
+//! @param data Used as a gpointer to a GwUiDictInstallLine to get needed uninstall information from
+//!
 G_MODULE_EXPORT void do_cancel_update_installed_dictionaries (GtkWidget *widget, gpointer data)
 {
     //gw_ui_set_install_line_status("update", "cancelling", NULL);

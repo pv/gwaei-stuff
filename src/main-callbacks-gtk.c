@@ -78,6 +78,7 @@ G_MODULE_EXPORT void do_settings (GtkWidget *widget, gpointer data)
     g_list_foreach (gw_tab_searchitems, (GFunc) gw_ui_cancel_search_by_searchitem, NULL);
     gw_ui_cancel_search_by_target (GW_TARGET_KANJI);
     gw_ui_cancel_search_by_target (GW_TARGET_RESULTS);
+    gw_ui_update_dictionary_orders ();
 
     //get some needed window references
     gw_ui_show_window ("settings_window");

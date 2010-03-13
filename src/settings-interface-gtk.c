@@ -54,60 +54,31 @@
 //!
 void gw_ui_update_settings_interface()
 {
-  /*
-  char id[50];
-
   //Set the install interface
   GtkWidget *close_button;
-  strcpy(id, "settings_close_button");
-  close_button = GTK_WIDGET (gtk_builder_get_object(builder, id));
-
-  GtkWidget *install_table;
-  strcpy(id, "dictionaries_table");
-  install_table = GTK_WIDGET (gtk_builder_get_object(builder, id));
+  close_button = GTK_WIDGET (gtk_builder_get_object (builder, "settings_close_button"));
 
   GtkWidget *advanced_tab;
-  strcpy(id, "advanced_tab");
-  advanced_tab = GTK_WIDGET (gtk_builder_get_object (builder, id));
+  advanced_tab = GTK_WIDGET (gtk_builder_get_object (builder, "advanced_tab"));
 
-  GtkWidget *update_button;
-  strcpy(id, "update_install_button");
-  update_button = GTK_WIDGET (gtk_builder_get_object(builder, id));
+  GtkWidget *organize_dictionaries_tab;
+  organize_dictionaries_tab = GTK_WIDGET (gtk_builder_get_object (builder, "organize_dictionaries_tab"));
 
-  GtkWidget *updated_button;
-  strcpy(id, "update_remove_button");
-  updated_button = GTK_WIDGET (gtk_builder_get_object(builder, id));
-
-
-  if (gw_dictlist_get_total_with_status (GW_DICT_STATUS_UPDATING) > 0)
+  if (gw_dictlist_get_total_with_status (GW_DICT_STATUS_UPDATING  ) > 0 ||
+      gw_dictlist_get_total_with_status (GW_DICT_STATUS_INSTALLING) > 0 ||
+      gw_dictlist_get_total_with_status (GW_DICT_STATUS_REBUILDING) > 0   )
   {
     gtk_widget_set_sensitive (close_button,   FALSE);
-    gtk_widget_set_sensitive (install_table,  FALSE);
-    gtk_widget_set_sensitive (update_button,  TRUE );
-    gtk_widget_set_sensitive (updated_button, TRUE );
-  }
-  else if (gw_dictlist_get_total_with_status (GW_DICT_STATUS_INSTALLING) > 0)
-  {
-    gtk_widget_set_sensitive (close_button,   FALSE);
-    gtk_widget_set_sensitive (install_table,  TRUE );
-    gtk_widget_set_sensitive (update_button,  FALSE);
-    gtk_widget_set_sensitive (updated_button, FALSE);
-  }
-  else if (gw_dictlist_get_total_with_status (GW_DICT_STATUS_REBUILDING) > 0)
-  {
-    gtk_widget_set_sensitive (close_button,   FALSE);
-    gtk_widget_set_sensitive (install_table,  FALSE);
-    gtk_widget_set_sensitive (update_button,  FALSE);
-    gtk_widget_set_sensitive (updated_button, FALSE);
+    gtk_widget_set_sensitive (advanced_tab,  FALSE);
+    gtk_widget_set_sensitive (organize_dictionaries_tab,  FALSE);
   }
   else
   {
     gtk_widget_set_sensitive (close_button,   TRUE );
-    gtk_widget_set_sensitive (install_table,  TRUE );
-    gtk_widget_set_sensitive (update_button,  TRUE );
-    gtk_widget_set_sensitive (updated_button, TRUE );
+    gtk_widget_set_sensitive (advanced_tab,  TRUE);
+    gtk_widget_set_sensitive (organize_dictionaries_tab,  TRUE);
   }
-  */
+
 }
 
 
