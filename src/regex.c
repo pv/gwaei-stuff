@@ -81,10 +81,10 @@ void gw_regex_initialize_constant_regular_expressions ()
     regcomp (&re_hexcolor, "^#[0-9A-Fa-f]{6,6}$", GW_REGEX_EFLAGS_EXIST);
 
 
-    regcomp (&gw_re[GW_RE_QUERY_STROKES],   "\\bS[0-9]{1,2}\\b", GW_REGEX_EFLAGS_LOCATE);
-    regcomp (&gw_re[GW_RE_QUERY_FREQUENCY], "\\bF[0-9]{1,4}\\b", GW_REGEX_EFLAGS_LOCATE);
-    regcomp (&gw_re[GW_RE_QUERY_GRADE],     "\\bG[0-4]{1,1}\\b", GW_REGEX_EFLAGS_LOCATE);
-    regcomp (&gw_re[GW_RE_QUERY_JLPT],      "\\bJ[0-4]{1,1}\\b", GW_REGEX_EFLAGS_LOCATE);
+    regcomp (&gw_re[GW_RE_QUERY_STROKES],   "S[0-9]{1,2}", GW_REGEX_EFLAGS_LOCATE);
+    regcomp (&gw_re[GW_RE_QUERY_FREQUENCY], "F[0-9]{1,4}", GW_REGEX_EFLAGS_LOCATE);
+    regcomp (&gw_re[GW_RE_QUERY_GRADE],     "G[0-4]{1,1}", GW_REGEX_EFLAGS_LOCATE);
+    regcomp (&gw_re[GW_RE_QUERY_JLPT],      "J[0-4]{1,1}", GW_REGEX_EFLAGS_LOCATE);
 
 
     //Adjective forms
