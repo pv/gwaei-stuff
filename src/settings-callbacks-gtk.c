@@ -704,23 +704,6 @@ G_MODULE_EXPORT void do_force_mix_rebuild (GtkWidget *widget, gpointer data)
 
 
 //!
-//! @brief The callback for links leading to the "Where to get other dictionaries" homepage
-//!
-//! @param widget Currently unused GtkWidget pointer
-//! @param data A currently unused gpointer
-//!
-G_MODULE_EXPORT void do_other_dictionaries_help (GtkWidget *widget, gpointer data)
-{
-    char *uri = "http://gwaei.sourceforge.net/dictionaries.html";
-
-    GError *err = NULL;
-    gtk_show_uri (NULL, uri, gtk_get_current_event_time (), &err);
-    if (err != NULL)
-      g_error_free(err);
-}
-
-
-//!
 //! @brief Callback to switch the dictionary install table shown in the preferences
 //!
 //! @param widget The GtkComboBox where the user selects the dictionary table the wish to you

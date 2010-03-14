@@ -212,8 +212,7 @@
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="relief">none</property>
-                                <signal name="clicked" handler="do_other_dictionaries_help"/>
-                                <signal name="activate" handler="do_other_dictionaries_help"/>
+                                <property name="uri">http://gwaei.sourceforge.net/dictionaries.html</property>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
