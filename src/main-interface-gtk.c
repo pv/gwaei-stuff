@@ -2726,7 +2726,6 @@ gboolean gw_ui_cancel_search_for_current_tab ()
 
 gboolean gw_ui_cancel_search_by_target (const int TARGET)
 {
-    printf("Cancel search by target was called...shady\n");
     if (TARGET == GW_TARGET_KANJI)
     {
       GwHistoryList* hl = gw_historylist_get_list(GW_HISTORYLIST_RESULTS);
