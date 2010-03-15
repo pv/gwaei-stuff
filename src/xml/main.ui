@@ -2,12 +2,6 @@
 <interface>
   <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy toplevel-contextual -->
-  <object class="GtkMenu" id="back_popup">
-    <property name="visible">True</property>
-  </object>
-  <object class="GtkMenu" id="forward_popup">
-    <property name="visible">True</property>
-  </object>
   <object class="GtkWindow" id="main_window">
     <property name="events">GDK_POINTER_MOTION_MASK | GDK_BUTTON_MOTION_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_STRUCTURE_MASK</property>
     <property name="title" translatable="yes">gWaei Japanese-English Dictionary</property>
@@ -521,11 +515,34 @@
               </packing>
             </child>
             <child>
+              <object class="GtkToolButton" id="edit_toolbutton">
+                <property name="visible">True</property>
+                <property name="use_action_appearance">True</property>
+                <property name="related_action">file_edit_action</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
               <object class="GtkMenuToolButton" id="forward_toolbutton">
                 <property name="menu">forward_popup</property>
               </object>
               <packing>
                 <property name="expand">False</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkToolButton" id="save_toolbutton">
+                <property name="visible">True</property>
+                <property name="use_action_appearance">True</property>
+                <property name="related_action">file_append_action</property>
+                <property name="label" translatable="yes">Append</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
               </packing>
             </child>
             <child>
@@ -535,33 +552,10 @@
               </packing>
             </child>
             <child>
-              <object class="GtkToolButton" id="edit_toolbutton">
-                <property name="visible">True</property>
-                <property name="related_action">file_edit_action</property>
-                <property name="use_action_appearance">True</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="homogeneous">True</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkToolButton" id="save_toolbutton">
-                <property name="visible">True</property>
-                <property name="related_action">file_append_action</property>
-                <property name="use_action_appearance">True</property>
-                <property name="label" translatable="yes">Append</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="homogeneous">True</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkToolButton" id="save_as_toolbutton">
                 <property name="visible">True</property>
-                <property name="related_action">file_save_as_action</property>
                 <property name="use_action_appearance">True</property>
+                <property name="related_action">file_save_as_action</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -580,8 +574,8 @@
               <object class="GtkToolButton" id="print_toolbutton">
                 <property name="visible">True</property>
                 <property name="no_show_all">True</property>
-                <property name="related_action">file_print_action</property>
                 <property name="use_action_appearance">True</property>
+                <property name="related_action">file_print_action</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -599,8 +593,8 @@
             <child>
               <object class="GtkToolButton" id="word_boundary_toolitem">
                 <property name="visible">True</property>
-                <property name="related_action">insert_word_edge_action</property>
                 <property name="use_action_appearance">True</property>
+                <property name="related_action">insert_word_edge_action</property>
                 <property name="label" translatable="yes">Bound</property>
               </object>
               <packing>
@@ -611,8 +605,8 @@
             <child>
               <object class="GtkToolButton" id="non_word_boundary_toolitem">
                 <property name="visible">True</property>
-                <property name="related_action">insert_not_word_edge_action</property>
                 <property name="use_action_appearance">True</property>
+                <property name="related_action">insert_not_word_edge_action</property>
                 <property name="label" translatable="yes">Not Bound</property>
               </object>
               <packing>
@@ -623,8 +617,8 @@
             <child>
               <object class="GtkToolButton" id="unkown_character_toolitem">
                 <property name="visible">True</property>
-                <property name="related_action">insert_unknown_character_action</property>
                 <property name="use_action_appearance">True</property>
+                <property name="related_action">insert_unknown_character_action</property>
                 <property name="label" translatable="yes">Unknown</property>
               </object>
               <packing>
@@ -663,8 +657,8 @@
             <child>
               <object class="GtkToolButton" id="zoom_in_toolbutton">
                 <property name="visible">True</property>
-                <property name="related_action">view_zoom_in_action</property>
                 <property name="use_action_appearance">True</property>
+                <property name="related_action">view_zoom_in_action</property>
                 <property name="label" translatable="yes">Enlarge</property>
               </object>
               <packing>
@@ -675,8 +669,8 @@
             <child>
               <object class="GtkToolButton" id="zoom_out_toolbutton">
                 <property name="visible">True</property>
-                <property name="related_action">view_zoom_out_action</property>
                 <property name="use_action_appearance">True</property>
+                <property name="related_action">view_zoom_out_action</property>
                 <property name="label" translatable="yes">Shrink</property>
               </object>
               <packing>
@@ -1228,4 +1222,10 @@
   </object>
   <object class="GtkActionGroup" id="main_actiongroup"/>
   <object class="GtkTextBuffer" id="textbuffer1"/>
+  <object class="GtkMenu" id="forward_popup">
+    <property name="visible">True</property>
+  </object>
+  <object class="GtkMenu" id="back_popup">
+    <property name="visible">True</property>
+  </object>
 </interface>
