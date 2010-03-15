@@ -220,19 +220,19 @@ void gw_ui_dict_install_set_action_button (GwUiDictInstallLine *il, const gchar 
     gtk_box_pack_start (GTK_BOX (parent), il->action_button, TRUE, TRUE, 0);
     gtk_widget_show (il->action_button);
 
-    if (STOCK_ID == GTK_STOCK_ADD)
+    if (strcmp (STOCK_ID, GTK_STOCK_ADD) == 0)
       g_signal_connect(il->action_button, "clicked", G_CALLBACK (do_dictionary_install), (gpointer) il);
-    if (STOCK_ID == GTK_STOCK_DELETE)
+    if (strcmp (STOCK_ID, GTK_STOCK_DELETE) == 0)
       g_signal_connect(il->action_button, "clicked", G_CALLBACK (do_dictionary_remove), (gpointer) il);
-    if (STOCK_ID = GTK_STOCK_CANCEL)
+    if (strcmp (STOCK_ID, GTK_STOCK_CANCEL) == 0)
       g_signal_connect(il->action_button, "clicked", G_CALLBACK (do_cancel_dictionary_install), (gpointer) il);
 
     gtk_widget_set_sensitive (il->action_button, SENSITIVE);
+    gtk_widget_set_size_request (il->action_button, 150, -1);
 
     gboolean advanced_hbox_is_sensitive;
     advanced_hbox_is_sensitive = (strcmp (STOCK_ID, GTK_STOCK_ADD) == 0);
     gtk_widget_set_sensitive(il->source_hbox, advanced_hbox_is_sensitive);
-    gtk_widget_set_size_request (il->action_button, 150, -1);
   }
 }
 
