@@ -47,6 +47,7 @@
 #include <gwaei/interface.h>
 #include <gwaei/callbacks.h>
 #include <gwaei/preferences.h>
+#include <gwaei/gtk-dict-install-line-object.h>
 
 
 //!
@@ -220,11 +221,11 @@ void gw_ui_dict_install_set_action_button (GwUiDictInstallLine *il, const gchar 
     gtk_widget_show (il->action_button);
 
     if (STOCK_ID == GTK_STOCK_ADD)
-      g_signal_connect(il->action_button, "clicked", do_dictionary_install, (gpointer) il);
+      g_signal_connect(il->action_button, "clicked", G_CALLBACK (do_dictionary_install), (gpointer) il);
     if (STOCK_ID == GTK_STOCK_DELETE)
-      g_signal_connect(il->action_button, "clicked", do_dictionary_remove, (gpointer) il);
+      g_signal_connect(il->action_button, "clicked", G_CALLBACK (do_dictionary_remove), (gpointer) il);
     if (STOCK_ID = GTK_STOCK_CANCEL)
-      g_signal_connect(il->action_button, "clicked", do_cancel_dictionary_install, (gpointer) il);
+      g_signal_connect(il->action_button, "clicked", G_CALLBACK (do_cancel_dictionary_install), (gpointer) il);
 
     gtk_widget_set_sensitive (il->action_button, SENSITIVE);
 
@@ -268,7 +269,7 @@ void gw_ui_dict_install_line_progress_bar_set_fraction (GwUiDictInstallLine *il,
 //! @param STOCK_ICON_ID A constant character string of the wanted gtk stock icon.
 //! @param message_text A contstat character string set the message text to.
 //!
-void gw_ui_dict_install_set_message (GwUiDictInstallLine *il, const gchar* STOCK_ICON_ID, const char *message_text)
+void gw_ui_dict_install_set_message (GwUiDictInstallLine *il, const gchar *STOCK_ICON_ID, const char *message_text)
 {
   //Take care of the icon
   if (STOCK_ICON_ID == NULL)

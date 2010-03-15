@@ -48,6 +48,7 @@
 #include <gwaei/preferences.h>
 #include <gwaei/gtk.h>
 #include <gwaei/callbacks.h>
+#include <gwaei/gtk-dict-install-line-object.h>
 
 
 //!
@@ -488,6 +489,21 @@ G_MODULE_EXPORT void do_color_reset_for_swatches (GtkWidget *widget, gpointer da
 
 
 //!
+//! @brief Callback to cancel the installion of the selected dictionary
+//!
+//! @param widget Unused pointer to a GtkWidget
+//! @param data Used as a gpointer to a GwUiDictInstallLine to get needed uninstall information from
+//!
+G_MODULE_EXPORT void do_cancel_dictionary_install (GtkWidget *widget, gpointer data)
+{
+    GwUiDictInstallLine *il = (GwUiDictInstallLine*) data;
+    gw_ui_dict_install_set_action_button (il, GTK_STOCK_CANCEL, FALSE);
+    gw_ui_dict_install_set_message (il, NULL, gettext ("Cancelling..."));
+    il->di->status = GW_DICT_STATUS_CANCELING;
+}
+
+
+//!
 //! @brief Callback to uninstall the selected dictionary
 //!
 //! @param widget Unused pointer to a GtkWidget
@@ -503,20 +519,6 @@ G_MODULE_EXPORT void do_dictionary_remove (GtkWidget* widget, gpointer data)
     gw_ui_update_dictionary_orders ();
 }
 
-
-//!
-//! @brief Callback to cancel the installion of the selected dictionary
-//!
-//! @param widget Unused pointer to a GtkWidget
-//! @param data Used as a gpointer to a GwUiDictInstallLine to get needed uninstall information from
-//!
-G_MODULE_EXPORT void do_cancel_dictionary_install (GtkWidget *widget, gpointer data)
-{
-    GwUiDictInstallLine *il = (GwUiDictInstallLine*) data;
-    gw_ui_dict_install_set_action_button (il, GTK_STOCK_CANCEL, FALSE);
-    gw_ui_dict_install_set_message (il, NULL, gettext ("Cancelling..."));
-    il->di->status = GW_DICT_STATUS_CANCELING;
-}
 
 //!
 //! @brief Callback to install the selected dictionary
@@ -876,7 +878,7 @@ G_MODULE_EXPORT void do_move_dictionary_down (GtkWidget *widget, gpointer data)
 //! @param widget A pointer to the GtkExpander widget that was toggled
 //! @param data An unused gpointer
 //!
-G_MODULE_EXPORT do_toggle_advanced_source (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void do_toggle_advanced_source (GtkWidget *widget, gpointer data)
 {
     gboolean expanded;
     expanded = gtk_expander_get_expanded(GTK_EXPANDER (widget));

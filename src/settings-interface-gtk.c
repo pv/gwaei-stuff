@@ -47,6 +47,7 @@
 #include <gwaei/engine.h>
 #include <gwaei/callbacks.h>
 #include <gwaei/interface.h>
+#include <gwaei/gtk-dict-install-line-object.h>
 
 
 //!
