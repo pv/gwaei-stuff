@@ -310,7 +310,6 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
         if (regexec(&(ql->kanji_regex[REGEX_TYPE][i]), rl->kanji, 1, NULL, 0) != 0)
           kanji_check_passed = FALSE;
       }
-      if (kanji_check_passed) printf("%s\n", rl->kanji);
 
       //Calculate the radical check
       if (rl->radicals == NULL)
@@ -326,10 +325,6 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
       //Return our results
       if (REGEX_TYPE == GW_QUERYLINE_HIGH)
       {
-        if (kanji_check_passed)
-        {
-          printf("returned true for: %s\n", rl->kanji);
-        }
         return (kanji_check_passed);
       }
       else
