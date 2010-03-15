@@ -345,6 +345,9 @@ static void print_help_message() {
     printf("%s\n", gettext("This is a Japanese-English dictionary program that allows regex style searches.\nThe dictionaries include: English, Places, Names, Radicals and Kanji. Periods\ncan be used in place of unknown kanji."));
 
     printf("\n%s\n", gettext("OPTIONS:"));
+    printf("%s\n", gettext("  -m                         "
+                   "Open up the multisearch window (beta)"));
+
     printf("%s\n", gettext("  -e, --exact                "
                    "Do not display less relevant results"));
 

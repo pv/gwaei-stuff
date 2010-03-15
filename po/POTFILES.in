@@ -27,3 +27,4 @@ src/xml/main.glade
 src/xml/radicals.glade
 src/xml/settings.glade
 src/kanjipad/kanjipad.glade
+src/gtk-dict-install-line-object.c
