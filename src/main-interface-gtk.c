@@ -731,6 +731,7 @@ void gw_ui_show_window (char *id)
     {
       GtkWidget *window;
       window = GTK_WIDGET (gtk_builder_get_object (builder, id));
+      gtk_widget_set_name (GTK_WIDGET (window), id);
       initialize_window_attributes (id);
       gtk_widget_show(window);
       initialize_window_attributes (id);
@@ -741,6 +742,7 @@ void gw_ui_show_window (char *id)
       main_window = GTK_WIDGET (gtk_builder_get_object(builder, "main_window"));
       GtkWidget *settings_window;
       settings_window = GTK_WIDGET (gtk_builder_get_object(builder, id));
+      gtk_widget_set_name (GTK_WIDGET (settings_window), id);
 
       //Show the window
       gtk_window_set_transient_for (GTK_WINDOW (settings_window), GTK_WINDOW (main_window));
@@ -749,13 +751,14 @@ void gw_ui_show_window (char *id)
     }
     else if (strcmp (id, "kanjipad_window") == 0)
     {
-      kanjipad_set_target_text_widget(search_entry);
-      show_kanjipad(builder);
+      kanjipad_set_target_text_widget (search_entry);
+      show_kanjipad (builder);
     }
     else
     {
       GtkWidget *window;
       window = GTK_WIDGET (gtk_builder_get_object(builder, id));
+      gtk_widget_set_name (GTK_WIDGET (window), id);
       gtk_widget_show(window);
     }
 }

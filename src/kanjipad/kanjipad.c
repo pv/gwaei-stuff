@@ -467,6 +467,7 @@ void show_kanjipad (GtkBuilder* builder)
 
   GtkWidget *window;
   window = GTK_WIDGET (gtk_builder_get_object(builder, "kanjipad_window"));
+  gtk_widget_set_name (GTK_WIDGET (window), "kanjipad_window");
 
   initialize_window_attributes(window);
   gtk_widget_show(window);
