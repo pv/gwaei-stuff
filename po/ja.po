@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-03-14 20:04-0500\n"
+"POT-Creation-Date: 2010-03-15 21:46-0500\n"
 "PO-Revision-Date: 2008-11-30 02:35+0500\n"
 "Last-Translator: Zachary Dovel pizzach@gmail.com\n"
 "Language-Team: Not Applicable\n"
@@ -309,38 +309,38 @@ msgid ""
 msgstr ""
 
 #: src/main-interface-console.c:1114 src/main-interface-console.c:1160
-#: src/main-interface-gtk.c:3006 src/main-interface-gtk.c:3108
+#: src/main-interface-gtk.c:3017 src/main-interface-gtk.c:3119
 #: src/xml/settings.glade:1213
 msgid "Radicals:"
 msgstr "部首:"
 
 #: src/main-interface-console.c:1118 src/main-interface-console.c:1164
-#: src/main-interface-gtk.c:3043
+#: src/main-interface-gtk.c:3054
 msgid "Stroke:"
 msgstr "画数:"
 
 #: src/main-interface-console.c:1125 src/main-interface-console.c:1170
-#: src/main-interface-gtk.c:3050
+#: src/main-interface-gtk.c:3061
 msgid "Freq:"
 msgstr "頻数:"
 
 #: src/main-interface-console.c:1132 src/main-interface-console.c:1177
-#: src/main-interface-gtk.c:3057
+#: src/main-interface-gtk.c:3068
 msgid "Grade:"
 msgstr "段階:"
 
 #: src/main-interface-console.c:1139 src/main-interface-console.c:1184
-#: src/main-interface-gtk.c:3063
+#: src/main-interface-gtk.c:3074
 msgid "JLPT:"
 msgstr "JLPT:"
 
 #: src/main-interface-console.c:1146 src/main-interface-console.c:1191
-#: src/main-interface-gtk.c:3023
+#: src/main-interface-gtk.c:3034
 msgid "Readings:"
 msgstr "読み:"
 
 #: src/main-interface-console.c:1152 src/main-interface-console.c:1197
-#: src/main-interface-gtk.c:3072
+#: src/main-interface-gtk.c:3083
 msgid "Meanings:"
 msgstr "意味:"
 
@@ -446,7 +446,7 @@ msgstr "主な辞書"
 msgid "Edit the current vocabulary list"
 msgstr "現在語彙リストを編集する"
 
-#: src/main-interface-gtk.c:422 src/main-callbacks-gtk.c:1723
+#: src/main-interface-gtk.c:422 src/main-callbacks-gtk.c:1726
 msgid "A_ppend"
 msgstr "追加(_P)"
 
@@ -927,55 +927,55 @@ msgstr ""
 msgid "- A dictionary program for Japanese-English translation."
 msgstr ""
 
-#: src/main-interface-gtk.c:2894 src/main-interface-gtk.c:2960
+#: src/main-interface-gtk.c:2905 src/main-interface-gtk.c:2971
 msgid "Pop"
 msgstr ""
 
-#: src/main-interface-gtk.c:3135
+#: src/main-interface-gtk.c:3146
 msgid "E:\t"
 msgstr ""
 
-#: src/main-interface-gtk.c:3145
+#: src/main-interface-gtk.c:3156
 msgid ""
 "\n"
 "J:\t"
 msgstr ""
 
-#: src/main-interface-gtk.c:3155
+#: src/main-interface-gtk.c:3166
 msgid ""
 "\n"
 "D:\t"
 msgstr ""
 
-#: src/main-callbacks-gtk.c:479
+#: src/main-callbacks-gtk.c:482
 msgid "Save As"
 msgstr "別名で保存"
 
-#: src/main-callbacks-gtk.c:491 src/main-callbacks-gtk.c:565
+#: src/main-callbacks-gtk.c:494 src/main-callbacks-gtk.c:568
 msgid "vocabulary.txt"
 msgstr "語彙.txt"
 
-#: src/main-callbacks-gtk.c:555
+#: src/main-callbacks-gtk.c:558
 msgid "Save"
 msgstr "保存"
 
-#: src/main-callbacks-gtk.c:1089
+#: src/main-callbacks-gtk.c:1092
 msgid "Italian: "
 msgstr "イタリア語: "
 
-#: src/main-callbacks-gtk.c:1090
+#: src/main-callbacks-gtk.c:1093
 msgid "Japanese: "
 msgstr "日本語: "
 
-#: src/main-callbacks-gtk.c:1091
+#: src/main-callbacks-gtk.c:1094
 msgid "Spanish: "
 msgstr "和西: "
 
-#: src/main-callbacks-gtk.c:1092
+#: src/main-callbacks-gtk.c:1095
 msgid "French: "
 msgstr "フランス語:"
 
-#: src/main-callbacks-gtk.c:1115
+#: src/main-callbacks-gtk.c:1118
 msgid ""
 "gWaei (C) 2008-2010 Zachary Dovel\n"
 "Kanjipad backend (C) 2002 Owen Taylor\n"
@@ -985,7 +985,7 @@ msgstr ""
 "漢字パッド バックエンド (C) 2002 Owen Taylor\n"
 "JStroke バックエンド(C) 1997 Robert Wells"
 
-#: src/main-callbacks-gtk.c:1116
+#: src/main-callbacks-gtk.c:1119
 msgid ""
 "Program for Japanese translation and reference. The\n"
 "dictionaries are supplied by Jim Breen's WWWJDIC."
@@ -993,15 +993,15 @@ msgstr ""
 "日本語の翻訳や参照の為に作られたプログラムです. 辞書ファイルがJim Breenの"
 "WWWJDICから取られています."
 
-#: src/main-callbacks-gtk.c:1712
+#: src/main-callbacks-gtk.c:1715
 msgid "A_ppend Selected"
 msgstr "選択のを追加(_P)"
 
-#: src/main-callbacks-gtk.c:1714
+#: src/main-callbacks-gtk.c:1717
 msgid "Save Selected _As"
 msgstr "選択のを別名で保存"
 
-#: src/main-callbacks-gtk.c:1716
+#: src/main-callbacks-gtk.c:1719
 msgid "_Print Selected"
 msgstr "選択のを印刷"
 

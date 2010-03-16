@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-03-14 20:04-0500\n"
+"POT-Creation-Date: 2010-03-15 21:46-0500\n"
 "PO-Revision-Date: 2010-03-13 17:12+0100\n"
 "Last-Translator: Fabrizio Sabatini <jecnua@gmail.com>\n"
 "Language-Team: Not Applicable\n"
@@ -319,38 +319,38 @@ msgstr ""
 "tutte le parentesi? Controlla anche gli apici.\n"
 
 #: src/main-interface-console.c:1114 src/main-interface-console.c:1160
-#: src/main-interface-gtk.c:3006 src/main-interface-gtk.c:3108
+#: src/main-interface-gtk.c:3017 src/main-interface-gtk.c:3119
 #: src/xml/settings.glade:1213
 msgid "Radicals:"
 msgstr "Radicali:"
 
 #: src/main-interface-console.c:1118 src/main-interface-console.c:1164
-#: src/main-interface-gtk.c:3043
+#: src/main-interface-gtk.c:3054
 msgid "Stroke:"
 msgstr "Tratti:"
 
 #: src/main-interface-console.c:1125 src/main-interface-console.c:1170
-#: src/main-interface-gtk.c:3050
+#: src/main-interface-gtk.c:3061
 msgid "Freq:"
 msgstr "Freq:"
 
 #: src/main-interface-console.c:1132 src/main-interface-console.c:1177
-#: src/main-interface-gtk.c:3057
+#: src/main-interface-gtk.c:3068
 msgid "Grade:"
 msgstr "Grado:"
 
 #: src/main-interface-console.c:1139 src/main-interface-console.c:1184
-#: src/main-interface-gtk.c:3063
+#: src/main-interface-gtk.c:3074
 msgid "JLPT:"
 msgstr "JLPT:"
 
 #: src/main-interface-console.c:1146 src/main-interface-console.c:1191
-#: src/main-interface-gtk.c:3023
+#: src/main-interface-gtk.c:3034
 msgid "Readings:"
 msgstr "Lettura:"
 
 #: src/main-interface-console.c:1152 src/main-interface-console.c:1197
-#: src/main-interface-gtk.c:3072
+#: src/main-interface-gtk.c:3083
 msgid "Meanings:"
 msgstr "Significato:"
 
@@ -456,7 +456,7 @@ msgstr "Dizionari Principali"
 msgid "Edit the current vocabulary list"
 msgstr "Modifica la lista dei vocabolari correnti"
 
-#: src/main-interface-gtk.c:422 src/main-callbacks-gtk.c:1723
+#: src/main-interface-gtk.c:422 src/main-callbacks-gtk.c:1726
 msgid "A_ppend"
 msgstr "_Aggiungi"
 
@@ -980,62 +980,62 @@ msgstr ""
 msgid "- A dictionary program for Japanese-English translation."
 msgstr "- Un programma dizionario per traduzioni Giapponese-Inglese."
 
-#: src/main-interface-gtk.c:2894 src/main-interface-gtk.c:2960
+#: src/main-interface-gtk.c:2905 src/main-interface-gtk.c:2971
 msgid "Pop"
 msgstr ""
 
-#: src/main-interface-gtk.c:3135
+#: src/main-interface-gtk.c:3146
 msgid "E:\t"
 msgstr ""
 
-#: src/main-interface-gtk.c:3145
+#: src/main-interface-gtk.c:3156
 msgid ""
 "\n"
 "J:\t"
 msgstr ""
 
-#: src/main-interface-gtk.c:3155
+#: src/main-interface-gtk.c:3166
 msgid ""
 "\n"
 "D:\t"
 msgstr ""
 
-#: src/main-callbacks-gtk.c:479
+#: src/main-callbacks-gtk.c:482
 msgid "Save As"
 msgstr "Salva con nome..."
 
-#: src/main-callbacks-gtk.c:491 src/main-callbacks-gtk.c:565
+#: src/main-callbacks-gtk.c:494 src/main-callbacks-gtk.c:568
 msgid "vocabulary.txt"
 msgstr "vocabolario.txt"
 
-#: src/main-callbacks-gtk.c:555
+#: src/main-callbacks-gtk.c:558
 msgid "Save"
 msgstr "Salva"
 
-#: src/main-callbacks-gtk.c:1089
+#: src/main-callbacks-gtk.c:1092
 msgid "Italian: "
 msgstr "Italiano: "
 
-#: src/main-callbacks-gtk.c:1090
+#: src/main-callbacks-gtk.c:1093
 msgid "Japanese: "
 msgstr "Giapponese: "
 
-#: src/main-callbacks-gtk.c:1091
+#: src/main-callbacks-gtk.c:1094
 msgid "Spanish: "
 msgstr "Spagnolo: "
 
-#: src/main-callbacks-gtk.c:1092
+#: src/main-callbacks-gtk.c:1095
 msgid "French: "
 msgstr "Francese: "
 
-#: src/main-callbacks-gtk.c:1115
+#: src/main-callbacks-gtk.c:1118
 msgid ""
 "gWaei (C) 2008-2010 Zachary Dovel\n"
 "Kanjipad backend (C) 2002 Owen Taylor\n"
 "JStroke backend (C) 1997 Robert Wells"
 msgstr ""
 
-#: src/main-callbacks-gtk.c:1116
+#: src/main-callbacks-gtk.c:1119
 msgid ""
 "Program for Japanese translation and reference. The\n"
 "dictionaries are supplied by Jim Breen's WWWJDIC."
@@ -1043,15 +1043,15 @@ msgstr ""
 "Programma per la traduzione e consultazione del Giapponese.\n"
 "I dizionari sono forniti da Jim Breen's WWWJDIC."
 
-#: src/main-callbacks-gtk.c:1712
+#: src/main-callbacks-gtk.c:1715
 msgid "A_ppend Selected"
 msgstr "_Aggiungi Selezione"
 
-#: src/main-callbacks-gtk.c:1714
+#: src/main-callbacks-gtk.c:1717
 msgid "Save Selected _As"
 msgstr "S_alva selezione come"
 
-#: src/main-callbacks-gtk.c:1716
+#: src/main-callbacks-gtk.c:1719
 msgid "_Print Selected"
 msgstr "Stampa Selezione"
 

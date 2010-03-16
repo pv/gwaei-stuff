@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 1.2.0\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-03-14 20:04-0500\n"
-"PO-Revision-Date: 2009-11-14 18:09+0100\n"
+"POT-Creation-Date: 2010-03-15 21:46-0500\n"
+"PO-Revision-Date: 2009-11-12 00:12+0100\n"
 "Last-Translator: Nicolas (aka FoeNyx)\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -17,6 +17,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
+"X-Poedit-Basepath: /home/nicolas/dev/japanese/gwaei-1.2.0/\n"
 
 #: src/tabs.c:73
 msgid "_Close Tab"
@@ -92,7 +93,7 @@ msgstr "Il n'y a pas de dictionnaire installé."
 
 #: src/main-interface-console.c:323
 msgid "Available:"
-msgstr "Disponible :"
+msgstr "Disponible : "
 
 #: src/main-interface-console.c:336
 #, c-format
@@ -114,7 +115,7 @@ msgstr ""
 "Ce logiciel est un dictionnaire Japonais-Anglais qui permet la recherche à "
 "l'aide d'expressions régulières (regex).\n"
 "Les différents dictionnaires couvrent : l'anglais, les noms de lieux, les "
-"noms, les radicaux et les kanjis.\n"
+"noms propres, les radicaux et les kanjis.\n"
 "Le caractère point (\".\") peut-être utilisé dans les recherches à la place "
 "de kanjis inconnus."
 
@@ -246,7 +247,7 @@ msgstr "  waei -d Names "
 
 #: src/main-interface-console.c:410
 msgid "         Look up a name in the name database"
-msgstr "         Rechercher un nom dans la base de données des noms"
+msgstr "         Rechercher un nom propres dans la base de données des noms"
 
 #: src/main-interface-console.c:413
 msgid "  waei -d Places "
@@ -335,38 +336,38 @@ msgstr ""
 "Peut-être voudrez-vous aussi mettre des guillemets.\n"
 
 #: src/main-interface-console.c:1114 src/main-interface-console.c:1160
-#: src/main-interface-gtk.c:3006 src/main-interface-gtk.c:3108
+#: src/main-interface-gtk.c:3017 src/main-interface-gtk.c:3119
 #: src/xml/settings.glade:1213
 msgid "Radicals:"
 msgstr "Radicaux :"
 
 #: src/main-interface-console.c:1118 src/main-interface-console.c:1164
-#: src/main-interface-gtk.c:3043
+#: src/main-interface-gtk.c:3054
 msgid "Stroke:"
 msgstr "Traits :"
 
 #: src/main-interface-console.c:1125 src/main-interface-console.c:1170
-#: src/main-interface-gtk.c:3050
+#: src/main-interface-gtk.c:3061
 msgid "Freq:"
 msgstr "Fréq. :"
 
 #: src/main-interface-console.c:1132 src/main-interface-console.c:1177
-#: src/main-interface-gtk.c:3057
+#: src/main-interface-gtk.c:3068
 msgid "Grade:"
 msgstr "Niveau :"
 
 #: src/main-interface-console.c:1139 src/main-interface-console.c:1184
-#: src/main-interface-gtk.c:3063
+#: src/main-interface-gtk.c:3074
 msgid "JLPT:"
 msgstr "JLPT :"
 
 #: src/main-interface-console.c:1146 src/main-interface-console.c:1191
-#: src/main-interface-gtk.c:3023
+#: src/main-interface-gtk.c:3034
 msgid "Readings:"
 msgstr "Lectures :"
 
 #: src/main-interface-console.c:1152 src/main-interface-console.c:1197
-#: src/main-interface-gtk.c:3072
+#: src/main-interface-gtk.c:3083
 msgid "Meanings:"
 msgstr "Signification : "
 
@@ -444,7 +445,7 @@ msgstr ""
 
 #: src/main-interface-gtk.c:399
 msgid "Only for Non-Japanese Locals"
-msgstr "Si l'interface n'est pas en japonais"
+msgstr "Uniquement pour les variables de localisations non japonaise"
 
 #: src/main-interface-gtk.c:400
 msgid "When Possible"
@@ -474,7 +475,7 @@ msgstr "Dictionnaires principaux"
 msgid "Edit the current vocabulary list"
 msgstr "Modifier la liste de vocabulaire courante"
 
-#: src/main-interface-gtk.c:422 src/main-callbacks-gtk.c:1723
+#: src/main-interface-gtk.c:422 src/main-callbacks-gtk.c:1726
 msgid "A_ppend"
 msgstr "A_jouter"
 
@@ -532,7 +533,7 @@ msgstr "Afficher les résultats _moins pertinents"
 
 #: src/main-interface-gtk.c:465
 msgid "Using _Kanjipad"
-msgstr "En utilisant _Kanjipad"
+msgstr "En utilisant le _Kanjipad"
 
 #: src/main-interface-gtk.c:470
 msgid "Using _Radical Search Tool"
@@ -544,7 +545,7 @@ msgstr "Indicateur de _bordure de mot"
 
 #: src/main-interface-gtk.c:476
 msgid "_Edge"
-msgstr "_Bordure"
+msgstr "_bordure"
 
 #: src/main-interface-gtk.c:477
 msgid "Insert a word-edge character"
@@ -568,7 +569,7 @@ msgstr "Caractère _inconnu"
 
 #: src/main-interface-gtk.c:491
 msgid "_Unknown"
-msgstr "_Inconnu"
+msgstr "_inconnu"
 
 #: src/main-interface-gtk.c:492
 msgid "Insert an unknown character"
@@ -735,7 +736,7 @@ msgid ""
 msgstr ""
 " est une autre option pour saisir des kanjis. En raison de la façon dont "
 "Kanjipad fonctionne, il est très important de dessiner les kanjis avec le "
-"nombre correct de traits et de les tracer dans le bon sens."
+"nombre correct de traits et de les tracer dans la bonne direction."
 
 #: src/main-interface-gtk.c:2089
 msgid "Getting More Exact Matches"
@@ -1002,56 +1003,56 @@ msgstr ""
 msgid "- A dictionary program for Japanese-English translation."
 msgstr ""
 
-#: src/main-interface-gtk.c:2894 src/main-interface-gtk.c:2960
+#: src/main-interface-gtk.c:2905 src/main-interface-gtk.c:2971
 msgid "Pop"
 msgstr "Pop."
 
-#: src/main-interface-gtk.c:3135
+#: src/main-interface-gtk.c:3146
 msgid "E:\t"
 msgstr ""
 
-#: src/main-interface-gtk.c:3145
+#: src/main-interface-gtk.c:3156
 msgid ""
 "\n"
 "J:\t"
 msgstr ""
 
-#: src/main-interface-gtk.c:3155
+#: src/main-interface-gtk.c:3166
 msgid ""
 "\n"
 "D:\t"
 msgstr ""
 
-#: src/main-callbacks-gtk.c:479
+#: src/main-callbacks-gtk.c:482
 msgid "Save As"
 msgstr "Enregistrer sous"
 
-#: src/main-callbacks-gtk.c:491 src/main-callbacks-gtk.c:565
+#: src/main-callbacks-gtk.c:494 src/main-callbacks-gtk.c:568
 msgid "vocabulary.txt"
 msgstr "vocabulaire.txt"
 
-#: src/main-callbacks-gtk.c:555
+#: src/main-callbacks-gtk.c:558
 msgid "Save"
 msgstr "Enregistrer"
 
-#: src/main-callbacks-gtk.c:1089
+#: src/main-callbacks-gtk.c:1092
 msgid "Italian: "
 msgstr "Italien : "
 
-#: src/main-callbacks-gtk.c:1090
+#: src/main-callbacks-gtk.c:1093
 msgid "Japanese: "
 msgstr "Japonais : "
 
-#: src/main-callbacks-gtk.c:1091
+#: src/main-callbacks-gtk.c:1094
 msgid "Spanish: "
 msgstr "Espagnol : "
 
-#: src/main-callbacks-gtk.c:1092
+#: src/main-callbacks-gtk.c:1095
 #, fuzzy
 msgid "French: "
 msgstr "Français : "
 
-#: src/main-callbacks-gtk.c:1115
+#: src/main-callbacks-gtk.c:1118
 #, fuzzy
 msgid ""
 "gWaei (C) 2008-2010 Zachary Dovel\n"
@@ -1062,7 +1063,7 @@ msgstr ""
 "Kanjipad backend (C) 2002 Owen Taylor\n"
 "JStroke backend (C) 1997 Robert Wells"
 
-#: src/main-callbacks-gtk.c:1116
+#: src/main-callbacks-gtk.c:1119
 msgid ""
 "Program for Japanese translation and reference. The\n"
 "dictionaries are supplied by Jim Breen's WWWJDIC."
@@ -1070,22 +1071,22 @@ msgstr ""
 "Logiciel pour la traduction et l'apprentissage du Japonais. \n"
 "Les dictionnaires sont fournis par WWWJDIC de Jim Breen."
 
-#: src/main-callbacks-gtk.c:1712
+#: src/main-callbacks-gtk.c:1715
 msgid "A_ppend Selected"
 msgstr "A_jouter la sélection dans"
 
-#: src/main-callbacks-gtk.c:1714
+#: src/main-callbacks-gtk.c:1717
 msgid "Save Selected _As"
 msgstr "Enregister la sélection _sous"
 
-#: src/main-callbacks-gtk.c:1716
+#: src/main-callbacks-gtk.c:1719
 msgid "_Print Selected"
 msgstr "_Imprimer la sélection"
 
 #: src/engine.c:109
 #, fuzzy, c-format
 msgid "Main Results %d"
-msgstr "Résultats principaux "
+msgstr "Résultats principaux"
 
 #: src/engine.c:132
 #, fuzzy, c-format
@@ -1204,41 +1205,49 @@ msgid "Success"
 msgstr "Succès"
 
 #: src/dictinfo-object.c:79
+#, fuzzy
 msgid "English Dictionary"
-msgstr "Dictionnaire Anglais"
+msgstr " Dictionnaire"
 
 #: src/dictinfo-object.c:80
+#, fuzzy
 msgid "Spanish Dictionary"
-msgstr "Dictionnaire Espagnol"
+msgstr " Dictionnaire"
 
 #: src/dictinfo-object.c:81
 #, fuzzy
 msgid "Kanji Dictionary"
-msgstr "Dictionnaire Espagnol"
+msgstr " Dictionnaire"
 
 #: src/dictinfo-object.c:82
+#, fuzzy
 msgid "Radicals Dictionary"
-msgstr "Dictionnaire des radicaux"
+msgstr " Dictionnaire"
 
 #: src/dictinfo-object.c:83
+#, fuzzy
 msgid "Places Dictionary"
-msgstr "Dictionnaire des lieux"
+msgstr " Dictionnaire"
 
 #: src/dictinfo-object.c:84
+#, fuzzy
 msgid "Names Dictionary"
-msgstr "Dictionnaire des noms"
+msgstr " Dictionnaire"
 
 #: src/dictinfo-object.c:85
+#, fuzzy
 msgid "Examples Dictionary"
-msgstr "Dictionnaire des exemples"
+msgstr " Dictionnaire"
 
 #: src/dictinfo-object.c:86
+#, fuzzy
 msgid "French Dictionary"
-msgstr "Dictionnaire Français"
+msgstr " Dictionnaire"
 
 #: src/dictinfo-object.c:87
+#, fuzzy
 msgid "German Dictionary"
-msgstr "Dictionnaire Allemand"
+msgstr " Dictionnaire"
 
 #: src/xml/main.glade:33
 msgid "_File"
@@ -1304,7 +1313,7 @@ msgstr ""
 
 #: src/xml/main.glade:940
 msgid "Kanji Lookup:"
-msgstr "Recherche par kanji :"
+msgstr "Recherche par Kanji :"
 
 #: src/xml/radicals.glade:7
 msgid "gWaei Radical Search Tool"
@@ -1312,11 +1321,11 @@ msgstr "Outil de recherche par radicaux de gWaei"
 
 #: src/xml/radicals.glade:4290
 msgid "_Restrict to Kanji of"
-msgstr "_Restreindre aux kanjis de "
+msgstr "_Restreindre aux Kanjis de "
 
 #: src/xml/radicals.glade:4324
 msgid " _strokes"
-msgstr " _trait(s)"
+msgstr " _traits"
 
 #: src/xml/radicals.glade:4366 src/kanjipad/kanjipad.glade:110
 msgid "C_lear"
@@ -1354,8 +1363,8 @@ msgid ""
 "Allows searching for Kanji and radical characters from the same dictionary.  "
 "To enable, install both the  Radicals and Kanji dictionaries."
 msgstr ""
-"Permettre la recherche des kanjis et radicaux depuis le même dictionnaire. "
-"Pour l'activer, installez le dictionnaire de radicaux et celui des kanjis."
+"Permettre la recherche des Kanjis et radicaux depuis le même dictionnaire. "
+"Pour l'activer, installez le dictionnaire de radicaux et celui des Kanjis."
 
 #: src/xml/settings.glade:176 src/xml/settings.glade:228
 #: src/xml/settings.glade:282 src/xml/settings.glade:466
@@ -1409,10 +1418,10 @@ msgid ""
 "button of the one you want. The files are downloaded from Jim Breen's "
 "WWWJDIC servers.  Click the triangles to choose other installation sources."
 msgstr ""
-"gWaei s'occupera de l'installation des dictionnaires : \n"
-"Il vous suffit de cliquer sur les boutons de ceux que vous désirez. Les "
-"fichiers sont téléchargés par défaut depuis le serveur WWWJDIC de Jim Breen. "
-"Cliquez sur les triangles pour définir une source d'installation alternative."
+"gWaei s'occupera de l'installation des dictionnaires : Il vous suffit de "
+"cliquer sur les boutons de ceux que vous désirez. Les fichiers sont "
+"téléchargés par défaut depuis le serveur WWWJDIC de Jim Breen. Cliquez sur "
+"les triangles pour définir une source d'installation alternative."
 
 #: src/xml/settings.glade:895 src/xml/settings.glade:968
 #: src/xml/settings.glade:1041 src/xml/settings.glade:1256
@@ -1495,11 +1504,11 @@ msgstr "Rechercher aussi les versions en Kana des requêtes en _Romaji :"
 
 #: src/xml/settings.glade:2968
 msgid "Also search for _Katakana versions of Hiragana queries"
-msgstr "Rechercher aussi les versions en _Katakana des requêtes en Hiragana"
+msgstr "Rechercher aussi les versions en _Katakana des requêtes en Hiragana :"
 
 #: src/xml/settings.glade:2984
 msgid "Also search for _Hiragana versions of Katakana queries"
-msgstr "Rechercher aussi les versions en _Hiragana des requêtes en Katakana"
+msgstr "Rechercher aussi les versions en _Hiragana des requêtes en Katakana :"
 
 #: src/xml/settings.glade:3000
 msgid "_Check the spelling of queries as they are typed in"
@@ -1515,7 +1524,7 @@ msgstr "_Ouvrir le dossier des dictionnaires de gWaei"
 
 #: src/xml/settings.glade:3117
 msgid " using your default file viewer."
-msgstr " utiliser le gestionnaire de fichiers par défaut."
+msgstr " utiliser le visualisateur de fichiers par défaut."
 
 #: src/xml/settings.glade:3138
 msgid "<b>Manual Dictionary Management</b>"
@@ -1570,15 +1579,6 @@ msgstr "Téléchargement ..."
 msgid "Browse..."
 msgstr "Explorer"
 
-#~ msgid "Errored"
-#~ msgstr "Erreur"
-
-#~ msgid "Syncing "
-#~ msgstr "Synchronisation du dictionnaire "
-
-#~ msgid " dictionary changes..."
-#~ msgstr " ..."
-
 #~ msgid "[35mRadicals:[0m"
 #~ msgstr "[35mRadicaux : [0m"
 
@@ -1608,8 +1608,17 @@ msgstr "Explorer"
 #~ msgid "Disabled"
 #~ msgstr "Désactivé"
 
+#~ msgid "Errored"
+#~ msgstr "Erreur"
+
 #~ msgid "Requires rsync to be installed"
 #~ msgstr "Nécessite que l'utilitaire rsync soit installé"
+
+#~ msgid "Syncing "
+#~ msgstr "Synchronisation du dictionnaire "
+
+#~ msgid " dictionary changes..."
+#~ msgstr " ..."
 
 #~ msgid "English"
 #~ msgstr "Anglais"
@@ -1637,7 +1646,3 @@ msgstr "Explorer"
 
 #~ msgid "German"
 #~ msgstr "Allemand"
-
-#, fuzzy
-#~ msgid " Dictionary"
-#~ msgstr "Dictionnaire des kanjis"
