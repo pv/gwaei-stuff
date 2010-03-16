@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 1.3.0\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-03-15 22:19-0500\n"
+"POT-Creation-Date: 2010-03-16 00:54-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -446,7 +446,7 @@ msgstr ""
 msgid "Edit the current vocabulary list"
 msgstr ""
 
-#: src/main-interface-gtk.c:422 src/main-callbacks-gtk.c:1726
+#: src/main-interface-gtk.c:422 src/main-callbacks-gtk.c:1717
 msgid "A_ppend"
 msgstr ""
 
@@ -959,44 +959,32 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: src/main-callbacks-gtk.c:1092
-msgid "Italian: "
-msgstr ""
-
-#: src/main-callbacks-gtk.c:1093
-msgid "Japanese: "
-msgstr ""
-
-#: src/main-callbacks-gtk.c:1094
-msgid "Spanish: "
-msgstr ""
-
-#: src/main-callbacks-gtk.c:1095
-msgid "French: "
-msgstr ""
-
-#: src/main-callbacks-gtk.c:1118
+#: src/main-callbacks-gtk.c:1108
 msgid ""
 "gWaei (C) 2008-2010 Zachary Dovel\n"
 "Kanjipad backend (C) 2002 Owen Taylor\n"
 "JStroke backend (C) 1997 Robert Wells"
 msgstr ""
 
-#: src/main-callbacks-gtk.c:1119
+#: src/main-callbacks-gtk.c:1109
 msgid ""
 "Program for Japanese translation and reference. The\n"
 "dictionaries are supplied by Jim Breen's WWWJDIC."
 msgstr ""
 
-#: src/main-callbacks-gtk.c:1715
+#: src/main-callbacks-gtk.c:1112
+msgid "translator-credits"
+msgstr ""
+
+#: src/main-callbacks-gtk.c:1706
 msgid "A_ppend Selected"
 msgstr ""
 
-#: src/main-callbacks-gtk.c:1717
+#: src/main-callbacks-gtk.c:1708
 msgid "Save Selected _As"
 msgstr ""
 
-#: src/main-callbacks-gtk.c:1719
+#: src/main-callbacks-gtk.c:1710
 msgid "_Print Selected"
 msgstr ""
 

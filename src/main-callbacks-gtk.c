@@ -1088,22 +1088,12 @@ G_MODULE_EXPORT void do_about (GtkWidget *widget, gpointer data)
     strcat (pixbuf_path, PACKAGE);
     strcat (pixbuf_path, "/logo.png");
 
-    //Generate the translator credits in such a way it is easily localizable
-    char *italian = gettext ("Italian: ");
-    char *japanese = gettext ("Japanese: ");
-    char *spanish = gettext ("Spanish: ");
-    char *french = gettext ("French: ");
-    char translator_credits[10000];
-    strcpy (translator_credits, "");
-
-    strcat (translator_credits, italian);
-    strcat (translator_credits, "Fabrizio Sabatini\n");
-    strcat (translator_credits, japanese);
-    strcat (translator_credits, "Zachary Dovel\n");
-    strcat (translator_credits, spanish);
-    strcat (translator_credits, "4packed\n");
-    strcat (translator_credits, french);
-    strcat (translator_credits, "Nicolas (aka FoeNyx)\n");
+    char *programmer_credits[] = 
+    {
+      "Zachary Dovel <pizzach@gmail.com>",
+      "Fabrizio Sabatini",
+      NULL
+    };
 
     GdkPixbuf *logo;
     if ( (logo = gdk_pixbuf_new_from_file ( pixbuf_path,    NULL)) == NULL &&
@@ -1112,14 +1102,15 @@ G_MODULE_EXPORT void do_about (GtkWidget *widget, gpointer data)
       printf ("Was unable to load the gwaei logo.\n");
     }
 
-  GtkWidget *about = g_object_new (GTK_TYPE_ABOUT_DIALOG,
+    GtkWidget *about = g_object_new (GTK_TYPE_ABOUT_DIALOG,
                "program-name", "gWaei", 
                "version", VERSION,
                "copyright", gettext("gWaei (C) 2008-2010 Zachary Dovel\nKanjipad backend (C) 2002 Owen Taylor\nJStroke backend (C) 1997 Robert Wells"),
                "comments", gettext("Program for Japanese translation and reference. The\ndictionaries are supplied by Jim Breen's WWWJDIC."),
                "license", "This software is GPL Licensed.\n\ngWaei is free software: you can redistribute it and/or modify\nit under the terms of the GNU General Public License as published by\n the Free Software Foundation, either version 3 of the License, or\n(at your option) any later version.\n\ngWaei is distributed in the hope that it will be useful,\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\nMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\nGNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License\nalong with gWaei.  If not, see <http://www.gnu.org/licenses/>.",
                "logo", logo,
-               "translator-credits", translator_credits,
+               "translator-credits", gettext("translator-credits"),
+               "authors", programmer_credits,
                "website", "http://gwaei.sourceforge.net/",
                NULL);
     gtk_dialog_run (GTK_DIALOG (about));

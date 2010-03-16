@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 1.2.0\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-03-15 22:19-0500\n"
+"POT-Creation-Date: 2010-03-16 00:54-0500\n"
 "PO-Revision-Date: 2009-11-12 00:12+0100\n"
 "Last-Translator: Nicolas (aka FoeNyx)\n"
 "Language-Team: none\n"
@@ -475,7 +475,7 @@ msgstr "Dictionnaires principaux"
 msgid "Edit the current vocabulary list"
 msgstr "Modifier la liste de vocabulaire courante"
 
-#: src/main-interface-gtk.c:422 src/main-callbacks-gtk.c:1726
+#: src/main-interface-gtk.c:422 src/main-callbacks-gtk.c:1717
 msgid "A_ppend"
 msgstr "A_jouter"
 
@@ -1035,24 +1035,7 @@ msgstr "vocabulaire.txt"
 msgid "Save"
 msgstr "Enregistrer"
 
-#: src/main-callbacks-gtk.c:1092
-msgid "Italian: "
-msgstr "Italien : "
-
-#: src/main-callbacks-gtk.c:1093
-msgid "Japanese: "
-msgstr "Japonais : "
-
-#: src/main-callbacks-gtk.c:1094
-msgid "Spanish: "
-msgstr "Espagnol : "
-
-#: src/main-callbacks-gtk.c:1095
-#, fuzzy
-msgid "French: "
-msgstr "Français : "
-
-#: src/main-callbacks-gtk.c:1118
+#: src/main-callbacks-gtk.c:1108
 #, fuzzy
 msgid ""
 "gWaei (C) 2008-2010 Zachary Dovel\n"
@@ -1063,7 +1046,7 @@ msgstr ""
 "Kanjipad backend (C) 2002 Owen Taylor\n"
 "JStroke backend (C) 1997 Robert Wells"
 
-#: src/main-callbacks-gtk.c:1119
+#: src/main-callbacks-gtk.c:1109
 msgid ""
 "Program for Japanese translation and reference. The\n"
 "dictionaries are supplied by Jim Breen's WWWJDIC."
@@ -1071,15 +1054,19 @@ msgstr ""
 "Logiciel pour la traduction et l'apprentissage du Japonais. \n"
 "Les dictionnaires sont fournis par WWWJDIC de Jim Breen."
 
-#: src/main-callbacks-gtk.c:1715
+#: src/main-callbacks-gtk.c:1112
+msgid "translator-credits"
+msgstr "Nicolas (aka FoeNyx)"
+
+#: src/main-callbacks-gtk.c:1706
 msgid "A_ppend Selected"
 msgstr "A_jouter la sélection dans"
 
-#: src/main-callbacks-gtk.c:1717
+#: src/main-callbacks-gtk.c:1708
 msgid "Save Selected _As"
 msgstr "Enregister la sélection _sous"
 
-#: src/main-callbacks-gtk.c:1719
+#: src/main-callbacks-gtk.c:1710
 msgid "_Print Selected"
 msgstr "_Imprimer la sélection"
 
@@ -1578,6 +1565,19 @@ msgstr "Téléchargement ..."
 #, fuzzy
 msgid "Browse..."
 msgstr "Explorer"
+
+#~ msgid "Italian: "
+#~ msgstr "Italien : "
+
+#~ msgid "Japanese: "
+#~ msgstr "Japonais : "
+
+#~ msgid "Spanish: "
+#~ msgstr "Espagnol : "
+
+#, fuzzy
+#~ msgid "French: "
+#~ msgstr "Français : "
 
 #~ msgid "[35mRadicals:[0m"
 #~ msgstr "[35mRadicaux : [0m"

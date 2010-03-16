@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-03-15 22:19-0500\n"
+"POT-Creation-Date: 2010-03-16 00:54-0500\n"
 "PO-Revision-Date: 2008-11-30 02:35+0500\n"
 "Last-Translator: Zachary Dovel pizzach@gmail.com\n"
 "Language-Team: Not Applicable\n"
@@ -446,7 +446,7 @@ msgstr "主な辞書"
 msgid "Edit the current vocabulary list"
 msgstr "現在語彙リストを編集する"
 
-#: src/main-interface-gtk.c:422 src/main-callbacks-gtk.c:1726
+#: src/main-interface-gtk.c:422 src/main-callbacks-gtk.c:1717
 msgid "A_ppend"
 msgstr "追加(_P)"
 
@@ -959,23 +959,7 @@ msgstr "語彙.txt"
 msgid "Save"
 msgstr "保存"
 
-#: src/main-callbacks-gtk.c:1092
-msgid "Italian: "
-msgstr "イタリア語: "
-
-#: src/main-callbacks-gtk.c:1093
-msgid "Japanese: "
-msgstr "日本語: "
-
-#: src/main-callbacks-gtk.c:1094
-msgid "Spanish: "
-msgstr "和西: "
-
-#: src/main-callbacks-gtk.c:1095
-msgid "French: "
-msgstr "フランス語:"
-
-#: src/main-callbacks-gtk.c:1118
+#: src/main-callbacks-gtk.c:1108
 msgid ""
 "gWaei (C) 2008-2010 Zachary Dovel\n"
 "Kanjipad backend (C) 2002 Owen Taylor\n"
@@ -985,7 +969,7 @@ msgstr ""
 "漢字パッド バックエンド (C) 2002 Owen Taylor\n"
 "JStroke バックエンド(C) 1997 Robert Wells"
 
-#: src/main-callbacks-gtk.c:1119
+#: src/main-callbacks-gtk.c:1109
 msgid ""
 "Program for Japanese translation and reference. The\n"
 "dictionaries are supplied by Jim Breen's WWWJDIC."
@@ -993,15 +977,19 @@ msgstr ""
 "日本語の翻訳や参照の為に作られたプログラムです. 辞書ファイルがJim Breenの"
 "WWWJDICから取られています."
 
-#: src/main-callbacks-gtk.c:1715
+#: src/main-callbacks-gtk.c:1112
+msgid "translator-credits"
+msgstr "Zachary Dovel"
+
+#: src/main-callbacks-gtk.c:1706
 msgid "A_ppend Selected"
 msgstr "選択のを追加(_P)"
 
-#: src/main-callbacks-gtk.c:1717
+#: src/main-callbacks-gtk.c:1708
 msgid "Save Selected _As"
 msgstr "選択のを別名で保存"
 
-#: src/main-callbacks-gtk.c:1719
+#: src/main-callbacks-gtk.c:1710
 msgid "_Print Selected"
 msgstr "選択のを印刷"
 
@@ -1479,6 +1467,18 @@ msgstr "ダウンロード中..."
 #: src/gtk-dict-install-line-object.c:119
 msgid "Browse..."
 msgstr "参照..."
+
+#~ msgid "Italian: "
+#~ msgstr "イタリア語: "
+
+#~ msgid "Japanese: "
+#~ msgstr "日本語: "
+
+#~ msgid "Spanish: "
+#~ msgstr "和西: "
+
+#~ msgid "French: "
+#~ msgstr "フランス語:"
 
 #~ msgid "Errored"
 #~ msgstr "エラー"

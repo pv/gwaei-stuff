@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-03-15 22:19-0500\n"
+"POT-Creation-Date: 2010-03-16 00:54-0500\n"
 "PO-Revision-Date: 2010-03-13 17:12+0100\n"
 "Last-Translator: Fabrizio Sabatini <jecnua@gmail.com>\n"
 "Language-Team: Not Applicable\n"
@@ -456,7 +456,7 @@ msgstr "Dizionari Principali"
 msgid "Edit the current vocabulary list"
 msgstr "Modifica la lista dei vocabolari correnti"
 
-#: src/main-interface-gtk.c:422 src/main-callbacks-gtk.c:1726
+#: src/main-interface-gtk.c:422 src/main-callbacks-gtk.c:1717
 msgid "A_ppend"
 msgstr "_Aggiungi"
 
@@ -1012,30 +1012,14 @@ msgstr "vocabolario.txt"
 msgid "Save"
 msgstr "Salva"
 
-#: src/main-callbacks-gtk.c:1092
-msgid "Italian: "
-msgstr "Italiano: "
-
-#: src/main-callbacks-gtk.c:1093
-msgid "Japanese: "
-msgstr "Giapponese: "
-
-#: src/main-callbacks-gtk.c:1094
-msgid "Spanish: "
-msgstr "Spagnolo: "
-
-#: src/main-callbacks-gtk.c:1095
-msgid "French: "
-msgstr "Francese: "
-
-#: src/main-callbacks-gtk.c:1118
+#: src/main-callbacks-gtk.c:1108
 msgid ""
 "gWaei (C) 2008-2010 Zachary Dovel\n"
 "Kanjipad backend (C) 2002 Owen Taylor\n"
 "JStroke backend (C) 1997 Robert Wells"
 msgstr ""
 
-#: src/main-callbacks-gtk.c:1119
+#: src/main-callbacks-gtk.c:1109
 msgid ""
 "Program for Japanese translation and reference. The\n"
 "dictionaries are supplied by Jim Breen's WWWJDIC."
@@ -1043,15 +1027,19 @@ msgstr ""
 "Programma per la traduzione e consultazione del Giapponese.\n"
 "I dizionari sono forniti da Jim Breen's WWWJDIC."
 
-#: src/main-callbacks-gtk.c:1715
+#: src/main-callbacks-gtk.c:1112
+msgid "translator-credits"
+msgstr "Fabrizio Sabatini"
+
+#: src/main-callbacks-gtk.c:1706
 msgid "A_ppend Selected"
 msgstr "_Aggiungi Selezione"
 
-#: src/main-callbacks-gtk.c:1717
+#: src/main-callbacks-gtk.c:1708
 msgid "Save Selected _As"
 msgstr "S_alva selezione come"
 
-#: src/main-callbacks-gtk.c:1719
+#: src/main-callbacks-gtk.c:1710
 msgid "_Print Selected"
 msgstr "Stampa Selezione"
 
@@ -1532,6 +1520,18 @@ msgstr "Sto Scaricando..."
 #, fuzzy
 msgid "Browse..."
 msgstr "Sfoglia"
+
+#~ msgid "Italian: "
+#~ msgstr "Italiano: "
+
+#~ msgid "Japanese: "
+#~ msgstr "Giapponese: "
+
+#~ msgid "Spanish: "
+#~ msgstr "Spagnolo: "
+
+#~ msgid "French: "
+#~ msgstr "Francese: "
 
 #~ msgid "Errored"
 #~ msgstr "Errori"

@@ -29,7 +29,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 0.15.1\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-03-15 22:19-0500\n"
+"POT-Creation-Date: 2010-03-16 00:54-0500\n"
 "PO-Revision-Date: 2009-10-10 01:05-0500\n"
 "Last-Translator: dean <3dx@live.com>\n"
 "Language-Team: none\n"
@@ -485,7 +485,7 @@ msgstr "_Diccionarios"
 msgid "Edit the current vocabulary list"
 msgstr "Editar la lista de vocabulario actual"
 
-#: src/main-interface-gtk.c:422 src/main-callbacks-gtk.c:1726
+#: src/main-interface-gtk.c:422 src/main-callbacks-gtk.c:1717
 msgid "A_ppend"
 msgstr "A_nexo"
 
@@ -1040,24 +1040,7 @@ msgstr "vocabulario.txt"
 msgid "Save"
 msgstr "Guardar"
 
-#: src/main-callbacks-gtk.c:1092
-msgid "Italian: "
-msgstr "Italiano: "
-
-#: src/main-callbacks-gtk.c:1093
-msgid "Japanese: "
-msgstr "Japonés: "
-
-#: src/main-callbacks-gtk.c:1094
-msgid "Spanish: "
-msgstr "Español: "
-
-#: src/main-callbacks-gtk.c:1095
-#, fuzzy
-msgid "French: "
-msgstr "Freq:"
-
-#: src/main-callbacks-gtk.c:1118
+#: src/main-callbacks-gtk.c:1108
 #, fuzzy
 msgid ""
 "gWaei (C) 2008-2010 Zachary Dovel\n"
@@ -1068,7 +1051,7 @@ msgstr ""
 "Kanjipad backend (C) 2002 Owen Taylor\n"
 "JStroke backend (C) 1997 Robert Wells"
 
-#: src/main-callbacks-gtk.c:1119
+#: src/main-callbacks-gtk.c:1109
 msgid ""
 "Program for Japanese translation and reference. The\n"
 "dictionaries are supplied by Jim Breen's WWWJDIC."
@@ -1076,27 +1059,31 @@ msgstr ""
 "Aplicación para traducción y referencia del japonés. Los\n"
 "diccionarios son suministrados por Jim Breen's WWWJDIC."
 
-#: src/main-callbacks-gtk.c:1715
+#: src/main-callbacks-gtk.c:1112
+msgid "translator-credits"
+msgstr "4packed"
+
+#: src/main-callbacks-gtk.c:1706
 msgid "A_ppend Selected"
 msgstr "A_nexo seleccionado"
 
-#: src/main-callbacks-gtk.c:1717
+#: src/main-callbacks-gtk.c:1708
 msgid "Save Selected _As"
 msgstr "Guardar selección _Como"
 
-#: src/main-callbacks-gtk.c:1719
+#: src/main-callbacks-gtk.c:1710
 msgid "_Print Selected"
 msgstr "_Imprimir selección"
 
 #: src/engine.c:109
-#, fuzzy, c-format
+#, c-format
 msgid "Main Results %d"
-msgstr " Resultados principales"
+msgstr "Resultados principales %d"
 
 #: src/engine.c:132
-#, fuzzy, c-format
+#, c-format
 msgid "Other Results %d"
-msgstr "Otros resultados"
+msgstr "Otros resultados %d"
 
 #: src/printing-gtk.c:316
 msgid "Page "
@@ -1160,9 +1147,8 @@ msgid "Dictionary update finished"
 msgstr "Actualización del diccionario finalizada"
 
 #: src/settings-callbacks-gtk.c:284
-#, fuzzy
 msgid "Connection failure"
-msgstr "Conexión fallida\n"
+msgstr "Conexión fallida"
 
 #: src/settings-callbacks-gtk.c:293
 msgid "Decompressing..."
@@ -1210,34 +1196,28 @@ msgid "Success"
 msgstr "Éxito"
 
 #: src/dictinfo-object.c:79
-#, fuzzy
 msgid "English Dictionary"
-msgstr "Diccionario:"
+msgstr "Inglés Diccionario:"
 
 #: src/dictinfo-object.c:80
-#, fuzzy
 msgid "Spanish Dictionary"
-msgstr "Diccionario:"
+msgstr "Español Diccionario:"
 
 #: src/dictinfo-object.c:81
-#, fuzzy
 msgid "Kanji Dictionary"
-msgstr "Diccionario:"
+msgstr "Kanji Diccionario:"
 
 #: src/dictinfo-object.c:82
-#, fuzzy
 msgid "Radicals Dictionary"
-msgstr "Diccionario:"
+msgstr "Radicals Diccionario:"
 
 #: src/dictinfo-object.c:83
-#, fuzzy
 msgid "Places Dictionary"
-msgstr "Diccionario:"
+msgstr "Places Diccionario:"
 
 #: src/dictinfo-object.c:84
-#, fuzzy
 msgid "Names Dictionary"
-msgstr "Diccionario:"
+msgstr "Nombres Diccionario:"
 
 #: src/dictinfo-object.c:85
 #, fuzzy
@@ -1593,6 +1573,19 @@ msgstr "Descargando..."
 #, fuzzy
 msgid "Browse..."
 msgstr "Navegar"
+
+#~ msgid "Italian: "
+#~ msgstr "Italiano: "
+
+#~ msgid "Japanese: "
+#~ msgstr "Japonés: "
+
+#~ msgid "Spanish: "
+#~ msgstr "Español: "
+
+#, fuzzy
+#~ msgid "French: "
+#~ msgstr "Freq:"
 
 #~ msgid "Errored"
 #~ msgstr "Error"
