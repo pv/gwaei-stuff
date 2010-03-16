@@ -47,6 +47,7 @@ enum GwSearchState
 {
   GW_SEARCH_IDLE,
   GW_SEARCH_SEARCHING,
+  GW_SEARCH_FINISHING,
   GW_SEARCH_GW_DICT_STATUS_CANCELING
 };
 
@@ -59,7 +60,7 @@ typedef struct GwSearchItem {
     GwDictInfo* dictionary;                 //!< Pointer to the dictionary used
 
     FILE* fd;                               //!< File descriptor for file search position
-    int status;                             //!< Used to test if a search is in progress.
+    enum GwSearchState status;                             //!< Used to test if a search is in progress.
     char *scratch_buffer;                   //!< Scratch space
     int target;                             //!< What gui element should be outputted to
     long current_line;                      //!< Current line in teh dictionary file

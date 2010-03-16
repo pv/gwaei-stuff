@@ -924,6 +924,7 @@ void gw_ui_set_total_results_label_by_searchitem (GwSearchItem* item)
       switch (item->status)
       {
         case GW_SEARCH_IDLE:
+        case GW_SEARCH_FINISHING:
             if (item->current_line == 0)
               gtk_label_set_text(GTK_LABEL (label), idle_message_none);
             else if (relevant == total)
@@ -1183,7 +1184,7 @@ void gw_ui_set_search_progressbar_by_searchitem (GwSearchItem *item)
       total = item->dictionary->total_lines;
     }
 
-    if (item == NULL || item->dictionary == NULL || total == 0 || ((double)current/(double)total) > 1.0 || item->status == GW_SEARCH_IDLE)
+    if (item == NULL || item->dictionary == NULL || total == 0 || ((double)current/(double)total) > 1.0 || item->status == GW_SEARCH_IDLE || item->status == GW_SEARCH_FINISHING)
     {
       gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR (progress), 0.0);
       gtk_widget_show (GTK_WIDGET (progress));
