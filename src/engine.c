@@ -370,7 +370,6 @@ static gboolean stream_results_thread (GwSearchItem *item)
 //!
 static gboolean stream_results_cleanup (GwSearchItem *item)
 {
-    gw_searchitem_do_post_search_clean (item);
     less_relevant_title_inserted = FALSE;
     if (gw_util_get_runmode () == GW_CONSOLE_RUNMODE)
     {
@@ -381,10 +380,11 @@ static gboolean stream_results_cleanup (GwSearchItem *item)
       if (item->target == GW_TARGET_RESULTS)
       {
         gw_ui_remove_whitespace_from_buffer (item->target_tb);
-        gw_ui_set_total_results_label_by_searchitem(item);
+        gw_ui_set_total_results_label_by_searchitem (item);
         gw_ui_set_search_progressbar_by_searchitem (item);
       }
     }     
+    gw_searchitem_do_post_search_clean (item);
 }
 
 

@@ -778,7 +778,7 @@ void gw_ui_update_toolbar_buttons ()
     GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
     int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
     int pages = gtk_notebook_get_n_pages (GTK_NOTEBOOK (notebook));
-    GwSearchItem *tab_search_item = g_list_nth_data(gw_tab_searchitems, page_num);
+    GwSearchItem *tab_search_item = g_list_nth_data (gw_tab_searchitems, page_num);
 
 
     int current_font_size;
@@ -1839,7 +1839,7 @@ gboolean gw_ui_set_color_to_tagtable (char    *id,     const int TARGET,
 
     //Assertain the target text buffer
     GObject *tb;
-    tb = get_gobject_from_target(TARGET);
+    tb = get_gobject_from_target (TARGET);
 
     //Load the tag table
     GtkTextTagTable *table;
@@ -1923,7 +1923,7 @@ void  gw_ui_set_tag_to_tagtable (char *id,   int      TARGET,
 {
     //Assertain the target text buffer
     GObject *tb;
-    tb = get_gobject_from_target(TARGET);
+    tb = get_gobject_from_target (TARGET);
 
     GtkTextTagTable* table = gtk_text_buffer_get_tag_table (GTK_TEXT_BUFFER (tb)); 
     GtkTextTag* tag = gtk_text_tag_table_lookup (table, id);
@@ -2454,7 +2454,7 @@ void gw_ui_cycle_dictionaries(gboolean cycle_forward)
 char* gw_ui_get_text_from_text_buffer(const int TARGET)
 {
     GObject* tb;
-    tb = get_gobject_from_target(TARGET);
+    tb = get_gobject_from_target (TARGET);
 
     GtkTextIter s, e;
     if (gtk_text_buffer_get_has_selection (GTK_TEXT_BUFFER (tb)))
@@ -2676,7 +2676,10 @@ void initialize_gui_interface(int *argc, char ***argv)
 
 gboolean gw_ui_cancel_search_by_searchitem (GwSearchItem *item)
 {
+  printf("Testing...\n");
     if (item == NULL || item->status == GW_SEARCH_IDLE) return TRUE;
+  printf("CANCELING!!\n");
+
 
     item->status = GW_SEARCH_GW_DICT_STATUS_CANCELING;
 
@@ -2694,13 +2697,21 @@ gboolean gw_ui_cancel_search_by_tab_content (gpointer container)
 {
     GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
     int position = gtk_notebook_page_num (GTK_NOTEBOOK (notebook), container);
+    printf("Canceling search by tab content\n");
     if (position != -1)
     {
       GwSearchItem *item = g_list_nth_data (gw_tab_searchitems, position);
+      printf("position non-negative %d\n", position);
       if (item == NULL)
+      {
+        printf("searchitem was null! %d\n\n", position);
         return TRUE;
+      }
       else
+      {
+        printf("canceling search by searchitem\n\n");
         return  gw_ui_cancel_search_by_searchitem (item);
+      }
     }
     printf("WARNING: Could not find search to cancel. Something went wrong.\n");
     return FALSE;

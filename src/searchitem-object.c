@@ -75,7 +75,7 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary, const int 
   temp->scratch_buffer = NULL;
   temp->dictionary = dictionary;
   temp->target = TARGET;
-  temp->target_tb = (gpointer) get_gobject_from_target(TARGET);
+  temp->target_tb = (gpointer) get_gobject_from_target (TARGET);
   temp->total_relevant_results = 0;
   temp->total_irrelevant_results = 0;
   temp->total_results = 0;
@@ -174,6 +174,9 @@ gboolean gw_searchitem_do_pre_search_prep (GwSearchItem* item)
     item->total_relevant_results = 0;
     item->total_irrelevant_results = 0;
     item->total_results = 0;
+
+    //Make sure searches done from the history are pointing at a valid target
+    item->target_tb = (gpointer) get_gobject_from_target (item->target);
 
     if (item->fd == NULL)
       item->fd = fopen ((item->dictionary)->path, "r");

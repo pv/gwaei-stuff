@@ -369,6 +369,9 @@ G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
     GwSearchItem *item;
     item = (GwSearchItem*) data;
 
+    //Make sure searches done from the history are pointing at a valid target
+    item->target_tb = (gpointer) get_gobject_from_target (item->target);
+
     //Checks to make sure everything is sane
     if (gw_ui_cancel_search_for_current_tab () == FALSE)
       return;
@@ -393,8 +396,8 @@ G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
     //Add tab reference to searchitem
     GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
     int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
-    GList *listitem = g_list_nth(gw_tab_searchitems, page_num);
-    listitem->data = hl->current;
+    GList *list = g_list_nth (gw_tab_searchitems, page_num);
+    list->data = hl->current;
 
     gw_search_get_results (hl->current);
     gw_ui_update_history_popups ();
@@ -1328,7 +1331,7 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
 
     GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
     int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
-    GwSearchItem *tabitem = g_list_nth_data(gw_tab_searchitems, page_num);
+    GwSearchItem *item = g_list_nth_data (gw_tab_searchitems, page_num);
 
     GList *list = gw_dictlist_get_selected ();
     GwDictInfo *dictionary = list->data;
@@ -1341,11 +1344,11 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
       return;
 
     //Stop duplicate searches
-    if (tabitem != NULL &&
-        tabitem->queryline != NULL &&
-        strcmp (query, tabitem->queryline->string) == 0 &&
-        dictionary->id == tabitem->dictionary->id &&
-        show_less_relevant == tabitem->show_less_relevant_results)
+    if (item != NULL &&
+        item->queryline != NULL &&
+        strcmp (query, item->queryline->string) == 0 &&
+        dictionary->id == item->dictionary->id &&
+        show_less_relevant == item->show_less_relevant_results)
       return;
 
     if (gw_ui_cancel_search_for_current_tab () == FALSE)
@@ -1372,8 +1375,8 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
     }
 
     //Add tab reference to searchitem
-    GList *listitem = g_list_nth(gw_tab_searchitems, page_num);
-    listitem->data = hl->current;
+    list = g_list_nth (gw_tab_searchitems, page_num);
+    list->data = hl->current;
 
     //Start the search
     //Set tab text
