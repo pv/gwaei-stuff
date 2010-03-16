@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 1.3.0\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-03-15 21:46-0500\n"
+"POT-Creation-Date: 2010-03-15 22:19-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -309,38 +309,38 @@ msgid ""
 msgstr ""
 
 #: src/main-interface-console.c:1114 src/main-interface-console.c:1160
-#: src/main-interface-gtk.c:3017 src/main-interface-gtk.c:3119
+#: src/main-interface-gtk.c:3010 src/main-interface-gtk.c:3112
 #: src/xml/settings.glade:1213
 msgid "Radicals:"
 msgstr ""
 
 #: src/main-interface-console.c:1118 src/main-interface-console.c:1164
-#: src/main-interface-gtk.c:3054
+#: src/main-interface-gtk.c:3047
 msgid "Stroke:"
 msgstr ""
 
 #: src/main-interface-console.c:1125 src/main-interface-console.c:1170
-#: src/main-interface-gtk.c:3061
+#: src/main-interface-gtk.c:3054
 msgid "Freq:"
 msgstr ""
 
 #: src/main-interface-console.c:1132 src/main-interface-console.c:1177
-#: src/main-interface-gtk.c:3068
+#: src/main-interface-gtk.c:3061
 msgid "Grade:"
 msgstr ""
 
 #: src/main-interface-console.c:1139 src/main-interface-console.c:1184
-#: src/main-interface-gtk.c:3074
+#: src/main-interface-gtk.c:3067
 msgid "JLPT:"
 msgstr ""
 
 #: src/main-interface-console.c:1146 src/main-interface-console.c:1191
-#: src/main-interface-gtk.c:3034
+#: src/main-interface-gtk.c:3027
 msgid "Readings:"
 msgstr ""
 
 #: src/main-interface-console.c:1152 src/main-interface-console.c:1197
-#: src/main-interface-gtk.c:3083
+#: src/main-interface-gtk.c:3076
 msgid "Meanings:"
 msgstr ""
 
@@ -927,21 +927,21 @@ msgstr ""
 msgid "- A dictionary program for Japanese-English translation."
 msgstr ""
 
-#: src/main-interface-gtk.c:2905 src/main-interface-gtk.c:2971
+#: src/main-interface-gtk.c:2898 src/main-interface-gtk.c:2964
 msgid "Pop"
 msgstr ""
 
-#: src/main-interface-gtk.c:3146
+#: src/main-interface-gtk.c:3139
 msgid "E:\t"
 msgstr ""
 
-#: src/main-interface-gtk.c:3156
+#: src/main-interface-gtk.c:3149
 msgid ""
 "\n"
 "J:\t"
 msgstr ""
 
-#: src/main-interface-gtk.c:3166
+#: src/main-interface-gtk.c:3159
 msgid ""
 "\n"
 "D:\t"

@@ -381,7 +381,7 @@ static gboolean stream_results_cleanup (GwSearchItem *item)
       {
         gw_ui_remove_whitespace_from_buffer (item->target_tb);
         gw_ui_set_total_results_label_by_searchitem (item);
-        gw_ui_set_search_progressbar_by_searchitem (item);
+        gw_ui_set_search_progressbar_by_searchitem (NULL);
       }
     }     
     gw_searchitem_do_post_search_clean (item);

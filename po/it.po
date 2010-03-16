@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-03-15 21:46-0500\n"
+"POT-Creation-Date: 2010-03-15 22:19-0500\n"
 "PO-Revision-Date: 2010-03-13 17:12+0100\n"
 "Last-Translator: Fabrizio Sabatini <jecnua@gmail.com>\n"
 "Language-Team: Not Applicable\n"
@@ -319,38 +319,38 @@ msgstr ""
 "tutte le parentesi? Controlla anche gli apici.\n"
 
 #: src/main-interface-console.c:1114 src/main-interface-console.c:1160
-#: src/main-interface-gtk.c:3017 src/main-interface-gtk.c:3119
+#: src/main-interface-gtk.c:3010 src/main-interface-gtk.c:3112
 #: src/xml/settings.glade:1213
 msgid "Radicals:"
 msgstr "Radicali:"
 
 #: src/main-interface-console.c:1118 src/main-interface-console.c:1164
-#: src/main-interface-gtk.c:3054
+#: src/main-interface-gtk.c:3047
 msgid "Stroke:"
 msgstr "Tratti:"
 
 #: src/main-interface-console.c:1125 src/main-interface-console.c:1170
-#: src/main-interface-gtk.c:3061
+#: src/main-interface-gtk.c:3054
 msgid "Freq:"
 msgstr "Freq:"
 
 #: src/main-interface-console.c:1132 src/main-interface-console.c:1177
-#: src/main-interface-gtk.c:3068
+#: src/main-interface-gtk.c:3061
 msgid "Grade:"
 msgstr "Grado:"
 
 #: src/main-interface-console.c:1139 src/main-interface-console.c:1184
-#: src/main-interface-gtk.c:3074
+#: src/main-interface-gtk.c:3067
 msgid "JLPT:"
 msgstr "JLPT:"
 
 #: src/main-interface-console.c:1146 src/main-interface-console.c:1191
-#: src/main-interface-gtk.c:3034
+#: src/main-interface-gtk.c:3027
 msgid "Readings:"
 msgstr "Lettura:"
 
 #: src/main-interface-console.c:1152 src/main-interface-console.c:1197
-#: src/main-interface-gtk.c:3083
+#: src/main-interface-gtk.c:3076
 msgid "Meanings:"
 msgstr "Significato:"
 
@@ -980,21 +980,21 @@ msgstr ""
 msgid "- A dictionary program for Japanese-English translation."
 msgstr "- Un programma dizionario per traduzioni Giapponese-Inglese."
 
-#: src/main-interface-gtk.c:2905 src/main-interface-gtk.c:2971
+#: src/main-interface-gtk.c:2898 src/main-interface-gtk.c:2964
 msgid "Pop"
 msgstr ""
 
-#: src/main-interface-gtk.c:3146
+#: src/main-interface-gtk.c:3139
 msgid "E:\t"
 msgstr ""
 
-#: src/main-interface-gtk.c:3156
+#: src/main-interface-gtk.c:3149
 msgid ""
 "\n"
 "J:\t"
 msgstr ""
 
-#: src/main-interface-gtk.c:3166
+#: src/main-interface-gtk.c:3159
 msgid ""
 "\n"
 "D:\t"

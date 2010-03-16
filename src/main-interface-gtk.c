@@ -2676,10 +2676,7 @@ void initialize_gui_interface(int *argc, char ***argv)
 
 gboolean gw_ui_cancel_search_by_searchitem (GwSearchItem *item)
 {
-  printf("Testing...\n");
     if (item == NULL || item->status == GW_SEARCH_IDLE) return TRUE;
-  printf("CANCELING!!\n");
-
 
     item->status = GW_SEARCH_GW_DICT_STATUS_CANCELING;
 
@@ -2697,19 +2694,15 @@ gboolean gw_ui_cancel_search_by_tab_content (gpointer container)
 {
     GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
     int position = gtk_notebook_page_num (GTK_NOTEBOOK (notebook), container);
-    printf("Canceling search by tab content\n");
     if (position != -1)
     {
       GwSearchItem *item = g_list_nth_data (gw_tab_searchitems, position);
-      printf("position non-negative %d\n", position);
       if (item == NULL)
       {
-        printf("searchitem was null! %d\n\n", position);
         return TRUE;
       }
       else
       {
-        printf("canceling search by searchitem\n\n");
         return  gw_ui_cancel_search_by_searchitem (item);
       }
     }
