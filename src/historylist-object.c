@@ -183,7 +183,7 @@ GList* gw_historylist_get_combined_history_list (const int TARGET)
 //! The current variable has its GwSearchItem moved into the backhistory list.  The
 //! forward history is also cleared at this time.
 //!
-void gw_historylist_add_searchitem_to_history(const int TARGET, GwSearchItem *item)
+void gw_historylist_add_searchitem_to_history (const int TARGET, GwSearchItem *item)
 { 
     GwHistoryList *hl = gw_historylist_get_list (TARGET);
     gw_historylist_clear_forward_history(TARGET);

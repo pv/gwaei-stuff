@@ -245,8 +245,20 @@ G_MODULE_EXPORT void do_tab_remove (GtkWidget *widget, gpointer data)
     gw_ui_cancel_search_by_tab_number (page_num);
     gtk_notebook_remove_page (GTK_NOTEBOOK (notebook), page_num);
 
-    GList *item = g_list_nth (gw_tab_searchitems, page_num);
-    gw_tab_searchitems = g_list_delete_link (gw_tab_searchitems, item);
+    GList *listitem = g_list_nth (gw_tab_searchitems, page_num);
+    if (listitem != NULL)
+    {
+      if (listitem->data != NULL && ((GwSearchItem*) listitem->data)->total_results)
+      {
+        gw_historylist_add_searchitem_to_history (GW_HISTORYLIST_RESULTS, listitem->data);
+        gw_ui_update_history_popups ();
+      }
+      else if (listitem->data != NULL)
+      {
+        gw_searchitem_free (listitem->data);
+      }
+    }
+    gw_tab_searchitems = g_list_delete_link (gw_tab_searchitems, listitem);
 
     gw_tab_update_on_deck_historylist_item_by_current_tab ();
     gw_tab_update_appearance ();
@@ -268,8 +280,21 @@ G_MODULE_EXPORT void do_tab_remove_current (GtkWidget *widget, gpointer data)
     int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
     gw_ui_cancel_search_by_tab_number (page_num);
 
-    GList *item = g_list_nth (gw_tab_searchitems, page_num);
-    gw_tab_searchitems = g_list_delete_link (gw_tab_searchitems, item);
+    GList *listitem = g_list_nth (gw_tab_searchitems, page_num);
+    if (listitem != NULL)
+    {
+      if (listitem->data != NULL && ((GwSearchItem*) listitem->data)->total_results)
+      {
+        gw_historylist_add_searchitem_to_history (GW_HISTORYLIST_RESULTS, listitem->data);
+        gw_ui_update_history_popups ();
+      }
+      else if (listitem->data != NULL)
+      {
+        gw_searchitem_free (listitem->data);
+      }
+    }
+    gw_tab_searchitems = g_list_delete_link (gw_tab_searchitems, listitem);
+
     gtk_notebook_remove_page (GTK_NOTEBOOK (notebook), page_num);
 
     gw_tab_update_on_deck_historylist_item_by_current_tab ();
