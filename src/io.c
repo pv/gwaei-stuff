@@ -179,15 +179,16 @@ static size_t read_func(void *ptr, size_t size, size_t nmemb, FILE *stream)
 }
 
 
-gboolean gw_io_download_dictionary_file(char *source_path, char *save_path, gpointer func, gpointer data)
+gboolean gw_io_download_dictionary_file (char *source_path, char *save_path, gpointer func, gpointer data, GError **error)
 {
     CURL *curl;
     CURLcode res;
     FILE *outfile = NULL;
+    GwDictInfo *di = (GwDictInfo*) data;
 
-    curl = curl_easy_init();
+    curl = curl_easy_init ();
 
-    if(curl == NULL) return FALSE;
+    if (curl == NULL) return FALSE;
 
     outfile = fopen(save_path, "w");
 
@@ -210,6 +211,13 @@ gboolean gw_io_download_dictionary_file(char *source_path, char *save_path, gpoi
     if (res != 0)
     {
       g_remove(save_path);
+      if (di->status != GW_DICT_STATUS_CANCELING)
+      {
+        GQuark quark;
+        quark = g_quark_from_string (GW_GENERIC_ERROR);
+        const char *message = gettext(curl_easy_strerror(res));
+        *error = g_error_new_literal (quark, GW_FILE_ERROR, message);
+      }
     }
 
     return (res == 0);

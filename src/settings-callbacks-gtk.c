@@ -278,12 +278,7 @@ static void *install_thread (gpointer data)
     //Otherwise attempt to download it
     else if (ret)
     {
-      ret = gw_io_download_dictionary_file (uri, gz_path, gw_ui_update_progressbar, il);
-      if (ret == FALSE && di->status != GW_DICT_STATUS_CANCELING)
-      {
-        const char *message = gettext("Connection failure");
-        error = g_error_new_literal (quark, GW_FILE_ERROR, message);
-      }
+      ret = gw_io_download_dictionary_file (uri, gz_path, gw_ui_update_progressbar, (gpointer) di, &error);
     }
 
     if (strstr(gz_path, ".gz") && ret && error == NULL && di->status != GW_DICT_STATUS_CANCELING)
@@ -298,6 +293,12 @@ static void *install_thread (gpointer data)
     {
       printf("Unzipping...\n");
       ret = gw_io_unzip_dictionary_file(gz_path, &error);
+      if (ret == FALSE && di->status != GW_DICT_STATUS_CANCELING && error == NULL)
+      {
+        quark = g_quark_from_string (GW_GENERIC_ERROR);
+        const char *message = gettext("Unzip Error");
+        error = g_error_new_literal (quark, GW_FILE_ERROR, message);
+      }
     }
    
     if (strstr(sync_path, "UTF") == NULL && ret && error == NULL && di->status != GW_DICT_STATUS_CANCELING)
@@ -306,6 +307,12 @@ static void *install_thread (gpointer data)
       gw_ui_dict_install_set_message (il, NULL, gettext("Converting encoding..."));
       gdk_threads_leave();
       ret = gw_io_copy_with_encoding(sync_path, path, "EUC-JP","UTF-8", &error);
+      if (ret == FALSE && di->status != GW_DICT_STATUS_CANCELING && error == NULL)
+      {
+        quark = g_quark_from_string (GW_GENERIC_ERROR);
+        const char *message = gettext("Conversion Error");
+        error = g_error_new_literal (quark, GW_FILE_ERROR, message);
+      }
     }
     else if (ret && error == NULL && di->status != GW_DICT_STATUS_CANCELING)
     {
