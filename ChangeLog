@@ -26,3 +26,6 @@
 	          didn't automatically import it without gtk.h
 	* main-interface-gtk.c: Added flag to force a new instance of the program
 	                        when wanted.
+	* gtk-dict-install-line-object.c: Added new file
+	* settings-interface-gtk.c: Now uses gtk-dict-install-line-object.c to
+	                            generate the files
