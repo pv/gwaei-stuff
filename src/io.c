@@ -124,6 +124,8 @@ gboolean gw_io_copy_with_encoding( char *source_path,     char *target_path,
                                   char *source_encoding, char *target_encoding,
                                   GError **error)
 {
+    if (*error != NULL) return;
+
     FILE* readfd = NULL;
     readfd = fopen (source_path, "r");
     if (readfd == NULL) exit(0);
@@ -181,6 +183,8 @@ static size_t read_func(void *ptr, size_t size, size_t nmemb, FILE *stream)
 
 gboolean gw_io_download_dictionary_file (char *source_path, char *save_path, gpointer func, gpointer data, GError **error)
 {
+    if (*error != NULL) return;
+
     CURL *curl;
     CURLcode res;
     FILE *outfile = NULL;
@@ -216,7 +220,7 @@ gboolean gw_io_download_dictionary_file (char *source_path, char *save_path, gpo
         GQuark quark;
         quark = g_quark_from_string (GW_GENERIC_ERROR);
         const char *message = gettext(curl_easy_strerror(res));
-        *error = g_error_new_literal (quark, GW_FILE_ERROR, message);
+        if (error != NULL) *error = g_error_new_literal (quark, GW_FILE_ERROR, message);
       }
     }
 
@@ -255,8 +259,10 @@ gboolean gw_io_delete_dictionary_file(GwDictInfo* file)
 }
 
 
-gboolean gw_io_copy_dictionary_file(char *source_path, char *target_path, GError **error)
+gboolean gw_io_copy_dictionary_file (char *source_path, char *target_path, GError **error)
 {
+    if (*error != NULL) return;
+
     GQuark quark;
     quark = g_quark_from_string (GW_GENERIC_ERROR);
 
@@ -265,11 +271,8 @@ gboolean gw_io_copy_dictionary_file(char *source_path, char *target_path, GError
     if ( g_file_get_contents(source_path, &contents, &length, NULL) == FALSE ||
          g_file_set_contents(target_path, contents, length, NULL) == FALSE     )
     {
-      printf("Error while copying the file...cleaning up.\n");
       remove(target_path);
-      const char *message = gettext("File copy error");
-      if (error != NULL)
-        *error = g_error_new_literal (quark, GW_FILE_ERROR, message);
+      if (error != NULL) *error = g_error_new_literal (quark, GW_FILE_ERROR, gettext("File copy error"));
       return FALSE;
     }
     if (contents != NULL) g_free(contents);
@@ -279,7 +282,7 @@ gboolean gw_io_copy_dictionary_file(char *source_path, char *target_path, GError
 
 
 //Creates a single dictionary containing both the radical dict and kanji dict
-gboolean gw_io_create_mix_dictionary(char *mpath, char *kpath, char *rpath)
+gboolean gw_io_create_mix_dictionary (char *mpath, char *kpath, char *rpath)
 {
     printf(gettext("  Recreating mixed dictionary..."));
 
@@ -480,6 +483,8 @@ gboolean gw_io_split_places_from_names_dictionary (char *spath, char *npath, cha
 
 gboolean gw_io_gunzip_dictionary_file(char *path, GError **error)
 {
+    if (*error != NULL) return;
+
     GQuark quark;
     quark = g_quark_from_string (GW_GENERIC_ERROR);
     gboolean success;
@@ -494,8 +499,7 @@ gboolean gw_io_gunzip_dictionary_file(char *path, GError **error)
     if (success == FALSE) {
       g_remove(path);
       const char *message = gettext("gunzip error");
-      if (error != NULL)
-        *error = g_error_new_literal (quark, GW_FILE_ERROR, message);
+      if (error != NULL) *error = g_error_new_literal (quark, GW_FILE_ERROR, message);
     }
 
     return success;
@@ -525,8 +529,7 @@ gboolean gw_io_unzip_dictionary_file(char *path, GError **error)
     if (success == FALSE) {
       g_remove(path);
       const char *message = gettext("gunzip error");
-      if (error != NULL)
-        *error = g_error_new_literal (quark, GW_FILE_ERROR, message);
+      if (error != NULL) *error = g_error_new_literal (quark, GW_FILE_ERROR, message);
     }
     return success;
 }

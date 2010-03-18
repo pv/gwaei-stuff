@@ -129,8 +129,7 @@ static void *update_thread (void *nothing)
 
         if (system (di->rsync) != 0)
         {
-          const char *message = gettext ("Connection failure\n");
-          error = g_error_new_literal (quark, GW_FILE_ERROR, message);
+          error = g_error_new_literal (quark, GW_FILE_ERROR, "Connection failure");
         }
       }
       progress += increment;
@@ -242,7 +241,6 @@ static void *install_thread (gpointer data)
     char *name;
     name = g_utf8_strdown(di->name, -1);
 
-    gboolean ret = TRUE;
     char *path = di->path;
     char *sync_path = di->sync_path;
     char *gz_path = di->gz_path;
@@ -268,59 +266,57 @@ static void *install_thread (gpointer data)
     gw_util_get_waei_directory(download_path);
     strcat(download_path, G_DIR_SEPARATOR_S);
     strcat(download_path, "download");
-    if (ret)
-      ret = ((g_mkdir_with_parents(download_path, 0755)) == 0);
-    //Copy the file if it is a local file
-    if (ret && g_file_test (uri, G_FILE_TEST_IS_REGULAR) && di->status != GW_DICT_STATUS_CANCELING)
+    if (error == NULL)
     {
-      ret = gw_io_copy_dictionary_file (uri, gz_path);
+      if ((g_mkdir_with_parents(download_path, 0755)) != 0 && di->status != GW_DICT_STATUS_CANCELING)
+      {
+        quark = g_quark_from_string (GW_GENERIC_ERROR);
+        error = g_error_new_literal (quark, GW_FILE_ERROR, gettext("Unable to create dictionary folder"));
+      }
     }
-    //Otherwise attempt to download it
-    else if (ret)
+    //Copy the file if it is a local file
+    if (error == NULL && di->status != GW_DICT_STATUS_CANCELING)
     {
-      ret = gw_io_download_dictionary_file (uri, gz_path, gw_ui_update_progressbar, (gpointer) di, &error);
+      if (g_file_test (uri, G_FILE_TEST_IS_REGULAR)) //Copy from local drive
+      {
+        gw_io_copy_dictionary_file (uri, gz_path, &error);
+      }
+      else //Download file over network
+      {
+        gw_io_download_dictionary_file (uri, gz_path, gw_ui_update_progressbar, (gpointer) il, &error);
+      }
     }
 
-    if (strstr(gz_path, ".gz") && ret && error == NULL && di->status != GW_DICT_STATUS_CANCELING)
+    if (error == NULL && di->status != GW_DICT_STATUS_CANCELING && strstr(gz_path, ".gz"))
     {
-      printf("Gunzipping...\n");
       gdk_threads_enter();
       gw_ui_dict_install_set_message (il, NULL, gettext("Decompressing..."));
       gdk_threads_leave();
-      ret = gw_io_gunzip_dictionary_file(gz_path, &error);
+      gw_io_gunzip_dictionary_file (gz_path, &error);
     }
-    else if (strstr(gz_path, ".zip") && ret && error == NULL && di->status != GW_DICT_STATUS_CANCELING)
+    else if (error == NULL && di->status != GW_DICT_STATUS_CANCELING && strstr(gz_path, ".zip"))
     {
-      printf("Unzipping...\n");
-      ret = gw_io_unzip_dictionary_file(gz_path, &error);
-      if (ret == FALSE && di->status != GW_DICT_STATUS_CANCELING && error == NULL)
+      gw_io_unzip_dictionary_file(gz_path, &error);
+      if (error == NULL && di->status != GW_DICT_STATUS_CANCELING)
       {
         quark = g_quark_from_string (GW_GENERIC_ERROR);
-        const char *message = gettext("Unzip Error");
-        error = g_error_new_literal (quark, GW_FILE_ERROR, message);
+        error = g_error_new_literal (quark, GW_FILE_ERROR, gettext("Unzip Error"));
       }
     }
-   
-    if (strstr(sync_path, "UTF") == NULL && ret && error == NULL && di->status != GW_DICT_STATUS_CANCELING)
+    if (error == NULL && di->status != GW_DICT_STATUS_CANCELING && strstr(sync_path, "UTF") == NULL)
     {
       gdk_threads_enter();
       gw_ui_dict_install_set_message (il, NULL, gettext("Converting encoding..."));
       gdk_threads_leave();
-      ret = gw_io_copy_with_encoding(sync_path, path, "EUC-JP","UTF-8", &error);
-      if (ret == FALSE && di->status != GW_DICT_STATUS_CANCELING && error == NULL)
-      {
-        quark = g_quark_from_string (GW_GENERIC_ERROR);
-        const char *message = gettext("Conversion Error");
-        error = g_error_new_literal (quark, GW_FILE_ERROR, message);
-      }
+      gw_io_copy_with_encoding(sync_path, path, "EUC-JP","UTF-8", &error);
     }
-    else if (ret && error == NULL && di->status != GW_DICT_STATUS_CANCELING)
+    else if (error == NULL && di->status != GW_DICT_STATUS_CANCELING)
     {
-      gw_io_copy_dictionary_file(sync_path, path, &error);
+      gw_io_copy_dictionary_file (sync_path, path, &error);
     }
 
     //Special dictionary post processing
-    if (ret && error == NULL && di->status != GW_DICT_STATUS_CANCELING)
+    if (error == NULL && di->status != GW_DICT_STATUS_CANCELING)
     {
       gdk_threads_enter();
       gw_ui_dict_install_set_message (il, NULL, gettext("Postprocessing..."));
