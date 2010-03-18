@@ -294,9 +294,9 @@ gboolean gw_regex_create_furi_med_regex (regex_t *regex, char *string, int flags
 gboolean gw_regex_create_roma_high_regex (regex_t *regex, char *string, int flags)
 {
     char expression[MAX_LINE * 2];
-    strcpy (expression, "(^|\\)|(/)|(\\bto ))(");
+    strcpy (expression, "(^|\\)|(/)|(^to )|\\) )(");
     strcat (expression, string);
-    strcat (expression, ")(\\(|/|$|!)");
+    strcat (expression, ")(\\(|/|$|!| \\()");
     return regcomp (regex, expression, flags);
 }
 
