@@ -256,6 +256,8 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
     int i = 0;
     if (item->dictionary->type == GW_DICT_TYPE_KANJI || item->dictionary->type == GW_DICT_TYPE_RADICALS)
     {
+      if (item->dictionary->type == GW_DICT_TYPE_RADICALS && ql->roma_total > 0) return FALSE;
+
       gboolean strokes_check_passed = TRUE;
       gboolean frequency_check_passed = TRUE;
       gboolean grade_check_passed = TRUE;
