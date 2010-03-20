@@ -544,7 +544,8 @@ void force_gtk_builder_translation_for_gtk_actions_hack ()
     gtk_widget_set_tooltip_text (GTK_WIDGET (widget), gettext("Click to start search"));
 }
 
-gpointer get_gobject_from_target(const int TARGET)
+
+gpointer get_gobject_from_target (const int TARGET)
 {
     GObject *gobject;
     GtkWidget *notebook;
@@ -1345,7 +1346,7 @@ void gw_ui_update_history_popups()
 }
 
 
-void gw_ui_set_font(char *family, int size)
+void gw_ui_set_font (char *family, int size)
 {
     //Convert the int version of size to a string
     char digit2 = ((size/10) + 48);
