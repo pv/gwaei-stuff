@@ -160,11 +160,11 @@ void gw_settings_initialize_installed_dictionary_list ()
     di =  gw_dictlist_get_dictionary_by_name ("Names");
     il = gw_ui_new_dict_install_line (di);
     gw_ui_add_dict_install_line_to_table (GTK_TABLE (table), il);
-
+/*
     di =  gw_dictlist_get_dictionary_by_name ("Radicals");
     il = gw_ui_new_dict_install_line (di);
     gw_ui_add_dict_install_line_to_table (GTK_TABLE (table), il);
-
+*/
     di =  gw_dictlist_get_dictionary_by_name ("Examples");
     il = gw_ui_new_dict_install_line (di);
     gw_ui_add_dict_install_line_to_table (GTK_TABLE (table), il);

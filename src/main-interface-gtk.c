@@ -2666,6 +2666,51 @@ void initialize_gui_interface(int *argc, char ***argv)
         do_search (NULL, NULL);
       }
 
+      GtkWidget *viewport = GTK_WIDGET (gtk_builder_get_object (builder, "organize_dictionaries_viewport"));
+      GtkListStore *liststore = gtk_list_store_new (4, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
+
+      GtkTreeIter iter;
+      gtk_list_store_append (liststore, &iter);
+      gtk_list_store_set (liststore, &iter, 0, "emblem-favorite", 1, "1", 2, gettext("English Dictionary"), 3, "Alt-1", -1);
+      gtk_list_store_append (liststore, &iter);
+      gtk_list_store_set (liststore, &iter, 0, NULL,              1, "2", 2, gettext("Kanji Dictionary"),   3, "Alt-2", -1);
+      gtk_list_store_append (liststore, &iter);
+      gtk_list_store_set (liststore, &iter, 0, NULL,              1, "3", 2, gettext("Names Dictionary"),   3, "Alt-3", -1);
+      gtk_list_store_append (liststore, &iter);
+      gtk_list_store_set (liststore, &iter, 0, NULL,              1, "4", 2, gettext("Places Dictionary"),  3, "Alt-4", -1);
+
+      GtkWidget *treeview = gtk_tree_view_new ();
+      gtk_tree_view_set_model (GTK_TREE_VIEW (treeview), GTK_TREE_MODEL (liststore));
+      gtk_container_add (GTK_CONTAINER (viewport), GTK_WIDGET (treeview));
+      gtk_widget_show_all (GTK_WIDGET (treeview));
+
+      GtkCellRenderer *renderer;
+      GtkTreeViewColumn *column;
+
+      renderer = gtk_cell_renderer_pixbuf_new ();
+      gtk_cell_renderer_set_padding (renderer, 0, 8);
+      column = gtk_tree_view_column_new_with_attributes (NULL, renderer, "icon-name", 0, NULL);
+      gtk_tree_view_append_column (GTK_TREE_VIEW (treeview), column);
+
+      renderer = gtk_cell_renderer_text_new ();
+      gtk_cell_renderer_set_padding (renderer, 0, 8);
+      column = gtk_tree_view_column_new_with_attributes (gettext("Order"), renderer, "text", 1, NULL);
+      gtk_tree_view_append_column (GTK_TREE_VIEW (treeview), column);
+
+      renderer = gtk_cell_renderer_text_new ();
+      gtk_cell_renderer_set_padding (renderer, 0, 8);
+      column = gtk_tree_view_column_new_with_attributes (gettext("Dictionary Name"), renderer, "text", 2, NULL);
+      gtk_tree_view_append_column (GTK_TREE_VIEW (treeview), column);
+
+      renderer = gtk_cell_renderer_text_new ();
+      gtk_cell_renderer_set_padding (renderer, 0, 8);
+      gtk_cell_renderer_set_sensitive (renderer, FALSE);
+      column = gtk_tree_view_column_new_with_attributes (gettext("Shortcut"), renderer, "text", 3, NULL);
+      gtk_tree_view_append_column (GTK_TREE_VIEW (treeview), column);
+
+
+
+
       //Enter the main loop
       gdk_threads_enter();
       gtk_main ();
