@@ -199,6 +199,7 @@ int gw_tab_new ()
     //Finish
     int current = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
     int position = gtk_notebook_append_page (GTK_NOTEBOOK (notebook), scrolledwindow, hbox);
+    gtk_notebook_set_tab_reorderable (GTK_NOTEBOOK (notebook), scrolledwindow, TRUE);
     gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), position);
     gw_ui_initialize_tags();
     gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), current);
