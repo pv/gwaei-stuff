@@ -2680,6 +2680,7 @@ void initialize_gui_interface(int *argc, char ***argv)
       gtk_list_store_set (liststore, &iter, 0, NULL,              1, "4", 2, gettext("Places Dictionary"),  3, "Alt-4", -1);
 
       GtkWidget *treeview = gtk_tree_view_new ();
+      gtk_tree_view_set_reorderable (GTK_TREE_VIEW (treeview), TRUE);
       gtk_tree_view_set_model (GTK_TREE_VIEW (treeview), GTK_TREE_MODEL (liststore));
       gtk_container_add (GTK_CONTAINER (viewport), GTK_WIDGET (treeview));
       gtk_widget_show_all (GTK_WIDGET (treeview));
