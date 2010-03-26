@@ -109,7 +109,7 @@ gboolean gw_pref_get_boolean (char *key, gboolean backup)
     gboolean return_value;
     GError *err = NULL;
 
-    return_value = gconf_client_get_bool (client, key, &err);
+   return_value = gconf_client_get_bool (client, key, &err);
 
     if (err != NULL)
     {
@@ -245,12 +245,6 @@ void do_dictionary_source_gconf_key_changed_action (gpointer client,
                                                     guint cnxn_id,
                                                     gpointer entry,
                                                     gpointer data   )
-/*
-void do_dictionary_source_gconf_key_changed_action (GConfClient* client,
-                                                    guint cnxn_id,
-                                                    GConfEntry *entry,
-                                                    gpointer data        )
-*/
 {
     GConfValue *value;
     value = gconf_entry_get_value(entry);
@@ -285,46 +279,89 @@ void do_toolbar_show_pref_changed_action ( GConfClient* client,
     value = gconf_entry_get_value(entry);
 
     if (value != NULL && value->type == GCONF_VALUE_BOOL)
-      gw_ui_set_toolbar_show(gconf_value_get_bool(value));
+      gw_ui_set_toolbar_show (gconf_value_get_bool(value));
     else
       gw_ui_set_toolbar_show(FALSE);
 }
 
 
-void do_font_size_pref_changed_action ( GConfClient* client,
-                                        guint cnxn_id,
-                                        GConfEntry *entry,
-                                        gpointer data        )
+void do_use_global_document_font_pref_changed_action (GConfClient* client,
+                                                      guint cnxn_id,
+                                                      GConfEntry *entry,
+                                                      gpointer data        )
+{
+    GConfValue *value;
+    value = gconf_entry_get_value(entry);
+
+    if (value != NULL && value->type == GCONF_VALUE_BOOL)
+      gw_ui_set_use_global_document_font_checkbox (gconf_value_get_bool(value));
+    else
+      gw_ui_set_use_global_document_font_checkbox (TRUE);
+
+    gw_ui_set_font (NULL, NULL);
+}
+
+
+void do_global_document_font_pref_changed_action (GConfClient* client,
+                                                  guint cnxn_id,
+                                                  GConfEntry *entry,
+                                                  gpointer data        )
+{
+    GConfValue *value;
+    value = gconf_entry_get_value(entry);
+
+    if (value != NULL && value->type == GCONF_VALUE_STRING)
+    {
+      gw_ui_update_global_font_label (gconf_value_get_string (value));
+      gw_ui_set_font (NULL, NULL);
+    }
+}
+
+
+void do_custom_document_font_pref_changed_action (GConfClient* client,
+                                                  guint cnxn_id,
+                                                  GConfEntry *entry,
+                                                  gpointer data        )
+{
+    GConfValue *value;
+    value = gconf_entry_get_value(entry);
+
+    if (value != NULL && value->type == GCONF_VALUE_STRING)
+    {
+      gw_ui_update_custom_font_button (gconf_value_get_string (value));
+      gw_ui_set_font (NULL, NULL);
+    }
+}
+
+
+void do_font_magnification_pref_changed_action (GConfClient* client,
+                                                guint cnxn_id,
+                                                GConfEntry *entry,
+                                                gpointer data        )
 {
     //Get the size from the GCONF key
-    int size;
-    size = gconf_client_get_int ( client, GCKEY_GW_FONT_SIZE, NULL);
+    int magnification;
+    magnification = gconf_client_get_int (client, GCKEY_GW_FONT_MAGNIFICATION, NULL);
 
-    char font[100];
-    gw_pref_get_string (font, GCKEY_DOCUMENT_FONT_NAME, "Sans 10", 100);
-    char *pos = strrchr(font, ' ');
-    if (pos != NULL)
-      *pos = '\0';
-
-    //If the value is strange, get the default value
-    if (size < MIN_FONT_SIZE | size > MAX_FONT_SIZE)
+    //If the value is strange, get the default value, this function will get called again anvway
+    if (magnification < GW_MIN_FONT_MAGNIFICATION | magnification > GW_MAX_FONT_MAGNIFICATION)
     {
       GConfValue *value;
-      value = gconf_client_get_default_from_schema ( client,
-                                                     GCKEY_GW_FONT_SIZE,
-                                                     NULL                   );
-      size = gconf_value_get_int (value);
-      if (value != NULL && size >= MIN_FONT_SIZE && size <= MAX_FONT_SIZE) {
-        gconf_client_set_int ( client, GCKEY_GW_FONT_SIZE, size, NULL);
+      value = gconf_client_get_default_from_schema (client, GCKEY_GW_FONT_MAGNIFICATION, NULL);
+      magnification = gconf_value_get_int (value);
+      if (value != NULL && magnification >= GW_MIN_FONT_MAGNIFICATION && magnification <= GW_MAX_FONT_MAGNIFICATION)
+      {
+        gconf_client_set_int (client, GCKEY_GW_FONT_MAGNIFICATION, magnification, NULL);
       }
       else
-        gconf_client_set_int ( client, GCKEY_GW_FONT_SIZE, 12, NULL);
-      return;
+        gconf_client_set_int (client, GCKEY_GW_FONT_MAGNIFICATION, 0, NULL);
     }
-
-    gw_ui_set_font(font, size);
-
-    gw_ui_update_toolbar_buttons ();
+    //Set the font since the numbers seem to be sane
+    else
+    {
+      gw_ui_set_font (NULL, &magnification);
+      gw_ui_update_toolbar_buttons ();
+    }
 }
 
 
@@ -337,7 +374,7 @@ void do_less_relevant_show_pref_changed_action ( GConfClient* client,
     value = gconf_entry_get_value(entry);
 
     if (value != NULL && value->type == GCONF_VALUE_BOOL)
-      gw_ui_set_less_relevant_show(gconf_value_get_bool(value));
+      gw_ui_set_less_relevant_show (gconf_value_get_bool(value));
     else
       gw_ui_set_less_relevant_show(TRUE);
 }
@@ -422,11 +459,10 @@ void do_color_value_changed_action( GConfClient* client,
       const char *hex_string = gconf_value_get_string(value);
        
       //If the format of the string is wrong, get the default one
-      if (regexec(&re_hexcolor, gconf_value_get_string(value), 1, NULL, 0) != 0)
+      if (regexec(&re_hexcolor, hex_string, 1, NULL, 0) != 0)
       {
-        value = gconf_client_get_default_from_schema (client,
-                                                      GCKEY_GW_FONT_SIZE,
-                                                      NULL                  );
+        const char *key = gconf_entry_get_key (entry);
+        value = gconf_client_get_default_from_schema (client, key, NULL);
         if (value != NULL && value->type == GCONF_VALUE_STRING)
           hex_string = gconf_value_get_string (value);
         else
@@ -494,8 +530,12 @@ void gw_prefs_initialize_preferences()
   gw_prefs_add_change_listener (GCKEY_GW_LESS_RELEVANT_SHOW, do_less_relevant_show_pref_changed_action, NULL);
   gw_prefs_add_change_listener (GCKEY_TOOLBAR_STYLE, do_toolbar_style_pref_changed_action, NULL);
   gw_prefs_add_change_listener (GCKEY_GW_TOOLBAR_SHOW, do_toolbar_show_pref_changed_action, NULL);
-  gw_prefs_add_change_listener (GCKEY_GW_FONT_SIZE, do_font_size_pref_changed_action, NULL);
-  gw_prefs_add_change_listener (GCKEY_DOCUMENT_FONT_NAME, do_font_size_pref_changed_action, NULL);
+
+  gw_prefs_add_change_listener (GCKEY_GW_FONT_USE_GLOBAL_FONT, do_use_global_document_font_pref_changed_action, NULL);
+  gw_prefs_add_change_listener (GCKEY_DOCUMENT_FONT_NAME, do_global_document_font_pref_changed_action, NULL);
+  gw_prefs_add_change_listener (GCKEY_GW_FONT_CUSTOM_FONT, do_custom_document_font_pref_changed_action, NULL);
+  gw_prefs_add_change_listener (GCKEY_GW_FONT_MAGNIFICATION, do_font_magnification_pref_changed_action, NULL);
+
   gw_prefs_add_change_listener (GCKEY_GW_ROMAN_KANA, do_roman_kana_conv_pref_changed_action, NULL);
   gw_prefs_add_change_listener (GCKEY_GW_HIRA_KATA, do_hira_kata_conv_pref_changed_action, NULL);
   gw_prefs_add_change_listener (GCKEY_GW_KATA_HIRA, do_kata_hira_conv_pref_changed_action, NULL);

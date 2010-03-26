@@ -892,3 +892,32 @@ G_MODULE_EXPORT void do_toggle_advanced_source (GtkWidget *widget, gpointer data
       gtk_widget_show_all (GTK_WIDGET (data));
 }
 
+
+//!
+//! @brief Sets the preference key for the global font usage
+//! 
+//! @param widget Unused GtkWidget pointer.
+//! @param data Unused gpointer
+//!
+G_MODULE_EXPORT void do_toggle_use_global_document_font (GtkWidget *widget, gpointer data)
+{
+    gboolean state;
+    state = gw_pref_get_boolean (GCKEY_GW_FONT_USE_GLOBAL_FONT, TRUE);
+    gw_pref_set_boolean (GCKEY_GW_FONT_USE_GLOBAL_FONT, !state);
+}
+
+
+//!
+//! @brief Sets the preference key for the new custom document font
+//! 
+//! @param widget Unused GtkWidget pointer.
+//! @param data Unused gpointer
+//!
+G_MODULE_EXPORT void do_set_custom_document_font (GtkWidget *widget, gpointer data)
+{
+    GtkWidget *button = GTK_WIDGET (gtk_builder_get_object (builder, "custom_font_fontbutton"));
+    const char *font_description_string = gtk_font_button_get_font_name (GTK_FONT_BUTTON (button));
+    gw_pref_set_string (GCKEY_GW_FONT_CUSTOM_FONT, font_description_string);
+}
+
+

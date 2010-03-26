@@ -11,10 +11,17 @@
 #define MAX_MEDIUM_IRRELIVENT_RESULTS 100
 #define MAX_LOW_IRRELIVENT_RESULTS    50
 
+#define GW_MAX_FONT_MAGNIFICATION  6
+#define GW_MIN_FONT_MAGNIFICATION -6
+#define GW_DEFAULT_FONT_MAGNIFICATION 0
 
-//#define DEFAULT_FONT_SIZE 12
-#define MAX_FONT_SIZE     22
-#define MIN_FONT_SIZE     8
+#define GW_FONT_ZOOM_STEP 2
+
+#define GW_MAX_FONT_SIZE 100
+#define GW_MIN_FONT_SIZE 6
+#define GW_DEFAULT_FONT_SIZE 12
+
+#define GW_DEFAULT_FONT "Sans 12"
 
 //GConfig
 #define GCPATH_INTERFACE           "/desktop/gnome/interface"
@@ -24,7 +31,10 @@
 #define GCPATH_GW               "/apps/gwaei"
 #define GCKEY_GW_TOOLBAR_SHOW   "/apps/gwaei/toolbar_show"
 #define GCKEY_GW_LESS_RELEVANT_SHOW   "/apps/gwaei/less_relevant_results_show"
-#define GCKEY_GW_FONT_SIZE      "/apps/gwaei/font_size"
+#define GCKEY_GW_FONT_USE_GLOBAL_FONT  "/apps/gwaei/fonts/use_global_document_font"
+#define GCKEY_GW_FONT_CUSTOM_FONT      "/apps/gwaei/fonts/custom_document_font"
+#define GCKEY_GW_FONT_MAGNIFICATION    "/apps/gwaei/fonts/magnification"
+
 #define GCKEY_GW_HIRA_KATA      "/apps/gwaei/query_hiragana_to_katakana"
 #define GCKEY_GW_KATA_HIRA      "/apps/gwaei/query_katakana_to_hiragana"
 #define GCKEY_GW_ROMAN_KANA     "/apps/gwaei/query_romanji_to_kana"

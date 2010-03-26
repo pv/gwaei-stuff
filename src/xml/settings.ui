@@ -85,19 +85,20 @@
                                 <property name="use_underline">True</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
+                                <signal name="toggled" handler="do_toggle_use_global_document_font"/>
                               </object>
                               <packing>
                                 <property name="position">0</property>
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkHBox" id="system_documente_font_hbox">
+                              <object class="GtkHBox" id="system_document_font_hbox">
                                 <property name="visible">True</property>
                                 <property name="sensitive">False</property>
                                 <child>
                                   <object class="GtkLabel" id="label2">
                                     <property name="visible">True</property>
-                                    <property name="label" translatable="yes">Font: </property>
+                                    <property name="label" translatable="yes">Custom Font: </property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -106,12 +107,14 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkFontButton" id="fontbutton1">
+                                  <object class="GtkFontButton" id="custom_font_fontbutton">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
+                                    <signal name="font_set" handler="do_set_custom_document_font"/>
                                   </object>
                                   <packing>
+                                    <property name="expand">False</property>
                                     <property name="position">1</property>
                                   </packing>
                                 </child>

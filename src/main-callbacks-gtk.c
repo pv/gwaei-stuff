@@ -617,9 +617,9 @@ G_MODULE_EXPORT void do_save (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void do_zoom_in (GtkWidget *widget, gpointer data)
 {
     int size;
-    size = gw_pref_get_int (GCKEY_GW_FONT_SIZE, 12) + 2;
-    if (size >= MIN_FONT_SIZE && size <= MAX_FONT_SIZE)
-      gw_pref_set_int (GCKEY_GW_FONT_SIZE, size);
+    size = gw_pref_get_int (GCKEY_GW_FONT_MAGNIFICATION, GW_DEFAULT_FONT_MAGNIFICATION) + GW_FONT_ZOOM_STEP;
+    if (size >= GW_MIN_FONT_MAGNIFICATION && size <= GW_MAX_FONT_MAGNIFICATION)
+      gw_pref_set_int (GCKEY_GW_FONT_MAGNIFICATION, size);
 }
 
 
@@ -637,9 +637,9 @@ G_MODULE_EXPORT void do_zoom_in (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void do_zoom_out (GtkWidget *widget, gpointer data)
 {
     int size;
-    size = gw_pref_get_int (GCKEY_GW_FONT_SIZE, 12) - 2;
-    if (size >= MIN_FONT_SIZE | size <= MAX_FONT_SIZE)
-      gw_pref_set_int (GCKEY_GW_FONT_SIZE, size);
+    size = gw_pref_get_int (GCKEY_GW_FONT_MAGNIFICATION, GW_DEFAULT_FONT_MAGNIFICATION) - GW_FONT_ZOOM_STEP;
+    if (size >= GW_MIN_FONT_MAGNIFICATION | size <= GW_MAX_FONT_MAGNIFICATION)
+      gw_pref_set_int (GCKEY_GW_FONT_MAGNIFICATION, size);
 }
 
 
@@ -657,8 +657,8 @@ G_MODULE_EXPORT void do_zoom_out (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void do_zoom_100 (GtkWidget *widget, gpointer data)
 {
     int size;
-    size = gw_pref_get_default_int (GCKEY_GW_FONT_SIZE, 12);
-    gw_pref_set_int (GCKEY_GW_FONT_SIZE, size);
+    size = gw_pref_get_default_int (GCKEY_GW_FONT_MAGNIFICATION, GW_DEFAULT_FONT_MAGNIFICATION);
+    gw_pref_set_int (GCKEY_GW_FONT_MAGNIFICATION, size);
 }
 
 

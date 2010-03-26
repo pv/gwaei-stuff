@@ -782,29 +782,29 @@ void gw_ui_update_toolbar_buttons ()
     GwSearchItem *tab_search_item = g_list_nth_data (gw_tab_searchitems, page_num);
 
 
-    int current_font_size;
-    current_font_size = gw_pref_get_int (GCKEY_GW_FONT_SIZE, 12);
+    int current_font_magnification;
+    current_font_magnification = gw_pref_get_int (GCKEY_GW_FONT_MAGNIFICATION, GW_DEFAULT_FONT_MAGNIFICATION);
 
     GtkWidget *results_tv = get_widget_from_target(GW_TARGET_RESULTS);
 
     //Update Zoom in sensitivity state
     strncpy(id, "view_zoom_in_action", id_length);
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
-    enable = (tab_search_item != NULL && current_font_size < MAX_FONT_SIZE);
+    enable = (tab_search_item != NULL && current_font_magnification < GW_MAX_FONT_MAGNIFICATION);
     gtk_action_set_sensitive(action, enable);
 
     //Update Zoom out sensitivity state
     strncpy(id, "view_zoom_out_action", id_length);
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
-    enable = (tab_search_item != NULL && current_font_size > MIN_FONT_SIZE);
+    enable = (tab_search_item != NULL && current_font_magnification > GW_MIN_FONT_MAGNIFICATION);
     gtk_action_set_sensitive(action, enable);
 
     //Update Zoom 100 sensitivity state
     strncpy(id, "view_zoom_100_action", id_length);
     action = GTK_ACTION (gtk_builder_get_object(builder, id));
-    int default_font_size;
-    default_font_size = gw_pref_get_default_int (GCKEY_GW_FONT_SIZE, 12);
-    enable = (tab_search_item != NULL && current_font_size != default_font_size);
+    int default_font_magnification;
+    default_font_magnification = gw_pref_get_default_int (GCKEY_GW_FONT_MAGNIFICATION, GW_DEFAULT_FONT_MAGNIFICATION);
+    enable = (tab_search_item != NULL && current_font_magnification != default_font_magnification);
     gtk_action_set_sensitive(action, enable);
 
     //Update Save sensitivity state
@@ -1346,22 +1346,61 @@ void gw_ui_update_history_popups()
 }
 
 
-void gw_ui_set_font (char *family, int size)
+void gw_ui_set_font (char *font_description_string, int *font_magnification)
 {
-    //Convert the int version of size to a string
-    char digit2 = ((size/10) + 48);
-    char digit1 = ((size%10) + 48);
-    char digits[] = { digit2, digit1, '\0' };
+    gboolean use_global_font_setting = gw_pref_get_boolean (GCKEY_GW_FONT_USE_GLOBAL_FONT, TRUE);
+    char *new_font_description_string = NULL;
+    char font_family[100];
+    int font_size = 0;
 
-    //Concatinate it all together
-    char font[100];
-    strncpy(font, family, 100 - 4);
-    strcat(font, " ");
-    strcat(font, digits);
+    //Get the font family
+    if (font_description_string == NULL)
+    {
+      if (use_global_font_setting)
+        gw_pref_get_string (font_family, GCKEY_DOCUMENT_FONT_NAME, GW_DEFAULT_FONT, 100);
+      else
+        gw_pref_get_string (font_family, GCKEY_GW_FONT_CUSTOM_FONT, GW_DEFAULT_FONT, 100);
+    }
+    else
+      strcpy (font_family, font_description_string);
 
+    //Get the font size
+    char *pos = strrchr (font_family, ' ');
+    if (pos != NULL)
+    {
+      *pos = '\0';
+      pos++;
+      font_size = (int) g_ascii_strtoll (pos, NULL, 10);
+    }
+    else
+    {
+      font_size = GW_DEFAULT_FONT_SIZE;
+    }
+
+    printf("font family: %s\nfont size: %d\n", font_family, font_size);
+
+    //Add the magnification in to the font size
+    if (font_magnification == NULL)
+      font_size += gw_pref_get_int (GCKEY_GW_FONT_MAGNIFICATION, GW_DEFAULT_FONT_MAGNIFICATION);
+    else
+      font_size += *font_magnification;
+
+    //Make sure the font size is sane
+    if (font_size < GW_MIN_FONT_SIZE)
+      font_size = GW_MIN_FONT_SIZE;
+    else if (font_size > GW_MAX_FONT_SIZE)
+      font_size = GW_MAX_FONT_SIZE;
+
+    //printf("font magnification: %d\n", *font_magnification);
+
+    //Assemble the font description
+    new_font_description_string = g_strdup_printf("%s %d", font_family, font_size);
+    printf("font desc: %s\nnew font desc: %s\n", font_description_string, new_font_description_string);
+
+    //Set it
     PangoFontDescription *desc;
-
-    if ((desc = pango_font_description_from_string (font)) != NULL)
+    desc = pango_font_description_from_string (new_font_description_string);
+    if (desc != NULL && new_font_description_string != NULL)
     {
       GtkWidget* results_tv = get_widget_from_target(GW_TARGET_RESULTS);
       gtk_widget_modify_font (GTK_WIDGET (results_tv), desc);
@@ -1369,7 +1408,16 @@ void gw_ui_set_font (char *family, int size)
       pango_font_description_free (desc);
     }
 
-    desc = NULL;
+    //Cleanup
+    if (desc != NULL)
+    {
+      desc = NULL;
+    }
+    if (new_font_description_string != NULL)
+    {
+      g_free (new_font_description_string);
+      new_font_description_string = NULL;
+    }
 }
 
 void gw_ui_set_toolbar_style(char *request) 

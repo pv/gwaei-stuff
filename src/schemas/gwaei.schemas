@@ -4,14 +4,38 @@
 
       <!-- General settings -->
       <schema>
-        <key>/schemas/apps/gwaei/font_size</key>
-        <applyto>/apps/gwaei/font_size</applyto>
+        <key>/schemas/apps/gwaei/fonts/use_global_document_font</key>
+        <applyto>/apps/gwaei/fonts/use_global_document_font</applyto>
+        <owner>gwaei</owner>
+        <type>bool</type>
+        <default>TRUE</default>
+        <locale name="C">
+	      <short>Use the global document font</short>
+	      <long>Makes the program use the global document font instead of the custom one.</long>
+        </locale>
+      </schema>
+
+      <schema>
+        <key>/schemas/apps/gwaei/fonts/custom_document_font</key>
+        <applyto>/apps/gwaei/fonts/custom_document_font</applyto>
+        <owner>gwaei</owner>
+        <type>string</type>
+        <default>Sans 10</default>
+        <locale name="C">
+	      <short>Custom document font</short>
+	      <long>A document font to use instead of the global one.</long>
+        </locale>
+      </schema>
+
+      <schema>
+        <key>/schemas/apps/gwaei/fonts/magnification</key>
+        <applyto>/apps/gwaei/fonts/magnification</applyto>
         <owner>gwaei</owner>
         <type>int</type>
-        <default>10</default>
+        <default>0</default>
         <locale name="C">
 	      <short>Results font size</short>
-	      <long>Sets the font size of the returned results from searches.</long>
+	      <long>Enlarges the document font by the step given here.</long>
         </locale>
       </schema>
 

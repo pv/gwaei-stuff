@@ -68,6 +68,8 @@ void do_toggle_advanced_source (GtkWidget*, gpointer);
 void do_dictionary_install (GtkWidget*, gpointer);
 void do_cancel_dictionary_install (GtkWidget*, gpointer);
 void do_dictionary_remove (GtkWidget*, gpointer);
+void do_toggle_use_global_document_font (GtkWidget*, gpointer);
+void do_set_custom_document_font (GtkWidget*, gpointer);
 
 
 
