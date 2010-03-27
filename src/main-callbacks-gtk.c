@@ -78,7 +78,22 @@ G_MODULE_EXPORT void do_settings (GtkWidget *widget, gpointer data)
     g_list_foreach (gw_tab_searchitems, (GFunc) gw_ui_cancel_search_by_searchitem, NULL);
     gw_ui_cancel_search_by_target (GW_TARGET_KANJI);
     gw_ui_cancel_search_by_target (GW_TARGET_RESULTS);
-    gw_ui_update_dictionary_orders ();
+
+    //Setup please install dictionary message and notebook page
+    GtkWidget *message;
+    message = GTK_WIDGET (gtk_builder_get_object (builder, "please_install_dictionary_hbox"));
+    GtkWidget *notebook;
+    notebook = GTK_WIDGET (gtk_builder_get_object (builder, "settings_notebook"));
+    if (data != NULL)
+    {
+      gtk_widget_show (message);
+      gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), GPOINTER_TO_INT (data));
+    }
+    else
+    {
+      gtk_widget_hide (message);
+      gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), 0);
+    }
 
     //get some needed window references
     gw_ui_show_window ("settings_window");

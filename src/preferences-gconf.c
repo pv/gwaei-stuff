@@ -251,7 +251,6 @@ void do_dictionary_source_gconf_key_changed_action (gpointer client,
 
     if (value != NULL && value->type == GCONF_VALUE_STRING)
       gw_ui_set_dictionary_source (data, gconf_value_get_string(value));
-    gw_ui_update_dictionary_orders ();
 }
 
 
@@ -489,7 +488,7 @@ void do_color_value_changed_action( GConfClient* client,
 
 void do_update_dictionary_order_list_changed_action ()
 {
-      gw_ui_update_dictionary_orders ();
+    //rebuild_combobox_dictionary_list();
 }
 
 
@@ -545,7 +544,7 @@ void gw_prefs_initialize_preferences()
   gw_prefs_add_change_listener (GCKEY_GW_HEADER_FG, do_color_value_changed_action, NULL);
   gw_prefs_add_change_listener (GCKEY_GW_HEADER_BG, do_color_value_changed_action, NULL);
   gw_prefs_add_change_listener (GCKEY_GW_COMMENT_FG, do_color_value_changed_action, NULL);
-  gw_prefs_add_change_listener (GCKEY_GW_LOAD_ORDER, (GConfClientNotifyFunc) do_dictionary_source_gconf_key_changed_action, NULL);
+  //gw_prefs_add_change_listener (GCKEY_GW_LOAD_ORDER, (GConfClientNotifyFunc) do_update_dictionary_order_list_changed_action, NULL);
 
   g_object_unref(client);
 }

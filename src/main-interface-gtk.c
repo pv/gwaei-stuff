@@ -659,16 +659,17 @@ void initialize_window_attributes (char* window_id)
 
     //Apply the x and y if they are within the screen size
     if (x < gdk_screen_width() && y < gdk_screen_height()) {
-      gtk_window_move(GTK_WINDOW (window), x, y);
+      gtk_window_move (GTK_WINDOW (window), x, y);
     }
 
     //Apply the height and width if they are sane
     if ( width  >= 100                 &&
          width  <= gdk_screen_width()  && 
          height >= 100                 && 
-         height <= gdk_screen_height()    )
+         height <= gdk_screen_height() &&
+         strcmp (window_id, "main_window") == 0)
     {
-      gtk_window_resize(GTK_WINDOW(window), width, height);
+      gtk_window_resize (GTK_WINDOW(window), width, height);
     }
 
 
@@ -1070,7 +1071,7 @@ int rebuild_combobox_dictionary_list()
         *names[i] = '\0';
       i++;
     }
-   
+
     //Collapse the holes
     j = 0;
     i = 0;
@@ -1099,9 +1100,12 @@ int rebuild_combobox_dictionary_list()
     char id[id_length];
 
     GtkListStore *list_store;
-    strncpy(id, "list_store_dictionaries", id_length);
-    list_store = GTK_LIST_STORE (gtk_builder_get_object (builder, id));
-    GtkTreeIter iter;
+    list_store = GTK_LIST_STORE (gtk_builder_get_object (builder, "list_store_dictionaries"));
+
+    g_signal_handlers_block_by_func (list_store, do_add_dictionary_to_order_prefs, NULL);
+    g_signal_handlers_block_by_func (list_store, do_remove_dictionary_from_order_prefs, NULL);
+
+    gtk_list_store_clear (list_store);
 
     GSList* group = NULL;
     GtkAccelGroup* accel_group;
@@ -1109,9 +1113,6 @@ int rebuild_combobox_dictionary_list()
     GtkWidget *item = NULL;
     i = 0;
 
-    //Empty the combobox list
-    while (gtk_tree_model_get_iter_first (GTK_TREE_MODEL (list_store), &iter))
-      gtk_list_store_remove(list_store, &iter);
 
     //Remove all widgets after the back and forward menuitem buttons
     GtkMenuShell *shell = NULL;
@@ -1129,7 +1130,13 @@ int rebuild_combobox_dictionary_list()
 
     //Start filling in the new items
     GwDictInfo *di_alias, *di_name;
+    GtkTreeIter iter;
     j = 0;
+    char *dictionary_name = NULL;
+    char *icon_name = NULL;
+    char *shortcut_name = NULL;
+    char *order_number = NULL;
+    char *favorite_icon = "emblem-favorite";
     while (names[i] != NULL)
     {
       di_alias = gw_dictlist_get_dictionary_by_alias (names[i]);
@@ -1139,18 +1146,38 @@ int rebuild_combobox_dictionary_list()
       {
         printf("%d %s\n", j, di_alias->long_name);
 
+        dictionary_name = di_alias->long_name;
+        if (j == 0)
+          icon_name = favorite_icon;
+        else
+          icon_name = NULL;
+        if (j < 10)
+          shortcut_name = g_strdup_printf ("Alt-%d", j + 1);
+
+        order_number = g_strdup_printf ("%d", j + 1);
+
         //Refill the combobox
         gtk_list_store_append (GTK_LIST_STORE (list_store), &iter);
-        gtk_list_store_set (GTK_LIST_STORE (list_store), &iter,
-                            0, di->long_name, -1                    );
+        gtk_list_store_set (list_store, &iter, 0, dictionary_name, 1, icon_name, 2, order_number, 3, shortcut_name, -1);
+
+        //Free allocated momory
+        if (shortcut_name != NULL)
+        {
+          g_free (shortcut_name);
+          shortcut_name = NULL;
+        }
+        if (order_number != NULL)
+        {
+          g_free (order_number);
+          order_number = NULL;
+        }
 
         //Refill the menu
         item = GTK_WIDGET (gtk_radio_menu_item_new_with_label (group, di->long_name));
         group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
         gtk_menu_shell_append (GTK_MENU_SHELL (shell),  GTK_WIDGET (item));
         if (i == 0) gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), TRUE);
-        g_signal_connect( G_OBJECT (item),       "toggled",
-                         G_CALLBACK (do_dictionary_changed_action), NULL);
+        g_signal_connect(G_OBJECT (item), "toggled", G_CALLBACK (do_dictionary_changed_action), NULL);
         if (j + 1 < 10) gtk_widget_add_accelerator (GTK_WIDGET (item), "activate", accel_group, (GDK_0 + j + 1), GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
         gtk_widget_show (item);
 
@@ -1164,8 +1191,7 @@ int rebuild_combobox_dictionary_list()
 
     //Set the combobox to the first item
     GtkWidget *combobox;
-    strncpy(id, "dictionary_combobox", id_length);
-    combobox = GTK_WIDGET (gtk_builder_get_object(builder, id));
+    combobox = GTK_WIDGET (gtk_builder_get_object(builder, "dictionary_combobox"));
     gtk_combo_box_set_active (GTK_COMBO_BOX (combobox), 0);
 
     //Fill in the other menu items
@@ -1176,16 +1202,19 @@ int rebuild_combobox_dictionary_list()
     item = GTK_WIDGET (gtk_menu_item_new_with_mnemonic(gettext("_Cycle Up")));
     gtk_menu_shell_append (GTK_MENU_SHELL (shell), GTK_WIDGET (item));
     g_signal_connect (G_OBJECT (item),       "activate",
-                     G_CALLBACK (do_cycle_dictionaries_backward), NULL);
+        G_CALLBACK (do_cycle_dictionaries_backward), NULL);
     gtk_widget_add_accelerator (GTK_WIDGET (item), "activate", accel_group, GDK_Up, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
     gtk_widget_show (GTK_WIDGET (item));
 
     item = GTK_WIDGET (gtk_menu_item_new_with_mnemonic(gettext("Cycle _Down")));
     gtk_menu_shell_append (GTK_MENU_SHELL (shell), GTK_WIDGET (item));
     g_signal_connect (G_OBJECT (item),       "activate",
-                     G_CALLBACK (do_cycle_dictionaries_forward), NULL);
+        G_CALLBACK (do_cycle_dictionaries_forward), NULL);
     gtk_widget_add_accelerator (GTK_WIDGET (item), "activate", accel_group, GDK_Down, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
     gtk_widget_show (GTK_WIDGET (item));
+
+    g_signal_handlers_unblock_by_func (list_store, do_add_dictionary_to_order_prefs, NULL);
+    g_signal_handlers_unblock_by_func (list_store, do_remove_dictionary_from_order_prefs, NULL);
 
     //Finish
     printf(gettext("%d dictionaries are being used.\n"), j);
@@ -2674,7 +2703,9 @@ void initialize_gui_interface(int *argc, char ***argv)
       gw_ui_load_gtk_builder_xml ("radicals.ui");
       gw_ui_load_gtk_builder_xml ("settings.ui");
       gw_ui_load_gtk_builder_xml ("kanjipad.ui");
-gw_ui_initialize_radicals_table ();
+
+      gw_ui_initialize_radicals_table ();
+      gw_ui_initialize_dictionary_order_list ();
 
       GtkWidget *main_window;
       main_window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
@@ -2697,7 +2728,7 @@ gw_ui_initialize_radicals_table ();
 
       gw_settings_initialize_installed_dictionary_list ();
       if (rebuild_combobox_dictionary_list () == 0) {
-        do_settings(NULL, NULL);
+        do_settings(NULL, GINT_TO_POINTER (1));
       }
 
       //Set the initial focus to the search bar
@@ -2730,51 +2761,6 @@ gw_ui_initialize_radicals_table ();
         gtk_entry_set_text (GTK_ENTRY (search_entry), query_text);
         do_search (NULL, NULL);
       }
-
-      GtkWidget *viewport = GTK_WIDGET (gtk_builder_get_object (builder, "organize_dictionaries_viewport"));
-      GtkListStore *liststore = gtk_list_store_new (4, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
-
-      GtkTreeIter iter;
-      gtk_list_store_append (liststore, &iter);
-      gtk_list_store_set (liststore, &iter, 0, "emblem-favorite", 1, "1", 2, gettext("English Dictionary"), 3, "Alt-1", -1);
-      gtk_list_store_append (liststore, &iter);
-      gtk_list_store_set (liststore, &iter, 0, NULL,              1, "2", 2, gettext("Kanji Dictionary"),   3, "Alt-2", -1);
-      gtk_list_store_append (liststore, &iter);
-      gtk_list_store_set (liststore, &iter, 0, NULL,              1, "3", 2, gettext("Names Dictionary"),   3, "Alt-3", -1);
-      gtk_list_store_append (liststore, &iter);
-      gtk_list_store_set (liststore, &iter, 0, NULL,              1, "4", 2, gettext("Places Dictionary"),  3, "Alt-4", -1);
-
-      GtkWidget *treeview = gtk_tree_view_new ();
-      gtk_tree_view_set_reorderable (GTK_TREE_VIEW (treeview), TRUE);
-      gtk_tree_view_set_model (GTK_TREE_VIEW (treeview), GTK_TREE_MODEL (liststore));
-      gtk_container_add (GTK_CONTAINER (viewport), GTK_WIDGET (treeview));
-      gtk_widget_show_all (GTK_WIDGET (treeview));
-
-      GtkCellRenderer *renderer;
-      GtkTreeViewColumn *column;
-
-      renderer = gtk_cell_renderer_pixbuf_new ();
-      gtk_cell_renderer_set_padding (renderer, 0, 8);
-      column = gtk_tree_view_column_new_with_attributes (NULL, renderer, "icon-name", 0, NULL);
-      gtk_tree_view_append_column (GTK_TREE_VIEW (treeview), column);
-
-      renderer = gtk_cell_renderer_text_new ();
-      gtk_cell_renderer_set_padding (renderer, 0, 8);
-      column = gtk_tree_view_column_new_with_attributes (gettext("Order"), renderer, "text", 1, NULL);
-      gtk_tree_view_append_column (GTK_TREE_VIEW (treeview), column);
-
-      renderer = gtk_cell_renderer_text_new ();
-      gtk_cell_renderer_set_padding (renderer, 0, 8);
-      column = gtk_tree_view_column_new_with_attributes (gettext("Dictionary Name"), renderer, "text", 2, NULL);
-      gtk_tree_view_append_column (GTK_TREE_VIEW (treeview), column);
-
-      renderer = gtk_cell_renderer_text_new ();
-      gtk_cell_renderer_set_padding (renderer, 0, 8);
-      gtk_cell_renderer_set_sensitive (renderer, FALSE);
-      column = gtk_tree_view_column_new_with_attributes (gettext("Shortcut"), renderer, "text", 3, NULL);
-      gtk_tree_view_append_column (GTK_TREE_VIEW (treeview), column);
-
-
 
 
       //Enter the main loop

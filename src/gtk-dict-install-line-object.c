@@ -115,7 +115,7 @@ GwUiDictInstallLine *gw_ui_new_dict_install_line (GwDictInfo *di)
       g_signal_connect (G_OBJECT (temp->source_uri_entry), "changed", G_CALLBACK (do_source_entry_changed_action), temp);
       GtkWidget *label = gtk_label_new (gettext("Source: "));
       GtkWidget *alignment = gtk_alignment_new (0, 0, 1, 1);
-      gtk_widget_set_size_request (GTK_WIDGET (alignment), 50, -1);
+      //gtk_widget_set_size_request (GTK_WIDGET (alignment), 50, -1);
       temp->source_browse_button = gtk_button_new_with_label (gettext("Browse..."));
       g_signal_connect (G_OBJECT (temp->source_browse_button), "clicked", G_CALLBACK (do_dictionary_source_browse), temp);
       gw_prefs_add_change_listener (di->gckey, (gpointer) do_dictionary_source_gconf_key_changed_action, temp->source_uri_entry);
@@ -228,7 +228,7 @@ void gw_ui_dict_install_set_action_button (GwUiDictInstallLine *il, const gchar 
       g_signal_connect(il->action_button, "clicked", G_CALLBACK (do_cancel_dictionary_install), (gpointer) il);
 
     gtk_widget_set_sensitive (il->action_button, SENSITIVE);
-    gtk_widget_set_size_request (il->action_button, 150, -1);
+    //gtk_widget_set_size_request (il->action_button, 150, -1);
 
     gboolean advanced_hbox_is_sensitive;
     advanced_hbox_is_sensitive = (strcmp (STOCK_ID, GTK_STOCK_ADD) == 0);

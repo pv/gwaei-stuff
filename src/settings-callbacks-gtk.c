@@ -51,6 +51,10 @@
 #include <gwaei/gtk-dict-install-line-object.h>
 
 
+static int removed_from = -1;
+static int added_to = -1;
+
+
 //!
 //! @brief The thread used while rsync is running, updating the dictionaries
 //!
@@ -358,7 +362,6 @@ static void *install_thread (gpointer data)
 
     gdk_threads_enter();
     gw_ui_update_settings_interface();
-    gw_ui_update_dictionary_orders ();
     rebuild_combobox_dictionary_list();
     gdk_threads_leave();
 }
@@ -519,7 +522,6 @@ G_MODULE_EXPORT void do_dictionary_remove (GtkWidget* widget, gpointer data)
     gw_ui_dict_install_set_action_button (il, GTK_STOCK_ADD, TRUE);
     gw_ui_dict_install_set_message (il, NULL, gettext ("Not Installed"));
     rebuild_combobox_dictionary_list ();
-    gw_ui_update_dictionary_orders ();
 }
 
 
@@ -546,6 +548,115 @@ G_MODULE_EXPORT void do_dictionary_install (GtkWidget *widget, gpointer data)
     }
 }
 
+
+//!
+//! @brief Updates the gconf entry for the dictionary orders
+//!
+//! @param widget Pointer to the GtkWidget containing the source URI to copy
+//! @param data il A pointer to a GwUiDictInstallLine to use to get the gconf key from
+//!
+G_MODULE_EXPORT void do_remove_dictionary_from_order_prefs (GtkTreeModel *tree_model,
+                                                            GtkTreePath *path,
+                                                            gpointer    *data        )
+{
+    int *indices = gtk_tree_path_get_indices (path);
+    removed_from = indices[0];
+
+    if (added_to == -1) return;
+
+
+    //Parse the string
+    char order[5000];
+    gw_pref_get_string (order, GCKEY_GW_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
+    char *long_name_list[50];
+    char **condensed_name_list[50];
+    long_name_list[0] = order;
+    int i = 0;
+    int j = 0;
+    while ((long_name_list[i + 1] = g_utf8_strchr (long_name_list[i], -1, L',')) && i < 50)
+    {
+      i++;
+      *long_name_list[i] = '\0';
+      long_name_list[i]++;
+    }
+    long_name_list[i + 1] = NULL;
+
+    i = 0;
+    j = 0;
+    GwDictInfo *di1, *di2;
+    while (long_name_list[i] != NULL && long_name_list[j] != NULL)
+    {
+      di1 = gw_dictlist_get_dictionary_by_name (long_name_list[j]);
+      di2 = gw_dictlist_get_dictionary_by_alias (long_name_list[j]);
+      if (strcmp(di1->name, di2->name) == 0 && di2->status == GW_DICT_STATUS_INSTALLED)
+      {
+        condensed_name_list[i] = &long_name_list[j];
+        i++; j++;
+      }
+      else
+      {
+        j++;
+      }
+        
+    }
+    condensed_name_list[i] = NULL;
+
+    int long_total = j;
+    int short_total = i;
+
+
+    //Pull the switcheroo
+    int increment_direction = 0;
+    if (removed_from < added_to)
+    {
+      increment_direction = 1;
+      added_to--;
+
+    }
+    else
+    {
+      increment_direction = -1;
+      removed_from--;
+    }
+
+    while (removed_from != added_to)
+    {
+        char *temp;
+        temp = *condensed_name_list[removed_from];
+        *condensed_name_list[removed_from] = *condensed_name_list[removed_from + increment_direction];
+        *condensed_name_list[removed_from + increment_direction] = temp;
+        removed_from = removed_from + increment_direction;
+    }
+
+
+    i = 0;
+    char output[5000];
+    output[0] = '\0';
+    while (long_name_list[i] != NULL)
+    {
+      strcat (output, long_name_list[i]);
+      strcat (output, ",");
+      i++;
+    }
+    output[strlen(output) - 1] = '\0';
+    gw_pref_set_string (GCKEY_GW_LOAD_ORDER, output);
+    added_to == -1;
+}
+
+//!
+//! @brief Updates the gconf entry for the dictionary orders
+//!
+//! @param widget Pointer to the GtkWidget containing the source URI to copy
+//! @param data il A pointer to a GwUiDictInstallLine to use to get the gconf key from
+//!
+G_MODULE_EXPORT void do_add_dictionary_to_order_prefs (GtkTreeModel *tree_model,
+                                                       GtkTreePath *path,
+                                                       GtkTreeIter *iter,
+                                                       gpointer    *data        )
+{
+    int *indices = gtk_tree_path_get_indices (path);
+    added_to = indices[0];
+}
 
 //!
 //! @brief Updates the gconf source entry for the dictionary when the user types into the text entry
@@ -663,7 +774,7 @@ G_MODULE_EXPORT void do_cancel_update_installed_dictionaries (GtkWidget *widget,
 //! @param widget Currently unused GtkWidget pointer
 //! @param data A currently unused gpointer
 //!
-G_MODULE_EXPORT void do_force_names_resplit(GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void do_force_names_resplit (GtkWidget *widget, gpointer data)
 {
     GError *error = NULL;
 
@@ -742,8 +853,24 @@ G_MODULE_EXPORT void do_switch_displayed_dictionaries_action (GtkWidget *widget,
 G_MODULE_EXPORT void do_move_dictionary_up (GtkWidget *widget, gpointer data)
 {
     printf("Moving up...\n");
-    //Get element number
-    int requested_move = GPOINTER_TO_INT(data);
+    GtkTreeIter start_iter, end_iter;
+    int *indices = NULL;
+    int move_from_here = -1;
+    int move_to_here = -1;
+
+    GtkTreeView *treeview = GTK_TREE_VIEW (data);
+    GtkTreeSelection *selection = gtk_tree_view_get_selection (treeview);
+    GtkTreeModel *model = gtk_tree_view_get_model (treeview);
+    if (!gtk_tree_selection_get_selected (selection, &model, &start_iter)) return;
+    GtkTreePath *path = gtk_tree_model_get_path (model, &start_iter);
+    indices = gtk_tree_path_get_indices (path);
+    move_from_here = indices[0];
+    if (!gtk_tree_path_prev (path)) return;
+    indices = gtk_tree_path_get_indices (path);
+    move_to_here = indices[0];
+    gtk_tree_model_get_iter (model, &end_iter, path);
+    gtk_list_store_move_before (GTK_LIST_STORE (model), &start_iter, &end_iter);
+    gtk_tree_path_free (path);
 
     //Parse the string
     char order[5000];
@@ -781,14 +908,15 @@ G_MODULE_EXPORT void do_move_dictionary_up (GtkWidget *widget, gpointer data)
     }
     condensed_name_list[i] = NULL;
 
+    int long_total = j;
+    int short_total = i;
+
+
     //Pull the switcheroo
-    if (requested_move > 0)
-    {
-      char *temp;
-      temp = *condensed_name_list[requested_move - 1];
-      *condensed_name_list[requested_move - 1] = *condensed_name_list[requested_move];
-      *condensed_name_list[requested_move] = temp;
-    }
+    char *temp;
+    temp = *condensed_name_list[move_from_here];
+    *condensed_name_list[move_from_here] = *condensed_name_list[move_to_here];
+    *condensed_name_list[move_to_here] = temp;
 
     i = 0;
     char output[5000];
@@ -801,6 +929,7 @@ G_MODULE_EXPORT void do_move_dictionary_up (GtkWidget *widget, gpointer data)
     }
     output[strlen(output) - 1] = '\0';
     gw_pref_set_string (GCKEY_GW_LOAD_ORDER, output);
+    //rebuild_combobox_dictionary_list();
 }
 
 
@@ -813,8 +942,25 @@ G_MODULE_EXPORT void do_move_dictionary_up (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void do_move_dictionary_down (GtkWidget *widget, gpointer data)
 {
     printf("Moving down...\n");
-    //Get element number
-    int requested_move = GPOINTER_TO_INT(data);
+    GtkTreeIter start_iter, end_iter;
+    int *indices = NULL;
+    int move_from_here = -1;
+    int move_to_here = -1;
+
+    GtkTreeView *treeview = GTK_TREE_VIEW (data);
+    GtkTreeSelection *selection = gtk_tree_view_get_selection (treeview);
+    GtkTreeModel *model = gtk_tree_view_get_model (treeview);
+    if (!gtk_tree_selection_get_selected (selection, &model, &start_iter)) return;
+    GtkTreePath *path = gtk_tree_model_get_path (model, &start_iter);
+    indices = gtk_tree_path_get_indices (path);
+    move_from_here = indices[0];
+    gtk_tree_path_next (path);
+    indices = gtk_tree_path_get_indices (path);
+    move_to_here = indices[0];
+    gtk_tree_model_get_iter (model, &end_iter, path);
+    gtk_tree_path_free (path);
+
+    if (move_from_here == move_to_here) return;
 
     //Parse the string
     char order[5000];
@@ -852,14 +998,17 @@ G_MODULE_EXPORT void do_move_dictionary_down (GtkWidget *widget, gpointer data)
     }
     condensed_name_list[i] = NULL;
 
+    int long_total = j;
+    int short_total = i;
+
+    if (move_to_here == short_total) return;
+    gtk_list_store_move_after (GTK_LIST_STORE (model), &start_iter, &end_iter);
+
     //Pull the switcheroo
-    if (requested_move < i)
-    {
-      char *temp;
-      temp = *condensed_name_list[requested_move + 1];
-      *condensed_name_list[requested_move + 1] = *condensed_name_list[requested_move];
-      *condensed_name_list[requested_move] = temp;
-    }
+    char *temp;
+    temp = *condensed_name_list[move_from_here];
+    *condensed_name_list[move_from_here] = *condensed_name_list[move_to_here];
+    *condensed_name_list[move_to_here] = temp;
 
     i = 0;
     char output[5000];
@@ -872,6 +1021,16 @@ G_MODULE_EXPORT void do_move_dictionary_down (GtkWidget *widget, gpointer data)
     }
     output[strlen(output) - 1] = '\0';
     gw_pref_set_string (GCKEY_GW_LOAD_ORDER, output);
+    //rebuild_combobox_dictionary_list();
+}
+
+
+G_MODULE_EXPORT void do_reset_dictionary_orders (GtkWidget *widget, gpointer data)
+{
+    const char *default_string = gw_pref_get_default_string (GCKEY_GW_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK);
+    if (default_string != NULL)
+      gw_pref_set_string (GCKEY_GW_LOAD_ORDER, default_string);
+    rebuild_combobox_dictionary_list();
 }
 
 

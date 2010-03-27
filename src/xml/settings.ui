@@ -76,6 +76,7 @@
                           <object class="GtkVBox" id="vbox5">
                             <property name="visible">True</property>
                             <property name="orientation">vertical</property>
+                            <property name="homogeneous">True</property>
                             <child>
                               <object class="GtkCheckButton" id="system_font_checkbox">
                                 <property name="label" translatable="yes">_Use the system document font (Sans 10)</property>
@@ -114,7 +115,6 @@
                                     <signal name="font_set" handler="do_set_custom_document_font"/>
                                   </object>
                                   <packing>
-                                    <property name="expand">False</property>
                                     <property name="position">1</property>
                                   </packing>
                                 </child>
@@ -154,202 +154,177 @@
                         <property name="border_width">4</property>
                         <property name="left_padding">12</property>
                         <child>
-                          <object class="GtkHBox" id="hbox35">
+                          <object class="GtkVBox" id="vbox3">
                             <property name="visible">True</property>
-                            <property name="spacing">8</property>
+                            <property name="orientation">vertical</property>
                             <child>
-                              <object class="GtkTable" id="table1">
+                              <object class="GtkHBox" id="hbox35">
                                 <property name="visible">True</property>
-                                <property name="n_rows">3</property>
-                                <property name="n_columns">4</property>
-                                <property name="column_spacing">2</property>
-                                <property name="homogeneous">True</property>
+                                <property name="spacing">8</property>
                                 <child>
-                                  <object class="GtkColorButton" id="comment_background">
+                                  <object class="GtkTable" id="table1">
                                     <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="receives_default">True</property>
-                                    <property name="color">#000000000000</property>
-                                    <signal name="color_set" handler="do_set_color_to_swatch"/>
+                                    <property name="n_rows">3</property>
+                                    <property name="n_columns">4</property>
+                                    <property name="column_spacing">6</property>
+                                    <property name="homogeneous">True</property>
+                                    <child>
+                                      <object class="GtkColorButton" id="comment_background">
+                                        <property name="visible">True</property>
+                                        <property name="sensitive">False</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">True</property>
+                                        <property name="color">#000000000000</property>
+                                        <signal name="color_set" handler="do_set_color_to_swatch"/>
+                                      </object>
+                                      <packing>
+                                        <property name="left_attach">2</property>
+                                        <property name="right_attach">3</property>
+                                        <property name="top_attach">2</property>
+                                        <property name="bottom_attach">3</property>
+                                        <property name="x_options">GTK_FILL</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkColorButton" id="comment_foreground">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">True</property>
+                                        <property name="color">#000000000000</property>
+                                        <signal name="color_set" handler="do_set_color_to_swatch"/>
+                                      </object>
+                                      <packing>
+                                        <property name="left_attach">2</property>
+                                        <property name="right_attach">3</property>
+                                        <property name="top_attach">1</property>
+                                        <property name="bottom_attach">2</property>
+                                        <property name="x_options">GTK_FILL</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkColorButton" id="header_foreground">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">True</property>
+                                        <property name="color">#000000000000</property>
+                                        <signal name="color_set" handler="do_set_color_to_swatch"/>
+                                      </object>
+                                      <packing>
+                                        <property name="left_attach">1</property>
+                                        <property name="right_attach">2</property>
+                                        <property name="top_attach">1</property>
+                                        <property name="bottom_attach">2</property>
+                                        <property name="x_options">GTK_FILL</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkColorButton" id="header_background">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">True</property>
+                                        <property name="color">#000000000000</property>
+                                        <signal name="color_set" handler="do_set_color_to_swatch"/>
+                                      </object>
+                                      <packing>
+                                        <property name="left_attach">1</property>
+                                        <property name="right_attach">2</property>
+                                        <property name="top_attach">2</property>
+                                        <property name="bottom_attach">3</property>
+                                        <property name="x_options">GTK_FILL</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkColorButton" id="match_foreground">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">True</property>
+                                        <property name="color">#000000000000</property>
+                                        <signal name="color_set" handler="do_set_color_to_swatch"/>
+                                      </object>
+                                      <packing>
+                                        <property name="top_attach">1</property>
+                                        <property name="bottom_attach">2</property>
+                                        <property name="x_options">GTK_FILL</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkColorButton" id="match_background">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">True</property>
+                                        <property name="color">#000000000000</property>
+                                        <signal name="color_set" handler="do_set_color_to_swatch"/>
+                                      </object>
+                                      <packing>
+                                        <property name="top_attach">2</property>
+                                        <property name="bottom_attach">3</property>
+                                        <property name="x_options">GTK_FILL</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkLabel" id="label28">
+                                        <property name="visible">True</property>
+                                        <property name="label" translatable="yes">Match</property>
+                                      </object>
+                                      <packing>
+                                        <property name="x_options"></property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkLabel" id="label29">
+                                        <property name="visible">True</property>
+                                        <property name="label" translatable="yes">Header</property>
+                                      </object>
+                                      <packing>
+                                        <property name="left_attach">1</property>
+                                        <property name="right_attach">2</property>
+                                        <property name="x_options"></property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkLabel" id="label30">
+                                        <property name="visible">True</property>
+                                        <property name="label" translatable="yes">Comment</property>
+                                      </object>
+                                      <packing>
+                                        <property name="left_attach">2</property>
+                                        <property name="right_attach">3</property>
+                                        <property name="x_options"></property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkButton" id="button5">
+                                        <property name="label" translatable="yes">_Reset</property>
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">True</property>
+                                        <property name="use_underline">True</property>
+                                        <signal name="clicked" handler="do_color_reset_for_swatches"/>
+                                        <signal name="activate" handler="do_color_reset_for_swatches"/>
+                                      </object>
+                                      <packing>
+                                        <property name="left_attach">3</property>
+                                        <property name="right_attach">4</property>
+                                        <property name="top_attach">1</property>
+                                        <property name="bottom_attach">2</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <placeholder/>
+                                    </child>
+                                    <child>
+                                      <placeholder/>
+                                    </child>
                                   </object>
                                   <packing>
-                                    <property name="left_attach">3</property>
-                                    <property name="right_attach">4</property>
-                                    <property name="top_attach">2</property>
-                                    <property name="bottom_attach">3</property>
-                                    <property name="x_options">GTK_FILL</property>
+                                    <property name="position">0</property>
                                   </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkColorButton" id="comment_foreground">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="receives_default">True</property>
-                                    <property name="color">#000000000000</property>
-                                    <signal name="color_set" handler="do_set_color_to_swatch"/>
-                                  </object>
-                                  <packing>
-                                    <property name="left_attach">3</property>
-                                    <property name="right_attach">4</property>
-                                    <property name="top_attach">1</property>
-                                    <property name="bottom_attach">2</property>
-                                    <property name="x_options">GTK_FILL</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="label27">
-                                    <property name="visible">True</property>
-                                    <property name="label" translatable="yes">Background: </property>
-                                  </object>
-                                  <packing>
-                                    <property name="top_attach">2</property>
-                                    <property name="bottom_attach">3</property>
-                                    <property name="x_options"></property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="label26">
-                                    <property name="visible">True</property>
-                                    <property name="label" translatable="yes">Foreground: </property>
-                                  </object>
-                                  <packing>
-                                    <property name="top_attach">1</property>
-                                    <property name="bottom_attach">2</property>
-                                    <property name="x_options"></property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkColorButton" id="header_foreground">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="receives_default">True</property>
-                                    <property name="color">#000000000000</property>
-                                    <signal name="color_set" handler="do_set_color_to_swatch"/>
-                                  </object>
-                                  <packing>
-                                    <property name="left_attach">2</property>
-                                    <property name="right_attach">3</property>
-                                    <property name="top_attach">1</property>
-                                    <property name="bottom_attach">2</property>
-                                    <property name="x_options">GTK_FILL</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkColorButton" id="header_background">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="receives_default">True</property>
-                                    <property name="color">#000000000000</property>
-                                    <signal name="color_set" handler="do_set_color_to_swatch"/>
-                                  </object>
-                                  <packing>
-                                    <property name="left_attach">2</property>
-                                    <property name="right_attach">3</property>
-                                    <property name="top_attach">2</property>
-                                    <property name="bottom_attach">3</property>
-                                    <property name="x_options">GTK_FILL</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkColorButton" id="match_foreground">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="receives_default">True</property>
-                                    <property name="color">#000000000000</property>
-                                    <signal name="color_set" handler="do_set_color_to_swatch"/>
-                                  </object>
-                                  <packing>
-                                    <property name="left_attach">1</property>
-                                    <property name="right_attach">2</property>
-                                    <property name="top_attach">1</property>
-                                    <property name="bottom_attach">2</property>
-                                    <property name="x_options">GTK_FILL</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkColorButton" id="match_background">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="receives_default">True</property>
-                                    <property name="color">#000000000000</property>
-                                    <signal name="color_set" handler="do_set_color_to_swatch"/>
-                                  </object>
-                                  <packing>
-                                    <property name="left_attach">1</property>
-                                    <property name="right_attach">2</property>
-                                    <property name="top_attach">2</property>
-                                    <property name="bottom_attach">3</property>
-                                    <property name="x_options">GTK_FILL</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="label28">
-                                    <property name="visible">True</property>
-                                    <property name="label" translatable="yes">Match</property>
-                                  </object>
-                                  <packing>
-                                    <property name="left_attach">1</property>
-                                    <property name="right_attach">2</property>
-                                    <property name="x_options"></property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="label29">
-                                    <property name="visible">True</property>
-                                    <property name="label" translatable="yes">Header</property>
-                                  </object>
-                                  <packing>
-                                    <property name="left_attach">2</property>
-                                    <property name="right_attach">3</property>
-                                    <property name="x_options"></property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="label30">
-                                    <property name="visible">True</property>
-                                    <property name="label" translatable="yes">Comment</property>
-                                  </object>
-                                  <packing>
-                                    <property name="left_attach">3</property>
-                                    <property name="right_attach">4</property>
-                                    <property name="x_options"></property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="label18">
-                                    <property name="visible">True</property>
-                                  </object>
                                 </child>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
                                 <property name="fill">False</property>
                                 <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkVBox" id="vbox3">
-                                <property name="visible">True</property>
-                                <property name="orientation">vertical</property>
-                                <child>
-                                  <object class="GtkButton" id="button5">
-                                    <property name="label" translatable="yes">_Reset All Colors</property>
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="receives_default">True</property>
-                                    <property name="use_underline">True</property>
-                                    <signal name="clicked" handler="do_color_reset_for_swatches"/>
-                                    <signal name="activate" handler="do_color_reset_for_swatches"/>
-                                  </object>
-                                  <packing>
-                                    <property name="fill">False</property>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="position">1</property>
                               </packing>
                             </child>
                           </object>
@@ -385,13 +360,65 @@
                 <property name="visible">True</property>
                 <property name="orientation">vertical</property>
                 <child>
+                  <object class="GtkHBox" id="please_install_dictionary_hbox">
+                    <property name="visible">True</property>
+                    <property name="spacing">8</property>
+                    <child>
+                      <object class="GtkLabel" id="label8">
+                        <property name="visible">True</property>
+                        <property name="label"> </property>
+                      </object>
+                      <packing>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkImage" id="image1">
+                        <property name="visible">True</property>
+                        <property name="stock">gtk-dialog-warning</property>
+                        <property name="icon-size">3</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="label7">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">gWaei requires at least one dictionary to be installed.</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="label9">
+                        <property name="visible">True</property>
+                        <property name="label"> </property>
+                      </object>
+                      <packing>
+                        <property name="position">3</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="padding">6</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
                   <object class="GtkFrame" id="frame1">
                     <property name="visible">True</property>
                     <property name="border_width">3</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">in</property>
                     <child>
-                      <object class="GtkVBox" id="vbox4">
+                      <object class="GtkVBox" id="vbox8">
                         <property name="visible">True</property>
                         <property name="orientation">vertical</property>
                         <child>
@@ -399,8 +426,8 @@
                             <property name="visible">True</property>
                             <property name="border_width">8</property>
                             <property name="n_columns">3</property>
-                            <property name="column_spacing">10</property>
-                            <property name="row_spacing">6</property>
+                            <property name="column_spacing">8</property>
+                            <property name="row_spacing">2</property>
                             <child>
                               <placeholder/>
                             </child>
@@ -421,8 +448,8 @@
                           <object class="GtkTable" id="other_dictionaries_table">
                             <property name="border_width">8</property>
                             <property name="n_columns">3</property>
-                            <property name="column_spacing">10</property>
-                            <property name="row_spacing">6</property>
+                            <property name="column_spacing">8</property>
+                            <property name="row_spacing">2</property>
                             <child>
                               <placeholder/>
                             </child>
@@ -494,7 +521,7 @@
                     </child>
                   </object>
                   <packing>
-                    <property name="position">0</property>
+                    <property name="position">1</property>
                   </packing>
                 </child>
               </object>
@@ -505,7 +532,7 @@
             <child type="tab">
               <object class="GtkLabel" id="install_dictionaries_label">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Install Dictionaries</property>
+                <property name="label" translatable="yes">Install</property>
               </object>
               <packing>
                 <property name="position">1</property>
@@ -544,7 +571,6 @@
                     <child>
                       <object class="GtkVBox" id="organize_dictionarieus_controls_vbox">
                         <property name="visible">True</property>
-                        <property name="sensitive">False</property>
                         <property name="orientation">vertical</property>
                         <child>
                           <object class="GtkLabel" id="label4">
@@ -588,6 +614,8 @@
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                             <property name="use_stock">True</property>
+                            <signal name="clicked" handler="do_reset_dictionary_orders"/>
+                            <signal name="activate" handler="do_reset_dictionary_orders"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -624,7 +652,7 @@
             <child type="tab">
               <object class="GtkLabel" id="organize_dictionaries_label">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Organize Dictionaries</property>
+                <property name="label" translatable="yes">Organize</property>
               </object>
               <packing>
                 <property name="position">2</property>
@@ -636,7 +664,7 @@
                 <property name="visible">True</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkFrame" id="frame4">
+                  <object class="GtkFrame" id="search_entry_settings_frame">
                     <property name="visible">True</property>
                     <property name="border_width">6</property>
                     <property name="label_xalign">0</property>
@@ -650,14 +678,15 @@
                           <object class="GtkVBox" id="vbox6">
                             <property name="visible">True</property>
                             <property name="orientation">vertical</property>
-                            <property name="spacing">8</property>
+                            <property name="spacing">2</property>
+                            <property name="homogeneous">True</property>
                             <child>
                               <object class="GtkHBox" id="hbox25">
                                 <property name="visible">True</property>
                                 <child>
                                   <object class="GtkLabel" id="label34">
                                     <property name="visible">True</property>
-                                    <property name="label" translatable="yes">Also search for Kana versions of _Romaji queries: </property>
+                                    <property name="label" translatable="yes">Convert _Romaji to Kana: </property>
                                     <property name="use_underline">True</property>
                                     <property name="justify">center</property>
                                   </object>
@@ -694,7 +723,7 @@
                             </child>
                             <child>
                               <object class="GtkCheckButton" id="query_hiragana_to_katakana">
-                                <property name="label" translatable="yes">Also search for _Katakana versions of Hiragana queries</property>
+                                <property name="label" translatable="yes">Convert Hiragana to _Katakana</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
@@ -710,7 +739,7 @@
                             </child>
                             <child>
                               <object class="GtkCheckButton" id="query_katakana_to_hiragana">
-                                <property name="label" translatable="yes">Also search for _Hiragana versions of Katakana queries</property>
+                                <property name="label" translatable="yes">Convert Katakana to _Hiragana</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
@@ -726,7 +755,7 @@
                             </child>
                             <child>
                               <object class="GtkCheckButton" id="query_spellcheck">
-                                <property name="label" translatable="yes">_Check the spelling of queries as they are typed in</property>
+                                <property name="label" translatable="yes">Enable Spell _Checking</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
                                 <property name="no_show_all">True</property>
@@ -747,7 +776,7 @@
                     <child type="label">
                       <object class="GtkLabel" id="label6">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">&lt;b&gt;Search Settings&lt;/b&gt;</property>
+                        <property name="label" translatable="yes">&lt;b&gt;Search Entry Settings&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
                       </object>
                     </child>
@@ -758,7 +787,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkFrame" id="Manual Dictionary Management">
+                  <object class="GtkFrame" id="manual_dictionary_management_frame">
                     <property name="visible">True</property>
                     <property name="border_width">6</property>
                     <property name="label_xalign">0</property>
@@ -769,155 +798,35 @@
                         <property name="border_width">4</property>
                         <property name="left_padding">12</property>
                         <child>
-                          <object class="GtkTable" id="table3">
+                          <object class="GtkVBox" id="vbox7">
                             <property name="visible">True</property>
-                            <property name="n_rows">2</property>
-                            <property name="n_columns">2</property>
+                            <property name="orientation">vertical</property>
+                            <property name="spacing">2</property>
                             <property name="homogeneous">True</property>
                             <child>
                               <object class="GtkButton" id="open_gwaei_folder_button">
+                                <property name="label" translatable="yes">_Open the gWaei dictionary folder</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
+                                <property name="use_underline">True</property>
                                 <signal name="clicked" handler="do_open_dictionary_folder"/>
                                 <signal name="activate" handler="do_open_dictionary_folder"/>
-                                <child>
-                                  <object class="GtkHBox" id="hbox10">
-                                    <property name="visible">True</property>
-                                    <child>
-                                      <object class="GtkAlignment" id="alignment40">
-                                        <property name="visible">True</property>
-                                        <child>
-                                          <placeholder/>
-                                        </child>
-                                      </object>
-                                      <packing>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkImage" id="image2">
-                                        <property name="visible">True</property>
-                                        <property name="stock">gtk-open</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel" id="label36">
-                                        <property name="visible">True</property>
-                                        <property name="label" translatable="yes">_Open the gWaei dictionary folder</property>
-                                        <property name="use_underline">True</property>
-                                        <property name="mnemonic_widget">open_gwaei_folder_button</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">2</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkAlignment" id="alignment43">
-                                        <property name="visible">True</property>
-                                        <child>
-                                          <placeholder/>
-                                        </child>
-                                      </object>
-                                      <packing>
-                                        <property name="position">3</property>
-                                      </packing>
-                                    </child>
-                                  </object>
-                                </child>
                               </object>
                               <packing>
-                                <property name="x_options">GTK_FILL</property>
+                                <property name="position">0</property>
                               </packing>
                             </child>
                             <child>
                               <object class="GtkButton" id="open_gwaei_folder_button1">
+                                <property name="label" translatable="yes">_Update dictionaries using Rsync</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
-                                <child>
-                                  <object class="GtkHBox" id="hbox1">
-                                    <property name="visible">True</property>
-                                    <child>
-                                      <object class="GtkAlignment" id="alignment5">
-                                        <property name="visible">True</property>
-                                        <child>
-                                          <placeholder/>
-                                        </child>
-                                      </object>
-                                      <packing>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkImage" id="image1">
-                                        <property name="visible">True</property>
-                                        <property name="stock">gtk-refresh</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel" id="label7">
-                                        <property name="visible">True</property>
-                                        <property name="label" translatable="yes">_Update dictionaries using Rsync</property>
-                                        <property name="use_underline">True</property>
-                                        <property name="mnemonic_widget">open_gwaei_folder_button</property>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">2</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkAlignment" id="alignment6">
-                                        <property name="visible">True</property>
-                                        <child>
-                                          <placeholder/>
-                                        </child>
-                                      </object>
-                                      <packing>
-                                        <property name="position">3</property>
-                                      </packing>
-                                    </child>
-                                  </object>
-                                </child>
+                                <property name="use_underline">True</property>
                               </object>
                               <packing>
-                                <property name="top_attach">1</property>
-                                <property name="bottom_attach">2</property>
-                                <property name="x_options">GTK_FILL</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="label35">
-                                <property name="visible">True</property>
-                              </object>
-                              <packing>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="label8">
-                                <property name="visible">True</property>
-                              </object>
-                              <packing>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
-                                <property name="top_attach">1</property>
-                                <property name="bottom_attach">2</property>
+                                <property name="position">1</property>
                               </packing>
                             </child>
                           </object>

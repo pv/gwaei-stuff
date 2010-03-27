@@ -190,152 +190,60 @@ void gw_settings_initialize_installed_dictionary_list ()
 //!
 //! @brief Updates the dictionary orders for the dictionary order tab
 //!
-void gw_ui_update_dictionary_orders ()
+void gw_ui_initialize_dictionary_order_list ()
 {
-    GtkWidget *container;
-    container = GTK_WIDGET (gtk_builder_get_object (builder, "organize_dictionary_list_hbox"));
-    if (container == NULL)
-      return;
+      #define XPADDING 4
+      #define YPADDING 0
+
+      GtkWidget *viewport = GTK_WIDGET (gtk_builder_get_object (builder, "organize_dictionaries_viewport"));
+      if (gtk_bin_get_child (GTK_BIN (viewport)) != NULL) return;
+      GtkListStore *list_store = GTK_LIST_STORE (gtk_builder_get_object (builder, "list_store_dictionaries"));
+      //GtkWidget *treeview = GTK_WIDGET (gtk_builder_get_object (builder, "organize_dictionaries_treeview"));
+      GtkWidget *treeview = GTK_WIDGET (gtk_tree_view_new ());
+
+      GtkWidget *down_button = GTK_WIDGET (gtk_builder_get_object (builder, "move_dictionary_down_button"));
+      GtkWidget *up_button = GTK_WIDGET (gtk_builder_get_object (builder, "move_dictionary_up_button"));
+      g_signal_connect(G_OBJECT (down_button), "clicked", G_CALLBACK (do_move_dictionary_down), (gpointer) treeview);
+      g_signal_connect(G_OBJECT (up_button), "clicked", G_CALLBACK (do_move_dictionary_up), (gpointer) treeview);
 
 
-    //Parse the the names of the dictionary list
-    char order[5000];
-    gw_pref_get_string (order, GCKEY_GW_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
-    char *long_name_list[50];
-    char **condensed_name_list[50];
-    long_name_list[0] = order;
-    int i = 0;
-    int j = 0;
-    while ((long_name_list[i + 1] = g_utf8_strchr (long_name_list[i], -1, L',')) && i < 50)
-    {
-      i++;
-      *long_name_list[i] = '\0';
-      long_name_list[i]++;
-    }
-    long_name_list[i + 1] = NULL;
+      //gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (treeview), FALSE);
+      gtk_tree_view_set_reorderable (GTK_TREE_VIEW (treeview), TRUE);
+      gtk_tree_view_set_model (GTK_TREE_VIEW (treeview), GTK_TREE_MODEL (list_store));
 
-    //Get the condensed version
-    i = 0;
-    j = 0;
-    GwDictInfo *di1, *di2;
-    while (long_name_list[i] != NULL && long_name_list[j] != NULL)
-    {
-      di1 = gw_dictlist_get_dictionary_by_name (long_name_list[j]);
-      di2 = gw_dictlist_get_dictionary_by_alias (long_name_list[j]);
-      if (di1 != NULL && di2 != NULL && strcmp(di1->name, di2->name) == 0 && di2->status == GW_DICT_STATUS_INSTALLED)
-      {
-        condensed_name_list[i] = &long_name_list[j];
-        i++; j++;
-      }
-      else
-      {
-        j++;
-      }
-        
-    }
-    condensed_name_list[i] = NULL;
+      gtk_container_add (GTK_CONTAINER (viewport), GTK_WIDGET (treeview));
+      gtk_widget_show_all (GTK_WIDGET (treeview));
 
+      GtkCellRenderer *renderer;
+      GtkTreeViewColumn *column;
 
-    //Declarations
-    GtkWidget *label, *dictionary, *move_up_button;
-    GtkWidget *move_down_button, *button_box, *button_image;
-    GtkWidget *number_label, *eventbox, *quickkey;
-    GtkWidget *icon_image;
-    GList *list;
-    move_down_button = NULL;
+/*
+      renderer = gtk_cell_renderer_pixbuf_new ();
+      gtk_cell_renderer_set_padding (renderer, YPADDING, XPADDING);
+      column = gtk_tree_view_column_new_with_attributes (NULL, renderer, "icon-name", 1, NULL);
+      gtk_tree_view_append_column (GTK_TREE_VIEW (treeview), column);
 
-    //Clear out old buttons
-    list = gtk_container_get_children (GTK_CONTAINER (container));
-    while (list != NULL)
-    {
-      gtk_widget_destroy (GTK_WIDGET(list->data));
-      list = gtk_container_get_children (GTK_CONTAINER (container));
-    }
+      renderer = gtk_cell_renderer_text_new ();
+      gtk_cell_renderer_set_padding (renderer, YPADDING, XPADDING);
+      column = gtk_tree_view_column_new_with_attributes (gettext("Order"), renderer, "text", 2, NULL);
+      gtk_tree_view_append_column (GTK_TREE_VIEW (treeview), column);
+*/
 
-    //Add new buttons
-    i = 0;
-    char *markup;
-    GwDictInfo *di;
-    while (condensed_name_list[i] != NULL)
-    {
-      eventbox = gtk_event_box_new();
-      if (i == 0)
-        icon_image = gtk_image_new_from_icon_name ("emblem-favorite", GTK_ICON_SIZE_MENU);
-      else
-        icon_image = gtk_image_new_from_stock (GTK_STOCK_YES, GTK_ICON_SIZE_MENU);
+      renderer = gtk_cell_renderer_text_new ();
+      gtk_cell_renderer_set_padding (renderer, YPADDING, XPADDING);
+      column = gtk_tree_view_column_new_with_attributes (gettext("Dictionary Name"), renderer, "text", 0, NULL);
+      gtk_tree_view_append_column (GTK_TREE_VIEW (treeview), column);
 
-      number_label = GTK_WIDGET (gtk_label_new (NULL));
-      markup = g_markup_printf_escaped ("<span weight=\"bold\">%d</span>", i + 1);
-      gtk_label_set_markup (GTK_LABEL (number_label), markup);
-      g_free (markup);
+/*
+      renderer = gtk_cell_renderer_text_new ();
+      gtk_cell_renderer_set_padding (renderer, YPADDING, XPADDING);
+      gtk_cell_renderer_set_sensitive (renderer, FALSE);
+      column = gtk_tree_view_column_new_with_attributes (gettext("Shortcut"), renderer, "text", 3, NULL);
+      gtk_tree_view_append_column (GTK_TREE_VIEW (treeview), column);
+*/
 
-      label = GTK_WIDGET (gtk_label_new (NULL));
-      if (di = gw_dictlist_get_dictionary_by_name (*condensed_name_list[i]))
-        markup = g_markup_printf_escaped ("<span size=\"larger\">%s</span>", di->long_name);
-      else
-        markup = g_markup_printf_escaped ("<span size=\"larger\">%s</span>", *condensed_name_list[i]);
-      gtk_label_set_markup (GTK_LABEL (label), markup);
-      g_free (markup);
-
-      quickkey = GTK_WIDGET (gtk_label_new (NULL));
-      if (i < 9)
-        markup = g_markup_printf_escaped ("<span size=\"smaller\">Alt-%d</span>", i + 1);
-      else
-        markup = g_markup_printf_escaped ("<span size=\"smaller\">   </span>", i + 1);
-      gtk_label_set_markup (GTK_LABEL (quickkey), markup);
-      gtk_widget_set_sensitive (GTK_WIDGET (quickkey), FALSE);
-      g_free (markup);
-
-      dictionary = GTK_WIDGET (gtk_hbox_new (FALSE, 5));
-      gtk_container_set_border_width (GTK_CONTAINER (dictionary), 10);
-      button_box = GTK_WIDGET (gtk_hbox_new (TRUE, 5));
-
-      move_up_button = GTK_WIDGET (gtk_button_new ());
-      gtk_button_set_relief (GTK_BUTTON (move_up_button), GTK_RELIEF_NONE);
-      button_image = GTK_WIDGET (gtk_image_new_from_stock (GTK_STOCK_GO_UP, GTK_ICON_SIZE_MENU));
-      gtk_container_add (GTK_CONTAINER (move_up_button), button_image);
-      if (i == 0) gtk_widget_set_sensitive (move_up_button, FALSE);
-      g_signal_connect( G_OBJECT (move_up_button),       "clicked",
-                        G_CALLBACK (do_move_dictionary_up), GINT_TO_POINTER(i));
-
-      move_down_button = GTK_WIDGET (gtk_button_new ());
-      gtk_button_set_relief (GTK_BUTTON (move_down_button), GTK_RELIEF_NONE);
-      button_image = GTK_WIDGET (gtk_image_new_from_stock (GTK_STOCK_GO_DOWN, GTK_ICON_SIZE_MENU));
-      gtk_container_add (GTK_CONTAINER (move_down_button), button_image);
-      g_signal_connect( G_OBJECT (move_down_button),       "clicked",
-                        G_CALLBACK (do_move_dictionary_down), GINT_TO_POINTER(i));
-      
-      gtk_box_pack_start (GTK_BOX (button_box), move_up_button, FALSE, FALSE, 0);
-      gtk_box_pack_start (GTK_BOX (button_box), move_down_button, FALSE, FALSE, 0);
-      gtk_box_pack_end (GTK_BOX (dictionary), button_box, FALSE, FALSE, 5);
-
-      gtk_box_pack_start (GTK_BOX (dictionary), icon_image, FALSE, FALSE, 5);
-      gtk_box_pack_start (GTK_BOX (dictionary), number_label, FALSE, FALSE, 5);
-      GtkWidget *temp = GTK_WIDGET (gtk_hbox_new (FALSE, 5));
-      gtk_box_pack_start (GTK_BOX (temp), label, FALSE, FALSE, 5);
-      gtk_box_pack_start (GTK_BOX (temp), quickkey, FALSE, FALSE, 5);
-      gtk_box_pack_start (GTK_BOX (dictionary), temp, TRUE, TRUE, 5);
-
-      if (i % 2)
-      {
-        gtk_container_add (GTK_CONTAINER (eventbox), dictionary);
-        gtk_box_pack_start (GTK_BOX (container), eventbox, FALSE,FALSE, 0);
-        gtk_widget_show_all (eventbox);
-      }
-      else
-      {
-        gtk_box_pack_start (GTK_BOX (container), dictionary, FALSE, FALSE, 0);
-        gtk_widget_show_all (dictionary);
-      }
-      i++;
-    }
-
-    //Hide the last move down arrow
-    if (move_down_button != NULL) gtk_widget_set_sensitive (move_down_button, FALSE);
-
-    //Force the container to resize
-    gtk_widget_hide (container);
-    gtk_widget_show (container);
+      #undef XPADDING
+      #undef YPADDING
 }
 
 
