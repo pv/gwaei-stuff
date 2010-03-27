@@ -953,6 +953,7 @@ G_MODULE_EXPORT void do_radical_search_tool (GtkWidget *widget, gpointer data)
 {
     char id[50];
 
+/*
     GtkWidget *hbox;
     strncpy (id, "strokes_hbox", 50);
     hbox = GTK_WIDGET (gtk_builder_get_object (builder, id));
@@ -969,6 +970,7 @@ G_MODULE_EXPORT void do_radical_search_tool (GtkWidget *widget, gpointer data)
       gtk_widget_hide (hbox); 
     else
       gtk_widget_show (hbox); 
+      */
 
     //Show the window
     gw_ui_show_window ("radicals_window");

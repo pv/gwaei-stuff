@@ -682,6 +682,28 @@ void initialize_window_attributes (char* window_id)
       gtk_window_move(GTK_WINDOW(window), half_width, half_height);
       printf(gettext("Looks like this may be your initial install.  I'm just going to center this window for ya.  You can thank me later %d %d\n"), x, y);
     }
+    else if (strcmp(window_id, "radicals_window") == 0)
+    {
+      //Height checking
+      GtkWidget *window = GTK_WIDGET (gtk_builder_get_object (builder, "radicals_window"));
+      GtkWidget *scrolledwindow = GTK_WIDGET (gtk_builder_get_object (builder, "radical_selection_scrolledwindow"));
+
+      //Get the natural size
+      gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow), GTK_POLICY_NEVER, GTK_POLICY_NEVER);
+      gtk_widget_set_size_request (GTK_WIDGET (window), -1, -1);
+      gtk_widget_queue_draw (GTK_WIDGET (window));
+      int width, height;
+      gtk_window_get_size (GTK_WINDOW (window), &width, &height);
+
+      //Set the final size
+      if (height > gdk_screen_height ())
+        gtk_widget_set_size_request (GTK_WIDGET (window), -1, gdk_screen_height() - 50);
+      else
+        gtk_widget_set_size_request (GTK_WIDGET (window), -1, height);
+
+      //Allow a vertical scrollbar
+      gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+    }
 }
 
 
@@ -1377,8 +1399,6 @@ void gw_ui_set_font (char *font_description_string, int *font_magnification)
       font_size = GW_DEFAULT_FONT_SIZE;
     }
 
-    printf("font family: %s\nfont size: %d\n", font_family, font_size);
-
     //Add the magnification in to the font size
     if (font_magnification == NULL)
       font_size += gw_pref_get_int (GCKEY_GW_FONT_MAGNIFICATION, GW_DEFAULT_FONT_MAGNIFICATION);
@@ -1391,11 +1411,8 @@ void gw_ui_set_font (char *font_description_string, int *font_magnification)
     else if (font_size > GW_MAX_FONT_SIZE)
       font_size = GW_MAX_FONT_SIZE;
 
-    //printf("font magnification: %d\n", *font_magnification);
-
     //Assemble the font description
     new_font_description_string = g_strdup_printf("%s %d", font_family, font_size);
-    printf("font desc: %s\nnew font desc: %s\n", font_description_string, new_font_description_string);
 
     //Set it
     PangoFontDescription *desc;
@@ -1869,7 +1886,6 @@ gboolean gw_ui_load_gtk_builder_xml(const char *name) {
       return TRUE;
     }
 
-    printf("Could not find needed xml files\n");
     return FALSE;
 }
 
@@ -2658,6 +2674,7 @@ void initialize_gui_interface(int *argc, char ***argv)
       gw_ui_load_gtk_builder_xml ("radicals.ui");
       gw_ui_load_gtk_builder_xml ("settings.ui");
       gw_ui_load_gtk_builder_xml ("kanjipad.ui");
+gw_ui_initialize_radicals_table ();
 
       GtkWidget *main_window;
       main_window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
