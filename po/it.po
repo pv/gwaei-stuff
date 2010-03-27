@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-03-27 12:29-0500\n"
+"POT-Creation-Date: 2010-03-27 18:44-0500\n"
 "PO-Revision-Date: 2010-03-13 17:12+0100\n"
 "Last-Translator: Fabrizio Sabatini <jecnua@gmail.com>\n"
 "Language-Team: Not Applicable\n"
@@ -320,7 +320,6 @@ msgstr ""
 
 #: src/main-interface-console.c:1176 src/main-interface-console.c:1249
 #: src/main-interface-gtk.c:3109 src/main-interface-gtk.c:3211
-#: src/xml/settings.glade:1213
 msgid "Radicals:"
 msgstr "Radicali:"
 
@@ -1133,11 +1132,7 @@ msgstr "Scompattando..."
 msgid "Unzip Error"
 msgstr ""
 
-#: src/settings-callbacks-gtk.c:359 src/xml/settings.glade:800
-#: src/xml/settings.glade:1528 src/xml/settings.glade:1608
-#: src/xml/settings.glade:1688 src/xml/settings.glade:1768
-#: src/xml/settings.glade:2320 src/xml/settings.glade:2398
-#: src/xml/settings.glade:2478 src/gtk-dict-install-line-object.c:63
+#: src/settings-callbacks-gtk.c:359 src/gtk-dict-install-line-object.c:63
 msgid "Installed"
 msgstr "Installato"
 
@@ -1149,11 +1144,7 @@ msgstr "Sto Cancellando..."
 msgid "Not Installed"
 msgstr "Non Installato"
 
-#: src/settings-callbacks-gtk.c:542 src/xml/settings.glade:753
-#: src/xml/settings.glade:1481 src/xml/settings.glade:1561
-#: src/xml/settings.glade:1641 src/xml/settings.glade:1721
-#: src/xml/settings.glade:2273 src/xml/settings.glade:2351
-#: src/xml/settings.glade:2431
+#: src/settings-callbacks-gtk.c:542
 msgid "Installing..."
 msgstr "Installazione in corso..."
 
@@ -1290,228 +1281,101 @@ msgstr " _tratti"
 msgid "C_lear"
 msgstr "Pu_lisci"
 
-#: src/xml/settings.glade:7
+#: src/xml/settings.glade:38
 msgid "gWaei Settings"
 msgstr "Opzioni gWaei"
 
-#: src/xml/settings.glade:55
-msgid ""
-"gWaei uses some external components and files to function. At the very "
-"least, a single dictionary needs to be installed for proper operation.  To "
-"install a dictionary automatically through the program, go to the Install "
-"Dictionaries tab."
+#: src/xml/settings.glade:82
+msgid "_Use the system document font (Sans 10)"
 msgstr ""
-"gWaei usa alcune componenti e file esterni per funzionare. Almeno un "
-"dizionario deve essere installato affinché funzioni correttamente.  Per "
-"installare il dizionario automaticamente dal programma, vai alla scheda "
-"Installa Dizionari."
 
-#: src/xml/settings.glade:98
-msgid ""
-"General searches require at least one dictionary to be installed.  Go to the "
-"Install Dictionaries tab for more information."
+#: src/xml/settings.glade:102
+msgid "Custom Font: "
 msgstr ""
-"Ricerche generiche richiedono che almeno un dizionario sia installato.  Vai "
-"alla scheda Installa Dizionari per maggiori informazioni."
 
-#: src/xml/settings.glade:120
-msgid ""
-"Allows searching for Kanji and radical characters from the same dictionary.  "
-"To enable, install both the  Radicals and Kanji dictionaries."
+#: src/xml/settings.glade:134
+msgid "<b>Result Window Fonts</b>"
 msgstr ""
-"Permette la ricerca per Kanji e caratteri radicali dallo stesso dizionario.  "
-"Per attivarlo, installare entrambi i dizionari dei Radicali e dei Kanji."
 
-#: src/xml/settings.glade:176 src/xml/settings.glade:228
-#: src/xml/settings.glade:282 src/xml/settings.glade:466
-msgid "Enabled"
-msgstr "Attivato"
-
-#: src/xml/settings.glade:315
-msgid ""
-"Allows quick Kanji lookups in the side bar by clicking Kanji characters in "
-"the results pane.  To enable, install the Kanji dictionary."
-msgstr ""
-"Attiva la ricerca veloce dei Kanji nella barra laterale cliccando i Kanji "
-"nel pannello dei risultati. Per attivarlo, installare il dizionario dei "
-"Kanji."
-
-#: src/xml/settings.glade:338
-msgid "Combined Dictionary:"
-msgstr "Dizionario Combinato:"
-
-#: src/xml/settings.glade:359
-msgid "Radical Search Tool:"
-msgstr "Tool di Ricerca dei Radicali:"
-
-#: src/xml/settings.glade:380
-msgid "General Search:"
-msgstr "Ricerca generica:"
-
-#: src/xml/settings.glade:399
-msgid "Kanji Lookup Tool:"
-msgstr "Tool di Ricerca dei Kanji:"
-
-#: src/xml/settings.glade:421
-msgid ""
-"Allows a Kanji search tool with clickable radical characters.  To enable, "
-"install the Radicals dictionary."
-msgstr ""
-"Attiva un tool di ricerca dei Kanji con caratteri radicali cliccabili.  Per "
-"attivarlo, installare il dizionario dei Radicali."
-
-#: src/xml/settings.glade:505
-msgid "<b>Features</b>"
-msgstr "<b>Caratteristiche</b>"
-
-#: src/xml/settings.glade:523
-msgid "Status"
-msgstr "Stato"
-
-#: src/xml/settings.glade:555
-msgid ""
-"gWaei will take care of installing dictionaries for you.  Just click the "
-"button of the one you want. The files are downloaded from Jim Breen's "
-"WWWJDIC servers.  Click the triangles to choose other installation sources."
-msgstr ""
-"gWaei si prenderà cura di installare i dizionari per te. Basta cliccare il "
-"bottone desiderato. I file sono scaricati dai server di Jim Breen's WWWJDIC. "
-"Clicca i triangoli per scegliere altre fonti di installazione."
-
-#: src/xml/settings.glade:895 src/xml/settings.glade:968
-#: src/xml/settings.glade:1041 src/xml/settings.glade:1256
-#: src/xml/settings.glade:1420 src/xml/settings.glade:1828
-#: src/xml/settings.glade:1897 src/xml/settings.glade:1966
-#: src/gtk-dict-install-line-object.c:116
-msgid "Source: "
-msgstr "Sorgente: "
-
-#: src/xml/settings.glade:914 src/xml/settings.glade:987
-#: src/xml/settings.glade:1060 src/xml/settings.glade:1275
-#: src/xml/settings.glade:1440 src/xml/settings.glade:1847
-#: src/xml/settings.glade:1916 src/xml/settings.glade:1985
-msgid "Browse"
-msgstr "Sfoglia"
-
-#: src/xml/settings.glade:928 src/xml/settings.glade:1001
-#: src/xml/settings.glade:1074 src/xml/settings.glade:1289
-#: src/xml/settings.glade:1454 src/xml/settings.glade:1859
-#: src/xml/settings.glade:1928 src/xml/settings.glade:1997
-#: src/gtk-dict-install-line-object.c:122
-msgid "Reset"
-msgstr "Pulisci"
-
-#: src/xml/settings.glade:1107
-msgid "English:"
-msgstr "Inglese:"
-
-#: src/xml/settings.glade:1141
-msgid "Kanji:"
-msgstr "Kanji:"
-
-#: src/xml/settings.glade:1177
-msgid "Names:"
-msgstr "Nomi:"
-
-#: src/xml/settings.glade:1322
-msgid "Examples:"
-msgstr "Esempi:"
-
-#: src/xml/settings.glade:2175
-msgid "German:"
-msgstr "Tedesco:"
-
-#: src/xml/settings.glade:2210
-msgid "French:"
-msgstr "Francese:"
-
-#: src/xml/settings.glade:2243
-msgid "Spanish:"
-msgstr "Spagnolo:"
-
-#: src/xml/settings.glade:2524
-msgid "Where can I get other dictionaries?"
-msgstr "Dove posso trovare altri dizionari?"
-
-#: src/xml/settings.glade:2693 src/xml/settings.glade:2770
-msgid "_Update Installed Dictionaries"
-msgstr "_Aggiorna Dizionari Installati"
-
-#: src/xml/settings.glade:2818
-msgid "Install Dictionaries"
-msgstr "Installa Dizionari"
-
-#: src/xml/settings.glade:2852
-msgid ""
-"Reorganize your dictionaries by clicking the arrow keys.  You know you want "
-"to."
-msgstr "Riorganizza i dizionari premendo i pulsanti freccia. Sai di volerlo."
-
-#: src/xml/settings.glade:2902
-msgid "Organize Dictionaries"
-msgstr "Organizza Dizionari"
-
-#: src/xml/settings.glade:2932
-msgid "Also search for Kana versions of _Romaji queries: "
-msgstr "Cerca anche per la versione Kana delle richerche _Romaji: "
-
-#: src/xml/settings.glade:2968
-msgid "Also search for _Katakana versions of Hiragana queries"
-msgstr "Cerca anche per la versione _Katakana delle ricerche Hiragana:"
-
-#: src/xml/settings.glade:2984
-msgid "Also search for _Hiragana versions of Katakana queries"
-msgstr "Cerca anche per la versione _Hiragana delle ricerche Katakana:"
-
-#: src/xml/settings.glade:3000
-msgid "_Check the spelling of queries as they are typed in"
-msgstr "_Controlla la sintassi delle ricerche mentre vengono scritte"
-
-#: src/xml/settings.glade:3019
-msgid "<b>Search Settings</b>"
-msgstr "<b>Impostazioni Ricerca</b>"
-
-#: src/xml/settings.glade:3083
-msgid "_Open the gWaei dictionary folder"
-msgstr "Apri la cartella dei dizi_onari gWaei"
-
-#: src/xml/settings.glade:3117
-msgid " using your default file viewer."
-msgstr " usando il tuo visualizzatore di file di default."
-
-#: src/xml/settings.glade:3138
-msgid "<b>Manual Dictionary Management</b>"
-msgstr "<b>Gestione Manuale Dizionari</b>"
-
-#: src/xml/settings.glade:3205
-msgid "Background: "
-msgstr "Sfondo: "
-
-#: src/xml/settings.glade:3216
-msgid "Foreground: "
-msgstr "Primo Piano: "
-
-#: src/xml/settings.glade:3291
+#: src/xml/settings.glade:270
 msgid "Match"
 msgstr "Corrispondenze"
 
-#: src/xml/settings.glade:3302
+#: src/xml/settings.glade:279
 msgid "Header"
 msgstr "Intestazione"
 
-#: src/xml/settings.glade:3313
+#: src/xml/settings.glade:290
 msgid "Comment"
 msgstr "Commenti"
 
-#: src/xml/settings.glade:3339
-msgid "_Reset All Colors"
-msgstr "_Resetta Tutti i Colori"
+#: src/xml/settings.glade:300
+#, fuzzy
+msgid "_Reset"
+msgstr "Pulisci"
 
-#: src/xml/settings.glade:3362
-msgid "<b>Highlighting Settings</b>"
-msgstr "<b>Impostazione Evidenziazione</b>"
+#: src/xml/settings.glade:340
+msgid "<b>Result Window Colors</b>"
+msgstr ""
 
-#: src/xml/settings.glade:3384
+#: src/xml/settings.glade:358
+#, fuzzy
+msgid "Appearance"
+msgstr "Aggiungi"
+
+#: src/xml/settings.glade:397
+#, fuzzy
+msgid "gWaei requires at least one dictionary to be installed."
+msgstr "Non ci sono dizionari installati"
+
+#: src/xml/settings.glade:492
+msgid "Where can I get other dictionaries?"
+msgstr "Dove posso trovare altri dizionari?"
+
+#: src/xml/settings.glade:544
+#, fuzzy
+msgid "Install"
+msgstr "Installato"
+
+#: src/xml/settings.glade:665
+msgid "Organize"
+msgstr ""
+
+#: src/xml/settings.glade:700
+msgid "Convert _Romaji to Kana: "
+msgstr ""
+
+#: src/xml/settings.glade:736
+msgid "Convert Hiragana to _Katakana"
+msgstr ""
+
+#: src/xml/settings.glade:752
+msgid "Convert Katakana to _Hiragana"
+msgstr ""
+
+#: src/xml/settings.glade:768
+msgid "Enable Spell _Checking"
+msgstr ""
+
+#: src/xml/settings.glade:789
+#, fuzzy
+msgid "<b>Search Entry Settings</b>"
+msgstr "<b>Impostazioni Ricerca</b>"
+
+#: src/xml/settings.glade:821
+msgid "_Open the gWaei dictionary folder"
+msgstr "Apri la cartella dei dizi_onari gWaei"
+
+#: src/xml/settings.glade:835
+#, fuzzy
+msgid "_Update dictionaries using Rsync"
+msgstr "_Aggiorna Dizionari Installati"
+
+#: src/xml/settings.glade:852
+msgid "<b>Manual Dictionary Management</b>"
+msgstr "<b>Gestione Manuale Dizionari</b>"
+
+#: src/xml/settings.glade:877
 msgid "Advanced"
 msgstr "Avanzato"
 
@@ -1527,10 +1391,153 @@ msgstr "Tratti _Annotati"
 msgid "Downloading..."
 msgstr "Sto Scaricando..."
 
+#: src/gtk-dict-install-line-object.c:116
+msgid "Source: "
+msgstr "Sorgente: "
+
 #: src/gtk-dict-install-line-object.c:119
 #, fuzzy
 msgid "Browse..."
 msgstr "Sfoglia"
+
+#: src/gtk-dict-install-line-object.c:122
+msgid "Reset"
+msgstr "Pulisci"
+
+#~ msgid ""
+#~ "gWaei uses some external components and files to function. At the very "
+#~ "least, a single dictionary needs to be installed for proper operation.  "
+#~ "To install a dictionary automatically through the program, go to the "
+#~ "Install Dictionaries tab."
+#~ msgstr ""
+#~ "gWaei usa alcune componenti e file esterni per funzionare. Almeno un "
+#~ "dizionario deve essere installato affinché funzioni correttamente.  Per "
+#~ "installare il dizionario automaticamente dal programma, vai alla scheda "
+#~ "Installa Dizionari."
+
+#~ msgid ""
+#~ "General searches require at least one dictionary to be installed.  Go to "
+#~ "the Install Dictionaries tab for more information."
+#~ msgstr ""
+#~ "Ricerche generiche richiedono che almeno un dizionario sia installato.  "
+#~ "Vai alla scheda Installa Dizionari per maggiori informazioni."
+
+#~ msgid ""
+#~ "Allows searching for Kanji and radical characters from the same "
+#~ "dictionary.  To enable, install both the  Radicals and Kanji dictionaries."
+#~ msgstr ""
+#~ "Permette la ricerca per Kanji e caratteri radicali dallo stesso "
+#~ "dizionario.  Per attivarlo, installare entrambi i dizionari dei Radicali "
+#~ "e dei Kanji."
+
+#~ msgid "Enabled"
+#~ msgstr "Attivato"
+
+#~ msgid ""
+#~ "Allows quick Kanji lookups in the side bar by clicking Kanji characters "
+#~ "in the results pane.  To enable, install the Kanji dictionary."
+#~ msgstr ""
+#~ "Attiva la ricerca veloce dei Kanji nella barra laterale cliccando i Kanji "
+#~ "nel pannello dei risultati. Per attivarlo, installare il dizionario dei "
+#~ "Kanji."
+
+#~ msgid "Combined Dictionary:"
+#~ msgstr "Dizionario Combinato:"
+
+#~ msgid "Radical Search Tool:"
+#~ msgstr "Tool di Ricerca dei Radicali:"
+
+#~ msgid "General Search:"
+#~ msgstr "Ricerca generica:"
+
+#~ msgid "Kanji Lookup Tool:"
+#~ msgstr "Tool di Ricerca dei Kanji:"
+
+#~ msgid ""
+#~ "Allows a Kanji search tool with clickable radical characters.  To enable, "
+#~ "install the Radicals dictionary."
+#~ msgstr ""
+#~ "Attiva un tool di ricerca dei Kanji con caratteri radicali cliccabili.  "
+#~ "Per attivarlo, installare il dizionario dei Radicali."
+
+#~ msgid "<b>Features</b>"
+#~ msgstr "<b>Caratteristiche</b>"
+
+#~ msgid "Status"
+#~ msgstr "Stato"
+
+#~ msgid ""
+#~ "gWaei will take care of installing dictionaries for you.  Just click the "
+#~ "button of the one you want. The files are downloaded from Jim Breen's "
+#~ "WWWJDIC servers.  Click the triangles to choose other installation "
+#~ "sources."
+#~ msgstr ""
+#~ "gWaei si prenderà cura di installare i dizionari per te. Basta cliccare "
+#~ "il bottone desiderato. I file sono scaricati dai server di Jim Breen's "
+#~ "WWWJDIC. Clicca i triangoli per scegliere altre fonti di installazione."
+
+#~ msgid "Browse"
+#~ msgstr "Sfoglia"
+
+#~ msgid "English:"
+#~ msgstr "Inglese:"
+
+#~ msgid "Kanji:"
+#~ msgstr "Kanji:"
+
+#~ msgid "Names:"
+#~ msgstr "Nomi:"
+
+#~ msgid "Examples:"
+#~ msgstr "Esempi:"
+
+#~ msgid "German:"
+#~ msgstr "Tedesco:"
+
+#~ msgid "French:"
+#~ msgstr "Francese:"
+
+#~ msgid "Spanish:"
+#~ msgstr "Spagnolo:"
+
+#~ msgid "Install Dictionaries"
+#~ msgstr "Installa Dizionari"
+
+#~ msgid ""
+#~ "Reorganize your dictionaries by clicking the arrow keys.  You know you "
+#~ "want to."
+#~ msgstr ""
+#~ "Riorganizza i dizionari premendo i pulsanti freccia. Sai di volerlo."
+
+#~ msgid "Organize Dictionaries"
+#~ msgstr "Organizza Dizionari"
+
+#~ msgid "Also search for Kana versions of _Romaji queries: "
+#~ msgstr "Cerca anche per la versione Kana delle richerche _Romaji: "
+
+#~ msgid "Also search for _Katakana versions of Hiragana queries"
+#~ msgstr "Cerca anche per la versione _Katakana delle ricerche Hiragana:"
+
+#~ msgid "Also search for _Hiragana versions of Katakana queries"
+#~ msgstr "Cerca anche per la versione _Hiragana delle ricerche Katakana:"
+
+#~ msgid "_Check the spelling of queries as they are typed in"
+#~ msgstr "_Controlla la sintassi delle ricerche mentre vengono scritte"
+
+#~ msgid " using your default file viewer."
+#~ msgstr " usando il tuo visualizzatore di file di default."
+
+#~ msgid "Background: "
+#~ msgstr "Sfondo: "
+
+#~ msgid "Foreground: "
+#~ msgstr "Primo Piano: "
+
+#~ msgid "_Reset All Colors"
+#~ msgstr "_Resetta Tutti i Colori"
+
+#~ msgid "<b>Highlighting Settings</b>"
+#~ msgstr "<b>Impostazione Evidenziazione</b>"
 
 #~ msgid "Connection failure\n"
 #~ msgstr "Errore nella connessione\n"
