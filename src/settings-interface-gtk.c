@@ -55,43 +55,95 @@
 //!
 void gw_ui_update_settings_interface()
 {
-  //Set the install interface
-  GtkWidget *close_button;
-  close_button = GTK_WIDGET (gtk_builder_get_object (builder, "settings_close_button"));
+    //Set the install interface
+    GtkWidget *close_button;
+    close_button = GTK_WIDGET (gtk_builder_get_object (builder, "settings_close_button"));
 
-  GtkWidget *advanced_tab;
-  advanced_tab = GTK_WIDGET (gtk_builder_get_object (builder, "advanced_tab"));
+    GtkWidget *advanced_tab;
+    advanced_tab = GTK_WIDGET (gtk_builder_get_object (builder, "advanced_tab"));
 
-  GtkWidget *organize_dictionaries_tab;
-  organize_dictionaries_tab = GTK_WIDGET (gtk_builder_get_object (builder, "organize_dictionaries_tab"));
+    GtkWidget *organize_dictionaries_tab;
+    organize_dictionaries_tab = GTK_WIDGET (gtk_builder_get_object (builder, "organize_dictionaries_tab"));
 
-  if (gw_dictlist_get_total_with_status (GW_DICT_STATUS_UPDATING  ) > 0 ||
-      gw_dictlist_get_total_with_status (GW_DICT_STATUS_INSTALLING) > 0 ||
-      gw_dictlist_get_total_with_status (GW_DICT_STATUS_REBUILDING) > 0   )
-  {
-    gtk_widget_set_sensitive (close_button,   FALSE);
-    gtk_widget_set_sensitive (advanced_tab,  FALSE);
-    gtk_widget_set_sensitive (organize_dictionaries_tab,  FALSE);
-  }
-  else
-  {
-    gtk_widget_set_sensitive (close_button,   TRUE );
-    gtk_widget_set_sensitive (advanced_tab,  TRUE);
-    gtk_widget_set_sensitive (organize_dictionaries_tab,  TRUE);
-  }
+    if (gw_dictlist_get_total_with_status (GW_DICT_STATUS_UPDATING  ) > 0 ||
+        gw_dictlist_get_total_with_status (GW_DICT_STATUS_INSTALLING) > 0 ||
+        gw_dictlist_get_total_with_status (GW_DICT_STATUS_REBUILDING) > 0   )
+    {
+      gtk_widget_set_sensitive (close_button,   FALSE);
+      gtk_widget_set_sensitive (advanced_tab,  FALSE);
+      gtk_widget_set_sensitive (organize_dictionaries_tab,  FALSE);
+    }
+    else
+    {
+      gtk_widget_set_sensitive (close_button,   TRUE );
+      gtk_widget_set_sensitive (advanced_tab,  TRUE);
+      gtk_widget_set_sensitive (organize_dictionaries_tab,  TRUE);
+    }
 
 
-  GtkWidget *message;
-  message = GTK_WIDGET (gtk_builder_get_object (builder, "please_install_dictionary_hbox"));
-  if (gw_dictlist_get_total_with_status (GW_DICT_STATUS_INSTALLED  ) > 0)
-  {
-    gtk_widget_hide (message);
-  }
-  else
-  {
-    gtk_widget_show (message);
-  }
+    GtkWidget *message;
+    message = GTK_WIDGET (gtk_builder_get_object (builder, "please_install_dictionary_hbox"));
+    if (gw_dictlist_get_total_with_status (GW_DICT_STATUS_INSTALLED  ) > 0)
+    {
+      gtk_widget_hide (message);
+    }
+    else
+    {
+      gtk_widget_show (message);
+    }
 
+    GtkWidget *move_dictionary_up;
+    move_dictionary_up = GTK_WIDGET (gtk_builder_get_object (builder, "move_dictionary_up_button"));
+    GtkWidget *move_dictionary_down;
+    move_dictionary_down = GTK_WIDGET (gtk_builder_get_object (builder, "move_dictionary_down_button"));
+    GtkWidget *reset_order_button;
+    reset_order_button = GTK_WIDGET (gtk_builder_get_object (builder, "reset_dictionary_order_button"));
+    GtkListStore *liststore;
+    liststore = GTK_LIST_STORE (gtk_builder_get_object (builder, "list_store_dictionaries"));
+    GtkWidget *treeview;
+    treeview = GTK_WIDGET (gtk_builder_get_object (builder, "organize_dictionaries_treeview"));
+    GtkTreeModel *model;
+    model = gtk_tree_view_get_model (GTK_TREE_VIEW (treeview));
+    GtkTreeSelection * selection;
+    selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (treeview));
+   
+    GtkTreeIter selection_iter;
+    if (gtk_tree_selection_get_selected (selection, &model, &selection_iter))
+    {
+      GtkTreePath *selection_path;
+      selection_path = gtk_tree_model_get_path (model, &selection_iter);
+
+      GtkTreeIter comparison_iter;
+      gtk_tree_model_get_iter_first (model, &comparison_iter);
+      GtkTreePath *comparison_path;
+      comparison_path = gtk_tree_model_get_path (model, &comparison_iter);
+
+      gtk_widget_set_sensitive (move_dictionary_up, gtk_tree_path_compare (selection_path, comparison_path) != 0);
+
+      gtk_tree_path_free (comparison_path);
+      comparison_path = NULL;
+      GtkTreeIter previous_iter;
+      while (gtk_tree_model_iter_next (model, &comparison_iter)) previous_iter = comparison_iter;
+      comparison_iter = previous_iter;
+      comparison_path = gtk_tree_model_get_path (model, &comparison_iter);
+
+      gtk_widget_set_sensitive (move_dictionary_down, gtk_tree_path_compare (selection_path, comparison_path) != 0);
+
+      gtk_tree_path_free (comparison_path);
+      comparison_path = NULL;
+      gtk_tree_path_free (selection_path);
+      selection_path = NULL;
+    }
+    else
+    {
+      gtk_widget_set_sensitive (move_dictionary_up, FALSE);
+      gtk_widget_set_sensitive (move_dictionary_down, FALSE);
+    }
+
+    char order[5000];
+    gw_pref_get_string (order, GCKEY_GW_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
+    const char *default_string = gw_pref_get_default_string (GCKEY_GW_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK);
+    gtk_widget_set_sensitive (reset_order_button, strcmp (default_string, order) != 0);
 }
 
 
@@ -172,11 +224,7 @@ void gw_settings_initialize_installed_dictionary_list ()
     di =  gw_dictlist_get_dictionary_by_name ("Names");
     il = gw_ui_new_dict_install_line (di);
     gw_ui_add_dict_install_line_to_table (GTK_TABLE (table), il);
-/*
-    di =  gw_dictlist_get_dictionary_by_name ("Radicals");
-    il = gw_ui_new_dict_install_line (di);
-    gw_ui_add_dict_install_line_to_table (GTK_TABLE (table), il);
-*/
+
     di =  gw_dictlist_get_dictionary_by_name ("Examples");
     il = gw_ui_new_dict_install_line (di);
     gw_ui_add_dict_install_line_to_table (GTK_TABLE (table), il);
@@ -207,23 +255,17 @@ void gw_ui_initialize_dictionary_order_list ()
       #define XPADDING 4
       #define YPADDING 0
 
-      GtkWidget *viewport = GTK_WIDGET (gtk_builder_get_object (builder, "organize_dictionaries_viewport"));
-      if (gtk_bin_get_child (GTK_BIN (viewport)) != NULL) return;
       GtkListStore *list_store = GTK_LIST_STORE (gtk_builder_get_object (builder, "list_store_dictionaries"));
-      GtkWidget *treeview = GTK_WIDGET (gtk_tree_view_new ());
+      GtkWidget *treeview = GTK_WIDGET (gtk_builder_get_object (builder, "organize_dictionaries_treeview"));
 
       GtkWidget *down_button = GTK_WIDGET (gtk_builder_get_object (builder, "move_dictionary_down_button"));
       GtkWidget *up_button = GTK_WIDGET (gtk_builder_get_object (builder, "move_dictionary_up_button"));
       g_signal_connect(G_OBJECT (down_button), "clicked", G_CALLBACK (do_move_dictionary_down), (gpointer) treeview);
       g_signal_connect(G_OBJECT (up_button), "clicked", G_CALLBACK (do_move_dictionary_up), (gpointer) treeview);
 
-
-      //gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (treeview), FALSE);
+      gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (treeview), TRUE);
       gtk_tree_view_set_reorderable (GTK_TREE_VIEW (treeview), TRUE);
       gtk_tree_view_set_model (GTK_TREE_VIEW (treeview), GTK_TREE_MODEL (list_store));
-
-      gtk_container_add (GTK_CONTAINER (viewport), GTK_WIDGET (treeview));
-      gtk_widget_show_all (GTK_WIDGET (treeview));
 
       GtkCellRenderer *renderer;
       GtkTreeViewColumn *column;

@@ -404,6 +404,10 @@ void force_gtk_builder_translation_for_gtk_actions_hack ()
     char *temp5 = gettext("Other Dictionaries");
     char *temp6 = gettext("Main Dictionaries");
 
+    char *temp7 = gettext("Order");
+    char *temp8 = gettext("Shortcut");
+    char *temp9 = gettext("Dictionary");
+
 
     gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "close_menuitem")), "activate", accel_group, GDK_w, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
     gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "quit_menuitem")), "activate", accel_group, GDK_q, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
@@ -1217,6 +1221,8 @@ int rebuild_combobox_dictionary_list()
 
     g_signal_handlers_unblock_by_func (list_store, do_add_dictionary_to_order_prefs, NULL);
     g_signal_handlers_unblock_by_func (list_store, do_remove_dictionary_from_order_prefs, NULL);
+
+    gw_ui_update_settings_interface();
 
     //Finish
     printf(gettext("%d dictionaries are being used.\n"), j);

@@ -951,6 +951,7 @@ G_MODULE_EXPORT void do_move_dictionary_up (GtkWidget *widget, gpointer data)
     gw_pref_set_string (GCKEY_GW_LOAD_ORDER, output);
 
     gw_ui_update_dictionary_order_list ();
+    gw_ui_update_settings_interface ();
 }
 
 
@@ -1044,6 +1045,7 @@ G_MODULE_EXPORT void do_move_dictionary_down (GtkWidget *widget, gpointer data)
     gw_pref_set_string (GCKEY_GW_LOAD_ORDER, output);
 
     gw_ui_update_dictionary_order_list ();
+    gw_ui_update_settings_interface ();
 }
 
 
@@ -1053,6 +1055,7 @@ G_MODULE_EXPORT void do_reset_dictionary_orders (GtkWidget *widget, gpointer dat
     if (default_string != NULL)
       gw_pref_set_string (GCKEY_GW_LOAD_ORDER, default_string);
     rebuild_combobox_dictionary_list();
+    gw_ui_update_settings_interface();
 }
 
 
