@@ -820,7 +820,6 @@
                             <child>
                               <object class="GtkButton" id="open_gwaei_folder_button1">
                                 <property name="label" translatable="yes">_Update dictionaries using Rsync</property>
-                                <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="use_underline">True</property>

@@ -228,7 +228,7 @@ void gw_ui_dict_install_set_action_button (GwUiDictInstallLine *il, const gchar 
       g_signal_connect(il->action_button, "clicked", G_CALLBACK (do_cancel_dictionary_install), (gpointer) il);
 
     gtk_widget_set_sensitive (il->action_button, SENSITIVE);
-    //gtk_widget_set_size_request (il->action_button, 150, -1);
+    gtk_widget_set_size_request (il->action_button, 120, -1);
 
     gboolean advanced_hbox_is_sensitive;
     advanced_hbox_is_sensitive = (strcmp (STOCK_ID, GTK_STOCK_ADD) == 0);
