@@ -89,8 +89,9 @@ struct GwDictInfo
     enum gw_dictionary_type type;  //!< classification of dictionary
     int status;                    //!< install status of the dictionary
     long total_lines;              //!< total lines in the file
-    char name[100];                //!< name of the file in the .waei folder
-    char long_name[100];           //!< long name of the file (usually localized)
+    char *name;                    //!< name of the file in the .waei folder
+    char *long_name;               //!< long name of the file (usually localized)
+    char *short_name;              //!< short name of the file (usually localized)
     char path[FILENAME_MAX];       //!< Path to the dictionary file
     char gz_path[FILENAME_MAX];    //!< Path to the gziped dictionary file
     char sync_path[FILENAME_MAX];  //!< Path to the raw unziped dictionary file

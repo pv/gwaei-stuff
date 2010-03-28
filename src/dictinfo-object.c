@@ -72,42 +72,69 @@ GwDictInfo* gw_dictinfo_new (char *name)
     int remaining;
     temp->load_position = -1;
 
+    temp->name = NULL;
+    temp->short_name = NULL;
+    temp->long_name = NULL;
+
     //Copy the name of the dictionary over
     remaining = MAX_DICTIONARY;
-    strncpy(temp->name, name, remaining);
-
-    char *english = gettext("English Dictionary");
-    char *spanish = gettext("Spanish Dictionary");
-    char *kanji = gettext("Kanji Dictionary");
-    char *radicals = gettext("Radicals Dictionary");
-    char *places = gettext("Places Dictionary");
-    char *names = gettext("Names Dictionary");
-    char *examples = gettext("Examples Dictionary");
-    char *french = gettext("French Dictionary");
-    char *german = gettext("German Dictionary");
+    temp->name = g_strdup_printf ("%s", name);
 
     if (strcmp(name, "English") == 0)
-      strncpy(temp->long_name, english, 100);
+    {
+      temp->long_name = gettext("English Dictionary");
+      temp->short_name = gettext("English");
+    }
     else if (strcmp(name, "Spanish") == 0)
-      strncpy(temp->long_name, spanish, 100);
+    {
+      temp->long_name = gettext("Spanish Dictionary");
+      temp->short_name = gettext("Spanish");
+    }
     else if (strcmp(name, "Mix") == 0)
-      strncpy(temp->long_name, kanji, 100);
+    {
+      temp->long_name = gettext("Kanji Dictionary");
+      temp->short_name = gettext("Kanji");
+    }
     else if (strcmp(name, "Kanji") == 0)
-      strncpy(temp->long_name, kanji, 100);
+    {
+      temp->long_name = gettext("Kanji Dictionary");
+      temp->short_name = gettext("Kanji");
+    }
     else if (strcmp(name, "Radicals") == 0)
-      strncpy(temp->long_name, radicals, 100);
+    {
+      temp->long_name = gettext("Radicals Dictionary");
+      temp->short_name = gettext("Radicals");
+    }
     else if (strcmp(name, "Places") == 0)
-      strncpy(temp->long_name, places, 100);
+    {
+      temp->long_name = gettext("Places Dictionary");
+      temp->short_name = gettext("Places");
+    }
     else if (strcmp(name, "Names") == 0)
-      strncpy(temp->long_name, names, 100);
+    {
+      temp->long_name = gettext("Names Dictionary");
+      temp->short_name = gettext("Names");
+    }
     else if (strcmp(name, "Examples") == 0)
-      strncpy(temp->long_name, examples, 100);
+    {
+      temp->long_name = gettext("Examples Dictionary");
+      temp->short_name = gettext("Examples");
+    }
     else if (strcmp(name, "French") == 0)
-      strncpy(temp->long_name, french, 100);
+    {
+      temp->long_name = gettext("French Dictionary");
+      temp->short_name = gettext("French");
+    }
     else if (strcmp(name, "German") == 0)
-      strncpy(temp->long_name, german, 100);
+    {
+      temp->long_name = gettext("German Dictionary");
+      temp->short_name = gettext("German");
+    }
     else
-      strncpy(temp->long_name, name, 100);
+    {
+      temp->long_name = g_strdup_printf (gettext("%s Dictionary"), name);
+      temp->short_name = g_strdup_printf ("%s", name);
+    }
 
     //Calculate the path to the used dictionary file
     remaining = PATH_MAX;
@@ -273,6 +300,12 @@ GwDictInfo* gw_dictinfo_new (char *name)
 //!
 void gw_dictinfo_free(GwDictInfo* di)
 {
+    if (di->name != NULL)
+    {
+      g_free (di->name);
+      di->name = NULL;
+    }
+
     free(di);
     di = NULL;
 }

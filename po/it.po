@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-03-28 07:26-0500\n"
+"POT-Creation-Date: 2010-03-28 09:16-0500\n"
 "PO-Revision-Date: 2010-03-13 17:12+0100\n"
 "Last-Translator: Fabrizio Sabatini <jecnua@gmail.com>\n"
 "Language-Team: Not Applicable\n"
@@ -455,7 +455,7 @@ msgstr "Dizionari Principali"
 msgid "Edit the current vocabulary list"
 msgstr "Modifica la lista dei vocabolari correnti"
 
-#: src/main-interface-gtk.c:422 src/main-callbacks-gtk.c:1734
+#: src/main-interface-gtk.c:422 src/main-callbacks-gtk.c:1731
 msgid "A_ppend"
 msgstr "_Aggiungi"
 
@@ -999,26 +999,26 @@ msgid ""
 "D:\t"
 msgstr ""
 
-#: src/main-callbacks-gtk.c:497
+#: src/main-callbacks-gtk.c:494
 msgid "Save As"
 msgstr "Salva con nome..."
 
-#: src/main-callbacks-gtk.c:509 src/main-callbacks-gtk.c:583
+#: src/main-callbacks-gtk.c:506 src/main-callbacks-gtk.c:580
 msgid "vocabulary.txt"
 msgstr "vocabolario.txt"
 
-#: src/main-callbacks-gtk.c:573
+#: src/main-callbacks-gtk.c:570
 msgid "Save"
 msgstr "Salva"
 
-#: src/main-callbacks-gtk.c:1125
+#: src/main-callbacks-gtk.c:1122
 msgid ""
 "gWaei (C) 2008-2010 Zachary Dovel\n"
 "Kanjipad backend (C) 2002 Owen Taylor\n"
 "JStroke backend (C) 1997 Robert Wells"
 msgstr ""
 
-#: src/main-callbacks-gtk.c:1126
+#: src/main-callbacks-gtk.c:1123
 msgid ""
 "Program for Japanese translation and reference. The\n"
 "dictionaries are supplied by Jim Breen's WWWJDIC."
@@ -1026,19 +1026,19 @@ msgstr ""
 "Programma per la traduzione e consultazione del Giapponese.\n"
 "I dizionari sono forniti da Jim Breen's WWWJDIC."
 
-#: src/main-callbacks-gtk.c:1129
+#: src/main-callbacks-gtk.c:1126
 msgid "translator-credits"
 msgstr "Fabrizio Sabatini"
 
-#: src/main-callbacks-gtk.c:1723
+#: src/main-callbacks-gtk.c:1720
 msgid "A_ppend Selected"
 msgstr "_Aggiungi Selezione"
 
-#: src/main-callbacks-gtk.c:1725
+#: src/main-callbacks-gtk.c:1722
 msgid "Save Selected _As"
 msgstr "S_alva selezione come"
 
-#: src/main-callbacks-gtk.c:1727
+#: src/main-callbacks-gtk.c:1724
 msgid "_Print Selected"
 msgstr "Stampa Selezione"
 
@@ -1079,20 +1079,20 @@ msgstr "Operazione terminata con successo\n"
 msgid "gunzip error"
 msgstr ""
 
-#: src/settings-interface-gtk.c:226
+#: src/settings-interface-gtk.c:238
 msgid "Order"
 msgstr ""
 
-#: src/settings-interface-gtk.c:232
+#: src/settings-interface-gtk.c:244
 msgid "Shortcut"
 msgstr ""
 
-#: src/settings-interface-gtk.c:237
+#: src/settings-interface-gtk.c:249
 #, fuzzy
 msgid "Dictionary Name"
 msgstr "_Dizionari"
 
-#: src/settings-interface-gtk.c:299
+#: src/settings-interface-gtk.c:311
 #, c-format
 msgid "_Use the System Document Font (%s)"
 msgstr ""
@@ -1140,23 +1140,23 @@ msgstr "Scompattando..."
 msgid "Unzip Error"
 msgstr ""
 
-#: src/settings-callbacks-gtk.c:359 src/gtk-dict-install-line-object.c:63
+#: src/settings-callbacks-gtk.c:364 src/gtk-dict-install-line-object.c:63
 msgid "Installed"
 msgstr "Installato"
 
-#: src/settings-callbacks-gtk.c:364 src/settings-callbacks-gtk.c:552
+#: src/settings-callbacks-gtk.c:371 src/settings-callbacks-gtk.c:560
 msgid "Installing..."
 msgstr "Installazione in corso..."
 
-#: src/settings-callbacks-gtk.c:517
+#: src/settings-callbacks-gtk.c:524
 msgid "Cancelling..."
 msgstr "Sto Cancellando..."
 
-#: src/settings-callbacks-gtk.c:533 src/gtk-dict-install-line-object.c:68
+#: src/settings-callbacks-gtk.c:540 src/gtk-dict-install-line-object.c:68
 msgid "Not Installed"
 msgstr "Non Installato"
 
-#: src/settings-callbacks-gtk.c:721
+#: src/settings-callbacks-gtk.c:729
 msgid "Dictionary File Select"
 msgstr "Seleziona il File Dizionario"
 
@@ -1173,41 +1173,82 @@ msgstr "Lettura file fallita"
 msgid "Success"
 msgstr "Operazione terminata correttamente"
 
-#: src/dictinfo-object.c:79
+#: src/dictinfo-object.c:85
 msgid "English Dictionary"
 msgstr "Dizionario di Inglese"
 
-#: src/dictinfo-object.c:80
+#: src/dictinfo-object.c:86
+msgid "English"
+msgstr "Inglese"
+
+#: src/dictinfo-object.c:90
 msgid "Spanish Dictionary"
 msgstr "Dizionario di Spagnolo"
 
-#: src/dictinfo-object.c:81
+#: src/dictinfo-object.c:91
+msgid "Spanish"
+msgstr "Spagnolo"
+
+#: src/dictinfo-object.c:95 src/dictinfo-object.c:100
 msgid "Kanji Dictionary"
 msgstr "Dizionario dei Kanji"
 
-#: src/dictinfo-object.c:82
+#: src/dictinfo-object.c:96 src/dictinfo-object.c:101
+msgid "Kanji"
+msgstr "Kanji"
+
+#: src/dictinfo-object.c:105
 msgid "Radicals Dictionary"
 msgstr "Dizionario dei Radicali"
 
-#: src/dictinfo-object.c:83
+#: src/dictinfo-object.c:106
+msgid "Radicals"
+msgstr "Radicali"
+
+#: src/dictinfo-object.c:110
 msgid "Places Dictionary"
 msgstr "Dizionario dei Luoghi"
 
-#: src/dictinfo-object.c:84
+#: src/dictinfo-object.c:111
+msgid "Places"
+msgstr "Luoghi"
+
+#: src/dictinfo-object.c:115
 msgid "Names Dictionary"
 msgstr "Dizionario dei Nomi"
 
-#: src/dictinfo-object.c:85
+#: src/dictinfo-object.c:116
+msgid "Names"
+msgstr "Nomi"
+
+#: src/dictinfo-object.c:120
 msgid "Examples Dictionary"
 msgstr "Dizionario di Esempi"
 
-#: src/dictinfo-object.c:86
+#: src/dictinfo-object.c:121
+msgid "Examples"
+msgstr "Esempi"
+
+#: src/dictinfo-object.c:125
 msgid "French Dictionary"
 msgstr "Dizionario Francese"
 
-#: src/dictinfo-object.c:87
+#: src/dictinfo-object.c:126
+msgid "French"
+msgstr "Francese"
+
+#: src/dictinfo-object.c:130
 msgid "German Dictionary"
 msgstr "Dizionario Tedesco"
+
+#: src/dictinfo-object.c:131
+msgid "German"
+msgstr "Tedesco"
+
+#: src/dictinfo-object.c:135
+#, fuzzy, c-format
+msgid "%s Dictionary"
+msgstr "Dizionario dei Nomi"
 
 #: src/xml/main.glade:33
 msgid "_File"
@@ -1591,33 +1632,6 @@ msgstr "Pulisci"
 
 #~ msgid "Requires rsync to be installed"
 #~ msgstr "Richiede rsync per essere installato"
-
-#~ msgid "English"
-#~ msgstr "Inglese"
-
-#~ msgid "Spanish"
-#~ msgstr "Spagnolo"
-
-#~ msgid "Kanji"
-#~ msgstr "Kanji"
-
-#~ msgid "Radicals"
-#~ msgstr "Radicali"
-
-#~ msgid "Places"
-#~ msgstr "Luoghi"
-
-#~ msgid "Names"
-#~ msgstr "Nomi"
-
-#~ msgid "Examples"
-#~ msgstr "Esempi"
-
-#~ msgid "French"
-#~ msgstr "Francese"
-
-#~ msgid "German"
-#~ msgstr "Tedesco"
 
 #, fuzzy
 #~ msgid "Rearrange your installed ditionaries."

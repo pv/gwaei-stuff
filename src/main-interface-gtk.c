@@ -1146,7 +1146,7 @@ int rebuild_combobox_dictionary_list()
       {
         printf("%d %s\n", j, di_alias->long_name);
 
-        dictionary_name = di_alias->long_name;
+        dictionary_name = di_alias->short_name;
         if (j == 0)
           icon_name = favorite_icon;
         else

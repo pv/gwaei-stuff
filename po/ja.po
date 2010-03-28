@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-03-28 07:26-0500\n"
+"POT-Creation-Date: 2010-03-28 09:16-0500\n"
 "PO-Revision-Date: 2008-11-30 02:35+0500\n"
 "Last-Translator: Zachary Dovel pizzach@gmail.com\n"
 "Language-Team: Not Applicable\n"
@@ -445,7 +445,7 @@ msgstr "主な辞書"
 msgid "Edit the current vocabulary list"
 msgstr "現在語彙リストを編集する"
 
-#: src/main-interface-gtk.c:422 src/main-callbacks-gtk.c:1734
+#: src/main-interface-gtk.c:422 src/main-callbacks-gtk.c:1731
 msgid "A_ppend"
 msgstr "追加(_P)"
 
@@ -946,19 +946,19 @@ msgid ""
 "D:\t"
 msgstr ""
 
-#: src/main-callbacks-gtk.c:497
+#: src/main-callbacks-gtk.c:494
 msgid "Save As"
 msgstr "別名で保存"
 
-#: src/main-callbacks-gtk.c:509 src/main-callbacks-gtk.c:583
+#: src/main-callbacks-gtk.c:506 src/main-callbacks-gtk.c:580
 msgid "vocabulary.txt"
 msgstr "語彙.txt"
 
-#: src/main-callbacks-gtk.c:573
+#: src/main-callbacks-gtk.c:570
 msgid "Save"
 msgstr "保存"
 
-#: src/main-callbacks-gtk.c:1125
+#: src/main-callbacks-gtk.c:1122
 msgid ""
 "gWaei (C) 2008-2010 Zachary Dovel\n"
 "Kanjipad backend (C) 2002 Owen Taylor\n"
@@ -968,7 +968,7 @@ msgstr ""
 "漢字パッド バックエンド (C) 2002 Owen Taylor\n"
 "JStroke バックエンド(C) 1997 Robert Wells"
 
-#: src/main-callbacks-gtk.c:1126
+#: src/main-callbacks-gtk.c:1123
 msgid ""
 "Program for Japanese translation and reference. The\n"
 "dictionaries are supplied by Jim Breen's WWWJDIC."
@@ -976,19 +976,19 @@ msgstr ""
 "日本語の翻訳や参照の為に作られたプログラムです. 辞書ファイルがJim Breenの"
 "WWWJDICから取られています."
 
-#: src/main-callbacks-gtk.c:1129
+#: src/main-callbacks-gtk.c:1126
 msgid "translator-credits"
 msgstr "Zachary Dovel"
 
-#: src/main-callbacks-gtk.c:1723
+#: src/main-callbacks-gtk.c:1720
 msgid "A_ppend Selected"
 msgstr "選択のを追加(_P)"
 
-#: src/main-callbacks-gtk.c:1725
+#: src/main-callbacks-gtk.c:1722
 msgid "Save Selected _As"
 msgstr "選択のを別名で保存"
 
-#: src/main-callbacks-gtk.c:1727
+#: src/main-callbacks-gtk.c:1724
 msgid "_Print Selected"
 msgstr "選択のを印刷"
 
@@ -1029,19 +1029,19 @@ msgstr "成功\n"
 msgid "gunzip error"
 msgstr "gunzipエラー"
 
-#: src/settings-interface-gtk.c:226
+#: src/settings-interface-gtk.c:238
 msgid "Order"
 msgstr "順序"
 
-#: src/settings-interface-gtk.c:232
+#: src/settings-interface-gtk.c:244
 msgid "Shortcut"
 msgstr "ショートカット"
 
-#: src/settings-interface-gtk.c:237
+#: src/settings-interface-gtk.c:249
 msgid "Dictionary Name"
 msgstr "辞書"
 
-#: src/settings-interface-gtk.c:299
+#: src/settings-interface-gtk.c:311
 #, c-format
 msgid "_Use the System Document Font (%s)"
 msgstr "システムのデフォルトフォントを使う (%s) (_U)"
@@ -1088,23 +1088,23 @@ msgstr "解凍中..."
 msgid "Unzip Error"
 msgstr "Unzipエラー"
 
-#: src/settings-callbacks-gtk.c:359 src/gtk-dict-install-line-object.c:63
+#: src/settings-callbacks-gtk.c:364 src/gtk-dict-install-line-object.c:63
 msgid "Installed"
 msgstr "インストールされた"
 
-#: src/settings-callbacks-gtk.c:364 src/settings-callbacks-gtk.c:552
+#: src/settings-callbacks-gtk.c:371 src/settings-callbacks-gtk.c:560
 msgid "Installing..."
 msgstr "インストール中..."
 
-#: src/settings-callbacks-gtk.c:517
+#: src/settings-callbacks-gtk.c:524
 msgid "Cancelling..."
 msgstr "キャンセル中..."
 
-#: src/settings-callbacks-gtk.c:533 src/gtk-dict-install-line-object.c:68
+#: src/settings-callbacks-gtk.c:540 src/gtk-dict-install-line-object.c:68
 msgid "Not Installed"
 msgstr "インストールされていない"
 
-#: src/settings-callbacks-gtk.c:721
+#: src/settings-callbacks-gtk.c:729
 msgid "Dictionary File Select"
 msgstr "辞書ファイルの選択"
 
@@ -1121,41 +1121,82 @@ msgstr "ファイル読み込み失敗"
 msgid "Success"
 msgstr "成功"
 
-#: src/dictinfo-object.c:79
+#: src/dictinfo-object.c:85
 msgid "English Dictionary"
 msgstr "和英辞書"
 
-#: src/dictinfo-object.c:80
+#: src/dictinfo-object.c:86
+msgid "English"
+msgstr "和英"
+
+#: src/dictinfo-object.c:90
 msgid "Spanish Dictionary"
 msgstr "和西辞書"
 
-#: src/dictinfo-object.c:81
+#: src/dictinfo-object.c:91
+msgid "Spanish"
+msgstr "和西"
+
+#: src/dictinfo-object.c:95 src/dictinfo-object.c:100
 msgid "Kanji Dictionary"
 msgstr "漢字辞書"
 
-#: src/dictinfo-object.c:82
+#: src/dictinfo-object.c:96 src/dictinfo-object.c:101
+msgid "Kanji"
+msgstr "漢字"
+
+#: src/dictinfo-object.c:105
 msgid "Radicals Dictionary"
 msgstr "部首辞書"
 
-#: src/dictinfo-object.c:83
+#: src/dictinfo-object.c:106
+msgid "Radicals"
+msgstr "部首"
+
+#: src/dictinfo-object.c:110
 msgid "Places Dictionary"
 msgstr "場所辞書"
 
-#: src/dictinfo-object.c:84
+#: src/dictinfo-object.c:111
+msgid "Places"
+msgstr "場所"
+
+#: src/dictinfo-object.c:115
 msgid "Names Dictionary"
 msgstr "名前辞書"
 
-#: src/dictinfo-object.c:85
+#: src/dictinfo-object.c:116
+msgid "Names"
+msgstr "名前"
+
+#: src/dictinfo-object.c:120
 msgid "Examples Dictionary"
 msgstr "例文辞書"
 
-#: src/dictinfo-object.c:86
+#: src/dictinfo-object.c:121
+msgid "Examples"
+msgstr "例文"
+
+#: src/dictinfo-object.c:125
 msgid "French Dictionary"
 msgstr "和払辞書"
 
-#: src/dictinfo-object.c:87
+#: src/dictinfo-object.c:126
+msgid "French"
+msgstr "和仏"
+
+#: src/dictinfo-object.c:130
 msgid "German Dictionary"
 msgstr "和独辞書"
+
+#: src/dictinfo-object.c:131
+msgid "German"
+msgstr "和独"
+
+#: src/dictinfo-object.c:135
+#, fuzzy, c-format
+msgid "%s Dictionary"
+msgstr "%s辞書"
 
 #: src/xml/main.glade:33
 msgid "_File"
@@ -1535,33 +1576,6 @@ msgstr "リセット"
 
 #~ msgid "Requires rsync to be installed"
 #~ msgstr "rsyncが必要であります。"
-
-#~ msgid "English"
-#~ msgstr "和英"
-
-#~ msgid "Spanish"
-#~ msgstr "和西"
-
-#~ msgid "Kanji"
-#~ msgstr "漢字"
-
-#~ msgid "Radicals"
-#~ msgstr "部首"
-
-#~ msgid "Places"
-#~ msgstr "場所"
-
-#~ msgid "Names"
-#~ msgstr "名前"
-
-#~ msgid "Examples"
-#~ msgstr "例文"
-
-#~ msgid "French"
-#~ msgstr "和仏"
-
-#~ msgid "German"
-#~ msgstr "和独"
 
 #~ msgid "Rearrange your installed ditionaries."
 #~ msgstr "辞書を立て直す"

@@ -83,7 +83,7 @@ GwUiDictInstallLine *gw_ui_new_dict_install_line (GwDictInfo *di)
       temp->di = di;
 
       //Row 1 Column 1 Expander with name
-      char *name = g_strdup_printf ("%s: ", di->long_name);
+      char *name = g_strdup_printf ("%s: ", di->short_name);
       temp->advanced_expander = gtk_expander_new (name);
       g_free (name);
       temp->advanced_hbox = gtk_hbox_new (FALSE, 0);
