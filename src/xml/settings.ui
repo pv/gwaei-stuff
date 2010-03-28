@@ -583,6 +583,7 @@
                         <child>
                           <object class="GtkButton" id="move_dictionary_up_button">
                             <property name="label">gtk-go-up</property>
+                            <property name="width_request">150</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>

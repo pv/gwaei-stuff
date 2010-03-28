@@ -355,10 +355,17 @@ static void *install_thread (gpointer data)
       gdk_threads_enter();
       di->status = GW_DICT_STATUS_INSTALLED;
       di->total_lines =  gw_io_get_total_lines_for_path (di->path);
-      gw_ui_dict_install_set_action_button (il, GTK_STOCK_DELETE, TRUE);
-      gw_ui_dict_install_set_message (il, GTK_STOCK_APPLY, gettext("Installed"));
+
+      //If statement to reduce flicker, between the Kanji/Radical dictionary install
+      if (di->id != GW_DICT_ID_KANJI)
+      {
+
+        gw_ui_dict_install_set_action_button (il, GTK_STOCK_DELETE, TRUE);
+        gw_ui_dict_install_set_message (il, GTK_STOCK_APPLY, gettext("Installed"));
+      }
       gdk_threads_leave();
 
+      //Special case where the Radicals dictionary is installed right after the Kanji one.
       if (di->id == GW_DICT_ID_KANJI)
       {
         gw_ui_dict_install_set_message (il, NULL, gettext("Installing..."));
