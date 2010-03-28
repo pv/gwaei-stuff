@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-03-27 18:44-0500\n"
+"POT-Creation-Date: 2010-03-27 23:06-0500\n"
 "PO-Revision-Date: 2010-03-13 17:12+0100\n"
 "Last-Translator: Fabrizio Sabatini <jecnua@gmail.com>\n"
 "Language-Team: Not Applicable\n"
@@ -1079,12 +1079,20 @@ msgstr "Operazione terminata con successo\n"
 msgid "gunzip error"
 msgstr ""
 
-#: src/settings-interface-gtk.c:234
+#: src/settings-interface-gtk.c:226
+msgid "Order"
+msgstr ""
+
+#: src/settings-interface-gtk.c:232
+msgid "Shortcut"
+msgstr ""
+
+#: src/settings-interface-gtk.c:237
 #, fuzzy
 msgid "Dictionary Name"
 msgstr "_Dizionari"
 
-#: src/settings-interface-gtk.c:265
+#: src/settings-interface-gtk.c:299
 #, c-format
 msgid "_Use the System Document Font (%s)"
 msgstr ""
@@ -1148,7 +1156,7 @@ msgstr "Non Installato"
 msgid "Installing..."
 msgstr "Installazione in corso..."
 
-#: src/settings-callbacks-gtk.c:709
+#: src/settings-callbacks-gtk.c:711
 msgid "Dictionary File Select"
 msgstr "Seleziona il File Dizionario"
 

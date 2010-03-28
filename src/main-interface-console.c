@@ -111,8 +111,11 @@ void gw_console_uninstall_dictionary_by_name (char *name)
     di->status = GW_DICT_STATUS_NOT_INSTALLED;
     di->load_position = -1;
 
-    if (di->id == GW_DICT_ID_KANJI || di->id == GW_DICT_ID_RADICALS)
+    if (di->id == GW_DICT_ID_KANJI)
+    {
+      gw_console_uninstall_dictionary_by_name ("Radicals");
       gw_console_uninstall_dictionary_by_name ("Mix");
+    }
     else if (di->id == GW_DICT_ID_NAMES)
       gw_console_uninstall_dictionary_by_name ("Places");
 }

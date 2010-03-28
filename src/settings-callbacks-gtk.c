@@ -242,6 +242,7 @@ static void *install_thread (gpointer data)
 
     GwUiDictInstallLine *il = (GwUiDictInstallLine*) data;
     GwDictInfo *di = (GwDictInfo*) il->di;
+
     char *name;
     name = g_utf8_strdown(di->name, -1);
 
@@ -328,7 +329,6 @@ static void *install_thread (gpointer data)
       gw_dictlist_preform_postprocessing_by_name(di->name, &error);
     }
      
-    //Was canceled
     if (di->status == GW_DICT_STATUS_CANCELING)
     {
       gdk_threads_enter();
@@ -358,6 +358,16 @@ static void *install_thread (gpointer data)
       gw_ui_dict_install_set_action_button (il, GTK_STOCK_DELETE, TRUE);
       gw_ui_dict_install_set_message (il, GTK_STOCK_APPLY, gettext("Installed"));
       gdk_threads_leave();
+
+      if (di->id == GW_DICT_ID_KANJI)
+      {
+        gw_ui_dict_install_set_message (il, NULL, gettext("Installing..."));
+        GwDictInfo *radicals_dict = gw_dictlist_get_dictionary_by_id (GW_DICT_ID_RADICALS);
+        GwDictInfo *kanji_dict = gw_dictlist_get_dictionary_by_id (GW_DICT_ID_KANJI);
+        il->di = radicals_dict;
+        install_thread (data);
+        il->di = kanji_dict;
+      }
     }
 
     gdk_threads_enter();
@@ -641,6 +651,8 @@ G_MODULE_EXPORT void do_remove_dictionary_from_order_prefs (GtkTreeModel *tree_m
     output[strlen(output) - 1] = '\0';
     gw_pref_set_string (GCKEY_GW_LOAD_ORDER, output);
     added_to == -1;
+
+    gw_ui_update_dictionary_order_list ();
 }
 
 //!
@@ -929,7 +941,8 @@ G_MODULE_EXPORT void do_move_dictionary_up (GtkWidget *widget, gpointer data)
     }
     output[strlen(output) - 1] = '\0';
     gw_pref_set_string (GCKEY_GW_LOAD_ORDER, output);
-    //rebuild_combobox_dictionary_list();
+
+    gw_ui_update_dictionary_order_list ();
 }
 
 
@@ -1021,7 +1034,8 @@ G_MODULE_EXPORT void do_move_dictionary_down (GtkWidget *widget, gpointer data)
     }
     output[strlen(output) - 1] = '\0';
     gw_pref_set_string (GCKEY_GW_LOAD_ORDER, output);
-    //rebuild_combobox_dictionary_list();
+
+    gw_ui_update_dictionary_order_list ();
 }
 
 

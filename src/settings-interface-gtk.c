@@ -139,7 +139,7 @@ int gw_ui_update_progressbar (void   *data,
 
 
 //!
-//! @brief Sets teh initial status of the dictionaries in the settings dialog
+//! @brief Sets the initial status of the dictionaries in the settings dialog
 //!
 void gw_settings_initialize_installed_dictionary_list () 
 {
@@ -198,7 +198,6 @@ void gw_ui_initialize_dictionary_order_list ()
       GtkWidget *viewport = GTK_WIDGET (gtk_builder_get_object (builder, "organize_dictionaries_viewport"));
       if (gtk_bin_get_child (GTK_BIN (viewport)) != NULL) return;
       GtkListStore *list_store = GTK_LIST_STORE (gtk_builder_get_object (builder, "list_store_dictionaries"));
-      //GtkWidget *treeview = GTK_WIDGET (gtk_builder_get_object (builder, "organize_dictionaries_treeview"));
       GtkWidget *treeview = GTK_WIDGET (gtk_tree_view_new ());
 
       GtkWidget *down_button = GTK_WIDGET (gtk_builder_get_object (builder, "move_dictionary_down_button"));
@@ -217,7 +216,6 @@ void gw_ui_initialize_dictionary_order_list ()
       GtkCellRenderer *renderer;
       GtkTreeViewColumn *column;
 
-/*
       renderer = gtk_cell_renderer_pixbuf_new ();
       gtk_cell_renderer_set_padding (renderer, YPADDING, XPADDING);
       column = gtk_tree_view_column_new_with_attributes (NULL, renderer, "icon-name", 1, NULL);
@@ -227,25 +225,61 @@ void gw_ui_initialize_dictionary_order_list ()
       gtk_cell_renderer_set_padding (renderer, YPADDING, XPADDING);
       column = gtk_tree_view_column_new_with_attributes (gettext("Order"), renderer, "text", 2, NULL);
       gtk_tree_view_append_column (GTK_TREE_VIEW (treeview), column);
-*/
+
+      renderer = gtk_cell_renderer_text_new ();
+      gtk_cell_renderer_set_padding (renderer, YPADDING, XPADDING);
+      gtk_cell_renderer_set_sensitive (renderer, FALSE);
+      column = gtk_tree_view_column_new_with_attributes (gettext("Shortcut"), renderer, "text", 3, NULL);
+      gtk_tree_view_append_column (GTK_TREE_VIEW (treeview), column);
 
       renderer = gtk_cell_renderer_text_new ();
       gtk_cell_renderer_set_padding (renderer, YPADDING, XPADDING);
       column = gtk_tree_view_column_new_with_attributes (gettext("Dictionary Name"), renderer, "text", 0, NULL);
       gtk_tree_view_append_column (GTK_TREE_VIEW (treeview), column);
 
-/*
-      renderer = gtk_cell_renderer_text_new ();
-      gtk_cell_renderer_set_padding (renderer, YPADDING, XPADDING);
-      gtk_cell_renderer_set_sensitive (renderer, FALSE);
-      column = gtk_tree_view_column_new_with_attributes (gettext("Shortcut"), renderer, "text", 3, NULL);
-      gtk_tree_view_append_column (GTK_TREE_VIEW (treeview), column);
-*/
-
       #undef XPADDING
       #undef YPADDING
 }
 
+
+void gw_ui_update_dictionary_order_list ()
+{
+  printf("Updating distiary order list\n");
+      GtkListStore *list_store = GTK_LIST_STORE (gtk_builder_get_object (builder, "list_store_dictionaries"));
+
+      GtkTreeIter iter;
+      if (gtk_tree_model_get_iter_first (GTK_TREE_MODEL (list_store), &iter) == FALSE) return;
+      char *icon_name = NULL;
+      char *favorite = "emblem-favorite";
+      char *order = NULL;
+      char *shortcut = NULL;
+      gboolean can_continue = TRUE;
+
+      int i = 1;
+
+      while (i < 10 && can_continue)
+      {
+        if (i == 1) icon_name = favorite;
+        else icon_name = NULL;
+        order = g_strdup_printf ("%d", i);
+        shortcut = g_strdup_printf ("Alt-%d", i);
+        gtk_list_store_set (GTK_LIST_STORE (list_store), &iter, 1, icon_name, 2, order, 3, shortcut, -1); 
+        g_free (order);
+        g_free (shortcut);
+        i++;
+        can_continue = gtk_tree_model_iter_next (GTK_TREE_MODEL (list_store), &iter);
+      }
+      while (can_continue)
+      {
+        icon_name = NULL;
+        order = g_strdup_printf ("%d", i);
+        shortcut = NULL;
+        gtk_list_store_set (GTK_LIST_STORE (list_store), &iter, 1, icon_name, 2, order, 3, shortcut, -1); 
+        g_free (order);
+        i++;
+        can_continue = gtk_tree_model_iter_next (GTK_TREE_MODEL (list_store), &iter);
+      }
+}
 
 void gw_ui_set_use_global_document_font_checkbox (gboolean setting)
 {

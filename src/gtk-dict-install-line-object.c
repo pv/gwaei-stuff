@@ -97,6 +97,7 @@ GwUiDictInstallLine *gw_ui_new_dict_install_line (GwDictInfo *di)
       gtk_progress_bar_set_text (GTK_PROGRESS_BAR (temp->status_progressbar), gettext("Downloading..."));
 
       temp->status_hbox = gtk_hbox_new (FALSE, 0);
+      gtk_widget_set_size_request (GTK_WIDGET (temp->status_hbox), 150, -1);
       temp->message_hbox = gtk_hbox_new (FALSE, 0);
 
       gtk_box_pack_start (GTK_BOX (temp->status_hbox), temp->status_progressbar, TRUE, TRUE, 0);
@@ -115,7 +116,7 @@ GwUiDictInstallLine *gw_ui_new_dict_install_line (GwDictInfo *di)
       g_signal_connect (G_OBJECT (temp->source_uri_entry), "changed", G_CALLBACK (do_source_entry_changed_action), temp);
       GtkWidget *label = gtk_label_new (gettext("Source: "));
       GtkWidget *alignment = gtk_alignment_new (0, 0, 1, 1);
-      //gtk_widget_set_size_request (GTK_WIDGET (alignment), 50, -1);
+      gtk_widget_set_size_request (GTK_WIDGET (alignment), 50, -1);
       temp->source_browse_button = gtk_button_new_with_label (gettext("Browse..."));
       g_signal_connect (G_OBJECT (temp->source_browse_button), "clicked", G_CALLBACK (do_dictionary_source_browse), temp);
       gw_prefs_add_change_listener (di->gckey, (gpointer) do_dictionary_source_gconf_key_changed_action, temp->source_uri_entry);
