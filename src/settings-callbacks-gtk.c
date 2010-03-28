@@ -113,8 +113,8 @@ static void *update_thread (void *nothing)
 
     gdk_threads_enter();
     //gw_ui_set_install_line_status("update",  "cancel",  NULL);
-    gw_ui_update_settings_interface();
-    gdk_threads_leave();
+    gw_ui_update_settings_interface ();
+    gdk_threads_leave ();
 
     while (updatelist != NULL && gw_ui_get_install_line_status("update") != GW_DICT_STATUS_CANCELING)
     {
@@ -539,6 +539,7 @@ G_MODULE_EXPORT void do_dictionary_remove (GtkWidget* widget, gpointer data)
     gw_ui_dict_install_set_action_button (il, GTK_STOCK_ADD, TRUE);
     gw_ui_dict_install_set_message (il, NULL, gettext ("Not Installed"));
     rebuild_combobox_dictionary_list ();
+    gw_ui_update_settings_interface ();
 }
 
 

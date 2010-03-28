@@ -80,6 +80,18 @@ void gw_ui_update_settings_interface()
     gtk_widget_set_sensitive (organize_dictionaries_tab,  TRUE);
   }
 
+
+  GtkWidget *message;
+  message = GTK_WIDGET (gtk_builder_get_object (builder, "please_install_dictionary_hbox"));
+  if (gw_dictlist_get_total_with_status (GW_DICT_STATUS_INSTALLED  ) > 0)
+  {
+    gtk_widget_hide (message);
+  }
+  else
+  {
+    gtk_widget_show (message);
+  }
+
 }
 
 
