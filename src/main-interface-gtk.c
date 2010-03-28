@@ -1133,6 +1133,7 @@ int rebuild_combobox_dictionary_list()
     GtkTreeIter iter;
     j = 0;
     char *dictionary_name = NULL;
+    char *long_name = NULL;
     char *icon_name = NULL;
     char *shortcut_name = NULL;
     char *order_number = NULL;
@@ -1147,6 +1148,7 @@ int rebuild_combobox_dictionary_list()
         printf("%d %s\n", j, di_alias->long_name);
 
         dictionary_name = di_alias->short_name;
+        long_name = di_alias->long_name;
         if (j == 0)
           icon_name = favorite_icon;
         else
@@ -1158,7 +1160,7 @@ int rebuild_combobox_dictionary_list()
 
         //Refill the combobox
         gtk_list_store_append (GTK_LIST_STORE (list_store), &iter);
-        gtk_list_store_set (list_store, &iter, 0, dictionary_name, 1, icon_name, 2, order_number, 3, shortcut_name, -1);
+        gtk_list_store_set (list_store, &iter, 0, dictionary_name, 1, icon_name, 2, order_number, 3, shortcut_name, 4, long_name, -1);
 
         //Free allocated momory
         if (shortcut_name != NULL)
