@@ -362,6 +362,14 @@ void gw_ui_initialize_radicals_table ()
     {
       if (cols == total_columns && rows != 0) gtk_table_resize (table, rows, table->ncols);
       button = gtk_toggle_button_new_with_label (radical_array[i][ACTUAL_RADICAL]);
+      char *tooltip = g_markup_printf_escaped ("<b>Substitution Radical:</b> %s\n<b>Actual Radical:</b> %s\n<b>Radical Name:</b> %s", radical_array[i][REPRESENTATIVE_RADICAL], radical_array[i][ACTUAL_RADICAL], radical_array[i][RADICAL_NAME]);
+      gtk_widget_set_name (GTK_WIDGET (button), radical_array[i][REPRESENTATIVE_RADICAL]);
+      if (tooltip != NULL)
+      {
+        gtk_widget_set_tooltip_markup (GTK_WIDGET (button), tooltip);
+        g_free (tooltip);
+        tooltip = NULL;
+      }
       g_signal_connect(button, "toggled", G_CALLBACK (do_radical_search), NULL);
       gtk_table_attach (table, button, cols, cols + 1, rows, rows + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
       i++;
@@ -405,7 +413,8 @@ void gw_ui_strcpy_all_selected_radicals(char *output, int *MAX)
     {
       if (G_OBJECT_TYPE(list->data) == g_type_from_name("GtkToggleButton"))
       {
-         label_text = gtk_button_get_label( GTK_BUTTON(list->data));
+         //label_text = gtk_button_get_label( GTK_BUTTON(list->data));
+         label_text = gtk_widget_get_name ( GTK_WIDGET (list->data));
          if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(list->data)))
          {
            a_button_was_in_pressed_state = TRUE;
@@ -452,7 +461,8 @@ void gw_ui_set_button_sensitive_when_label_is (const char *string)
       {
         if (G_OBJECT_TYPE(it->data) == g_type_from_name("GtkToggleButton"))
         {
-           label_text = gtk_button_get_label (GTK_BUTTON(it->data));
+           //label_text = gtk_button_get_label (GTK_BUTTON(it->data));
+           label_text = gtk_widget_get_name (GTK_WIDGET (it->data));
            if (strcmp(label_text, radical) == 0)
             gtk_widget_set_sensitive (GTK_WIDGET (it->data), TRUE);
         }
@@ -475,7 +485,8 @@ void gw_ui_set_button_sensitive_when_label_is (const char *string)
         {
           if (G_OBJECT_TYPE(it->data) == g_type_from_name("GtkToggleButton"))
           {
-             label_text = gtk_button_get_label (GTK_BUTTON(it->data));
+             //label_text = gtk_button_get_label (GTK_BUTTON(it->data));
+             label_text = gtk_widget_get_name (GTK_WIDGET (it->data));
              if (strcmp(label_text, radical) == 0)
               gtk_widget_set_sensitive (GTK_WIDGET (it->data), TRUE);
           }
