@@ -362,7 +362,7 @@ void gw_ui_initialize_radicals_table ()
     {
       if (cols == total_columns && rows != 0) gtk_table_resize (table, rows, table->ncols);
       button = gtk_toggle_button_new_with_label (radical_array[i][ACTUAL_RADICAL]);
-      char *tooltip = g_markup_printf_escaped ("<b>Substitution Radical:</b> %s\n<b>Actual Radical:</b> %s\n<b>Radical Name:</b> %s", radical_array[i][REPRESENTATIVE_RADICAL], radical_array[i][ACTUAL_RADICAL], radical_array[i][RADICAL_NAME]);
+      char *tooltip = g_markup_printf_escaped (gettext("<b>Substitution Radical:</b> %s\n<b>Actual Radical:</b> %s\n<b>Radical Name:</b> %s"), radical_array[i][REPRESENTATIVE_RADICAL], radical_array[i][ACTUAL_RADICAL], radical_array[i][RADICAL_NAME]);
       gtk_widget_set_name (GTK_WIDGET (button), radical_array[i][REPRESENTATIVE_RADICAL]);
       if (tooltip != NULL)
       {

@@ -29,7 +29,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 0.15.1\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-03-28 14:29-0500\n"
+"POT-Creation-Date: 2010-03-29 21:16-0500\n"
 "PO-Revision-Date: 2009-10-10 01:05-0500\n"
 "Last-Translator: dean <3dx@live.com>\n"
 "Language-Team: none\n"
@@ -480,15 +480,15 @@ msgstr "_Diccionarios"
 msgid "Main Dictionaries"
 msgstr "_Diccionarios"
 
-#: src/main-interface-gtk.c:407 src/settings-interface-gtk.c:280
+#: src/main-interface-gtk.c:407 src/settings-interface-gtk.c:281
 msgid "Order"
 msgstr ""
 
-#: src/main-interface-gtk.c:408 src/settings-interface-gtk.c:286
+#: src/main-interface-gtk.c:408 src/settings-interface-gtk.c:287
 msgid "Shortcut"
 msgstr ""
 
-#: src/main-interface-gtk.c:409 src/settings-interface-gtk.c:291
+#: src/main-interface-gtk.c:409 src/settings-interface-gtk.c:292
 #, fuzzy
 msgid "Dictionary"
 msgstr "Nombres Diccionario:"
@@ -497,7 +497,7 @@ msgstr "Nombres Diccionario:"
 msgid "Edit the current vocabulary list"
 msgstr "Editar la lista de vocabulario actual"
 
-#: src/main-interface-gtk.c:426 src/main-callbacks-gtk.c:1731
+#: src/main-interface-gtk.c:426 src/main-callbacks-gtk.c:1725
 msgid "A_ppend"
 msgstr "A_nexo"
 
@@ -1052,7 +1052,7 @@ msgstr "vocabulario.txt"
 msgid "Save"
 msgstr "Guardar"
 
-#: src/main-callbacks-gtk.c:1122
+#: src/main-callbacks-gtk.c:1116
 #, fuzzy
 msgid ""
 "gWaei (C) 2008-2010 Zachary Dovel\n"
@@ -1063,7 +1063,7 @@ msgstr ""
 "Kanjipad backend (C) 2002 Owen Taylor\n"
 "JStroke backend (C) 1997 Robert Wells"
 
-#: src/main-callbacks-gtk.c:1123
+#: src/main-callbacks-gtk.c:1117
 msgid ""
 "Program for Japanese translation and reference. The\n"
 "dictionaries are supplied by Jim Breen's WWWJDIC."
@@ -1071,19 +1071,19 @@ msgstr ""
 "Aplicación para traducción y referencia del japonés. Los\n"
 "diccionarios son suministrados por Jim Breen's WWWJDIC."
 
-#: src/main-callbacks-gtk.c:1126
+#: src/main-callbacks-gtk.c:1120
 msgid "translator-credits"
 msgstr "4packed"
 
-#: src/main-callbacks-gtk.c:1720
+#: src/main-callbacks-gtk.c:1714
 msgid "A_ppend Selected"
 msgstr "A_nexo seleccionado"
 
-#: src/main-callbacks-gtk.c:1722
+#: src/main-callbacks-gtk.c:1716
 msgid "Save Selected _As"
 msgstr "Guardar selección _Como"
 
-#: src/main-callbacks-gtk.c:1724
+#: src/main-callbacks-gtk.c:1718
 msgid "_Print Selected"
 msgstr "_Imprimir selección"
 
@@ -1124,7 +1124,7 @@ msgstr "éxito\n"
 msgid "gunzip error"
 msgstr ""
 
-#: src/settings-interface-gtk.c:353
+#: src/settings-interface-gtk.c:354
 #, c-format
 msgid "_Use the System Document Font (%s)"
 msgstr ""
@@ -1191,6 +1191,14 @@ msgstr "No instalado"
 #: src/settings-callbacks-gtk.c:729
 msgid "Dictionary File Select"
 msgstr "Seleccione el archivo del diccionario"
+
+#: src/radicals-interface-gtk.c:365
+#, c-format
+msgid ""
+"<b>Substitution Radical:</b> %s\n"
+"<b>Actual Radical:</b> %s\n"
+"<b>Radical Name:</b> %s"
+msgstr ""
 
 #: src/dictlist-object.c:652
 #, c-format

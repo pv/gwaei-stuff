@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: gwaei 1.3.0\n"
+"Project-Id-Version: gwaei 1.4.0\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-03-28 14:29-0500\n"
+"POT-Creation-Date: 2010-03-29 21:16-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -441,15 +441,15 @@ msgstr ""
 msgid "Main Dictionaries"
 msgstr ""
 
-#: src/main-interface-gtk.c:407 src/settings-interface-gtk.c:280
+#: src/main-interface-gtk.c:407 src/settings-interface-gtk.c:281
 msgid "Order"
 msgstr ""
 
-#: src/main-interface-gtk.c:408 src/settings-interface-gtk.c:286
+#: src/main-interface-gtk.c:408 src/settings-interface-gtk.c:287
 msgid "Shortcut"
 msgstr ""
 
-#: src/main-interface-gtk.c:409 src/settings-interface-gtk.c:291
+#: src/main-interface-gtk.c:409 src/settings-interface-gtk.c:292
 msgid "Dictionary"
 msgstr ""
 
@@ -457,7 +457,7 @@ msgstr ""
 msgid "Edit the current vocabulary list"
 msgstr ""
 
-#: src/main-interface-gtk.c:426 src/main-callbacks-gtk.c:1731
+#: src/main-interface-gtk.c:426 src/main-callbacks-gtk.c:1725
 msgid "A_ppend"
 msgstr ""
 
@@ -970,32 +970,32 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: src/main-callbacks-gtk.c:1122
+#: src/main-callbacks-gtk.c:1116
 msgid ""
 "gWaei (C) 2008-2010 Zachary Dovel\n"
 "Kanjipad backend (C) 2002 Owen Taylor\n"
 "JStroke backend (C) 1997 Robert Wells"
 msgstr ""
 
-#: src/main-callbacks-gtk.c:1123
+#: src/main-callbacks-gtk.c:1117
 msgid ""
 "Program for Japanese translation and reference. The\n"
 "dictionaries are supplied by Jim Breen's WWWJDIC."
 msgstr ""
 
-#: src/main-callbacks-gtk.c:1126
+#: src/main-callbacks-gtk.c:1120
 msgid "translator-credits"
 msgstr ""
 
-#: src/main-callbacks-gtk.c:1720
+#: src/main-callbacks-gtk.c:1714
 msgid "A_ppend Selected"
 msgstr ""
 
-#: src/main-callbacks-gtk.c:1722
+#: src/main-callbacks-gtk.c:1716
 msgid "Save Selected _As"
 msgstr ""
 
-#: src/main-callbacks-gtk.c:1724
+#: src/main-callbacks-gtk.c:1718
 msgid "_Print Selected"
 msgstr ""
 
@@ -1036,7 +1036,7 @@ msgstr ""
 msgid "gunzip error"
 msgstr ""
 
-#: src/settings-interface-gtk.c:353
+#: src/settings-interface-gtk.c:354
 #, c-format
 msgid "_Use the System Document Font (%s)"
 msgstr ""
@@ -1101,6 +1101,14 @@ msgstr ""
 
 #: src/settings-callbacks-gtk.c:729
 msgid "Dictionary File Select"
+msgstr ""
+
+#: src/radicals-interface-gtk.c:365
+#, c-format
+msgid ""
+"<b>Substitution Radical:</b> %s\n"
+"<b>Actual Radical:</b> %s\n"
+"<b>Radical Name:</b> %s"
 msgstr ""
 
 #: src/dictlist-object.c:652

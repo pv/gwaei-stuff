@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 1.2.0\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-03-28 14:29-0500\n"
+"POT-Creation-Date: 2010-03-29 21:16-0500\n"
 "PO-Revision-Date: 2010-03-17 02:02+0100\n"
 "Last-Translator: Nicolas Laurent\n"
 "Language-Team: none\n"
@@ -488,15 +488,15 @@ msgstr "Autres dictionnaires"
 msgid "Main Dictionaries"
 msgstr "Dictionnaires principaux"
 
-#: src/main-interface-gtk.c:407 src/settings-interface-gtk.c:280
+#: src/main-interface-gtk.c:407 src/settings-interface-gtk.c:281
 msgid "Order"
 msgstr ""
 
-#: src/main-interface-gtk.c:408 src/settings-interface-gtk.c:286
+#: src/main-interface-gtk.c:408 src/settings-interface-gtk.c:287
 msgid "Shortcut"
 msgstr ""
 
-#: src/main-interface-gtk.c:409 src/settings-interface-gtk.c:291
+#: src/main-interface-gtk.c:409 src/settings-interface-gtk.c:292
 #, fuzzy
 msgid "Dictionary"
 msgstr "Dictionnaire des noms"
@@ -505,7 +505,7 @@ msgstr "Dictionnaire des noms"
 msgid "Edit the current vocabulary list"
 msgstr "Modifier la liste de vocabulaire courante"
 
-#: src/main-interface-gtk.c:426 src/main-callbacks-gtk.c:1731
+#: src/main-interface-gtk.c:426 src/main-callbacks-gtk.c:1725
 msgid "A_ppend"
 msgstr "A_jouter"
 
@@ -1071,7 +1071,7 @@ msgstr "vocabulaire.txt"
 msgid "Save"
 msgstr "Enregistrer"
 
-#: src/main-callbacks-gtk.c:1122
+#: src/main-callbacks-gtk.c:1116
 msgid ""
 "gWaei (C) 2008-2010 Zachary Dovel\n"
 "Kanjipad backend (C) 2002 Owen Taylor\n"
@@ -1081,7 +1081,7 @@ msgstr ""
 "Kanjipad backend (C) 2002 Owen Taylor\n"
 "JStroke backend (C) 1997 Robert Wells"
 
-#: src/main-callbacks-gtk.c:1123
+#: src/main-callbacks-gtk.c:1117
 msgid ""
 "Program for Japanese translation and reference. The\n"
 "dictionaries are supplied by Jim Breen's WWWJDIC."
@@ -1089,21 +1089,21 @@ msgstr ""
 "Logiciel pour la traduction et l'apprentissage du Japonais. \n"
 "Les dictionnaires sont fournis par WWWJDIC de Jim Breen."
 
-#: src/main-callbacks-gtk.c:1126
+#: src/main-callbacks-gtk.c:1120
 msgid "translator-credits"
 msgstr ""
 "Traduction par \n"
 "Nicolas Laurent (2009-2010)"
 
-#: src/main-callbacks-gtk.c:1720
+#: src/main-callbacks-gtk.c:1714
 msgid "A_ppend Selected"
 msgstr "A_jouter la sélection dans"
 
-#: src/main-callbacks-gtk.c:1722
+#: src/main-callbacks-gtk.c:1716
 msgid "Save Selected _As"
 msgstr "Enregister la sélection _sous"
 
-#: src/main-callbacks-gtk.c:1724
+#: src/main-callbacks-gtk.c:1718
 msgid "_Print Selected"
 msgstr "_Imprimer la sélection"
 
@@ -1144,7 +1144,7 @@ msgstr "succès\n"
 msgid "gunzip error"
 msgstr "Erreur de gunzip"
 
-#: src/settings-interface-gtk.c:353
+#: src/settings-interface-gtk.c:354
 #, c-format
 msgid "_Use the System Document Font (%s)"
 msgstr ""
@@ -1212,6 +1212,14 @@ msgstr "Non installé"
 #: src/settings-callbacks-gtk.c:729
 msgid "Dictionary File Select"
 msgstr "Sélection du fichier du dictionnaire"
+
+#: src/radicals-interface-gtk.c:365
+#, c-format
+msgid ""
+"<b>Substitution Radical:</b> %s\n"
+"<b>Actual Radical:</b> %s\n"
+"<b>Radical Name:</b> %s"
+msgstr ""
 
 #: src/dictlist-object.c:652
 #, c-format

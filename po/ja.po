@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-03-28 14:29-0500\n"
+"POT-Creation-Date: 2010-03-29 21:16-0500\n"
 "PO-Revision-Date: 2008-11-30 02:35+0500\n"
 "Last-Translator: Zachary Dovel pizzach@gmail.com\n"
 "Language-Team: Not Applicable\n"
@@ -441,15 +441,15 @@ msgstr "他の辞書"
 msgid "Main Dictionaries"
 msgstr "主な辞書"
 
-#: src/main-interface-gtk.c:407 src/settings-interface-gtk.c:280
+#: src/main-interface-gtk.c:407 src/settings-interface-gtk.c:281
 msgid "Order"
 msgstr "順序"
 
-#: src/main-interface-gtk.c:408 src/settings-interface-gtk.c:286
+#: src/main-interface-gtk.c:408 src/settings-interface-gtk.c:287
 msgid "Shortcut"
 msgstr "ショートカット"
 
-#: src/main-interface-gtk.c:409 src/settings-interface-gtk.c:291
+#: src/main-interface-gtk.c:409 src/settings-interface-gtk.c:292
 msgid "Dictionary"
 msgstr "辞書"
 
@@ -457,7 +457,7 @@ msgstr "辞書"
 msgid "Edit the current vocabulary list"
 msgstr "現在語彙リストを編集する"
 
-#: src/main-interface-gtk.c:426 src/main-callbacks-gtk.c:1731
+#: src/main-interface-gtk.c:426 src/main-callbacks-gtk.c:1725
 msgid "A_ppend"
 msgstr "追加(_P)"
 
@@ -970,7 +970,7 @@ msgstr "語彙.txt"
 msgid "Save"
 msgstr "保存"
 
-#: src/main-callbacks-gtk.c:1122
+#: src/main-callbacks-gtk.c:1116
 msgid ""
 "gWaei (C) 2008-2010 Zachary Dovel\n"
 "Kanjipad backend (C) 2002 Owen Taylor\n"
@@ -980,7 +980,7 @@ msgstr ""
 "漢字パッド バックエンド (C) 2002 Owen Taylor\n"
 "JStroke バックエンド(C) 1997 Robert Wells"
 
-#: src/main-callbacks-gtk.c:1123
+#: src/main-callbacks-gtk.c:1117
 msgid ""
 "Program for Japanese translation and reference. The\n"
 "dictionaries are supplied by Jim Breen's WWWJDIC."
@@ -988,19 +988,19 @@ msgstr ""
 "日本語の翻訳や参照の為に作られたプログラムです. 辞書ファイルがJim Breenの"
 "WWWJDICから取られています."
 
-#: src/main-callbacks-gtk.c:1126
+#: src/main-callbacks-gtk.c:1120
 msgid "translator-credits"
 msgstr "Zachary Dovel"
 
-#: src/main-callbacks-gtk.c:1720
+#: src/main-callbacks-gtk.c:1714
 msgid "A_ppend Selected"
 msgstr "選択のを追加(_P)"
 
-#: src/main-callbacks-gtk.c:1722
+#: src/main-callbacks-gtk.c:1716
 msgid "Save Selected _As"
 msgstr "選択のを別名で保存"
 
-#: src/main-callbacks-gtk.c:1724
+#: src/main-callbacks-gtk.c:1718
 msgid "_Print Selected"
 msgstr "選択のを印刷"
 
@@ -1041,7 +1041,7 @@ msgstr "成功\n"
 msgid "gunzip error"
 msgstr "gunzipエラー"
 
-#: src/settings-interface-gtk.c:353
+#: src/settings-interface-gtk.c:354
 #, c-format
 msgid "_Use the System Document Font (%s)"
 msgstr "システムのデフォルトフォントを使う (%s) (_U)"
@@ -1107,6 +1107,17 @@ msgstr "インストールされていない"
 #: src/settings-callbacks-gtk.c:729
 msgid "Dictionary File Select"
 msgstr "辞書ファイルの選択"
+
+#: src/radicals-interface-gtk.c:365
+#, c-format
+msgid ""
+"<b>Substitution Radical:</b> %s\n"
+"<b>Actual Radical:</b> %s\n"
+"<b>Radical Name:</b> %s"
+msgstr ""
+"<b>代表の部首:</b> %s\n"
+"<b>本当の部首:</b> %s\n"
+"<b>部首の名:</b> %s"
 
 #: src/dictlist-object.c:652
 #, c-format
