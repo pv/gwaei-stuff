@@ -535,7 +535,7 @@ G_MODULE_EXPORT void do_cancel_dictionary_install (GtkWidget *widget, gpointer d
 G_MODULE_EXPORT void do_dictionary_remove (GtkWidget* widget, gpointer data)
 {
     GwUiDictInstallLine *il = (GwUiDictInstallLine*) data;
-    gw_console_uninstall_dictionary_by_name (il->di->name);
+    gw_io_uninstall_dictionary_by_name (il->di->name, NULL, NULL, TRUE);
     gw_ui_dict_install_set_action_button (il, GTK_STOCK_ADD, TRUE);
     gw_ui_dict_install_set_message (il, NULL, gettext ("Not Installed"));
     rebuild_combobox_dictionary_list ();

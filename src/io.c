@@ -228,37 +228,6 @@ gboolean gw_io_download_dictionary_file (char *source_path, char *save_path, gpo
 }
 
 
-gboolean gw_io_delete_dictionary_file(GwDictInfo* file)
-{
-    printf("  ");
-    printf(gettext("Removing %s..."), file->long_name);
-    printf("\n");
-
-    printf("*   ");
-    printf(gettext("Removing %s..."), file->path);
-    if (g_remove(file->path) == 0)
-      printf("Success\n");
-    else
-      printf("Failed\n");
-
-    printf("*   ");
-    printf(gettext("Removing %s..."), file->gz_path);
-    if (g_remove(file->gz_path) == 0)
-      printf("Success\n");
-    else
-      printf("Failed\n");
-
-    printf("*   ");
-    printf(gettext("Removing %s..."), file->sync_path);
-    if (g_remove(file->sync_path) == 0)
-      printf("Success\n");
-    else
-      printf("Failed\n");
-
-    return TRUE;
-}
-
-
 gboolean gw_io_copy_dictionary_file (char *source_path, char *target_path, GError **error)
 {
     if (*error != NULL) return;
@@ -551,4 +520,49 @@ int gw_io_get_total_lines_for_path (char *path)
 }
 
 
+//!
+//! \brief Uninstalls a dictionary by it's name and all related dictionaries
+//!
+//! @param name The string representing the name of the dictionary to uninstall.
+//! @param callback_function The function to use to post status messages to.
+//! @param data gpointer to the data to pass to the callback_function
+//! @param long_messages Whether the messages should be long form or short form.
+//!
+void gw_io_uninstall_dictionary_by_name (char *name, gpointer callback_function (char*, int, gpointer), gpointer data, gboolean long_messages)
+{
+    GwDictInfo* di;
+    di = gw_dictlist_get_dictionary_by_name (name);
+    if (di == NULL) return;
 
+    char *message = NULL;
+    if (long_messages)
+      message = g_strdup_printf (gettext("Removing %s..."), di->long_name);
+    else
+      message = g_strdup_printf (gettext("Removing..."));
+
+    if (callback_function != NULL) {
+      callback_function (message, -1, data);
+    }
+
+    if (message != NULL)
+    {
+      g_free (message);
+      message = NULL;
+    }
+
+    g_remove(di->path);
+    g_remove(di->gz_path);
+    g_remove(di->sync_path);
+
+    di->status = GW_DICT_STATUS_NOT_INSTALLED;
+    di->load_position = -1;
+
+
+    if (di->id == GW_DICT_ID_KANJI)
+    {
+      gw_io_uninstall_dictionary_by_name ("Radicals", callback_function, data, long_messages);
+      gw_io_uninstall_dictionary_by_name ("Mix", callback_function, data, long_messages);
+    }
+    else if (di->id == GW_DICT_ID_NAMES)
+      gw_io_uninstall_dictionary_by_name ("Places", callback_function, data, long_messages);
+}

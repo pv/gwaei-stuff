@@ -96,28 +96,29 @@ void gw_console_no_result()
 
 
 //!
+//! @brief Callback function for printing a status message to the console
+//!
+//! @param message String of message to be shown.
+//! @param percent An integer of how much a progress bar should be filled.  1-100.
+//! @param data Currently unused gpointer.
+//!
+static void *print_message_to_console (char *message, int percent, gpointer data)
+{
+    if (message != NULL) printf("%s", message);
+    if (percent > -1 && percent < 101) printf("%d%s", percent, "%");
+    if (message != NULL || (percent > -1 && percent < 101)) printf("\n");
+}
+
+
+//!
 //! @brief Uninstalls the named dictionary, deleting it.
 //!
 //! @param name A string of the name of the dictionary to uninstall.
 //!
 void gw_console_uninstall_dictionary_by_name (char *name)
 {
-
-    GwDictInfo* di;
-    di = gw_dictlist_get_dictionary_by_name (name);
-    if (di == NULL) return;
-
-    gw_io_delete_dictionary_file(di);
-    di->status = GW_DICT_STATUS_NOT_INSTALLED;
-    di->load_position = -1;
-
-    if (di->id == GW_DICT_ID_KANJI)
-    {
-      gw_console_uninstall_dictionary_by_name ("Radicals");
-      gw_console_uninstall_dictionary_by_name ("Mix");
-    }
-    else if (di->id == GW_DICT_ID_NAMES)
-      gw_console_uninstall_dictionary_by_name ("Places");
+    gw_io_uninstall_dictionary_by_name (name, &print_message_to_console, NULL, TRUE);
+    printf(gettext("Uninstall Finished\n\n"));
 }
 
 
