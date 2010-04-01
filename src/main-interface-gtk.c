@@ -1132,6 +1132,8 @@ int rebuild_combobox_dictionary_list()
       }
     }
 
+    printf(gettext("\n"));
+
     //Start filling in the new items
     GwDictInfo *di_alias, *di_name;
     GtkTreeIter iter;
@@ -1193,7 +1195,6 @@ int rebuild_combobox_dictionary_list()
 
       i++;
     }
-    printf("\n");
 
     //Set the combobox to the first item
     GtkWidget *combobox;
@@ -1225,7 +1226,7 @@ int rebuild_combobox_dictionary_list()
     gw_ui_update_settings_interface();
 
     //Finish
-    printf(gettext("%d dictionaries are being used.\n"), j);
+    printf(gettext("%d dictionaries are being used.\n\n"), j);
     return j;
 }
 
