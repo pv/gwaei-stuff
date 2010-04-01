@@ -369,74 +369,33 @@ static void print_help_message()
     printf("%s\n\n", gettext("waei [options]... pattern"));
     printf("%s\n", gettext("This is a Japanese-English dictionary program that allows regex style searches.\nThe dictionaries include: English, Places, Names, Radicals and Kanji. Periods\ncan be used in place of unknown kanji."));
 
-    printf("\n%s\n", gettext("OPTIONS:"));
-    printf("%s\n", gettext("  -n                         "
-                   "Open up the multisearch window (beta)"));
 
-    printf("%s\n", gettext("  -e, --exact                "
-                   "Do not display less relevant results"));
-
-    printf("%s\n", gettext("  -d, --dictionary name      "
-                   "Search using a chosen dictionary"));
-
-    printf("%s\n", gettext("  -l, --list                 "
-                   "Show available dictionaries for searches"));
-
-    printf("%s\n", gettext("  -i, --install              "
-                   "List installable dictionaries"));
-
-    printf("%s\n", gettext("  -i, --install dictionary   "
-                   "Install dictionary"));
-
-    printf("%s\n", gettext("  -u, --uninstall            "
-                   "List uninstallable dictionaries"));
-
-    printf("%s\n", gettext("  -u, --uninstall dictionary "
-                   "Uninstall dictionary"));
-
-    printf("%s\n", gettext("  -s, --sync                 "
-                   "Sync installed dictionaries using rsync"));
-
-    printf("%s\n", gettext("  -v, --version              "
-                   "Check the waei version info"));
-
-    printf("%s\n", gettext("  -q, --quiet                "
-                   "Display less information"));
-
-    printf("%s\n", gettext("  -h, --help                 "
-                   "Display this help"));
-
-    printf("\n%s\n", gettext("EXAMPLES:"));
-
-    printf("%s\n", gettext("  waei English               "
-                   "Search for the english word English"));
-
-    printf("%s\n", gettext("  waei \"cats&dogs\"           "
-                   "Search for results containing cats and dogs"));
-
-    printf("%s\n", gettext("  waei \"cats|dogs\"           "
-                   "Search for results containing cats or dogs"));
-
-    printf("%s\n", gettext("  waei cats dogs             "
-                   "Search for results containing \"cats dogs\""));
-
-    printf("%s日本語%s日本語\n", gettext("  waei "), gettext("                "
-                    "Search for the Japanese word "));
-
-    printf("%s日本%s日本%s\n", gettext("  waei -e "), gettext("               "
-                    "Search for "), gettext(" ignoring similar results"));
-
-    printf("%s日.語%s\n", gettext("  waei "), gettext("                 "
-                   "When you don't know the middle character"));
-
-    printf("%s伍%s\n", gettext("  waei -d Kanji "), gettext("           "
-                   "Find a kanji character in the kanji database"));
-
-    printf("%s田中%s\n", gettext("  waei -d Names "), gettext("         "
-                   "Look up a name in the name database"));
-
-    printf("%s秋葉原%s\n", gettext("  waei -d Places "), gettext("      "
-                   "Look up a place in the place database"));
+    printf(gettext("\nOPTIONS:\n"
+                   "  -n                         Open up the multisearch window (beta).\n"
+                   "  -e, --exact                Do not display less relevant results.\n"
+                   "  -d, --dictionary name      Search using a chosen dictionary.\n"
+                   "  -l, --list                 Show available dictionaries for searches.\n"
+                   "  -i, --install              List installable dictionaries.\n"
+                   "  -i, --install dictionary   Install dictionary.\n"
+                   "  -u, --uninstall            List uninstallable dictionaries.\n"
+                   "  -u, --uninstall dictionary Uninstall dictionary.\n"
+                   "  -s, --sync                 Sync installed dictionaries using rsync.\n"
+                   "  -v, --version              Check the waei version info.\n"
+                   "  -q, --quiet                Display less information.\n"
+                   "  -h, --help                 Display this help.\n"
+                   "\nEXAMPLES:\n"
+                   "  waei English               Search for the english word English.\n"
+                   "  waei \"cats&dogs\"           Search for results containing cats and dogs.\n"
+                   "  waei \"cats|dogs\"           Search for results containing cats or dogs.\n"
+                   "  waei cats dogs             Search for results containing \"cats dogs\".\n"
+                   "  waei %s                Search for the Japanese word %s.\n"
+                   "  waei -e %s               Search for %s and ignore similar results.\n"
+                   "  waei %s                 When you don't know a kanji character.\n"
+                   "  waei -d Kanji %s           Find a kanji character in the kanji dictionary.\n"
+                   "  waei -d Names %s       Look up a name in the names dictionary.\n"
+                   "  waei -d Places %s       Look up a place in the places dictionary.\n")
+             , "にほん", "にほん", "日本", "日本", "日.語", "魚", "Miyabe", "Tokyo"
+             );
 }
 
 /*

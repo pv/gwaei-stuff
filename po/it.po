@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-04-01 00:38-0500\n"
+"POT-Creation-Date: 2010-04-01 01:22-0500\n"
 "PO-Revision-Date: 2010-03-13 17:12+0100\n"
 "Last-Translator: Fabrizio Sabatini <jecnua@gmail.com>\n"
 "Language-Team: Not Applicable\n"
@@ -114,202 +114,107 @@ msgstr ""
 "Kanji. I punti\n"
 "possono essere usati al posto dei kanji sconosciuti."
 
-#: src/main-interface-console.c:372
-msgid "OPTIONS:"
-msgstr "OPZIONI:"
-
 #: src/main-interface-console.c:373
-msgid "  -n                         Open up the multisearch window (beta)"
-msgstr ""
-
-#: src/main-interface-console.c:376
-msgid "  -e, --exact                Do not display less relevant results"
-msgstr "  -e, --exact                Non mostra i risultati meno rilevanti"
-
-#: src/main-interface-console.c:379
-msgid "  -d, --dictionary name      Search using a chosen dictionary"
-msgstr "  -d, --dictionary name      Cerca usando il dizionario scelto"
-
-#: src/main-interface-console.c:382
-msgid "  -l, --list                 Show available dictionaries for searches"
-msgstr ""
-"  -l, --list                 Mostra i dizionari disponibili per la ricerca"
-
-#: src/main-interface-console.c:385
-msgid "  -i, --install              List installable dictionaries"
-msgstr "  -i, --install              Lista dei dizionari installabili"
-
-#: src/main-interface-console.c:388
-msgid "  -i, --install dictionary   Install dictionary"
-msgstr "  -i, --install dictionary   Installa un dizionario"
-
-#: src/main-interface-console.c:391
-msgid "  -u, --uninstall            List uninstallable dictionaries"
-msgstr "  -u, --uninstall            Lista dei dizionari disinstallabili"
-
-#: src/main-interface-console.c:394
-msgid "  -u, --uninstall dictionary Uninstall dictionary"
-msgstr "  -u, --uninstall dictionary Disinstalla un dizionario"
-
-#: src/main-interface-console.c:397
-msgid "  -s, --sync                 Sync installed dictionaries using rsync"
-msgstr ""
-"  -s, --sync                 Sincronizza i dizionari installati con rsync"
-
-#: src/main-interface-console.c:400
-msgid "  -v, --version              Check the waei version info"
-msgstr ""
-"  -v, --version              Mostra informazioni sulla versione di waei"
-
-#: src/main-interface-console.c:403
-msgid "  -q, --quiet                Display less information"
-msgstr "  -q, --quiet                Mostra meno informazioni"
-
-#: src/main-interface-console.c:406
-msgid "  -h, --help                 Display this help"
-msgstr "  -h, --help                 Mostra questo aiuto"
-
-#: src/main-interface-console.c:409
-msgid "EXAMPLES:"
-msgstr "ESEMPI:"
-
-#: src/main-interface-console.c:411
-msgid "  waei English               Search for the english word English"
-msgstr "  waei English               Cerca per la parola inglese English"
-
-#: src/main-interface-console.c:414
+#, c-format
 msgid ""
-"  waei \"cats&dogs\"           Search for results containing cats and dogs"
-msgstr ""
-"  waei \"cats&dogs\"           Cerca i risultati contenenti cats e dogs"
-
-#: src/main-interface-console.c:417
-msgid ""
-"  waei \"cats|dogs\"           Search for results containing cats or dogs"
-msgstr "  waei \"cats|dogs\"           Cerca risultati contenenti cats o dogs"
-
-#: src/main-interface-console.c:420
-msgid ""
-"  waei cats dogs             Search for results containing \"cats dogs\""
-msgstr "  waei cats dogs             Cerca risultati contenenti \"cats dogs\""
-
-#: src/main-interface-console.c:423 src/main-interface-console.c:429
-msgid "  waei "
-msgstr ""
-
-#: src/main-interface-console.c:423
-msgid "                Search for the Japanese word "
-msgstr "                Cerca un parola Giapponese"
-
-#: src/main-interface-console.c:426
-msgid "  waei -e "
-msgstr ""
-
-#: src/main-interface-console.c:426
-msgid "               Search for "
-msgstr "               Cerca per "
-
-#: src/main-interface-console.c:427
-msgid " ignoring similar results"
-msgstr " ignorando i risultati simili"
-
-#: src/main-interface-console.c:429
-msgid "                 When you don't know the middle character"
-msgstr "                 Quando non conosci il carattere nel mezzo"
-
-#: src/main-interface-console.c:432
-msgid "  waei -d Kanji "
+"\n"
+"OPTIONS:\n"
+"  -n                         Open up the multisearch window (beta).\n"
+"  -e, --exact                Do not display less relevant results.\n"
+"  -d, --dictionary name      Search using a chosen dictionary.\n"
+"  -l, --list                 Show available dictionaries for searches.\n"
+"  -i, --install              List installable dictionaries.\n"
+"  -i, --install dictionary   Install dictionary.\n"
+"  -u, --uninstall            List uninstallable dictionaries.\n"
+"  -u, --uninstall dictionary Uninstall dictionary.\n"
+"  -s, --sync                 Sync installed dictionaries using rsync.\n"
+"  -v, --version              Check the waei version info.\n"
+"  -q, --quiet                Display less information.\n"
+"  -h, --help                 Display this help.\n"
+"\n"
+"EXAMPLES:\n"
+"  waei English               Search for the english word English.\n"
+"  waei \"cats&dogs\"           Search for results containing cats and dogs.\n"
+"  waei \"cats|dogs\"           Search for results containing cats or dogs.\n"
+"  waei cats dogs             Search for results containing \"cats dogs\".\n"
+"  waei %s                Search for the Japanese word %s.\n"
+"  waei -e %s               Search for %s and ignore similar results.\n"
+"  waei %s                 When you don't know a kanji character.\n"
+"  waei -d Kanji %s           Find a kanji character in the kanji "
+"dictionary.\n"
+"  waei -d Names %s       Look up a name in the names dictionary.\n"
+"  waei -d Places %s       Look up a place in the places dictionary.\n"
 msgstr ""
 
-#: src/main-interface-console.c:432
-msgid "           Find a kanji character in the kanji database"
-msgstr "           Cerca un kanji nel database dei kanji"
-
-#: src/main-interface-console.c:435
-msgid "  waei -d Names "
-msgstr "  waei -d Nomi "
-
-#: src/main-interface-console.c:435
-msgid "         Look up a name in the name database"
-msgstr "         Cerca un nome nel database dei nomi"
-
-#: src/main-interface-console.c:438
-msgid "  waei -d Places "
-msgstr "  waei -d Luoghi "
-
-#: src/main-interface-console.c:438
-msgid "      Look up a place in the place database"
-msgstr "      Cerca un luogo del database dei luoghi"
-
-#: src/main-interface-console.c:704 src/main-interface-console.c:848
-#: src/main-interface-console.c:876 src/main-interface-console.c:1003
+#: src/main-interface-console.c:663 src/main-interface-console.c:807
+#: src/main-interface-console.c:835 src/main-interface-console.c:962
 #, c-format
 msgid "Requested dictionary not found!\n"
 msgstr "Dizionario richiesto non trovato!\n"
 
-#: src/main-interface-console.c:705
+#: src/main-interface-console.c:664
 msgid "Press any key to exit.\n"
 msgstr "Premi qualsiasi pulsante per uscire.\n"
 
-#: src/main-interface-console.c:734
+#: src/main-interface-console.c:693
 msgid "No word inserted. Only option."
 msgstr "Nessuna parola inserita. Solo opzioni."
 
-#: src/main-interface-console.c:781 src/main-interface-console.c:1052
+#: src/main-interface-console.c:740 src/main-interface-console.c:1011
 msgid "Found "
 msgstr "Trovati "
 
-#: src/main-interface-console.c:781 src/main-interface-console.c:1052
+#: src/main-interface-console.c:740 src/main-interface-console.c:1011
 msgid " Results"
 msgstr " Risultati"
 
-#: src/main-interface-console.c:784 src/main-interface-console.c:1055
+#: src/main-interface-console.c:743 src/main-interface-console.c:1014
 msgid " ("
 msgstr " ("
 
-#: src/main-interface-console.c:784 src/main-interface-console.c:1055
+#: src/main-interface-console.c:743 src/main-interface-console.c:1014
 msgid " Relevant)"
 msgstr " Rilevanti)"
 
-#: src/main-interface-console.c:917
+#: src/main-interface-console.c:876
 #, c-format
 msgid "Syncing possible installed dictionaries..."
 msgstr "Aggiorno i dizionari installati..."
 
-#: src/main-interface-console.c:931 src/main-interface-console.c:969
-#: src/main-interface-console.c:989
+#: src/main-interface-console.c:890 src/main-interface-console.c:928
+#: src/main-interface-console.c:948
 #, c-format
 msgid "Finished"
 msgstr "Operazione completata"
 
-#: src/main-interface-console.c:952
+#: src/main-interface-console.c:911
 #, c-format
 msgid "%sTrying to install %s%s%s...%s"
 msgstr "%sCerco di installare il dizionario %s%s%s...%s"
 
-#: src/main-interface-console.c:958
+#: src/main-interface-console.c:917
 msgid "Already Installed"
 msgstr "Già installato"
 
-#: src/main-interface-console.c:963
+#: src/main-interface-console.c:922
 msgid "That dictionary is not installable with this mechanism"
 msgstr "Quel dizionario non è installabile con quel meccanismo"
 
-#: src/main-interface-console.c:974
+#: src/main-interface-console.c:933
 #, c-format
 msgid "Failed"
 msgstr "Fallito"
 
-#: src/main-interface-console.c:984
+#: src/main-interface-console.c:943
 #, c-format
 msgid "%sTrying to uninstall %s%s%s...%s"
 msgstr "%sCerco di disinstallare il dizionario %s%s%s...%s"
 
-#: src/main-interface-console.c:993
+#: src/main-interface-console.c:952
 msgid "Is not installed"
 msgstr "Non è installato"
 
-#: src/main-interface-console.c:1032
+#: src/main-interface-console.c:991
 #, c-format
 msgid ""
 "Results seem to have incorrect formatting. Did you close all of your\n"
@@ -318,37 +223,37 @@ msgstr ""
 "Sembra che i risultati abbiano una formattazione scorretta. Hai chiuso\n"
 "tutte le parentesi? Controlla anche gli apici.\n"
 
-#: src/main-interface-console.c:1179 src/main-interface-console.c:1252
+#: src/main-interface-console.c:1138 src/main-interface-console.c:1211
 #: src/main-interface-gtk.c:2932 src/main-interface-gtk.c:3034
 msgid "Radicals:"
 msgstr "Radicali:"
 
-#: src/main-interface-console.c:1184 src/main-interface-console.c:1257
+#: src/main-interface-console.c:1143 src/main-interface-console.c:1216
 #: src/main-interface-gtk.c:2969
 msgid "Stroke:"
 msgstr "Tratti:"
 
-#: src/main-interface-console.c:1192 src/main-interface-console.c:1265
+#: src/main-interface-console.c:1151 src/main-interface-console.c:1224
 #: src/main-interface-gtk.c:2976
 msgid "Freq:"
 msgstr "Freq:"
 
-#: src/main-interface-console.c:1200 src/main-interface-console.c:1273
+#: src/main-interface-console.c:1159 src/main-interface-console.c:1232
 #: src/main-interface-gtk.c:2983
 msgid "Grade:"
 msgstr "Grado:"
 
-#: src/main-interface-console.c:1208 src/main-interface-console.c:1281
+#: src/main-interface-console.c:1167 src/main-interface-console.c:1240
 #: src/main-interface-gtk.c:2989
 msgid "JLPT:"
 msgstr "JLPT:"
 
-#: src/main-interface-console.c:1215 src/main-interface-console.c:1288
+#: src/main-interface-console.c:1174 src/main-interface-console.c:1247
 #: src/main-interface-gtk.c:2949
 msgid "Readings:"
 msgstr "Lettura:"
 
-#: src/main-interface-console.c:1221 src/main-interface-console.c:1294
+#: src/main-interface-console.c:1180 src/main-interface-console.c:1253
 #: src/main-interface-gtk.c:2998
 msgid "Meanings:"
 msgstr "Significato:"
@@ -1305,6 +1210,94 @@ msgstr "Sfoglia"
 #: src/gtk-dict-install-line-object.c:123
 msgid "Reset"
 msgstr "Pulisci"
+
+#~ msgid "OPTIONS:"
+#~ msgstr "OPZIONI:"
+
+#~ msgid "  -e, --exact                Do not display less relevant results"
+#~ msgstr "  -e, --exact                Non mostra i risultati meno rilevanti"
+
+#~ msgid "  -d, --dictionary name      Search using a chosen dictionary"
+#~ msgstr "  -d, --dictionary name      Cerca usando il dizionario scelto"
+
+#~ msgid ""
+#~ "  -l, --list                 Show available dictionaries for searches"
+#~ msgstr ""
+#~ "  -l, --list                 Mostra i dizionari disponibili per la ricerca"
+
+#~ msgid "  -i, --install              List installable dictionaries"
+#~ msgstr "  -i, --install              Lista dei dizionari installabili"
+
+#~ msgid "  -i, --install dictionary   Install dictionary"
+#~ msgstr "  -i, --install dictionary   Installa un dizionario"
+
+#~ msgid "  -u, --uninstall            List uninstallable dictionaries"
+#~ msgstr "  -u, --uninstall            Lista dei dizionari disinstallabili"
+
+#~ msgid "  -u, --uninstall dictionary Uninstall dictionary"
+#~ msgstr "  -u, --uninstall dictionary Disinstalla un dizionario"
+
+#~ msgid "  -s, --sync                 Sync installed dictionaries using rsync"
+#~ msgstr ""
+#~ "  -s, --sync                 Sincronizza i dizionari installati con rsync"
+
+#~ msgid "  -v, --version              Check the waei version info"
+#~ msgstr ""
+#~ "  -v, --version              Mostra informazioni sulla versione di waei"
+
+#~ msgid "  -q, --quiet                Display less information"
+#~ msgstr "  -q, --quiet                Mostra meno informazioni"
+
+#~ msgid "  -h, --help                 Display this help"
+#~ msgstr "  -h, --help                 Mostra questo aiuto"
+
+#~ msgid "EXAMPLES:"
+#~ msgstr "ESEMPI:"
+
+#~ msgid "  waei English               Search for the english word English"
+#~ msgstr "  waei English               Cerca per la parola inglese English"
+
+#~ msgid ""
+#~ "  waei \"cats&dogs\"           Search for results containing cats and dogs"
+#~ msgstr ""
+#~ "  waei \"cats&dogs\"           Cerca i risultati contenenti cats e dogs"
+
+#~ msgid ""
+#~ "  waei \"cats|dogs\"           Search for results containing cats or dogs"
+#~ msgstr ""
+#~ "  waei \"cats|dogs\"           Cerca risultati contenenti cats o dogs"
+
+#~ msgid ""
+#~ "  waei cats dogs             Search for results containing \"cats dogs\""
+#~ msgstr ""
+#~ "  waei cats dogs             Cerca risultati contenenti \"cats dogs\""
+
+#~ msgid "                Search for the Japanese word "
+#~ msgstr "                Cerca un parola Giapponese"
+
+#~ msgid "               Search for "
+#~ msgstr "               Cerca per "
+
+#~ msgid " ignoring similar results"
+#~ msgstr " ignorando i risultati simili"
+
+#~ msgid "                 When you don't know the middle character"
+#~ msgstr "                 Quando non conosci il carattere nel mezzo"
+
+#~ msgid "           Find a kanji character in the kanji database"
+#~ msgstr "           Cerca un kanji nel database dei kanji"
+
+#~ msgid "  waei -d Names "
+#~ msgstr "  waei -d Nomi "
+
+#~ msgid "         Look up a name in the name database"
+#~ msgstr "         Cerca un nome nel database dei nomi"
+
+#~ msgid "  waei -d Places "
+#~ msgstr "  waei -d Luoghi "
+
+#~ msgid "      Look up a place in the place database"
+#~ msgstr "      Cerca un luogo del database dei luoghi"
 
 #, fuzzy
 #~ msgid ""
