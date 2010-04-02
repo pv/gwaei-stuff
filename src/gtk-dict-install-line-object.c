@@ -247,10 +247,10 @@ void gw_ui_dict_install_set_action_button (GwUiDictInstallLine *il, const gchar 
 //! @param il A pointer to a GwUiDictInstallLine to manipulate the action button on.
 //! @param FRACTION A constant gdouble for the percent of the bar to fill.
 //!
-void gw_ui_dict_install_line_progress_bar_set_fraction (GwUiDictInstallLine *il, const gdouble FRACTION)
+void gw_ui_progressbar_set_fraction_by_install_line (GwUiDictInstallLine *il, const gdouble FRACTION)
 {
-  gtk_widget_show (il->status_progressbar);
   gtk_widget_hide (il->message_hbox);
+  gtk_widget_show (il->status_progressbar);
 
   if (FRACTION < 0.0)
     gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (il->status_progressbar), 0.0);

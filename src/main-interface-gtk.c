@@ -249,111 +249,113 @@ void gw_ui_set_inforation_box_label (const char* string, const char* query, int 
 
 void gw_ui_verb_check_with_suggestion (GwSearchItem *item)
 {
-  if (item == NULL || item->queryline == NULL || item->resultline == NULL || item->target != GW_TARGET_RESULTS) return;
+/*
+    if (item == NULL || item->queryline == NULL || item->resultline == NULL || item->target != GW_TARGET_RESULTS) return;
 
-  //It's already shown.  No need to do anything.
-  GtkWidget *suggestion_hbox;
-  suggestion_hbox = GTK_WIDGET (gtk_builder_get_object (builder, "suggestion_hbox"));
-  if (GTK_WIDGET_VISIBLE(suggestion_hbox) == TRUE) return;
+    //It's already shown.  No need to do anything.
+    GtkWidget *suggestion_hbox;
+    suggestion_hbox = GTK_WIDGET (gtk_builder_get_object (builder, "suggestion_hbox"));
+    if (GTK_WIDGET_VISIBLE(suggestion_hbox) == TRUE) return;
 
-  char *query = item->queryline->hira_string;
-  GwResultLine *rl = item->resultline;
+    char *query = item->queryline->hira_string;
+    GwResultLine *rl = item->resultline;
 
-  if (query[0] == '\0' || rl->kanji_start == NULL)
-    return;
+    if (query[0] == '\0' || rl->kanji_start == NULL)
+      return;
 
-  gunichar query_first_letter;
-  query_first_letter = g_utf8_get_char (query);
-  gunichar result_kanji_first_letter;
-  result_kanji_first_letter = g_utf8_get_char (rl->kanji_start);
-  gunichar result_furigana_first_letter; 
-  if (rl->furigana_start != NULL)
-    result_furigana_first_letter = g_utf8_get_char (rl->furigana_start);
-  else
-    result_furigana_first_letter = result_kanji_first_letter;
+    gunichar query_first_letter;
+    query_first_letter = g_utf8_get_char (query);
+    gunichar result_kanji_first_letter;
+    result_kanji_first_letter = g_utf8_get_char (rl->kanji_start);
+    gunichar result_furigana_first_letter; 
+    if (rl->furigana_start != NULL)
+      result_furigana_first_letter = g_utf8_get_char (rl->furigana_start);
+    else
+      result_furigana_first_letter = result_kanji_first_letter;
 
-  //Make sure the query and the search result start similarly
-  if (rl->classification_start == NULL || (query_first_letter != result_kanji_first_letter && query_first_letter != result_furigana_first_letter))
-    return;
+    //Make sure the query and the search result start similarly
+    if (rl->classification_start == NULL || (query_first_letter != result_kanji_first_letter && query_first_letter != result_furigana_first_letter))
+      return;
 
-  GtkWidget *suggestion_label;
-  suggestion_label = GTK_WIDGET (gtk_builder_get_object (builder, "suggestion_label"));
-  GtkWidget *suggestion_eventbox;
-  suggestion_eventbox = GTK_WIDGET (gtk_builder_get_object (builder, "suggestion_eventbox"));
-  GtkWidget *window;
-  window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
-  GdkColor fgcolor;
-  fgcolor = window->style->fg[GTK_STATE_SELECTED];
-  GdkColor bgcolor;
-  bgcolor = window->style->bg[GTK_STATE_SELECTED];
+    GtkWidget *suggestion_label;
+    suggestion_label = GTK_WIDGET (gtk_builder_get_object (builder, "suggestion_label"));
+    GtkWidget *suggestion_eventbox;
+    suggestion_eventbox = GTK_WIDGET (gtk_builder_get_object (builder, "suggestion_eventbox"));
+    GtkWidget *window;
+    window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
+    GdkColor fgcolor;
+    fgcolor = window->style->fg[GTK_STATE_SELECTED];
+    GdkColor bgcolor;
+    bgcolor = window->style->bg[GTK_STATE_SELECTED];
 
-  gtk_event_box_set_visible_window (GTK_EVENT_BOX (suggestion_eventbox), TRUE);
-  gtk_widget_modify_fg (suggestion_eventbox, GTK_STATE_NORMAL, &fgcolor);
-  gtk_widget_modify_bg (suggestion_eventbox, GTK_STATE_NORMAL, &bgcolor);
+    gtk_event_box_set_visible_window (GTK_EVENT_BOX (suggestion_eventbox), TRUE);
+    gtk_widget_modify_fg (suggestion_eventbox, GTK_STATE_NORMAL, &fgcolor);
+    gtk_widget_modify_bg (suggestion_eventbox, GTK_STATE_NORMAL, &bgcolor);
 
-  //i-adjective stuffs
-  if (strstr(rl->classification_start, "adj-i"))
-  {
-    int nmatch = 1;
-    regmatch_t pmatch[nmatch];
-    if (regexec (&re_i_adj_past, query, nmatch, pmatch, 0) == 0)
+    //i-adjective stuffs
+    if (strstr(rl->classification_start, "adj-i"))
     {
-      char *message = gettext("Your query is possibly a past-form i-adjective.  (Try searching for %s%s?)");
-      gw_ui_set_inforation_box_label (message, query, pmatch[0].rm_so, "い");
+      int nmatch = 1;
+      regmatch_t pmatch[nmatch];
+      if (regexec (&re_i_adj_past, query, nmatch, pmatch, 0) == 0)
+      {
+        char *message = gettext("Your query is possibly a past-form i-adjective.  (Try searching for %s%s?)");
+        gw_ui_set_inforation_box_label (message, query, pmatch[0].rm_so, "い");
+      }
+      else if (regexec (&re_i_adj_negative, query, nmatch, pmatch, 0) == 0)
+      {
+        char *message = gettext("Your query is possibly a negative i-adjective.  (Try searching for %s%s?)");
+        gw_ui_set_inforation_box_label (message, query, pmatch[0].rm_so, "い");
+      }
+      else if (regexec (&re_i_adj_te, query, nmatch, pmatch, 0) == 0)
+      {
+        char *message = gettext("Your query is possibly a te-form i-adjective.  (Try searching for %s%s?)");
+        gw_ui_set_inforation_box_label (message, query, pmatch[0].rm_so, "い");
+      }
+      else if (regexec (&re_i_adj_causative, query, nmatch, pmatch, 0) == 0)
+      {
+        char *message = gettext("Your query is possibly a causitive i-adjective.  (Try searching for %s%s?)");
+        gw_ui_set_inforation_box_label (message, query, pmatch[0].rm_so, "い");
+      }
+      else if (regexec (&re_i_adj_conditional, query, nmatch, pmatch, 0) == 0)
+      {
+        char *message = gettext("Your query is possibly a conditional-form i-adjective.  (Try searching for %s%s?)");
+        gw_ui_set_inforation_box_label (message, query, pmatch[0].rm_so, "い");
+      }
     }
-    else if (regexec (&re_i_adj_negative, query, nmatch, pmatch, 0) == 0)
-    {
-      char *message = gettext("Your query is possibly a negative i-adjective.  (Try searching for %s%s?)");
-      gw_ui_set_inforation_box_label (message, query, pmatch[0].rm_so, "い");
-    }
-    else if (regexec (&re_i_adj_te, query, nmatch, pmatch, 0) == 0)
-    {
-      char *message = gettext("Your query is possibly a te-form i-adjective.  (Try searching for %s%s?)");
-      gw_ui_set_inforation_box_label (message, query, pmatch[0].rm_so, "い");
-    }
-    else if (regexec (&re_i_adj_causative, query, nmatch, pmatch, 0) == 0)
-    {
-      char *message = gettext("Your query is possibly a causitive i-adjective.  (Try searching for %s%s?)");
-      gw_ui_set_inforation_box_label (message, query, pmatch[0].rm_so, "い");
-    }
-    else if (regexec (&re_i_adj_conditional, query, nmatch, pmatch, 0) == 0)
-    {
-      char *message = gettext("Your query is possibly a conditional-form i-adjective.  (Try searching for %s%s?)");
-      gw_ui_set_inforation_box_label (message, query, pmatch[0].rm_so, "い");
-    }
-  }
 
-  //na-adjective stuffs
-  else if (strstr(rl->classification_start, "adj-na"))
-  {
-    int nmatch = 1;
-    regmatch_t pmatch[nmatch];
-    if (regexec(&re_na_adj_past, query, nmatch, pmatch, 0) == 0)
+    //na-adjective stuffs
+    else if (strstr(rl->classification_start, "adj-na"))
     {
-      char *message = gettext("Your query is possibly a past-form na-adjective.  (Try searching for %s%s?)");
-      gw_ui_set_inforation_box_label (message, query, pmatch[0].rm_so, "");
+      int nmatch = 1;
+      regmatch_t pmatch[nmatch];
+      if (regexec(&re_na_adj_past, query, nmatch, pmatch, 0) == 0)
+      {
+        char *message = gettext("Your query is possibly a past-form na-adjective.  (Try searching for %s%s?)");
+        gw_ui_set_inforation_box_label (message, query, pmatch[0].rm_so, "");
+      }
+      else if (regexec(&re_na_adj_negative, query, nmatch, pmatch, 0) == 0)
+      {
+        char *message = gettext("Your query is possibly a negative na-adjective.  (Try searching for %s%s?)");
+        gw_ui_set_inforation_box_label (message, query, pmatch[0].rm_so, "");
+      }
+      else if (regexec(&re_na_adj_te, query, nmatch, pmatch, 0) == 0)
+      {
+        char *message = gettext("Your query is possibly a te-form na-adjective.  (Try searching for %s%s?)");
+        gw_ui_set_inforation_box_label (message, query, pmatch[0].rm_so, "");
+      }
+      else if (regexec(&re_na_adj_causative, query, nmatch, pmatch, 0) == 0)
+      {
+        char *message = gettext("Your query is possibly a causitive na-adjective.  (Try searching for %s%s?)");
+        gw_ui_set_inforation_box_label (message, query, pmatch[0].rm_so, "");
+      }
+      else if (regexec(&re_na_adj_conditional, query, nmatch, pmatch, 0) == 0)
+      {
+        char *message = gettext("Your query is possibly a conditional-form na-adjective.  (Try searching for %s%s?)");
+        gw_ui_set_inforation_box_label (message, query, pmatch[0].rm_so, "");
+      }
     }
-    else if (regexec(&re_na_adj_negative, query, nmatch, pmatch, 0) == 0)
-    {
-      char *message = gettext("Your query is possibly a negative na-adjective.  (Try searching for %s%s?)");
-      gw_ui_set_inforation_box_label (message, query, pmatch[0].rm_so, "");
-    }
-    else if (regexec(&re_na_adj_te, query, nmatch, pmatch, 0) == 0)
-    {
-      char *message = gettext("Your query is possibly a te-form na-adjective.  (Try searching for %s%s?)");
-      gw_ui_set_inforation_box_label (message, query, pmatch[0].rm_so, "");
-    }
-    else if (regexec(&re_na_adj_causative, query, nmatch, pmatch, 0) == 0)
-    {
-      char *message = gettext("Your query is possibly a causitive na-adjective.  (Try searching for %s%s?)");
-      gw_ui_set_inforation_box_label (message, query, pmatch[0].rm_so, "");
-    }
-    else if (regexec(&re_na_adj_conditional, query, nmatch, pmatch, 0) == 0)
-    {
-      char *message = gettext("Your query is possibly a conditional-form na-adjective.  (Try searching for %s%s?)");
-      gw_ui_set_inforation_box_label (message, query, pmatch[0].rm_so, "");
-    }
-  }
+*/
 }
 
 
@@ -1070,7 +1072,7 @@ int rebuild_combobox_dictionary_list()
     i = 0;
     while (names[i] != NULL)
     {
-      di = gw_dictlist_get_dictionary_by_name (names[i]);
+      di = gw_dictlist_get_dictinfo_by_name (names[i]);
       if (di == NULL)
         *names[i] = '\0';
       i++;
@@ -1146,8 +1148,8 @@ int rebuild_combobox_dictionary_list()
     char *favorite_icon = "emblem-favorite";
     while (names[i] != NULL)
     {
-      di_alias = gw_dictlist_get_dictionary_by_alias (names[i]);
-      di_name = gw_dictlist_get_dictionary_by_name (names[i]);
+      di_alias = gw_dictlist_get_dictinfo_by_alias (names[i]);
+      di_name = gw_dictlist_get_dictinfo_by_name (names[i]);
       di = di_alias;
       if (strcmp(di_alias->name, di_name->name) == 0 && di_alias->status == GW_DICT_STATUS_INSTALLED)
       {
@@ -2563,7 +2565,7 @@ void initialize_gui_interface(int *argc, char ***argv)
       /*Set initial dictionary*/
       if (arg_dictionary != NULL)
       {
-        GwDictInfo *di = gw_dictlist_get_dictionary_by_alias (arg_dictionary);
+        GwDictInfo *di = gw_dictlist_get_dictinfo_by_alias (arg_dictionary);
         if (di != NULL)
         {
           gw_ui_set_dictionary (di->load_position);

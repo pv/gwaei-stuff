@@ -169,19 +169,78 @@ gboolean gw_io_copy_with_encoding( char *source_path,     char *target_path,
 }
 
 
-static size_t write_func(void *ptr, size_t size, size_t nmemb, FILE *stream)
+//!
+//! \brief Private function made to be used with gw_io_download_file
+//!
+//! @param ptr TBA
+//! @param size TBA
+//! @param nmemb TBA
+//! @param stream TBA
+//!
+static size_t libcurl_write_func (void *ptr, size_t size, size_t nmemb, FILE *stream)
 {
     return fwrite(ptr, size, nmemb, stream);
 }
  
 
-static size_t read_func(void *ptr, size_t size, size_t nmemb, FILE *stream)
+//!
+//! \brief Private function made to be used with gw_io_download_file
+//!
+//! @param ptr TBA
+//! @param size TBA
+//! @param nmemb TBA
+//! @param stream TBA
+//!
+static size_t libcurl_read_func (void *ptr, size_t size, size_t nmemb, FILE *stream)
 {
-    return fread(ptr, size, nmemb, stream);
+    return fread (ptr, size, nmemb, stream);
 }
 
 
-gboolean gw_io_download_dictionary_file (char *source_path, char *save_path, gpointer func, gpointer data, GError **error)
+//!
+//! \brief Private struct made to be used with gw_io_download_file
+//!
+//! @param ptr TBA
+//! @param size TBA
+//! @param nmemb TBA
+//! @param stream TBA
+//!
+typedef struct libcurl_callback_func_with_data {
+    int (*callback_function) (char*, int, gpointer);
+    gpointer data;
+} libcurl_callback_func_with_data; 
+
+
+//!
+//! \brief Private struct made to be used with gw_io_download_file
+//!
+//! @param ptr TBA
+//! @param size TBA
+//! @param nmemb TBA
+//! @param stream TBA
+//!
+int libcurl_update_progressbar (void   *data,
+                                double  dltotal,
+                                double  dlnow,
+                                double  ultotal,
+                                double  ulnow   )
+{
+    libcurl_callback_func_with_data *curldata = (libcurl_callback_func_with_data*) data;
+    return (curldata->callback_function) (NULL, (int) (dlnow / dltotal * 100.0), curldata->data);
+}
+
+
+//!
+//! \brief Downloads a file using libcurl
+//!
+//! @param source_path String of the source url
+//! @param save_path String of the path to save the file locally
+//! @param func Pointer to a function to update
+//! @param data gpointer to data to pass to the function pointer
+//! @param error Error handling
+//!
+gboolean gw_io_download_file (char *source_path, char *save_path,
+                              int (*callback_function) (char*, int, gpointer), gpointer data, GError **error)
 {
     if (*error != NULL) return;
 
@@ -198,13 +257,18 @@ gboolean gw_io_download_dictionary_file (char *source_path, char *save_path, gpo
 
     curl_easy_setopt(curl, CURLOPT_URL, source_path);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, outfile);
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_func);
-    curl_easy_setopt(curl, CURLOPT_READFUNCTION, read_func);
-    if (func != NULL && data != NULL)
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, libcurl_write_func);
+    curl_easy_setopt(curl, CURLOPT_READFUNCTION, libcurl_read_func);
+
+    libcurl_callback_func_with_data libcurl_data;
+    libcurl_data.callback_function = callback_function;
+    libcurl_data.data = data;
+
+    if (callback_function != NULL)
     {
       curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0L);
-      curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, func);
-      curl_easy_setopt(curl, CURLOPT_PROGRESSDATA, data);
+      curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, libcurl_update_progressbar);
+      curl_easy_setopt(curl, CURLOPT_PROGRESSDATA, &libcurl_data);
     }
 
     res = curl_easy_perform(curl);
@@ -228,7 +292,14 @@ gboolean gw_io_download_dictionary_file (char *source_path, char *save_path, gpo
 }
 
 
-gboolean gw_io_copy_dictionary_file (char *source_path, char *target_path, GError **error)
+//!
+//! \brief Copies a local file to another local location
+//!
+//! @param source_path String of the source url
+//! @param save_path String of the path to save the file locally
+//! @param error Error handling
+//!
+gboolean gw_io_copy_file (char *source_path, char *target_path, GError **error)
 {
     if (*error != NULL) return;
 
@@ -253,8 +324,6 @@ gboolean gw_io_copy_dictionary_file (char *source_path, char *target_path, GErro
 //Creates a single dictionary containing both the radical dict and kanji dict
 gboolean gw_io_create_mix_dictionary (char *mpath, char *kpath, char *rpath)
 {
-    printf(gettext("  Recreating mixed dictionary..."));
-
     FILE* kanji_file =  fopen(kpath, "r");
     FILE* output_file = fopen(mpath, "w");
     FILE *radicals_file = NULL;
@@ -336,8 +405,6 @@ gboolean gw_io_create_mix_dictionary (char *mpath, char *kpath, char *rpath)
     //Cleanup
     fclose(kanji_file);
     fclose(output_file);
-
-    printf(gettext("success\n"));
 
     return TRUE;
 }
@@ -450,7 +517,13 @@ gboolean gw_io_split_places_from_names_dictionary (char *spath, char *npath, cha
 }
 
 
-gboolean gw_io_gunzip_dictionary_file(char *path, GError **error)
+//!
+//! \brief Gunzips a file
+//!
+//! @param path String representing the path of the file to gunzip
+//! @param error Error handling
+//!
+gboolean gw_io_gunzip_file (char *path, GError **error)
 {
     if (*error != NULL) return;
 
@@ -475,7 +548,13 @@ gboolean gw_io_gunzip_dictionary_file(char *path, GError **error)
 } 
 
 
-gboolean gw_io_unzip_dictionary_file(char *path, GError **error)
+//!
+//! \brief Unzips a file
+//!
+//! @param path String representing the path of the file to unzip
+//! @param error Error handling
+//!
+gboolean gw_io_unzip_file (char *path, GError **error)
 {
     GQuark quark;
     quark = g_quark_from_string (GW_GENERIC_ERROR);
@@ -504,6 +583,11 @@ gboolean gw_io_unzip_dictionary_file(char *path, GError **error)
 }
 
 
+//!
+//! \brief Returns the total lines in a dictionary file for processing purposes.
+//!
+//! @param path The string representing path to the dictionary file
+//!
 int gw_io_get_total_lines_for_path (char *path)
 {
     //Calculate the number of lines in the dictionary
@@ -528,15 +612,14 @@ int gw_io_get_total_lines_for_path (char *path)
 //! @param data gpointer to the data to pass to the callback_function
 //! @param long_messages Whether the messages should be long form or short form.
 //!
-void gw_io_uninstall_dictionary_by_name (char *name, gpointer callback_function (char*, int, gpointer), gpointer data, gboolean long_messages)
+void gw_io_uninstall_dictinfo (GwDictInfo *di,    int (*callback_function) (char*, int, gpointer),
+                                 gpointer data, gboolean long_messages                            )
 {
-    GwDictInfo* di;
-    di = gw_dictlist_get_dictionary_by_name (name);
     if (di == NULL) return;
 
     char *message = NULL;
     if (long_messages)
-      message = g_strdup_printf (gettext("Removing %s..."), di->long_name);
+      message = g_strdup_printf (gettext("Removing %s..."), di->path);
     else
       message = g_strdup_printf (gettext("Removing..."));
 
@@ -558,11 +641,127 @@ void gw_io_uninstall_dictionary_by_name (char *name, gpointer callback_function 
     di->load_position = -1;
 
 
+    GwDictInfo *r_di, *m_di, *k_di, *p_di;
+    r_di = gw_dictlist_get_dictinfo_by_id (GW_DICT_ID_RADICALS);
+    k_di = gw_dictlist_get_dictinfo_by_id (GW_DICT_ID_KANJI);
+    m_di = gw_dictlist_get_dictinfo_by_id (GW_DICT_ID_MIX);
+    p_di = gw_dictlist_get_dictinfo_by_id (GW_DICT_ID_PLACES);
+
     if (di->id == GW_DICT_ID_KANJI)
     {
-      gw_io_uninstall_dictionary_by_name ("Radicals", callback_function, data, long_messages);
-      gw_io_uninstall_dictionary_by_name ("Mix", callback_function, data, long_messages);
+      gw_io_uninstall_dictinfo (r_di, callback_function, data, long_messages);
+      gw_io_uninstall_dictinfo (m_di, callback_function, data, long_messages);
     }
     else if (di->id == GW_DICT_ID_NAMES)
-      gw_io_uninstall_dictionary_by_name ("Places", callback_function, data, long_messages);
+    {
+      gw_io_uninstall_dictinfo (p_di, callback_function, data, long_messages);
+    }
 }
+
+
+//!
+//! \brief Installs a dictionary by it's name and all related dictionaries
+//!
+//! @param name The string representing the name of the dictionary to uninstall.
+//! @param callback_function The function to use to post status messages to.
+//! @param data gpointer to the data to pass to the callback_function
+//! @param long_messages Whether the messages should be long form or short form.
+//!
+void gw_io_install_dictinfo (GwDictInfo *di,    int (*callback_function) (char*, int, gpointer),
+                               gpointer data, gboolean long_messages, GError **error            )
+{
+    if (*error != NULL) return;
+
+    GQuark quark;
+    quark = g_quark_from_string (GW_GENERIC_ERROR);
+
+    if (di == NULL || di->status != GW_DICT_STATUS_NOT_INSTALLED) return;
+    di->status = GW_DICT_STATUS_INSTALLING;
+
+    char *message = NULL;
+
+    char fallback_uri[100];
+    gw_util_strncpy_fallback_from_key (fallback_uri, di->gckey, 100);
+
+    char uri[100];
+    gw_pref_get_string (uri, di->gckey, fallback_uri, 100);
+
+    if (long_messages == TRUE)
+    {
+      message = g_strdup_printf(gettext("Downloading %s..."), uri);
+      if (message != NULL)
+      {
+        callback_function (message, -1, NULL);
+        g_free (message);
+        message = NULL;
+      }
+    }
+
+    //Make sure the download folder exits
+    char download_path[FILENAME_MAX] = "";
+    gw_util_get_waei_directory(download_path);
+    strcat(download_path, G_DIR_SEPARATOR_S);
+    strcat(download_path, "download");
+    if (*error == NULL)
+    {
+      if ((g_mkdir_with_parents(download_path, 0755)) != 0 && di->status != GW_DICT_STATUS_CANCELING)
+      {
+        quark = g_quark_from_string (GW_GENERIC_ERROR);
+        *error = g_error_new_literal (quark, GW_FILE_ERROR, gettext("Unable to create dictionary folder"));
+      }
+    }
+
+    //Copy the file if it is a local file
+    if (*error == NULL && di->status != GW_DICT_STATUS_CANCELING)
+    {
+      if (g_file_test (uri, G_FILE_TEST_IS_REGULAR)) //Copy from local drive
+      {
+        gw_io_copy_file (uri, di->gz_path, error);
+      }
+      else //Download file over network
+      {
+        gw_io_download_file (uri, di->gz_path, callback_function, data, error);
+      }
+    }
+
+    //Decompress the file if necessary
+    if (*error == NULL && di->status != GW_DICT_STATUS_CANCELING && strstr(di->gz_path, ".gz"))
+    {
+      if (callback_function != NULL) {
+        callback_function (gettext("Decompressing..."), -1, data);
+      }
+      gw_io_gunzip_file (di->gz_path, error);
+    }
+    else if (*error == NULL && di->status != GW_DICT_STATUS_CANCELING && strstr(di->gz_path, ".zip"))
+    {
+      gw_io_unzip_file(di->gz_path, error);
+      if (*error == NULL && di->status != GW_DICT_STATUS_CANCELING)
+      {
+        quark = g_quark_from_string (GW_GENERIC_ERROR);
+        *error = g_error_new_literal (quark, GW_FILE_ERROR, gettext("Unzip Error"));
+      }
+    }
+
+    //Convert encoding if necessary
+    if (*error == NULL && di->status != GW_DICT_STATUS_CANCELING && strstr(di->sync_path, "UTF") == NULL)
+    {
+      if (callback_function != NULL) {
+        callback_function (gettext("Converting encoding..."), -1, data);
+      }
+      gw_io_copy_with_encoding(di->sync_path, di->path, "EUC-JP","UTF-8", error);
+    }
+    else if (*error == NULL && di->status != GW_DICT_STATUS_CANCELING)
+    {
+      gw_io_copy_file (di->sync_path, di->path, error);
+    }
+
+    //Special dictionary post processing
+    if (*error == NULL && di->status != GW_DICT_STATUS_CANCELING)
+    {
+      if (callback_function != NULL) {
+        callback_function (gettext("Postprocessing..."), -1, data);
+      }
+      gw_dictlist_preform_postprocessing_by_name (di->name, error);
+    }
+}
+

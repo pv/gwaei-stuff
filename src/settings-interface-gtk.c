@@ -168,32 +168,28 @@ void gw_ui_set_dictionary_source (GtkWidget *widget, const char* value)
 //!
 //! @brief A progressbar update function made specifially to be used with curl when downloading
 //!
-//! @param data A GwUiDictInstallLine to use as a base for updating the interface
-//! @param dltotal the amount to be downloaded
-//! @param dlnow the current amount downloaded
-//! @param ultotal The upload total (unused)
-//! @param ulnow The current amount upload (unused)
+//! @param message
+//! @param percent
+//! @param data
 //!
-int gw_ui_update_progressbar (void   *data,
-                              double  dltotal,
-                              double  dlnow,
-                              double  ultotal,
-                              double  ulnow   )
+int gw_ui_update_progressbar (char *message, int percent, gpointer data)
 {
     gdk_threads_enter();
 
     GwUiDictInstallLine *il = (GwUiDictInstallLine*) data;
     GtkWidget *progressbar = il->status_progressbar;
 
-    if (il->di->status != GW_DICT_STATUS_CANCELING) {
-      if (dlnow == 0.0) {
-        gw_ui_dict_install_line_progress_bar_set_fraction (il, 0.0);
+    if (il->di->status != GW_DICT_STATUS_CANCELING)
+    {
+      if (percent == 0)
+      {
+        //gw_ui_progressbar_set_fraction_by_install_line (il, 0.0);
       }
-      else {
-        double ratio = dlnow / dltotal;
-        gw_ui_dict_install_line_progress_bar_set_fraction (il, ratio);
+      else
+      {
+        gdouble ratio = ((gdouble) percent) / 100.0;
+        gw_ui_progressbar_set_fraction_by_install_line (il, ratio);
       }
-
       gdk_threads_leave ();
       return FALSE;
     }
@@ -214,33 +210,33 @@ void gw_settings_initialize_installed_dictionary_list ()
 
     table = GTK_WIDGET (gtk_builder_get_object (builder, "dictionaries_table"));
 
-    di =  gw_dictlist_get_dictionary_by_name ("English");
+    di =  gw_dictlist_get_dictinfo_by_name ("English");
     il = gw_ui_new_dict_install_line (di);
     gw_ui_add_dict_install_line_to_table (GTK_TABLE (table), il);
 
-    di =  gw_dictlist_get_dictionary_by_name ("Kanji");
+    di =  gw_dictlist_get_dictinfo_by_name ("Kanji");
     il = gw_ui_new_dict_install_line (di);
     gw_ui_add_dict_install_line_to_table (GTK_TABLE (table), il);
 
-    di =  gw_dictlist_get_dictionary_by_name ("Names");
+    di =  gw_dictlist_get_dictinfo_by_name ("Names");
     il = gw_ui_new_dict_install_line (di);
     gw_ui_add_dict_install_line_to_table (GTK_TABLE (table), il);
 
-    di =  gw_dictlist_get_dictionary_by_name ("Examples");
+    di =  gw_dictlist_get_dictinfo_by_name ("Examples");
     il = gw_ui_new_dict_install_line (di);
     gw_ui_add_dict_install_line_to_table (GTK_TABLE (table), il);
 
     table = GTK_WIDGET (gtk_builder_get_object (builder, "other_dictionaries_table"));
 
-    di =  gw_dictlist_get_dictionary_by_name ("French");
+    di =  gw_dictlist_get_dictinfo_by_name ("French");
     il = gw_ui_new_dict_install_line (di);
     gw_ui_add_dict_install_line_to_table (GTK_TABLE (table), il);
 
-    di =  gw_dictlist_get_dictionary_by_name ("German");
+    di =  gw_dictlist_get_dictinfo_by_name ("German");
     il = gw_ui_new_dict_install_line (di);
     gw_ui_add_dict_install_line_to_table (GTK_TABLE (table), il);
 
-    di =  gw_dictlist_get_dictionary_by_name ("Spanish");
+    di =  gw_dictlist_get_dictinfo_by_name ("Spanish");
     il = gw_ui_new_dict_install_line (di);
     gw_ui_add_dict_install_line_to_table (GTK_TABLE (table), il);
 

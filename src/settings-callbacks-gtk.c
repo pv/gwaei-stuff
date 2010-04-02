@@ -67,11 +67,11 @@ static void *update_thread (void *nothing)
     GError *error = NULL;
 
     GwDictInfo* kanji;
-    kanji = gw_dictlist_get_dictionary_by_id (GW_DICT_ID_KANJI);
+    kanji = gw_dictlist_get_dictinfo_by_id (GW_DICT_ID_KANJI);
     GwDictInfo* names;
-    names = gw_dictlist_get_dictionary_by_id (GW_DICT_ID_NAMES);
+    names = gw_dictlist_get_dictinfo_by_id (GW_DICT_ID_NAMES);
     GwDictInfo* radicals;
-    radicals = gw_dictlist_get_dictionary_by_id (GW_DICT_ID_RADICALS);
+    radicals = gw_dictlist_get_dictinfo_by_id (GW_DICT_ID_RADICALS);
 
     //Find out how many dictionaries need updating
     gdouble total_dictionary_updates = 0.0;
@@ -236,6 +236,7 @@ static void *update_thread (void *nothing)
 //!
 static void *install_thread (gpointer data)
 {
+    //Preparations
     GQuark quark;
     quark = g_quark_from_string (GW_GENERIC_ERROR);
     GError *error = NULL;
@@ -243,92 +244,20 @@ static void *install_thread (gpointer data)
     GwUiDictInstallLine *il = (GwUiDictInstallLine*) data;
     GwDictInfo *di = (GwDictInfo*) il->di;
 
-    char *name;
-    name = g_utf8_strdown(di->name, -1);
-
-    char *path = di->path;
-    char *sync_path = di->sync_path;
-    char *gz_path = di->gz_path;
-
     if (di->status != GW_DICT_STATUS_NOT_INSTALLED) return;
 
-    //If everything succeeded, update the interface
-    di->status = GW_DICT_STATUS_INSTALLING;
+    //Preparatation complete, it's showtime
     gdk_threads_enter ();
     gw_ui_dict_install_set_action_button (il, GTK_STOCK_CANCEL, TRUE);
     gw_ui_update_settings_interface();
     gdk_threads_leave ();
-    
-    char fallback_uri[100];
-    gw_util_strncpy_fallback_from_key (fallback_uri, di->gckey, 100);
 
-    char uri[100];
-    gw_pref_get_string (uri, di->gckey, fallback_uri, 100);
-    printf("%s\n", uri);
 
-    //Make sure the download folder exits
-    char download_path[FILENAME_MAX] = "";
-    gw_util_get_waei_directory(download_path);
-    strcat(download_path, G_DIR_SEPARATOR_S);
-    strcat(download_path, "download");
-    if (error == NULL)
-    {
-      if ((g_mkdir_with_parents(download_path, 0755)) != 0 && di->status != GW_DICT_STATUS_CANCELING)
-      {
-        quark = g_quark_from_string (GW_GENERIC_ERROR);
-        error = g_error_new_literal (quark, GW_FILE_ERROR, gettext("Unable to create dictionary folder"));
-      }
-    }
-    //Copy the file if it is a local file
-    if (error == NULL && di->status != GW_DICT_STATUS_CANCELING)
-    {
-      if (g_file_test (uri, G_FILE_TEST_IS_REGULAR)) //Copy from local drive
-      {
-        gw_io_copy_dictionary_file (uri, gz_path, &error);
-      }
-      else //Download file over network
-      {
-        gw_io_download_dictionary_file (uri, gz_path, gw_ui_update_progressbar, (gpointer) il, &error);
-      }
-    }
+    //Offload the install work to the io function
+    gw_io_install_dictinfo (di, gw_ui_update_progressbar, data, FALSE, &error);
 
-    if (error == NULL && di->status != GW_DICT_STATUS_CANCELING && strstr(gz_path, ".gz"))
-    {
-      gdk_threads_enter();
-      gw_ui_dict_install_set_message (il, NULL, gettext("Decompressing..."));
-      gdk_threads_leave();
-      gw_io_gunzip_dictionary_file (gz_path, &error);
-    }
-    else if (error == NULL && di->status != GW_DICT_STATUS_CANCELING && strstr(gz_path, ".zip"))
-    {
-      gw_io_unzip_dictionary_file(gz_path, &error);
-      if (error == NULL && di->status != GW_DICT_STATUS_CANCELING)
-      {
-        quark = g_quark_from_string (GW_GENERIC_ERROR);
-        error = g_error_new_literal (quark, GW_FILE_ERROR, gettext("Unzip Error"));
-      }
-    }
-    if (error == NULL && di->status != GW_DICT_STATUS_CANCELING && strstr(sync_path, "UTF") == NULL)
-    {
-      gdk_threads_enter();
-      gw_ui_dict_install_set_message (il, NULL, gettext("Converting encoding..."));
-      gdk_threads_leave();
-      gw_io_copy_with_encoding(sync_path, path, "EUC-JP","UTF-8", &error);
-    }
-    else if (error == NULL && di->status != GW_DICT_STATUS_CANCELING)
-    {
-      gw_io_copy_dictionary_file (sync_path, path, &error);
-    }
 
-    //Special dictionary post processing
-    if (error == NULL && di->status != GW_DICT_STATUS_CANCELING)
-    {
-      gdk_threads_enter();
-      gw_ui_dict_install_set_message (il, NULL, gettext("Postprocessing..."));
-      gdk_threads_leave();
-      gw_dictlist_preform_postprocessing_by_name(di->name, &error);
-    }
-     
+    //Finish up
     if (di->status == GW_DICT_STATUS_CANCELING)
     {
       gdk_threads_enter();
@@ -355,11 +284,9 @@ static void *install_thread (gpointer data)
       gdk_threads_enter();
       di->status = GW_DICT_STATUS_INSTALLED;
       di->total_lines =  gw_io_get_total_lines_for_path (di->path);
-
       //If statement to reduce flicker, between the Kanji/Radical dictionary install
       if (di->id != GW_DICT_ID_KANJI)
       {
-
         gw_ui_dict_install_set_action_button (il, GTK_STOCK_DELETE, TRUE);
         gw_ui_dict_install_set_message (il, GTK_STOCK_APPLY, gettext("Installed"));
       }
@@ -369,8 +296,8 @@ static void *install_thread (gpointer data)
       if (di->id == GW_DICT_ID_KANJI)
       {
         gw_ui_dict_install_set_message (il, NULL, gettext("Installing..."));
-        GwDictInfo *radicals_dict = gw_dictlist_get_dictionary_by_id (GW_DICT_ID_RADICALS);
-        GwDictInfo *kanji_dict = gw_dictlist_get_dictionary_by_id (GW_DICT_ID_KANJI);
+        GwDictInfo *radicals_dict = gw_dictlist_get_dictinfo_by_id (GW_DICT_ID_RADICALS);
+        GwDictInfo *kanji_dict = gw_dictlist_get_dictinfo_by_id (GW_DICT_ID_KANJI);
         il->di = radicals_dict;
         install_thread (data);
         il->di = kanji_dict;
@@ -535,7 +462,7 @@ G_MODULE_EXPORT void do_cancel_dictionary_install (GtkWidget *widget, gpointer d
 G_MODULE_EXPORT void do_dictionary_remove (GtkWidget* widget, gpointer data)
 {
     GwUiDictInstallLine *il = (GwUiDictInstallLine*) data;
-    gw_io_uninstall_dictionary_by_name (il->di->name, NULL, NULL, TRUE);
+    gw_io_uninstall_dictinfo (il->di, NULL, NULL, TRUE);
     gw_ui_dict_install_set_action_button (il, GTK_STOCK_ADD, TRUE);
     gw_ui_dict_install_set_message (il, NULL, gettext ("Not Installed"));
     rebuild_combobox_dictionary_list ();
@@ -604,8 +531,8 @@ G_MODULE_EXPORT void do_remove_dictionary_from_order_prefs (GtkTreeModel *tree_m
     GwDictInfo *di1, *di2;
     while (long_name_list[i] != NULL && long_name_list[j] != NULL)
     {
-      di1 = gw_dictlist_get_dictionary_by_name (long_name_list[j]);
-      di2 = gw_dictlist_get_dictionary_by_alias (long_name_list[j]);
+      di1 = gw_dictlist_get_dictinfo_by_name (long_name_list[j]);
+      di2 = gw_dictlist_get_dictinfo_by_alias (long_name_list[j]);
       if (strcmp(di1->name, di2->name) == 0 && di2->status == GW_DICT_STATUS_INSTALLED)
       {
         condensed_name_list[i] = &long_name_list[j];
@@ -763,7 +690,7 @@ G_MODULE_EXPORT void do_update_installed_dictionaries(GtkWidget *widget, gpointe
     gw_parse_widget_name(name, widget, TRUE);
 
     GwDictInfo *dictionary;
-    dictionary = gw_dictlist_get_dictionary_by_alias (name);
+    dictionary = gw_dictlist_get_dictinfo_by_alias (name);
 
     //Create the thread
     if (g_thread_create(&update_thread, NULL, FALSE, NULL) == NULL) {
@@ -799,7 +726,7 @@ G_MODULE_EXPORT void do_force_names_resplit (GtkWidget *widget, gpointer data)
     GError *error = NULL;
 
     GwDictInfo* di;
-    di = gw_dictlist_get_dictionary_by_alias("Names");
+    di = gw_dictlist_get_dictinfo_by_alias("Names");
 
     di->status = GW_DICT_STATUS_REBUILDING;
     gw_dictlist_preform_postprocessing_by_name("Names", &error);
@@ -823,7 +750,7 @@ G_MODULE_EXPORT void do_force_mix_rebuild (GtkWidget *widget, gpointer data)
     GError *error = NULL;
 
     GwDictInfo* di;
-    di = gw_dictlist_get_dictionary_by_alias("Mix");
+    di = gw_dictlist_get_dictinfo_by_alias("Mix");
 
     if (gw_dictlist_dictionary_get_status_by_id (GW_DICT_ID_KANJI)    == GW_DICT_STATUS_INSTALLED &&
         gw_dictlist_dictionary_get_status_by_id (GW_DICT_ID_RADICALS) == GW_DICT_STATUS_INSTALLED   )
@@ -913,8 +840,8 @@ G_MODULE_EXPORT void do_move_dictionary_up (GtkWidget *widget, gpointer data)
     GwDictInfo *di1, *di2;
     while (long_name_list[i] != NULL && long_name_list[j] != NULL)
     {
-      di1 = gw_dictlist_get_dictionary_by_name (long_name_list[j]);
-      di2 = gw_dictlist_get_dictionary_by_alias (long_name_list[j]);
+      di1 = gw_dictlist_get_dictinfo_by_name (long_name_list[j]);
+      di2 = gw_dictlist_get_dictinfo_by_alias (long_name_list[j]);
       if (strcmp(di1->name, di2->name) == 0 && di2->status == GW_DICT_STATUS_INSTALLED)
       {
         condensed_name_list[i] = &long_name_list[j];
@@ -1005,8 +932,8 @@ G_MODULE_EXPORT void do_move_dictionary_down (GtkWidget *widget, gpointer data)
     GwDictInfo *di1, *di2;
     while (long_name_list[i] != NULL && long_name_list[j] != NULL)
     {
-      di1 = gw_dictlist_get_dictionary_by_name (long_name_list[j]);
-      di2 = gw_dictlist_get_dictionary_by_alias (long_name_list[j]);
+      di1 = gw_dictlist_get_dictinfo_by_name (long_name_list[j]);
+      di2 = gw_dictlist_get_dictinfo_by_alias (long_name_list[j]);
       if (strcmp(di1->name, di2->name) == 0 && di2->status == GW_DICT_STATUS_INSTALLED)
       {
         condensed_name_list[i] = &long_name_list[j];

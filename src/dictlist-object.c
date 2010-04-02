@@ -195,7 +195,7 @@ void gw_dictlist_free()
 //! @param request a const string to search for in the dictionary names
 //! @return returns the GwDictInfo dictionary object of the result or null.
 //!
-GwDictInfo* gw_dictlist_get_dictionary_by_name (const char* request)
+GwDictInfo* gw_dictlist_get_dictinfo_by_name (const char* request)
 {
     GList *current;
     current = dictionaries->list;
@@ -225,13 +225,13 @@ GwDictInfo* gw_dictlist_get_dictionary_by_name (const char* request)
 //! @param request a const string to search for in the dictionary names
 //! @return returns the GwDictInfo dictionary object of the result or null.
 //!
-GwDictInfo* gw_dictlist_get_dictionary_by_alias (const char* request)
+GwDictInfo* gw_dictlist_get_dictinfo_by_alias (const char* request)
 {
     if ((strcmp (request, "Radicals") == 0 || strcmp (request, "Kanji") == 0) &&
          gw_dictlist_dictionary_get_status_by_id (GW_DICT_ID_MIX) == GW_DICT_STATUS_INSTALLED )
-      return gw_dictlist_get_dictionary_by_name ("Mix");
+      return gw_dictlist_get_dictinfo_by_id (GW_DICT_ID_MIX);
     else 
-      return gw_dictlist_get_dictionary_by_name (request);
+      return gw_dictlist_get_dictinfo_by_name (request);
 }
 
 
@@ -330,7 +330,7 @@ int gw_dictlist_dictionary_get_status_by_id(int id)
 //! @param id Id attribute of the wanted dictionary
 //! @return Returns a pointer to the dictionary if available
 //!
-GwDictInfo* gw_dictlist_get_dictionary_by_id (int id)
+GwDictInfo* gw_dictlist_get_dictinfo_by_id (int id)
 {
     GList *current = dictionaries->list;
     GwDictInfo *di = (GwDictInfo*) current->data;
@@ -450,14 +450,14 @@ void gw_dictionaries_initialize_dictionary_list()
 static gboolean create_mix_dictionary()
 {
     GwDictInfo* mix;
-    mix = gw_dictlist_get_dictionary_by_id(GW_DICT_ID_MIX);
+    mix = gw_dictlist_get_dictinfo_by_id(GW_DICT_ID_MIX);
     g_remove (mix->path);
     mix->status = GW_DICT_STATUS_NOT_INSTALLED;
 
     GwDictInfo* kanji;
-    kanji = gw_dictlist_get_dictionary_by_id(GW_DICT_ID_KANJI);
+    kanji = gw_dictlist_get_dictinfo_by_id(GW_DICT_ID_KANJI);
     GwDictInfo* radicals;
-    radicals = gw_dictlist_get_dictionary_by_id(GW_DICT_ID_RADICALS);
+    radicals = gw_dictlist_get_dictinfo_by_id(GW_DICT_ID_RADICALS);
 
     char *mpath = mix->path;
     char *kpath = kanji->path;
@@ -494,9 +494,9 @@ static gboolean create_mix_dictionary()
 static gboolean split_places_from_names_dictionary(GError **error)
 {
     GwDictInfo* di_places;
-    di_places = gw_dictlist_get_dictionary_by_id (GW_DICT_ID_PLACES);
+    di_places = gw_dictlist_get_dictinfo_by_id (GW_DICT_ID_PLACES);
     GwDictInfo* di_names;
-    di_names = gw_dictlist_get_dictionary_by_id (GW_DICT_ID_NAMES);
+    di_names = gw_dictlist_get_dictinfo_by_id (GW_DICT_ID_NAMES);
 
     if (di_names->status == GW_DICT_STATUS_NOT_INSTALLED) return FALSE;
 
@@ -559,7 +559,7 @@ void gw_dictlist_preform_postprocessing_by_name (char* name, GError **error)
 {
     //Sanity check
     GwDictInfo* di;
-    di = gw_dictlist_get_dictionary_by_name (name);
+    di = gw_dictlist_get_dictinfo_by_name (name);
     if (di->status != GW_DICT_STATUS_INSTALLING &&
         di->status != GW_DICT_STATUS_UPDATING &&
         di->status != GW_DICT_STATUS_REBUILDING)
@@ -568,24 +568,21 @@ void gw_dictlist_preform_postprocessing_by_name (char* name, GError **error)
       return;
 
     //Setup some pointers
-    GwDictInfo* k_di = gw_dictlist_get_dictionary_by_id (GW_DICT_ID_KANJI);
-    GwDictInfo* r_di = gw_dictlist_get_dictionary_by_id (GW_DICT_ID_RADICALS);
-    GwDictInfo* n_di = gw_dictlist_get_dictionary_by_id (GW_DICT_ID_NAMES);
-
-    //Preseve the status
-    int restore_status = di->status;
-    di->status = GW_DICT_STATUS_INSTALLED;
+    GwDictInfo* k_di = gw_dictlist_get_dictinfo_by_id (GW_DICT_ID_KANJI);
+    GwDictInfo* r_di = gw_dictlist_get_dictinfo_by_id (GW_DICT_ID_RADICALS);
+    GwDictInfo* n_di = gw_dictlist_get_dictinfo_by_id (GW_DICT_ID_NAMES);
 
     //Rebuild the mix dictionary
-    if ((di->id == GW_DICT_ID_RADICALS || di->id == GW_DICT_ID_KANJI || di->id == GW_DICT_ID_MIX) &&
-        (k_di->status == GW_DICT_STATUS_INSTALLED && r_di->status == GW_DICT_STATUS_INSTALLED)
+    if ((di->id == GW_DICT_ID_RADICALS && k_di->status == GW_DICT_STATUS_INSTALLED) || 
+        (di->id == GW_DICT_ID_KANJI    && r_di->status == GW_DICT_STATUS_INSTALLED) ||
+        (di->id == GW_DICT_ID_MIX && k_di->status == GW_DICT_STATUS_INSTALLED && r_di->status == GW_DICT_STATUS_INSTALLED)
        )
     {
       di->status = GW_DICT_STATUS_REBUILDING;
       create_mix_dictionary ();
     }
     //Rebuild the names dictionary
-    else if(di->id == GW_DICT_ID_NAMES && n_di->status == GW_DICT_STATUS_INSTALLED)
+    else if(di->id == GW_DICT_ID_NAMES)
     {
       di->status = GW_DICT_STATUS_REBUILDING;
       split_places_from_names_dictionary(error);
@@ -594,7 +591,7 @@ void gw_dictlist_preform_postprocessing_by_name (char* name, GError **error)
     //Restore the previous state if the install wasn't canceled
     if (di->status != GW_DICT_STATUS_CANCELING)
     {
-      di->status = restore_status;
+      di->status = GW_DICT_STATUS_INSTALLED;
     }
 }
 
@@ -719,7 +716,7 @@ void gw_dictlist_update_dictionary_order_list ()
     i = 0;
     while (names[i] != NULL)
     {
-      di = gw_dictlist_get_dictionary_by_name (names[i]);
+      di = gw_dictlist_get_dictinfo_by_name (names[i]);
       if (di == NULL || di->status != GW_DICT_STATUS_INSTALLED)
         *names[i] = '\0';
       if (di && di->id == GW_DICT_ID_MIX) mix_name = names[i];

@@ -88,7 +88,7 @@ G_MODULE_EXPORT void do_radical_search (GtkWidget *widget, gpointer data)
     gw_ui_text_select_all_by_target (GW_TARGET_ENTRY);
 
     GwDictInfo *dictionary;
-    dictionary = gw_dictlist_get_dictionary_by_alias ("Radicals");
+    dictionary = gw_dictlist_get_dictinfo_by_alias ("Radicals");
     if (dictionary == NULL || dictionary->status != GW_DICT_STATUS_INSTALLED) return;
 
     //Checks to make sure everything is sane

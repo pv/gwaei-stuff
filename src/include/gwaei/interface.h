@@ -17,7 +17,7 @@ gboolean gw_load_gtk_builder_xml (const char );
 char* gw_ui_get_text_slice_from_buffer (int, int, int);
 
 //Settings
-int gw_ui_update_progressbar (void*, double, double, double, double);
+int gw_ui_update_progressbar (char*, int, gpointer);
 
 const char* gw_ui_get_active_dictionary(void);
 char* gw_ui_get_text_from_text_buffer(const int);

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 1.2.0\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-04-01 02:21-0500\n"
+"POT-Creation-Date: 2010-04-02 03:42-0500\n"
 "PO-Revision-Date: 2010-04-01 01:05+0100\n"
 "Last-Translator: Nicolas Laurent\n"
 "Language-Team: none\n"
@@ -35,74 +35,64 @@ msgid "Other Results"
 msgstr "Autres résultats"
 
 #: src/main-interface-console.c:92 src/main-interface-console.c:94
-#: src/main-interface-gtk.c:2122
+#: src/main-interface-gtk.c:2124
 msgid "No results found!"
 msgstr "Aucun résultat trouvé."
 
-#: src/main-interface-console.c:161
-msgid "Copying file..."
-msgstr "Copie du fichier ..."
+#: src/main-interface-console.c:123 src/main-interface-console.c:157
+#, fuzzy, c-format
+msgid "Finished\n"
+msgstr "Fini"
 
-#: src/main-interface-console.c:166
-msgid "Downloading file..."
-msgstr "Téléchargement du fichier ..."
+#: src/main-interface-console.c:134
+#, fuzzy, c-format
+msgid "Trying to install the %s...\n"
+msgstr "%sTentative d'installation de %s%s%s...%s"
 
-#: src/main-interface-console.c:172
-msgid "Gunzipping file..."
-msgstr "Décompression gzip du fichier ..."
-
-#: src/main-interface-console.c:178 src/settings-callbacks-gtk.c:314
-msgid "Converting encoding..."
-msgstr "Conversion de l'encodage ..."
-
-#: src/main-interface-console.c:190 src/settings-callbacks-gtk.c:327
-msgid "Postprocessing..."
-msgstr "Traitements ..."
-
-#: src/main-interface-console.c:230 src/main-interface-console.c:246
+#: src/main-interface-console.c:195 src/main-interface-console.c:211
 msgid "Searching for \""
 msgstr "Recherche de \""
 
-#: src/main-interface-console.c:234 src/main-interface-console.c:248
+#: src/main-interface-console.c:199 src/main-interface-console.c:213
 msgid "\" in the "
 msgstr "\" dans le dictionnaire "
 
-#: src/main-interface-console.c:238 src/main-interface-console.c:250
+#: src/main-interface-console.c:203 src/main-interface-console.c:215
 msgid " dictionary..."
 msgstr " ..."
 
-#: src/main-interface-console.c:267
+#: src/main-interface-console.c:232
 msgid "Installable:"
 msgstr "Pouvant être installé : "
 
-#: src/main-interface-console.c:288
+#: src/main-interface-console.c:253
 #, c-format
 msgid "All dictionaries are already installed"
 msgstr "Tous les dictionnaires sont déjà installés."
 
-#: src/main-interface-console.c:310
+#: src/main-interface-console.c:275
 msgid "Uninstallable:"
 msgstr "Pouvant être désinstallé : "
 
-#: src/main-interface-console.c:327
+#: src/main-interface-console.c:292
 #, c-format
 msgid "There are no dictionaries installed"
 msgstr "Il n'y a pas de dictionnaire installé."
 
-#: src/main-interface-console.c:344
+#: src/main-interface-console.c:309
 msgid "Available:"
 msgstr "Disponible :"
 
-#: src/main-interface-console.c:357
+#: src/main-interface-console.c:322
 #, c-format
 msgid " There are no dictionaries available"
 msgstr "Il n'y a pas de dictionnaire disponible"
 
-#: src/main-interface-console.c:369
+#: src/main-interface-console.c:334
 msgid "waei [options]... pattern"
 msgstr "waei [options]... motif"
 
-#: src/main-interface-console.c:370
+#: src/main-interface-console.c:335
 msgid ""
 "This is a Japanese-English dictionary program that allows regex style "
 "searches.\n"
@@ -117,7 +107,7 @@ msgstr ""
 "Le caractère point (\".\") peut-être utilisé dans les recherches à la place "
 "de kanjis inconnus."
 
-#: src/main-interface-console.c:373
+#: src/main-interface-console.c:338
 #, c-format
 msgid ""
 "\n"
@@ -130,7 +120,6 @@ msgid ""
 "  -i, --install dictionary   Install dictionary.\n"
 "  -u, --uninstall            List uninstallable dictionaries.\n"
 "  -u, --uninstall dictionary Uninstall dictionary.\n"
-"  -s, --sync                 Sync installed dictionaries using rsync.\n"
 "  -v, --version              Check the waei version info.\n"
 "  -q, --quiet                Display less information.\n"
 "  -h, --help                 Display this help.\n"
@@ -149,75 +138,57 @@ msgid ""
 "  waei -d Places %s       Look up a place in the places dictionary.\n"
 msgstr ""
 
-#: src/main-interface-console.c:663 src/main-interface-console.c:807
-#: src/main-interface-console.c:835 src/main-interface-console.c:962
+#: src/main-interface-console.c:628 src/main-interface-console.c:776
+#: src/main-interface-console.c:805 src/main-interface-console.c:916
 #, c-format
 msgid "Requested dictionary not found!\n"
 msgstr "Le dictionnaire indiqué n'a pas été trouvé !\n"
 
-#: src/main-interface-console.c:664
+#: src/main-interface-console.c:629
 msgid "Press any key to exit.\n"
 msgstr "Appuyez sur une touche pour quitter.\n"
 
-#: src/main-interface-console.c:693
+#: src/main-interface-console.c:658
 msgid "No word inserted. Only option."
 msgstr "Pas de mot spécifié. Options uniquement."
 
-#: src/main-interface-console.c:740 src/main-interface-console.c:1011
-msgid "Found "
-msgstr "Trouvé(s) : "
-
-#: src/main-interface-console.c:740 src/main-interface-console.c:1011
-msgid " Results"
-msgstr " Résultats"
-
-#: src/main-interface-console.c:743 src/main-interface-console.c:1014
-msgid " ("
-msgstr " ("
-
-#: src/main-interface-console.c:743 src/main-interface-console.c:1014
-msgid " Relevant)"
-msgstr " pertinents)"
-
-#: src/main-interface-console.c:876
+#: src/main-interface-console.c:703 src/main-interface-console.c:964
+#: src/main-interface-gtk.c:945
 #, c-format
-msgid "Syncing possible installed dictionaries..."
-msgstr "Synchronisation des dictionnaires potentiellement installés ..."
+msgid "Found %d result"
+msgid_plural "Found %d results"
+msgstr[0] "%d résultat trouvé"
+msgstr[1] "%d résultats trouvés"
 
-#: src/main-interface-console.c:890 src/main-interface-console.c:928
-#: src/main-interface-console.c:948
+#: src/main-interface-console.c:704 src/main-interface-console.c:965
+#: src/main-interface-gtk.c:948
 #, c-format
-msgid "Finished"
-msgstr "Fini"
+msgid "(%d Relevant)"
+msgid_plural "(%d Relevant)"
+msgstr[0] "(%d pertinent)"
+msgstr[1] "(%d pertinents)"
 
-#: src/main-interface-console.c:911
-#, c-format
-msgid "%sTrying to install %s%s%s...%s"
-msgstr "%sTentative d'installation de %s%s%s...%s"
-
-#: src/main-interface-console.c:917
-msgid "Already Installed"
+#: src/main-interface-console.c:887
+#, fuzzy, c-format
+msgid "%s is already Installed.\n"
 msgstr "Déjà installé"
 
-#: src/main-interface-console.c:922
-msgid "That dictionary is not installable with this mechanism"
+#: src/main-interface-console.c:889
+#, fuzzy, c-format
+msgid "%s is not installable with this mechanism.\n"
 msgstr "Ce dictionnaire ne peut-être installé de cette façon"
 
-#: src/main-interface-console.c:933
-#, c-format
-msgid "Failed"
-msgstr "Échec"
-
-#: src/main-interface-console.c:943
-#, c-format
-msgid "%sTrying to uninstall %s%s%s...%s"
-msgstr "%sTentative de désinstallation de %s%s%s...%s"
-
-#: src/main-interface-console.c:952
-msgid "Is not installed"
+#: src/main-interface-console.c:904
+#, fuzzy, c-format
+msgid "The %s is not installed.\n"
 msgstr "N'est pas installé"
 
-#: src/main-interface-console.c:991
+#: src/main-interface-console.c:907
+#, fuzzy, c-format
+msgid "%s is not installed.\n"
+msgstr "N'est pas installé"
+
+#: src/main-interface-console.c:945
 #, c-format
 msgid ""
 "Results seem to have incorrect formatting. Did you close all of your\n"
@@ -227,38 +198,38 @@ msgstr ""
 "Avez-vous fermé toutes vos parenthèses ? \n"
 "Peut-être voudrez-vous aussi mettre des guillemets.\n"
 
-#: src/main-interface-console.c:1138 src/main-interface-console.c:1211
-#: src/main-interface-gtk.c:2933 src/main-interface-gtk.c:3035
+#: src/main-interface-console.c:1092 src/main-interface-console.c:1165
+#: src/main-interface-gtk.c:2935 src/main-interface-gtk.c:3037
 msgid "Radicals:"
 msgstr "Radicaux :"
 
-#: src/main-interface-console.c:1143 src/main-interface-console.c:1216
-#: src/main-interface-gtk.c:2970
+#: src/main-interface-console.c:1097 src/main-interface-console.c:1170
+#: src/main-interface-gtk.c:2972
 msgid "Stroke:"
 msgstr "Traits :"
 
-#: src/main-interface-console.c:1151 src/main-interface-console.c:1224
-#: src/main-interface-gtk.c:2977
+#: src/main-interface-console.c:1105 src/main-interface-console.c:1178
+#: src/main-interface-gtk.c:2979
 msgid "Freq:"
 msgstr "Fréq. :"
 
-#: src/main-interface-console.c:1159 src/main-interface-console.c:1232
-#: src/main-interface-gtk.c:2984
+#: src/main-interface-console.c:1113 src/main-interface-console.c:1186
+#: src/main-interface-gtk.c:2986
 msgid "Grade:"
 msgstr "Niveau :"
 
-#: src/main-interface-console.c:1167 src/main-interface-console.c:1240
-#: src/main-interface-gtk.c:2990
+#: src/main-interface-console.c:1121 src/main-interface-console.c:1194
+#: src/main-interface-gtk.c:2992
 msgid "JLPT:"
 msgstr "JLPT :"
 
-#: src/main-interface-console.c:1174 src/main-interface-console.c:1247
-#: src/main-interface-gtk.c:2950
+#: src/main-interface-console.c:1128 src/main-interface-console.c:1201
+#: src/main-interface-gtk.c:2952
 msgid "Readings:"
 msgstr "Lectures :"
 
-#: src/main-interface-console.c:1180 src/main-interface-console.c:1253
-#: src/main-interface-gtk.c:2999
+#: src/main-interface-console.c:1134 src/main-interface-console.c:1207
+#: src/main-interface-gtk.c:3001
 msgid "Meanings:"
 msgstr "Signification : "
 
@@ -266,301 +237,219 @@ msgstr "Signification : "
 msgid "gWaei Japanese-English Dictionary"
 msgstr "Dictionnaire Japonais-Anglais gWaei"
 
-#: src/main-interface-gtk.c:301
-#, c-format
-msgid ""
-"Your query is possibly a past-form i-adjective.  (Try searching for %s%s?)"
-msgstr ""
-"Votre requête est potentiellement une forme passée d'un i-adjectif. (Essayer "
-"de rechercher %s%s ?)"
-
-#: src/main-interface-gtk.c:306
-#, c-format
-msgid ""
-"Your query is possibly a negative i-adjective.  (Try searching for %s%s?)"
-msgstr ""
-"Votre requête est potentiellement une forme négative d'un i-adjectif. "
-"(Essayer de rechercher %s%s ?)"
-
-#: src/main-interface-gtk.c:311
-#, c-format
-msgid ""
-"Your query is possibly a te-form i-adjective.  (Try searching for %s%s?)"
-msgstr ""
-"Votre requête est potentiellement une forme en -te d'un i-adjectif. (Essayer "
-"de rechercher %s%s ?)"
-
-#: src/main-interface-gtk.c:316
-#, c-format
-msgid ""
-"Your query is possibly a causitive i-adjective.  (Try searching for %s%s?)"
-msgstr ""
-"Votre requête est potentiellement une forme causale d'un i-adjectif. "
-"(Essayer de rechercher %s%s ?)"
-
-#: src/main-interface-gtk.c:321
-#, c-format
-msgid ""
-"Your query is possibly a conditional-form i-adjective.  (Try searching for %s"
-"%s?)"
-msgstr ""
-"Votre requête est potentiellement une forme conditionnelle d'un i-adjectif. "
-"(Essayer de rechercher %s%s ?)"
-
-#: src/main-interface-gtk.c:333
-#, c-format
-msgid ""
-"Your query is possibly a past-form na-adjective.  (Try searching for %s%s?)"
-msgstr ""
-"Votre requête est potentiellement une forme passée d'un na-adjectif. "
-"(Essayer de rechercher %s%s ?)"
-
-#: src/main-interface-gtk.c:338
-#, c-format
-msgid ""
-"Your query is possibly a negative na-adjective.  (Try searching for %s%s?)"
-msgstr ""
-"Votre requête est potentiellement une forme négative d'un na-adjectif. "
-"(Essayer de rechercher %s%s ?)"
-
-#: src/main-interface-gtk.c:343
-#, c-format
-msgid ""
-"Your query is possibly a te-form na-adjective.  (Try searching for %s%s?)"
-msgstr ""
-"Votre requête est potentiellement une forme en -te d'un na-adjectif. "
-"(Essayer de rechercher %s%s ?)"
-
-#: src/main-interface-gtk.c:348
-#, c-format
-msgid ""
-"Your query is possibly a causitive na-adjective.  (Try searching for %s%s?)"
-msgstr ""
-"Votre requête est potentiellement une forme causale d'un na-adjectif. "
-"(Essayer de rechercher %s%s ?)"
-
-#: src/main-interface-gtk.c:353
-#, c-format
-msgid ""
-"Your query is possibly a conditional-form na-adjective.  (Try searching for %"
-"s%s?)"
-msgstr ""
-"Votre requête est potentiellement une forme conditionnelle d'un i-adjectif. "
-"(Essayer de rechercher %s%s ?)"
-
-#: src/main-interface-gtk.c:392 src/xml/main.glade:41
+#: src/main-interface-gtk.c:394 src/xml/main.glade:41
 msgid "_New Tab"
 msgstr "_Nouvel onglet"
 
-#: src/main-interface-gtk.c:399
+#: src/main-interface-gtk.c:401
 msgid "Only for Non-Japanese Locals"
 msgstr "Si l'interface n'est pas en japonais"
 
-#: src/main-interface-gtk.c:400
+#: src/main-interface-gtk.c:402
 msgid "When Possible"
 msgstr "Quand cela est possible"
 
-#: src/main-interface-gtk.c:401
+#: src/main-interface-gtk.c:403
 msgid "Never"
 msgstr "Jamais"
 
-#: src/main-interface-gtk.c:402 src/xml/main.glade:470
+#: src/main-interface-gtk.c:404 src/xml/main.glade:470
 msgid "Go to the _Project Homepage"
 msgstr "Consulter sur le site _web du projet"
 
-#: src/main-interface-gtk.c:403 src/xml/main.glade:478
+#: src/main-interface-gtk.c:405 src/xml/main.glade:478
 msgid "Get Help on I_RC"
 msgstr "Obtenir de l'aide sur I_RC"
 
-#: src/main-interface-gtk.c:404
+#: src/main-interface-gtk.c:406
 msgid "Other Dictionaries"
 msgstr "Autres dictionnaires"
 
-#: src/main-interface-gtk.c:405
+#: src/main-interface-gtk.c:407
 msgid "Main Dictionaries"
 msgstr "Dictionnaires principaux"
 
-#: src/main-interface-gtk.c:407 src/settings-interface-gtk.c:281
+#: src/main-interface-gtk.c:409 src/settings-interface-gtk.c:277
 msgid "Order"
 msgstr "Ordre"
 
-#: src/main-interface-gtk.c:408 src/settings-interface-gtk.c:287
+#: src/main-interface-gtk.c:410 src/settings-interface-gtk.c:283
 msgid "Shortcut"
 msgstr "Raccourci"
 
-#: src/main-interface-gtk.c:409 src/settings-interface-gtk.c:292
+#: src/main-interface-gtk.c:411 src/settings-interface-gtk.c:288
 msgid "Dictionary"
 msgstr "Dictionnaire"
 
-#: src/main-interface-gtk.c:422
+#: src/main-interface-gtk.c:424
 msgid "Edit the current vocabulary list"
 msgstr "Modifier la liste de vocabulaire courante"
 
-#: src/main-interface-gtk.c:426 src/main-callbacks-gtk.c:1725
+#: src/main-interface-gtk.c:428 src/main-callbacks-gtk.c:1725
 msgid "A_ppend"
 msgstr "A_jouter"
 
-#: src/main-interface-gtk.c:427
+#: src/main-interface-gtk.c:429
 msgid "Append the current results to a file"
 msgstr "Ajouter les résultats courants à la fin d'un fichier"
 
-#: src/main-interface-gtk.c:432
+#: src/main-interface-gtk.c:434
 msgid "Save the current results to a new file"
 msgstr "Sauvegarder les résultats courants dans un nouveau fichier"
 
-#: src/main-interface-gtk.c:436
+#: src/main-interface-gtk.c:438
 msgid "Print the current results"
 msgstr "Imprimer les résultats courants"
 
-#: src/main-interface-gtk.c:441
+#: src/main-interface-gtk.c:443
 msgid "_Enlarge Text"
 msgstr "_Agrandir la taille du texte"
 
-#: src/main-interface-gtk.c:442 src/xml/main.glade:662
+#: src/main-interface-gtk.c:444 src/xml/main.glade:662
 msgid "Enlarge"
 msgstr "Agrandir"
 
-#: src/main-interface-gtk.c:443
+#: src/main-interface-gtk.c:445
 msgid "Enlarge the results text"
 msgstr "Agrandir la taille du texte des résultats"
 
-#: src/main-interface-gtk.c:448
+#: src/main-interface-gtk.c:450
 msgid "_Shrink Text"
 msgstr "_Réduire la taille du texte"
 
-#: src/main-interface-gtk.c:449 src/xml/main.glade:674
+#: src/main-interface-gtk.c:451 src/xml/main.glade:674
 msgid "Shrink"
 msgstr "Réduire"
 
-#: src/main-interface-gtk.c:450
+#: src/main-interface-gtk.c:452
 msgid "Shrink the results text"
 msgstr "Réduire la taille du texte des résultats"
 
-#: src/main-interface-gtk.c:455
+#: src/main-interface-gtk.c:457
 msgid "_Normal Size"
 msgstr "_Taille de texte normale"
 
-#: src/main-interface-gtk.c:456
+#: src/main-interface-gtk.c:458
 msgid "Normal"
 msgstr "_Normale"
 
-#: src/main-interface-gtk.c:461
+#: src/main-interface-gtk.c:463
 msgid "Show _Toolbar"
 msgstr "Afficher la barre d'_outils"
 
-#: src/main-interface-gtk.c:465
+#: src/main-interface-gtk.c:467
 msgid "Show _Less Relevant Results"
 msgstr "Afficher les résultats _moins pertinents"
 
-#: src/main-interface-gtk.c:469
+#: src/main-interface-gtk.c:471
 msgid "Using _Kanjipad"
 msgstr "En utilisant _Kanjipad"
 
-#: src/main-interface-gtk.c:474
+#: src/main-interface-gtk.c:476
 msgid "Using _Radical Search Tool"
 msgstr "Via l'outil de recherche des _radicaux"
 
-#: src/main-interface-gtk.c:479
+#: src/main-interface-gtk.c:481
 msgid "_Word-edge Mark"
 msgstr "Indicateur de _bordure de mot"
 
-#: src/main-interface-gtk.c:480
+#: src/main-interface-gtk.c:482
 msgid "_Edge"
 msgstr "_Bordure"
 
-#: src/main-interface-gtk.c:481
+#: src/main-interface-gtk.c:483
 msgid "Insert a word-edge character"
 msgstr "Insérer un marqueur de bordure de mot"
 
-#: src/main-interface-gtk.c:487
+#: src/main-interface-gtk.c:489
 msgid "_Not-word-edge Mark"
 msgstr "Indicateur de _non bordure de mot"
 
-#: src/main-interface-gtk.c:488
+#: src/main-interface-gtk.c:490
 msgid "_Not Edge"
 msgstr "_Non bordure"
 
-#: src/main-interface-gtk.c:489
+#: src/main-interface-gtk.c:491
 msgid "Insert a not-word-edge character"
 msgstr "Insérer un marqueur de non bordure de mot"
 
-#: src/main-interface-gtk.c:494
+#: src/main-interface-gtk.c:496
 msgid "_Unknown Character"
 msgstr "Caractère _inconnu"
 
-#: src/main-interface-gtk.c:495
+#: src/main-interface-gtk.c:497
 msgid "_Unknown"
 msgstr "_Inconnu"
 
-#: src/main-interface-gtk.c:496
+#: src/main-interface-gtk.c:498
 msgid "Insert an unknown character"
 msgstr "insérer un marqueur pour un caractère inconnu"
 
-#: src/main-interface-gtk.c:500
+#: src/main-interface-gtk.c:502
 msgid "_Or Character"
 msgstr "Marqueur _Ou logique"
 
-#: src/main-interface-gtk.c:504
+#: src/main-interface-gtk.c:506
 msgid "_And Character"
 msgstr "Marqueur _Et logique"
 
-#: src/main-interface-gtk.c:508
+#: src/main-interface-gtk.c:510
 msgid "_Previous Search"
 msgstr "Recherche _précédente"
 
-#: src/main-interface-gtk.c:509
+#: src/main-interface-gtk.c:511
 msgid "Previous"
 msgstr "Précédent"
 
-#: src/main-interface-gtk.c:510
+#: src/main-interface-gtk.c:512
 msgid "Go to the previous search"
 msgstr "Retourner à la précédente recherche"
 
-#: src/main-interface-gtk.c:515
+#: src/main-interface-gtk.c:517
 msgid "_Next Search"
 msgstr "Recherche _suivante"
 
-#: src/main-interface-gtk.c:516
+#: src/main-interface-gtk.c:518
 msgid "Next"
 msgstr "Suivant"
 
-#: src/main-interface-gtk.c:517
+#: src/main-interface-gtk.c:519
 msgid "Go to the next search"
 msgstr "Avancer à la recherche suivante"
 
-#: src/main-interface-gtk.c:522
+#: src/main-interface-gtk.c:524
 msgid "_Contents"
 msgstr "_Sommaire"
 
-#: src/main-interface-gtk.c:523
+#: src/main-interface-gtk.c:525
 msgid "Help"
 msgstr "Aide"
 
-#: src/main-interface-gtk.c:524
+#: src/main-interface-gtk.c:526
 msgid "Open the help dialog"
 msgstr "Ouvrir la fenêtre d'Aide"
 
-#: src/main-interface-gtk.c:529
+#: src/main-interface-gtk.c:531
 msgid "Dictionary _Terminology Glossary"
 msgstr "Glossaire _terminologique du dictionnaire"
 
-#: src/main-interface-gtk.c:536
+#: src/main-interface-gtk.c:538
 msgid "Enable spellcheck for searches"
 msgstr "Activer la correction orthographique pour les recherches"
 
-#: src/main-interface-gtk.c:540
+#: src/main-interface-gtk.c:542
 msgid "Input your query here"
 msgstr "Entrer votre requête ici"
 
-#: src/main-interface-gtk.c:544
+#: src/main-interface-gtk.c:546
 msgid "Select the dictionary you want to use"
 msgstr "Sélectionner le dictionnaire que vous voulez utiliser"
 
-#: src/main-interface-gtk.c:548
+#: src/main-interface-gtk.c:550
 msgid "Click to start search"
 msgstr "Cliquer pour lancer une recherche"
 
-#: src/main-interface-gtk.c:688
+#: src/main-interface-gtk.c:690
 #, c-format
 msgid ""
 "Looks like this may be your initial install.  I'm just going to center this "
@@ -569,60 +458,46 @@ msgstr ""
 "Il semble qu'il s'agisse de votre première installation. Je vais centrer "
 "cette fenêtre pour vous. Vous pourrez me remercier plus tard %d %d\n"
 
-#: src/main-interface-gtk.c:941
+#: src/main-interface-gtk.c:943
 msgid "Searching..."
 msgstr "Recherche en cours ... "
 
-#: src/main-interface-gtk.c:943
-#, c-format
-msgid "Found %d result"
-msgid_plural "Found %d results"
-msgstr[0] "%d résultat trouvé"
-msgstr[1] "%d résultats trouvés"
-
-#: src/main-interface-gtk.c:944
+#: src/main-interface-gtk.c:946
 #, c-format
 msgid "Searching... %d result"
 msgid_plural "Searching... %d results"
 msgstr[0] "Recherche en cours ... %d résultat"
 msgstr[1] "Recherche en cours ... %d résultats"
 
-#: src/main-interface-gtk.c:946
-#, c-format
-msgid "(%d Relevant)"
-msgid_plural "(%d Relevant)"
-msgstr[0] "(%d pertinent)"
-msgstr[1] "(%d pertinents)"
-
-#: src/main-interface-gtk.c:1135
+#: src/main-interface-gtk.c:1137
 #, c-format
 msgid "\n"
 msgstr ""
 
-#: src/main-interface-gtk.c:1209
+#: src/main-interface-gtk.c:1211
 msgid "_Cycle Up"
 msgstr "Revenir au _précédent"
 
-#: src/main-interface-gtk.c:1216
+#: src/main-interface-gtk.c:1218
 msgid "Cycle _Down"
 msgstr "Passer au _suivant"
 
-#: src/main-interface-gtk.c:1229
+#: src/main-interface-gtk.c:1231
 #, fuzzy, c-format
 msgid ""
 "%d dictionaries are being used.\n"
 "\n"
 msgstr "%d dictionnaire(s) utilisé(s).\n"
 
-#: src/main-interface-gtk.c:2141
+#: src/main-interface-gtk.c:2143
 msgid "gWaei Usage Tip #"
 msgstr "Astuce d'utilisation de gWaei n°"
 
-#: src/main-interface-gtk.c:2145
+#: src/main-interface-gtk.c:2147
 msgid ": "
 msgstr " : "
 
-#: src/main-interface-gtk.c:2152
+#: src/main-interface-gtk.c:2154
 #, fuzzy, c-format
 msgid ""
 "Use the Unknown Character from the Insert menu or toolbar in place of "
@@ -636,22 +511,22 @@ msgstr ""
 "Kanjipad fonctionne, il est très important de dessiner les kanjis avec le "
 "nombre correct de traits et de les tracer dans le bon sens."
 
-#: src/main-interface-gtk.c:2159
+#: src/main-interface-gtk.c:2161
 msgid "Inputting Unknown Kanji"
 msgstr "Entrer un kanji inconnu"
 
-#: src/main-interface-gtk.c:2176
+#: src/main-interface-gtk.c:2178
 msgid "Getting More Exact Matches"
 msgstr "Obtenir plus de résultat exacts"
 
-#: src/main-interface-gtk.c:2182
+#: src/main-interface-gtk.c:2184
 msgid ""
 "Use the Word-edge Mark and the Not-word-edge Mark from the insert menu to "
 "get more relevant results.  fish\\b will return results like fish and "
 "selfish , but not fisherman"
 msgstr ""
 
-#: src/main-interface-gtk.c:2190
+#: src/main-interface-gtk.c:2192
 #, fuzzy, c-format
 msgid ""
 "Use the And Character or Or Character to search for results that contain a "
@@ -662,15 +537,15 @@ msgstr ""
 " pour trouver des résultats qui contiennent une combinaison de mots qui "
 "pourraient ne pas être consécutifs."
 
-#: src/main-interface-gtk.c:2196
+#: src/main-interface-gtk.c:2198
 msgid "Searching for Multiple Words"
 msgstr "Recherche de mots multiples"
 
-#: src/main-interface-gtk.c:2213
+#: src/main-interface-gtk.c:2215
 msgid "Make a Vocabulary List"
 msgstr "Faire une liste de vocabulaire"
 
-#: src/main-interface-gtk.c:2219
+#: src/main-interface-gtk.c:2221
 #, fuzzy
 msgid ""
 "Specific sections of results can be printed or saved by dragging the mouse "
@@ -682,11 +557,11 @@ msgstr ""
 "glissant la souris pour les mettre en surbrillance. En utilisant ceci en "
 "combinaison avec la commande "
 
-#: src/main-interface-gtk.c:2229
+#: src/main-interface-gtk.c:2231
 msgid "Why Use the Mouse?"
 msgstr "Pourquoi donc utiliser la souris ?"
 
-#: src/main-interface-gtk.c:2235
+#: src/main-interface-gtk.c:2237
 msgid ""
 "Typing something will move the focus to the search input box.  Hitting the "
 "Up or Down arrow key will move the focus to the results pane so you can "
@@ -694,11 +569,11 @@ msgid ""
 "installed dictionaries."
 msgstr ""
 
-#: src/main-interface-gtk.c:2245
+#: src/main-interface-gtk.c:2247
 msgid "Get Ready for the JLPT"
 msgstr "Préparez vous pour le JLPT"
 
-#: src/main-interface-gtk.c:2251
+#: src/main-interface-gtk.c:2253
 #, fuzzy
 msgid ""
 "The Kanji dictionary has some hidden features.  One such one is the ability "
@@ -715,11 +590,11 @@ msgstr ""
 "Si vous prévoyez de passer le \" Japanese Language Proficiency Test \", en "
 "utilisant le code "
 
-#: src/main-interface-gtk.c:2265
+#: src/main-interface-gtk.c:2267
 msgid "Just drag words in!"
 msgstr "Glissez et déposez les mots !"
 
-#: src/main-interface-gtk.c:2271
+#: src/main-interface-gtk.c:2273
 #, fuzzy
 msgid ""
 "If you drag and drop a highlighted word into gWaei's search query input, "
@@ -730,11 +605,11 @@ msgstr ""
 "moyen sympathique de rapidement trouver des mots lors de vos recherches sur "
 "le web."
 
-#: src/main-interface-gtk.c:2282
+#: src/main-interface-gtk.c:2284
 msgid "What does (adj-i) mean?"
 msgstr "Que signifie (adj-i) ?"
 
-#: src/main-interface-gtk.c:2288
+#: src/main-interface-gtk.c:2290
 #, fuzzy
 msgid ""
 "It is part of the terminalogy used by the EDICT group of dictionaries to "
@@ -749,11 +624,11 @@ msgstr ""
 "resteront obscurs à moins de regarder leur signification.\n"
 "\n"
 
-#: src/main-interface-gtk.c:2300
+#: src/main-interface-gtk.c:2302
 msgid "Books are Heavy"
 msgstr "Les livres sont lourds"
 
-#: src/main-interface-gtk.c:2306
+#: src/main-interface-gtk.c:2308
 msgid ""
 "Aways wear a construction helmet when working with books.  They are "
 "dangerous heavy objects that can at any point fall on and injure you.  "
@@ -765,21 +640,21 @@ msgstr ""
 "Avertissez tous vos amis. Ils vous en remercieront plus tard. Si si, "
 "Vraiment."
 
-#: src/main-interface-gtk.c:2509
+#: src/main-interface-gtk.c:2511
 msgid "- A dictionary program for Japanese-English translation."
 msgstr "- Un dictionnaire logiciel pour la traduction Japonais-Anglais"
 
-#: src/main-interface-gtk.c:2821 src/main-interface-gtk.c:2887
+#: src/main-interface-gtk.c:2823 src/main-interface-gtk.c:2889
 msgid "Pop"
 msgstr "Pop."
 
 # E: English
-#: src/main-interface-gtk.c:3062
+#: src/main-interface-gtk.c:3064
 msgid "E:\t"
 msgstr "E:\t"
 
 # J: Japanese
-#: src/main-interface-gtk.c:3072
+#: src/main-interface-gtk.c:3074
 msgid ""
 "\n"
 "J:\t"
@@ -788,7 +663,7 @@ msgstr ""
 "J:\t"
 
 # D: Detail
-#: src/main-interface-gtk.c:3082
+#: src/main-interface-gtk.c:3084
 msgid ""
 "\n"
 "D:\t"
@@ -858,30 +733,50 @@ msgstr "Autres résultats %d"
 msgid "Page "
 msgstr "Page"
 
-#: src/io.c:234 src/io.c:238 src/io.c:245 src/io.c:252
+#: src/io.c:315
+msgid "File copy error"
+msgstr "Erreur de copie du fichier"
+
+#: src/io.c:543 src/io.c:579
+msgid "gunzip error"
+msgstr "Erreur de gunzip"
+
+#: src/io.c:622
 #, c-format
 msgid "Removing %s..."
 msgstr "Suppression de %s..."
 
-#: src/io.c:275
-msgid "File copy error"
-msgstr "Erreur de copie du fichier"
+#: src/io.c:624
+#, fuzzy
+msgid "Removing..."
+msgstr "Suppression de %s..."
 
-#: src/io.c:287
-#, c-format
-msgid "  Recreating mixed dictionary..."
-msgstr "  Recréation du dictionnaire mixte ..."
+#: src/io.c:690
+#, fuzzy, c-format
+msgid "Downloading %s..."
+msgstr "Téléchargement ..."
 
-#: src/io.c:371
-#, c-format
-msgid "success\n"
-msgstr "succès\n"
+#: src/io.c:709
+msgid "Unable to create dictionary folder"
+msgstr "Impossible de créer le dossier des dictionnaires"
 
-#: src/io.c:501 src/io.c:531
-msgid "gunzip error"
-msgstr "Erreur de gunzip"
+#: src/io.c:730
+msgid "Decompressing..."
+msgstr "Décompression ..."
 
-#: src/settings-interface-gtk.c:354
+#: src/io.c:740
+msgid "Unzip Error"
+msgstr "Erreur de décompression unzip"
+
+#: src/io.c:748
+msgid "Converting encoding..."
+msgstr "Conversion de l'encodage ..."
+
+#: src/io.c:761
+msgid "Postprocessing..."
+msgstr "Traitements ..."
+
+#: src/settings-interface-gtk.c:350
 #, c-format
 msgid "_Use the System Document Font (%s)"
 msgstr "_Utiliser la police de document du système (%s)"
@@ -916,35 +811,23 @@ msgstr "Mise à jour annulée"
 msgid "Dictionary update finished"
 msgstr "Dictionnaire mis à jour"
 
-#: src/settings-callbacks-gtk.c:279
-msgid "Unable to create dictionary folder"
-msgstr "Impossible de créer le dossier des dictionnaires"
-
-#: src/settings-callbacks-gtk.c:298
-msgid "Decompressing..."
-msgstr "Décompression ..."
-
-#: src/settings-callbacks-gtk.c:308
-msgid "Unzip Error"
-msgstr "Erreur de décompression unzip"
-
-#: src/settings-callbacks-gtk.c:364 src/gtk-dict-install-line-object.c:63
+#: src/settings-callbacks-gtk.c:291 src/gtk-dict-install-line-object.c:63
 msgid "Installed"
 msgstr "Installé"
 
-#: src/settings-callbacks-gtk.c:371 src/settings-callbacks-gtk.c:560
+#: src/settings-callbacks-gtk.c:298 src/settings-callbacks-gtk.c:487
 msgid "Installing..."
 msgstr "Installation en cours ..."
 
-#: src/settings-callbacks-gtk.c:524
+#: src/settings-callbacks-gtk.c:451
 msgid "Cancelling..."
 msgstr "Annulation ..."
 
-#: src/settings-callbacks-gtk.c:540 src/gtk-dict-install-line-object.c:68
+#: src/settings-callbacks-gtk.c:467 src/gtk-dict-install-line-object.c:68
 msgid "Not Installed"
 msgstr "Non installé"
 
-#: src/settings-callbacks-gtk.c:729
+#: src/settings-callbacks-gtk.c:656
 msgid "Dictionary File Select"
 msgstr "Sélection du fichier du dictionnaire"
 
@@ -959,16 +842,16 @@ msgstr ""
 "<b>Radical actuel :</b> %s\n"
 "<b>Nom du radical :</b> %s"
 
-#: src/dictlist-object.c:652
+#: src/dictlist-object.c:649
 #, c-format
 msgid "Syncing %s dictionary"
 msgstr "Synchronisation du dictionnaire %s "
 
-#: src/dictlist-object.c:657
+#: src/dictlist-object.c:654
 msgid "File read failed"
 msgstr "Échec de lecture du fichier"
 
-#: src/dictlist-object.c:682
+#: src/dictlist-object.c:679
 msgid "Success"
 msgstr "Succès"
 
@@ -1248,6 +1131,114 @@ msgstr "Explorer ..."
 #: src/gtk-dict-install-line-object.c:123
 msgid "Reset"
 msgstr "Réinitialiser"
+
+#~ msgid ""
+#~ "Your query is possibly a past-form i-adjective.  (Try searching for %s%s?)"
+#~ msgstr ""
+#~ "Votre requête est potentiellement une forme passée d'un i-adjectif. "
+#~ "(Essayer de rechercher %s%s ?)"
+
+#~ msgid ""
+#~ "Your query is possibly a negative i-adjective.  (Try searching for %s%s?)"
+#~ msgstr ""
+#~ "Votre requête est potentiellement une forme négative d'un i-adjectif. "
+#~ "(Essayer de rechercher %s%s ?)"
+
+#~ msgid ""
+#~ "Your query is possibly a te-form i-adjective.  (Try searching for %s%s?)"
+#~ msgstr ""
+#~ "Votre requête est potentiellement une forme en -te d'un i-adjectif. "
+#~ "(Essayer de rechercher %s%s ?)"
+
+#~ msgid ""
+#~ "Your query is possibly a causitive i-adjective.  (Try searching for %s%s?)"
+#~ msgstr ""
+#~ "Votre requête est potentiellement une forme causale d'un i-adjectif. "
+#~ "(Essayer de rechercher %s%s ?)"
+
+#~ msgid ""
+#~ "Your query is possibly a conditional-form i-adjective.  (Try searching "
+#~ "for %s%s?)"
+#~ msgstr ""
+#~ "Votre requête est potentiellement une forme conditionnelle d'un i-"
+#~ "adjectif. (Essayer de rechercher %s%s ?)"
+
+#~ msgid ""
+#~ "Your query is possibly a past-form na-adjective.  (Try searching for %s%"
+#~ "s?)"
+#~ msgstr ""
+#~ "Votre requête est potentiellement une forme passée d'un na-adjectif. "
+#~ "(Essayer de rechercher %s%s ?)"
+
+#~ msgid ""
+#~ "Your query is possibly a negative na-adjective.  (Try searching for %s%s?)"
+#~ msgstr ""
+#~ "Votre requête est potentiellement une forme négative d'un na-adjectif. "
+#~ "(Essayer de rechercher %s%s ?)"
+
+#~ msgid ""
+#~ "Your query is possibly a te-form na-adjective.  (Try searching for %s%s?)"
+#~ msgstr ""
+#~ "Votre requête est potentiellement une forme en -te d'un na-adjectif. "
+#~ "(Essayer de rechercher %s%s ?)"
+
+#~ msgid ""
+#~ "Your query is possibly a causitive na-adjective.  (Try searching for %s%"
+#~ "s?)"
+#~ msgstr ""
+#~ "Votre requête est potentiellement une forme causale d'un na-adjectif. "
+#~ "(Essayer de rechercher %s%s ?)"
+
+#~ msgid ""
+#~ "Your query is possibly a conditional-form na-adjective.  (Try searching "
+#~ "for %s%s?)"
+#~ msgstr ""
+#~ "Votre requête est potentiellement une forme conditionnelle d'un i-"
+#~ "adjectif. (Essayer de rechercher %s%s ?)"
+
+#, fuzzy
+#~ msgid "Found %d Results"
+#~ msgstr "%d résultat trouvé"
+
+#, fuzzy
+#~ msgid " (%d Relevant)"
+#~ msgstr "(%d pertinent)"
+
+#~ msgid "Found "
+#~ msgstr "Trouvé(s) : "
+
+#~ msgid " Results"
+#~ msgstr " Résultats"
+
+#~ msgid " ("
+#~ msgstr " ("
+
+#~ msgid " Relevant)"
+#~ msgstr " pertinents)"
+
+#~ msgid "Syncing possible installed dictionaries..."
+#~ msgstr "Synchronisation des dictionnaires potentiellement installés ..."
+
+#~ msgid "Failed"
+#~ msgstr "Échec"
+
+#~ msgid "%sTrying to uninstall %s%s%s...%s"
+#~ msgstr "%sTentative de désinstallation de %s%s%s...%s"
+
+#~ msgid "Copying file..."
+#~ msgstr "Copie du fichier ..."
+
+#~ msgid "Downloading file..."
+#~ msgstr "Téléchargement du fichier ..."
+
+#~ msgid "Gunzipping file..."
+#~ msgstr "Décompression gzip du fichier ..."
+
+#~ msgid "  Recreating mixed dictionary..."
+#~ msgstr "  Recréation du dictionnaire mixte ..."
+
+#~ msgid "success\n"
+#~ msgstr "succès\n"
 
 #, fuzzy
 #~ msgid ""
@@ -1691,11 +1682,6 @@ msgstr "Réinitialiser"
 
 #~ msgid " dictionary changes..."
 #~ msgstr " ..."
-
-#~ msgid "Found %d Result"
-#~ msgid_plural "Found %d Results"
-#~ msgstr[0] "%d résultat trouvé"
-#~ msgstr[1] "%d résultats trouvés"
 
 #~ msgid "%d Relevant"
 #~ msgid_plural "%d Relevant"
