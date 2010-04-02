@@ -40,6 +40,7 @@
 #include <gwaei/dictionary-objects.h>
 #include <gwaei/search-objects.h>
 #include <gwaei/interface.h>
+#include <gwaei/main-interface-ncurses.h>
 
 
 //!
@@ -96,22 +97,18 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary, const int 
         temp->gw_searchitem_parse_result_string = &gw_resultline_parse_edict_result_string;
         if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
           temp->gw_searchitem_append_results_to_output = &gw_console_append_edict_results;
+        else if  (gw_util_get_runmode() == GW_NCURSES_RUNMODE)
+          temp->gw_searchitem_append_results_to_output = &gw_ncurses_append_edict_results;
         else
           temp->gw_searchitem_append_results_to_output = &gw_ui_append_edict_results_to_buffer;
-        break;
-      case GW_DICT_TYPE_RADICALS:
-        if (!gw_queryline_parse_edict_string (temp->queryline, query)) return;
-        temp->gw_searchitem_parse_result_string = &gw_resultline_parse_radicaldict_result_string;
-        if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
-          temp->gw_searchitem_append_results_to_output = &gw_console_append_radicalsdict_results;
-        else
-          temp->gw_searchitem_append_results_to_output = &gw_ui_append_radicalsdict_results_to_buffer;
         break;
       case GW_DICT_TYPE_KANJI:
         if (!gw_queryline_parse_kanjidict_string (temp->queryline, query)) return;
         temp->gw_searchitem_parse_result_string = &gw_resultline_parse_kanjidict_result_string;
         if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
-          temp->gw_searchitem_append_results_to_output = gw_console_append_kanjidict_results;
+          temp->gw_searchitem_append_results_to_output = &gw_console_append_kanjidict_results;
+        else if (gw_util_get_runmode() == GW_NCURSES_RUNMODE)
+          temp->gw_searchitem_append_results_to_output = &gw_ncurses_append_kanjidict_results;
         else
           temp->gw_searchitem_append_results_to_output = &gw_ui_append_kanjidict_results_to_buffer;
         break;
@@ -120,6 +117,8 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary, const int 
         temp->gw_searchitem_parse_result_string = &gw_resultline_parse_examplesdict_result_string;
         if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
           temp->gw_searchitem_append_results_to_output = &gw_console_append_examplesdict_results;
+        else if  (gw_util_get_runmode() == GW_NCURSES_RUNMODE)
+          temp->gw_searchitem_append_results_to_output = &gw_ncurses_append_examplesdict_results;
         else
           temp->gw_searchitem_append_results_to_output = &gw_ui_append_examplesdict_results_to_buffer;
         break;
@@ -128,6 +127,8 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary, const int 
         temp->gw_searchitem_parse_result_string = &gw_resultline_parse_unknowndict_result_string;
         if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
           temp->gw_searchitem_append_results_to_output = &gw_console_append_unknowndict_results;
+        else if  (gw_util_get_runmode() == GW_NCURSES_RUNMODE)
+          temp->gw_searchitem_append_results_to_output = &gw_ncurses_append_unknowndict_results;
         else
           temp->gw_searchitem_append_results_to_output = &gw_ui_append_unknowndict_results_to_buffer;
         break;

@@ -1,3 +1,4 @@
+#ifndef GW_RESULTLINE_OBJECT_INCLUDED
 #define GW_RESULTLINE_OBJECT_INCLUDED
 /******************************************************************************
     AUTHOR:
@@ -69,3 +70,4 @@ void gw_resultline_parse_radicaldict_result_string (GwResultLine*);
 void gw_resultline_parse_examplesdict_result_string (GwResultLine*);
 void gw_resultline_parse_unknowndict_result_string (GwResultLine*);
 
+#endif

@@ -1,3 +1,4 @@
+#ifndef GW_DEFINITIONS_INCLUDED
 #define GW_DEFINITIONS_INCLUDED
 
 #define MAX_QUERY        250
@@ -98,3 +99,6 @@
 #define GW_GENERIC_ERROR "gwaei generic error"
 
 #define GW_FILE_ERROR 1
+
+
+#endif

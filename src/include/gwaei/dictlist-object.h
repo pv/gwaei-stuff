@@ -1,3 +1,4 @@
+#ifndef GW_DICTLIST_OBJECT_INCLUDED
 #define GW_DICTLIST_OBJECT_INCLUDED
 /******************************************************************************
     AUTHOR:
@@ -28,9 +29,7 @@
 //! To be written.
 //!
 
-#ifndef GW_DICTINFO_OBJECT_INCLUDED
 #include <gwaei/dictinfo-object.h>
-#endif
 
 //!
 //! @brief Primitive for storing lists of dictionaries
@@ -53,3 +52,5 @@ GwDictInfo* gw_dictlist_get_dictinfo_by_name (const char*);
 GwDictInfo* gw_dictlist_get_dictinfo_by_alias(const char*);
 GList* gw_dictlist_get_dict_by_load_position(int);
 GList* gw_dictlist_set_selected_by_load_position(int);
+
+#endif

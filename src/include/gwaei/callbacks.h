@@ -1,3 +1,4 @@
+#ifndef GW_CALLBACKS_INCLUDED
 #define GW_CALLBACKS_INCLUDED
 
 //Main
@@ -78,4 +79,5 @@ void do_remove_dictionary_from_order_prefs (GtkTreeModel*, GtkTreePath*, gpointe
 
 
 
+#endif
 

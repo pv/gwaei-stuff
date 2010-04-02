@@ -1,3 +1,4 @@
+#ifndef GW_QUERYLINE_OBJECT_INCLUDED
 #define GW_QUERYLINE_OBJECT_INCLUDED
 
 #define MAX_ATOMS 20
@@ -37,3 +38,4 @@ typedef struct GwQueryLine {
 GwQueryLine* gw_queryline_new (void );
 void gw_queryline_free (GwQueryLine*);
 
+#endif

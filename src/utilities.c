@@ -50,20 +50,47 @@ static int run_mode;
 //!
 //! @param call String describing the runmode to set.
 //!
-void gw_util_initialize_runmode (char* call)
+void gw_util_initialize_runmode (int argc, char *argv[])
 {
-   char *call_ptr = &call[strlen(call)];
-   while (call_ptr != call && !G_IS_DIR_SEPARATOR (*call_ptr))
+   char *call_ptr = argv[0];
+   call_ptr = &call_ptr[strlen(call_ptr)];
+   while (call_ptr != argv[0] && !G_IS_DIR_SEPARATOR (*call_ptr))
      call_ptr--;
    if (G_IS_DIR_SEPARATOR (*call_ptr))
      call_ptr++;
 
+   gboolean ncurses_switch = FALSE;
+   char *ptr = argv[0];
+   int i = 0;
+   while (i < argc && ncurses_switch == FALSE)
+   {
+     ncurses_switch = (strcmp(argv[i], "-n") == 0 || strcmp(argv[i], "--ncurses") == 0);
+     i++;
+   }
+
    if (strcmp (call_ptr, "waei") == 0 || strcmp (INTERFACE, "NONE") == 0)
-     run_mode = GW_CONSOLE_RUNMODE;
+   {
+     if (ncurses_switch)
+     {
+       run_mode = GW_NCURSES_RUNMODE;
+     }
+     else
+     {
+       run_mode = GW_CONSOLE_RUNMODE;
+     }
+   }
    else if (strcmp (call_ptr, "gwaei") == 0)
+   {
      run_mode = GW_GTK_RUNMODE;
+   }
    else if (strcmp (call_ptr, "kwaei") == 0)
+   {
      run_mode = GW_QT_RUNMODE;
+   }
+   else
+   {
+     run_mode = GW_CONSOLE_RUNMODE;
+   }
 }
 
 
@@ -1042,4 +1069,41 @@ void gw_util_strncpy_fallback_from_key (char *value, char *key, int n)
 }
 
 
+//!
+//! @brief Creates an allocated string from the arguments passed to the program
+//!
+char *gw_util_strdup_args_to_query (int argc, char *argv[])
+{
+      int i = 1;
+      char *query_text_data = NULL;
+      char *query_temp = NULL;
+      //query_text_data = g_strdup_printf ("");
+      while (i < argc)
+      {
+        //First loop
+        if (query_text_data == NULL)
+        {
+          query_text_data = g_strdup_printf("%s", argv[i]);
+        }
+        //Next loops
+        else
+        {
+          query_temp = g_strdup_printf("%s %s", query_text_data, argv[i]);
+          if (query_text_data != NULL)
+          {
+            g_free (query_text_data);
+            query_text_data = NULL;
+          }
+          query_text_data = query_temp;
+          query_temp = NULL;
+        }
+        i++;
+      }
+      if (query_temp != NULL)
+      {
+        g_free (query_temp);
+        query_temp = NULL;
+      }
 
+      return query_text_data;
+}

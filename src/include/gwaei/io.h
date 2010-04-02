@@ -1,3 +1,4 @@
+#ifndef GW_IO_INCLUDED
 #define GW_IO_INCLUDED
 
 char save_path[FILENAME_MAX];
@@ -13,3 +14,5 @@ gboolean gw_io_copy_with_encoding( char *source_path,
                                       GError **error);
 
 gboolean gw_io_check_for_rsync(void);
+
+#endif

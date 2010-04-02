@@ -1,3 +1,4 @@
+#ifndef GW_INTERFACE_INCLUDED
 #define GW_INTERFACE_INCLUDED
 
 gpointer get_gobject_from_target (const int);
@@ -22,19 +23,20 @@ int gw_ui_update_progressbar (char*, int, gpointer);
 const char* gw_ui_get_active_dictionary(void);
 char* gw_ui_get_text_from_text_buffer(const int);
 
-void initialize_gui_interface(int*, char***);
+void initialize_gui_interface(int, char**);
 
 void gw_ui_append_edict_results_to_buffer (GwSearchItem*, gboolean);
 void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem*, gboolean);
-void gw_ui_append_radicalsdict_results_to_buffer (GwSearchItem*, gboolean);
 void gw_ui_append_examplesdict_results_to_buffer (GwSearchItem*, gboolean);
 void gw_ui_append_unknowndict_results_to_buffer (GwSearchItem*, gboolean);
 
 void gw_console_append_edict_results (GwSearchItem*, gboolean);
 void gw_console_append_kanjidict_results (GwSearchItem*, gboolean);
-void gw_console_append_radicalsdict_results (GwSearchItem*, gboolean);
 void gw_console_append_examplesdict_results (GwSearchItem*, gboolean);
 void gw_console_append_unknowndict_results (GwSearchItem*, gboolean);
 void gw_ui_deselect_all_radicals (void);
 gboolean gw_ui_cancel_search (gpointer);
 gboolean gw_ui_cancel_search_by_searchitem (GwSearchItem*);
+
+
+#endif

@@ -1,8 +1,13 @@
+#ifndef GW_UTILITIES_INCLUDED
 #define GW_UTILITIES_INCLUDED
 
-#define GW_CONSOLE_RUNMODE 0
-#define GW_GTK_RUNMODE     1
-#define GW_QT_RUNMODE      2
+enum gw_runmodes {
+  GW_CONSOLE_RUNMODE,
+  GW_GTK_RUNMODE,
+  GW_QT_RUNMODE,
+  GW_NCURSES_RUNMODE,
+  GW_TOTAL_RUNMODES
+};
 
 gboolean gw_util_itoa(int, char *, const int);
 char* gw_util_get_waei_directory( char* );
@@ -20,4 +25,9 @@ gboolean gw_util_is_hiragana_str(char*);
 gboolean gw_util_is_util_kanji_str(char*);
 gboolean gw_util_is_katakana_str(char*);
 gboolean gw_util_is_romaji_str(char*);
+
+char *gw_util_strdup_args_to_query (int, char**);
+
 #define IS_HEXCOLOR(color) (regexec(&re_hexcolor, (color), 1, NULL, 0) == 0)
+
+#endif

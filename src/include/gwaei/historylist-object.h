@@ -1,3 +1,4 @@
+#ifndef GW_HISTORYLIST_OBJECT_INCLUDED
 #define GW_HISTORYLIST_OBJECT_INCLUDED 
 /******************************************************************************
     AUTHOR:
@@ -32,9 +33,7 @@
 //! Historylist targets
 //!
 
-#ifndef GW_SEARCHITEM_OBJECT_INCLUDED
 #include <gwaei/searchitem-object.h>
-#endif
 
 enum historylist_targets
 {
@@ -74,3 +73,4 @@ GList* gw_historylist_get_combined_history_list (const int);
 GList* gw_historylist_get_back_history (const int);
 GList* gw_historylist_get_forward_history (const int);
 
+#endif

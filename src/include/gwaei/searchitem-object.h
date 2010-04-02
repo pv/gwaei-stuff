@@ -1,3 +1,4 @@
+#ifndef GW_SERACHITEM_OBJECT_INCLUDED
 #define GW_SEARCHITEM_OBJECT_INCLUDED
 /******************************************************************************
     AUTHOR:
@@ -32,12 +33,8 @@
 //! Historylist targets
 //!
 
-#ifndef GW_QUERYLINE_OBJECT_INCLUDED
 #include <gwaei/queryline-object.h>
-#endif
-#ifndef GW_RESULTLINE_OBJECT_INCLUDED
 #include <gwaei/resultline-object.h>
-#endif
 
 
 //!
@@ -84,3 +81,4 @@ typedef struct GwSearchItem {
 } GwSearchItem;
 
 
+#endif

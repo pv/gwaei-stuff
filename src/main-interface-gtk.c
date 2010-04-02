@@ -28,6 +28,7 @@
 //! This is the gtk version.
 //!
 
+#include <stdlib.h>
 #include <string.h>
 #include <regex.h>
 #include <locale.h>
@@ -1134,7 +1135,7 @@ int rebuild_combobox_dictionary_list()
       }
     }
 
-    printf(gettext("\n"));
+    printf("\n");
 
     //Start filling in the new items
     GwDictInfo *di_alias, *di_name;
@@ -2497,12 +2498,12 @@ void gw_ui_set_header (GwSearchItem *item, char* text, char* mark_name)
 }
 
 
-void initialize_gui_interface(int *argc, char ***argv)
+void initialize_gui_interface(int argc, char *argv[])
 {
     //Initialize some libraries
     UniqueApp *app;
     gdk_threads_init();
-    gtk_init (argc, argv);
+    gtk_init (&argc, &argv);
 
     app = unique_app_new ("org.dictionary.gWaei", NULL);
     
@@ -2511,7 +2512,7 @@ void initialize_gui_interface(int *argc, char ***argv)
     GOptionContext *context = g_option_context_new (gettext("- A dictionary program for Japanese-English translation."));
     g_option_context_add_main_entries (context, entries, PACKAGE);
     g_option_context_add_group (context, gtk_get_option_group (TRUE));
-    g_option_context_parse (context, argc, argv, &error);
+    g_option_context_parse (context, &argc, &argv, &error);
     g_option_context_free (context);
 
     //Activate the main window in the program is already open
@@ -2573,29 +2574,35 @@ void initialize_gui_interface(int *argc, char ***argv)
       }
 
       /*Set initial search in arguments were given with the application*/
-      char query_text[200] = "\0";
-      if (*argc > 1)
+      //Set query text
+      char *query_text_data = NULL;
+      if (argc > 1 && query_text_data == NULL)
       {
-        int i = 1;
-        while (i < *argc)
+        query_text_data = gw_util_strdup_args_to_query (argc, argv);
+        if (query_text_data == NULL)
         {
-          strcat(query_text, argv[0][i]);
-          i++;
-          if (i < *argc)
-             strcat(query_text, " ");
+          printf ("Memory error creating initial query string!\n");
+          exit (EXIT_FAILURE);
         }
-        gtk_entry_set_text (GTK_ENTRY (search_entry), query_text);
+        gtk_entry_set_text (GTK_ENTRY (search_entry), query_text_data);
         do_search (NULL, NULL);
       }
-
 
       //Enter the main loop
       gdk_threads_enter();
       gtk_main ();
       gdk_threads_leave();
 
+      //Cleanup
+      if (query_text_data != NULL)
+      {
+        g_free (query_text_data);
+        query_text_data = NULL;
+      }
       g_object_unref (app);
     }
+
+    exit (EXIT_SUCCESS);
 }
 
 
@@ -3009,6 +3016,7 @@ void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item, gboolean unus
 }
 
 
+/*
 void gw_ui_append_radicalsdict_results_to_buffer (GwSearchItem *item, gboolean unused)
 {
       GwResultLine* resultline = item->resultline;
@@ -3046,6 +3054,7 @@ void gw_ui_append_radicalsdict_results_to_buffer (GwSearchItem *item, gboolean u
         gw_ui_set_button_sensitive_when_label_is (resultline->radicals);
       }
 }
+*/
 
 
 void gw_ui_append_examplesdict_results_to_buffer (GwSearchItem *item, gboolean unused)
@@ -3092,6 +3101,7 @@ void gw_ui_append_examplesdict_results_to_buffer (GwSearchItem *item, gboolean u
       gtk_text_buffer_get_iter_at_mark (tb, &iter, mark);
       gtk_text_buffer_insert (tb, &iter, "\n\n", -1);
 }
+
 
 void gw_ui_append_unknowndict_results_to_buffer (GwSearchItem *item, gboolean unused)
 {

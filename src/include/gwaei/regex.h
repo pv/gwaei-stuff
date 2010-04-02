@@ -1,3 +1,4 @@
+#ifndef GW_REGEX_INCLUDED
 #define GW_REGEX_INCLUDED
 
 #define GW_REGEX_EFLAGS_EXIST    (REG_EXTENDED | REG_ICASE | REG_NOSUB)
@@ -76,3 +77,4 @@ regex_t gw_re[GW_RE_LENGTH];
 
 
 
+#endif

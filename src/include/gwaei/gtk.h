@@ -1,3 +1,4 @@
+#ifndef GW_GTK_INCLUDED
 #define GW_GTK_INCLUDED
 /******************************************************************************
     AUTHOR:
@@ -58,3 +59,4 @@ typedef struct GwUiDictInstallLine GwUiDictInstallLine;
 
 
 
+#endif

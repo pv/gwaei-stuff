@@ -49,9 +49,9 @@
 
 
 
-int main( int argc, char *argv[] )
+int main (int argc, char *argv[])
 {    
-    gw_util_initialize_runmode(argv[0]);
+    gw_util_initialize_runmode(argc, argv);
 
     //Setup for localized messages
     setlocale(LC_MESSAGES, "");
@@ -80,8 +80,12 @@ int main( int argc, char *argv[] )
 
     if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
       initialize_console_interface(argc, argv);
+    else if  (gw_util_get_runmode() == GW_NCURSES_RUNMODE)
+      initialize_ncurses_interface (argc, argv);
+    else if  (gw_util_get_runmode() == GW_GTK_RUNMODE)
+      initialize_gui_interface(argc, argv);
     else
-      initialize_gui_interface(&argc, &argv);
+      initialize_console_interface(argc, argv);
 
     gw_dictlist_free ();
 

@@ -1,4 +1,6 @@
+#ifndef GW_DICTINFO_OBJECT_INCLUDED
 #define GW_DICTINFO_OBJECT_INCLUDED
+
 /******************************************************************************
     AUTHOR:
     File written and Copyrighted by Zachary Dovel. All Rights Reserved.
@@ -28,9 +30,7 @@
 //! To be written.
 //!
 
-#ifndef GW_RESULTLINE_OBJECT_INCLUDED
 #include <gwaei/resultline-object.h>
-#endif
 
 //!
 //! @brief Enumeration of dictionary statuses
@@ -105,3 +105,5 @@ typedef struct GwDictInfo GwDictInfo;
 
 
 GwDictInfo* gw_dictinfo_new (char*);
+
+#endif
