@@ -110,6 +110,7 @@ G_MODULE_EXPORT void do_radical_search (GtkWidget *widget, gpointer data)
     hl->current = gw_searchitem_new(query, dictionary, GW_TARGET_RESULTS);
 
     //Start the search
+    gw_ui_initialize_buffer_by_searchitem (hl->current);
     gw_search_get_results (hl->current);
 }
 

@@ -237,6 +237,7 @@ G_MODULE_EXPORT gboolean do_get_iter_for_button_release (GtkWidget      *widget,
         GwSearchItem *item;
         item = gw_searchitem_new (query, di, GW_TARGET_KANJI);
 
+        gw_ui_initialize_buffer_by_searchitem (item);
         gw_search_get_results (item);
       }
       else
@@ -411,6 +412,7 @@ G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
     GList *list = g_list_nth (gw_tab_searchitems, page_num);
     list->data = hl->current;
 
+    gw_ui_initialize_buffer_by_searchitem (hl->current);
     gw_search_get_results (hl->current);
     gw_ui_update_history_popups ();
     gw_ui_update_toolbar_buttons ();
@@ -1382,6 +1384,8 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
     gw_guarantee_first_tab ();
     gw_tab_set_current_tab_text (query);
     gw_ui_set_query_entry_text_by_searchitem (hl->current);
+    gw_ui_close_kanji_results();
+    gw_ui_initialize_buffer_by_searchitem (hl->current);
     gw_search_get_results (hl->current);
 
     //Update the toolbar buttons

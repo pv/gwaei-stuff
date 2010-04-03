@@ -1665,17 +1665,12 @@ void gw_ui_append_image_to_buffer (GwSearchItem *item, char *name)
 }
 
 
-void gw_ui_clear_buffer_by_target (gpointer* tb)
-{
-    gtk_text_buffer_set_text (GTK_TEXT_BUFFER (tb), "", -1);
-}
-
-
 void gw_ui_initialize_buffer_by_searchitem (GwSearchItem *item)
 {
-    if (gw_util_get_runmode () == GW_CONSOLE_RUNMODE) return;
+    //Make sure searches done from the history are pointing at a valid target
+    item->target_tb = (gpointer) get_gobject_from_target (item->target);
 
-    gw_ui_clear_buffer_by_target (item->target_tb);
+    gtk_text_buffer_set_text (GTK_TEXT_BUFFER (item->target_tb), "", -1);
 
     if (item->target == GW_TARGET_RESULTS)
     {
@@ -1710,7 +1705,11 @@ void gw_ui_initialize_buffer_by_searchitem (GwSearchItem *item)
       gtk_text_buffer_insert (GTK_TEXT_BUFFER (tb), &iter, "\n\n\n", -1);
       gtk_text_buffer_get_end_iter (GTK_TEXT_BUFFER (tb), &iter);
       gtk_text_buffer_create_mark (GTK_TEXT_BUFFER (tb), "footer_insertion_mark", &iter, FALSE);
+
+      gw_ui_set_total_results_label_by_searchitem (item);
     }
+
+
 }
 
 
@@ -2561,7 +2560,7 @@ void initialize_gui_interface(int argc, char *argv[])
       //Set the initial focus to the search bar
       gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
       GObject *tb = G_OBJECT (get_gobject_from_target (GW_TARGET_RESULTS));
-      gw_ui_clear_buffer_by_target ((gpointer) tb);
+      gtk_text_buffer_set_text (GTK_TEXT_BUFFER (tb), "", -1);
 
       /*Set initial dictionary*/
       if (arg_dictionary != NULL)
@@ -3170,3 +3169,79 @@ void gw_ui_remove_whitespace_from_buffer (gpointer *tb)
 }
 
 
+//!
+//! /brief To be written
+//!
+void gw_ui_update_progress_feedback (GwSearchItem* item)
+{
+    gboolean buffer_tab_is_focused;
+    buffer_tab_is_focused = (item != NULL && item->target_tb == (gpointer*) get_gobject_from_target(item->target)
+                             && item->target != GW_TARGET_KANJI);
+    if (buffer_tab_is_focused)
+    {
+      gw_ui_set_total_results_label_by_searchitem (item);
+      gw_ui_set_main_window_title_by_searchitem (item);
+      gw_ui_set_search_progressbar_by_searchitem (item);
+    }
+}
+
+//!
+//! /brief To be written
+//!
+void gw_ui_no_result (GwSearchItem *item)
+{
+    gtk_text_buffer_set_text (GTK_TEXT_BUFFER (item->target_tb), "", -1);
+    gw_ui_display_no_results_found_page (item);
+    gw_ui_set_main_window_title_by_searchitem (item);
+}
+
+
+//!
+//! /brief To be written
+//!
+void gw_ui_append_less_relevant_header_to_output(GwSearchItem *item)
+{
+    int irrelevant = item->total_irrelevant_results;
+    char *message = g_strdup_printf (gettext("Other Results %d"), irrelevant);
+    if (message != NULL)
+    {
+      gw_ui_set_header (item, message, "less_relevant_header_mark");
+      g_free (message);
+    }
+}
+
+
+//!
+//! /brief To be written
+//!
+void gw_ui_append_more_relevant_header_to_output (GwSearchItem *item)
+{
+    int relevant = item->total_relevant_results;
+    char *message = g_strdup_printf (gettext("Main Results %d"), relevant);
+    if (message != NULL)
+    {
+      gw_ui_set_header (item, message, "more_relevant_header_mark");
+      g_free (message);
+    }
+}
+
+
+//!
+//! /brief Not yet written
+//!
+void gw_ui_after_search_cleanup (GwSearchItem *item)
+{
+    //Finish up
+    if (item->total_results == 0 &&
+        item->target != GW_TARGET_KANJI &&
+        item->status == GW_SEARCH_SEARCHING)
+    {
+      gw_ui_no_result (item);
+    }
+    if (item->target == GW_TARGET_RESULTS)
+    {
+      gw_ui_remove_whitespace_from_buffer (item->target_tb);
+      gw_ui_set_total_results_label_by_searchitem (item);
+      gw_ui_set_search_progressbar_by_searchitem (item);
+    }     
+}

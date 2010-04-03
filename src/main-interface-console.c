@@ -60,7 +60,7 @@ static char* query_text_data = NULL;
 //!
 //! /brief Print the "less relevant" header where necessary.
 //!
-void gw_console_append_less_relevant_header_to_output()
+void gw_console_append_less_relevant_header_to_output(GwSearchItem *item)
 {
     printf("\n[0;31m***[0m[1m%s[0;31m***************************[0m\n\n\n", gettext("Other Results"));
 }
@@ -69,7 +69,7 @@ void gw_console_append_less_relevant_header_to_output()
 //!
 //! /brief Print the "no result" message where necessary.
 //!
-void gw_console_no_result()
+void gw_console_no_result(GwSearchItem *item)
 {
     printf("%s\n\n", gettext("No results found!"));
 }
@@ -623,3 +623,33 @@ void gw_console_append_unknowndict_results (GwSearchItem *item, gboolean unused)
     printf("%s\n", item->resultline->string);
 }
 
+
+//!
+//! /brief Not yet written
+//!
+void gw_console_update_progress_feedback (GwSearchItem *item)
+{
+}
+
+
+//!
+//! /brief Not yet written
+//!
+void gw_console_append_more_relevant_header_to_output (GwSearchItem *item)
+{
+}
+
+
+//!
+//! /brief Not yet written
+//!
+void gw_console_after_search_cleanup (GwSearchItem *item)
+{
+    //Finish up
+    if (item->total_results == 0 &&
+        item->target != GW_TARGET_KANJI &&
+        item->status == GW_SEARCH_SEARCHING)
+    {
+      gw_console_no_result(item);
+    }
+}

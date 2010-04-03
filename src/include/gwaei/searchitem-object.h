@@ -74,8 +74,12 @@ typedef struct GwSearchItem {
     GwResultLine* backup_resultline;        //!< Result line kept for comparison purposes from previosu result line
     GwResultLine* swap_resultline;          //!< Swap space for swapping result line and backup_resultline
 
-    void (*gw_searchitem_parse_result_string)(GwResultLine*);
+    void (*gw_searchitem_parse_result_string)(struct GwResultLine*);
     void (*gw_searchitem_append_results_to_output)(struct GwSearchItem*, gboolean);
+    void (*gw_searchitem_update_progress_feedback)(struct GwSearchItem*);
+    void (*gw_searchitem_append_less_relevant_header_to_output)(struct GwSearchItem*);
+    void (*gw_searchitem_append_more_relevant_header_to_output)(struct GwSearchItem*);
+    void (*gw_searchitem_after_search_cleanup)(struct GwSearchItem*);
 
     gpointer* target_tb;                 //!< Pointer to a buffer that stays constant unlike when the target attribute is used
 } GwSearchItem;

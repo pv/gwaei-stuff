@@ -39,8 +39,12 @@
 #include <gwaei/utilities.h>
 #include <gwaei/dictionary-objects.h>
 #include <gwaei/search-objects.h>
+
 #include <gwaei/interface.h>
+#include <gwaei/main-interface-console.h>
 #include <gwaei/main-interface-ncurses.h>
+#include <gwaei/main-interface-gtk.h>
+
 
 
 //!
@@ -133,6 +137,27 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary, const int 
           temp->gw_searchitem_append_results_to_output = &gw_ui_append_unknowndict_results_to_buffer;
         break;
   }
+  if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
+  {
+    temp->gw_searchitem_update_progress_feedback = &gw_console_update_progress_feedback;
+    temp->gw_searchitem_append_less_relevant_header_to_output = &gw_console_append_less_relevant_header_to_output;
+    temp->gw_searchitem_append_more_relevant_header_to_output = &gw_console_append_more_relevant_header_to_output;
+    temp->gw_searchitem_after_search_cleanup = &gw_console_after_search_cleanup;
+  }
+  else if  (gw_util_get_runmode() == GW_NCURSES_RUNMODE)
+  {
+    temp->gw_searchitem_update_progress_feedback = &gw_ncurses_update_progress_feedback;
+    temp->gw_searchitem_append_less_relevant_header_to_output = &gw_ncurses_append_less_relevant_header_to_output;
+    temp->gw_searchitem_append_more_relevant_header_to_output = &gw_ncurses_append_more_relevant_header_to_output;
+    temp->gw_searchitem_after_search_cleanup = &gw_ncurses_after_search_cleanup;
+  }
+  else
+  {
+    temp->gw_searchitem_update_progress_feedback = &gw_ui_update_progress_feedback;
+    temp->gw_searchitem_append_less_relevant_header_to_output = &gw_ui_append_less_relevant_header_to_output;
+    temp->gw_searchitem_append_more_relevant_header_to_output = &gw_ui_append_more_relevant_header_to_output;
+    temp->gw_searchitem_after_search_cleanup = &gw_ui_after_search_cleanup;
+  }
 
   return temp;
 }
@@ -175,9 +200,6 @@ gboolean gw_searchitem_do_pre_search_prep (GwSearchItem* item)
     item->total_relevant_results = 0;
     item->total_irrelevant_results = 0;
     item->total_results = 0;
-
-    //Make sure searches done from the history are pointing at a valid target
-    item->target_tb = (gpointer) get_gobject_from_target (item->target);
 
     if (item->fd == NULL)
       item->fd = fopen ((item->dictionary)->path, "r");

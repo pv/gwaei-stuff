@@ -94,60 +94,6 @@ static void append_result_to_output (GwSearchItem *item)
 
 
 //!
-//! @brief Does the work of outputing the more relevant header.
-//!
-//! THIS IS A PRIVATE FUNCTION. The function gives a label for the user to see
-//! and tells how many results are below it.
-//!
-//! @param item a GwSearchItem to get the result numbers from
-//!
-static void append_more_relevant_header_to_output(GwSearchItem *item)
-{
-    if (gw_util_get_runmode() == GW_GTK_RUNMODE)
-    {
-      int relevant = item->total_relevant_results;
-      char *message = g_strdup_printf (gettext("Main Results %d"), relevant);
-      if (message != NULL)
-      {
-        gw_ui_set_header (item, message, "more_relevant_header_mark");
-        g_free (message);
-      }
-    }
-}
-
-
-//!
-//! @brief Does the work of outputing the less relevant header
-//!
-//! THIS IS A PRIVATE FUNCTION. The function gives a label for the user to see
-//! and tells how many results are below it.
-//!
-//! @param item a GwSearchItem to get the result numbers from
-//!
-static void append_less_relevant_header_to_output(GwSearchItem *item)
-{
-    if (gw_util_get_runmode() == GW_GTK_RUNMODE)
-    {
-      int irrelevant = item->total_irrelevant_results;
-      char *message = g_strdup_printf (gettext("Other Results %d"), irrelevant);
-      if (message != NULL)
-      {
-        gw_ui_set_header (item, message, "less_relevant_header_mark");
-        g_free (message);
-      }
-    }
-    else if (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
-    {
-      gw_console_append_less_relevant_header_to_output();
-    }
-    else if (gw_util_get_runmode() == GW_NCURSES_RUNMODE)
-    {
-      gw_ncurses_append_less_relevant_header_to_output();
-    }
-}
-
-
-//!
 //! @brief Gets a stored result in a search item and posts it to the output.
 //!
 //! THIS IS A PRIVATE FUNCTION. The memory is allocated and tthis function makes
@@ -212,7 +158,6 @@ static int get_relevance (GwSearchItem *item) {
 //!
 static gboolean stream_results_thread (GwSearchItem *item)
 {
-    gboolean buffer_is_focused = (item != NULL && item->target_tb == (gpointer*) get_gobject_from_target(item->target) && item->target != GW_TARGET_KANJI);
     int chunk = 0;
 
     //We loop, processing lines of the file until the max chunk size has been
@@ -253,12 +198,7 @@ static gboolean stream_results_thread (GwSearchItem *item)
               item->total_results++;
               item->total_relevant_results++;
               if (item->target != GW_TARGET_KANJI)
-                append_more_relevant_header_to_output(item);
-              if (buffer_is_focused && gw_util_get_runmode () == GW_GTK_RUNMODE)
-              {
-                gw_ui_set_total_results_label_by_searchitem (item);
-                gw_ui_set_main_window_title_by_searchitem (item);
-              }
+                (*item->gw_searchitem_append_more_relevant_header_to_output)(item);
               append_result_to_output(item);
 
               //Swap the result lines
@@ -294,11 +234,8 @@ static gboolean stream_results_thread (GwSearchItem *item)
       continue;
     }
 
-    //Update the progressbar
-    if (buffer_is_focused && gw_util_get_runmode () == GW_GTK_RUNMODE)
-    {
-      gw_ui_set_search_progressbar_by_searchitem (item);
-    }
+    //Update the progress feeback
+    (*item->gw_searchitem_update_progress_feedback)(item);
 
     //If the chunk reached the max chunk size, there is still file left to load
     if ( chunk == MAX_CHUNK ) {
@@ -310,7 +247,7 @@ static gboolean stream_results_thread (GwSearchItem *item)
          !less_relevant_title_inserted &&
          (item->results_medium != NULL || item->results_low != NULL) )
     {
-      append_less_relevant_header_to_output(item);
+      (*item->gw_searchitem_append_less_relevant_header_to_output)(item);
       less_relevant_title_inserted = TRUE;
     }
 
@@ -322,11 +259,7 @@ static gboolean stream_results_thread (GwSearchItem *item)
         item->total_results++;
         append_stored_result_to_output(item, &(item->results_medium), item->resultline);
       }
-      if (buffer_is_focused && gw_util_get_runmode () == GW_GTK_RUNMODE)
-      {
-        gw_ui_set_total_results_label_by_searchitem(item);
-        gw_ui_set_main_window_title_by_searchitem (item);
-      }
+      (*item->gw_searchitem_update_progress_feedback)(item);
       return TRUE;
     }
 
@@ -338,31 +271,8 @@ static gboolean stream_results_thread (GwSearchItem *item)
         item->total_results++;
         append_stored_result_to_output(item, &(item->results_low), item->resultline);
       }
-      if (buffer_is_focused && gw_util_get_runmode () == GW_GTK_RUNMODE)
-      {
-        gw_ui_set_total_results_label_by_searchitem (item);
-        gw_ui_set_main_window_title_by_searchitem (item);
-      }
+      (*item->gw_searchitem_update_progress_feedback)(item);
       return TRUE;
-    }
-
-    //Finish up
-    if (item->total_results == 0 &&
-        item->target != GW_TARGET_KANJI &&
-        item->status == GW_SEARCH_SEARCHING)
-    {
-      if (gw_util_get_runmode () == GW_CONSOLE_RUNMODE)
-    	  gw_console_no_result();
-      else if (gw_util_get_runmode () == GW_NCURSES_RUNMODE)
-    	  gw_ncurses_no_result();
-      else if (gw_util_get_runmode () == GW_GTK_RUNMODE)
-      {
-        gw_ui_clear_buffer_by_target (item->target_tb);
-        gw_ui_display_no_results_found_page(item);
-        {
-          gw_ui_set_main_window_title_by_searchitem (item);
-        }
-      }
     }
 
     return FALSE;
@@ -383,16 +293,7 @@ static gboolean stream_results_cleanup (GwSearchItem *item)
 {
     less_relevant_title_inserted = FALSE;
     item->status = GW_SEARCH_FINISHING;
-    if (gw_util_get_runmode () == GW_CONSOLE_RUNMODE || gw_util_get_runmode () == GW_NCURSES_RUNMODE)
-    {
-       item->status = GW_SEARCH_IDLE;
-    }
-    else if (gw_util_get_runmode () == GW_GTK_RUNMODE &&  item->target == GW_TARGET_RESULTS)
-    {
-      gw_ui_remove_whitespace_from_buffer (item->target_tb);
-      gw_ui_set_total_results_label_by_searchitem (item);
-      gw_ui_set_search_progressbar_by_searchitem (item);
-    }     
+    (*item->gw_searchitem_after_search_cleanup)(item);
     gw_searchitem_do_post_search_clean (item);
     item->status = GW_SEARCH_IDLE;
 }
@@ -416,17 +317,11 @@ void gw_search_get_results (GwSearchItem *item)
         (item->dictionary->type == GW_DICT_TYPE_KANJI || item->dictionary->type == GW_DICT_TYPE_RADICALS))
       item->show_less_relevant_results = TRUE;
 
-    if (gw_util_get_runmode () == GW_GTK_RUNMODE)
-      gw_ui_initialize_buffer_by_searchitem (item);
-
     if (gw_searchitem_do_pre_search_prep (item) == FALSE)
     {
       gw_searchitem_free(item);
       return;
     }
-
-    if (item->target == GW_TARGET_RESULTS)
-      gw_ui_close_kanji_results();
 
     //Start the search
     if (gw_util_get_runmode () == GW_CONSOLE_RUNMODE || gw_util_get_runmode () == GW_NCURSES_RUNMODE)
@@ -437,7 +332,6 @@ void gw_search_get_results (GwSearchItem *item)
     }
     else
     {
-      gw_ui_set_total_results_label_by_searchitem (item);
       g_timeout_add_full (G_PRIORITY_DEFAULT_IDLE, 1,
                           (GSourceFunc)stream_results_thread, item,
                           (GDestroyNotify)stream_results_cleanup     );

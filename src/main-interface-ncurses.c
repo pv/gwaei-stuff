@@ -71,7 +71,7 @@ int cursesSupportColorFlag = true;	//TODO: use this
 //!
 //! /brief Print the "no result" message where necessary.
 //!
-void gw_ncurses_no_result()
+void gw_ncurses_no_result(GwSearchItem *item)
 {
     wprintw(results,"%s\n\n", gettext("No results found!"));
 }
@@ -107,7 +107,9 @@ static void print_search_start_banner(char *query, char *dictionary)
 //!
 //! /brief Print the "less relevant" header where necessary.
 //!
-void gw_ncurses_append_less_relevant_header_to_output()
+//! @param item A GwSearchItem to gleam information from
+//!
+void gw_ncurses_append_less_relevant_header_to_output(GwSearchItem *item)
 {
     wattron(results, COLOR_PAIR(REDONBLACK));
     wprintw(results,"\n*** ");
@@ -116,6 +118,19 @@ void gw_ncurses_append_less_relevant_header_to_output()
     wattron(results, COLOR_PAIR(REDONBLACK));
     wprintw(results,"***************************\n\n\n");
     wattroff(results, COLOR_PAIR(REDONBLACK));
+}
+
+//!
+//! /brief  Print the "more relevant" header where necessary
+//!
+//! This function gets called whenever another relevant result
+//! is found.  You either need to use it to update the line once
+//! written, or make sure that it only prints once.
+//!
+//! @param item A GwSearchItem to gleam information from
+//!
+void gw_ncurses_append_more_relevant_header_to_output(GwSearchItem *item)
+{
 }
 
 
@@ -622,5 +637,39 @@ void gw_ncurses_append_examplesdict_results (GwSearchItem *item, gboolean unused
 void gw_ncurses_append_unknowndict_results (GwSearchItem *item, gboolean unused)
 {
   	wprintw(results,"%s\n", item->resultline->string);
+}
+
+
+//!
+//! /brief Called ruetienly to update progress information
+//!
+//! This function is used to update things such as numbers of
+//! results found or progress bars percentages etc.
+//!
+//! @param item A GwSearchItem pointer to get information from
+//!
+void gw_ncurses_update_progress_feedback (GwSearchItem *item)
+{
+}
+
+
+//!
+//! /brief The details to be taken care of after a search is finished
+//!
+//! This is the function that takes care of things such as hiding progressbars,
+//! changing action verbs to past verbs (Searching... vs Found) and for displaying
+//! "no results found" pages.
+//!
+//! @param item A GwSearchItem pointer to get information from
+//!
+void gw_ncurses_after_search_cleanup (GwSearchItem *item)
+{
+    //Finish up
+    if (item->total_results == 0 &&
+        item->target != GW_TARGET_KANJI &&
+        item->status == GW_SEARCH_SEARCHING)
+    {
+      gw_ncurses_no_result (item);
+    }
 }
 
