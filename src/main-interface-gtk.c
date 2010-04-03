@@ -193,7 +193,7 @@ void gw_ui_set_main_window_title_by_searchitem (GwSearchItem *item)
     int total;
 
     //Initializations
-    if (item->total_relevant_results > 0 && required_objects_exist)
+    if (required_objects_exist)
     {
       char *query = item->queryline->string;
       int relevant = item->total_relevant_results;
@@ -3204,7 +3204,6 @@ void gw_ui_after_search_cleanup (GwSearchItem *item)
     }
     if (item->target == GW_TARGET_RESULTS)
     {
-//      gw_ui_remove_whitespace_from_buffer (item->target_tb);
       gw_ui_set_total_results_label_by_searchitem (item);
       gw_ui_set_search_progressbar_by_searchitem (item);
     }     

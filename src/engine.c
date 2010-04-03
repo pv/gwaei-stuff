@@ -243,6 +243,10 @@ static gboolean stream_results_thread (GwSearchItem *item)
       return TRUE;
     }
 
+    //Make sure the more relevant header banner is visible
+    if (item->target != GW_TARGET_KANJI)
+      (*item->gw_searchitem_append_more_relevant_header_to_output)(item);
+
     //Insert the less relevant title header if needed
     if ( item->show_less_relevant_results    &&
          !less_relevant_title_inserted &&
@@ -260,6 +264,8 @@ static gboolean stream_results_thread (GwSearchItem *item)
         item->total_results++;
         append_stored_result_to_output(item, &(item->results_medium), item->resultline);
       }
+      //Update the progress feeback
+      (*item->gw_searchitem_update_progress_feedback)(item);
       return TRUE;
     }
 
@@ -271,6 +277,8 @@ static gboolean stream_results_thread (GwSearchItem *item)
         item->total_results++;
         append_stored_result_to_output(item, &(item->results_low), item->resultline);
       }
+      //Update the progress feeback
+      (*item->gw_searchitem_update_progress_feedback)(item);
       return TRUE;
     }
 
