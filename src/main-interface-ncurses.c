@@ -45,6 +45,10 @@
 #include <gwaei/preferences.h>
 #include <gwaei/utilities.h>
 
+GwDictInfo *di = NULL;
+char query_text[MAX_QUERY];
+static GMainLoop *main_loop = NULL;
+
 static gboolean ncurses_switch = FALSE;
 static gboolean exact_switch = FALSE;
 static gboolean quiet_switch = FALSE;
@@ -318,129 +322,40 @@ static void ncurses_input_and_scrolling(char *query)
 }
 
 
-//!
-//! @brief NCURSES Main function
-//!
-//! TODO: Show the chosen dictionary and search option
-//! TODO: Accept a !quit/!q like vim?
-//! TODO: Check result
-//!
-//! Zachary's recommendations:
-//! * Pressing "Enter" with no text should bring up a help list of commands
-//! * /exit  and /quit should exit the program
-//! * /dictionary dictionaryname should switch the dictonary
-//! * /exact on should turn no exact searches
-//! * quiet mode doesn't really apply to ncurses so you should ignore it totally
-//!
-//! @param argc The number of arguments
-//! @param argv An array of strings
-//!
-void initialize_ncurses_interface (int argc, char *argv[])
+static gboolean main_loop_function (gpointer data)
 {
-    GwDictInfo *di = NULL;
-    GError *error = NULL;
-    GOptionContext *context;
-    context = g_option_context_new (gettext("- Japanese-English dictionary program that allows regex searches"));
-    GOptionEntry entries[] = 
-    {
-      { "ncurses", 'n', 0, G_OPTION_ARG_NONE, &ncurses_switch, gettext("Open up the multisearch window (beta)"), NULL },
-      { "exact", 'e', 0, G_OPTION_ARG_NONE, &exact_switch, gettext("Do not display less relevant results"), NULL },
-      { "quiet", 'q', 0, G_OPTION_ARG_NONE, &quiet_switch, gettext("Display less information"), NULL },
-      { "dictionary", 'd', 0, G_OPTION_ARG_STRING, &dictionary_switch_data, gettext("Search using a chosen dictionary"), NULL },
-      { NULL }
-    };
-    g_option_context_add_main_entries (context, entries, PACKAGE);
-    if (!g_option_context_parse (context, &argc, &argv, &error))
-    {
-      g_print (gettext("Option parsing failed: %s\n"), error->message);
-      exit (EXIT_FAILURE);
-    }
-    if (error != NULL)
-    {
-      printf("%s\n", error->message);
-      g_error_free (error);
-      error = NULL;
-      exit (EXIT_FAILURE);
-    }
-
-    //We weren't interupted by any switches! Now to the search....
-
-    //Set dictionary
-    if (dictionary_switch_data == NULL)
-      di = gw_dictlist_get_dictinfo_by_alias ("English");
-    else
-      di = gw_dictlist_get_dictinfo_by_alias (dictionary_switch_data);
-    if (di == NULL || di->status != GW_DICT_STATUS_INSTALLED)
-    {
-      printf (gettext("Requested dictionary not found!\n"));
-      exit (EXIT_FAILURE);
-    }
-
-    //Set query text
-    static char* query_text_data;
-    if (argc > 1 && query_text_data == NULL)
-    {
-      query_text_data = gw_util_strdup_args_to_query (argc, argv);
-      if (query_text_data == NULL)
-      {
-        printf ("Memory error creating initial query string!\n");
-        exit (EXIT_FAILURE);
-      }
-    }
-    char query[MAX_QUERY];
-    if (query_text_data != NULL)
-    {
-      strncpy (query, query_text_data, MAX_QUERY);
-      g_free (query_text_data);
-      query_text_data = NULL;
-    }
-
-    //nCurses initializations
-    if (ncurses_screen_init() == ERR) return;
-
-    //Enter the main loop of ncurses
-    int cont = 0;
-    gboolean loop = TRUE;
-    while(loop)
-    {
       wmove(search, 1, 2);
-      ncurses_input_and_scrolling(query);
+      ncurses_input_and_scrolling(query_text);
       wmove(search, 1, 2);
 
       ncurses_add_intro_and_box(screen, gettext("Results: "));
       wclear(results);
 
       //If there is nothing, exit
-      if ((query[0] == '\n') || (query[0] == '\0'))
+      if ((query_text[0] == '\n') || (query_text[0] == '\0'))
       {
-        loop = FALSE;
-        break;
+        g_main_loop_quit (main_loop);
       }
 
-      for (cont = 0; cont < sizeof(query); ++cont)
-      {
-        if (query[cont] == '\n')
-        {
-          query[cont] = '\0';
-          break;
-        }
-      }
+      //Clear the entry area and prep for the search
+      char *ptr = strchr (query_text, '\n');
+      if (ptr != NULL) *ptr = '\0';
 
       if (quiet_switch == FALSE)
-        print_search_start_banner (query, di->name);
+        print_search_start_banner (query_text, di->name);
 
-      if (query[0] == '\0')
-        continue;
+      if (query_text[0] == '\0')
+        return TRUE;
 
-      GwSearchItem *item;
-      item = gw_searchitem_new (query, di, GW_TARGET_CONSOLE);
+      GwSearchItem *item = NULL;
+      item = gw_searchitem_new (query_text, di, GW_TARGET_CONSOLE);
       if (item == NULL)
       {
         wprintw(screen, "There was an error creating your search.");
         wrefresh(screen);
         cbreak(); wgetch(search); endwin();
-        query[0] = '\0';
-        continue;
+        query_text[0] = '\0';
+        return TRUE;
       }
 
       item->show_less_relevant_results = !exact_switch;
@@ -493,7 +408,93 @@ void initialize_ncurses_interface (int argc, char *argv[])
       gw_searchitem_free(item);
       item = NULL;
 
+      return TRUE;
+}
+
+
+//!
+//! @brief NCURSES Main function
+//!
+//! TODO: Show the chosen dictionary and search option
+//! TODO: Accept a !quit/!q like vim?
+//! TODO: Check result
+//!
+//! Zachary's recommendations:
+//! * Pressing "Enter" with no text should bring up a help list of commands
+//! * /exit  and /quit should exit the program
+//! * /dictionary dictionaryname should switch the dictonary
+//! * /exact on should turn no exact searches
+//! * quiet mode doesn't really apply to ncurses so you should ignore it totally
+//!
+//! @param argc The number of arguments
+//! @param argv An array of strings
+//!
+void initialize_ncurses_interface (int argc, char *argv[])
+{
+    di = NULL;
+    GError *error = NULL;
+    GOptionContext *context;
+    context = g_option_context_new (gettext("- Japanese-English dictionary program that allows regex searches"));
+    GOptionEntry entries[] = 
+    {
+      { "ncurses", 'n', 0, G_OPTION_ARG_NONE, &ncurses_switch, gettext("Open up the multisearch window (beta)"), NULL },
+      { "exact", 'e', 0, G_OPTION_ARG_NONE, &exact_switch, gettext("Do not display less relevant results"), NULL },
+      { "quiet", 'q', 0, G_OPTION_ARG_NONE, &quiet_switch, gettext("Display less information"), NULL },
+      { "dictionary", 'd', 0, G_OPTION_ARG_STRING, &dictionary_switch_data, gettext("Search using a chosen dictionary"), NULL },
+      { NULL }
+    };
+    g_option_context_add_main_entries (context, entries, PACKAGE);
+    if (!g_option_context_parse (context, &argc, &argv, &error))
+    {
+      g_print (gettext("Option parsing failed: %s\n"), error->message);
+      exit (EXIT_FAILURE);
     }
+    if (error != NULL)
+    {
+      printf("%s\n", error->message);
+      g_error_free (error);
+      error = NULL;
+      exit (EXIT_FAILURE);
+    }
+
+    //We weren't interupted by any switches! Now to the search....
+
+    //Set dictionary
+    if (dictionary_switch_data == NULL)
+      di = gw_dictlist_get_dictinfo_by_alias ("English");
+    else
+      di = gw_dictlist_get_dictinfo_by_alias (dictionary_switch_data);
+    if (di == NULL || di->status != GW_DICT_STATUS_INSTALLED)
+    {
+      printf (gettext("Requested dictionary not found!\n"));
+      exit (EXIT_FAILURE);
+    }
+
+    //Set query text
+    static char* query_text_data;
+    if (argc > 1 && query_text_data == NULL)
+    {
+      query_text_data = gw_util_strdup_args_to_query (argc, argv);
+      if (query_text_data == NULL)
+      {
+        printf ("Memory error creating initial query string!\n");
+        exit (EXIT_FAILURE);
+      }
+    }
+    if (query_text_data != NULL)
+    {
+      strncpy (query_text, query_text_data, MAX_QUERY);
+      g_free (query_text_data);
+      query_text_data = NULL;
+    }
+
+    //nCurses initializations
+    if (ncurses_screen_init() == ERR) return;
+
+    //Enter the main loop of ncurses
+    main_loop = g_main_loop_new (NULL, TRUE);
+    g_timeout_add  (100, (GSourceFunc) main_loop_function, NULL);
+    g_main_loop_run (main_loop);
 
     endwin();
 

@@ -3011,47 +3011,6 @@ void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item, gboolean unus
 }
 
 
-/*
-void gw_ui_append_radicalsdict_results_to_buffer (GwSearchItem *item, gboolean unused)
-{
-      GwResultLine* resultline = item->resultline;
-      GtkTextBuffer *tb = GTK_TEXT_BUFFER (item->target_tb);
-
-      int line, start_offset, end_offset;
-      GtkTextMark *mark;
-      mark = gtk_text_buffer_get_mark (tb, "content_insertion_mark");
-      GtkTextIter iter;
-      gtk_text_buffer_get_iter_at_mark (tb, &iter, mark);
-
-      //Kanji
-      gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); start_offset = gtk_text_iter_get_line_offset (&iter);
-      gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->kanji, -1, "large", NULL);
-      if (item->target == GW_TARGET_RESULTS) gtk_text_buffer_insert_with_tags_by_name (tb, &iter, " ", -1, "large", NULL);
-      gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
-      gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); line = gtk_text_iter_get_line (&iter);
-      gw_ui_add_match_highlights (line, start_offset, end_offset, item);
-
-      gtk_text_buffer_insert (tb, &iter, "\n", -1);
-      gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); line = gtk_text_iter_get_line (&iter);
-      
-      //Radicals
-      if (resultline->radicals != NULL)
-      {
-        gtk_text_buffer_insert_with_tags_by_name (tb, &iter, gettext("Radicals:"), -1, "important", NULL);
-        gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); start_offset = gtk_text_iter_get_line_offset (&iter);
-        gtk_text_buffer_insert (tb, &iter, resultline->radicals, -1);
-        gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
-        gw_ui_add_match_highlights (line, start_offset, end_offset, item);
-
-        gtk_text_buffer_insert (tb, &iter, "\n", -1);
-        gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); line = gtk_text_iter_get_line (&iter);
-
-        gw_ui_set_button_sensitive_when_label_is (resultline->radicals);
-      }
-}
-*/
-
-
 void gw_ui_append_examplesdict_results_to_buffer (GwSearchItem *item, gboolean unused)
 {
       GwResultLine* resultline = item->resultline;
