@@ -261,7 +261,7 @@ static void *install_thread (gpointer data)
     if (di->status == GW_DICT_STATUS_CANCELING)
     {
       gdk_threads_enter();
-      di->status = GW_DICT_STATUS_NOT_INSTALLED;
+        di->status = GW_DICT_STATUS_NOT_INSTALLED;
       gdk_threads_leave();
       g_error_free(error);
       error = NULL;
@@ -271,31 +271,36 @@ static void *install_thread (gpointer data)
     else if (error != NULL)
     {
       gdk_threads_enter();
-      di->status = GW_DICT_STATUS_NOT_INSTALLED;
-      gw_ui_dict_install_set_message (il, GTK_STOCK_DIALOG_ERROR, error->message);
-      gw_ui_dict_install_set_action_button (il, GTK_STOCK_ADD, TRUE);
+        di->status = GW_DICT_STATUS_NOT_INSTALLED;
+        gw_ui_dict_install_set_message (il, GTK_STOCK_DIALOG_ERROR, error->message);
+        gw_ui_dict_install_set_action_button (il, GTK_STOCK_ADD, TRUE);
       gdk_threads_leave();
       g_error_free(error);
       error = NULL;
+      do_dictionary_remove (il->action_button, il);
     }
     //Install was successful
     else
     {
       gdk_threads_enter();
-      di->status = GW_DICT_STATUS_INSTALLED;
-      di->total_lines =  gw_io_get_total_lines_for_path (di->path);
+        di->status = GW_DICT_STATUS_INSTALLED;
+        di->total_lines =  gw_io_get_total_lines_for_path (di->path);
+      gdk_threads_leave();
       //If statement to reduce flicker, between the Kanji/Radical dictionary install
       if (di->id != GW_DICT_ID_KANJI)
       {
-        gw_ui_dict_install_set_action_button (il, GTK_STOCK_DELETE, TRUE);
-        gw_ui_dict_install_set_message (il, GTK_STOCK_APPLY, gettext("Installed"));
+        gdk_threads_enter();
+          gw_ui_dict_install_set_action_button (il, GTK_STOCK_DELETE, TRUE);
+          gw_ui_dict_install_set_message (il, GTK_STOCK_APPLY, gettext("Installed"));
+        gdk_threads_leave();
       }
-      gdk_threads_leave();
 
       //Special case where the Radicals dictionary is installed right after the Kanji one.
       if (di->id == GW_DICT_ID_KANJI)
       {
-        gw_ui_dict_install_set_message (il, NULL, gettext("Installing..."));
+        gdk_threads_enter();
+          gw_ui_dict_install_set_message (il, NULL, gettext("Installing..."));
+        gdk_threads_leave();
         GwDictInfo *radicals_dict = gw_dictlist_get_dictinfo_by_id (GW_DICT_ID_RADICALS);
         GwDictInfo *kanji_dict = gw_dictlist_get_dictinfo_by_id (GW_DICT_ID_KANJI);
         il->di = radicals_dict;
@@ -305,8 +310,8 @@ static void *install_thread (gpointer data)
     }
 
     gdk_threads_enter();
-    gw_ui_update_settings_interface();
-    rebuild_combobox_dictionary_list();
+      gw_ui_update_settings_interface();
+      rebuild_combobox_dictionary_list();
     gdk_threads_leave();
 }
 

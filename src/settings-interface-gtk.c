@@ -181,7 +181,11 @@ int gw_ui_update_progressbar (char *message, int percent, gpointer data)
 
     if (il->di->status != GW_DICT_STATUS_CANCELING)
     {
-      if (percent == 0)
+      if (percent < 0)
+      {
+        gw_ui_dict_install_set_message (il, NULL, message);
+      }
+      else if (percent == 0)
       {
         //gw_ui_progressbar_set_fraction_by_install_line (il, 0.0);
       }
