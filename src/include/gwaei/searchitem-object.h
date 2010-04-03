@@ -60,12 +60,14 @@ typedef struct GwSearchItem {
     enum GwSearchState status;                             //!< Used to test if a search is in progress.
     char *scratch_buffer;                   //!< Scratch space
     int target;                             //!< What gui element should be outputted to
-    long current_line;                      //!< Current line in teh dictionary file
+    long current_line;                      //!< Current line in the dictionary file
+    long previous_line;                     //!< Recorderd previous line for determining when to update the progresse
     gboolean show_less_relevant_results;    //!< Saved search display format
 
     int total_relevant_results;             //!< Total results guessed to be highly relevant to the query
     int total_irrelevant_results;           //!< Total results guessed to be vaguely relevant to the query
     int total_results;                      //!< Total results returned from the search
+    int previous_total_results;             //!< Total results used for determining when to update the progress
 
     GList *results_medium;                  //!< Buffer storing mediumly relevant result for later display
     GList *results_low;                     //!< Buffer storing lowly relevant result for later display

@@ -197,9 +197,11 @@ gboolean gw_searchitem_do_pre_search_prep (GwSearchItem* item)
 
     //Reset internal variables
     item->current_line = 0;
+    item->previous_line = 0;
     item->total_relevant_results = 0;
     item->total_irrelevant_results = 0;
     item->total_results = 0;
+    item->previous_total_results = 0;
 
     if (item->fd == NULL)
       item->fd = fopen ((item->dictionary)->path, "r");

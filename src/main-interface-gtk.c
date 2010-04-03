@@ -184,8 +184,6 @@ void gw_ui_set_query_entry_text_by_searchitem (GwSearchItem *item)
 //!
 void gw_ui_set_main_window_title_by_searchitem (GwSearchItem *item)
 {
-    if (gw_util_get_runmode () == GW_CONSOLE_RUNMODE) return;
-
     //Declarations
     char *full_title = NULL;
     char *base_title = gettext("gWaei Japanese-English Dictionary");
@@ -195,7 +193,7 @@ void gw_ui_set_main_window_title_by_searchitem (GwSearchItem *item)
     int total;
 
     //Initializations
-    if (required_objects_exist)
+    if (item->total_relevant_results > 0 && required_objects_exist)
     {
       char *query = item->queryline->string;
       int relevant = item->total_relevant_results;
@@ -921,8 +919,6 @@ void gw_ui_update_toolbar_buttons ()
 //!
 void gw_ui_set_total_results_label_by_searchitem (GwSearchItem* item)
 {
-    if (gw_util_get_runmode () == GW_CONSOLE_RUNMODE) return;
-
     GtkWidget *label = GTK_WIDGET (gtk_builder_get_object(builder, "progress_label"));
 
     if (item == NULL)
@@ -968,7 +964,7 @@ void gw_ui_set_total_results_label_by_searchitem (GwSearchItem* item)
             }
             break;
         case GW_SEARCH_SEARCHING:
-            if (item->current_line == 0)
+            if (item->total_results == 0)
               gtk_label_set_text(GTK_LABEL (label), searching_message_none);
             else if (relevant == total)
               final_message = g_strdup_printf (searching_message_total, total);
@@ -3174,14 +3170,24 @@ void gw_ui_remove_whitespace_from_buffer (gpointer *tb)
 //!
 void gw_ui_update_progress_feedback (GwSearchItem* item)
 {
+    //Ensure global gui elements are only updated by the currently visible tab
     gboolean buffer_tab_is_focused;
     buffer_tab_is_focused = (item != NULL && item->target_tb == (gpointer*) get_gobject_from_target(item->target)
                              && item->target != GW_TARGET_KANJI);
-    if (buffer_tab_is_focused)
+    if (!buffer_tab_is_focused)
+      return;
+
+    //Only update the elements when necessary, otherwise it slows down the search
+    if (item->current_line - item->previous_line > 1000)
     {
+      item->previous_line = item->current_line;
+      gw_ui_set_search_progressbar_by_searchitem (item);
+    }
+    if (item->current_line == 1 || item->total_results != item->previous_total_results)
+    {
+      item->previous_total_results = item->total_relevant_results;
       gw_ui_set_total_results_label_by_searchitem (item);
       gw_ui_set_main_window_title_by_searchitem (item);
-      gw_ui_set_search_progressbar_by_searchitem (item);
     }
 }
 
@@ -3233,14 +3239,13 @@ void gw_ui_after_search_cleanup (GwSearchItem *item)
 {
     //Finish up
     if (item->total_results == 0 &&
-        item->target != GW_TARGET_KANJI &&
-        item->status == GW_SEARCH_SEARCHING)
+        item->target != GW_TARGET_KANJI)
     {
       gw_ui_no_result (item);
     }
     if (item->target == GW_TARGET_RESULTS)
     {
-      gw_ui_remove_whitespace_from_buffer (item->target_tb);
+//      gw_ui_remove_whitespace_from_buffer (item->target_tb);
       gw_ui_set_total_results_label_by_searchitem (item);
       gw_ui_set_search_progressbar_by_searchitem (item);
     }     

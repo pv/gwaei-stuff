@@ -184,6 +184,9 @@ static gboolean stream_results_thread (GwSearchItem *item)
         strcat(item->resultline->string, item->scratch_buffer);
       }
       (*item->gw_searchitem_parse_result_string)(item->resultline);
+
+      //Update the progress feeback
+      (*item->gw_searchitem_update_progress_feedback)(item);
 /*
       if (item->target_tb == (gpointer*) get_gobject_from_target(item->target))
         gw_ui_verb_check_with_suggestion (item);
@@ -234,8 +237,6 @@ static gboolean stream_results_thread (GwSearchItem *item)
       continue;
     }
 
-    //Update the progress feeback
-    (*item->gw_searchitem_update_progress_feedback)(item);
 
     //If the chunk reached the max chunk size, there is still file left to load
     if ( chunk == MAX_CHUNK ) {
@@ -259,7 +260,6 @@ static gboolean stream_results_thread (GwSearchItem *item)
         item->total_results++;
         append_stored_result_to_output(item, &(item->results_medium), item->resultline);
       }
-      (*item->gw_searchitem_update_progress_feedback)(item);
       return TRUE;
     }
 
@@ -271,7 +271,6 @@ static gboolean stream_results_thread (GwSearchItem *item)
         item->total_results++;
         append_stored_result_to_output(item, &(item->results_low), item->resultline);
       }
-      (*item->gw_searchitem_update_progress_feedback)(item);
       return TRUE;
     }
 
