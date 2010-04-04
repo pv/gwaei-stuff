@@ -41,6 +41,7 @@
 #define GCKEY_GW_ROMAN_KANA     "/apps/gwaei/query_romanji_to_kana"
 #define GCKEY_GW_SPELLCHECK     "/apps/gwaei/query_spellcheck"
 
+#define GCPATH_GW_HIGHLIGHT     "/apps/gwaei/highlighting/"
 #define GCKEY_GW_MATCH_FG       "/apps/gwaei/highlighting/match_foreground"
 #define GCKEY_GW_MATCH_BG       "/apps/gwaei/highlighting/match_background"
 #define GCKEY_GW_HEADER_FG      "/apps/gwaei/highlighting/header_foreground"

@@ -34,6 +34,8 @@
 #include <locale.h>
 #include <libintl.h>
 
+#include <gdk/gdk.h>
+
 #include <gconf/gconf-client.h>
 #include <gwaei/definitions.h>
 #include <gwaei/regex.h>
@@ -197,7 +199,7 @@ char* gw_pref_get_string (char *output, char *key, char* backup, int n)
     return return_value;
 }
 
-const char* gw_pref_get_default_string (char *key, char* backup)
+const char* gw_pref_get_default_string (const char *key, const char* backup)
 {
     GConfClient *client;
     client = gconf_client_get_default ();
@@ -455,33 +457,29 @@ void do_color_value_changed_action( GConfClient* client,
     value = gconf_entry_get_value(entry);
     if (value != NULL &&  value->type == GCONF_VALUE_STRING)
     {
-      const char *hex_string = gconf_value_get_string(value);
+      const char *hex_color_string = gconf_value_get_string(value);
+      GdkColor color;
+      char fallback_value[100];
+      const char *pref_key = gconf_entry_get_key (entry);
        
       //If the format of the string is wrong, get the default one
-      if (regexec(&re_hexcolor, hex_string, 1, NULL, 0) != 0)
+      if (gdk_color_parse (hex_color_string, &color) == FALSE)
       {
-        const char *key = gconf_entry_get_key (entry);
-        value = gconf_client_get_default_from_schema (client, key, NULL);
+        value = gconf_client_get_default_from_schema (client, pref_key, NULL);
+        gw_util_strncpy_fallback_from_key (fallback_value, pref_key, 100);
+        hex_color_string =  gw_pref_get_default_string (pref_key, fallback_value);
         if (value != NULL && value->type == GCONF_VALUE_STRING)
-          hex_string = gconf_value_get_string (value);
+          hex_color_string = gconf_value_get_string (value);
         else
           return;
       }
 
-      guint red   = gw_util_2digithexstrtoint(hex_string[1], hex_string[2]);
-      guint green = gw_util_2digithexstrtoint(hex_string[3], hex_string[4]);
-      guint blue  = gw_util_2digithexstrtoint(hex_string[5], hex_string[6]);
+      //Get the widget name which happens to be the same as part of the key
+      const char *widget_name = strrchr(pref_key, '/'); widget_name++;
 
-      //The last portion of the key happens to be the widget id
-      const char *key = gconf_entry_get_key(entry);
-      const char *key_ptr = &key[strlen(key)];
-      while (*key_ptr != '/')
-        key_ptr--;
-      key_ptr++;
-
-      gw_ui_set_color_to_swatch(key_ptr, red, green, blue);
-
-      gw_ui_reload_tagtable_tags();
+      //Finish up
+      gw_ui_set_color_to_swatch (widget_name, hex_color_string);
+      gw_ui_reload_tagtable_tags ();
     }
 }
 

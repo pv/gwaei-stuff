@@ -48,7 +48,6 @@ regex_t re_places;
 regex_t re_names;
 regex_t re_mix;
 regex_t re_gz;
-regex_t re_hexcolor;
 
 
 regex_t re_i_adj_pastform;
@@ -77,8 +76,6 @@ void gw_regex_initialize_constant_regular_expressions ()
     regcomp (&re_places, "Places", GW_REGEX_EFLAGS_EXIST);
     regcomp (&re_mix, "Mix", GW_REGEX_EFLAGS_EXIST);
     regcomp (&re_gz, "\\.gz", GW_REGEX_EFLAGS_EXIST);
-    regcomp (&re_hexcolor, "^#[0-9A-Fa-f]{6,6}$", GW_REGEX_EFLAGS_EXIST);
-    regcomp (&re_hexcolor, "^#[0-9A-Fa-f]{6,6}$", GW_REGEX_EFLAGS_EXIST);
 
 
     regcomp (&gw_re[GW_RE_QUERY_STROKES],   "S[0-9]{1,2}", GW_REGEX_EFLAGS_LOCATE);

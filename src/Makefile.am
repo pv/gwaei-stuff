@@ -60,7 +60,7 @@ gwaei_SOURCES += none-preferences.c
 DEFS += -DINTERFACE=\"NONE\"
 
 else
-gwaei_SOURCES += gconf-preferences.c 
+gwaei_SOURCES += gtk-gconf-preferences.c 
 gwaei_SOURCES += gtk-main-interface-sexy.c
 gwaei_SOURCES += gtk-main-callbacks.c gtk-main-interface.c gtk-settings-callbacks.c gtk-settings-interface.c gtk-radicals-interface.c gtk-radicals-callbacks.c gtk-printing.c include/gwaei/gtk-main-interface.h include/gwaei/gtk-settings-interface.h include/gwaei/gtk-radicals-interface.h include/gwaei/gtk-printing.h include/gwaei/gtk.h include/gwaei/gtk-settings-interface-install-line.h kanjipad/callbacks.c kanjipad/callbacks.h  kanjipad/kanjipad.c kanjipad/kanjipad.h kanjipad/padarea.c kanjipad/padarea.h include/gwaei/gtk-main-interface-sexy.h gtk-main-interface-tabs.c include/gwaei/gtk-main-interface-tabs.h gtk-settings-interface-install-line.c
 gwaei_LDADD += $(GNOME_LIBS)

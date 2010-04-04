@@ -380,27 +380,31 @@ G_MODULE_EXPORT void do_romaji_kana_conv_change (GtkWidget *widget, gpointer dat
 //!
 G_MODULE_EXPORT void do_set_color_to_swatch (GtkWidget *widget, gpointer data)
 {
+    //Initializations
     GdkColor color;
     gtk_color_button_get_color(GTK_COLOR_BUTTON (widget), &color);
+    char *hex_color_string = NULL;
+    hex_color_string = gdk_color_to_string (&color);
+    char *pref_key = NULL;
+    pref_key = g_strdup_printf (GCPATH_GW_HIGHLIGHT "%s", gtk_buildable_get_name (GTK_BUILDABLE (widget)));
 
-    guint red = color.red & 0xFF00;
-    guint green = color.green & 0xFF00;
-    guint blue = color.blue & 0xFF00;
+    //Set the color inthe prefs
+    if (pref_key != NULL && hex_color_string != NULL)
+    {
+      gw_pref_set_string (pref_key, hex_color_string);
+    }
 
-    int hex_integer = (red << 8) | (green) | (blue >> 8);
-
-    char hex_string[10];
-    if (gw_util_itohexstr(hex_string, hex_integer) == TRUE)
-      printf("hex string: %s\n", hex_string);
-
-    char key[100];
-    char *key_ptr;
-    strcpy(key, GCPATH_GW);
-    strcat(key, "/highlighting/");
-    key_ptr = &key[strlen(key)];
-    strcpy(key_ptr, gtk_widget_get_name(widget));
-
-    gw_pref_set_string (key, hex_string);
+    //Cleanup
+    if (pref_key != NULL)
+    {
+      g_free (pref_key);
+      pref_key = NULL;
+    }
+    if (hex_color_string != NULL)
+    {
+      g_free (hex_color_string);
+      hex_color_string = NULL;
+    }
 }
 
 
@@ -412,31 +416,25 @@ G_MODULE_EXPORT void do_set_color_to_swatch (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void do_color_reset_for_swatches (GtkWidget *widget, gpointer data)
 {
-    char key[100];
-    char *key_ptr;
-    strcpy(key, GCPATH_GW);
-    strcat(key, "/highlighting/");
-    key_ptr = &key[strlen(key)];
-
+    //Initializations
     char fallback[100];
-    int i;
+    int i = 0;
+    char *pref_key[] = {
+      GCKEY_GW_MATCH_FG,
+      GCKEY_GW_MATCH_BG,
+      GCKEY_GW_HEADER_FG,
+      GCKEY_GW_HEADER_BG,
+      GCKEY_GW_COMMENT_FG,
+      NULL
+    };
 
-    int total_key = 5;
-    char key_id [][100] = {
-                             "match_foreground",
-                             "match_background",
-                             "header_foreground",
-                             "header_background",
-                             "comment_foreground"
-                          };
-
-    for (i = 0; i < total_key; i++)
+    //Start setting the default values
+    for (i = 0; pref_key[i] != NULL; i++)
     {
-      strcpy(key_ptr, key_id[i]);
-      gw_util_strncpy_fallback_from_key (fallback, key, 100);
-      const char *string = gw_pref_get_default_string (key, fallback);
-      if (string != NULL)
-        gw_pref_set_string (key, string);
+      gw_util_strncpy_fallback_from_key (fallback, pref_key[i], 100);
+      const char *default_hex_color_string = gw_pref_get_default_string (pref_key[i], fallback);
+      if (default_hex_color_string != NULL)
+        gw_pref_set_string (pref_key[i], default_hex_color_string);
     }
 
     gw_ui_reload_tagtable_tags();

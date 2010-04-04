@@ -133,38 +133,18 @@ static GOptionEntry entries[] =
 //!
 void gw_ui_set_query_entry_text_by_searchitem (GwSearchItem *item)
 {
-    //Set the colors of the entry to the current match highlight colors
-    char key[100];
-    char *key_ptr;
-    strcpy (key, GCPATH_GW);
-    strcat (key, "/highlighting/match");
-    key_ptr = &key[strlen (key)];
-    char fg_color[100], bg_color[100], fallback[100];
-    char *ret;
-    strcpy (key_ptr, "_foreground");
-    gw_util_strncpy_fallback_from_key (fallback, key, 100);
-    ret = gw_pref_get_string (fg_color, key, fallback, 100);
-    if (IS_HEXCOLOR(fg_color) == FALSE)
-    {
-      if (ret != NULL) gw_pref_set_string (key, fallback);
-      strncpy (fg_color, fallback, 100);
-    }
-    strcpy (key_ptr, "_background");
-    gw_util_strncpy_fallback_from_key (fallback, key, 100);
-    ret = gw_pref_get_string (bg_color, key, fallback, 100);
-    if (IS_HEXCOLOR(bg_color) == FALSE)
-    {
-      if (ret != NULL) gw_pref_set_string (key, fallback);
-      strncpy (bg_color, fallback, 100);
-    }
+    //Initializations
+    char hex_color_string[100], fallback[100];
+    GdkColor color;
 
-
+    //If there is no search, set the default colors
     if (item == NULL)
     {
       gtk_entry_set_text (GTK_ENTRY (search_entry), "");
       gtk_widget_modify_base (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
       gtk_widget_modify_text (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
     }
+    //There was previously a search, set the match colors from the prefs
     else
     {
       if (item->queryline != NULL && strlen(item->queryline->string) > 1)
@@ -172,11 +152,25 @@ void gw_ui_set_query_entry_text_by_searchitem (GwSearchItem *item)
       else
         gtk_entry_set_text (GTK_ENTRY (search_entry), "");
 
-      GdkColor forground, background;
-      gdk_color_parse (fg_color, &forground);
-      gdk_color_parse (bg_color, &background);
-      gtk_widget_modify_base (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, &background);
-      gtk_widget_modify_text (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, &forground);
+      //Set the foreground color
+      gw_util_strncpy_fallback_from_key (fallback, GCKEY_GW_MATCH_FG, 100);
+      gw_pref_get_string (hex_color_string, GCKEY_GW_MATCH_FG, fallback, 100);
+      if (gdk_color_parse (hex_color_string, &color) == FALSE)
+      {
+        gw_pref_set_string (GCKEY_GW_MATCH_FG, fallback);
+        gdk_color_parse (fallback, &color);
+      }
+      gtk_widget_modify_text (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, &color);
+
+      //Set the background color
+      gw_util_strncpy_fallback_from_key (fallback, GCKEY_GW_MATCH_BG, 100);
+      gw_pref_get_string (hex_color_string, GCKEY_GW_MATCH_BG, fallback, 100);
+      if (gdk_color_parse (hex_color_string, &color) == FALSE)
+      {
+        gw_pref_set_string (GCKEY_GW_MATCH_BG, fallback);
+        gdk_color_parse (fallback, &color);
+      }
+      gtk_widget_modify_base (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, &color);
     }
 }
 
@@ -1567,12 +1561,15 @@ void gw_ui_set_hiragana_katakana_conv(gboolean request)
 }
 
 
-void gw_ui_set_katakana_hiragana_conv(gboolean request)
+//!
+//! @brief Sets the katakana-hiragana conversion checkbox being mindful to disable the event handlers
+//!
+//! @param request A boolean to use to set the checkbox state.
+//!
+void gw_ui_set_katakana_hiragana_conv (gboolean request)
 {
-    char id[50];
     GtkWidget *widget;
-    strcpy(id, "query_katakana_to_hiragana");
-    if (widget = GTK_WIDGET (gtk_builder_get_object(builder, id)))
+    if (widget = GTK_WIDGET (gtk_builder_get_object(builder, "query_katakana_to_hiragana")))
     {
       g_signal_handlers_block_by_func(widget, do_katakana_hiragana_conv_toggle, NULL); 
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (widget), request);
@@ -1581,25 +1578,30 @@ void gw_ui_set_katakana_hiragana_conv(gboolean request)
 }
 
 
-
-
-void gw_ui_set_color_to_swatch(const char *widget_id, guint r, guint g, guint b)
+//!
+//! @brief Sets the color to a switch minding to disable the event handlers on it
+//!
+//! @param widget_id The id of the widget to get.
+//! @param hex_color_string The color to attempt to set.
+//!
+void gw_ui_set_color_to_swatch (const char *widget_id, const char *hex_color_string)
 {
     GtkWidget *widget;
-    widget = GTK_WIDGET (gtk_builder_get_object(builder, widget_id));
+    widget = GTK_WIDGET (gtk_builder_get_object (builder, widget_id));
 
     GdkColor color;
-    color.pixel = -1;
-    color.red = r;
-    color.green = g;
-    color.blue = b;
-
-    g_signal_handlers_block_by_func(widget, do_set_color_to_swatch, NULL);
-    gtk_color_button_set_color(GTK_COLOR_BUTTON (widget), &color);
-    g_signal_handlers_unblock_by_func(widget, do_set_color_to_swatch, NULL);
+    if (gdk_color_parse (hex_color_string, &color) == TRUE)
+    {
+      g_signal_handlers_block_by_func (widget, do_set_color_to_swatch, NULL);
+      gtk_color_button_set_color (GTK_COLOR_BUTTON (widget), &color);
+      g_signal_handlers_unblock_by_func (widget, do_set_color_to_swatch, NULL);
+    }
 }
 
 
+//!
+//! @brief To be written
+//!
 void gw_ui_append_to_buffer (GwSearchItem *item, char *text, char *tag1,
                                 char *tag2, int *start_line, int *end_line)
 {
@@ -1634,6 +1636,9 @@ void gw_ui_append_to_buffer (GwSearchItem *item, char *text, char *tag1,
 }
 
 
+//!
+//! @brief To be written
+//!
 void gw_ui_append_image_to_buffer (GwSearchItem *item, char *name)
 {
     //Insert the pixbuf
@@ -1665,6 +1670,9 @@ void gw_ui_append_image_to_buffer (GwSearchItem *item, char *name)
 }
 
 
+//!
+//! @brief To be written
+//!
 void gw_ui_initialize_buffer_by_searchitem (GwSearchItem *item)
 {
     //Make sure searches done from the history are pointing at a valid target
@@ -1713,7 +1721,10 @@ void gw_ui_initialize_buffer_by_searchitem (GwSearchItem *item)
 }
 
 
-void gw_ui_search_entry_insert(char* text)
+//!
+//! @brief To be written
+//!
+void gw_ui_search_entry_insert (char* text)
 {
     GtkWidget *entry;
     entry = search_entry;
@@ -1730,6 +1741,9 @@ void gw_ui_search_entry_insert(char* text)
 }
 
 
+//!
+//! @brief To be written
+//!
 void gw_ui_grab_focus_by_target (const int TARGET)
 {
     GtkWidget* widget;
@@ -1738,6 +1752,9 @@ void gw_ui_grab_focus_by_target (const int TARGET)
 }
 
 
+//!
+//! @brief To be written
+//!
 void gw_ui_clear_search_entry()
 {
     GtkWidget *entry;
@@ -1750,6 +1767,9 @@ void gw_ui_clear_search_entry()
 }
 
 
+//!
+//! @brief To be written
+//!
 void gw_ui_strcpy_from_widget(char* output, int MAX, int TARGET)
 {
     //GtkEntry
@@ -1784,6 +1804,9 @@ void gw_ui_strcpy_from_widget(char* output, int MAX, int TARGET)
 }
 
 
+//!
+//! @brief To be written
+//!
 void gw_ui_text_select_all_by_target (int TARGET)
 {
     //GtkEntry
@@ -1812,6 +1835,9 @@ void gw_ui_text_select_all_by_target (int TARGET)
 }
 
 
+//!
+//! @brief To be written
+//!
 void gw_ui_text_select_none_by_target (int TARGET)
 {
     //GtkEntry
@@ -1840,6 +1866,9 @@ void gw_ui_text_select_none_by_target (int TARGET)
 }
 
 
+//!
+//! @brief To be written
+//!
 guint gw_ui_get_current_widget_focus (char *window_id)
 {
     GtkWidget *window;
@@ -1861,7 +1890,10 @@ guint gw_ui_get_current_widget_focus (char *window_id)
 }
 
 
-void gw_ui_copy_text(guint TARGET)
+//!
+//! @brief To be written
+//!
+void gw_ui_copy_text (guint TARGET)
 {
     GtkClipboard *clipbd;
     GObject *results_tb;
@@ -1884,6 +1916,9 @@ void gw_ui_copy_text(guint TARGET)
 }
 
 
+//!
+//! @brief To be written
+//!
 void gw_ui_cut_text(guint TARGET)
 {
     switch (TARGET)
@@ -1895,6 +1930,9 @@ void gw_ui_cut_text(guint TARGET)
 }
 
 
+//!
+//! @brief To be written
+//!
 void gw_ui_paste_text(guint TARGET)
 {
     switch (TARGET)
@@ -1906,17 +1944,16 @@ void gw_ui_paste_text(guint TARGET)
 }
 
 
-gboolean gw_ui_load_gtk_builder_xml(const char *name) {
+//!
+//! @brief To be written
+//!
+gboolean gw_ui_load_gtk_builder_xml (const char *name) {
     char local_path[FILENAME_MAX];
-    strcpy(local_path, "xml");
-    strcat(local_path, G_DIR_SEPARATOR_S);
+    strcpy(local_path, "xml" G_DIR_SEPARATOR_S);
     strcat(local_path, name);
 
     char global_path[FILENAME_MAX]; 
-    strcpy(global_path, DATADIR2);
-    strcat(global_path, G_DIR_SEPARATOR_S);
-    strcat(global_path, PACKAGE);
-    strcat(global_path, G_DIR_SEPARATOR_S);
+    strcpy(global_path, DATADIR2 G_DIR_SEPARATOR_S PACKAGE G_DIR_SEPARATOR_S);
     strcat(global_path, name);
 
     if ( gtk_builder_add_from_file (builder, local_path,  NULL) ||
@@ -1952,9 +1989,10 @@ gboolean gw_ui_set_color_to_tagtable (char    *id,     const int TARGET,
     table = gtk_text_buffer_get_tag_table(GTK_TEXT_BUFFER (tb));
 
     //Load the set colors in the preferences
+    char *pref_key = NULL;
     char key[100];
     char *key_ptr;
-    strcpy(key, GCPATH_GW);
+    strcpy(key, GCPATH_GW_HIGHLIGHT);;
     strcat(key, "/highlighting/");
     strcat(key, id);
     key_ptr = &key[strlen(key)];
@@ -1962,30 +2000,42 @@ gboolean gw_ui_set_color_to_tagtable (char    *id,     const int TARGET,
     char fg_color[100];
     char bg_color[100];
     char fallback[100];
-    char *ret;
 
-    //Load the prefered tag colors from pref
+    GdkColor color;
+
+    //Set the foreground color and reset if the value is odd
     if (set_fg)
     {
-      strcpy(key_ptr, "_foreground");
-      gw_util_strncpy_fallback_from_key (fallback, key, 100);
-      ret = gw_pref_get_string (fg_color, key, fallback, 100);
-      if (IS_HEXCOLOR(fg_color) == FALSE)
+      pref_key = g_strdup_printf (GCPATH_GW_HIGHLIGHT "%s" "_foreground", id);
+      if (pref_key != NULL)
       {
-        if (ret != NULL) gw_pref_set_string (key, fallback);
-        strncpy(fg_color, fallback, 100);
+        gw_util_strncpy_fallback_from_key (fallback, pref_key, 100);
+        gw_pref_get_string (fg_color, key, fallback, 100);
+        if (gdk_color_parse (fg_color, &color) == FALSE)
+        {
+          gw_pref_set_string (pref_key, fallback);
+          strncpy(fg_color, fallback, 100);
+        }
+        g_free (pref_key);
+        pref_key = NULL;
       }
     }
 
+    //Set the background color and reset if the value is odd
     if (set_bg)
     {
-      strcpy(key_ptr, "_background");
-      gw_util_strncpy_fallback_from_key (fallback, key, 100);
-      ret = gw_pref_get_string (bg_color, key, fallback, 100);
-      if (IS_HEXCOLOR(bg_color) == FALSE)
+      pref_key = g_strdup_printf (GCPATH_GW_HIGHLIGHT "%s" "_background", id);
+      if (pref_key != NULL)
       {
-        if (ret != NULL) gw_pref_set_string (key, fallback);
-        strncpy(bg_color, fallback, 100);
+        gw_util_strncpy_fallback_from_key (fallback, pref_key, 100);
+        gw_pref_get_string (bg_color, key, fallback, 100);
+        if (gdk_color_parse (bg_color, &color) == FALSE)
+        {
+          gw_pref_set_string (pref_key, fallback);
+          strncpy(bg_color, fallback, 100);
+        }
+        g_free (pref_key);
+        pref_key = NULL;
       }
     }
 
@@ -2113,8 +2163,6 @@ void gw_ui_display_no_results_found_page(GwSearchItem *item)
       temp = g_random_int_range(0,9);
     const gint32 TIP_NUMBER = temp;
     gw_previous_tip = temp;
-    char tip_number_str[5];
-    gw_util_itoa((TIP_NUMBER + 1), tip_number_str, 5);
 
     char *body = NULL;
 
@@ -2139,13 +2187,15 @@ void gw_ui_display_no_results_found_page(GwSearchItem *item)
 
     //Insert the instruction text
     gw_ui_append_to_buffer (item, "\n\n", NULL, NULL, NULL, NULL);
-
-    gw_ui_append_to_buffer (item, gettext("gWaei Usage Tip #"),
-                            "important", NULL, NULL, NULL         );
-    gw_ui_append_to_buffer (item, tip_number_str,
-                            "important", NULL, NULL, NULL         );
-    gw_ui_append_to_buffer (item, gettext(": "),
-                            "important", NULL, NULL, NULL         );
+    char *tip_header_str = NULL;
+    tip_header_str = g_strdup_printf (gettext("gWaei Usage Tip #%d: "), (TIP_NUMBER + 1));
+    if (tip_header_str != NULL)
+    {
+      gw_ui_append_to_buffer (item, tip_header_str,
+                              "important", NULL, NULL, NULL         );
+      g_free (tip_header_str);
+      tip_header_str = NULL;
+    }
                             
     switch (TIP_NUMBER)
     {

@@ -301,11 +301,7 @@ static void draw_page (GtkPrintOperation *operation,
     desc = pango_font_description_from_string ("sans 10");
     pango_layout_set_font_description (layout, desc);
     pango_font_description_free (desc);
-
-    //Convert the page number to a string
-    char page_number[20];
-    gw_util_itoa (page_nr + 1, page_number, 20);
-   
+ 
     //Get the text from the text_buffer
     char *input_text, *output_text;
     input_text = gtk_text_buffer_get_text(GTK_TEXT_BUFFER (tb),
@@ -315,9 +311,15 @@ static void draw_page (GtkPrintOperation *operation,
     output_text = malloc ((sizeof(char) * strlen(input_text)) + 50);
 
     //Copy the data to the output_text string
-    strcpy (output_text, gettext("Page "));
-    strcat (output_text, page_number);
-    strcat (output_text, "\n\n");
+    char *page_number = NULL;
+    page_number = g_strdup_printf ("Page %d", page_nr + 1);
+    if (page_number != NULL)
+    {
+      strcat (output_text, page_number);
+      strcat (output_text, "\n\n");
+      g_free (page_number);
+      page_number = NULL;
+    }
     strcat (output_text, input_text);
     
     //Add the text to the  pango context
