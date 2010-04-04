@@ -1980,94 +1980,98 @@ gboolean gw_ui_set_color_to_tagtable (char    *id,     const int TARGET,
 {
     GtkTextTag *tag;
 
-    //Assertain the target text buffer
+    //Yes, we're going to update the colors for all tabs
     GObject *tb;
-    tb = get_gobject_from_target (TARGET);
+    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    GtkWidget *textview = NULL;
+    GtkWidget *scrolledwindow = NULL;
 
-    //Load the tag table
-    GtkTextTagTable *table;
-    table = gtk_text_buffer_get_tag_table(GTK_TEXT_BUFFER (tb));
-
-    //Load the set colors in the preferences
-    char *pref_key = NULL;
-    char key[100];
-    char *key_ptr;
-    strcpy(key, GCPATH_GW_HIGHLIGHT);;
-    strcat(key, "/highlighting/");
-    strcat(key, id);
-    key_ptr = &key[strlen(key)];
-
-    char fg_color[100];
-    char bg_color[100];
-    char fallback[100];
-
-    GdkColor color;
-
-    //Set the foreground color and reset if the value is odd
-    if (set_fg)
+    int i = 0;
+    while ((scrolledwindow = GTK_WIDGET (gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), i))) != NULL)
     {
-      pref_key = g_strdup_printf (GCPATH_GW_HIGHLIGHT "%s" "_foreground", id);
-      if (pref_key != NULL)
-      {
-        gw_util_strncpy_fallback_from_key (fallback, pref_key, 100);
-        gw_pref_get_string (fg_color, key, fallback, 100);
-        if (gdk_color_parse (fg_color, &color) == FALSE)
-        {
-          gw_pref_set_string (pref_key, fallback);
-          strncpy(fg_color, fallback, 100);
-        }
-        g_free (pref_key);
-        pref_key = NULL;
-      }
-    }
+      textview = GTK_WIDGET (gtk_bin_get_child (GTK_BIN (scrolledwindow)));
+      tb = G_OBJECT (gtk_text_view_get_buffer (GTK_TEXT_VIEW (textview)));
 
-    //Set the background color and reset if the value is odd
-    if (set_bg)
-    {
-      pref_key = g_strdup_printf (GCPATH_GW_HIGHLIGHT "%s" "_background", id);
-      if (pref_key != NULL)
-      {
-        gw_util_strncpy_fallback_from_key (fallback, pref_key, 100);
-        gw_pref_get_string (bg_color, key, fallback, 100);
-        if (gdk_color_parse (bg_color, &color) == FALSE)
-        {
-          gw_pref_set_string (pref_key, fallback);
-          strncpy(bg_color, fallback, 100);
-        }
-        g_free (pref_key);
-        pref_key = NULL;
-      }
-    }
+      //Load the tag table
+      GtkTextTagTable *table;
+      table = gtk_text_buffer_get_tag_table(GTK_TEXT_BUFFER (tb));
 
-    if ((tag = gtk_text_tag_table_lookup(GTK_TEXT_TAG_TABLE (table), id)) == NULL)
-    {
-      //Insert the new tag into the table
-      if (set_fg && set_bg)
-        tag = gtk_text_buffer_create_tag (GTK_TEXT_BUFFER (tb), id,
-                                          "foreground", fg_color, "background", bg_color, NULL );
-      else if (set_fg)
-        tag = gtk_text_buffer_create_tag (GTK_TEXT_BUFFER (tb), id,
-                                          "foreground", fg_color, NULL               );
-      else if (set_bg)
-        tag = gtk_text_buffer_create_tag (GTK_TEXT_BUFFER (tb), id,
-                                          "background", bg_color, NULL               );
-    }
-    else
-    {
-      GValue fg_value = {0}, bg_value = {0};
-      tag = gtk_text_tag_table_lookup (GTK_TEXT_TAG_TABLE (table), id);
+      //Load the set colors in the preferences
+      char *pref_key = NULL;
+      char fg_color[100];
+      char bg_color[100];
+      char fallback[100];
+
+      GdkColor color;
+
+      //Set the foreground color and reset if the value is odd
       if (set_fg)
       {
-        g_value_init (&fg_value, G_TYPE_STRING);
-        g_value_set_string (&fg_value, fg_color);
-        g_object_set_property (G_OBJECT (tag), "foreground", &fg_value);
+        pref_key = g_strdup_printf (GCPATH_GW_HIGHLIGHT "%s" "_foreground", id);
+        if (pref_key != NULL)
+        {
+          gw_util_strncpy_fallback_from_key (fallback, pref_key, 100);
+          gw_pref_get_string (fg_color, pref_key, fallback, 100);
+          if (gdk_color_parse (fg_color, &color) == FALSE)
+          {
+            gw_pref_set_string (pref_key, fallback);
+            strncpy(fg_color, fallback, 100);
+          }
+          g_free (pref_key);
+          pref_key = NULL;
+        }
       }
+
+      //Set the background color and reset if the value is odd
       if (set_bg)
       {
-        g_value_init (&bg_value, G_TYPE_STRING);
-        g_value_set_string (&bg_value, bg_color);
-        g_object_set_property (G_OBJECT (tag), "background", &bg_value);
+        pref_key = g_strdup_printf (GCPATH_GW_HIGHLIGHT "%s" "_background", id);
+        if (pref_key != NULL)
+        {
+          gw_util_strncpy_fallback_from_key (fallback, pref_key, 100);
+          gw_pref_get_string (bg_color, pref_key, fallback, 100);
+          if (gdk_color_parse (bg_color, &color) == FALSE)
+          {
+            gw_pref_set_string (pref_key, fallback);
+            strncpy(bg_color, fallback, 100);
+          }
+          g_free (pref_key);
+          pref_key = NULL;
+        }
       }
+
+
+      if ((tag = gtk_text_tag_table_lookup (GTK_TEXT_TAG_TABLE (table), id)) == NULL)
+      {
+        //Insert the new tag into the table
+        if (set_fg && set_bg)
+          tag = gtk_text_buffer_create_tag (GTK_TEXT_BUFFER (tb), id,
+                                            "foreground", fg_color, "background", bg_color, NULL );
+        else if (set_fg)
+          tag = gtk_text_buffer_create_tag (GTK_TEXT_BUFFER (tb), id,
+                                            "foreground", fg_color, NULL               );
+        else if (set_bg)
+          tag = gtk_text_buffer_create_tag (GTK_TEXT_BUFFER (tb), id,
+                                            "background", bg_color, NULL               );
+      }
+      else
+      {
+        GValue fg_value = {0}, bg_value = {0};
+        tag = gtk_text_tag_table_lookup (GTK_TEXT_TAG_TABLE (table), id);
+        if (set_fg)
+        {
+          g_value_init (&fg_value, G_TYPE_STRING);
+          g_value_set_string (&fg_value, fg_color);
+          g_object_set_property (G_OBJECT (tag), "foreground", &fg_value);
+        }
+        if (set_bg)
+        {
+          g_value_init (&bg_value, G_TYPE_STRING);
+          g_value_set_string (&bg_value, bg_color);
+          g_object_set_property (G_OBJECT (tag), "background", &bg_value);
+        }
+      }
+      i++;
     }
     return TRUE;
 }
@@ -2444,9 +2448,6 @@ char* gw_ui_get_text_from_text_buffer(const int TARGET)
 
 void gw_ui_reload_tagtable_tags()
 {
-    GwHistoryList* hl;
-    hl = gw_historylist_get_list (GW_HISTORYLIST_RESULTS);
-
     gw_ui_set_color_to_tagtable ("comment", GW_TARGET_RESULTS, TRUE, FALSE);
     gw_ui_set_color_to_tagtable ("comment", GW_TARGET_KANJI,   TRUE, FALSE);
 
