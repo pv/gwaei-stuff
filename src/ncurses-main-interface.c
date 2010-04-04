@@ -48,8 +48,8 @@
 #include <gwaei/main.h>
 #include <gwaei/ncurses-main-interface.h>
 
-GwDictInfo *di = NULL;
-char query_text[MAX_QUERY];
+static GwDictInfo *di = NULL;
+static char query_text[MAX_QUERY];
 static GMainLoop *main_loop = NULL;
 
 static gboolean ncurses_switch = FALSE;
@@ -66,14 +66,11 @@ static WINDOW *mainWindows;
 static WINDOW *results;
 static WINDOW *search;
 static WINDOW *screen;
-int current_row = 0;
-int maxY, maxX;
-int cursesFlag = false;
-int cursesSupportColorFlag = true;	//TODO: use this
+static int current_row = 0;
+static int maxY, maxX;
+static int cursesFlag = false;
+static int cursesSupportColorFlag = true;	//TODO: use this
 
-#define GREENONBLACK	1
-#define BLUEONBLACK		2
-#define REDONBLACK		3
 
 //!
 //! /brief Print the "no result" message where necessary.
@@ -97,13 +94,13 @@ static void print_search_start_banner(char *query, char *dictionary)
 {
     wprintw(screen, " ");
     wprintw(screen, gettext("Searching for \""));
-    wattron(screen, COLOR_PAIR(REDONBLACK));
+    wattron(screen, COLOR_PAIR(GW_NCCOLORS_REDONBLACK));
     wprintw(screen,"%s", query);
-    wattroff(screen, COLOR_PAIR(REDONBLACK));
+    wattroff(screen, COLOR_PAIR(GW_NCCOLORS_REDONBLACK));
     wprintw(screen, gettext("\" in the "));
-    wattron(screen, COLOR_PAIR(REDONBLACK));
+    wattron(screen, COLOR_PAIR(GW_NCCOLORS_REDONBLACK));
     wprintw(screen," %s", dictionary);
-    wattroff(screen, COLOR_PAIR(REDONBLACK));
+    wattroff(screen, COLOR_PAIR(GW_NCCOLORS_REDONBLACK));
     wprintw(screen, gettext(" dictionary..."));
 
     wrefresh(screen);
@@ -118,13 +115,13 @@ static void print_search_start_banner(char *query, char *dictionary)
 //!
 void gw_ncurses_append_less_relevant_header_to_output(GwSearchItem *item)
 {
-    wattron(results, COLOR_PAIR(REDONBLACK));
+    wattron(results, COLOR_PAIR(GW_NCCOLORS_REDONBLACK));
     wprintw(results,"\n*** ");
-    wattroff(results, COLOR_PAIR(REDONBLACK));
+    wattroff(results, COLOR_PAIR(GW_NCCOLORS_REDONBLACK));
     wprintw(results,"%s ", gettext("Other Results"));
-    wattron(results, COLOR_PAIR(REDONBLACK));
+    wattron(results, COLOR_PAIR(GW_NCCOLORS_REDONBLACK));
     wprintw(results,"***************************\n\n\n");
-    wattroff(results, COLOR_PAIR(REDONBLACK));
+    wattroff(results, COLOR_PAIR(GW_NCCOLORS_REDONBLACK));
 }
 
 //!
@@ -159,9 +156,9 @@ static void ncurses_color_init (bool hasColors)
 			cursesSupportColorFlag = false;
 			return;
 		}
-		init_pair(GREENONBLACK, COLOR_GREEN, COLOR_BLACK);
-		init_pair(BLUEONBLACK, COLOR_BLUE, COLOR_BLACK);
-		init_pair(REDONBLACK, COLOR_RED, COLOR_BLACK);
+		init_pair(GW_NCCOLORS_GREENONBLACK, COLOR_GREEN, COLOR_BLACK);
+		init_pair(GW_NCCOLORS_BLUEONBLACK, COLOR_BLUE, COLOR_BLACK);
+		init_pair(GW_NCCOLORS_REDONBLACK, COLOR_RED, COLOR_BLACK);
 	}
 	else
 		cursesSupportColorFlag = false;
@@ -325,6 +322,14 @@ static void ncurses_input_and_scrolling(char *query)
 }
 
 
+//!
+//! @brief A glib loop acting as the main loop for the ncurses program
+//!
+//! The loop will keep looping until g_main_loop_quit (main_loop); is called
+//! or FALSE is returned;
+//!
+//! @param data A gpointer passed to the function.  Currently NULL.
+//!
 static gboolean main_loop_function (gpointer data)
 {
       wmove(search, 1, 2);
@@ -561,9 +566,9 @@ void gw_ncurses_append_kanjidict_results (GwSearchItem *item)
 	    GwResultLine *resultline = item->resultline;
 
 		//Kanji
-		wattron(results, COLOR_PAIR(GREENONBLACK));
+		wattron(results, COLOR_PAIR(GW_NCCOLORS_GREENONBLACK));
 		wprintw(results,"%s\n", resultline->kanji);
-		wattroff(results, COLOR_PAIR(REDONBLACK));
+		wattroff(results, COLOR_PAIR(GW_NCCOLORS_REDONBLACK));
 
 		if (resultline->radicals)
 			wprintw(results,"%s%s\n", gettext("Radicals:"), resultline->radicals);
@@ -624,9 +629,9 @@ void gw_ncurses_append_examplesdict_results (GwSearchItem *item)
 		{
 		  if (resultline->number[i][0] == 'A' || resultline->number[i][0] == 'B')
 		  {
-			  wattron(results, COLOR_PAIR(BLUEONBLACK));
+			  wattron(results, COLOR_PAIR(GW_NCCOLORS_BLUEONBLACK));
 			  wprintw(results,"%s:\t", resultline->number[i]);
-			  wattroff(results, COLOR_PAIR(BLUEONBLACK));
+			  wattroff(results, COLOR_PAIR(GW_NCCOLORS_BLUEONBLACK));
 			  wprintw(results,"%s\n", resultline->def_start[i]);
 		  }
 		  else
