@@ -142,10 +142,11 @@ void gw_ui_update_settings_interface()
       gtk_widget_set_sensitive (move_dictionary_down, FALSE);
     }
 
-    char order[5000];
-    gw_pref_get_string (order, GCKEY_GW_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
-    const char *default_string = gw_pref_get_default_string (GCKEY_GW_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK);
-    gtk_widget_set_sensitive (reset_order_button, strcmp (default_string, order) != 0);
+    char current_order[5000];
+    char default_order[5000];
+    gw_pref_get_string (current_order, GCKEY_GW_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
+    gw_pref_get_default_string (default_order, GCKEY_GW_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
+    gtk_widget_set_sensitive (reset_order_button, strcmp (default_order, current_order) != 0);
 }
 
 

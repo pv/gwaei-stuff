@@ -199,7 +199,7 @@ char* gw_pref_get_string (char *output, char *key, char* backup, int n)
     return return_value;
 }
 
-const char* gw_pref_get_default_string (const char *key, const char* backup)
+void gw_pref_get_default_string (char* output, const char *key, const char* backup, int n)
 {
     GConfClient *client;
     client = gconf_client_get_default ();
@@ -221,7 +221,10 @@ const char* gw_pref_get_default_string (const char *key, const char* backup)
     }
     g_object_unref (client);
 
-    return return_value;
+    if (return_value == NULL)
+      strncpy (output, "", n);
+    else
+      strncpy (output, return_value, n);
 }
 
 
@@ -457,7 +460,8 @@ void do_color_value_changed_action( GConfClient* client,
     value = gconf_entry_get_value(entry);
     if (value != NULL &&  value->type == GCONF_VALUE_STRING)
     {
-      const char *hex_color_string = gconf_value_get_string(value);
+      char hex_color_string[100];
+      strncpy (hex_color_string, gconf_value_get_string(value), 100);
       GdkColor color;
       char fallback_value[100];
       const char *pref_key = gconf_entry_get_key (entry);
@@ -467,9 +471,9 @@ void do_color_value_changed_action( GConfClient* client,
       {
         value = gconf_client_get_default_from_schema (client, pref_key, NULL);
         gw_util_strncpy_fallback_from_key (fallback_value, pref_key, 100);
-        hex_color_string =  gw_pref_get_default_string (pref_key, fallback_value);
+        gw_pref_get_default_string (hex_color_string, pref_key, fallback_value, 100);
         if (value != NULL && value->type == GCONF_VALUE_STRING)
-          hex_color_string = gconf_value_get_string (value);
+          strncpy (hex_color_string, gconf_value_get_string (value), 100);
         else
           return;
       }

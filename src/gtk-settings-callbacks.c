@@ -428,11 +428,13 @@ G_MODULE_EXPORT void do_color_reset_for_swatches (GtkWidget *widget, gpointer da
       NULL
     };
 
+    char default_hex_color_string[100];
+
     //Start setting the default values
     for (i = 0; pref_key[i] != NULL; i++)
     {
       gw_util_strncpy_fallback_from_key (fallback, pref_key[i], 100);
-      const char *default_hex_color_string = gw_pref_get_default_string (pref_key[i], fallback);
+      gw_pref_get_default_string (default_hex_color_string, pref_key[i], fallback, 100);
       if (default_hex_color_string != NULL)
         gw_pref_set_string (pref_key[i], default_hex_color_string);
     }
@@ -637,9 +639,11 @@ G_MODULE_EXPORT void do_dictionary_source_reset (GtkWidget *widget, gpointer dat
     if (widget != NULL && data != NULL)
     {
       GwUiDictInstallLine *il = (GwUiDictInstallLine*) data;
-      const char *string = gw_pref_get_default_string (il->di->gckey, NULL);
-      if (string != NULL)
-        gw_pref_set_string (il->di->gckey, string);
+      char source_string[100];
+      char fallback[100];
+      gw_util_strncpy_fallback_from_key (fallback, il->di->gckey, 100);
+      gw_pref_get_default_string (source_string, il->di->gckey, fallback, 100);
+      gw_pref_set_string (il->di->gckey, source_string);
     }
 }
 
@@ -981,9 +985,9 @@ G_MODULE_EXPORT void do_move_dictionary_down (GtkWidget *widget, gpointer data)
 
 G_MODULE_EXPORT void do_reset_dictionary_orders (GtkWidget *widget, gpointer data)
 {
-    const char *default_string = gw_pref_get_default_string (GCKEY_GW_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK);
-    if (default_string != NULL)
-      gw_pref_set_string (GCKEY_GW_LOAD_ORDER, default_string);
+    char dictionary_orders[5000];
+    gw_pref_get_default_string (dictionary_orders, GCKEY_GW_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
+    gw_pref_set_string (GCKEY_GW_LOAD_ORDER, dictionary_orders);
     rebuild_combobox_dictionary_list();
     gw_ui_update_settings_interface();
 }
