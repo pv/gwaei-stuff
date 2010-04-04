@@ -41,7 +41,13 @@
 #include <gwaei/regex.h>
 
 
-int gw_pref_get_int (char *key, int backup)
+//!
+//! @brief Returns an integer from the preference backend 
+//!
+//! @param key The key to use to look up the pref
+//! @param backup the value to return on failure
+//!
+int gw_pref_get_int (const char *key, const int backup)
 {
     GConfClient *client;
     client = gconf_client_get_default ();
@@ -64,7 +70,13 @@ int gw_pref_get_int (char *key, int backup)
 }
 
 
-int gw_pref_get_default_int (char *key, int backup)
+//!
+//! @brief Returns the default integer from the preference backend 
+//!
+//! @param key The key to use to look up the pref
+//! @param backup the value to return on failure
+//!
+int gw_pref_get_default_int (const char *key, const int backup)
 {
     GConfClient *client;
     client = gconf_client_get_default ();
@@ -94,7 +106,13 @@ int gw_pref_get_default_int (char *key, int backup)
 }
 
 
-void gw_pref_set_int (char *key, int request)
+//!
+//! @brief Sets the int to the key in the preferences backend
+//!
+//! @param key The key to use to look up the pref
+//! @param request The value to set
+//!
+void gw_pref_set_int (const char *key, const int request)
 {
     GConfClient *client;
     client = gconf_client_get_default ();
@@ -103,7 +121,13 @@ void gw_pref_set_int (char *key, int request)
 }
 
 
-gboolean gw_pref_get_boolean (char *key, gboolean backup)
+//!
+//! @brief Returns an boolean from the preference backend 
+//!
+//! @param key The key to use to look up the pref
+//! @param backup the value to return on failure
+//!
+gboolean gw_pref_get_boolean (const char *key, const gboolean backup)
 {
     GConfClient *client;
     client = gconf_client_get_default ();
@@ -126,7 +150,13 @@ gboolean gw_pref_get_boolean (char *key, gboolean backup)
 }
 
 
-gboolean gw_pref_get_default_boolean (char *key, gboolean backup)
+//!
+//! @brief Returns the default boolean from the preference backend 
+//!
+//! @param key The key to use to look up the pref
+//! @param backup the value to return on failure
+//!
+gboolean gw_pref_get_default_boolean (const char *key, const gboolean backup)
 {
     GConfClient *client;
     client = gconf_client_get_default ();
@@ -156,7 +186,13 @@ gboolean gw_pref_get_default_boolean (char *key, gboolean backup)
 }
 
 
-void gw_pref_set_boolean (char *key, gboolean request)
+//!
+//! @brief Sets the boolean to the key in the preferences backend
+//!
+//! @param key The key to use to look up the pref
+//! @param request The value to set
+//!
+void gw_pref_set_boolean (const char *key, const gboolean request)
 {
     GConfClient *client;
     client = gconf_client_get_default ();
@@ -165,10 +201,14 @@ void gw_pref_set_boolean (char *key, gboolean request)
 }
 
 //!
-//! Returns a preferenc string, using a specified backup if
-//! there is an error with up to n characters copied.
+//! @brief Returns an string from the preference backend 
 //!
-char* gw_pref_get_string (char *output, char *key, char* backup, int n)
+//! @output string to copy the pref to
+//! @param key The key to use to look up the pref
+//! @param backup the value to return on failure
+//! @param n The max characters to copy to output
+//!
+void gw_pref_get_string (char *output, const char *key, const char* backup, const int n)
 {
     GConfClient *client;
     client = gconf_client_get_default ();
@@ -195,11 +235,18 @@ char* gw_pref_get_string (char *output, char *key, char* backup, int n)
     }
 
     g_object_unref (client);
-
-    return return_value;
 }
 
-void gw_pref_get_default_string (char* output, const char *key, const char* backup, int n)
+
+//!
+//! @brief Returns the default string from the preference backend 
+//!
+//! @output string to copy the pref to
+//! @param key The key to use to look up the pref
+//! @param backup the value to return on failure
+//! @param n The max characters to copy to output
+//!
+void gw_pref_get_default_string (char* output, const char *key, const char* backup, const int n)
 {
     GConfClient *client;
     client = gconf_client_get_default ();
@@ -228,12 +275,13 @@ void gw_pref_get_default_string (char* output, const char *key, const char* back
 }
 
 
-const char* gw_pref_free_string (char *sting)
-{
-    
-}
-
-void gw_pref_set_string (char *key, const char* request)
+//!
+//! @brief Sets the string to the key in the preferences backend
+//!
+//! @param key The key to use to look up the pref
+//! @param request The value to set
+//!
+void gw_pref_set_string (const char *key, const char* request)
 {
     GConfClient *client;
     client = gconf_client_get_default ();
@@ -242,10 +290,14 @@ void gw_pref_set_string (char *key, const char* request)
 }
 
 
-//
-//Actions taken when a gconf value changes
-//
-
+//!
+//! @brief Callback action for when preference key changes
+//!
+//! @param client The preference client
+//! @param cnxn_id Unknown
+//! @param entry The preference entry object
+//! @param data Usere data passed to the function
+//!
 void do_dictionary_source_gconf_key_changed_action (gpointer client,
                                                     guint cnxn_id,
                                                     gpointer entry,
@@ -259,7 +311,15 @@ void do_dictionary_source_gconf_key_changed_action (gpointer client,
 }
 
 
-void do_toolbar_style_pref_changed_action( GConfClient* client, 
+//!
+//! @brief Callback action for when preference key changes
+//!
+//! @param client The preference client
+//! @param cnxn_id Unknown
+//! @param entry The preference entry object
+//! @param data Usere data passed to the function
+//!
+void do_toolbar_style_pref_changed_action (GConfClient* client, 
                                            guint        cnxn_id,
                                            GConfEntry*  entry,
                                            gpointer     data     )
@@ -274,6 +334,14 @@ void do_toolbar_style_pref_changed_action( GConfClient* client,
 }
 
 
+//!
+//! @brief Callback action for when preference key changes
+//!
+//! @param client The preference client
+//! @param cnxn_id Unknown
+//! @param entry The preference entry object
+//! @param data Usere data passed to the function
+//!
 void do_toolbar_show_pref_changed_action ( GConfClient* client,
                                            guint        cnxn_id,
                                            GConfEntry*  entry,
@@ -289,6 +357,14 @@ void do_toolbar_show_pref_changed_action ( GConfClient* client,
 }
 
 
+//!
+//! @brief Callback action for when preference key changes
+//!
+//! @param client The preference client
+//! @param cnxn_id Unknown
+//! @param entry The preference entry object
+//! @param data Usere data passed to the function
+//!
 void do_use_global_document_font_pref_changed_action (GConfClient* client,
                                                       guint cnxn_id,
                                                       GConfEntry *entry,
@@ -306,6 +382,14 @@ void do_use_global_document_font_pref_changed_action (GConfClient* client,
 }
 
 
+//!
+//! @brief Callback action for when preference key changes
+//!
+//! @param client The preference client
+//! @param cnxn_id Unknown
+//! @param entry The preference entry object
+//! @param data Usere data passed to the function
+//!
 void do_global_document_font_pref_changed_action (GConfClient* client,
                                                   guint cnxn_id,
                                                   GConfEntry *entry,
@@ -322,6 +406,14 @@ void do_global_document_font_pref_changed_action (GConfClient* client,
 }
 
 
+//!
+//! @brief Callback action for when preference key changes
+//!
+//! @param client The preference client
+//! @param cnxn_id Unknown
+//! @param entry The preference entry object
+//! @param data Usere data passed to the function
+//!
 void do_custom_document_font_pref_changed_action (GConfClient* client,
                                                   guint cnxn_id,
                                                   GConfEntry *entry,
@@ -338,6 +430,14 @@ void do_custom_document_font_pref_changed_action (GConfClient* client,
 }
 
 
+//!
+//! @brief Callback action for when preference key changes
+//!
+//! @param client The preference client
+//! @param cnxn_id Unknown
+//! @param entry The preference entry object
+//! @param data Usere data passed to the function
+//!
 void do_font_magnification_pref_changed_action (GConfClient* client,
                                                 guint cnxn_id,
                                                 GConfEntry *entry,
@@ -369,6 +469,14 @@ void do_font_magnification_pref_changed_action (GConfClient* client,
 }
 
 
+//!
+//! @brief Callback action for when preference key changes
+//!
+//! @param client The preference client
+//! @param cnxn_id Unknown
+//! @param entry The preference entry object
+//! @param data Usere data passed to the function
+//!
 void do_less_relevant_show_pref_changed_action ( GConfClient* client,
                                                  guint        cnxn_id,
                                                  GConfEntry*  entry,
@@ -384,7 +492,15 @@ void do_less_relevant_show_pref_changed_action ( GConfClient* client,
 }
 
 
-void do_roman_kana_conv_pref_changed_action( GConfClient* client, 
+//!
+//! @brief Callback action for when preference key changes
+//!
+//! @param client The preference client
+//! @param cnxn_id Unknown
+//! @param entry The preference entry object
+//! @param data Usere data passed to the function
+//!
+void do_roman_kana_conv_pref_changed_action (GConfClient* client, 
                                              guint        cnxn_id,
                                              GConfEntry*  entry,
                                              gpointer     data     )
@@ -405,6 +521,14 @@ void do_roman_kana_conv_pref_changed_action( GConfClient* client,
 }
 
 
+//!
+//! @brief Callback action for when preference key changes
+//!
+//! @param client The preference client
+//! @param cnxn_id Unknown
+//! @param entry The preference entry object
+//! @param data Usere data passed to the function
+//!
 void do_hira_kata_conv_pref_changed_action (GConfClient* client, 
                                             guint        cnxn_id,
                                             GConfEntry*  entry,
@@ -420,7 +544,15 @@ void do_hira_kata_conv_pref_changed_action (GConfClient* client,
 }
 
 
-void do_kata_hira_conv_pref_changed_action( GConfClient *client, 
+//!
+//! @brief Callback action for when preference key changes
+//!
+//! @param client The preference client
+//! @param cnxn_id Unknown
+//! @param entry The preference entry object
+//! @param data Usere data passed to the function
+//!
+void do_kata_hira_conv_pref_changed_action (GConfClient *client, 
                                             guint        cnxn_id,
                                             GConfEntry  *entry,
                                             gpointer     data     )
@@ -435,7 +567,15 @@ void do_kata_hira_conv_pref_changed_action( GConfClient *client,
 }
 
 
-void do_spellcheck_pref_changed_action( GConfClient* client, 
+//!
+//! @brief Callback action for when preference key changes
+//!
+//! @param client The preference client
+//! @param cnxn_id Unknown
+//! @param entry The preference entry object
+//! @param data Usere data passed to the function
+//!
+void do_spellcheck_pref_changed_action (GConfClient* client, 
                                         guint        cnxn_id,
                                         GConfEntry*  entry,
                                         gpointer     data     )
@@ -450,7 +590,15 @@ void do_spellcheck_pref_changed_action( GConfClient* client,
 }
 
 
-void do_color_value_changed_action( GConfClient* client, 
+//!
+//! @brief Callback action for when preference key changes
+//!
+//! @param client The preference client
+//! @param cnxn_id Unknown
+//! @param entry The preference entry object
+//! @param data Usere data passed to the function
+//!
+void do_color_value_changed_action (GConfClient* client, 
                                     guint cnxn_id,
                                     GConfEntry *entry,
                                     gpointer data       )
@@ -488,28 +636,26 @@ void do_color_value_changed_action( GConfClient* client,
 }
 
 
-void do_update_dictionary_order_list_changed_action ()
-{
-    //rebuild_combobox_dictionary_list();
-}
-
-
-
-
-//
-//Preference initializations
-//
-
-void gw_prefs_add_change_listener (const char *KEY, GConfClientNotifyFunc callback_function, gpointer data)
+//!
+//! @brief Adds a preference change listener for the selected key
+//!
+//! @param key The preference key
+//! @param callback_function The function to call when the key changes
+//! @param data The userdata to pass to the callback function
+//!
+void gw_prefs_add_change_listener (const char *key, GConfClientNotifyFunc callback_function, gpointer data)
 {
   GConfClient *client;
   client = gconf_client_get_default ();
 
-  gconf_client_notify_add (client, KEY, callback_function, data, NULL, NULL);
-  gconf_client_notify (client, KEY);
+  gconf_client_notify_add (client, key, callback_function, data, NULL, NULL);
+  gconf_client_notify (client, key);
 }
 
 
+//!
+//! @brief Initializes the preferences backend
+//!
 void gw_prefs_initialize_preferences()
 {
   g_type_init();
@@ -546,7 +692,6 @@ void gw_prefs_initialize_preferences()
   gw_prefs_add_change_listener (GCKEY_GW_HEADER_FG, do_color_value_changed_action, NULL);
   gw_prefs_add_change_listener (GCKEY_GW_HEADER_BG, do_color_value_changed_action, NULL);
   gw_prefs_add_change_listener (GCKEY_GW_COMMENT_FG, do_color_value_changed_action, NULL);
-  //gw_prefs_add_change_listener (GCKEY_GW_LOAD_ORDER, (GConfClientNotifyFunc) do_update_dictionary_order_list_changed_action, NULL);
 
   g_object_unref(client);
 }

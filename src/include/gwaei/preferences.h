@@ -10,7 +10,7 @@ gboolean gw_pref_get_boolean (char*, gboolean);
 gboolean gw_pref_get_default_boolean (char*, gboolean);
 
 void gw_pref_set_string (char*, const char*);
-char* gw_pref_get_string (char*, char*, char*, int);
+void gw_pref_get_string (char*, char*, char*, int);
 void gw_pref_get_default_string (char*, char*, char*, int);
 
 void gw_prefs_initialize_preferences(void);
