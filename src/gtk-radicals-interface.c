@@ -45,7 +45,7 @@
 #include <gwaei/gtk-radicals-callbacks.h>
 
 
-static char radical_cache[300 * 3];
+static char radical_cache[300 * 4];
 
 static char *radical_array[][5] =
 {
@@ -520,7 +520,7 @@ char* gw_ui_strdup_prefered_stroke_count ()
     //If the checkbox is checked, get the stroke count from the spinner
     if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON (checkbox)))
     {
-      strokes = g_strdup_printf ("%lf", gtk_spin_button_get_value (GTK_SPIN_BUTTON (spinbutton)));
+      strokes = g_strdup_printf ("s%d", (int)gtk_spin_button_get_value (GTK_SPIN_BUTTON (spinbutton)));
     }
 
     return strokes;
