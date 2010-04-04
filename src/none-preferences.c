@@ -20,6 +20,18 @@
 *******************************************************************************/
 
 
+//!
+//! @file src/none-preferences.c
+//!
+//! @brief File that just returns the default pref option
+//!
+//! Unlike the other preference backends, this is not a backend.
+//! It relies on the default values set in include/definitions.h
+//! to do anything.
+//!
+
+
+
 #include <string.h>
 #include <regex.h>
 #include <locale.h>

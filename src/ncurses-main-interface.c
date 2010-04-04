@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file src/main-interface-ncurses.c
+//! @file src/ncurses-main-interface.c
 //!
 //! @brief Abstraction layer for gtk objects
 //!
@@ -655,11 +655,22 @@ void gw_ncurses_update_progress_feedback (GwSearchItem *item)
 
 
 //!
+//! /brief Sets up the interface before each search begins
+//!
+//! @param item A GwSearchItem pointer to get information from
+//!
+void gw_ncurses_pre_search_prep (GwSearchItem *item)
+{
+}
+
+
+//!
 //! /brief The details to be taken care of after a search is finished
 //!
 //! This is the function that takes care of things such as hiding progressbars,
 //! changing action verbs to past verbs (Searching... vs Found) and for displaying
-//! "no results found" pages.
+//! "no results found" pages.  Before this function is called, the searchitem search
+//! status changes from GW_SEARCH_SEARCHING to GW_SEARCH_FINISHING.
 //!
 //! @param item A GwSearchItem pointer to get information from
 //!

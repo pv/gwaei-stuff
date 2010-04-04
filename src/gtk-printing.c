@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file src/printing-gtk.c
+//! @file src/gtk-printing.c
 //!
 //! @brief Abstraction layer for gtk printing
 //!
@@ -42,11 +42,13 @@
 #include <gwaei/utilities.h>
 #include <gwaei/dictionary-objects.h>
 #include <gwaei/search-objects.h>
-#include <gwaei/gtk.h>
 
 #include <gwaei/engine.h>
-#include <gwaei/printing.h>
-#include <gwaei/interface.h>
+
+#include <gwaei/gtk.h>
+#include <gwaei/gtk-main-interface.h>
+#include <gwaei/gtk-printing.h>
+
 
 
 //!
@@ -74,7 +76,7 @@ GwPageInfo* gw_pageinfo_new()
       return NULL;
 
     GwHistoryList *hl = gw_historylist_get_list (GW_HISTORYLIST_RESULTS);
-    GObject *tb = get_gobject_from_target(GW_TARGET_RESULTS);
+    GObject *tb = get_gobject_from_target (GW_TARGET_RESULTS);
 
     //Start from the start of the highlighted text
     if (gtk_text_buffer_get_has_selection (GTK_TEXT_BUFFER (tb)))

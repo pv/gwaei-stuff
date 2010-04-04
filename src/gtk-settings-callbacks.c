@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file src/settings-callbacks-gtk.c
+//! @file src/gtk-settings-callbacks.c
 //!
 //! @brief Abstraction layer for gtk callbacks
 //!
@@ -41,14 +41,14 @@
 #include <gwaei/regex.h>
 #include <gwaei/utilities.h>
 #include <gwaei/io.h>
-#include <gwaei/settings.h>
 #include <gwaei/dictionary-objects.h>
 #include <gwaei/search-objects.h>
-#include <gwaei/interface.h>
 #include <gwaei/preferences.h>
+
 #include <gwaei/gtk.h>
-#include <gwaei/callbacks.h>
-#include <gwaei/gtk-dict-install-line-object.h>
+#include <gwaei/gtk-settings-callbacks.h>
+#include <gwaei/gtk-settings-interface.h>
+#include <gwaei/gtk-settings-interface-install-line.h>
 
 
 static int removed_from = -1;

@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file src/radicals-interface-gtk.c
+//! @file src/gtk-radicals-interface.c
 //!
 //! @brief Abstraction layer for gtk objects 
 //!
@@ -39,21 +39,13 @@
 #include <gwaei/definitions.h>
 #include <gwaei/dictionary-objects.h>
 #include <gwaei/search-objects.h>
-#include <gwaei/interface.h>
-#include <gwaei/callbacks.h>
+
 #include <gwaei/gtk.h>
+#include <gwaei/gtk-radicals-interface.h>
+#include <gwaei/gtk-radicals-callbacks.h>
 
 
 static char radical_cache[300 * 3];
-
-enum radical_fields
-{
-  STROKES,
-  REPRESENTATIVE_RADICAL,
-  ACTUAL_RADICAL,
-  RADICAL_NAME,
-  TOTAL_FIELDS
-};
 
 static char *radical_array[][5] =
 {
@@ -330,6 +322,7 @@ static char *radical_array[][5] =
   {NULL}
 };
 
+
 void gw_ui_initialize_radicals_table ()
 {
   int total_columns = 19;
@@ -345,11 +338,11 @@ void gw_ui_initialize_radicals_table ()
   while (radical_array[i][0] != NULL)
   {
     //Add a new stroke label
-    if (stroke == NULL || strcmp(stroke, radical_array[i][STROKES]) != 0)
+    if (stroke == NULL || strcmp(stroke, radical_array[i][GW_RADARRAY_STROKES]) != 0)
     {
-      stroke = radical_array[i][STROKES];
+      stroke = radical_array[i][GW_RADARRAY_STROKES];
       label = gtk_label_new (stroke);
-      char *markup = g_markup_printf_escaped ("<span color=\"red\"><b>%s</b></span>", radical_array[i][STROKES]);
+      char *markup = g_markup_printf_escaped ("<span color=\"red\"><b>%s</b></span>", radical_array[i][GW_RADARRAY_STROKES]);
       if (markup != NULL)
       {
         gtk_label_set_markup (GTK_LABEL (label), markup);
@@ -361,9 +354,12 @@ void gw_ui_initialize_radicals_table ()
     else
     {
       if (cols == total_columns && rows != 0) gtk_table_resize (table, rows, table->ncols);
-      button = gtk_toggle_button_new_with_label (radical_array[i][ACTUAL_RADICAL]);
-      char *tooltip = g_markup_printf_escaped (gettext("<b>Substitution Radical:</b> %s\n<b>Actual Radical:</b> %s\n<b>Radical Name:</b> %s"), radical_array[i][REPRESENTATIVE_RADICAL], radical_array[i][ACTUAL_RADICAL], radical_array[i][RADICAL_NAME]);
-      gtk_widget_set_name (GTK_WIDGET (button), radical_array[i][REPRESENTATIVE_RADICAL]);
+      button = gtk_toggle_button_new_with_label (radical_array[i][GW_RADARRAY_ACTUAL]);
+      char *tooltip = g_markup_printf_escaped (
+          gettext("<b>Substitution Radical:</b> %s\n<b>Actual Radical:</b> %s\n<b>Radical Name:</b> %s"),
+          radical_array[i][GW_RADARRAY_REPRESENTATIVE], radical_array[i][GW_RADARRAY_ACTUAL], radical_array[i][GW_RADARRAY_NAME]
+      );
+      gtk_widget_set_name (GTK_WIDGET (button), radical_array[i][GW_RADARRAY_REPRESENTATIVE]);
       if (tooltip != NULL)
       {
         gtk_widget_set_tooltip_markup (GTK_WIDGET (button), tooltip);
@@ -386,51 +382,61 @@ void gw_ui_initialize_radicals_table ()
 
 }
 
-//
+
+//!
 //! @brief Copies all the lables of the depressed buttons in the radicals window
 //!
-//! @param output The string to copy to
-//! @param The max characters to copy
 //!
-void gw_ui_strcpy_all_selected_radicals(char *output, int *MAX)
+char* gw_ui_strdup_all_selected_radicals ()
 {
-    char id[50];
-    
     GtkWidget *table;
-    strcpy(id, "radical_selection_table");
-    table = GTK_WIDGET (gtk_builder_get_object(builder, id));
+    table = GTK_WIDGET (gtk_builder_get_object(builder, "radical_selection_table"));
 
-    GList     *list;
-    list  = gtk_container_get_children (GTK_CONTAINER (table));
+    GList     *radical_togglebutton_list;
+    radical_togglebutton_list  = gtk_container_get_children (GTK_CONTAINER (table));
 
-    int leftover = *MAX;
+    char *temp_string = NULL;
+    char *final_string = NULL;
+
     const char *label_text = NULL;
     radical_cache[0] = '\0';
     gboolean a_button_was_in_pressed_state = FALSE;
 
     //Probe all of the active toggle buttons in the table
-    while (list != NULL)
+    while (radical_togglebutton_list != NULL)
     {
-      if (G_OBJECT_TYPE(list->data) == g_type_from_name("GtkToggleButton"))
+      if (G_OBJECT_TYPE(radical_togglebutton_list->data) == g_type_from_name("GtkToggleButton"))
       {
-         //label_text = gtk_button_get_label( GTK_BUTTON(list->data));
-         label_text = gtk_widget_get_name ( GTK_WIDGET (list->data));
-         if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(list->data)))
+         label_text = gtk_widget_get_name ( GTK_WIDGET (radical_togglebutton_list->data));
+         if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(radical_togglebutton_list->data)))
          {
            a_button_was_in_pressed_state = TRUE;
-           strncat(output, label_text, leftover);
-           leftover -= strlen(label_text);
+           if (final_string == NULL)
+           {
+             final_string = g_strdup_printf("%s", label_text);
+           }
+           else
+           {
+             temp_string = g_strdup_printf("%s%s", final_string, label_text);
+             g_free (final_string);
+             final_string = NULL;
+             final_string = temp_string;
+             temp_string = NULL;
+           }
+         }
+         else
+         {
+           gtk_widget_set_sensitive (GTK_WIDGET (radical_togglebutton_list->data), FALSE);
          }
          strcat (radical_cache, label_text);
-         gtk_widget_set_sensitive (GTK_WIDGET (list->data), FALSE);
       }
-      list = list->next;
+      radical_togglebutton_list = radical_togglebutton_list->next;
     }
 
     if (!a_button_was_in_pressed_state)
       gw_ui_deselect_all_radicals ();
 
-    *MAX = leftover;
+    return final_string;
 }
 
 
@@ -464,7 +470,7 @@ void gw_ui_set_button_sensitive_when_label_is (const char *string)
            //label_text = gtk_button_get_label (GTK_BUTTON(it->data));
            label_text = gtk_widget_get_name (GTK_WIDGET (it->data));
            if (strcmp(label_text, radical) == 0)
-            gtk_widget_set_sensitive (GTK_WIDGET (it->data), TRUE);
+             gtk_widget_set_sensitive (GTK_WIDGET (it->data), TRUE);
         }
         it = it->next;
       }
@@ -502,37 +508,22 @@ void gw_ui_set_button_sensitive_when_label_is (const char *string)
 //!
 //! @param output The string to copy the prefered stroke count to
 //! @param MAX The max characters to copy
-void gw_ui_strcpy_prefered_stroke_count(char *output, int *MAX)
+char* gw_ui_strdup_prefered_stroke_count ()
 {
-    char id[50];
-
     GtkWidget *checkbox;
-    strcpy(id, "strokes_checkbox");
-    checkbox   = GTK_WIDGET (gtk_builder_get_object(builder, id));
-
+    checkbox   = GTK_WIDGET (gtk_builder_get_object(builder, "strokes_checkbox"));
     GtkWidget *spinbutton;
-    strcpy(id, "strokes_spinbutton");
-    spinbutton = GTK_WIDGET (gtk_builder_get_object(builder, id));
+    spinbutton = GTK_WIDGET (gtk_builder_get_object(builder, "strokes_spinbutton"));
 
-    int leftover = *MAX;
+    char *strokes = NULL;
 
     //If the checkbox is checked, get the stroke count from the spinner
     if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON (checkbox)))
     {
-      int strokes;
-      strokes = gtk_spin_button_get_value (GTK_SPIN_BUTTON (spinbutton));
-
-      char S[3];
-      gw_util_itoa(strokes, S, 3);
-
-      strncat(output, "S", leftover);
-      leftover -= 1;
-
-      strncat(output, S, leftover);
-      leftover -= strlen(S);
+      strokes = g_strdup_printf ("%lf", gtk_spin_button_get_value (GTK_SPIN_BUTTON (spinbutton)));
     }
 
-    *MAX = leftover;
+    return strokes;
 }
 
 
@@ -541,23 +532,18 @@ void gw_ui_strcpy_prefered_stroke_count(char *output, int *MAX)
 //!
 void gw_ui_update_strokes_checkbox_state()
 {
-    char id[50];
-
     //Get the needed variables and references
     GtkWidget *checkbutton;
-    strcpy(id, "strokes_checkbox");
-    checkbutton = GTK_WIDGET (gtk_builder_get_object(builder, id));
+    checkbutton = GTK_WIDGET (gtk_builder_get_object(builder, "strokes_checkbox"));
 
     gboolean enable;
     enable = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton));
 
     GtkWidget *spinbutton;
-    strcpy(id, "strokes_spinbutton");
-    spinbutton = GTK_WIDGET (gtk_builder_get_object(builder, id));
+    spinbutton = GTK_WIDGET (gtk_builder_get_object(builder, "strokes_spinbutton"));
     
     GtkWidget *label;
-    strcpy(id, "strokes_checkbox");
-    label = GTK_WIDGET (gtk_builder_get_object(builder, id));
+    label = GTK_WIDGET (gtk_builder_get_object(builder, "strokes_checkbox"));
 
     gtk_widget_set_sensitive (spinbutton, enable);
 }
@@ -568,11 +554,8 @@ void gw_ui_update_strokes_checkbox_state()
 //!
 void gw_ui_deselect_all_radicals()
 {
-    char id[50];
-
     GtkWidget *table;
-    strcpy(id, "radical_selection_table");
-    table = GTK_WIDGET (gtk_builder_get_object(builder, id));
+    table = GTK_WIDGET (gtk_builder_get_object(builder, "radical_selection_table"));
 
     //Reset all of the toggle buttons
     GList* list;
@@ -596,11 +579,8 @@ void gw_ui_deselect_all_radicals()
 //!
 void gw_ui_set_strokes_checkbox_state (gboolean state)
 {
-    char id[50];
-
     GtkWidget *checkbox;
-    strcpy(id, "strokes_checkbox");
-    checkbox = GTK_WIDGET (gtk_builder_get_object(builder, id));
+    checkbox = GTK_WIDGET (gtk_builder_get_object(builder, "strokes_checkbox"));
 
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (checkbox), state);
 }

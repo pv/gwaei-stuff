@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file src/tabs.c
+//! @file src/gtk-main-interface-tabs.c
 //!
 //! @brief Abstraction layer for gtk callbacks
 //!
@@ -43,14 +43,14 @@
 #include <gwaei/io.h>
 #include <gwaei/dictionary-objects.h>
 #include <gwaei/search-objects.h>
-#include <gwaei/gtk.h>
+#include <gwaei/preferences.h>
 
 #include <gwaei/engine.h>
-#include <gwaei/callbacks.h>
-#include <gwaei/interface.h>
-#include <gwaei/preferences.h>
-#include <gwaei/callbacks.h>
-#include <gwaei/tabs.h>
+
+#include <gwaei/gtk.h>
+#include <gwaei/gtk-main-callbacks.h>
+#include <gwaei/gtk-main-interface.h>
+#include <gwaei/gtk-main-interface-tabs.h>
 
 G_MODULE_EXPORT void do_tab_remove (GtkWidget *widget, gpointer data);
 

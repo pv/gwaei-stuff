@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file src/gtk-dict-install-line-object.c
+//! @file src/gtk-settings-interface-install-line.c
 //!
 //! @brief Abstraction layer for gtk object
 //!
@@ -41,13 +41,13 @@
 #include <gwaei/utilities.h>
 #include <gwaei/dictionary-objects.h>
 #include <gwaei/search-objects.h>
-#include <gwaei/gtk.h>
 
 #include <gwaei/engine.h>
-#include <gwaei/interface.h>
-#include <gwaei/callbacks.h>
 #include <gwaei/preferences.h>
-#include <gwaei/gtk-dict-install-line-object.h>
+#include <gwaei/gtk.h>
+#include <gwaei/gtk-settings-callbacks.h>
+#include <gwaei/gtk-settings-interface.h>
+#include <gwaei/gtk-settings-interface-install-line.h>
 
 
 //!

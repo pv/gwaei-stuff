@@ -45,7 +45,10 @@
 #include <gwaei/utilities.h>
 #include <gwaei/dictionary-objects.h>
 #include <gwaei/search-objects.h>
-#include <gwaei/interface.h>
+
+#ifdef GW_WITH_GTK
+#include <gwaei/gtk-main-interface.h>
+#endif
 
 
 
@@ -82,8 +85,10 @@ int main (int argc, char *argv[])
       initialize_console_interface(argc, argv);
     else if  (gw_util_get_runmode() == GW_NCURSES_RUNMODE)
       initialize_ncurses_interface (argc, argv);
+#ifdef GW_WITH_GTK
     else if  (gw_util_get_runmode() == GW_GTK_RUNMODE)
       initialize_gui_interface(argc, argv);
+#endif
     else
       initialize_console_interface(argc, argv);
 

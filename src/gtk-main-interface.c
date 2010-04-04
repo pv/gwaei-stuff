@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file src/main-interface-gtk.c
+//! @file src/gtk-main-interface.c
 //!
 //! @brief Abstraction layer for gtk objects
 //!
@@ -44,13 +44,15 @@
 #include <gwaei/utilities.h>
 #include <gwaei/io.h>
 #include <gwaei/search-objects.h>
-#include <gwaei/gtk.h>
+#include <gwaei/preferences.h>
 
 #include <gwaei/engine.h>
-#include <gwaei/callbacks.h>
-#include <gwaei/interface.h>
-#include <gwaei/preferences.h>
-#include <gwaei/tabs.h>
+
+#include <gwaei/gtk.h>
+#include <gwaei/gtk-main-callbacks.h>
+#include <gwaei/gtk-settings-callbacks.h>
+#include <gwaei/gtk-main-interface.h>
+#include <gwaei/gtk-main-interface-tabs.h>
 
 
 //Convenience pointers
@@ -3192,7 +3194,24 @@ void gw_ui_append_more_relevant_header_to_output (GwSearchItem *item)
 
 
 //!
-//! /brief Not yet written
+//! /brief Sets up the interface before each search begins
+//!
+//! @param item A GwSearchItem pointer to get information from
+//!
+void gw_ui_pre_search_prep (GwSearchItem *item)
+{
+}
+
+
+//!
+//! /brief The details to be taken care of after a search is finished
+//!
+//! This is the function that takes care of things such as hiding progressbars,
+//! changing action verbs to past verbs (Searching... vs Found) and for displaying
+//! "no results found" pages.  Before this function is called, the searchitem search
+//! status changes from GW_SEARCH_SEARCHING to GW_SEARCH_FINISHING.
+//!
+//! @param item A GwSearchItem pointer to get information from
 //!
 void gw_ui_after_search_cleanup (GwSearchItem *item)
 {

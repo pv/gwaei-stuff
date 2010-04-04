@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //! 
-//! @file src/sexy-enable.c
+//! @file src/gtk-main-interface-sexy.c
 //!
 //! @brief Replaces the search GtkEntry with a SexySpellEntry.
 //!
@@ -43,13 +43,13 @@
 
 #include <gwaei/definitions.h>
 #include <gwaei/dictionary-objects.h>
-#include <gwaei/gtk.h>
-#include <gwaei/sexy.h>
 #include <gwaei/utilities.h>
 #include <gwaei/search-objects.h>
-#include <gwaei/interface.h>
-#include <gwaei/callbacks.h>
 #include <gwaei/preferences.h>
+
+#include <gwaei/gtk.h>
+#include <gwaei/gtk-main-callbacks.h>
+#include <gwaei/gtk-settings-callbacks.h>
 
 
 //!

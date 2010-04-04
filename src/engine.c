@@ -82,14 +82,16 @@ static void append_result_to_output (GwSearchItem *item)
         skip = FALSE;
       }
 
+#ifdef GW_WITH_GTK
       //Begin comparison if possible
       if (!skip && ((same_def_totals && same_first_def) || (same_kanji && same_furigana)))
         gw_ui_append_def_same_to_buffer (item, TRUE);
       else
-        (*item->gw_searchitem_append_results_to_output)(item, (!skip && same_kanji));
+#endif
+        (*item->gw_searchitem_ui_append_results_to_output)(item, (!skip && same_kanji));
     }
     else
-      (*item->gw_searchitem_append_results_to_output)(item, TRUE);
+      (*item->gw_searchitem_ui_append_results_to_output)(item, TRUE);
 }
 
 
@@ -186,7 +188,7 @@ static gboolean stream_results_thread (GwSearchItem *item)
       (*item->gw_searchitem_parse_result_string)(item->resultline);
 
       //Update the progress feeback
-      (*item->gw_searchitem_update_progress_feedback)(item);
+      (*item->gw_searchitem_ui_update_progress_feedback)(item);
 /*
       if (item->target_tb == (gpointer*) get_gobject_from_target(item->target))
         gw_ui_verb_check_with_suggestion (item);
@@ -201,7 +203,7 @@ static gboolean stream_results_thread (GwSearchItem *item)
               item->total_results++;
               item->total_relevant_results++;
               if (item->target != GW_TARGET_KANJI)
-                (*item->gw_searchitem_append_more_relevant_header_to_output)(item);
+                (*item->gw_searchitem_ui_append_more_relevant_header_to_output)(item);
               append_result_to_output(item);
 
               //Swap the result lines
@@ -245,14 +247,14 @@ static gboolean stream_results_thread (GwSearchItem *item)
 
     //Make sure the more relevant header banner is visible
     if (item->target != GW_TARGET_KANJI)
-      (*item->gw_searchitem_append_more_relevant_header_to_output)(item);
+      (*item->gw_searchitem_ui_append_more_relevant_header_to_output)(item);
 
     //Insert the less relevant title header if needed
     if ( item->show_less_relevant_results    &&
          !less_relevant_title_inserted &&
          (item->results_medium != NULL || item->results_low != NULL) )
     {
-      (*item->gw_searchitem_append_less_relevant_header_to_output)(item);
+      (*item->gw_searchitem_ui_append_less_relevant_header_to_output)(item);
       less_relevant_title_inserted = TRUE;
     }
 
@@ -265,7 +267,7 @@ static gboolean stream_results_thread (GwSearchItem *item)
         append_stored_result_to_output(item, &(item->results_medium), item->resultline);
       }
       //Update the progress feeback
-      (*item->gw_searchitem_update_progress_feedback)(item);
+      (*item->gw_searchitem_ui_update_progress_feedback)(item);
       return TRUE;
     }
 
@@ -278,7 +280,7 @@ static gboolean stream_results_thread (GwSearchItem *item)
         append_stored_result_to_output(item, &(item->results_low), item->resultline);
       }
       //Update the progress feeback
-      (*item->gw_searchitem_update_progress_feedback)(item);
+      (*item->gw_searchitem_ui_update_progress_feedback)(item);
       return TRUE;
     }
 
@@ -300,7 +302,7 @@ static gboolean stream_results_cleanup (GwSearchItem *item)
 {
     less_relevant_title_inserted = FALSE;
     item->status = GW_SEARCH_FINISHING;
-    (*item->gw_searchitem_after_search_cleanup)(item);
+    (*item->gw_searchitem_ui_after_search_cleanup)(item);
     gw_searchitem_do_post_search_clean (item);
     item->status = GW_SEARCH_IDLE;
 }

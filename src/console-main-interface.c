@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file src/main-interface-console.c
+//! @file src/console-main-interface.c
 //!
 //! @brief Abstraction layer for the console
 //!
@@ -639,6 +639,13 @@ void gw_console_append_more_relevant_header_to_output (GwSearchItem *item)
 {
 }
 
+
+//!
+//! /brief Not yet written
+//!
+void gw_console_pre_search_prep (GwSearchItem *item)
+{
+}
 
 //!
 //! /brief Not yet written

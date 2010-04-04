@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file src/radicals-callbacks-gtk.c
+//! @file src/gtk-radicals-callbacks.c
 //!
 //! @brief Abstraction layer for gtk callbacks 
 //!
@@ -39,8 +39,9 @@
 #include <gwaei/dictionary-objects.h>
 #include <gwaei/search-objects.h>
 #include <gwaei/engine.h>
-#include <gwaei/interface.h>
+
 #include <gwaei/gtk.h>
+#include <gwaei/gtk-radicals-interface.h>
 
 
 //!
@@ -71,29 +72,50 @@ G_MODULE_EXPORT void do_radical_clear (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void do_radical_search (GtkWidget *widget, gpointer data)
 {
+    //Ininitializations
     GwHistoryList* hl = gw_historylist_get_list(GW_HISTORYLIST_RESULTS);   
+    char *query_text = NULL;
+    char *radicals_text = gw_ui_strdup_all_selected_radicals ();
+    char *strokes_text = gw_ui_strdup_prefered_stroke_count ();
+    GwDictInfo *di = gw_dictlist_get_dictinfo_by_alias ("Radicals");
 
-    int leftover = 250;
+    //Create the query string
+    if (radicals_text != NULL && strokes_text != NULL)
+    {
+      query_text = g_strdup_printf ("%s%s", radicals_text, strokes_text);
+    }
+    else if (radicals_text != NULL)
+    {
+      query_text = radicals_text;
+      radicals_text = NULL;
+    }
+    else if (strokes_text != NULL)
+    {
+      query_text = strokes_text;
+      strokes_text = NULL;
+    }
 
-    char query[leftover];
-    query[0] = '\0';
+    //Free unneeded variables
+    if (strokes_text != NULL)
+    {
+      g_free (strokes_text);
+      strokes_text = NULL;
+    }
+    if (radicals_text != NULL)
+    {
+      g_free (radicals_text);
+      strokes_text = NULL;
+    }
 
-    gw_ui_strcpy_all_selected_radicals (query, &leftover);
-    gw_ui_strcpy_prefered_stroke_count (query, &leftover);
+    //Sanity checks
+    if (query_text == NULL || strlen(query_text) == 0) return;
+    if (di == NULL || di->status != GW_DICT_STATUS_INSTALLED) return;
+    if (gw_ui_cancel_search_for_current_tab () == FALSE) return;
 
-    if (strlen(query) == 0) return;
-
+    //Prep the search
     gw_ui_clear_search_entry ();
-    gw_ui_search_entry_insert (query);
+    gw_ui_search_entry_insert (query_text);
     gw_ui_text_select_all_by_target (GW_TARGET_ENTRY);
-
-    GwDictInfo *dictionary;
-    dictionary = gw_dictlist_get_dictinfo_by_alias ("Radicals");
-    if (dictionary == NULL || dictionary->status != GW_DICT_STATUS_INSTALLED) return;
-
-    //Checks to make sure everything is sane
-    if (gw_ui_cancel_search_for_current_tab () == FALSE)
-      return;
 
     if (hl->current != NULL && (hl->current)->total_results > 0) 
     {
@@ -107,11 +129,18 @@ G_MODULE_EXPORT void do_radical_search (GtkWidget *widget, gpointer data)
       hl->current = NULL;
     }
  
-    hl->current = gw_searchitem_new(query, dictionary, GW_TARGET_RESULTS);
+    hl->current = gw_searchitem_new (query_text, di, GW_TARGET_RESULTS);
 
     //Start the search
     gw_ui_initialize_buffer_by_searchitem (hl->current);
     gw_search_get_results (hl->current);
+
+    //Cleanup
+    if (query_text != NULL)
+    {
+      g_free (query_text);
+      query_text = NULL;
+    }
 }
 
 

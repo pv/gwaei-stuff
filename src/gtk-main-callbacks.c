@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file src/main-callbacks-gtk.c
+//! @file src/gtk-main-callbacks.c
 //!
 //! @brief Abstraction layer for gtk callbacks
 //!
@@ -43,14 +43,15 @@
 #include <gwaei/utilities.h>
 #include <gwaei/io.h>
 #include <gwaei/search-objects.h>
-#include <gwaei/gtk.h>
-
-#include <gwaei/printing.h>
-#include <gwaei/engine.h>
-#include <gwaei/settings.h>
-#include <gwaei/interface.h>
 #include <gwaei/preferences.h>
-#include <gwaei/tabs.h>
+
+#include <gwaei/engine.h>
+
+#include <gwaei/gtk.h>
+#include <gwaei/gtk-printing.h>
+#include <gwaei/gtk-main-interface.h>
+#include <gwaei/gtk-main-interface-tabs.h>
+#include <gwaei/gtk-settings-interface.h>
 
 #include "kanjipad/kanjipad.h"
 

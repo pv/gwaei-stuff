@@ -40,10 +40,9 @@
 #include <gwaei/dictionary-objects.h>
 #include <gwaei/search-objects.h>
 
-#include <gwaei/interface.h>
-#include <gwaei/main-interface-console.h>
-#include <gwaei/main-interface-ncurses.h>
-#include <gwaei/main-interface-gtk.h>
+#include <gwaei/console-main-interface.h>
+#include <gwaei/ncurses-main-interface.h>
+#include <gwaei/gtk-main-interface.h>
 
 
 
@@ -80,7 +79,9 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary, const int 
   temp->scratch_buffer = NULL;
   temp->dictionary = dictionary;
   temp->target = TARGET;
+#ifdef GW_WITH_GTK
   temp->target_tb = (gpointer) get_gobject_from_target (TARGET);
+#endif
   temp->total_relevant_results = 0;
   temp->total_irrelevant_results = 0;
   temp->total_results = 0;
@@ -100,64 +101,77 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary, const int 
         if (!gw_queryline_parse_edict_string (temp->queryline, query)) return;
         temp->gw_searchitem_parse_result_string = &gw_resultline_parse_edict_result_string;
         if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
-          temp->gw_searchitem_append_results_to_output = &gw_console_append_edict_results;
+          temp->gw_searchitem_ui_append_results_to_output = &gw_console_append_edict_results;
         else if  (gw_util_get_runmode() == GW_NCURSES_RUNMODE)
-          temp->gw_searchitem_append_results_to_output = &gw_ncurses_append_edict_results;
+          temp->gw_searchitem_ui_append_results_to_output = &gw_ncurses_append_edict_results;
+#ifdef GW_WITH_GTK
         else
-          temp->gw_searchitem_append_results_to_output = &gw_ui_append_edict_results_to_buffer;
+          temp->gw_searchitem_ui_append_results_to_output = &gw_ui_append_edict_results_to_buffer;
+#endif
         break;
       case GW_DICT_TYPE_KANJI:
         if (!gw_queryline_parse_kanjidict_string (temp->queryline, query)) return;
         temp->gw_searchitem_parse_result_string = &gw_resultline_parse_kanjidict_result_string;
         if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
-          temp->gw_searchitem_append_results_to_output = &gw_console_append_kanjidict_results;
+          temp->gw_searchitem_ui_append_results_to_output = &gw_console_append_kanjidict_results;
         else if (gw_util_get_runmode() == GW_NCURSES_RUNMODE)
-          temp->gw_searchitem_append_results_to_output = &gw_ncurses_append_kanjidict_results;
+          temp->gw_searchitem_ui_append_results_to_output = &gw_ncurses_append_kanjidict_results;
+#ifdef GTK
         else
-          temp->gw_searchitem_append_results_to_output = &gw_ui_append_kanjidict_results_to_buffer;
+          temp->gw_searchitem_ui_append_results_to_output = &gw_ui_append_kanjidict_results_to_buffer;
+#endif
         break;
       case GW_DICT_TYPE_EXAMPLES:
         if (!gw_queryline_parse_exampledict_string (temp->queryline, query)) return;
         temp->gw_searchitem_parse_result_string = &gw_resultline_parse_examplesdict_result_string;
         if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
-          temp->gw_searchitem_append_results_to_output = &gw_console_append_examplesdict_results;
+          temp->gw_searchitem_ui_append_results_to_output = &gw_console_append_examplesdict_results;
         else if  (gw_util_get_runmode() == GW_NCURSES_RUNMODE)
-          temp->gw_searchitem_append_results_to_output = &gw_ncurses_append_examplesdict_results;
+          temp->gw_searchitem_ui_append_results_to_output = &gw_ncurses_append_examplesdict_results;
+#ifdef GW_WITH_GTK
         else
-          temp->gw_searchitem_append_results_to_output = &gw_ui_append_examplesdict_results_to_buffer;
-        break;
+          temp->gw_searchitem_ui_append_results_to_output = &gw_ui_append_examplesdict_results_to_buffer;
+#endif
+      break;
       default:
         if (!gw_queryline_parse_edict_string (temp->queryline, query)) return;
         temp->gw_searchitem_parse_result_string = &gw_resultline_parse_unknowndict_result_string;
         if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
-          temp->gw_searchitem_append_results_to_output = &gw_console_append_unknowndict_results;
+          temp->gw_searchitem_ui_append_results_to_output = &gw_console_append_unknowndict_results;
         else if  (gw_util_get_runmode() == GW_NCURSES_RUNMODE)
-          temp->gw_searchitem_append_results_to_output = &gw_ncurses_append_unknowndict_results;
+          temp->gw_searchitem_ui_append_results_to_output = &gw_ncurses_append_unknowndict_results;
+#ifdef GW_WITH_GTK
         else
-          temp->gw_searchitem_append_results_to_output = &gw_ui_append_unknowndict_results_to_buffer;
+          temp->gw_searchitem_ui_append_results_to_output = &gw_ui_append_unknowndict_results_to_buffer;
+#endif
         break;
   }
   if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
   {
-    temp->gw_searchitem_update_progress_feedback = &gw_console_update_progress_feedback;
-    temp->gw_searchitem_append_less_relevant_header_to_output = &gw_console_append_less_relevant_header_to_output;
-    temp->gw_searchitem_append_more_relevant_header_to_output = &gw_console_append_more_relevant_header_to_output;
-    temp->gw_searchitem_after_search_cleanup = &gw_console_after_search_cleanup;
+    temp->gw_searchitem_ui_update_progress_feedback = &gw_console_update_progress_feedback;
+    temp->gw_searchitem_ui_append_less_relevant_header_to_output = &gw_console_append_less_relevant_header_to_output;
+    temp->gw_searchitem_ui_append_more_relevant_header_to_output = &gw_console_append_more_relevant_header_to_output;
+    temp->gw_searchitem_ui_pre_search_prep = &gw_console_pre_search_prep;
+    temp->gw_searchitem_ui_after_search_cleanup = &gw_console_after_search_cleanup;
   }
   else if  (gw_util_get_runmode() == GW_NCURSES_RUNMODE)
   {
-    temp->gw_searchitem_update_progress_feedback = &gw_ncurses_update_progress_feedback;
-    temp->gw_searchitem_append_less_relevant_header_to_output = &gw_ncurses_append_less_relevant_header_to_output;
-    temp->gw_searchitem_append_more_relevant_header_to_output = &gw_ncurses_append_more_relevant_header_to_output;
-    temp->gw_searchitem_after_search_cleanup = &gw_ncurses_after_search_cleanup;
+    temp->gw_searchitem_ui_update_progress_feedback = &gw_ncurses_update_progress_feedback;
+    temp->gw_searchitem_ui_append_less_relevant_header_to_output = &gw_ncurses_append_less_relevant_header_to_output;
+    temp->gw_searchitem_ui_append_more_relevant_header_to_output = &gw_ncurses_append_more_relevant_header_to_output;
+    temp->gw_searchitem_ui_pre_search_prep = &gw_ncurses_pre_search_prep;
+    temp->gw_searchitem_ui_after_search_cleanup = &gw_ncurses_after_search_cleanup;
   }
+#ifdef GW_WITH_GTK
   else
   {
-    temp->gw_searchitem_update_progress_feedback = &gw_ui_update_progress_feedback;
-    temp->gw_searchitem_append_less_relevant_header_to_output = &gw_ui_append_less_relevant_header_to_output;
-    temp->gw_searchitem_append_more_relevant_header_to_output = &gw_ui_append_more_relevant_header_to_output;
-    temp->gw_searchitem_after_search_cleanup = &gw_ui_after_search_cleanup;
+    temp->gw_searchitem_ui_update_progress_feedback = &gw_ui_update_progress_feedback;
+    temp->gw_searchitem_ui_append_less_relevant_header_to_output = &gw_ui_append_less_relevant_header_to_output;
+    temp->gw_searchitem_ui_append_more_relevant_header_to_output = &gw_ui_append_more_relevant_header_to_output;
+    temp->gw_searchitem_ui_pre_search_prep = &gw_ui_pre_search_prep;
+    temp->gw_searchitem_ui_after_search_cleanup = &gw_ui_after_search_cleanup;
   }
+#endif
 
   return temp;
 }
@@ -256,7 +270,7 @@ void gw_searchitem_do_post_search_clean (GwSearchItem* item)
 //!
 void gw_searchitem_free (GwSearchItem* item)
 {
-  gw_ui_cancel_search_by_searchitem (item);
+//  gw_ui_cancel_search_by_searchitem (item);
   gw_searchitem_do_post_search_clean (item);
   free (item->queryline);
   free (item);
