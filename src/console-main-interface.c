@@ -183,6 +183,7 @@ static void print_about_program ()
 static void print_search_start_banner (char *query, char *dictionary)
 {
     printf(gettext("Searching for \"%s\" in %s...\n"), query, dictionary);
+    printf("\n");
 
     #ifdef G_OS_UNIX
     sleep(1);
@@ -474,7 +475,6 @@ void initialize_console_interface (int argc, char **argv)
     {
       char *message_total = ngettext("Found %d result", "Found %d results", item->total_results);
       char *message_relevant = ngettext("(%d Relevant)", "(%d Relevant)", item->total_relevant_results);
-      printf("\n");
       printf(message_total, item->total_results);
       if (item->total_relevant_results != item->total_results)
         printf(message_relevant, item->total_relevant_results);
