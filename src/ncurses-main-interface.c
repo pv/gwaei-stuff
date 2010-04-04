@@ -45,6 +45,9 @@
 #include <gwaei/preferences.h>
 #include <gwaei/utilities.h>
 
+#include <gwaei/main.h>
+#include <gwaei/ncurses-main-interface.h>
+
 GwDictInfo *di = NULL;
 char query_text[MAX_QUERY];
 static GMainLoop *main_loop = NULL;
@@ -490,6 +493,7 @@ void initialize_ncurses_interface (int argc, char *argv[])
 
     //nCurses initializations
     if (ncurses_screen_init() == ERR) return;
+    gw_ncurses_initialize_interface_output_generics ();
 
     //Enter the main loop of ncurses
     main_loop = g_main_loop_new (NULL, TRUE);
@@ -507,7 +511,7 @@ void initialize_ncurses_interface (int argc, char *argv[])
 //!
 //! /brief Not yet written
 //!
-void gw_ncurses_append_edict_results (GwSearchItem *item, gboolean unused)
+void gw_ncurses_append_edict_results (GwSearchItem *item)
 {
 		//Definitions
 		int cont = 0;
@@ -551,7 +555,7 @@ void gw_ncurses_append_edict_results (GwSearchItem *item, gboolean unused)
 //!
 //! /brief Not yet written
 //!
-void gw_ncurses_append_kanjidict_results (GwSearchItem *item, gboolean unused)
+void gw_ncurses_append_kanjidict_results (GwSearchItem *item)
 {
 		char line_started = FALSE;
 	    GwResultLine *resultline = item->resultline;
@@ -612,7 +616,7 @@ void gw_ncurses_append_kanjidict_results (GwSearchItem *item, gboolean unused)
 //!
 //! /brief Not yet written
 //!
-void gw_ncurses_append_examplesdict_results (GwSearchItem *item, gboolean unused)
+void gw_ncurses_append_examplesdict_results (GwSearchItem *item)
 {
 		GwResultLine *resultline = item->resultline;
 		int i = 0;
@@ -635,7 +639,7 @@ void gw_ncurses_append_examplesdict_results (GwSearchItem *item, gboolean unused
 //!
 //! /brief Not yet written
 //!
-void gw_ncurses_append_unknowndict_results (GwSearchItem *item, gboolean unused)
+void gw_ncurses_append_unknowndict_results (GwSearchItem *item)
 {
   	wprintw(results,"%s\n", item->resultline->string);
 }
@@ -683,5 +687,23 @@ void gw_ncurses_after_search_cleanup (GwSearchItem *item)
     {
       gw_ncurses_no_result (item);
     }
+}
+
+
+//!
+//! @brief Set the output generics functions when a search is being done
+//!
+void gw_ncurses_initialize_interface_output_generics ()
+{
+    gw_output_generic_append_edict_results = gw_ncurses_append_edict_results;
+    gw_output_generic_append_kanjidict_results = gw_ncurses_append_kanjidict_results;
+    gw_output_generic_append_examplesdict_results = gw_ncurses_append_examplesdict_results;
+    gw_output_generic_append_unknowndict_results = gw_ncurses_append_unknowndict_results;
+
+    gw_output_generic_update_progress_feedback = gw_ncurses_update_progress_feedback;
+    gw_output_generic_append_less_relevant_header_to_output = gw_ncurses_append_less_relevant_header_to_output;
+    gw_output_generic_append_more_relevant_header_to_output = gw_ncurses_append_more_relevant_header_to_output;
+    gw_output_generic_pre_search_prep = gw_ncurses_pre_search_prep;
+    gw_output_generic_after_search_cleanup = gw_ncurses_after_search_cleanup;
 }
 

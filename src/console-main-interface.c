@@ -44,6 +44,8 @@
 #include <gwaei/preferences.h>
 #include <gwaei/utilities.h>
 
+#include <gwaei/console-main-interface.h>
+#include <gwaei/main.h>
 
 static gboolean ncurses_switch = FALSE;
 static gboolean exact_switch = FALSE;
@@ -445,6 +447,9 @@ void initialize_console_interface (int argc, char **argv)
       exit (EXIT_SUCCESS);
     }
 
+    //Set the output generic functions
+    gw_console_initialize_interface_output_generics ();
+
     //Print the search intro
     if (!quiet_switch)
     {
@@ -492,7 +497,7 @@ void initialize_console_interface (int argc, char **argv)
 //!
 //! /brief Not yet written
 //!
-void gw_console_append_edict_results (GwSearchItem *item, gboolean unused)
+void gw_console_append_edict_results (GwSearchItem *item)
 {
     //Definitions
     int cont = 0;
@@ -523,7 +528,7 @@ void gw_console_append_edict_results (GwSearchItem *item, gboolean unused)
 //!
 //! /brief Not yet written
 //!
-void gw_console_append_kanjidict_results (GwSearchItem *item, gboolean unused)
+void gw_console_append_kanjidict_results (GwSearchItem *item)
 {
     if (item == NULL) return;
 
@@ -584,7 +589,7 @@ void gw_console_append_kanjidict_results (GwSearchItem *item, gboolean unused)
 //!
 //! /brief Not yet written
 //!
-void gw_console_append_examplesdict_results (GwSearchItem *item, gboolean unused)
+void gw_console_append_examplesdict_results (GwSearchItem *item)
 {
     if (item == NULL) return;
 
@@ -616,7 +621,7 @@ void gw_console_append_examplesdict_results (GwSearchItem *item, gboolean unused
 //!
 //! /brief Not yet written
 //!
-void gw_console_append_unknowndict_results (GwSearchItem *item, gboolean unused)
+void gw_console_append_unknowndict_results (GwSearchItem *item)
 {
     if (item == NULL) return;
 
@@ -660,3 +665,22 @@ void gw_console_after_search_cleanup (GwSearchItem *item)
       gw_console_no_result(item);
     }
 }
+
+
+//!
+//! @brief Set the output generics functions when a search is being done
+//!
+void gw_console_initialize_interface_output_generics ()
+{
+    gw_output_generic_append_edict_results = &gw_console_append_edict_results;
+    gw_output_generic_append_kanjidict_results = &gw_console_append_kanjidict_results;
+    gw_output_generic_append_examplesdict_results = &gw_console_append_examplesdict_results;
+    gw_output_generic_append_unknowndict_results = &gw_console_append_unknowndict_results;
+
+    gw_output_generic_update_progress_feedback = &gw_console_update_progress_feedback;
+    gw_output_generic_append_less_relevant_header_to_output = &gw_console_append_less_relevant_header_to_output;
+    gw_output_generic_append_more_relevant_header_to_output = &gw_console_append_more_relevant_header_to_output;
+    gw_output_generic_pre_search_prep = &gw_console_pre_search_prep;
+    gw_output_generic_after_search_cleanup = &gw_console_after_search_cleanup;
+}
+

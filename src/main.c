@@ -46,6 +46,7 @@
 #include <gwaei/dictionary-objects.h>
 #include <gwaei/search-objects.h>
 
+#include <gwaei/main.h>
 #ifdef GW_WITH_GTK
 #include <gwaei/gtk-main-interface.h>
 #endif
@@ -81,6 +82,20 @@ int main (int argc, char *argv[])
     gw_history_initialize_history();
     gw_io_check_for_rsync();
 
+
+    //Set initial state for output generics
+    gw_output_generic_append_edict_results = NULL;
+    gw_output_generic_append_kanjidict_results = NULL;
+    gw_output_generic_append_examplesdict_results = NULL;
+    gw_output_generic_append_unknowndict_results = NULL;
+    gw_output_generic_update_progress_feedback = NULL;
+    gw_output_generic_append_less_relevant_header_to_output = NULL;
+    gw_output_generic_append_more_relevant_header_to_output = NULL;
+    gw_output_generic_pre_search_prep = NULL;
+    gw_output_generic_after_search_cleanup = NULL;
+
+
+    //Start the runmode chosen by the user
     if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
       initialize_console_interface(argc, argv);
     else if  (gw_util_get_runmode() == GW_NCURSES_RUNMODE)
@@ -92,8 +107,38 @@ int main (int argc, char *argv[])
     else
       initialize_console_interface(argc, argv);
 
+    //Cleanup and exit
     gw_dictlist_free ();
-
     exit(EXIT_SUCCESS);
 }
+
+
+//!
+//! @brief Makes sure that all the output functions have been set properly by the interface
+//!
+gboolean gw_main_verify_output_generic_functions ()
+{
+    if (gw_output_generic_append_edict_results == NULL)
+      return FALSE;
+    if (gw_output_generic_append_kanjidict_results == NULL)
+      return FALSE;
+    if (gw_output_generic_append_examplesdict_results == NULL)
+      return FALSE;
+    if (gw_output_generic_append_unknowndict_results == NULL)
+      return FALSE;
+    if (gw_output_generic_update_progress_feedback == NULL)
+      return FALSE;
+    if (gw_output_generic_append_less_relevant_header_to_output == NULL)
+      return FALSE;
+    if (gw_output_generic_append_more_relevant_header_to_output == NULL)
+      return FALSE;
+    if (gw_output_generic_pre_search_prep == NULL)
+      return FALSE;
+    if (gw_output_generic_after_search_cleanup == NULL)
+      return FALSE;
+
+    return TRUE;
+}
+
+
 

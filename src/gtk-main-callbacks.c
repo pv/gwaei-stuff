@@ -268,6 +268,7 @@ G_MODULE_EXPORT void do_close (GtkWidget *widget, gpointer data)
     if (strcmp (id, "main_window") == 0)
     {
       save_window_attributes_and_hide (id);
+      g_list_foreach (gw_tab_searchitems, (GFunc) gw_ui_cancel_search_by_searchitem, NULL);
       gtk_main_quit ();
     }
     else if (strcmp (id, "radicals_window") == 0)
@@ -283,6 +284,7 @@ G_MODULE_EXPORT void do_close (GtkWidget *widget, gpointer data)
       }
       else
       {
+        g_list_foreach (gw_tab_searchitems, (GFunc) gw_ui_cancel_search_by_searchitem, NULL);
         gtk_main_quit ();
       }
     }
@@ -359,6 +361,7 @@ G_MODULE_EXPORT gboolean do_close_on_escape (GtkWidget *widget,
 //!
 G_MODULE_EXPORT void do_quit (GtkWidget *widget, gpointer data)
 {
+    g_list_foreach (gw_tab_searchitems, (GFunc) gw_ui_cancel_search_by_searchitem, NULL);
     do_close (widget, data);
     gtk_main_quit ();
 }
@@ -1364,6 +1367,7 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
     }
     else if (hl->current != NULL)
     {
+      gw_ui_cancel_search_by_searchitem (item);
       gw_searchitem_free (hl->current);
       hl->current = NULL;
     }

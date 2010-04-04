@@ -48,6 +48,8 @@
 
 #include <gwaei/engine.h>
 
+#include <gwaei/main.h>
+
 #include <gwaei/gtk.h>
 #include <gwaei/gtk-main-callbacks.h>
 #include <gwaei/gtk-settings-callbacks.h>
@@ -2543,6 +2545,7 @@ void initialize_gui_interface(int argc, char *argv[])
       initialize_global_widget_pointers ();
       gw_tab_new ();
       initialize_kanjipad ();
+      gw_ui_initialize_interface_output_generics ();
 
       gw_sexy_initialize_libsexy ();
       gw_ui_update_history_popups ();
@@ -2771,8 +2774,83 @@ void gw_ui_shift_append_mark (GwSearchItem *item, char *stay_name, char *append_
 }
 
 
-void gw_ui_append_edict_results_to_buffer (GwSearchItem *item, gboolean remove_last_linebreak)
+void gw_ui_append_def_same_to_buffer (GwSearchItem* item, gboolean UNUSED)
 {
+    GwResultLine* resultline = item->resultline;
+
+    GtkTextBuffer *tb = GTK_TEXT_BUFFER (item->target_tb);
+
+    gw_ui_shift_append_mark (item, "previous_result", "new_result");
+    GtkTextMark *mark;
+    if ((mark = gtk_text_buffer_get_mark (tb, "previous_result")) != NULL)
+    {
+      GtkTextIter iter;
+      int line, start_offset, end_offset;
+      gtk_text_buffer_get_iter_at_mark (tb, &iter, mark);
+      line = gtk_text_iter_get_line (&iter);
+      start_offset = gtk_text_iter_get_line_offset (&iter);
+      gtk_text_buffer_insert_with_tags_by_name (tb, &iter, " /", -1, "important", NULL);
+      gtk_text_buffer_insert (tb, &iter, " ", -1);
+      //Kanji
+      if (resultline->kanji_start != NULL)
+        gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->kanji_start, -1, "important", NULL);
+      //Furigana
+      if (resultline->furigana_start != NULL)
+      {
+        gtk_text_buffer_insert_with_tags_by_name (tb, &iter, " [", -1, "important", NULL);
+        gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->furigana_start, -1, "important", NULL);
+        gtk_text_buffer_insert_with_tags_by_name (tb, &iter, "]", -1, "important", NULL);
+      }
+      //Other info
+      if (resultline->classification_start != NULL)
+      {
+        gtk_text_buffer_insert                   (tb, &iter, " ", -1);
+        GtkTextIter copy = iter;
+        gtk_text_iter_backward_char (&copy);
+        gtk_text_buffer_remove_tag_by_name (tb, "important", &copy, &iter);
+        gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->classification_start, -1, "gray", "italic", NULL);
+      }
+      if (resultline->important == TRUE)
+      {
+        gtk_text_buffer_insert                   (tb, &iter, " ", -1);
+        gtk_text_buffer_insert_with_tags_by_name (tb, &iter, gettext("Pop"), -1, "small", NULL);
+      }
+      end_offset = gtk_text_iter_get_line_offset (&iter);
+      gw_ui_add_match_highlights (line, start_offset, end_offset, item);
+    }
+}
+
+
+void gw_ui_append_edict_results_to_buffer (GwSearchItem *item)
+{
+    //Some checks
+    gboolean furigana_exists, kanji_exists;
+    gboolean same_def_totals, same_first_def, same_furigana, same_kanji, skip;
+    kanji_exists = (item->resultline->kanji_start != NULL && item->backup_resultline->kanji_start != NULL);
+    furigana_exists = (item->resultline->furigana_start != NULL && item->backup_resultline->furigana_start != NULL);
+    if (item->resultline->kanji_start == NULL || item->backup_resultline->kanji_start == NULL)
+    {
+      skip = TRUE;
+    }
+    else
+    {
+      same_def_totals = (item->resultline->def_total == item->backup_resultline->def_total);
+      same_first_def = (strcmp(item->resultline->def_start[0], item->backup_resultline->def_start[0]) == 0);
+      same_furigana = (!furigana_exists ||strcmp(item->resultline->furigana_start, item->backup_resultline->furigana_start) == 0);
+      same_kanji = (!kanji_exists || strcmp(item->resultline->kanji_start, item->backup_resultline->kanji_start) == 0);
+      skip = FALSE;
+    }
+
+    //Begin comparison if possible
+    if (!skip && ((same_def_totals && same_first_def) || (same_kanji && same_furigana)))
+    {
+      gw_ui_append_def_same_to_buffer (item, TRUE);
+      return;
+    }
+
+    gboolean remove_last_linebreak = (!skip && same_kanji);
+
+    //Start output
     GwResultLine* rl = item->resultline;
 
     GtkTextBuffer *tb = GTK_TEXT_BUFFER (item->target_tb);
@@ -2851,54 +2929,7 @@ void gw_ui_append_edict_results_to_buffer (GwSearchItem *item, gboolean remove_l
 }
 
 
-void gw_ui_append_def_same_to_buffer (GwSearchItem* item, gboolean UNUSED)
-{
-    GwResultLine* resultline = item->resultline;
-
-    GtkTextBuffer *tb = GTK_TEXT_BUFFER (item->target_tb);
-
-    gw_ui_shift_append_mark (item, "previous_result", "new_result");
-    GtkTextMark *mark;
-    if ((mark = gtk_text_buffer_get_mark (tb, "previous_result")) != NULL)
-    {
-      GtkTextIter iter;
-      int line, start_offset, end_offset;
-      gtk_text_buffer_get_iter_at_mark (tb, &iter, mark);
-      line = gtk_text_iter_get_line (&iter);
-      start_offset = gtk_text_iter_get_line_offset (&iter);
-      gtk_text_buffer_insert_with_tags_by_name (tb, &iter, " /", -1, "important", NULL);
-      gtk_text_buffer_insert (tb, &iter, " ", -1);
-      //Kanji
-      if (resultline->kanji_start != NULL)
-        gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->kanji_start, -1, "important", NULL);
-      //Furigana
-      if (resultline->furigana_start != NULL)
-      {
-        gtk_text_buffer_insert_with_tags_by_name (tb, &iter, " [", -1, "important", NULL);
-        gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->furigana_start, -1, "important", NULL);
-        gtk_text_buffer_insert_with_tags_by_name (tb, &iter, "]", -1, "important", NULL);
-      }
-      //Other info
-      if (resultline->classification_start != NULL)
-      {
-        gtk_text_buffer_insert                   (tb, &iter, " ", -1);
-        GtkTextIter copy = iter;
-        gtk_text_iter_backward_char (&copy);
-        gtk_text_buffer_remove_tag_by_name (tb, "important", &copy, &iter);
-        gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->classification_start, -1, "gray", "italic", NULL);
-      }
-      if (resultline->important == TRUE)
-      {
-        gtk_text_buffer_insert                   (tb, &iter, " ", -1);
-        gtk_text_buffer_insert_with_tags_by_name (tb, &iter, gettext("Pop"), -1, "small", NULL);
-      }
-      end_offset = gtk_text_iter_get_line_offset (&iter);
-      gw_ui_add_match_highlights (line, start_offset, end_offset, item);
-    }
-}
-
-
-void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item, gboolean unused)
+void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item)
 {
       GwResultLine* resultline = item->resultline;
       GtkTextBuffer *tb = GTK_TEXT_BUFFER (item->target_tb);
@@ -3013,7 +3044,7 @@ void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item, gboolean unus
 }
 
 
-void gw_ui_append_examplesdict_results_to_buffer (GwSearchItem *item, gboolean unused)
+void gw_ui_append_examplesdict_results_to_buffer (GwSearchItem *item)
 {
       GwResultLine* resultline = item->resultline;
       GtkTextBuffer *tb = GTK_TEXT_BUFFER (item->target_tb);
@@ -3059,7 +3090,7 @@ void gw_ui_append_examplesdict_results_to_buffer (GwSearchItem *item, gboolean u
 }
 
 
-void gw_ui_append_unknowndict_results_to_buffer (GwSearchItem *item, gboolean unused)
+void gw_ui_append_unknowndict_results_to_buffer (GwSearchItem *item)
 {
       GwResultLine* resultline = item->resultline;
       GtkTextBuffer *tb = GTK_TEXT_BUFFER (item->target_tb);
@@ -3227,3 +3258,26 @@ void gw_ui_after_search_cleanup (GwSearchItem *item)
       gw_ui_set_search_progressbar_by_searchitem (item);
     }     
 }
+
+
+//!
+//! @brief Set the output generics functions when a search is being done
+//!
+void gw_ui_initialize_interface_output_generics ()
+{
+    gw_output_generic_append_edict_results = gw_ui_append_edict_results_to_buffer;
+    gw_output_generic_append_kanjidict_results =gw_ui_append_kanjidict_results_to_buffer;
+    gw_output_generic_append_examplesdict_results = gw_ui_append_examplesdict_results_to_buffer;
+    gw_output_generic_append_unknowndict_results = gw_ui_append_unknowndict_results_to_buffer;
+
+    gw_output_generic_update_progress_feedback = gw_ui_update_progress_feedback;
+    gw_output_generic_append_less_relevant_header_to_output = gw_ui_append_less_relevant_header_to_output;
+    gw_output_generic_append_more_relevant_header_to_output = gw_ui_append_more_relevant_header_to_output;
+    gw_output_generic_pre_search_prep = gw_ui_pre_search_prep;
+    gw_output_generic_after_search_cleanup = gw_ui_after_search_cleanup;
+}
+
+
+
+
+

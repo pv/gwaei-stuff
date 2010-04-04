@@ -77,7 +77,7 @@ typedef struct GwSearchItem {
     GwResultLine* swap_resultline;          //!< Swap space for swapping result line and backup_resultline
 
     void (*gw_searchitem_parse_result_string)(struct GwResultLine*);
-    void (*gw_searchitem_ui_append_results_to_output)(struct GwSearchItem*, gboolean);
+    void (*gw_searchitem_ui_append_results_to_output)(struct GwSearchItem*);
     void (*gw_searchitem_ui_update_progress_feedback)(struct GwSearchItem*);
     void (*gw_searchitem_ui_append_less_relevant_header_to_output)(struct GwSearchItem*);
     void (*gw_searchitem_ui_append_more_relevant_header_to_output)(struct GwSearchItem*);

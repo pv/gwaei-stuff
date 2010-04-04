@@ -38,7 +38,6 @@
 #include <libintl.h>
 
 #include <glib.h>
-#include <curl/curl.h>
 
 #include <gwaei/definitions.h>
 #include <gwaei/regex.h>

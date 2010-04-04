@@ -230,7 +230,7 @@ static void *update_thread (void *nothing)
 
 
 //!
-//! @brief The thread used while libcurl is running, downloading the dictionariues
+//! @brief GUI install thread for a dictionary
 //!
 //! @param dictionary A gpointer to a dictionary
 //!

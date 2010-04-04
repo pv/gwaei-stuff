@@ -51,49 +51,6 @@
 
 static gboolean less_relevant_title_inserted = FALSE;
 
-//!
-//! @brief Sends a result directly out to the output.
-//!
-//! THIS IS A PRIVATE FUNCTION. Function takes the current working result of the
-//! search thread and outputs it to the approprate output, be that a terminal or
-//! a text widget.
-//! are below it.
-//!
-//! @param item a GwSearchItem to get the result from
-//!
-static void append_result_to_output (GwSearchItem *item)
-{
-    if (item->dictionary->type == GW_DICT_TYPE_EDICT && gw_util_get_runmode() == GW_GTK_RUNMODE)
-    {
-      gboolean furigana_exists, kanji_exists;
-      gboolean same_def_totals, same_first_def, same_furigana, same_kanji, skip;
-      kanji_exists = (item->resultline->kanji_start != NULL && item->backup_resultline->kanji_start != NULL);
-      furigana_exists = (item->resultline->furigana_start != NULL && item->backup_resultline->furigana_start != NULL);
-      if (item->resultline->kanji_start == NULL || item->backup_resultline->kanji_start == NULL)
-      {
-        skip = TRUE;
-      }
-      else
-      {
-        same_def_totals = (item->resultline->def_total == item->backup_resultline->def_total);
-        same_first_def = (strcmp(item->resultline->def_start[0], item->backup_resultline->def_start[0]) == 0);
-        same_furigana = (!furigana_exists ||strcmp(item->resultline->furigana_start, item->backup_resultline->furigana_start) == 0);
-        same_kanji = (!kanji_exists || strcmp(item->resultline->kanji_start, item->backup_resultline->kanji_start) == 0);
-        skip = FALSE;
-      }
-
-#ifdef GW_WITH_GTK
-      //Begin comparison if possible
-      if (!skip && ((same_def_totals && same_first_def) || (same_kanji && same_furigana)))
-        gw_ui_append_def_same_to_buffer (item, TRUE);
-      else
-#endif
-        (*item->gw_searchitem_ui_append_results_to_output)(item, (!skip && same_kanji));
-    }
-    else
-      (*item->gw_searchitem_ui_append_results_to_output)(item, TRUE);
-}
-
 
 //!
 //! @brief Gets a stored result in a search item and posts it to the output.
@@ -105,7 +62,7 @@ static void append_result_to_output (GwSearchItem *item)
 //! @param item a GwSearchItem
 //! @param results the result stored in a GList to free
 //!
-static void append_stored_result_to_output (GwSearchItem *item, GList **results, GwResultLine *UNUSED)
+static void append_stored_result_to_output (GwSearchItem *item, GList **results)
 {
     //Swap the lines
     item->swap_resultline = item->backup_resultline;
@@ -122,7 +79,7 @@ static void append_stored_result_to_output (GwSearchItem *item, GList **results,
     //Append to the buffer 
     if (item->show_less_relevant_results || item->total_relevant_results == 0)
     {
-      append_result_to_output (item);
+      (*item->gw_searchitem_ui_append_results_to_output)(item);
     }
 }
 
@@ -204,7 +161,7 @@ static gboolean stream_results_thread (GwSearchItem *item)
               item->total_relevant_results++;
               if (item->target != GW_TARGET_KANJI)
                 (*item->gw_searchitem_ui_append_more_relevant_header_to_output)(item);
-              append_result_to_output(item);
+              (*item->gw_searchitem_ui_append_results_to_output)(item);
 
               //Swap the result lines
               item->swap_resultline = item->backup_resultline;
@@ -264,7 +221,7 @@ static gboolean stream_results_thread (GwSearchItem *item)
       for (chunk = 0; item->results_medium != NULL && chunk < MAX_CHUNK; chunk++)
       {
         item->total_results++;
-        append_stored_result_to_output(item, &(item->results_medium), item->resultline);
+        append_stored_result_to_output(item, &(item->results_medium));
       }
       //Update the progress feeback
       (*item->gw_searchitem_ui_update_progress_feedback)(item);
@@ -277,7 +234,7 @@ static gboolean stream_results_thread (GwSearchItem *item)
       for (chunk = 0; item->results_low != NULL && chunk < MAX_CHUNK; chunk++)
       {
         item->total_results++;
-        append_stored_result_to_output(item, &(item->results_low), item->resultline);
+        append_stored_result_to_output(item, &(item->results_low));
       }
       //Update the progress feeback
       (*item->gw_searchitem_ui_update_progress_feedback)(item);
