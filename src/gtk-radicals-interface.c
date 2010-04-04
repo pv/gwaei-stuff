@@ -407,7 +407,7 @@ char* gw_ui_strdup_all_selected_radicals ()
     {
       if (G_OBJECT_TYPE(radical_togglebutton_list->data) == g_type_from_name("GtkToggleButton"))
       {
-         label_text = gtk_widget_get_name ( GTK_WIDGET (radical_togglebutton_list->data));
+         label_text = gtk_widget_get_name (GTK_WIDGET (radical_togglebutton_list->data));
          if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(radical_togglebutton_list->data)))
          {
            a_button_was_in_pressed_state = TRUE;
@@ -468,7 +468,7 @@ void gw_ui_set_button_sensitive_when_label_is (const char *string)
         if (G_OBJECT_TYPE(it->data) == g_type_from_name("GtkToggleButton"))
         {
            //label_text = gtk_button_get_label (GTK_BUTTON(it->data));
-           label_text = gtk_widget_get_name (GTK_WIDGET (it->data));
+           label_text = gtk_buildable_get_name (GTK_BUILDABLE (it->data));
            if (strcmp(label_text, radical) == 0)
              gtk_widget_set_sensitive (GTK_WIDGET (it->data), TRUE);
         }
@@ -491,8 +491,7 @@ void gw_ui_set_button_sensitive_when_label_is (const char *string)
         {
           if (G_OBJECT_TYPE(it->data) == g_type_from_name("GtkToggleButton"))
           {
-             //label_text = gtk_button_get_label (GTK_BUTTON(it->data));
-             label_text = gtk_widget_get_name (GTK_WIDGET (it->data));
+             label_text = gtk_buildable_get_name (GTK_BUILDABLE (it->data));
              if (strcmp(label_text, radical) == 0)
               gtk_widget_set_sensitive (GTK_WIDGET (it->data), TRUE);
           }

@@ -262,7 +262,7 @@ G_MODULE_EXPORT gboolean do_get_iter_for_button_release (GtkWidget      *widget,
 //!
 G_MODULE_EXPORT void do_close (GtkWidget *widget, gpointer data)
 {
-    const char *id = gtk_widget_get_name (widget);
+    const char *id = gtk_buildable_get_name (GTK_BUILDABLE (widget));
 
     if (strcmp (id, "main_window") == 0)
     {
@@ -1643,7 +1643,7 @@ G_MODULE_EXPORT void do_search_drag_data_recieved (GtkWidget        *widget,
                                                    guint             time,
                                                    gpointer          user_data    )
 {
-    if (strcmp (gtk_widget_get_name (widget), "search_entry") == 0)
+    if (strcmp (gtk_buildable_get_name (GTK_BUILDABLE (widget)), "search_entry") == 0)
       return;
 
     GtkWidget *entry;

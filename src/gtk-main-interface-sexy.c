@@ -308,7 +308,7 @@ void gw_sexy_initialize_libsexy ()
     entry_container = GTK_WIDGET (gtk_builder_get_object (builder, id));
 
     gtk_container_add (GTK_CONTAINER (entry_container), entry);
-    gtk_widget_set_name (entry, "search_entry");
+    gtk_buildable_set_name (GTK_BUILDABLE (entry), "search_entry");
     if (tooltip_text != NULL)
     {
       gtk_widget_set_tooltip_text (entry, tooltip_text);

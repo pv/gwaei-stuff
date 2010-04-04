@@ -641,8 +641,8 @@ void initialize_window_attributes (char* window_id)
     leftover -= strlen(GCPATH_GW);
     strncat(key, "/", leftover);
     leftover -= 1;
-    strncat(key, gtk_widget_get_name(window), leftover);
-    leftover -= strlen(gtk_widget_get_name(window));
+    strncat(key, gtk_buildable_get_name (GTK_BUILDABLE (window)), leftover);
+    leftover -= strlen(gtk_buildable_get_name (GTK_BUILDABLE (window)));
 
     //Set a pointer at the end of the key for easy access
     char *value;
@@ -732,8 +732,8 @@ void save_window_attributes_and_hide (char* window_id)
     leftover -= strlen(GCPATH_GW);
     strncat(key, "/", leftover);
     leftover -= 1;
-    strncat(key, gtk_widget_get_name(window), leftover);
-    leftover -= strlen(gtk_widget_get_name(window));
+    strncat(key, gtk_buildable_get_name (GTK_BUILDABLE (window)), leftover);
+    leftover -= strlen(gtk_buildable_get_name (GTK_BUILDABLE (window)));
 
     //Set a pointer at the end of the key for easy access
     char *value;
@@ -758,7 +758,6 @@ void gw_ui_show_window (char *id)
     {
       GtkWidget *window;
       window = GTK_WIDGET (gtk_builder_get_object (builder, id));
-      gtk_widget_set_name (GTK_WIDGET (window), id);
       initialize_window_attributes (id);
       gtk_widget_show(window);
       initialize_window_attributes (id);
@@ -769,7 +768,6 @@ void gw_ui_show_window (char *id)
       main_window = GTK_WIDGET (gtk_builder_get_object(builder, "main_window"));
       GtkWidget *settings_window;
       settings_window = GTK_WIDGET (gtk_builder_get_object(builder, id));
-      gtk_widget_set_name (GTK_WIDGET (settings_window), id);
 
       //Show the window
       gtk_window_set_transient_for (GTK_WINDOW (settings_window), GTK_WINDOW (main_window));
@@ -785,7 +783,6 @@ void gw_ui_show_window (char *id)
     {
       GtkWidget *window;
       window = GTK_WIDGET (gtk_builder_get_object(builder, id));
-      gtk_widget_set_name (GTK_WIDGET (window), id);
       gtk_widget_show(window);
     }
 }
