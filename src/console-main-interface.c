@@ -60,7 +60,7 @@ static char* query_text_data = NULL;
 
 
 //!
-//! /brief Print the "less relevant" header where necessary.
+//! @brief Print the "less relevant" header where necessary.
 //!
 void gw_console_append_less_relevant_header_to_output(GwSearchItem *item)
 {
@@ -69,7 +69,7 @@ void gw_console_append_less_relevant_header_to_output(GwSearchItem *item)
 
 
 //!
-//! /brief Print the "no result" message where necessary.
+//! @brief Print the "no result" message where necessary.
 //!
 void gw_console_no_result(GwSearchItem *item)
 {
@@ -224,7 +224,7 @@ static void print_installable_dictionaries ()
 
 
 //!
-//! /brief Not yet written
+//! @brief Not yet written
 //!
 static void print_available_dictionaries()
 {
@@ -495,7 +495,7 @@ void initialize_console_interface (int argc, char **argv)
 
 
 //!
-//! /brief Not yet written
+//! @brief Not yet written
 //!
 void gw_console_append_edict_results (GwSearchItem *item)
 {
@@ -526,7 +526,7 @@ void gw_console_append_edict_results (GwSearchItem *item)
 
 
 //!
-//! /brief Not yet written
+//! @brief Not yet written
 //!
 void gw_console_append_kanjidict_results (GwSearchItem *item)
 {
@@ -587,7 +587,7 @@ void gw_console_append_kanjidict_results (GwSearchItem *item)
 
 
 //!
-//! /brief Not yet written
+//! @brief Not yet written
 //!
 void gw_console_append_examplesdict_results (GwSearchItem *item)
 {
@@ -619,7 +619,7 @@ void gw_console_append_examplesdict_results (GwSearchItem *item)
 
 
 //!
-//! /brief Not yet written
+//! @brief Not yet written
 //!
 void gw_console_append_unknowndict_results (GwSearchItem *item)
 {
@@ -630,7 +630,7 @@ void gw_console_append_unknowndict_results (GwSearchItem *item)
 
 
 //!
-//! /brief Not yet written
+//! @brief Not yet written
 //!
 void gw_console_update_progress_feedback (GwSearchItem *item)
 {
@@ -638,7 +638,7 @@ void gw_console_update_progress_feedback (GwSearchItem *item)
 
 
 //!
-//! /brief Not yet written
+//! @brief Not yet written
 //!
 void gw_console_append_more_relevant_header_to_output (GwSearchItem *item)
 {
@@ -646,14 +646,14 @@ void gw_console_append_more_relevant_header_to_output (GwSearchItem *item)
 
 
 //!
-//! /brief Not yet written
+//! @brief Not yet written
 //!
 void gw_console_pre_search_prep (GwSearchItem *item)
 {
 }
 
 //!
-//! /brief Not yet written
+//! @brief Not yet written
 //!
 void gw_console_after_search_cleanup (GwSearchItem *item)
 {

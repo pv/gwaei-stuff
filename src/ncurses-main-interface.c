@@ -73,7 +73,7 @@ static int cursesSupportColorFlag = true;	//TODO: use this
 
 
 //!
-//! /brief Print the "no result" message where necessary.
+//! @brief Print the "no result" message where necessary.
 //!
 void gw_ncurses_no_result(GwSearchItem *item)
 {
@@ -109,7 +109,7 @@ static void print_search_start_banner(char *query, char *dictionary)
 
 
 //!
-//! /brief Print the "less relevant" header where necessary.
+//! @brief Print the "less relevant" header where necessary.
 //!
 //! @param item A GwSearchItem to gleam information from
 //!
@@ -125,7 +125,7 @@ void gw_ncurses_append_less_relevant_header_to_output(GwSearchItem *item)
 }
 
 //!
-//! /brief  Print the "more relevant" header where necessary
+//! @brief  Print the "more relevant" header where necessary
 //!
 //! This function gets called whenever another relevant result
 //! is found.  You either need to use it to update the line once
@@ -514,7 +514,7 @@ void initialize_ncurses_interface (int argc, char *argv[])
 
 
 //!
-//! /brief Not yet written
+//! @brief Not yet written
 //!
 void gw_ncurses_append_edict_results (GwSearchItem *item)
 {
@@ -558,7 +558,7 @@ void gw_ncurses_append_edict_results (GwSearchItem *item)
 
 
 //!
-//! /brief Not yet written
+//! @brief Not yet written
 //!
 void gw_ncurses_append_kanjidict_results (GwSearchItem *item)
 {
@@ -619,7 +619,7 @@ void gw_ncurses_append_kanjidict_results (GwSearchItem *item)
 
 
 //!
-//! /brief Not yet written
+//! @brief Not yet written
 //!
 void gw_ncurses_append_examplesdict_results (GwSearchItem *item)
 {
@@ -642,7 +642,7 @@ void gw_ncurses_append_examplesdict_results (GwSearchItem *item)
 
 
 //!
-//! /brief Not yet written
+//! @brief Not yet written
 //!
 void gw_ncurses_append_unknowndict_results (GwSearchItem *item)
 {
@@ -651,7 +651,7 @@ void gw_ncurses_append_unknowndict_results (GwSearchItem *item)
 
 
 //!
-//! /brief Called ruetienly to update progress information
+//! @brief Called ruetienly to update progress information
 //!
 //! This function is used to update things such as numbers of
 //! results found or progress bars percentages etc.
@@ -664,7 +664,7 @@ void gw_ncurses_update_progress_feedback (GwSearchItem *item)
 
 
 //!
-//! /brief Sets up the interface before each search begins
+//! @brief Sets up the interface before each search begins
 //!
 //! @param item A GwSearchItem pointer to get information from
 //!
@@ -674,7 +674,7 @@ void gw_ncurses_pre_search_prep (GwSearchItem *item)
 
 
 //!
-//! /brief The details to be taken care of after a search is finished
+//! @brief The details to be taken care of after a search is finished
 //!
 //! This is the function that takes care of things such as hiding progressbars,
 //! changing action verbs to past verbs (Searching... vs Found) and for displaying

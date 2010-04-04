@@ -3158,7 +3158,7 @@ void gw_ui_remove_whitespace_from_buffer (gpointer *tb)
 
 
 //!
-//! /brief To be written
+//! @brief To be written
 //!
 void gw_ui_update_progress_feedback (GwSearchItem* item)
 {
@@ -3184,7 +3184,7 @@ void gw_ui_update_progress_feedback (GwSearchItem* item)
 }
 
 //!
-//! /brief To be written
+//! @brief To be written
 //!
 void gw_ui_no_result (GwSearchItem *item)
 {
@@ -3195,7 +3195,7 @@ void gw_ui_no_result (GwSearchItem *item)
 
 
 //!
-//! /brief To be written
+//! @brief To be written
 //!
 void gw_ui_append_less_relevant_header_to_output(GwSearchItem *item)
 {
@@ -3210,7 +3210,7 @@ void gw_ui_append_less_relevant_header_to_output(GwSearchItem *item)
 
 
 //!
-//! /brief To be written
+//! @brief To be written
 //!
 void gw_ui_append_more_relevant_header_to_output (GwSearchItem *item)
 {
@@ -3225,7 +3225,7 @@ void gw_ui_append_more_relevant_header_to_output (GwSearchItem *item)
 
 
 //!
-//! /brief Sets up the interface before each search begins
+//! @brief Sets up the interface before each search begins
 //!
 //! @param item A GwSearchItem pointer to get information from
 //!
@@ -3236,7 +3236,7 @@ void gw_ui_pre_search_prep (GwSearchItem *item)
 
 
 //!
-//! /brief The details to be taken care of after a search is finished
+//! @brief The details to be taken care of after a search is finished
 //!
 //! This is the function that takes care of things such as hiding progressbars,
 //! changing action verbs to past verbs (Searching... vs Found) and for displaying
