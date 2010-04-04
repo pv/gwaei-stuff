@@ -63,6 +63,10 @@ GObject   *kanji_tb     = NULL;
 GtkWidget *search_entry = NULL;
 GList *gw_tab_searchitems = NULL;
 
+
+//!
+//! @brief To be written
+//!
 static UniqueResponse message_received_cb (UniqueApp         *app,
                                            UniqueCommand      command,
                                            UniqueMessageData *message,
@@ -212,6 +216,9 @@ void gw_ui_set_main_window_title_by_searchitem (GwSearchItem *item)
 }
 
 
+//!
+//! @brief To be written
+//!
 void gw_ui_close_suggestion_box ()
 {
   GtkWidget *suggestion_hbox;
@@ -220,6 +227,9 @@ void gw_ui_close_suggestion_box ()
 }
 
 
+//!
+//! @brief To be written
+//!
 void gw_ui_set_inforation_box_label (const char* string, const char* query, int query_length, const char* extension)
 {
     if (query_length > 1)
@@ -244,6 +254,9 @@ void gw_ui_set_inforation_box_label (const char* string, const char* query, int 
 }
 
 
+//!
+//! @brief To be written
+//!
 void gw_ui_verb_check_with_suggestion (GwSearchItem *item)
 {
 /*
@@ -548,6 +561,9 @@ void force_gtk_builder_translation_for_gtk_actions_hack ()
 }
 
 
+//!
+//! @brief To be written
+//!
 gpointer get_gobject_from_target (const int TARGET)
 {
     GObject *gobject;
@@ -576,6 +592,9 @@ gpointer get_gobject_from_target (const int TARGET)
 }
 
 
+//!
+//! @brief To be written
+//!
 GtkWidget* get_widget_from_target (const int TARGET)
 {
     GtkWidget *widget;
@@ -603,6 +622,9 @@ GtkWidget* get_widget_from_target (const int TARGET)
 }
 
 
+//!
+//! @brief To be written
+//!
 gboolean gw_ui_widget_equals_target (gpointer widget, const int TARGET)
 {
     GtkWidget* target;
@@ -611,6 +633,9 @@ gboolean gw_ui_widget_equals_target (gpointer widget, const int TARGET)
 }
 
 
+//!
+//! @brief To be written
+//!
 void initialize_global_widget_pointers ()
 {
     char id[50];
@@ -625,7 +650,9 @@ void initialize_global_widget_pointers ()
 }
 
 
-
+//!
+//! @brief To be written
+//!
 void initialize_window_attributes (char* window_id)
 {
     int leftover;
@@ -711,6 +738,9 @@ void initialize_window_attributes (char* window_id)
 }
 
 
+//!
+//! @brief To be written
+//!
 void save_window_attributes_and_hide (char* window_id)
 {
     GtkWidget *window;
@@ -752,6 +782,9 @@ void save_window_attributes_and_hide (char* window_id)
 }
 
 
+//!
+//! @brief To be written
+//!
 void gw_ui_show_window (char *id)
 {
     if (strcmp(id, "main_window") == 0 || strcmp (id, "radicals_window") == 0)
@@ -788,6 +821,9 @@ void gw_ui_show_window (char *id)
 }
 
 
+//!
+//! @brief To be written
+//!
 void gw_ui_update_toolbar_buttons ()
 {
     const int id_length = 50;
@@ -984,6 +1020,9 @@ void gw_ui_set_total_results_label_by_searchitem (GwSearchItem* item)
 }
 
 
+//!
+//! @brief To be written
+//!
 void gw_ui_set_dictionary(int request)
 {
     //Set the correct dictionary in the dictionary list
@@ -1013,12 +1052,20 @@ void gw_ui_set_dictionary(int request)
     }
 }
 
+
+//!
+//! @brief To be written
+//!
 void gw_ui_set_dictionary_by_searchitem (GwSearchItem *item)
 {
     if (item != NULL && item->dictionary != NULL)
       gw_ui_set_dictionary(item->dictionary->load_position);
 }
 
+
+//!
+//! @brief To be written
+//!
 int rebuild_combobox_dictionary_list() 
 {
     //Parse the string
@@ -1225,6 +1272,9 @@ int rebuild_combobox_dictionary_list()
 }
 
 
+//!
+//! @brief To be written
+//!
 void gw_ui_set_search_progressbar_by_searchitem (GwSearchItem *item)
 {
     if (gw_util_get_runmode () == GW_CONSOLE_RUNMODE) return;
@@ -1252,9 +1302,9 @@ void gw_ui_set_search_progressbar_by_searchitem (GwSearchItem *item)
 }
 
 
-//
-// Menu popups section
-//
+//!
+//! @brief Menu popups section
+//!
 void gw_ui_update_history_menu_popup()
 {
     const int id_length = 50;
@@ -1330,7 +1380,9 @@ void gw_ui_update_history_menu_popup()
 }
 
 
-//Populate the menu item lists for the back and forward buttons
+//!
+//! @brief Populate the menu item lists for the back and forward buttons
+//!
 void rebuild_history_button_popup(char* id, GList* list) {
     //Get a reference to the history_popup
     GtkWidget *popup;
@@ -1388,6 +1440,9 @@ void rebuild_history_button_popup(char* id, GList* list) {
 }
 
 
+//!
+//! @brief To be written
+//!
 void gw_ui_update_history_popups()
 {
     GList* list;
@@ -1400,6 +1455,9 @@ void gw_ui_update_history_popups()
 }
 
 
+//!
+//! @brief To be written
+//!
 void gw_ui_set_font (char *font_description_string, int *font_magnification)
 {
     gboolean use_global_font_setting = gw_pref_get_boolean (GCKEY_GW_FONT_USE_GLOBAL_FONT, TRUE);
@@ -1469,6 +1527,10 @@ void gw_ui_set_font (char *font_description_string, int *font_magnification)
     }
 }
 
+
+//!
+//! @brief To be written
+//!
 void gw_ui_set_toolbar_style(char *request) 
 {
     char id[50];
@@ -1491,6 +1553,9 @@ void gw_ui_set_toolbar_style(char *request)
 }
 
 
+//!
+//! @brief To be written
+//!
 void gw_ui_set_toolbar_show(gboolean request)
 {
     int id_length = 50;
@@ -1515,7 +1580,10 @@ void gw_ui_set_toolbar_show(gboolean request)
 }
 
 
-void gw_ui_set_less_relevant_show(gboolean show)
+//!
+//! @brief To be written
+//!
+void gw_ui_set_less_relevant_show (gboolean show)
 {
   int id_length = 50;
   char id[id_length];
@@ -1530,7 +1598,10 @@ void gw_ui_set_less_relevant_show(gboolean show)
 }
 
 
-void gw_ui_set_romaji_kana_conv(int request)
+//!
+//! @brief To be written
+//!
+void gw_ui_set_romaji_kana_conv (int request)
 {
   char id[50];
 
@@ -1544,7 +1615,10 @@ void gw_ui_set_romaji_kana_conv(int request)
 }
 
 
-void gw_ui_set_hiragana_katakana_conv(gboolean request)
+//!
+//! @brief To be written
+//!
+void gw_ui_set_hiragana_katakana_conv (gboolean request)
 {
     char id[50];
     GtkWidget *widget;
@@ -1668,7 +1742,11 @@ void gw_ui_append_image_to_buffer (GwSearchItem *item, char *name)
 
 
 //!
-//! @brief To be written
+//! @brief Performs initializations absolutely necessary before a search can take place
+//!
+//! Correctly the pointer in the GwSearchItem to the correct textbuffer and moves marks
+//!
+//! @param item A GwSearchItem to use initialize the data of for the GUI.
 //!
 void gw_ui_initialize_buffer_by_searchitem (GwSearchItem *item)
 {
@@ -1916,7 +1994,7 @@ void gw_ui_copy_text (guint TARGET)
 //!
 //! @brief To be written
 //!
-void gw_ui_cut_text(guint TARGET)
+void gw_ui_cut_text (guint TARGET)
 {
     switch (TARGET)
     {
@@ -1930,7 +2008,7 @@ void gw_ui_cut_text(guint TARGET)
 //!
 //! @brief To be written
 //!
-void gw_ui_paste_text(guint TARGET)
+void gw_ui_paste_text (guint TARGET)
 {
     switch (TARGET)
     {
