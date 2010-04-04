@@ -3231,6 +3231,7 @@ void gw_ui_append_more_relevant_header_to_output (GwSearchItem *item)
 //!
 void gw_ui_pre_search_prep (GwSearchItem *item)
 {
+    gw_ui_initialize_buffer_by_searchitem (item);
 }
 
 

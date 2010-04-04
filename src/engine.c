@@ -289,6 +289,8 @@ void gw_search_get_results (GwSearchItem *item)
       return;
     }
 
+    (*item->gw_searchitem_ui_pre_search_prep) (item);
+
     //Start the search
     if (gw_util_get_runmode () == GW_CONSOLE_RUNMODE || gw_util_get_runmode () == GW_NCURSES_RUNMODE)
     {
