@@ -47,7 +47,22 @@
 #include <gwaei/dictinfo-object.h>
 
 
-static int id_increment = 100;
+static GwDictId id_increment = 100;
+
+
+//!
+//! @brief Creates a unique id number for a dictionary
+//!
+//! The function returns an id, then incrementing the internal number for the 
+//! next dictionary.
+//!
+//! @return A unique id integer
+//!
+GwDictId gw_dictinfo_make_dictionary_id ()
+{
+    id_increment++;
+    return id_increment;
+}
 
 
 //!
@@ -310,17 +325,4 @@ void gw_dictinfo_free(GwDictInfo* di)
 }
 
 
-//!
-//! @brief Creates a unique id number for a dictionary
-//!
-//! The function returns an id, then incrementing the internal number for the 
-//! next dictionary.
-//!
-//! @return A unique id integer
-//!
-int gw_dictinfo_make_dictionary_id ()
-{
-    id_increment++;
-    return id_increment;
-}
 

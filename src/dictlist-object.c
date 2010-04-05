@@ -272,7 +272,7 @@ gboolean gw_dictlist_check_if_loaded_by_name(char* name)
 //! @param status the integer status to check for
 //! @return returns the number of dictionaries with the status
 //!
-int gw_dictlist_get_total_with_status(int status)
+int gw_dictlist_get_total_with_status (GwDictStatus status)
 {
     GwDictInfo *di;
     GList *current = dictionaries->list;
@@ -302,7 +302,7 @@ int gw_dictlist_get_total_with_status(int status)
 //! @param id Id attribute of the wanted dictionary
 //! @return Returns the status of the dictionary
 //!
-int gw_dictlist_dictionary_get_status_by_id(int id)
+GwDictStatus gw_dictlist_dictionary_get_status_by_id (GwDictId id)
 {
     GList *current = dictionaries->list;
     GwDictInfo *di = (GwDictInfo*) current->data;
@@ -329,7 +329,7 @@ int gw_dictlist_dictionary_get_status_by_id(int id)
 //! @param id Id attribute of the wanted dictionary
 //! @return Returns a pointer to the dictionary if available
 //!
-GwDictInfo* gw_dictlist_get_dictinfo_by_id (int id)
+GwDictInfo* gw_dictlist_get_dictinfo_by_id (GwDictId id)
 {
     GList *current = dictionaries->list;
     GwDictInfo *di = (GwDictInfo*) current->data;
@@ -608,7 +608,7 @@ void gw_dictlist_preform_postprocessing_by_name (char* name, GError **error)
 //! @param OLD const int of the current install status
 //! @param NEW const int of the new install status
 //!
-void gw_dictlist_normalize_all_status_from_to (const int OLD, const int NEW)
+void gw_dictlist_normalize_all_status_from_to (const GwDictStatus OLD, const GwDictStatus NEW)
 {
     GList *current = dictionaries->list;
     GwDictInfo *di;

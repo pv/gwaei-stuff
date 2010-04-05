@@ -43,14 +43,15 @@ typedef struct GwDictList GwDictList;
 
 
 GList* gw_dictlist_get_list (void);
-GwDictInfo* gw_dictlist_get_dictinfo_by_id (int);
+GwDictInfo* gw_dictlist_get_dictinfo_by_id (GwDictId);
 int gw_dictlist_get_total (void);
-GList* gw_dictlist_get_selected(void);
+GList* gw_dictlist_get_selected (void);
 
 
 GwDictInfo* gw_dictlist_get_dictinfo_by_name (const char*);
-GwDictInfo* gw_dictlist_get_dictinfo_by_alias(const char*);
-GList* gw_dictlist_get_dict_by_load_position(int);
-GList* gw_dictlist_set_selected_by_load_position(int);
+GwDictInfo* gw_dictlist_get_dictinfo_by_alias (const char*);
+GList* gw_dictlist_get_dict_by_load_position (int);
+GList* gw_dictlist_set_selected_by_load_position (int);
+GwDictStatus gw_dictlist_dictionary_get_status_by_id (GwDictId);
 
 #endif

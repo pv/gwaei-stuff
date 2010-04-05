@@ -87,7 +87,7 @@ struct GwDictInfo
 {
     GwDictId id;      //!< Unique dictionary id number
     GwDictType type;  //!< classification of dictionary
-    int status;                    //!< install status of the dictionary
+    GwDictStatus status;                    //!< install status of the dictionary
     long total_lines;              //!< total lines in the file
     char *name;                    //!< name of the file in the .waei folder
     char *long_name;               //!< long name of the file (usually localized)
