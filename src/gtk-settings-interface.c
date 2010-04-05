@@ -273,23 +273,31 @@ void gw_ui_initialize_dictionary_order_list ()
       GtkTreeViewColumn *column;
 
       renderer = gtk_cell_renderer_pixbuf_new ();
+      #if GTK_CHECK_VERSION(2,18,0)
       gtk_cell_renderer_set_padding (renderer, YPADDING, XPADDING);
+      #endif
       column = gtk_tree_view_column_new_with_attributes (NULL, renderer, "icon-name", 1, NULL);
       gtk_tree_view_append_column (GTK_TREE_VIEW (treeview), column);
 
       renderer = gtk_cell_renderer_text_new ();
+      #if GTK_CHECK_VERSION(2,18,0)
       gtk_cell_renderer_set_padding (renderer, YPADDING, XPADDING);
+      #endif
       column = gtk_tree_view_column_new_with_attributes (gettext("Order"), renderer, "text", 2, NULL);
       gtk_tree_view_append_column (GTK_TREE_VIEW (treeview), column);
 
       renderer = gtk_cell_renderer_text_new ();
+      #if GTK_CHECK_VERSION(2,18,0)
       gtk_cell_renderer_set_padding (renderer, YPADDING, XPADDING);
       gtk_cell_renderer_set_sensitive (renderer, FALSE);
+      #endif
       column = gtk_tree_view_column_new_with_attributes (gettext("Shortcut"), renderer, "text", 3, NULL);
       gtk_tree_view_append_column (GTK_TREE_VIEW (treeview), column);
 
       renderer = gtk_cell_renderer_text_new ();
+      #if GTK_CHECK_VERSION(2,18,0)
       gtk_cell_renderer_set_padding (renderer, YPADDING, XPADDING);
+      #endif
       column = gtk_tree_view_column_new_with_attributes (gettext("Dictionary"), renderer, "text", 0, NULL);
       gtk_tree_view_append_column (GTK_TREE_VIEW (treeview), column);
 
