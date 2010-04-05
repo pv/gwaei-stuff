@@ -804,7 +804,7 @@ void gw_ui_show_window (char *id)
 
       //Show the window
       gtk_window_set_transient_for (GTK_WINDOW (settings_window), GTK_WINDOW (main_window));
-      gtk_window_set_position (GTK_WINDOW (settings_window), GTK_WIN_POS_CENTER);
+      gtk_window_set_position (GTK_WINDOW (settings_window), GTK_WIN_POS_CENTER_ON_PARENT);
       gtk_widget_show(settings_window);
     }
     else if (strcmp (id, "kanjipad_window") == 0)
