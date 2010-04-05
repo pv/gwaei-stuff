@@ -1509,8 +1509,16 @@ void gw_ui_set_font (char *font_description_string, int *font_magnification)
     desc = pango_font_description_from_string (new_font_description_string);
     if (desc != NULL && new_font_description_string != NULL)
     {
-      GtkWidget* results_tv = get_widget_from_target(GW_TARGET_RESULTS);
-      gtk_widget_modify_font (GTK_WIDGET (results_tv), desc);
+      GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+      GtkWidget *textview = NULL;
+      GtkWidget *scrolledwindow = NULL;
+      int i = 0;
+      while ((scrolledwindow = GTK_WIDGET (gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), i))) != NULL)
+      {
+        textview = GTK_WIDGET (gtk_bin_get_child (GTK_BIN (scrolledwindow)));
+        gtk_widget_modify_font (GTK_WIDGET (textview), desc);
+        i++;
+      }
       gtk_widget_modify_font (GTK_WIDGET (kanji_tv), desc);
       pango_font_description_free (desc);
     }
