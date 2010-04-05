@@ -150,23 +150,23 @@ GwUiDictInstallLine *gw_ui_new_dict_install_line (GwDictInfo *di)
 //!
 void gw_ui_add_dict_install_line_to_table (GtkTable *table, GwUiDictInstallLine *il)
 {
-  if (table->ncols < 3) gtk_table_resize (table, table->nrows, 3);
+    if (table->ncols < 3) gtk_table_resize (table, table->nrows, 3);
 
-  int row = table->nrows;
-  gtk_table_resize (table, table->nrows + 2, table->ncols);
+    int row = table->nrows;
+    gtk_table_resize (table, table->nrows + 2, table->ncols);
 
-  gtk_table_attach (table, il->advanced_hbox, 0, 1, row, row + 1, GTK_FILL, 0, 0, 0);
-  gtk_table_attach (table, il->status_hbox, 1, 2, row, row + 1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0 ,0);
-  gtk_table_attach (table, il->action_button_hbox, 2, 3, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
-  gtk_widget_show_all (il->advanced_hbox);
-  gtk_widget_show_all (il->status_hbox);
-  gtk_widget_show_all (il->action_button_hbox);
+    gtk_table_attach (table, il->advanced_hbox, 0, 1, row, row + 1, GTK_FILL, 0, 0, 0);
+    gtk_table_attach (table, il->status_hbox, 1, 2, row, row + 1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0 ,0);
+    gtk_table_attach (table, il->action_button_hbox, 2, 3, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
+    gtk_widget_show_all (il->advanced_hbox);
+    gtk_widget_show_all (il->status_hbox);
+    gtk_widget_show_all (il->action_button_hbox);
 
-  row++;
+    row++;
 
-  gtk_table_attach (table, il->source_hbox, 0, 3, row, row + 1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+    gtk_table_attach (table, il->source_hbox, 0, 3, row, row + 1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
 
-  gw_settings_initialize_dictionary_ui_status (il);
+    gw_settings_initialize_dictionary_ui_status (il);
 }
 
 
@@ -213,28 +213,28 @@ void gw_ui_destroy_dict_install_line (GwUiDictInstallLine *il)
 //!
 void gw_ui_dict_install_set_action_button (GwUiDictInstallLine *il, const gchar *STOCK_ID, gboolean SENSITIVE)
 {
-  GtkWidget *parent = gtk_widget_get_parent (il->action_button);
-  gtk_widget_destroy (il->action_button);
-  il->action_button = gtk_button_new_from_stock (STOCK_ID);
-  if (parent != NULL)
-  {
-    gtk_box_pack_start (GTK_BOX (parent), il->action_button, TRUE, TRUE, 0);
-    gtk_widget_show (il->action_button);
+    GtkWidget *parent = gtk_widget_get_parent (il->action_button);
+    gtk_widget_destroy (il->action_button);
+    il->action_button = gtk_button_new_from_stock (STOCK_ID);
+    if (parent != NULL)
+    {
+      gtk_box_pack_start (GTK_BOX (parent), il->action_button, TRUE, TRUE, 0);
+      gtk_widget_show (il->action_button);
 
-    if (strcmp (STOCK_ID, GTK_STOCK_ADD) == 0)
-      g_signal_connect(il->action_button, "clicked", G_CALLBACK (do_dictionary_install), (gpointer) il);
-    if (strcmp (STOCK_ID, GTK_STOCK_DELETE) == 0)
-      g_signal_connect(il->action_button, "clicked", G_CALLBACK (do_dictionary_remove), (gpointer) il);
-    if (strcmp (STOCK_ID, GTK_STOCK_CANCEL) == 0)
-      g_signal_connect(il->action_button, "clicked", G_CALLBACK (do_cancel_dictionary_install), (gpointer) il);
+      if (strcmp (STOCK_ID, GTK_STOCK_ADD) == 0)
+        g_signal_connect(il->action_button, "clicked", G_CALLBACK (do_dictionary_install), (gpointer) il);
+      if (strcmp (STOCK_ID, GTK_STOCK_DELETE) == 0)
+        g_signal_connect(il->action_button, "clicked", G_CALLBACK (do_dictionary_remove), (gpointer) il);
+      if (strcmp (STOCK_ID, GTK_STOCK_CANCEL) == 0)
+        g_signal_connect(il->action_button, "clicked", G_CALLBACK (do_cancel_dictionary_install), (gpointer) il);
 
-    gtk_widget_set_sensitive (il->action_button, SENSITIVE);
-    gtk_widget_set_size_request (il->action_button, 120, -1);
+      gtk_widget_set_sensitive (il->action_button, SENSITIVE);
+      gtk_widget_set_size_request (il->action_button, 120, -1);
 
-    gboolean advanced_hbox_is_sensitive;
-    advanced_hbox_is_sensitive = (strcmp (STOCK_ID, GTK_STOCK_ADD) == 0);
-    gtk_widget_set_sensitive(il->source_hbox, advanced_hbox_is_sensitive);
-  }
+      gboolean advanced_hbox_is_sensitive;
+      advanced_hbox_is_sensitive = (strcmp (STOCK_ID, GTK_STOCK_ADD) == 0);
+      gtk_widget_set_sensitive(il->source_hbox, advanced_hbox_is_sensitive);
+    }
 }
 
 
@@ -249,15 +249,15 @@ void gw_ui_dict_install_set_action_button (GwUiDictInstallLine *il, const gchar 
 //!
 void gw_ui_progressbar_set_fraction_by_install_line (GwUiDictInstallLine *il, const gdouble FRACTION)
 {
-  gtk_widget_hide (il->message_hbox);
-  gtk_widget_show (il->status_progressbar);
+    gtk_widget_hide (il->message_hbox);
+    gtk_widget_show (il->status_progressbar);
 
-  if (FRACTION < 0.0)
-    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (il->status_progressbar), 0.0);
-  else if (FRACTION > 1.0)
-    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (il->status_progressbar), 1.0);
-  else
-    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (il->status_progressbar), FRACTION);
+    if (FRACTION < 0.0)
+      gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (il->status_progressbar), 0.0);
+    else if (FRACTION > 1.0)
+      gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (il->status_progressbar), 1.0);
+    else
+      gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (il->status_progressbar), FRACTION);
 }
 
 
@@ -272,30 +272,30 @@ void gw_ui_progressbar_set_fraction_by_install_line (GwUiDictInstallLine *il, co
 //!
 void gw_ui_dict_install_set_message (GwUiDictInstallLine *il, const gchar *STOCK_ICON_ID, const char *message_text)
 {
-  //Take care of the icon
-  if (STOCK_ICON_ID == NULL)
-  {
-    gtk_widget_hide (il->status_icon);
-  }
-  else
-  {
-    gtk_widget_hide (il->status_progressbar);
-    gtk_image_set_from_stock (GTK_IMAGE (il->status_icon), STOCK_ICON_ID, GTK_ICON_SIZE_SMALL_TOOLBAR);
-    gtk_widget_show (il->status_icon);
-    gtk_widget_show (il->message_hbox);
-  }
+    //Take care of the icon
+    if (STOCK_ICON_ID == NULL)
+    {
+      gtk_widget_hide (il->status_icon);
+    }
+    else
+    {
+      gtk_widget_hide (il->status_progressbar);
+      gtk_image_set_from_stock (GTK_IMAGE (il->status_icon), STOCK_ICON_ID, GTK_ICON_SIZE_SMALL_TOOLBAR);
+      gtk_widget_show (il->status_icon);
+      gtk_widget_show (il->message_hbox);
+    }
 
-  //Take care of the message text
-  if (message_text == NULL)
-  {
-    gtk_widget_hide (il->status_message);
-  }
-  else
-  {
-    gtk_widget_hide (il->status_progressbar);
-    gtk_label_set_text (GTK_LABEL (il->status_message), message_text);
-    gtk_widget_show (il->status_message);
-    gtk_widget_show (il->message_hbox);
-  }
+    //Take care of the message text
+    if (message_text == NULL)
+    {
+      gtk_widget_hide (il->status_message);
+    }
+    else
+    {
+      gtk_widget_hide (il->status_progressbar);
+      gtk_label_set_text (GTK_LABEL (il->status_message), message_text);
+      gtk_widget_show (il->status_message);
+      gtk_widget_show (il->message_hbox);
+    }
 }
 

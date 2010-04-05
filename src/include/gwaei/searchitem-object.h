@@ -40,13 +40,13 @@
 //!
 //! Search status types
 //!
-enum GwSearchState 
+typedef enum
 {
   GW_SEARCH_IDLE,
   GW_SEARCH_SEARCHING,
   GW_SEARCH_FINISHING,
   GW_SEARCH_GW_DICT_STATUS_CANCELING
-};
+} GwSearchState;
 
 
 //!
@@ -57,7 +57,7 @@ typedef struct GwSearchItem {
     GwDictInfo* dictionary;                 //!< Pointer to the dictionary used
 
     FILE* fd;                               //!< File descriptor for file search position
-    enum GwSearchState status;                             //!< Used to test if a search is in progress.
+    GwSearchState status;                             //!< Used to test if a search is in progress.
     char *scratch_buffer;                   //!< Scratch space
     int target;                             //!< What gui element should be outputted to
     long current_line;                      //!< Current line in the dictionary file
@@ -76,7 +76,7 @@ typedef struct GwSearchItem {
     GwResultLine* backup_resultline;        //!< Result line kept for comparison purposes from previosu result line
     GwResultLine* swap_resultline;          //!< Swap space for swapping result line and backup_resultline
 
-    void (*gw_searchitem_parse_result_string)(struct GwResultLine*);
+    void (*gw_searchitem_parse_result_string)(GwResultLine*);
     void (*gw_searchitem_ui_append_results_to_output)(struct GwSearchItem*);
     void (*gw_searchitem_ui_update_progress_feedback)(struct GwSearchItem*);
     void (*gw_searchitem_ui_append_less_relevant_header_to_output)(struct GwSearchItem*);

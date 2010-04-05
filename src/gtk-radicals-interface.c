@@ -359,7 +359,7 @@ void gw_ui_initialize_radicals_table ()
           gettext("<b>Substitution Radical:</b> %s\n<b>Actual Radical:</b> %s\n<b>Radical Name:</b> %s"),
           radical_array[i][GW_RADARRAY_REPRESENTATIVE], radical_array[i][GW_RADARRAY_ACTUAL], radical_array[i][GW_RADARRAY_NAME]
       );
-      gtk_buildable_set_name (GTK_WIDGET (button), radical_array[i][GW_RADARRAY_REPRESENTATIVE]);
+      gtk_buildable_set_name (GTK_BUILDABLE (button), radical_array[i][GW_RADARRAY_REPRESENTATIVE]);
       if (tooltip != NULL)
       {
         gtk_widget_set_tooltip_markup (GTK_WIDGET (button), tooltip);

@@ -2,13 +2,12 @@
 #define GW_NCURSES_MAIN_INTERFACE_INCLUDED
 
 
-enum gw_ncurses_color_pairs
-{
+typedef enum {
   GW_NCCOLORS_GREENONBLACK,
   GW_NCCOLORS_BLUEONBLACK,
   GW_NCCOLORS_REDONBLACK,
   GW_NCCOLORS_TOTAL
-};
+} GwNcursesColorPair;
 
 
 void gw_ncurses_initialize_interface_output_generics (void);

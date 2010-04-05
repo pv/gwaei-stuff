@@ -248,8 +248,10 @@ static void *install_thread (gpointer data)
 
     //Preparatation complete, it's showtime
     gdk_threads_enter ();
+    di->status = GW_DICT_STATUS_INSTALLING;
     gw_ui_dict_install_set_action_button (il, GTK_STOCK_CANCEL, TRUE);
     gw_ui_update_settings_interface();
+    di->status = GW_DICT_STATUS_NOT_INSTALLED;
     gdk_threads_leave ();
 
 

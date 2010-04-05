@@ -43,7 +43,7 @@ gboolean gw_regex_create_mix_med_regex (regex_t*, char*, int);
 gboolean gw_regex_create_exact_regex (regex_t*, char*, int);
 
 
-enum initial_dictionary_regexes {
+typedef enum {
   GW_RE_DICT_ENGLISH,
   GW_RE_DICT_RADICAL,
   GW_RE_DICT_KANJI,
@@ -71,7 +71,7 @@ enum initial_dictionary_regexes {
   GW_RE_WORD_NA_ADJ_CONDITIONAL,
 
   GW_RE_LENGTH
-};
+} GwInitialDictonaryRegex;
 
 regex_t gw_re[GW_RE_LENGTH];
 

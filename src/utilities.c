@@ -38,7 +38,7 @@
 #include <gwaei/definitions.h>
 #include <gwaei/utilities.h>
 
-static int run_mode;
+static GwRunmode run_mode;
 
 
 //!
@@ -103,7 +103,7 @@ void gw_util_initialize_runmode (int argc, char *argv[])
 //!
 //! @return Returns the current runmode as an integer
 //!
-int gw_util_get_runmode ()
+GwRunmode gw_util_get_runmode ()
 {
     return run_mode;
 }

@@ -39,7 +39,7 @@
 //! dictionary list.  This helps to set the GUI up correctly and generally
 //! keep havoc from breaking out.
 //!
-enum gw_dictionary_statuses {
+typedef enum {
   GW_DICT_STATUS_INSTALLING,
   GW_DICT_STATUS_INSTALLED,
   GW_DICT_STATUS_NOT_INSTALLED,
@@ -49,12 +49,12 @@ enum gw_dictionary_statuses {
   GW_DICT_STATUS_CANCELED,
   GW_DICT_STATUS_ERRORED,
   GW_DICT_STATUS_REBUILDING
-};
+} GwDictStatus;
 
 //!
 //! @brief Dictionary type assigned by the program.  It determines the parsing algorithm
 //!
-enum gw_dictionary_type {  
+typedef enum {  
   GW_DICT_TYPE_EDICT,         //!< Standard edict format dictionary
   GW_DICT_TYPE_KANJI,         //!< Kanjidic format dictionary
   GW_DICT_TYPE_RADICALS,      //!< Simple radical/kanji reference dictionary format
@@ -62,12 +62,12 @@ enum gw_dictionary_type {
   GW_DICT_TYPE_MIX,           //!< gWaei special format for combined kanji/radicals dictionary
   GW_DICT_TYPE_EXAMPLES,      //!< Examples format dictionary
   GW_DICT_TYPE_OTHER          //!< Unkown format which should use safe parsing
-};
+} GwDictType;
 
 //!
 //! @brief Original IDs to known dictionaries to gWaei
 //!
-enum gw_dictionary_id {  
+typedef enum {  
   GW_DICT_ID_ENGLISH,    //!< Edict English dictionary
   GW_DICT_ID_KANJI,      //!< Kanjidic Kanji dictionary
   GW_DICT_ID_RADICALS,   //!< Radic Radical<->Kanji dictionary
@@ -78,15 +78,15 @@ enum gw_dictionary_id {
   GW_DICT_ID_FRENCH,     //!< French dictionary
   GW_DICT_ID_GERMAN,     //!< Wadoku German dictionary
   GW_DICT_ID_SPANISH     //!< Espandic Spanish dictionary
-};
+} GwDictId;
 
 //!
 //! @brief Primitive for storing dictionary information
 //!
 struct GwDictInfo
 {
-    enum gw_dictionary_id id;      //!< Unique dictionary id number
-    enum gw_dictionary_type type;  //!< classification of dictionary
+    GwDictId id;      //!< Unique dictionary id number
+    GwDictType type;  //!< classification of dictionary
     int status;                    //!< install status of the dictionary
     long total_lines;              //!< total lines in the file
     char *name;                    //!< name of the file in the .waei folder

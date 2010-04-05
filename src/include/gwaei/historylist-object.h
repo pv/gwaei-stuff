@@ -35,11 +35,10 @@
 
 #include <gwaei/searchitem-object.h>
 
-enum historylist_targets
-{
+typedef enum {
   GW_HISTORYLIST_RESULTS,
   GW_HISTORYLIST_KANJI
-};
+} GwHistoryListTarget;
 
 
 //!
