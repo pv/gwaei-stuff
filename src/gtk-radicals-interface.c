@@ -359,7 +359,7 @@ void gw_ui_initialize_radicals_table ()
           gettext("<b>Substitution Radical:</b> %s\n<b>Actual Radical:</b> %s\n<b>Radical Name:</b> %s"),
           radical_array[i][GW_RADARRAY_REPRESENTATIVE], radical_array[i][GW_RADARRAY_ACTUAL], radical_array[i][GW_RADARRAY_NAME]
       );
-      gtk_widget_set_name (GTK_WIDGET (button), radical_array[i][GW_RADARRAY_REPRESENTATIVE]);
+      gtk_buildable_set_name (GTK_WIDGET (button), radical_array[i][GW_RADARRAY_REPRESENTATIVE]);
       if (tooltip != NULL)
       {
         gtk_widget_set_tooltip_markup (GTK_WIDGET (button), tooltip);
@@ -447,6 +447,8 @@ char* gw_ui_strdup_all_selected_radicals ()
 //!
 void gw_ui_set_button_sensitive_when_label_is (const char *string)
 {
+    if (string == NULL) return;
+
     GtkWidget *table;
     table = GTK_WIDGET (gtk_builder_get_object(builder, "radical_selection_table"));
 
@@ -462,7 +464,7 @@ void gw_ui_set_button_sensitive_when_label_is (const char *string)
       radical[2] = jump[2];
       radical[3] = '\0';
 
-      it = list  = gtk_container_get_children (GTK_CONTAINER (table));
+      it = list = gtk_container_get_children (GTK_CONTAINER (table));
       while (it != NULL)
       {
         if (G_OBJECT_TYPE(it->data) == g_type_from_name("GtkToggleButton"))

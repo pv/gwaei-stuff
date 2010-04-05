@@ -593,6 +593,7 @@ G_MODULE_EXPORT void do_remove_dictionary_from_order_prefs (GtkTreeModel *tree_m
     added_to == -1;
 
     gw_ui_update_dictionary_order_list ();
+    gw_ui_update_settings_interface();
 }
 
 //!

@@ -225,8 +225,11 @@ int libcurl_update_progressbar (void   *data,
                                 double  ultotal,
                                 double  ulnow   )
 {
+    int percent = 0;
+    if (dltotal != 0.0)
+      percent = (int) (dlnow / dltotal * 100.0);
     libcurl_callback_func_with_data *curldata = (libcurl_callback_func_with_data*) data;
-    return (curldata->callback_function) (NULL, (int) (dlnow / dltotal * 100.0), curldata->data);
+    return (curldata->callback_function) (NULL, percent, curldata->data);
 }
 
 
