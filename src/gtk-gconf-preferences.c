@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file src/gconf-preferences.c
+//! @file src/gtk-gconf-preferences.c
 //!
 //! @brief Abstraction layer for gconf preferences
 //!
