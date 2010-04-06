@@ -1648,11 +1648,10 @@ G_MODULE_EXPORT void do_search_drag_data_recieved (GtkWidget        *widget,
     entry = GTK_WIDGET (search_entry);
 
     char* text = gtk_selection_data_get_text (data);
+    g_strstrip(text);
 
     if ((data->length >= 0) && (data->format == 8) && text != NULL)
     {
-      g_free (text);
-
       do_clear_search (entry, NULL);
       gtk_entry_set_text (GTK_ENTRY (entry), data->data);
       do_search (NULL, NULL);
@@ -1664,6 +1663,13 @@ G_MODULE_EXPORT void do_search_drag_data_recieved (GtkWidget        *widget,
     {
       gtk_drag_finish (drag_context, FALSE, FALSE, time);
     }
+
+    if (text != NULL)
+    {
+      g_free (text);
+      text = NULL;
+    }
+
 }
 
 
