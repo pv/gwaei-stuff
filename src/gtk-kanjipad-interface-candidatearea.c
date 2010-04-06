@@ -119,11 +119,9 @@ static void candidatearea_draw_character (GtkWidget *w, int index, int selected)
 
     if (selected >= 0)
     {
-      /*
       gdk_draw_rectangle (pa->kpixmap,
         selected ? w->style->bg_gc[GTK_STATE_SELECTED] :
         w->style->white_gc, TRUE, 0, (char_height + 6) *index, w->allocation.width - 1, char_height + 5);
-      */
     }
 
     string_utf = utf8_for_char (pa->kanji_candidates[index]);
@@ -235,9 +233,9 @@ static void candidatearea_primary_clear (GtkClipboard *clipboard,
 //! @brief To be written
 //!
 static void candidatearea_primary_get (GtkClipboard     *clipboard,
-                               GtkSelectionData *selection_data,
-                               guint             info,
-                               gpointer          owner           )
+                                       GtkSelectionData *selection_data,
+                                       guint             info,
+                                       gpointer          owner           )
 {
     if (pa->kselected[0] || pa->kselected[1])
     {
@@ -277,6 +275,7 @@ gboolean candidatearea_button_press_event (GtkWidget *w, GdkEventButton *event)
     j = event->y / (char_height + 6);
     if (j < pa->total_candidates)
     {
+      candidatearea_draw (w);
       strncpy(pa->kselected, pa->kanji_candidates[j], 2);
       candidatearea_draw_character (w, j, 1);
       
