@@ -125,7 +125,8 @@ static void *update_thread (void *nothing)
       if (error == NULL)
       {
         gdk_threads_enter ();
-        temp_text = g_strdup_printf (gettext("Syncing %s dictionary with server..."), di->long_name);
+        // TRANSLATORS: The "%s" stands for the long name of the dictionary (like "English Dictionary" or "Kanji Dictionary")
+        temp_text = g_strdup_printf (gettext("Syncing %s with server..."), di->long_name);
         gw_ui_set_progressbar ("update", progress, temp_text);
         g_free (temp_text);
         temp_text = NULL;
@@ -141,6 +142,7 @@ static void *update_thread (void *nothing)
       if (error == NULL)
       {
         gdk_threads_enter ();
+        // TRANSLATORS: The "%s" stands for the long name of the dictionary (like "English Dictionary" or "Kanji Dictionary")
         temp_text = g_strdup_printf (gettext("Finalizing %s changes..."), di->long_name);
         gw_ui_set_progressbar ("update", progress, temp_text);
         g_free (temp_text);

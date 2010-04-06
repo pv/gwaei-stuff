@@ -93,14 +93,17 @@ void gw_ncurses_no_result(GwSearchItem *item)
 static void print_search_start_banner(char *query, char *dictionary)
 {
     wprintw(screen, " ");
+    // TRANSLATORS: First part of the sentence : 'Searching for "${query}" in the ${dictionary} dictionary'
     wprintw(screen, gettext("Searching for \""));
     wattron(screen, COLOR_PAIR(GW_NCCOLORS_REDONBLACK));
     wprintw(screen,"%s", query);
     wattroff(screen, COLOR_PAIR(GW_NCCOLORS_REDONBLACK));
+    // TRANSLATORS: Second part of the sentence : 'Searching for "${query}" in the ${dictionary} dictionary'
     wprintw(screen, gettext("\" in the "));
     wattron(screen, COLOR_PAIR(GW_NCCOLORS_REDONBLACK));
     wprintw(screen," %s", dictionary);
     wattroff(screen, COLOR_PAIR(GW_NCCOLORS_REDONBLACK));
+    // TRANSLATORS: Third and last part of the sentence : 'Searching for "${query}" in the ${dictionary} dictionary'
     wprintw(screen, gettext(" dictionary..."));
 
     wrefresh(screen);
@@ -454,6 +457,7 @@ void initialize_ncurses_interface (int argc, char *argv[])
     g_option_context_add_main_entries (context, entries, PACKAGE);
     if (!g_option_context_parse (context, &argc, &argv, &error))
     {
+      // TRANSLATORS: The "%s" stands for the error message
       g_print (gettext("Option parsing failed: %s\n"), error->message);
       exit (EXIT_FAILURE);
     }

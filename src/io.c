@@ -622,6 +622,7 @@ void gw_io_uninstall_dictinfo (GwDictInfo *di,    int (*callback_function) (char
 
     char *message = NULL;
     if (long_messages)
+      // TRANSLATORS: The %s stands for a file path
       message = g_strdup_printf (gettext("Removing %s..."), di->path);
     else
       message = g_strdup_printf (gettext("Removing..."));
@@ -691,6 +692,7 @@ void gw_io_install_dictinfo (GwDictInfo *di,    int (*callback_function) (char*,
 
     if (long_messages == TRUE)
     {
+      // TRANSLATORS: The %s stands for an URL
       message = g_strdup_printf(gettext("Downloading %s..."), uri);
       if (message != NULL)
       {

@@ -182,6 +182,7 @@ static void print_about_program ()
 //!
 static void print_search_start_banner (char *query, char *dictionary)
 {
+    // TRANSLATORS: 'Searching for "${query}" in ${dictionary long name}'
     printf(gettext("Searching for \"%s\" in %s...\n"), query, dictionary);
     printf("\n");
 
@@ -218,7 +219,7 @@ static void print_installable_dictionaries ()
     }
 
     if (i == 0)
-      printf(gettext("  none\n"));
+      printf("  %s\n", gettext("none"));
 
     printf ("\n");
 }
@@ -249,7 +250,7 @@ static void print_available_dictionaries()
     }
 
     if (i == 0)
-      printf(gettext("  none\n"));
+      printf("  %s\n", gettext("none"));
 
     printf ("\n");
 }
@@ -308,6 +309,7 @@ void initialize_console_interface (int argc, char **argv)
     g_option_context_add_main_entries (context, entries, PACKAGE);
     if (!g_option_context_parse (context, &argc, &argv, &error))
     {
+      // TRANSLATORS: The "%s" stands for the error message
       g_print (gettext("Option parsing failed: %s\n"), error->message);
       exit (EXIT_FAILURE);
     }
@@ -406,6 +408,7 @@ void initialize_console_interface (int argc, char **argv)
       }
       else
       {
+        // TRANSLATORS: The "%s" stands for the value provided by the user to the "waei uninstall"
         printf(gettext("%s is not installed. "), uninstall_switch_data);
         print_available_dictionaries();
       }

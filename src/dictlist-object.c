@@ -645,6 +645,7 @@ void gw_dictlist_sync_dictionary (GwDictInfo *di, GError **error)
       return;
 
     printf("*  ");
+    // TRANSLATORS: The %s stands for the internal (untranslated) short name of the dictionary
     printf(gettext("Syncing %s dictionary"), di->name);
     printf("---------------------\n");
 

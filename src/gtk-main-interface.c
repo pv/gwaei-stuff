@@ -978,9 +978,10 @@ void gw_ui_set_total_results_label_by_searchitem (GwSearchItem* item)
       char *idle_message_none = "";
       char *searching_message_none = gettext("Searching...");
 
-      char *idle_message_total = ngettext("Found %d result", "Found %d results", relevant);
+      char *idle_message_total = ngettext("Found %d result", "Found %d results", total);
       char *searching_message_total = ngettext("Searching... %d result", "Searching... %d results", total);
 
+      // TRANSLATORS: relevant what ? It's the number of "relevant" result(s) displayed while or after searching.
       char *message_relevant = ngettext("(%d Relevant)", "(%d Relevant)", relevant);
 
       char *base_message = NULL;
@@ -1275,7 +1276,8 @@ int rebuild_combobox_dictionary_list()
     gw_ui_update_settings_interface();
 
     //Finish
-    printf(gettext("%d dictionaries are being used.\n\n"), j);
+    printf(ngettext("%d dictionnary is being used.", "%d dictionaries are being used.",j), j);
+    printf("\n\n");
     return j;
 }
 
@@ -3199,6 +3201,7 @@ void gw_ui_append_examplesdict_results_to_buffer (GwSearchItem *item)
 
       if (resultline->def_start[0] != NULL)
       {
+        // TRANSLATORS: The "E" stands for "English"
         gtk_text_buffer_insert_with_tags_by_name (tb, &iter, gettext("E:\t"), -1, "important", "comment", NULL);
         gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); start_offset = gtk_text_iter_get_line_offset (&iter);
         gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->def_start[0], -1, "important", NULL, NULL);
@@ -3209,6 +3212,7 @@ void gw_ui_append_examplesdict_results_to_buffer (GwSearchItem *item)
 
       if (resultline->kanji_start != NULL)
       {
+        // TRANSLATORS: The "J" stands for "Japanese"
         gtk_text_buffer_insert_with_tags_by_name (tb, &iter, gettext("\nJ:\t"), -1, "important", "comment", NULL);
         gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); start_offset = gtk_text_iter_get_line_offset (&iter);
         gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->kanji_start, -1, NULL, NULL, NULL);
@@ -3219,6 +3223,7 @@ void gw_ui_append_examplesdict_results_to_buffer (GwSearchItem *item)
 
       if (resultline->furigana_start != NULL)
       {
+        // TRANSLATORS: The "D" stands for "Detail"
         gtk_text_buffer_insert_with_tags_by_name (tb, &iter, gettext("\nD:\t"), -1, "important", "comment", NULL);
         gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); start_offset = gtk_text_iter_get_line_offset (&iter);
         gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->furigana_start, -1, NULL, NULL, NULL);
@@ -3337,12 +3342,12 @@ void gw_ui_no_result (GwSearchItem *item)
 
 
 //!
-//! @brief To be written
+//! @brief Add an header to irrelevant "other" results with number of matches
 //!
 void gw_ui_append_less_relevant_header_to_output(GwSearchItem *item)
 {
     int irrelevant = item->total_irrelevant_results;
-    char *message = g_strdup_printf (gettext("Other Results %d"), irrelevant);
+    char *message = g_strdup_printf(ngettext("Other Result %d", "Other Results %d", irrelevant), irrelevant);
     if (message != NULL)
     {
       gw_ui_set_header (item, message, "less_relevant_header_mark");
@@ -3352,12 +3357,12 @@ void gw_ui_append_less_relevant_header_to_output(GwSearchItem *item)
 
 
 //!
-//! @brief To be written
+//! @brief Add an header to relevant "main" results with number of matches
 //!
 void gw_ui_append_more_relevant_header_to_output (GwSearchItem *item)
 {
     int relevant = item->total_relevant_results;
-    char *message = g_strdup_printf (gettext("Main Results %d"), relevant);
+    char *message = g_strdup_printf(ngettext("Main Result %d", "Main Results %d", relevant), relevant);
     if (message != NULL)
     {
       gw_ui_set_header (item, message, "more_relevant_header_mark");
