@@ -40,80 +40,105 @@
 #include <gwaei/regex.h>
 
 
+gboolean gw_global_regex_expressions_initialized = FALSE;
 
-regex_t re_english;
-regex_t re_radical;
-regex_t re_kanji;
-regex_t re_places;
-regex_t re_names;
-regex_t re_mix;
-regex_t re_gz;
+struct _GwRegexInfo {
+  GwInitialDictonaryRegexIndex index;
+  char *expression;
+  int flags;
+};
+typedef struct _GwRegexInfo GwRegexInfo;
+
+static GwRegexInfo regex_info_array[] = 
+{
+  { GW_RE_DICT_ENGLISH, "English", GW_REGEX_EFLAGS_EXIST },
+  { GW_RE_DICT_RADICAL, "Radical", GW_REGEX_EFLAGS_EXIST },
+  { GW_RE_DICT_KANJI, "Kanji", GW_REGEX_EFLAGS_EXIST },
+  { GW_RE_DICT_PLACES, "Names", GW_REGEX_EFLAGS_EXIST },
+  { GW_RE_DICT_NAMES, "Places", GW_REGEX_EFLAGS_EXIST },
+  { GW_RE_DICT_MIX, "Mix", GW_REGEX_EFLAGS_EXIST },
+
+  { GW_RE_QUERY_STROKES, "S[0-9]{1,2}", GW_REGEX_EFLAGS_LOCATE },
+  { GW_RE_QUERY_GRADE, "F[0-9]{1,4}", GW_REGEX_EFLAGS_LOCATE },
+  { GW_RE_QUERY_FREQUENCY, "G[0-9]{1,1}", GW_REGEX_EFLAGS_LOCATE },
+  { GW_RE_QUERY_JLPT, "J[0-4]{1,1}", GW_REGEX_EFLAGS_LOCATE },
+
+  { GW_RE_FILENAME_GZ, "\\.gz$", GW_REGEX_EFLAGS_EXIST },
+
+  { GW_RE_WORD_I_ADJ_PASTFORM,    "\\B((かった))$", GW_REGEX_EFLAGS_LOCATE },
+  { GW_RE_WORD_I_ADJ_NEGATIVE,    "\\B((くない))$", GW_REGEX_EFLAGS_LOCATE },
+  { GW_RE_WORD_I_ADJ_TE_FORM,     "\\B((くて))$", GW_REGEX_EFLAGS_LOCATE },
+  { GW_RE_WORD_I_ADJ_CAUSATIVE,   "\\B((くさせる))$", GW_REGEX_EFLAGS_LOCATE },
+  { GW_RE_WORD_I_ADJ_CONDITIONAL, "\\B((ければ))$", GW_REGEX_EFLAGS_LOCATE },
 
 
-regex_t re_i_adj_pastform;
-regex_t re_i_adj_negative;
-regex_t re_i_adj_te_form;
-regex_t re_i_adj_causative;
-regex_t re_i_adj_conditional;
-regex_t re_na_adj_pastform;
-regex_t re_na_adj_negative;
-regex_t re_na_adj_te_form;
-regex_t re_na_adj_causative;
-regex_t re_na_adj_conditional;
+  { GW_RE_WORD_NA_ADJ_PASTFORM,    "\\B((だった))$", GW_REGEX_EFLAGS_LOCATE },
+  { GW_RE_WORD_NA_ADJ_NEGATIVE,    "\\B((ではない)|(じゃない))$", GW_REGEX_EFLAGS_LOCATE },
+  { GW_RE_WORD_NA_ADJ_TE_FORM,     "\\B((で))$", GW_REGEX_EFLAGS_LOCATE },
+  { GW_RE_WORD_NA_ADJ_CAUSATIVE,   "\\B((にさせる))$", GW_REGEX_EFLAGS_LOCATE },
+  { GW_RE_WORD_NA_ADJ_CONDITIONAL, "\\B((であれば))$", GW_REGEX_EFLAGS_LOCATE },
+  { -1, NULL, -1}
+};
+
+/*
+    //Verb forms
+    regcomp (re_verb_presentform, "\\B((ます))$", GW_REGEX_EFLAGS_EXIST);
+    regcomp (re_verb_politepast, "\\B((ました))$", GW_REGEX_EFLAGS_EXIST);
+    regcomp (re_verb_pastform_negative, "\\B((なかった))$", GW_REGEX_EFLAGS_EXIST);
+    regcomp (re_verb_pastform, "\\B((った)|(いた)|(いだ)|(した)|(んだ)|(えた))$", GW_REGEX_EFLAGS_EXIST);
+    regcomp (re_verb_negative, "\\B((わない)|(かない)|(がない)|(さない)|(たない)|(なない)|(まない)|(いない))$", GW_REGEX_EFLAGS_EXIST);
+    regcomp (re_verb_te_form, "\\B((って)|(いて)|(いで)|(して)|(んで))$", GW_REGEX_EFLAGS_EXIST);
+    regcomp (re_verb_potention, "\\B((える)|(ける)|(げる)|(せる)|(てる)|(ねる)|(べる)|(める)|(れる)|(いられる)|(えられる)|(いれる))$", GW_REGEX_EFLAGS_EXIST);
+    regcomp (re_verb_causative, "\\B((させる)|(わせる)|(かせる)|(がせる)|(なせる)|(たせる)|(ばせる)|ませる(らせる)|(いさせる)|())$", GW_REGEX_EFLAGS_EXIST);
+    regcomp (re_conditional, "\\B((すれば)|(くれば)|(であれば)|(えば)|(けば)|(げば)|(せば)|(てば)|(ねば)|(べば)|(めば)|(れば)|(いれば)|(れば))$", GW_REGEX_EFLAGS_EXIST);
+    regcomp (re_negative_conditional, "\\B((なければ))$", GW_REGEX_EFLAGS_EXIST);
+    regcomp (re_verb_imperative, "\\B((しろ)|(せよ)|(こい)|(くれ)|(ませ)|(であれ)|(え)|(け)|(せ)|(て)|(ね)|(べ)|(め)|(れ)|(いろ)|(えろ))$", GW_REGEX_EFLAGS_EXIST);
+    regcomp (re_verb_passive, "\\B((される)|(こられる)|(われる)|(かれる)|(がれる)|(される)|(たれる)|(なれる)|(ばれる)|(まれる)|(られる)|(いられる)|(えられる))$", GW_REGEX_EFLAGS_EXIST);
+    regcomp (re_verb_volitional, "\\B((しよう)|(せよう)|(こよう)|(だろう)|(ましょう)|(おう)|(こう)|(ごう)|(そう)|(とう)|(のう)|(ぼう)|(もう)|(ろう)|(いよう)|(よう))$", GW_REGEX_EFLAGS_EXIST);
+*/
+
 
 
 //!
-//! @brief Initializes rebuild often used prebuilt regex expressions
-//!
-//! These are mostly dictionary names where we want to ignore things like case.
+//! @brief Initializes often used prebuilt regex expressions
 //!
 void gw_regex_initialize_constant_regular_expressions ()
 {
-    regcomp (&re_english, "English", GW_REGEX_EFLAGS_EXIST);
-    regcomp (&re_radical, "Radical", GW_REGEX_EFLAGS_EXIST);
-    regcomp (&re_kanji, "Kanji", GW_REGEX_EFLAGS_EXIST);
-    regcomp (&re_names, "Names", GW_REGEX_EFLAGS_EXIST);
-    regcomp (&re_places, "Places", GW_REGEX_EFLAGS_EXIST);
-    regcomp (&re_mix, "Mix", GW_REGEX_EFLAGS_EXIST);
-    regcomp (&re_gz, "\\.gz", GW_REGEX_EFLAGS_EXIST);
+    if (gw_global_regex_expressions_initialized == TRUE) return;
+
+    int i;
+    for (i = 0; regex_info_array[i].index != -1; i++)
+    {
+      if (regex_info_array[i].expression == NULL)
+      {
+        gw_re[regex_info_array[i].index] = NULL;
+      }
+      else
+      {
+        gw_re[regex_info_array[i].index] = (regex_t*) malloc (sizeof(regex_t));
+        regcomp (gw_re[regex_info_array[i].index], regex_info_array[i].expression, regex_info_array[i].flags);
+      }
+    }
+    gw_global_regex_expressions_initialized = TRUE;
+}
 
 
-    regcomp (&gw_re[GW_RE_QUERY_STROKES],   "S[0-9]{1,2}", GW_REGEX_EFLAGS_LOCATE);
-    regcomp (&gw_re[GW_RE_QUERY_FREQUENCY], "F[0-9]{1,4}", GW_REGEX_EFLAGS_LOCATE);
-    regcomp (&gw_re[GW_RE_QUERY_GRADE],     "G[0-4]{1,1}", GW_REGEX_EFLAGS_LOCATE);
-    regcomp (&gw_re[GW_RE_QUERY_JLPT],      "J[0-4]{1,1}", GW_REGEX_EFLAGS_LOCATE);
-
-
-    //Adjective forms
-    regcomp (&re_i_adj_past,         "\\B((かった))$",              GW_REGEX_EFLAGS_LOCATE);
-    regcomp (&re_i_adj_negative,     "\\B((くない))$",              GW_REGEX_EFLAGS_LOCATE);
-    regcomp (&re_i_adj_te,           "\\B((くて))$",                GW_REGEX_EFLAGS_LOCATE);
-    regcomp (&re_i_adj_causative,    "\\B((くさせる))$",            GW_REGEX_EFLAGS_LOCATE);
-    regcomp (&re_i_adj_conditional,  "\\B((ければ))$",              GW_REGEX_EFLAGS_LOCATE);
-
-    regcomp (&re_na_adj_past,        "\\B((だった))$",              GW_REGEX_EFLAGS_LOCATE);
-    regcomp (&re_na_adj_negative,    "\\B((ではない)|(じゃない))$", GW_REGEX_EFLAGS_LOCATE);
-    regcomp (&re_na_adj_te,          "\\B((で))$",                  GW_REGEX_EFLAGS_LOCATE);
-    regcomp (&re_na_adj_causative,   "\\B((にさせる))$",            GW_REGEX_EFLAGS_LOCATE);
-    regcomp (&re_na_adj_conditional, "\\B((であれば))$",            GW_REGEX_EFLAGS_LOCATE);
-
-
-    //Verb forms
-/*
-    regcomp (&re_verb_presentform, "\\B((ます))$", GW_REGEX_EFLAGS_EXIST);
-    regcomp (&re_verb_politepast, "\\B((ました))$", GW_REGEX_EFLAGS_EXIST);
-    regcomp (&re_verb_pastform_negative, "\\B((なかった))$", GW_REGEX_EFLAGS_EXIST);
-    regcomp (&re_verb_pastform, "\\B((った)|(いた)|(いだ)|(した)|(んだ)|(えた))$", GW_REGEX_EFLAGS_EXIST);
-    regcomp (&re_verb_negative, "\\B((わない)|(かない)|(がない)|(さない)|(たない)|(なない)|(まない)|(いない))$", GW_REGEX_EFLAGS_EXIST);
-    regcomp (&re_verb_te_form, "\\B((って)|(いて)|(いで)|(して)|(んで))$", GW_REGEX_EFLAGS_EXIST);
-    regcomp (&re_verb_potention, "\\B((える)|(ける)|(げる)|(せる)|(てる)|(ねる)|(べる)|(める)|(れる)|(いられる)|(えられる)|(いれる))$", GW_REGEX_EFLAGS_EXIST);
-    regcomp (&re_verb_causative, "\\B((させる)|(わせる)|(かせる)|(がせる)|(なせる)|(たせる)|(ばせる)|ませる(らせる)|(いさせる)|())$", GW_REGEX_EFLAGS_EXIST);
-    regcomp (&re_conditional, "\\B((すれば)|(くれば)|(であれば)|(えば)|(けば)|(げば)|(せば)|(てば)|(ねば)|(べば)|(めば)|(れば)|(いれば)|(れば))$", GW_REGEX_EFLAGS_EXIST);
-    regcomp (&re_negative_conditional, "\\B((なければ))$", GW_REGEX_EFLAGS_EXIST);
-    regcomp (&re_verb_imperative, "\\B((しろ)|(せよ)|(こい)|(くれ)|(ませ)|(であれ)|(え)|(け)|(せ)|(て)|(ね)|(べ)|(め)|(れ)|(いろ)|(えろ))$", GW_REGEX_EFLAGS_EXIST);
-    regcomp (&re_verb_passive, "\\B((される)|(こられる)|(われる)|(かれる)|(がれる)|(される)|(たれる)|(なれる)|(ばれる)|(まれる)|(られる)|(いられる)|(えられる))$", GW_REGEX_EFLAGS_EXIST);
-    regcomp (&re_verb_volitional, "\\B((しよう)|(せよう)|(こよう)|(だろう)|(ましょう)|(おう)|(こう)|(ごう)|(そう)|(とう)|(のう)|(ぼう)|(もう)|(ろう)|(いよう)|(よう))$", GW_REGEX_EFLAGS_EXIST);
-*/
+//!
+//! @brief Frees often used prebuilt regex expressions
+//!
+void gw_regex_free_constant_regular_expressions ()
+{
+    if (gw_global_regex_expressions_initialized == FALSE) return;
+    int i;
+    for (i = 0; regex_info_array[i].index != -1; i++)
+    {
+      if (&regex_info_array[i] != NULL)
+      {
+        regfree(gw_re[regex_info_array[i].index]);
+        gw_re[regex_info_array[i].index] = NULL;
+      }
+    }
+    gw_global_regex_expressions_initialized = FALSE;
 }
 
 

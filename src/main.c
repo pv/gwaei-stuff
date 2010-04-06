@@ -55,8 +55,6 @@
 
 int main (int argc, char *argv[])
 {    
-    gw_util_initialize_runmode(argc, argv);
-
     //Setup for localized messages
     setlocale(LC_MESSAGES, "");
     bindtextdomain(PACKAGE, LOCALEDIR);
@@ -74,16 +72,40 @@ int main (int argc, char *argv[])
     if (!g_thread_supported ())
       g_thread_init (NULL);
 
-    g_type_init();
-    curl_global_init(CURL_GLOBAL_ALL);
+    g_type_init ();
+    curl_global_init (CURL_GLOBAL_ALL);
 
-    gw_regex_initialize_constant_regular_expressions();
-    gw_dictionaries_initialize_dictionary_list();
-    gw_history_initialize_history();
-    gw_io_check_for_rsync();
+    gw_util_initialize_runmode (argc, argv);
+    gw_regex_initialize_constant_regular_expressions ();
+    gw_dictionaries_initialize_dictionary_list ();
+    gw_history_initialize_history ();
+    gw_main_initialize_generic_output_functions_to_null ();
+    gw_io_check_for_rsync ();
+
+    //Start the runmode chosen by the user
+    if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
+      initialize_console_interface (argc, argv);
+    else if  (gw_util_get_runmode () == GW_NCURSES_RUNMODE)
+      initialize_ncurses_interface (argc, argv);
+#ifdef GW_WITH_GTK
+    else if  (gw_util_get_runmode () == GW_GTK_RUNMODE)
+      initialize_gui_interface (argc, argv);
+#endif
+    else
+      initialize_console_interface (argc, argv);
+
+    //Cleanup and exit
+    gw_dictlist_free ();
+    gw_regex_free_constant_regular_expressions ();
+    exit(EXIT_SUCCESS);
+}
 
 
-    //Set initial state for output generics
+//!
+//! @brief Sets all output function pointers to NULL
+//!
+void gw_main_initialize_generic_output_functions_to_null ()
+{
     gw_output_generic_append_edict_results = NULL;
     gw_output_generic_append_kanjidict_results = NULL;
     gw_output_generic_append_examplesdict_results = NULL;
@@ -93,23 +115,6 @@ int main (int argc, char *argv[])
     gw_output_generic_append_more_relevant_header_to_output = NULL;
     gw_output_generic_pre_search_prep = NULL;
     gw_output_generic_after_search_cleanup = NULL;
-
-
-    //Start the runmode chosen by the user
-    if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
-      initialize_console_interface(argc, argv);
-    else if  (gw_util_get_runmode() == GW_NCURSES_RUNMODE)
-      initialize_ncurses_interface (argc, argv);
-#ifdef GW_WITH_GTK
-    else if  (gw_util_get_runmode() == GW_GTK_RUNMODE)
-      initialize_gui_interface(argc, argv);
-#endif
-    else
-      initialize_console_interface(argc, argv);
-
-    //Cleanup and exit
-    gw_dictlist_free ();
-    exit(EXIT_SUCCESS);
 }
 
 

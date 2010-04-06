@@ -73,7 +73,7 @@ GwHistoryList* gw_historylist_get_list(const int TARGET)
 GwHistoryList* gw_historylist_new()
 {
     GwHistoryList *temp;
-    if ((temp = malloc(sizeof(struct GwSearchItem))) != NULL)
+    if ((temp = malloc(sizeof(GwSearchItem))) != NULL)
     {
       temp->back = NULL;
       temp->forward = NULL;

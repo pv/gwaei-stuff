@@ -42,7 +42,7 @@ GwResultLine* gw_resultline_new ()
 {
     GwResultLine* temp;
 
-    if ((temp = (GwResultLine*) malloc(sizeof(struct GwResultLine))) == NULL) return NULL;
+    if ((temp = (GwResultLine*) malloc(sizeof(GwResultLine))) == NULL) return NULL;
 
     //A place for a copy of the raw string
     temp->string[0] = '\0';
@@ -256,7 +256,7 @@ void gw_resultline_parse_kanjidict_result_string (GwResultLine *rl)
 
     //Get strokes
     rl->strokes = NULL;
-    if (found[STROKES] = (regexec(&gw_re[GW_RE_QUERY_STROKES], ptr, nmatch, pmatch, 0) == 0))
+    if (found[STROKES] = (regexec(gw_re[GW_RE_QUERY_STROKES], ptr, nmatch, pmatch, 0) == 0))
     {
       rl->strokes = ptr + pmatch[0].rm_so + 1;
       end[STROKES] = ptr + pmatch[0].rm_eo;
@@ -264,7 +264,7 @@ void gw_resultline_parse_kanjidict_result_string (GwResultLine *rl)
 
     //Get frequency
     rl->frequency = NULL;
-    if (found[FREQUENCY] = (regexec(&gw_re[GW_RE_QUERY_FREQUENCY], ptr, nmatch, pmatch, 0) == 0))
+    if (found[FREQUENCY] = (regexec(gw_re[GW_RE_QUERY_FREQUENCY], ptr, nmatch, pmatch, 0) == 0))
     {
       rl->frequency = ptr + pmatch[0].rm_so + 1;
       end[FREQUENCY] = ptr + pmatch[0].rm_eo;
@@ -272,7 +272,7 @@ void gw_resultline_parse_kanjidict_result_string (GwResultLine *rl)
 
     //Get grade
     rl->grade = NULL;
-    if (found[GRADE] = (regexec(&gw_re[GW_RE_QUERY_GRADE], ptr, nmatch, pmatch, 0) == 0))
+    if (found[GRADE] = (regexec(gw_re[GW_RE_QUERY_GRADE], ptr, nmatch, pmatch, 0) == 0))
     {
       rl->grade = ptr + pmatch[0].rm_so + 1;
       end[GRADE] = ptr + pmatch[0].rm_eo;
@@ -280,7 +280,7 @@ void gw_resultline_parse_kanjidict_result_string (GwResultLine *rl)
 
     //Get JLPT
     rl->jlpt = NULL;
-    if (found[JLPT] = (regexec(&gw_re[GW_RE_QUERY_JLPT], ptr, nmatch, pmatch, 0) == 0))
+    if (found[JLPT] = (regexec(gw_re[GW_RE_QUERY_JLPT], ptr, nmatch, pmatch, 0) == 0))
     {
       rl->jlpt = ptr + pmatch[0].rm_so + 1;
       end[JLPT] = ptr + pmatch[0].rm_eo;

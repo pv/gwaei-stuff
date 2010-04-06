@@ -10,7 +10,7 @@
 #define GW_QUERYLINE_MED 3
 #define GW_QUERYLINE_HIGH 4
 
-typedef struct GwQueryLine {
+struct _GwQueryLine {
     char string[MAX_QUERY];
     char hira_string[MAX_QUERY];
 
@@ -32,7 +32,8 @@ typedef struct GwQueryLine {
     int grade_total;
     regex_t jlpt_regex[5][MAX_ATOMS];
     int jlpt_total;
-} GwQueryLine;
+};
+typedef struct _GwQueryLine GwQueryLine;
 
 
 GwQueryLine* gw_queryline_new (void );

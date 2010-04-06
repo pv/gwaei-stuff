@@ -83,7 +83,7 @@ typedef enum {
 //!
 //! @brief Primitive for storing dictionary information
 //!
-struct GwDictInfo
+struct _GwDictInfo
 {
     GwDictId id;      //!< Unique dictionary id number
     GwDictType type;  //!< classification of dictionary
@@ -101,7 +101,7 @@ struct GwDictInfo
     GwResultLine *cached_resultlines;
     GwResultLine *current_resultline;
 };
-typedef struct GwDictInfo GwDictInfo;
+typedef struct _GwDictInfo GwDictInfo;
 
 
 GwDictInfo* gw_dictinfo_new (char*);

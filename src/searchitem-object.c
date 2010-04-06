@@ -60,7 +60,7 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary, const int 
     GwSearchItem *temp;
 
     //Allocate some memory
-    if ((temp = malloc(sizeof(struct GwSearchItem))) == NULL) return NULL;
+    if ((temp = malloc(sizeof(GwSearchItem))) == NULL) return NULL;
 
     temp->results_medium = NULL;
     temp->results_low = NULL;

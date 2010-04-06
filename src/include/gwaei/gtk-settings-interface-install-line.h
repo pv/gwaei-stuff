@@ -2,7 +2,7 @@
 #define GW_GTK_SETTINGS_INTERFACE_INSTALL_LINE_INCLUDED
 
 //Class
-struct GwUiDictInstallLine {
+struct _GwUiDictInstallLine {
     GtkWidget *status_icon;
     GtkWidget *status_message;
     GtkWidget *status_progressbar;
@@ -22,7 +22,7 @@ struct GwUiDictInstallLine {
 
     GwDictInfo *di;
 };
-typedef struct GwUiDictInstallLine GwUiDictInstallLine;
+typedef struct _GwUiDictInstallLine GwUiDictInstallLine;
 
 
 //Methods

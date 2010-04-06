@@ -34,12 +34,12 @@
 //!
 //! @brief Primitive for storing lists of dictionaries
 //!
-struct GwDictList
+struct _GwDictList
 {
     GList *list;      //!< GList of the installed dictionaries
     GList *selected;  //!< Pointer to the currently selected dictionary in the GList
 };
-typedef struct GwDictList GwDictList;
+typedef struct _GwDictList GwDictList;
 
 
 GList* gw_dictlist_get_list (void);

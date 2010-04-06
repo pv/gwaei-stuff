@@ -52,7 +52,8 @@ typedef enum
 //!
 //! @brief Primitive for storing search item information
 //!
-typedef struct GwSearchItem {
+//Object
+struct _GwSearchItem {
     GwQueryLine* queryline;                 //!< Result line to store parsed result
     GwDictInfo* dictionary;                 //!< Pointer to the dictionary used
 
@@ -77,15 +78,19 @@ typedef struct GwSearchItem {
     GwResultLine* swap_resultline;          //!< Swap space for swapping result line and backup_resultline
 
     void (*gw_searchitem_parse_result_string)(GwResultLine*);
-    void (*gw_searchitem_ui_append_results_to_output)(struct GwSearchItem*);
-    void (*gw_searchitem_ui_update_progress_feedback)(struct GwSearchItem*);
-    void (*gw_searchitem_ui_append_less_relevant_header_to_output)(struct GwSearchItem*);
-    void (*gw_searchitem_ui_append_more_relevant_header_to_output)(struct GwSearchItem*);
-    void (*gw_searchitem_ui_pre_search_prep)(struct GwSearchItem*);
-    void (*gw_searchitem_ui_after_search_cleanup)(struct GwSearchItem*);
+    void (*gw_searchitem_ui_append_results_to_output)(struct _GwSearchItem*);
+    void (*gw_searchitem_ui_update_progress_feedback)(struct _GwSearchItem*);
+    void (*gw_searchitem_ui_append_less_relevant_header_to_output)(struct _GwSearchItem*);
+    void (*gw_searchitem_ui_append_more_relevant_header_to_output)(struct _GwSearchItem*);
+    void (*gw_searchitem_ui_pre_search_prep)(struct _GwSearchItem*);
+    void (*gw_searchitem_ui_after_search_cleanup)(struct _GwSearchItem*);
 
     gpointer* target_tb;                 //!< Pointer to a buffer that stays constant unlike when the target attribute is used
-} GwSearchItem;
+};
+typedef struct _GwSearchItem GwSearchItem;
+
+//Methods
+GwSearchItem* gw_searchitem_new (char*, GwDictInfo*, const int);
 
 
 #endif

@@ -44,32 +44,19 @@ typedef enum {
 //!
 //! @brief Primitive for storing search items in intelligent ways
 //!
-typedef struct GwHistoryList
-{
+struct _GwHistoryList {
     GList *back;           //!< A GList of past search items
     GList *forward;        //!< A GList where past search items get stacked when the user goes back.
     GwSearchItem *current; //!< The current search before it gets pushed only into a history list.
-} GwHistoryList;
+};
+typedef struct _GwHistoryList GwHistoryList;
 
 
-/*searchitem methods*/
-GwSearchItem* gw_searchitem_new    (char*, GwDictInfo*, int);
-void        gw_searchitem_remove (struct GwSearchItem*);
-
-/*Historylist methods*/
-GwHistoryList* gw_historylist_new_item(GwHistoryList*, char*, char*);
-GwHistoryList* gw_historylist_add_item(GwHistoryList*, GwSearchItem*);
-GwHistoryList* gw_historylist_unlink_item(GwHistoryList*);
-GwHistoryList* gw_historylist_remove_last_item(GwHistoryList*);
-void   gw_historylist_clear(GwHistoryList*, GList**);
-void   gw_historylist_shift_item(GwHistoryList*, GList**);
-
-/*Functions*/
-gboolean gw_searchitem_do_pre_search_prep (GwSearchItem*);
+//Methods
 GwHistoryList* gw_historylist_get_list(const int);
 GwSearchItem* gw_historylist_get_current (const int);
-GList* gw_historylist_get_combined_history_list (const int);
 GList* gw_historylist_get_back_history (const int);
 GList* gw_historylist_get_forward_history (const int);
+GList* gw_historylist_get_combined_history_list (const int);
 
 #endif

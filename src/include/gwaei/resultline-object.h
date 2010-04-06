@@ -37,7 +37,7 @@
 
 static char *FIRST_DEFINITION_PREFIX_STR = "(1)";
 
-typedef struct GwResultLine {
+struct _GwResultLine {
     char string[MAX_LINE];     //!< Character array holding the result line for the pointers to reference
 
     //General result things
@@ -60,7 +60,8 @@ typedef struct GwResultLine {
 
     gboolean important; //!< Weather a word/phrase has a high frequency of usage.
 
-} GwResultLine;
+};
+typedef struct _GwResultLine GwResultLine;
 
 
 GwResultLine* gw_resultline_new (void );

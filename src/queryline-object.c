@@ -51,7 +51,7 @@ GwQueryLine* gw_queryline_new ()
 {
     GwQueryLine* temp;
 
-    if ((temp = (GwQueryLine*) malloc(sizeof(struct GwQueryLine))) == NULL) return NULL;
+    if ((temp = (GwQueryLine*) malloc(sizeof(GwQueryLine))) == NULL) return NULL;
 
     //A place for a copy of the raw string
     temp->string[0]      = '\0';
@@ -335,7 +335,7 @@ int gw_queryline_parse_kanjidict_string (GwQueryLine *ql, const char* string)
     gboolean want_rk_conv = (rk_conv_pref == 0 || (rk_conv_pref == 2 && !gw_util_is_japanese_locale()));
 
     //Get stroke
-    if (regexec(&gw_re[GW_RE_QUERY_STROKES], ptr, nmatch, pmatch, 0) == 0)
+    if (regexec(gw_re[GW_RE_QUERY_STROKES], ptr, nmatch, pmatch, 0) == 0)
     {
       start = ptr + pmatch[0].rm_so + 1;
       length = pmatch[0].rm_eo - pmatch[0].rm_so - 1;
@@ -349,7 +349,7 @@ int gw_queryline_parse_kanjidict_string (GwQueryLine *ql, const char* string)
     }
 
     //Get Frequency
-    if (regexec(&gw_re[GW_RE_QUERY_FREQUENCY], ptr, nmatch, pmatch, 0) == 0)
+    if (regexec(gw_re[GW_RE_QUERY_FREQUENCY], ptr, nmatch, pmatch, 0) == 0)
     {
       start = ptr + pmatch[0].rm_so + 1;
       length = pmatch[0].rm_eo - pmatch[0].rm_so - 1;
@@ -363,7 +363,7 @@ int gw_queryline_parse_kanjidict_string (GwQueryLine *ql, const char* string)
     }
 
     //Get Grade
-    if (regexec(&gw_re[GW_RE_QUERY_GRADE], ptr, nmatch, pmatch, 0) == 0)
+    if (regexec(gw_re[GW_RE_QUERY_GRADE], ptr, nmatch, pmatch, 0) == 0)
     {
       start = ptr + pmatch[0].rm_so + 1;
       length = pmatch[0].rm_eo - pmatch[0].rm_so - 1;
@@ -377,7 +377,7 @@ int gw_queryline_parse_kanjidict_string (GwQueryLine *ql, const char* string)
     }
 
     //Get JLPT 
-    if (regexec(&gw_re[GW_RE_QUERY_JLPT], ptr, nmatch, pmatch, 0) == 0)
+    if (regexec(gw_re[GW_RE_QUERY_JLPT], ptr, nmatch, pmatch, 0) == 0)
     {
       start = ptr + pmatch[0].rm_so + 1;
       length = pmatch[0].rm_eo - pmatch[0].rm_so - 1;

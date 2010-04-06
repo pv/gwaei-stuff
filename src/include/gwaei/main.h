@@ -15,5 +15,6 @@ void (*gw_output_generic_pre_search_prep)(GwSearchItem*);
 void (*gw_output_generic_after_search_cleanup)(GwSearchItem*);
 
 gboolean gw_main_verify_output_generic_functions (void);
+void gw_main_initialize_generic_output_functions_to_null (void);
 
 #endif

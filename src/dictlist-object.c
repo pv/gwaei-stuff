@@ -417,7 +417,7 @@ void gw_dictionaries_initialize_dictionary_list()
       {
         strcpy (filename, input);
         if (g_file_test(path, G_FILE_TEST_IS_REGULAR) == TRUE &&
-            regexec (&re_gz,  filename, 1, NULL, 0 ) != 0     &&
+            regexec (gw_re[GW_RE_FILENAME_GZ],  filename, 1, NULL, 0 ) != 0     &&
             strcmp  (filename, "English"           ) != 0     &&
             strcmp  (filename, "Kanji"             ) != 0     &&
             strcmp  (filename, "Names"             ) != 0     &&           

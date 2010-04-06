@@ -4,33 +4,10 @@
 #define GW_REGEX_EFLAGS_EXIST    (REG_EXTENDED | REG_ICASE | REG_NOSUB)
 #define GW_REGEX_EFLAGS_LOCATE   (REG_EXTENDED | REG_ICASE)
 
-regex_t re_english;
-regex_t re_radical;
-regex_t re_kanji;
-regex_t re_places;
-regex_t re_names;
-regex_t re_mix;
-regex_t re_gz;
-regex_t re_hexcolor;
-
-
-//Adjectives
-regex_t re_i_adj_past;
-regex_t re_i_adj_negative;
-regex_t re_i_adj_te;
-regex_t re_i_adj_causative;
-regex_t re_i_adj_conditional;
-
-regex_t re_na_adj_past;
-regex_t re_na_adj_negative;
-regex_t re_na_adj_te;
-regex_t re_na_adj_causative;
-regex_t re_na_adj_conditional;
-
-
-
 
 void gw_regex_initialize_constant_regular_expressions(void);
+void gw_regex_free_constant_regular_expressions (void);
+
 char* gw_regex_locate_offset (char*, char*, regex_t*, gint*, gint*);
 gboolean gw_regex_create_kanji_high_regex (regex_t*, char*, int);
 gboolean gw_regex_create_kanji_med_regex (regex_t*, char*, int);
@@ -70,10 +47,10 @@ typedef enum {
   GW_RE_WORD_NA_ADJ_CAUSATIVE,
   GW_RE_WORD_NA_ADJ_CONDITIONAL,
 
-  GW_RE_LENGTH
-} GwInitialDictonaryRegex;
+  GW_RE_TOTAL
+} GwInitialDictonaryRegexIndex;
 
-regex_t gw_re[GW_RE_LENGTH];
+regex_t *gw_re[GW_RE_TOTAL];
 
 
 
