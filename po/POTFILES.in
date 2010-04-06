@@ -27,9 +27,7 @@ src/regex.c
 src/resultline-object.c
 src/searchitem-object.c
 src/utilities.c
-src/schemas/gwaei.schemas.in
-src/gtk-builder-xml/main.ui
-src/gtk-builder-xml/radicals.ui
-src/gtk-builder-xml/settings.ui
-src/gtk-builder-xml/kanjipad.ui
-src/desktop/gwaei.desktop.in
+src/gtk-builder-xml/kanjipad.glade
+src/gtk-builder-xml/main.glade
+src/gtk-builder-xml/radicals.glade
+src/gtk-builder-xml/settings.glade

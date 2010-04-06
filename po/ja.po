@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-04-06 08:50-0500\n"
+"POT-Creation-Date: 2010-04-06 09:22-0500\n"
 "PO-Revision-Date: 2008-11-30 02:35+0500\n"
 "Last-Translator: Zachary Dovel pizzach@gmail.com\n"
 "Language-Team: Not Applicable\n"
@@ -365,7 +365,7 @@ msgstr "閉じる(_C)"
 msgid "(Empty)"
 msgstr "(空っぽ)"
 
-#: src/gtk-main-interface.c:193
+#: src/gtk-main-interface.c:193 src/gtk-builder-xml/main.glade:7
 msgid "gWaei Japanese-English Dictionary"
 msgstr "gWaei 和英辞書"
 
@@ -385,11 +385,11 @@ msgstr "できる時だけ"
 msgid "Never"
 msgstr "しない"
 
-#: src/gtk-main-interface.c:416
+#: src/gtk-main-interface.c:416 src/gtk-builder-xml/main.glade:469
 msgid "Go to the _Project Homepage"
 msgstr "プロジェクトホームページへ行く"
 
-#: src/gtk-main-interface.c:417
+#: src/gtk-main-interface.c:417 src/gtk-builder-xml/main.glade:477
 msgid "Get Help on I_RC"
 msgstr "IRCでヘルプを求める"
 
@@ -413,7 +413,7 @@ msgstr "ショートカット"
 msgid "Dictionary"
 msgstr "辞書"
 
-#: src/gtk-main-interface.c:424
+#: src/gtk-main-interface.c:424 src/gtk-builder-xml/kanjipad.glade:75
 msgid "_Annotate Strokes"
 msgstr "画数付き(_A)"
 
@@ -437,7 +437,7 @@ msgstr "表示されている候補を印刷する"
 msgid "_Enlarge Text"
 msgstr "文字を拡大する(_E)"
 
-#: src/gtk-main-interface.c:457
+#: src/gtk-main-interface.c:457 src/gtk-builder-xml/main.glade:661
 msgid "Enlarge"
 msgstr "拡大"
 
@@ -449,7 +449,7 @@ msgstr "候補の文字を拡大する"
 msgid "_Shrink Text"
 msgstr "文字を縮小する(_S)"
 
-#: src/gtk-main-interface.c:464
+#: src/gtk-main-interface.c:464 src/gtk-builder-xml/main.glade:673
 msgid "Shrink"
 msgstr "縮小"
 
@@ -902,140 +902,192 @@ msgstr "検索: "
 msgid "Results: "
 msgstr "候補: "
 
-#~ msgid "_File"
-#~ msgstr "ファイル(_F)"
+#: src/gtk-builder-xml/kanjipad.glade:6
+msgid "gWaei Kanjipad"
+msgstr "gWaei 漢字パッド"
 
-#~ msgid "_Dictionaries"
-#~ msgstr "辞書(_D)"
+#: src/gtk-builder-xml/kanjipad.glade:128
+#: src/gtk-builder-xml/radicals.glade:154
+msgid "C_lear"
+msgstr "クリア(_L)"
 
-#~ msgid "_Edit"
-#~ msgstr "編集(_E)"
+#: src/gtk-builder-xml/main.glade:29
+msgid "_File"
+msgstr "ファイル(_F)"
 
-#~ msgid "_View"
-#~ msgstr "表示(_V)"
+#: src/gtk-builder-xml/main.glade:83
+msgid "_Dictionaries"
+msgstr "辞書(_D)"
 
-#~ msgid "_Previous Tab"
-#~ msgstr "前のタブ(_P)"
+#: src/gtk-builder-xml/main.glade:91
+msgid "menuitem2"
+msgstr ""
 
-#~ msgid "Ne_xt Tab"
-#~ msgstr "次のタブ(_X)"
+#: src/gtk-builder-xml/main.glade:146
+msgid "_Edit"
+msgstr "編集(_E)"
 
-#~ msgid "_Insert"
-#~ msgstr "挿入(_I)"
+#: src/gtk-builder-xml/main.glade:217
+msgid "_View"
+msgstr "表示(_V)"
 
-#~ msgid "Hi_story"
-#~ msgstr "履歴(_S)"
+#: src/gtk-builder-xml/main.glade:285
+msgid "_Previous Tab"
+msgstr "前のタブ(_P)"
 
-#~ msgid "_Help"
-#~ msgstr "ヘルプ(_H)"
+#: src/gtk-builder-xml/main.glade:294
+msgid "Ne_xt Tab"
+msgstr "次のタブ(_X)"
 
-#~ msgid "Append"
-#~ msgstr "追加"
+#: src/gtk-builder-xml/main.glade:307
+msgid "_Insert"
+msgstr "挿入(_I)"
 
-#~ msgid "Bound"
-#~ msgstr "言葉端"
+#: src/gtk-builder-xml/main.glade:402
+msgid "Hi_story"
+msgstr "履歴(_S)"
 
-#~ msgid "Not Bound"
-#~ msgstr "非言葉端"
+#: src/gtk-builder-xml/main.glade:439
+msgid "_Help"
+msgstr "ヘルプ(_H)"
 
-#~ msgid "Unknown"
-#~ msgstr "未知"
+#: src/gtk-builder-xml/main.glade:541
+msgid "Append"
+msgstr "追加"
 
-#~ msgid "Search:"
-#~ msgstr "検索:"
+#: src/gtk-builder-xml/main.glade:598
+msgid "Bound"
+msgstr "言葉端"
 
-#~ msgid "Kanji Lookup:"
-#~ msgstr "漢字の参照:"
+#: src/gtk-builder-xml/main.glade:610
+msgid "Not Bound"
+msgstr "非言葉端"
 
-#~ msgid "gWaei Radical Search Tool"
-#~ msgstr "gWaei 部首検索ツール"
+#: src/gtk-builder-xml/main.glade:622
+msgid "Unknown"
+msgstr "未知"
 
-#~ msgid "_Restrict to Kanji of"
-#~ msgstr "総画数を(_R)"
+#: src/gtk-builder-xml/main.glade:715
+msgid "Search:"
+msgstr "検索:"
 
-#~ msgid " _strokes"
-#~ msgstr "つに限定する(_S)"
+#: src/gtk-builder-xml/main.glade:859
+msgid "Did you mean?"
+msgstr ""
 
-#~ msgid "C_lear"
-#~ msgstr "クリア(_L)"
+#: src/gtk-builder-xml/main.glade:939
+msgid "Kanji Lookup:"
+msgstr "漢字の参照:"
 
-#~ msgid "gWaei Settings"
-#~ msgstr "gWaeiの設定"
+#: src/gtk-builder-xml/radicals.glade:7
+msgid "gWaei Radical Search Tool"
+msgstr "gWaei 部首検索ツール"
 
-#~ msgid "_Use the system document font (Sans 10)"
-#~ msgstr "システムのデフォルトフォントを使う(_U)"
+#: src/gtk-builder-xml/radicals.glade:64
+msgid "_Restrict to Kanji of"
+msgstr "総画数を(_R)"
 
-#~ msgid "Custom Font: "
-#~ msgstr "カスタムフォント: "
+#: src/gtk-builder-xml/radicals.glade:98
+msgid " _strokes"
+msgstr "つに限定する(_S)"
 
-#~ msgid "<b>Result Window Fonts</b>"
-#~ msgstr "<b>候補ウィンドのフォント</b>"
+#: src/gtk-builder-xml/settings.glade:38
+msgid "gWaei Settings"
+msgstr "gWaeiの設定"
 
-#~ msgid "Match"
-#~ msgstr "   一致   "
+#: src/gtk-builder-xml/settings.glade:82
+msgid "_Use the system document font (Sans 10)"
+msgstr "システムのデフォルトフォントを使う(_U)"
 
-#~ msgid "Header"
-#~ msgstr "ヘッダー"
+#: src/gtk-builder-xml/settings.glade:102
+msgid "Custom Font: "
+msgstr "カスタムフォント: "
 
-#~ msgid "Comment"
-#~ msgstr "コメント"
+#: src/gtk-builder-xml/settings.glade:134
+msgid "<b>Result Window Fonts</b>"
+msgstr "<b>候補ウィンドのフォント</b>"
 
-#~ msgid "_Reset"
-#~ msgstr "リセット(_R)"
+#: src/gtk-builder-xml/settings.glade:271
+msgid "Match"
+msgstr "   一致   "
 
-#~ msgid "<b>Result Window Colors</b>"
-#~ msgstr "<b>候補ウィンドの色</b>"
+#: src/gtk-builder-xml/settings.glade:280
+msgid "Header"
+msgstr "ヘッダー"
 
-#~ msgid "Appearance"
-#~ msgstr "外観"
+#: src/gtk-builder-xml/settings.glade:291
+msgid "Comment"
+msgstr "コメント"
 
-#~ msgid "gWaei requires at least one dictionary to be installed."
-#~ msgstr "gWaeiはインストールせれている辞書が必要です。"
+#: src/gtk-builder-xml/settings.glade:301
+msgid "_Reset"
+msgstr "リセット(_R)"
 
-#~ msgid "Where can I get other dictionaries?"
-#~ msgstr "何処で他の辞書を会得する事ができるでしょか?"
+#: src/gtk-builder-xml/settings.glade:341
+msgid "<b>Result Window Colors</b>"
+msgstr "<b>候補ウィンドの色</b>"
 
-#~ msgid "Install"
-#~ msgstr "インストール"
+#: src/gtk-builder-xml/settings.glade:359
+msgid "Appearance"
+msgstr "外観"
 
-#~ msgid "Organize"
-#~ msgstr "建て直し"
+#: src/gtk-builder-xml/settings.glade:390
+msgid "gWaei requires at least one dictionary to be installed."
+msgstr "gWaeiはインストールせれている辞書が必要です。"
 
-#~ msgid "Convert _Romaji to Kana: "
-#~ msgstr "ローマ字を仮名に直す(_R): "
+#: src/gtk-builder-xml/settings.glade:475
+msgid "Where can I get other dictionaries?"
+msgstr "何処で他の辞書を会得する事ができるでしょか?"
 
-#~ msgid "Convert Hiragana to _Katakana"
-#~ msgstr "ひらがなをカタカナに直す(_K)"
+#: src/gtk-builder-xml/settings.glade:527
+msgid "Install"
+msgstr "インストール"
 
-#~ msgid "Convert Katakana to _Hiragana"
-#~ msgstr "カタカナをひらがなに直す(_K)"
+#: src/gtk-builder-xml/settings.glade:655
+msgid "Organize"
+msgstr "建て直し"
 
-#~ msgid "Enable Spell _Checking"
-#~ msgstr "スペルチェックを有効"
+#: src/gtk-builder-xml/settings.glade:690
+msgid "Convert _Romaji to Kana: "
+msgstr "ローマ字を仮名に直す(_R): "
 
-#~ msgid "<b>Search Entry Settings</b>"
-#~ msgstr "<b>検索エントリー設定</b>"
+#: src/gtk-builder-xml/settings.glade:726
+msgid "Convert Hiragana to _Katakana"
+msgstr "ひらがなをカタカナに直す(_K)"
 
-#~ msgid "_Open the gWaei dictionary folder"
-#~ msgstr "gWaeiの辞書フォルダーを開く(_O)"
+#: src/gtk-builder-xml/settings.glade:742
+msgid "Convert Katakana to _Hiragana"
+msgstr "カタカナをひらがなに直す(_K)"
 
-#~ msgid "_Update dictionaries using Rsync"
-#~ msgstr "辞書をRsyncでアップデートさせる(_U)"
+#: src/gtk-builder-xml/settings.glade:758
+msgid "Enable Spell _Checking"
+msgstr "スペルチェックを有効"
 
-#~ msgid "<b>Manual Dictionary Management</b>"
-#~ msgstr "<b>手動の辞書管理</b>"
+#: src/gtk-builder-xml/settings.glade:779
+msgid "<b>Search Entry Settings</b>"
+msgstr "<b>検索エントリー設定</b>"
 
-#~ msgid "Advanced"
-#~ msgstr "詳細"
+#: src/gtk-builder-xml/settings.glade:811
+msgid "_Open the gWaei dictionary folder"
+msgstr "gWaeiの辞書フォルダーを開く(_O)"
+
+#: src/gtk-builder-xml/settings.glade:825
+msgid "_Update dictionaries using Rsync"
+msgstr "辞書をRsyncでアップデートさせる(_U)"
+
+#: src/gtk-builder-xml/settings.glade:841
+msgid "<b>Manual Dictionary Management</b>"
+msgstr "<b>手動の辞書管理</b>"
+
+#: src/gtk-builder-xml/settings.glade:866
+msgid "Advanced"
+msgstr "詳細"
 
 #~ msgid ": "
 #~ msgstr ": "
 
 #~ msgid "Page "
 #~ msgstr "ページ "
-
-#~ msgid "gWaei Kanjipad"
-#~ msgstr "gWaei 漢字パッド"
 
 #~ msgid "Installable:"
 #~ msgstr "インストール可能:"
