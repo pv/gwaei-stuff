@@ -13,6 +13,10 @@ src/gtk-radicals-interface.c
 src/gtk-settings-callbacks.c
 src/gtk-settings-interface-install-line.c
 src/gtk-settings-interface.c
+src/gtk-kanjipad-interface.c
+src/gtk-kanjipad-interface-drawingarea.c
+src/gtk-kanjipad-interface-candidatearea.c
+src/gtk-kanjipad-callbacks.c
 src/historylist-object.c
 src/io.c
 src/main.c
@@ -23,9 +27,9 @@ src/regex.c
 src/resultline-object.c
 src/searchitem-object.c
 src/utilities.c
-src/gtk-builder-xml/main.glade
+src/schemas/gwaei.schemas.in
 src/gtk-builder-xml/main.ui
-src/gtk-builder-xml/radicals.glade
 src/gtk-builder-xml/radicals.ui
-src/gtk-builder-xml/settings.glade
 src/gtk-builder-xml/settings.ui
+src/gtk-builder-xml/kanjipad.ui
+src/desktop/gwaei.desktop.in

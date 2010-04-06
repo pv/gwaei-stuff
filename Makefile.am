@@ -66,7 +66,6 @@ fedora-rpm:
 
 
 uninstall-local:
-	@ rm -rf $(DESTDIR)$(docdir)
 	@ rm -rf $(DESTDIR)$(datadir)/@PACKAGE@
 
 

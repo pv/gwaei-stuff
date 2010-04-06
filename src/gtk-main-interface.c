@@ -55,6 +55,8 @@
 #include <gwaei/gtk-settings-callbacks.h>
 #include <gwaei/gtk-main-interface.h>
 #include <gwaei/gtk-main-interface-tabs.h>
+#include <gwaei/gtk-kanjipad-interface.h>
+
 
 
 //Convenience pointers
@@ -419,6 +421,7 @@ void force_gtk_builder_translation_for_gtk_actions_hack ()
     char *temp7 = gettext("Order");
     char *temp8 = gettext("Shortcut");
     char *temp9 = gettext("Dictionary");
+    char *temp10 = gettext("_Annotate Strokes");
 
 
     gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "close_menuitem")), "activate", accel_group, GDK_w, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
@@ -809,8 +812,13 @@ void gw_ui_show_window (char *id)
     }
     else if (strcmp (id, "kanjipad_window") == 0)
     {
-      kanjipad_set_target_text_widget (search_entry);
-      show_kanjipad (builder);
+      GtkWidget *window;
+      window = GTK_WIDGET (gtk_builder_get_object (builder, id));
+
+      initialize_window_attributes (id);
+      gw_kanjipad_set_target_text_widget (search_entry);
+      gtk_widget_show(window);
+      initialize_window_attributes (id);
     }
     else
     {
@@ -2666,6 +2674,7 @@ void initialize_gui_interface(int argc, char *argv[])
 
       gw_ui_initialize_radicals_table ();
       gw_ui_initialize_dictionary_order_list ();
+      gw_kanjipad_initialize (builder);
 
       GtkWidget *main_window;
       main_window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
@@ -2678,7 +2687,6 @@ void initialize_gui_interface(int argc, char *argv[])
       //Initialize some component and variables
       initialize_global_widget_pointers ();
       gw_tab_new ();
-      initialize_kanjipad ();
       gw_ui_initialize_interface_output_generics ();
 
       gw_sexy_initialize_libsexy ();

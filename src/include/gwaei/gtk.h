@@ -35,28 +35,6 @@ GtkBuilder *builder;
 GtkWidget *search_entry, *kanji_tv;
 GtkWidget* get_widget_from_target(const int);
 
-struct GwUiDictInstallLine {
-    GtkWidget *status_icon;
-    GtkWidget *status_message;
-    GtkWidget *status_progressbar;
-    GtkWidget *status_hbox;
-    GtkWidget *message_hbox;
-
-    GtkWidget *action_button;
-    GtkWidget *action_button_hbox;
-
-    GtkWidget *source_uri_entry;
-    GtkWidget *source_browse_button;
-    GtkWidget *source_reset_button;
-    GtkWidget *source_hbox;
-
-    GtkWidget *advanced_expander;
-    GtkWidget *advanced_hbox;
-
-    GwDictInfo *di;
-};
-typedef struct GwUiDictInstallLine GwUiDictInstallLine;
-
 
 
 #endif

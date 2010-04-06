@@ -3,7 +3,6 @@ AC_CONFIG_SRCDIR([src/main.c])
 AM_INIT_AUTOMAKE
 AM_CONFIG_HEADER(config.h)
 
-
 RELEASE=1
 AC_SUBST(RELEASE)
 ARCH="i386"
@@ -93,7 +92,7 @@ esac],[gnome=false])
 AM_CONDITIONAL([WITHOUT_GNOME], [test x$gnome = xtrue])
 
 
-AC_CONFIG_MACRO_DIR([m4])
+##AC_CONFIG_MACRO_DIR([m4])
 
 if test ${win32} = true; then
   PKG_CHECK_MODULES(WIN32, gtk+-2.0           >= $GTK2_REQUIRED_VERSION )
@@ -128,10 +127,12 @@ AC_PATH_PROG(UNZIP, unzip)
 
 AC_PROG_CC
 AM_GNU_GETTEXT([external])
-AM_GNU_GETTEXT_VERSION(0.17)
+LT_INIT
+AC_CONFIG_MACRO_DIR([m4])
+
 
 if([test x$gnome = xfalse]);then([cp help/Makefile.am.gnome help/Makefile.am]);fi
 if([test x$gnome = xtrue]);then([cp help/Makefile.am.none help/Makefile.am]);fi
 
-AC_CONFIG_FILES([Makefile src/Makefile mandir/Makefile help/Makefile help/gwaei.omf help/C/gwaei.xml src/gtk-builder-xml/Makefile src/images/Makefile src/schemas/Makefile src/desktop/Makefile src/kpengine/Makefile src/kpengine/conv_jdata.pl rpm/gwaei.spec po/Makefile.in rpm/rpm_gconf_install_post.sh rpm/rpm_gconf_uninstall_pre.sh src/schemas/gwaei.schemas src/include/gwaei/definitions.h] Doxyfile)
+AC_CONFIG_FILES([Makefile src/Makefile mandir/Makefile help/Makefile help/gwaei.omf help/C/gwaei.xml src/gtk-builder-xml/Makefile src/images/Makefile src/schemas/Makefile src/desktop/Makefile src/kpengine/Makefile src/kpengine/conv_jdata.pl rpm/gwaei.spec rpm/rpm_gconf_install_post.sh rpm/rpm_gconf_uninstall_pre.sh src/schemas/gwaei.schemas src/include/gwaei/definitions.h po/Makefile.in po/Makefile] Doxyfile)
 AC_OUTPUT

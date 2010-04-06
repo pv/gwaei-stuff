@@ -1,6 +1,6 @@
 #! /bin/sh
 
-aclocal \
-&& gnome-doc-prepare -c -f \
-&& automake -c -f --add-missing \
-&& autoconf -f
+aclocal --force \
+&& gnome-doc-prepare --copy --force \
+&& automake --copy --force --add-missing \
+&& autoconf --force

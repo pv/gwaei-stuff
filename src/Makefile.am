@@ -38,7 +38,7 @@ INCLUDES = -I $(top_srcdir)/src/include
 
 ##WINDOWS SETUP
 if ENABLE_WIN32
-gwaei_SOURCES += gtk-main-callbacks.c include/gwaei/gtk-main-callbacks.h gtk-main-interface.c gtk-settings-callbacks.c include/gwaei/gtk-settings-callbacks.h gtk-settings-interface.c gtk-radicals-interface.c gtk-radicals-callbacks.c include/gwaei/gtk-radicals-callbacks.h gtk-printing.c include/gwaei/gtk-main-interface.h include/gwaei/gtk-settings-interface.h include/gwaei/gtk-radicals-interface.h include/gwaei/gtk-printing.h include/gwaei/gtk.h kanjipad/callbacks.c kanjipad/callbacks.h  kanjipad/kanjipad.c kanjipad/kanjipad.h kanjipad/padarea.c kanjipad/padarea.h gtk-main-interface-tabs.c include/gwaei/gtk-main-interface-tabs.h
+gwaei_SOURCES += gtk-main-callbacks.c include/gwaei/gtk-main-callbacks.h gtk-main-interface.c gtk-settings-callbacks.c include/gwaei/gtk-settings-callbacks.h gtk-settings-interface.c gtk-radicals-interface.c gtk-radicals-callbacks.c include/gwaei/gtk-radicals-callbacks.h gtk-printing.c include/gwaei/gtk-main-interface.h include/gwaei/gtk-settings-interface.h include/gwaei/gtk-radicals-interface.h include/gwaei/gtk-printing.h include/gwaei/gtk.h gtk-kanjipad-callbacks.c include/gwaei/gtk-kanjipad-callbacks.h  gtk-kanjipad-interface.c include/gwaei/gtk-kanjipad-interface.h gtk-kanjipad-interface-drawingarea.c include/gwaei/gtk-kanjipad-interface-drawingarea.h gtk-main-interface-tabs.c include/gwaei/gtk-main-interface-tabs.h
 gwaei_LDADD += $(WIN32_LIBS)
 AM_CFLAGS += $(WIN32_CFLAGS)
 DEFS += -DINTERFACE=\"GTK\" -DGW_WITH_GTK
@@ -62,7 +62,7 @@ DEFS += -DINTERFACE=\"NONE\"
 else
 gwaei_SOURCES += gtk-gconf-preferences.c 
 gwaei_SOURCES += gtk-main-interface-sexy.c
-gwaei_SOURCES += gtk-main-callbacks.c gtk-main-interface.c gtk-settings-callbacks.c gtk-settings-interface.c gtk-radicals-interface.c gtk-radicals-callbacks.c gtk-printing.c include/gwaei/gtk-main-interface.h include/gwaei/gtk-settings-interface.h include/gwaei/gtk-radicals-interface.h include/gwaei/gtk-printing.h include/gwaei/gtk.h include/gwaei/gtk-settings-interface-install-line.h kanjipad/callbacks.c kanjipad/callbacks.h  kanjipad/kanjipad.c kanjipad/kanjipad.h kanjipad/padarea.c kanjipad/padarea.h include/gwaei/gtk-main-interface-sexy.h gtk-main-interface-tabs.c include/gwaei/gtk-main-interface-tabs.h gtk-settings-interface-install-line.c
+gwaei_SOURCES += gtk-main-callbacks.c gtk-main-interface.c gtk-settings-callbacks.c gtk-settings-interface.c gtk-radicals-interface.c gtk-radicals-callbacks.c gtk-printing.c include/gwaei/gtk-main-interface.h include/gwaei/gtk-settings-interface.h include/gwaei/gtk-radicals-interface.h include/gwaei/gtk-printing.h include/gwaei/gtk.h include/gwaei/gtk-settings-interface-install-line.h gtk-kanjipad-callbacks.c include/gwaei/gtk-kanjipad-callbacks.h  gtk-kanjipad-interface.c include/gwaei/gtk-kanjipad-interface.h gtk-kanjipad-interface-candidatearea.c include/gwaei/gtk-kanjipad-interface-candidatearea.h gtk-kanjipad-interface-drawingarea.c include/gwaei/gtk-kanjipad-interface-drawingarea.h include/gwaei/gtk-main-interface-sexy.h gtk-main-interface-tabs.c include/gwaei/gtk-main-interface-tabs.h gtk-settings-interface-install-line.c
 gwaei_LDADD += $(GNOME_LIBS)
 AM_CFLAGS += $(GNOME_CFLAGS)
 DEFS += -DINTERFACE=\"GTK\" -DGW_WITH_GTK

@@ -53,8 +53,6 @@
 #include <gwaei/gtk-main-interface-tabs.h>
 #include <gwaei/gtk-settings-interface.h>
 
-#include "kanjipad/kanjipad.h"
-
 
 static gint button_press_x = 0;
 static gint button_press_y = 0;
@@ -109,8 +107,7 @@ G_MODULE_EXPORT void do_settings (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void do_kanjipad (GtkWidget *widget, gpointer data)
 {
-    kanjipad_set_target_text_widget (search_entry);
-    show_kanjipad (builder);
+    gw_ui_show_window ("kanjipad_window");
 }
 
 
@@ -270,7 +267,7 @@ G_MODULE_EXPORT void do_close (GtkWidget *widget, gpointer data)
       g_list_foreach (gw_tab_searchitems, (GFunc) gw_ui_cancel_search_by_searchitem, NULL);
       gtk_main_quit ();
     }
-    else if (strcmp (id, "radicals_window") == 0)
+    else if (strcmp (id, "radicals_window") == 0 || strcmp (id, "kanjipad_window") == 0)
     {
       save_window_attributes_and_hide (id);
     }
