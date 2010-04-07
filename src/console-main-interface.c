@@ -158,11 +158,11 @@ gboolean gw_console_install_dictinfo (GwDictInfo *di)
 static void print_about_program ()
 {
 #ifdef GW_WITH_GTK
-    printf ("gWaei version %s with the Gnome font end compiled in.", PACKAGE, VERSION);
+    printf ("gWaei version %s with the Gnome font end compiled in.", VERSION);
 #elif GW_WITH_QT
-    printf ("gWaei version %s with the QT font end compiled in.", PACKAGE, VERSION);
+    printf ("gWaei version %s with the QT font end compiled in.", VERSION);
 #else
-    printf ("gWaei version %s with no end compiled in.", PACKAGE, VERSION);
+    printf ("gWaei version %s with no end compiled in.", VERSION);
 #endif
 
     printf ("\n\n");
