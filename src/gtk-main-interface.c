@@ -1738,6 +1738,7 @@ void gw_ui_append_to_buffer (GwSearchItem *item, char *text, char *tag1,
     //Assertain the target text buffer
     GObject *tb;
     if (item == NULL || item->target_tb == NULL) return;
+    tb = G_OBJECT (item->target_tb);
 
     GtkTextIter iter;
     gtk_text_buffer_get_end_iter(GTK_TEXT_BUFFER (tb), &iter);
