@@ -30,11 +30,9 @@
 //! This is the gtk version.
 //!
 
+#include <gwaei/definitions.h>
 
 GtkBuilder *builder;
-GtkWidget *search_entry, *kanji_tv;
-GtkWidget* get_widget_from_target(const int);
-
-
+GtkWidget* get_widget_from_target (GwTargetOutput);
 
 #endif

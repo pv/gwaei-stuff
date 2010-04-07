@@ -48,7 +48,8 @@ static GwRunmode run_mode;
 //! primarily interact with the user.  The two possible choices are GTK or
 //! the console.  QT is currently a red herring.
 //!
-//! @param call String describing the runmode to set.
+//! @param argc Standard main arguments
+//! @param argv Standard main arguments
 //!
 void gw_util_initialize_runmode (int argc, char *argv[])
 {
@@ -64,11 +65,12 @@ void gw_util_initialize_runmode (int argc, char *argv[])
    int i = 0;
    while (i < argc && ncurses_switch == FALSE)
    {
+     //WARNING this is a lazy implimentation...
      ncurses_switch = (strcmp(argv[i], "-n") == 0 || strcmp(argv[i], "--ncurses") == 0);
      i++;
    }
 
-   if (strcmp (call_ptr, "waei") == 0 || strcmp (INTERFACE, "NONE") == 0)
+   if (strcmp (call_ptr, "waei") == 0)
    {
      if (ncurses_switch)
      {
@@ -79,14 +81,18 @@ void gw_util_initialize_runmode (int argc, char *argv[])
        run_mode = GW_CONSOLE_RUNMODE;
      }
    }
+#ifdef GW_WITH_GTK
    else if (strcmp (call_ptr, "gwaei") == 0)
    {
      run_mode = GW_GTK_RUNMODE;
    }
+#endif
+#ifdef GW_WITH_QT
    else if (strcmp (call_ptr, "kwaei") == 0)
    {
      run_mode = GW_QT_RUNMODE;
    }
+#endif
    else
    {
      run_mode = GW_CONSOLE_RUNMODE;
@@ -907,6 +913,11 @@ gboolean gw_util_is_japanese_locale()
 }
 
 
+//!
+//! @brief Attempting to force a japanese CTYPE for better regex handling
+//!
+//! @return Returns whether the attempt was successful or not
+//!
 gboolean gw_util_force_japanese_locale()
 {
     //Try forcing a correct or better setting
@@ -976,6 +987,11 @@ void gw_util_strncpy_fallback_from_key (char *value, char *key, int n)
 
 //!
 //! @brief Creates an allocated string from the arguments passed to the program
+//!
+//! @param argc Standard main argument
+//! @param argv Standard main argument
+//!
+//! @return Returns an allocated string containing the query text.  Should be freed with g_free ()
 //!
 char *gw_util_strdup_args_to_query (int argc, char *argv[])
 {

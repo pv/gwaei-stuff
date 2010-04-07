@@ -97,11 +97,11 @@ static void append_stored_result_to_output (GwSearchItem *item, GList **results)
 //!
 static int get_relevance (GwSearchItem *item) {
     if (gw_searchitem_existance_generic_comparison (item, GW_QUERYLINE_HIGH))
-      return HIGH_RELEVANCE;
+      return GW_RESULT_HIGH_RELEVANCE;
     else if (gw_searchitem_existance_generic_comparison (item, GW_QUERYLINE_MED))
-      return MEDIUM_RELEVANCE;
+      return GW_RESULT_MEDIUM_RELEVANCE;
     else
-      return LOW_RELEVANCE;
+      return GW_RESULT_LOW_RELEVANCE;
 }
 
 
@@ -156,7 +156,7 @@ static gboolean stream_results_thread (GwSearchItem *item)
         int relevance = get_relevance(item);
         switch(relevance)
         {
-          case HIGH_RELEVANCE:
+          case GW_RESULT_HIGH_RELEVANCE:
               item->total_results++;
               item->total_relevant_results++;
               if (item->target != GW_TARGET_KANJI)
@@ -169,7 +169,7 @@ static gboolean stream_results_thread (GwSearchItem *item)
               item->resultline = item->swap_resultline;
               item->swap_resultline = NULL;
               break;
-          case MEDIUM_RELEVANCE:
+          case GW_RESULT_MEDIUM_RELEVANCE:
               if ((item->dictionary->type == GW_DICT_TYPE_KANJI || item->total_irrelevant_results < MAX_MEDIUM_IRRELIVENT_RESULTS) &&
                    (item->swap_resultline = gw_resultline_new ()) != NULL && item->target != GW_TARGET_KANJI)
               {

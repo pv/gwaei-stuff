@@ -97,6 +97,7 @@ int main (int argc, char *argv[])
     //Cleanup and exit
     gw_dictlist_free ();
     gw_regex_free_constant_regular_expressions ();
+
     exit(EXIT_SUCCESS);
 }
 

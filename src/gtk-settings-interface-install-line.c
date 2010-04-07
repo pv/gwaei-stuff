@@ -69,6 +69,22 @@ void gw_settings_initialize_dictionary_ui_status (GwUiDictInstallLine *il)
     }
 }
 
+
+//!
+//! @brief The callback for when the widgets of the GwInstallLine get destroyed to free memory
+//!
+//! @param object The GtkObject that the destroy was called on
+//! @param data The GwUiDictInstallLine passed as a gpointer
+//!
+void gw_ui_dict_install_line_destroy_action (GtkObject *object, gpointer data)
+{
+    GwUiDictInstallLine *il = (GwUiDictInstallLine*) data;
+    free (il);
+    printf("Freeing\n");
+    il = NULL;
+}
+
+
 //!
 //! @brief Allocates and creates a new GwUiDictInstallLine object.
 //!
@@ -131,6 +147,7 @@ GwUiDictInstallLine *gw_ui_new_dict_install_line (GwDictInfo *di)
       gtk_box_pack_start (GTK_BOX (temp->source_hbox), temp->source_reset_button, FALSE, TRUE, 0);
 
       g_signal_connect (G_OBJECT (temp->advanced_expander), "activate", G_CALLBACK (do_toggle_advanced_source), temp->source_hbox);
+      g_signal_connect (G_OBJECT (temp->advanced_expander), "destroy", G_CALLBACK (gw_ui_dict_install_line_destroy_action), temp);
 
       return temp;
     }

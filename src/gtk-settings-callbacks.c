@@ -443,7 +443,7 @@ G_MODULE_EXPORT void do_color_reset_for_swatches (GtkWidget *widget, gpointer da
         gw_pref_set_string (pref_key[i], default_hex_color_string);
     }
 
-    gw_ui_reload_tagtable_tags();
+    gw_ui_buffer_reload_tagtable_tags();
 }
 
 

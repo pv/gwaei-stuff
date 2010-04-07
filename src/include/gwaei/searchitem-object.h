@@ -48,6 +48,15 @@ typedef enum
   GW_SEARCH_GW_DICT_STATUS_CANCELING
 } GwSearchState;
 
+typedef enum
+{
+  GW_RESULT_HIGH_RELEVANCE,
+  GW_RESULT_MEDIUM_RELEVANCE,
+  GW_RESULT_LOW_RELEVANCE
+} GwResultRelevance;
+
+
+
 
 //!
 //! @brief Primitive for storing search item information

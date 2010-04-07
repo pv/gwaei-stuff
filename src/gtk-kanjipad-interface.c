@@ -52,6 +52,7 @@
 #define BUFLEN 256
 
 static GtkWidget *target_text_widget = NULL;
+static gboolean gw_kanjipad_is_initialized = FALSE;
 
 
 //!
@@ -146,7 +147,7 @@ void kanjipad_init_engine (GwKanjipad *pa)
                argv[0], err->message);
       gtk_dialog_run (GTK_DIALOG (dialog));
       g_error_free (err);
-      exit (1);
+      exit (EXIT_FAILURE);
     }
 
     g_free (uninstalled);
@@ -203,10 +204,12 @@ GwKanjipad *kanjipad_create (GtkWidget *drawing_widget, GtkWidget *candidate_wid
 
 
 //!
-//! @brief Sets up kanjipad
+//! @brief Sets up kanjipad, aquiring any needed resources
 //!
 void gw_kanjipad_initialize (GtkBuilder *builder)
 {
+    if (gw_kanjipad_is_initialized == TRUE) return;
+
     GtkWidget *drawingarea;
     drawingarea = GTK_WIDGET (gtk_builder_get_object (builder, "kdrawing_area"));
     GtkWidget *candidatearea;
@@ -214,6 +217,42 @@ void gw_kanjipad_initialize (GtkBuilder *builder)
 
     pa = kanjipad_create (drawingarea, candidatearea);
     kanjipad_init_engine (pa);
+
+    gw_kanjipad_is_initialized = TRUE;
+}
+
+
+//!
+//! @brief Frees any resources taken by the initialization of kanjipad
+//!
+void gw_kanjipad_free_resources ()
+{
+    if (gw_kanjipad_is_initialized == FALSE) return;
+
+    GError *error = NULL;
+
+    g_io_channel_shutdown (pa->from_engine, FALSE, &error);
+    if (error != NULL)
+    {
+      printf("Errored: %s\n", error->message);
+      exit(EXIT_FAILURE);
+    }
+    g_io_channel_unref (pa->from_engine);
+    pa->from_engine = NULL;
+
+    g_io_channel_shutdown (pa->to_engine, FALSE, &error);
+    if (error != NULL)
+    {
+      printf("Errored: %s\n", error->message);
+      exit(EXIT_FAILURE);
+    }
+    g_io_channel_unref (pa->to_engine);
+    pa->to_engine = NULL;
+
+    g_free (pa);
+    pa = NULL;
+
+    gw_kanjipad_is_initialized = FALSE;
 }
 
 

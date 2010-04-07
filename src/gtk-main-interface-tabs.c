@@ -52,8 +52,16 @@
 #include <gwaei/gtk-main-interface.h>
 #include <gwaei/gtk-main-interface-tabs.h>
 
-G_MODULE_EXPORT void do_tab_remove (GtkWidget *widget, gpointer data);
+static GList *gw_tab_searchitems = NULL;
 
+
+//!
+//! @brief Returns the private glist of searchitems for the tabs
+//!
+GList *gw_tab_get_searchitem_list ()
+{
+    return gw_tab_searchitems;
+}
 
 
 //!
@@ -198,12 +206,12 @@ int gw_tab_new ()
     int position = gtk_notebook_append_page (GTK_NOTEBOOK (notebook), scrolledwindow, hbox);
     gtk_notebook_set_tab_reorderable (GTK_NOTEBOOK (notebook), scrolledwindow, TRUE);
     gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), position);
-    gw_ui_initialize_tags();
+    gw_ui_buffer_initialize_tags();
     gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), current);
-    gw_ui_initialize_buffer_marks(textbuffer);
-    gw_tab_searchitems = g_list_append(gw_tab_searchitems, NULL);
+    gw_ui_buffer_initialize_marks (textbuffer);
+    gw_tab_searchitems = g_list_append (gw_tab_searchitems, NULL);
     gw_tab_update_appearance ();
-    gw_ui_update_toolbar_buttons();
+    gw_ui_update_toolbar_buttons ();
 
     return position;
 }
@@ -333,5 +341,4 @@ G_MODULE_EXPORT void do_previous_tab (GtkWidget *widget, gpointer data)
     gw_tab_update_appearance ();
     gw_tab_update_on_deck_historylist_item_by_current_tab ();
 }
-
 

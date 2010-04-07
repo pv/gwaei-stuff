@@ -59,11 +59,22 @@
 
 
 
-//Convenience pointers
-GtkWidget *kanji_tv     = NULL;
-GObject   *kanji_tb     = NULL;
-GtkWidget *search_entry = NULL;
-GList *gw_tab_searchitems = NULL;
+//Private variables
+static GtkWidget *kanji_tv     = NULL;
+static GObject   *kanji_tb     = NULL;
+static GtkWidget *search_entry = NULL;
+static int gw_previous_tip = 0;
+static gchar   *arg_dictionary = NULL;
+static gboolean arg_exact = FALSE;
+static gboolean arg_new_instance = FALSE;
+static GOptionEntry entries[] =
+{
+  { "dictionary", 'd', 0, G_OPTION_ARG_STRING, &arg_dictionary, "Choose the dictionary to use", "English" },
+  { "new-instance", 'n', 0, G_OPTION_ARG_NONE, &arg_new_instance, "Open a new instance of gWaei", NULL },
+  { NULL }
+};
+
+
 
 
 //!
@@ -116,20 +127,6 @@ static UniqueResponse message_received_cb (UniqueApp         *app,
     }
     return res;
 }
-
-
-static gchar *arg_dictionary = NULL;
-static gboolean arg_exact = FALSE;
-static gboolean arg_new_instance = FALSE;
-
-static GOptionEntry entries[] =
-{
-  { "dictionary", 'd', 0, G_OPTION_ARG_STRING, &arg_dictionary, "Choose the dictionary to use", "English" },
-  { "new-instance", 'n', 0, G_OPTION_ARG_NONE, &arg_new_instance, "Open a new instance of gWaei", NULL },
-  /*{ "exact",      'e', 0, G_OPTION_ARG_NONE, &arg_exact,        "Set to only show exactly matching results", NULL },*/
-  { NULL }
-};
-
 
 
 //!
@@ -219,7 +216,7 @@ void gw_ui_set_main_window_title_by_searchitem (GwSearchItem *item)
 
 
 //!
-//! @brief To be written
+//! @brief Closes the suggestion box.  (Currently unused feature of gWaei)
 //!
 void gw_ui_close_suggestion_box ()
 {
@@ -230,7 +227,12 @@ void gw_ui_close_suggestion_box ()
 
 
 //!
-//! @brief To be written
+//! @brief Currently unused function
+//!
+//! @param string Unknown
+//! @param query Unknown
+//! @param query_length Unknown
+//! @param extension Unknown
 //!
 void gw_ui_set_inforation_box_label (const char* string, const char* query, int query_length, const char* extension)
 {
@@ -257,7 +259,9 @@ void gw_ui_set_inforation_box_label (const char* string, const char* query, int 
 
 
 //!
-//! @brief To be written
+//! @brief Currently unused function
+//!
+//! @param item A GwSearchItem pointer to gleam information from
 //!
 void gw_ui_verb_check_with_suggestion (GwSearchItem *item)
 {
@@ -565,9 +569,14 @@ void force_gtk_builder_translation_for_gtk_actions_hack ()
 
 
 //!
-//! @brief To be written
+//! @brief Retrieves a special gobject designated by the GwTargetOuput signature
 //!
-gpointer get_gobject_from_target (const int TARGET)
+//! This function would get the target textbuffer instead of the targettext view for example.
+//! The focus is on getting the backend widget.
+//!
+//! @param TARGET A GwTargetOutput designating the target
+//!
+gpointer get_gobject_by_target (GwTargetOutput TARGET)
 {
     GObject *gobject;
     GtkWidget *notebook;
@@ -596,9 +605,14 @@ gpointer get_gobject_from_target (const int TARGET)
 
 
 //!
-//! @brief To be written
+//! @brief Retrieves a special GtkWidget designated by the GwTargetOuput signature
 //!
-GtkWidget* get_widget_from_target (const int TARGET)
+//! This function would get the target textview instead of the textbuffer.
+//! The focus is on getting the frontend widget.
+//!
+//! @param TARGET A GwTargetOutput designating the target
+//!
+GtkWidget* get_widget_by_target (GwTargetOutput TARGET)
 {
     GtkWidget *widget;
     GtkWidget *notebook;
@@ -631,7 +645,7 @@ GtkWidget* get_widget_from_target (const int TARGET)
 gboolean gw_ui_widget_equals_target (gpointer widget, const int TARGET)
 {
     GtkWidget* target;
-    target = get_widget_from_target (TARGET);
+    target = get_widget_by_target (TARGET);
     return (GTK_WIDGET (widget) == GTK_WIDGET (target));
 }
 
@@ -639,22 +653,19 @@ gboolean gw_ui_widget_equals_target (gpointer widget, const int TARGET)
 //!
 //! @brief To be written
 //!
-void initialize_global_widget_pointers ()
+static void initialize_global_widget_pointers ()
 {
-    char id[50];
-
     //Setup our text view and text buffer references
-    strncpy (id, "kanji_text_view", 50);
-    kanji_tv = GTK_WIDGET (gtk_builder_get_object(builder, id));
-    kanji_tb   = G_OBJECT (gtk_text_view_get_buffer(GTK_TEXT_VIEW (kanji_tv)));
-
-    strncpy(id, "search_entry", 50);
-    search_entry = GTK_WIDGET (gtk_builder_get_object(builder, id));
+    kanji_tv     = GTK_WIDGET (gtk_builder_get_object (builder, "kanji_text_view"));
+    kanji_tb     = G_OBJECT (gtk_text_view_get_buffer (GTK_TEXT_VIEW (kanji_tv)));
+    search_entry = GTK_WIDGET (gtk_builder_get_object (builder, "search_entry"));
 }
 
 
 //!
-//! @brief To be written
+//! @brief Sets the position preferences of the window
+//!
+//! @param window_id The gtkbuilder window id which also acts as a preference key
 //!
 void initialize_window_attributes (char* window_id)
 {
@@ -664,31 +675,47 @@ void initialize_window_attributes (char* window_id)
     window = GTK_WIDGET (gtk_builder_get_object(builder, window_id));
 
     //Setup the unique key for the window
-    leftover = MAX_GCONF_KEY;
-    char key[leftover];
+    char *window_key_path = g_strdup_printf (GCPATH_GW "/%s", gtk_buildable_get_name (GTK_BUILDABLE (window)));
+    if (window_key_path == NULL) return;
 
-    strncpy(key, GCPATH_GW, leftover);
-    leftover -= strlen(GCPATH_GW);
-    strncat(key, "/", leftover);
-    leftover -= 1;
-    strncat(key, gtk_buildable_get_name (GTK_BUILDABLE (window)), leftover);
-    leftover -= strlen(gtk_buildable_get_name (GTK_BUILDABLE (window)));
-
-    //Set a pointer at the end of the key for easy access
-    char *value;
-    value = &key[strlen(key)];
+    //Some other variable declarations
+    char *x_key_path = NULL, *y_key_path = NULL, *width_key_path = NULL, *height_key_path = NULL;
+    int x = 0, y = 0, width = 100, height = 100;
 
     //Get the stored attributes from pref
-    int x, y, width, height;
+    if ((x_key_path = g_strdup_printf ("%s%s", window_key_path, "/x")) != NULL)
+    {
+      x = gw_pref_get_int (x_key_path, 0);
+      g_free (x_key_path);
+      x_key_path = NULL;
+    }
 
-    strncpy(value, "/x", leftover - strlen("/x"));
-    x = gw_pref_get_int (key, 0);
-    strncpy(value, "/y", leftover - strlen("/y"));
-    y = gw_pref_get_int(key, 0);
-    strncpy(value, "/width", leftover - strlen("/width"));
-    width = gw_pref_get_int(key, 100);
-    strncpy(value, "/height", leftover - strlen("/height"));
-    height = gw_pref_get_int(key, 100);
+    if ((y_key_path = g_strdup_printf ("%s%s", window_key_path, "/y")) != NULL)
+    {
+      y = gw_pref_get_int(y_key_path, 0);
+      g_free (y_key_path);
+      y_key_path = NULL;
+    }
+
+    if ((width_key_path = g_strdup_printf ("%s%s", window_key_path, "/width")) != NULL)
+    {
+      width = gw_pref_get_int(width_key_path, 100);
+      g_free (width_key_path);
+      width_key_path = NULL;
+    }
+    
+    if ((height_key_path = g_strdup_printf ("%s%s", window_key_path, "/height")) != NULL)
+    {
+      height = gw_pref_get_int(height_key_path, 100);
+      g_free (height_key_path);
+      height_key_path = NULL;
+    }
+
+    if (window_key_path != NULL)
+    {
+      g_free (window_key_path);
+      window_key_path = NULL;
+    }
 
     //Apply the x and y if they are within the screen size
     if (x < gdk_screen_width() && y < gdk_screen_height()) {
@@ -714,7 +741,6 @@ void initialize_window_attributes (char* window_id)
       half_width = (gdk_screen_width() / 2) - (width / 2);
       half_height =  (gdk_screen_height() / 2) - (height / 2);
       gtk_window_move(GTK_WINDOW(window), half_width, half_height);
-      printf(gettext("Looks like this may be your initial install.  I'm just going to center this window for ya.  You can thank me later %d %d\n"), x, y);
     }
     else if (strcmp(window_id, "radicals_window") == 0)
     {
@@ -742,7 +768,9 @@ void initialize_window_attributes (char* window_id)
 
 
 //!
-//! @brief To be written
+//! @brief Saves the coordinates of a windomw, then closes it
+//!
+//! @param window_id The gtkbuilder id of the window
 //!
 void save_window_attributes_and_hide (char* window_id)
 {
@@ -786,7 +814,9 @@ void save_window_attributes_and_hide (char* window_id)
 
 
 //!
-//! @brief To be written
+//! @brief Shows a window, using the prefs to initialize it's position and does some other checks too
+//!
+//! @param The gtkbuilder id of the window
 //!
 void gw_ui_show_window (char *id)
 {
@@ -830,7 +860,7 @@ void gw_ui_show_window (char *id)
 
 
 //!
-//! @brief To be written
+//! @brief Updates the states of the toolbar buttons etc in the main interface
 //!
 void gw_ui_update_toolbar_buttons ()
 {
@@ -846,13 +876,12 @@ void gw_ui_update_toolbar_buttons ()
     GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
     int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
     int pages = gtk_notebook_get_n_pages (GTK_NOTEBOOK (notebook));
-    GwSearchItem *tab_search_item = g_list_nth_data (gw_tab_searchitems, page_num);
-
+    GwSearchItem *tab_search_item = g_list_nth_data (gw_tab_get_searchitem_list (), page_num);
 
     int current_font_magnification;
     current_font_magnification = gw_pref_get_int (GCKEY_GW_FONT_MAGNIFICATION, GW_DEFAULT_FONT_MAGNIFICATION);
 
-    GtkWidget *results_tv = get_widget_from_target(GW_TARGET_RESULTS);
+    GtkWidget *results_tv = get_widget_by_target(GW_TARGET_RESULTS);
 
     //Update Zoom in sensitivity state
     strncpy(id, "view_zoom_in_action", id_length);
@@ -954,7 +983,7 @@ void gw_ui_update_toolbar_buttons ()
 //!
 //! @brief Set's the progress label of the program using the inforamtion from the searchitem
 //!
-//! @param item a GwSearchItem argument.
+//! @param item A GwSearchItem pointer to gleam information from
 //!
 void gw_ui_set_total_results_label_by_searchitem (GwSearchItem* item)
 {
@@ -1030,9 +1059,11 @@ void gw_ui_set_total_results_label_by_searchitem (GwSearchItem* item)
 
 
 //!
-//! @brief To be written
+//! @brief Sets the current dictionary by using the load position
 //!
-void gw_ui_set_dictionary(int request)
+//! @param request Sets the current dictionary by the number here
+//!
+void gw_ui_set_dictionary (int request)
 {
     //Set the correct dictionary in the dictionary list
     if (gw_dictlist_set_selected_by_load_position(request) == NULL)
@@ -1063,17 +1094,21 @@ void gw_ui_set_dictionary(int request)
 
 
 //!
-//! @brief To be written
+//! @brief Uses a GwSearchItem to set the currently active dictionary
+//!
+//! This function is greatly useful for doing searches from the history.
+//!
+//! @param item A GwSearchItem to gleam information from
 //!
 void gw_ui_set_dictionary_by_searchitem (GwSearchItem *item)
 {
     if (item != NULL && item->dictionary != NULL)
-      gw_ui_set_dictionary(item->dictionary->load_position);
+      gw_ui_set_dictionary (item->dictionary->load_position);
 }
 
 
 //!
-//! @brief To be written
+//! @brief Loads up the dictionaries for the GUI
 //!
 int rebuild_combobox_dictionary_list() 
 {
@@ -1283,12 +1318,12 @@ int rebuild_combobox_dictionary_list()
 
 
 //!
-//! @brief To be written
+//! @brief Updates the status of the search progressbar
+//!
+//! @param item A GwSearchItem to gleam information from
 //!
 void gw_ui_set_search_progressbar_by_searchitem (GwSearchItem *item)
 {
-    if (gw_util_get_runmode () == GW_CONSOLE_RUNMODE) return;
-
     GtkWidget *progress = GTK_WIDGET (gtk_builder_get_object(builder, "search_progressbar"));
     long current = 0;
     long total = 0;
@@ -1313,7 +1348,7 @@ void gw_ui_set_search_progressbar_by_searchitem (GwSearchItem *item)
 
 
 //!
-//! @brief Menu popups section
+//! @brief Updates the history menu popup menu
 //!
 void gw_ui_update_history_menu_popup()
 {
@@ -1391,9 +1426,12 @@ void gw_ui_update_history_menu_popup()
 
 
 //!
-//! @brief Populate the menu item lists for the back and forward buttons
+//! @brief PRIVATE FUNCTION. Populate the menu item lists for the back and forward buttons
 //!
-void rebuild_history_button_popup(char* id, GList* list) {
+//! @param id Id of the popuplist
+//! @param list history list to compair against
+//!
+static void rebuild_history_button_popup(char* id, GList* list) {
     //Get a reference to the history_popup
     GtkWidget *popup;
     popup = GTK_WIDGET (gtk_builder_get_object(builder, id));
@@ -1451,11 +1489,11 @@ void rebuild_history_button_popup(char* id, GList* list) {
 
 
 //!
-//! @brief To be written
+//! @brief Convenience function to update both the back and forward histories etc
 //!
 void gw_ui_update_history_popups()
 {
-    GList* list;
+    GList* list = NULL;
 
     gw_ui_update_history_menu_popup();
     list = gw_historylist_get_forward_history (GW_HISTORYLIST_RESULTS);
@@ -1466,7 +1504,10 @@ void gw_ui_update_history_popups()
 
 
 //!
-//! @brief To be written
+//! @brief Sets the requested font with magnification applied
+//!
+//! @param font_description_string The font with the font size
+//! @param font_magnification And describing how to enlarge or shrink the font
 //!
 void gw_ui_set_font (char *font_description_string, int *font_magnification)
 {
@@ -1547,15 +1588,14 @@ void gw_ui_set_font (char *font_description_string, int *font_magnification)
 
 
 //!
-//! @brief To be written
+//! @brief Sets the style of the toolbar [icons/text/both/both-horizontal]
 //!
-void gw_ui_set_toolbar_style(char *request) 
+//! @param request The name of the style
+//!
+void gw_ui_set_toolbar_style (char *request) 
 {
-    char id[50];
-
     GtkWidget *toolbar;
-    strcpy(id, "toolbar");
-    toolbar = GTK_WIDGET (gtk_builder_get_object(builder, id));
+    toolbar = GTK_WIDGET (gtk_builder_get_object(builder, "toolbar"));
 
     GtkToolbarStyle style;
     if (strcmp(request, "text") == 0)
@@ -1572,16 +1612,14 @@ void gw_ui_set_toolbar_style(char *request)
 
 
 //!
-//! @brief To be written
+//! @brief Sets the checkbox to show or hide the toolbar
+//!
+//! @param request How to set the toolbar
 //!
 void gw_ui_set_toolbar_show(gboolean request)
 {
-    int id_length = 50;
-    char id[id_length];
-    
     GtkWidget *toolbar;
-    strncpy(id, "toolbar", id_length);
-    toolbar = GTK_WIDGET (gtk_builder_get_object(builder, id));
+    toolbar = GTK_WIDGET (gtk_builder_get_object(builder, "toolbar"));
 
     if (request == TRUE)
       gtk_widget_show(toolbar);
@@ -1589,8 +1627,7 @@ void gw_ui_set_toolbar_show(gboolean request)
       gtk_widget_hide(toolbar);
 
     GtkAction *action;
-    strcpy(id, "view_toggle_toolbar_action");
-    action = GTK_ACTION (gtk_builder_get_object(builder,id));
+    action = GTK_ACTION (gtk_builder_get_object (builder, "view_toggle_toolbar_action"));
 
     g_signal_handlers_block_by_func (G_OBJECT (action), do_toolbar_toggle, NULL);
     gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), request);
@@ -1599,33 +1636,30 @@ void gw_ui_set_toolbar_show(gboolean request)
 
 
 //!
-//! @brief To be written
+//! @brief Sets the checkbox state of the less relevant show option checkbox
 //!
-void gw_ui_set_less_relevant_show (gboolean show)
+//! @param request How to set the preference
+//!
+void gw_ui_set_less_relevant_show (gboolean request)
 {
-  int id_length = 50;
-  char id[id_length];
-
   GtkAction *action;
-  strncpy(id, "view_less_relevant_results_toggle_action", id_length);
-  action = GTK_ACTION (gtk_builder_get_object(builder, id));
+  action = GTK_ACTION (gtk_builder_get_object(builder, "view_less_relevant_results_toggle_action"));
 
   g_signal_handlers_block_by_func(G_OBJECT (action), do_less_relevant_results_toggle, NULL);
-  gtk_toggle_action_set_active(GTK_TOGGLE_ACTION (action), show);
+  gtk_toggle_action_set_active(GTK_TOGGLE_ACTION (action), request);
   g_signal_handlers_unblock_by_func(G_OBJECT (action), do_less_relevant_results_toggle, NULL);
 }
 
 
 //!
-//! @brief To be written
+//! @brief Sets the checkbox state of the roma-kana conversion pref
+//!
+//! @param request How to set the preference
 //!
 void gw_ui_set_romaji_kana_conv (int request)
 {
-  char id[50];
-
   GtkWidget *widget;
-  strcpy(id, "query_romaji_to_kana");
-  widget = GTK_WIDGET (gtk_builder_get_object(builder, id));
+  widget = GTK_WIDGET (gtk_builder_get_object(builder, "query_romaji_to_kana"));
 
   g_signal_handlers_block_by_func(widget, do_romaji_kana_conv_change, NULL);
   gtk_combo_box_set_active(GTK_COMBO_BOX (widget), request);
@@ -1634,14 +1668,14 @@ void gw_ui_set_romaji_kana_conv (int request)
 
 
 //!
-//! @brief To be written
+//! @brief Sets the checkbox state of the hira-kata conversion pref
+//!
+//! @param request How to set the preference
 //!
 void gw_ui_set_hiragana_katakana_conv (gboolean request)
 {
-    char id[50];
     GtkWidget *widget;
-    strcpy(id, "query_hiragana_to_katakana");
-    if (widget = GTK_WIDGET (gtk_builder_get_object(builder, id)))
+    if (widget = GTK_WIDGET (gtk_builder_get_object(builder, "query_hiragana_to_katakana")))
     {
       g_signal_handlers_block_by_func(widget, do_hiragana_katakana_conv_toggle, NULL); 
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (widget), request);
@@ -1689,14 +1723,21 @@ void gw_ui_set_color_to_swatch (const char *widget_id, const char *hex_color_str
 
 
 //!
-//! @brief To be written
+//! @brief Appends some text to the text buffer
+//!
+//! @param item A GwSearchItem to gleam information from
+//! @param text The text to append to the buffer
+//! @param tag1 A tag to apply to the text or NULL
+//! @param tag2 A tag to apply to the text or NULL
+//! @param start_line Returns the start line of the text inserted
+//! @param end_line Returns the end line of the text inserted
 //!
 void gw_ui_append_to_buffer (GwSearchItem *item, char *text, char *tag1,
-                                char *tag2, int *start_line, int *end_line)
+                             char *tag2, int *start_line, int *end_line)
 {
     //Assertain the target text buffer
     GObject *tb;
-    tb = G_OBJECT (item->target_tb);
+    if (item == NULL || item->target_tb == NULL) return;
 
     GtkTextIter iter;
     gtk_text_buffer_get_end_iter(GTK_TEXT_BUFFER (tb), &iter);
@@ -1726,36 +1767,25 @@ void gw_ui_append_to_buffer (GwSearchItem *item, char *text, char *tag1,
 
 
 //!
-//! @brief To be written
+//! @brief Appends the image name to the end of the textbuffer
 //!
-void gw_ui_append_image_to_buffer (GwSearchItem *item, char *name)
+//! @param item A GwaSearchItem to gleam information from
+//! @param filename The name of the image to look for in the global data path
+//!
+void gw_ui_append_image_to_buffer (GwSearchItem *item, char *filename)
 {
-    //Insert the pixbuf
-    int leftover = FILENAME_MAX;
-    char pixbuf_path[leftover];
-    strncpy(pixbuf_path, DATADIR2, leftover);
-    leftover -= strlen(DATADIR2);
-    strncat(pixbuf_path, G_DIR_SEPARATOR_S, leftover);
-    leftover -= 1;
-    strncat(pixbuf_path, PACKAGE, leftover);
-    leftover -= strlen(PACKAGE);
-    strncat(pixbuf_path, G_DIR_SEPARATOR_S, leftover);
-    leftover -= 1;
-    strncat(pixbuf_path, name, leftover);
+    char *path = g_build_filename (DATADIR, PACKAGE, filename, NULL);
 
     GdkPixbuf *pixbuf;
-    if ((pixbuf = gdk_pixbuf_new_from_file ( pixbuf_path, NULL)) == NULL)
+    if ((pixbuf = gdk_pixbuf_new_from_file (path, NULL)) != NULL)
     {
-      g_assert("gWaei was unable to find the character.png image\n");
+      GObject *tb;
+      tb = G_OBJECT (item->target_tb);
+      GtkTextIter iter;
+      gtk_text_buffer_get_end_iter(GTK_TEXT_BUFFER(tb), &iter);
+      gtk_text_buffer_insert_pixbuf (GTK_TEXT_BUFFER (tb), &iter, pixbuf);
+      g_object_unref(pixbuf);
     }
-
-    GObject *tb;
-    tb = G_OBJECT (item->target_tb);
-
-    GtkTextIter iter;
-    gtk_text_buffer_get_end_iter(GTK_TEXT_BUFFER(tb), &iter);
-    gtk_text_buffer_insert_pixbuf (GTK_TEXT_BUFFER (tb), &iter, pixbuf);
-    g_object_unref(pixbuf);
 }
 
 
@@ -1764,12 +1794,12 @@ void gw_ui_append_image_to_buffer (GwSearchItem *item, char *name)
 //!
 //! Correctly the pointer in the GwSearchItem to the correct textbuffer and moves marks
 //!
-//! @param item A GwSearchItem to use initialize the data of for the GUI.
+//! @param item A GwSearchItem to gleam information from
 //!
 void gw_ui_initialize_buffer_by_searchitem (GwSearchItem *item)
 {
     //Make sure searches done from the history are pointing at a valid target
-    item->target_tb = (gpointer) get_gobject_from_target (item->target);
+    item->target_tb = (gpointer) get_gobject_by_target (item->target);
 
     gtk_text_buffer_set_text (GTK_TEXT_BUFFER (item->target_tb), "", -1);
 
@@ -1809,13 +1839,13 @@ void gw_ui_initialize_buffer_by_searchitem (GwSearchItem *item)
 
       gw_ui_set_total_results_label_by_searchitem (item);
     }
-
-
 }
 
 
 //!
-//! @brief To be written
+//! @brief Inserts text into the search entry
+//!
+//! @param text The text to insert
 //!
 void gw_ui_search_entry_insert (char* text)
 {
@@ -1835,20 +1865,22 @@ void gw_ui_search_entry_insert (char* text)
 
 
 //!
-//! @brief To be written
+//! @brief Sets the focus to a specific target widget
+//! 
+//! @param TARGET A GwTargetOutput specifying a specific target
 //!
-void gw_ui_grab_focus_by_target (const int TARGET)
+void gw_ui_grab_focus_by_target (GwTargetOutput TARGET)
 {
     GtkWidget* widget;
-    widget = get_widget_from_target(TARGET);
+    widget = get_widget_by_target(TARGET);
     gtk_widget_grab_focus(widget);
 }
 
 
 //!
-//! @brief To be written
+//! @brief Clears the search entry
 //!
-void gw_ui_clear_search_entry()
+void gw_ui_clear_search_entry ()
 {
     GtkWidget *entry;
     entry = search_entry;
@@ -1861,9 +1893,13 @@ void gw_ui_clear_search_entry()
 
 
 //!
-//! @brief To be written
+//! @brief Copies the text held by a text type widget using a strncpy like structure
 //!
-void gw_ui_strcpy_from_widget(char* output, int MAX, int TARGET)
+//! @param output The char pointer to copy the string to
+//! @param TARGET The widget to copy the text from identified by a target
+//! @param MAX The Max characters to copy
+//!
+void gw_ui_strncpy_text_from_widget_by_target (char* output, GwTargetOutput TARGET, int MAX)
 {
     //GtkEntry
     if (TARGET == GW_TARGET_ENTRY)
@@ -1898,9 +1934,11 @@ void gw_ui_strcpy_from_widget(char* output, int MAX, int TARGET)
 
 
 //!
-//! @brief To be written
+//! @brief Selects all text in a target
 //!
-void gw_ui_text_select_all_by_target (int TARGET)
+//! @param TARGET The widget where to select all text
+//!
+void gw_ui_text_select_all_by_target (GwTargetOutput TARGET)
 {
     //GtkEntry
     if (TARGET == GW_TARGET_ENTRY)
@@ -1917,7 +1955,7 @@ void gw_ui_text_select_all_by_target (int TARGET)
     {
       //Assertain the target text buffer
       GObject *tb;
-      tb = get_gobject_from_target(TARGET);
+      tb = get_gobject_by_target (TARGET);
 
       GtkTextIter start, end;
       gtk_text_buffer_get_start_iter(GTK_TEXT_BUFFER (tb), &start);
@@ -1929,9 +1967,11 @@ void gw_ui_text_select_all_by_target (int TARGET)
 
 
 //!
-//! @brief To be written
+//! @brief Deselects all text in a target
 //!
-void gw_ui_text_select_none_by_target (int TARGET)
+//! @param TARGET The widget where to deselect all text
+//!
+void gw_ui_text_select_none_by_target (GwTargetOutput TARGET)
 {
     //GtkEntry
     if (TARGET == GW_TARGET_ENTRY)
@@ -1948,7 +1988,7 @@ void gw_ui_text_select_none_by_target (int TARGET)
     {
       //Assertain the target text buffer
       GObject *tb;
-      tb = get_gobject_from_target(TARGET);
+      tb = get_gobject_by_target (TARGET);
 
       GtkTextIter start, end;
       gtk_text_buffer_get_end_iter(GTK_TEXT_BUFFER (tb), &start);
@@ -1960,9 +2000,11 @@ void gw_ui_text_select_none_by_target (int TARGET)
 
 
 //!
-//! @brief To be written
+//! @brief Returns the target id corresponding to what widget has focus
 //!
-guint gw_ui_get_current_widget_focus (char *window_id)
+//! @param window_id The window to check the widgets against 
+//!
+guint gw_ui_get_current_target_focus (char *window_id)
 {
     GtkWidget *window;
     window = GTK_WIDGET (gtk_builder_get_object (builder, window_id));
@@ -1970,7 +2012,7 @@ guint gw_ui_get_current_widget_focus (char *window_id)
     GtkWidget *widget;
     widget = GTK_WIDGET (gtk_window_get_focus (GTK_WINDOW (window))); 
 
-    GtkWidget* results_tv = get_widget_from_target(GW_TARGET_RESULTS);
+    GtkWidget* results_tv = get_widget_by_target(GW_TARGET_RESULTS);
 
     if (widget == results_tv)
       return GW_TARGET_RESULTS;
@@ -1984,13 +2026,15 @@ guint gw_ui_get_current_widget_focus (char *window_id)
 
 
 //!
-//! @brief To be written
+//! @brief Copy Text into the target output
 //!
-void gw_ui_copy_text (guint TARGET)
+//! TARGET GwTargetOutput to specify where the text should come from
+//!
+void gw_ui_copy_text (GwTargetOutput TARGET)
 {
     GtkClipboard *clipbd;
     GObject *results_tb;
-    results_tb = get_gobject_from_target (GW_TARGET_RESULTS);
+    results_tb = get_gobject_by_target (GW_TARGET_RESULTS);
 
     switch (TARGET)
     {
@@ -2010,9 +2054,11 @@ void gw_ui_copy_text (guint TARGET)
 
 
 //!
-//! @brief To be written
+//! @brief Cut Text into the target output
 //!
-void gw_ui_cut_text (guint TARGET)
+//! TARGET GwTargetOutput to specify where the text should come from
+//!
+void gw_ui_cut_text (GwTargetOutput TARGET)
 {
     switch (TARGET)
     {
@@ -2024,9 +2070,11 @@ void gw_ui_cut_text (guint TARGET)
 
 
 //!
-//! @brief To be written
+//! @brief Pastes Text into the target output
 //!
-void gw_ui_paste_text (guint TARGET)
+//! TARGET GwTargetOutput to specify where the text should go
+//!
+void gw_ui_paste_text (GwTargetOutput TARGET)
 {
     switch (TARGET)
     {
@@ -2038,21 +2086,33 @@ void gw_ui_paste_text (guint TARGET)
 
 
 //!
-//! @brief To be written
+//! @brief Loads the gtk builder xml file from the usual paths
 //!
-gboolean gw_ui_load_gtk_builder_xml (const char *name) {
-    char local_path[FILENAME_MAX];
-    strcpy(local_path, "xml" G_DIR_SEPARATOR_S);
-    strcat(local_path, name);
+//! @param filename The filename of the xml file to look for
+//!
+gboolean gw_ui_load_gtk_builder_xml (const char *filename) {
+    char *path = NULL;
 
-    char global_path[FILENAME_MAX]; 
-    strcpy(global_path, DATADIR2 G_DIR_SEPARATOR_S PACKAGE G_DIR_SEPARATOR_S);
-    strcat(global_path, name);
-
-    if ( gtk_builder_add_from_file (builder, local_path,  NULL) ||
-         gtk_builder_add_from_file (builder, global_path, NULL)    )
+    //Try a local path first
+    if (
+        (path = g_build_filename ("xml", filename, NULL)) != NULL &&
+         gtk_builder_add_from_file (builder, path,  NULL)
+       )
     {
       gtk_builder_connect_signals (builder, NULL);
+      g_free (path);
+      path = NULL;
+      return TRUE;
+    }
+    //Try the global path next
+    else if (
+             (path = g_build_filename (DATADIR, PACKAGE, filename, NULL)) != NULL &&
+             gtk_builder_add_from_file (builder, path,  NULL)
+            )
+    {
+      gtk_builder_connect_signals (builder, NULL);
+      g_free (path);
+      path = NULL;
       return TRUE;
     }
 
@@ -2170,13 +2230,20 @@ gboolean gw_ui_set_color_to_tagtable (char    *id,     const int TARGET,
 }
 
 
-
-void  gw_ui_set_tag_to_tagtable (char *id,   int      TARGET,
-                                    char *atr,  gpointer val    )
+//!
+//! PRIVATE FUNCTION. Sets a single tag to the tagtable of the output buffer
+//!
+//! @param id The id of the tag
+//! @param TARGET The GWTargetOutput of the buffer
+//! @param atr The attribute to set
+//! @param val the value to set to the attribute
+//!
+static void gw_ui_set_tag_to_tagtable (char *id,  GwTargetOutput TARGET,
+                                       char *atr, gpointer val          )
 {
     //Assertain the target text buffer
     GObject *tb;
-    tb = get_gobject_from_target (TARGET);
+    tb = get_gobject_by_target (TARGET);
 
     GtkTextTagTable* table = gtk_text_buffer_get_tag_table (GTK_TEXT_BUFFER (tb)); 
     GtkTextTag* tag = gtk_text_tag_table_lookup (table, id);
@@ -2188,11 +2255,18 @@ void  gw_ui_set_tag_to_tagtable (char *id,   int      TARGET,
 }
 
 
-char* gw_ui_get_text_slice_from_buffer (int TARGET, int sl, int el)
+//!
+//! @brief Returns the slice of characters between to line numbers in the target output buffer
+//!
+//! @param TARGET The GwTargetOutput to get the text slice from
+//! @param sl The start line number
+//! @param el The end line number
+//!
+char* gw_ui_buffer_get_text_slice_by_target (GwTargetOutput TARGET, int sl, int el)
 {
     //Assertain the target text buffer
     GObject *tb;
-    tb = get_gobject_from_target(TARGET);
+    tb = get_gobject_by_target (TARGET);
 
     //Set up the text
     GtkTextIter si, ei;
@@ -2203,10 +2277,16 @@ char* gw_ui_get_text_slice_from_buffer (int TARGET, int sl, int el)
 }
 
 
-gunichar gw_get_hovered_character(int *x, int *y)
+//!
+//! @brief Returns the character currently under the cursor in the main results window
+//!
+//! @param x Pointer to the x coordinate
+//! @param y Pointer to the y coordinate
+//!
+gunichar gw_get_hovered_character (int *x, int *y)
 {
     gint trailing = 0;
-    GtkWidget* results_tv = get_widget_from_target(GW_TARGET_RESULTS);
+    GtkWidget* results_tv = get_widget_by_target (GW_TARGET_RESULTS);
 
     gtk_text_view_window_to_buffer_coords (GTK_TEXT_VIEW(results_tv), 
                                            GTK_TEXT_WINDOW_TEXT, 
@@ -2221,21 +2301,29 @@ gunichar gw_get_hovered_character(int *x, int *y)
 } 
 
 
-void gw_ui_set_cursor(const int CURSOR)
+//!
+//! @brief A convenience function to set the gdk cursor
+//!
+//! @param GdkCursorType The prefered cursor to set
+//!
+void gw_ui_set_cursor (GdkCursorType CURSOR)
 {
-    GtkWidget* results_tv = get_widget_from_target(GW_TARGET_RESULTS);
+    GtkWidget* results_tv = get_widget_by_target (GW_TARGET_RESULTS);
 
     GdkWindow* gdk_window;
-    gdk_window = gtk_text_view_get_window( GTK_TEXT_VIEW (results_tv), 
+    gdk_window = gtk_text_view_get_window (GTK_TEXT_VIEW (results_tv), 
                                            GTK_TEXT_WINDOW_TEXT        );
     GdkCursor* cursor;
-    cursor = gdk_cursor_new(CURSOR);
+    cursor = gdk_cursor_new (CURSOR);
     gdk_window_set_cursor (gdk_window, cursor);
     gdk_cursor_unref (cursor);
 }
 
 
-void gw_ui_open_kanji_results()
+//!
+//! @brief A convenience function to open the kanji sidebar
+//!
+void gw_ui_open_kanji_sidebar ()
 {
     GtkWidget *window;
     window = GTK_WIDGET (gtk_builder_get_object( builder, "kanji-viewport" ));
@@ -2243,7 +2331,10 @@ void gw_ui_open_kanji_results()
 }
 
 
-void gw_ui_close_kanji_results()
+//!
+//! @brief A convenience function to close the kanji sidebar
+//!
+void gw_ui_close_kanji_sidebar ()
 {
     GtkWidget *window;
     window = GTK_WIDGET (gtk_builder_get_object( builder, "kanji-viewport" ));
@@ -2251,13 +2342,16 @@ void gw_ui_close_kanji_results()
 }
 
 
-
-gint32 gw_previous_tip = 0;
-void gw_ui_display_no_results_found_page(GwSearchItem *item)
+//!
+//! @brief Sets the no results page to the output buffer
+//!
+//! @param item A GwSearchItem pointer to gleam information from
+//!
+void gw_ui_display_no_results_found_page (GwSearchItem *item)
 {
-    gint32 temp = g_random_int_range(0,9);
+    gint32 temp = g_random_int_range (0,9);
     while (temp == gw_previous_tip)
-      temp = g_random_int_range(0,9);
+      temp = g_random_int_range (0,9);
     const gint32 TIP_NUMBER = temp;
     gw_previous_tip = temp;
 
@@ -2279,7 +2373,7 @@ void gw_ui_display_no_results_found_page(GwSearchItem *item)
       strcat(image_name, "3");
     strcat(image_name, ".png");
     
-    gw_ui_append_image_to_buffer(item, image_name);
+    gw_ui_append_image_to_buffer (item, image_name);
 
 
     //Insert the instruction text
@@ -2466,23 +2560,13 @@ void gw_ui_display_no_results_found_page(GwSearchItem *item)
 }
 
 
-void gw_ui_next_dictionary()
+//!
+//! @brief Cycles the dictionaries forward or backward, looping when it reaches the end
+//!
+//! @param cycle_forward A boolean to choose the cycle direction
+//!
+void gw_ui_cycle_dictionaries (gboolean cycle_forward)
 {
-    //Declarations
-    char id[50];
-    char *active_text;
-    GtkWidget *combobox;
-    strcpy (id, "dictionary_combobox");
-    combobox = GTK_WIDGET (gtk_builder_get_object(builder, id));
-
-    gint active;
-    active = gtk_combo_box_get_active( GTK_COMBO_BOX (combobox) );
-}
-
-
-void gw_ui_cycle_dictionaries(gboolean cycle_forward)
-{
-    char id[50];
     int increment;
 
     if (cycle_forward)
@@ -2492,8 +2576,7 @@ void gw_ui_cycle_dictionaries(gboolean cycle_forward)
 
     //Declarations
     GtkWidget *combobox;
-    strcpy (id, "dictionary_combobox");
-    combobox = GTK_WIDGET (gtk_builder_get_object(builder, id));
+    combobox = GTK_WIDGET (gtk_builder_get_object(builder, "dictionary_combobox"));
 
     gint active;
     active = gtk_combo_box_get_active( GTK_COMBO_BOX (combobox) );
@@ -2519,10 +2602,18 @@ void gw_ui_cycle_dictionaries(gboolean cycle_forward)
 }
 
 
-char* gw_ui_get_text_from_text_buffer(const int TARGET)
+//!
+//! @brief  Returns the unfreeable text from a gtk widget by target
+//!
+//! The fancy thing about this function is it will only return the
+//! highlighted text if some is highlighted.
+//!
+//! @param TARGET a GwTargetOutput to get the data from
+//!
+char* gw_ui_buffer_get_text_by_target (GwTargetOutput TARGET)
 {
     GObject* tb;
-    tb = get_gobject_from_target (TARGET);
+    tb = get_gobject_by_target (TARGET);
 
     GtkTextIter s, e;
     if (gtk_text_buffer_get_has_selection (GTK_TEXT_BUFFER (tb)))
@@ -2539,7 +2630,10 @@ char* gw_ui_get_text_from_text_buffer(const int TARGET)
 }
 
 
-void gw_ui_reload_tagtable_tags()
+//!
+//! @brief Resets the color tags according to the preferences
+//!
+void gw_ui_buffer_reload_tagtable_tags()
 {
     gw_ui_set_color_to_tagtable ("comment", GW_TARGET_RESULTS, TRUE, FALSE);
     gw_ui_set_color_to_tagtable ("comment", GW_TARGET_KANJI,   TRUE, FALSE);
@@ -2555,7 +2649,10 @@ void gw_ui_reload_tagtable_tags()
 }
 
 
-void gw_ui_initialize_tags()
+//!
+//! @brief Adds the tags to stylize the buffer text
+//!
+void gw_ui_buffer_initialize_tags()
 {
     gw_ui_set_tag_to_tagtable ("italic", GW_TARGET_RESULTS,
                                   "style", GINT_TO_POINTER(PANGO_STYLE_ITALIC));
@@ -2580,11 +2677,16 @@ void gw_ui_initialize_tags()
     gw_ui_set_tag_to_tagtable ("small", GW_TARGET_RESULTS,  "font", "serif 6");
     gw_ui_set_tag_to_tagtable ("small", GW_TARGET_KANJI,    "font", "serif 6");
 
-    gw_ui_reload_tagtable_tags();
+    gw_ui_buffer_reload_tagtable_tags();
 }
 
 
-void gw_ui_initialize_buffer_marks(gpointer tb)
+//!
+//! @brief Creates the initial marks needed for the text buffer
+//!
+//! tb gpointer to the textbuffer to add the marks to
+//!
+void gw_ui_buffer_initialize_marks (gpointer tb)
 {
     GtkTextIter iter;
 
@@ -2607,7 +2709,15 @@ void gw_ui_initialize_buffer_marks(gpointer tb)
 }
 
 
-void gw_ui_set_header (GwSearchItem *item, char* text, char* mark_name)
+//!
+//! @brief PRIVATE FUNCTION. A Stes the text of the desired mark.
+//!
+//! @param item A GwSearchItem to gleam information from
+//! @param text The desired text to set to the mark
+//! @param mark_name The name of the mark to set the new attributes to
+//!
+//!
+static void set_header (GwSearchItem *item, char* text, char* mark_name)
 {
     GObject *results_tb = G_OBJECT (item->target_tb);
 
@@ -2630,18 +2740,27 @@ void gw_ui_set_header (GwSearchItem *item, char* text, char* mark_name)
     }
 
     //Update the header text
-    char new_text[100];
-    strncpy(new_text, text, 100);
-    strncat(new_text, "\n", 100 - strlen(text));
-    GtkTextIter end_iter;
-    gtk_text_buffer_get_iter_at_line(GTK_TEXT_BUFFER (results_tb), &end_iter, line + 1);
-    gtk_text_buffer_delete (GTK_TEXT_BUFFER (results_tb), &iter, &end_iter);
-    gtk_text_buffer_get_iter_at_mark (GTK_TEXT_BUFFER (results_tb), &iter, mark);
-    gtk_text_buffer_insert_with_tags_by_name (GTK_TEXT_BUFFER (results_tb), &iter, new_text, -1, "header", "important", NULL);
+    char *new_text = g_strdup_printf ("%s\n", text);
+    if (new_text != NULL)
+    {
+      GtkTextIter end_iter;
+      gtk_text_buffer_get_iter_at_line(GTK_TEXT_BUFFER (results_tb), &end_iter, line + 1);
+      gtk_text_buffer_delete (GTK_TEXT_BUFFER (results_tb), &iter, &end_iter);
+      gtk_text_buffer_get_iter_at_mark (GTK_TEXT_BUFFER (results_tb), &iter, mark);
+      gtk_text_buffer_insert_with_tags_by_name (GTK_TEXT_BUFFER (results_tb), &iter, new_text, -1, "header", "important", NULL);
+      g_free (new_text);
+      new_text = NULL;
+    }
 }
 
 
-void initialize_gui_interface(int argc, char *argv[])
+//!
+//! @brief Main entry into the gtk version of gWaei
+//!
+//! @param argc Standard main arguments
+//! @param argv Standard main arguments
+//!
+void initialize_gui_interface (int argc, char *argv[])
 {
     //Initialize some libraries
     UniqueApp *app;
@@ -2674,29 +2793,26 @@ void initialize_gui_interface(int argc, char *argv[])
       gw_ui_load_gtk_builder_xml ("settings.ui");
       gw_ui_load_gtk_builder_xml ("kanjipad.ui");
 
-      gw_ui_initialize_radicals_table ();
-      gw_ui_initialize_dictionary_order_list ();
-      gw_kanjipad_initialize (builder);
-
+      //Libunique setup
       GtkWidget *main_window;
       main_window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
       unique_app_watch_window (app, GTK_WINDOW (main_window));
       g_signal_connect (app, "message-received", G_CALLBACK (message_received_cb), NULL);
 
-      //HACK!!!!!!!!!!!!!!
+      //Variious initializations
       force_gtk_builder_translation_for_gtk_actions_hack ();
-
-      //Initialize some component and variables
       initialize_global_widget_pointers ();
-      gw_tab_new ();
       gw_ui_initialize_interface_output_generics ();
-
-      gw_sexy_initialize_libsexy ();
+      gw_guarantee_first_tab ();
+      gw_sexy_initialize_libsexy (&search_entry);
       gw_ui_update_history_popups ();
       gw_ui_show_window ("main_window");
-
       gw_prefs_initialize_preferences ();
+      gw_ui_initialize_radicals_table ();
+      gw_ui_initialize_dictionary_order_list ();
+      gw_kanjipad_initialize (builder);
 
+      //Spring up the prefs dialog if no dictionaries are installed
       gw_settings_initialize_installed_dictionary_list ();
       if (rebuild_combobox_dictionary_list () == 0) {
         do_settings(NULL, GINT_TO_POINTER (1));
@@ -2704,10 +2820,10 @@ void initialize_gui_interface(int argc, char *argv[])
 
       //Set the initial focus to the search bar
       gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
-      GObject *tb = G_OBJECT (get_gobject_from_target (GW_TARGET_RESULTS));
+      GObject *tb = G_OBJECT (get_gobject_by_target (GW_TARGET_RESULTS));
       gtk_text_buffer_set_text (GTK_TEXT_BUFFER (tb), "", -1);
 
-      /*Set initial dictionary*/
+      //Set the initial dictionary
       if (arg_dictionary != NULL)
       {
         GwDictInfo *di = gw_dictlist_get_dictinfo_by_alias (arg_dictionary);
@@ -2717,8 +2833,7 @@ void initialize_gui_interface(int argc, char *argv[])
         }
       }
 
-      /*Set initial search in arguments were given with the application*/
-      //Set query text
+      //Set the initial query text
       char *query_text_data = NULL;
       if (argc > 1 && query_text_data == NULL)
       {
@@ -2744,12 +2859,18 @@ void initialize_gui_interface(int argc, char *argv[])
         query_text_data = NULL;
       }
       g_object_unref (app);
+      gw_kanjipad_free_resources ();
     }
 
     exit (EXIT_SUCCESS);
 }
 
 
+//!
+//! @brief Uses a searchitem to cancel a search
+//!
+//! @param item A GwSearchItem to gleam information from
+//!
 gboolean gw_ui_cancel_search_by_searchitem (GwSearchItem *item)
 {
     if (item == NULL || item->status == GW_SEARCH_IDLE) return TRUE;
@@ -2766,13 +2887,19 @@ gboolean gw_ui_cancel_search_by_searchitem (GwSearchItem *item)
 }
 
 
+//!
+//! @brief Cancels a search by identifying matching gpointer
+//!
+//! @param container A pointer to the top-most widget in the desired tab to cancel the search of.
+//!
 gboolean gw_ui_cancel_search_by_tab_content (gpointer container)
 {
     GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
     int position = gtk_notebook_page_num (GTK_NOTEBOOK (notebook), container);
     if (position != -1)
     {
-      GwSearchItem *item = g_list_nth_data (gw_tab_searchitems, position);
+      GList *list = gw_tab_get_searchitem_list ();
+      GwSearchItem *item = g_list_nth_data (list, position);
       if (item == NULL)
       {
         return TRUE;
@@ -2786,6 +2913,22 @@ gboolean gw_ui_cancel_search_by_tab_content (gpointer container)
     return FALSE;
 }
 
+
+//!
+//! @brief Cancels all searches in all currently open tabs
+//!
+void gw_ui_tab_cancel_all_searches ()
+{
+    GList *list = gw_tab_get_searchitem_list ();
+    g_list_foreach (list, (GFunc) gw_ui_cancel_search_by_searchitem, NULL);
+}
+
+
+//!
+//! @brief Cancels the search of the tab number
+//!
+//! @param page_num The page number of the tab to cancel the search of
+//!
 gboolean gw_ui_cancel_search_by_tab_number (const int page_num)
 {
     GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
@@ -2796,6 +2939,10 @@ gboolean gw_ui_cancel_search_by_tab_number (const int page_num)
       return TRUE;
 }
 
+
+//!
+//! @brief Cancels the search of the currently visibile tab
+//!
 gboolean gw_ui_cancel_search_for_current_tab ()
 {
     GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
@@ -2804,7 +2951,10 @@ gboolean gw_ui_cancel_search_for_current_tab ()
 }
 
 
-gboolean gw_ui_cancel_search_by_target (const int TARGET)
+//!
+//! @brief Cancels a search using a GwTargetOutput as identification
+//!
+gboolean gw_ui_cancel_search_by_target (GwTargetOutput TARGET)
 {
     if (TARGET == GW_TARGET_KANJI)
     {
@@ -2816,29 +2966,29 @@ gboolean gw_ui_cancel_search_by_target (const int TARGET)
 
 
 //!
-//! \brief Abstraction function to find out if some text is selected
+//! @brief Abstraction function to find out if some text is selected
 //!
 //! It gets the requested text buffer and then returns if it has text selected
 //! or not.
 //!
-//! @param TARGET A constant int representing a text buffer
+//! @param TARGET A GwTargetOutput
 //!
-gboolean gw_ui_has_selection_by_target (const int TARGET)
+gboolean gw_ui_has_selection_by_target (GwTargetOutput TARGET)
 {
-    GObject* tb = get_gobject_from_target(TARGET);
+    GObject* tb = get_gobject_by_target (TARGET);
     return (gtk_text_buffer_get_has_selection (GTK_TEXT_BUFFER (tb)));
 }
 
 
 //!
-//! @brief Apples a tag to a section of text
+//! @brief PRIVATE FUNCTION. Apples a tag to a section of text
 //!
 //! @param line An integer showing the line in the buffer to tag
 //! @param start_offset the ending character in the line to highlight
 //! @param end_offset The ending character in the line to highlight
 //! @param item A GwSearchItem to get general information from
 //!
-void gw_ui_add_match_highlights (gint line, gint start_offset, gint end_offset, GwSearchItem* item)
+static void add_match_highlights (gint line, gint start_offset, gint end_offset, GwSearchItem* item)
 {
     GtkTextBuffer *tb;
     tb = GTK_TEXT_BUFFER (item->target_tb);
@@ -2885,7 +3035,14 @@ void gw_ui_add_match_highlights (gint line, gint start_offset, gint end_offset, 
     g_free (text);
 }
 
-void gw_ui_shift_stay_mark (GwSearchItem *item, char *name)
+
+//!
+//! @brief PRIVATE FUNCTION. Moves the content insertion mark to another mark's spot
+//!
+//! @param item A GwSearchItem pointer to gleam information from
+//! @param name The name of the mark to move the content insertion mark to
+//!
+static void shift_stay_mark (GwSearchItem *item, char *name)
 {
     GObject *results_tb;
     results_tb = G_OBJECT (item->target_tb);
@@ -2900,7 +3057,15 @@ void gw_ui_shift_stay_mark (GwSearchItem *item, char *name)
       gtk_text_buffer_move_mark (GTK_TEXT_BUFFER (results_tb), mark, &iter);
 }
 
-void gw_ui_shift_append_mark (GwSearchItem *item, char *stay_name, char *append_name)
+
+//!
+//! @brief PRIVATE FUNCTION.  Updates the position of a mark to accomidate new results.
+//!
+//! @param item A GwSearchItem to gleam information from.
+//! @param stay_name The name of the mark that stays in place before the new result.
+//! @param append_name The name of the mark that moves to the end after the new result is added.
+//!
+static void shift_append_mark (GwSearchItem *item, char *stay_name, char *append_name)
 {
     GObject *results_tb;
     results_tb = G_OBJECT (item->target_tb);
@@ -2918,13 +3083,20 @@ void gw_ui_shift_append_mark (GwSearchItem *item, char *stay_name, char *append_
 }
 
 
-void gw_ui_append_def_same_to_buffer (GwSearchItem* item, gboolean UNUSED)
+//!
+//! @brief PRIVATE FUNCTION.  When adding a result to the buffer, it just adds the the kanji/hiragana section
+//!
+//! This function is made to help readability of edict results since there is a lot of repeating.
+//!
+//! @param item A GwSearchItem pointer to use for data.
+//!
+static void append_def_same_to_buffer (GwSearchItem* item)
 {
     GwResultLine* resultline = item->resultline;
 
     GtkTextBuffer *tb = GTK_TEXT_BUFFER (item->target_tb);
 
-    gw_ui_shift_append_mark (item, "previous_result", "new_result");
+    shift_append_mark (item, "previous_result", "new_result");
     GtkTextMark *mark;
     if ((mark = gtk_text_buffer_get_mark (tb, "previous_result")) != NULL)
     {
@@ -2960,11 +3132,19 @@ void gw_ui_append_def_same_to_buffer (GwSearchItem* item, gboolean UNUSED)
         gtk_text_buffer_insert_with_tags_by_name (tb, &iter, gettext("Pop"), -1, "small", NULL);
       }
       end_offset = gtk_text_iter_get_line_offset (&iter);
-      gw_ui_add_match_highlights (line, start_offset, end_offset, item);
+      add_match_highlights (line, start_offset, end_offset, item);
     }
 }
 
 
+//!
+//! @brief Appends an edict style result to the buffer, adding nice formatting.
+//!
+//! This is a part of a set of functions used for the global output function pointers and
+//! isn't used directly
+//!
+//! @param item A GwSearchItem to gleam information from.
+//!
 void gw_ui_append_edict_results_to_buffer (GwSearchItem *item)
 {
     //Some checks
@@ -2988,7 +3168,7 @@ void gw_ui_append_edict_results_to_buffer (GwSearchItem *item)
     //Begin comparison if possible
     if (!skip && ((same_def_totals && same_first_def) || (same_kanji && same_furigana)))
     {
-      gw_ui_append_def_same_to_buffer (item, TRUE);
+      append_def_same_to_buffer (item);
       return;
     }
 
@@ -3048,11 +3228,11 @@ void gw_ui_append_edict_results_to_buffer (GwSearchItem *item)
       gtk_text_buffer_insert (tb, &iter, " ", -1);
       gtk_text_buffer_insert_with_tags_by_name (tb, &iter, gettext("Pop"), -1, "small", NULL);
     }
-    gw_ui_shift_stay_mark (item, "previous_result");
+    shift_stay_mark (item, "previous_result");
     start_offset = 0;
     end_offset = gtk_text_iter_get_line_offset (&iter);
     if (!remove_last_linebreak) gtk_text_buffer_insert (tb, &iter, "\n", -1);
-    gw_ui_add_match_highlights (line, start_offset, end_offset, item);
+    add_match_highlights (line, start_offset, end_offset, item);
 
     //Definitions
     int i = 0;
@@ -3065,7 +3245,7 @@ void gw_ui_append_edict_results_to_buffer (GwSearchItem *item)
       gtk_text_buffer_insert                   (tb, &iter, rl->def_start[i], -1);
       end_offset = gtk_text_iter_get_line_offset (&iter);
       line = gtk_text_iter_get_line (&iter);
-      gw_ui_add_match_highlights (line, start_offset, end_offset, item);
+      add_match_highlights (line, start_offset, end_offset, item);
       gtk_text_buffer_insert                   (tb, &iter, "\n", -1);
       i++;
     }
@@ -3073,6 +3253,14 @@ void gw_ui_append_edict_results_to_buffer (GwSearchItem *item)
 }
 
 
+//!
+//! @brief Appends a kanjidict style result to the buffer, adding nice formatting.
+//!
+//! This is a part of a set of functions used for the global output function pointers and
+//! isn't used directly
+//!
+//! @param item A GwSearchItem to gleam information from.
+//!
 void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item)
 {
       GwResultLine* resultline = item->resultline;
@@ -3091,7 +3279,7 @@ void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item)
         if (item->target == GW_TARGET_RESULTS) gtk_text_buffer_insert_with_tags_by_name (tb, &iter, " ", -1, "large", NULL);
         gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
         gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); line = gtk_text_iter_get_line (&iter);
-        gw_ui_add_match_highlights (line, start_offset, end_offset, item);
+        add_match_highlights (line, start_offset, end_offset, item);
       }
 
       mark = gtk_text_buffer_get_mark (tb, "footer_insertion_mark");
@@ -3103,7 +3291,7 @@ void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item)
       gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
       gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); line = gtk_text_iter_get_line (&iter);
       if (item->target == GW_TARGET_RESULTS)
-        gw_ui_add_match_highlights (line, start_offset, end_offset, item);
+        add_match_highlights (line, start_offset, end_offset, item);
 
       gtk_text_buffer_insert (tb, &iter, "\n", -1);
       gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); line = gtk_text_iter_get_line (&iter);
@@ -3117,7 +3305,7 @@ void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item)
         gtk_text_buffer_insert (tb, &iter, " ", -1);
         gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
         if (item->target == GW_TARGET_RESULTS)
-          gw_ui_add_match_highlights (line, start_offset, end_offset, item);
+          add_match_highlights (line, start_offset, end_offset, item);
 
         gtk_text_buffer_insert (tb, &iter, "\n", -1);
         gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); line = gtk_text_iter_get_line (&iter);
@@ -3138,7 +3326,7 @@ void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item)
         }
         gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
         if (item->target == GW_TARGET_RESULTS)
-          gw_ui_add_match_highlights (line, start_offset, end_offset, item);
+          add_match_highlights (line, start_offset, end_offset, item);
         gtk_text_buffer_insert (tb, &iter, "\n", -1);
         gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); line = gtk_text_iter_get_line (&iter);
       }
@@ -3181,13 +3369,21 @@ void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item)
       gtk_text_buffer_insert (tb, &iter, resultline->meanings, -1);
       gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
       if (item->target == GW_TARGET_RESULTS)
-        gw_ui_add_match_highlights (line, start_offset, end_offset, item);
+        add_match_highlights (line, start_offset, end_offset, item);
 
       gtk_text_buffer_insert (tb, &iter, "\n\n", -1);
 
 }
 
 
+//!
+//! @brief Appends a examplesdict style result to the buffer, adding nice formatting.
+//!
+//! This is a part of a set of functions used for the global output function pointers and
+//! isn't used directly
+//!
+//! @param item A GwSearchItem to gleam information from.
+//!
 void gw_ui_append_examplesdict_results_to_buffer (GwSearchItem *item)
 {
       GwResultLine* resultline = item->resultline;
@@ -3207,7 +3403,7 @@ void gw_ui_append_examplesdict_results_to_buffer (GwSearchItem *item)
         gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->def_start[0], -1, "important", NULL, NULL);
         gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
         gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); line = gtk_text_iter_get_line (&iter);
-        gw_ui_add_match_highlights (line, start_offset, end_offset, item);
+        add_match_highlights (line, start_offset, end_offset, item);
       }
 
       if (resultline->kanji_start != NULL)
@@ -3218,7 +3414,7 @@ void gw_ui_append_examplesdict_results_to_buffer (GwSearchItem *item)
         gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->kanji_start, -1, NULL, NULL, NULL);
         gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
         gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); line = gtk_text_iter_get_line (&iter);
-        gw_ui_add_match_highlights (line, start_offset, end_offset, item);
+        add_match_highlights (line, start_offset, end_offset, item);
       }
 
       if (resultline->furigana_start != NULL)
@@ -3229,7 +3425,7 @@ void gw_ui_append_examplesdict_results_to_buffer (GwSearchItem *item)
         gtk_text_buffer_insert_with_tags_by_name (tb, &iter, resultline->furigana_start, -1, NULL, NULL, NULL);
         gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
         gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); line = gtk_text_iter_get_line (&iter);
-        gw_ui_add_match_highlights (line, start_offset, end_offset, item);
+        add_match_highlights (line, start_offset, end_offset, item);
       }
 
       gtk_text_buffer_get_iter_at_mark (tb, &iter, mark);
@@ -3237,6 +3433,14 @@ void gw_ui_append_examplesdict_results_to_buffer (GwSearchItem *item)
 }
 
 
+//!
+//! @brief Appends a examplesdict style result to the buffer, adding nice formatting.
+//!
+//! This is a part of a set of functions used for the global output function pointers and
+//! isn't used directly.  This is the fallback safe function for unknown dictionaries.
+//!
+//! @param item A GwSearchItem to gleam information from.
+//!
 void gw_ui_append_unknowndict_results_to_buffer (GwSearchItem *item)
 {
       GwResultLine* resultline = item->resultline;
@@ -3252,7 +3456,7 @@ void gw_ui_append_unknowndict_results_to_buffer (GwSearchItem *item)
       if (item->target == GW_TARGET_RESULTS) gtk_text_buffer_insert (tb, &iter, " ", -1);
       gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
       gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); line = gtk_text_iter_get_line (&iter);
-      gw_ui_add_match_highlights (line, start_offset, end_offset, item);
+      add_match_highlights (line, start_offset, end_offset, item);
 
       gtk_text_buffer_get_iter_at_mark (tb, &iter, mark);
       gtk_text_buffer_insert (tb, &iter, "\n\n", -1);
@@ -3261,57 +3465,18 @@ void gw_ui_append_unknowndict_results_to_buffer (GwSearchItem *item)
 
 
 //!
-//! @brief Remove whitespace from the top and bottom of the buffer
+//! @brief Updates the progress information based on the GwSearchItem info
 //!
-//! The current functions are egraries with white space, sepecially
-//! if some sections return with no results. This tidies things up
-//! a bit.
+//! This method isn't called directly, but through the global output funcion pointers
+//! set at the beginning of the program.
 //!
-//! @param TARGET A contast int representing a target
-//!
-void gw_ui_remove_whitespace_from_buffer (gpointer *tb)
-{
-      GtkTextIter iter, iter2;
-      gunichar c;
-
-      //Remove end whitespace
-      gtk_text_buffer_get_end_iter (GTK_TEXT_BUFFER (tb), &iter);
-      gtk_text_iter_backward_char (&iter);
-      c = gtk_text_iter_get_char (&iter);
-      while ((c == L' ' || c == L'\n') && c != 0 && gtk_text_iter_backward_char (&iter))
-      {
-        c = gtk_text_iter_get_char (&iter);
-      }
-      gtk_text_iter_forward_char (&iter);
-      
-      gtk_text_buffer_get_end_iter (GTK_TEXT_BUFFER (tb), &iter2);
-      gtk_text_iter_backward_char (&iter2);
-
-      gtk_text_buffer_delete (GTK_TEXT_BUFFER (tb), &iter, &iter2);
-
-      //Remove start whitespace
-      gtk_text_buffer_get_start_iter (GTK_TEXT_BUFFER (tb), &iter);
-      gtk_text_iter_forward_char (&iter);
-
-      gtk_text_buffer_get_start_iter (GTK_TEXT_BUFFER (tb), &iter2);
-      gtk_text_iter_forward_char (&iter2);
-      c = gtk_text_iter_get_char (&iter2);
-      while ((c == L' ' || c == L'\n') && c != 0 && gtk_text_iter_forward_char (&iter2))
-      {
-        c = gtk_text_iter_get_char (&iter2);
-      }
-      gtk_text_buffer_delete (GTK_TEXT_BUFFER (tb), &iter, &iter2);
-}
-
-
-//!
-//! @brief To be written
+//! @param item A GwSearchItem pointer to gleam information from.
 //!
 void gw_ui_update_progress_feedback (GwSearchItem* item)
 {
     //Ensure global gui elements are only updated by the currently visible tab
     gboolean buffer_tab_is_focused;
-    buffer_tab_is_focused = (item != NULL && item->target_tb == (gpointer*) get_gobject_from_target(item->target)
+    buffer_tab_is_focused = (item != NULL && item->target_tb == (gpointer*) get_gobject_by_target (item->target)
                              && item->target != GW_TARGET_KANJI);
     if (!buffer_tab_is_focused)
       return;
@@ -3331,7 +3496,11 @@ void gw_ui_update_progress_feedback (GwSearchItem* item)
 }
 
 //!
-//! @brief To be written
+//! @brief Sets the no results page to the buffer
+//!
+//! What is special about this no results page is it also gives usage tips.
+//!
+//! @param item A GwSearchItem pointer to gleam information from.
 //!
 void gw_ui_no_result (GwSearchItem *item)
 {
@@ -3350,7 +3519,7 @@ void gw_ui_append_less_relevant_header_to_output(GwSearchItem *item)
     char *message = g_strdup_printf(ngettext("Other Result %d", "Other Results %d", irrelevant), irrelevant);
     if (message != NULL)
     {
-      gw_ui_set_header (item, message, "less_relevant_header_mark");
+      set_header (item, message, "less_relevant_header_mark");
       g_free (message);
     }
 }
@@ -3365,7 +3534,7 @@ void gw_ui_append_more_relevant_header_to_output (GwSearchItem *item)
     char *message = g_strdup_printf(ngettext("Main Result %d", "Main Results %d", relevant), relevant);
     if (message != NULL)
     {
-      gw_ui_set_header (item, message, "more_relevant_header_mark");
+      set_header (item, message, "more_relevant_header_mark");
       g_free (message);
     }
 }

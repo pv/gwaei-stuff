@@ -74,9 +74,8 @@ static gboolean start_search_in_new_window = FALSE;
 //!
 G_MODULE_EXPORT void do_settings (GtkWidget *widget, gpointer data)
 {
-    g_list_foreach (gw_tab_searchitems, (GFunc) gw_ui_cancel_search_by_searchitem, NULL);
+    gw_ui_tab_cancel_all_searches ();
     gw_ui_cancel_search_by_target (GW_TARGET_KANJI);
-    gw_ui_cancel_search_by_target (GW_TARGET_RESULTS);
 
     //Setup please install dictionary message and notebook page
     GtkWidget *notebook;
@@ -121,7 +120,7 @@ G_MODULE_EXPORT void do_kanjipad (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void do_close_kanji_results (GtkWidget *widget, gpointer data)
 { 
-    gw_ui_close_kanji_results ();
+    gw_ui_close_kanji_sidebar ();
 }
 
 
@@ -224,7 +223,7 @@ G_MODULE_EXPORT gboolean do_get_iter_for_button_release (GtkWidget      *widget,
       // Characters above 0xFF00 represent inserted images
       if (unic > L'ー' && unic < 0xFF00 )
       {
-        gw_ui_open_kanji_results ();
+        gw_ui_open_kanji_sidebar ();
 
         //Convert the unicode character into to a utf8 string
         gchar query[7];
@@ -239,7 +238,7 @@ G_MODULE_EXPORT gboolean do_get_iter_for_button_release (GtkWidget      *widget,
       }
       else
       {
-        gw_ui_close_kanji_results ();
+        gw_ui_close_kanji_sidebar ();
       }
     }
 
@@ -264,7 +263,7 @@ G_MODULE_EXPORT void do_close (GtkWidget *widget, gpointer data)
     if (strcmp (id, "main_window") == 0)
     {
       save_window_attributes_and_hide (id);
-      g_list_foreach (gw_tab_searchitems, (GFunc) gw_ui_cancel_search_by_searchitem, NULL);
+      gw_ui_tab_cancel_all_searches ();
       gtk_main_quit ();
     }
     else if (strcmp (id, "radicals_window") == 0 || strcmp (id, "kanjipad_window") == 0)
@@ -280,7 +279,7 @@ G_MODULE_EXPORT void do_close (GtkWidget *widget, gpointer data)
       }
       else
       {
-        g_list_foreach (gw_tab_searchitems, (GFunc) gw_ui_cancel_search_by_searchitem, NULL);
+        gw_ui_tab_cancel_all_searches ();
         gtk_main_quit ();
       }
     }
@@ -357,7 +356,7 @@ G_MODULE_EXPORT gboolean do_close_on_escape (GtkWidget *widget,
 //!
 G_MODULE_EXPORT void do_quit (GtkWidget *widget, gpointer data)
 {
-    g_list_foreach (gw_tab_searchitems, (GFunc) gw_ui_cancel_search_by_searchitem, NULL);
+    gw_ui_tab_cancel_all_searches ();
     do_close (widget, data);
     gtk_main_quit ();
 }
@@ -383,7 +382,7 @@ G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
     item = (GwSearchItem*) data;
 
     //Make sure searches done from the history are pointing at a valid target
-    item->target_tb = (gpointer) get_gobject_from_target (item->target);
+    item->target_tb = (gpointer) get_gobject_by_target (item->target);
 
     //Checks to make sure everything is sane
     if (gw_ui_cancel_search_for_current_tab () == FALSE)
@@ -409,7 +408,8 @@ G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
     //Add tab reference to searchitem
     GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
     int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
-    GList *list = g_list_nth (gw_tab_searchitems, page_num);
+    GList *list = gw_tab_get_searchitem_list ();
+    list = g_list_nth (list, page_num);
     list->data = hl->current;
 
     gw_search_get_results (hl->current);
@@ -514,7 +514,7 @@ G_MODULE_EXPORT void do_save_as (GtkWidget *widget, gpointer data)
     //Prepare the text
     gchar *text;
     //Get the region of text to be saved if some text is highlighted
-    text = gw_ui_get_text_from_text_buffer (GW_TARGET_RESULTS);
+    text = gw_ui_buffer_get_text_by_target (GW_TARGET_RESULTS);
 
     //Run the save as dialog
     if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
@@ -562,7 +562,7 @@ G_MODULE_EXPORT void do_save (GtkWidget *widget, gpointer data)
     window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
 
     gchar *text;
-    text = gw_ui_get_text_from_text_buffer (GW_TARGET_RESULTS);
+    text = gw_ui_buffer_get_text_by_target (GW_TARGET_RESULTS);
 
     //Pop up a save dialog if the user hasn't saved before
     if (save_path[0] == '\0')
@@ -773,7 +773,7 @@ G_MODULE_EXPORT void do_dictionary_changed_action (GtkWidget *widget, gpointer d
 G_MODULE_EXPORT void do_select_all (GtkWidget *widget, gpointer data)
 {
     guint TARGET;
-    TARGET = gw_ui_get_current_widget_focus ("main_window");
+    TARGET = gw_ui_get_current_target_focus ("main_window");
 
     gw_ui_text_select_all_by_target (TARGET);
 }
@@ -796,7 +796,7 @@ G_MODULE_EXPORT void do_select_all (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void do_paste (GtkWidget *widget, gpointer data)
 {
     guint TARGET;
-    TARGET = gw_ui_get_current_widget_focus ("main_window");
+    TARGET = gw_ui_get_current_target_focus ("main_window");
     gw_ui_paste_text (TARGET);
 }
 
@@ -818,7 +818,7 @@ G_MODULE_EXPORT void do_paste (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void do_cut (GtkWidget *widget, gpointer data)
 {
     guint TARGET;
-    TARGET = gw_ui_get_current_widget_focus ("main_window");
+    TARGET = gw_ui_get_current_target_focus ("main_window");
     gw_ui_cut_text (TARGET);
 }
 
@@ -840,7 +840,7 @@ G_MODULE_EXPORT void do_cut (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void do_copy (GtkWidget *widget, gpointer data)
 {
     guint TARGET;
-    TARGET = gw_ui_get_current_widget_focus ("main_window");
+    TARGET = gw_ui_get_current_target_focus ("main_window");
     gw_ui_copy_text (TARGET);
 }
 
@@ -866,7 +866,7 @@ G_MODULE_EXPORT gboolean do_update_clipboard_on_focus_change (GtkWidget        *
 {
     gw_ui_close_suggestion_box ();
     guint TARGET;
-    TARGET = gw_ui_get_current_widget_focus ("main_window");
+    TARGET = gw_ui_get_current_target_focus ("main_window");
 
     //Set up the references to the actions
     GtkAction *copy_action, *cut_action, *paste_action, *select_all_action;
@@ -945,7 +945,7 @@ G_MODULE_EXPORT gboolean do_update_clipboard_on_focus_change (GtkWidget        *
 //!
 G_MODULE_EXPORT void do_print (GtkWidget *widget, gpointer data)
 {
-    g_list_foreach (gw_tab_searchitems, (GFunc) gw_ui_cancel_search_by_searchitem, NULL);
+    gw_ui_tab_cancel_all_searches ();
     gw_print ();
 }
 
@@ -1069,7 +1069,7 @@ G_MODULE_EXPORT void do_help (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void do_glossary (GtkWidget *widget, gpointer data)
 {
-    char *uri = g_build_filename ("ghelp://", DATADIR2, "gnome", "help", "gwaei", "C", "glossary.xml", NULL);
+    char *uri = g_build_filename ("ghelp://", DATADIR, "gnome", "help", "gwaei", "C", "glossary.xml", NULL);
 
     GError *err = NULL;
     gtk_show_uri (NULL, uri, gtk_get_current_event_time (), &err);
@@ -1092,7 +1092,7 @@ G_MODULE_EXPORT void do_glossary (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void do_about (GtkWidget *widget, gpointer data)
 {
     char pixbuf_path[FILENAME_MAX];
-    strcpy (pixbuf_path, DATADIR2);
+    strcpy (pixbuf_path, DATADIR);
     strcat (pixbuf_path, "/");
     strcat (pixbuf_path, PACKAGE);
     strcat (pixbuf_path, "/logo.png");
@@ -1176,6 +1176,7 @@ G_MODULE_EXPORT gboolean do_key_press_modify_status_update (GtkWidget *widget,
                                                             gpointer  *data  )
 {
     guint keyval = ((GdkEventKey*)event)->keyval;
+    GtkWidget* search_entry = get_widget_by_target (GW_TARGET_ENTRY);
 
     if ((keyval == GDK_ISO_Enter || keyval == GDK_Return) && gtk_widget_is_focus (search_entry))
     {
@@ -1323,7 +1324,7 @@ G_MODULE_EXPORT gboolean do_focus_change_on_key_press (GtkWidget *widget,
 G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
 {
     gchar query[MAX_QUERY];
-    gw_ui_strcpy_from_widget (query, MAX_QUERY, GW_TARGET_ENTRY);
+    gw_ui_strncpy_text_from_widget_by_target (query, GW_TARGET_ENTRY, MAX_QUERY);
 
     if (start_search_in_new_window == TRUE)
       do_new_tab (NULL, NULL);
@@ -1332,7 +1333,7 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
 
     GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
     int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
-    GwSearchItem *item = g_list_nth_data (gw_tab_searchitems, page_num);
+    GwSearchItem *item = g_list_nth_data (gw_tab_get_searchitem_list (), page_num);
 
     GList *list = gw_dictlist_get_selected ();
     GwDictInfo *dictionary = list->data;
@@ -1377,7 +1378,7 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
     }
 
     //Add tab reference to searchitem
-    list = g_list_nth (gw_tab_searchitems, page_num);
+    list = g_list_nth (gw_tab_get_searchitem_list (), page_num);
     list->data = hl->current;
 
     //Start the search
@@ -1385,7 +1386,7 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
     gw_guarantee_first_tab ();
     gw_tab_set_current_tab_text (query);
     gw_ui_set_query_entry_text_by_searchitem (hl->current);
-    gw_ui_close_kanji_results();
+    gw_ui_close_kanji_sidebar ();
     gw_search_get_results (hl->current);
 
     //Update the toolbar buttons
@@ -1644,8 +1645,7 @@ G_MODULE_EXPORT void do_search_drag_data_recieved (GtkWidget        *widget,
     if (strcmp (gtk_buildable_get_name (GTK_BUILDABLE (widget)), "search_entry") == 0)
       return;
 
-    GtkWidget *entry;
-    entry = GTK_WIDGET (search_entry);
+    GtkWidget* entry = get_widget_by_target (GW_TARGET_ENTRY);
 
     char* text = gtk_selection_data_get_text (data);
     g_strstrip(text);
@@ -1686,6 +1686,7 @@ G_MODULE_EXPORT void do_search_drag_data_recieved (GtkWidget        *widget,
 G_MODULE_EXPORT void do_update_button_states_based_on_entry_text (GtkWidget *widget,
                                                                   gpointer   data   )
 {
+    GtkWidget *search_entry = get_widget_by_target (GW_TARGET_ENTRY);
     int length = gtk_entry_get_text_length (GTK_ENTRY (search_entry));
 
     //Show the clear icon when approprate

@@ -157,14 +157,18 @@ gboolean gw_console_install_dictinfo (GwDictInfo *di)
 //!
 static void print_about_program ()
 {
-    printf ("[1;31m%s Version %s[0m with ", PACKAGE, VERSION);
-    if (strcmp (INTERFACE, "NONE") == 0)
-      printf ("no");
-    else if (strcmp (INTERFACE, "gwaei"))
-      printf("the Gnome");
-    printf (" front end compiled in.\n\n");
-    printf ("[0mCheck for the latest updates at <http://gwaei.sourceforge.net/>\n");
-    printf ("Code Copyright (C) 2009 Zachary Dovel[0m\n\n");
+#ifdef GW_WITH_GTK
+    printf ("gWaei version %s with the Gnome font end compiled in.", PACKAGE, VERSION);
+#elif GW_WITH_QT
+    printf ("gWaei version %s with the QT font end compiled in.", PACKAGE, VERSION);
+#else
+    printf ("gWaei version %s with no end compiled in.", PACKAGE, VERSION);
+#endif
+
+    printf ("\n\n");
+
+    printf ("Check for the latest updates at <http://gwaei.sourceforge.net/>\n");
+    printf ("Code Copyright (C) 2009-2010 Zachary Dovel\n\n");
 
     printf ("License:\n");
     printf ("Copyright (C) 2008 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\nThis is free software: you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.\n\n");

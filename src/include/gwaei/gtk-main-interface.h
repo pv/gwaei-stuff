@@ -1,8 +1,11 @@
 #ifndef GW_GTK_MAIN_INTERFACE_INCLUDED
 #define GW_GTK_MAIN_INTERFACE_INCLUDED
 
+#include <gtk/gtk.h>
 
-gpointer get_gobject_from_target (const int);
+gpointer get_gobject_by_target (GwTargetOutput);
+GtkWidget* get_widget_by_target (GwTargetOutput);
+
 void initialize_text_views (void);
 void initialize_window_attributes (char* window_id);
 void save_window_attributes (char* window_id);
@@ -13,13 +16,12 @@ void update_history_popup (void);
 void gw_ui_update_total_results_label (GwSearchItem*);
 gboolean gw_load_gtk_builder_xml (const char );
 char* gw_ui_get_text_slice_from_buffer (int, int, int);
-
 const char* gw_ui_get_active_dictionary (void);
-char* gw_ui_get_text_from_text_buffer (const int);
+char* gw_ui_buffer_get_text_by_target (GwTargetOutput);
 void initialize_gui_interface (int, char**);
+
 gboolean gw_ui_cancel_search (gpointer);
 gboolean gw_ui_cancel_search_by_searchitem (GwSearchItem*);
-
 
 
 void gw_ui_initialize_interface_output_generics (void);

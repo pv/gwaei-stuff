@@ -584,9 +584,9 @@ void do_spellcheck_pref_changed_action (GConfClient* client,
     value = gconf_entry_get_value(entry);
 
     if (value != NULL && value->type == GCONF_VALUE_BOOL)
-      gw_sexy_ui_set_spellcheck(gconf_value_get_bool(value));
+      gw_sexy_ui_set_spellcheck (gconf_value_get_bool(value));
     else
-      gw_sexy_ui_set_spellcheck(TRUE);
+      gw_sexy_ui_set_spellcheck (TRUE);
 }
 
 
@@ -631,7 +631,7 @@ void do_color_value_changed_action (GConfClient* client,
 
       //Finish up
       gw_ui_set_color_to_swatch (widget_name, hex_color_string);
-      gw_ui_reload_tagtable_tags ();
+      gw_ui_buffer_reload_tagtable_tags ();
     }
 }
 
@@ -666,12 +666,8 @@ void gw_prefs_initialize_preferences()
   client = gconf_client_get_default ();
   
   //Add directory listeners gwaei will be using
-  gconf_client_add_dir   ( client, GCPATH_INTERFACE, 
-                           GCONF_CLIENT_PRELOAD_NONE,
-                           NULL                             );
-  gconf_client_add_dir   ( client, GCPATH_GW, 
-                           GCONF_CLIENT_PRELOAD_NONE,
-                           NULL                            );
+  gconf_client_add_dir (client, GCPATH_INTERFACE, GCONF_CLIENT_PRELOAD_NONE, NULL);
+  gconf_client_add_dir (client, GCPATH_GW, GCONF_CLIENT_PRELOAD_NONE, NULL);
 
   //Add preference change notifiers
   gw_prefs_add_change_listener (GCKEY_GW_LESS_RELEVANT_SHOW, do_less_relevant_show_pref_changed_action, NULL);
