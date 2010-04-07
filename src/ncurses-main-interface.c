@@ -611,11 +611,12 @@ void gw_ncurses_append_kanjidict_results (GwSearchItem *item)
 			wprintw(results,"\n");
 
 		if (resultline->readings[0])
-			wprintw(results,"%s%s", gettext("Readings:"), resultline->readings[0]);
-		if (resultline->readings[1])
-			wprintw(results,"%s", resultline->readings[1]);
+			wprintw(results,"%s%s\n", gettext("Readings:"), resultline->readings[0]);
+    if (resultline->readings[1])
+      wprintw(results,"%s%s\n", gettext("Name:"), resultline->readings[1]);
+    if (resultline->readings[2])
+      wprintw(results,"%s%s\n", gettext("Radical Name:"), resultline->readings[2]);
 
-		wprintw(results,"\n");
 		if (resultline->meanings)
 			wprintw(results,"%s%s\n", gettext("Meanings:"), resultline->meanings);
 		wprintw(results,"\n");

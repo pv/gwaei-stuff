@@ -3319,11 +3319,28 @@ void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item)
         gtk_text_buffer_insert_with_tags_by_name (tb, &iter, gettext("Readings:"), -1, "important", NULL);
         gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); start_offset = gtk_text_iter_get_line_offset (&iter);
         gtk_text_buffer_insert (tb, &iter, resultline->readings[0], -1);
-        if (resultline->readings[1] != NULL)
-        {
-          gtk_text_buffer_insert (tb, &iter, " ", -1);
-          gtk_text_buffer_insert (tb, &iter, resultline->readings[1], -1);
-        }
+        gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
+        if (item->target == GW_TARGET_RESULTS)
+          add_match_highlights (line, start_offset, end_offset, item);
+        gtk_text_buffer_insert (tb, &iter, "\n", -1);
+        gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); line = gtk_text_iter_get_line (&iter);
+      }
+      if (resultline->readings[1] != NULL)
+      {
+        gtk_text_buffer_insert_with_tags_by_name (tb, &iter, gettext("Name:"), -1, "important", NULL);
+        gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); start_offset = gtk_text_iter_get_line_offset (&iter);
+        gtk_text_buffer_insert (tb, &iter, resultline->readings[1], -1);
+        gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
+        if (item->target == GW_TARGET_RESULTS)
+          add_match_highlights (line, start_offset, end_offset, item);
+        gtk_text_buffer_insert (tb, &iter, "\n", -1);
+        gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); line = gtk_text_iter_get_line (&iter);
+      }
+      if (resultline->readings[2] != NULL)
+      {
+        gtk_text_buffer_insert_with_tags_by_name (tb, &iter, gettext("Radical Name:"), -1, "important", NULL);
+        gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); start_offset = gtk_text_iter_get_line_offset (&iter);
+        gtk_text_buffer_insert (tb, &iter, resultline->readings[2], -1);
         gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
         if (item->target == GW_TARGET_RESULTS)
           add_match_highlights (line, start_offset, end_offset, item);

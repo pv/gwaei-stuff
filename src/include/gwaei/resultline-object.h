@@ -51,7 +51,7 @@ struct _GwResultLine {
     //Kanji things
     char *strokes;      //!< Pointer to the number of strokes of a kanji
     char *frequency;    //!< Pointer to the frequency number of a kanji
-    char *readings[2];  //!< Pointer to the readings of a kanji
+    char *readings[3];  //!< Pointer to the readings of a kanji
     char *meanings;     //!< Pointer to the meanings of a kanji
     char *grade;        //!< Pointer to the grade of a kanji
     char *jlpt;         //!< Pointer to the JLPT level of a kanji

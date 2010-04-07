@@ -60,6 +60,7 @@ GwResultLine* gw_resultline_new ()
     temp->frequency = NULL;
     temp->readings[0] = NULL;
     temp->readings[1] = NULL;
+    temp->readings[2] = NULL;
     temp->meanings = NULL;
     temp->grade = NULL;
     temp->jlpt = NULL;
@@ -87,6 +88,7 @@ void gw_resultline_clear_variables (GwResultLine *temp)
     temp->frequency = NULL;
     temp->readings[0] = NULL;
     temp->readings[1] = NULL;
+    temp->readings[2] = NULL;
     temp->meanings = NULL;
     temp->grade = NULL;
     temp->jlpt = NULL;
@@ -121,6 +123,7 @@ void gw_resultline_parse_edict_result_string (GwResultLine *rl)
     rl->frequency = NULL;
     rl->readings[0] = NULL;
     rl->readings[1] = NULL;
+    rl->readings[2] = NULL;
     rl->meanings = NULL;
     rl->grade = NULL;
     rl->jlpt = NULL;
@@ -247,6 +250,7 @@ void gw_resultline_parse_kanjidict_result_string (GwResultLine *rl)
     rl->important = FALSE;
     rl->readings[0] = NULL;
     rl->readings[1] = NULL;
+    rl->readings[2] = NULL;
     rl->meanings = NULL;
     rl->kanji = NULL;
     rl->radicals = NULL;
@@ -322,6 +326,11 @@ void gw_resultline_parse_kanjidict_result_string (GwResultLine *rl)
         *(ptr - 1) = '\0';
         rl->readings[1] = next + 2;
       }
+      //The strange T2 character between kana readings
+      if (g_utf8_get_char (ptr) == L'T' && g_utf8_get_char(next) == L'2') {
+        *(ptr - 1) = '\0';
+        rl->readings[2] = next + 2;
+      }
       ptr = next;
     }
     *ptr = '\0';
@@ -339,51 +348,6 @@ void gw_resultline_parse_kanjidict_result_string (GwResultLine *rl)
       *end[GRADE] = '\0';
     if (found[JLPT])
       *end[JLPT] = '\0';
-}
-
-
-//!
-//! @brief Parses a string for an radical format string
-//!
-//! String parsing for the Jim Breen Radicals dictionary
-//!
-//! @param line line
-//! @param string string
-//!
-void gw_resultline_parse_radicaldict_result_string (GwResultLine *rl)
-{
-    //Reinitialize Variables to help prevent craziness
-    rl->def_start[0] = NULL;
-    rl->def_total = 0;
-    rl->kanji_start = NULL;
-    rl->furigana_start = NULL;
-    rl->classification_start = NULL;
-    rl->important = FALSE;
-    rl->strokes = NULL;
-    rl->frequency = NULL;
-    rl->readings[0] = NULL;
-    rl->readings[1] = NULL;
-    rl->meanings = NULL;
-    rl->grade = NULL;
-    rl->jlpt = NULL;
-    rl->kanji = NULL;
-    rl->radicals = NULL;
-
-    //First generate the grade, stroke, frequency, and jplt fields
-    rl->kanji = rl->string;
-
-    char *temp = NULL;
-
-    if (temp = g_utf8_strchr (rl->string, -1, L'\n'))
-    {
-      *temp = '\0';
-    }
-
-    if (temp = g_utf8_strchr (rl->string, -1, L':'))
-    {
-      *temp = '\0';
-      rl->radicals = temp + 1;
-    }
 }
 
 
@@ -408,6 +372,7 @@ void gw_resultline_parse_examplesdict_result_string (GwResultLine *rl)
     rl->frequency = NULL;
     rl->readings[0] = NULL;
     rl->readings[1] = NULL;
+    rl->readings[2] = NULL;
     rl->meanings = NULL;
     rl->grade = NULL;
     rl->jlpt = NULL;
@@ -498,6 +463,7 @@ void gw_resultline_parse_unknowndict_result_string (GwResultLine *rl)
     rl->frequency = NULL;
     rl->readings[0] = NULL;
     rl->readings[1] = NULL;
+    rl->readings[2] = NULL;
     rl->meanings = NULL;
     rl->grade = NULL;
     rl->jlpt = NULL;

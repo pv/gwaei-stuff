@@ -582,11 +582,12 @@ void gw_console_append_kanjidict_results (GwSearchItem *item)
       printf("\n");
 
     if (resultline->readings[0])
-      printf("%s%s", gettext("Readings:"), resultline->readings[0]);
+      printf("%s%s\n", gettext("Readings:"), resultline->readings[0]);
     if (resultline->readings[1])
-      printf("%s", resultline->readings[1]);
+      printf("%s%s\n", gettext("Name:"), resultline->readings[1]);
+    if (resultline->readings[2])
+      printf("%s%s\n", gettext("Radical Name:"), resultline->readings[2]);
 
-    printf("\n");
     if (resultline->meanings)
       printf("%s%s\n", gettext("Meanings:"), resultline->meanings);
     printf("\n");
