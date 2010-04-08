@@ -407,7 +407,7 @@ char* gw_ui_strdup_all_selected_radicals ()
     {
       if (G_OBJECT_TYPE(radical_togglebutton_list->data) == g_type_from_name("GtkToggleButton"))
       {
-         label_text = gtk_widget_get_name (GTK_WIDGET (radical_togglebutton_list->data));
+         label_text = gtk_buildable_get_name (GTK_BUILDABLE (radical_togglebutton_list->data));
          if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(radical_togglebutton_list->data)))
          {
            a_button_was_in_pressed_state = TRUE;

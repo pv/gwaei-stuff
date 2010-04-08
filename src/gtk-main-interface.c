@@ -757,7 +757,7 @@ void initialize_window_attributes (char* window_id)
 
       //Set the final size
       if (height > gdk_screen_height ())
-        gtk_widget_set_size_request (GTK_WIDGET (window), -1, gdk_screen_height() - 50);
+        gtk_widget_set_size_request (GTK_WIDGET (window), -1, gdk_screen_height() - 100);
       else
         gtk_widget_set_size_request (GTK_WIDGET (window), -1, height);
 
