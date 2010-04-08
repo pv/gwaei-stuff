@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-04-07 07:20-0500\n"
+"POT-Creation-Date: 2010-04-08 01:12-0500\n"
 "PO-Revision-Date: 2010-03-13 17:12+0100\n"
 "Last-Translator: Fabrizio Sabatini <jecnua@gmail.com>\n"
 "Language-Team: Not Applicable\n"
@@ -20,7 +20,7 @@ msgstr ""
 msgid "Other Results"
 msgstr "Altri Risultati"
 
-#: src/console-main-interface.c:76 src/gtk-main-interface.c:2363
+#: src/console-main-interface.c:76 src/gtk-main-interface.c:2364
 #: src/ncurses-main-interface.c:80
 msgid "No results found!"
 msgstr "Nessun risultato trovato!"
@@ -176,67 +176,67 @@ msgid_plural "(%d Relevant)"
 msgstr[0] "(%d Rilevante)"
 msgstr[1] "(%d Rilevanti)"
 
-#: src/console-main-interface.c:549 src/gtk-main-interface.c:3302
+#: src/console-main-interface.c:549 src/gtk-main-interface.c:3303
 #: src/ncurses-main-interface.c:578
 msgid "Radicals:"
 msgstr "Radicali:"
 
-#: src/console-main-interface.c:554 src/gtk-main-interface.c:3356
+#: src/console-main-interface.c:554 src/gtk-main-interface.c:3357
 #: src/ncurses-main-interface.c:583
 msgid "Stroke:"
 msgstr "Tratti:"
 
-#: src/console-main-interface.c:562 src/gtk-main-interface.c:3363
+#: src/console-main-interface.c:562 src/gtk-main-interface.c:3364
 #: src/ncurses-main-interface.c:591
 msgid "Freq:"
 msgstr "Freq:"
 
-#: src/console-main-interface.c:570 src/gtk-main-interface.c:3370
+#: src/console-main-interface.c:570 src/gtk-main-interface.c:3371
 #: src/ncurses-main-interface.c:599
 msgid "Grade:"
 msgstr "Grado:"
 
-#: src/console-main-interface.c:578 src/gtk-main-interface.c:3376
+#: src/console-main-interface.c:578 src/gtk-main-interface.c:3377
 #: src/ncurses-main-interface.c:607
 msgid "JLPT:"
 msgstr "JLPT:"
 
-#: src/console-main-interface.c:585 src/gtk-main-interface.c:3319
+#: src/console-main-interface.c:585 src/gtk-main-interface.c:3320
 #: src/ncurses-main-interface.c:614
 msgid "Readings:"
 msgstr "Lettura:"
 
-#: src/console-main-interface.c:587 src/gtk-main-interface.c:3330
+#: src/console-main-interface.c:587 src/gtk-main-interface.c:3331
 #: src/ncurses-main-interface.c:616
 #, fuzzy
 msgid "Name:"
 msgstr "Nomi:"
 
-#: src/console-main-interface.c:589 src/gtk-main-interface.c:3341
+#: src/console-main-interface.c:589 src/gtk-main-interface.c:3342
 #: src/ncurses-main-interface.c:618
 #, fuzzy
 msgid "Radical Name:"
 msgstr "Radicali:"
 
-#: src/console-main-interface.c:592 src/gtk-main-interface.c:3385
+#: src/console-main-interface.c:592 src/gtk-main-interface.c:3386
 #: src/ncurses-main-interface.c:621
 msgid "Meanings:"
 msgstr "Significato:"
 
 #. TRANSLATORS: The "E" stands for "English"
-#: src/console-main-interface.c:609 src/gtk-main-interface.c:3418
+#: src/console-main-interface.c:609 src/gtk-main-interface.c:3419
 msgid "E:\t"
 msgstr ""
 
 #. TRANSLATORS: The "J" stands for "Japanese"
-#: src/console-main-interface.c:615 src/gtk-main-interface.c:3429
+#: src/console-main-interface.c:615 src/gtk-main-interface.c:3430
 msgid ""
 "\n"
 "J:\t"
 msgstr ""
 
 #. TRANSLATORS: The "D" stands for "Detail"
-#: src/console-main-interface.c:621 src/gtk-main-interface.c:3440
+#: src/console-main-interface.c:621 src/gtk-main-interface.c:3441
 msgid ""
 "\n"
 "D:\t"
@@ -636,12 +636,12 @@ msgid_plural "%d dictionaries are being used."
 msgstr[0] "Sono utilizzati %d dizionari.\n"
 msgstr[1] "Sono utilizzati %d dizionari.\n"
 
-#: src/gtk-main-interface.c:2382
+#: src/gtk-main-interface.c:2383
 #, fuzzy, c-format
 msgid "gWaei Usage Tip #%d: "
 msgstr "gWaei Consigli per l'utilizzo #"
 
-#: src/gtk-main-interface.c:2395
+#: src/gtk-main-interface.c:2396
 #, fuzzy, c-format
 msgid ""
 "Use the Unknown Character from the Insert menu or toolbar in place of "
@@ -655,22 +655,22 @@ msgstr ""
 "interno di Kanjipad, disegnare il numero corretto di tratti e disegnarli "
 "nella direzione corretta è molto importante."
 
-#: src/gtk-main-interface.c:2402
+#: src/gtk-main-interface.c:2403
 msgid "Inputting Unknown Kanji"
 msgstr "Inserire Kanji Sconosciuti"
 
-#: src/gtk-main-interface.c:2419
+#: src/gtk-main-interface.c:2420
 msgid "Getting More Exact Matches"
 msgstr "Sto Cercando Risultati Più Attinenti"
 
-#: src/gtk-main-interface.c:2425
+#: src/gtk-main-interface.c:2426
 msgid ""
 "Use the Word-edge Mark and the Not-word-edge Mark from the insert menu to "
 "get more relevant results.  fish\\b will return results like fish and "
 "selfish , but not fisherman"
 msgstr ""
 
-#: src/gtk-main-interface.c:2433
+#: src/gtk-main-interface.c:2434
 #, fuzzy, c-format
 msgid ""
 "Use the And Character or Or Character to search for results that contain a "
@@ -681,15 +681,15 @@ msgstr ""
 " per cercare risultati che contengono una combinazione di parole che "
 "potrebbero non essere una vicino all'altra.  "
 
-#: src/gtk-main-interface.c:2439
+#: src/gtk-main-interface.c:2440
 msgid "Searching for Multiple Words"
 msgstr "Sto Cercando Parole Multiple"
 
-#: src/gtk-main-interface.c:2456
+#: src/gtk-main-interface.c:2457
 msgid "Make a Vocabulary List"
 msgstr "Fai una Lista dei Vocabolari"
 
-#: src/gtk-main-interface.c:2462
+#: src/gtk-main-interface.c:2463
 #, fuzzy
 msgid ""
 "Specific sections of results can be printed or saved by dragging the mouse "
@@ -701,11 +701,11 @@ msgstr ""
 "trascinando il mouse per evidenziarle.  Usando questo in combinazione con il "
 "comando "
 
-#: src/gtk-main-interface.c:2472
+#: src/gtk-main-interface.c:2473
 msgid "Why Use the Mouse?"
 msgstr "Perché usare il Mouse?"
 
-#: src/gtk-main-interface.c:2478
+#: src/gtk-main-interface.c:2479
 msgid ""
 "Typing something will move the focus to the search input box.  Hitting the "
 "Up or Down arrow key will move the focus to the results pane so you can "
@@ -713,11 +713,11 @@ msgid ""
 "installed dictionaries."
 msgstr ""
 
-#: src/gtk-main-interface.c:2488
+#: src/gtk-main-interface.c:2489
 msgid "Get Ready for the JLPT"
 msgstr "Preparati per il JLPT"
 
-#: src/gtk-main-interface.c:2494
+#: src/gtk-main-interface.c:2495
 #, fuzzy
 msgid ""
 "The Kanji dictionary has some hidden features.  One such one is the ability "
@@ -734,11 +734,11 @@ msgstr ""
 "stai pensando di sottoporti al Japanese Language Proficiency Test, usando la "
 "frase "
 
-#: src/gtk-main-interface.c:2508
+#: src/gtk-main-interface.c:2509
 msgid "Just drag words in!"
 msgstr "Basta trascinarci le parola sopra!"
 
-#: src/gtk-main-interface.c:2514
+#: src/gtk-main-interface.c:2515
 #, fuzzy
 msgid ""
 "If you drag and drop a highlighted word into gWaei's search query input, "
@@ -748,11 +748,11 @@ msgstr ""
 " comincerà automaticamente la ricerca di quel testo.  Questo può essere un "
 "modo carino per trovare velocemente termini mentre si navigano pagine web."
 
-#: src/gtk-main-interface.c:2525
+#: src/gtk-main-interface.c:2526
 msgid "What does (adj-i) mean?"
 msgstr "Che cosa vuol dire (adj-i)?"
 
-#: src/gtk-main-interface.c:2531
+#: src/gtk-main-interface.c:2532
 #, fuzzy
 msgid ""
 "It is part of the terminalogy used by the EDICT group of dictionaries to "
@@ -767,11 +767,11 @@ msgstr ""
 "c'è altro modo di sapere il significato senza cercarlo.\n"
 "\n"
 
-#: src/gtk-main-interface.c:2543
+#: src/gtk-main-interface.c:2544
 msgid "Books are Heavy"
 msgstr "I libri sono pesanti"
 
-#: src/gtk-main-interface.c:2549
+#: src/gtk-main-interface.c:2550
 msgid ""
 "Aways wear a construction helmet when working with books.  They are "
 "dangerous heavy objects that can at any point fall on and injure you.  "
@@ -783,22 +783,22 @@ msgstr ""
 "ferirti. Per favore, avvertite della cosa anche tutti i vostri amici. Dopo "
 "vi ringrazieranno. Davvero."
 
-#: src/gtk-main-interface.c:2774
+#: src/gtk-main-interface.c:2775
 msgid "- A dictionary program for Japanese-English translation."
 msgstr "- Un programma dizionario per traduzioni Giapponese-Inglese."
 
-#: src/gtk-main-interface.c:3132 src/gtk-main-interface.c:3229
+#: src/gtk-main-interface.c:3133 src/gtk-main-interface.c:3230
 msgid "Pop"
 msgstr ""
 
-#: src/gtk-main-interface.c:3536
+#: src/gtk-main-interface.c:3537
 #, fuzzy, c-format
 msgid "Other Result %d"
 msgid_plural "Other Results %d"
 msgstr[0] "Altri Risultati %d"
 msgstr[1] "Altri Risultati %d"
 
-#: src/gtk-main-interface.c:3551
+#: src/gtk-main-interface.c:3552
 #, fuzzy, c-format
 msgid "Main Result %d"
 msgid_plural "Main Results %d"
@@ -813,57 +813,25 @@ msgid ""
 "<b>Radical Name:</b> %s"
 msgstr ""
 
-#. TRANSLATORS: The "%s" stands for the long name of the dictionary (like "English Dictionary" or "Kanji Dictionary")
-#: src/gtk-settings-callbacks.c:129
-#, fuzzy, c-format
-msgid "Syncing %s with server..."
-msgstr "Sincronizzando %s dizionari con il server..."
-
-#. TRANSLATORS: The "%s" stands for the long name of the dictionary (like "English Dictionary" or "Kanji Dictionary")
-#: src/gtk-settings-callbacks.c:146
-#, c-format
-msgid "Finalizing %s changes..."
-msgstr "Completando %s cambiamenti..."
-
-#: src/gtk-settings-callbacks.c:162
-msgid "Recreating Mixed dictionary..."
-msgstr "Ricreo il Dizionario Misto..."
-
-#: src/gtk-settings-callbacks.c:173
-msgid "Resplitting Names dictionary..."
-msgstr "Risuddivido il dizionario dei Nomi..."
-
-#: src/gtk-settings-callbacks.c:196
-msgid "Finishing..."
-msgstr "Sto Finendo..."
-
-#: src/gtk-settings-callbacks.c:211
-msgid "Update was cancelled"
-msgstr "L'aggiornamento è stato cancellato"
-
-#: src/gtk-settings-callbacks.c:221
-msgid "Dictionary update finished"
-msgstr "Finito l'aggiornamento dei dizionari"
-
-#: src/gtk-settings-callbacks.c:298
+#: src/gtk-settings-callbacks.c:300
 #: src/gtk-settings-interface-install-line.c:63
 msgid "Installed"
 msgstr "Installato"
 
-#: src/gtk-settings-callbacks.c:306 src/gtk-settings-callbacks.c:496
+#: src/gtk-settings-callbacks.c:308 src/gtk-settings-callbacks.c:498
 msgid "Installing..."
 msgstr "Installazione in corso..."
 
-#: src/gtk-settings-callbacks.c:460
+#: src/gtk-settings-callbacks.c:462
 msgid "Cancelling..."
 msgstr "Sto Cancellando..."
 
-#: src/gtk-settings-callbacks.c:476
+#: src/gtk-settings-callbacks.c:478
 #: src/gtk-settings-interface-install-line.c:68
 msgid "Not Installed"
 msgstr "Non Installato"
 
-#: src/gtk-settings-callbacks.c:668
+#: src/gtk-settings-callbacks.c:670
 msgid "Dictionary File Select"
 msgstr "Seleziona il File Dizionario"
 
@@ -1149,6 +1117,28 @@ msgstr "<b>Gestione Manuale Dizionari</b>"
 #: src/gtk-builder-xml/settings.glade:866
 msgid "Advanced"
 msgstr "Avanzato"
+
+#, fuzzy
+#~ msgid "Syncing %s with server..."
+#~ msgstr "Sincronizzando %s dizionari con il server..."
+
+#~ msgid "Finalizing %s changes..."
+#~ msgstr "Completando %s cambiamenti..."
+
+#~ msgid "Recreating Mixed dictionary..."
+#~ msgstr "Ricreo il Dizionario Misto..."
+
+#~ msgid "Resplitting Names dictionary..."
+#~ msgstr "Risuddivido il dizionario dei Nomi..."
+
+#~ msgid "Finishing..."
+#~ msgstr "Sto Finendo..."
+
+#~ msgid "Update was cancelled"
+#~ msgstr "L'aggiornamento è stato cancellato"
+
+#~ msgid "Dictionary update finished"
+#~ msgstr "Finito l'aggiornamento dei dizionari"
 
 #~ msgid ""
 #~ "Looks like this may be your initial install.  I'm just going to center "

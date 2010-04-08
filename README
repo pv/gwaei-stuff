@@ -21,7 +21,7 @@ TABLE OF CONTENTS
 1.0 PREREQUISITES:
 
   To run gWaei 1.2, an environment with at least gtk+-2.16/glib-2.9.0,
-  gconf-2.24.0, curl 7.19.6, gnome-doc-utils-0.14.0, libncursesw5-5.7, and
+  gconf-2.24.0, curl 7.19.6, gnome-doc-utils-0.14.0, libncurses5-5.7, and
   libsexy-0.1.11 are required.  Additionally, you will want to have rsync, gzip
   and kanjistrokeorders  available.  Most of these are satisfied with a
   default install of Gnome 2.26 or newer which should come with Ubuntu 9.04
@@ -32,7 +32,7 @@ TABLE OF CONTENTS
   required runtime dependancies is:
 
   sudo apt-get install libcurl3 libgtk2.0-0 libsexy2 libgconf2-4\ 
-  ttf-kanjistrokeorders gnome-doc-utils libncursesw5
+  ttf-kanjistrokeorders gnome-doc-utils libncurses5
 
   To compile the program, you will have to have the dev files for  GCONF2,
   GTK+, CURL3, NCURSES and LIBSEXY and available. Users with binary based
@@ -47,14 +47,15 @@ TABLE OF CONTENTS
   required compilation dependancies is:
 
   sudo apt-get install libcurl4-gnutls-dev libgtk2.0-dev libsexy-dev\
-  libgconf2-dev build-essential gnome-doc-utils libunique-dev libncursesw5-dev
+  libgconf2-dev build-essential gnome-doc-utils libunique-dev libncurses5-dev
+  gcc autoconf automake
 
   For inputing Japanese queries, installing some software for Japanese
-  conversion is highly recommended.  Currently, the two main linux methods are
-  UIM or SCIM using the ANTHY engine.  For emergency situations where users
+  conversion is highly recommended.  Currently, the three main linux methods are
+  UIM or SCIM using the ANTHY engine or iBus.  For emergency situations where users
   can't install either, gWaei has internal support for converting romanji
   searches to hiragana/katakana automatically.  (This conversion is disabled
-  for Japanese locals.)
+  for Japanese locals by default in the preferences.)
 
 
 
@@ -67,7 +68,7 @@ TABLE OF CONTENTS
   choose the wrong location for the schemas, installation will usually fail. 
   Most users will install using steps similar to below.
 
-  2.2 CREATION OF MISSING FILES FOR GIT REPO VERSION
+  2.2 CREATION OF MISSING FILES FOR A DOWNLOAD FRESH FROM THE GIT REPO
     $ ./autogen.sh
 
   2.3 BUILDING AND INSTALLING FROM THE SOURCE:
@@ -82,12 +83,10 @@ TABLE OF CONTENTS
 
 3.0 MAKING A DEB PACKAGE:
 
-  Debian packages of gWaei are coming to most distros through Debian.  In the
-  mean time, you can run:
-    $ git clone git://gwaei.git.sourceforge.net/gitroot/gwaei/debian debian
-
-  to get a copy of the debian folder.  You may need to run ./autogen.sh if you
-  got gWaei from the git repositiories.  You then run:
+  Debian packages of gWaei are coming to most distros through Debian.  To build
+  from the sources on the gWaei site, make sure you have dkpg and fakeroot installed in
+  addition to the standard build tools detailed above.  You may need to then run
+  ./autogen.sh.  You then run:
     $ ./configure
     $ make deb
 
