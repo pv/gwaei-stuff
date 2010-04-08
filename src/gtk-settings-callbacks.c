@@ -60,6 +60,7 @@ static int added_to = -1;
 //!
 //! @param nothing A void pionter that currently does nothing
 //!
+/*
 static void *update_thread (void *nothing)
 {
     GQuark quark;
@@ -229,6 +230,7 @@ static void *update_thread (void *nothing)
     gw_ui_update_settings_interface ();
     gdk_threads_leave ();
 }
+*/
 
 
 //!
