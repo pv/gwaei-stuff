@@ -47,9 +47,8 @@ msgid "Installable dictionaries are:\n"
 msgstr "インストール可能の辞書:\n"
 
 #: src/console-main-interface.c:226 src/console-main-interface.c:257
-#, fuzzy
 msgid "none"
-msgstr "  無い\n"
+msgstr "無い"
 
 #: src/console-main-interface.c:243
 #, c-format
@@ -619,17 +618,15 @@ msgid "Cycle _Down"
 msgstr "逆循環させる(_D)"
 
 #: src/gtk-main-interface.c:1314
-#, fuzzy, c-format
+#, c-format
 msgid "%d dictionnary is being used."
 msgid_plural "%d dictionaries are being used."
-msgstr[0] ""
-"辞書が%dつ使われている。\n"
-"\n"
+msgstr[0] "辞書が%dつ使われている。"
 
 #: src/gtk-main-interface.c:2383
-#, fuzzy, c-format
+#, c-format
 msgid "gWaei Usage Tip #%d: "
-msgstr "gWaeiの利用チップ＃"
+msgstr "gWaeiの利用チップ＃%d: "
 
 #: src/gtk-main-interface.c:2396
 #, c-format
@@ -756,13 +753,13 @@ msgid "Pop"
 msgstr ""
 
 #: src/gtk-main-interface.c:3537
-#, fuzzy, c-format
+#, c-format
 msgid "Other Result %d"
 msgid_plural "Other Results %d"
 msgstr[0] "他の候補 %d"
 
 #: src/gtk-main-interface.c:3552
-#, fuzzy, c-format
+#, c-format
 msgid "Main Result %d"
 msgid_plural "Main Results %d"
 msgstr[0] "一致する候補 %d"
