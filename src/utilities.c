@@ -1028,3 +1028,49 @@ char *gw_util_strdup_args_to_query (int argc, char *argv[])
 
       return query_text_data;
 }
+
+//!
+//! @brief Sanitize an input string
+//!
+//! This function will check if the input string is a valid utf-8 sequence,
+//! it will then normalize this string in the Normalization Form Canonical Composition,
+//! then replace the bytes of unprintable unicode glyphe (like control codepoint) with spaces,
+//! and finally will remove leading and trailing spaces if asked to.
+//!
+//! @param text an utf8 encoded string to sanitize
+//! @param strip if true remove leading and trailing spaces
+//! @return a newly allocated sanitized utf8 encoded string or NULL if text was too.
+//!         If the result is non-NULL it must be freed with g_free(). 
+//!
+char* gw_util_sanitize_input(char * text, gboolean strip)
+{
+  if(text == NULL)
+    return NULL;
+  
+  // First validate the utf8 input data
+  char *end; // pointer to the valid end of utf8, it is before or at the end of *text 
+  if (!g_utf8_validate(text, -1, (const char **) &end))
+    *end = '\0'; // uh oh, was not valid utf8, let's put a stop at the last valid position
+    
+  // Then let's normalize utf8 : there can be several encodings for same glyph, 
+  // let's always use the same for the sake of consistency
+  // see http://library.gnome.org/devel/glib/stable/glib-Unicode-Manipulation.html#g-utf8-normalize
+  // and http://en.wikipedia.org/wiki/Unicode_normalization
+  char *ntext = g_utf8_normalize (text, -1,  G_NORMALIZE_NFC ); // this allocate a new char*
+  
+  // for each unicode symbol replace unprintable symbol bytes with spaces  
+  char *ptr = ntext;  // pointer to the start of current glyph
+  char *next = NULL;  // pointer to the start of original next glyph
+  while (*ptr != '\0') 
+  {
+    next = g_utf8_next_char (ptr);
+    if (!g_unichar_isprint (g_utf8_get_char (ptr)) )
+      strncpy(ptr, "         ", next - ptr);
+    ptr = next;
+  }
+
+  if(strip)    
+    g_strstrip(ntext); // no new allocation, just modifying the string
+   
+  return ntext;
+}
