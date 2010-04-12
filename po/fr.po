@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 1.4.0\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-04-12 00:08+0200\n"
-"PO-Revision-Date: 2010-04-12 00:10+0100\n"
+"POT-Creation-Date: 2010-04-12 22:14+0200\n"
+"PO-Revision-Date: 2010-04-12 22:19+0100\n"
 "Last-Translator: Nicolas Laurent\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -192,60 +192,60 @@ msgid_plural "(%d Relevant)"
 msgstr[0] "(%d pertinent)"
 msgstr[1] "(%d pertinents)"
 
-#: src/console-main-interface.c:549 src/gtk-main-interface.c:3303
+#: src/console-main-interface.c:549 src/gtk-main-interface.c:3304
 #: src/ncurses-main-interface.c:578
 msgid "Radicals:"
 msgstr "Radicaux :"
 
-#: src/console-main-interface.c:554 src/gtk-main-interface.c:3357
+#: src/console-main-interface.c:554 src/gtk-main-interface.c:3358
 #: src/ncurses-main-interface.c:583
 msgid "Stroke:"
 msgstr "Traits :"
 
-#: src/console-main-interface.c:562 src/gtk-main-interface.c:3364
+#: src/console-main-interface.c:562 src/gtk-main-interface.c:3365
 #: src/ncurses-main-interface.c:591
 msgid "Freq:"
 msgstr "Fréq. :"
 
-#: src/console-main-interface.c:570 src/gtk-main-interface.c:3371
+#: src/console-main-interface.c:570 src/gtk-main-interface.c:3372
 #: src/ncurses-main-interface.c:599
 msgid "Grade:"
 msgstr "Grade :"
 
-#: src/console-main-interface.c:578 src/gtk-main-interface.c:3377
+#: src/console-main-interface.c:578 src/gtk-main-interface.c:3378
 #: src/ncurses-main-interface.c:607
 msgid "JLPT:"
 msgstr "JLPT :"
 
-#: src/console-main-interface.c:585 src/gtk-main-interface.c:3320
+#: src/console-main-interface.c:585 src/gtk-main-interface.c:3321
 #: src/ncurses-main-interface.c:614
 msgid "Readings:"
 msgstr "Lectures :"
 
-#: src/console-main-interface.c:587 src/gtk-main-interface.c:3331
+#: src/console-main-interface.c:587 src/gtk-main-interface.c:3332
 #: src/ncurses-main-interface.c:616
 msgid "Name:"
 msgstr "Nom :"
 
-#: src/console-main-interface.c:589 src/gtk-main-interface.c:3342
+#: src/console-main-interface.c:589 src/gtk-main-interface.c:3343
 #: src/ncurses-main-interface.c:618
 msgid "Radical Name:"
 msgstr "Radicaux :"
 
-#: src/console-main-interface.c:592 src/gtk-main-interface.c:3386
+#: src/console-main-interface.c:592 src/gtk-main-interface.c:3387
 #: src/ncurses-main-interface.c:621
 msgid "Meanings:"
 msgstr "Signification : "
 
 # E: English
 #. TRANSLATORS: The "E" stands for "English"
-#: src/console-main-interface.c:609 src/gtk-main-interface.c:3419
+#: src/console-main-interface.c:609 src/gtk-main-interface.c:3420
 msgid "E:\t"
 msgstr "E:\t"
 
 # J: Japanese
 #. TRANSLATORS: The "J" stands for "Japanese"
-#: src/console-main-interface.c:615 src/gtk-main-interface.c:3430
+#: src/console-main-interface.c:615 src/gtk-main-interface.c:3431
 msgid ""
 "\n"
 "J:\t"
@@ -255,7 +255,7 @@ msgstr ""
 
 # D: Detail
 #. TRANSLATORS: The "D" stands for "Detail"
-#: src/console-main-interface.c:621 src/gtk-main-interface.c:3441
+#: src/console-main-interface.c:621 src/gtk-main-interface.c:3442
 msgid ""
 "\n"
 "D:\t"
@@ -354,19 +354,19 @@ msgstr "Échec de lecture du fichier"
 msgid "Success"
 msgstr "Succès"
 
-#: src/gtk-main-callbacks.c:495
+#: src/gtk-main-callbacks.c:493
 msgid "Save As"
 msgstr "Enregistrer sous"
 
-#: src/gtk-main-callbacks.c:507 src/gtk-main-callbacks.c:581
+#: src/gtk-main-callbacks.c:505 src/gtk-main-callbacks.c:579
 msgid "vocabulary.txt"
 msgstr "vocabulaire.txt"
 
-#: src/gtk-main-callbacks.c:571
+#: src/gtk-main-callbacks.c:569
 msgid "Save"
 msgstr "Enregistrer"
 
-#: src/gtk-main-callbacks.c:1117
+#: src/gtk-main-callbacks.c:1115
 msgid ""
 "gWaei (C) 2008-2010 Zachary Dovel\n"
 "Kanjipad backend (C) 2002 Owen Taylor\n"
@@ -376,7 +376,7 @@ msgstr ""
 "Kanjipad backend (C) 2002 Owen Taylor\n"
 "JStroke backend (C) 1997 Robert Wells"
 
-#: src/gtk-main-callbacks.c:1118
+#: src/gtk-main-callbacks.c:1116
 msgid ""
 "Program for Japanese translation and reference. The\n"
 "dictionaries are supplied by Jim Breen's WWWJDIC."
@@ -385,37 +385,35 @@ msgstr ""
 "Les dictionnaires sont fournis par WWWJDIC de Jim Breen."
 
 #. TRANSLATORS: You can add your own name to the translation of this field, it will be displayed in the "about" box when gwaei is run in your language
-#: src/gtk-main-callbacks.c:1122
+#: src/gtk-main-callbacks.c:1120
 msgid "translator-credits"
-msgstr ""
-"Traduction par \n"
-"Nicolas Laurent (2009-2010)"
+msgstr "Nicolas Laurent (2009-2010)"
 
-#: src/gtk-main-callbacks.c:1734
+#: src/gtk-main-callbacks.c:1731
 msgid "A_ppend Selected"
 msgstr "A_jouter la sélection dans"
 
-#: src/gtk-main-callbacks.c:1736
+#: src/gtk-main-callbacks.c:1733
 msgid "Save Selected _As"
 msgstr "Enregister la sélection _sous"
 
-#: src/gtk-main-callbacks.c:1738
+#: src/gtk-main-callbacks.c:1735
 msgid "_Print Selected"
 msgstr "_Imprimer la sélection"
 
-#: src/gtk-main-callbacks.c:1745 src/gtk-main-interface.c:445
+#: src/gtk-main-callbacks.c:1742 src/gtk-main-interface.c:445
 msgid "A_ppend"
 msgstr "A_jouter"
 
-#: src/gtk-main-interface-tabs.c:81
+#: src/gtk-main-interface-tabs.c:87
 msgid "_Close Tab"
 msgstr "_Fermer l'onglet"
 
-#: src/gtk-main-interface-tabs.c:82
+#: src/gtk-main-interface-tabs.c:88
 msgid "_Close"
 msgstr "_Fermer"
 
-#: src/gtk-main-interface-tabs.c:194
+#: src/gtk-main-interface-tabs.c:200
 msgid "(Empty)"
 msgstr "(Vide)"
 
@@ -656,7 +654,7 @@ msgstr "Passer au _suivant"
 
 #: src/gtk-main-interface.c:1314
 #, c-format
-msgid "%d dictionnary is being used."
+msgid "%d dictionary is being used."
 msgid_plural "%d dictionaries are being used."
 msgstr[0] "%d dictionnaire utilisé."
 msgstr[1] "%d dictionnaires utilisés."
@@ -836,18 +834,18 @@ msgstr ""
 msgid "- A dictionary program for Japanese-English translation."
 msgstr "- Un dictionnaire logiciel pour la traduction Japonais-Anglais"
 
-#: src/gtk-main-interface.c:3133 src/gtk-main-interface.c:3230
+#: src/gtk-main-interface.c:3134 src/gtk-main-interface.c:3231
 msgid "Pop"
 msgstr "Pop."
 
-#: src/gtk-main-interface.c:3537
+#: src/gtk-main-interface.c:3538
 #, c-format
 msgid "Other Result %d"
 msgid_plural "Other Results %d"
 msgstr[0] "%d résultat similaire"
 msgstr[1] "%d résultats similaires"
 
-#: src/gtk-main-interface.c:3552
+#: src/gtk-main-interface.c:3553
 #, c-format
 msgid "Main Result %d"
 msgid_plural "Main Results %d"
@@ -855,6 +853,7 @@ msgstr[0] "%d résultat principal"
 msgstr[1] "%d résultats principaux"
 
 #: src/gtk-printing.c:311
+#, c-format
 msgid "Page %d"
 msgstr "Page %d"
 
