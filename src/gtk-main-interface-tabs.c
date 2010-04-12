@@ -63,6 +63,12 @@ GList *gw_tab_get_searchitem_list ()
     return gw_tab_searchitems;
 }
 
+void gw_tab_set_searchitem_by_page_num (GwSearchItem *item, int page_num)
+{
+    GList* list = g_list_nth (gw_tab_searchitems, page_num);
+    list->data = item;
+}
+
 
 //!
 //! @brief Updates the tab and surrounding interface to reflect the current tab

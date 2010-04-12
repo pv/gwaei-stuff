@@ -1311,7 +1311,7 @@ int rebuild_combobox_dictionary_list()
     gw_ui_update_settings_interface();
 
     //Finish
-    printf(ngettext("%d dictionnary is being used.", "%d dictionaries are being used.",j), j);
+    printf(ngettext("%d dictionary is being used.", "%d dictionaries are being used.",j), j);
     printf("\n\n");
     return j;
 }
@@ -2910,7 +2910,6 @@ gboolean gw_ui_cancel_search_by_tab_content (gpointer container)
         return  gw_ui_cancel_search_by_searchitem (item);
       }
     }
-    printf("WARNING: Could not find search to cancel. Something went wrong.\n");
     return FALSE;
 }
 
@@ -2937,7 +2936,9 @@ gboolean gw_ui_cancel_search_by_tab_number (const int page_num)
     if (content != NULL)
       return gw_ui_cancel_search_by_tab_content (content);
     else
+    {
       return TRUE;
+    }
 }
 
 

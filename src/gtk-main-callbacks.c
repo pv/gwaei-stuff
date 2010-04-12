@@ -408,9 +408,7 @@ G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
     //Add tab reference to searchitem
     GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
     int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
-    GList *list = gw_tab_get_searchitem_list ();
-    list = g_list_nth (list, page_num);
-    list->data = hl->current;
+    gw_tab_set_searchitem_by_page_num (hl->current, page_num);
 
     gw_search_get_results (hl->current);
     gw_ui_update_history_popups ();
@@ -1378,8 +1376,7 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
     }
 
     //Add tab reference to searchitem
-    list = g_list_nth (gw_tab_get_searchitem_list (), page_num);
-    list->data = hl->current;
+    gw_tab_set_searchitem_by_page_num (hl->current, page_num);
 
     //Start the search
     //Set tab text

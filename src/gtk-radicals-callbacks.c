@@ -131,6 +131,11 @@ G_MODULE_EXPORT void do_radical_search (GtkWidget *widget, gpointer data)
  
     hl->current = gw_searchitem_new (query_text, di, GW_TARGET_RESULTS);
 
+    //Set the search item reference in the tabs
+    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+    gw_tab_set_searchitem_by_page_num (hl->current, page_num);
+
     //Start the search
     gw_search_get_results (hl->current);
 
