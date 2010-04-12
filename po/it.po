@@ -1127,12 +1127,8 @@ msgstr "Avanzato"
 #~ "per te. Mi potrai ringraziare più tardi %d %d\n"
 #~ msgid ": "
 #~ msgstr ": "
-<<<<<<< HEAD
-
-=======
 #~ msgid "Page "
 #~ msgstr "Pagina "
->>>>>>> 7e1af007deffb5d34af211fa64d352b5283b9a75
 #~ msgid "Installable:"
 #~ msgstr "Installabili:"
 #~ msgid "All dictionaries are already installed"
