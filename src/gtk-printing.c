@@ -303,23 +303,26 @@ static void draw_page (GtkPrintOperation *operation,
     pango_font_description_free (desc);
  
     //Get the text from the text_buffer
-    char *input_text, *output_text;
-    input_text = gtk_text_buffer_get_text(GTK_TEXT_BUFFER (tb),
-                                          page->data, &pi->page_end_line,
-                                          FALSE                          );
-
-    output_text = malloc ((sizeof(char) * strlen(input_text)) + 50);
-
-    //Copy the data to the output_text string
+    char *input_text = NULL;
+    input_text = gtk_text_buffer_get_text (GTK_TEXT_BUFFER (tb),
+                                           page->data, &pi->page_end_line,
+                                           FALSE                          );
     char *page_number = NULL;
-    page_number = g_strdup_printf ("Page %d", page_nr + 1);
-    if (page_number != NULL)
+    page_number = g_strdup_printf (gettext("Page %d"), page_nr + 1);
+    char *output_text = NULL;
+    output_text = malloc (strlen(input_text) + strlen(page_number) + 100);
+
+    if (input_text == NULL || page_number == NULL || output_text == NULL)
     {
-      strcat (output_text, page_number);
-      strcat (output_text, "\n\n");
-      g_free (page_number);
-      page_number = NULL;
+      if (input_text != NULL) g_free (input_text);
+      if (page_number != NULL) g_free (page_number);
+      if (output_text != NULL) free (output_text);
+      return;
     }
+
+    strcpy (output_text, "");
+    strcat (output_text, page_number);
+    strcat (output_text, "\n\n");
     strcat (output_text, input_text);
     
     //Add the text to the  pango context
@@ -336,8 +339,21 @@ static void draw_page (GtkPrintOperation *operation,
     pango_cairo_show_layout (cr, layout);
     
     //Cleanup
-    g_free(input_text);
-    g_free(output_text);
+    if (input_text != NULL)
+    {
+      g_free(input_text);
+      input_text = NULL;
+    }
+    if (output_text != NULL)
+    {
+      free(output_text);
+      output_text = NULL;
+    }
+    if (page_number != NULL)
+    {
+      g_free (page_number);
+      page_number = NULL;
+    }
     g_object_unref (layout);
 }
 
