@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 1.4.0\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-04-12 06:00-0400\n"
-"PO-Revision-Date: 2010-04-06 01:22+0100\n"
+"POT-Creation-Date: 2010-04-12 00:08+0200\n"
+"PO-Revision-Date: 2010-04-12 00:10+0100\n"
 "Last-Translator: Nicolas Laurent\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
-"X-Poedit-Basepath: /home/nicolas/dev/japanese/gwaei-main/\n"
+"X-Poedit-Basepath: /home/nicolas/dev/japanese/gwaei\n"
 
 #: src/console-main-interface.c:67 src/ncurses-main-interface.c:124
 msgid "Other Results"
@@ -210,7 +210,7 @@ msgstr "Fréq. :"
 #: src/console-main-interface.c:570 src/gtk-main-interface.c:3371
 #: src/ncurses-main-interface.c:599
 msgid "Grade:"
-msgstr "Niveau :"
+msgstr "Grade :"
 
 #: src/console-main-interface.c:578 src/gtk-main-interface.c:3377
 #: src/ncurses-main-interface.c:607
@@ -224,13 +224,11 @@ msgstr "Lectures :"
 
 #: src/console-main-interface.c:587 src/gtk-main-interface.c:3331
 #: src/ncurses-main-interface.c:616
-#, fuzzy
 msgid "Name:"
-msgstr "Noms :"
+msgstr "Nom :"
 
 #: src/console-main-interface.c:589 src/gtk-main-interface.c:3342
 #: src/ncurses-main-interface.c:618
-#, fuzzy
 msgid "Radical Name:"
 msgstr "Radicaux :"
 
@@ -393,19 +391,19 @@ msgstr ""
 "Traduction par \n"
 "Nicolas Laurent (2009-2010)"
 
-#: src/gtk-main-callbacks.c:1725
+#: src/gtk-main-callbacks.c:1734
 msgid "A_ppend Selected"
 msgstr "A_jouter la sélection dans"
 
-#: src/gtk-main-callbacks.c:1727
+#: src/gtk-main-callbacks.c:1736
 msgid "Save Selected _As"
 msgstr "Enregister la sélection _sous"
 
-#: src/gtk-main-callbacks.c:1729
+#: src/gtk-main-callbacks.c:1738
 msgid "_Print Selected"
 msgstr "_Imprimer la sélection"
 
-#: src/gtk-main-callbacks.c:1736 src/gtk-main-interface.c:445
+#: src/gtk-main-callbacks.c:1745 src/gtk-main-interface.c:445
 msgid "A_ppend"
 msgstr "A_jouter"
 
@@ -792,10 +790,10 @@ msgid ""
 "gWaei will automatically start a search using that text.  This can be a nice "
 "way to quickly look up words while browsing webpages. "
 msgstr ""
-"Si vous glissez et déposez un mot dans la zone de recherche de gWaei, le "
+"Si vous glissez et déposez un mot dans la zone de résultats de gWaei, le "
 "logiciel lancera automatiquement une recherche sur celui-ci. Ceci peut-être "
-"un moyen sympathique de rapidement trouver des mots lors de vos recherches "
-"sur le web."
+"un bon moyen de rapidement trouver des mots lors de vos recherches sur le "
+"web."
 
 #: src/gtk-main-interface.c:2526
 msgid "What does (adj-i) mean?"
@@ -857,9 +855,8 @@ msgstr[0] "%d résultat principal"
 msgstr[1] "%d résultats principaux"
 
 #: src/gtk-printing.c:311
-#, fuzzy, c-format
 msgid "Page %d"
-msgstr "Page"
+msgstr "Page %d"
 
 #: src/gtk-radicals-interface.c:359
 #, c-format
@@ -991,7 +988,7 @@ msgstr "gWaei Kanjipad"
 #: src/gtk-builder-xml/kanjipad.glade:128
 #: src/gtk-builder-xml/radicals.glade:154
 msgid "C_lear"
-msgstr "_Effacer"
+msgstr "E_ffacer"
 
 #: src/gtk-builder-xml/main.glade:29
 msgid "_File"

@@ -1646,14 +1646,23 @@ G_MODULE_EXPORT void do_search_drag_data_recieved (GtkWidget        *widget,
       return;
 
     GtkWidget* entry = get_widget_by_target (GW_TARGET_ENTRY);
-
-    char* text = gtk_selection_data_get_text (data);
-    g_strstrip(text);
+   
+    char* text = gtk_selection_data_get_text (data);   
+    if (text != NULL)
+    {
+      // Sanitizes text : when drag/dropping text from external sources it 
+      // might contains some invalid utf8 data that we should clean.
+      // (ex: from the anki tool, it has some trailing unicode control char).
+      char* sane_text = gw_util_sanitize_input(text, TRUE);
+      g_free (text);
+      text = sane_text;
+      sane_text = NULL;
+    }
 
     if ((data->length >= 0) && (data->format == 8) && text != NULL)
     {
       do_clear_search (entry, NULL);
-      gtk_entry_set_text (GTK_ENTRY (entry), data->data);
+      gtk_entry_set_text (GTK_ENTRY (entry), text);
       do_search (NULL, NULL);
 
       drag_context->action = GDK_ACTION_COPY;

@@ -26,4 +26,6 @@ gboolean gw_util_is_romaji_str (char*);
 
 char* gw_util_strdup_args_to_query (int, char**);
 
+char* gw_util_sanitize_input(char*, gboolean);
+
 #endif
