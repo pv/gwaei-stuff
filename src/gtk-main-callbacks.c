@@ -1780,22 +1780,39 @@ void do_populate_popup_with_search_options (GtkTextView *entry, GtkMenu *menu, g
     char *menu_text = NULL;
     GtkWidget *menuitem = NULL;
     GtkWidget *menuimage = NULL;
+    gchar *selected_text = NULL;
+    char *query_text = NULL;
     char *search_for_menuitem_text;
     char *websearch_for_menuitem_text;
+    GObject* tb = NULL;
+    GtkTextIter start_iter, end_iter;
+
 
     //Initializations
-    search_for_menuitem_text = gettext("Search for %s in the %s");
-    websearch_for_menuitem_text = gettext("Search for %s on %s");
+    tb = get_gobject_by_target (GW_TARGET_RESULTS);
+    search_for_menuitem_text = gettext("Search for \"%s\" in the %s");
+    websearch_for_menuitem_text = gettext("Search for \"%s\" on %s");
     menuitem = gtk_separator_menu_item_new ();
     gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), GTK_WIDGET (menuitem));
     gtk_widget_show (GTK_WIDGET (menuitem));
+    if (gtk_text_buffer_get_has_selection (GTK_TEXT_BUFFER (tb)))
+    {
+      gtk_text_buffer_get_selection_bounds (GTK_TEXT_BUFFER (tb), &start_iter, &end_iter);
+      query_text = gtk_text_buffer_get_text (GTK_TEXT_BUFFER (tb), &start_iter, &end_iter, FALSE);
+      if (g_utf8_strchr(query_text, -1, L'\n') != NULL) query_text = NULL;
+    }
+    if (query_text == NULL)
+    {
+      query_text = hovered_word;
+    }
+
 
     //Add webpage links
     GList* list =  gw_dictlist_get_dict_by_load_position (0);
     di = list->data;
-    if (di != NULL && (item = gw_searchitem_new (hovered_word, di, GW_TARGET_RESULTS)) != NULL)
+    if (di != NULL && (item = gw_searchitem_new (query_text, di, GW_TARGET_RESULTS)) != NULL)
     {
-      menu_text = g_strdup_printf (websearch_for_menuitem_text, hovered_word, "Goo.ne.jp");
+      menu_text = g_strdup_printf (websearch_for_menuitem_text, item->queryline->string, "Goo.ne.jp");
       if (menu_text != NULL)
       {
         menuitem = GTK_WIDGET (gtk_image_menu_item_new_with_label (menu_text));
@@ -1823,9 +1840,9 @@ void do_populate_popup_with_search_options (GtkTextView *entry, GtkMenu *menu, g
     while (dictionaries[i] != NULL)
     {
       di = gw_dictlist_get_dictinfo_by_alias (dictionaries[i]);
-      if (di != NULL && (item = gw_searchitem_new (hovered_word, di, GW_TARGET_RESULTS)) != NULL)
+      if (di != NULL && (item = gw_searchitem_new (query_text, di, GW_TARGET_RESULTS)) != NULL)
       {
-        menu_text = g_strdup_printf (search_for_menuitem_text, hovered_word, di->long_name);
+        menu_text = g_strdup_printf (search_for_menuitem_text, item->queryline->string, di->long_name);
         if (menu_text != NULL)
         {
           menuitem = GTK_WIDGET (gtk_image_menu_item_new_with_label (menu_text));

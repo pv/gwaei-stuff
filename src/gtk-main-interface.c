@@ -1293,15 +1293,13 @@ int rebuild_combobox_dictionary_list()
 
     item = GTK_WIDGET (gtk_menu_item_new_with_mnemonic(gettext("_Cycle Up")));
     gtk_menu_shell_append (GTK_MENU_SHELL (shell), GTK_WIDGET (item));
-    g_signal_connect (G_OBJECT (item),       "activate",
-        G_CALLBACK (do_cycle_dictionaries_backward), NULL);
+    g_signal_connect (G_OBJECT (item), "activate", G_CALLBACK (do_cycle_dictionaries_backward), NULL);
     gtk_widget_add_accelerator (GTK_WIDGET (item), "activate", accel_group, GDK_Up, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
     gtk_widget_show (GTK_WIDGET (item));
 
     item = GTK_WIDGET (gtk_menu_item_new_with_mnemonic(gettext("Cycle _Down")));
     gtk_menu_shell_append (GTK_MENU_SHELL (shell), GTK_WIDGET (item));
-    g_signal_connect (G_OBJECT (item),       "activate",
-        G_CALLBACK (do_cycle_dictionaries_forward), NULL);
+    g_signal_connect (G_OBJECT (item), "activate", G_CALLBACK (do_cycle_dictionaries_forward), NULL);
     gtk_widget_add_accelerator (GTK_WIDGET (item), "activate", accel_group, GDK_Down, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
     gtk_widget_show (GTK_WIDGET (item));
 
@@ -1616,7 +1614,7 @@ void gw_ui_set_toolbar_style (char *request)
 //!
 //! @param request How to set the toolbar
 //!
-void gw_ui_set_toolbar_show(gboolean request)
+void gw_ui_set_toolbar_show (gboolean request)
 {
     GtkWidget *toolbar;
     toolbar = GTK_WIDGET (gtk_builder_get_object(builder, "toolbar"));
