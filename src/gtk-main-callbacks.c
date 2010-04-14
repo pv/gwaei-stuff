@@ -51,6 +51,7 @@
 #include <gwaei/gtk-printing.h>
 #include <gwaei/gtk-main-interface.h>
 #include <gwaei/gtk-main-interface-tabs.h>
+#include <gwaei/gtk-main-callbacks.h>
 #include <gwaei/gtk-settings-interface.h>
 
 
@@ -61,6 +62,7 @@ static gulong cut_handler_id = 0;
 static gulong paste_handler_id = 0;
 static gulong select_all_handler_id = 0;
 static gboolean start_search_in_new_window = FALSE; 
+static char* hovered_word = NULL; 
 
 
 //!
@@ -143,10 +145,21 @@ G_MODULE_EXPORT gboolean do_get_iter_for_motion (GtkWidget      *widget,
                                                  gpointer        data   )
 {
     gunichar unic;
+    GtkTextIter iter, start, end;
     gint x = event->x;
     gint y = event->y;
 
-    unic = gw_get_hovered_character (&x, &y);
+    //get unichar
+    unic = gw_ui_get_hovered_character (&x, &y, &iter);
+
+    //get word
+    if (gtk_text_iter_starts_word (&iter) == FALSE)
+      gtk_text_iter_backward_word_start (&iter);
+    start = iter;
+    if (gtk_text_iter_ends_word (&iter) == FALSE)
+      gtk_text_iter_forward_word_end (&iter);
+    end = iter;
+    hovered_word = gtk_text_iter_get_visible_slice (&start, &end);
 
     GwDictInfo *di;
     di = gw_dictlist_get_dictinfo_by_alias ("Kanji");
@@ -177,11 +190,12 @@ G_MODULE_EXPORT gboolean do_get_position_for_button_press (GtkWidget      *widge
                                                            GdkEventButton *event,
                                                            gpointer        data    )
 {
+    GtkTextIter iter;
     //Window coordinates
     button_press_x = event->x;
     button_press_y = event->y;
 
-    gw_get_hovered_character (&button_press_x, &button_press_y);
+    gw_ui_get_hovered_character (&button_press_x, &button_press_y, &iter);
 
     return FALSE;
 }
@@ -208,10 +222,10 @@ G_MODULE_EXPORT gboolean do_get_iter_for_button_release (GtkWidget      *widget,
     gint x = event->x;
     gint y = event->y;
     gint trailing = 0;
-    GtkTextIter start;
+    GtkTextIter iter;
 
     gunichar unic;
-    unic = gw_get_hovered_character (&x, &y);
+    unic = gw_ui_get_hovered_character (&x, &y, &iter);
 
     GwDictInfo *di;
     di = gw_dictlist_get_dictinfo_by_alias ("Kanji");
@@ -1749,3 +1763,112 @@ G_MODULE_EXPORT gboolean do_update_icons_for_selection (GtkWidget *widget,
 }
 
 
+//!
+//! @brief Populates the main contextual menu with search options
+//!
+//! @param entry The GtkTexView that was right clicked
+//! @param menu The Popup menu to populate
+//! @param data  Currently unused gpointer containing user data
+//!
+void do_populate_popup_with_search_options (GtkTextView *entry, GtkMenu *menu, gpointer data)
+{
+    if (hovered_word == NULL) return;
+
+    //Declarations
+    GwSearchItem *item = NULL;
+    GwDictInfo *di = NULL;
+    char *menu_text = NULL;
+    GtkWidget *menuitem = NULL;
+    GtkWidget *menuimage = NULL;
+    char *search_for_menuitem_text;
+    char *websearch_for_menuitem_text;
+
+    //Initializations
+    search_for_menuitem_text = gettext("Search for %s in the %s");
+    websearch_for_menuitem_text = gettext("Search for %s on %s");
+    menuitem = gtk_separator_menu_item_new ();
+    gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), GTK_WIDGET (menuitem));
+    gtk_widget_show (GTK_WIDGET (menuitem));
+
+    //Add webpage links
+    GList* list =  gw_dictlist_get_dict_by_load_position (0);
+    di = list->data;
+    if (di != NULL && (item = gw_searchitem_new (hovered_word, di, GW_TARGET_RESULTS)) != NULL)
+    {
+      menu_text = g_strdup_printf (websearch_for_menuitem_text, hovered_word, "Goo.ne.jp");
+      if (menu_text != NULL)
+      {
+        menuitem = GTK_WIDGET (gtk_image_menu_item_new_with_label (menu_text));
+        char *path = g_build_filename (DATADIR, PACKAGE, "goo.png", NULL);
+        if (path != NULL)
+        {
+          menuimage = gtk_image_new_from_file (path);
+          gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menuitem), GTK_WIDGET (menuimage));
+          g_free (path);
+          path = NULL;
+        }
+        g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (do_search_for_searchitem_on_goo), item);
+        g_signal_connect (G_OBJECT (menuitem), "destroy",  G_CALLBACK (do_destroy_tab_menuitem_searchitem_data), item);
+        gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), GTK_WIDGET (menuitem));
+        gtk_widget_show (GTK_WIDGET (menuitem));
+        gtk_widget_show (GTK_WIDGET (menuimage));
+        g_free (menu_text);
+        menu_text = NULL;
+      }
+    }
+
+    //Add internal dictionary links
+    int i = 0;
+    char *dictionaries[] = { "Kanji", "Examples", NULL };
+    while (dictionaries[i] != NULL)
+    {
+      di = gw_dictlist_get_dictinfo_by_alias (dictionaries[i]);
+      if (di != NULL && (item = gw_searchitem_new (hovered_word, di, GW_TARGET_RESULTS)) != NULL)
+      {
+        menu_text = g_strdup_printf (search_for_menuitem_text, hovered_word, di->long_name);
+        if (menu_text != NULL)
+        {
+          menuitem = GTK_WIDGET (gtk_image_menu_item_new_with_label (menu_text));
+          menuimage = gtk_image_new_from_icon_name ("stock_new-tab", GTK_ICON_SIZE_MENU);
+          gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menuitem), GTK_WIDGET (menuimage));
+          g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (do_prep_and_start_search_in_new_tab), item);
+          g_signal_connect (G_OBJECT (menuitem), "destroy",  G_CALLBACK (do_destroy_tab_menuitem_searchitem_data), item);
+          gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), GTK_WIDGET (menuitem));
+          gtk_widget_show (GTK_WIDGET (menuitem));
+          gtk_widget_show (GTK_WIDGET (menuimage));
+          g_free (menu_text);
+          menu_text = NULL;
+        }
+      }
+      i++;
+    }
+}
+
+
+//!
+//! @brief Searches for the word in a webbrower in an external dictionary
+//! 
+//! @param widget Unused GtkWidget pointer
+//! @param data Unused gpointer
+//!
+G_MODULE_EXPORT void do_search_for_searchitem_on_goo (GtkWidget *widget, gpointer data)
+{
+    char *url = NULL;
+    GwSearchItem *item = (GwSearchItem*) data;
+    if (item != NULL)
+    {
+      GError *error = NULL;
+      url = g_strdup_printf ("http://dictionary.goo.ne.jp/srch/all/%s/m0u/", item->queryline->string);
+      if (url != NULL)
+      {
+        gtk_show_uri (NULL, url, gtk_get_current_event_time (), &error);
+        if (error != NULL)
+        {
+          g_error_free (error);
+          error = NULL;
+        }
+        g_free (url);
+        url = NULL;
+      }
+    }
+}

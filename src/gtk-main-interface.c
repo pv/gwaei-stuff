@@ -2284,7 +2284,9 @@ char* gw_ui_buffer_get_text_slice_by_target (GwTargetOutput TARGET, int sl, int 
 //! @param x Pointer to the x coordinate
 //! @param y Pointer to the y coordinate
 //!
-gunichar gw_get_hovered_character (int *x, int *y)
+//! @return Returns the character that is being moused over
+//!
+gunichar gw_ui_get_hovered_character (int *x, int *y, GtkTextIter *start)
 {
     gint trailing = 0;
     GtkWidget* results_tv = get_widget_by_target (GW_TARGET_RESULTS);
@@ -2293,12 +2295,11 @@ gunichar gw_get_hovered_character (int *x, int *y)
                                            GTK_TEXT_WINDOW_TEXT, 
                                            *x,  *y, x, y             );
 
-    GtkTextIter start;
     gtk_text_view_get_iter_at_position (GTK_TEXT_VIEW (results_tv),
-                                        &start, &trailing,
+                                        start, &trailing,
                                         *x, *y                      );
 
-    return gtk_text_iter_get_char (&start);
+    return gtk_text_iter_get_char (start);
 } 
 
 

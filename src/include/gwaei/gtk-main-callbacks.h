@@ -51,6 +51,9 @@ void do_search_drag_data_recieved (GtkWidget*, GdkDragContext*, gint, gint , Gtk
 gboolean do_focus_change_on_key_press (GtkWidget*, GdkEvent*, gpointer*);
 gboolean do_update_icons_for_selection (GtkWidget*, GdkEvent*, gpointer); 
 
+void do_populate_popup_with_search_options (GtkTextView*, GtkMenu*, gpointer);
+void do_search_for_searchitem_on_goo (GtkWidget*, gpointer);
+
 
 #endif
 

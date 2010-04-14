@@ -15,7 +15,7 @@ data32_DATA = 32x32/$(PACKAGE).png
 data48_DATA = 48x48/$(PACKAGE).png
 
 #Install Application Logo
-pkgdata_DATA = logo.png character.png character2.png character3.png
+pkgdata_DATA = logo.png character.png character2.png character3.png goo.png
 
 #Install Toolbar/Menuitem Icons
 datawordboundary16dir = $(datadir)/icons/hicolor/16x16/actions
