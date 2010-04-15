@@ -461,6 +461,7 @@ void force_gtk_builder_translation_for_gtk_actions_hack ()
     gtk_action_set_short_label (action, gettext("Enlarge"));
     gtk_action_set_tooltip (action, gettext("Enlarge the results text"));
     gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "zoom_in_menuitem")), "activate", accel_group, GDK_plus, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+    gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "zoom_in_menuitem")), "activate", accel_group, GDK_KP_Add, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 
     //Zoom out action
     action = GTK_ACTION (gtk_builder_get_object (builder, "view_zoom_out_action"));
@@ -468,12 +469,14 @@ void force_gtk_builder_translation_for_gtk_actions_hack ()
     gtk_action_set_short_label (action, gettext("Shrink"));
     gtk_action_set_tooltip (action, gettext("Shrink the results text"));
     gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "zoom_out_menuitem")), "activate", accel_group, GDK_minus, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+    gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "zoom_out_menuitem")), "activate", accel_group, GDK_KP_Subtract, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 
     //Normal size action
     action = GTK_ACTION (gtk_builder_get_object (builder, "view_zoom_100_action"));
     gtk_action_set_label (action, gettext("_Normal Size"));
     gtk_action_set_short_label (action, gettext("Normal"));
     gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "zoom_100_menuitem")), "activate", accel_group, GDK_0, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+    gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "zoom_100_menuitem")), "activate", accel_group, GDK_KP_0, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 
     //Show toolbar action
     action = GTK_ACTION (gtk_builder_get_object (builder, "view_toggle_toolbar_action"));
