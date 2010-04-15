@@ -206,16 +206,24 @@ int gw_tab_new ()
     GtkWidget *close_button = GTK_WIDGET (gtk_button_new ());
     gtk_button_set_relief (GTK_BUTTON (close_button), GTK_RELIEF_NONE);
     GtkWidget *button_image = GTK_WIDGET (gtk_image_new_from_stock (GTK_STOCK_CLOSE, GTK_ICON_SIZE_MENU));
-
+    gtk_button_set_focus_on_click (GTK_BUTTON (close_button), FALSE);
     gtk_container_set_border_width (GTK_CONTAINER (close_button), 0);
     gtk_misc_set_padding (GTK_MISC (button_image), 0, 0);
-    gtk_widget_set_size_request (GTK_WIDGET (button_image), 12, 12);
+    gtk_widget_set_size_request (GTK_WIDGET (button_image), 14, 14);
 
+    //Put all the elements together
     gtk_container_add (GTK_CONTAINER (close_button), button_image);
-    g_signal_connect( G_OBJECT (close_button), "clicked", G_CALLBACK (do_tab_remove), scrolledwindow);
+    g_signal_connect (G_OBJECT (close_button), "clicked", G_CALLBACK (do_tab_remove), scrolledwindow);
     gtk_container_add (GTK_CONTAINER (hbox), label);
     gtk_container_add (GTK_CONTAINER (hbox), close_button);
     gtk_widget_show_all (GTK_WIDGET (hbox));
+
+    //Shrink the close button
+    GtkRcStyle *rcstyle;
+    rcstyle = gtk_rc_style_new ();
+    rcstyle->xthickness = rcstyle->ythickness = 0;
+    gtk_widget_modify_style (close_button, rcstyle);
+    gtk_rc_style_unref (rcstyle);
 
     //Finish
     int current = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
