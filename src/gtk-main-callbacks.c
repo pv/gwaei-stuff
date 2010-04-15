@@ -1787,16 +1787,21 @@ void do_populate_popup_with_search_options (GtkTextView *entry, GtkMenu *menu, g
     char *query_text = NULL;
     char *search_for_menuitem_text;
     char *websearch_for_menuitem_text;
+    char *othersearch_for_menuitem_text;
     GObject* tb = NULL;
     GtkTextIter start_iter, end_iter;
-
+    GList *list_selected = NULL;
+    GwDictInfo *di_selected = NULL;
 
     //Initializations
     tb = get_gobject_by_target (GW_TARGET_RESULTS);
     // TRANSLATORS: Search for "$expression" in the ${dictionary long name}
     search_for_menuitem_text = gettext("Search for \"%s\" in the %s");
-    // TRANSLATORS: Search for "$expression" on ${url}
-    websearch_for_menuitem_text = gettext("Search for \"%s\" on %s");
+    // TRANSLATORS: Search for "$expression" in a different dictionary
+    othersearch_for_menuitem_text = gettext("Search for \"%s\" in a different dictionary");
+    // TRANSLATORS: Search for "$expression" online at ${url}
+    websearch_for_menuitem_text = gettext("Search for \"%s\" online at %s");
+
     menuitem = gtk_separator_menu_item_new ();
     gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), GTK_WIDGET (menuitem));
     gtk_widget_show (GTK_WIDGET (menuitem));
@@ -1810,6 +1815,8 @@ void do_populate_popup_with_search_options (GtkTextView *entry, GtkMenu *menu, g
     {
       query_text = hovered_word;
     }
+    list_selected = gw_dictlist_get_selected();
+    di_selected = list_selected->data;
 
 
     //Add webpage links
@@ -1839,35 +1846,68 @@ void do_populate_popup_with_search_options (GtkTextView *entry, GtkMenu *menu, g
       }
     }
 
+
+    //Setup the submenu
+    GtkWidget *dictionaries_menu = NULL;
+    GtkWidget *dictionaries_menuitem = NULL;
+    menu_text = g_strdup_printf (othersearch_for_menuitem_text, item->queryline->string, di->long_name);
+    if (menu_text != NULL)
+    {
+      dictionaries_menu = gtk_menu_new();
+      dictionaries_menuitem = gtk_menu_item_new_with_label (menu_text);
+      g_free (menu_text);
+      menu_text = NULL;
+    }
+    else
+    {
+      dictionaries_menuitem = gtk_menu_item_new_with_label ("Search for this in a different dictionary");
+    }
+    gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), GTK_WIDGET (dictionaries_menuitem));
+    gtk_menu_item_set_submenu (GTK_MENU_ITEM (dictionaries_menuitem), GTK_WIDGET (dictionaries_menu));
+    gtk_widget_show (dictionaries_menuitem);
+    gtk_widget_show (dictionaries_menu);
+
     //Add internal dictionary links
     int i = 0;
-    char *dictionaries[] = { "Kanji", "Examples", NULL };
-
-    while ((list = gw_dictlist_get_dict_by_load_position(i)) != NULL) i++;
-    i--;
-
-    while (i >= 0)
+    while ((list = gw_dictlist_get_dict_by_load_position(i)) != NULL)
     {
       list = gw_dictlist_get_dict_by_load_position(i);
       di = list->data;
       if (di != NULL && (item = gw_searchitem_new (query_text, di, GW_TARGET_RESULTS)) != NULL)
       {
-        menu_text = g_strdup_printf (search_for_menuitem_text, item->queryline->string, di->long_name);
+        if (di->id == di_selected->id)
+        {
+          menu_text = g_strdup_printf (search_for_menuitem_text, item->queryline->string, di->long_name);
+          if (menu_text != NULL)
+          {
+            menuitem = GTK_WIDGET (gtk_image_menu_item_new_with_label (menu_text));
+            menuimage = gtk_image_new_from_icon_name ("stock_new-tab", GTK_ICON_SIZE_MENU);
+            gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menuitem), GTK_WIDGET (menuimage));
+            g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (do_prep_and_start_search_in_new_tab), item);
+            gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), GTK_WIDGET (menuitem));
+            gtk_widget_show (GTK_WIDGET (menuitem));
+            gtk_widget_show (GTK_WIDGET (menuimage));
+            g_free (menu_text);
+            menu_text = NULL;
+          }
+        }
+        menu_text = g_strdup_printf ("%s", di->long_name);
         if (menu_text != NULL)
         {
           menuitem = GTK_WIDGET (gtk_image_menu_item_new_with_label (menu_text));
-          menuimage = gtk_image_new_from_icon_name ("stock_new-tab", GTK_ICON_SIZE_MENU);
-          gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menuitem), GTK_WIDGET (menuimage));
+//          menuimage = gtk_image_new_from_icon_name ("stock_new-tab", GTK_ICON_SIZE_MENU);
+//          gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menuitem), GTK_WIDGET (menuimage));
           g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (do_prep_and_start_search_in_new_tab), item);
           g_signal_connect (G_OBJECT (menuitem), "destroy",  G_CALLBACK (do_destroy_tab_menuitem_searchitem_data), item);
-          gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), GTK_WIDGET (menuitem));
+          //gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), GTK_WIDGET (menuitem));
+          gtk_menu_shell_append (GTK_MENU_SHELL (dictionaries_menu), GTK_WIDGET (menuitem));
           gtk_widget_show (GTK_WIDGET (menuitem));
           gtk_widget_show (GTK_WIDGET (menuimage));
           g_free (menu_text);
           menu_text = NULL;
         }
       }
-      i--;
+      i++;
     }
 }
 

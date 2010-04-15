@@ -279,12 +279,15 @@ G_MODULE_EXPORT void do_tab_remove (GtkWidget *widget, gpointer data)
       else if (listitem->data != NULL)
       {
         gw_searchitem_free (listitem->data);
+        gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
       }
+      listitem->data = NULL;
     }
     gw_tab_searchitems = g_list_delete_link (gw_tab_searchitems, listitem);
 
     gw_tab_update_on_deck_historylist_item_by_current_tab ();
     gw_tab_update_appearance ();
+    if (pages == 1) gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
 }
 
 
@@ -316,6 +319,7 @@ G_MODULE_EXPORT void do_tab_remove_current (GtkWidget *widget, gpointer data)
       {
         gw_searchitem_free (listitem->data);
       }
+      listitem->data = NULL;
     }
     gw_tab_searchitems = g_list_delete_link (gw_tab_searchitems, listitem);
 
@@ -323,6 +327,7 @@ G_MODULE_EXPORT void do_tab_remove_current (GtkWidget *widget, gpointer data)
 
     gw_tab_update_on_deck_historylist_item_by_current_tab ();
     gw_tab_update_appearance ();
+    if (pages == 1) gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
 }
 
 

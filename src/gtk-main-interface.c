@@ -415,7 +415,8 @@ void force_gtk_builder_translation_for_gtk_actions_hack ()
     GtkWidget *menuitem;
 
 
-    action = gtk_action_new ("new_tab_action", gettext("_New Tab"), NULL, GTK_STOCK_NEW);
+    action = gtk_action_new ("new_tab_action", gettext("_New Tab"), NULL, NULL);
+    gtk_action_set_icon_name (action, "stock_new-tab"); 
     g_signal_connect( G_OBJECT (action), "activate", G_CALLBACK (do_new_tab), NULL);
     gtk_action_set_accel_group (action, accel_group);
     gtk_action_group_add_action_with_accel (action_group, action, "<control>t");
