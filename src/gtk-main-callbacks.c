@@ -1790,7 +1790,9 @@ void do_populate_popup_with_search_options (GtkTextView *entry, GtkMenu *menu, g
 
     //Initializations
     tb = get_gobject_by_target (GW_TARGET_RESULTS);
+    // TRANSLATORS: Search for "$expression" in the ${dictionary long name}
     search_for_menuitem_text = gettext("Search for \"%s\" in the %s");
+    // TRANSLATORS: Search for "$expression" on ${url}
     websearch_for_menuitem_text = gettext("Search for \"%s\" on %s");
     menuitem = gtk_separator_menu_item_new ();
     gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), GTK_WIDGET (menuitem));
