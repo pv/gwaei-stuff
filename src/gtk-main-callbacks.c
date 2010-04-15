@@ -644,7 +644,7 @@ G_MODULE_EXPORT void do_zoom_in (GtkWidget *widget, gpointer data)
 {
     int size;
     size = gw_pref_get_int (GCKEY_GW_FONT_MAGNIFICATION, GW_DEFAULT_FONT_MAGNIFICATION) + GW_FONT_ZOOM_STEP;
-    if (size >= GW_MIN_FONT_MAGNIFICATION && size <= GW_MAX_FONT_MAGNIFICATION)
+    if (size <= GW_MAX_FONT_MAGNIFICATION)
       gw_pref_set_int (GCKEY_GW_FONT_MAGNIFICATION, size);
 }
 
@@ -664,7 +664,7 @@ G_MODULE_EXPORT void do_zoom_out (GtkWidget *widget, gpointer data)
 {
     int size;
     size = gw_pref_get_int (GCKEY_GW_FONT_MAGNIFICATION, GW_DEFAULT_FONT_MAGNIFICATION) - GW_FONT_ZOOM_STEP;
-    if (size >= GW_MIN_FONT_MAGNIFICATION | size <= GW_MAX_FONT_MAGNIFICATION)
+    if (size >= GW_MIN_FONT_MAGNIFICATION)
       gw_pref_set_int (GCKEY_GW_FONT_MAGNIFICATION, size);
 }
 
@@ -1793,7 +1793,9 @@ void do_populate_popup_with_search_options (GtkTextView *entry, GtkMenu *menu, g
 
     //Initializations
     tb = get_gobject_by_target (GW_TARGET_RESULTS);
+    // TRANSLATORS: Search for "$expression" in the ${dictionary long name}
     search_for_menuitem_text = gettext("Search for \"%s\" in the %s");
+    // TRANSLATORS: Search for "$expression" on ${url}
     websearch_for_menuitem_text = gettext("Search for \"%s\" on %s");
     menuitem = gtk_separator_menu_item_new ();
     gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), GTK_WIDGET (menuitem));
@@ -1896,4 +1898,34 @@ G_MODULE_EXPORT void do_search_for_searchitem_on_goo (GtkWidget *widget, gpointe
         url = NULL;
       }
     }
+}
+
+//!
+//! @brief Emulates web browsers font size control with (ctrl + wheel)
+//!
+//! @param widget Unused GtkWidget pointer.
+//! @param data Unused gpointer
+//!
+G_MODULE_EXPORT gboolean do_scroll_or_zoom(GtkWidget *widget, GdkEventScroll *event, gpointer data)
+{
+    // If "control" is being pressed
+    if( (event->state & GDK_CONTROL_MASK) == GDK_CONTROL_MASK )
+    {
+	// On wheel direction up ~ zoom out
+	if(event->direction == GDK_SCROLL_UP)
+	{
+	  do_zoom_out(widget, data);
+	  return TRUE; // dont propagate event, no scroll
+	}
+
+	// On wheel direction down ~ zoom in
+	if(event->direction == GDK_SCROLL_DOWN)
+	{
+	  do_zoom_in(widget, data);
+	  return TRUE; // dont propagate event, no scroll
+	}
+    }
+
+    // return false and propagate event for regular scroll
+    return FALSE;
 }
