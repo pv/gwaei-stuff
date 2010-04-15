@@ -390,6 +390,8 @@ G_MODULE_EXPORT void do_quit (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
 {
+    gw_guarantee_first_tab ();
+
     GwHistoryList *hl;
     hl = gw_historylist_get_list (GW_HISTORYLIST_RESULTS);
     GwSearchItem *item;
@@ -416,7 +418,6 @@ G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
     }
 
     //Set tab text
-    gw_guarantee_first_tab ();
     gw_tab_set_current_tab_text (hl->current->queryline->string);
 
     //Add tab reference to searchitem
@@ -1338,6 +1339,8 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
     gchar query[MAX_QUERY];
     gw_ui_strncpy_text_from_widget_by_target (query, GW_TARGET_ENTRY, MAX_QUERY);
 
+    gw_guarantee_first_tab ();
+
     if (start_search_in_new_window == TRUE)
       do_new_tab (NULL, NULL);
 
@@ -1837,9 +1840,14 @@ void do_populate_popup_with_search_options (GtkTextView *entry, GtkMenu *menu, g
     //Add internal dictionary links
     int i = 0;
     char *dictionaries[] = { "Kanji", "Examples", NULL };
-    while (dictionaries[i] != NULL)
+
+    while ((list = gw_dictlist_get_dict_by_load_position(i)) != NULL) i++;
+    i--;
+
+    while (i >= 0)
     {
-      di = gw_dictlist_get_dictinfo_by_alias (dictionaries[i]);
+      list = gw_dictlist_get_dict_by_load_position(i);
+      di = list->data;
       if (di != NULL && (item = gw_searchitem_new (query_text, di, GW_TARGET_RESULTS)) != NULL)
       {
         menu_text = g_strdup_printf (search_for_menuitem_text, item->queryline->string, di->long_name);
@@ -1857,7 +1865,7 @@ void do_populate_popup_with_search_options (GtkTextView *entry, GtkMenu *menu, g
           menu_text = NULL;
         }
       }
-      i++;
+      i--;
     }
 }
 

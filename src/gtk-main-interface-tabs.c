@@ -54,7 +54,6 @@
 
 static GList *gw_tab_searchitems = NULL;
 
-
 //!
 //! @brief Returns the private glist of searchitems for the tabs
 //!
@@ -81,11 +80,15 @@ void gw_tab_update_appearance_with_searchitem (GwSearchItem *item)
     int pages = gtk_notebook_get_n_pages (GTK_NOTEBOOK (notebook));
 
     //Set display status of tabs
-    gtk_notebook_set_show_tabs (GTK_NOTEBOOK (notebook), (pages > 1));
+    //gtk_notebook_set_show_tabs (GTK_NOTEBOOK (notebook), (pages > 1));
+    gtk_notebook_set_show_tabs (GTK_NOTEBOOK (notebook), TRUE);
     
     GtkWidget *close_menuitem = GTK_WIDGET (gtk_builder_get_object (builder, "close_menuitem"));
-    if (pages > 1) gtk_menu_item_set_label (GTK_MENU_ITEM (close_menuitem), gettext("_Close Tab"));
-    else gtk_menu_item_set_label (GTK_MENU_ITEM (close_menuitem), gettext("_Close"));
+    gtk_menu_item_set_label (GTK_MENU_ITEM (close_menuitem), gettext("_Close Tab"));
+    if (pages > 0) gtk_menu_item_set_label (GTK_MENU_ITEM (close_menuitem), gettext("_Close Tab"));
+    gtk_widget_set_sensitive (close_menuitem, (pages > 0));
+    //if (pages > 1) gtk_menu_item_set_label (GTK_MENU_ITEM (close_menuitem), gettext("_Close Tab"));
+    //else gtk_menu_item_set_label (GTK_MENU_ITEM (close_menuitem), gettext("_Close"));
 
     //Force correct querytext
     gw_ui_set_query_entry_text_by_searchitem (item);
@@ -202,6 +205,11 @@ int gw_tab_new ()
     GtkWidget *close_button = GTK_WIDGET (gtk_button_new ());
     gtk_button_set_relief (GTK_BUTTON (close_button), GTK_RELIEF_NONE);
     GtkWidget *button_image = GTK_WIDGET (gtk_image_new_from_stock (GTK_STOCK_CLOSE, GTK_ICON_SIZE_MENU));
+
+    gtk_container_set_border_width (GTK_CONTAINER (close_button), 0);
+    gtk_misc_set_padding (GTK_MISC (button_image), 0, 0);
+    gtk_widget_set_size_request (GTK_WIDGET (button_image), 12, 12);
+
     gtk_container_add (GTK_CONTAINER (close_button), button_image);
     g_signal_connect( G_OBJECT (close_button), "clicked", G_CALLBACK (do_tab_remove), scrolledwindow);
     gtk_container_add (GTK_CONTAINER (hbox), label);
@@ -253,7 +261,8 @@ G_MODULE_EXPORT void do_tab_remove (GtkWidget *widget, gpointer data)
 {
     GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
     int pages = gtk_notebook_get_n_pages (GTK_NOTEBOOK (notebook));
-    if (pages < 2) return;
+    if (pages < 1) return;
+    //if (pages < 2) exit (EXIT_SUCCESS);
     int page_num = gtk_notebook_page_num (GTK_NOTEBOOK (notebook), GTK_WIDGET (data));
     gw_ui_cancel_search_by_tab_number (page_num);
     gtk_notebook_remove_page (GTK_NOTEBOOK (notebook), page_num);
@@ -289,7 +298,8 @@ G_MODULE_EXPORT void do_tab_remove_current (GtkWidget *widget, gpointer data)
 
     GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
     int pages = gtk_notebook_get_n_pages (GTK_NOTEBOOK (notebook));
-    if (pages < 2) exit(EXIT_SUCCESS);
+    if (pages < 1) return;
+    //if (pages < 2) exit (EXIT_SUCCESS);
     int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
     gw_ui_cancel_search_by_tab_number (page_num);
 

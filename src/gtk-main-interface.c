@@ -589,11 +589,11 @@ gpointer get_gobject_by_target (GwTargetOutput TARGET)
     {
       case GW_TARGET_RESULTS:
           notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
-          page_number =  gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+          page_number = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
           if (page_number == -1) return NULL;
           page = gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), page_number);
           if (page == NULL) return NULL;
-          view = gtk_bin_get_child (GTK_BIN (page));
+          if ((view = gtk_bin_get_child (GTK_BIN (page))) == NULL) return NULL;
           tb = G_OBJECT (gtk_text_view_get_buffer (GTK_TEXT_VIEW (view)));
           return tb;
       case GW_TARGET_KANJI:
@@ -626,7 +626,9 @@ GtkWidget* get_widget_by_target (GwTargetOutput TARGET)
       case GW_TARGET_RESULTS:
         notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
         page_number =  gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+        if (page_number == -1) return NULL;
         page = gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), page_number);
+        if (page == NULL) return NULL;
         view = gtk_bin_get_child (GTK_BIN (page));
         return view;
       case GW_TARGET_KANJI:
@@ -949,7 +951,7 @@ void gw_ui_update_toolbar_buttons ()
       action = GTK_ACTION (gtk_builder_get_object (builder, id));
       gtk_action_set_sensitive (action, sensitive);
     }
-    else if (GTK_WIDGET_HAS_FOCUS(results_tv))
+    else if (results_tv != NULL && GTK_WIDGET_HAS_FOCUS(results_tv))
     {
       sensitive = (gw_ui_has_selection_by_target (GW_TARGET_RESULTS));
       strncpy(id, "edit_copy_action", id_length);
@@ -2803,7 +2805,7 @@ void initialize_gui_interface (int argc, char *argv[])
       force_gtk_builder_translation_for_gtk_actions_hack ();
       initialize_global_widget_pointers ();
       gw_ui_initialize_interface_output_generics ();
-      gw_guarantee_first_tab ();
+      //gw_guarantee_first_tab ();
       gw_sexy_initialize_libsexy (&search_entry);
       gw_ui_update_history_popups ();
       gw_ui_show_window ("main_window");
@@ -2820,8 +2822,6 @@ void initialize_gui_interface (int argc, char *argv[])
 
       //Set the initial focus to the search bar
       gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
-      GObject *tb = G_OBJECT (get_gobject_by_target (GW_TARGET_RESULTS));
-      gtk_text_buffer_set_text (GTK_TEXT_BUFFER (tb), "", -1);
 
       //Set the initial dictionary
       if (arg_dictionary != NULL)
@@ -2977,7 +2977,7 @@ gboolean gw_ui_cancel_search_by_target (GwTargetOutput TARGET)
 gboolean gw_ui_has_selection_by_target (GwTargetOutput TARGET)
 {
     GObject* tb = get_gobject_by_target (TARGET);
-    return (gtk_text_buffer_get_has_selection (GTK_TEXT_BUFFER (tb)));
+    return (tb != NULL && gtk_text_buffer_get_has_selection (GTK_TEXT_BUFFER (tb)));
 }
 
 
