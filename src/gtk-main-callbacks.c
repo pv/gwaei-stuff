@@ -1889,3 +1889,33 @@ G_MODULE_EXPORT void do_search_for_searchitem_on_goo (GtkWidget *widget, gpointe
       }
     }
 }
+
+//!
+//! @brief Emulates web browsers font size control with (ctrl + wheel)
+//!
+//! @param widget Unused GtkWidget pointer.
+//! @param data Unused gpointer
+//!
+G_MODULE_EXPORT gboolean do_scroll_or_zoom(GtkWidget *widget, GdkEventScroll *event, gpointer data)
+{
+    // If "control" is being pressed
+    if( (event->state & GDK_CONTROL_MASK) == GDK_CONTROL_MASK )
+    {
+	// On wheel direction up ~ zoom out
+	if(event->direction == GDK_SCROLL_UP)
+	{
+	  do_zoom_out(widget, data);
+	  return TRUE; // dont propagate event, no scroll
+	}
+
+	// On wheel direction down ~ zoom in
+	if(event->direction == GDK_SCROLL_DOWN)
+	{
+	  do_zoom_in(widget, data);
+	  return TRUE; // dont propagate event, no scroll
+	}
+    }
+
+    // return false and propagate event for regular scroll
+    return FALSE;
+}

@@ -192,6 +192,7 @@ int gw_tab_new ()
     g_signal_connect( G_OBJECT (textview), "key_press_event", G_CALLBACK (do_focus_change_on_key_press), NULL);
     g_signal_connect( G_OBJECT (textview), "event_after", G_CALLBACK (do_update_icons_for_selection), NULL);
     g_signal_connect( G_OBJECT (textview), "populate_popup", G_CALLBACK (do_populate_popup_with_search_options), NULL);
+    g_signal_connect( G_OBJECT (textview), "scroll_event", G_CALLBACK (do_scroll_or_zoom), NULL);
 
     gtk_container_add (GTK_CONTAINER (scrolledwindow), textview);
     gtk_widget_show_all (GTK_WIDGET (scrolledwindow));
