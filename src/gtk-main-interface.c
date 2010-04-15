@@ -151,9 +151,17 @@ void gw_ui_set_query_entry_text_by_searchitem (GwSearchItem *item)
     else
     {
       if (item->queryline != NULL && strlen(item->queryline->string) > 1)
-        gtk_entry_set_text (GTK_ENTRY (search_entry), item->queryline->string);
+      {
+        if (strcmp(gtk_entry_get_text (GTK_ENTRY (search_entry)), item->queryline->string) != 0)
+        {
+          gtk_entry_set_text (GTK_ENTRY (search_entry), item->queryline->string);
+          gtk_editable_set_position (GTK_EDITABLE (search_entry), -1);
+        }
+      }
       else
+      {
         gtk_entry_set_text (GTK_ENTRY (search_entry), "");
+      }
 
       //Set the foreground color
       gw_util_strncpy_fallback_from_key (fallback, GCKEY_GW_MATCH_FG, 100);
