@@ -1104,11 +1104,7 @@ G_MODULE_EXPORT void do_glossary (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void do_about (GtkWidget *widget, gpointer data)
 {
-    char pixbuf_path[FILENAME_MAX];
-    strcpy (pixbuf_path, DATADIR);
-    strcat (pixbuf_path, "/");
-    strcat (pixbuf_path, PACKAGE);
-    strcat (pixbuf_path, "/logo.png");
+    char *pixbuf_path = DATADIR G_DIR_SEPARATOR_S PACKAGE G_DIR_SEPARATOR_S "logo.png";
 
     char *programmer_credits[] = 
     {
@@ -1119,7 +1115,7 @@ G_MODULE_EXPORT void do_about (GtkWidget *widget, gpointer data)
 
     GdkPixbuf *logo;
     if ( (logo = gdk_pixbuf_new_from_file ( pixbuf_path,    NULL)) == NULL &&
-         (logo = gdk_pixbuf_new_from_file ( "img/logo.png", NULL)) == NULL    )
+         (logo = gdk_pixbuf_new_from_file ( "img" G_DIR_SEPARATOR_S "logo.png", NULL)) == NULL    )
     {
       printf ("Was unable to load the gwaei logo.\n");
     }
@@ -1127,8 +1123,8 @@ G_MODULE_EXPORT void do_about (GtkWidget *widget, gpointer data)
     GtkWidget *about = g_object_new (GTK_TYPE_ABOUT_DIALOG,
                "program-name", "gWaei", 
                "version", VERSION,
-               "copyright", gettext("gWaei (C) 2008-2010 Zachary Dovel\nKanjipad backend (C) 2002 Owen Taylor\nJStroke backend (C) 1997 Robert Wells"),
-               "comments", gettext("Program for Japanese translation and reference. The\ndictionaries are supplied by Jim Breen's WWWJDIC."),
+               "copyright", "gWaei (C) 2008-2010 Zachary Dovel\nKanjipad backend (C) 2002 Owen Taylor\nJStroke backend (C) 1997 Robert Wells",
+               "comments", gettext("Program for Japanese translation and reference. The\ndictionaries are supplied by Jim Breen's WWWJDIC.\nSpecial thanks to the maker of GJITEN who served as an inspiration."),
                "license", "This software is GPL Licensed.\n\ngWaei is free software: you can redistribute it and/or modify\nit under the terms of the GNU General Public License as published by\n the Free Software Foundation, either version 3 of the License, or\n(at your option) any later version.\n\ngWaei is distributed in the hope that it will be useful,\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\nMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\nGNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License\nalong with gWaei.  If not, see <http://www.gnu.org/licenses/>.",
                "logo", logo,
                // TRANSLATORS: You can add your own name to the translation of this field, it will be displayed in the "about" box when gwaei is run in your language
@@ -1895,11 +1891,8 @@ void do_populate_popup_with_search_options (GtkTextView *entry, GtkMenu *menu, g
         if (menu_text != NULL)
         {
           menuitem = GTK_WIDGET (gtk_image_menu_item_new_with_label (menu_text));
-//          menuimage = gtk_image_new_from_icon_name ("stock_new-tab", GTK_ICON_SIZE_MENU);
-//          gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menuitem), GTK_WIDGET (menuimage));
           g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (do_prep_and_start_search_in_new_tab), item);
           g_signal_connect (G_OBJECT (menuitem), "destroy",  G_CALLBACK (do_destroy_tab_menuitem_searchitem_data), item);
-          //gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), GTK_WIDGET (menuitem));
           gtk_menu_shell_append (GTK_MENU_SHELL (dictionaries_menu), GTK_WIDGET (menuitem));
           gtk_widget_show (GTK_WIDGET (menuitem));
           gtk_widget_show (GTK_WIDGET (menuimage));
