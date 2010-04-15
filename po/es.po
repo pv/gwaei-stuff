@@ -29,7 +29,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 0.15.1\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-04-15 00:43-0400\n"
+"POT-Creation-Date: 2010-04-15 05:39-0400\n"
 "PO-Revision-Date: 2009-10-10 01:05-0500\n"
 "Last-Translator: dean <3dx@live.com>\n"
 "Language-Team: none\n"
@@ -377,63 +377,54 @@ msgstr "vocabulario.txt"
 msgid "Save"
 msgstr "Guardar"
 
-#: src/gtk-main-callbacks.c:1130
+#: src/gtk-main-callbacks.c:1127
 #, fuzzy
 msgid ""
-"gWaei (C) 2008-2010 Zachary Dovel\n"
-"Kanjipad backend (C) 2002 Owen Taylor\n"
-"JStroke backend (C) 1997 Robert Wells"
-msgstr ""
-"gWaei (C) 2008-2009 Zachary Dovel\n"
-"Kanjipad backend (C) 2002 Owen Taylor\n"
-"JStroke backend (C) 1997 Robert Wells"
-
-#: src/gtk-main-callbacks.c:1131
-msgid ""
 "Program for Japanese translation and reference. The\n"
-"dictionaries are supplied by Jim Breen's WWWJDIC."
+"dictionaries are supplied by Jim Breen's WWWJDIC.\n"
+"Special thanks to the maker of GJITEN who served as an inspiration."
 msgstr ""
 "Aplicación para traducción y referencia del japonés. Los\n"
 "diccionarios son suministrados por Jim Breen's WWWJDIC."
 
 #. TRANSLATORS: You can add your own name to the translation of this field, it will be displayed in the "about" box when gwaei is run in your language
-#: src/gtk-main-callbacks.c:1135
+#: src/gtk-main-callbacks.c:1131
 msgid "translator-credits"
 msgstr "4packed"
 
-#: src/gtk-main-callbacks.c:1748
+#: src/gtk-main-callbacks.c:1744
 msgid "A_ppend Selected"
 msgstr "A_nexo seleccionado"
 
-#: src/gtk-main-callbacks.c:1750
+#: src/gtk-main-callbacks.c:1746
 msgid "Save Selected _As"
 msgstr "Guardar selección _Como"
 
-#: src/gtk-main-callbacks.c:1752
+#: src/gtk-main-callbacks.c:1748
 msgid "_Print Selected"
 msgstr "_Imprimir selección"
 
-#: src/gtk-main-callbacks.c:1759 src/gtk-main-interface.c:454
+#: src/gtk-main-callbacks.c:1755 src/gtk-main-interface.c:454
 msgid "A_ppend"
 msgstr "A_nexo"
 
 #. TRANSLATORS: Search for "$expression" in the ${dictionary long name}
-#: src/gtk-main-callbacks.c:1798
+#: src/gtk-main-callbacks.c:1796
 #, fuzzy, c-format
 msgid "Search for \"%s\" in the %s"
 msgstr "Buscar por \""
 
 #. TRANSLATORS: Search for "$expression" in a different dictionary
-#: src/gtk-main-callbacks.c:1800
+#: src/gtk-main-callbacks.c:1798
 #, fuzzy, c-format
 msgid "Search for \"%s\" in a different dictionary"
 msgstr "  -d, --dictionary name      Busca usando un diccionario específico"
 
 #. TRANSLATORS: Search for "$expression" online at ${url}
-#: src/gtk-main-callbacks.c:1802
-#, fuzzy, c-format
-msgid "Search for \"%s\" online at %s"
-msgstr "Buscar por \""
+#: src/gtk-main-callbacks.c:1800
+#, c-format
+msgid "Cross-reference \"%s\" online"
+msgstr ""
 
 #: src/gtk-main-interface-tabs.c:87 src/gtk-main-interface-tabs.c:88
 msgid "_Close Tab"
@@ -1175,6 +1166,20 @@ msgstr "<b>Gestión manual de los diccionarios</b>"
 #: src/gtk-builder-xml/settings.glade:866
 msgid "Advanced"
 msgstr "Avanzado"
+
+#, fuzzy
+#~ msgid ""
+#~ "gWaei (C) 2008-2010 Zachary Dovel\n"
+#~ "Kanjipad backend (C) 2002 Owen Taylor\n"
+#~ "JStroke backend (C) 1997 Robert Wells"
+#~ msgstr ""
+#~ "gWaei (C) 2008-2009 Zachary Dovel\n"
+#~ "Kanjipad backend (C) 2002 Owen Taylor\n"
+#~ "JStroke backend (C) 1997 Robert Wells"
+
+#, fuzzy
+#~ msgid "Search for \"%s\" online at %s"
+#~ msgstr "Buscar por \""
 
 #, fuzzy
 #~ msgid "Search for \"%s\" on %s"

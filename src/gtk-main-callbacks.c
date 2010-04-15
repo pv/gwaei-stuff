@@ -1788,6 +1788,7 @@ void do_populate_popup_with_search_options (GtkTextView *entry, GtkMenu *menu, g
     GtkTextIter start_iter, end_iter;
     GList *list_selected = NULL;
     GwDictInfo *di_selected = NULL;
+    int i = 0;
 
     //Initializations
     tb = get_gobject_by_target (GW_TARGET_RESULTS);
@@ -1796,7 +1797,7 @@ void do_populate_popup_with_search_options (GtkTextView *entry, GtkMenu *menu, g
     // TRANSLATORS: Search for "$expression" in a different dictionary
     othersearch_for_menuitem_text = gettext("Search for \"%s\" in a different dictionary");
     // TRANSLATORS: Search for "$expression" online at ${url}
-    websearch_for_menuitem_text = gettext("Search for \"%s\" online at %s");
+    websearch_for_menuitem_text = gettext("Cross-reference \"%s\" online");
 
     menuitem = gtk_separator_menu_item_new ();
     gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), GTK_WIDGET (menuitem));
@@ -1818,35 +1819,79 @@ void do_populate_popup_with_search_options (GtkTextView *entry, GtkMenu *menu, g
     //Add webpage links
     GList* list =  gw_dictlist_get_dict_by_load_position (0);
     di = list->data;
-    if (di != NULL && (item = gw_searchitem_new (query_text, di, GW_TARGET_RESULTS)) != NULL)
+    char *website_url_menuitems[] = {
+      "Wikipedia", "http://www.wikipedia.org/wiki/%s", "wikipedia.png",
+      "Goo.ne.jp", "http://dictionary.goo.ne.jp/srch/all/%s/m0u/", "goo.png",
+      "Google.com", "http://www.google.com/search?q=%s", "google.png",
+      NULL, NULL, NULL
+    };
+
+    //Setup the web submenu
+    GtkWidget *web_menu = NULL;
+    GtkWidget *web_menuitem = NULL;
+    menu_text = g_strdup_printf (websearch_for_menuitem_text, query_text);
+    if (menu_text != NULL)
     {
-      menu_text = g_strdup_printf (websearch_for_menuitem_text, item->queryline->string, "Goo.ne.jp");
-      if (menu_text != NULL)
+      web_menu = gtk_menu_new();
+      web_menuitem = gtk_menu_item_new_with_label (menu_text);
+      g_free (menu_text);
+      menu_text = NULL;
+    }
+    else
+    {
+      web_menuitem = gtk_menu_item_new_with_label ("crossreference on the web");
+    }
+    gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), GTK_WIDGET (web_menuitem));
+    gtk_menu_item_set_submenu (GTK_MENU_ITEM (web_menuitem), GTK_WIDGET (web_menu));
+    gtk_widget_show (web_menuitem);
+    gtk_widget_show (web_menu);
+
+    i = 0;
+    while (website_url_menuitems[i] != NULL)
+    {
+      if (di != NULL && (item = gw_searchitem_new (query_text, di, GW_TARGET_RESULTS)) != NULL)
       {
-        menuitem = GTK_WIDGET (gtk_image_menu_item_new_with_label (menu_text));
-        char *path = g_build_filename (DATADIR, PACKAGE, "goo.png", NULL);
-        if (path != NULL)
+        //Create handy variables
+        char *name = website_url_menuitems[i];
+        char *url = g_strdup_printf(website_url_menuitems[i + 1], query_text);
+        if (url != NULL)
         {
-          menuimage = gtk_image_new_from_file (path);
-          gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menuitem), GTK_WIDGET (menuimage));
-          g_free (path);
-          path = NULL;
+          strncpy(item->queryline->string, url, MAX_QUERY);
+          g_free (url);
+          url = NULL;
         }
-        g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (do_search_for_searchitem_on_goo), item);
-        g_signal_connect (G_OBJECT (menuitem), "destroy",  G_CALLBACK (do_destroy_tab_menuitem_searchitem_data), item);
-        gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), GTK_WIDGET (menuitem));
-        gtk_widget_show (GTK_WIDGET (menuitem));
-        gtk_widget_show (GTK_WIDGET (menuimage));
-        g_free (menu_text);
-        menu_text = NULL;
+        char *icon_path = website_url_menuitems[i + 2];
+
+        //Start creating
+        menu_text = g_strdup_printf ("%s", name);
+        if (menu_text != NULL)
+        {
+          menuitem = GTK_WIDGET (gtk_image_menu_item_new_with_label (menu_text));
+          char *path = g_build_filename (DATADIR, PACKAGE, icon_path, NULL);
+          if (path != NULL)
+          {
+            menuimage = gtk_image_new_from_file (path);
+            gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menuitem), GTK_WIDGET (menuimage));
+            g_free (path);
+            path = NULL;
+          }
+          g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (do_search_for_searchitem_online), item);
+          g_signal_connect (G_OBJECT (menuitem), "destroy",  G_CALLBACK (do_destroy_tab_menuitem_searchitem_data), item);
+          gtk_menu_shell_append (GTK_MENU_SHELL (web_menu), GTK_WIDGET (menuitem));
+          gtk_widget_show (GTK_WIDGET (menuitem));
+          gtk_widget_show (GTK_WIDGET (menuimage));
+          g_free (menu_text);
+          menu_text = NULL;
+        }
       }
+      i += 3;
     }
 
 
     //Setup the submenu
     GtkWidget *dictionaries_menu = NULL;
     GtkWidget *dictionaries_menuitem = NULL;
-    menu_text = g_strdup_printf (othersearch_for_menuitem_text, item->queryline->string, di->long_name);
+    menu_text = g_strdup_printf (othersearch_for_menuitem_text, query_text);
     if (menu_text != NULL)
     {
       dictionaries_menu = gtk_menu_new();
@@ -1864,7 +1909,7 @@ void do_populate_popup_with_search_options (GtkTextView *entry, GtkMenu *menu, g
     gtk_widget_show (dictionaries_menu);
 
     //Add internal dictionary links
-    int i = 0;
+    i = 0;
     while ((list = gw_dictlist_get_dict_by_load_position(i)) != NULL)
     {
       list = gw_dictlist_get_dict_by_load_position(i);
@@ -1911,24 +1956,17 @@ void do_populate_popup_with_search_options (GtkTextView *entry, GtkMenu *menu, g
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void do_search_for_searchitem_on_goo (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void do_search_for_searchitem_online (GtkWidget *widget, gpointer data)
 {
-    char *url = NULL;
     GwSearchItem *item = (GwSearchItem*) data;
     if (item != NULL)
     {
       GError *error = NULL;
-      url = g_strdup_printf ("http://dictionary.goo.ne.jp/srch/all/%s/m0u/", item->queryline->string);
-      if (url != NULL)
+      gtk_show_uri (NULL, item->queryline->string, gtk_get_current_event_time (), &error);
+      if (error != NULL)
       {
-        gtk_show_uri (NULL, url, gtk_get_current_event_time (), &error);
-        if (error != NULL)
-        {
-          g_error_free (error);
-          error = NULL;
-        }
-        g_free (url);
-        url = NULL;
+        g_error_free (error);
+        error = NULL;
       }
     }
 }
