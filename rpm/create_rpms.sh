@@ -28,7 +28,7 @@ do
 	echo "%__arch_install_post   /usr/lib/rpm/check-rpaths   /usr/lib/rpm/check-buildroot" >> ~/.rpmmacros
 
 	# 2- Create all rpmbuild directories
-	mkdir -p $toprpmdir/SOURCES $toprpmdir/BUILD $toprpmdir/BUILDROOT $toprpmdir/RPMS $toprpmdir/SRPMS
+	mkdir -p $toprpmdir/SOURCES $toprpmdir/BUILD $toprpmdir/BUILDROOT $toprpmdir/RPMS $toprpmdir/SRPMS $toprpmdir/log
 
 	# 3- Move sources and patches
 	cp -f $topdir/$tarpkgname $toprpmdir/SOURCES
