@@ -63,7 +63,9 @@ fedora-rpm:
 	@ $(top_srcdir)/configure --prefix /usr --sysconfdir /etc --docdir=/usr/share/doc/@PACKAGE@ > /dev/null
 	@ make rpm
 
-
+nene-rpm: dist
+	@ make clean > /dev/null
+	@ $(top_srcdir)/rpm/create_rpms.sh `pwd` @PACKAGE@ @VERSION@
 
 uninstall-local:
 	@ rm -rf $(DESTDIR)$(datadir)/@PACKAGE@
