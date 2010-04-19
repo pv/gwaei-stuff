@@ -2817,7 +2817,7 @@ void initialize_gui_interface (int argc, char *argv[])
       force_gtk_builder_translation_for_gtk_actions_hack ();
       initialize_global_widget_pointers ();
       gw_ui_initialize_interface_output_generics ();
-      //gw_guarantee_first_tab ();
+      gw_guarantee_first_tab ();
       gw_sexy_initialize_libsexy (&search_entry);
       gw_ui_update_history_popups ();
       gw_ui_show_window ("main_window");
