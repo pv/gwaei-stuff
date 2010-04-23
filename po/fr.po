@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 1.4.0\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-04-15 05:39-0400\n"
+"POT-Creation-Date: 2010-04-23 06:18-0400\n"
 "PO-Revision-Date: 2010-04-15 03:07+0100\n"
 "Last-Translator: Nicolas Laurent\n"
 "Language-Team: none\n"
@@ -406,18 +406,22 @@ msgstr "Recherche de \"%s\" dans le %s"
 #. TRANSLATORS: Search for "$expression" in a different dictionary
 #: src/gtk-main-callbacks.c:1798
 #, fuzzy, c-format
-msgid "Search for \"%s\" in a different dictionary"
+msgid "Search for \"%s\" in a Different Dictionary"
 msgstr "Rechercher dans un dictionnaire précis"
 
 #. TRANSLATORS: Search for "$expression" online at ${url}
 #: src/gtk-main-callbacks.c:1800
 #, c-format
-msgid "Cross-reference \"%s\" online"
+msgid "Cross-reference \"%s\" Online"
 msgstr ""
 
-#: src/gtk-main-interface-tabs.c:87 src/gtk-main-interface-tabs.c:88
+#: src/gtk-main-interface-tabs.c:87 src/gtk-main-interface-tabs.c:90
 msgid "_Close Tab"
 msgstr "_Fermer l'onglet"
+
+#: src/gtk-main-interface-tabs.c:91
+msgid "_Close"
+msgstr "_Fermer"
 
 #: src/gtk-main-interface-tabs.c:205
 msgid "(Empty)"
@@ -1182,9 +1186,6 @@ msgstr "Avancé"
 
 #~ msgid "Search for \"%s\" on %s"
 #~ msgstr "Recherche de \"%s\" sur %s"
-
-#~ msgid "_Close"
-#~ msgstr "_Fermer"
 
 #~ msgid "Syncing %s with server..."
 #~ msgstr "Synchronisation du %s avec le serveur ..."
