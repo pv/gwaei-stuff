@@ -180,13 +180,13 @@ int gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
 
    while (generic_atoms[i] != NULL && i < MAX_ATOMS)
    {
-     if (gw_util_is_kanji_ish_str (generic_atoms[i]))
+     if (gw_util_is_kanji_ish_str (generic_atoms[i]) || gw_util_is_kanji_str (generic_atoms[i]))
      {
        strcpy(ql->hira_string, "(");
        strcat(ql->hira_string, generic_atoms[i]);
        strcat(ql->hira_string, ")");
 
-       if (g_utf8_strlen (generic_atoms[i], -1) == 4 && gw_util_is_kanji_str (generic_atoms[i]))
+       if (g_utf8_strlen (generic_atoms[i], -1) == 4)
        {
           g_utf8_strncpy (temp, generic_atoms[i], 2);
           temp_ptr = temp;
@@ -507,7 +507,7 @@ int gw_queryline_parse_exampledict_string (GwQueryLine *ql, const char* string)
 
    while (generic_atoms[i] != NULL && i < MAX_ATOMS)
    {
-     if (gw_util_is_kanji_ish_str (generic_atoms[i]))
+     if (gw_util_is_kanji_ish_str (generic_atoms[i]) || gw_util_is_kanji_str (generic_atoms[i]))
      {
        strcpy(ql->hira_string, generic_atoms[i]);
        if (regcomp (&(ql->kanji_regex                         [GW_QUERYLINE_EXIST] [kanji_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0) return FALSE;
