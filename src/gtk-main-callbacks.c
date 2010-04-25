@@ -1792,11 +1792,11 @@ void do_populate_popup_with_search_options (GtkTextView *entry, GtkMenu *menu, g
 
     //Initializations
     tb = get_gobject_by_target (GW_TARGET_RESULTS);
-    // TRANSLATORS: Search for "$expression" in the ${dictionary long name}
+    // TRANSLATORS: The first variable is the expression to look for, the second is the dictionary full name
     search_for_menuitem_text = gettext("Search for \"%s\" in the %s");
-    // TRANSLATORS: Search for "$expression" in a different dictionary
+    // TRANSLATORS: The variable is the expression to look for
     othersearch_for_menuitem_text = gettext("Search for \"%s\" in a Different Dictionary");
-    // TRANSLATORS: Search for "$expression" online at ${url}
+    // TRANSLATORS: The variable is the expression to look for
     websearch_for_menuitem_text = gettext("Cross-reference \"%s\" Online");
 
     menuitem = gtk_separator_menu_item_new ();
