@@ -3179,13 +3179,13 @@ void gw_ui_append_edict_results_to_buffer (GwSearchItem *item)
     }
 
     //Begin comparison if possible
-    if (!skip && ((same_def_totals && same_first_def) || (same_kanji && same_furigana)))
+    if (!skip && ((same_def_totals) || (same_kanji && same_furigana)) && same_first_def)
     {
       append_def_same_to_buffer (item);
       return;
     }
 
-    gboolean remove_last_linebreak = (!skip && same_kanji);
+    gboolean remove_last_linebreak = (!skip && same_kanji && same_first_def);
 
     //Start output
     GwResultLine* rl = item->resultline;
@@ -3525,6 +3525,7 @@ void gw_ui_update_progress_feedback (GwSearchItem* item)
     }
 }
 
+
 //!
 //! @brief Sets the no results page to the buffer
 //!
@@ -3543,10 +3544,10 @@ void gw_ui_no_result (GwSearchItem *item)
 //!
 //! @brief Add an header to irrelevant "other" results with number of matches
 //!
-void gw_ui_append_less_relevant_header_to_output(GwSearchItem *item)
+void gw_ui_append_less_relevant_header_to_output (GwSearchItem *item)
 {
     int irrelevant = item->total_irrelevant_results;
-    char *message = g_strdup_printf(ngettext("Other Result %d", "Other Results %d", irrelevant), irrelevant);
+    char *message = g_strdup_printf (ngettext("Other Result %d", "Other Results %d", irrelevant), irrelevant);
     if (message != NULL)
     {
       set_header (item, message, "less_relevant_header_mark");
@@ -3561,7 +3562,7 @@ void gw_ui_append_less_relevant_header_to_output(GwSearchItem *item)
 void gw_ui_append_more_relevant_header_to_output (GwSearchItem *item)
 {
     int relevant = item->total_relevant_results;
-    char *message = g_strdup_printf(ngettext("Main Result %d", "Main Results %d", relevant), relevant);
+    char *message = g_strdup_printf (ngettext("Main Result %d", "Main Results %d", relevant), relevant);
     if (message != NULL)
     {
       set_header (item, message, "more_relevant_header_mark");
