@@ -1,9 +1,19 @@
-#!/bin/bash
+#!/bin/bash -x
 
+# Description : Script to build rpm from a source distribution
+# Parameter :
+# $1 = Script started directory.
+# $2 = Program name
+# $3 = Version
+# $4 = Build for "distribution name" or "all".
+
+# Set global variables
 topdir=$1
 scriptdir=$(dirname $0)
 scriptname=$(basename $0)
-tarpkgname=$2-$3.tar.gz
+prog=$2
+version=$3
+tarpkgname=$prog-$version.tar.gz
 
 distro=$(find $scriptdir -maxdepth 1 -type d | grep -v "^$scriptdir$" | sed 's#^\./##')
 
@@ -15,31 +25,49 @@ do
 	toprpmdir=$topdir/$distro
 	echo "Processing : $toprpmdir"
 
-	# Create build environment
-	# 1- Define rpmmacros
+	# 1-Create build environment
+	# 1a- Define rpmmacros
 	if [ -f ~/.rpmmacros ]
 		then
 		# Backup the original env
+		typeset -i backup=1
 		cp -f ~/.rpmmacros ~/.rpmmacros.backup
 	fi
 
-	echo "%_topdir      %$toprpmdir" > ~/.rpmmacros
+	echo "%_topdir      $toprpmdir" > ~/.rpmmacros
 	echo "%_smp_mflags  -j3" >> ~/.rpmmacros
 	echo "%__arch_install_post   /usr/lib/rpm/check-rpaths   /usr/lib/rpm/check-buildroot" >> ~/.rpmmacros
 
-	# 2- Create all rpmbuild directories
+	# 1b- Create all rpmbuild directories
 	mkdir -p $toprpmdir/SOURCES $toprpmdir/BUILD $toprpmdir/BUILDROOT $toprpmdir/RPMS $toprpmdir/SRPMS $toprpmdir/log
 
-	# 3- Move sources and patches
+	# 1c- Move sources and patches
 	cp -f $topdir/$tarpkgname $toprpmdir/SOURCES
 	cp -f $toprpmdir/patches/* $toprpmdir/SOURCES
 
-	exit
+	# 2-Now build
+	#rpmbuild -ba $toprpmdir/SPECS/$prog.spec 2>&1 | tee $toprpmdir/log/build.log
+	rpmbuild -bp $toprpmdir/SPECS/$prog.spec 2>&1 | tee $toprpmdir/log/build.log
+	
+	# 3-Restore original rpmmacros if needed
+	if [ $backup -eq 1 ]
+		then 
+		cp -f ~/.rpmmacros.backup ~/.rpmmacros
+		rm -f ~/.rpmmacros.backup
+	fi
+
+	# 4-Check result	
+	grep "Erreur de construction de RPM" $toprpmdir/log/build.log
+	if [ "$?" -eq 0 ]
+		then
+		echo "Error building rpm"
+		exit 1
+	fi
+	echo "Done"
 done
-
-
-
 exit
+
+
 rpm: dist
         @ make clean > /dev/null
         @ touch $(HOME)/.rpmmacros
