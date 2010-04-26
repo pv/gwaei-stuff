@@ -59,11 +59,11 @@ rpm: dist
 	@ mv -f $(HOME)/.rpmmacros.backup $(HOME)/.rpmmacros
 	@ echo "Success! Finished creating the rpm packge. Please have a sugary day."
 
-fedora-rpm:
-	@ $(top_srcdir)/configure --prefix /usr --sysconfdir /etc --docdir=/usr/share/doc/@PACKAGE@ > /dev/null
-	@ make rpm
+#fedora-rpm:
+#	@ $(top_srcdir)/configure --prefix /usr --sysconfdir /etc --docdir=/usr/share/doc/@PACKAGE@ > /dev/null
+#	@ make rpm
 
-nene-rpm: dist
+fedora-rpm: dist
 	@ make clean > /dev/null
 	@ $(top_srcdir)/rpm/create_rpms.sh `pwd` @PACKAGE@ @VERSION@
 

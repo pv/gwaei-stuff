@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 # Description : Script to build rpm from a source distribution
 # Parameter :
@@ -46,8 +46,7 @@ do
 	cp -f $toprpmdir/patches/* $toprpmdir/SOURCES
 
 	# 2-Now build
-	#rpmbuild -ba $toprpmdir/SPECS/$prog.spec 2>&1 | tee $toprpmdir/log/build.log
-	rpmbuild -bp $toprpmdir/SPECS/$prog.spec 2>&1 | tee $toprpmdir/log/build.log
+	rpmbuild -ba $toprpmdir/SPECS/$prog.spec 2>&1 | tee $toprpmdir/log/build.log
 	
 	# 3-Restore original rpmmacros if needed
 	if [ $backup -eq 1 ]
@@ -67,22 +66,22 @@ do
 done
 exit
 
-
-rpm: dist
-        @ make clean > /dev/null
-        @ touch $(HOME)/.rpmmacros
-        @ cp -f $(HOME)/.rpmmacros $(HOME)/.rpmmacros.backup
-        @ echo "%_topdir $(PWD)/rpm" > $(HOME)/.rpmmacros
-        @ mkdir -p $(top_srcdir)/rpm/SOURCES $(top_srcdir)/rpm/SPECS $(top_srcdir)/rpm/BUILD $(top_srcdir)/rpm/RPMS/@ARCH@ $(top_srcdir)/rpm/SRPMS/@ARCH@
-        @ cp @PACKAGE@-@VERSION@.tar.gz $(top_srcdir)/rpm/SOURCES
-        @ ${RPMBUILD} -ba --target @ARCH@ $(top_srcdir)/rpm/@PACKAGE@.spec
-        @ cp $(RPM_RPMS)/@ARCH@/@PACKAGE@-@VERSION@-@RELEASE@.@ARCH@.rpm $(top_srcdir)
-        @ rm -rf $(top_srcdir)/rpm/SOURCES $(top_srcdir)/rpm/SPECS $(top_srcdir)/rpm/BUILD $(top_srcdir)/rpm/RPMS $(top_srcdir)/rpm/SRPMS
-        @ rm -f $(HOME)/.rpmmacros
-        @ mv -f $(HOME)/.rpmmacros.backup $(HOME)/.rpmmacros
-        @ echo "Success! Finished creating the rpm packge. Please have a sugary day."
-
-fedora-rpm:
-        @ $(top_srcdir)/configure --prefix /usr --sysconfdir /etc --docdir=/usr/share/doc/@PACKAGE@ > /dev/null
-        @ make rpm
+# Example from Makefile.am
+#rpm: dist
+#        @ make clean > /dev/null
+#        @ touch $(HOME)/.rpmmacros
+#        @ cp -f $(HOME)/.rpmmacros $(HOME)/.rpmmacros.backup
+#        @ echo "%_topdir $(PWD)/rpm" > $(HOME)/.rpmmacros
+#        @ mkdir -p $(top_srcdir)/rpm/SOURCES $(top_srcdir)/rpm/SPECS $(top_srcdir)/rpm/BUILD $(top_srcdir)/rpm/RPMS/@ARCH@ $(top_srcdir)/rpm/SRPMS/@ARCH@
+#        @ cp @PACKAGE@-@VERSION@.tar.gz $(top_srcdir)/rpm/SOURCES
+#        @ ${RPMBUILD} -ba --target @ARCH@ $(top_srcdir)/rpm/@PACKAGE@.spec
+#        @ cp $(RPM_RPMS)/@ARCH@/@PACKAGE@-@VERSION@-@RELEASE@.@ARCH@.rpm $(top_srcdir)
+#        @ rm -rf $(top_srcdir)/rpm/SOURCES $(top_srcdir)/rpm/SPECS $(top_srcdir)/rpm/BUILD $(top_srcdir)/rpm/RPMS $(top_srcdir)/rpm/SRPMS
+#        @ rm -f $(HOME)/.rpmmacros
+#        @ mv -f $(HOME)/.rpmmacros.backup $(HOME)/.rpmmacros
+#        @ echo "Success! Finished creating the rpm packge. Please have a sugary day."
+#
+#fedora-rpm:
+#        @ $(top_srcdir)/configure --prefix /usr --sysconfdir /etc --docdir=/usr/share/doc/@PACKAGE@ > /dev/null
+#        @ make rpm
 
