@@ -267,8 +267,12 @@ gboolean gw_util_is_furigana_str (char input[])
 //!
 gboolean gw_util_is_kanji_ish_str (char input[])
 {
-    char *next = g_utf8_next_char (input);
-    return (g_utf8_get_char(input) >= L'ー' || g_utf8_get_char(next) >= L'ー');
+    gboolean hira = gw_util_is_hiragana_str (input);
+    gboolean kata = gw_util_is_katakana_str (input);
+    gboolean roma = gw_util_is_romaji_str (input);
+    gboolean kanji = gw_util_is_kanji_str (input);
+
+    return (!hira && !kata && !roma && !kanji);
 }
 
 //!
