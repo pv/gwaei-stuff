@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 1.4.0\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-04-25 12:24+0200\n"
+"POT-Creation-Date: 2010-04-28 00:23-0400\n"
 "PO-Revision-Date: 2010-04-25 17:49+0100\n"
 "Last-Translator: Nicolas Laurent\n"
 "Language-Team: none\n"
@@ -849,14 +849,14 @@ msgstr "- Un dictionnaire logiciel pour la traduction Japonais-Anglais"
 msgid "Pop"
 msgstr "Pop."
 
-#: src/gtk-main-interface.c:3549
+#: src/gtk-main-interface.c:3550
 #, c-format
 msgid "Other Result %d"
 msgid_plural "Other Results %d"
 msgstr[0] "%d résultat similaire"
 msgstr[1] "%d résultats similaires"
 
-#: src/gtk-main-interface.c:3564
+#: src/gtk-main-interface.c:3565
 #, c-format
 msgid "Main Result %d"
 msgid_plural "Main Results %d"

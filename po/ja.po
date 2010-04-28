@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-04-23 06:18-0400\n"
+"POT-Creation-Date: 2010-04-28 00:23-0400\n"
 "PO-Revision-Date: 2008-11-30 02:35+0500\n"
 "Last-Translator: Zachary Dovel pizzach@gmail.com\n"
 "Language-Team: Not Applicable\n"
@@ -363,19 +363,19 @@ msgstr "選択のを印刷"
 msgid "A_ppend"
 msgstr "追加(_P)"
 
-#. TRANSLATORS: Search for "$expression" in the ${dictionary long name}
+#. TRANSLATORS: The first variable is the expression to look for, the second is the dictionary full name
 #: src/gtk-main-callbacks.c:1796
 #, c-format
 msgid "Search for \"%s\" in the %s"
 msgstr "「%s」を%sで検索する"
 
-#. TRANSLATORS: Search for "$expression" in a different dictionary
+#. TRANSLATORS: The variable is the expression to look for
 #: src/gtk-main-callbacks.c:1798
 #, c-format
 msgid "Search for \"%s\" in a Different Dictionary"
 msgstr "「%s」を別の辞書で検索する"
 
-#. TRANSLATORS: Search for "$expression" online at ${url}
+#. TRANSLATORS: The variable is the expression to look for
 #: src/gtk-main-callbacks.c:1800
 #, c-format
 msgid "Cross-reference \"%s\" Online"
@@ -762,13 +762,13 @@ msgstr ""
 msgid "Pop"
 msgstr ""
 
-#: src/gtk-main-interface.c:3549
+#: src/gtk-main-interface.c:3550
 #, c-format
 msgid "Other Result %d"
 msgid_plural "Other Results %d"
 msgstr[0] "他の候補 %d"
 
-#: src/gtk-main-interface.c:3564
+#: src/gtk-main-interface.c:3565
 #, c-format
 msgid "Main Result %d"
 msgid_plural "Main Results %d"
