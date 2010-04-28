@@ -186,7 +186,7 @@ int gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
        strcat(ql->hira_string, generic_atoms[i]);
        strcat(ql->hira_string, ")");
 
-       if (g_utf8_strlen (generic_atoms[i], -1) == 4)
+       if (g_utf8_strlen (generic_atoms[i], -1) == 4 && gw_util_is_kanji_str (generic_atoms[i]))
        {
           g_utf8_strncpy (temp, generic_atoms[i], 2);
           temp_ptr = temp;
