@@ -47,8 +47,8 @@ TABLE OF CONTENTS
   required compilation dependancies is:
 
   sudo apt-get install libcurl4-gnutls-dev libgtk2.0-dev libsexy-dev\
-  libgconf2-dev build-essential gnome-doc-utils libunique-dev libncurses5-dev
-  gcc autoconf automake
+ libgconf2-dev build-essential gnome-doc-utils libunique-dev libncurses5-dev
+  libncursesw5-dev gcc autoconf automake
 
   For inputing Japanese queries, installing some software for Japanese
   conversion is highly recommended.  Currently, the three main linux methods are
