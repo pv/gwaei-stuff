@@ -170,8 +170,7 @@ AM_GNU_GETTEXT([external])
 AC_CONFIG_MACRO_DIR([m4])
 
 
-if([test x$gnome = xfalse]);then([cp help/Makefile.am.gnome help/Makefile.am]);fi
-if([test x$gnome = xtrue]);then([cp help/Makefile.am.none help/Makefile.am]);fi
+AM_CONDITIONAL(MAKE_GNOMEHELP, test x$gnome = xfalse)
 
 AC_CONFIG_FILES([Makefile src/Makefile mandir/Makefile help/Makefile help/gwaei.omf help/C/gwaei.xml src/gtk-builder-xml/Makefile src/images/Makefile src/schemas/Makefile src/desktop/Makefile src/kpengine/Makefile src/kpengine/conv_jdata.pl rpm/gwaei.spec rpm/rpm_gconf_install_post.sh rpm/rpm_gconf_uninstall_pre.sh rpm/fedora/SPECS/gwaei.spec src/schemas/gwaei.schemas src/include/gwaei/definitions.h po/Makefile.in po/Makefile] Doxyfile)
 AC_OUTPUT
