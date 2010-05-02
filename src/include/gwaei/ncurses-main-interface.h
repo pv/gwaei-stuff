@@ -10,6 +10,7 @@ typedef enum {
 } GwNcursesColorPair;
 
 
+void initialize_ncurses_interface (int, char**);
 void gw_ncurses_initialize_interface_output_generics (void);
 void gw_ncurses_append_edict_results (GwSearchItem*);
 void gw_ncurses_append_kanjidict_results (GwSearchItem*);

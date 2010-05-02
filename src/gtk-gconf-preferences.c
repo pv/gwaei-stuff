@@ -567,6 +567,7 @@ void do_kata_hira_conv_pref_changed_action (GConfClient *client,
 }
 
 
+#ifdef ENABLE_LIBSEXY
 //!
 //! @brief Callback action for when preference key changes
 //!
@@ -588,6 +589,7 @@ void do_spellcheck_pref_changed_action (GConfClient* client,
     else
       gw_sexy_ui_set_spellcheck (TRUE);
 }
+#endif
 
 
 //!
@@ -682,7 +684,9 @@ void gw_prefs_initialize_preferences()
   gw_prefs_add_change_listener (GCKEY_GW_ROMAN_KANA, do_roman_kana_conv_pref_changed_action, NULL);
   gw_prefs_add_change_listener (GCKEY_GW_HIRA_KATA, do_hira_kata_conv_pref_changed_action, NULL);
   gw_prefs_add_change_listener (GCKEY_GW_KATA_HIRA, do_kata_hira_conv_pref_changed_action, NULL);
+#ifdef ENABLE_LIBSEXY
   gw_prefs_add_change_listener (GCKEY_GW_SPELLCHECK, do_spellcheck_pref_changed_action, NULL);
+#endif
   gw_prefs_add_change_listener (GCKEY_GW_MATCH_FG, do_color_value_changed_action, NULL);
   gw_prefs_add_change_listener (GCKEY_GW_MATCH_BG, do_color_value_changed_action, NULL);
   gw_prefs_add_change_listener (GCKEY_GW_HEADER_FG, do_color_value_changed_action, NULL);

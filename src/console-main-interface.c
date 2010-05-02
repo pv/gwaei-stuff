@@ -300,7 +300,9 @@ void initialize_console_interface (int argc, char **argv)
     }
     GOptionEntry entries[] = 
     {
+#ifdef ENABLE_NCURSES
       { "ncurses", 'n', 0, G_OPTION_ARG_NONE, &ncurses_switch, gettext("Open up the multisearch window (beta)"), NULL },
+#endif
       { "exact", 'e', 0, G_OPTION_ARG_NONE, &exact_switch, gettext("Do not display less relevant results"), NULL },
       { "quiet", 'q', 0, G_OPTION_ARG_NONE, &quiet_switch, gettext("Display less information"), NULL },
       { "dictionary", 'd', 0, G_OPTION_ARG_STRING, &dictionary_switch_data, gettext("Search using a chosen dictionary"), NULL },

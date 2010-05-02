@@ -597,6 +597,10 @@ GCONF_SCHEMAS_INSTALL_FALSE
 GCONF_SCHEMAS_INSTALL_TRUE
 GCONF_SCHEMA_FILE_DIR
 GCONF_SCHEMA_CONFIG_SOURCE
+LIBSEXY_LIBS
+LIBSEXY_CFLAGS
+LIBUNIQUE_LIBS
+LIBUNIQUE_CFLAGS
 HAVE_GNOME_DOC_UTILS_FALSE
 HAVE_GNOME_DOC_UTILS_TRUE
 DISTCHECK_CONFIGURE_FLAGS
@@ -612,6 +616,12 @@ WIN32_LIBS
 WIN32_CFLAGS
 WITHOUT_GNOME_FALSE
 WITHOUT_GNOME_TRUE
+WITHOUT_NCURSES_FALSE
+WITHOUT_NCURSES_TRUE
+WITHOUT_LIBSEXY_FALSE
+WITHOUT_LIBSEXY_TRUE
+WITHOUT_LIBUNIQUE_FALSE
+WITHOUT_LIBUNIQUE_TRUE
 ENABLE_WIN32_FALSE
 ENABLE_WIN32_TRUE
 COMMENT_FG_DEFAULT
@@ -715,6 +725,9 @@ ac_user_opts='
 enable_option_checking
 enable_dependency_tracking
 enable_win32
+with_libunique
+with_libsexy
+with_ncurses
 with_gnome
 with_help_dir
 with_omf_dir
@@ -743,7 +756,11 @@ CPPFLAGS
 WIN32_CFLAGS
 WIN32_LIBS
 GNOME_CFLAGS
-GNOME_LIBS'
+GNOME_LIBS
+LIBUNIQUE_CFLAGS
+LIBUNIQUE_LIBS
+LIBSEXY_CFLAGS
+LIBSEXY_LIBS'
 
 
 # Initialize some variables set by options.
@@ -1375,6 +1392,9 @@ Optional Features:
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
+  --without-libunique         disable libunique
+  --without-libsexy         disable libsexy
+  --without-ncurses         disable ncurses
   --without-gnome         turn off the gnome gui interface
   --with-help-dir=DIR     path to help docs
   --with-omf-dir=DIR      path to OMF files
@@ -1407,6 +1427,14 @@ Some influential environment variables:
   GNOME_CFLAGS
               C compiler flags for GNOME, overriding pkg-config
   GNOME_LIBS  linker flags for GNOME, overriding pkg-config
+  LIBUNIQUE_CFLAGS
+              C compiler flags for LIBUNIQUE, overriding pkg-config
+  LIBUNIQUE_LIBS
+              linker flags for LIBUNIQUE, overriding pkg-config
+  LIBSEXY_CFLAGS
+              C compiler flags for LIBSEXY, overriding pkg-config
+  LIBSEXY_LIBS
+              linker flags for LIBSEXY, overriding pkg-config
 
 Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
@@ -2475,9 +2503,9 @@ RELEASE=1
 ARCH="i386"
 
 
-GTK2_REQUIRED_VERSION=2.14.0
+GTK2_REQUIRED_VERSION=2.16.0
 GLIB_REQUIRED_VERSION=2.8.0
-GTHREAD_REQUIRED_VERSION=2.16.5
+GTHREAD_REQUIRED_VERSION=2.16.0
 GCONF_REQUIRED_VERSION=2.22.0
 LIBCURL_REQUIRED_VERSION=7.18.0
 GMODULE_EXPORT_REQUIRED_VERSION=2.16.0
@@ -3818,6 +3846,68 @@ fi
 
 
 
+# Check whether --with-libunique was given.
+if test "${with_libunique+set}" = set; then :
+  withval=$with_libunique; case "${withval}" in
+yes) libunique=false ;;
+no)  libunique=true ;;
+*) as_fn_error "bad value ${withval} for --without-libunique" "$LINENO" 5 ;;
+esac
+else
+  libunique=false
+fi
+
+ if test x$libunique = xtrue; then
+  WITHOUT_LIBUNIQUE_TRUE=
+  WITHOUT_LIBUNIQUE_FALSE='#'
+else
+  WITHOUT_LIBUNIQUE_TRUE='#'
+  WITHOUT_LIBUNIQUE_FALSE=
+fi
+
+
+
+# Check whether --with-libsexy was given.
+if test "${with_libsexy+set}" = set; then :
+  withval=$with_libsexy; case "${withval}" in
+yes) libsexy=false ;;
+no)  libsexy=true ;;
+*) as_fn_error "bad value ${withval} for --without-libsexy" "$LINENO" 5 ;;
+esac
+else
+  libsexy=false
+fi
+
+ if test x$libsexy = xtrue; then
+  WITHOUT_LIBSEXY_TRUE=
+  WITHOUT_LIBSEXY_FALSE='#'
+else
+  WITHOUT_LIBSEXY_TRUE='#'
+  WITHOUT_LIBSEXY_FALSE=
+fi
+
+
+
+# Check whether --with-ncurses was given.
+if test "${with_ncurses+set}" = set; then :
+  withval=$with_ncurses; case "${withval}" in
+yes) ncurses=false ;;
+no)  ncurses=true ;;
+*) as_fn_error "bad value ${withval} for --without-ncurses" "$LINENO" 5 ;;
+esac
+else
+  ncurses=false
+fi
+
+ if test x$ncurses = xtrue; then
+  WITHOUT_NCURSES_TRUE=
+  WITHOUT_NCURSES_FALSE='#'
+else
+  WITHOUT_NCURSES_TRUE='#'
+  WITHOUT_NCURSES_FALSE=
+fi
+
+
 
 # Check whether --with-gnome was given.
 if test "${with_gnome+set}" = set; then :
@@ -4056,6 +4146,7 @@ $as_echo "yes" >&6; }
 fi
 
 
+
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether ln -s works" >&5
 $as_echo_n "checking whether ln -s works... " >&6; }
 LN_S=$as_ln_s
@@ -4070,6 +4161,8 @@ fi
 
 gdu_cv_version_required=0.3.2
 
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking gnome-doc-utils >= $gdu_cv_version_required" >&5
+$as_echo_n "checking gnome-doc-utils >= $gdu_cv_version_required... " >&6; }
 if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gnome-doc-utils >= \$gdu_cv_version_required\""; } >&5
   ($PKG_CONFIG --exists --print-errors "gnome-doc-utils >= $gdu_cv_version_required") 2>&5
@@ -4082,8 +4175,12 @@ else
 fi
 
 if test "$gdu_cv_have_gdu" = "yes"; then
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
 	:
 else
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
 	as_fn_error "gnome-doc-utils >= $gdu_cv_version_required not found" "$LINENO" 5
 fi
 
@@ -4154,6 +4251,8 @@ else
 
 gdu_cv_version_required=0.3.2
 
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking gnome-doc-utils >= $gdu_cv_version_required" >&5
+$as_echo_n "checking gnome-doc-utils >= $gdu_cv_version_required... " >&6; }
 if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gnome-doc-utils >= \$gdu_cv_version_required\""; } >&5
   ($PKG_CONFIG --exists --print-errors "gnome-doc-utils >= $gdu_cv_version_required") 2>&5
@@ -4166,8 +4265,12 @@ else
 fi
 
 if test "$gdu_cv_have_gdu" = "yes"; then
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
 	:
 else
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
 	:
 fi
 
@@ -4236,6 +4339,187 @@ fi
 
 fi
 
+if test ${libunique} = false && ${gnome} = false; then
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBUNIQUE" >&5
+$as_echo_n "checking for LIBUNIQUE... " >&6; }
+
+if test -n "$LIBUNIQUE_CFLAGS"; then
+    pkg_cv_LIBUNIQUE_CFLAGS="$LIBUNIQUE_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"unique-1.0  >= \$LIBUNIQUE_REQUIRED_VERSION\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "unique-1.0  >= $LIBUNIQUE_REQUIRED_VERSION") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_LIBUNIQUE_CFLAGS=`$PKG_CONFIG --cflags "unique-1.0  >= $LIBUNIQUE_REQUIRED_VERSION" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$LIBUNIQUE_LIBS"; then
+    pkg_cv_LIBUNIQUE_LIBS="$LIBUNIQUE_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"unique-1.0  >= \$LIBUNIQUE_REQUIRED_VERSION\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "unique-1.0  >= $LIBUNIQUE_REQUIRED_VERSION") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_LIBUNIQUE_LIBS=`$PKG_CONFIG --libs "unique-1.0  >= $LIBUNIQUE_REQUIRED_VERSION" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        LIBUNIQUE_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "unique-1.0  >= $LIBUNIQUE_REQUIRED_VERSION" 2>&1`
+        else
+	        LIBUNIQUE_PKG_ERRORS=`$PKG_CONFIG --print-errors "unique-1.0  >= $LIBUNIQUE_REQUIRED_VERSION" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$LIBUNIQUE_PKG_ERRORS" >&5
+
+	as_fn_error "Package requirements (unique-1.0  >= $LIBUNIQUE_REQUIRED_VERSION) were not met:
+
+$LIBUNIQUE_PKG_ERRORS
+
+Consider adjusting the PKG_CONFIG_PATH environment variable if you
+installed software in a non-standard prefix.
+
+Alternatively, you may set the environment variables LIBUNIQUE_CFLAGS
+and LIBUNIQUE_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+" "$LINENO" 5
+elif test $pkg_failed = untried; then
+	{ { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error "The pkg-config script could not be found or is too old.  Make sure it
+is in your PATH or set the PKG_CONFIG environment variable to the full
+path to pkg-config.
+
+Alternatively, you may set the environment variables LIBUNIQUE_CFLAGS
+and LIBUNIQUE_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+
+To get pkg-config, see <http://pkg-config.freedesktop.org/>.
+See \`config.log' for more details." "$LINENO" 5; }
+else
+	LIBUNIQUE_CFLAGS=$pkg_cv_LIBUNIQUE_CFLAGS
+	LIBUNIQUE_LIBS=$pkg_cv_LIBUNIQUE_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	:
+fi
+
+
+fi
+
+if test ${libsexy} = false && ${gnome} = false; then
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBSEXY" >&5
+$as_echo_n "checking for LIBSEXY... " >&6; }
+
+if test -n "$LIBSEXY_CFLAGS"; then
+    pkg_cv_LIBSEXY_CFLAGS="$LIBSEXY_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libsexy  >= \$LIBSEXY_REQUIRED_VERSION\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libsexy  >= $LIBSEXY_REQUIRED_VERSION") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_LIBSEXY_CFLAGS=`$PKG_CONFIG --cflags "libsexy  >= $LIBSEXY_REQUIRED_VERSION" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$LIBSEXY_LIBS"; then
+    pkg_cv_LIBSEXY_LIBS="$LIBSEXY_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libsexy  >= \$LIBSEXY_REQUIRED_VERSION\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libsexy  >= $LIBSEXY_REQUIRED_VERSION") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_LIBSEXY_LIBS=`$PKG_CONFIG --libs "libsexy  >= $LIBSEXY_REQUIRED_VERSION" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        LIBSEXY_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "libsexy  >= $LIBSEXY_REQUIRED_VERSION" 2>&1`
+        else
+	        LIBSEXY_PKG_ERRORS=`$PKG_CONFIG --print-errors "libsexy  >= $LIBSEXY_REQUIRED_VERSION" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$LIBSEXY_PKG_ERRORS" >&5
+
+	as_fn_error "Package requirements (libsexy  >= $LIBSEXY_REQUIRED_VERSION) were not met:
+
+$LIBSEXY_PKG_ERRORS
+
+Consider adjusting the PKG_CONFIG_PATH environment variable if you
+installed software in a non-standard prefix.
+
+Alternatively, you may set the environment variables LIBSEXY_CFLAGS
+and LIBSEXY_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+" "$LINENO" 5
+elif test $pkg_failed = untried; then
+	{ { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error "The pkg-config script could not be found or is too old.  Make sure it
+is in your PATH or set the PKG_CONFIG environment variable to the full
+path to pkg-config.
+
+Alternatively, you may set the environment variables LIBSEXY_CFLAGS
+and LIBSEXY_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+
+To get pkg-config, see <http://pkg-config.freedesktop.org/>.
+See \`config.log' for more details." "$LINENO" 5; }
+else
+	LIBSEXY_CFLAGS=$pkg_cv_LIBSEXY_CFLAGS
+	LIBSEXY_LIBS=$pkg_cv_LIBSEXY_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	:
+fi
+
+
+fi
 
 
 
@@ -7298,7 +7582,7 @@ $as_echo "#define HAVE_DCGETTEXT 1" >>confdefs.h
 if(test x$gnome = xfalse);then(cp help/Makefile.am.gnome help/Makefile.am);fi
 if(test x$gnome = xtrue);then(cp help/Makefile.am.none help/Makefile.am);fi
 
-ac_config_files="$ac_config_files Makefile src/Makefile mandir/Makefile help/Makefile help/gwaei.omf help/C/gwaei.xml src/gtk-builder-xml/Makefile src/images/Makefile src/schemas/Makefile src/desktop/Makefile src/kpengine/Makefile src/kpengine/conv_jdata.pl rpm/gwaei.spec rpm/rpm_gconf_install_post.sh rpm/rpm_gconf_uninstall_pre.sh src/schemas/gwaei.schemas src/include/gwaei/definitions.h po/Makefile.in po/Makefile Doxyfile"
+ac_config_files="$ac_config_files Makefile src/Makefile mandir/Makefile help/Makefile help/gwaei.omf help/C/gwaei.xml src/gtk-builder-xml/Makefile src/images/Makefile src/schemas/Makefile src/desktop/Makefile src/kpengine/Makefile src/kpengine/conv_jdata.pl rpm/gwaei.spec rpm/rpm_gconf_install_post.sh rpm/rpm_gconf_uninstall_pre.sh rpm/fedora/SPECS/gwaei.spec src/schemas/gwaei.schemas src/include/gwaei/definitions.h po/Makefile.in po/Makefile Doxyfile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -7415,6 +7699,18 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${ENABLE_WIN32_TRUE}" && test -z "${ENABLE_WIN32_FALSE}"; then
   as_fn_error "conditional \"ENABLE_WIN32\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${WITHOUT_LIBUNIQUE_TRUE}" && test -z "${WITHOUT_LIBUNIQUE_FALSE}"; then
+  as_fn_error "conditional \"WITHOUT_LIBUNIQUE\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${WITHOUT_LIBSEXY_TRUE}" && test -z "${WITHOUT_LIBSEXY_FALSE}"; then
+  as_fn_error "conditional \"WITHOUT_LIBSEXY\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${WITHOUT_NCURSES_TRUE}" && test -z "${WITHOUT_NCURSES_FALSE}"; then
+  as_fn_error "conditional \"WITHOUT_NCURSES\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${WITHOUT_GNOME_TRUE}" && test -z "${WITHOUT_GNOME_FALSE}"; then
@@ -8067,6 +8363,7 @@ do
     "rpm/gwaei.spec") CONFIG_FILES="$CONFIG_FILES rpm/gwaei.spec" ;;
     "rpm/rpm_gconf_install_post.sh") CONFIG_FILES="$CONFIG_FILES rpm/rpm_gconf_install_post.sh" ;;
     "rpm/rpm_gconf_uninstall_pre.sh") CONFIG_FILES="$CONFIG_FILES rpm/rpm_gconf_uninstall_pre.sh" ;;
+    "rpm/fedora/SPECS/gwaei.spec") CONFIG_FILES="$CONFIG_FILES rpm/fedora/SPECS/gwaei.spec" ;;
     "src/schemas/gwaei.schemas") CONFIG_FILES="$CONFIG_FILES src/schemas/gwaei.schemas" ;;
     "src/include/gwaei/definitions.h") CONFIG_FILES="$CONFIG_FILES src/include/gwaei/definitions.h" ;;
     "po/Makefile.in") CONFIG_FILES="$CONFIG_FILES po/Makefile.in" ;;

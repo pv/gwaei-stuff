@@ -8,9 +8,9 @@ AC_SUBST(RELEASE)
 ARCH="i386"
 AC_SUBST(ARCH)
 
-GTK2_REQUIRED_VERSION=2.14.0
+GTK2_REQUIRED_VERSION=2.16.0
 GLIB_REQUIRED_VERSION=2.8.0
-GTHREAD_REQUIRED_VERSION=2.16.5
+GTHREAD_REQUIRED_VERSION=2.16.0
 GCONF_REQUIRED_VERSION=2.22.0
 LIBCURL_REQUIRED_VERSION=7.18.0
 GMODULE_EXPORT_REQUIRED_VERSION=2.16.0
@@ -81,6 +81,32 @@ no)  win32=false ;;
 esac],[win32=false])
 AM_CONDITIONAL([ENABLE_WIN32], [test x$win32 = xtrue])
 
+AC_ARG_WITH([libunique],
+[  --without-libunique         disable libunique],
+[case "${withval}" in
+yes) libunique=false ;;
+no)  libunique=true ;;
+*) AC_MSG_ERROR([bad value ${withval} for --without-libunique]) ;;
+esac],[libunique=false])
+AM_CONDITIONAL([WITHOUT_LIBUNIQUE], [test x$libunique = xtrue])
+
+AC_ARG_WITH([libsexy],
+[  --without-libsexy         disable libsexy],
+[case "${withval}" in
+yes) libsexy=false ;;
+no)  libsexy=true ;;
+*) AC_MSG_ERROR([bad value ${withval} for --without-libsexy]) ;;
+esac],[libsexy=false])
+AM_CONDITIONAL([WITHOUT_LIBSEXY], [test x$libsexy = xtrue])
+
+AC_ARG_WITH([ncurses],
+[  --without-ncurses         disable ncurses],
+[case "${withval}" in
+yes) ncurses=false ;;
+no)  ncurses=true ;;
+*) AC_MSG_ERROR([bad value ${withval} for --without-ncurses]) ;;
+esac],[ncurses=false])
+AM_CONDITIONAL([WITHOUT_NCURSES], [test x$ncurses = xtrue])
 
 AC_ARG_WITH([gnome],
 [  --without-gnome         turn off the gnome gui interface],
@@ -106,12 +132,24 @@ elif test ${gnome} = false; then
                            gnome-doc-utils    >= $GDU_REQUIRED_VERSION )
   AC_SUBST(GNOME_CFLAGS)
   AC_SUBST(GNOME_LIBS)
+
   GNOME_DOC_INIT
 else
   dnl Do not care if GDU is not found
   GNOME_DOC_INIT(,,[:])
 fi
 
+if test ${libunique} = false && ${gnome} = false; then
+  PKG_CHECK_MODULES(LIBUNIQUE, unique-1.0  >= $LIBUNIQUE_REQUIRED_VERSION)
+  AC_SUBST(LIBUNIQUE_CFLAGS)
+  AC_SUBST(LIBUNIQUE_LIBS)
+fi
+
+if test ${libsexy} = false && ${gnome} = false; then
+  PKG_CHECK_MODULES(LIBSEXY, libsexy  >= $LIBSEXY_REQUIRED_VERSION)
+  AC_SUBST(LIBSEXY_CFLAGS)
+  AC_SUBST(LIBSEXY_LIBS)
+fi
 
 
 AM_GCONF_SOURCE_2

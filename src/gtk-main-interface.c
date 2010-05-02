@@ -34,7 +34,6 @@
 #include <locale.h>
 #include <libintl.h>
 
-#include <unique/unique.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
@@ -54,6 +53,12 @@
 #include <gwaei/gtk-main-callbacks.h>
 #include <gwaei/gtk-settings-callbacks.h>
 #include <gwaei/gtk-main-interface.h>
+#ifdef ENABLE_LIBUNIQUE
+#include <gwaei/gtk-main-interface-unique.h>
+#endif
+#ifdef ENABLE_LIBSEXY
+#include <gwaei/gtk-main-interface-sexy.h>
+#endif
 #include <gwaei/gtk-main-interface-tabs.h>
 #include <gwaei/gtk-kanjipad-interface.h>
 
@@ -73,60 +78,6 @@ static GOptionEntry entries[] =
   { "new-instance", 'n', 0, G_OPTION_ARG_NONE, &arg_new_instance, "Open a new instance of gWaei", NULL },
   { NULL }
 };
-
-
-
-
-//!
-//! @brief To be written
-//!
-static UniqueResponse message_received_cb (UniqueApp         *app,
-                                           UniqueCommand      command,
-                                           UniqueMessageData *message,
-                                           guint              time_,
-                                           gpointer           user_data)
-{
-    UniqueResponse res;
-    GtkWidget *main_window, *settings_window, *radicals_window, *kanjipad_window;
-    main_window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
-    kanjipad_window = GTK_WIDGET (gtk_builder_get_object (builder, "kanjipad_window"));
-    radicals_window = GTK_WIDGET (gtk_builder_get_object (builder, "radicals_window"));
-    settings_window = GTK_WIDGET (gtk_builder_get_object (builder, "settings_window"));
-    switch (command)
-    {
-        case UNIQUE_ACTIVATE:
-          if (GTK_WIDGET_VISIBLE (main_window))
-          {
-          gdk_x11_window_move_to_current_desktop (main_window->window);
-          gtk_window_set_screen (GTK_WINDOW (main_window), unique_message_data_get_screen (message));
-          gtk_window_present_with_time (GTK_WINDOW (main_window), time_);
-          }
-          if (GTK_WIDGET_VISIBLE (kanjipad_window))
-          {
-            gdk_x11_window_move_to_current_desktop (main_window->window);
-            gtk_window_set_screen (GTK_WINDOW (kanjipad_window), unique_message_data_get_screen (message));
-            gtk_window_present_with_time (GTK_WINDOW (kanjipad_window), time_);
-          }
-          if (GTK_WIDGET_VISIBLE (radicals_window))
-          {
-            gdk_x11_window_move_to_current_desktop (radicals_window->window);
-            gtk_window_set_screen (GTK_WINDOW (radicals_window), unique_message_data_get_screen (message));
-            gtk_window_present_with_time (GTK_WINDOW (radicals_window), time_);
-          }
-          if (GTK_WIDGET_VISIBLE (settings_window))
-          {
-            gdk_x11_window_move_to_current_desktop (settings_window->window);
-            gtk_window_set_screen (GTK_WINDOW (settings_window), unique_message_data_get_screen (message));
-            gtk_window_present_with_time (GTK_WINDOW (settings_window), time_);
-          }
-          res = UNIQUE_RESPONSE_OK;
-          break;
-        default:
-          res = UNIQUE_RESPONSE_OK;
-          break;
-    }
-    return res;
-}
 
 
 //!
@@ -2777,12 +2728,9 @@ static void set_header (GwSearchItem *item, char* text, char* mark_name)
 void initialize_gui_interface (int argc, char *argv[])
 {
     //Initialize some libraries
-    UniqueApp *app;
     gdk_threads_init();
     gtk_init (&argc, &argv);
 
-    app = unique_app_new ("org.dictionary.gWaei", NULL);
-    
     //Program flags setup
     GError *error = NULL;
     GOptionContext *context = g_option_context_new (gettext("- A dictionary program for Japanese-English translation."));
@@ -2791,15 +2739,11 @@ void initialize_gui_interface (int argc, char *argv[])
     g_option_context_parse (context, &argc, &argv, &error);
     g_option_context_free (context);
 
-    //Activate the main window in the program is already open
-    if (arg_new_instance == FALSE && unique_app_is_running (app))
-    {
-      UniqueResponse response;
-      response = unique_app_send_message (app, UNIQUE_ACTIVATE, NULL);
-    }
+#ifdef ENABLE_LIBUNIQUE
     //Fresh instance startup
-    else
+    if (gw_unique_is_unique (arg_new_instance))
     {
+#endif
       //Setup the main windows xml
       builder = gtk_builder_new ();
       gw_ui_load_gtk_builder_xml ("main.ui");
@@ -2810,15 +2754,18 @@ void initialize_gui_interface (int argc, char *argv[])
       //Libunique setup
       GtkWidget *main_window;
       main_window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
-      unique_app_watch_window (app, GTK_WINDOW (main_window));
-      g_signal_connect (app, "message-received", G_CALLBACK (message_received_cb), NULL);
+#ifdef ENABLE_LIBUNIQUE
+      gw_unique_add_window_watcher (main_window);
+#endif
 
       //Variious initializations
       force_gtk_builder_translation_for_gtk_actions_hack ();
       initialize_global_widget_pointers ();
       gw_ui_initialize_interface_output_generics ();
       gw_guarantee_first_tab ();
+#ifdef ENABLE_LIBSEXY
       gw_sexy_initialize_libsexy (&search_entry);
+#endif
       gw_ui_update_history_popups ();
       gw_ui_show_window ("main_window");
       gw_prefs_initialize_preferences ();
@@ -2870,9 +2817,11 @@ void initialize_gui_interface (int argc, char *argv[])
         g_free (query_text_data);
         query_text_data = NULL;
       }
-      g_object_unref (app);
       gw_kanjipad_free_resources ();
+
+#ifdef ENABLE_LIBUNIQUE
     }
+#endif
 
     exit (EXIT_SUCCESS);
 }
