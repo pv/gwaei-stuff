@@ -14,6 +14,7 @@ scriptname=$(basename $0)
 prog=$2
 version=$3
 tarpkgname=$prog-$version.tar.gz
+rpmtimestamp=$(LANG=C && date "+%a %b %d %Y")
 
 distro=$(find $scriptdir -maxdepth 1 -type d | grep -v "^$scriptdir$" | sed 's#^\./##')
 
@@ -44,6 +45,9 @@ do
 	# 1c- Move sources and patches
 	cp -f $topdir/$tarpkgname $toprpmdir/SOURCES
 	cp -f $toprpmdir/patches/* $toprpmdir/SOURCES
+
+	# 1d- Insert time stamp into spec file
+	sed -i "s/<DATE>/$rpmtimestamp/" $toprpmdir/SPECS/$prog.spec
 
 	# 2-Now build
 	rpmbuild -ba $toprpmdir/SPECS/$prog.spec 2>&1 | tee $toprpmdir/log/build.log
