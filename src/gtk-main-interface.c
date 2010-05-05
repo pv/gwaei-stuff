@@ -2409,7 +2409,7 @@ void gw_ui_display_no_results_found_page (GwSearchItem *item)
 
 
     //Add label for links
-    hbox = gtk_hbox_new (FALSE, 5);
+    hbox = gtk_hbox_new (FALSE, 0);
     gtk_text_buffer_get_end_iter (tb, &iter);
     anchor = gtk_text_buffer_create_child_anchor (tb, &iter);
     gtk_text_view_add_child_at_anchor (GTK_TEXT_VIEW (tv), hbox, anchor);
@@ -2430,9 +2430,9 @@ void gw_ui_display_no_results_found_page (GwSearchItem *item)
 
     //Add links
     char *website_url_menuitems[] = {
-      "Wikipedia", "http://www.wikipedia.org/wiki/%s", "wikipedia.png",
-      "Goo", "http://dictionary.goo.ne.jp/srch/all/%s/m0u/", "goo.png",
       "Google", "http://www.google.com/search?q=%s", "google.png",
+      "Goo", "http://dictionary.goo.ne.jp/srch/all/%s/m0u/", "goo.png",
+      "Wikipedia", "http://www.wikipedia.org/wiki/%s", "wikipedia.png",
       NULL, NULL, NULL
     };
     i = 0;
@@ -2442,14 +2442,11 @@ void gw_ui_display_no_results_found_page (GwSearchItem *item)
       char *name = website_url_menuitems[i];
       char *url = g_strdup_printf(website_url_menuitems[i + 1], query_text);
       char *icon_path = website_url_menuitems[i + 2];
-/*      
       char *path = g_build_filename (DATADIR, PACKAGE, icon_path, NULL);
-*/
       image = NULL;
 
       //Start creating
       button = gtk_link_button_new_with_label (url, name);
-/*
       if (path != NULL)
       {
         image = gtk_image_new_from_file (path);
@@ -2457,7 +2454,6 @@ void gw_ui_display_no_results_found_page (GwSearchItem *item)
         g_free (path);
         path = NULL;
       }
-*/
       gtk_container_add (GTK_CONTAINER (hbox), GTK_WIDGET (button));
       gtk_widget_show (button);
       i += 3;
