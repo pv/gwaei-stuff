@@ -2392,9 +2392,19 @@ void gw_ui_display_no_results_found_page (GwSearchItem *item)
         {
           if (di->id != di_selected->id)
           {
-            button = gtk_link_button_new_with_label ("", di->short_name);
+            button = gtk_link_button_new_with_label ("Search using internal dictionary.", di->short_name);
             g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (do_prep_and_start_search_in_new_tab), temp_item);
             g_signal_connect (G_OBJECT (button), "destroy",  G_CALLBACK (do_destroy_tab_menuitem_searchitem_data), temp_item);
+/*
+          char *path = g_build_filename (DATADIR, PACKAGE, "book_green.png", NULL);
+            if (path != NULL)
+            {
+              image = gtk_image_new_from_file (path);
+              if (image != NULL) gtk_button_set_image (GTK_BUTTON (button), image);
+              g_free (path);
+              path = NULL;
+            }
+*/
             gtk_container_add (GTK_CONTAINER (hbox), GTK_WIDGET (button));
             gtk_widget_show (GTK_WIDGET (button));
           }

@@ -15,7 +15,7 @@ data32_DATA = 32x32/$(PACKAGE).png
 data48_DATA = 48x48/$(PACKAGE).png
 
 #Install Application Logo
-pkgdata_DATA = logo.png goo.png google.png wikipedia.png
+pkgdata_DATA = logo.png goo.png google.png wikipedia.png book_green.png
 
 #Install Toolbar/Menuitem Icons
 datawordboundary16dir = $(datadir)/icons/hicolor/16x16/actions
@@ -49,5 +49,5 @@ update-icon-cache:
 endif
 
 
-EXTRA_DIST = logo.png 16x16/$(PACKAGE).png 24x24/$(PACKAGE).png 32x32/$(PACKAGE).png 48x48/$(PACKAGE).png 22x22/word-boundary.png 16x16/non-word-boundary.png 16x16/unknown-character.png 24x24/non-word-boundary.png 16x16/word-boundary.png 24x24/unknown-character.png 22x22/non-word-boundary.png 24x24/word-boundary.png 22x22/unknown-character.png goo.png google.png wikipedia.png
+EXTRA_DIST = logo.png 16x16/$(PACKAGE).png 24x24/$(PACKAGE).png 32x32/$(PACKAGE).png 48x48/$(PACKAGE).png 22x22/word-boundary.png 16x16/non-word-boundary.png 16x16/unknown-character.png 24x24/non-word-boundary.png 16x16/word-boundary.png 24x24/unknown-character.png 22x22/non-word-boundary.png 24x24/word-boundary.png 22x22/unknown-character.png goo.png google.png wikipedia.png book_green.png
 
