@@ -77,6 +77,7 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary, const int 
     temp->dictionary = dictionary;
     temp->target = TARGET;
     temp->target_tb = NULL;
+    temp->target_tv = NULL;
     temp->total_relevant_results = 0;
     temp->total_irrelevant_results = 0;
     temp->total_results = 0;

@@ -397,7 +397,8 @@ G_MODULE_EXPORT void do_prep_and_start_search_in_new_tab (GtkWidget *widget, gpo
     GwSearchItem *item = (GwSearchItem*) data;
     if (item != NULL)
     {
-      do_new_tab (NULL, NULL);
+      if (item->total_results > 0)
+        do_new_tab (NULL, NULL);
       gw_ui_set_dictionary_by_searchitem (item);
       gw_ui_set_query_entry_text_by_searchitem (item);
       do_search (NULL, NULL);

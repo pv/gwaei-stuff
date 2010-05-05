@@ -1731,29 +1731,6 @@ void gw_ui_append_to_buffer (GwSearchItem *item, char *text, char *tag1,
 
 
 //!
-//! @brief Appends the image name to the end of the textbuffer
-//!
-//! @param item A GwaSearchItem to gleam information from
-//! @param filename The name of the image to look for in the global data path
-//!
-void gw_ui_append_image_to_buffer (GwSearchItem *item, char *filename)
-{
-    char *path = g_build_filename (DATADIR, PACKAGE, filename, NULL);
-
-    GdkPixbuf *pixbuf;
-    if ((pixbuf = gdk_pixbuf_new_from_file (path, NULL)) != NULL)
-    {
-      GObject *tb;
-      tb = G_OBJECT (item->target_tb);
-      GtkTextIter iter;
-      gtk_text_buffer_get_end_iter(GTK_TEXT_BUFFER(tb), &iter);
-      gtk_text_buffer_insert_pixbuf (GTK_TEXT_BUFFER (tb), &iter, pixbuf);
-      g_object_unref(pixbuf);
-    }
-}
-
-
-//!
 //! @brief Performs initializations absolutely necessary before a search can take place
 //!
 //! Correctly the pointer in the GwSearchItem to the correct textbuffer and moves marks
@@ -1764,6 +1741,7 @@ void gw_ui_initialize_buffer_by_searchitem (GwSearchItem *item)
 {
     //Make sure searches done from the history are pointing at a valid target
     item->target_tb = (gpointer) get_gobject_by_target (item->target);
+    item->target_tv = (gpointer) get_widget_by_target (item->target);
 
     gtk_text_buffer_set_text (GTK_TEXT_BUFFER (item->target_tb), "", -1);
 
@@ -2319,30 +2297,183 @@ void gw_ui_display_no_results_found_page (GwSearchItem *item)
       temp = g_random_int_range (0,9);
     const gint32 TIP_NUMBER = temp;
     gw_previous_tip = temp;
-
+    GtkTextView *tv = GTK_TEXT_VIEW (item->target_tv);
+    GtkTextBuffer *tb = GTK_TEXT_BUFFER (item->target_tb);
+    GtkWidget *image = NULL;
+    GtkTextIter iter;
+    GtkTextChildAnchor *anchor = NULL;
+    GtkWidget *label = NULL;
+    GtkWidget *hbox = NULL;
     char *body = NULL;
+    GtkWidget *search_entry = GTK_WIDGET (get_widget_by_target (GW_TARGET_ENTRY));
+    const char *query_text = gtk_entry_get_text (GTK_ENTRY (search_entry));
+    GList *list = NULL;
+    int i = 0;
+    GtkWidget *button = NULL;
+    char *markup = NULL;
+    list = gw_dictlist_get_selected();
+    GwDictInfo *di_selected = list->data;
+
 
 
     //Add the title
     gw_ui_append_to_buffer (item, "\n", "small", NULL, NULL, NULL);
-    gw_ui_append_to_buffer (item, gettext("No results found!"),
-                            "important", "larger", NULL, NULL    );
 
 
-    //Linebreak before the image
-    gw_ui_append_to_buffer (item, "\n", NULL, NULL, NULL, NULL);
+    //Set the header message
+    hbox = gtk_hbox_new (FALSE, 10);
+    gtk_text_buffer_get_end_iter (tb, &iter);
+    anchor = gtk_text_buffer_create_child_anchor (tb, &iter);
+    gtk_text_view_add_child_at_anchor (GTK_TEXT_VIEW (tv), hbox, anchor);
+    gtk_widget_show (hbox);
 
-    char image_name[100];
-    strcpy(image_name, "character");
-    if (TIP_NUMBER == 8)
-      strcat(image_name, "3");
-    strcat(image_name, ".png");
-    
-    gw_ui_append_image_to_buffer (item, image_name);
+    image = gtk_image_new_from_stock (GTK_STOCK_FIND, GTK_ICON_SIZE_DIALOG);
+    gtk_container_add (GTK_CONTAINER (hbox), GTK_WIDGET (image));
+    gtk_widget_show (image);
+
+    label = gtk_label_new (NULL);
+    char *message = NULL;
+    message = g_strdup_printf(gettext("Nothing found in the %s!"), di_selected->long_name);
+    if (message != NULL)
+    {
+      markup = g_markup_printf_escaped ("<big><big><b>%s</b></big></big>", message);
+      if (markup != NULL)
+      {
+        gtk_label_set_markup (GTK_LABEL (label), markup);
+        gtk_container_add (GTK_CONTAINER (hbox), GTK_WIDGET (label));
+        gtk_widget_show (label);
+        g_free (markup);
+        markup = NULL;
+      }
+      g_free (message);
+      message = NULL;
+    }
+
+
+    //Linebreak after the image
+    gw_ui_append_to_buffer (item, "\n\n\n", NULL, NULL, NULL, NULL);
+
+
+    if (gw_dictlist_get_total_with_status (GW_DICT_STATUS_INSTALLED) > 1)
+    {
+      //Add label for links
+      hbox = gtk_hbox_new (FALSE, 0);
+      gtk_text_buffer_get_end_iter (tb, &iter);
+      anchor = gtk_text_buffer_create_child_anchor (tb, &iter);
+      gtk_text_view_add_child_at_anchor (GTK_TEXT_VIEW (tv), hbox, anchor);
+      gtk_widget_show (hbox);
+
+      label = gtk_label_new (NULL);
+      markup = g_markup_printf_escaped ("<b>%s</b>", gettext("Search Other Dictionary: "));
+      if (markup != NULL)
+      {
+        gtk_label_set_markup (GTK_LABEL (label), markup);
+        gtk_container_add (GTK_CONTAINER (hbox), GTK_WIDGET (label));
+        gtk_widget_show (label);
+        g_free (markup);
+        markup = NULL;
+      }
+
+
+      //Add internal dictionary links
+      i = 0;
+      list = gw_dictlist_get_selected();
+      list = gw_dictlist_get_dict_by_load_position (0);
+      GwDictInfo *di = list->data;
+      GwSearchItem *temp_item = NULL;
+
+      char text[MAX_QUERY];
+      while ((list = gw_dictlist_get_dict_by_load_position(i)) != NULL)
+      {
+        list = gw_dictlist_get_dict_by_load_position(i);
+        di = list->data;
+        strncpy(text, query_text, MAX_QUERY);
+        if (di != NULL && (temp_item = gw_searchitem_new (text, di, GW_TARGET_RESULTS)) != NULL)
+        {
+          if (di->id != di_selected->id)
+          {
+            button = gtk_link_button_new_with_label ("", di->short_name);
+            g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (do_prep_and_start_search_in_new_tab), temp_item);
+            g_signal_connect (G_OBJECT (button), "destroy",  G_CALLBACK (do_destroy_tab_menuitem_searchitem_data), temp_item);
+            gtk_container_add (GTK_CONTAINER (hbox), GTK_WIDGET (button));
+            gtk_widget_show (GTK_WIDGET (button));
+          }
+        }
+        i++;
+      }
+
+      gw_ui_append_to_buffer (item, "\n", NULL, NULL, NULL, NULL);
+    }
+
+
+
+
+    //Add label for links
+    hbox = gtk_hbox_new (FALSE, 5);
+    gtk_text_buffer_get_end_iter (tb, &iter);
+    anchor = gtk_text_buffer_create_child_anchor (tb, &iter);
+    gtk_text_view_add_child_at_anchor (GTK_TEXT_VIEW (tv), hbox, anchor);
+    gtk_widget_show (hbox);
+
+    label = gtk_label_new (NULL);
+    markup = g_markup_printf_escaped ("<b>%s</b>", gettext("Search Online: "));
+    if (markup != NULL)
+    {
+      gtk_label_set_markup (GTK_LABEL (label), markup);
+      gtk_container_add (GTK_CONTAINER (hbox), GTK_WIDGET (label));
+      gtk_widget_show (label);
+      g_free (markup);
+      markup = NULL;
+    }
+
+
+
+    //Add links
+    char *website_url_menuitems[] = {
+      "Wikipedia", "http://www.wikipedia.org/wiki/%s", "wikipedia.png",
+      "Goo", "http://dictionary.goo.ne.jp/srch/all/%s/m0u/", "goo.png",
+      "Google", "http://www.google.com/search?q=%s", "google.png",
+      NULL, NULL, NULL
+    };
+    i = 0;
+    while (website_url_menuitems[i] != NULL)
+    {
+      //Create handy variables
+      char *name = website_url_menuitems[i];
+      char *url = g_strdup_printf(website_url_menuitems[i + 1], query_text);
+      char *icon_path = website_url_menuitems[i + 2];
+/*      
+      char *path = g_build_filename (DATADIR, PACKAGE, icon_path, NULL);
+*/
+      image = NULL;
+
+      //Start creating
+      button = gtk_link_button_new_with_label (url, name);
+/*
+      if (path != NULL)
+      {
+        image = gtk_image_new_from_file (path);
+        if (image != NULL) gtk_button_set_image (GTK_BUTTON (button), image);
+        g_free (path);
+        path = NULL;
+      }
+*/
+      gtk_container_add (GTK_CONTAINER (hbox), GTK_WIDGET (button));
+      gtk_widget_show (button);
+      i += 3;
+    }
+
+
+
+
+
+
+    gw_ui_append_to_buffer (item, "\n\n\n", NULL, NULL, NULL, NULL);
+
+
 
 
     //Insert the instruction text
-    gw_ui_append_to_buffer (item, "\n\n", NULL, NULL, NULL, NULL);
     char *tip_header_str = NULL;
     tip_header_str = g_strdup_printf (gettext("gWaei Usage Tip #%d: "), (TIP_NUMBER + 1));
     if (tip_header_str != NULL)
@@ -2477,7 +2608,7 @@ void gw_ui_display_no_results_found_page (GwSearchItem *item)
                                 NULL, NULL, NULL, NULL         );
         gw_ui_append_to_buffer (item,
                                 gettext("If you drag and drop a highlighted word into gWaei's "
-                                "search query input, gWaei will automatically start a search "
+                                "search result box, gWaei will automatically start a search "
                                 "using that text.  This can be a nice way to quickly look up words "
                                 "while browsing webpages. "),
                                 NULL, NULL, NULL, NULL         );

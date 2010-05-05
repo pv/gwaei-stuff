@@ -95,6 +95,7 @@ struct _GwSearchItem {
     void (*gw_searchitem_ui_after_search_cleanup)(struct _GwSearchItem*);
 
     gpointer* target_tb;                 //!< Pointer to a buffer that stays constant unlike when the target attribute is used
+    gpointer* target_tv;                 //!< Pointer to a buffer that stays constant unlike when the target attribute is used
 };
 typedef struct _GwSearchItem GwSearchItem;
 

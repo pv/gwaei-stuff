@@ -399,6 +399,7 @@ G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
 
     //Make sure searches done from the history are pointing at a valid target
     item->target_tb = (gpointer) get_gobject_by_target (item->target);
+    item->target_tv = (gpointer) get_widget_by_target (item->target);
 
     //Checks to make sure everything is sane
     if (gw_ui_cancel_search_for_current_tab () == FALSE)
