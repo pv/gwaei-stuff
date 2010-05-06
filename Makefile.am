@@ -2,7 +2,6 @@
 
 SUBDIRS = src po mandir
 
-
 if WITHOUT_GNOME
 else
 if ENABLE_WIN32
@@ -58,10 +57,6 @@ rpm: dist
 	@ rm -f $(HOME)/.rpmmacros
 	@ mv -f $(HOME)/.rpmmacros.backup $(HOME)/.rpmmacros
 	@ echo "Success! Finished creating the rpm packge. Please have a sugary day."
-
-#fedora-rpm:
-#	@ $(top_srcdir)/configure --prefix /usr --sysconfdir /etc --docdir=/usr/share/doc/@PACKAGE@ > /dev/null
-#	@ make rpm
 
 fedora-rpm: dist
 	@ make clean > /dev/null

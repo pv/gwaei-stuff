@@ -3,8 +3,6 @@ VERSION = @VERSION@
 datadir = @datadir@
 
 
-if MAKE_GNOMEHELP
-
 include $(top_srcdir)/gnome-doc-utils.make
 dist-hook: doc-dist-hook
 DOC_MODULE = gwaei
@@ -22,4 +20,5 @@ distclean:
 	@ rm -rf Makefile
 	@ rm -rf gwaei.omf
 	@ rm -rf gwaei-C.omf
-endif
+
+

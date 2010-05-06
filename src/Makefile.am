@@ -70,21 +70,21 @@ endif
 
 if WITHOUT_LIBUNIQUE
 else
-DEFS += -DENABLE_LIBUNIQUE=\"1\"
+DEFS += -DENABLE_LIBUNIQUE
 gwaei_SOURCES += gtk-main-interface-unique.c include/gwaei/gtk-main-interface-unique.h
 gwaei_LDADD += $(LIBUNIQUE_LIBS)
 endif
 
 if WITHOUT_LIBSEXY
 else
-DEFS += -DENABLE_LIBSEXY=\"1\"
+DEFS += -DENABLE_LIBSEXY
 gwaei_SOURCES += gtk-main-interface-sexy.c include/gwaei/gtk-main-interface-sexy.h
 gwaei_LDADD += $(LIBSEXY_LIBS)
 endif
 
 if WITHOUT_NCURSES
 else
-DEFS += -DENABLE_NCURSES=\"1\"
+DEFS += -DENABLE_NCURSES
 gwaei_SOURCES += ncurses-main-interface.c include/gwaei/ncurses-main-interface.h
 gwaei_LDADD += -lncursesw
 endif
