@@ -48,6 +48,7 @@ rpm/gwaei.spec
 rpm/rpm_gconf_install_post.sh
 rpm/rpm_gconf_uninstall_pre.sh
 rpm/BUILD
+rpm/fedora/SPECS/gwaei.spec
 
 src/gwaei
 src/waei

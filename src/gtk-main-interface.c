@@ -75,7 +75,9 @@ static gboolean arg_new_instance = FALSE;
 static GOptionEntry entries[] =
 {
   { "dictionary", 'd', 0, G_OPTION_ARG_STRING, &arg_dictionary, "Choose the dictionary to use", "English" },
+#ifdef ENABLE_LIBUNIQUE
   { "new-instance", 'n', 0, G_OPTION_ARG_NONE, &arg_new_instance, "Open a new instance of gWaei", NULL },
+#endif
   { NULL }
 };
 
