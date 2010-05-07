@@ -397,7 +397,11 @@ G_MODULE_EXPORT void do_prep_and_start_search_in_new_tab (GtkWidget *widget, gpo
     GwSearchItem *item = (GwSearchItem*) data;
     if (item != NULL)
     {
-      if (item->total_results > 0)
+      GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+      int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+      GwSearchItem *current_item = g_list_nth_data (gw_tab_get_searchitem_list (), page_num);
+
+      if (current_item != NULL && current_item->total_results > 0)
         do_new_tab (NULL, NULL);
       gw_ui_set_dictionary_by_searchitem (item);
       gw_ui_set_query_entry_text_by_searchitem (item);
