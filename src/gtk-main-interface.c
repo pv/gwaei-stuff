@@ -791,6 +791,8 @@ void gw_ui_show_window (char *id)
     {
       GtkWidget *window;
       window = GTK_WIDGET (gtk_builder_get_object (builder, id));
+      if (strcmp (id, "radicals_window") == 0)
+        gtk_window_set_type_hint (GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_UTILITY);
       initialize_window_attributes (id);
       gtk_widget_show(window);
       initialize_window_attributes (id);
@@ -814,6 +816,7 @@ void gw_ui_show_window (char *id)
 
       initialize_window_attributes (id);
       gw_kanjipad_set_target_text_widget (search_entry);
+      gtk_window_set_type_hint (GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_UTILITY);
       gtk_widget_show(window);
       initialize_window_attributes (id);
     }

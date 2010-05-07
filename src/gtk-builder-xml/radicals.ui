@@ -5,9 +5,9 @@
   <object class="GtkWindow" id="radicals_window">
     <property name="width_request">550</property>
     <property name="title" translatable="yes">gWaei Radical Search Tool</property>
-    <property name="resizable">False</property>
     <property name="destroy_with_parent">True</property>
     <property name="icon_name">gwaei</property>
+    <property name="type_hint">utility</property>
     <signal name="key_press_event" handler="do_close_on_escape" object="radicals_window"/>
     <signal name="delete_event" handler="do_delete_event_action" object="radicals_window"/>
     <child>
