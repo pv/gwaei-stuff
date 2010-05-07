@@ -92,63 +92,14 @@
                     <property name="layout_style">end</property>
                     <child>
                       <object class="GtkButton" id="button2">
+                        <property name="label" translatable="yes">C_lear</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
+                        <property name="image">image1</property>
+                        <property name="use_underline">True</property>
                         <signal name="clicked" handler="do_kanjipad_clear"/>
                         <signal name="activate" handler="do_kanjipad_clear"/>
-                        <child>
-                          <object class="GtkHBox" id="hbox4">
-                            <property name="visible">True</property>
-                            <child>
-                              <object class="GtkAspectFrame" id="aspectframe1">
-                                <property name="visible">True</property>
-                                <property name="label_xalign">0</property>
-                                <property name="shadow_type">none</property>
-                                <child>
-                                  <placeholder/>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkImage" id="image1">
-                                <property name="visible">True</property>
-                                <property name="stock">gtk-clear</property>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="label2">
-                                <property name="visible">True</property>
-                                <property name="label" translatable="yes">C_lear</property>
-                                <property name="use_underline">True</property>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="position">2</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkAspectFrame" id="aspectframe2">
-                                <property name="visible">True</property>
-                                <property name="label_xalign">0</property>
-                                <property name="shadow_type">none</property>
-                                <child>
-                                  <placeholder/>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="position">3</property>
-                              </packing>
-                            </child>
-                          </object>
-                        </child>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -163,8 +114,8 @@
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="Escape" signal="activate"/>
                         <accelerator key="w" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                        <accelerator key="Escape" signal="activate"/>
                         <signal name="clicked" handler="do_close" object="kanjipad_window"/>
                         <signal name="activate" handler="do_close" object="kanjipad_window"/>
                       </object>
@@ -192,5 +143,9 @@
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkImage" id="image1">
+    <property name="visible">True</property>
+    <property name="stock">gtk-clear</property>
   </object>
 </interface>
