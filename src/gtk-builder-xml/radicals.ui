@@ -33,8 +33,6 @@
                       <object class="GtkTable" id="radical_selection_table">
                         <property name="visible">True</property>
                         <property name="border_width">6</property>
-                        <property name="row_spacing">8</property>
-                        <property name="homogeneous">True</property>
                         <child>
                           <placeholder/>
                         </child>

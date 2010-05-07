@@ -325,7 +325,7 @@ static char *radical_array[][5] =
 
 void gw_ui_initialize_radicals_table ()
 {
-  int total_columns = 19;
+  int total_columns = 14;
   GtkTable *table = GTK_TABLE (gtk_builder_get_object (builder, "radical_selection_table"));
   if (table->ncols < total_columns) gtk_table_resize (table, table->nrows, total_columns);
   int rows = table->nrows - 1;
@@ -355,6 +355,8 @@ void gw_ui_initialize_radicals_table ()
     {
       if (cols == total_columns && rows != 0) gtk_table_resize (table, rows, table->ncols);
       button = gtk_toggle_button_new_with_label (radical_array[i][GW_RADARRAY_ACTUAL]);
+      gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
+
       char *tooltip = g_markup_printf_escaped (
           gettext("<b>Substitution Radical:</b> %s\n<b>Actual Radical:</b> %s\n<b>Radical Name:</b> %s"),
           radical_array[i][GW_RADARRAY_REPRESENTATIVE], radical_array[i][GW_RADARRAY_ACTUAL], radical_array[i][GW_RADARRAY_NAME]
