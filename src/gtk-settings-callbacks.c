@@ -276,14 +276,14 @@ static void *install_thread (gpointer data)
     //Errored
     else if (error != NULL)
     {
+      do_dictionary_remove (il->action_button, il);
       gdk_threads_enter();
         di->status = GW_DICT_STATUS_NOT_INSTALLED;
         gw_ui_dict_install_set_message (il, GTK_STOCK_DIALOG_ERROR, error->message);
         gw_ui_dict_install_set_action_button (il, GTK_STOCK_ADD, TRUE);
       gdk_threads_leave();
-      g_error_free(error);
+      g_error_free (error);
       error = NULL;
-      do_dictionary_remove (il->action_button, il);
     }
     //Install was successful
     else

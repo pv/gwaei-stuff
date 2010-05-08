@@ -267,7 +267,7 @@
         <applyto>/apps/gwaei/dictionary/examples_source</applyto>
         <owner>gwaei</owner>
         <type>string</type>
-        <default>ftp://ftp.csse.monash.edu.au/users/jwb/examples.gz</default>
+        <default>http://www.csse.monash.edu.au/~jwb/examples.gz</default>
         <locale name="C">
 	      <short>Examples dictionary install source</short>
 	      <long>Used for determining the path to install and update the Radicals dictionary from.</long>
