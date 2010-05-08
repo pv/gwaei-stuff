@@ -40,7 +40,7 @@ AC_SUBST(RADICALS_DEFAULT_URI)
 NAMES_DEFAULT_URI=ftp://ftp.monash.edu.au/pub/nihongo/enamdict.gz
 AC_SUBST(NAMES_DEFAULT_URI)
 
-EXAMPLES_DEFAULT_URI=ftp://ftp.csse.monash.edu.au/users/jwb/examples.gz
+EXAMPLES_DEFAULT_URI=http://www.csse.monash.edu.au/~jwb/examples.gz
 AC_SUBST(EXAMPLES_DEFAULT_URI)
 
 FRENCH_DEFAULT_URI=http://dico.fj.free.fr/fj.utf
