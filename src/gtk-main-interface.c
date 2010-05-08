@@ -2332,6 +2332,7 @@ void gw_ui_display_no_results_found_page (GwSearchItem *item)
 
     label = gtk_label_new (NULL);
     char *message = NULL;
+    // TRANSLATORS: The argument is the dictionary long name
     message = g_strdup_printf(gettext("Nothing found in the %s!"), di_selected->long_name);
     if (message != NULL)
     {
