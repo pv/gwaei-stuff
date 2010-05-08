@@ -2,13 +2,8 @@
 
 SUBDIRS = src po mandir
 
-if WITHOUT_GNOME
-else
-if ENABLE_WIN32
-SUBDIRS += src/gtk-builder-xml src/kpengine src/images src/desktop
-else
+if WITH_GNOME
 SUBDIRS += src/schemas src/gtk-builder-xml src/kpengine src/images src/desktop help
-endif
 endif
 
 ACLOCAL_AMFLAGS = -I m4
