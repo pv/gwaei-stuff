@@ -53,10 +53,10 @@
 #include <gwaei/gtk-main-callbacks.h>
 #include <gwaei/gtk-settings-callbacks.h>
 #include <gwaei/gtk-main-interface.h>
-#ifdef ENABLE_LIBUNIQUE
+#ifdef WITH_LIBUNIQUE
 #include <gwaei/gtk-main-interface-unique.h>
 #endif
-#ifdef ENABLE_LIBSEXY
+#ifdef WITH_LIBSEXY
 #include <gwaei/gtk-main-interface-sexy.h>
 #endif
 #include <gwaei/gtk-main-interface-tabs.h>
@@ -75,7 +75,7 @@ static gboolean arg_new_instance = FALSE;
 static GOptionEntry entries[] =
 {
   { "dictionary", 'd', 0, G_OPTION_ARG_STRING, &arg_dictionary, "Choose the dictionary to use", "English" },
-#ifdef ENABLE_LIBUNIQUE
+#ifdef WITH_LIBUNIQUE
   { "new-instance", 'n', 0, G_OPTION_ARG_NONE, &arg_new_instance, "Open a new instance of gWaei", NULL },
 #endif
   { NULL }
@@ -2875,7 +2875,7 @@ void initialize_gui_interface (int argc, char *argv[])
     g_option_context_parse (context, &argc, &argv, &error);
     g_option_context_free (context);
 
-#ifdef ENABLE_LIBUNIQUE
+#ifdef WITH_LIBUNIQUE
     //Fresh instance startup
     if (gw_unique_is_unique (arg_new_instance))
     {
@@ -2890,7 +2890,7 @@ void initialize_gui_interface (int argc, char *argv[])
       //Libunique setup
       GtkWidget *main_window;
       main_window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
-#ifdef ENABLE_LIBUNIQUE
+#ifdef WITH_LIBUNIQUE
       gw_unique_add_window_watcher (main_window);
 #endif
 
@@ -2899,7 +2899,7 @@ void initialize_gui_interface (int argc, char *argv[])
       initialize_global_widget_pointers ();
       gw_ui_initialize_interface_output_generics ();
       gw_guarantee_first_tab ();
-#ifdef ENABLE_LIBSEXY
+#ifdef WITH_LIBSEXY
       gw_sexy_initialize_libsexy (&search_entry);
 #endif
       gw_ui_update_history_popups ();
@@ -2955,7 +2955,7 @@ void initialize_gui_interface (int argc, char *argv[])
       }
       gw_kanjipad_free_resources ();
 
-#ifdef ENABLE_LIBUNIQUE
+#ifdef WITH_LIBUNIQUE
     }
 #endif
 

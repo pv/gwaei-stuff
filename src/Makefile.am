@@ -27,59 +27,49 @@ endif
 
 datadir = @datadir@
 localedir = $(datadir)/locale
-DEFS = -DLOCALEDIR=\"$(localedir)\" -DVERSION=\"$(VERSION)\" -DPACKAGE=\"$(PACKAGE)\" -DBINDIR=\"$(bindir)\" -DRSYNC=\"$(RSYNC)\" -DUNZIP=\"$(UNZIP)\" -DGUNZIP=\"$(GUNZIP)\" -DDATADIR=\"$(datadir)\" -DLIBDIR=\"$(libdir)\"
+DEPS_DEFS =-DLOCALEDIR=\"$(localedir)\" -DVERSION=\"$(VERSION)\" -DPACKAGE=\"$(PACKAGE)\" -DBINDIR=\"$(bindir)\" -DRSYNC=\"$(RSYNC)\" -DUNZIP=\"$(UNZIP)\" -DGUNZIP=\"$(GUNZIP)\" -DDATADIR=\"$(datadir)\" -DLIBDIR=\"$(libdir)\"
 
 gwaei_SOURCES = main.c dictinfo-object.c dictlist-object.c queryline-object.c engine.c utilities.c io.c regex.c console-main-interface.c include/gwaei/console-main-interface.h searchitem-object.c historylist-object.c resultline-object.c include/gwaei/main.h include/gwaei/dictinfo-object.h include/gwaei/dictlist-object.h include/gwaei/utilities.h include/gwaei/io.h include/gwaei/regex.h include/gwaei/engine.h include/gwaei/definitions.h include/gwaei/preferences.h include/gwaei/resultline-object.h include/gwaei/historylist-object.h include/gwaei/searchitem-object.h include/gwaei/search-objects.h include/gwaei/dictionary-objects.h include/gwaei/queryline-object.h
-gwaei_LDADD =  $(DEPS_LIBS) @LIBINTL@
-gwaei_LDFLAGS = -Wall -Wextra -pedantic -g
-
-AM_CPPFLAGS = $(DEPS_CFLAGS)
+gwaei_LDADD = $(DEPS_LIBS) @LIBINTL@
+##gwaei_LDFLAGS =
+#AM_CPPFLAGS = $(DEPS_CFLAGS) $(DEPS_DEFS) -Wall -Wextra -pedantic -g
+AM_CPPFLAGS =$(DEPS_CFLAGS)$(DEPS_DEFS)
 INCLUDES = -I $(top_srcdir)/src/include
 
 ##WINDOWS SETUP
 if ENABLE_WIN32
-gwaei_SOURCES += gtk-main-callbacks.c include/gwaei/gtk-main-callbacks.h gtk-main-interface.c gtk-settings-callbacks.c include/gwaei/gtk-settings-callbacks.h gtk-settings-interface.c gtk-radicals-interface.c gtk-radicals-callbacks.c include/gwaei/gtk-radicals-callbacks.h gtk-printing.c include/gwaei/gtk-main-interface.h include/gwaei/gtk-settings-interface.h include/gwaei/gtk-radicals-interface.h include/gwaei/gtk-printing.h include/gwaei/gtk.h gtk-kanjipad-callbacks.c include/gwaei/gtk-kanjipad-callbacks.h  gtk-kanjipad-interface.c include/gwaei/gtk-kanjipad-interface.h gtk-kanjipad-interface-drawingarea.c include/gwaei/gtk-kanjipad-interface-drawingarea.h gtk-main-interface-tabs.c include/gwaei/gtk-main-interface-tabs.h
-gwaei_LDADD += $(WIN32_LIBS)
-AM_CPPFLAGS += $(WIN32_CFLAGS)
-DEFS += -DGW_WITH_GTK
-DEFS += -DLC_MESSAGES=\"C\"
-DEFS += -DCURL_STATICLIB
-##Libcurl stuffs for zlib, ssl and such
-#gwaei_LDADD += -lws2_32 -lwinmm -leay32 -lssl32 -lssl -lssh2 -llibz -lcurl -lurl -lcrypt -lcrypt32 -lcrypto -lgnurx
-gwaei_LDADD += -lws2_32 -lwinmm -lcurl -lurl -lgnurx -llibz
-@ENABLE_WIN32_TRUE@am__append_1 = -LC_MESSAGE=\"C\"
-
+#EMPTY
+endif
 
 ##LINUX/UNIX/BSD SETUP
-else
 if WITH_GNOME
 gwaei_SOURCES += gtk-gconf-preferences.c 
 gwaei_SOURCES += gtk-main-callbacks.c gtk-main-interface.c gtk-settings-callbacks.c gtk-settings-interface.c gtk-radicals-interface.c gtk-radicals-callbacks.c gtk-printing.c include/gwaei/gtk-main-interface.h include/gwaei/gtk-settings-interface.h include/gwaei/gtk-radicals-interface.h include/gwaei/gtk-printing.h include/gwaei/gtk.h include/gwaei/gtk-settings-interface-install-line.h gtk-kanjipad-callbacks.c include/gwaei/gtk-kanjipad-callbacks.h  gtk-kanjipad-interface.c include/gwaei/gtk-kanjipad-interface.h gtk-kanjipad-interface-candidatearea.c include/gwaei/gtk-kanjipad-interface-candidatearea.h gtk-kanjipad-interface-drawingarea.c include/gwaei/gtk-kanjipad-interface-drawingarea.h gtk-main-interface-tabs.c include/gwaei/gtk-main-interface-tabs.h gtk-settings-interface-install-line.c
 gwaei_LDADD += $(GNOME_LIBS)
-AM_CPPFLAGS += $(GNOME_CFLAGS)
-DEFS += -DGW_WITH_GTK
+GNOME_DEFS =-DWITH_GTK
+AM_CPPFLAGS +=$(GNOME_CFLAGS)$(GNOME_DEFS)
 else
 gwaei_SOURCES += none-preferences.c
 endif
-endif
 
 if WITH_LIBUNIQUE
-DEFS += -DENABLE_LIBUNIQUE
+LIBUNIQUE_DEFS =-DWITH_LIBUNIQUE
 gwaei_SOURCES += gtk-main-interface-unique.c include/gwaei/gtk-main-interface-unique.h
 gwaei_LDADD += $(LIBUNIQUE_LIBS)
-AM_CPPFLAGS += $(LIBUNIQUE_CFLAGS)
+AM_CPPFLAGS +=$(LIBUNIQUE_CFLAGS)$(LIBUNIQUE_DEFS)
 endif
 
 if WITH_LIBSEXY
-DEFS += -DENABLE_LIBSEXY
+LIBSEXY_DEFS =-DWITH_LIBSEXY
 gwaei_SOURCES += gtk-main-interface-sexy.c include/gwaei/gtk-main-interface-sexy.h
 gwaei_LDADD += $(LIBSEXY_LIBS)
-AM_CPPFLAGS += $(LIBSEXY_CFLAGS)
+AM_CPPFLAGS +=$(LIBSEXY_CFLAGS)$(LIBSEXY_DEFS)
 endif
 
 if WITH_NCURSES
-DEFS += -DENABLE_NCURSES
+NCURSES_DEFS =-DWITH_NCURSES
 gwaei_SOURCES += ncurses-main-interface.c include/gwaei/ncurses-main-interface.h
 gwaei_LDADD += $(NCURSES_LIBS)
+AM_CPPFLAGS +=$(NCURSES_DEFS)
 endif
 

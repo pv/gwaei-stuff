@@ -47,10 +47,10 @@
 #include <gwaei/search-objects.h>
 
 #include <gwaei/main.h>
-#ifdef GW_WITH_GTK
+#ifdef WITH_GTK
 #include <gwaei/gtk-main-interface.h>
 #endif
-#ifdef ENABLE_NCURSES
+#ifdef WITH_NCURSES
 #include <gwaei/ncurses-main-interface.h>
 #endif
 
@@ -88,11 +88,11 @@ int main (int argc, char *argv[])
     //Start the runmode chosen by the user
     if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
       initialize_console_interface (argc, argv);
-#ifdef ENABLE_NCURSES
+#ifdef WITH_NCURSES
     else if  (gw_util_get_runmode () == GW_NCURSES_RUNMODE)
       initialize_ncurses_interface (argc, argv);
 #endif
-#ifdef GW_WITH_GTK
+#ifdef WITH_GTK
     else if  (gw_util_get_runmode () == GW_GTK_RUNMODE)
       initialize_gui_interface (argc, argv);
 #endif

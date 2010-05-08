@@ -107,7 +107,7 @@ yes) libunique=true ;;
 no)  libunique=false ;;
 *) AC_MSG_ERROR([bad value ${withval} for --without-libunique]) ;;
 esac],[libunique=true])
-AM_CONDITIONAL([WITH_LIBUNIQUE], [test x$libunique = xtrue && x$gnome = xtrue])
+AM_CONDITIONAL([WITH_LIBUNIQUE], [test x$libunique = xtrue && test x$gnome = xtrue])
 
 AC_ARG_WITH([libsexy],
 [  --without-libsexy         disable libsexy],
@@ -116,7 +116,7 @@ yes) libsexy=true ;;
 no)  libsexy=false ;;
 *) AC_MSG_ERROR([bad value ${withval} for --without-libsexy]) ;;
 esac],[libsexy=true])
-AM_CONDITIONAL([WITH_LIBSEXY], [test x$libsexy = xtrue && x$gnome = xtrue])
+AM_CONDITIONAL([WITH_LIBSEXY], [test x$libsexy = xtrue && test x$gnome = xtrue])
 
 
 
@@ -137,13 +137,13 @@ else
   GNOME_DOC_INIT(,,[:])
 fi
 
-if test $libunique = true && $gnome = true; then
+if test $libunique = true && test $gnome = true; then
   PKG_CHECK_MODULES(LIBUNIQUE, unique-1.0  >= $LIBUNIQUE_REQUIRED_VERSION)
   AC_SUBST(LIBUNIQUE_CFLAGS)
   AC_SUBST(LIBUNIQUE_LIBS)
 fi
 
-if test $libsexy = true && $gnome = true; then
+if test $libsexy = true && test $gnome = true; then
   PKG_CHECK_MODULES(LIBSEXY, libsexy  >= $LIBSEXY_REQUIRED_VERSION)
   AC_SUBST(LIBSEXY_CFLAGS)
   AC_SUBST(LIBSEXY_LIBS)
@@ -184,12 +184,12 @@ if test $gnome = true; then
 else
   echo -e "* Gnome is\tDISABLED"
 fi
-if test $libunique = true && $gnome = true; then
+if test $libunique = true && test $gnome = true; then
   echo -e "* Libunique is\tENABLED"
 else
   echo -e "* Libunique is\tDISABLED (Requires Gnome)"
 fi
-if test $libsexy = true && $gnome = true; then
+if test $libsexy = true && test $gnome = true; then
   echo -e "* Libsexy is\tENABLED"
 else
   echo -e "* Libsexy is\tDISABLED (Requires Gnome)"

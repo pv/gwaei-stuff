@@ -157,9 +157,9 @@ gboolean gw_console_install_dictinfo (GwDictInfo *di)
 //!
 static void print_about_program ()
 {
-#ifdef GW_WITH_GTK
+#ifdef WITH_GTK
     printf ("gWaei version %s with the Gnome font end compiled in.", VERSION);
-#elif GW_WITH_QT
+#elif WITH_QT
     printf ("gWaei version %s with the QT font end compiled in.", VERSION);
 #else
     printf ("gWaei version %s with no end compiled in.", VERSION);
@@ -300,7 +300,7 @@ void initialize_console_interface (int argc, char **argv)
     }
     GOptionEntry entries[] = 
     {
-#ifdef ENABLE_NCURSES
+#ifdef WITH_NCURSES
       { "ncurses", 'n', 0, G_OPTION_ARG_NONE, &ncurses_switch, gettext("Open up the multisearch window (beta)"), NULL },
 #endif
       { "exact", 'e', 0, G_OPTION_ARG_NONE, &exact_switch, gettext("Do not display less relevant results"), NULL },

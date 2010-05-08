@@ -81,13 +81,13 @@ void gw_util_initialize_runmode (int argc, char *argv[])
        run_mode = GW_CONSOLE_RUNMODE;
      }
    }
-#ifdef GW_WITH_GTK
+#ifdef WITH_GTK
    else if (strcmp (call_ptr, "gwaei") == 0)
    {
      run_mode = GW_GTK_RUNMODE;
    }
 #endif
-#ifdef GW_WITH_QT
+#ifdef WITH_QT
    else if (strcmp (call_ptr, "kwaei") == 0)
    {
      run_mode = GW_QT_RUNMODE;
