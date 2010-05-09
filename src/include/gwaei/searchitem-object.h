@@ -102,5 +102,13 @@ typedef struct _GwSearchItem GwSearchItem;
 //Methods
 GwSearchItem* gw_searchitem_new (char*, GwDictInfo*, const int);
 
+void gw_searchitem_do_post_search_clean (GwSearchItem*);
+gboolean gw_searchitem_do_pre_search_prep (GwSearchItem*);
+
+gboolean gw_searchitem_existance_generic_comparison (GwSearchItem*, const int);
+
+
+void gw_searchitem_free (GwSearchItem*);
+
 
 #endif

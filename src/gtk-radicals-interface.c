@@ -533,7 +533,7 @@ char* gw_ui_strdup_prefered_stroke_count ()
 //!
 //! @brief Matches the sensativity of the strokes spinbutton to the stokes checkbox
 //!
-void gw_ui_update_strokes_checkbox_state()
+void gw_ui_update_strokes_checkbox_state ()
 {
     //Get the needed variables and references
     GtkWidget *checkbutton;

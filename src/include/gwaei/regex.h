@@ -20,6 +20,9 @@ gboolean gw_regex_create_mix_med_regex (regex_t*, char*, int);
 gboolean gw_regex_create_exact_regex (regex_t*, char*, int);
 
 
+gboolean gw_regex_locate_boundary_byte_pointers (const char*, char*, char**, char **);
+
+
 typedef enum {
   GW_RE_DICT_ENGLISH,
   GW_RE_DICT_RADICAL,

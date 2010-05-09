@@ -52,6 +52,7 @@
 #include <gwaei/gtk-main-interface.h>
 #include <gwaei/gtk-main-interface-tabs.h>
 #include <gwaei/gtk-main-callbacks.h>
+#include <gwaei/gtk-radicals-callbacks.h>
 #include <gwaei/gtk-settings-interface.h>
 
 

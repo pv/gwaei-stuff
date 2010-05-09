@@ -42,6 +42,7 @@ void padarea_init_engine (GwKanjipad*);
 void gw_kanjipad_set_target_text_widget (GtkWidget*);
 GtkWidget* gw_kanjipad_get_target_text_widget (void);
 void gw_kanjipad_initialize (GtkBuilder*);
+void gw_kanjipad_free_resources ();
 
 
 #endif

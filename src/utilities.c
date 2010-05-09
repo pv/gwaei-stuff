@@ -39,6 +39,7 @@
 #include <gwaei/utilities.h>
 
 static GwRunmode run_mode;
+static char *gw_waei_folder_path = NULL;
 
 
 //!
@@ -61,7 +62,7 @@ void gw_util_initialize_runmode (int argc, char *argv[])
      call_ptr++;
 
    gboolean ncurses_switch = FALSE;
-   char *ptr = argv[0];
+   //char *ptr = argv[0];
    int i = 0;
    while (i < argc && ncurses_switch == FALSE)
    {
@@ -122,19 +123,22 @@ GwRunmode gw_util_get_runmode ()
 //! @param an integer representing a color
 //! @return Always returns true
 //!
-char* gw_util_get_waei_directory(char *buffer) 
+const char* gw_util_get_waei_directory() 
 {
-    const char* home = g_get_home_dir ();
-    char* directory = g_build_filename (home, ".waei", NULL);
-    strcpy (buffer, directory);
-    strcat (buffer, G_DIR_SEPARATOR_S);
-    g_free (directory);
+    if (gw_waei_folder_path != NULL)
+    {
+      g_free (gw_waei_folder_path);
+      gw_waei_folder_path = NULL;
+    }
 
-    //Make sure the ~/.waei directory exits, return NULL on error
-    if(g_mkdir_with_parents (buffer, 0755) == -1)
+    gw_waei_folder_path = g_build_filename (g_get_home_dir (), ".waei", NULL);
+
+    if(gw_waei_folder_path != NULL && g_mkdir_with_parents (gw_waei_folder_path, 0755) == -1)
+    {
       return NULL;
-    else
-      return buffer;
+    }
+    
+    return gw_waei_folder_path;
 }
 
 
@@ -922,7 +926,7 @@ gboolean gw_util_is_japanese_locale()
 //!
 //! @return Returns whether the attempt was successful or not
 //!
-gboolean gw_util_force_japanese_locale()
+gboolean gw_util_force_japanese_locale ()
 {
     //Try forcing a correct or better setting
     //This will have nice effects like antialiased text
@@ -962,7 +966,7 @@ gboolean gw_util_force_japanese_locale()
 //! @param key the key of the wanted preference
 //! @param n the radix of the size of the value array
 //!
-void gw_util_strncpy_fallback_from_key (char *value, char *key, int n)
+void gw_util_strncpy_fallback_from_key (char *value, const char *key, int n)
 {
     if (strcmp (GCKEY_GW_ENGLISH_SOURCE, key) == 0)
       strncpy (value, GW_ENGLISH_URI_FALLBACK, n);

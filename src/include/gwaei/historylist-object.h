@@ -52,11 +52,17 @@ struct _GwHistoryList {
 typedef struct _GwHistoryList GwHistoryList;
 
 
+void gw_history_initialize_history (void);
+
 //Methods
 GwHistoryList* gw_historylist_get_list(const int);
 GwSearchItem* gw_historylist_get_current (const int);
 GList* gw_historylist_get_back_history (const int);
 GList* gw_historylist_get_forward_history (const int);
 GList* gw_historylist_get_combined_history_list (const int);
+void gw_historylist_add_searchitem_to_history (const int, GwSearchItem*);
+void gw_historylist_go_back_by_target (const int);
+void gw_historylist_go_forward_by_target (const int);
+
 
 #endif

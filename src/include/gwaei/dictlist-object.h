@@ -48,10 +48,19 @@ int gw_dictlist_get_total (void);
 GList* gw_dictlist_get_selected (void);
 
 
+void gw_dictionaries_initialize_dictionary_list (void);
 GwDictInfo* gw_dictlist_get_dictinfo_by_name (const char*);
 GwDictInfo* gw_dictlist_get_dictinfo_by_alias (const char*);
 GList* gw_dictlist_get_dict_by_load_position (int);
 GList* gw_dictlist_set_selected_by_load_position (int);
 GwDictStatus gw_dictlist_dictionary_get_status_by_id (GwDictId);
+gboolean gw_dictlist_check_if_loaded_by_name (char*);
+
+void gw_dictlist_preform_postprocessing_by_name (char*, GError**);
+int gw_dictlist_get_total_with_status (GwDictStatus);
+
+void gw_dictlist_free ();
+
+
 
 #endif

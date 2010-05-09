@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 1.4.0\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-05-08 10:55+0200\n"
+"POT-Creation-Date: 2010-05-08 22:17-0400\n"
 "PO-Revision-Date: 2010-05-08 10:55+0100\n"
 "Last-Translator: Nicolas Laurent\n"
 "Language-Team: none\n"
@@ -262,79 +262,79 @@ msgstr ""
 "\n"
 "D:\t"
 
-#: src/dictinfo-object.c:99
+#: src/dictinfo-object.c:97
 msgid "English Dictionary"
 msgstr "Dictionnaire Anglais"
 
-#: src/dictinfo-object.c:100
+#: src/dictinfo-object.c:98
 msgid "English"
 msgstr "Anglais"
 
-#: src/dictinfo-object.c:104
+#: src/dictinfo-object.c:102
 msgid "Spanish Dictionary"
 msgstr "Dictionnaire Espagnol"
 
-#: src/dictinfo-object.c:105
+#: src/dictinfo-object.c:103
 msgid "Spanish"
 msgstr "Espagnol"
 
-#: src/dictinfo-object.c:109 src/dictinfo-object.c:114
+#: src/dictinfo-object.c:107 src/dictinfo-object.c:112
 msgid "Kanji Dictionary"
 msgstr "Dictionnaire de kanjis"
 
-#: src/dictinfo-object.c:110 src/dictinfo-object.c:115
+#: src/dictinfo-object.c:108 src/dictinfo-object.c:113
 msgid "Kanji"
 msgstr "Kanjis"
 
-#: src/dictinfo-object.c:119
+#: src/dictinfo-object.c:117
 msgid "Radicals Dictionary"
 msgstr "Dictionnaire des radicaux"
 
-#: src/dictinfo-object.c:120
+#: src/dictinfo-object.c:118
 msgid "Radicals"
 msgstr "Radicaux"
 
-#: src/dictinfo-object.c:124
+#: src/dictinfo-object.c:122
 msgid "Places Dictionary"
 msgstr "Dictionnaire des lieux"
 
-#: src/dictinfo-object.c:125
+#: src/dictinfo-object.c:123
 msgid "Places"
 msgstr "Lieux"
 
-#: src/dictinfo-object.c:129
+#: src/dictinfo-object.c:127
 msgid "Names Dictionary"
 msgstr "Dictionnaire des noms"
 
-#: src/dictinfo-object.c:130
+#: src/dictinfo-object.c:128
 msgid "Names"
 msgstr "Noms"
 
-#: src/dictinfo-object.c:134
+#: src/dictinfo-object.c:132
 msgid "Examples Dictionary"
 msgstr "Dictionnaire des exemples"
 
-#: src/dictinfo-object.c:135
+#: src/dictinfo-object.c:133
 msgid "Examples"
 msgstr "Exemples"
 
-#: src/dictinfo-object.c:139
+#: src/dictinfo-object.c:137
 msgid "French Dictionary"
 msgstr "Dictionnaire Français"
 
-#: src/dictinfo-object.c:140
+#: src/dictinfo-object.c:138
 msgid "French"
 msgstr "Français"
 
-#: src/dictinfo-object.c:144
+#: src/dictinfo-object.c:142
 msgid "German Dictionary"
 msgstr "Dictionnaire Allemand"
 
-#: src/dictinfo-object.c:145
+#: src/dictinfo-object.c:143
 msgid "German"
 msgstr "Allemand"
 
-#: src/dictinfo-object.c:149
+#: src/dictinfo-object.c:147
 #, c-format
 msgid "%s Dictionary"
 msgstr "Dictionnaire %s"

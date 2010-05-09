@@ -40,10 +40,12 @@
 
 #include <gwaei/definitions.h>
 #include <gwaei/regex.h>
+#include <gwaei/utilities.h>
 #include <gwaei/dictionary-objects.h>
+#include <gwaei/preferences.h>
 
 
-char     save_path[FILENAME_MAX]    = { '\0' };
+static char save_path[FILENAME_MAX] = { '\0' };
 
 
 //!
@@ -96,7 +98,7 @@ void gw_io_write_file(const char* write_mode, gchar *text)
 //!
 //! @return The status of the existance of rsync
 //!
-gboolean gw_io_check_for_rsync()
+gboolean gw_io_check_for_rsync ()
 {
     gboolean rsync_exists;
     rsync_exists = ( RSYNC != NULL     &&
@@ -124,7 +126,7 @@ gboolean gw_io_copy_with_encoding( char *source_path,     char *target_path,
                                   char *source_encoding, char *target_encoding,
                                   GError **error)
 {
-    if (*error != NULL) return;
+    if (*error != NULL) return FALSE;
 
     FILE* readfd = NULL;
     readfd = fopen (source_path, "r");
@@ -147,13 +149,17 @@ gboolean gw_io_copy_with_encoding( char *source_path,     char *target_path,
     {
       inptr = buffer; outptr = output;
       inbytes_left = length; outbytes_left = length;
-      while (inbytes_left && outbytes_left && g_iconv (conv, &inptr, &inbytes_left, &outptr, &outbytes_left) != -1)
+      while (inbytes_left && outbytes_left)
       {
+        if (g_iconv (conv, &inptr, &inbytes_left, &outptr, &outbytes_left) == -1) break;
+
+        //Force increment if there is something wrong
         if (prev_inbytes == inbytes_left)
         {
           inptr++;
           inbytes_left--;
         }
+        //Normal operation
         prev_inbytes = inbytes_left;
         inptr = inptr + strlen(inptr) - inbytes_left;
         outptr = outptr + strlen(outptr) - outbytes_left;
@@ -162,8 +168,8 @@ gboolean gw_io_copy_with_encoding( char *source_path,     char *target_path,
     }
     g_iconv_close (conv);
 
-    close(readfd);
-    close(writefd);
+    fclose(readfd);
+    fclose(writefd);
 
     return TRUE;
 }
@@ -245,7 +251,7 @@ int libcurl_update_progressbar (void   *data,
 gboolean gw_io_download_file (char *source_path, char *save_path,
                               int (*callback_function) (char*, int, gpointer), gpointer data, GError **error)
 {
-    if (*error != NULL) return;
+    if (*error != NULL) return FALSE;
 
     CURL *curl;
     CURLcode res;
@@ -304,13 +310,13 @@ gboolean gw_io_download_file (char *source_path, char *save_path,
 //!
 gboolean gw_io_copy_file (char *source_path, char *target_path, GError **error)
 {
-    if (*error != NULL) return;
+    if (*error != NULL) return FALSE;
 
     GQuark quark;
     quark = g_quark_from_string (GW_GENERIC_ERROR);
 
     char *contents = NULL;
-    gssize length;
+    gsize length;
     if ( g_file_get_contents(source_path, &contents, &length, NULL) == FALSE ||
          g_file_set_contents(target_path, contents, length, NULL) == FALSE     )
     {
@@ -703,17 +709,19 @@ void gw_io_install_dictinfo (GwDictInfo *di,    int (*callback_function) (char*,
     }
 
     //Make sure the download folder exits
-    char download_path[FILENAME_MAX] = "";
-    gw_util_get_waei_directory(download_path);
-    strcat(download_path, G_DIR_SEPARATOR_S);
-    strcat(download_path, "download");
-    if (*error == NULL)
+    char *download_path = g_build_filename (gw_util_get_waei_directory(), "download", NULL);
+    if (download_path != NULL)
     {
-      if ((g_mkdir_with_parents(download_path, 0755)) != 0 && di->status != GW_DICT_STATUS_CANCELING)
+      if (*error == NULL)
       {
-        quark = g_quark_from_string (GW_GENERIC_ERROR);
-        *error = g_error_new_literal (quark, GW_FILE_ERROR, gettext("Unable to create dictionary folder"));
+        if ((g_mkdir_with_parents(download_path, 0755)) != 0 && di->status != GW_DICT_STATUS_CANCELING)
+        {
+          quark = g_quark_from_string (GW_GENERIC_ERROR);
+          *error = g_error_new_literal (quark, GW_FILE_ERROR, gettext("Unable to create dictionary folder"));
+        }
       }
+      g_free (download_path);
+      download_path = NULL;
     }
 
     //Copy the file if it is a local file
@@ -753,7 +761,8 @@ void gw_io_install_dictinfo (GwDictInfo *di,    int (*callback_function) (char*,
       if (callback_function != NULL) {
         callback_function (gettext("Converting encoding..."), -1, data);
       }
-      gw_io_copy_with_encoding(di->sync_path, di->path, "EUC-JP","UTF-8", error);
+      printf("converting encoding...\n");
+      gw_io_copy_with_encoding (di->sync_path, di->path, "EUC-JP","UTF-8", error);
     }
     else if (*error == NULL && di->status != GW_DICT_STATUS_CANCELING)
     {

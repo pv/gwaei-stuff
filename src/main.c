@@ -43,6 +43,7 @@
 #include <gwaei/definitions.h>
 #include <gwaei/regex.h>
 #include <gwaei/utilities.h>
+#include <gwaei/io.h>
 #include <gwaei/dictionary-objects.h>
 #include <gwaei/search-objects.h>
 
@@ -53,6 +54,7 @@
 #ifdef WITH_NCURSES
 #include <gwaei/ncurses-main-interface.h>
 #endif
+#include <gwaei/console-main-interface.h>
 
 
 

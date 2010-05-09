@@ -92,11 +92,11 @@ struct _GwDictInfo
     char *name;                    //!< name of the file in the .waei folder
     char *long_name;               //!< long name of the file (usually localized)
     char *short_name;              //!< short name of the file (usually localized)
-    char path[FILENAME_MAX];       //!< Path to the dictionary file
-    char gz_path[FILENAME_MAX];    //!< Path to the gziped dictionary file
-    char sync_path[FILENAME_MAX];  //!< Path to the raw unziped dictionary file
-    char rsync[FILENAME_MAX];      //!< rsync command in full with arguments for sync
-    char gckey[100];               //!< gckey for the download source
+    char *path;       //!< Path to the dictionary file
+    char *gz_path;    //!< Path to the gziped dictionary file
+    char *sync_path;  //!< Path to the raw unziped dictionary file
+    char *rsync;      //!< rsync command in full with arguments for sync
+    char *gckey;               //!< gckey for the download source
     int load_position;             //!< load position in the GUI
     GwResultLine *cached_resultlines;
     GwResultLine *current_resultline;
@@ -105,5 +105,7 @@ typedef struct _GwDictInfo GwDictInfo;
 
 
 GwDictInfo* gw_dictinfo_new (char*);
+void gw_dictinfo_free(GwDictInfo*);
+
 
 #endif

@@ -29,6 +29,8 @@ typedef struct _GwUiDictInstallLine GwUiDictInstallLine;
 GwUiDictInstallLine *gw_ui_new_dict_install_line (GwDictInfo*);
 void gw_ui_dict_install_set_action_button (GwUiDictInstallLine*, const gchar*, gboolean);
 void gw_ui_dict_install_set_message (GwUiDictInstallLine*, const gchar*, const char*);
+void gw_ui_progressbar_set_fraction_by_install_line (GwUiDictInstallLine*, const gdouble);
+void gw_ui_add_dict_install_line_to_table (GtkTable*, GwUiDictInstallLine*);
 
 
 #endif

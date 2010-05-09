@@ -14,5 +14,10 @@ gboolean gw_io_copy_with_encoding( char *source_path,
                                       GError **error);
 
 gboolean gw_io_check_for_rsync(void);
+int gw_io_get_total_lines_for_path (char*);
+/*
+void gw_io_uninstall_dictinfo (GwDictInfo*, int (char*, int, gpointer), gpointer, gboolean);
+void gw_io_install_dictinfo (GwDictInfo*, int (char*, int, gpointer), gpointer, gboolean, GError**);
+*/
 
 #endif

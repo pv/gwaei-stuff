@@ -35,10 +35,11 @@
 #include <libintl.h>
 
 #include <gdk/gdk.h>
-
 #include <gconf/gconf-client.h>
+
 #include <gwaei/definitions.h>
 #include <gwaei/regex.h>
+#include <gwaei/utilities.h>
 
 
 //!

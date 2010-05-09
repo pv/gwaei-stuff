@@ -28,8 +28,11 @@ endif
 datadir = @datadir@
 localedir = $(datadir)/locale
 DEPS_DEFS =-DLOCALEDIR=\"$(localedir)\" -DVERSION=\"$(VERSION)\" -DPACKAGE=\"$(PACKAGE)\" -DBINDIR=\"$(bindir)\" -DRSYNC=\"$(RSYNC)\" -DUNZIP=\"$(UNZIP)\" -DGUNZIP=\"$(GUNZIP)\" -DDATADIR=\"$(datadir)\" -DLIBDIR=\"$(libdir)\"
+##AM_CFLAGS = --pedantic -std=c99 -O2 -g
 
-gwaei_SOURCES = main.c dictinfo-object.c dictlist-object.c queryline-object.c engine.c utilities.c io.c regex.c console-main-interface.c include/gwaei/console-main-interface.h searchitem-object.c historylist-object.c resultline-object.c include/gwaei/main.h include/gwaei/dictinfo-object.h include/gwaei/dictlist-object.h include/gwaei/utilities.h include/gwaei/io.h include/gwaei/regex.h include/gwaei/engine.h include/gwaei/definitions.h include/gwaei/preferences.h include/gwaei/resultline-object.h include/gwaei/historylist-object.h include/gwaei/searchitem-object.h include/gwaei/search-objects.h include/gwaei/dictionary-objects.h include/gwaei/queryline-object.h
+
+gwaei_SOURCES = main.c dictinfo-object.c dictlist-object.c queryline-object.c engine.c utilities.c io.c regex.c console-main-interface.c searchitem-object.c historylist-object.c resultline-object.c
+gwaei_SOURCES += include/gwaei/definitions.h include/gwaei/main.h include/gwaei/search-objects.h include/gwaei/dictionary-objects.h include/gwaei/dictinfo-object.h include/gwaei/dictlist-object.h include/gwaei/queryline-object.h include/gwaei/engine.h include/gwaei/utilities.h include/gwaei/io.h include/gwaei/regex.h include/gwaei/console-main-interface.h include/gwaei/search-objects.h include/gwaei/searchitem-object.h include/gwaei/historylist-object.h include/gwaei/resultline-object.h include/gwaei/preferences.h
 gwaei_LDADD = $(DEPS_LIBS) @LIBINTL@
 ##gwaei_LDFLAGS =
 #AM_CPPFLAGS = $(DEPS_CFLAGS) $(DEPS_DEFS) -Wall -Wextra -pedantic -g
@@ -40,7 +43,6 @@ INCLUDES = -I $(top_srcdir)/src/include
 if ENABLE_WIN32
 #EMPTY
 endif
-
 ##LINUX/UNIX/BSD SETUP
 if WITH_GNOME
 gwaei_SOURCES += gtk-gconf-preferences.c 

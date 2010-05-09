@@ -41,6 +41,8 @@
 #include <gwaei/engine.h>
 
 #include <gwaei/gtk.h>
+#include <gwaei/gtk-main-interface.h>
+#include <gwaei/gtk-main-interface-tabs.h>
 #include <gwaei/gtk-radicals-interface.h>
 
 

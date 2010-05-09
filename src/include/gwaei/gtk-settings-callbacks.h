@@ -21,6 +21,9 @@ void do_toggle_use_global_document_font (GtkWidget*, gpointer);
 void do_set_custom_document_font (GtkWidget*, gpointer);
 void do_add_dictionary_to_order_prefs (GtkTreeModel*, GtkTreePath*, GtkTreeIter*, gpointer*);
 void do_remove_dictionary_from_order_prefs (GtkTreeModel*, GtkTreePath*, gpointer*);
+void gw_ui_set_dictionary_source (GtkWidget*, const char*);
+void gw_ui_update_dictionary_order_list (void);
+
 
 
 #endif

@@ -259,7 +259,8 @@ void gw_historylist_go_forward_by_target (const int TARGET)
 //! Currently there is the results history list and the mostly unused
 //! kanji history list for the sidebar.
 //!
-void gw_history_initialize_history() {
+void gw_history_initialize_history ()
+{
     results_history = gw_historylist_new();
     kanji_history   = gw_historylist_new();
 }

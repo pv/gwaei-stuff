@@ -34,6 +34,7 @@
 #include <locale.h>
 #include <libintl.h>
 
+#include <gdk/gdkx.h>
 #include <gtk/gtk.h>
 #include <libsexy/sexy.h>
 #include <unique/unique.h>

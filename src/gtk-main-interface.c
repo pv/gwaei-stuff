@@ -61,6 +61,7 @@
 #endif
 #include <gwaei/gtk-main-interface-tabs.h>
 #include <gwaei/gtk-kanjipad-interface.h>
+#include <gwaei/gtk-radicals-interface.h>
 
 
 
@@ -609,7 +610,7 @@ GtkWidget* get_widget_by_target (GwTargetOutput TARGET)
 //!
 //! @brief To be written
 //!
-gboolean gw_ui_widget_equals_target (gpointer widget, const int TARGET)
+gboolean gw_ui_widget_equals_target (gpointer widget, GwTargetOutput TARGET)
 {
     GtkWidget* target;
     target = get_widget_by_target (TARGET);
@@ -739,7 +740,7 @@ void initialize_window_attributes (char* window_id)
 //!
 //! @param window_id The gtkbuilder id of the window
 //!
-void save_window_attributes_and_hide (char* window_id)
+void save_window_attributes_and_hide (const char* window_id)
 {
     GtkWidget *window;
     window = GTK_WIDGET (gtk_builder_get_object(builder, window_id));
@@ -1074,7 +1075,7 @@ void gw_ui_set_dictionary_by_searchitem (GwSearchItem *item)
 //!
 //! @brief Loads up the dictionaries for the GUI
 //!
-int rebuild_combobox_dictionary_list() 
+int rebuild_combobox_dictionary_list () 
 {
     //Parse the string
     char order[5000];
@@ -1453,7 +1454,7 @@ static void rebuild_history_button_popup(char* id, GList* list) {
 //!
 //! @brief Convenience function to update both the back and forward histories etc
 //!
-void gw_ui_update_history_popups()
+void gw_ui_update_history_popups ()
 {
     GList* list = NULL;
 
@@ -2069,7 +2070,7 @@ gboolean gw_ui_load_gtk_builder_xml (const char *filename) {
 //! @param set_fg Boolean whether to set the foreground color or not
 //! @param set_bg Boolean whether to set the background color or not
 //!
-gboolean gw_ui_set_color_to_tagtable (char    *id,     const int TARGET,
+gboolean gw_ui_set_color_to_tagtable (char    *id,     GwTargetOutput TARGET,
                                       gboolean set_fg, gboolean set_bg  )
 {
     GtkTextTag *tag;
@@ -2735,7 +2736,7 @@ char* gw_ui_buffer_get_text_by_target (GwTargetOutput TARGET)
 //!
 //! @brief Resets the color tags according to the preferences
 //!
-void gw_ui_buffer_reload_tagtable_tags()
+void gw_ui_buffer_reload_tagtable_tags ()
 {
     gw_ui_set_color_to_tagtable ("comment", GW_TARGET_RESULTS, TRUE, FALSE);
     gw_ui_set_color_to_tagtable ("comment", GW_TARGET_KANJI,   TRUE, FALSE);
@@ -2754,7 +2755,7 @@ void gw_ui_buffer_reload_tagtable_tags()
 //!
 //! @brief Adds the tags to stylize the buffer text
 //!
-void gw_ui_buffer_initialize_tags()
+void gw_ui_buffer_initialize_tags ()
 {
     gw_ui_set_tag_to_tagtable ("italic", GW_TARGET_RESULTS,
                                   "style", GINT_TO_POINTER(PANGO_STYLE_ITALIC));

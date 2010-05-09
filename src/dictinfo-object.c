@@ -83,7 +83,6 @@ GwDictInfo* gw_dictinfo_new (char *name)
     //Allocate some memory
     if ((temp = malloc(sizeof(GwDictInfo))) == NULL) return NULL;
 
-    int remaining;
     temp->load_position = -1;
 
     temp->name = NULL;
@@ -91,7 +90,6 @@ GwDictInfo* gw_dictinfo_new (char *name)
     temp->long_name = NULL;
 
     //Copy the name of the dictionary over
-    remaining = MAX_DICTIONARY;
     temp->name = g_strdup_printf ("%s", name);
 
     if (strcmp(name, "English") == 0)
@@ -150,27 +148,13 @@ GwDictInfo* gw_dictinfo_new (char *name)
       temp->short_name = g_strdup_printf ("%s", name);
     }
 
-    //Calculate the path to the used dictionary file
-    remaining = PATH_MAX;
-    gw_util_get_waei_directory(temp->path);
-    remaining -= strlen(temp->path);
-    strncat(temp->path, name, remaining);
-
-    //Calculate the path to the sync file
-    remaining = PATH_MAX;
-    gw_util_get_waei_directory(temp->sync_path);
-    remaining -= strlen(temp->sync_path);
-    strncat(temp->sync_path, "download", remaining);
-    remaining -= strlen("download");
-    strncat(temp->sync_path, G_DIR_SEPARATOR_S, remaining);
-    remaining -= 1;
-    strncat(temp->sync_path, name, remaining);
-
-    //Calculate the path to the gz
-    remaining = PATH_MAX;
-    strcpy(temp->gz_path, temp->sync_path);
-    remaining -= strlen(temp->gz_path);
-    strncat(temp->gz_path, ".gz", remaining);
+    //Create paths
+    temp->path = g_build_filename (gw_util_get_waei_directory(), name, NULL);
+    temp->sync_path = g_build_filename (gw_util_get_waei_directory(), "download", name, NULL);
+    if (temp->sync_path != NULL)
+      temp->gz_path = g_strdup_printf ("%s%s", temp->sync_path, ".gz");
+    else
+      temp->gz_path = NULL;
 
     //Update the line count
     if (gw_util_get_runmode () == GW_CONSOLE_RUNMODE)
@@ -183,110 +167,87 @@ GwDictInfo* gw_dictinfo_new (char *name)
     {
       temp->id = GW_DICT_ID_ENGLISH;
       temp->type = GW_DICT_TYPE_EDICT;
-      strncpy (temp->gckey, GCKEY_GW_ENGLISH_SOURCE, 100);
-      strcpy (temp->rsync, RSYNC);
-      strcat (temp->rsync, " -v ftp.monash.edu.au::nihongo/edict ");
-      strcat (temp->rsync, temp->sync_path);
+      temp->gckey = g_strdup_printf ("%s", GCKEY_GW_ENGLISH_SOURCE);
+      temp->rsync = g_strdup_printf ("%s%s", RSYNC, " -v ftp.monash.edu.au::nihongo/edict ", temp->sync_path);
     }
     else if (strcmp (name, "Kanji") == 0)
     {
       temp->id = GW_DICT_ID_KANJI;
       temp->type = GW_DICT_TYPE_KANJI;
-      strncpy (temp->gckey, GCKEY_GW_KANJI_SOURCE, 100);
-      strcpy (temp->rsync, RSYNC);
-      strcat (temp->rsync, " -v ftp.monash.edu.au::nihongo/kanjidic ");
-      strcat (temp->rsync, temp->sync_path);
+      temp->gckey = g_strdup_printf ("%s", GCKEY_GW_KANJI_SOURCE);
+      temp->rsync = g_strdup_printf ("%s%s", RSYNC, " -v ftp.monash.edu.au::nihongo/kanjidic ", temp->sync_path);
     }
     else if (strcmp (name, "Radicals") == 0)
     {
       temp->id = GW_DICT_ID_RADICALS;
       temp->type = GW_DICT_TYPE_RADICALS;
-      strncpy (temp->gckey, GCKEY_GW_RADICALS_SOURCE, 100);
-      strcpy (temp->rsync, "");
+      temp->gckey = g_strdup_printf ("%s", GCKEY_GW_RADICALS_SOURCE);
+      temp->rsync = NULL;
     }
     else if (strcmp (name, "Names") == 0)
     {
       temp->id = GW_DICT_ID_NAMES;
       temp->type = GW_DICT_TYPE_EDICT;
-      strncpy (temp->gckey, GCKEY_GW_NAMES_SOURCE, 100);
-      strcpy (temp->rsync, RSYNC);
-      strcat (temp->rsync, " -v ftp.monash.edu.au::nihongo/enamdict ");
-      strcat (temp->rsync, temp->sync_path);
+      temp->gckey = g_strdup_printf ("%s", GCKEY_GW_NAMES_SOURCE);
+      temp->rsync = g_strdup_printf ("%s%s", RSYNC, " -v ftp.monash.edu.au::nihongo/enamdict ", temp->sync_path);
     }
     else if (strcmp (name, "Places") == 0)
     {
       temp->id = GW_DICT_ID_PLACES;
       temp->type = GW_DICT_TYPE_EDICT;
-      strncpy(temp->gckey, "", 100);
-      strcpy (temp->rsync, "");
+      temp->gckey = NULL;
+      temp->rsync = NULL;
     }
     else if (strcmp (name, "Examples") == 0)
     {
       temp->id = GW_DICT_ID_EXAMPLES;
       temp->type = GW_DICT_TYPE_EXAMPLES;
-      strncpy(temp->gckey, GCKEY_GW_EXAMPLES_SOURCE, 100);
-      strcpy (temp->rsync, "");
+      temp->gckey = g_strdup_printf ("%s", GCKEY_GW_EXAMPLES_SOURCE);
+      temp->rsync = NULL;
       temp->total_lines =  temp->total_lines / 2;
     }
     else if (strcmp (name, "French") == 0)
     {
       temp->id = GW_DICT_ID_FRENCH;
       temp->type = GW_DICT_TYPE_EDICT;
-      strncpy(temp->gckey, GCKEY_GW_FRENCH_SOURCE, 100);
-      strcpy (temp->rsync, "");
-
-      gw_util_get_waei_directory(temp->gz_path);
-      strcat(temp->gz_path, "download");
-      strncat(temp->gz_path, G_DIR_SEPARATOR_S, remaining);
-      strcat(temp->gz_path, "French.UTF8");
-
-      gw_util_get_waei_directory(temp->sync_path);
-      strcat(temp->sync_path, "download");
-      strncat(temp->sync_path, G_DIR_SEPARATOR_S, remaining);
-      strcat(temp->sync_path, "French.UTF8");
-
+      temp->gckey = g_strdup_printf ("%s", GCKEY_GW_FRENCH_SOURCE);
+      temp->rsync = NULL;
+      if (temp->gz_path != NULL) g_free (temp->gz_path);
+      if (temp->sync_path != NULL) g_free (temp->sync_path);
+      temp->gz_path = g_build_filename (gw_util_get_waei_directory(), "download", "French.UTF8", NULL);
+      temp->sync_path = g_build_filename (gw_util_get_waei_directory(), "download", "French.UTF8", NULL);
 }
     else if (strcmp (name, "German") == 0)
     {
       temp->id = GW_DICT_ID_GERMAN;
       temp->type = GW_DICT_TYPE_EDICT;
-      strncpy(temp->gckey, GCKEY_GW_GERMAN_SOURCE, 100);
-      strcpy (temp->rsync, "");
+      temp->gckey = g_strdup_printf ("%s", GCKEY_GW_GERMAN_SOURCE);
+      temp->rsync = NULL;
     }
     else if (strcmp (name, "Spanish") == 0)
     {
       temp->id = GW_DICT_ID_SPANISH;
       temp->type = GW_DICT_TYPE_EDICT;
-      strncpy(temp->gckey, GCKEY_GW_SPANISH_SOURCE, 100);
-      strcpy (temp->rsync, "");
-      strcpy(temp->gz_path, temp->sync_path);
-
-      gw_util_get_waei_directory(temp->gz_path);
-      strcat(temp->gz_path, "download");
-      strncat(temp->gz_path, G_DIR_SEPARATOR_S, remaining);
-      strcat(temp->gz_path, "Spanish.zip");
-
-      gw_util_get_waei_directory(temp->sync_path);
-      strcat(temp->sync_path, "download");
-      strncat(temp->sync_path, G_DIR_SEPARATOR_S, remaining);
-      strcat(temp->sync_path, "hispamix.euc");
-
-      gw_util_get_waei_directory(temp->path);
-      strcat(temp->path, "Spanish");
+      temp->gckey = g_strdup_printf ("%s", GCKEY_GW_SPANISH_SOURCE);
+      temp->rsync = NULL;
+      if (temp->gz_path != NULL) g_free (temp->gz_path);
+      if (temp->sync_path != NULL) g_free (temp->sync_path);
+      temp->gz_path = g_build_filename (gw_util_get_waei_directory(), "download", "Spanish.zip", NULL);
+      temp->sync_path = g_build_filename (gw_util_get_waei_directory(), "download", "hispamix.euc", NULL);
     }
     else if (strcmp (name, "Mix") == 0)
     {
       temp->id = GW_DICT_ID_MIX;
       temp->type = GW_DICT_TYPE_KANJI;
-      strncpy(temp->gckey, "", 100);
-      strcpy (temp->rsync, "");
+      temp->gckey = NULL;
+      temp->rsync = NULL;
     }
     else
     {
       temp->id = gw_dictinfo_make_dictionary_id ();
       temp->type = GW_DICT_TYPE_OTHER;
-      strncpy(temp->gckey, "", 100);
-      strcpy (temp->rsync, "");
+      temp->gckey = NULL;
+      temp->rsync = NULL;
     }
 
     //Set the initial installation status
@@ -319,8 +280,33 @@ void gw_dictinfo_free(GwDictInfo* di)
       g_free (di->name);
       di->name = NULL;
     }
+    if (di->path != NULL)
+    {
+      g_free (di->path);
+      di->path = NULL;
+    }
+    if (di->gz_path != NULL)
+    {
+      g_free (di->gz_path);
+      di->gz_path = NULL;
+    }
+    if (di->sync_path != NULL)
+    {
+      g_free (di->sync_path);
+      di->sync_path = NULL;
+    }
+    if (di->rsync != NULL)
+    {
+      g_free (di->rsync);
+      di->rsync = NULL;
+    }
+    if (di->gckey != NULL)
+    {
+      g_free (di->gckey);
+      di->gckey = NULL;
+    }
 
-    free(di);
+    free (di);
     di = NULL;
 }
 

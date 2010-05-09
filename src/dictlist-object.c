@@ -38,12 +38,14 @@
 #include <libintl.h>
 
 #include <glib.h>
+#include <glib/gstdio.h>
 
 #include <gwaei/definitions.h>
 #include <gwaei/regex.h>
 #include <gwaei/utilities.h>
 #include <gwaei/io.h>
 #include <gwaei/dictlist-object.h>
+#include <gwaei/preferences.h>
 
 
 static GwDictList *dictionaries;
@@ -176,7 +178,7 @@ GList* gw_dictlist_remove_first()
 //! The work of freeing each individual dictionary is automatically handled,
 //! removing the chance for mistakes.
 //!
-void gw_dictlist_free()
+void gw_dictlist_free ()
 {
     while (dictionaries->list != NULL)
       dictionaries->list = gw_dictlist_remove_first();
@@ -244,7 +246,7 @@ GwDictInfo* gw_dictlist_get_dictinfo_by_alias (const char* request)
 //! @param request a const string to search for in the dictionary names
 //! @return returns true if the dictionary is installed
 //!
-gboolean gw_dictlist_check_if_loaded_by_name(char* name)
+gboolean gw_dictlist_check_if_loaded_by_name (char* name)
 {
     GList *current = dictionaries->list;
     GwDictInfo *di;
@@ -381,7 +383,7 @@ GList* gw_dictlist_get_list()
 //! The built in dictionaries are set up, then any additional manually installed
 //! user dictionaries are searched for and set up.
 //!
-void gw_dictionaries_initialize_dictionary_list()
+void gw_dictionaries_initialize_dictionary_list ()
 {
     if (dictionaries != NULL)
       gw_dictlist_free ();
@@ -402,7 +404,7 @@ void gw_dictionaries_initialize_dictionary_list()
 
     //Path variables
     char path[FILENAME_MAX];
-    if (gw_util_get_waei_directory (path) == NULL) return;
+    if (gw_util_get_waei_directory () == NULL) return;
     char *filename = &path[strlen (path)];
 
     //Directory variables

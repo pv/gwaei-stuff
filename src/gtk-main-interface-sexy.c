@@ -347,11 +347,11 @@ void gw_sexy_ui_set_spellcheck (gboolean request)
     pref_checkbox = GTK_WIDGET (gtk_builder_get_object(builder, "query_spellcheck"));
     toolbar_button = GTK_WIDGET (gtk_builder_get_object(builder, "spellcheck_toolbutton"));
 
-    g_signal_handlers_block_by_func(pref_checkbox, do_spellcheck_toggle, NULL); 
-    g_signal_handlers_block_by_func(toolbar_button, do_spellcheck_toggle, NULL); 
+    g_signal_handlers_block_by_func(G_OBJECT (pref_checkbox), do_spellcheck_toggle, NULL); 
+    g_signal_handlers_block_by_func(G_OBJECT (toolbar_button), do_spellcheck_toggle, NULL); 
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (pref_checkbox), request);
     gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON (toolbar_button), request);
-    g_signal_handlers_unblock_by_func(pref_checkbox, do_spellcheck_toggle, NULL); 
-    g_signal_handlers_unblock_by_func(toolbar_button, do_spellcheck_toggle, NULL); 
+    g_signal_handlers_unblock_by_func(G_OBJECT (pref_checkbox), do_spellcheck_toggle, NULL); 
+    g_signal_handlers_unblock_by_func(G_OBJECT (toolbar_button), do_spellcheck_toggle, NULL); 
     do_conditionally_enable_spellcheck (NULL, NULL);
 }

@@ -43,6 +43,7 @@
 #include <gwaei/engine.h>
 #include <gwaei/preferences.h>
 #include <gwaei/utilities.h>
+#include <gwaei/io.h>
 
 #include <gwaei/console-main-interface.h>
 #include <gwaei/main.h>

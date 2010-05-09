@@ -38,6 +38,7 @@
 
 #include <gwaei/definitions.h>
 #include <gwaei/regex.h>
+#include <gwaei/utilities.h>
 #include <gwaei/queryline-object.h>
 #include <gwaei/preferences.h>
 

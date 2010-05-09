@@ -71,4 +71,7 @@ void gw_resultline_parse_radicaldict_result_string (GwResultLine*);
 void gw_resultline_parse_examplesdict_result_string (GwResultLine*);
 void gw_resultline_parse_unknowndict_result_string (GwResultLine*);
 
+void gw_resultline_free (GwResultLine*);
+
+
 #endif

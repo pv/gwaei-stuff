@@ -68,8 +68,8 @@ static WINDOW *search;
 static WINDOW *screen;
 static int current_row = 0;
 static int maxY, maxX;
-static int cursesFlag = false;
-static int cursesSupportColorFlag = true;	//TODO: use this
+static int cursesFlag = FALSE;
+static int cursesSupportColorFlag = TRUE;	//TODO: use this
 
 
 //!
@@ -156,7 +156,7 @@ static void ncurses_color_init (bool hasColors)
 	{
 		check = start_color();
 		if (check == ERR){
-			cursesSupportColorFlag = false;
+			cursesSupportColorFlag = FALSE;
 			return;
 		}
 		init_pair(GW_NCCOLORS_GREENONBLACK, COLOR_GREEN, COLOR_BLACK);
@@ -164,7 +164,7 @@ static void ncurses_color_init (bool hasColors)
 		init_pair(GW_NCCOLORS_REDONBLACK, COLOR_RED, COLOR_BLACK);
 	}
 	else
-		cursesSupportColorFlag = false;
+		cursesSupportColorFlag = FALSE;
 
 	return;
 }
@@ -273,7 +273,7 @@ static void ncurses_input_and_scrolling(char *query)
 	wchar_t singleChar;
 	keypad(search, TRUE);		/*<  */
 
-	while(true)
+	while(TRUE)
 	{
 		if (stringControl == (MAX_QUERY - 1))
 		{

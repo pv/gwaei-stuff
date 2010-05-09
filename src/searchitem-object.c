@@ -39,6 +39,7 @@
 #include <gwaei/utilities.h>
 #include <gwaei/dictionary-objects.h>
 #include <gwaei/search-objects.h>
+#include <gwaei/preferences.h>
 
 #include <gwaei/main.h>
 
@@ -101,22 +102,22 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary, const int 
     switch (temp->dictionary->type)
     {
         case GW_DICT_TYPE_EDICT:
-          if (!gw_queryline_parse_edict_string (temp->queryline, query)) return;
+          if (!gw_queryline_parse_edict_string (temp->queryline, query)) return NULL;
           temp->gw_searchitem_parse_result_string = &gw_resultline_parse_edict_result_string;
           temp->gw_searchitem_ui_append_results_to_output = gw_output_generic_append_edict_results;
           break;
         case GW_DICT_TYPE_KANJI:
-          if (!gw_queryline_parse_kanjidict_string (temp->queryline, query)) return;
+          if (!gw_queryline_parse_kanjidict_string (temp->queryline, query)) return NULL;
           temp->gw_searchitem_parse_result_string = &gw_resultline_parse_kanjidict_result_string;
           temp->gw_searchitem_ui_append_results_to_output = gw_output_generic_append_kanjidict_results;
           break;
         case GW_DICT_TYPE_EXAMPLES:
-          if (!gw_queryline_parse_exampledict_string (temp->queryline, query)) return;
+          if (!gw_queryline_parse_exampledict_string (temp->queryline, query)) return NULL;
           temp->gw_searchitem_parse_result_string = &gw_resultline_parse_examplesdict_result_string;
           temp->gw_searchitem_ui_append_results_to_output = gw_output_generic_append_examplesdict_results;
         break;
         default:
-          if (!gw_queryline_parse_edict_string (temp->queryline, query)) return;
+          if (!gw_queryline_parse_edict_string (temp->queryline, query)) return NULL;
           temp->gw_searchitem_parse_result_string = &gw_resultline_parse_unknowndict_result_string;
           temp->gw_searchitem_ui_append_results_to_output = gw_output_generic_append_unknowndict_results;
           break;

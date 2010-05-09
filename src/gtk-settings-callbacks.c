@@ -47,6 +47,7 @@
 
 #include <gwaei/gtk.h>
 #include <gwaei/gtk-settings-callbacks.h>
+#include <gwaei/gtk-main-interface.h>
 #include <gwaei/gtk-settings-interface.h>
 #include <gwaei/gtk-settings-interface-install-line.h>
 
@@ -248,7 +249,7 @@ static void *install_thread (gpointer data)
     GwUiDictInstallLine *il = (GwUiDictInstallLine*) data;
     GwDictInfo *di = (GwDictInfo*) il->di;
 
-    if (di->status != GW_DICT_STATUS_NOT_INSTALLED) return;
+    if (di->status != GW_DICT_STATUS_NOT_INSTALLED) return FALSE;
 
     //Preparatation complete, it's showtime
     gdk_threads_enter ();
@@ -260,7 +261,7 @@ static void *install_thread (gpointer data)
 
 
     //Offload the install work to the io function
-    gw_io_install_dictinfo (di, gw_ui_update_progressbar, data, FALSE, &error);
+    gw_io_install_dictinfo (di, &gw_ui_update_progressbar, data, FALSE, &error);
 
 
     //Finish up

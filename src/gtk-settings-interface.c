@@ -55,7 +55,7 @@
 //!
 //! @brief Disables portions of the interface depending on the currently queued jobs.
 //!
-void gw_ui_update_settings_interface()
+void gw_ui_update_settings_interface ()
 {
     //Set the install interface
     GtkWidget *close_button;

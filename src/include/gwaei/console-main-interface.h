@@ -1,6 +1,8 @@
 #ifndef GW_CONSOLE_MAIN_INTERFACE_INCLUDED
 #define GW_CONSOLE_MAIN_INTERFACE_INCLUDED
 
+void initialize_console_interface (int, char**);
+
 void gw_console_initialize_interface_output_generics (void);
 
 void gw_console_append_edict_results (GwSearchItem*);
