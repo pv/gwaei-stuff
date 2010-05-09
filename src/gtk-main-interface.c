@@ -1156,8 +1156,8 @@ int rebuild_combobox_dictionary_list ()
     GtkListStore *list_store;
     list_store = GTK_LIST_STORE (gtk_builder_get_object (builder, "list_store_dictionaries"));
 
-    g_signal_handlers_block_by_func (list_store, do_add_dictionary_to_order_prefs, NULL);
-    g_signal_handlers_block_by_func (list_store, do_remove_dictionary_from_order_prefs, NULL);
+    g_signal_handlers_block_by_func (G_OBJECT (list_store), do_add_dictionary_to_order_prefs, NULL);
+    g_signal_handlers_block_by_func (G_OBJECT (list_store), do_remove_dictionary_from_order_prefs, NULL);
 
     gtk_list_store_clear (list_store);
 

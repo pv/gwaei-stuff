@@ -388,7 +388,7 @@ void gw_dictionaries_initialize_dictionary_list ()
     if (dictionaries != NULL)
       gw_dictlist_free ();
 
-    dictionaries = gw_dictlist_new();
+    dictionaries = gw_dictlist_new ();
        
     //Dictionaries having to do with gui elements
     gw_dictlist_add_dictionary ("English");
@@ -402,9 +402,11 @@ void gw_dictionaries_initialize_dictionary_list ()
     gw_dictlist_add_dictionary ("German");
     gw_dictlist_add_dictionary ("Spanish");
 
+    if (gw_util_get_waei_directory () == NULL) return;
+
     //Path variables
     char path[FILENAME_MAX];
-    if (gw_util_get_waei_directory () == NULL) return;
+    strncpy(path, gw_util_get_waei_directory (), FILENAME_MAX);
     char *filename = &path[strlen (path)];
 
     //Directory variables
