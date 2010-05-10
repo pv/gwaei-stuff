@@ -42,7 +42,9 @@
 #include <gwaei/utilities.h>
 
 #include <gwaei/gtk-main-interface.h>
+#ifdef WITH_LIBSEXY
 #include <gwaei/gtk-main-interface-sexy.h>
+#endif
 #include <gwaei/gtk-settings-interface.h>
 
 
