@@ -559,18 +559,17 @@ void gw_ui_deselect_all_radicals()
 {
     GtkWidget *table;
     table = GTK_WIDGET (gtk_builder_get_object(builder, "radical_selection_table"));
-
-    //Reset all of the toggle buttons
     GList* list;
     list = gtk_container_get_children (GTK_CONTAINER (table));
 
+    //Reset all of the toggle buttons
+
     while (list != NULL)
     {
-      GClosure *closure = g_cclosure_new (G_CALLBACK (do_radical_search), NULL, NULL);
-      g_signal_handlers_block_by_func (list->data, closure, NULL);
+      g_signal_handlers_block_by_func (list->data, do_radical_search, NULL);
       if (G_OBJECT_TYPE(list->data) == g_type_from_name("GtkToggleButton"))
          gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(list->data), FALSE);
-      g_signal_handlers_unblock_by_func (list->data, closure, NULL);
+      g_signal_handlers_unblock_by_func (list->data, do_radical_search, NULL);
       gtk_widget_set_sensitive (GTK_WIDGET (list->data), TRUE);
 
       list = list->next;

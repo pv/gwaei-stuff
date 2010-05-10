@@ -1048,13 +1048,12 @@ void gw_ui_set_dictionary (int request)
       GtkWidget *radioitem = g_list_nth_data (children, request);
       if (radioitem != NULL)
       {
-        GClosure *closure = g_cclosure_new (G_CALLBACK (do_dictionary_changed_action), NULL, NULL);
-        g_signal_handlers_block_by_func(radioitem, closure, NULL);
-        g_signal_handlers_block_by_func(combobox, closure, NULL);
+        g_signal_handlers_block_by_func (radioitem, do_dictionary_changed_action, NULL);
+        g_signal_handlers_block_by_func (combobox, do_dictionary_changed_action, NULL);
         gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (radioitem), TRUE);
         gtk_combo_box_set_active (GTK_COMBO_BOX (combobox), request);
-        g_signal_handlers_unblock_by_func(radioitem, closure, NULL);
-        g_signal_handlers_unblock_by_func(combobox, closure, NULL);
+        g_signal_handlers_unblock_by_func(radioitem, do_dictionary_changed_action, NULL);
+        g_signal_handlers_unblock_by_func(combobox, do_dictionary_changed_action, NULL);
       }
     }
 }
@@ -1159,11 +1158,6 @@ int rebuild_combobox_dictionary_list ()
 
     GtkListStore *list_store;
     list_store = GTK_LIST_STORE (gtk_builder_get_object (builder, "list_store_dictionaries"));
-
-    GClosure *closure_add = g_cclosure_new (G_CALLBACK (do_add_dictionary_to_order_prefs), NULL, NULL);
-    GClosure *closure_remove = g_cclosure_new (G_CALLBACK (do_remove_dictionary_from_order_prefs), NULL, NULL);
-    g_signal_handlers_block_by_func (GTK_TREE_MODEL (list_store), closure_add, NULL);
-    g_signal_handlers_block_by_func (GTK_TREE_MODEL (list_store), closure_remove, NULL);
 
     gtk_list_store_clear (list_store);
 
@@ -1273,9 +1267,6 @@ int rebuild_combobox_dictionary_list ()
     g_signal_connect (G_OBJECT (item), "activate", G_CALLBACK (do_cycle_dictionaries_forward), NULL);
     gtk_widget_add_accelerator (GTK_WIDGET (item), "activate", accel_group, GDK_Down, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
     gtk_widget_show (GTK_WIDGET (item));
-
-    g_signal_handlers_unblock_by_func (GTK_TREE_MODEL (list_store), closure_add, NULL);
-    g_signal_handlers_unblock_by_func (GTK_TREE_MODEL (list_store), closure_remove, NULL);
 
     gw_ui_update_settings_interface();
     gw_settings_decrement_order_list_processes ();
@@ -1599,10 +1590,9 @@ void gw_ui_set_toolbar_show (gboolean request)
     GtkAction *action;
     action = GTK_ACTION (gtk_builder_get_object (builder, "view_toggle_toolbar_action"));
 
-    GClosure *closure = g_cclosure_new (G_CALLBACK (do_toolbar_toggle), NULL, NULL);
-    g_signal_handlers_block_by_func (G_OBJECT (action), closure, NULL);
+    g_signal_handlers_block_by_func (action, do_toolbar_toggle, NULL);
     gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), request);
-    g_signal_handlers_unblock_by_func (G_OBJECT (action), closure, NULL);
+    g_signal_handlers_unblock_by_func (action, do_toolbar_toggle, NULL);
 }
 
 
@@ -1616,10 +1606,9 @@ void gw_ui_set_less_relevant_show (gboolean request)
   GtkAction *action;
   action = GTK_ACTION (gtk_builder_get_object(builder, "view_less_relevant_results_toggle_action"));
 
-  GClosure *closure = g_cclosure_new (G_CALLBACK (do_less_relevant_results_toggle), NULL, NULL);
-  g_signal_handlers_block_by_func(G_OBJECT (action), closure, NULL);
-  gtk_toggle_action_set_active(GTK_TOGGLE_ACTION (action), request);
-  g_signal_handlers_unblock_by_func(G_OBJECT (action), closure, NULL);
+  g_signal_handlers_block_by_func (action, do_less_relevant_results_toggle, NULL);
+  gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), request);
+  g_signal_handlers_unblock_by_func (action, do_less_relevant_results_toggle, NULL);
 }
 
 
@@ -1633,10 +1622,9 @@ void gw_ui_set_romaji_kana_conv (int request)
   GtkWidget *widget;
   widget = GTK_WIDGET (gtk_builder_get_object(builder, "query_romaji_to_kana"));
 
-  GClosure *closure = g_cclosure_new (G_CALLBACK (do_romaji_kana_conv_change), NULL, NULL);
-  g_signal_handlers_block_by_func(widget, closure, NULL);
+  g_signal_handlers_block_by_func(widget, do_romaji_kana_conv_change, NULL);
   gtk_combo_box_set_active(GTK_COMBO_BOX (widget), request);
-  g_signal_handlers_unblock_by_func(widget, closure, NULL);
+  g_signal_handlers_unblock_by_func(widget, do_romaji_kana_conv_change, NULL);
 }
 
 
@@ -1650,10 +1638,9 @@ void gw_ui_set_hiragana_katakana_conv (gboolean request)
     GtkWidget *widget;
     if (widget = GTK_WIDGET (gtk_builder_get_object(builder, "query_hiragana_to_katakana")))
     {
-      GClosure *closure = g_cclosure_new (G_CALLBACK (do_hiragana_katakana_conv_toggle), NULL, NULL);
-      g_signal_handlers_block_by_func(widget, closure, NULL); 
+      g_signal_handlers_block_by_func(widget, do_hiragana_katakana_conv_toggle, NULL); 
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (widget), request);
-      g_signal_handlers_unblock_by_func(widget, closure, NULL); 
+      g_signal_handlers_unblock_by_func(widget, do_hiragana_katakana_conv_toggle, NULL); 
     }
 }
 
@@ -1668,10 +1655,9 @@ void gw_ui_set_katakana_hiragana_conv (gboolean request)
     GtkWidget *widget;
     if (widget = GTK_WIDGET (gtk_builder_get_object(builder, "query_katakana_to_hiragana")))
     {
-      GClosure *closure = g_cclosure_new (G_CALLBACK (do_katakana_hiragana_conv_toggle), NULL, NULL);
-      g_signal_handlers_block_by_func(widget, closure, NULL); 
+      g_signal_handlers_block_by_func(widget, do_katakana_hiragana_conv_toggle, NULL); 
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (widget), request);
-      g_signal_handlers_unblock_by_func(widget, closure, NULL); 
+      g_signal_handlers_unblock_by_func(widget, do_katakana_hiragana_conv_toggle, NULL); 
     }
 }
 
@@ -1690,10 +1676,9 @@ void gw_ui_set_color_to_swatch (const char *widget_id, const char *hex_color_str
     GdkColor color;
     if (gdk_color_parse (hex_color_string, &color) == TRUE)
     {
-      GClosure *closure = g_cclosure_new (G_CALLBACK (do_set_color_to_swatch), NULL, NULL);
-      g_signal_handlers_block_by_func (widget, closure, NULL);
+      g_signal_handlers_block_by_func (widget, do_set_color_to_swatch, NULL);
       gtk_color_button_set_color (GTK_COLOR_BUTTON (widget), &color);
-      g_signal_handlers_unblock_by_func (widget, closure, NULL);
+      g_signal_handlers_unblock_by_func (widget, do_set_color_to_swatch, NULL);
     }
 }
 

@@ -1537,10 +1537,9 @@ G_MODULE_EXPORT void do_update_styles (GtkWidget *widget, gpointer data)
     view   = GTK_WIDGET (gtk_builder_get_object (builder, "kanji_text_view"));
     color  = window->style->bg[GTK_STATE_NORMAL];
 
-    GClosure *closure = g_cclosure_new (G_CALLBACK (do_update_styles), NULL, NULL);
-    g_signal_handlers_block_by_func (widget, closure, NULL);
+    g_signal_handlers_block_by_func (widget, do_update_styles, NULL);
     gtk_widget_modify_base (view, GTK_STATE_NORMAL, &color);
-    g_signal_handlers_unblock_by_func (widget, closure, NULL);
+    g_signal_handlers_unblock_by_func (widget, do_update_styles, NULL);
 }
 
 
