@@ -3,6 +3,8 @@
 
 #include <gtk/gtk.h>
 
+#include <gwaei/searchitem-object.h>
+
 gpointer get_gobject_by_target (GwTargetOutput);
 GtkWidget* get_widget_by_target (GwTargetOutput);
 
@@ -85,6 +87,14 @@ void gw_ui_set_dictionary_by_searchitem (GwSearchItem*);
 
 gboolean gw_ui_widget_equals_target (gpointer, GwTargetOutput);
 void gw_ui_close_suggestion_box (void);
+void gw_ui_set_katakana_hiragana_conv (gboolean);
+void gw_ui_set_hiragana_katakana_conv (gboolean);
+void gw_ui_set_romaji_kana_conv (int);
+void gw_ui_set_less_relevant_show (gboolean);
+void gw_ui_set_use_global_document_font_checkbox (gboolean);
+void gw_ui_set_toolbar_show (gboolean);
+void gw_ui_set_toolbar_style (const char*);
+void gw_ui_set_color_to_swatch (const char*, const char*);
 
 
 #endif

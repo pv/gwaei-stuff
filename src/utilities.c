@@ -1050,7 +1050,7 @@ char *gw_util_strdup_args_to_query (int argc, char *argv[])
 //! @return a newly allocated sanitized utf8 encoded string or NULL if text was too.
 //!         If the result is non-NULL it must be freed with g_free(). 
 //!
-char* gw_util_sanitize_input(char * text, gboolean strip)
+char* gw_util_sanitize_input(char *text, gboolean strip)
 {
   if(text == NULL)
     return NULL;

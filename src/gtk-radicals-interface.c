@@ -566,10 +566,11 @@ void gw_ui_deselect_all_radicals()
 
     while (list != NULL)
     {
-      g_signal_handlers_block_by_func(list->data, do_radical_search , NULL);
+      GClosure *closure = g_cclosure_new (G_CALLBACK (do_radical_search), NULL, NULL);
+      g_signal_handlers_block_by_func (list->data, closure, NULL);
       if (G_OBJECT_TYPE(list->data) == g_type_from_name("GtkToggleButton"))
-         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(list->data), FALSE);
-      g_signal_handlers_unblock_by_func(list->data, do_radical_search , NULL);
+         gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(list->data), FALSE);
+      g_signal_handlers_unblock_by_func (list->data, closure, NULL);
       gtk_widget_set_sensitive (GTK_WIDGET (list->data), TRUE);
 
       list = list->next;

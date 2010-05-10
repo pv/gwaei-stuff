@@ -36,6 +36,7 @@
 #include <libintl.h>
 
 #include <glib.h>
+#include <glib/gstdio.h>
 #include <curl/curl.h>
 
 #include <gwaei/definitions.h>
@@ -534,7 +535,7 @@ gboolean gw_io_split_places_from_names_dictionary (char *spath, char *npath, cha
 //!
 gboolean gw_io_gunzip_file (char *path, GError **error)
 {
-    if (*error != NULL) return;
+    if (*error != NULL) return FALSE;
 
     GQuark quark;
     quark = g_quark_from_string (GW_GENERIC_ERROR);

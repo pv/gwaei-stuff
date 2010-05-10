@@ -54,6 +54,28 @@
 
 static int removed_from = -1;
 static int added_to = -1;
+static int rebuilding_order_list_processes = 0;
+
+
+//!
+//! @brief Temporary function used to fix failure of closures for blocking the dictionary order functions
+//!
+void gw_settings_increment_order_list_processes ()
+{
+  rebuilding_order_list_processes++;
+}
+
+
+//!
+//! @brief Temporary function used to fix failure of closures for blocking the dictionary order functions
+//!
+void gw_settings_decrement_order_list_processes ()
+{
+  rebuilding_order_list_processes--;
+  if (rebuilding_order_list_processes < 0)
+    rebuilding_order_list_processes = 0;
+}
+
 
 
 //!
@@ -516,6 +538,9 @@ G_MODULE_EXPORT void do_remove_dictionary_from_order_prefs (GtkTreeModel *tree_m
                                                             GtkTreePath *path,
                                                             gpointer    *data        )
 {
+    if (rebuilding_order_list_processes != 0) return;
+
+    printf("removing dictionry from order prefs\n");
     int *indices = gtk_tree_path_get_indices (path);
     removed_from = indices[0];
 
@@ -614,6 +639,8 @@ G_MODULE_EXPORT void do_add_dictionary_to_order_prefs (GtkTreeModel *tree_model,
                                                        GtkTreeIter *iter,
                                                        gpointer    *data        )
 {
+    if (rebuilding_order_list_processes != 0) return;
+
     int *indices = gtk_tree_path_get_indices (path);
     added_to = indices[0];
 }

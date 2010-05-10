@@ -160,9 +160,10 @@ void gw_ui_set_dictionary_source (GtkWidget *widget, const char* value)
 {
     if (widget != NULL && value != NULL)
     {
-      g_signal_handlers_block_by_func (GTK_WIDGET (widget), do_source_entry_changed_action, NULL);
+      GClosure *closure = g_cclosure_new (G_CALLBACK (do_source_entry_changed_action), NULL, NULL);
+      g_signal_handlers_block_by_func (GTK_WIDGET (widget), closure, NULL);
       gtk_entry_set_text (GTK_ENTRY (widget), value);
-      g_signal_handlers_unblock_by_func (GTK_WIDGET (widget), do_source_entry_changed_action, NULL);
+      g_signal_handlers_unblock_by_func (GTK_WIDGET (widget), closure, NULL);
     }
 }
 
@@ -350,14 +351,15 @@ void gw_ui_set_use_global_document_font_checkbox (gboolean setting)
     GtkWidget *checkbox = GTK_WIDGET (gtk_builder_get_object (builder, "system_font_checkbox"));
     GtkWidget *child_settings = GTK_WIDGET (gtk_builder_get_object (builder, "system_document_font_hbox"));
 
-    g_signal_handlers_block_by_func (GTK_WIDGET (checkbox), do_toggle_use_global_document_font, NULL);
+    GClosure *closure = g_cclosure_new (G_CALLBACK (do_toggle_use_global_document_font), NULL, NULL);
+    g_signal_handlers_block_by_func (GTK_WIDGET (checkbox), closure, NULL);
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), setting);
     gtk_widget_set_sensitive (child_settings, !setting);
-    g_signal_handlers_unblock_by_func (GTK_WIDGET (checkbox), do_toggle_use_global_document_font, NULL);
+    g_signal_handlers_unblock_by_func (GTK_WIDGET (checkbox), closure, NULL);
 }
 
 
-void gw_ui_update_global_font_label (char *font_description_string)
+void gw_ui_update_global_font_label (const char *font_description_string)
 {
     GtkWidget *checkbox = GTK_WIDGET (gtk_builder_get_object (builder, "system_font_checkbox"));
     char *text = g_strdup_printf (gettext("_Use the System Document Font (%s)"), font_description_string);
@@ -371,11 +373,12 @@ void gw_ui_update_global_font_label (char *font_description_string)
 }
 
 
-void gw_ui_update_custom_font_button (char *font_description_string)
+void gw_ui_update_custom_font_button (const char *font_description_string)
 {
     GtkWidget *button = GTK_WIDGET (gtk_builder_get_object (builder, "custom_font_fontbutton"));
-    g_signal_handlers_block_by_func (GTK_WIDGET (button), do_set_custom_document_font, NULL);
+    GClosure *closure = g_cclosure_new (G_CALLBACK (do_set_custom_document_font), NULL, NULL);
+    g_signal_handlers_block_by_func (GTK_WIDGET (button), closure, NULL);
     gtk_font_button_set_font_name (GTK_FONT_BUTTON (button), font_description_string);
-    g_signal_handlers_unblock_by_func (GTK_WIDGET (button), do_set_custom_document_font, NULL);
+    g_signal_handlers_unblock_by_func (GTK_WIDGET (button), closure, NULL);
 }
 

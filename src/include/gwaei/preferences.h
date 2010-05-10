@@ -1,6 +1,8 @@
 #ifndef GW_PREFERENCES_INCLUDED
 #define GW_PREFERENCES_INCLUDED
 
+#include <gconf/gconf-client.h>
+
 void gw_pref_set_int (char*, int);
 int gw_pref_get_int (char*, int);
 int gw_pref_get_default_int (char*, int);
@@ -14,9 +16,9 @@ void gw_pref_get_string (char*, char*, char*, int);
 void gw_pref_get_default_string (char*, char*, char*, int);
 
 void gw_prefs_initialize_preferences(void);
-void do_dictionary_source_gconf_key_changed_action (gpointer, guint, gpointer, gpointer);
+void do_dictionary_source_gconf_key_changed_action (GConfClient*, guint, GConfEntry*, gpointer);
 
-void gw_prefs_add_change_listener (const char*, gpointer, gpointer);
+void gw_prefs_add_change_listener (const char*, void (GConfClient*, guint, GConfEntry*, gpointer), gpointer);
 
 
 #endif

@@ -120,7 +120,7 @@ gboolean gw_console_install_dictinfo (GwDictInfo *di)
     quark = g_quark_from_string (GW_GENERIC_ERROR);
     GError *error = NULL;
 
-    if (di->status != GW_DICT_STATUS_NOT_INSTALLED) return;
+    if (di->status != GW_DICT_STATUS_NOT_INSTALLED) return FALSE;
 
     gw_io_install_dictinfo (di, &print_message_to_console, NULL, TRUE, &error);
 
@@ -190,10 +190,6 @@ static void print_search_start_banner (char *query, char *dictionary)
     // TRANSLATORS: 'Searching for "${query}" in ${dictionary long name}'
     printf(gettext("Searching for \"%s\" in %s...\n"), query, dictionary);
     printf("\n");
-
-    #ifdef G_OS_UNIX
-    sleep(1);
-    #endif
 }
 
 

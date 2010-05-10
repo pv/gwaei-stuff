@@ -41,6 +41,10 @@
 #include <gwaei/regex.h>
 #include <gwaei/utilities.h>
 
+#include <gwaei/gtk-main-interface.h>
+#include <gwaei/gtk-main-interface-sexy.h>
+#include <gwaei/gtk-settings-interface.h>
+
 
 //!
 //! @brief Returns an integer from the preference backend 
@@ -299,10 +303,10 @@ void gw_pref_set_string (const char *key, const char* request)
 //! @param entry The preference entry object
 //! @param data Usere data passed to the function
 //!
-void do_dictionary_source_gconf_key_changed_action (gpointer client,
+void do_dictionary_source_gconf_key_changed_action (GConfClient* client,
                                                     guint cnxn_id,
-                                                    gpointer entry,
-                                                    gpointer data   )
+                                                    GConfEntry* entry,
+                                                    gpointer data       )
 {
     GConfValue *value;
     value = gconf_entry_get_value(entry);
@@ -329,9 +333,9 @@ void do_toolbar_style_pref_changed_action (GConfClient* client,
     value = gconf_entry_get_value(entry);
 
     if (value != NULL && value->type == GCONF_VALUE_STRING)
-      gw_ui_set_toolbar_style(gconf_value_get_string(value));
+      gw_ui_set_toolbar_style (gconf_value_get_string(value));
     else
-      gw_ui_set_toolbar_style("both");
+      gw_ui_set_toolbar_style ("both");
 }
 
 
@@ -646,8 +650,10 @@ void do_color_value_changed_action (GConfClient* client,
 //! @param callback_function The function to call when the key changes
 //! @param data The userdata to pass to the callback function
 //!
-void gw_prefs_add_change_listener (const char *key, GConfClientNotifyFunc callback_function, gpointer data)
+void gw_prefs_add_change_listener (const char *key, void (*callback_function) (GConfClient*, guint, GConfEntry*, gpointer), gpointer data)
 {
+  //Get the gconf value
+
   GConfClient *client;
   client = gconf_client_get_default ();
 

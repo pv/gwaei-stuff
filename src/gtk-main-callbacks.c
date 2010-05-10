@@ -1537,9 +1537,10 @@ G_MODULE_EXPORT void do_update_styles (GtkWidget *widget, gpointer data)
     view   = GTK_WIDGET (gtk_builder_get_object (builder, "kanji_text_view"));
     color  = window->style->bg[GTK_STATE_NORMAL];
 
-    g_signal_handlers_block_by_func (widget, do_update_styles, NULL);
+    GClosure *closure = g_cclosure_new (G_CALLBACK (do_update_styles), NULL, NULL);
+    g_signal_handlers_block_by_func (widget, closure, NULL);
     gtk_widget_modify_base (view, GTK_STATE_NORMAL, &color);
-    g_signal_handlers_unblock_by_func (widget, do_update_styles, NULL);
+    g_signal_handlers_unblock_by_func (widget, closure, NULL);
 }
 
 
@@ -1659,13 +1660,13 @@ G_MODULE_EXPORT void do_search_drag_data_recieved (GtkWidget        *widget,
 
     GtkWidget* entry = get_widget_by_target (GW_TARGET_ENTRY);
    
-    char* text = gtk_selection_data_get_text (data);   
+    char* text = (char*) gtk_selection_data_get_text (data);   
     if (text != NULL)
     {
       // Sanitizes text : when drag/dropping text from external sources it 
       // might contains some invalid utf8 data that we should clean.
       // (ex: from the anki tool, it has some trailing unicode control char).
-      char* sane_text = gw_util_sanitize_input(text, TRUE);
+      char* sane_text = gw_util_sanitize_input (text, TRUE);
       g_free (text);
       text = sane_text;
       sane_text = NULL;

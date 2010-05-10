@@ -35,6 +35,7 @@
 
 #include <gwaei/queryline-object.h>
 #include <gwaei/resultline-object.h>
+#include <gwaei/dictinfo-object.h>
 
 
 //!
