@@ -29,35 +29,3 @@
 	* Makefile.am (SUBDIRS): Add intl.
 	* configure.ac (AC_CONFIG_FILES): Add intl/Makefile.
 	(AM_GNU_GETTEXT_VERSION): Bump to 0.17.
-
-2010-02-17  pizzach  <pizzach@gmail.com>
-
-	* queryline-object.c: Finished writing new search backend
-	* searchitem-object.c: Improvements to the handling of comparisons.  Better
-	                       handling of unknown dictionary formats.
-	* utilities.c: The katakana "-" now will have no effect on the outcome of a
-	               hiragana/katakana test.
-	* main-interface-gtk.c: Added the ability to start gwaei with an initial
-	                        search from a specific dictionary.
-	* sexy-enable.c: Better spellcheck dictionary selection that chooses the
-	                 correct one for the known dictionaries. (French, English, Germain...)
-	* settings-interface-gtk.c: Interface tweaks for the preferences.  Cleaner
-	                            and more minimalistic.
-	* settings-interface-gtk.c: gWaei now uses the gnome set font as it's
-	                            default font instead of sans.
-	* README: Added autogen.sh information to the readme.
-	* debian/rpm: Updated the summary to no longer do a direct comparison to
-	              gjiten
-	* tabs.c: Added tab functionality to gWaei.
-	* dictinfo-object.c: Dictionary names are now more localization friendly.
-	* main-interfec-gtk.c: Search status information now appears in the window
-	                       title much like it does for web browsers etc.
-	* main-interface-console.c: multisearch capability through the console
-	                            through an interface build with ncurses.
-	* main.c: gobject dependency was missing for some linux distros as glib.h
-	          didn't automatically import it without gtk.h
-	* main-interface-gtk.c: Added flag to force a new instance of the program
-	                        when wanted.
-	* gtk-dict-install-line-object.c: Added new file
-	* settings-interface-gtk.c: Now uses gtk-dict-install-line-object.c to
-	                            generate the files

@@ -206,11 +206,11 @@ static void print_installable_dictionaries ()
     int i = 0; 
 
     GwDictInfo* di;
-    GList *list = gw_dictlist_get_list();
+    GList *list = gw_dictlist_get_list ();
     while (list != NULL)
     {
-      di = list->data;
-      if (di->gckey[0] != '\0' && di->status == GW_DICT_STATUS_NOT_INSTALLED &&
+      di = (GwDictInfo*) list->data;
+      if (di->gckey != NULL && di->status == GW_DICT_STATUS_NOT_INSTALLED &&
           di->id != GW_DICT_ID_RADICALS && di->id != GW_DICT_ID_MIX            )
       {
         printf("  %s (AKA: %s)\n", di->name, di->long_name);

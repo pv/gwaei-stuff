@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 1.4.0\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-05-08 22:17-0400\n"
+"POT-Creation-Date: 2010-05-10 22:23-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,55 +17,55 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: src/console-main-interface.c:67 src/ncurses-main-interface.c:124
+#: src/console-main-interface.c:68 src/ncurses-main-interface.c:124
 msgid "Other Results"
 msgstr ""
 
-#: src/console-main-interface.c:76 src/ncurses-main-interface.c:80
+#: src/console-main-interface.c:77 src/ncurses-main-interface.c:80
 msgid "No results found!"
 msgstr ""
 
-#: src/console-main-interface.c:105 src/console-main-interface.c:148
+#: src/console-main-interface.c:106 src/console-main-interface.c:149
 #, c-format
 msgid "Finished\n"
 msgstr ""
 
-#: src/console-main-interface.c:116
+#: src/console-main-interface.c:117
 #, c-format
 msgid "Trying to install the %s...\n"
 msgstr ""
 
 #. TRANSLATORS: 'Searching for "${query}" in ${dictionary long name}'
-#: src/console-main-interface.c:190
+#: src/console-main-interface.c:191
 #, c-format
 msgid "Searching for \"%s\" in %s...\n"
 msgstr ""
 
-#: src/console-main-interface.c:206
+#: src/console-main-interface.c:203
 #, c-format
 msgid "Installable dictionaries are:\n"
 msgstr ""
 
-#: src/console-main-interface.c:226 src/console-main-interface.c:257
+#: src/console-main-interface.c:223 src/console-main-interface.c:254
 msgid "none"
 msgstr ""
 
-#: src/console-main-interface.c:243
+#: src/console-main-interface.c:240
 #, c-format
 msgid "Available dictionaries are:\n"
 msgstr ""
 
-#: src/console-main-interface.c:277 src/ncurses-main-interface.c:448
+#: src/console-main-interface.c:274 src/ncurses-main-interface.c:448
 msgid "- Japanese-English dictionary program that allows regex searches"
 msgstr ""
 
-#: src/console-main-interface.c:278
+#: src/console-main-interface.c:275
 msgid ""
 "waei generally outputs directly to the console.  If you want to do multiple\n"
 "searches, please start gWaei with the -n switch for the multisearch mode."
 msgstr ""
 
-#: src/console-main-interface.c:282
+#: src/console-main-interface.c:279
 #, c-format
 msgid ""
 "Examples:\n"
@@ -81,76 +81,76 @@ msgid ""
 "  waei -d Places %s       Look up a place in the places dictionary"
 msgstr ""
 
-#: src/console-main-interface.c:304 src/ncurses-main-interface.c:451
+#: src/console-main-interface.c:301 src/ncurses-main-interface.c:451
 msgid "Open up the multisearch window (beta)"
 msgstr ""
 
-#: src/console-main-interface.c:306 src/ncurses-main-interface.c:452
+#: src/console-main-interface.c:303 src/ncurses-main-interface.c:452
 msgid "Do not display less relevant results"
 msgstr ""
 
-#: src/console-main-interface.c:307 src/ncurses-main-interface.c:453
+#: src/console-main-interface.c:304 src/ncurses-main-interface.c:453
 msgid "Display less information"
 msgstr ""
 
-#: src/console-main-interface.c:308 src/ncurses-main-interface.c:454
+#: src/console-main-interface.c:305 src/ncurses-main-interface.c:454
 msgid "Search using a chosen dictionary"
 msgstr ""
 
-#: src/console-main-interface.c:309
+#: src/console-main-interface.c:306
 msgid "Show available dictionaries for searches"
 msgstr ""
 
-#: src/console-main-interface.c:310
+#: src/console-main-interface.c:307
 msgid "Install dictionary"
 msgstr ""
 
-#: src/console-main-interface.c:311
+#: src/console-main-interface.c:308
 msgid "Uninstall dictionary"
 msgstr ""
 
-#: src/console-main-interface.c:312
+#: src/console-main-interface.c:309
 msgid "Check the waei version information"
 msgstr ""
 
 #. TRANSLATORS: The "%s" stands for the error message
-#: src/console-main-interface.c:319 src/ncurses-main-interface.c:461
+#: src/console-main-interface.c:316 src/ncurses-main-interface.c:461
 #, c-format
 msgid "Option parsing failed: %s\n"
 msgstr ""
 
-#: src/console-main-interface.c:387
+#: src/console-main-interface.c:384
 #, c-format
 msgid "%s is already Installed. "
 msgstr ""
 
-#: src/console-main-interface.c:392
+#: src/console-main-interface.c:389
 #, c-format
 msgid "%s is not installable with this mechanism. "
 msgstr ""
 
-#: src/console-main-interface.c:411
+#: src/console-main-interface.c:408
 #, c-format
 msgid "The %s is not installed. "
 msgstr ""
 
 #. TRANSLATORS: The "%s" stands for the value provided by the user to the "waei uninstall"
-#: src/console-main-interface.c:418
+#: src/console-main-interface.c:415
 #, c-format
 msgid "%s is not installed. "
 msgstr ""
 
-#: src/console-main-interface.c:433 src/ncurses-main-interface.c:481
+#: src/console-main-interface.c:430 src/ncurses-main-interface.c:481
 #, c-format
 msgid "Requested dictionary not found!\n"
 msgstr ""
 
-#: src/console-main-interface.c:474
+#: src/console-main-interface.c:471
 #, c-format
 msgid "Query parse error\n"
 msgstr ""
 
-#: src/console-main-interface.c:485 src/gtk-main-interface.c:974
+#: src/console-main-interface.c:482 src/gtk-main-interface.c:976
 #: src/ncurses-main-interface.c:394
 #, c-format
 msgid "Found %d result"
@@ -159,7 +159,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. TRANSLATORS: relevant what ? It's the number of "relevant" result(s) displayed while or after searching.
-#: src/console-main-interface.c:486 src/gtk-main-interface.c:978
+#: src/console-main-interface.c:483 src/gtk-main-interface.c:980
 #: src/ncurses-main-interface.c:395
 #, c-format
 msgid "(%d Relevant)"
@@ -167,65 +167,65 @@ msgid_plural "(%d Relevant)"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/console-main-interface.c:551 src/gtk-main-interface.c:3401
+#: src/console-main-interface.c:548 src/gtk-main-interface.c:3400
 #: src/ncurses-main-interface.c:578
 msgid "Radicals:"
 msgstr ""
 
-#: src/console-main-interface.c:556 src/gtk-main-interface.c:3455
+#: src/console-main-interface.c:553 src/gtk-main-interface.c:3454
 #: src/ncurses-main-interface.c:583
 msgid "Stroke:"
 msgstr ""
 
-#: src/console-main-interface.c:564 src/gtk-main-interface.c:3462
+#: src/console-main-interface.c:561 src/gtk-main-interface.c:3461
 #: src/ncurses-main-interface.c:591
 msgid "Freq:"
 msgstr ""
 
-#: src/console-main-interface.c:572 src/gtk-main-interface.c:3469
+#: src/console-main-interface.c:569 src/gtk-main-interface.c:3468
 #: src/ncurses-main-interface.c:599
 msgid "Grade:"
 msgstr ""
 
-#: src/console-main-interface.c:580 src/gtk-main-interface.c:3475
+#: src/console-main-interface.c:577 src/gtk-main-interface.c:3474
 #: src/ncurses-main-interface.c:607
 msgid "JLPT:"
 msgstr ""
 
-#: src/console-main-interface.c:587 src/gtk-main-interface.c:3418
+#: src/console-main-interface.c:584 src/gtk-main-interface.c:3417
 #: src/ncurses-main-interface.c:614
 msgid "Readings:"
 msgstr ""
 
-#: src/console-main-interface.c:589 src/gtk-main-interface.c:3429
+#: src/console-main-interface.c:586 src/gtk-main-interface.c:3428
 #: src/ncurses-main-interface.c:616
 msgid "Name:"
 msgstr ""
 
-#: src/console-main-interface.c:591 src/gtk-main-interface.c:3440
+#: src/console-main-interface.c:588 src/gtk-main-interface.c:3439
 #: src/ncurses-main-interface.c:618
 msgid "Radical Name:"
 msgstr ""
 
-#: src/console-main-interface.c:594 src/gtk-main-interface.c:3484
+#: src/console-main-interface.c:591 src/gtk-main-interface.c:3483
 #: src/ncurses-main-interface.c:621
 msgid "Meanings:"
 msgstr ""
 
 #. TRANSLATORS: The "E" stands for "English"
-#: src/console-main-interface.c:611 src/gtk-main-interface.c:3517
+#: src/console-main-interface.c:608 src/gtk-main-interface.c:3516
 msgid "E:\t"
 msgstr ""
 
 #. TRANSLATORS: The "J" stands for "Japanese"
-#: src/console-main-interface.c:617 src/gtk-main-interface.c:3528
+#: src/console-main-interface.c:614 src/gtk-main-interface.c:3527
 msgid ""
 "\n"
 "J:\t"
 msgstr ""
 
 #. TRANSLATORS: The "D" stands for "Detail"
-#: src/console-main-interface.c:623 src/gtk-main-interface.c:3539
+#: src/console-main-interface.c:620 src/gtk-main-interface.c:3538
 msgid ""
 "\n"
 "D:\t"
@@ -309,32 +309,32 @@ msgid "%s Dictionary"
 msgstr ""
 
 #. TRANSLATORS: The %s stands for the internal (untranslated) short name of the dictionary
-#: src/dictlist-object.c:649
+#: src/dictlist-object.c:653
 #, c-format
 msgid "Syncing %s dictionary"
 msgstr ""
 
-#: src/dictlist-object.c:654
+#: src/dictlist-object.c:658
 msgid "File read failed"
 msgstr ""
 
-#: src/dictlist-object.c:679
+#: src/dictlist-object.c:683
 msgid "Success"
 msgstr ""
 
-#: src/gtk-main-callbacks.c:509
+#: src/gtk-main-callbacks.c:510
 msgid "Save As"
 msgstr ""
 
-#: src/gtk-main-callbacks.c:521 src/gtk-main-callbacks.c:595
+#: src/gtk-main-callbacks.c:522 src/gtk-main-callbacks.c:596
 msgid "vocabulary.txt"
 msgstr ""
 
-#: src/gtk-main-callbacks.c:585
+#: src/gtk-main-callbacks.c:586
 msgid "Save"
 msgstr ""
 
-#: src/gtk-main-callbacks.c:1128
+#: src/gtk-main-callbacks.c:1129
 msgid ""
 "Program for Japanese translation and reference. The\n"
 "dictionaries are supplied by Jim Breen's WWWJDIC.\n"
@@ -342,40 +342,40 @@ msgid ""
 msgstr ""
 
 #. TRANSLATORS: You can add your own name to the translation of this field, it will be displayed in the "about" box when gwaei is run in your language
-#: src/gtk-main-callbacks.c:1132
+#: src/gtk-main-callbacks.c:1133
 msgid "translator-credits"
 msgstr ""
 
-#: src/gtk-main-callbacks.c:1745
+#: src/gtk-main-callbacks.c:1746
 msgid "A_ppend Selected"
 msgstr ""
 
-#: src/gtk-main-callbacks.c:1747
+#: src/gtk-main-callbacks.c:1748
 msgid "Save Selected _As"
 msgstr ""
 
-#: src/gtk-main-callbacks.c:1749
+#: src/gtk-main-callbacks.c:1750
 msgid "_Print Selected"
 msgstr ""
 
-#: src/gtk-main-callbacks.c:1756 src/gtk-main-interface.c:407
+#: src/gtk-main-callbacks.c:1757 src/gtk-main-interface.c:409
 msgid "A_ppend"
 msgstr ""
 
 #. TRANSLATORS: The first variable is the expression to look for, the second is the dictionary full name
-#: src/gtk-main-callbacks.c:1797
+#: src/gtk-main-callbacks.c:1798
 #, c-format
 msgid "Search for \"%s\" in the %s"
 msgstr ""
 
 #. TRANSLATORS: The variable is the expression to look for
-#: src/gtk-main-callbacks.c:1799
+#: src/gtk-main-callbacks.c:1800
 #, c-format
 msgid "Search for \"%s\" in a Different Dictionary"
 msgstr ""
 
 #. TRANSLATORS: The variable is the expression to look for
-#: src/gtk-main-callbacks.c:1801
+#: src/gtk-main-callbacks.c:1802
 #, c-format
 msgid "Cross-reference \"%s\" Online"
 msgstr ""
@@ -392,242 +392,242 @@ msgstr ""
 msgid "(Empty)"
 msgstr ""
 
-#: src/gtk-main-interface.c:151 src/gtk-builder-xml/main.glade:7
+#: src/gtk-main-interface.c:153 src/gtk-builder-xml/main.glade:7
 msgid "gWaei Japanese-English Dictionary"
 msgstr ""
 
-#: src/gtk-main-interface.c:371
+#: src/gtk-main-interface.c:373
 msgid "_New Tab"
 msgstr ""
 
-#: src/gtk-main-interface.c:379
+#: src/gtk-main-interface.c:381
 msgid "Only for Non-Japanese Locals"
 msgstr ""
 
-#: src/gtk-main-interface.c:380
+#: src/gtk-main-interface.c:382
 msgid "When Possible"
 msgstr ""
 
-#: src/gtk-main-interface.c:381
+#: src/gtk-main-interface.c:383
 msgid "Never"
 msgstr ""
 
-#: src/gtk-main-interface.c:382 src/gtk-builder-xml/main.glade:469
+#: src/gtk-main-interface.c:384 src/gtk-builder-xml/main.glade:469
 msgid "Go to the _Project Homepage"
 msgstr ""
 
-#: src/gtk-main-interface.c:383 src/gtk-builder-xml/main.glade:477
+#: src/gtk-main-interface.c:385 src/gtk-builder-xml/main.glade:477
 msgid "Get Help on I_RC"
 msgstr ""
 
-#: src/gtk-main-interface.c:384
+#: src/gtk-main-interface.c:386
 msgid "Other Dictionaries"
 msgstr ""
 
-#: src/gtk-main-interface.c:385
+#: src/gtk-main-interface.c:387
 msgid "Main Dictionaries"
 msgstr ""
 
-#: src/gtk-main-interface.c:387 src/gtk-settings-interface.c:286
+#: src/gtk-main-interface.c:389 src/gtk-settings-interface.c:286
 msgid "Order"
 msgstr ""
 
-#: src/gtk-main-interface.c:388 src/gtk-settings-interface.c:294
+#: src/gtk-main-interface.c:390 src/gtk-settings-interface.c:294
 msgid "Shortcut"
 msgstr ""
 
-#: src/gtk-main-interface.c:389 src/gtk-settings-interface.c:301
+#: src/gtk-main-interface.c:391 src/gtk-settings-interface.c:301
 msgid "Dictionary"
 msgstr ""
 
-#: src/gtk-main-interface.c:390 src/gtk-builder-xml/kanjipad.glade:75
+#: src/gtk-main-interface.c:392 src/gtk-builder-xml/kanjipad.glade:75
 msgid "_Annotate Strokes"
 msgstr ""
 
-#: src/gtk-main-interface.c:403
+#: src/gtk-main-interface.c:405
 msgid "Edit the current vocabulary list"
 msgstr ""
 
-#: src/gtk-main-interface.c:408
+#: src/gtk-main-interface.c:410
 msgid "Append the current results to a file"
 msgstr ""
 
-#: src/gtk-main-interface.c:413
+#: src/gtk-main-interface.c:415
 msgid "Save the current results to a new file"
 msgstr ""
 
-#: src/gtk-main-interface.c:417
+#: src/gtk-main-interface.c:419
 msgid "Print the current results"
 msgstr ""
 
-#: src/gtk-main-interface.c:422
+#: src/gtk-main-interface.c:424
 msgid "_Enlarge Text"
 msgstr ""
 
-#: src/gtk-main-interface.c:423 src/gtk-builder-xml/main.glade:661
+#: src/gtk-main-interface.c:425 src/gtk-builder-xml/main.glade:661
 msgid "Enlarge"
 msgstr ""
 
-#: src/gtk-main-interface.c:424
+#: src/gtk-main-interface.c:426
 msgid "Enlarge the results text"
 msgstr ""
 
-#: src/gtk-main-interface.c:430
+#: src/gtk-main-interface.c:432
 msgid "_Shrink Text"
 msgstr ""
 
-#: src/gtk-main-interface.c:431 src/gtk-builder-xml/main.glade:673
+#: src/gtk-main-interface.c:433 src/gtk-builder-xml/main.glade:673
 msgid "Shrink"
 msgstr ""
 
-#: src/gtk-main-interface.c:432
+#: src/gtk-main-interface.c:434
 msgid "Shrink the results text"
 msgstr ""
 
-#: src/gtk-main-interface.c:438
+#: src/gtk-main-interface.c:440
 msgid "_Normal Size"
 msgstr ""
 
-#: src/gtk-main-interface.c:439
+#: src/gtk-main-interface.c:441
 msgid "Normal"
 msgstr ""
 
-#: src/gtk-main-interface.c:445
+#: src/gtk-main-interface.c:447
 msgid "Show _Toolbar"
 msgstr ""
 
-#: src/gtk-main-interface.c:449
+#: src/gtk-main-interface.c:451
 msgid "Show _Less Relevant Results"
 msgstr ""
 
-#: src/gtk-main-interface.c:453
+#: src/gtk-main-interface.c:455
 msgid "Using _Kanjipad"
 msgstr ""
 
-#: src/gtk-main-interface.c:458
+#: src/gtk-main-interface.c:460
 msgid "Using _Radical Search Tool"
 msgstr ""
 
-#: src/gtk-main-interface.c:463
+#: src/gtk-main-interface.c:465
 msgid "_Word-edge Mark"
 msgstr ""
 
-#: src/gtk-main-interface.c:464
+#: src/gtk-main-interface.c:466
 msgid "_Edge"
 msgstr ""
 
-#: src/gtk-main-interface.c:465
+#: src/gtk-main-interface.c:467
 msgid "Insert a word-edge character"
 msgstr ""
 
-#: src/gtk-main-interface.c:471
+#: src/gtk-main-interface.c:473
 msgid "_Not-word-edge Mark"
 msgstr ""
 
-#: src/gtk-main-interface.c:472
+#: src/gtk-main-interface.c:474
 msgid "_Not Edge"
 msgstr ""
 
-#: src/gtk-main-interface.c:473
+#: src/gtk-main-interface.c:475
 msgid "Insert a not-word-edge character"
 msgstr ""
 
-#: src/gtk-main-interface.c:478
+#: src/gtk-main-interface.c:480
 msgid "_Unknown Character"
 msgstr ""
 
-#: src/gtk-main-interface.c:479
+#: src/gtk-main-interface.c:481
 msgid "_Unknown"
 msgstr ""
 
-#: src/gtk-main-interface.c:480
+#: src/gtk-main-interface.c:482
 msgid "Insert an unknown character"
 msgstr ""
 
-#: src/gtk-main-interface.c:484
+#: src/gtk-main-interface.c:486
 msgid "_Or Character"
 msgstr ""
 
-#: src/gtk-main-interface.c:488
+#: src/gtk-main-interface.c:490
 msgid "_And Character"
 msgstr ""
 
-#: src/gtk-main-interface.c:492
+#: src/gtk-main-interface.c:494
 msgid "_Previous Search"
 msgstr ""
 
-#: src/gtk-main-interface.c:493
+#: src/gtk-main-interface.c:495
 msgid "Previous"
 msgstr ""
 
-#: src/gtk-main-interface.c:494
+#: src/gtk-main-interface.c:496
 msgid "Go to the previous search"
 msgstr ""
 
-#: src/gtk-main-interface.c:499
+#: src/gtk-main-interface.c:501
 msgid "_Next Search"
 msgstr ""
 
-#: src/gtk-main-interface.c:500
+#: src/gtk-main-interface.c:502
 msgid "Next"
 msgstr ""
 
-#: src/gtk-main-interface.c:501
+#: src/gtk-main-interface.c:503
 msgid "Go to the next search"
 msgstr ""
 
-#: src/gtk-main-interface.c:506
+#: src/gtk-main-interface.c:508
 msgid "_Contents"
 msgstr ""
 
-#: src/gtk-main-interface.c:507
+#: src/gtk-main-interface.c:509
 msgid "Help"
 msgstr ""
 
-#: src/gtk-main-interface.c:508
+#: src/gtk-main-interface.c:510
 msgid "Open the help dialog"
 msgstr ""
 
-#: src/gtk-main-interface.c:513
+#: src/gtk-main-interface.c:515
 msgid "Dictionary _Terminology Glossary"
 msgstr ""
 
-#: src/gtk-main-interface.c:520
+#: src/gtk-main-interface.c:522
 msgid "Enable spellcheck for searches"
 msgstr ""
 
-#: src/gtk-main-interface.c:524
+#: src/gtk-main-interface.c:526
 msgid "Input your query here"
 msgstr ""
 
-#: src/gtk-main-interface.c:528
+#: src/gtk-main-interface.c:530
 msgid "Select the dictionary you want to use"
 msgstr ""
 
-#: src/gtk-main-interface.c:532
+#: src/gtk-main-interface.c:534
 msgid "Click to start search"
 msgstr ""
 
-#: src/gtk-main-interface.c:972
+#: src/gtk-main-interface.c:974
 msgid "Searching..."
 msgstr ""
 
-#: src/gtk-main-interface.c:975
+#: src/gtk-main-interface.c:977
 #, c-format
 msgid "Searching... %d result"
 msgid_plural "Searching... %d results"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/gtk-main-interface.c:1258
+#: src/gtk-main-interface.c:1259
 msgid "_Cycle Up"
 msgstr ""
 
-#: src/gtk-main-interface.c:1264
+#: src/gtk-main-interface.c:1265
 msgid "Cycle _Down"
 msgstr ""
 
-#: src/gtk-main-interface.c:1276
+#: src/gtk-main-interface.c:1275
 #, c-format
 msgid "%d dictionary is being used."
 msgid_plural "%d dictionaries are being used."
@@ -635,25 +635,25 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. TRANSLATORS: The argument is the dictionary long name
-#: src/gtk-main-interface.c:2336
+#: src/gtk-main-interface.c:2335
 #, c-format
 msgid "Nothing found in the %s!"
 msgstr ""
 
-#: src/gtk-main-interface.c:2367
+#: src/gtk-main-interface.c:2366
 msgid "Search Other Dictionary: "
 msgstr ""
 
-#: src/gtk-main-interface.c:2429
+#: src/gtk-main-interface.c:2428
 msgid "Search Online: "
 msgstr ""
 
-#: src/gtk-main-interface.c:2484
+#: src/gtk-main-interface.c:2483
 #, c-format
 msgid "gWaei Usage Tip #%d: "
 msgstr ""
 
-#: src/gtk-main-interface.c:2497
+#: src/gtk-main-interface.c:2496
 #, c-format
 msgid ""
 "Use the Unknown Character from the Insert menu or toolbar in place of "
@@ -664,22 +664,22 @@ msgid ""
 "and drawing the strokes in the correct direction is very important."
 msgstr ""
 
-#: src/gtk-main-interface.c:2504
+#: src/gtk-main-interface.c:2503
 msgid "Inputting Unknown Kanji"
 msgstr ""
 
-#: src/gtk-main-interface.c:2521
+#: src/gtk-main-interface.c:2520
 msgid "Getting More Exact Matches"
 msgstr ""
 
-#: src/gtk-main-interface.c:2527
+#: src/gtk-main-interface.c:2526
 msgid ""
 "Use the Word-edge Mark and the Not-word-edge Mark from the insert menu to "
 "get more relevant results.  fish\\b will return results like fish and "
 "selfish , but not fisherman"
 msgstr ""
 
-#: src/gtk-main-interface.c:2535
+#: src/gtk-main-interface.c:2534
 #, c-format
 msgid ""
 "Use the And Character or Or Character to search for results that contain a "
@@ -688,15 +688,15 @@ msgid ""
 "does."
 msgstr ""
 
-#: src/gtk-main-interface.c:2541
+#: src/gtk-main-interface.c:2540
 msgid "Searching for Multiple Words"
 msgstr ""
 
-#: src/gtk-main-interface.c:2558
+#: src/gtk-main-interface.c:2557
 msgid "Make a Vocabulary List"
 msgstr ""
 
-#: src/gtk-main-interface.c:2564
+#: src/gtk-main-interface.c:2563
 msgid ""
 "Specific sections of results can be printed or saved by dragging the mouse "
 "to highlight them.  Using this in combination with the Append command from "
@@ -704,11 +704,11 @@ msgid ""
 "possible."
 msgstr ""
 
-#: src/gtk-main-interface.c:2574
+#: src/gtk-main-interface.c:2573
 msgid "Why Use the Mouse?"
 msgstr ""
 
-#: src/gtk-main-interface.c:2580
+#: src/gtk-main-interface.c:2579
 msgid ""
 "Typing something will move the focus to the search input box.  Hitting the "
 "Up or Down arrow key will move the focus to the results pane so you can "
@@ -716,11 +716,11 @@ msgid ""
 "installed dictionaries."
 msgstr ""
 
-#: src/gtk-main-interface.c:2590
+#: src/gtk-main-interface.c:2589
 msgid "Get Ready for the JLPT"
 msgstr ""
 
-#: src/gtk-main-interface.c:2596
+#: src/gtk-main-interface.c:2595
 msgid ""
 "The Kanji dictionary has some hidden features.  One such one is the ability "
 "to filter out Kanji that don't meet a certain criteria.  If you are planning "
@@ -732,22 +732,22 @@ msgid ""
 "Japanese person would study it at in school."
 msgstr ""
 
-#: src/gtk-main-interface.c:2610
+#: src/gtk-main-interface.c:2609
 msgid "Just drag words in!"
 msgstr ""
 
-#: src/gtk-main-interface.c:2616
+#: src/gtk-main-interface.c:2615
 msgid ""
 "If you drag and drop a highlighted word into gWaei's search result box, "
 "gWaei will automatically start a search using that text.  This can be a nice "
 "way to quickly look up words while browsing webpages. "
 msgstr ""
 
-#: src/gtk-main-interface.c:2627
+#: src/gtk-main-interface.c:2626
 msgid "What does (adj-i) mean?"
 msgstr ""
 
-#: src/gtk-main-interface.c:2633
+#: src/gtk-main-interface.c:2632
 msgid ""
 "It is part of the terminalogy used by the EDICT group of dictionaries to "
 "categorize words.  Some are obvious, but there are a number that there is no "
@@ -757,11 +757,11 @@ msgid ""
 "the Dictionary Terminology Glossary menuitem in the Help menu to get to it."
 msgstr ""
 
-#: src/gtk-main-interface.c:2645
+#: src/gtk-main-interface.c:2644
 msgid "Books are Heavy"
 msgstr ""
 
-#: src/gtk-main-interface.c:2651
+#: src/gtk-main-interface.c:2650
 msgid ""
 "Aways wear a construction helmet when working with books.  They are "
 "dangerous heavy objects that can at any point fall on and injure you.  "
@@ -769,22 +769,22 @@ msgid ""
 "Really."
 msgstr ""
 
-#: src/gtk-main-interface.c:2873
+#: src/gtk-main-interface.c:2872
 msgid "- A dictionary program for Japanese-English translation."
 msgstr ""
 
-#: src/gtk-main-interface.c:3231 src/gtk-main-interface.c:3328
+#: src/gtk-main-interface.c:3230 src/gtk-main-interface.c:3327
 msgid "Pop"
 msgstr ""
 
-#: src/gtk-main-interface.c:3636
+#: src/gtk-main-interface.c:3635
 #, c-format
 msgid "Other Result %d"
 msgid_plural "Other Results %d"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/gtk-main-interface.c:3651
+#: src/gtk-main-interface.c:3650
 #, c-format
 msgid "Main Result %d"
 msgid_plural "Main Results %d"
@@ -804,25 +804,25 @@ msgid ""
 "<b>Radical Name:</b> %s"
 msgstr ""
 
-#: src/gtk-settings-callbacks.c:300
+#: src/gtk-settings-callbacks.c:323
 #: src/gtk-settings-interface-install-line.c:63
 msgid "Installed"
 msgstr ""
 
-#: src/gtk-settings-callbacks.c:308 src/gtk-settings-callbacks.c:498
+#: src/gtk-settings-callbacks.c:331 src/gtk-settings-callbacks.c:521
 msgid "Installing..."
 msgstr ""
 
-#: src/gtk-settings-callbacks.c:462
+#: src/gtk-settings-callbacks.c:485
 msgid "Cancelling..."
 msgstr ""
 
-#: src/gtk-settings-callbacks.c:478
+#: src/gtk-settings-callbacks.c:501
 #: src/gtk-settings-interface-install-line.c:68
 msgid "Not Installed"
 msgstr ""
 
-#: src/gtk-settings-callbacks.c:670
+#: src/gtk-settings-callbacks.c:698
 msgid "Dictionary File Select"
 msgstr ""
 
@@ -847,47 +847,47 @@ msgstr ""
 msgid "_Use the System Document Font (%s)"
 msgstr ""
 
-#: src/io.c:318
+#: src/io.c:325
 msgid "File copy error"
 msgstr ""
 
-#: src/io.c:546 src/io.c:582
+#: src/io.c:553 src/io.c:589
 msgid "gunzip error"
 msgstr ""
 
 #. TRANSLATORS: The %s stands for a file path
-#: src/io.c:626
+#: src/io.c:633
 #, c-format
 msgid "Removing %s..."
 msgstr ""
 
-#: src/io.c:628
+#: src/io.c:635
 msgid "Removing..."
 msgstr ""
 
 #. TRANSLATORS: The %s stands for an URL
-#: src/io.c:696
+#: src/io.c:703
 #, c-format
 msgid "Downloading %s..."
 msgstr ""
 
-#: src/io.c:715
+#: src/io.c:721
 msgid "Unable to create dictionary folder"
 msgstr ""
 
-#: src/io.c:736
+#: src/io.c:745
 msgid "Decompressing..."
 msgstr ""
 
-#: src/io.c:746
+#: src/io.c:755
 msgid "Unzip Error"
 msgstr ""
 
-#: src/io.c:754
+#: src/io.c:763
 msgid "Converting encoding..."
 msgstr ""
 
-#: src/io.c:767
+#: src/io.c:777
 msgid "Postprocessing..."
 msgstr ""
 

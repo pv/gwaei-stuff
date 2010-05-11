@@ -1,4 +1,4 @@
-2010-02-17: Released gWaei 1.3.0
-  New major release.  It should hopefully be more bugfree than 1.2.0 was.  Significant changes include a newly implimented backend for searches, tabs, a multisearch interface implimented by fabrizio for the console implimented using ncurses and simplified preferences dialog.
+2010-05-10: Released gWaei 1.4.0
+  A fair amount more background reworking had went into this release, and much of the interface has been tweaked to be smaller, easier to maintain, and prettier.There is a revamped no results page where you can search for the word online or in another dictionary with just a click.  There is also functionality to search for a word in a new tab by right clicking it.
 
-  Smaller but noticable improvements include more intelligent choosing of spellcheck dictionaries for different languages, various bugfixes to the engine, and improved localization code.
+  The command line now show download progress as a dictionary is being installe,d, and has recieved some basic maintenace.

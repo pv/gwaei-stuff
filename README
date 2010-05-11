@@ -86,6 +86,8 @@ TABLE OF CONTENTS
   Debian packages of gWaei are coming to most distros through Debian.  To build
   from the sources on the gWaei site, make sure you have dkpg and fakeroot installed in
   addition to the standard build tools detailed above.  You may need to then run
+    sudo apt-get install quilt
+
   ./autogen.sh.  You then run:
     $ ./configure
     $ make deb

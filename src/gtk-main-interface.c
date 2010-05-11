@@ -698,7 +698,7 @@ void initialize_window_attributes (char* window_id)
          height <= gdk_screen_height() &&
          strcmp (window_id, "main_window") == 0)
     {
-      gtk_window_resize (GTK_WINDOW(window), width, height);
+      gtk_window_resize (GTK_WINDOW (window), width, height);
     }
 
 
@@ -706,12 +706,12 @@ void initialize_window_attributes (char* window_id)
         x == 0 && y == 0                        )
     {
       int half_width, half_height;
-      gtk_window_get_size(GTK_WINDOW (window), &width, &height);
+      gtk_window_get_size (GTK_WINDOW (window), &width, &height);
       half_width = (gdk_screen_width() / 2) - (width / 2);
       half_height =  (gdk_screen_height() / 2) - (height / 2);
-      gtk_window_move(GTK_WINDOW(window), half_width, half_height);
+      gtk_window_move (GTK_WINDOW (window), half_width, half_height);
     }
-    else if (strcmp(window_id, "radicals_window") == 0)
+    else if (strcmp (window_id, "radicals_window") == 0)
     {
       //Height checking
       GtkWidget *window = GTK_WIDGET (gtk_builder_get_object (builder, "radicals_window"));
@@ -744,7 +744,7 @@ void initialize_window_attributes (char* window_id)
 void save_window_attributes_and_hide (const char* window_id)
 {
     GtkWidget *window;
-    window = GTK_WIDGET (gtk_builder_get_object(builder, window_id));
+    window = GTK_WIDGET (gtk_builder_get_object (builder, window_id));
 
     //Get the window attributes
     int x, y, width, height;
@@ -752,7 +752,7 @@ void save_window_attributes_and_hide (const char* window_id)
     gtk_window_get_size (GTK_WINDOW (window), &width, &height);
 
     //Hide the widget now because pref can be slow
-    gtk_widget_hide(window);
+    gtk_widget_hide (window);
 
     //Setup our unique key for the window
     int leftover = MAX_GCONF_KEY;
@@ -798,7 +798,7 @@ void gw_ui_show_window (char *id)
       if (strcmp (id, "radicals_window") == 0)
         gtk_window_set_type_hint (GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_UTILITY);
       initialize_window_attributes (id);
-      gtk_widget_show(window);
+      gtk_widget_show (window);
       initialize_window_attributes (id);
     }
     else if (strcmp (id, "settings_window") == 0)
@@ -808,19 +808,19 @@ void gw_ui_show_window (char *id)
 
       gtk_window_set_transient_for (GTK_WINDOW (window), GTK_WINDOW (main_window));
       gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER_ON_PARENT);
-      gtk_widget_show(window);
+      gtk_widget_show (window);
     }
     else if (strcmp (id, "kanjipad_window") == 0)
     {
       initialize_window_attributes (id);
       gw_kanjipad_set_target_text_widget (search_entry);
       gtk_window_set_type_hint (GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_UTILITY);
-      gtk_widget_show(window);
+      gtk_widget_show (window);
       initialize_window_attributes (id);
     }
     else
     {
-      gtk_widget_show(window);
+      gtk_widget_show (window);
     }
 }
 
