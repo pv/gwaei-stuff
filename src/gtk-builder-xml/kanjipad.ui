@@ -8,6 +8,7 @@
     <property name="default_height">350</property>
     <property name="icon_name">gwaei</property>
     <property name="type_hint">utility</property>
+    <signal name="delete_event" handler="do_delete_event_action"/>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
@@ -114,8 +115,8 @@
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="w" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                         <accelerator key="Escape" signal="activate"/>
+                        <accelerator key="w" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                         <signal name="clicked" handler="do_close" object="kanjipad_window"/>
                         <signal name="activate" handler="do_close" object="kanjipad_window"/>
                       </object>

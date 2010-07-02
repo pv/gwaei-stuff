@@ -1,4 +1,1 @@
-2010-05-10: Released gWaei 1.4.0
-  A fair amount more background reworking had went into this release, and much of the interface has been tweaked to be smaller, easier to maintain, and prettier.There is a revamped no results page where you can search for the word online or in another dictionary with just a click.  There is also functionality to search for a word in a new tab by right clicking it.
-
-  The command line now show download progress as a dictionary is being installe,d, and has recieved some basic maintenace.
+2010-07-02: Released gWaei 1.4.1
