@@ -29,7 +29,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 0.15.1\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-05-10 22:23-0500\n"
+"POT-Creation-Date: 2010-07-02 16:02-0400\n"
 "PO-Revision-Date: 2010-04-27 23:02-0500\n"
 "Last-Translator: 3dxtrip <3dx@live.com>\n"
 "Language-Team: none\n"
@@ -390,36 +390,36 @@ msgstr ""
 msgid "translator-credits"
 msgstr "4packed (Dean)"
 
-#: src/gtk-main-callbacks.c:1746
+#: src/gtk-main-callbacks.c:1748
 msgid "A_ppend Selected"
 msgstr "A_nexar seleccionado"
 
-#: src/gtk-main-callbacks.c:1748
+#: src/gtk-main-callbacks.c:1750
 msgid "Save Selected _As"
 msgstr "Guardar selección _Como"
 
-#: src/gtk-main-callbacks.c:1750
+#: src/gtk-main-callbacks.c:1752
 msgid "_Print Selected"
 msgstr "_Imprimir selección"
 
-#: src/gtk-main-callbacks.c:1757 src/gtk-main-interface.c:409
+#: src/gtk-main-callbacks.c:1759 src/gtk-main-interface.c:409
 msgid "A_ppend"
 msgstr "A_nexar"
 
 #. TRANSLATORS: The first variable is the expression to look for, the second is the dictionary full name
-#: src/gtk-main-callbacks.c:1798
+#: src/gtk-main-callbacks.c:1800
 #, c-format
 msgid "Search for \"%s\" in the %s"
 msgstr "Buscar por \"%s\" en %s"
 
 #. TRANSLATORS: The variable is the expression to look for
-#: src/gtk-main-callbacks.c:1800
+#: src/gtk-main-callbacks.c:1802
 #, c-format
 msgid "Search for \"%s\" in a Different Dictionary"
 msgstr "Buscar por \"%s\" en un diccionario diferente"
 
 #. TRANSLATORS: The variable is the expression to look for
-#: src/gtk-main-callbacks.c:1802
+#: src/gtk-main-callbacks.c:1804
 #, c-format
 msgid "Cross-reference \"%s\" Online"
 msgstr "Referencia-cruzada \"%s\" En línea"
