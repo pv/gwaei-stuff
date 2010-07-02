@@ -1,7 +1,7 @@
 Summary:   A Japanese dictionary for Gnome
-Name:      @PACKAGE@
-Version:   @VERSION@
-Release:   @RELEASE@%{?dist}
+Name:      gwaei
+Version:   1.4.0
+Release:   1%{?dist}
 License:   GPLv2+
 Group:     Applications/Productivity
 URL:       http://gwaei.sourceforge.net/
@@ -101,9 +101,6 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
-* <DATE> René Ribaud <rene.ribaud@free.fr> - @VERSION@-@RELEASE@
-- New package with @PACKAGE@ @VERSION@ release.
-
 * Thu May 27 2010 René Ribaud <rene.ribaud@free.fr> - 1.4.0-1
 - New package with gwaei 1.4.0 release.
 
