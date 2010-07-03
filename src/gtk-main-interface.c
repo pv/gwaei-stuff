@@ -2459,7 +2459,8 @@ void gw_ui_display_no_results_found_page (GwSearchItem *item)
       if (path != NULL)
       {
         image = gtk_image_new_from_file (path);
-        if (image != NULL) gtk_button_set_image (GTK_BUTTON (button), image);
+        //Gtk doesn't use the image anymore by default so we are removing
+        //if (image != NULL) gtk_button_set_image (GTK_BUTTON (button), image);
         g_free (path);
         path = NULL;
       }
