@@ -239,8 +239,8 @@
                         <property name="use_action_appearance">True</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="plus" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                         <accelerator key="KP_Add" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                        <accelerator key="plus" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -250,8 +250,8 @@
                         <property name="use_action_appearance">True</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="minus" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                         <accelerator key="KP_Subtract" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                        <accelerator key="minus" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -261,8 +261,8 @@
                         <property name="use_action_appearance">True</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="0" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                         <accelerator key="KP_0" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                        <accelerator key="0" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -476,7 +476,7 @@
                     </child>
                     <child>
                       <object class="GtkMenuItem" id="irc_channel_menuitem">
-                        <property name="visible">True</property>
+                        <property name="no_show_all">True</property>
                         <property name="label" translatable="yes">Get Help on I_RC</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="do_irc_channel"/>
