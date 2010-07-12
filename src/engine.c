@@ -118,6 +118,7 @@ static int get_relevance (GwSearchItem *item) {
 static gboolean stream_results_thread (GwSearchItem *item)
 {
     int chunk = 0;
+    if (item->fd == NULL) return FALSE;
 
     //We loop, processing lines of the file until the max chunk size has been
     //reached or we reach the end of the file or a cancel request is recieved.
@@ -257,6 +258,8 @@ static gboolean stream_results_thread (GwSearchItem *item)
 //!
 static gboolean stream_results_cleanup (GwSearchItem *item)
 {
+    if (item->fd == NULL) return FALSE;
+
     less_relevant_title_inserted = FALSE;
     item->status = GW_SEARCH_FINISHING;
     (*item->gw_searchitem_ui_after_search_cleanup)(item);

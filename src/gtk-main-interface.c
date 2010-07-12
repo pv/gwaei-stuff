@@ -2775,8 +2775,8 @@ void gw_ui_buffer_initialize_tags ()
     gw_ui_set_tag_to_tagtable ("large", GW_TARGET_RESULTS, "font", "serif 40");
     gw_ui_set_tag_to_tagtable ("large", GW_TARGET_KANJI,   "font", "KanjiStrokeOrders, serif 100");
 
-    gw_ui_set_tag_to_tagtable ("center", GW_TARGET_RESULTS,   "justification", GTK_JUSTIFY_LEFT);
-    gw_ui_set_tag_to_tagtable ("center", GW_TARGET_KANJI,   "justification", GTK_JUSTIFY_CENTER);
+    gw_ui_set_tag_to_tagtable ("center", GW_TARGET_RESULTS, "justification", GINT_TO_POINTER(GTK_JUSTIFY_LEFT));
+    gw_ui_set_tag_to_tagtable ("center", GW_TARGET_KANJI,   "justification", GINT_TO_POINTER(GTK_JUSTIFY_CENTER));
 
     //Small tag
     gw_ui_set_tag_to_tagtable ("small", GW_TARGET_RESULTS,  "font", "serif 6");

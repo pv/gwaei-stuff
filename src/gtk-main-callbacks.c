@@ -1654,8 +1654,9 @@ G_MODULE_EXPORT void do_search_drag_data_recieved (GtkWidget        *widget,
                                                    guint             time,
                                                    gpointer          user_data    )
 {
-    char *name = NULL;
-    if (widget != NULL) name = gtk_buildable_get_name (GTK_BUILDABLE (widget));
+    if (widget == NULL) 
+      return;
+    const char *name = gtk_buildable_get_name (GTK_BUILDABLE (widget));
     if (name == NULL || strcmp (name, "search_entry") == 0)
       return;
 
