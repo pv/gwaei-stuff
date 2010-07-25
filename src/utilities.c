@@ -976,6 +976,8 @@ void gw_util_strncpy_fallback_from_key (char *value, const char *key, int n)
       strncpy (value, GW_NAMES_URI_FALLBACK, n);
     else if (strcmp (GCKEY_GW_RADICALS_SOURCE, key) == 0)
       strncpy (value, GW_RADICALS_URI_FALLBACK, n);
+    else if (strcmp (GCKEY_GW_EXAMPLES_SOURCE, key) == 0)
+      strncpy (value, GW_EXAMPLES_URI_FALLBACK, n);
 
     else if (strcmp (GCKEY_GW_MATCH_FG, key) == 0)
       strncpy (value, GW_MATCH_FG_FALLBACK, n);
