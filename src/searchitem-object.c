@@ -255,37 +255,45 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
       gboolean frequency_check_passed = TRUE;
       gboolean grade_check_passed = TRUE;
       gboolean jlpt_check_passed = TRUE;
+      gboolean romaji_high_check_passed = TRUE;
       gboolean romaji_check_passed = TRUE;
       gboolean furigana_check_passed = TRUE;
       gboolean kanji_check_passed = TRUE;
       gboolean radical_check_passed = TRUE;
 
       //Calculate the strokes check
-      if (ql->strokes_total > 0 && rl->strokes != NULL)
+      if (ql->strokes_total > 0)
       {
-        if (regexec(&(ql->strokes_regex[REGEX_TYPE][i]), rl->strokes, 1, NULL, 0) != 0)
+        if (rl->strokes == NULL || regexec(&(ql->strokes_regex[REGEX_TYPE][i]), rl->strokes, 1, NULL, 0) != 0)
           strokes_check_passed = FALSE;
       }
 
       //Calculate the frequency check
-      if (ql->frequency_total > 0 && rl->frequency != NULL)
+      if (ql->frequency_total > 0)
       {
-        if (regexec(&(ql->frequency_regex[REGEX_TYPE][i]), rl->frequency, 1, NULL, 0) != 0)
+        if (rl->frequency == NULL || regexec(&(ql->frequency_regex[REGEX_TYPE][i]), rl->frequency, 1, NULL, 0) != 0)
           frequency_check_passed = FALSE;
       }
 
       //Calculate the grade check
-      if (ql->grade_total > 0 && rl->grade != NULL)
+      if (ql->grade_total > 0)
       {
-        if (regexec(&(ql->grade_regex[REGEX_TYPE][i]), rl->grade, 1, NULL, 0) != 0)
+        if (rl->grade == NULL || regexec(&(ql->grade_regex[REGEX_TYPE][i]), rl->grade, 1, NULL, 0) != 0)
           grade_check_passed = FALSE;
       }
 
       //Calculate the jlpt check
-      if (ql->jlpt_total > 0 && rl->jlpt != NULL)
+      if (ql->jlpt_total > 0)
       {
-        if (regexec(&(ql->jlpt_regex[REGEX_TYPE][i]), rl->jlpt, 1, NULL, 0) != 0)
+        if (rl->jlpt == NULL || regexec(&(ql->jlpt_regex[REGEX_TYPE][i]), rl->jlpt, 1, NULL, 0) != 0)
           jlpt_check_passed = FALSE;
+      }
+
+      //Calculate the romaji check
+      if (ql->roma_total > 0 && rl->meanings != NULL)
+      {
+        if (regexec(&(ql->roma_regex[GW_QUERYLINE_HIGH][i]), rl->meanings, 1, NULL, 0) != 0)
+          romaji_high_check_passed = FALSE;
       }
 
       //Calculate the romaji check
@@ -323,7 +331,7 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
       //Return our results
       if (REGEX_TYPE == GW_QUERYLINE_HIGH)
       {
-        return (kanji_check_passed);
+        return (kanji_check_passed && romaji_high_check_passed);
       }
       else
       {

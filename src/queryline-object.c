@@ -436,10 +436,18 @@ int gw_queryline_parse_kanjidict_string (GwQueryLine *ql, const char* string)
     {
       strncpy (atom, ptr, next - ptr);
       atom[next - ptr] = '\0';
-      if (regcomp (&(ql->roma_regex                         [GW_QUERYLINE_EXIST] [ql->roma_total]), atom, EFLAGS_EXIST)  != 0) return FALSE;
-      if (regcomp (&(ql->roma_regex                         [GW_QUERYLINE_LOCATE][ql->roma_total]), atom, EFLAGS_LOCATE) != 0) return FALSE;
+      char *high_pattern = g_strdup_printf("\\{%s\\}", atom);
+      char *med_pattern = g_strdup_printf("\\b%s\\b", atom);
+      if (regcomp (&(ql->roma_regex [GW_QUERYLINE_EXIST] [ql->roma_total]), atom, EFLAGS_EXIST)  != 0) return FALSE;
+      if (regcomp (&(ql->roma_regex [GW_QUERYLINE_LOCATE][ql->roma_total]), atom, EFLAGS_LOCATE) != 0) return FALSE;
+      if (regcomp (&(ql->roma_regex [GW_QUERYLINE_HIGH]  [ql->roma_total]), high_pattern, EFLAGS_EXIST)  != 0) return FALSE;
+      if (regcomp (&(ql->roma_regex [GW_QUERYLINE_MED]   [ql->roma_total]), med_pattern, EFLAGS_EXIST)  != 0) return FALSE;
+      if (high_pattern != NULL) g_free(high_pattern);
+      if (med_pattern != NULL) g_free(med_pattern);
+      /*
       if (gw_regex_create_roma_high_regex (&(ql->roma_regex [GW_QUERYLINE_HIGH]  [ql->roma_total]), atom, EFLAGS_EXIST)  != 0) return FALSE;
       if (gw_regex_create_roma_med_regex  (&(ql->roma_regex [GW_QUERYLINE_MED]   [ql->roma_total]), atom, EFLAGS_EXIST)  != 0) return FALSE;
+      */
       ql->roma_total++;
 
       //Add coversions to search on success
