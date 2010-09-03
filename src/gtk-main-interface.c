@@ -3372,7 +3372,7 @@ void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item)
       mark = gtk_text_buffer_get_mark (tb, "content_insertion_mark");
       gtk_text_buffer_get_iter_at_mark (tb, &iter, mark);
       int line, start_offset, end_offset;
-
+/*
       if (item->target == GW_TARGET_RESULTS)
       {
         //Kanji
@@ -3385,6 +3385,7 @@ void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item)
       }
 
       mark = gtk_text_buffer_get_mark (tb, "footer_insertion_mark");
+      */
 
       //Kanji
       gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); start_offset = gtk_text_iter_get_line_offset (&iter);
