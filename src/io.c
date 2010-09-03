@@ -46,7 +46,7 @@
 #include <gwaei/preferences.h>
 
 
-static char save_path[FILENAME_MAX] = { '\0' };
+char save_path[FILENAME_MAX] = { '\0' };
 
 
 //!

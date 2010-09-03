@@ -544,13 +544,9 @@ G_MODULE_EXPORT void do_save_as (GtkWidget *widget, gpointer data)
 
         gw_io_write_file ("w", text);
 
-        GtkWidget *edit_toolbutton;
-        edit_toolbutton = GTK_WIDGET (gtk_builder_get_object (builder, "edit_toolbutton"));
-        gtk_widget_set_sensitive (edit_toolbutton, TRUE);
-
-        GtkAction *edit_menuitem;
-        edit_menuitem = GTK_ACTION (gtk_builder_get_object (builder, "edit_menuitem"));
-        gtk_action_set_sensitive (edit_menuitem, TRUE);
+        GtkAction *edit;
+        edit = GTK_ACTION (gtk_builder_get_object (builder, "file_edit_action"));
+        gtk_action_set_sensitive (edit, TRUE);
     }
 
     gtk_widget_destroy (dialog);
@@ -608,13 +604,9 @@ G_MODULE_EXPORT void do_save (GtkWidget *widget, gpointer data)
 
           gw_io_write_file ("a", text);
 
-          GtkWidget *edit_toolbutton;
-          edit_toolbutton = GTK_WIDGET (gtk_builder_get_object (builder, "edit_toolbutton"));
-          gtk_widget_set_sensitive (edit_toolbutton, TRUE);
-
-          GtkAction *edit_menuitem;
-          edit_menuitem = GTK_ACTION (gtk_builder_get_object (builder, "edit_menuitem"));
-          gtk_action_set_sensitive (edit_menuitem, TRUE);
+          GtkAction *edit;
+          edit = GTK_ACTION (gtk_builder_get_object (builder, "file_edit_action"));
+          gtk_action_set_sensitive (edit, TRUE);
       }
 
       gtk_widget_destroy (dialog);
