@@ -319,7 +319,7 @@ int gw_queryline_parse_kanjidict_string (GwQueryLine *ql, const char* string)
     //Make sure it isn't already created
     if (strcmp(ql->string, string) == 0) return TRUE;
 
-    //Make a perminent copy of the query
+    //Make a permanent copy of the query
     strncpy(ql->string, string, MAX_QUERY); 
 
     //Variable preparations
@@ -377,7 +377,7 @@ int gw_queryline_parse_kanjidict_string (GwQueryLine *ql, const char* string)
       ql->grade_total++;
     }
 
-    //Get JLPT 
+    //Get JLPT
     if (regexec(gw_re[GW_RE_QUERY_JLPT], ptr, nmatch, pmatch, 0) == 0)
     {
       start = ptr + pmatch[0].rm_so + 1;
@@ -450,7 +450,7 @@ int gw_queryline_parse_kanjidict_string (GwQueryLine *ql, const char* string)
       */
       ql->roma_total++;
 
-      //Add coversions to search on success
+      //Add conversions to search on success
       if (gw_util_str_roma_to_hira (atom, temp, 300) && want_rk_conv)
       {
         //Hiragana

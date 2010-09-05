@@ -255,8 +255,7 @@ void gw_resultline_parse_kanjidict_result_string (GwResultLine *rl)
     rl->kanji = NULL;
     rl->radicals = NULL;
 
-
-    //First generate the grade, stroke, frequency, and jplt fields
+    //First generate the grade, stroke, frequency, and jlpt fields
 
     //Get strokes
     rl->strokes = NULL;

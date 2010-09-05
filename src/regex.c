@@ -58,10 +58,12 @@ static GwRegexInfo regex_info_array[] =
   { GW_RE_DICT_NAMES, "Places", GW_REGEX_EFLAGS_EXIST },
   { GW_RE_DICT_MIX, "Mix", GW_REGEX_EFLAGS_EXIST },
 
-  { GW_RE_QUERY_STROKES, "S[0-9]{1,2}", GW_REGEX_EFLAGS_LOCATE },
-  { GW_RE_QUERY_GRADE, "G[0-9]{1,1}", GW_REGEX_EFLAGS_LOCATE },
-  { GW_RE_QUERY_FREQUENCY, "F[0-9]{1,4}", GW_REGEX_EFLAGS_LOCATE },
-  { GW_RE_QUERY_JLPT, "J[0-4]{1,1}", GW_REGEX_EFLAGS_LOCATE },
+  // Searches for this numeric values in Kanji and Mix need to be \\b
+  // in order to avoid false positive hits (XJ07337, I5g19.1, U59f6, DG1, DF1, etc)
+  { GW_RE_QUERY_STROKES, "\\bS[0-9]{1,2}", GW_REGEX_EFLAGS_LOCATE },
+  { GW_RE_QUERY_GRADE, "\\bG[0-9]{1,2}", GW_REGEX_EFLAGS_LOCATE },
+  { GW_RE_QUERY_FREQUENCY, "\\bF[0-9]{1,4}", GW_REGEX_EFLAGS_LOCATE },
+  { GW_RE_QUERY_JLPT, "\\bJ[0-4]{1,1}", GW_REGEX_EFLAGS_LOCATE },
 
   { GW_RE_FILENAME_GZ, "\\.gz$", GW_REGEX_EFLAGS_EXIST },
 
@@ -153,7 +155,7 @@ void gw_regex_free_constant_regular_expressions ()
 //! @param pattern a pattern string to search for
 //! @param start a character pointer array for match starts points
 //! @param end a character pointer array for match end points
-//! @return Returns truE when pattern is found.
+//! @return Returns true when pattern is found.
 //!
 gboolean gw_regex_locate_boundary_byte_pointers (const char *string, char  *pattern,
                                                  char      **start,  char **end     )

@@ -3083,7 +3083,7 @@ gboolean gw_ui_has_selection_by_target (GwTargetOutput TARGET)
 
 
 //!
-//! @brief PRIVATE FUNCTION. Apples a tag to a section of text
+//! @brief PRIVATE FUNCTION. Applies a tag to a section of text
 //!
 //! @param line An integer showing the line in the buffer to tag
 //! @param start_offset the ending character in the line to highlight
