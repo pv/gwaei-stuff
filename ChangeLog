@@ -1,3 +1,14 @@
+2010-08-17  general fixes <pizzach@gamil.com>
+	* updated version string: 1.4.2
+	* fixes to grade to accept 2 digit numbers
+	* fixes to kanji numbers searches to be more accurate
+	* fixes for english searches in kanji dictionary
+	* removed kanji list in the beginning of kanji searches for speed
+	* Save fixed
+	* Added scrollbars for kanjisidebar
+	* fixed crash when sucessively starting too many searches (usually seen when
+	using the kanji radical tool)
+
 2010-04-06  gettextize  <bug-gnu-gettext@gnu.org>
 
 	* Added chek translation: new file
