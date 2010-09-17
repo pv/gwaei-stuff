@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: gwaei 1.4.1\n"
+"Project-Id-Version: gwaei 1.4.2\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-07-03 14:19-0400\n"
+"POT-Creation-Date: 2010-09-17 12:37-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -167,65 +167,65 @@ msgid_plural "(%d Relevant)"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/console-main-interface.c:548 src/gtk-main-interface.c:3404
+#: src/console-main-interface.c:548 src/gtk-main-interface.c:3405
 #: src/ncurses-main-interface.c:578
 msgid "Radicals:"
 msgstr ""
 
-#: src/console-main-interface.c:553 src/gtk-main-interface.c:3458
+#: src/console-main-interface.c:553 src/gtk-main-interface.c:3459
 #: src/ncurses-main-interface.c:583
 msgid "Stroke:"
 msgstr ""
 
-#: src/console-main-interface.c:561 src/gtk-main-interface.c:3465
+#: src/console-main-interface.c:561 src/gtk-main-interface.c:3466
 #: src/ncurses-main-interface.c:591
 msgid "Freq:"
 msgstr ""
 
-#: src/console-main-interface.c:569 src/gtk-main-interface.c:3472
+#: src/console-main-interface.c:569 src/gtk-main-interface.c:3473
 #: src/ncurses-main-interface.c:599
 msgid "Grade:"
 msgstr ""
 
-#: src/console-main-interface.c:577 src/gtk-main-interface.c:3478
+#: src/console-main-interface.c:577 src/gtk-main-interface.c:3479
 #: src/ncurses-main-interface.c:607
 msgid "JLPT:"
 msgstr ""
 
-#: src/console-main-interface.c:584 src/gtk-main-interface.c:3421
+#: src/console-main-interface.c:584 src/gtk-main-interface.c:3422
 #: src/ncurses-main-interface.c:614
 msgid "Readings:"
 msgstr ""
 
-#: src/console-main-interface.c:586 src/gtk-main-interface.c:3432
+#: src/console-main-interface.c:586 src/gtk-main-interface.c:3433
 #: src/ncurses-main-interface.c:616
 msgid "Name:"
 msgstr ""
 
-#: src/console-main-interface.c:588 src/gtk-main-interface.c:3443
+#: src/console-main-interface.c:588 src/gtk-main-interface.c:3444
 #: src/ncurses-main-interface.c:618
 msgid "Radical Name:"
 msgstr ""
 
-#: src/console-main-interface.c:591 src/gtk-main-interface.c:3487
+#: src/console-main-interface.c:591 src/gtk-main-interface.c:3488
 #: src/ncurses-main-interface.c:621
 msgid "Meanings:"
 msgstr ""
 
 #. TRANSLATORS: The "E" stands for "English"
-#: src/console-main-interface.c:608 src/gtk-main-interface.c:3520
+#: src/console-main-interface.c:608 src/gtk-main-interface.c:3521
 msgid "E:\t"
 msgstr ""
 
 #. TRANSLATORS: The "J" stands for "Japanese"
-#: src/console-main-interface.c:614 src/gtk-main-interface.c:3531
+#: src/console-main-interface.c:614 src/gtk-main-interface.c:3532
 msgid ""
 "\n"
 "J:\t"
 msgstr ""
 
 #. TRANSLATORS: The "D" stands for "Detail"
-#: src/console-main-interface.c:620 src/gtk-main-interface.c:3542
+#: src/console-main-interface.c:620 src/gtk-main-interface.c:3543
 msgid ""
 "\n"
 "D:\t"
@@ -326,15 +326,15 @@ msgstr ""
 msgid "Save As"
 msgstr ""
 
-#: src/gtk-main-callbacks.c:522 src/gtk-main-callbacks.c:596
+#: src/gtk-main-callbacks.c:522 src/gtk-main-callbacks.c:592
 msgid "vocabulary.txt"
 msgstr ""
 
-#: src/gtk-main-callbacks.c:586
+#: src/gtk-main-callbacks.c:582
 msgid "Save"
 msgstr ""
 
-#: src/gtk-main-callbacks.c:1129
+#: src/gtk-main-callbacks.c:1121
 msgid ""
 "Program for Japanese translation and reference. The\n"
 "dictionaries are supplied by Jim Breen's WWWJDIC.\n"
@@ -342,40 +342,40 @@ msgid ""
 msgstr ""
 
 #. TRANSLATORS: You can add your own name to the translation of this field, it will be displayed in the "about" box when gwaei is run in your language
-#: src/gtk-main-callbacks.c:1133
+#: src/gtk-main-callbacks.c:1125
 msgid "translator-credits"
 msgstr ""
 
-#: src/gtk-main-callbacks.c:1748
+#: src/gtk-main-callbacks.c:1741
 msgid "A_ppend Selected"
 msgstr ""
 
-#: src/gtk-main-callbacks.c:1750
+#: src/gtk-main-callbacks.c:1743
 msgid "Save Selected _As"
 msgstr ""
 
-#: src/gtk-main-callbacks.c:1752
+#: src/gtk-main-callbacks.c:1745
 msgid "_Print Selected"
 msgstr ""
 
-#: src/gtk-main-callbacks.c:1759 src/gtk-main-interface.c:409
+#: src/gtk-main-callbacks.c:1752 src/gtk-main-interface.c:409
 msgid "A_ppend"
 msgstr ""
 
 #. TRANSLATORS: The first variable is the expression to look for, the second is the dictionary full name
-#: src/gtk-main-callbacks.c:1800
+#: src/gtk-main-callbacks.c:1793
 #, c-format
 msgid "Search for \"%s\" in the %s"
 msgstr ""
 
 #. TRANSLATORS: The variable is the expression to look for
-#: src/gtk-main-callbacks.c:1802
+#: src/gtk-main-callbacks.c:1795
 #, c-format
 msgid "Search for \"%s\" in a Different Dictionary"
 msgstr ""
 
 #. TRANSLATORS: The variable is the expression to look for
-#: src/gtk-main-callbacks.c:1804
+#: src/gtk-main-callbacks.c:1797
 #, c-format
 msgid "Cross-reference \"%s\" Online"
 msgstr ""
@@ -777,14 +777,14 @@ msgstr ""
 msgid "Pop"
 msgstr ""
 
-#: src/gtk-main-interface.c:3639
+#: src/gtk-main-interface.c:3640
 #, c-format
 msgid "Other Result %d"
 msgid_plural "Other Results %d"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/gtk-main-interface.c:3654
+#: src/gtk-main-interface.c:3655
 #, c-format
 msgid "Main Result %d"
 msgid_plural "Main Results %d"
