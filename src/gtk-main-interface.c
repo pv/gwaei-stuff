@@ -1295,7 +1295,12 @@ void gw_ui_set_search_progressbar_by_searchitem (GwSearchItem *item)
       total = item->dictionary->total_lines;
     }
 
-    if (item == NULL || item->dictionary == NULL || total == 0 || ((double)current/(double)total) > 1.0 || item->status == GW_SEARCH_IDLE || item->status == GW_SEARCH_FINISHING)
+    if (total == 0) {
+      gtk_progress_bar_pulse (GTK_PROGRESS_BAR (progress));
+      gtk_progress_bar_set_pulse_step (GTK_PROGRESS_BAR (progress), 0.05);
+    }
+
+    else if (item == NULL || item->dictionary == NULL || total == 0 || ((double)current/(double)total) > 1.0 || item->status == GW_SEARCH_IDLE || item->status == GW_SEARCH_FINISHING)
     {
       gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR (progress), 0.0);
       gtk_widget_show (GTK_WIDGET (progress));
@@ -3602,7 +3607,7 @@ void gw_ui_update_progress_feedback (GwSearchItem* item)
       return;
 
     //Only update the elements when necessary, otherwise it slows down the search
-    if (item->current_line - item->previous_line > 1000)
+    if (item->current_line - item->previous_line > 2000)
     {
       item->previous_line = item->current_line;
       gw_ui_set_search_progressbar_by_searchitem (item);

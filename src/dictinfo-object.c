@@ -156,11 +156,14 @@ GwDictInfo* gw_dictinfo_new (char *name)
     else
       temp->gz_path = NULL;
 
+/*
     //Update the line count
     if (gw_util_get_runmode () == GW_CONSOLE_RUNMODE)
       temp->total_lines = 1;
     else
       temp->total_lines =  gw_io_get_total_lines_for_path (temp->path);
+*/
+    temp->total_lines = 0;
 
     //Create id (to show special built in dictionaries)
     if      (strcmp(name, "English") == 0)

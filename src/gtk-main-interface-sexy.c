@@ -315,10 +315,11 @@ void gw_sexy_initialize_libsexy (GtkWidget **original_entry)
     g_signal_connect( G_OBJECT (search_entry), "focus-in-event", G_CALLBACK (do_update_clipboard_on_focus_change), search_entry);
     g_signal_connect( G_OBJECT (search_entry), "key-press-event", G_CALLBACK (do_focus_change_on_key_press), NULL);
     g_signal_connect( G_OBJECT (search_entry), "changed", G_CALLBACK (do_update_button_states_based_on_entry_text), NULL);
+//    g_signal_connect( G_OBJECT (search_entry), "changed", G_CALLBACK (do_search), NULL);
     g_signal_connect( G_OBJECT (search_entry), "icon-release", G_CALLBACK (do_clear_search), NULL);
 
     //New callbacks specifically for libsexy
-    g_signal_connect( G_OBJECT (search_entry), "changed", G_CALLBACK (do_conditionally_enable_spellcheck), NULL);
+//    g_signal_connect( G_OBJECT (search_entry), "changed", G_CALLBACK (do_conditionally_enable_spellcheck), NULL);
 /*
     g_signal_connect( G_OBJECT (search_entry), "focus-in-event", G_CALLBACK (do_enable_spellcheck_when_focus_in), search_entry);
     g_signal_connect( G_OBJECT (results_tv), "focus-in-event", G_CALLBACK (do_disable_spellcheck_when_focus_out), search_entry);

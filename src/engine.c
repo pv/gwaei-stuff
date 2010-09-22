@@ -119,12 +119,13 @@ static gboolean stream_results_thread (GwSearchItem *item)
 {
     int chunk = 0;
     if (item->fd == NULL) return FALSE;
+    char *line_pointer = NULL;
 
     //We loop, processing lines of the file until the max chunk size has been
     //reached or we reach the end of the file or a cancel request is recieved.
     while (chunk < MAX_CHUNK               &&
            item->status != GW_SEARCH_GW_DICT_STATUS_CANCELING &&
-           fgets(item->resultline->string, MAX_LINE, item->fd) != NULL)
+           (line_pointer = fgets(item->resultline->string, MAX_LINE, item->fd)) != NULL)
     {
       chunk++;
       item->current_line++;
@@ -196,6 +197,8 @@ static gboolean stream_results_thread (GwSearchItem *item)
       }
       continue;
     }
+
+    if (line_pointer == NULL) item->dictionary->total_lines = item->current_line;
 
 
     //If the chunk reached the max chunk size, there is still file left to load

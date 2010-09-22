@@ -438,11 +438,8 @@ G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
     gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
 
     //Set the correct dictionary in the gui
-    const int id_length = 50;
-    char id[id_length];
     GtkWidget *combobox;
-    strncpy (id, "dictionary_combobox", id_length);
-    combobox = GTK_WIDGET (gtk_builder_get_object (builder, id));
+    combobox = GTK_WIDGET (gtk_builder_get_object (builder, "dictionary_combobox"));
     gtk_combo_box_set_active (GTK_COMBO_BOX (combobox), hl->current->dictionary->load_position);
 }
 
