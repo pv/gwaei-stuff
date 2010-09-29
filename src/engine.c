@@ -198,7 +198,17 @@ static gboolean stream_results_thread (GwSearchItem *item)
       continue;
     }
 
-    if (line_pointer == NULL) item->dictionary->total_lines = item->current_line;
+    if (line_pointer == NULL) {
+      if (item->dictionary->total_lines != item->current_line) {
+        item->dictionary->total_lines = item->current_line;
+        char *gcpath = NULL;
+        gcpath = g_strdup_printf ("%s%s%s%s", GCPATH_GW, "/dictionary/", item->dictionary->name, "_line_total");
+        if (gcpath != NULL) {
+          gw_pref_set_int(gcpath, item->current_line);
+          g_free (gcpath);
+        }
+      }
+    } 
 
 
     //If the chunk reached the max chunk size, there is still file left to load

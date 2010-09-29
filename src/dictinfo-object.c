@@ -164,6 +164,12 @@ GwDictInfo* gw_dictinfo_new (char *name)
       temp->total_lines =  gw_io_get_total_lines_for_path (temp->path);
 */
     temp->total_lines = 0;
+    char *gcpath = NULL;
+    gcpath = g_strdup_printf ("%s%s%s%s", GCPATH_GW, "/dictionary/", temp->name, "_line_total");
+    if (gcpath != NULL) {
+      temp->total_lines = gw_pref_get_int(gcpath, 0);
+      g_free (gcpath);
+    }
 
     //Create id (to show special built in dictionaries)
     if      (strcmp(name, "English") == 0)
