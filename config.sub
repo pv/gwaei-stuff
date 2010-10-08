@@ -1,10 +1,10 @@
 #! /bin/sh
 # Configuration validation subroutine script.
 #   Copyright (C) 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999,
-#   2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010
+#   2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009
 #   Free Software Foundation, Inc.
 
-timestamp='2010-03-22'
+timestamp='2009-11-20'
 
 # This file is (in principle) common to ALL GNU software.
 # The presence of a machine in this file suggests that SOME GNU software
@@ -75,9 +75,8 @@ Report bugs and patches to <config-patches@gnu.org>."
 version="\
 GNU config.sub ($timestamp)
 
-Copyright (C) 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000,
-2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 Free
-Software Foundation, Inc.
+Copyright (C) 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001,
+2002, 2003, 2004, 2005, 2006, 2007, 2008 Free Software Foundation, Inc.
 
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
@@ -252,7 +251,7 @@ case $basic_machine in
 	| arc | arm | arm[bl]e | arme[lb] | armv[2345] | armv[345][lb] | avr | avr32 \
 	| bfin \
 	| c4x | clipper \
-	| d10v | d30v | dlx | dsp16xx | dvp \
+	| d10v | d30v | dlx | dsp16xx \
 	| fido | fr30 | frv \
 	| h8300 | h8500 | hppa | hppa1.[01] | hppa2.0 | hppa2.0[nw] | hppa64 \
 	| i370 | i860 | i960 | ia64 \
@@ -295,22 +294,13 @@ case $basic_machine in
 	| sparc | sparc64 | sparc64b | sparc64v | sparc86x | sparclet | sparclite \
 	| sparcv8 | sparcv9 | sparcv9b | sparcv9v \
 	| spu | strongarm \
-	| tahoe | thumb | tic4x | tic54x | tic55x | tic6x | tic80 | tron \
+	| tahoe | thumb | tic4x | tic80 | tron \
 	| ubicom32 \
 	| v850 | v850e \
 	| we32k \
 	| x86 | xc16x | xscale | xscalee[bl] | xstormy16 | xtensa \
 	| z8k | z80)
 		basic_machine=$basic_machine-unknown
-		;;
-	c54x)
-		basic_machine=tic54x-unknown
-		;;
-	c55x)
-		basic_machine=tic55x-unknown
-		;;
-	c6x)
-		basic_machine=tic6x-unknown
 		;;
 	m6811 | m68hc11 | m6812 | m68hc12 | picochip)
 		# Motorola 68HC11/12.
@@ -343,7 +333,7 @@ case $basic_machine in
 	| arm-*  | armbe-* | armle-* | armeb-* | armv*-* \
 	| avr-* | avr32-* \
 	| bfin-* | bs2000-* \
-	| c[123]* | c30-* | [cjt]90-* | c4x-* \
+	| c[123]* | c30-* | [cjt]90-* | c4x-* | c54x-* | c55x-* | c6x-* \
 	| clipper-* | craynv-* | cydra-* \
 	| d10v-* | d30v-* | dlx-* \
 	| elxsi-* \
@@ -390,8 +380,7 @@ case $basic_machine in
 	| sparclite-* \
 	| sparcv8-* | sparcv9-* | sparcv9b-* | sparcv9v-* | strongarm-* | sv1-* | sx?-* \
 	| tahoe-* | thumb-* \
-	| tic30-* | tic4x-* | tic54x-* | tic55x-* | tic6x-* | tic80-* \
-	| tile-* | tilegx-* \
+	| tic30-* | tic4x-* | tic54x-* | tic55x-* | tic6x-* | tic80-* | tile-* \
 	| tron-* \
 	| ubicom32-* \
 	| v850-* | v850e-* | vax-* \
@@ -490,15 +479,6 @@ case $basic_machine in
 	bluegene*)
 		basic_machine=powerpc-ibm
 		os=-cnk
-		;;
-	c54x-*)
-		basic_machine=tic54x-`echo $basic_machine | sed 's/^[^-]*-//'`
-		;;
-	c55x-*)
-		basic_machine=tic55x-`echo $basic_machine | sed 's/^[^-]*-//'`
-		;;
-	c6x-*)
-		basic_machine=tic6x-`echo $basic_machine | sed 's/^[^-]*-//'`
 		;;
 	c90)
 		basic_machine=c90-cray
@@ -769,24 +749,6 @@ case $basic_machine in
 	*mint | -mint[0-9]* | *MiNT | *MiNT[0-9]*)
 		basic_machine=m68k-atari
 		os=-mint
-		;;
-	mipsEE* | ee | ps2)
-		basic_machine=mips64r5900el-scei
-		case $os in
-		    -linux*)
-			;;
-		    *)
-			os=-elf
-			;;
-		esac
-		;;
-	iop)
-		basic_machine=mipsel-scei
-		os=-irx
-		;;
-	dvp)
-		basic_machine=dvp-scei
-		os=-elf
 		;;
 	mips3*-*)
 		basic_machine=`echo $basic_machine | sed -e 's/mips3/mips64/'`
@@ -1111,10 +1073,17 @@ case $basic_machine in
 		basic_machine=t90-cray
 		os=-unicos
 		;;
-        # This must be matched before tile*.
-        tilegx*)
-		basic_machine=tilegx-unknown
-		os=-linux-gnu
+	tic54x | c54x*)
+		basic_machine=tic54x-unknown
+		os=-coff
+		;;
+	tic55x | c55x*)
+		basic_machine=tic55x-unknown
+		os=-coff
+		;;
+	tic6x | c6x*)
+		basic_machine=tic6x-unknown
+		os=-coff
 		;;
 	tile*)
 		basic_machine=tile-unknown
@@ -1329,7 +1298,7 @@ case $os in
 	      | -uxpv* | -beos* | -mpeix* | -udk* \
 	      | -interix* | -uwin* | -mks* | -rhapsody* | -darwin* | -opened* \
 	      | -openstep* | -oskit* | -conix* | -pw32* | -nonstopux* \
-	      | -storm-chaos* | -tops10* | -tenex* | -tops20* | -its* | -irx* \
+	      | -storm-chaos* | -tops10* | -tenex* | -tops20* | -its* \
 	      | -os2* | -vos* | -palmos* | -uclinux* | -nucleus* \
 	      | -morphos* | -superux* | -rtmk* | -rtmk-nova* | -windiss* \
 	      | -powermax* | -dnix* | -nx6 | -nx7 | -sei* | -dragonfly* \
@@ -1466,8 +1435,6 @@ case $os in
 	-dicos*)
 		os=-dicos
 		;;
-        -nacl*)
-	        ;;
 	-none)
 		;;
 	*)
@@ -1507,15 +1474,6 @@ case $basic_machine in
 		;;
         c4x-* | tic4x-*)
         	os=-coff
-		;;
-	tic54x-*)
-		os=-coff
-		;;
-	tic55x-*)
-		os=-coff
-		;;
-	tic6x-*)
-		os=-coff
 		;;
 	# This must come before the *-dec entry.
 	pdp10-*)

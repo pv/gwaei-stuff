@@ -124,8 +124,8 @@ static gboolean stream_results_thread (GwSearchItem *item)
     //We loop, processing lines of the file until the max chunk size has been
     //reached or we reach the end of the file or a cancel request is recieved.
     while (chunk < MAX_CHUNK               &&
-           item->status != GW_SEARCH_GW_DICT_STATUS_CANCELING &&
-           (line_pointer = fgets(item->resultline->string, MAX_LINE, item->fd)) != NULL)
+           (line_pointer = fgets(item->resultline->string, MAX_LINE, item->fd)) != NULL &&
+           item->status != GW_SEARCH_GW_DICT_STATUS_CANCELING)
     {
       chunk++;
       item->current_line++;
