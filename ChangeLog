@@ -1,4 +1,6 @@
 2010-08-17  general fixes <pizzach@gamil.com>
+	* added git tag: 1.4.3
+2010-08-17  general fixes <pizzach@gamil.com>
 	* updated version string: 1.4.3
 	* updated autoconf and gettext files to new versions
 	* gWaei now buffers dictionary line counts in the prefs
