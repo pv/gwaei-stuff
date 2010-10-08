@@ -1,2 +1,2 @@
-2010-08-16: gWaei 1.4.2
-A number of bug fixes. Crasher when rapidly switching radical search tool buttons has been fixed.  Fixed the save menu so it works again.  Better search results with the Kanji dictionary.  Various other fixes listed on git.
+2010-10-08: gWaei 1.4.3
+  New version meant to be easier to compile with the new Fedora/Ubuntu versions coming out by updating the autoconf and gettext files.  There was a bit of makefile cleanup to use -I correctly for the gWaei header files instead of manually compiling them all.  Dictionary line count used for progress is now dynamically calculated during searches and stored in the preferences instead of on each startup.
