@@ -21,7 +21,6 @@ char* gw_ui_get_text_slice_from_buffer (int, int, int);
 const char* gw_ui_get_active_dictionary (void);
 char* gw_ui_buffer_get_text_by_target (GwTargetOutput);
 void initialize_gui_interface (int, char**);
-void gw_ui_open_kanji_sidebar (void);
 void save_window_attributes_and_hide (const char*);
 
 gboolean gw_ui_cancel_search (gpointer);
@@ -65,7 +64,6 @@ void gw_ui_update_toolbar_buttons (void);
 
 gunichar gw_ui_get_hovered_character (int*, int*, GtkTextIter*);
 void gw_ui_show_window (char*);
-void gw_ui_close_kanji_sidebar (void);
 void gw_ui_set_cursor (GdkCursorType);
 guint gw_ui_get_current_target_focus (char*);
 

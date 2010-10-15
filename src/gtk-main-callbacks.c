@@ -58,6 +58,7 @@
 
 static gint button_press_x = 0;
 static gint button_press_y = 0;
+static gunichar button_character = 0;
 static gulong copy_handler_id = 0;
 static gulong cut_handler_id = 0;
 static gulong paste_handler_id = 0;
@@ -114,20 +115,6 @@ G_MODULE_EXPORT void do_kanjipad (GtkWidget *widget, gpointer data)
 
 
 //!
-//! @brief Closes the kanjipad sidebar
-//!
-//! Calls the gwaei ui function to close the kanji results sidebar.
-//!
-//! @param widget Currently unused widget pointer
-//! @param data Currently unused gpointer
-//!
-G_MODULE_EXPORT void do_close_kanji_results (GtkWidget *widget, gpointer data)
-{ 
-    gw_ui_close_kanji_sidebar ();
-}
-
-
-//!
 //! @brief Sets the cursor type depending on the character hovered
 //!
 //! If the character hovered is a kanji character, the hand turns into a
@@ -170,6 +157,14 @@ G_MODULE_EXPORT gboolean do_get_iter_for_motion (GtkWidget      *widget,
       gw_ui_set_cursor (GDK_HAND2);
     else
       gw_ui_set_cursor (GDK_XTERM);
+
+    GtkWidget *tv = GTK_WIDGET (get_widget_by_target (GW_TARGET_RESULTS));
+    GtkWidget *window = GTK_WIDGET (gtk_widget_get_tooltip_window (tv));
+    if (window != NULL && button_character != unic) 
+    {
+      gtk_widget_destroy (window);
+      gtk_widget_set_tooltip_window (tv, NULL);
+    }
 
     return FALSE;
 }
@@ -238,8 +233,6 @@ G_MODULE_EXPORT gboolean do_get_iter_for_button_release (GtkWidget      *widget,
       // Characters above 0xFF00 represent inserted images
       if (unic > L'ー' && unic < 0xFF00 )
       {
-        gw_ui_open_kanji_sidebar ();
-
         //Convert the unicode character into to a utf8 string
         gchar query[7];
         gint length = g_unichar_to_utf8 (unic, query);
@@ -248,12 +241,35 @@ G_MODULE_EXPORT gboolean do_get_iter_for_button_release (GtkWidget      *widget,
         //Start the search
         GwSearchItem *item;
         item = gw_searchitem_new (query, di, GW_TARGET_KANJI);
-
         gw_search_get_results (item);
+
+        GtkWidget *tv = GTK_WIDGET (get_widget_by_target (GW_TARGET_RESULTS));
+        GtkWidget *window = GTK_WIDGET (gtk_widget_get_tooltip_window (tv));
+        if (window == NULL) {
+          button_character = unic;
+          window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+          gtk_window_set_decorated (GTK_WINDOW (window), FALSE);
+          gtk_window_set_skip_taskbar_hint (GTK_WINDOW (window), TRUE);
+          gtk_window_set_skip_pager_hint (GTK_WINDOW (window), TRUE);
+          gtk_window_set_accept_focus (GTK_WINDOW (window), FALSE);
+          GtkWidget *label = gtk_label_new(NULL);
+          gtk_container_set_border_width (GTK_CONTAINER (window), 10);
+          gtk_container_add (GTK_CONTAINER (window), label);
+          gtk_widget_set_tooltip_window (tv, GTK_WINDOW (window));
+        }
+        if (window != NULL) {
+          button_character = unic;
+          gtk_window_move (GTK_WINDOW (window), (event->x_root + 3), (event->y_root + 3));
+        }
       }
-      else
-      {
-        gw_ui_close_kanji_sidebar ();
+      else {
+        GtkWidget *tv = GTK_WIDGET (get_widget_by_target (GW_TARGET_RESULTS));
+        GtkWidget *window = GTK_WIDGET (gtk_widget_get_tooltip_window (tv));
+        if (window != NULL && button_character != unic) 
+        {
+          gtk_widget_destroy (window);
+          gtk_widget_set_tooltip_window (tv, NULL);
+        }
       }
     }
 
@@ -1175,6 +1191,14 @@ G_MODULE_EXPORT gboolean do_key_press_modify_status_update (GtkWidget *widget,
                                                             GdkEvent  *event,
                                                             gpointer  *data  )
 {
+    GtkWidget *tv = GTK_WIDGET (get_widget_by_target (GW_TARGET_RESULTS));
+    GtkWidget *window = GTK_WIDGET (gtk_widget_get_tooltip_window (tv));
+    if (window != NULL) 
+    {
+      gtk_widget_destroy (window);
+      gtk_widget_set_tooltip_window (tv, NULL);
+    }
+
     guint keyval = ((GdkEventKey*)event)->keyval;
     GtkWidget* search_entry = get_widget_by_target (GW_TARGET_ENTRY);
 
@@ -1387,7 +1411,6 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
     gw_guarantee_first_tab ();
     gw_tab_set_current_tab_text (query);
     gw_ui_set_query_entry_text_by_searchitem (hl->current);
-    gw_ui_close_kanji_sidebar ();
     gw_search_get_results (hl->current);
 
     //Update the toolbar buttons
@@ -1504,31 +1527,6 @@ G_MODULE_EXPORT void do_clear_search (GtkWidget *widget, gpointer data)
 {
     gw_ui_clear_search_entry ();
     gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
-}
-
-
-//!
-//! @brief Makes the background color of the kanji sidebar max the theme
-//!
-//! Keeps the kanji sidebar backgound looking as if it is part of the window
-//! even if the gtk theme changes.  The look helps to keep the central focus
-//! of the window on the main results, and it looks nice, too.
-//!
-//! @param widget Unused GtkWidget pointer
-//! @param data Unused gpointer
-//!
-G_MODULE_EXPORT void do_update_styles (GtkWidget *widget, gpointer data)
-{
-    GtkWidget *window, *view;
-    GdkColor color;
-
-    window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
-    view   = GTK_WIDGET (gtk_builder_get_object (builder, "kanji_text_view"));
-    color  = window->style->bg[GTK_STATE_NORMAL];
-
-    g_signal_handlers_block_by_func (widget, do_update_styles, NULL);
-    gtk_widget_modify_base (view, GTK_STATE_NORMAL, &color);
-    g_signal_handlers_unblock_by_func (widget, do_update_styles, NULL);
 }
 
 
