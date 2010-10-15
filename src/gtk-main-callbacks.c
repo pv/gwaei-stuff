@@ -66,7 +66,6 @@ static gulong select_all_handler_id = 0;
 static gboolean start_search_in_new_window = FALSE; 
 static char* hovered_word = NULL; 
 
-
 //!
 //! @brief Brings up the preferences dialog to change settings
 //!
@@ -1378,12 +1377,15 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
         strcmp (query, item->queryline->string) == 0 &&
         dictionary->id == item->dictionary->id &&
         show_less_relevant == item->show_less_relevant_results)
+    {
+      (hl->current)->search_relevance_idle_timer++;
       return;
+    }
 
     if (gw_ui_cancel_search_for_current_tab () == FALSE)
       return;
 
-    if (hl->current != NULL && (hl->current)->total_results) 
+    if (hl->current != NULL && (hl->current)->total_results && (hl->current)->search_relevance_idle_timer > 30)  
     {
       gw_historylist_add_searchitem_to_history (GW_HISTORYLIST_RESULTS, hl->current);
       hl->current = NULL;

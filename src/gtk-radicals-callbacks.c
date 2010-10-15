@@ -132,6 +132,7 @@ G_MODULE_EXPORT void do_radical_search (GtkWidget *widget, gpointer data)
     }
  
     hl->current = gw_searchitem_new (query_text, di, GW_TARGET_RESULTS);
+    gw_ui_set_dictionary_by_searchitem (hl->current);
 
     //Set the search item reference in the tabs
     GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));

@@ -75,6 +75,8 @@ struct _GwSearchItem {
     long previous_line;                     //!< Recorderd previous line for determining when to update the progresse
     gboolean show_less_relevant_results;    //!< Saved search display format
 
+    int search_relevance_idle_timer;
+
     int total_relevant_results;             //!< Total results guessed to be highly relevant to the query
     int total_irrelevant_results;           //!< Total results guessed to be vaguely relevant to the query
     int total_results;                      //!< Total results returned from the search

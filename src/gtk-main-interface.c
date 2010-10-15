@@ -65,7 +65,6 @@
 #include <gwaei/gtk-radicals-interface.h>
 
 
-
 //Private variables
 static GtkWidget *search_entry = NULL;
 static int gw_previous_tip = 0;
@@ -2802,14 +2801,8 @@ static void set_header (GwSearchItem *item, char* text, char* mark_name)
 }
 
 
-//int myloopcounter = 0;
 static gboolean gw_ui_keep_searching ()
 {
-  /*
-    myloopcounter++;
-    printf("loop: %d\n", myloopcounter);
-    */
-
     do_search (NULL, NULL);
 
     return TRUE;
