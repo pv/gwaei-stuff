@@ -1378,7 +1378,8 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
         dictionary->id == item->dictionary->id &&
         show_less_relevant == item->show_less_relevant_results)
     {
-      (hl->current)->search_relevance_idle_timer++;
+      if ((hl->current)->search_relevance_idle_timer < 50)
+        (hl->current)->search_relevance_idle_timer++;
       return;
     }
 
