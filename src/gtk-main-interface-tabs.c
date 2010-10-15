@@ -91,14 +91,12 @@ void gw_tab_update_appearance_with_searchitem (GwSearchItem *item)
     else gtk_menu_item_set_label (GTK_MENU_ITEM (close_menuitem), gettext("_Close"));
 
     //Force correct querytext
-    /*
     gw_ui_set_query_entry_text_by_searchitem (item);
     gw_ui_set_total_results_label_by_searchitem (item);
     gw_ui_set_search_progressbar_by_searchitem (item);
     gw_ui_set_query_entry_text_by_searchitem (item);
     gw_ui_set_main_window_title_by_searchitem (item);
     gw_ui_set_dictionary_by_searchitem (item);
-    */
 }
 
 

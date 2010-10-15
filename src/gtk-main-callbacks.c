@@ -1351,9 +1351,10 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
     gw_ui_strncpy_text_from_widget_by_target (query, GW_TARGET_ENTRY, MAX_QUERY);
 
     gw_guarantee_first_tab ();
-
+/*
     if (start_search_in_new_window == TRUE)
       do_new_tab (NULL, NULL);
+*/
 
     GwHistoryList* hl = gw_historylist_get_list (GW_HISTORYLIST_RESULTS);
 

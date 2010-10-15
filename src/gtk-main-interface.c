@@ -103,7 +103,7 @@ void gw_ui_set_query_entry_text_by_searchitem (GwSearchItem *item)
     //There was previously a search, set the match colors from the prefs
     else
     {
-      if (item->queryline != NULL && strlen(item->queryline->string) > 1)
+      if (item->queryline != NULL && strlen(item->queryline->string) > 0)
       {
         if (strcmp(gtk_entry_get_text (GTK_ENTRY (search_entry)), item->queryline->string) != 0)
         {
@@ -2802,6 +2802,21 @@ static void set_header (GwSearchItem *item, char* text, char* mark_name)
 }
 
 
+//int myloopcounter = 0;
+static gboolean gw_ui_keep_searching ()
+{
+  /*
+    myloopcounter++;
+    printf("loop: %d\n", myloopcounter);
+    */
+
+    do_search (NULL, NULL);
+
+    return TRUE;
+}
+
+
+
 //!
 //! @brief Main entry into the gtk version of gWaei
 //!
@@ -2891,6 +2906,11 @@ void initialize_gui_interface (int argc, char *argv[])
 
       //Enter the main loop
       gdk_threads_enter();
+
+      g_timeout_add_full (G_PRIORITY_DEFAULT_IDLE, 500,
+                          (GSourceFunc)gw_ui_keep_searching, NULL,
+                          (GDestroyNotify)NULL     );
+
       gtk_main ();
       gdk_threads_leave();
 
@@ -2921,6 +2941,9 @@ gboolean gw_ui_cancel_search_by_searchitem (GwSearchItem *item)
 
     item->status = GW_SEARCH_GW_DICT_STATUS_CANCELING;
 
+    return FALSE;
+
+/*
     while (item->status != GW_SEARCH_IDLE)
     {
       gdk_threads_leave();
@@ -2928,6 +2951,7 @@ gboolean gw_ui_cancel_search_by_searchitem (GwSearchItem *item)
       gdk_threads_enter();
     }
     return TRUE;
+    */
 }
 
 
@@ -3192,6 +3216,8 @@ static void append_def_same_to_buffer (GwSearchItem* item)
 //!
 void gw_ui_append_edict_results_to_buffer (GwSearchItem *item)
 {
+    if (item->total_results == 1) gw_ui_initialize_buffer_by_searchitem (item);
+
     //Some checks
     gboolean furigana_exists, kanji_exists;
     gboolean same_def_totals, same_first_def, same_furigana, same_kanji, skip;
@@ -3711,7 +3737,9 @@ void gw_ui_append_more_relevant_header_to_output (GwSearchItem *item)
 //!
 void gw_ui_pre_search_prep (GwSearchItem *item)
 {
-    gw_ui_initialize_buffer_by_searchitem (item);
+    //gw_ui_initialize_buffer_by_searchitem (item);
+    item->target_tb = (gpointer) get_gobject_by_target (item->target);
+    item->target_tv = (gpointer) get_widget_by_target (item->target);
 }
 
 
