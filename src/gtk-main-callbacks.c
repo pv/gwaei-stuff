@@ -1371,6 +1371,14 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
     if (strlen (query) == 0)
       return;
 
+    // Run some checks and transformation on a user inputed string before using it
+    char* sane_query = gw_util_prepare_query (query, FALSE);
+    if (sane_query != NULL) {
+    	g_stpcpy(query, sane_query);
+    	g_free(sane_query);
+    	sane_query = NULL;
+    }
+
     //Stop duplicate searches
     if (item != NULL &&
         item->queryline != NULL &&
@@ -1654,16 +1662,6 @@ G_MODULE_EXPORT void do_search_drag_data_recieved (GtkWidget        *widget,
     GtkWidget* entry = get_widget_by_target (GW_TARGET_ENTRY);
    
     char* text = (char*) gtk_selection_data_get_text (data);   
-    if (text != NULL)
-    {
-      // Sanitizes text : when drag/dropping text from external sources it 
-      // might contains some invalid utf8 data that we should clean.
-      // (ex: from the anki tool, it has some trailing unicode control char).
-      char* sane_text = gw_util_sanitize_input (text, TRUE);
-      g_free (text);
-      text = sane_text;
-      sane_text = NULL;
-    }
 
     if ((data->length >= 0) && (data->format == 8) && text != NULL)
     {
