@@ -3327,6 +3327,8 @@ void gw_ui_append_edict_results_to_buffer (GwSearchItem *item)
 //!
 void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item)
 {
+    if (item->total_results == 1) gw_ui_initialize_buffer_by_searchitem (item);
+
       GwResultLine* resultline = item->resultline;
       GtkTextBuffer *tb = NULL;
       GtkWidget *tv = NULL;
@@ -3467,13 +3469,10 @@ void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item)
       char markup[1000];
       markup[0] = '\0';
 
-      strcat(markup, "<big><big><big>");
-      strcat(markup, "<big><big><big>");
-      strcat(markup, "<b>");
+      strcat(markup, "<span font=\"KanjiStrokeOrders 80\">");
       strcat(markup, resultline->kanji);
-      strcat(markup, "</b>");
-      strcat(markup, "</big></big></big>");
-      strcat(markup, "</big></big></big>");
+      strcat(markup, "</span>");
+
 
       if (resultline->radicals) {
         strcat(markup, "\n<b>");
@@ -3568,6 +3567,8 @@ void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item)
 //!
 void gw_ui_append_examplesdict_results_to_buffer (GwSearchItem *item)
 {
+    if (item->total_results == 1) gw_ui_initialize_buffer_by_searchitem (item);
+
       GwResultLine* resultline = item->resultline;
       GtkTextBuffer *tb = GTK_TEXT_BUFFER (item->target_tb);
 
@@ -3625,6 +3626,8 @@ void gw_ui_append_examplesdict_results_to_buffer (GwSearchItem *item)
 //!
 void gw_ui_append_unknowndict_results_to_buffer (GwSearchItem *item)
 {
+    if (item->total_results == 1) gw_ui_initialize_buffer_by_searchitem (item);
+
       GwResultLine* resultline = item->resultline;
       GtkTextBuffer *tb = GTK_TEXT_BUFFER (item->target_tb);
       GtkTextIter iter;
