@@ -319,12 +319,10 @@ void gw_sexy_initialize_libsexy (GtkWidget **original_entry)
     g_signal_connect( G_OBJECT (search_entry), "icon-release", G_CALLBACK (do_clear_search), NULL);
 
     //New callbacks specifically for libsexy
-//    g_signal_connect( G_OBJECT (search_entry), "changed", G_CALLBACK (do_conditionally_enable_spellcheck), NULL);
-/*
+    g_signal_connect( G_OBJECT (search_entry), "changed", G_CALLBACK (do_conditionally_enable_spellcheck), NULL);
     g_signal_connect( G_OBJECT (search_entry), "focus-in-event", G_CALLBACK (do_enable_spellcheck_when_focus_in), search_entry);
     g_signal_connect( G_OBJECT (results_tv), "focus-in-event", G_CALLBACK (do_disable_spellcheck_when_focus_out), search_entry);
     g_signal_connect( G_OBJECT (kanji_tv), "focus-in-event", G_CALLBACK (do_disable_spellcheck_when_focus_out), search_entry);
-*/
 
     //Show the spellcheck checkbox in the preferences
     GtkWidget *spellcheck_checkbox;
