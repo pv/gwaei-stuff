@@ -3469,11 +3469,6 @@ void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item)
       char markup[1000];
       markup[0] = '\0';
 
-      strcat(markup, "<span font=\"KanjiStrokeOrders 80\">");
-      strcat(markup, resultline->kanji);
-      strcat(markup, "</span>");
-
-
       if (resultline->radicals) {
         strcat(markup, "\n<b>");
         strcat(markup, gettext("Radicals:"));
@@ -3543,15 +3538,33 @@ void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item)
         strcat(markup, " ");
       }
 
+      char markup2[1000];
+      markup2[0] = '\0';
+
+      strcat(markup2, "<span font=\"KanjiStrokeOrders 80\">");
+      strcat(markup2, resultline->kanji);
+      strcat(markup2, "</span>");
+
+
       GtkWidget *window = GTK_WIDGET (gtk_widget_get_tooltip_window (tv));
       if (window != NULL) {
-        GList *list = gtk_container_get_children (GTK_CONTAINER (window)); 
-        GtkWidget *label = GTK_WIDGET ((list->data));
+        GtkWidget *hbox = GTK_WIDGET (gtk_hbox_new (FALSE, 3));
+        gtk_container_add (GTK_CONTAINER (window), GTK_WIDGET (hbox));
+
+        GtkWidget *label = GTK_WIDGET (gtk_label_new (NULL));
+        gtk_label_set_markup (GTK_LABEL (label), markup2);
+        gtk_box_pack_start (GTK_HBOX (hbox), GTK_WIDGET (label), FALSE, FALSE, 0);
+
+        label = GTK_WIDGET (gtk_label_new (NULL));
         gtk_label_set_markup (GTK_LABEL (label), markup);
+        gtk_box_pack_start (GTK_HBOX (hbox), GTK_WIDGET (label), FALSE, FALSE, 0);
+
         gtk_widget_show_all (window);
+        /*
         gtk_widget_set_size_request (GTK_WIDGET (window), 5, 5);
         gtk_widget_queue_resize (GTK_WIDGET (window));
         gtk_window_set_default_size (GTK_WINDOW (window), 1, 1);
+        */
       }
     }
 }

@@ -237,11 +237,6 @@ G_MODULE_EXPORT gboolean do_get_iter_for_button_release (GtkWidget      *widget,
         gint length = g_unichar_to_utf8 (unic, query);
         query[length] = '\0'; 
 
-        //Start the search
-        GwSearchItem *item;
-        item = gw_searchitem_new (query, di, GW_TARGET_KANJI);
-        gw_search_get_results (item);
-
         GtkWidget *tv = GTK_WIDGET (get_widget_by_target (GW_TARGET_RESULTS));
         GtkWidget *window = GTK_WIDGET (gtk_widget_get_tooltip_window (tv));
         if (window == NULL) {
@@ -251,10 +246,13 @@ G_MODULE_EXPORT gboolean do_get_iter_for_button_release (GtkWidget      *widget,
           gtk_window_set_skip_taskbar_hint (GTK_WINDOW (window), TRUE);
           gtk_window_set_skip_pager_hint (GTK_WINDOW (window), TRUE);
           gtk_window_set_accept_focus (GTK_WINDOW (window), FALSE);
-          GtkWidget *label = gtk_label_new(NULL);
-          gtk_container_set_border_width (GTK_CONTAINER (window), 10);
-          gtk_container_add (GTK_CONTAINER (window), label);
+          gtk_container_set_border_width (GTK_CONTAINER (window), 3);
           gtk_widget_set_tooltip_window (tv, GTK_WINDOW (window));
+
+          //Start the search
+          GwSearchItem *item;
+          item = gw_searchitem_new (query, di, GW_TARGET_KANJI);
+          gw_search_get_results (item);
         }
         if (window != NULL) {
           button_character = unic;
