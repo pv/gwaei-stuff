@@ -1040,6 +1040,38 @@ char *gw_util_strdup_args_to_query (int argc, char *argv[])
 }
 
 //!
+//! @brief Prepare an input query string
+//!
+//! Run some checks and transformation on a string before using it for a search :
+//!  * Check for badly encoded UTF-8 or invalid character
+//!  * Replace halfwidth japanese characters with their normal wide counterpart
+//!
+//! @param text an utf8 encoded string to prepare
+//! @param strip if true remove leading and trailing spaces
+//! @return a newly allocated utf8 encoded string or NULL if text was too.
+//!         If the result is non-NULL it must be freed with g_free().
+gchar* gw_util_prepare_query(char* text, gboolean strip)
+{
+	if(text == NULL)
+	    return NULL;
+
+	// Sanitizes text : when drag/dropping text from external sources it
+	// might contains some invalid utf8 data that we should clean.
+	// (ex: from the anki tool, it has some trailing unicode control char).
+	char* sane_text = gw_util_sanitize_input (text, strip);
+
+	if(gw_util_contains_halfwidth_japanese(sane_text) == TRUE)
+	{
+		char* enlarged_text = gw_util_enlarge_halfwidth_japanese(text);
+		g_free (sane_text);
+		sane_text = enlarged_text;
+		enlarged_text = NULL;
+	}
+
+	return sane_text;
+}
+
+//!
 //! @brief Sanitize an input string
 //!
 //! This function will check if the input string is a valid utf-8 sequence,
@@ -1052,7 +1084,7 @@ char *gw_util_strdup_args_to_query (int argc, char *argv[])
 //! @return a newly allocated sanitized utf8 encoded string or NULL if text was too.
 //!         If the result is non-NULL it must be freed with g_free(). 
 //!
-char* gw_util_sanitize_input(char *text, gboolean strip)
+gchar* gw_util_sanitize_input(char *text, gboolean strip)
 {
   if(text == NULL)
     return NULL;
@@ -1083,4 +1115,73 @@ char* gw_util_sanitize_input(char *text, gboolean strip)
     g_strstrip(ntext); // no new allocation, just modifying the string
    
   return ntext;
+}
+
+//!
+//! @brief Check if an input string contains char from the halfwidth japanese unicode range
+//!
+//! This function iterate over the string to check if it contains char from the halfwidth japanese unicode range
+//! (from U+FF61 HALFWIDTH IDEOGRAPHIC FULL STOP to U+FF9F HALFWIDTH KATAKANA SEMI-VOICED SOUND MARK).
+//!
+//! @param text an utf8 encoded string
+//! @return TRUE if the string contains is not null and contains a halfwidth japanese char
+//!
+gboolean gw_util_contains_halfwidth_japanese(gchar* text)
+{
+	if(text == NULL)
+		return FALSE;
+
+	gunichar ucp;
+	gchar *ptr = text;  // pointer to the start of current glyph
+	while (*ptr != '\0')
+	{
+		ucp = g_utf8_get_char (ptr);
+		if(ucp >=0xFF61 && ucp <=0xFF9F) // Halfwidth block
+			return TRUE;
+		ptr = g_utf8_next_char (ptr);
+	}
+	return FALSE;
+}
+
+//!
+//! @brief Replace all halfwidth japanese char with their ordinary wide equivalent
+//!
+//! This function create a copy of the text where char from the halfwidth japanese unicode range
+//! (from U+FF61 HALFWIDTH IDEOGRAPHIC FULL STOP to U+FF9F HALFWIDTH KATAKANA SEMI-VOICED SOUND MARK)
+//! are replaced by their ordinary wide equivalent.
+//!
+//! @param text an utf8 encoded string with halfwidth japanese char to expand.
+//! @return a newly allocated utf8 encoded string without halfwidth japanese char ; or NULL if text was too.
+//!         If the result is non-NULL it must be freed with g_free().
+//!
+gchar* gw_util_enlarge_halfwidth_japanese(gchar* text)
+{
+	if(text == NULL)
+	    return NULL;
+
+	gchar *ptr = text;  // pointer to the start of current glyph
+
+	GString* nstr = g_string_new( NULL );
+	gunichar ucp = 0;
+
+	while (*ptr != '\0')
+	{
+		ucp = g_utf8_get_char (ptr);
+		if(ucp >=0xFF61 && ucp <=0xFF9F) // Halfwidth block
+		{
+			// The G_NORMALIZE_ALL will remove the narrow modifier and return the normal wided char
+			// We know halfwidth char from this range take 3 bytes in utf8
+			char *nch = g_utf8_normalize (ptr, 3,  G_NORMALIZE_ALL ); // this allocate a new char*
+			g_string_append (nstr, nch);
+			g_free(nch);
+		}
+		else // just appending the char to the result
+		{
+			g_string_append_unichar (nstr, ucp);
+		}
+
+		ptr = g_utf8_next_char (ptr); // next !
+	}
+
+	return g_string_free(nstr, FALSE);
 }

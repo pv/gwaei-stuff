@@ -352,6 +352,14 @@ static gboolean main_loop_function (gpointer data)
       char *ptr = strchr (query_text, '\n');
       if (ptr != NULL) *ptr = '\0';
 
+      // Run some checks and transformation on a user inputed string before using it
+      char* sane_query = gw_util_prepare_query (query_text, FALSE);
+      if (sane_query != NULL) {
+    	  g_stpcpy(query_text, sane_query);
+    	  g_free(sane_query);
+    	  sane_query = NULL;
+      }
+
       if (quiet_switch == FALSE)
         print_search_start_banner (query_text, di->name);
 

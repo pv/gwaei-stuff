@@ -457,6 +457,17 @@ void initialize_console_interface (int argc, char **argv)
     //Set the output generic functions
     gw_console_initialize_interface_output_generics ();
 
+    // Run some checks and transformation on a user inputed string before using it
+   	char* sane_query = gw_util_prepare_query (query_text_data, FALSE);
+   	if (sane_query == NULL)
+   	{
+   	  printf(gettext("Query prepare error\n"));
+   	  exit (EXIT_FAILURE);
+   	}
+   	g_stpcpy(query_text_data, sane_query);
+   	g_free(sane_query);
+   	sane_query = NULL;
+
     //Print the search intro
     if (!quiet_switch)
     {

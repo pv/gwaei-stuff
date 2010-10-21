@@ -10,6 +10,8 @@
 #define GW_QUERYLINE_MED 3
 #define GW_QUERYLINE_HIGH 4
 
+#include <regex.h>	// needed for the regex_t below
+
 struct _GwQueryLine {
     char string[MAX_QUERY];
     char hira_string[MAX_QUERY];
