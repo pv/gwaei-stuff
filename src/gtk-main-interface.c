@@ -3553,11 +3553,11 @@ void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item)
 
         GtkWidget *label = GTK_WIDGET (gtk_label_new (NULL));
         gtk_label_set_markup (GTK_LABEL (label), markup2);
-        gtk_box_pack_start (GTK_HBOX (hbox), GTK_WIDGET (label), FALSE, FALSE, 0);
+        gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (label), FALSE, FALSE, 0);
 
         label = GTK_WIDGET (gtk_label_new (NULL));
         gtk_label_set_markup (GTK_LABEL (label), markup);
-        gtk_box_pack_start (GTK_HBOX (hbox), GTK_WIDGET (label), FALSE, FALSE, 0);
+        gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (label), FALSE, FALSE, 0);
 
         gtk_widget_show_all (window);
         /*

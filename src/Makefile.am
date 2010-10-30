@@ -48,17 +48,30 @@ WIN32_REGEX_LIB = -L$(top_srcdir)/windows/regex/lib -lregex
 WIN32_GETTEXT_INCLUDE = -I$(top_srcdir)/windows/gettext/include
 WIN32_GETTEXT_LIB =  -L$(top_srcdir)/windows/gettext/lib -lintl -lgettextlib
 
+WIN32_CAIRO_INCLUDE = -I$(top_srcdir)/windows/cairo/include/cairo
+WIN32_CAIRO_LIB =  -L$(top_srcdir)/windows/cairo/lib -lcairo
+
+WIN32_PANGO_INCLUDE = -I$(top_srcdir)/windows/pango/include/pango-1.0
+WIN32_PANGO_LIB =  -L$(top_srcdir)/windows/pango/lib -lpango-1.0 -lpangocairo-1.0
+
 WIN32_GLIB_INCLUDE = -I$(top_srcdir)/windows/glib/include -I$(top_srcdir)/windows/glib/include/glib-2.0 -I$(top_srcdir)/windows/glib/lib/glib-2.0/include
 WIN32_GLIB_LIB = -L$(top_srcdir)/windows/glib/lib -lglib-2.0 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lgio-2.0
-WIN32_GTK_INCLUDE = -I$(top_srcdir)/windows/gtk/include
-WIN32_GTK_LIB = -L$(top_srcdir)/windows/gtk/lib
+WIN32_GTK_INCLUDE = -I$(top_srcdir)/windows/gtk/include/gtk-2.0 -I$(top_srcdir)/windows/gtk/lib/gtk-2.0/include
+WIN32_GTK_LIB = -L$(top_srcdir)/windows/gtk/lib -lgtk-win32-2.0 -lgdk-win32-2.0
 
-WIN32_DEFS = -DENABLE_WIN32 -DLC_MESSAGES=\"C\" -DCURL_STATICLIB $(WIN32_CURL_INCLUDE) $(WIN32_GLIB_INCLUDE) -I/usr/i486-mingw32/include
-WIN32_LIBS = $(WIN32_REGEX_LIB) $(WIN32_CURL_LIB) $(WIN32_GLIB_LIB) $(WIN32_GETTEXT_LIB) -L$(top_srcdir)/windows/rt/lib
+WIN32_GDK_PIXBUF_INCLUDE = -I$(top_srcdir)/windows/gdk-pixbuf/include/gdk-pixbuf-2.0
+WIN32_GDK_PIXBUF_LIB = -L$(top_srcdir)/windows/gdk-pixbuf/lib -lgdk_pixbuf-2.0
+
+WIN32_ATK_INCLUDE = -I$(top_srcdir)/windows/atk/include/atk-1.0
+WIN32_ATK_LIB = -L$(top_srcdir)/windows/atk/lib -latk-1.0
+
+WIN32_DEFS = -DWITH_GTK -DENABLE_WIN32 -DLC_MESSAGES=\"C\" -DCURL_STATICLIB $(WIN32_CURL_INCLUDE) $(WIN32_GLIB_INCLUDE) $(WIN32_GTK_INCLUDE) -I/usr/i486-mingw32/include $(WIN32_CAIRO_INCLUDE) $(WIN32_PANGO_INCLUDE) $(WIN32_GDK_PIXBUF_INCLUDE) $(WIN32_ATK_INCLUDE)
+WIN32_LIBS = $(WIN32_REGEX_LIB) $(WIN32_CURL_LIB) $(WIN32_GLIB_LIB) $(WIN32_GETTEXT_LIB) $(WIN32_GTK_LIB) -L$(top_srcdir)/windows/rt/lib $(WIN32_CAIRO_LIB) $(WIN32_PANGO_LIB) $(WIN32_GDK_PIXBUF_LIB) $(WIN32_ATK_LIB)
 
 INCLUDES += $(WIN32_REGEX_INCLUDE) $(WIN32_GETTEXT_INCLUDE) $(WIN32_DEFS)
 gwaei_LDADD += $(WIN32_LIBS)
 gwaei_SOURCES += none-preferences.c
+gwaei_SOURCES += gtk-main-callbacks.c gtk-main-interface.c gtk-settings-callbacks.c gtk-settings-interface.c gtk-radicals-interface.c gtk-radicals-callbacks.c gtk-printing.c gtk-kanjipad-callbacks.c  gtk-kanjipad-interface.c gtk-kanjipad-interface-candidatearea.c gtk-kanjipad-interface-drawingarea.c gtk-main-interface-tabs.c gtk-settings-interface-install-line.c
 else
 gwaei_LDADD += $(DEPS_LIBS) @LIBINTL@
 INCLUDES += $(DEPS_CFLAGS)
