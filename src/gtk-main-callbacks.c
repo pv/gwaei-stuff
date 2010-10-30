@@ -1086,7 +1086,7 @@ G_MODULE_EXPORT void do_help (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void do_glossary (GtkWidget *widget, gpointer data)
 {
-    char *uri = g_build_filename ("ghelp://", DATADIR, "gnome", "help", "gwaei", "C", "glossary.xml", NULL);
+    char *uri = g_build_filename ("ghelp://", DATADIR2, "gnome", "help", "gwaei", "C", "glossary.xml", NULL);
 
     GError *err = NULL;
     gtk_show_uri (NULL, uri, gtk_get_current_event_time (), &err);
@@ -1108,7 +1108,7 @@ G_MODULE_EXPORT void do_glossary (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void do_about (GtkWidget *widget, gpointer data)
 {
-    char *pixbuf_path = DATADIR G_DIR_SEPARATOR_S PACKAGE G_DIR_SEPARATOR_S "logo.png";
+    char *pixbuf_path = DATADIR2 G_DIR_SEPARATOR_S PACKAGE G_DIR_SEPARATOR_S "logo.png";
 
     char *programmer_credits[] = 
     {
@@ -1859,7 +1859,7 @@ void do_populate_popup_with_search_options (GtkTextView *entry, GtkMenu *menu, g
         if (menu_text != NULL)
         {
           menuitem = GTK_WIDGET (gtk_image_menu_item_new_with_label (menu_text));
-          char *path = g_build_filename (DATADIR, PACKAGE, icon_path, NULL);
+          char *path = g_build_filename (DATADIR2, PACKAGE, icon_path, NULL);
           if (path != NULL)
           {
             menuimage = gtk_image_new_from_file (path);

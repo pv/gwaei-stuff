@@ -34,6 +34,7 @@
 #include <locale.h>
 
 #include <glib.h>
+#include <glib/gstdio.h>
 
 #include <gwaei/definitions.h>
 #include <gwaei/utilities.h>

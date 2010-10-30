@@ -27,18 +27,42 @@ endif
 
 datadir = @datadir@
 localedir = $(datadir)/locale
-DEPS_DEFS =-DLOCALEDIR=\"$(localedir)\" -DVERSION=\"$(VERSION)\" -DPACKAGE=\"$(PACKAGE)\" -DBINDIR=\"$(bindir)\" -DRSYNC=\"$(RSYNC)\" -DUNZIP=\"$(UNZIP)\" -DGUNZIP=\"$(GUNZIP)\" -DDATADIR=\"$(datadir)\" -DLIBDIR=\"$(libdir)\"
+DEPS_DEFS =-DLOCALEDIR=\"$(localedir)\" -DVERSION=\"$(VERSION)\" -DPACKAGE=\"$(PACKAGE)\" -DBINDIR=\"$(bindir)\" -DRSYNC=\"$(RSYNC)\" -DUNZIP=\"$(UNZIP)\" -DGUNZIP=\"$(GUNZIP)\" -DDATADIR2=\"$(datadir)\" -DLIBDIR=\"$(libdir)\"
 #AM_CFLAGS = --pedantic -std=c99 -O2 -g
 
 
 gwaei_SOURCES = main.c dictinfo-object.c dictlist-object.c queryline-object.c engine.c utilities.c io.c regex.c console-main-interface.c searchitem-object.c historylist-object.c resultline-object.c
-gwaei_LDADD = $(DEPS_LIBS) @LIBINTL@
-INCLUDES = -I$(top_srcdir)/src/include $(DEPS_CFLAGS) $(DEPS_DEFS)
+#gwaei_LDADD = $(DEPS_LIBS) @LIBINTL@
+#INCLUDES = -I$(top_srcdir)/src/include $(DEPS_CFLAGS) $(DEPS_DEFS)
+gwaei_LDADD = 
+INCLUDES = -I$(top_srcdir)/src/include $(DEPS_DEFS)
 
 ##WINDOWS SETUP
 if ENABLE_WIN32
-#EMPTY
-endif
+WIN32_CURL_INCLUDE = -I$(top_srcdir)/windows/curl/include
+WIN32_CURL_LIB = -L$(top_srcdir)/windows/curl/lib -lcurl -lws2_32
+
+WIN32_REGEX_INCLUDE = -I$(top_srcdir)/windows/regex/include
+WIN32_REGEX_LIB = -L$(top_srcdir)/windows/regex/lib -lregex
+
+WIN32_GETTEXT_INCLUDE = -I$(top_srcdir)/windows/gettext/include
+WIN32_GETTEXT_LIB =  -L$(top_srcdir)/windows/gettext/lib -lintl -lgettextlib
+
+WIN32_GLIB_INCLUDE = -I$(top_srcdir)/windows/glib/include -I$(top_srcdir)/windows/glib/include/glib-2.0 -I$(top_srcdir)/windows/glib/lib/glib-2.0/include
+WIN32_GLIB_LIB = -L$(top_srcdir)/windows/glib/lib -lglib-2.0 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lgio-2.0
+WIN32_GTK_INCLUDE = -I$(top_srcdir)/windows/gtk/include
+WIN32_GTK_LIB = -L$(top_srcdir)/windows/gtk/lib
+
+WIN32_DEFS = -DENABLE_WIN32 -DLC_MESSAGES=\"C\" -DCURL_STATICLIB $(WIN32_CURL_INCLUDE) $(WIN32_GLIB_INCLUDE) -I/usr/i486-mingw32/include
+WIN32_LIBS = $(WIN32_REGEX_LIB) $(WIN32_CURL_LIB) $(WIN32_GLIB_LIB) $(WIN32_GETTEXT_LIB) -L$(top_srcdir)/windows/rt/lib
+
+INCLUDES += $(WIN32_REGEX_INCLUDE) $(WIN32_GETTEXT_INCLUDE) $(WIN32_DEFS)
+gwaei_LDADD += $(WIN32_LIBS)
+gwaei_SOURCES += none-preferences.c
+else
+gwaei_LDADD += $(DEPS_LIBS) @LIBINTL@
+INCLUDES += $(DEPS_CFLAGS)
+
 ##LINUX/UNIX/BSD SETUP
 if WITH_GNOME
 gwaei_SOURCES += gtk-gconf-preferences.c 
@@ -48,6 +72,7 @@ GNOME_DEFS =-DWITH_GTK
 INCLUDES += $(GNOME_CFLAGS) $(GNOME_DEFS)
 else
 gwaei_SOURCES += none-preferences.c
+endif
 endif
 
 if WITH_LIBUNIQUE

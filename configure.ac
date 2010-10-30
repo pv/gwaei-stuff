@@ -89,7 +89,7 @@ yes) ncurses=true ;;
 no)  ncurses=false ;;
 *) AC_MSG_ERROR([bad value ${withval} for --without-ncurses]) ;;
 esac],[ncurses=true])
-AM_CONDITIONAL([WITH_NCURSES], [test x$ncurses = xtrue])
+AM_CONDITIONAL([WITH_NCURSES], [test x$ncurses = xtrue && test x$win32 = xfalse])
 
 AC_ARG_WITH([gnome],
 [  --without-gnome         turn off the gnome gui interface],
@@ -98,7 +98,7 @@ yes) gnome=true ;;
 no)  gnome=false ;;
 *) AC_MSG_ERROR([bad value ${withval} for --without-gnome]) ;;
 esac],[gnome=true])
-AM_CONDITIONAL([WITH_GNOME], [test x$gnome = xtrue])
+AM_CONDITIONAL([WITH_GNOME], [test x$gnome = xtrue && test x$win32 = xfalse])
 
 AC_ARG_WITH([libunique],
 [  --without-libunique         disable libunique],
@@ -107,7 +107,7 @@ yes) libunique=true ;;
 no)  libunique=false ;;
 *) AC_MSG_ERROR([bad value ${withval} for --without-libunique]) ;;
 esac],[libunique=true])
-AM_CONDITIONAL([WITH_LIBUNIQUE], [test x$libunique = xtrue && test x$gnome = xtrue])
+AM_CONDITIONAL([WITH_LIBUNIQUE], [test x$libunique = xtrue && test x$gnome = xtrue && test x$win32 = xfalse])
 
 AC_ARG_WITH([libsexy],
 [  --without-libsexy         disable libsexy],
@@ -116,15 +116,16 @@ yes) libsexy=true ;;
 no)  libsexy=false ;;
 *) AC_MSG_ERROR([bad value ${withval} for --without-libsexy]) ;;
 esac],[libsexy=true])
-AM_CONDITIONAL([WITH_LIBSEXY], [test x$libsexy = xtrue && test x$gnome = xtrue])
+AM_CONDITIONAL([WITH_LIBSEXY], [test x$libsexy = xtrue && test x$gnome = xtrue && test x$win32 = xfalse])
 
 
 
 
-if test ${win32} = true; then
-  PKG_CHECK_MODULES(WIN32, gtk+-2.0           >= $GTK2_REQUIRED_VERSION )
-  AC_SUBST(WIN32_CFLAGS)
-  AC_SUBST(WIN32_LIBS)
+if test $win32 = true; then
+  PKG_CHECK_MODULES(WIN32TEST, gtk+-2.0           >= $GTK2_REQUIRED_VERSION )
+##  AC_SUBST(WIN32_CFLAGS)
+##  AC_SUBST(WIN32_LIBS)
+  GNOME_DOC_INIT(,,[:])
 elif test $gnome = true; then
   PKG_CHECK_MODULES(GNOME, gtk+-2.0           >= $GTK2_REQUIRED_VERSION
                            gconf-2.0          >= $GCONF_REQUIRED_VERSION
@@ -179,22 +180,22 @@ AC_OUTPUT
 
 
 echo ""
-if test $gnome = true; then
+if test $gnome = true && test x$win32 = xfalse; then
   echo -e "* Gnome is\tENABLED"
 else
   echo -e "* Gnome is\tDISABLED"
 fi
-if test $libunique = true && test $gnome = true; then
+if test $libunique = true && test $gnome = true && test x$win32 = xfalse; then
   echo -e "* Libunique is\tENABLED"
 else
   echo -e "* Libunique is\tDISABLED (Requires Gnome)"
 fi
-if test $libsexy = true && test $gnome = true; then
+if test $libsexy = true && test $gnome = true && test x$win32 = xfalse; then
   echo -e "* Libsexy is\tENABLED"
 else
   echo -e "* Libsexy is\tDISABLED (Requires Gnome)"
 fi
-if test $ncurses = true; then
+if test $ncurses = true && test x$win32 = xfalse; then
   echo -e "* Ncurses is\tENABLED"
 else
   echo -e "* Ncurses is\tDISABLED"

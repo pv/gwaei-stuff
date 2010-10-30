@@ -2024,7 +2024,7 @@ gboolean gw_ui_load_gtk_builder_xml (const char *filename) {
     }
     //Try the global path next
     else if (
-             (path = g_build_filename (DATADIR, PACKAGE, filename, NULL)) != NULL &&
+             (path = g_build_filename (DATADIR2, PACKAGE, filename, NULL)) != NULL &&
              gtk_builder_add_from_file (builder, path,  NULL)
             )
     {
@@ -2351,7 +2351,7 @@ void gw_ui_display_no_results_found_page (GwSearchItem *item)
             g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (do_prep_and_start_search_in_new_tab), temp_item);
             g_signal_connect (G_OBJECT (button), "destroy",  G_CALLBACK (do_destroy_tab_menuitem_searchitem_data), temp_item);
 /*
-          char *path = g_build_filename (DATADIR, PACKAGE, "book_green.png", NULL);
+          char *path = g_build_filename (DATADIR2, PACKAGE, "book_green.png", NULL);
             if (path != NULL)
             {
               image = gtk_image_new_from_file (path);
@@ -2407,7 +2407,7 @@ void gw_ui_display_no_results_found_page (GwSearchItem *item)
       char *name = website_url_menuitems[i];
       char *url = g_strdup_printf(website_url_menuitems[i + 1], query_text);
       char *icon_path = website_url_menuitems[i + 2];
-      char *path = g_build_filename (DATADIR, PACKAGE, icon_path, NULL);
+      char *path = g_build_filename (DATADIR2, PACKAGE, icon_path, NULL);
       image = NULL;
 
       //Start creating
