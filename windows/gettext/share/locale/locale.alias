@@ -26,7 +26,7 @@
 # backward compatibility.  Nobody should rely on the names defined here.
 # Locales should always be specified by their full name.
 
-# Packages using this file: 
+# Packages using this file: gettext-runtime gettext-tools 
 
 bokmal		nb_NO.ISO-8859-1
 bokmål		nb_NO.ISO-8859-1
