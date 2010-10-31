@@ -19,15 +19,6 @@ GDU_REQUIRED_VERSION=0.13.0
 LIBUNIQUE_REQUIRED_VERSION=1.0.0
 LIBSEXY_REQUIRED_VERSION=0.1.11
 
-PKG_CHECK_MODULES(DEPS, glib-2.0           >= $GLIB_REQUIRED_VERSION
-                        gobject-2.0        >= $GLIB_REQUIRED_VERSION
-                        libcurl            >= $LIBCURL_REQUIRED_VERSION
-                        gmodule-2.0        >= $GMODULE_EXPORT_REQUIRED_VERSION 
-                        gthread-2.0        >= $GTHREAD_REQUIRED_VERSION       )
-AC_CHECK_LIB(m, sqrt)
-AC_SUBST(DEPS_CFLAGS)
-AC_SUBST(DEPS_LIBS)
-
 ENGLISH_DEFAULT_URI=ftp://ftp.monash.edu.au/pub/nihongo/edict.gz
 AC_SUBST(ENGLISH_DEFAULT_URI)
 
@@ -121,12 +112,19 @@ AM_CONDITIONAL([WITH_LIBSEXY], [test x$libsexy = xtrue && test x$gnome = xtrue &
 
 
 
-if test $win32 = true; then
-  PKG_CHECK_MODULES(WIN32TEST, gtk+-2.0           >= $GTK2_REQUIRED_VERSION )
-##  AC_SUBST(WIN32_CFLAGS)
-##  AC_SUBST(WIN32_LIBS)
-  GNOME_DOC_INIT(,,[:])
-elif test $gnome = true; then
+AC_CHECK_LIB(m, sqrt)
+if test $win32 = false; then
+  PKG_CHECK_MODULES(DEPS, glib-2.0           >= $GLIB_REQUIRED_VERSION
+                          gobject-2.0        >= $GLIB_REQUIRED_VERSION
+                          libcurl            >= $LIBCURL_REQUIRED_VERSION
+                          gmodule-2.0        >= $GMODULE_EXPORT_REQUIRED_VERSION 
+                          gthread-2.0        >= $GTHREAD_REQUIRED_VERSION       )
+  AC_SUBST(DEPS_CFLAGS)
+  AC_SUBST(DEPS_LIBS)
+fi
+
+
+if test $gnome = true && test $win32 = false; then
   PKG_CHECK_MODULES(GNOME, gtk+-2.0           >= $GTK2_REQUIRED_VERSION
                            gconf-2.0          >= $GCONF_REQUIRED_VERSION
                            gnome-doc-utils    >= $GDU_REQUIRED_VERSION )
@@ -138,13 +136,14 @@ else
   GNOME_DOC_INIT(,,[:])
 fi
 
-if test $libunique = true && test $gnome = true; then
+
+if test $libunique = true && test $gnome = true && test $win32 = false; then
   PKG_CHECK_MODULES(LIBUNIQUE, unique-1.0  >= $LIBUNIQUE_REQUIRED_VERSION)
   AC_SUBST(LIBUNIQUE_CFLAGS)
   AC_SUBST(LIBUNIQUE_LIBS)
 fi
 
-if test $libsexy = true && test $gnome = true; then
+if test $libsexy = true && test $gnome = true && test $win32 = false; then
   PKG_CHECK_MODULES(LIBSEXY, libsexy  >= $LIBSEXY_REQUIRED_VERSION)
   AC_SUBST(LIBSEXY_CFLAGS)
   AC_SUBST(LIBSEXY_LIBS)
