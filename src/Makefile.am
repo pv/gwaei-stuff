@@ -57,6 +57,7 @@ WIN32_LIBS = $(WIN32_LIB) $(WIN32_REGEX_LIB) $(WIN32_CURL_LIB) $(WIN32_GLIB_LIB)
 
 INCLUDES += $(WIN32_REGEX_INCLUDE) $(WIN32_GETTEXT_INCLUDE) $(WIN32_DEFS)
 gwaei_LDADD += $(WIN32_LIBS)
+gwaei_LDFLAGS = -mwindows
 gwaei_SOURCES += none-preferences.c
 gwaei_SOURCES += gtk-main-callbacks.c gtk-main-interface.c gtk-settings-callbacks.c gtk-settings-interface.c gtk-radicals-interface.c gtk-radicals-callbacks.c gtk-printing.c gtk-kanjipad-callbacks.c  gtk-kanjipad-interface.c gtk-kanjipad-interface-candidatearea.c gtk-kanjipad-interface-drawingarea.c gtk-main-interface-tabs.c gtk-settings-interface-install-line.c
 else

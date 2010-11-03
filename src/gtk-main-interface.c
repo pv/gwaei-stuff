@@ -2880,7 +2880,9 @@ void initialize_gui_interface (int argc, char *argv[])
 
       gw_ui_initialize_dictionary_order_list ();
       printf("initialized dictionary order list\n");
+#ifndef G_OS_WIN32
       gw_kanjipad_initialize (builder);
+#endif
       printf("initialized kanjipad\n");
 
       //Spring up the prefs dialog if no dictionaries are installed
@@ -2918,11 +2920,11 @@ void initialize_gui_interface (int argc, char *argv[])
       //Enter the main loop
       gdk_threads_enter();
 
-/*
+#ifndef G_OS_WIN32
       g_timeout_add_full (G_PRIORITY_DEFAULT_IDLE, 500,
                           (GSourceFunc)gw_ui_keep_searching, NULL,
                           (GDestroyNotify)NULL     );
-      */
+#endif
 
       gtk_main ();
       gdk_threads_leave();

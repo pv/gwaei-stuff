@@ -124,13 +124,17 @@ void kanjipad_init_engine (GwKanjipad *pa)
     GError *err = NULL;
     gchar *uninstalled;
     int stdin_fd, stdout_fd;
-    if (!g_file_test(argv[0], G_FILE_TEST_EXISTS)) printf("DOESN'T EXIST! %s\n", argv[0]);
+    if (!g_file_test(argv[0], G_FILE_TEST_EXISTS)) 
+    {
+      printf("DOESN'T EXIST! %s\n", argv[0]);
+      exit (EXIT_FAILURE);
+    }
 
     if (!g_spawn_async_with_pipes (NULL, /* working directory */
            argv, NULL,  /* argv, envp */
            0,
            NULL, NULL,  /* child_setup */
-           &pa->engine_pid,   /* child pid */
+           (gpointer)&pa->engine_pid,   /* child pid */
            &stdin_fd, &stdout_fd, NULL,
            &err))
     {
