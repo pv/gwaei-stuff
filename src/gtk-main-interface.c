@@ -2010,6 +2010,7 @@ void gw_ui_paste_text (GwTargetOutput TARGET)
 //!
 gboolean gw_ui_load_gtk_builder_xml (const char *filename) {
     char *path = NULL;
+    printf("filename:%s\n", filename);
 
     //Try a local path first
     if (
@@ -2020,6 +2021,7 @@ gboolean gw_ui_load_gtk_builder_xml (const char *filename) {
       gtk_builder_connect_signals (builder, NULL);
       g_free (path);
       path = NULL;
+      printf("GTK BUILDER Path try 1: %s\n", path);
       return TRUE;
     }
     //Try the global path next
@@ -2029,9 +2031,14 @@ gboolean gw_ui_load_gtk_builder_xml (const char *filename) {
             )
     {
       gtk_builder_connect_signals (builder, NULL);
+      printf("GTK BUILDER Path try 2: %s\n", path);
       g_free (path);
       path = NULL;
       return TRUE;
+    }
+    else {
+      printf("Failed to build path. Exiting\n");
+      exit (EXIT_FAILURE);
     }
 
     return FALSE;
@@ -2842,6 +2849,8 @@ void initialize_gui_interface (int argc, char *argv[])
       gw_ui_load_gtk_builder_xml ("settings.ui");
       gw_ui_load_gtk_builder_xml ("kanjipad.ui");
 
+      printf("loaded xml\n");
+
       //Libunique setup
       GtkWidget *main_window;
       main_window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
@@ -2851,18 +2860,28 @@ void initialize_gui_interface (int argc, char *argv[])
 
       //Variious initializations
       force_gtk_builder_translation_for_gtk_actions_hack ();
+      printf("forced translation xml\n");
       initialize_global_widget_pointers ();
       gw_ui_initialize_interface_output_generics ();
+      printf("set outptu generics\n");
       gw_guarantee_first_tab ();
 #ifdef WITH_LIBSEXY
       gw_sexy_initialize_libsexy (&search_entry);
 #endif
       gw_ui_update_history_popups ();
+      printf("set history popups\n");
+
       gw_ui_show_window ("main_window");
+      printf("show window\n");
       gw_prefs_initialize_preferences ();
+      printf("initialized prefernec\n");
       gw_ui_initialize_radicals_table ();
+      printf("initialized radicals table\n");
+
       gw_ui_initialize_dictionary_order_list ();
+      printf("initialized dictionary order list\n");
       gw_kanjipad_initialize (builder);
+      printf("initialized kanjipad\n");
 
       //Spring up the prefs dialog if no dictionaries are installed
       gw_settings_initialize_installed_dictionary_list ();
@@ -2896,13 +2915,14 @@ void initialize_gui_interface (int argc, char *argv[])
         gtk_entry_set_text (GTK_ENTRY (search_entry), query_text_data);
         do_search (NULL, NULL);
       }
-
       //Enter the main loop
       gdk_threads_enter();
 
+/*
       g_timeout_add_full (G_PRIORITY_DEFAULT_IDLE, 500,
                           (GSourceFunc)gw_ui_keep_searching, NULL,
                           (GDestroyNotify)NULL     );
+      */
 
       gtk_main ();
       gdk_threads_leave();

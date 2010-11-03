@@ -1,2 +1,3 @@
 #!/bin/sh
-./configure --enable-win32 --host=i486-mingw32 --prefix /usr/i486-mingw32
+./configure --enable-win32 --host=i486-mingw32 --prefix /usr/i486-mingw32/local
+#./configure --enable-win32 --prefix=/local --host=i486-mingw32 --build=i486-mingw32

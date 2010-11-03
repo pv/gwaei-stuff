@@ -87,6 +87,7 @@ int main (int argc, char *argv[])
     gw_main_initialize_generic_output_functions_to_null ();
     gw_io_check_for_rsync ();
 
+/*
     //Start the runmode chosen by the user
     if  (gw_util_get_runmode() == GW_CONSOLE_RUNMODE)
       initialize_console_interface (argc, argv);
@@ -96,10 +97,13 @@ int main (int argc, char *argv[])
 #endif
 #ifdef WITH_GTK
     else if  (gw_util_get_runmode () == GW_GTK_RUNMODE)
+      */
       initialize_gui_interface (argc, argv);
+      /*
 #endif
     else
       initialize_console_interface (argc, argv);
+      */
 
     //Cleanup and exit
     gw_dictlist_free ();

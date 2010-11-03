@@ -108,6 +108,36 @@ void gw_prefs_initialize_preferences()
 
 
 
+//!
+//! @brief Callback action for when preference key changes
+//!
+//! @param client The preference client
+//! @param cnxn_id Unknown
+//! @param entry The preference entry object
+//! @param data Usere data passed to the function
+//!
+void do_dictionary_source_gconf_key_changed_action (gpointer client,
+                                                    guint cnxn_id,
+                                                    gpointer entry,
+                                                    gpointer data       )
+{
+      gw_ui_set_dictionary_source (data, (char*) entry);
+}
+
+
+//!
+//! @brief Adds a preference change listener for the selected key
+//!
+//! @param key The preference key
+//! @param callback_function The function to call when the key changes
+//! @param data The userdata to pass to the callback function
+//!
+void gw_prefs_add_change_listener (const char *key, void (*callback_function) (gpointer, guint, gpointer, gpointer), gpointer data)
+{
+  char uri[100];
+  gw_util_strncpy_fallback_from_key(uri, key, 100);
+  (*callback_function) (NULL, 0, uri, data);
+}
 
 
 

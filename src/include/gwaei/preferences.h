@@ -18,9 +18,13 @@ char* gw_pref_get_string (char*, char*, char*, int);
 char* gw_pref_get_default_string (char*, char*, char*, int);
 
 void gw_prefs_initialize_preferences(void);
-#ifndef ENABLE_WIN32
+
+#ifdef WITH_GCONF
 void do_dictionary_source_gconf_key_changed_action (GConfClient*, guint, GConfEntry*, gpointer);
 void gw_prefs_add_change_listener (const char*, void (GConfClient*, guint, GConfEntry*, gpointer), gpointer);
+#else
+void do_dictionary_source_gconf_key_changed_action (void*, guint, void*, gpointer);
+void gw_prefs_add_change_listener (const char*, void (void*, guint, void*, gpointer), gpointer);
 #endif
 
 
