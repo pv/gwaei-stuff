@@ -97,12 +97,42 @@ void gw_pref_set_string (char *key, const char* request)
 }
 
 
+//!
+//! @brief Callback action for when preference key changes
+//!
+//! @param client The preference client
+//! @param cnxn_id Unknown
+//! @param entry The preference entry object
+//! @param data Usere data passed to the function
+//!
+void do_color_value_changed_action (gpointer key, 
+                                    guint cnxn_id,
+                                    gpointer color,
+                                    gpointer data       )
+{
+    //Get the widget name which happens to be the same as part of the key
+    const char *widget_name = strrchr((char*) key, '/'); widget_name++;
+
+    //Finish up
+    gw_ui_set_color_to_swatch (widget_name, color);
+    gw_ui_buffer_reload_tagtable_tags ();
+}
+
+
+
+
 //
 //Preference initializations
 //
 
 void gw_prefs_initialize_preferences()
 {
+  gw_prefs_add_change_listener (GCKEY_GW_MATCH_FG, do_color_value_changed_action, NULL);
+  gw_prefs_add_change_listener (GCKEY_GW_MATCH_BG, do_color_value_changed_action, NULL);
+  gw_prefs_add_change_listener (GCKEY_GW_HEADER_FG, do_color_value_changed_action, NULL);
+  gw_prefs_add_change_listener (GCKEY_GW_HEADER_BG, do_color_value_changed_action, NULL);
+  gw_prefs_add_change_listener (GCKEY_GW_COMMENT_FG, do_color_value_changed_action, NULL);
+
   return;
 }
 
@@ -135,9 +165,9 @@ void do_dictionary_source_gconf_key_changed_action (gpointer client,
 //!
 void gw_prefs_add_change_listener (const char *key, void (*callback_function) (gpointer, guint, gpointer, gpointer), gpointer data)
 {
-  char uri[100];
-  gw_util_strncpy_fallback_from_key(uri, key, 100);
-  (*callback_function) (NULL, 0, uri, data);
+  char value[100];
+  gw_util_strncpy_fallback_from_key(value, key, 100);
+  (*callback_function) (key, 0, value, data);
 }
 
 
