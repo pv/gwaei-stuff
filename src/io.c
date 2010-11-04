@@ -263,7 +263,7 @@ gboolean gw_io_download_file (char *source_path, char *save_path,
 
     if (curl == NULL) return FALSE;
 
-    outfile = fopen(save_path, "w");
+    outfile = fopen(save_path, "wb");
 
     curl_easy_setopt(curl, CURLOPT_URL, source_path);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, outfile);
@@ -545,6 +545,7 @@ gboolean gw_io_gunzip_file (char *path, GError **error)
     strcpy(command, GUNZIP);
     strcat(command, " ");
     strcat(command, path);
+    printf("command: %s\n", command);
 
     success = (system(command) == 0);
 

@@ -60,8 +60,6 @@
 
 int main (int argc, char *argv[])
 {    
-  printf(GUNZIP);
-  exit(0);
     //Setup for localized messages
     setlocale(LC_MESSAGES, "");
     bindtextdomain(PACKAGE, LOCALEDIR);
