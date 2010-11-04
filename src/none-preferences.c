@@ -80,13 +80,14 @@ void gw_pref_set_boolean (char *key, gboolean request)
 
 char* gw_pref_get_string (char *output, char *key, char* backup, int n)
 {
-    return backup;
+  strncpy(output, backup, n);
+  return output;
 }
 
 
 char* gw_pref_get_default_string (char *key, char* backup, char* fallback, int length)
 {
-    return backup;
+    return fallback;
 }
 
 

@@ -117,12 +117,20 @@ static gboolean engine_input_handler (GIOChannel *source, GIOCondition condition
 void kanjipad_init_engine (GwKanjipad *pa)
 {
 #ifdef G_OS_WIN32
-    gchar *argv[] = { ".." G_DIR_SEPARATOR_S "lib" G_DIR_SEPARATOR_S PACKAGE G_DIR_SEPARATOR_S "kpengine.exe", NULL, NULL, NULL };
+  char *dir = NULL;
+  char *path = NULL;
+  char *argv[2];
+
+  if ((dir = g_get_current_dir ()) == NULL) exit(EXIT_FAILURE);
+  if ((path = g_build_filename (dir, "..", "lib", PACKAGE, "kpengine.exe", NULL)) == NULL) exit(EXIT_FAILURE);
+  argv[0] = path;
+  argv[1] = NULL;
 #else
-    gchar *argv[] = { LIBDIR G_DIR_SEPARATOR_S PACKAGE G_DIR_SEPARATOR_S "kpengine", NULL, NULL, NULL };
+    argv[0] = LIBDIR G_DIR_SEPARATOR_S PACKAGE G_DIR_SEPARATOR_S "kpengine";
+    argv[1] = NULL;
 #endif
     GError *err = NULL;
-    gchar *uninstalled;
+    //gchar *uninstalled;
     int stdin_fd, stdout_fd;
     if (!g_file_test(argv[0], G_FILE_TEST_EXISTS)) 
     {
@@ -149,18 +157,22 @@ void kanjipad_init_engine (GwKanjipad *pa)
       g_error_free (err);
       exit (EXIT_FAILURE);
     }
-    printf("STARTED SYNC\n");
 
-    g_free (uninstalled);
+    //g_free (uninstalled);
     
     if (!(pa->to_engine = g_io_channel_unix_new (stdin_fd)))
       g_error ("Couldn't create pipe to child process: %s", g_strerror(errno));
     if (!(pa->from_engine = g_io_channel_unix_new (stdout_fd)))
       g_error ("Couldn't create pipe from child process: %s", g_strerror(errno));
-    printf("STARTED UNIX CHANNELS\n");
 
     g_io_add_watch (pa->from_engine, G_IO_IN, engine_input_handler, NULL);
-    printf("ADDED WATCH\n");
+
+#ifdef G_OS_WIN32
+    g_free(path);
+    path = NULL;
+    g_free(dir);
+    dir = NULL;
+#endif
 }
 
 

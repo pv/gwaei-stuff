@@ -2010,7 +2010,6 @@ void gw_ui_paste_text (GwTargetOutput TARGET)
 //!
 gboolean gw_ui_load_gtk_builder_xml (const char *filename) {
     char *path = NULL;
-    printf("filename:%s\n", filename);
 
     //Try a local path first
     if (
@@ -2021,7 +2020,6 @@ gboolean gw_ui_load_gtk_builder_xml (const char *filename) {
       gtk_builder_connect_signals (builder, NULL);
       g_free (path);
       path = NULL;
-      printf("GTK BUILDER Path try 1: %s\n", path);
       return TRUE;
     }
     //Try the global path next
@@ -2031,7 +2029,6 @@ gboolean gw_ui_load_gtk_builder_xml (const char *filename) {
             )
     {
       gtk_builder_connect_signals (builder, NULL);
-      printf("GTK BUILDER Path try 2: %s\n", path);
       g_free (path);
       path = NULL;
       return TRUE;
@@ -2860,30 +2857,19 @@ void initialize_gui_interface (int argc, char *argv[])
 
       //Variious initializations
       force_gtk_builder_translation_for_gtk_actions_hack ();
-      printf("forced translation xml\n");
       initialize_global_widget_pointers ();
       gw_ui_initialize_interface_output_generics ();
-      printf("set outptu generics\n");
       gw_guarantee_first_tab ();
 #ifdef WITH_LIBSEXY
       gw_sexy_initialize_libsexy (&search_entry);
 #endif
       gw_ui_update_history_popups ();
-      printf("set history popups\n");
 
       gw_ui_show_window ("main_window");
-      printf("show window\n");
       gw_prefs_initialize_preferences ();
-      printf("initialized prefernec\n");
       gw_ui_initialize_radicals_table ();
-      printf("initialized radicals table\n");
 
       gw_ui_initialize_dictionary_order_list ();
-      printf("initialized dictionary order list\n");
-#ifndef G_OS_WIN32
-      gw_kanjipad_initialize (builder);
-#endif
-      printf("initialized kanjipad\n");
 
       //Spring up the prefs dialog if no dictionaries are installed
       gw_settings_initialize_installed_dictionary_list ();
@@ -2919,6 +2905,7 @@ void initialize_gui_interface (int argc, char *argv[])
       }
       //Enter the main loop
       gdk_threads_enter();
+      gw_kanjipad_initialize (builder); //Kanjipad must be initalized within the thread not to lock it
 
 #ifndef G_OS_WIN32
       g_timeout_add_full (G_PRIORITY_DEFAULT_IDLE, 500,
@@ -3582,11 +3569,7 @@ void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item)
         gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (label), FALSE, FALSE, 0);
 
         gtk_widget_show_all (window);
-        /*
-        gtk_widget_set_size_request (GTK_WIDGET (window), 5, 5);
-        gtk_widget_queue_resize (GTK_WIDGET (window));
-        gtk_window_set_default_size (GTK_WINDOW (window), 1, 1);
-        */
+        gtk_window_present (GTK_WINDOW (window));
       }
     }
 }

@@ -166,8 +166,15 @@ AC_PATH_PROG(RPMDIR, rpm)
 AC_PATH_PROG(RPMBUILD, rpmbuild)
 AC_PATH_PROG(DPKG_DEB, dpkg-deb)
 AC_PATH_PROG(RSYNC, rsync)
+if test x$win32 = xtrue; then
+  GUNZIP="gzip.exe\ -d"
+  AC_SUBST(GUNZIP)
+  UNZIP="unzip.exe"
+  AC_SUBST(UNZIP)
+else
 AC_PATH_PROG(GUNZIP, gunzip)
 AC_PATH_PROG(UNZIP, unzip)
+fi
 
 AC_PROG_CC
 AM_GNU_GETTEXT([external])

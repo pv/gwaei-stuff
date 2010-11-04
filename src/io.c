@@ -693,9 +693,12 @@ void gw_io_install_dictinfo (GwDictInfo *di,    int (*callback_function) (char*,
 
     char fallback_uri[100];
     gw_util_strncpy_fallback_from_key (fallback_uri, di->gckey, 100);
+    printf("fallback uri: %s\n", fallback_uri);
 
     char uri[100];
     gw_pref_get_string (uri, di->gckey, fallback_uri, 100);
+
+    printf("uri: %s\n", uri);
 
     if (long_messages == TRUE)
     {
