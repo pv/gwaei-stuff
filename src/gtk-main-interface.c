@@ -2014,6 +2014,7 @@ gboolean gw_ui_load_gtk_builder_xml (const char *filename) {
     //Try a local path first
     if (
         (path = g_build_filename ("xml", filename, NULL)) != NULL &&
+         g_file_test (path, G_FILE_TEST_IS_REGULAR) &&
          gtk_builder_add_from_file (builder, path,  NULL)
        )
     {
@@ -2025,6 +2026,7 @@ gboolean gw_ui_load_gtk_builder_xml (const char *filename) {
     //Try the global path next
     else if (
              (path = g_build_filename (DATADIR2, PACKAGE, filename, NULL)) != NULL &&
+              g_file_test (path, G_FILE_TEST_IS_REGULAR) &&
              gtk_builder_add_from_file (builder, path,  NULL)
             )
     {
@@ -2905,9 +2907,11 @@ void initialize_gui_interface (int argc, char *argv[])
       }
       //Enter the main loop
       gdk_threads_enter();
+
       gw_kanjipad_initialize (builder); //Kanjipad must be initalized within the thread not to lock it
 
 #ifndef G_OS_WIN32
+//TO DO: Windows threading is horrible with glib. Must fix somehow later.
       g_timeout_add_full (G_PRIORITY_DEFAULT_IDLE, 500,
                           (GSourceFunc)gw_ui_keep_searching, NULL,
                           (GDestroyNotify)NULL     );

@@ -116,18 +116,17 @@ static gboolean engine_input_handler (GIOChannel *source, GIOCondition condition
 //!
 void kanjipad_init_engine (GwKanjipad *pa)
 {
-#ifdef G_OS_WIN32
   char *dir = NULL;
   char *path = NULL;
   char *argv[2];
-
+#ifdef G_OS_WIN32
   if ((dir = g_get_current_dir ()) == NULL) exit(EXIT_FAILURE);
   if ((path = g_build_filename (dir, "..", "lib", PACKAGE, "kpengine.exe", NULL)) == NULL) exit(EXIT_FAILURE);
   argv[0] = path;
   argv[1] = NULL;
 #else
-    argv[0] = LIBDIR G_DIR_SEPARATOR_S PACKAGE G_DIR_SEPARATOR_S "kpengine";
-    argv[1] = NULL;
+  argv[0] = LIBDIR G_DIR_SEPARATOR_S PACKAGE G_DIR_SEPARATOR_S "kpengine";
+  argv[1] = NULL;
 #endif
     GError *err = NULL;
     //gchar *uninstalled;
@@ -167,12 +166,10 @@ void kanjipad_init_engine (GwKanjipad *pa)
 
     g_io_add_watch (pa->from_engine, G_IO_IN, engine_input_handler, NULL);
 
-#ifdef G_OS_WIN32
     g_free(path);
     path = NULL;
     g_free(dir);
     dir = NULL;
-#endif
 }
 
 

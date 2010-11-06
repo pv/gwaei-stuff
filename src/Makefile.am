@@ -13,29 +13,25 @@ uninstall-local: uninstall-symbolic-link
 install-symbolic-link: install-binPROGRAMS
 if ENABLE_WIN32
 	rm -f $(DESTDIR)$(bindir)/waei.exe
-	cp $(DESTDIR)$(bindir)/gwaei.exe $(DESTDIR)$(bindir)/waei.exe
 else
 	rm -f $(DESTDIR)$(bindir)/waei
 	cp $(DESTDIR)$(bindir)/gwaei $(DESTDIR)$(bindir)/waei
 endif
 uninstall-symbolic-link:
 if ENABLE_WIN32
-	rm -f $(DESTDIR)$(bindir)/waei.exe
 else
 	rm -f $(DESTDIR)$(bindir)/waei
 endif
 
 datadir = @datadir@
 localedir = $(datadir)/locale
-DEPS_DEFS =-DLOCALEDIR=\"$(localedir)\" -DVERSION=\"$(VERSION)\" -DPACKAGE=\"$(PACKAGE)\" -DBINDIR=\"$(bindir)\" -DRSYNC=\"$(RSYNC)\" -DUNZIP=\"$(UNZIP)\" -DGUNZIP=\"$(GUNZIP)\" -DDATADIR2=\"$(datadir)\" -DLIBDIR=\"$(libdir)\"
+DEFINITIONS =-DLOCALEDIR=\"$(localedir)\" -DVERSION=\"$(VERSION)\" -DPACKAGE=\"$(PACKAGE)\" -DBINDIR=\"$(bindir)\" -DRSYNC=\"$(RSYNC)\" -DUNZIP=\"$(UNZIP)\" -DGUNZIP=\"$(GUNZIP)\" -DDATADIR2=\"$(datadir)\" -DLIBDIR=\"$(libdir)\"
 #AM_CFLAGS = --pedantic -std=c99 -O2 -g
 
 
 gwaei_SOURCES = main.c dictinfo-object.c dictlist-object.c queryline-object.c engine.c utilities.c io.c regex.c console-main-interface.c searchitem-object.c historylist-object.c resultline-object.c
-#gwaei_LDADD = $(DEPS_LIBS) @LIBINTL@
-#INCLUDES = -I$(top_srcdir)/src/include $(DEPS_CFLAGS) $(DEPS_DEFS)
-gwaei_LDADD = 
-INCLUDES = -I$(top_srcdir)/src/include $(DEPS_DEFS)
+gwaei_LDADD =  @LIBINTL@
+INCLUDES = -I$(top_srcdir)/src/include  $(DEFINITIONS)
 
 ##WINDOWS SETUP
 if ENABLE_WIN32
@@ -60,20 +56,21 @@ gwaei_LDADD += $(WIN32_LIBS)
 gwaei_LDFLAGS = -mwindows
 gwaei_SOURCES += none-preferences.c
 gwaei_SOURCES += gtk-main-callbacks.c gtk-main-interface.c gtk-settings-callbacks.c gtk-settings-interface.c gtk-radicals-interface.c gtk-radicals-callbacks.c gtk-printing.c gtk-kanjipad-callbacks.c  gtk-kanjipad-interface.c gtk-kanjipad-interface-candidatearea.c gtk-kanjipad-interface-drawingarea.c gtk-main-interface-tabs.c gtk-settings-interface-install-line.c
-else
-gwaei_LDADD += $(DEPS_LIBS) @LIBINTL@
-INCLUDES += $(DEPS_CFLAGS)
+endif
 
 ##LINUX/UNIX/BSD SETUP
 if WITH_GNOME
 gwaei_SOURCES += gtk-gconf-preferences.c 
 gwaei_SOURCES += gtk-main-callbacks.c gtk-main-interface.c gtk-settings-callbacks.c gtk-settings-interface.c gtk-radicals-interface.c gtk-radicals-callbacks.c gtk-printing.c gtk-kanjipad-callbacks.c  gtk-kanjipad-interface.c gtk-kanjipad-interface-candidatearea.c gtk-kanjipad-interface-drawingarea.c gtk-main-interface-tabs.c gtk-settings-interface-install-line.c
-gwaei_LDADD += $(GNOME_LIBS)
+gwaei_LDADD += $(GNOME_LIBS) 
 GNOME_DEFS =-DWITH_GTK -DWITH_GCONF
 INCLUDES += $(GNOME_CFLAGS) $(GNOME_DEFS)
+
+##Setup with no GUI, base dependancies
 else
+gwaei_LDADD += $(DEPS_LIBS) 
+INCLUDES += $(DEPS_CFLAGS)
 gwaei_SOURCES += none-preferences.c
-endif
 endif
 
 if WITH_LIBUNIQUE

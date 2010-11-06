@@ -1,4 +1,4 @@
-AC_INIT(gwaei, 1.5.0)
+AC_INIT(gwaei, 1.5.0Dev)
 AC_CONFIG_SRCDIR([src/main.c])
 AM_INIT_AUTOMAKE
 AM_CONFIG_HEADER(config.h)
@@ -126,7 +126,12 @@ fi
 
 if test $gnome = true && test $win32 = false; then
   PKG_CHECK_MODULES(GNOME, gtk+-2.0           >= $GTK2_REQUIRED_VERSION
+                           glib-2.0           >= $GLIB_REQUIRED_VERSION
+                           gobject-2.0        >= $GLIB_REQUIRED_VERSION
+                           gmodule-2.0        >= $GMODULE_EXPORT_REQUIRED_VERSION 
+                           gthread-2.0        >= $GTHREAD_REQUIRED_VERSION       
                            gconf-2.0          >= $GCONF_REQUIRED_VERSION
+                           libcurl            >= $LIBCURL_REQUIRED_VERSION
                            gnome-doc-utils    >= $GDU_REQUIRED_VERSION )
   AC_SUBST(GNOME_CFLAGS)
   AC_SUBST(GNOME_LIBS)
