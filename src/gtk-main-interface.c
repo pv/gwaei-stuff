@@ -1420,11 +1420,10 @@ void gw_ui_set_font (char *font_description_string, int *font_magnification)
     //Get the font family
     if (font_description_string == NULL)
     {
-      /*
       if (use_global_font_setting)
-        gw_pref_get_string (font_family, GW_SCHEMA_GNOME_INTERFACE, GW_KEY_DOCUMENT_FONT_NAME, GW_DEFAULT_FONT, 100);
+          strcpy(font_family, "Sans 10");
+//        gw_pref_get_string (font_family, GW_SCHEMA_GNOME_INTERFACE, GW_KEY_DOCUMENT_FONT_NAME, GW_DEFAULT_FONT, 100);
       else
-        */
         gw_pref_get_string (font_family, GW_SCHEMA_FONT, GW_KEY_FONT_CUSTOM_FONT, GW_DEFAULT_FONT, 100);
     }
     else
