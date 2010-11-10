@@ -416,6 +416,9 @@ G_MODULE_EXPORT void do_set_color_to_swatch (GtkWidget *widget, gpointer data)
     hex_color_string = gdk_color_to_string (&color);
     char *pref_key = NULL;
     pref_key = g_strdup_printf ("%s", gtk_buildable_get_name (GTK_BUILDABLE (widget)));
+    char *letter = strchr(pref_key, '_');
+    if (letter == NULL) return;
+    *letter = '-';
 
     //Set the color inthe prefs
     if (pref_key != NULL && hex_color_string != NULL)

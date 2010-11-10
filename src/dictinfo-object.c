@@ -164,9 +164,11 @@ GwDictInfo* gw_dictinfo_new (char *name)
       temp->total_lines =  gw_io_get_total_lines_for_path (temp->path);
 */
     temp->total_lines = 0;
+
     char *key = NULL;
-    key = g_strdup_printf ("%s%s", temp->name, "_line_total");
+    key = g_strdup_printf ("%s%s", temp->name, "-total-lines");
     if (key != NULL) {
+      *key = g_ascii_tolower (*key);
       temp->total_lines = gw_pref_get_int(GW_SCHEMA_DICTIONARY, key, 0);
       g_free (key);
     }

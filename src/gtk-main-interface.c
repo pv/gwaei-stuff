@@ -987,12 +987,8 @@ void gw_ui_set_dictionary (int request)
       GtkWidget *radioitem = g_list_nth_data (children, request);
       if (radioitem != NULL)
       {
-        g_signal_handlers_block_by_func (radioitem, do_dictionary_changed_action, NULL);
-        g_signal_handlers_block_by_func (combobox, do_dictionary_changed_action, NULL);
         gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (radioitem), TRUE);
         gtk_combo_box_set_active (GTK_COMBO_BOX (combobox), request);
-        g_signal_handlers_unblock_by_func(radioitem, do_dictionary_changed_action, NULL);
-        g_signal_handlers_unblock_by_func(combobox, do_dictionary_changed_action, NULL);
       }
     }
 }
@@ -1424,9 +1420,11 @@ void gw_ui_set_font (char *font_description_string, int *font_magnification)
     //Get the font family
     if (font_description_string == NULL)
     {
+      /*
       if (use_global_font_setting)
         gw_pref_get_string (font_family, GW_SCHEMA_GNOME_INTERFACE, GW_KEY_DOCUMENT_FONT_NAME, GW_DEFAULT_FONT, 100);
       else
+        */
         gw_pref_get_string (font_family, GW_SCHEMA_FONT, GW_KEY_FONT_CUSTOM_FONT, GW_DEFAULT_FONT, 100);
     }
     else
@@ -1533,9 +1531,7 @@ void gw_ui_set_toolbar_show (gboolean request)
     GtkAction *action;
     action = GTK_ACTION (gtk_builder_get_object (builder, "view_toggle_toolbar_action"));
 
-    g_signal_handlers_block_by_func (action, do_toolbar_toggle, NULL);
     gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), request);
-    g_signal_handlers_unblock_by_func (action, do_toolbar_toggle, NULL);
 }
 
 
@@ -1548,7 +1544,6 @@ void gw_ui_set_less_relevant_show (gboolean request)
 {
   GtkAction *action;
   action = GTK_ACTION (gtk_builder_get_object(builder, "view_less_relevant_results_toggle_action"));
-
   g_signal_handlers_block_by_func (action, do_less_relevant_results_toggle, NULL);
   gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), request);
   g_signal_handlers_unblock_by_func (action, do_less_relevant_results_toggle, NULL);
@@ -1565,9 +1560,7 @@ void gw_ui_set_romaji_kana_conv (int request)
   GtkWidget *widget;
   widget = GTK_WIDGET (gtk_builder_get_object(builder, "query_romaji_to_kana"));
 
-  g_signal_handlers_block_by_func(widget, do_romaji_kana_conv_change, NULL);
   gtk_combo_box_set_active(GTK_COMBO_BOX (widget), request);
-  g_signal_handlers_unblock_by_func(widget, do_romaji_kana_conv_change, NULL);
 }
 
 
@@ -1581,9 +1574,9 @@ void gw_ui_set_hiragana_katakana_conv (gboolean request)
     GtkWidget *widget;
     if (widget = GTK_WIDGET (gtk_builder_get_object(builder, "query_hiragana_to_katakana")))
     {
-      g_signal_handlers_block_by_func(widget, do_hiragana_katakana_conv_toggle, NULL); 
+      g_signal_handlers_block_by_func (widget, do_hiragana_katakana_conv_toggle, NULL);
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (widget), request);
-      g_signal_handlers_unblock_by_func(widget, do_hiragana_katakana_conv_toggle, NULL); 
+      g_signal_handlers_unblock_by_func (widget, do_hiragana_katakana_conv_toggle, NULL);
     }
 }
 
@@ -1598,9 +1591,10 @@ void gw_ui_set_katakana_hiragana_conv (gboolean request)
     GtkWidget *widget;
     if (widget = GTK_WIDGET (gtk_builder_get_object(builder, "query_katakana_to_hiragana")))
     {
-      g_signal_handlers_block_by_func(widget, do_katakana_hiragana_conv_toggle, NULL); 
+      g_signal_handlers_block_by_func (widget, do_katakana_hiragana_conv_toggle, NULL);
+      
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (widget), request);
-      g_signal_handlers_unblock_by_func(widget, do_katakana_hiragana_conv_toggle, NULL); 
+      g_signal_handlers_unblock_by_func (widget, do_katakana_hiragana_conv_toggle, NULL);
     }
 }
 
@@ -1619,9 +1613,7 @@ void gw_ui_set_color_to_swatch (const char *widget_id, const char *hex_color_str
     GdkColor color;
     if (gdk_color_parse (hex_color_string, &color) == TRUE)
     {
-      g_signal_handlers_block_by_func (widget, do_set_color_to_swatch, NULL);
       gtk_color_button_set_color (GTK_COLOR_BUTTON (widget), &color);
-      g_signal_handlers_unblock_by_func (widget, do_set_color_to_swatch, NULL);
     }
 }
 
@@ -2042,11 +2034,11 @@ gboolean gw_ui_set_color_to_tagtable (char    *id,     GwTargetOutput TARGET,
       //Set the foreground color and reset if the value is odd
       if (set_fg)
       {
-        pref_key = g_strdup_printf ("%s_foreground", id);
+        pref_key = g_strdup_printf ("%s-foreground", id);
         if (pref_key != NULL)
         {
           gw_util_strncpy_fallback_from_key (fallback, pref_key, 100);
-          gw_pref_get_string (GW_SCHEMA_HIGHLIGHT, fg_color, pref_key, fallback, 100);
+          gw_pref_get_string (fg_color, GW_SCHEMA_HIGHLIGHT, pref_key, fallback, 100);
           if (gdk_color_parse (fg_color, &color) == FALSE)
           {
             gw_pref_set_string (GW_SCHEMA_HIGHLIGHT, pref_key, fallback);
@@ -2060,7 +2052,7 @@ gboolean gw_ui_set_color_to_tagtable (char    *id,     GwTargetOutput TARGET,
       //Set the background color and reset if the value is odd
       if (set_bg)
       {
-        pref_key = g_strdup_printf ("%s_background", id);
+        pref_key = g_strdup_printf ("%s-background", id);
         if (pref_key != NULL)
         {
           gw_util_strncpy_fallback_from_key (fallback, pref_key, 100);

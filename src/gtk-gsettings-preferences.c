@@ -62,7 +62,6 @@ int gw_pref_get_int (const char* schemaid, const char *key, const int backup)
     if ((settings = g_settings_new (schemaid)) != NULL)
     {
       value = g_settings_get_int (settings, key);
-      g_free (settings);
       return value;
     }
 
@@ -88,7 +87,6 @@ int gw_pref_get_default_int (const char* schemaid, const char *key, const int ba
       g_settings_reset (settings, key);
       default_value = g_settings_get_int (settings, key);
       g_settings_set_int (settings, key, current_value);
-      g_free (settings);
       return default_value;
     }
 
@@ -127,7 +125,6 @@ gboolean gw_pref_get_boolean (const char* schemaid, const char *key, const gbool
     if ((settings = g_settings_new (schemaid)) != NULL)
     {
       value = g_settings_get_boolean (settings, key);
-      g_free (settings);
       return value;
     }
 
@@ -153,7 +150,6 @@ gboolean gw_pref_get_default_boolean (const char* schemaid, const char *key, con
       g_settings_reset (settings, key);
       default_value = g_settings_get_boolean (settings, key);
       g_settings_set_boolean (settings, key, current_value);
-      g_free (settings);
       return current_value;
     }
 
@@ -174,7 +170,6 @@ void gw_pref_set_boolean (const char* schemaid, const char *key, const gboolean 
     if ((settings = g_settings_new (schemaid)) != NULL)
     {
       g_settings_set_boolean (settings, key, request);
-      g_free (settings);
     }
 }
 
@@ -194,7 +189,6 @@ void gw_pref_get_string (char *output, const char* schemaid, const char *key, co
     if ((settings = g_settings_new (schemaid)) != NULL)
     {
       value = g_settings_get_string (settings, key);
-      g_free (settings);
       if (value != NULL) 
         strncpy(output, value, n);
       else
@@ -231,7 +225,6 @@ void gw_pref_get_default_string (char* output, const char* schemaid, const char 
         }
       }
     }
-    g_free (settings);
     g_free (current_value);
     g_free (default_value);
 }
@@ -250,7 +243,6 @@ void gw_pref_set_string (const char* schemaid, const char *key, const char* requ
     if ((settings = g_settings_new (schemaid)) != NULL)
     {
       g_settings_set_string (settings, key, request);
-      g_free (settings);
     }
 }
 
@@ -267,12 +259,14 @@ void do_dictionary_source_pref_key_changed_action (GSettings *settings,
                                                    gchar *key,
                                                    gpointer data       )
 {
+    g_signal_handlers_block_by_func (settings, do_dictionary_source_pref_key_changed_action, NULL);
     gchar *value = g_settings_get_string (settings, key);
     if (value != NULL)
     {
       gw_ui_set_dictionary_source (data, value);
     }
     g_free (value);
+    g_signal_handlers_unblock_by_func (settings, do_dictionary_source_pref_key_changed_action, NULL);
 }
 
 
@@ -313,8 +307,10 @@ void do_toolbar_show_pref_changed_action (GSettings *settings,
                                           gchar *key,
                                           gpointer data       )
 {
+    g_signal_handlers_block_by_func (settings, do_toolbar_show_pref_changed_action, NULL);
     gboolean value = g_settings_get_boolean (settings, key);
     gw_ui_set_toolbar_show (value);
+    g_signal_handlers_unblock_by_func (settings, do_toolbar_show_pref_changed_action, NULL);
 }
 
 
@@ -330,9 +326,11 @@ void do_use_global_document_font_pref_changed_action (GSettings *settings,
                                                       gchar *key,
                                                       gpointer data       )
 {
+    g_signal_handlers_block_by_func (settings, do_use_global_document_font_pref_changed_action, NULL);
     gboolean value = g_settings_get_boolean (settings, key);
     gw_ui_set_use_global_document_font_checkbox (value);
     gw_ui_set_font (NULL, NULL);
+    g_signal_handlers_unblock_by_func (settings, do_use_global_document_font_pref_changed_action, NULL);
 }
 
 
@@ -370,6 +368,7 @@ void do_custom_document_font_pref_changed_action (GSettings *settings,
                                                   gchar *key,
                                                   gpointer data       )
 {
+    g_signal_handlers_block_by_func (settings, do_custom_document_font_pref_changed_action, NULL);
     gchar *value = g_settings_get_string (settings, key);
     if (value != NULL)
     {
@@ -377,6 +376,7 @@ void do_custom_document_font_pref_changed_action (GSettings *settings,
       gw_ui_set_font (NULL, NULL);
     }
     g_free (value);
+    g_signal_handlers_unblock_by_func (settings, do_custom_document_font_pref_changed_action, NULL);
 }
 
 
@@ -392,6 +392,7 @@ void do_font_magnification_pref_changed_action (GSettings *settings,
                                                 gchar *key,
                                                 gpointer data       )
 {
+    g_signal_handlers_block_by_func (settings, do_font_magnification_pref_changed_action, NULL);
     int magnification = g_settings_get_int (settings, key);
 
     //If the value is strange, get the default value, this function will get called again anvway
@@ -411,6 +412,7 @@ void do_font_magnification_pref_changed_action (GSettings *settings,
       gw_ui_set_font (NULL, &magnification);
       gw_ui_update_toolbar_buttons ();
     }
+    g_signal_handlers_unblock_by_func (settings, do_font_magnification_pref_changed_action, NULL);
 }
 
 
@@ -426,8 +428,11 @@ void do_less_relevant_show_pref_changed_action (GSettings *settings,
                                                 gchar *key,
                                                 gpointer data       )
 {
+    g_signal_handlers_block_by_func (settings, do_less_relevant_show_pref_changed_action, NULL);
     gboolean value = g_settings_get_boolean (settings, key);
+
     gw_ui_set_less_relevant_show (value);
+    g_signal_handlers_unblock_by_func (settings, do_less_relevant_show_pref_changed_action, NULL);
 }
 
 
@@ -443,11 +448,13 @@ void do_roman_kana_conv_pref_changed_action (GSettings *settings,
                                              gchar *key,
                                              gpointer data       )
 {
+    g_signal_handlers_block_by_func (settings, do_roman_kana_conv_pref_changed_action, NULL);
     int selection = g_settings_get_int (settings, key);
     if (selection <= 2 && selection >= 0)
       gw_ui_set_romaji_kana_conv(selection);
     else
       gw_ui_set_romaji_kana_conv(2);
+    g_signal_handlers_unblock_by_func (settings, do_roman_kana_conv_pref_changed_action, NULL);
 }
 
 
@@ -463,8 +470,10 @@ void do_hira_kata_conv_pref_changed_action (GSettings *settings,
                                             gchar *key,
                                             gpointer data       )
 {
-    gboolean value = g_settings_get_int (settings, key);
+    g_signal_handlers_block_by_func (settings, do_hira_kata_conv_pref_changed_action, NULL);
+    gboolean value = g_settings_get_boolean (settings, key);
     gw_ui_set_hiragana_katakana_conv(value);
+    g_signal_handlers_unblock_by_func (settings, do_hira_kata_conv_pref_changed_action, NULL);
 }
 
 
@@ -480,8 +489,10 @@ void do_kata_hira_conv_pref_changed_action (GSettings *settings,
                                             gchar *key,
                                             gpointer data       )
 {
-    gboolean value = g_settings_get_int (settings, key);
+    g_signal_handlers_block_by_func (settings, do_kata_hira_conv_pref_changed_action, NULL);
+    gboolean value = g_settings_get_boolean (settings, key);
     gw_ui_set_katakana_hiragana_conv(value);
+    g_signal_handlers_unblock_by_func (settings, do_kata_hira_conv_pref_changed_action, NULL);
 }
 
 
@@ -498,8 +509,10 @@ void do_spellcheck_pref_changed_action (GSettings *settings,
                                         gchar *key,
                                         gpointer data       )
 {
-    gboolean value = g_settings_get_int (settings, key);
+    g_signal_handlers_block_by_func (settings, do_spellcheck_pref_changed_action, NULL);
+    gboolean value = g_settings_get_boolean (settings, key);
     gw_sexy_ui_set_spellcheck (value);
+    g_signal_handlers_unblock_by_func (settings, do_spellcheck_pref_changed_action, NULL);
 }
 #endif
 
@@ -516,6 +529,7 @@ void do_color_value_changed_action (GSettings *settings,
                                     gchar *key,
                                     gpointer data       )
 {
+    g_signal_handlers_block_by_func (settings, do_color_value_changed_action, NULL);
     char hex_color[100];
     char fallback_value[100];
     gw_util_strncpy_fallback_from_key (fallback_value, key, 100);
@@ -528,8 +542,12 @@ void do_color_value_changed_action (GSettings *settings,
     }
 
     //Finish up
-    gw_ui_set_color_to_swatch (key, hex_color);
+    char *name = key;
+    char *letter  = strchr(name, '-');
+    if (letter != NULL) *letter = '_';
+    gw_ui_set_color_to_swatch (name, hex_color);
     gw_ui_buffer_reload_tagtable_tags ();
+    g_signal_handlers_unblock_by_func (settings, do_color_value_changed_action, NULL);
 }
 
 
@@ -543,10 +561,13 @@ void do_color_value_changed_action (GSettings *settings,
 void gw_prefs_add_change_listener (const char* schemaid, const char *key, void (*callback_function) (GSettings*, gchar*, gpointer), gpointer data)
 {
   GSettings *setting = g_settings_new (schemaid);
-  g_signal_connect (G_OBJECT (setting), "changed", G_CALLBACK (callback_function), data);
+  char signal_name[100];
+  strcpy(signal_name, "changed::");
+  strcat(signal_name, key);
+
+  g_signal_connect (G_OBJECT (setting), signal_name, G_CALLBACK (callback_function), data);
   GVariant *value = g_settings_get_value(setting, key);
   if (value != NULL) g_settings_set_value(setting, key, value);
-  g_free (value);
 }
 
 
@@ -556,16 +577,6 @@ void gw_prefs_add_change_listener (const char* schemaid, const char *key, void (
 void gw_prefs_initialize_preferences()
 {
   g_type_init();
-
-  //Add directory listeners gwaei will be using
-  /*
-  gconf_client_add_dir (client, GCPATH_INTERFACE, GCONF_CLIENT_PRELOAD_NONE, NULL);
-  gconf_client_add_dir (client, GCPATH_GW, GCONF_CLIENT_PRELOAD_NONE, NULL);
-  */
-
-  //Add preference change notifiers
-  gw_prefs_add_change_listener (GW_SCHEMA_GNOME_INTERFACE, GW_KEY_TOOLBAR_STYLE, do_toolbar_style_pref_changed_action, NULL);
-  gw_prefs_add_change_listener (GW_SCHEMA_GNOME_INTERFACE, GW_KEY_DOCUMENT_FONT_NAME, do_global_document_font_pref_changed_action, NULL);
 
   gw_prefs_add_change_listener (GW_SCHEMA_FONT, GW_KEY_FONT_USE_GLOBAL_FONT, do_use_global_document_font_pref_changed_action, NULL);
   gw_prefs_add_change_listener (GW_SCHEMA_FONT, GW_KEY_FONT_CUSTOM_FONT, do_custom_document_font_pref_changed_action, NULL);

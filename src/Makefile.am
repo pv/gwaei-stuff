@@ -53,10 +53,10 @@ WIN32_LIBS = $(WIN32_LIB) $(WIN32_REGEX_LIB) $(WIN32_CURL_LIB) $(WIN32_GLIB_LIB)
 
 INCLUDES += $(WIN32_REGEX_INCLUDE) $(WIN32_GETTEXT_INCLUDE) $(WIN32_DEFS)
 gwaei_LDADD += $(WIN32_LIBS)
-gwaei_LDFLAGS = -mwindows
-gwaei_SOURCES += none-preferences.c
+gwaei_LDFLAGS = -Wl,-subsystem,windows 
+gwaei_SOURCES += gtk-gsettings-preferences.c
 gwaei_SOURCES += gtk-main-callbacks.c gtk-main-interface.c gtk-settings-callbacks.c gtk-settings-interface.c gtk-radicals-interface.c gtk-radicals-callbacks.c gtk-printing.c gtk-kanjipad-callbacks.c  gtk-kanjipad-interface.c gtk-kanjipad-interface-candidatearea.c gtk-kanjipad-interface-drawingarea.c gtk-main-interface-tabs.c gtk-settings-interface-install-line.c
-endif
+else
 
 ##LINUX/UNIX/BSD SETUP
 if WITH_GNOME
@@ -71,6 +71,7 @@ else
 gwaei_LDADD += $(DEPS_LIBS) 
 INCLUDES += $(DEPS_CFLAGS)
 gwaei_SOURCES += none-preferences.c
+endif
 endif
 
 if WITH_LIBUNIQUE

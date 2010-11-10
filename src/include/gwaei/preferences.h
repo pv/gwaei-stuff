@@ -20,5 +20,6 @@ void gw_prefs_initialize_preferences(void);
 void do_dictionary_source_pref_key_changed_action (GSettings*, gchar*, gpointer);
 void gw_prefs_add_change_listener (const char*, const char*, void (GSettings*, gchar*, gpointer), gpointer);
 
+void do_kata_hira_conv_pref_changed_action (GSettings*, gchar*, gpointer);
 
 #endif

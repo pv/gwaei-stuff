@@ -202,8 +202,10 @@ static gboolean stream_results_thread (GwSearchItem *item)
       if (item->dictionary->total_lines != item->current_line) {
         item->dictionary->total_lines = item->current_line;
         char *key = NULL;
-        key = g_strdup_printf ("%s%s", item->dictionary->name, "_line_total");
+        key = g_strdup_printf ("%s%s", item->dictionary->name, "-total-lines");
+
         if (key != NULL) {
+          *key = g_ascii_tolower (*key);
           gw_pref_set_int(GW_SCHEMA_DICTIONARY, key, item->current_line);
           g_free (key);
         }

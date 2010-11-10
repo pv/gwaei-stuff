@@ -183,7 +183,8 @@ AC_PROG_CC
 AM_GNU_GETTEXT([external])
 AC_CONFIG_MACRO_DIR([m4])
 
-AC_CONFIG_FILES([Makefile src/Makefile mandir/Makefile help/Makefile help/gwaei.omf help/C/gwaei.xml src/gtk-builder-xml/Makefile src/images/Makefile src/schemas/Makefile src/desktop/Makefile src/kpengine/Makefile src/kpengine/conv_jdata.pl rpm/gwaei.spec rpm/fedora/SPECS/gwaei.spec src/schemas/org.gnome.gwaei.gschema.xml src/include/gwaei/definitions.h po/Makefile.in po/Makefile] Doxyfile)
+AC_CONFIG_FILES([Makefile src/Makefile mandir/Makefile help/Makefile help/gwaei.omf help/C/gwaei.xml src/gtk-builder-xml/Makefile src/images/Makefile src/schemas/Makefile src/desktop/Makefile src/kpengine/Makefile src/kpengine/conv_jdata.pl rpm/gwaei.spec rpm/fedora/SPECS/gwaei.spec src/include/gwaei/definitions.h po/Makefile.in po/Makefile src/schemas/org.gnome.gwaei.gschema.xml src/schemas/org.gnome.gwaei.highlight.gschema.xml src/schemas/org.gnome.gwaei.dictionary.gschema.xml src/schemas/org.gnome.gwaei.kanjipad_window.gschema.xml src/schemas/org.gnome.gwaei.main_window.gschema.xml src/schemas/org.gnome.gwaei.fonts.gschema.xml src/schemas/org.gnome.gwaei.radicals_window.gschema.xml] Doxyfile)
+
 AC_OUTPUT
 
 
