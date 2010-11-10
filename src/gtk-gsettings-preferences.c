@@ -56,6 +56,7 @@
 //!
 int gw_pref_get_int (const char* schemaid, const char *key, const int backup)
 {
+    printf("GW_PREF_GET_INT: %s %s %d\n", schemaid, key, backup);
     GSettings *settings = NULL;
     int value = 0;
 
@@ -77,6 +78,7 @@ int gw_pref_get_int (const char* schemaid, const char *key, const int backup)
 //!
 int gw_pref_get_default_int (const char* schemaid, const char *key, const int backup)
 {
+    printf("GW_PREF_GET_DEFAULT_INT: %s %s %d\n", schemaid, key, backup);
     GSettings *settings = NULL;
     int current_value = 0;
     int default_value = 0;
@@ -102,6 +104,7 @@ int gw_pref_get_default_int (const char* schemaid, const char *key, const int ba
 //!
 void gw_pref_set_int (const char* schemaid, const char *key, const int request)
 {
+    printf("GW_PREF_SET_INT: %s %s %d\n", schemaid, key, request);
     GSettings *settings = NULL;
 
     if ((settings = g_settings_new (schemaid)) != NULL)
@@ -119,6 +122,7 @@ void gw_pref_set_int (const char* schemaid, const char *key, const int request)
 //!
 gboolean gw_pref_get_boolean (const char* schemaid, const char *key, const gboolean backup)
 {
+    printf("GW_PREF_GET_BOOLEAN: %s %s %d\n", schemaid, key, backup);
     GSettings *settings = NULL;
     gboolean value = FALSE; 
 
@@ -140,6 +144,7 @@ gboolean gw_pref_get_boolean (const char* schemaid, const char *key, const gbool
 //!
 gboolean gw_pref_get_default_boolean (const char* schemaid, const char *key, const gboolean backup)
 {
+    printf("GW_PREF_GET_DEFAULT_BOOLEAN: %s %s %d\n", schemaid, key, backup);
     GSettings *settings = NULL;
     gboolean current_value = FALSE; 
     gboolean default_value = FALSE; 
@@ -165,6 +170,7 @@ gboolean gw_pref_get_default_boolean (const char* schemaid, const char *key, con
 //!
 void gw_pref_set_boolean (const char* schemaid, const char *key, const gboolean request)
 {
+    printf("GW_PREF_SET_BOOLEAN: %s %s %d\n", schemaid, key, request);
     GSettings *settings = NULL;
 
     if ((settings = g_settings_new (schemaid)) != NULL)
@@ -183,6 +189,7 @@ void gw_pref_set_boolean (const char* schemaid, const char *key, const gboolean 
 //!
 void gw_pref_get_string (char *output, const char* schemaid, const char *key, const char* backup, const int n)
 {
+    printf("GW_PREF_GET_STRING: %s %s %s\n", schemaid, key, backup);
     GSettings *settings = NULL;
     gchar *value = NULL; 
 
@@ -208,6 +215,7 @@ void gw_pref_get_string (char *output, const char* schemaid, const char *key, co
 //!
 void gw_pref_get_default_string (char* output, const char* schemaid, const char *key, const char* backup, const int n)
 {
+    printf("GW_PREF_GET_DEFAULT_STRING: %s %s %s\n", schemaid, key, backup);
     GSettings *settings = NULL;
     gchar* current_value = NULL; 
     gchar* default_value = NULL; 
@@ -238,6 +246,7 @@ void gw_pref_get_default_string (char* output, const char* schemaid, const char 
 //!
 void gw_pref_set_string (const char* schemaid, const char *key, const char* request)
 {
+    printf("GW_PREF_SET_STRING: %s %s %s\n", schemaid, key, request);
     GSettings *settings = NULL;
 
     if ((settings = g_settings_new (schemaid)) != NULL)

@@ -1530,7 +1530,9 @@ void gw_ui_set_toolbar_show (gboolean request)
     GtkAction *action;
     action = GTK_ACTION (gtk_builder_get_object (builder, "view_toggle_toolbar_action"));
 
+    g_signal_handlers_block_by_func (action, do_toolbar_toggle, NULL);
     gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), request);
+    g_signal_handlers_unblock_by_func (action, do_toolbar_toggle, NULL);
 }
 
 
