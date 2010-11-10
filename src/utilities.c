@@ -969,26 +969,26 @@ gboolean gw_util_force_japanese_locale ()
 //!
 void gw_util_strncpy_fallback_from_key (char *value, const char *key, int n)
 {
-    if (strcmp (GCKEY_GW_ENGLISH_SOURCE, key) == 0)
+    if (strcmp (GW_KEY_ENGLISH_SOURCE, key) == 0)
       strncpy (value, GW_ENGLISH_URI_FALLBACK, n);
-    else if (strcmp (GCKEY_GW_KANJI_SOURCE, key) == 0)
+    else if (strcmp (GW_KEY_KANJI_SOURCE, key) == 0)
       strncpy (value, GW_KANJI_URI_FALLBACK, n);
-    else if (strcmp (GCKEY_GW_NAMES_SOURCE, key) == 0)
+    else if (strcmp (GW_KEY_NAMES_SOURCE, key) == 0)
       strncpy (value, GW_NAMES_URI_FALLBACK, n);
-    else if (strcmp (GCKEY_GW_RADICALS_SOURCE, key) == 0)
+    else if (strcmp (GW_KEY_RADICALS_SOURCE, key) == 0)
       strncpy (value, GW_RADICALS_URI_FALLBACK, n);
-    else if (strcmp (GCKEY_GW_EXAMPLES_SOURCE, key) == 0)
+    else if (strcmp (GW_KEY_EXAMPLES_SOURCE, key) == 0)
       strncpy (value, GW_EXAMPLES_URI_FALLBACK, n);
 
-    else if (strcmp (GCKEY_GW_MATCH_FG, key) == 0)
+    else if (strcmp (GW_KEY_MATCH_FG, key) == 0)
       strncpy (value, GW_MATCH_FG_FALLBACK, n);
-    else if (strcmp (GCKEY_GW_MATCH_BG, key) == 0)
+    else if (strcmp (GW_KEY_MATCH_BG, key) == 0)
       strncpy (value, GW_MATCH_BG_FALLBACK, n);
-    else if (strcmp (GCKEY_GW_HEADER_FG, key) == 0)
+    else if (strcmp (GW_KEY_HEADER_FG, key) == 0)
       strncpy (value, GW_HEADER_FG_FALLBACK, n);
-    else if (strcmp (GCKEY_GW_HEADER_BG, key) == 0)
+    else if (strcmp (GW_KEY_HEADER_BG, key) == 0)
       strncpy (value, GW_HEADER_BG_FALLBACK, n);
-    else if (strcmp (GCKEY_GW_COMMENT_FG, key) == 0)
+    else if (strcmp (GW_KEY_COMMENT_FG, key) == 0)
       strncpy (value, GW_COMMENT_FG_FALLBACK, n);
 
     else

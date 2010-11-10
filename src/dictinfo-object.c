@@ -164,11 +164,11 @@ GwDictInfo* gw_dictinfo_new (char *name)
       temp->total_lines =  gw_io_get_total_lines_for_path (temp->path);
 */
     temp->total_lines = 0;
-    char *gcpath = NULL;
-    gcpath = g_strdup_printf ("%s%s%s%s", GCPATH_GW, "/dictionary/", temp->name, "_line_total");
-    if (gcpath != NULL) {
-      temp->total_lines = gw_pref_get_int(gcpath, 0);
-      g_free (gcpath);
+    char *key = NULL;
+    key = g_strdup_printf ("%s%s", temp->name, "_line_total");
+    if (key != NULL) {
+      temp->total_lines = gw_pref_get_int(GW_SCHEMA_DICTIONARY, key, 0);
+      g_free (key);
     }
 
     //Create id (to show special built in dictionaries)
@@ -176,28 +176,28 @@ GwDictInfo* gw_dictinfo_new (char *name)
     {
       temp->id = GW_DICT_ID_ENGLISH;
       temp->type = GW_DICT_TYPE_EDICT;
-      temp->gckey = g_strdup_printf ("%s", GCKEY_GW_ENGLISH_SOURCE);
+      temp->gckey = g_strdup_printf ("%s", GW_KEY_ENGLISH_SOURCE);
       temp->rsync = g_strdup_printf ("%s%s", RSYNC, " -v ftp.monash.edu.au::nihongo/edict ", temp->sync_path);
     }
     else if (strcmp (name, "Kanji") == 0)
     {
       temp->id = GW_DICT_ID_KANJI;
       temp->type = GW_DICT_TYPE_KANJI;
-      temp->gckey = g_strdup_printf ("%s", GCKEY_GW_KANJI_SOURCE);
+      temp->gckey = g_strdup_printf ("%s", GW_KEY_KANJI_SOURCE);
       temp->rsync = g_strdup_printf ("%s%s", RSYNC, " -v ftp.monash.edu.au::nihongo/kanjidic ", temp->sync_path);
     }
     else if (strcmp (name, "Radicals") == 0)
     {
       temp->id = GW_DICT_ID_RADICALS;
       temp->type = GW_DICT_TYPE_RADICALS;
-      temp->gckey = g_strdup_printf ("%s", GCKEY_GW_RADICALS_SOURCE);
+      temp->gckey = g_strdup_printf ("%s", GW_KEY_RADICALS_SOURCE);
       temp->rsync = NULL;
     }
     else if (strcmp (name, "Names") == 0)
     {
       temp->id = GW_DICT_ID_NAMES;
       temp->type = GW_DICT_TYPE_EDICT;
-      temp->gckey = g_strdup_printf ("%s", GCKEY_GW_NAMES_SOURCE);
+      temp->gckey = g_strdup_printf ("%s", GW_KEY_NAMES_SOURCE);
       temp->rsync = g_strdup_printf ("%s%s", RSYNC, " -v ftp.monash.edu.au::nihongo/enamdict ", temp->sync_path);
     }
     else if (strcmp (name, "Places") == 0)
@@ -211,7 +211,7 @@ GwDictInfo* gw_dictinfo_new (char *name)
     {
       temp->id = GW_DICT_ID_EXAMPLES;
       temp->type = GW_DICT_TYPE_EXAMPLES;
-      temp->gckey = g_strdup_printf ("%s", GCKEY_GW_EXAMPLES_SOURCE);
+      temp->gckey = g_strdup_printf ("%s", GW_KEY_EXAMPLES_SOURCE);
       temp->rsync = NULL;
       temp->total_lines =  temp->total_lines / 2;
     }
@@ -219,7 +219,7 @@ GwDictInfo* gw_dictinfo_new (char *name)
     {
       temp->id = GW_DICT_ID_FRENCH;
       temp->type = GW_DICT_TYPE_EDICT;
-      temp->gckey = g_strdup_printf ("%s", GCKEY_GW_FRENCH_SOURCE);
+      temp->gckey = g_strdup_printf ("%s", GW_KEY_FRENCH_SOURCE);
       temp->rsync = NULL;
       if (temp->gz_path != NULL) g_free (temp->gz_path);
       if (temp->sync_path != NULL) g_free (temp->sync_path);
@@ -230,14 +230,14 @@ GwDictInfo* gw_dictinfo_new (char *name)
     {
       temp->id = GW_DICT_ID_GERMAN;
       temp->type = GW_DICT_TYPE_EDICT;
-      temp->gckey = g_strdup_printf ("%s", GCKEY_GW_GERMAN_SOURCE);
+      temp->gckey = g_strdup_printf ("%s", GW_KEY_GERMAN_SOURCE);
       temp->rsync = NULL;
     }
     else if (strcmp (name, "Spanish") == 0)
     {
       temp->id = GW_DICT_ID_SPANISH;
       temp->type = GW_DICT_TYPE_EDICT;
-      temp->gckey = g_strdup_printf ("%s", GCKEY_GW_SPANISH_SOURCE);
+      temp->gckey = g_strdup_printf ("%s", GW_KEY_SPANISH_SOURCE);
       temp->rsync = NULL;
       if (temp->gz_path != NULL) g_free (temp->gz_path);
       if (temp->sync_path != NULL) g_free (temp->sync_path);

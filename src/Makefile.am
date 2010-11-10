@@ -25,7 +25,7 @@ endif
 
 datadir = @datadir@
 localedir = $(datadir)/locale
-DEFINITIONS =-DLOCALEDIR=\"$(localedir)\" -DVERSION=\"$(VERSION)\" -DPACKAGE=\"$(PACKAGE)\" -DBINDIR=\"$(bindir)\" -DRSYNC=\"$(RSYNC)\" -DUNZIP=\"$(UNZIP)\" -DGUNZIP=\"$(GUNZIP)\" -DDATADIR2=\"$(datadir)\" -DLIBDIR=\"$(libdir)\"
+DEFINITIONS =-DLOCALEDIR=\"$(localedir)\" -DVERSION=\"$(VERSION)\" -DPACKAGE=\"$(PACKAGE)\" -DBINDIR=\"$(bindir)\" -DRSYNC=\"$(RSYNC)\" -DUNZIP=\"$(UNZIP)\" -DGUNZIP=\"$(GUNZIP)\" -DDATADIR2=\"$(datadir)\" -DLIBDIR=\"$(libdir)\" -DGTK_DISABLE_DEPRECATED -DG_SEAL_ENABLE
 #AM_CFLAGS = --pedantic -std=c99 -O2 -g
 
 
@@ -60,10 +60,10 @@ endif
 
 ##LINUX/UNIX/BSD SETUP
 if WITH_GNOME
-gwaei_SOURCES += gtk-gconf-preferences.c 
+gwaei_SOURCES += gtk-gsettings-preferences.c 
 gwaei_SOURCES += gtk-main-callbacks.c gtk-main-interface.c gtk-settings-callbacks.c gtk-settings-interface.c gtk-radicals-interface.c gtk-radicals-callbacks.c gtk-printing.c gtk-kanjipad-callbacks.c  gtk-kanjipad-interface.c gtk-kanjipad-interface-candidatearea.c gtk-kanjipad-interface-drawingarea.c gtk-main-interface-tabs.c gtk-settings-interface-install-line.c
 gwaei_LDADD += $(GNOME_LIBS) 
-GNOME_DEFS =-DWITH_GTK -DWITH_GCONF
+GNOME_DEFS =-DWITH_GTK
 INCLUDES += $(GNOME_CFLAGS) $(GNOME_DEFS)
 
 ##Setup with no GUI, base dependancies

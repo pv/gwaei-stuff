@@ -697,7 +697,7 @@ void gw_io_install_dictinfo (GwDictInfo *di,    int (*callback_function) (char*,
     printf("fallback uri: %s\n", fallback_uri);
 
     char uri[100];
-    gw_pref_get_string (uri, di->gckey, fallback_uri, 100);
+    gw_pref_get_string (uri, GW_SCHEMA_DICTIONARY, di->gckey, fallback_uri, 100);
 
     printf("uri: %s\n", uri);
 

@@ -354,8 +354,8 @@ static void *install_thread (gpointer data)
 G_MODULE_EXPORT void do_hiragana_katakana_conv_toggle (GtkWidget *widget, gpointer data)
 {
     gboolean state;
-    state = gw_pref_get_boolean (GCKEY_GW_HIRA_KATA, TRUE);
-    gw_pref_set_boolean (GCKEY_GW_HIRA_KATA, !state);
+    state = gw_pref_get_boolean (GW_SCHEMA_BASE, GW_KEY_HIRA_KATA, TRUE);
+    gw_pref_set_boolean (GW_SCHEMA_BASE, GW_KEY_HIRA_KATA, !state);
 }
 
 
@@ -368,8 +368,8 @@ G_MODULE_EXPORT void do_hiragana_katakana_conv_toggle (GtkWidget *widget, gpoint
 G_MODULE_EXPORT void do_katakana_hiragana_conv_toggle (GtkWidget *widget, gpointer data)
 {
     gboolean state;
-    state = gw_pref_get_boolean (GCKEY_GW_KATA_HIRA, TRUE);
-    gw_pref_set_boolean (GCKEY_GW_KATA_HIRA, !state);
+    state = gw_pref_get_boolean (GW_SCHEMA_BASE, GW_KEY_KATA_HIRA, TRUE);
+    gw_pref_set_boolean (GW_SCHEMA_BASE, GW_KEY_KATA_HIRA, !state);
 }
 
 
@@ -382,8 +382,8 @@ G_MODULE_EXPORT void do_katakana_hiragana_conv_toggle (GtkWidget *widget, gpoint
 G_MODULE_EXPORT void do_spellcheck_toggle (GtkWidget *widget, gpointer data)
 {
     gboolean state;
-    state = gw_pref_get_boolean (GCKEY_GW_SPELLCHECK, TRUE);
-    gw_pref_set_boolean (GCKEY_GW_SPELLCHECK, !state);
+    state = gw_pref_get_boolean (GW_SCHEMA_BASE, GW_KEY_SPELLCHECK, TRUE);
+    gw_pref_set_boolean (GW_SCHEMA_BASE, GW_KEY_SPELLCHECK, !state);
 }
 
 
@@ -397,7 +397,7 @@ G_MODULE_EXPORT void do_romaji_kana_conv_change (GtkWidget *widget, gpointer dat
 {
     int active;
     active = gtk_combo_box_get_active(GTK_COMBO_BOX (widget));
-    gw_pref_set_int (GCKEY_GW_ROMAN_KANA, active);
+    gw_pref_set_int (GW_SCHEMA_BASE, GW_KEY_ROMAN_KANA, active);
 }
 
 
@@ -415,12 +415,12 @@ G_MODULE_EXPORT void do_set_color_to_swatch (GtkWidget *widget, gpointer data)
     char *hex_color_string = NULL;
     hex_color_string = gdk_color_to_string (&color);
     char *pref_key = NULL;
-    pref_key = g_strdup_printf (GCPATH_GW_HIGHLIGHT "%s", gtk_buildable_get_name (GTK_BUILDABLE (widget)));
+    pref_key = g_strdup_printf ("%s", gtk_buildable_get_name (GTK_BUILDABLE (widget)));
 
     //Set the color inthe prefs
     if (pref_key != NULL && hex_color_string != NULL)
     {
-      gw_pref_set_string (pref_key, hex_color_string);
+      gw_pref_set_string (GW_SCHEMA_HIGHLIGHT, pref_key, hex_color_string);
     }
 
     //Cleanup
@@ -449,11 +449,11 @@ G_MODULE_EXPORT void do_color_reset_for_swatches (GtkWidget *widget, gpointer da
     char fallback[100];
     int i = 0;
     char *pref_key[] = {
-      GCKEY_GW_MATCH_FG,
-      GCKEY_GW_MATCH_BG,
-      GCKEY_GW_HEADER_FG,
-      GCKEY_GW_HEADER_BG,
-      GCKEY_GW_COMMENT_FG,
+      GW_KEY_MATCH_FG,
+      GW_KEY_MATCH_BG,
+      GW_KEY_HEADER_FG,
+      GW_KEY_HEADER_BG,
+      GW_KEY_COMMENT_FG,
       NULL
     };
 
@@ -463,9 +463,9 @@ G_MODULE_EXPORT void do_color_reset_for_swatches (GtkWidget *widget, gpointer da
     for (i = 0; pref_key[i] != NULL; i++)
     {
       gw_util_strncpy_fallback_from_key (fallback, pref_key[i], 100);
-      gw_pref_get_default_string (default_hex_color_string, pref_key[i], fallback, 100);
+      gw_pref_get_default_string (default_hex_color_string, GW_SCHEMA_HIGHLIGHT, pref_key[i], fallback, 100);
       if (default_hex_color_string != NULL)
-        gw_pref_set_string (pref_key[i], default_hex_color_string);
+        gw_pref_set_string (GW_SCHEMA_HIGHLIGHT, pref_key[i], default_hex_color_string);
     }
 
     gw_ui_buffer_reload_tagtable_tags();
@@ -549,7 +549,7 @@ G_MODULE_EXPORT void do_remove_dictionary_from_order_prefs (GtkTreeModel *tree_m
 
     //Parse the string
     char order[5000];
-    gw_pref_get_string (order, GCKEY_GW_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
+    gw_pref_get_string (order, GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
     char *long_name_list[50];
     char **condensed_name_list[50];
     long_name_list[0] = order;
@@ -621,7 +621,7 @@ G_MODULE_EXPORT void do_remove_dictionary_from_order_prefs (GtkTreeModel *tree_m
       i++;
     }
     output[strlen(output) - 1] = '\0';
-    gw_pref_set_string (GCKEY_GW_LOAD_ORDER, output);
+    gw_pref_set_string (GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, output);
     added_to == -1;
 
     gw_ui_update_dictionary_order_list ();
@@ -658,7 +658,7 @@ G_MODULE_EXPORT void do_source_entry_changed_action (GtkWidget *widget, gpointer
       GwUiDictInstallLine *il = (GwUiDictInstallLine*) data;
       char value[FILENAME_MAX];
       strcpy(value, gtk_entry_get_text(GTK_ENTRY (widget)));
-      gw_pref_set_string (il->di->gckey, value);
+      gw_pref_set_string (GW_SCHEMA_DICTIONARY, il->di->gckey, value);
     }
 }
 
@@ -677,8 +677,8 @@ G_MODULE_EXPORT void do_dictionary_source_reset (GtkWidget *widget, gpointer dat
       char source_string[100];
       char fallback[100];
       gw_util_strncpy_fallback_from_key (fallback, il->di->gckey, 100);
-      gw_pref_get_default_string (source_string, il->di->gckey, fallback, 100);
-      gw_pref_set_string (il->di->gckey, source_string);
+      gw_pref_get_default_string (GW_SCHEMA_DICTIONARY, source_string, il->di->gckey, fallback, 100);
+      gw_pref_set_string (GW_SCHEMA_DICTIONARY, il->di->gckey, source_string);
     }
 }
 
@@ -863,7 +863,7 @@ G_MODULE_EXPORT void do_move_dictionary_up (GtkWidget *widget, gpointer data)
 
     //Parse the string
     char order[5000];
-    gw_pref_get_string (order, GCKEY_GW_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
+    gw_pref_get_string (order, GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
     char *long_name_list[50];
     char **condensed_name_list[50];
     long_name_list[0] = order;
@@ -917,7 +917,7 @@ G_MODULE_EXPORT void do_move_dictionary_up (GtkWidget *widget, gpointer data)
       i++;
     }
     output[strlen(output) - 1] = '\0';
-    gw_pref_set_string (GCKEY_GW_LOAD_ORDER, output);
+    gw_pref_set_string (GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, output);
 
     gw_ui_update_dictionary_order_list ();
     gw_ui_update_settings_interface ();
@@ -955,7 +955,7 @@ G_MODULE_EXPORT void do_move_dictionary_down (GtkWidget *widget, gpointer data)
 
     //Parse the string
     char order[5000];
-    gw_pref_get_string (order, GCKEY_GW_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
+    gw_pref_get_string (order, GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
     char *long_name_list[50];
     char **condensed_name_list[50];
     long_name_list[0] = order;
@@ -1011,7 +1011,7 @@ G_MODULE_EXPORT void do_move_dictionary_down (GtkWidget *widget, gpointer data)
       i++;
     }
     output[strlen(output) - 1] = '\0';
-    gw_pref_set_string (GCKEY_GW_LOAD_ORDER, output);
+    gw_pref_set_string (GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, output);
 
     gw_ui_update_dictionary_order_list ();
     gw_ui_update_settings_interface ();
@@ -1021,8 +1021,8 @@ G_MODULE_EXPORT void do_move_dictionary_down (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void do_reset_dictionary_orders (GtkWidget *widget, gpointer data)
 {
     char dictionary_orders[5000];
-    gw_pref_get_default_string (dictionary_orders, GCKEY_GW_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
-    gw_pref_set_string (GCKEY_GW_LOAD_ORDER, dictionary_orders);
+    gw_pref_get_default_string (dictionary_orders, GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
+    gw_pref_set_string (GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, dictionary_orders);
     rebuild_combobox_dictionary_list();
     gw_ui_update_settings_interface();
 }
@@ -1055,8 +1055,8 @@ G_MODULE_EXPORT void do_toggle_advanced_source (GtkWidget *widget, gpointer data
 G_MODULE_EXPORT void do_toggle_use_global_document_font (GtkWidget *widget, gpointer data)
 {
     gboolean state;
-    state = gw_pref_get_boolean (GCKEY_GW_FONT_USE_GLOBAL_FONT, TRUE);
-    gw_pref_set_boolean (GCKEY_GW_FONT_USE_GLOBAL_FONT, !state);
+    state = gw_pref_get_boolean (GW_SCHEMA_FONT, GW_KEY_FONT_USE_GLOBAL_FONT, TRUE);
+    gw_pref_set_boolean (GW_SCHEMA_FONT, GW_KEY_FONT_USE_GLOBAL_FONT, !state);
 }
 
 
@@ -1070,7 +1070,7 @@ G_MODULE_EXPORT void do_set_custom_document_font (GtkWidget *widget, gpointer da
 {
     GtkWidget *button = GTK_WIDGET (gtk_builder_get_object (builder, "custom_font_fontbutton"));
     const char *font_description_string = gtk_font_button_get_font_name (GTK_FONT_BUTTON (button));
-    gw_pref_set_string (GCKEY_GW_FONT_CUSTOM_FONT, font_description_string);
+    gw_pref_set_string (GW_SCHEMA_FONT, GW_KEY_FONT_CUSTOM_FONT, font_description_string);
 }
 
 

@@ -144,8 +144,8 @@ void gw_ui_update_settings_interface ()
 
     char current_order[5000];
     char default_order[5000];
-    gw_pref_get_string (current_order, GCKEY_GW_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
-    gw_pref_get_default_string (default_order, GCKEY_GW_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
+    gw_pref_get_string (current_order, GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
+    gw_pref_get_default_string (default_order, GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
     gtk_widget_set_sensitive (reset_order_button, strcmp (default_order, current_order) != 0);
 }
 

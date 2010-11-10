@@ -348,7 +348,7 @@ G_MODULE_EXPORT void do_tab_remove_current (GtkWidget *widget, gpointer data)
 //! @param widget Currently unused widget pointer
 //! @param data Currently unused gpointer
 //!
-G_MODULE_EXPORT void do_tab_switch (GtkNotebook *notebook, GtkNotebookPage *page, int page_num, gpointer data)
+G_MODULE_EXPORT void do_tab_switch (GtkNotebook *notebook, GtkWidget *page, int page_num, gpointer data)
 {
     GwSearchItem *item = g_list_nth_data (gw_tab_searchitems, page_num);
     gw_tab_update_appearance_with_searchitem (item);

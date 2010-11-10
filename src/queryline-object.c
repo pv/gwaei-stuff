@@ -148,12 +148,12 @@ int gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
    strncpy(ql->string, string, MAX_QUERY); 
 
    //Load the preference settings
-   int rk_conv_pref = gw_pref_get_int (GCKEY_GW_ROMAN_KANA, 0);
+   int rk_conv_pref = gw_pref_get_int (GW_SCHEMA_BASE, GW_KEY_ROMAN_KANA, 0);
    gboolean want_rk_conv = (rk_conv_pref == 0 || (rk_conv_pref == 2 && !gw_util_is_japanese_locale()));
    gboolean want_hk_conv;
-   want_hk_conv = gw_pref_get_boolean (GCKEY_GW_HIRA_KATA, TRUE);
+   want_hk_conv = gw_pref_get_boolean (GW_SCHEMA_BASE, GW_KEY_HIRA_KATA, TRUE);
    gboolean want_kh_conv;
-   want_kh_conv = gw_pref_get_boolean (GCKEY_GW_KATA_HIRA, TRUE);
+   want_kh_conv = gw_pref_get_boolean (GW_SCHEMA_BASE, GW_KEY_KATA_HIRA, TRUE);
    ql->hira_string[0] = '\0';
 
    //Create atoms
@@ -332,7 +332,7 @@ int gw_queryline_parse_kanjidict_string (GwQueryLine *ql, const char* string)
     int length;
     char atom[MAX_QUERY];
     regmatch_t pmatch[nmatch];
-    int rk_conv_pref = gw_pref_get_int (GCKEY_GW_ROMAN_KANA, 0);
+    int rk_conv_pref = gw_pref_get_int (GW_SCHEMA_BASE, GW_KEY_ROMAN_KANA, 0);
     gboolean want_rk_conv = (rk_conv_pref == 0 || (rk_conv_pref == 2 && !gw_util_is_japanese_locale()));
 
     //Get stroke
@@ -484,12 +484,12 @@ int gw_queryline_parse_exampledict_string (GwQueryLine *ql, const char* string)
    strncpy(ql->string, string, MAX_QUERY); 
 
    //Load the preference settings
-   int rk_conv_pref = gw_pref_get_int (GCKEY_GW_ROMAN_KANA, 0);
+   int rk_conv_pref = gw_pref_get_int (GW_SCHEMA_BASE, GW_KEY_ROMAN_KANA, 0);
    gboolean want_rk_conv = (rk_conv_pref == 0 || (rk_conv_pref == 2 && !gw_util_is_japanese_locale()));
    gboolean want_hk_conv;
-   want_hk_conv = gw_pref_get_boolean (GCKEY_GW_HIRA_KATA, TRUE);
+   want_hk_conv = gw_pref_get_boolean (GW_SCHEMA_BASE, GW_KEY_HIRA_KATA, TRUE);
    gboolean want_kh_conv;
-   want_kh_conv = gw_pref_get_boolean (GCKEY_GW_KATA_HIRA, TRUE);
+   want_kh_conv = gw_pref_get_boolean (GW_SCHEMA_BASE, GW_KEY_KATA_HIRA, TRUE);
    ql->hira_string[0] = '\0';
 
    //Create atoms

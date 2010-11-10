@@ -688,7 +688,7 @@ void gw_dictlist_update_dictionary_order_list ()
 {
     //Get the pref string
     char order[5000];
-    gw_pref_get_string (order, GCKEY_GW_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
+    gw_pref_get_string (order, GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
 
     //Make sure all the dictionaries are in there
     GList* list = gw_dictlist_get_list();
@@ -757,7 +757,7 @@ void gw_dictlist_update_dictionary_order_list ()
     }
     new_order[strlen(new_order) - 1] = '\0';
     names[i] = NULL;
-    gw_pref_set_string (GCKEY_GW_LOAD_ORDER, new_order);
+    gw_pref_set_string (GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, new_order);
 }
 
 

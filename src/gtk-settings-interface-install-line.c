@@ -135,7 +135,7 @@ GwUiDictInstallLine *gw_ui_new_dict_install_line (GwDictInfo *di)
       gtk_widget_set_size_request (GTK_WIDGET (alignment), 20, -1);
       temp->source_browse_button = gtk_button_new_with_label (gettext("Browse..."));
       g_signal_connect (G_OBJECT (temp->source_browse_button), "clicked", G_CALLBACK (do_dictionary_source_browse), temp);
-      gw_prefs_add_change_listener (di->gckey, do_dictionary_source_gconf_key_changed_action, temp->source_uri_entry);
+      gw_prefs_add_change_listener (GW_SCHEMA_DICTIONARY, di->gckey, do_dictionary_source_pref_key_changed_action, temp->source_uri_entry);
       temp->source_reset_button = gtk_button_new_with_label (gettext("Reset"));
       g_signal_connect (G_OBJECT (temp->source_reset_button), "clicked", G_CALLBACK (do_dictionary_source_reset), temp);
 

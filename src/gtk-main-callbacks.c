@@ -647,9 +647,9 @@ G_MODULE_EXPORT void do_save (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void do_zoom_in (GtkWidget *widget, gpointer data)
 {
     int size;
-    size = gw_pref_get_int (GCKEY_GW_FONT_MAGNIFICATION, GW_DEFAULT_FONT_MAGNIFICATION) + GW_FONT_ZOOM_STEP;
+    size = gw_pref_get_int (GW_SCHEMA_FONT, GW_KEY_FONT_MAGNIFICATION, GW_DEFAULT_FONT_MAGNIFICATION) + GW_FONT_ZOOM_STEP;
     if (size <= GW_MAX_FONT_MAGNIFICATION)
-      gw_pref_set_int (GCKEY_GW_FONT_MAGNIFICATION, size);
+      gw_pref_set_int (GW_SCHEMA_FONT, GW_KEY_FONT_MAGNIFICATION, size);
 }
 
 
@@ -667,9 +667,9 @@ G_MODULE_EXPORT void do_zoom_in (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void do_zoom_out (GtkWidget *widget, gpointer data)
 {
     int size;
-    size = gw_pref_get_int (GCKEY_GW_FONT_MAGNIFICATION, GW_DEFAULT_FONT_MAGNIFICATION) - GW_FONT_ZOOM_STEP;
+    size = gw_pref_get_int (GW_SCHEMA_FONT, GW_KEY_FONT_MAGNIFICATION, GW_DEFAULT_FONT_MAGNIFICATION) - GW_FONT_ZOOM_STEP;
     if (size >= GW_MIN_FONT_MAGNIFICATION)
-      gw_pref_set_int (GCKEY_GW_FONT_MAGNIFICATION, size);
+      gw_pref_set_int (GW_SCHEMA_FONT, GW_KEY_FONT_MAGNIFICATION, size);
 }
 
 
@@ -687,8 +687,8 @@ G_MODULE_EXPORT void do_zoom_out (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void do_zoom_100 (GtkWidget *widget, gpointer data)
 {
     int size;
-    size = gw_pref_get_default_int (GCKEY_GW_FONT_MAGNIFICATION, GW_DEFAULT_FONT_MAGNIFICATION);
-    gw_pref_set_int (GCKEY_GW_FONT_MAGNIFICATION, size);
+    size = gw_pref_get_default_int (GW_SCHEMA_FONT, GW_KEY_FONT_MAGNIFICATION, GW_DEFAULT_FONT_MAGNIFICATION);
+    gw_pref_set_int (GW_SCHEMA_FONT, GW_KEY_FONT_MAGNIFICATION, size);
 }
 
 
@@ -707,8 +707,8 @@ G_MODULE_EXPORT void do_zoom_100 (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void do_less_relevant_results_toggle (GtkWidget *widget, gpointer data)
 {
     gboolean state;
-    state = gw_pref_get_boolean (GCKEY_GW_LESS_RELEVANT_SHOW, TRUE);
-    gw_pref_set_boolean (GCKEY_GW_LESS_RELEVANT_SHOW, !state);
+    state = gw_pref_get_boolean (GW_SCHEMA_BASE, GW_KEY_LESS_RELEVANT_SHOW, TRUE);
+    gw_pref_set_boolean (GW_SCHEMA_BASE, GW_KEY_LESS_RELEVANT_SHOW, !state);
 }
 
 
@@ -726,8 +726,8 @@ G_MODULE_EXPORT void do_less_relevant_results_toggle (GtkWidget *widget, gpointe
 G_MODULE_EXPORT void do_toolbar_toggle (GtkWidget *widget, gpointer data)
 {
     gboolean state;
-    state = gw_pref_get_boolean (GCKEY_GW_TOOLBAR_SHOW, TRUE);
-    gw_pref_set_boolean (GCKEY_GW_TOOLBAR_SHOW, !state);
+    state = gw_pref_get_boolean (GW_SCHEMA_BASE, GW_KEY_TOOLBAR_SHOW, TRUE);
+    gw_pref_set_boolean (GW_SCHEMA_BASE, GW_KEY_TOOLBAR_SHOW, !state);
 }
 
 
@@ -1362,8 +1362,7 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
     GList *list = gw_dictlist_get_selected ();
     GwDictInfo *dictionary = list->data;
 
-    char *gckey = GCKEY_GW_LESS_RELEVANT_SHOW; 
-    gboolean show_less_relevant = gw_pref_get_boolean (gckey, TRUE);
+    gboolean show_less_relevant = gw_pref_get_boolean (GW_SCHEMA_BASE, GW_KEY_LESS_RELEVANT_SHOW, TRUE);
 
     //Stop empty searches
     if (strlen (query) == 0)

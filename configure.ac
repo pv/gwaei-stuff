@@ -8,12 +8,12 @@ AC_SUBST(RELEASE)
 
 ##General Dependencies
 GLIB_REQUIRED_VERSION=2.10.0
+GIO_REQUIRED_VERSION=2.26.0
 GTHREAD_REQUIRED_VERSION=2.16.0
 LIBCURL_REQUIRED_VERSION=7.18.0
 GMODULE_EXPORT_REQUIRED_VERSION=2.16.0
 #GTK Base Dependencies
 GTK2_REQUIRED_VERSION=2.16.0
-GCONF_REQUIRED_VERSION=2.22.0
 GDU_REQUIRED_VERSION=0.13.0
 #GTK Optional Dependencies
 LIBUNIQUE_REQUIRED_VERSION=1.0.0
@@ -115,6 +115,7 @@ AM_CONDITIONAL([WITH_LIBSEXY], [test x$libsexy = xtrue && test x$gnome = xtrue &
 AC_CHECK_LIB(m, sqrt)
 if test $win32 = false; then
   PKG_CHECK_MODULES(DEPS, glib-2.0           >= $GLIB_REQUIRED_VERSION
+                          gio-2.0            >= $GIO_REQUIRED_VERSION
                           gobject-2.0        >= $GLIB_REQUIRED_VERSION
                           libcurl            >= $LIBCURL_REQUIRED_VERSION
                           gmodule-2.0        >= $GMODULE_EXPORT_REQUIRED_VERSION 
@@ -126,11 +127,11 @@ fi
 
 if test $gnome = true && test $win32 = false; then
   PKG_CHECK_MODULES(GNOME, gtk+-2.0           >= $GTK2_REQUIRED_VERSION
+                           gio-2.0            >= $GIO_REQUIRED_VERSION
                            glib-2.0           >= $GLIB_REQUIRED_VERSION
                            gobject-2.0        >= $GLIB_REQUIRED_VERSION
                            gmodule-2.0        >= $GMODULE_EXPORT_REQUIRED_VERSION 
                            gthread-2.0        >= $GTHREAD_REQUIRED_VERSION       
-                           gconf-2.0          >= $GCONF_REQUIRED_VERSION
                            libcurl            >= $LIBCURL_REQUIRED_VERSION
                            gnome-doc-utils    >= $GDU_REQUIRED_VERSION )
   AC_SUBST(GNOME_CFLAGS)
@@ -160,11 +161,8 @@ if test $ncurses = true; then
 fi
 
 
+GLIB_GSETTINGS
 
-
-
-AM_GCONF_SOURCE_2
-AC_PATH_PROG(GCONFTOOL, gconftool-2)
 AC_PATH_PROG(PERL, perl)
 AC_PATH_PROG(KILLALL, killall)
 AC_PATH_PROG(RPMDIR, rpm)
@@ -185,7 +183,7 @@ AC_PROG_CC
 AM_GNU_GETTEXT([external])
 AC_CONFIG_MACRO_DIR([m4])
 
-AC_CONFIG_FILES([Makefile src/Makefile mandir/Makefile help/Makefile help/gwaei.omf help/C/gwaei.xml src/gtk-builder-xml/Makefile src/images/Makefile src/schemas/Makefile src/desktop/Makefile src/kpengine/Makefile src/kpengine/conv_jdata.pl rpm/gwaei.spec rpm/rpm_gconf_install_post.sh rpm/rpm_gconf_uninstall_pre.sh rpm/fedora/SPECS/gwaei.spec src/schemas/gwaei.schemas src/include/gwaei/definitions.h po/Makefile.in po/Makefile] Doxyfile)
+AC_CONFIG_FILES([Makefile src/Makefile mandir/Makefile help/Makefile help/gwaei.omf help/C/gwaei.xml src/gtk-builder-xml/Makefile src/images/Makefile src/schemas/Makefile src/desktop/Makefile src/kpengine/Makefile src/kpengine/conv_jdata.pl rpm/gwaei.spec rpm/fedora/SPECS/gwaei.spec src/schemas/org.gnome.gwaei.gschema.xml src/include/gwaei/definitions.h po/Makefile.in po/Makefile] Doxyfile)
 AC_OUTPUT
 
 

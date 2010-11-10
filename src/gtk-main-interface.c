@@ -116,21 +116,21 @@ void gw_ui_set_query_entry_text_by_searchitem (GwSearchItem *item)
       }
 
       //Set the foreground color
-      gw_util_strncpy_fallback_from_key (fallback, GCKEY_GW_MATCH_FG, 100);
-      gw_pref_get_string (hex_color_string, GCKEY_GW_MATCH_FG, fallback, 100);
+      gw_util_strncpy_fallback_from_key (fallback, GW_KEY_MATCH_FG, 100);
+      gw_pref_get_string (hex_color_string, GW_SCHEMA_HIGHLIGHT, GW_KEY_MATCH_FG, fallback, 100);
       if (gdk_color_parse (hex_color_string, &color) == FALSE)
       {
-        gw_pref_set_string (GCKEY_GW_MATCH_FG, fallback);
+        gw_pref_set_string (GW_SCHEMA_HIGHLIGHT, GW_KEY_MATCH_FG, fallback);
         gdk_color_parse (fallback, &color);
       }
       gtk_widget_modify_text (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, &color);
 
       //Set the background color
-      gw_util_strncpy_fallback_from_key (fallback, GCKEY_GW_MATCH_BG, 100);
-      gw_pref_get_string (hex_color_string, GCKEY_GW_MATCH_BG, fallback, 100);
+      gw_util_strncpy_fallback_from_key (fallback, GW_KEY_MATCH_BG, 100);
+      gw_pref_get_string (hex_color_string, GW_SCHEMA_HIGHLIGHT, GW_KEY_MATCH_BG, fallback, 100);
       if (gdk_color_parse (hex_color_string, &color) == FALSE)
       {
-        gw_pref_set_string (GCKEY_GW_MATCH_BG, fallback);
+        gw_pref_set_string (GW_SCHEMA_HIGHLIGHT, GW_KEY_MATCH_BG, fallback);
         gdk_color_parse (fallback, &color);
       }
       gtk_widget_modify_base (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, &color);
@@ -231,7 +231,7 @@ void gw_ui_verb_check_with_suggestion (GwSearchItem *item)
     //It's already shown.  No need to do anything.
     GtkWidget *suggestion_hbox;
     suggestion_hbox = GTK_WIDGET (gtk_builder_get_object (builder, "suggestion_hbox"));
-    if (GTK_WIDGET_VISIBLE(suggestion_hbox) == TRUE) return;
+    if (gtk_widget_get_visible (suggestion_hbox) == TRUE) return;
 
     char *query = item->queryline->hira_string;
     GwResultLine *rl = item->resultline;
@@ -635,47 +635,19 @@ void initialize_window_attributes (char* window_id)
     window = GTK_WIDGET (gtk_builder_get_object(builder, window_id));
 
     //Setup the unique key for the window
-    char *window_key_path = g_strdup_printf (GCPATH_GW "/%s", gtk_buildable_get_name (GTK_BUILDABLE (window)));
-    if (window_key_path == NULL) return;
+    char *window_schema = g_strdup_printf (GW_SCHEMA_BASE ".%s", gtk_buildable_get_name (GTK_BUILDABLE (window)));
+    if (window_schema == NULL) return;
 
     //Some other variable declarations
-    char *x_key_path = NULL, *y_key_path = NULL, *width_key_path = NULL, *height_key_path = NULL;
     int x = 0, y = 0, width = 100, height = 100;
 
     //Get the stored attributes from pref
-    if ((x_key_path = g_strdup_printf ("%s%s", window_key_path, "/x")) != NULL)
-    {
-      x = gw_pref_get_int (x_key_path, 0);
-      g_free (x_key_path);
-      x_key_path = NULL;
-    }
+    x = gw_pref_get_int (window_schema, "x", 0);
+    y = gw_pref_get_int(window_schema, "y", 0);
+    width = gw_pref_get_int(window_schema, "width", 200);
+    height = gw_pref_get_int(window_schema, "height", 200);
 
-    if ((y_key_path = g_strdup_printf ("%s%s", window_key_path, "/y")) != NULL)
-    {
-      y = gw_pref_get_int(y_key_path, 0);
-      g_free (y_key_path);
-      y_key_path = NULL;
-    }
-
-    if ((width_key_path = g_strdup_printf ("%s%s", window_key_path, "/width")) != NULL)
-    {
-      width = gw_pref_get_int(width_key_path, 100);
-      g_free (width_key_path);
-      width_key_path = NULL;
-    }
-    
-    if ((height_key_path = g_strdup_printf ("%s%s", window_key_path, "/height")) != NULL)
-    {
-      height = gw_pref_get_int(height_key_path, 100);
-      g_free (height_key_path);
-      height_key_path = NULL;
-    }
-
-    if (window_key_path != NULL)
-    {
-      g_free (window_key_path);
-      window_key_path = NULL;
-    }
+    g_free (window_schema);
 
     //Apply the x and y if they are within the screen size
     if (x < gdk_screen_width() && y < gdk_screen_height()) {
@@ -746,30 +718,16 @@ void save_window_attributes_and_hide (const char* window_id)
     gtk_widget_hide (window);
 
     //Setup our unique key for the window
-    int leftover = MAX_GCONF_KEY;
-    char key[leftover];
-
-    strncpy(key, GCPATH_GW, leftover);
-    leftover -= strlen(GCPATH_GW);
-    strncat(key, "/", leftover);
-    leftover -= 1;
-    strncat(key, gtk_buildable_get_name (GTK_BUILDABLE (window)), leftover);
-    leftover -= strlen(gtk_buildable_get_name (GTK_BUILDABLE (window)));
-
-    //Set a pointer at the end of the key for easy access
-    char *value;
-    value = &key[strlen(key)];
+    char window_schema[100];
+    strcpy(window_schema, GW_SCHEMA_BASE);
+    strcat(window_schema, ".");
+    strcat(window_schema, gtk_buildable_get_name (GTK_BUILDABLE (window)));
 
     //Start sending the attributes to pref for storage
-
-    strncpy(value, "/x", leftover - strlen("/x"));
-    gw_pref_set_int (key, x);
-    strncpy(value, "/y", leftover - strlen("/y"));
-    gw_pref_set_int (key, y);
-    strncpy(value, "/width", leftover - strlen("/width"));
-    gw_pref_set_int (key, width);
-    strncpy(value, "/height", leftover - strlen("/height"));
-    gw_pref_set_int (key, height);
+    gw_pref_set_int (window_schema, "x", x);
+    gw_pref_set_int (window_schema, "y", y);
+    gw_pref_set_int (window_schema, "width", width);
+    gw_pref_set_int (window_schema, "height", height);
 }
 
 
@@ -782,7 +740,7 @@ void gw_ui_show_window (char *id)
 {
     GtkWidget *window;
     window = GTK_WIDGET (gtk_builder_get_object (builder, id));
-    if (GTK_WIDGET_VISIBLE (window) == TRUE) return;
+    if (gtk_widget_get_visible (window) == TRUE) return;
 
     if (strcmp(id, "main_window") == 0 || strcmp (id, "radicals_window") == 0)
     {
@@ -836,7 +794,7 @@ void gw_ui_update_toolbar_buttons ()
     GwSearchItem *tab_search_item = g_list_nth_data (gw_tab_get_searchitem_list (), page_num);
 
     int current_font_magnification;
-    current_font_magnification = gw_pref_get_int (GCKEY_GW_FONT_MAGNIFICATION, GW_DEFAULT_FONT_MAGNIFICATION);
+    current_font_magnification = gw_pref_get_int (GW_SCHEMA_FONT, GW_KEY_FONT_MAGNIFICATION, GW_DEFAULT_FONT_MAGNIFICATION);
 
     GtkWidget *results_tv = get_widget_by_target(GW_TARGET_RESULTS);
 
@@ -856,7 +814,7 @@ void gw_ui_update_toolbar_buttons ()
     strncpy(id, "view_zoom_100_action", id_length);
     action = GTK_ACTION (gtk_builder_get_object(builder, id));
     int default_font_magnification;
-    default_font_magnification = gw_pref_get_default_int (GCKEY_GW_FONT_MAGNIFICATION, GW_DEFAULT_FONT_MAGNIFICATION);
+    default_font_magnification = gw_pref_get_default_int (GW_SCHEMA_FONT, GW_KEY_FONT_MAGNIFICATION, GW_DEFAULT_FONT_MAGNIFICATION);
     enable = (tab_search_item != NULL && current_font_magnification != default_font_magnification);
     gtk_action_set_sensitive(action, enable);
 
@@ -896,7 +854,7 @@ void gw_ui_update_toolbar_buttons ()
 
     //Update cut/copy buttons
     gboolean sensitive;
-    if (GTK_WIDGET_HAS_FOCUS(search_entry) )
+    if (gtk_widget_has_focus (search_entry) )
     {
       sensitive = (gtk_editable_get_selection_bounds (GTK_EDITABLE (search_entry), NULL, NULL));
       strncpy(id, "edit_copy_action", id_length);
@@ -906,7 +864,7 @@ void gw_ui_update_toolbar_buttons ()
       action = GTK_ACTION (gtk_builder_get_object (builder, id));
       gtk_action_set_sensitive (action, sensitive);
     }
-    else if (results_tv != NULL && GTK_WIDGET_HAS_FOCUS(results_tv))
+    else if (results_tv != NULL && gtk_widget_has_focus (results_tv))
     {
       sensitive = (gw_ui_has_selection_by_target (GW_TARGET_RESULTS));
       strncpy(id, "edit_copy_action", id_length);
@@ -1065,7 +1023,7 @@ int rebuild_combobox_dictionary_list ()
     char order[5000];
     char new_order[5000];
     GwDictInfo* di = NULL;
-    gw_pref_get_string (order, GCKEY_GW_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
+    gw_pref_get_string (order, GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
 
     char *names[50];
     char *mix_name = NULL, *kanji_name = NULL, *radicals_name = NULL;
@@ -1131,7 +1089,7 @@ int rebuild_combobox_dictionary_list ()
     }
     new_order[strlen(new_order) - 1] = '\0';
     names[i] = NULL;
-    gw_pref_set_string (GCKEY_GW_LOAD_ORDER, new_order);
+    gw_pref_set_string (GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, new_order);
 
     //Initialize variables
     const int id_length = 50;
@@ -1458,7 +1416,7 @@ void gw_ui_update_history_popups ()
 //!
 void gw_ui_set_font (char *font_description_string, int *font_magnification)
 {
-    gboolean use_global_font_setting = gw_pref_get_boolean (GCKEY_GW_FONT_USE_GLOBAL_FONT, TRUE);
+    gboolean use_global_font_setting = gw_pref_get_boolean (GW_SCHEMA_FONT, GW_KEY_FONT_USE_GLOBAL_FONT, TRUE);
     char *new_font_description_string = NULL;
     char font_family[100];
     int font_size = 0;
@@ -1467,9 +1425,9 @@ void gw_ui_set_font (char *font_description_string, int *font_magnification)
     if (font_description_string == NULL)
     {
       if (use_global_font_setting)
-        gw_pref_get_string (font_family, GCKEY_DOCUMENT_FONT_NAME, GW_DEFAULT_FONT, 100);
+        gw_pref_get_string (font_family, GW_SCHEMA_GNOME_INTERFACE, GW_KEY_DOCUMENT_FONT_NAME, GW_DEFAULT_FONT, 100);
       else
-        gw_pref_get_string (font_family, GCKEY_GW_FONT_CUSTOM_FONT, GW_DEFAULT_FONT, 100);
+        gw_pref_get_string (font_family, GW_SCHEMA_FONT, GW_KEY_FONT_CUSTOM_FONT, GW_DEFAULT_FONT, 100);
     }
     else
       strcpy (font_family, font_description_string);
@@ -1489,7 +1447,7 @@ void gw_ui_set_font (char *font_description_string, int *font_magnification)
 
     //Add the magnification in to the font size
     if (font_magnification == NULL)
-      font_size += gw_pref_get_int (GCKEY_GW_FONT_MAGNIFICATION, GW_DEFAULT_FONT_MAGNIFICATION);
+      font_size += gw_pref_get_int (GW_SCHEMA_FONT, GW_KEY_FONT_MAGNIFICATION, GW_DEFAULT_FONT_MAGNIFICATION);
     else
       font_size += *font_magnification;
 
@@ -2084,14 +2042,14 @@ gboolean gw_ui_set_color_to_tagtable (char    *id,     GwTargetOutput TARGET,
       //Set the foreground color and reset if the value is odd
       if (set_fg)
       {
-        pref_key = g_strdup_printf (GCPATH_GW_HIGHLIGHT "%s" "_foreground", id);
+        pref_key = g_strdup_printf ("%s_foreground", id);
         if (pref_key != NULL)
         {
           gw_util_strncpy_fallback_from_key (fallback, pref_key, 100);
-          gw_pref_get_string (fg_color, pref_key, fallback, 100);
+          gw_pref_get_string (GW_SCHEMA_HIGHLIGHT, fg_color, pref_key, fallback, 100);
           if (gdk_color_parse (fg_color, &color) == FALSE)
           {
-            gw_pref_set_string (pref_key, fallback);
+            gw_pref_set_string (GW_SCHEMA_HIGHLIGHT, pref_key, fallback);
             strncpy(fg_color, fallback, 100);
           }
           g_free (pref_key);
@@ -2102,14 +2060,14 @@ gboolean gw_ui_set_color_to_tagtable (char    *id,     GwTargetOutput TARGET,
       //Set the background color and reset if the value is odd
       if (set_bg)
       {
-        pref_key = g_strdup_printf (GCPATH_GW_HIGHLIGHT "%s" "_background", id);
+        pref_key = g_strdup_printf ("%s_background", id);
         if (pref_key != NULL)
         {
           gw_util_strncpy_fallback_from_key (fallback, pref_key, 100);
-          gw_pref_get_string (bg_color, pref_key, fallback, 100);
+          gw_pref_get_string (bg_color, GW_SCHEMA_HIGHLIGHT, pref_key, fallback, 100);
           if (gdk_color_parse (bg_color, &color) == FALSE)
           {
-            gw_pref_set_string (pref_key, fallback);
+            gw_pref_set_string (GW_SCHEMA_HIGHLIGHT, pref_key, fallback);
             strncpy(bg_color, fallback, 100);
           }
           g_free (pref_key);

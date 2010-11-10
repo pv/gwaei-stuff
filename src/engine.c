@@ -201,11 +201,11 @@ static gboolean stream_results_thread (GwSearchItem *item)
     if (line_pointer == NULL) {
       if (item->dictionary->total_lines != item->current_line) {
         item->dictionary->total_lines = item->current_line;
-        char *gcpath = NULL;
-        gcpath = g_strdup_printf ("%s%s%s%s", GCPATH_GW, "/dictionary/", item->dictionary->name, "_line_total");
-        if (gcpath != NULL) {
-          gw_pref_set_int(gcpath, item->current_line);
-          g_free (gcpath);
+        char *key = NULL;
+        key = g_strdup_printf ("%s%s", item->dictionary->name, "_line_total");
+        if (key != NULL) {
+          gw_pref_set_int(GW_SCHEMA_DICTIONARY, key, item->current_line);
+          g_free (key);
         }
       }
     } 

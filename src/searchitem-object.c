@@ -89,8 +89,8 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary, const int 
     temp->queryline = gw_queryline_new ();
     temp->search_relevance_idle_timer = 0;
 
-    char *key = GCKEY_GW_LESS_RELEVANT_SHOW; 
-    temp->show_less_relevant_results = gw_pref_get_boolean (key, TRUE);
+    char *key = GW_KEY_LESS_RELEVANT_SHOW; 
+    temp->show_less_relevant_results = gw_pref_get_boolean (GW_SCHEMA_BASE, key, TRUE);
 
     if (gw_main_verify_output_generic_functions () == FALSE)
     {
