@@ -1,0 +1,30 @@
+<schemalist>
+  <!-- Main window attributes -->
+  <schema id="org.gnome.gwaei.kanjipad_window" path="/desktop/gnome/gwaei/kanjipad_window/">
+    <key name="x" type="i">
+      <default>0</default>
+      <summary>Stored x position of this window</summary>
+      <description>Used for restoring the position of the window.</description>
+    </key>
+
+    <key name="y" type="i">
+      <default>0</default>
+      <summary>Stored y position of this window</summary>
+      <description>Used for restoring the position of the window.</description>
+    </key>
+
+    <key name="width" type="i">
+      <default>0</default>
+      <summary>Stored width position of this window</summary>
+      <description>Used for restoring the position of the window.</description>
+    </key>
+
+    <key name="height" type="i">
+      <default>0</default>
+      <summary>Stored height position of this window</summary>
+      <description>Used for restoring the position of the window.</description>
+    </key>
+  </schema>
+</schemalist>
+
+

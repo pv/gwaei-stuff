@@ -1,0 +1,121 @@
+<schemalist>
+  <!-- dictionary settings -->
+  <schema id="org.gnome.gwaei.dictionary" path="/desktop/gnome/gwaei/dictionary/">
+    <key name="load-order" type="s">
+      <default>'@LOAD_ORDER_DEFAULT@'</default>
+      <summary>Used for the styling of some titles</summary>
+      <description>Used as a separator for the "Other results" section. Is not always used.</description>
+    </key>
+
+    <key name="english-source" type="s">
+      <default>'@ENGLISH_DEFAULT_URI@'</default>
+      <summary>English dictionary install source</summary>
+      <description>Used for determining the path to install and update the English dictionary from.</description>
+    </key>
+
+    <key name="english-total-lines" type="i">
+      <default>0</default>
+      <summary>English dictionary total lines</summary>
+      <description>English dictionary total lines.</description>
+    </key>
+
+    <key name="kanji-source" type="s">
+      <default>'@KANJI_DEFAULT_URI@'</default>
+      <summary>Kanji dictionary install source</summary>
+      <description>Used for determining the path to install and update the Kanji dictionary from.</description>
+    </key>
+
+    <key name="kanji-total-lines" type="i">
+      <default>0</default>
+      <summary>Kanji dictionary total lines</summary>
+      <description>Kanji dictionary total lines.</description>
+    </key>
+
+    <key name="mix-total-lines" type="i">
+      <default>0</default>
+      <summary>Kanji dictionary total lines</summary>
+      <description>Kanji dictionary total lines.</description>
+    </key>
+
+    <key name="names-source" type="s">
+      <default>'@NAMES_DEFAULT_URI@'</default>
+      <summary>Names dictionary install source</summary>
+      <description>Used for determining the path to install and update the Names dictionary from.</description>
+    </key>
+
+    <key name="names-total-lines" type="i">
+      <default>0</default>
+      <summary>Names dictionary total lines</summary>
+      <description>Kanji dictionary total lines.</description>
+    </key>
+
+    <key name="places-total-lines" type="i">
+      <default>0</default>
+      <summary>Places dictionary total lines</summary>
+      <description>Kanji dictionary total lines.</description>
+    </key>
+
+    <key name="radicals-source" type="s">
+      <default>'@RADICALS_DEFAULT_URI@'</default>
+      <summary>Radicals dictionary install source</summary>
+      <description>Used for determining the path to install and update the Radicals dictionary from.</description>
+    </key>
+
+    <key name="radicals-total-lines" type="i">
+      <default>0</default>
+      <summary>Places dictionary total lines</summary>
+      <description>Kanji dictionary total lines.</description>
+    </key>
+
+    <key name="examples-source" type="s">
+      <default>'@EXAMPLES_DEFAULT_URI@'</default>
+      <summary>Examples dictionary install source</summary>
+      <description>Used for determining the path to install and update the Radicals dictionary from.</description>
+    </key>
+
+    <key name="examples-total-lines" type="i">
+      <default>0</default>
+      <summary>Places dictionary total lines</summary>
+      <description>Kanji dictionary total lines.</description>
+    </key>
+
+    <key name="french-source" type="s">
+      <default>'@FRENCH_DEFAULT_URI@'</default>
+      <summary>French dictionary install source</summary>
+      <description>Used for determining the path to install and update the Radicals dictionary from.</description>
+    </key>
+
+    <key name="french-total-lines" type="i">
+      <default>0</default>
+      <summary>Places dictionary total lines</summary>
+      <description>Kanji dictionary total lines.</description>
+    </key>
+
+    <key name="german-source" type="s">
+      <default>'@GERMAN_DEFAULT_URI@'</default>
+      <summary>German dictionary install source</summary>
+      <description>Used for determining the path to install and update the Radicals dictionary from.</description>
+    </key>
+
+    <key name="german-total-lines" type="i">
+      <default>0</default>
+      <summary>Places dictionary total lines</summary>
+      <description>Kanji dictionary total lines.</description>
+    </key>
+
+    <key name="spanish-source" type="s">
+      <default>'@SPANISH_DEFAULT_URI@'</default>
+      <summary>Spanish dictionary install source</summary>
+      <description>Used for determining the path to install and update the Radicals dictionary from.</description>
+    </key>
+
+    <key name="spanish-total-lines" type="i">
+      <default>0</default>
+      <summary>Places dictionary total lines</summary>
+      <description>Kanji dictionary total lines.</description>
+    </key>
+
+  </schema>
+</schemalist>
+
+

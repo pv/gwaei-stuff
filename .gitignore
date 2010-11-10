@@ -1,4 +1,6 @@
 *.[oa]
+*.exe
+*.gschema.xml
 Makefile
 **/.deps/*
 *.gmo
