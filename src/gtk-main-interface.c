@@ -2865,14 +2865,10 @@ void initialize_gui_interface (int argc, char *argv[])
 
       gw_kanjipad_initialize (builder); //Kanjipad must be initalized within the thread not to lock it
 
-#ifndef G_OS_WIN32
 //TO DO: Windows threading is horrible with glib. Must fix somehow later.
-/*
       g_timeout_add_full (G_PRIORITY_DEFAULT_IDLE, 500,
                           (GSourceFunc)gw_ui_keep_searching, NULL,
                           (GDestroyNotify)NULL     );
-      */
-#endif
 
       gtk_main ();
       gdk_threads_leave();
@@ -3511,8 +3507,8 @@ void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item)
         gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (label), FALSE, FALSE, 0);
 
         GtkWindow* parent = GTK_WINDOW (gtk_builder_get_object (builder, "main_window"));
-        gtk_window_set_transient_for (window, parent);
-        gtk_window_set_opacity (window, .9);
+        gtk_window_set_transient_for (GTK_WINDOW (window), parent);
+        gtk_window_set_opacity (GTK_WINDOW (window), .9);
         gtk_widget_show_all (window);
         gtk_window_present (GTK_WINDOW (window));
       }

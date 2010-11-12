@@ -270,7 +270,7 @@ static void *install_thread (gpointer data)
 
     GwUiDictInstallLine *il = (GwUiDictInstallLine*) data;
     GwDictInfo *di = (GwDictInfo*) il->di;
-    di->source_uri = gtk_entry_get_text (GTK_ENTRY (il->source_uri_entry));
+    di->source_uri = (char*) gtk_entry_get_text (GTK_ENTRY (il->source_uri_entry));
 
     if (di->status != GW_DICT_STATUS_NOT_INSTALLED) return FALSE;
 

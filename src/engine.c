@@ -137,17 +137,30 @@ static gboolean stream_results_cleanup (GwSearchItem *item)
 //! @param data A GwSearchItem to search with
 //! @return Returns true when the search isn't finished yet.
 //!
-static void stream_results_thread (gpointer *data)
+static void stream_results_thread (gpointer data)
 {
     GwSearchItem *item = (GwSearchItem*) data;
     if (item->fd == NULL) return;
     char *line_pointer = NULL;
+    int chunk = 0;
 
     //We loop, processing lines of the file until the max chunk size has been
     //reached or we reach the end of the file or a cancel request is recieved.
     while ((line_pointer = fgets(item->resultline->string, MAX_LINE, item->fd)) != NULL &&
            item->status != GW_SEARCH_GW_DICT_STATUS_CANCELING)
     {
+#ifdef G_OS_WIN32
+      if (chunk < MAX_CHUNK)
+      {
+        chunk++;
+      }
+      else
+      {
+        chunk = 0;
+        g_main_context_iteration (NULL, FALSE);
+      }
+#endif
+
       item->current_line++;
 
       //Commented input in the dictionary...we should skip over it
@@ -302,7 +315,7 @@ void gw_search_get_results (GwSearchItem *item)
     }
     else
     {
-      if (g_thread_create(&stream_results_thread, (gpointer) item, FALSE, NULL) == NULL) {
+      if (g_thread_create((GThreadFunc)stream_results_thread, (gpointer) item, FALSE, NULL) == NULL) {
         g_warning("couldn't create the thread");
         return;
       }
