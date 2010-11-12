@@ -55,7 +55,7 @@
 //!
 //! @brief Disables portions of the interface depending on the currently queued jobs.
 //!
-void gw_ui_update_settings_interface ()
+G_MODULE_EXPORT void gw_ui_update_settings_interface ()
 {
     //Set the install interface
     GtkWidget *close_button;
@@ -142,11 +142,15 @@ void gw_ui_update_settings_interface ()
       gtk_widget_set_sensitive (move_dictionary_down, FALSE);
     }
 
-    char current_order[5000];
-    char default_order[5000];
-    gw_pref_get_string (current_order, GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
-    gw_pref_get_default_string (default_order, GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
-    gtk_widget_set_sensitive (reset_order_button, strcmp (default_order, current_order) != 0);
+/*
+THIS CODE BREAKS ON WINDOWS
+printf("MABREAK8\n");
+    char order[5000];
+    gw_pref_get_string (order, GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, 5000);
+printf("MABREAK9\n");
+    gtk_widget_set_sensitive (reset_order_button, (strcmp (order, GW_LOAD_ORDER_DEFAULT) != 0));
+printf("MABREAK10\n");
+*/
 }
 
 

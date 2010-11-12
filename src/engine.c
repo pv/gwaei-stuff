@@ -106,6 +106,28 @@ static int get_relevance (GwSearchItem *item) {
 
 
 //!
+//! @brief Preforms necessary cleanups after the search thread finishes
+//!
+//! THIS IS A PRIVATE FUNCTION. The calls to this function are made by
+//! gw_search_get_results.  Do not call this function directly.
+//!
+//! @see gw_search_get_results()
+//! @param data A GwSearchItem to clean up the data of
+//! @return currently unused
+//!
+static gboolean stream_results_cleanup (GwSearchItem *item)
+{
+    if (item->fd == NULL) return FALSE;
+
+    less_relevant_title_inserted = FALSE;
+    item->status = GW_SEARCH_FINISHING;
+    (*item->gw_searchitem_ui_after_search_cleanup)(item);
+    gw_searchitem_do_post_search_clean (item);
+    item->status = GW_SEARCH_IDLE;
+}
+
+
+//!
 //! @brief Preforms the brute work of the search
 //!
 //! THIS IS A PRIVATE FUNCTION. This function returns true until it finishes
@@ -115,25 +137,24 @@ static int get_relevance (GwSearchItem *item) {
 //! @param data A GwSearchItem to search with
 //! @return Returns true when the search isn't finished yet.
 //!
-static gboolean stream_results_thread (GwSearchItem *item)
+static void stream_results_thread (gpointer *data)
 {
-    int chunk = 0;
-    if (item->fd == NULL) return FALSE;
+    GwSearchItem *item = (GwSearchItem*) data;
+    if (item->fd == NULL) return;
     char *line_pointer = NULL;
 
     //We loop, processing lines of the file until the max chunk size has been
     //reached or we reach the end of the file or a cancel request is recieved.
-    while (chunk < MAX_CHUNK               &&
-           (line_pointer = fgets(item->resultline->string, MAX_LINE, item->fd)) != NULL &&
+    while ((line_pointer = fgets(item->resultline->string, MAX_LINE, item->fd)) != NULL &&
            item->status != GW_SEARCH_GW_DICT_STATUS_CANCELING)
     {
-      chunk++;
       item->current_line++;
 
       //Commented input in the dictionary...we should skip over it
       if(item->resultline->string[0] == '#' || g_utf8_get_char(item->resultline->string) == L'？') 
+      {
         continue;
-
+      }
       else if (item->resultline->string[0] == 'A' && item->resultline->string[1] == ':' &&
                fgets(item->scratch_buffer, MAX_LINE, item->fd) != NULL             )
       {
@@ -148,10 +169,10 @@ static gboolean stream_results_thread (GwSearchItem *item)
 
       //Update the progress feeback
       (*item->gw_searchitem_ui_update_progress_feedback)(item);
-/*
-      if (item->target_tb == (gpointer*) get_gobject_from_target(item->target))
-        gw_ui_verb_check_with_suggestion (item);
-*/
+
+//      if (item->target_tb == (gpointer*) get_gobject_from_target(item->target))
+//        gw_ui_verb_check_with_suggestion (item);
+
       //Results match, add to the text buffer
       if (gw_searchitem_existance_generic_comparison (item, GW_QUERYLINE_EXIST))
       {
@@ -195,9 +216,9 @@ static gboolean stream_results_thread (GwSearchItem *item)
               break;
         }
       }
-      continue;
     }
 
+/*
     if (line_pointer == NULL) {
       if (item->dictionary->total_lines != item->current_line) {
         item->dictionary->total_lines = item->current_line;
@@ -211,12 +232,7 @@ static gboolean stream_results_thread (GwSearchItem *item)
         }
       }
     } 
-
-
-    //If the chunk reached the max chunk size, there is still file left to load
-    if ( chunk == MAX_CHUNK ) {
-      return TRUE;
-    }
+*/
 
     //Make sure the more relevant header banner is visible
     if (item->target != GW_TARGET_KANJI)
@@ -232,54 +248,24 @@ static gboolean stream_results_thread (GwSearchItem *item)
     }
 
     //Append the medium relevent results
-    if (item->results_medium != NULL)
+    while (item->results_medium != NULL)
     {
-      for (chunk = 0; item->results_medium != NULL && chunk < MAX_CHUNK; chunk++)
-      {
-        item->total_results++;
-        append_stored_result_to_output(item, &(item->results_medium));
-      }
+      item->total_results++;
+      append_stored_result_to_output(item, &(item->results_medium));
       //Update the progress feeback
       (*item->gw_searchitem_ui_update_progress_feedback)(item);
-      return TRUE;
     }
 
     //Append the least relevent results
-    if (item->results_low != NULL)
+    while (item->results_low != NULL)
     {
-      for (chunk = 0; item->results_low != NULL && chunk < MAX_CHUNK; chunk++)
-      {
-        item->total_results++;
-        append_stored_result_to_output(item, &(item->results_low));
-      }
+      item->total_results++;
+      append_stored_result_to_output(item, &(item->results_low));
       //Update the progress feeback
       (*item->gw_searchitem_ui_update_progress_feedback)(item);
-      return TRUE;
     }
 
-    return FALSE;
-}
-
-
-//!
-//! @brief Preforms necessary cleanups after the search thread finishes
-//!
-//! THIS IS A PRIVATE FUNCTION. The calls to this function are made by
-//! gw_search_get_results.  Do not call this function directly.
-//!
-//! @see gw_search_get_results()
-//! @param data A GwSearchItem to clean up the data of
-//! @return currently unused
-//!
-static gboolean stream_results_cleanup (GwSearchItem *item)
-{
-    if (item->fd == NULL) return FALSE;
-
-    less_relevant_title_inserted = FALSE;
-    item->status = GW_SEARCH_FINISHING;
-    (*item->gw_searchitem_ui_after_search_cleanup)(item);
-    gw_searchitem_do_post_search_clean (item);
-    item->status = GW_SEARCH_IDLE;
+    stream_results_cleanup(item);
 }
 
 
@@ -312,15 +298,14 @@ void gw_search_get_results (GwSearchItem *item)
     //Start the search
     if (gw_util_get_runmode () == GW_CONSOLE_RUNMODE || gw_util_get_runmode () == GW_NCURSES_RUNMODE)
     {
-      while (stream_results_thread(item))
-        ;
-      stream_results_cleanup(item);
+      stream_results_thread((gpointer) item);
     }
     else
     {
-      g_timeout_add_full (G_PRIORITY_DEFAULT_IDLE, 1,
-                          (GSourceFunc)stream_results_thread, item,
-                          (GDestroyNotify)stream_results_cleanup     );
+      if (g_thread_create(&stream_results_thread, (gpointer) item, FALSE, NULL) == NULL) {
+        g_warning("couldn't create the thread");
+        return;
+      }
     }
 }
 

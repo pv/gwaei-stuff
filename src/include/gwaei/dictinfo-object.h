@@ -96,7 +96,8 @@ struct _GwDictInfo
     char *gz_path;    //!< Path to the gziped dictionary file
     char *sync_path;  //!< Path to the raw unziped dictionary file
     char *rsync;      //!< rsync command in full with arguments for sync
-    char *gckey;               //!< gckey for the download source
+    char *gskey;               //!< gckey for the download source
+    char *source_uri;               //!< gckey for the download source
     int load_position;             //!< load position in the GUI
     GwResultLine *cached_resultlines;
     GwResultLine *current_resultline;

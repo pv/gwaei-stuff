@@ -210,7 +210,7 @@ static void print_installable_dictionaries ()
     while (list != NULL)
     {
       di = (GwDictInfo*) list->data;
-      if (di->gckey != NULL && di->status == GW_DICT_STATUS_NOT_INSTALLED &&
+      if (di->gskey != NULL && di->status == GW_DICT_STATUS_NOT_INSTALLED &&
           di->id != GW_DICT_ID_RADICALS && di->id != GW_DICT_ID_MIX            )
       {
         printf("  %s (AKA: %s)\n", di->name, di->long_name);
@@ -379,12 +379,12 @@ void initialize_console_interface (int argc, char **argv)
     {
 
       di = gw_dictlist_get_dictinfo_by_name (install_switch_data);
-      if (di != NULL && di->status != GW_DICT_STATUS_NOT_INSTALLED && di->gckey[0] != '\0')
+      if (di != NULL && di->status != GW_DICT_STATUS_NOT_INSTALLED && di->gskey[0] != '\0')
       {
         printf(gettext("%s is already Installed. "), di->long_name);
         print_installable_dictionaries();
       }
-      else if (di == NULL || di->gckey[0] == '\0' || di->id == GW_DICT_ID_RADICALS || di->id == GW_DICT_ID_MIX)
+      else if (di == NULL || di->gskey[0] == '\0' || di->id == GW_DICT_ID_RADICALS || di->id == GW_DICT_ID_MIX)
       {
         printf(gettext("%s is not installable with this mechanism. "), install_switch_data);
         print_installable_dictionaries();

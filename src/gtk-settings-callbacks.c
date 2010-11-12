@@ -270,6 +270,7 @@ static void *install_thread (gpointer data)
 
     GwUiDictInstallLine *il = (GwUiDictInstallLine*) data;
     GwDictInfo *di = (GwDictInfo*) il->di;
+    di->source_uri = gtk_entry_get_text (GTK_ENTRY (il->source_uri_entry));
 
     if (di->status != GW_DICT_STATUS_NOT_INSTALLED) return FALSE;
 
@@ -460,18 +461,13 @@ G_MODULE_EXPORT void do_color_reset_for_swatches (GtkWidget *widget, gpointer da
       NULL
     };
 
-    char default_hex_color_string[100];
-
     //Start setting the default values
     for (i = 0; pref_key[i] != NULL; i++)
     {
-      gw_util_strncpy_fallback_from_key (fallback, pref_key[i], 100);
-      gw_pref_get_default_string (default_hex_color_string, GW_SCHEMA_HIGHLIGHT, pref_key[i], fallback, 100);
-      if (default_hex_color_string != NULL)
-        gw_pref_set_string (GW_SCHEMA_HIGHLIGHT, pref_key[i], default_hex_color_string);
+      gw_pref_reset_value (GW_SCHEMA_HIGHLIGHT, pref_key[i]);
     }
 
-    gw_ui_buffer_reload_tagtable_tags();
+    //gw_ui_buffer_reload_tagtable_tags();
 }
 
 
@@ -524,7 +520,7 @@ G_MODULE_EXPORT void do_dictionary_install (GtkWidget *widget, gpointer data)
     gw_ui_dict_install_set_message (il, NULL, gettext ("Installing..."));
 
     //Create the thread
-    if (g_thread_create(&install_thread, il, FALSE, NULL) == NULL) {
+    if (g_thread_create(&install_thread, (gpointer) il, FALSE, NULL) == NULL) {
       g_warning("couldn't create the thread");
       return;
     }
@@ -552,7 +548,7 @@ G_MODULE_EXPORT void do_remove_dictionary_from_order_prefs (GtkTreeModel *tree_m
 
     //Parse the string
     char order[5000];
-    gw_pref_get_string (order, GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
+    gw_pref_get_string (order, GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, 5000);
     char *long_name_list[50];
     char **condensed_name_list[50];
     long_name_list[0] = order;
@@ -661,7 +657,7 @@ G_MODULE_EXPORT void do_source_entry_changed_action (GtkWidget *widget, gpointer
       GwUiDictInstallLine *il = (GwUiDictInstallLine*) data;
       char value[FILENAME_MAX];
       strcpy(value, gtk_entry_get_text(GTK_ENTRY (widget)));
-      gw_pref_set_string (GW_SCHEMA_DICTIONARY, il->di->gckey, value);
+      gw_pref_set_string (GW_SCHEMA_DICTIONARY, il->di->gskey, value);
     }
 }
 
@@ -677,11 +673,7 @@ G_MODULE_EXPORT void do_dictionary_source_reset (GtkWidget *widget, gpointer dat
     if (widget != NULL && data != NULL)
     {
       GwUiDictInstallLine *il = (GwUiDictInstallLine*) data;
-      char source_string[100];
-      char fallback[100];
-      gw_util_strncpy_fallback_from_key (fallback, il->di->gckey, 100);
-      gw_pref_get_default_string (GW_SCHEMA_DICTIONARY, source_string, il->di->gckey, fallback, 100);
-      gw_pref_set_string (GW_SCHEMA_DICTIONARY, il->di->gckey, source_string);
+      gw_pref_reset_value (GW_SCHEMA_DICTIONARY, il->di->gskey);
     }
 }
 
@@ -866,7 +858,7 @@ G_MODULE_EXPORT void do_move_dictionary_up (GtkWidget *widget, gpointer data)
 
     //Parse the string
     char order[5000];
-    gw_pref_get_string (order, GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
+    gw_pref_get_string (order, GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, 5000);
     char *long_name_list[50];
     char **condensed_name_list[50];
     long_name_list[0] = order;
@@ -958,7 +950,7 @@ G_MODULE_EXPORT void do_move_dictionary_down (GtkWidget *widget, gpointer data)
 
     //Parse the string
     char order[5000];
-    gw_pref_get_string (order, GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
+    gw_pref_get_string (order, GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, 5000);
     char *long_name_list[50];
     char **condensed_name_list[50];
     long_name_list[0] = order;
@@ -1023,9 +1015,7 @@ G_MODULE_EXPORT void do_move_dictionary_down (GtkWidget *widget, gpointer data)
 
 G_MODULE_EXPORT void do_reset_dictionary_orders (GtkWidget *widget, gpointer data)
 {
-    char dictionary_orders[5000];
-    gw_pref_get_default_string (dictionary_orders, GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, GW_LOAD_ORDER_FALLBACK, 5000);
-    gw_pref_set_string (GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, dictionary_orders);
+    gw_pref_reset_value (GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER);
     rebuild_combobox_dictionary_list();
     gw_ui_update_settings_interface();
 }

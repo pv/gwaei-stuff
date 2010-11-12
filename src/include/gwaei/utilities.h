@@ -37,7 +37,7 @@ gboolean gw_util_all_chars_are_in_range (char*, int, int);
 gboolean gw_util_force_japanese_locale (void);
 void gw_util_initialize_runmode (int, char**);
 
-void gw_util_strncpy_fallback_from_key (char*, const char*, int);
+void gw_util_strncpy_fallback_from_key (char*, const char*, const char*, int);
 
 gchar* gw_util_prepare_query(char*, gboolean);
 gchar* gw_util_sanitize_input(char*, gboolean);

@@ -14,7 +14,7 @@
     </key>
 
     <key name="match-background" type="s">
-      <default>'@MATCH_BG_DEFAULT'</default>
+      <default>'@MATCH_BG_DEFAULT@'</default>
       <summary>Color used for query matches</summary>
       <description>Is used to make the matched portions of results more visible.</description>
     </key>

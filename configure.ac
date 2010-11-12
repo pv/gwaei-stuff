@@ -127,8 +127,8 @@ fi
 
 if test $gnome = true && test $win32 = false; then
   PKG_CHECK_MODULES(GNOME, gtk+-2.0           >= $GTK2_REQUIRED_VERSION
-                           gio-2.0            >= $GIO_REQUIRED_VERSION
                            glib-2.0           >= $GLIB_REQUIRED_VERSION
+                           gio-2.0            >= $GIO_REQUIRED_VERSION
                            gobject-2.0        >= $GLIB_REQUIRED_VERSION
                            gmodule-2.0        >= $GMODULE_EXPORT_REQUIRED_VERSION 
                            gthread-2.0        >= $GTHREAD_REQUIRED_VERSION       

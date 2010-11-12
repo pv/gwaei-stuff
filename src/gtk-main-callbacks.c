@@ -686,9 +686,7 @@ G_MODULE_EXPORT void do_zoom_out (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void do_zoom_100 (GtkWidget *widget, gpointer data)
 {
-    int size;
-    size = gw_pref_get_default_int (GW_SCHEMA_FONT, GW_KEY_FONT_MAGNIFICATION, GW_DEFAULT_FONT_MAGNIFICATION);
-    gw_pref_set_int (GW_SCHEMA_FONT, GW_KEY_FONT_MAGNIFICATION, size);
+    gw_pref_reset_value (GW_SCHEMA_FONT, GW_KEY_FONT_MAGNIFICATION);
 }
 
 
