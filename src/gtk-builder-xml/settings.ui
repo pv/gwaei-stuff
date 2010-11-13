@@ -170,7 +170,6 @@
                                     <property name="homogeneous">True</property>
                                     <child>
                                       <object class="GtkColorButton" id="comment_background">
-                                        <property name="visible">True</property>
                                         <property name="sensitive">False</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
@@ -219,7 +218,6 @@
                                     </child>
                                     <child>
                                       <object class="GtkColorButton" id="header_background">
-                                        <property name="visible">True</property>
                                         <property name="sensitive">False</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>

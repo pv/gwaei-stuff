@@ -2783,6 +2783,11 @@ void initialize_gui_interface (int argc, char *argv[])
     gdk_threads_init();
     gtk_init (&argc, &argv);
 
+#ifdef ENABLE_WIN32
+    gtk_rc_parse_string ("gtk-theme-name = \"Clearlooks\"");
+    gtk_rc_parse_string ("gtk-icon-theme-name = \"hicolor\"");
+#endif
+
     //Program flags setup
     GError *error = NULL;
     GOptionContext *context = g_option_context_new (gettext("- A dictionary program for Japanese-English translation."));
