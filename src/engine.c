@@ -49,6 +49,9 @@
 #include <gwaei/engine.h>
 #include <gwaei/utilities.h>
 
+#include <gtk/gtk.h>
+#include <gwaei/gtk-main-interface.h>
+
 static gboolean less_relevant_title_inserted = FALSE;
 
 
@@ -77,7 +80,7 @@ static void append_stored_result_to_output (GwSearchItem *item, GList **results)
     *results = g_list_delete_link(*results, *results);
       
     //Append to the buffer 
-    if (item->show_less_relevant_results || item->total_relevant_results == 0)
+    if (item->status != GW_SEARCH_CANCELING && (item->show_less_relevant_results || item->total_relevant_results == 0))
     {
       (*item->gw_searchitem_ui_append_results_to_output)(item);
     }
@@ -139,6 +142,7 @@ static gboolean stream_results_cleanup (GwSearchItem *item)
 //!
 static void stream_results_thread (gpointer data)
 {
+printf("START\n");
     GwSearchItem *item = (GwSearchItem*) data;
     if (item->fd == NULL) return;
     char *line_pointer = NULL;
@@ -147,20 +151,8 @@ static void stream_results_thread (gpointer data)
     //We loop, processing lines of the file until the max chunk size has been
     //reached or we reach the end of the file or a cancel request is recieved.
     while ((line_pointer = fgets(item->resultline->string, MAX_LINE, item->fd)) != NULL &&
-           item->status != GW_SEARCH_GW_DICT_STATUS_CANCELING)
+           item->status != GW_SEARCH_CANCELING)
     {
-#ifdef G_OS_WIN32
-      if (chunk < MAX_CHUNK)
-      {
-        chunk++;
-      }
-      else
-      {
-        chunk = 0;
-        g_main_context_iteration (NULL, FALSE);
-      }
-#endif
-
       item->current_line++;
 
       //Commented input in the dictionary...we should skip over it
@@ -189,10 +181,12 @@ static void stream_results_thread (gpointer data)
       //Results match, add to the text buffer
       if (gw_searchitem_existance_generic_comparison (item, GW_QUERYLINE_EXIST))
       {
+printf("CLEAR\n");
         int relevance = get_relevance(item);
         switch(relevance)
         {
           case GW_RESULT_HIGH_RELEVANCE:
+printf("HIGH RESULT!\n");
               item->total_results++;
               item->total_relevant_results++;
               if (item->target != GW_TARGET_KANJI)
@@ -231,21 +225,20 @@ static void stream_results_thread (gpointer data)
       }
     }
 
-/*
-    if (line_pointer == NULL) {
-      if (item->dictionary->total_lines != item->current_line) {
-        item->dictionary->total_lines = item->current_line;
-        char *key = NULL;
-        key = g_strdup_printf ("%s%s", item->dictionary->name, "-total-lines");
+//    if (line_pointer == NULL) {
+//      if (item->dictionary->total_lines != item->current_line) {
+//        item->dictionary->total_lines = item->current_line;
+//        char *key = NULL;
+//        key = g_strdup_printf ("%s%s", item->dictionary->name, "-total-lines");
 
-        if (key != NULL) {
-          *key = g_ascii_tolower (*key);
-          gw_pref_set_int(GW_SCHEMA_DICTIONARY, key, item->current_line);
-          g_free (key);
-        }
-      }
-    } 
-*/
+//        if (key != NULL) {
+//          *key = g_ascii_tolower (*key);
+//          gw_pref_set_int(GW_SCHEMA_DICTIONARY, key, item->current_line);
+//          g_free (key);
+//        }
+//      }
+//    } 
+
 
     //Make sure the more relevant header banner is visible
     if (item->target != GW_TARGET_KANJI)
@@ -315,7 +308,7 @@ void gw_search_get_results (GwSearchItem *item)
     }
     else
     {
-      if (g_thread_create((GThreadFunc)stream_results_thread, (gpointer) item, FALSE, NULL) == NULL) {
+      if (item->thread = g_thread_create((GThreadFunc)stream_results_thread, (gpointer) item, TRUE, NULL) == NULL) {
         g_warning("couldn't create the thread");
         return;
       }

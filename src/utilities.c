@@ -72,7 +72,7 @@ void gw_util_initialize_runmode (int argc, char *argv[])
      i++;
    }
 
-   if (strcmp (call_ptr, "waei") == 0)
+   if (strcmp (call_ptr, "waei") == 0 || strcmp(call_ptr, "waei.exe") == 0)
    {
      if (ncurses_switch)
      {
@@ -84,13 +84,13 @@ void gw_util_initialize_runmode (int argc, char *argv[])
      }
    }
 #ifdef WITH_GTK
-   else if (strcmp (call_ptr, "gwaei") == 0)
+   else if (strcmp (call_ptr, "gwaei") == 0 || strcmp (call_ptr, "gwaei.exe") == 0)
    {
      run_mode = GW_GTK_RUNMODE;
    }
 #endif
 #ifdef WITH_QT
-   else if (strcmp (call_ptr, "kwaei") == 0)
+   else if (strcmp (call_ptr, "kwaei") == 0 || strcmp (call_ptr, "kwaei.exe") == 0)
    {
      run_mode = GW_QT_RUNMODE;
    }

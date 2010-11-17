@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 1.4.0\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-11-06 01:38-0400\n"
+"POT-Creation-Date: 2010-11-14 01:02-0500\n"
 "PO-Revision-Date: 2004-01-01 20:41+0100\n"
 "Last-Translator: Pavel Fric <pavelfric@seznam.cz>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
@@ -180,7 +180,7 @@ msgstr "Chyba při zpracovávání požadavku\n"
 msgid "Query parse error\n"
 msgstr "Chyba při zpracovávání požadavku\n"
 
-#: src/console-main-interface.c:493 src/gtk-main-interface.c:957
+#: src/console-main-interface.c:493 src/gtk-main-interface.c:911
 #: src/ncurses-main-interface.c:402
 #, c-format
 msgid "Found %d result"
@@ -189,7 +189,7 @@ msgstr[0] "%d výsledek nalezen"
 msgstr[1] "%d výsledků nalezeno"
 
 #. TRANSLATORS: relevant what ? It's the number of "relevant" result(s) displayed while or after searching.
-#: src/console-main-interface.c:494 src/gtk-main-interface.c:961
+#: src/console-main-interface.c:494 src/gtk-main-interface.c:915
 #: src/ncurses-main-interface.c:403
 #, c-format
 msgid "(%d Relevant)"
@@ -197,60 +197,60 @@ msgid_plural "(%d Relevant)"
 msgstr[0] "(%d odpovídá)"
 msgstr[1] "(%d pertinents)"
 
-#: src/console-main-interface.c:559 src/gtk-main-interface.c:3387
-#: src/gtk-main-interface.c:3487 src/ncurses-main-interface.c:586
+#: src/console-main-interface.c:559 src/gtk-main-interface.c:3326
+#: src/gtk-main-interface.c:3426 src/ncurses-main-interface.c:586
 msgid "Radicals:"
 msgstr "Radikály:"
 
-#: src/console-main-interface.c:564 src/gtk-main-interface.c:3441
-#: src/gtk-main-interface.c:3520 src/ncurses-main-interface.c:591
+#: src/console-main-interface.c:564 src/gtk-main-interface.c:3380
+#: src/gtk-main-interface.c:3459 src/ncurses-main-interface.c:591
 msgid "Stroke:"
 msgstr "Tahy:"
 
-#: src/console-main-interface.c:572 src/gtk-main-interface.c:3448
-#: src/gtk-main-interface.c:3527 src/ncurses-main-interface.c:599
+#: src/console-main-interface.c:572 src/gtk-main-interface.c:3387
+#: src/gtk-main-interface.c:3466 src/ncurses-main-interface.c:599
 msgid "Freq:"
 msgstr "Častost:"
 
-#: src/console-main-interface.c:580 src/gtk-main-interface.c:3455
-#: src/gtk-main-interface.c:3534 src/ncurses-main-interface.c:607
+#: src/console-main-interface.c:580 src/gtk-main-interface.c:3394
+#: src/gtk-main-interface.c:3473 src/ncurses-main-interface.c:607
 msgid "Grade:"
 msgstr "Třída:"
 
-#: src/console-main-interface.c:588 src/gtk-main-interface.c:3461
-#: src/gtk-main-interface.c:3541 src/ncurses-main-interface.c:615
+#: src/console-main-interface.c:588 src/gtk-main-interface.c:3400
+#: src/gtk-main-interface.c:3480 src/ncurses-main-interface.c:615
 msgid "JLPT:"
 msgstr "JLPT:"
 
-#: src/console-main-interface.c:595 src/gtk-main-interface.c:3404
-#: src/gtk-main-interface.c:3495 src/ncurses-main-interface.c:622
+#: src/console-main-interface.c:595 src/gtk-main-interface.c:3343
+#: src/gtk-main-interface.c:3434 src/ncurses-main-interface.c:622
 msgid "Readings:"
 msgstr "Čtení:"
 
-#: src/console-main-interface.c:597 src/gtk-main-interface.c:3415
-#: src/gtk-main-interface.c:3503 src/ncurses-main-interface.c:624
+#: src/console-main-interface.c:597 src/gtk-main-interface.c:3354
+#: src/gtk-main-interface.c:3442 src/ncurses-main-interface.c:624
 msgid "Name:"
 msgstr "Název:"
 
-#: src/console-main-interface.c:599 src/gtk-main-interface.c:3426
-#: src/gtk-main-interface.c:3511 src/ncurses-main-interface.c:626
+#: src/console-main-interface.c:599 src/gtk-main-interface.c:3365
+#: src/gtk-main-interface.c:3450 src/ncurses-main-interface.c:626
 msgid "Radical Name:"
 msgstr "Název radikálu:"
 
-#: src/console-main-interface.c:602 src/gtk-main-interface.c:3470
-#: src/gtk-main-interface.c:3548 src/ncurses-main-interface.c:629
+#: src/console-main-interface.c:602 src/gtk-main-interface.c:3409
+#: src/gtk-main-interface.c:3487 src/ncurses-main-interface.c:629
 msgid "Meanings:"
 msgstr "Význam: "
 
 # E: English
 #. TRANSLATORS: The "E" stands for "English"
-#: src/console-main-interface.c:619 src/gtk-main-interface.c:3606
+#: src/console-main-interface.c:619 src/gtk-main-interface.c:3550
 msgid "E:\t"
 msgstr "E:\t"
 
 # J: Japanese
 #. TRANSLATORS: The "J" stands for "Japanese"
-#: src/console-main-interface.c:625 src/gtk-main-interface.c:3617
+#: src/console-main-interface.c:625 src/gtk-main-interface.c:3561
 msgid ""
 "\n"
 "J:\t"
@@ -260,7 +260,7 @@ msgstr ""
 
 # D: Detail
 #. TRANSLATORS: The "D" stands for "Detail"
-#: src/console-main-interface.c:631 src/gtk-main-interface.c:3628
+#: src/console-main-interface.c:631 src/gtk-main-interface.c:3572
 msgid ""
 "\n"
 "D:\t"
@@ -268,79 +268,79 @@ msgstr ""
 "\n"
 "D:\t"
 
-#: src/dictinfo-object.c:97
+#: src/dictinfo-object.c:99
 msgid "English Dictionary"
 msgstr "Anglický slovník"
 
-#: src/dictinfo-object.c:98
+#: src/dictinfo-object.c:100
 msgid "English"
 msgstr "Angličtina"
 
-#: src/dictinfo-object.c:102
+#: src/dictinfo-object.c:104
 msgid "Spanish Dictionary"
 msgstr "Španělský slovník"
 
-#: src/dictinfo-object.c:103
+#: src/dictinfo-object.c:105
 msgid "Spanish"
 msgstr "Španělština"
 
-#: src/dictinfo-object.c:107 src/dictinfo-object.c:112
+#: src/dictinfo-object.c:109 src/dictinfo-object.c:114
 msgid "Kanji Dictionary"
 msgstr "Slovník kanji"
 
-#: src/dictinfo-object.c:108 src/dictinfo-object.c:113
+#: src/dictinfo-object.c:110 src/dictinfo-object.c:115
 msgid "Kanji"
 msgstr "Kanji"
 
-#: src/dictinfo-object.c:117
+#: src/dictinfo-object.c:119
 msgid "Radicals Dictionary"
 msgstr "Slovník radikálů"
 
-#: src/dictinfo-object.c:118
+#: src/dictinfo-object.c:120
 msgid "Radicals"
 msgstr "Radikály"
 
-#: src/dictinfo-object.c:122
+#: src/dictinfo-object.c:124
 msgid "Places Dictionary"
 msgstr "Slovník míst"
 
-#: src/dictinfo-object.c:123
+#: src/dictinfo-object.c:125
 msgid "Places"
 msgstr "Místa"
 
-#: src/dictinfo-object.c:127
+#: src/dictinfo-object.c:129
 msgid "Names Dictionary"
 msgstr "Slovník jmen"
 
-#: src/dictinfo-object.c:128
+#: src/dictinfo-object.c:130
 msgid "Names"
 msgstr "Jména"
 
-#: src/dictinfo-object.c:132
+#: src/dictinfo-object.c:134
 msgid "Examples Dictionary"
 msgstr "Slovník příkladů"
 
-#: src/dictinfo-object.c:133
+#: src/dictinfo-object.c:135
 msgid "Examples"
 msgstr "Příklady"
 
-#: src/dictinfo-object.c:137
+#: src/dictinfo-object.c:139
 msgid "French Dictionary"
 msgstr "Francouzský slovník"
 
-#: src/dictinfo-object.c:138
+#: src/dictinfo-object.c:140
 msgid "French"
 msgstr "Francouzština"
 
-#: src/dictinfo-object.c:142
+#: src/dictinfo-object.c:144
 msgid "German Dictionary"
 msgstr "Německý slovník"
 
-#: src/dictinfo-object.c:143
+#: src/dictinfo-object.c:145
 msgid "German"
 msgstr "Němčina"
 
-#: src/dictinfo-object.c:147
+#: src/dictinfo-object.c:149
 #, c-format
 msgid "%s Dictionary"
 msgstr "Slovník %s"
@@ -371,7 +371,7 @@ msgstr "slovník.txt"
 msgid "Save"
 msgstr "Uložit"
 
-#: src/gtk-main-callbacks.c:1131
+#: src/gtk-main-callbacks.c:1129
 msgid ""
 "Program for Japanese translation and reference. The\n"
 "dictionaries are supplied by Jim Breen's WWWJDIC.\n"
@@ -383,40 +383,40 @@ msgstr ""
 "námět."
 
 #. TRANSLATORS: You can add your own name to the translation of this field, it will be displayed in the "about" box when gwaei is run in your language
-#: src/gtk-main-callbacks.c:1135
+#: src/gtk-main-callbacks.c:1133
 msgid "translator-credits"
 msgstr "www.fripohled.blogspot.com"
 
-#: src/gtk-main-callbacks.c:1736
+#: src/gtk-main-callbacks.c:1733
 msgid "A_ppend Selected"
 msgstr "Při_pojit vybrané"
 
-#: src/gtk-main-callbacks.c:1738
+#: src/gtk-main-callbacks.c:1735
 msgid "Save Selected _As"
 msgstr "Uložit výběr _jako"
 
-#: src/gtk-main-callbacks.c:1740
+#: src/gtk-main-callbacks.c:1737
 msgid "_Print Selected"
 msgstr "_Vytisknout vybrané"
 
-#: src/gtk-main-callbacks.c:1747 src/gtk-main-interface.c:406
+#: src/gtk-main-callbacks.c:1744 src/gtk-main-interface.c:404
 msgid "A_ppend"
 msgstr "Při_pojit"
 
 #. TRANSLATORS: The first variable is the expression to look for, the second is the dictionary full name
-#: src/gtk-main-callbacks.c:1788
+#: src/gtk-main-callbacks.c:1785
 #, c-format
 msgid "Search for \"%s\" in the %s"
 msgstr "Hledat \"%s\" v %s"
 
 #. TRANSLATORS: The variable is the expression to look for
-#: src/gtk-main-callbacks.c:1790
+#: src/gtk-main-callbacks.c:1787
 #, c-format
 msgid "Search for \"%s\" in a Different Dictionary"
 msgstr "Hledat \"%s\" v jiném slovníku"
 
 #. TRANSLATORS: The variable is the expression to look for
-#: src/gtk-main-callbacks.c:1792
+#: src/gtk-main-callbacks.c:1789
 #, c-format
 msgid "Cross-reference \"%s\" Online"
 msgstr "Hledat \"%s\" na internetu"
@@ -429,246 +429,246 @@ msgstr "_Zavřít kartu"
 msgid "_Close"
 msgstr "_Zavřít"
 
-#: src/gtk-main-interface-tabs.c:205
+#: src/gtk-main-interface-tabs.c:206
 msgid "(Empty)"
 msgstr "(Prázdný)"
 
-#: src/gtk-main-interface.c:150 src/gtk-builder-xml/main.glade:7
+#: src/gtk-main-interface.c:148 src/gtk-builder-xml/main.glade:7
 msgid "gWaei Japanese-English Dictionary"
 msgstr "Japonsko-anglický slovník gWaei "
 
-#: src/gtk-main-interface.c:370
+#: src/gtk-main-interface.c:368
 msgid "_New Tab"
 msgstr "_Nová karta"
 
-#: src/gtk-main-interface.c:378
+#: src/gtk-main-interface.c:376
 msgid "Only for Non-Japanese Locals"
 msgstr "Pokud rozhraní není v japonštině"
 
-#: src/gtk-main-interface.c:379
+#: src/gtk-main-interface.c:377
 msgid "When Possible"
 msgstr "Je-li to možné"
 
-#: src/gtk-main-interface.c:380
+#: src/gtk-main-interface.c:378
 msgid "Never"
 msgstr "Nikdy"
 
-#: src/gtk-main-interface.c:381 src/gtk-builder-xml/main.glade:469
+#: src/gtk-main-interface.c:379 src/gtk-builder-xml/main.glade:469
 msgid "Go to the _Project Homepage"
 msgstr "Navštívit domovskou stránku projektu"
 
-#: src/gtk-main-interface.c:382 src/gtk-builder-xml/main.glade:477
+#: src/gtk-main-interface.c:380 src/gtk-builder-xml/main.glade:477
 msgid "Get Help on I_RC"
 msgstr "Získat pomoc přes I_RC"
 
-#: src/gtk-main-interface.c:383
+#: src/gtk-main-interface.c:381
 msgid "Other Dictionaries"
 msgstr "Jiné slovníky"
 
-#: src/gtk-main-interface.c:384
+#: src/gtk-main-interface.c:382
 msgid "Main Dictionaries"
 msgstr "Hlavní slovníky"
 
-#: src/gtk-main-interface.c:386 src/gtk-settings-interface.c:286
+#: src/gtk-main-interface.c:384 src/gtk-settings-interface.c:288
 msgid "Order"
 msgstr "Příkaz"
 
-#: src/gtk-main-interface.c:387 src/gtk-settings-interface.c:294
+#: src/gtk-main-interface.c:385 src/gtk-settings-interface.c:296
 msgid "Shortcut"
 msgstr "Zkratka"
 
-#: src/gtk-main-interface.c:388 src/gtk-settings-interface.c:301
+#: src/gtk-main-interface.c:386 src/gtk-settings-interface.c:303
 msgid "Dictionary"
 msgstr "Slovník"
 
-#: src/gtk-main-interface.c:389 src/gtk-builder-xml/kanjipad.glade:75
+#: src/gtk-main-interface.c:387 src/gtk-builder-xml/kanjipad.glade:75
 msgid "_Annotate Strokes"
 msgstr "_Opatřit tahy vysvětlivkami"
 
-#: src/gtk-main-interface.c:402
+#: src/gtk-main-interface.c:400
 msgid "Edit the current vocabulary list"
 msgstr "Upravit nynější seznam slovíček"
 
-#: src/gtk-main-interface.c:407
+#: src/gtk-main-interface.c:405
 msgid "Append the current results to a file"
 msgstr "Přidat nynější výsledky na konec souboru"
 
-#: src/gtk-main-interface.c:412
+#: src/gtk-main-interface.c:410
 msgid "Save the current results to a new file"
 msgstr "Uložit nynější výsledky do nového souboru"
 
-#: src/gtk-main-interface.c:416
+#: src/gtk-main-interface.c:414
 msgid "Print the current results"
 msgstr "Vytisknout nynější výsledky"
 
-#: src/gtk-main-interface.c:421
+#: src/gtk-main-interface.c:419
 msgid "_Enlarge Text"
 msgstr "_Zvětšit velikost textu"
 
-#: src/gtk-main-interface.c:422 src/gtk-builder-xml/main.glade:661
+#: src/gtk-main-interface.c:420 src/gtk-builder-xml/main.glade:661
 msgid "Enlarge"
 msgstr "Zvětšit"
 
-#: src/gtk-main-interface.c:423
+#: src/gtk-main-interface.c:421
 msgid "Enlarge the results text"
 msgstr "Zvětšit velikost textu s výsledky"
 
-#: src/gtk-main-interface.c:429
+#: src/gtk-main-interface.c:427
 msgid "_Shrink Text"
 msgstr "_Zmenšit velikost textu"
 
-#: src/gtk-main-interface.c:430 src/gtk-builder-xml/main.glade:673
+#: src/gtk-main-interface.c:428 src/gtk-builder-xml/main.glade:673
 msgid "Shrink"
 msgstr "Zmenšit"
 
-#: src/gtk-main-interface.c:431
+#: src/gtk-main-interface.c:429
 msgid "Shrink the results text"
 msgstr "Zmenšit velikost textu s výsledky"
 
-#: src/gtk-main-interface.c:437
+#: src/gtk-main-interface.c:435
 msgid "_Normal Size"
 msgstr "_Velikost obyčejného textu"
 
-#: src/gtk-main-interface.c:438
+#: src/gtk-main-interface.c:436
 msgid "Normal"
 msgstr "_Obyčejný"
 
-#: src/gtk-main-interface.c:444
+#: src/gtk-main-interface.c:442
 msgid "Show _Toolbar"
 msgstr "Ukázat nástrojový pruh"
 
-#: src/gtk-main-interface.c:448
+#: src/gtk-main-interface.c:446
 msgid "Show _Less Relevant Results"
 msgstr "Ukázat _méně závažné výsledky"
 
-#: src/gtk-main-interface.c:452
+#: src/gtk-main-interface.c:450
 msgid "Using _Kanjipad"
 msgstr "Pomocí _Kanjipadu"
 
-#: src/gtk-main-interface.c:457
+#: src/gtk-main-interface.c:455
 msgid "Using _Radical Search Tool"
 msgstr "Pomocí nástroje na hledání _radikálů"
 
-#: src/gtk-main-interface.c:462
+#: src/gtk-main-interface.c:460
 msgid "_Word-edge Mark"
 msgstr "Značka pro _okraj slova"
 
-#: src/gtk-main-interface.c:463
+#: src/gtk-main-interface.c:461
 msgid "_Edge"
 msgstr "_Okraj"
 
-#: src/gtk-main-interface.c:464
+#: src/gtk-main-interface.c:462
 msgid "Insert a word-edge character"
 msgstr "Vložit znak pro okraj slova"
 
-#: src/gtk-main-interface.c:470
+#: src/gtk-main-interface.c:468
 msgid "_Not-word-edge Mark"
 msgstr "Značka pro _není okrajem slova"
 
-#: src/gtk-main-interface.c:471
+#: src/gtk-main-interface.c:469
 msgid "_Not Edge"
 msgstr "_Není okrajem slova"
 
-#: src/gtk-main-interface.c:472
+#: src/gtk-main-interface.c:470
 msgid "Insert a not-word-edge character"
 msgstr "Vložit znak pro není okrajem slova"
 
-#: src/gtk-main-interface.c:477
+#: src/gtk-main-interface.c:475
 msgid "_Unknown Character"
 msgstr "_Neznámý znak"
 
-#: src/gtk-main-interface.c:478
+#: src/gtk-main-interface.c:476
 msgid "_Unknown"
 msgstr "_Neznámý"
 
-#: src/gtk-main-interface.c:479
+#: src/gtk-main-interface.c:477
 msgid "Insert an unknown character"
 msgstr "Vložit značku pro neznámý znak"
 
-#: src/gtk-main-interface.c:483
+#: src/gtk-main-interface.c:481
 msgid "_Or Character"
 msgstr "Znak pro logické _Nebo"
 
-#: src/gtk-main-interface.c:487
+#: src/gtk-main-interface.c:485
 msgid "_And Character"
 msgstr "Znak pro logické _A"
 
-#: src/gtk-main-interface.c:491
+#: src/gtk-main-interface.c:489
 msgid "_Previous Search"
 msgstr "_Předchozí hledání"
 
-#: src/gtk-main-interface.c:492
+#: src/gtk-main-interface.c:490
 msgid "Previous"
 msgstr "Předchozí"
 
-#: src/gtk-main-interface.c:493
+#: src/gtk-main-interface.c:491
 msgid "Go to the previous search"
 msgstr "Vrátit se k předchozímu hledání"
 
-#: src/gtk-main-interface.c:498
+#: src/gtk-main-interface.c:496
 msgid "_Next Search"
 msgstr "_Další hledání"
 
-#: src/gtk-main-interface.c:499
+#: src/gtk-main-interface.c:497
 msgid "Next"
 msgstr "Další"
 
-#: src/gtk-main-interface.c:500
+#: src/gtk-main-interface.c:498
 msgid "Go to the next search"
 msgstr "Přejít na další hledání"
 
-#: src/gtk-main-interface.c:505
+#: src/gtk-main-interface.c:503
 msgid "_Contents"
 msgstr "_Obsah"
 
-#: src/gtk-main-interface.c:506
+#: src/gtk-main-interface.c:504
 msgid "Help"
 msgstr "Nápověda"
 
-#: src/gtk-main-interface.c:507
+#: src/gtk-main-interface.c:505
 msgid "Open the help dialog"
 msgstr "Otevřít dialog s nápovědou"
 
-#: src/gtk-main-interface.c:512
+#: src/gtk-main-interface.c:510
 msgid "Dictionary _Terminology Glossary"
 msgstr "Slovníček _pojmů nacházejících se ve slovníku"
 
-#: src/gtk-main-interface.c:519
+#: src/gtk-main-interface.c:517
 msgid "Enable spellcheck for searches"
 msgstr "Zapnout pro hledání kontrolu pravopisu"
 
-#: src/gtk-main-interface.c:523
+#: src/gtk-main-interface.c:521
 msgid "Input your query here"
 msgstr "Zde zadejte své požadavky"
 
-#: src/gtk-main-interface.c:527
+#: src/gtk-main-interface.c:525
 msgid "Select the dictionary you want to use"
 msgstr "Vyberte sloníky, které chcete používat"
 
-#: src/gtk-main-interface.c:531
+#: src/gtk-main-interface.c:529
 msgid "Click to start search"
 msgstr "Klepněte pro spuštění hledání"
 
-#: src/gtk-main-interface.c:955
+#: src/gtk-main-interface.c:909
 msgid "Searching..."
 msgstr "Vyhledává se..."
 
-#: src/gtk-main-interface.c:958
+#: src/gtk-main-interface.c:912
 #, c-format
 msgid "Searching... %d result"
 msgid_plural "Searching... %d results"
 msgstr[0] "Vyhledává se... %d výsledky"
 msgstr[1] "Vyhledává se... %d výsledků"
 
-#: src/gtk-main-interface.c:1240
+#: src/gtk-main-interface.c:1190
 msgid "_Cycle Up"
 msgstr "Vrátit se k _předchozímu"
 
-#: src/gtk-main-interface.c:1246
+#: src/gtk-main-interface.c:1196
 msgid "Cycle _Down"
 msgstr "Vrátit se k _dalšímu"
 
-#: src/gtk-main-interface.c:1256
+#: src/gtk-main-interface.c:1206
 #, c-format
 msgid "%d dictionary is being used."
 msgid_plural "%d dictionaries are being used."
@@ -676,25 +676,25 @@ msgstr[0] "%d slovníky jsou používány."
 msgstr[1] "%d slovníků jsou používáno."
 
 #. TRANSLATORS: The argument is the dictionary long name
-#: src/gtk-main-interface.c:2297
+#: src/gtk-main-interface.c:2250
 #, c-format
 msgid "Nothing found in the %s!"
 msgstr "V %s nebyl nalezen žádný výsledek!"
 
-#: src/gtk-main-interface.c:2328
+#: src/gtk-main-interface.c:2281
 msgid "Search Other Dictionary: "
 msgstr "Hledat v ostatních slovnících: "
 
-#: src/gtk-main-interface.c:2390
+#: src/gtk-main-interface.c:2343
 msgid "Search Online: "
 msgstr "Hledat na internetu: "
 
-#: src/gtk-main-interface.c:2446
+#: src/gtk-main-interface.c:2399
 #, c-format
 msgid "gWaei Usage Tip #%d: "
 msgstr "Rada pro používání gWaei n°%d :"
 
-#: src/gtk-main-interface.c:2459
+#: src/gtk-main-interface.c:2412
 #, c-format
 msgid ""
 "Use the Unknown Character from the Insert menu or toolbar in place of "
@@ -712,15 +712,15 @@ msgstr ""
 "způsobem Kanjipad uvnitř pracuje, je velmi důležité kanji kreslit se "
 "správným počtem tahů  a kreslit je ve správném směru."
 
-#: src/gtk-main-interface.c:2466
+#: src/gtk-main-interface.c:2419
 msgid "Inputting Unknown Kanji"
 msgstr "Zadat neznámý kanji"
 
-#: src/gtk-main-interface.c:2483
+#: src/gtk-main-interface.c:2436
 msgid "Getting More Exact Matches"
 msgstr "Obdržet více přesných shod"
 
-#: src/gtk-main-interface.c:2489
+#: src/gtk-main-interface.c:2442
 msgid ""
 "Use the Word-edge Mark and the Not-word-edge Mark from the insert menu to "
 "get more relevant results.  fish\\b will return results like fish and "
@@ -732,7 +732,7 @@ msgstr ""
 "výsledky jako \"fish\" a \"selfish\", ale vyloučí výrazy, v nichž  \"fish\" "
 "není na okraji slova, jako je \"fisherman\"."
 
-#: src/gtk-main-interface.c:2497
+#: src/gtk-main-interface.c:2450
 #, c-format
 msgid ""
 "Use the And Character or Or Character to search for results that contain a "
@@ -744,15 +744,15 @@ msgstr ""
 "výsledky, které obsahují spojení slov, jež nemusejí následovat hned po sobě. "
 "« cat&dogs » vrátí pouze výsledky, které obsahují dvě slova, jako « %s »."
 
-#: src/gtk-main-interface.c:2503
+#: src/gtk-main-interface.c:2456
 msgid "Searching for Multiple Words"
 msgstr "Hledají se vícenásobná slova"
 
-#: src/gtk-main-interface.c:2520
+#: src/gtk-main-interface.c:2473
 msgid "Make a Vocabulary List"
 msgstr "Udělat seznam se slovní zásobou"
 
-#: src/gtk-main-interface.c:2526
+#: src/gtk-main-interface.c:2479
 msgid ""
 "Specific sections of results can be printed or saved by dragging the mouse "
 "to highlight them.  Using this in combination with the Append command from "
@@ -764,11 +764,11 @@ msgstr ""
 "dostupný přes nabídku « Soubor » nebo z pruhu s nástroji, umožněno rychlé a "
 "snadné vytváření seznamů slovíček."
 
-#: src/gtk-main-interface.c:2536
+#: src/gtk-main-interface.c:2489
 msgid "Why Use the Mouse?"
 msgstr "Proč tedy používat myš?"
 
-#: src/gtk-main-interface.c:2542
+#: src/gtk-main-interface.c:2495
 msgid ""
 "Typing something will move the focus to the search input box.  Hitting the "
 "Up or Down arrow key will move the focus to the results pane so you can "
@@ -780,11 +780,11 @@ msgstr ""
 "můžete posunovat výsledky. Stisknutí spojení kláves Alt + šipka nahoru nebo "
 "Alt + šipka dolů budete točit nyní nainstalovanými slovníky."
 
-#: src/gtk-main-interface.c:2552
+#: src/gtk-main-interface.c:2505
 msgid "Get Ready for the JLPT"
 msgstr "Připravte se na JLPT"
 
-#: src/gtk-main-interface.c:2558
+#: src/gtk-main-interface.c:2511
 msgid ""
 "The Kanji dictionary has some hidden features.  One such one is the ability "
 "to filter out Kanji that don't meet a certain criteria.  If you are planning "
@@ -805,11 +805,11 @@ msgstr ""
 "Jinou z těchto skrytých funkcí je možnost filtrovat kanji na úrovni, jaká se "
 "učí v japonských školách - kód G# (kde # je rokem studia)."
 
-#: src/gtk-main-interface.c:2572
+#: src/gtk-main-interface.c:2525
 msgid "Just drag words in!"
 msgstr "Prostě přetáhněte slova!"
 
-#: src/gtk-main-interface.c:2578
+#: src/gtk-main-interface.c:2531
 msgid ""
 "If you drag and drop a highlighted word into gWaei's search result box, "
 "gWaei will automatically start a search using that text.  This can be a nice "
@@ -820,11 +820,11 @@ msgstr ""
 "text. To může být hezkou cestou pro rychlé hledání slov při procházení "
 "internetových stránek. "
 
-#: src/gtk-main-interface.c:2589
+#: src/gtk-main-interface.c:2542
 msgid "What does (adj-i) mean?"
 msgstr "Co znamená (adj-i)?"
 
-#: src/gtk-main-interface.c:2595
+#: src/gtk-main-interface.c:2548
 msgid ""
 "It is part of the terminalogy used by the EDICT group of dictionaries to "
 "categorize words.  Some are obvious, but there are a number that there is no "
@@ -842,11 +842,11 @@ msgstr ""
 "položku Slovníček pojmů nacházejících se ve slovníku, kterou najdete v "
 "nabídce Nápověda, abyste se k ní dostal."
 
-#: src/gtk-main-interface.c:2607
+#: src/gtk-main-interface.c:2560
 msgid "Books are Heavy"
 msgstr "Knihy jsou těžké"
 
-#: src/gtk-main-interface.c:2613
+#: src/gtk-main-interface.c:2566
 msgid ""
 "Aways wear a construction helmet when working with books.  They are "
 "dangerous heavy objects that can at any point fall on and injure you.  "
@@ -857,22 +857,22 @@ msgstr ""
 "těžké předměty, které mohou začít kdykoli padat a poranit vás. Povězte o tom "
 "také, prosím, všem svým přátelům. Později vám poděkují. Opravdu."
 
-#: src/gtk-main-interface.c:2833
+#: src/gtk-main-interface.c:2793
 msgid "- A dictionary program for Japanese-English translation."
 msgstr "- Slovníkový program pro překlad z japonštiny do angličtiny"
 
-#: src/gtk-main-interface.c:3207 src/gtk-main-interface.c:3306
+#: src/gtk-main-interface.c:3155 src/gtk-main-interface.c:3256
 msgid "Pop"
 msgstr "Vyskočit"
 
-#: src/gtk-main-interface.c:3727
+#: src/gtk-main-interface.c:3679
 #, c-format
 msgid "Other Result %d"
 msgid_plural "Other Results %d"
 msgstr[0] "Podobný výsledek %d"
 msgstr[1] "%d résultats similaires"
 
-#: src/gtk-main-interface.c:3742
+#: src/gtk-main-interface.c:3694
 #, c-format
 msgid "Main Result %d"
 msgid_plural "Main Results %d"
@@ -895,25 +895,25 @@ msgstr ""
 "<b>Současný radikál:</b> %s\n"
 "<b>Název radikálu:</b> %s"
 
-#: src/gtk-settings-callbacks.c:323
+#: src/gtk-settings-callbacks.c:324
 #: src/gtk-settings-interface-install-line.c:63
 msgid "Installed"
 msgstr "Nainstalován"
 
-#: src/gtk-settings-callbacks.c:331 src/gtk-settings-callbacks.c:521
+#: src/gtk-settings-callbacks.c:332 src/gtk-settings-callbacks.c:520
 msgid "Installing..."
 msgstr "Instaluje se..."
 
-#: src/gtk-settings-callbacks.c:485
+#: src/gtk-settings-callbacks.c:484
 msgid "Cancelling..."
 msgstr "Ruší se..."
 
-#: src/gtk-settings-callbacks.c:501
+#: src/gtk-settings-callbacks.c:500
 #: src/gtk-settings-interface-install-line.c:68
 msgid "Not Installed"
 msgstr "Nenainstalován"
 
-#: src/gtk-settings-callbacks.c:698
+#: src/gtk-settings-callbacks.c:693
 msgid "Dictionary File Select"
 msgstr "Výběr souboru se slovníkem"
 
@@ -933,7 +933,7 @@ msgstr "Procházet..."
 msgid "Reset"
 msgstr "Nastavit znovu"
 
-#: src/gtk-settings-interface.c:363
+#: src/gtk-settings-interface.c:367
 #, c-format
 msgid "_Use the System Document Font (%s)"
 msgstr "_Používat písmo dokumentů používané systémem (%s)"
@@ -957,28 +957,28 @@ msgid "Removing..."
 msgstr "Odstraňuje se..."
 
 #. TRANSLATORS: The %s stands for an URL
-#: src/io.c:707
+#: src/io.c:704
 #, c-format
 msgid "Downloading %s..."
 msgstr "Stahuje se %s..."
 
-#: src/io.c:725
+#: src/io.c:722
 msgid "Unable to create dictionary folder"
 msgstr "Nelze vytvořit složku pro slovník"
 
-#: src/io.c:749
+#: src/io.c:746
 msgid "Decompressing..."
 msgstr "Rozbaluje se..."
 
-#: src/io.c:759
+#: src/io.c:756
 msgid "Unzip Error"
 msgstr "Chyba při rozbalování (unzip)"
 
-#: src/io.c:767
+#: src/io.c:764
 msgid "Converting encoding..."
 msgstr "Převádí se kódování..."
 
-#: src/io.c:781
+#: src/io.c:778
 msgid "Postprocessing..."
 msgstr "Následné zpracování..."
 

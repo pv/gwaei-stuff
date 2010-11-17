@@ -78,6 +78,7 @@ src/img/Makefile.in
 src/kpengine/Makefile.in
 src/schemas/Makefile.in
 src/xml/Makefile.in
+rc/schemas/org.gnome.*.valid
 
 
 configure

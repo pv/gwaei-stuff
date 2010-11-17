@@ -109,37 +109,44 @@ no)  libsexy=false ;;
 esac],[libsexy=true])
 AM_CONDITIONAL([WITH_LIBSEXY], [test x$libsexy = xtrue && test x$gnome = xtrue && test x$win32 = xfalse])
 
-
-
-
 AC_CHECK_LIB(m, sqrt)
-if test $win32 = false; then
-  PKG_CHECK_MODULES(DEPS, glib-2.0           >= $GLIB_REQUIRED_VERSION
-                          gio-2.0            >= $GIO_REQUIRED_VERSION
-                          gobject-2.0        >= $GLIB_REQUIRED_VERSION
-                          libcurl            >= $LIBCURL_REQUIRED_VERSION
-                          gmodule-2.0        >= $GMODULE_EXPORT_REQUIRED_VERSION 
-                          gthread-2.0        >= $GTHREAD_REQUIRED_VERSION       )
-  AC_SUBST(DEPS_CFLAGS)
-  AC_SUBST(DEPS_LIBS)
-fi
 
+PKG_CHECK_MODULES(BASE, glib-2.0           >= $GLIB_REQUIRED_VERSION
+                        gobject-2.0        >= $GLIB_REQUIRED_VERSION
+                        gio-2.0            >= $GIO_REQUIRED_VERSION
+                        gmodule-2.0        >= $GMODULE_EXPORT_REQUIRED_VERSION 
+                        gthread-2.0        >= $GTHREAD_REQUIRED_VERSION       
+                        libcurl            >= $LIBCURL_REQUIRED_VERSION       )
+AC_SUBST(BASE_CFLAGS)
+AC_SUBST(BASE_LIBS)
+
+
+if test $win32 = true; then
+  PKG_CHECK_MODULES(WIN32, gtk+-2.0           >= $GTK2_REQUIRED_VERSION
+                           glib-2.0           >= $GLIB_REQUIRED_VERSION
+                           gobject-2.0        >= $GLIB_REQUIRED_VERSION
+                           gio-2.0            >= $GIO_REQUIRED_VERSION
+                           gmodule-2.0        >= $GMODULE_EXPORT_REQUIRED_VERSION 
+                           gthread-2.0        >= $GTHREAD_REQUIRED_VERSION      
+                           libcurl            >= $LIBCURL_REQUIRED_VERSION
+                           gnome-doc-utils    >= $GDU_REQUIRED_VERSION           )
+  AC_SUBST(WIN32_CFLAGS)
+  AC_SUBST(WIN32_LIBS)
+  GNOME_DOC_INIT(,,[:])
+fi
 
 if test $gnome = true && test $win32 = false; then
   PKG_CHECK_MODULES(GNOME, gtk+-2.0           >= $GTK2_REQUIRED_VERSION
                            glib-2.0           >= $GLIB_REQUIRED_VERSION
-                           gio-2.0            >= $GIO_REQUIRED_VERSION
                            gobject-2.0        >= $GLIB_REQUIRED_VERSION
+                           gio-2.0            >= $GIO_REQUIRED_VERSION
                            gmodule-2.0        >= $GMODULE_EXPORT_REQUIRED_VERSION 
                            gthread-2.0        >= $GTHREAD_REQUIRED_VERSION       
                            libcurl            >= $LIBCURL_REQUIRED_VERSION
-                           gnome-doc-utils    >= $GDU_REQUIRED_VERSION )
+                           gnome-doc-utils    >= $GDU_REQUIRED_VERSION           )
   AC_SUBST(GNOME_CFLAGS)
   AC_SUBST(GNOME_LIBS)
   GNOME_DOC_INIT
-else
-  dnl Do not care if GDU is not found
-  GNOME_DOC_INIT(,,[:])
 fi
 
 
@@ -168,7 +175,6 @@ AC_PATH_PROG(KILLALL, killall)
 AC_PATH_PROG(RPMDIR, rpm)
 AC_PATH_PROG(RPMBUILD, rpmbuild)
 AC_PATH_PROG(DPKG_DEB, dpkg-deb)
-AC_PATH_PROG(RSYNC, rsync)
 if test x$win32 = xtrue; then
   GUNZIP="gzip.exe\ -d"
   AC_SUBST(GUNZIP)

@@ -637,6 +637,7 @@ void gw_dictlist_normalize_all_status_from_to (const GwDictStatus OLD, const GwD
 //! @param di pointer to the dictionary object that needs updating
 //! @param error set a GError to the pointer when an error occurs
 //!
+/*
 void gw_dictlist_sync_dictionary (GwDictInfo *di, GError **error)
 {
     GQuark quark;
@@ -682,6 +683,7 @@ void gw_dictlist_sync_dictionary (GwDictInfo *di, GError **error)
     if (*error == NULL)
       printf("%s\n", gettext("Success"));
 }
+*/
 
 
 void gw_dictlist_update_dictionary_order_list ()

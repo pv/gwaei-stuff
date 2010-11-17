@@ -46,7 +46,7 @@ typedef enum
   GW_SEARCH_IDLE,
   GW_SEARCH_SEARCHING,
   GW_SEARCH_FINISHING,
-  GW_SEARCH_GW_DICT_STATUS_CANCELING
+  GW_SEARCH_CANCELING
 } GwSearchState;
 
 typedef enum
@@ -68,14 +68,15 @@ struct _GwSearchItem {
     GwDictInfo* dictionary;                 //!< Pointer to the dictionary used
 
     FILE* fd;                               //!< File descriptor for file search position
-    GwSearchState status;                             //!< Used to test if a search is in progress.
+    GThread *thread;                        //!< Thread the search is processed in
+    GwSearchState status;                   //!< Used to test if a search is in progress.
     char *scratch_buffer;                   //!< Scratch space
     int target;                             //!< What gui element should be outputted to
     long current_line;                      //!< Current line in the dictionary file
     long previous_line;                     //!< Recorderd previous line for determining when to update the progresse
     gboolean show_less_relevant_results;    //!< Saved search display format
+    int search_relevance_idle_timer;        //!< Helps determine if something is added to the history or not
 
-    int search_relevance_idle_timer;
 
     int total_relevant_results;             //!< Total results guessed to be highly relevant to the query
     int total_irrelevant_results;           //!< Total results guessed to be vaguely relevant to the query

@@ -2,7 +2,6 @@
 
 PACKAGE = @PACKAGE@
 VERSION = @VERSION@
-RSYNC = @RSYNC@
 ACLOCAL_AMFLAGS = -I m4
 
 bin_PROGRAMS = gwaei
@@ -25,7 +24,7 @@ endif
 
 datadir = @datadir@
 localedir = $(datadir)/locale
-DEFINITIONS =-DLOCALEDIR=\"$(localedir)\" -DVERSION=\"$(VERSION)\" -DPACKAGE=\"$(PACKAGE)\" -DBINDIR=\"$(bindir)\" -DRSYNC=\"$(RSYNC)\" -DUNZIP=\"$(UNZIP)\" -DGUNZIP=\"$(GUNZIP)\" -DDATADIR2=\"$(datadir)\" -DLIBDIR=\"$(libdir)\" -DGTK_DISABLE_DEPRECATED -DG_SEAL_ENABLE
+DEFINITIONS =-DLOCALEDIR=\"$(localedir)\" -DVERSION=\"$(VERSION)\" -DPACKAGE=\"$(PACKAGE)\" -DBINDIR=\"$(bindir)\" -DUNZIP=\"$(UNZIP)\" -DGUNZIP=\"$(GUNZIP)\" -DDATADIR2=\"$(datadir)\" -DLIBDIR=\"$(libdir)\" -DGTK_DISABLE_DEPRECATED -DG_SEAL_ENABLE
 #AM_CFLAGS = --pedantic -std=c99 -O2 -g
 
 
@@ -35,27 +34,14 @@ INCLUDES = -I$(top_srcdir)/src/include  $(DEFINITIONS)
 
 ##WINDOWS SETUP
 if ENABLE_WIN32
-WIN32_LIB = -L$(top_srcdir)/windows/lib
-WIN32_INCLUDE = -I$(top_srcdir)/windows/include -I$(top_srcdir)/windows/include/glib-2.0 -I$(top_srcdir)/windows/lib/glib-2.0/include -I$(top_srcdir)/windows/include/gtk-2.0 -I$(top_srcdir)/windows/include/cairo -I$(top_srcdir)/windows/include/pango-1.0 -I$(top_srcdir)/windows/lib/gtk-2.0/include -I$(top_srcdir)/windows/include/gdk-pixbuf-2.0 -I$(top_srcdir)/windows/include/atk-1.0
+##gwaei_LDFLAGS = -Wl,-subsystem,windows 
+gwaei_SOURCES += gtk-main-callbacks.c gtk-main-interface.c gtk-settings-callbacks.c gtk-settings-interface.c gtk-radicals-interface.c gtk-radicals-callbacks.c gtk-printing.c gtk-kanjipad-callbacks.c  gtk-kanjipad-interface.c gtk-kanjipad-interface-candidatearea.c gtk-kanjipad-interface-drawingarea.c gtk-main-interface-tabs.c gtk-settings-interface-install-line.c gtk-gsettings-preferences.c
 
-WIN32_CURL_LIB = -lcurl -lws2_32
-WIN32_REGEX_LIB = -lregex
-WIN32_GETTEXT_LIB =  -lintl -lgettextlib
-WIN32_CAIRO_LIB =  -lcairo
-WIN32_PANGO_LIB =  -lpango-1.0 -lpangocairo-1.0
-WIN32_GLIB_LIB = -lglib-2.0 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lgio-2.0
-WIN32_GTK_LIB = -lgtk-win32-2.0 -lgdk-win32-2.0
-WIN32_GDK_PIXBUF_LIB = -lgdk_pixbuf-2.0
-WIN32_ATK_LIB = -latk-1.0
-
-WIN32_DEFS = -DWITH_GTK -DENABLE_WIN32 -DLC_MESSAGES=\"C\" -DCURL_STATICLIB $(WIN32_INCLUDE) -I/usr/i486-mingw32/include -mms-bitfields
-WIN32_LIBS = $(WIN32_LIB) $(WIN32_REGEX_LIB) $(WIN32_CURL_LIB) $(WIN32_GLIB_LIB) $(WIN32_GETTEXT_LIB) $(WIN32_GTK_LIB) $(WIN32_CAIRO_LIB) $(WIN32_PANGO_LIB) $(WIN32_GDK_PIXBUF_LIB) $(WIN32_ATK_LIB)
-
-INCLUDES += $(WIN32_REGEX_INCLUDE) $(WIN32_GETTEXT_INCLUDE) $(WIN32_DEFS)
-gwaei_LDADD += $(WIN32_LIBS)
-gwaei_LDFLAGS = -Wl,-subsystem,windows 
-gwaei_SOURCES += gtk-gsettings-preferences.c
-gwaei_SOURCES += gtk-main-callbacks.c gtk-main-interface.c gtk-settings-callbacks.c gtk-settings-interface.c gtk-radicals-interface.c gtk-radicals-callbacks.c gtk-printing.c gtk-kanjipad-callbacks.c  gtk-kanjipad-interface.c gtk-kanjipad-interface-candidatearea.c gtk-kanjipad-interface-drawingarea.c gtk-main-interface-tabs.c gtk-settings-interface-install-line.c
+WINLIBPREFIX = /mingw
+WIN32_REGEX_LIB = -L$(WINLIBPREFIX)/lib -lregex
+WIN32_DEFS = -DWITH_GTK -DENABLE_WIN32 -DLC_MESSAGES=\"C\" -DCURL_STATICLIB
+gwaei_LDADD += $(WIN32_LIBS)  $(WIN32_REGEX_LIB)
+INCLUDES += $(WIN32_CFLAGS) $(WIN32_DEFS) -I$(WINLIBPREFIX)/include
 else
 
 ##LINUX/UNIX/BSD SETUP
@@ -68,8 +54,8 @@ INCLUDES += $(GNOME_CFLAGS) $(GNOME_DEFS)
 
 ##Setup with no GUI, base dependancies
 else
-gwaei_LDADD += $(DEPS_LIBS) 
-INCLUDES += $(DEPS_CFLAGS)
+gwaei_LDADD += $(BASE_LIBS) 
+INCLUDES += $(BASE_CFLAGS)
 gwaei_SOURCES += none-preferences.c
 endif
 endif

@@ -65,6 +65,7 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary, const int 
 
     temp->results_medium = NULL;
     temp->results_low = NULL;
+    temp->thread = NULL;
     
     if (TARGET != GW_TARGET_RESULTS &&
         TARGET != GW_TARGET_KANJI   &&
@@ -190,6 +191,12 @@ gboolean gw_searchitem_do_pre_search_prep (GwSearchItem* item)
 //!
 void gw_searchitem_do_post_search_clean (GwSearchItem* item)
 {
+    if (item->thread != NULL)
+    {
+      g_thread_join (item->thread);
+      item->thread = NULL;
+    }
+    item->status = GW_SEARCH_CANCELING;
     if (item->fd != NULL)
     {
       fclose(item->fd);
@@ -226,6 +233,12 @@ void gw_searchitem_do_post_search_clean (GwSearchItem* item)
 //!
 void gw_searchitem_free (GwSearchItem* item)
 {
+  if (item->thread != NULL) 
+  {
+    item->status = GW_SEARCH_CANCELING;
+    g_thread_join(item->thread);
+    item->thread = NULL;
+  }
   gw_searchitem_do_post_search_clean (item);
   free (item->queryline);
   free (item);

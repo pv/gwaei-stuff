@@ -249,14 +249,15 @@ G_MODULE_EXPORT gboolean do_get_iter_for_button_release (GtkWidget      *widget,
           gtk_container_set_border_width (GTK_CONTAINER (window), 3);
           gtk_widget_set_tooltip_window (tv, GTK_WINDOW (window));
 
-          //Start the search
-          GwSearchItem *item;
-          item = gw_searchitem_new (query, di, GW_TARGET_KANJI);
-          gw_search_get_results (item);
         }
         if (window != NULL) {
           button_character = unic;
           gtk_window_move (GTK_WINDOW (window), (event->x_root + 3), (event->y_root + 3));
+
+          //Start the search
+          GwSearchItem *item;
+          item = gw_searchitem_new (query, di, GW_TARGET_KANJI);
+          gw_search_get_results (item);
         }
       }
       else {
@@ -1106,7 +1107,8 @@ G_MODULE_EXPORT void do_glossary (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void do_about (GtkWidget *widget, gpointer data)
 {
-    char *pixbuf_path = DATADIR2 G_DIR_SEPARATOR_S PACKAGE G_DIR_SEPARATOR_S "logo.png";
+    char *global_path = DATADIR2 G_DIR_SEPARATOR_S PACKAGE G_DIR_SEPARATOR_S "logo.png";
+    char *local_path = ".." G_DIR_SEPARATOR_S "share" G_DIR_SEPARATOR_S PACKAGE G_DIR_SEPARATOR_S "logo.png";
 
     char *programmer_credits[] = 
     {
@@ -1116,8 +1118,8 @@ G_MODULE_EXPORT void do_about (GtkWidget *widget, gpointer data)
     };
 
     GdkPixbuf *logo;
-    if ( (logo = gdk_pixbuf_new_from_file ( pixbuf_path,    NULL)) == NULL &&
-         (logo = gdk_pixbuf_new_from_file ( "img" G_DIR_SEPARATOR_S "logo.png", NULL)) == NULL    )
+    if ( (logo = gdk_pixbuf_new_from_file (global_path,    NULL)) == NULL &&
+         (logo = gdk_pixbuf_new_from_file (local_path, NULL)) == NULL    )
     {
       printf ("Was unable to load the gwaei logo.\n");
     }
@@ -1126,7 +1128,7 @@ G_MODULE_EXPORT void do_about (GtkWidget *widget, gpointer data)
                "program-name", "gWaei", 
                "version", VERSION,
                "copyright", "gWaei (C) 2008-2010 Zachary Dovel\nKanjipad backend (C) 2002 Owen Taylor\nJStroke backend (C) 1997 Robert Wells",
-               "comments", gettext("Program for Japanese translation and reference. The\ndictionaries are supplied by Jim Breen's WWWJDIC.\nSpecial thanks to the maker of GJITEN who served as an inspiration."),
+               "comments", gettext("Program for Japanese translation and reference. The\ndictionaries are supplied by Jim Breen's WWWJDIC.\nSpecial thanks to the maker of GJITEN who served as an inspiration.\n Dedicated to Chuus"),
                "license", "This software is GPL Licensed.\n\ngWaei is free software: you can redistribute it and/or modify\nit under the terms of the GNU General Public License as published by\n the Free Software Foundation, either version 3 of the License, or\n(at your option) any later version.\n\ngWaei is distributed in the hope that it will be useful,\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\nMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\nGNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License\nalong with gWaei.  If not, see <http://www.gnu.org/licenses/>.",
                "logo", logo,
                // TRANSLATORS: You can add your own name to the translation of this field, it will be displayed in the "about" box when gwaei is run in your language

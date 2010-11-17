@@ -1961,7 +1961,7 @@ gboolean gw_ui_load_gtk_builder_xml (const char *filename) {
 
     //Try a local path first
     if (
-        (path = g_build_filename ("xml", filename, NULL)) != NULL &&
+        (path = g_build_filename ("..", "share", PACKAGE, filename, NULL)) != NULL &&
          g_file_test (path, G_FILE_TEST_IS_REGULAR) &&
          gtk_builder_add_from_file (builder, path,  NULL)
        )
@@ -2205,6 +2205,8 @@ void gw_ui_set_cursor (GdkCursorType CURSOR)
 //!
 void gw_ui_display_no_results_found_page (GwSearchItem *item)
 {
+    if (item->status == GW_SEARCH_CANCELING) return; 
+
     gint32 temp = g_random_int_range (0,9);
     while (temp == gw_previous_tip)
       temp = g_random_int_range (0,9);
@@ -2780,11 +2782,13 @@ static gboolean gw_ui_keep_searching ()
 void initialize_gui_interface (int argc, char *argv[])
 {
     //Initialize some libraries
-    gdk_threads_init();
+    g_thread_init(NULL);
+    gdk_threads_init();                   // Called to initialize internal mutex "gdk_threads_mutex".
+
     gtk_init (&argc, &argv);
 
 #ifdef ENABLE_WIN32
-    gtk_rc_parse_string ("gtk-theme-name = \"Clearlooks\"");
+    gtk_rc_parse_string ("gtk-theme-name = \"wimp\"");
     gtk_rc_parse_string ("gtk-icon-theme-name = \"hicolor\"");
 #endif
 
@@ -2870,8 +2874,7 @@ void initialize_gui_interface (int argc, char *argv[])
 
       gw_kanjipad_initialize (builder); //Kanjipad must be initalized within the thread not to lock it
 
-//TO DO: Windows threading is horrible with glib. Must fix somehow later.
-      g_timeout_add_full (G_PRIORITY_DEFAULT_IDLE, 500,
+      g_timeout_add_full (G_PRIORITY_DEFAULT_IDLE, 100,
                           (GSourceFunc)gw_ui_keep_searching, NULL,
                           (GDestroyNotify)NULL     );
 
@@ -2902,10 +2905,15 @@ void initialize_gui_interface (int argc, char *argv[])
 gboolean gw_ui_cancel_search_by_searchitem (GwSearchItem *item)
 {
     if (item == NULL || item->status == GW_SEARCH_IDLE) return TRUE;
+    if (item->status == GW_SEARCH_CANCELING) return FALSE;
 
-    item->status = GW_SEARCH_GW_DICT_STATUS_CANCELING;
+    item->status = GW_SEARCH_CANCELING;
+    if (item->thread != NULL)
+    {
+      g_thread_join(item->thread);
+      item->thread = NULL;
+    }
 
-    return FALSE;
 }
 
 
@@ -3292,6 +3300,7 @@ void gw_ui_append_edict_results_to_buffer (GwSearchItem *item)
 //!
 void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item)
 {
+  printf("KANJIDIC RESULT!\n");
   gdk_threads_enter();
     if (item->total_results == 1) gw_ui_initialize_buffer_by_searchitem (item);
 
@@ -3418,6 +3427,7 @@ void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item)
     
     if (item->target == GW_TARGET_KANJI && (tv = GTK_WIDGET (get_widget_by_target (GW_TARGET_RESULTS))) != NULL)
     {
+      printf("FOUND RESULT!\n");
       char markup[1000];
       markup[0] = '\0';
 
@@ -3628,30 +3638,33 @@ void gw_ui_append_unknowndict_results_to_buffer (GwSearchItem *item)
 //!
 void gw_ui_update_progress_feedback (GwSearchItem* item)
 {
-  gdk_threads_enter();
+#ifdef ENABLE_WIN32
+//BREAKS WIN32
+  return;
+#endif
+  /*This portion freezes the windows build*/
     //Ensure global gui elements are only updated by the currently visible tab
     gboolean buffer_tab_is_focused;
-    buffer_tab_is_focused = (item != NULL && item->target_tb == (gpointer*) get_gobject_by_target (item->target)
-                             && item->target != GW_TARGET_KANJI);
-    if (!buffer_tab_is_focused)
+    buffer_tab_is_focused = (item != NULL && item->target != GW_TARGET_KANJI && 
+                             item->target_tb == (gpointer*) get_gobject_by_target (item->target)
+                             );
+    if (buffer_tab_is_focused)
     {
-      gdk_threads_leave();
-      return;
+gdk_threads_enter();
+      //Only update the elements when necessary, otherwise it slows down the search
+      if (item->current_line - item->previous_line > 2000)
+      {
+        item->previous_line = item->current_line;
+        gw_ui_set_search_progressbar_by_searchitem (item);
+      }
+      if (item->current_line == 1 || item->total_results != item->previous_total_results)
+      {
+        item->previous_total_results = item->total_relevant_results;
+        gw_ui_set_total_results_label_by_searchitem (item);
+        gw_ui_set_main_window_title_by_searchitem (item);
+      }
+gdk_threads_leave();
     }
-
-    //Only update the elements when necessary, otherwise it slows down the search
-    if (item->current_line - item->previous_line > 2000)
-    {
-      item->previous_line = item->current_line;
-      gw_ui_set_search_progressbar_by_searchitem (item);
-    }
-    if (item->current_line == 1 || item->total_results != item->previous_total_results)
-    {
-      item->previous_total_results = item->total_relevant_results;
-      gw_ui_set_total_results_label_by_searchitem (item);
-      gw_ui_set_main_window_title_by_searchitem (item);
-    }
-  gdk_threads_leave();
 }
 
 
@@ -3725,6 +3738,10 @@ void gw_ui_pre_search_prep (GwSearchItem *item)
 //!
 void gw_ui_after_search_cleanup (GwSearchItem *item)
 {
+#ifdef ENABLE_WIN32
+//BREAKS WIN32
+  return;
+#endif
   gdk_threads_enter();
     //Finish up
     if (item->total_results == 0 &&

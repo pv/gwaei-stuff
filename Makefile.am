@@ -3,7 +3,7 @@
 SUBDIRS = src po mandir
 
 if ENABLE_WIN32
-SUBDIRS += src/schemas src/gtk-builder-xml src/kpengine src/images
+SUBDIRS += src/schemas src/gtk-builder-xml src/kpengine src/images help
 endif
 if WITH_GNOME
 SUBDIRS += src/schemas src/gtk-builder-xml src/kpengine src/images src/desktop help

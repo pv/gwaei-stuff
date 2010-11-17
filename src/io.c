@@ -99,6 +99,7 @@ void gw_io_write_file(const char* write_mode, gchar *text)
 //!
 //! @return The status of the existance of rsync
 //!
+/*
 gboolean gw_io_check_for_rsync ()
 {
     gboolean rsync_exists;
@@ -108,6 +109,7 @@ gboolean gw_io_check_for_rsync ()
                    );
     return rsync_exists;
 }
+*/
 
 
 //!
