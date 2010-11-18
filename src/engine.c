@@ -52,8 +52,6 @@
 #include <gtk/gtk.h>
 #include <gwaei/gtk-main-interface.h>
 
-static gboolean less_relevant_title_inserted = FALSE;
-
 
 //!
 //! @brief Gets a stored result in a search item and posts it to the output.
@@ -107,27 +105,6 @@ static int _get_relevance (GwSearchItem *item) {
       return GW_RESULT_LOW_RELEVANCE;
 }
 
-
-//!
-//! @brief Preforms necessary cleanups after the search thread finishes
-//!
-//! THIS IS A PRIVATE FUNCTION. The calls to this function are made by
-//! gw_search_get_results.  Do not call this function directly.
-//!
-//! @see gw_search_get_results()
-//! @param data A GwSearchItem to clean up the data of
-//! @return currently unused
-//!
-static gboolean stream_results_cleanup (GwSearchItem *item)
-{
-    if (item->fd == NULL) return FALSE;
-
-    less_relevant_title_inserted = FALSE;
-    item->status = GW_SEARCH_FINISHING;
-    (*item->gw_searchitem_ui_after_search_cleanup)(item);
-    gw_searchitem_do_post_search_clean (item);
-    item->status = GW_SEARCH_IDLE;
-}
 
 
 //!
@@ -237,17 +214,16 @@ static void stream_results_thread (gpointer data)
 
 
     //Make sure the more relevant header banner is visible
-    if (item->target != GW_TARGET_KANJI)
+    if (item->target != GW_TARGET_KANJI && item->status != GW_SEARCH_CANCELING && item->total_results > 0)
       (*item->gw_searchitem_ui_append_more_relevant_header_to_output)(item);
 
     //Insert the less relevant title header if needed
     if ( item->show_less_relevant_results    &&
-         !less_relevant_title_inserted &&
-         (item->results_medium != NULL || item->results_low != NULL) )
+         (item->results_medium != NULL || item->results_low != NULL) && item->status != GW_SEARCH_CANCELING )
     {
       (*item->gw_searchitem_ui_append_less_relevant_header_to_output)(item);
-      less_relevant_title_inserted = TRUE;
     }
+
 
     //Append the medium relevent results
     while (item->results_medium != NULL)
@@ -265,7 +241,9 @@ static void stream_results_thread (gpointer data)
       //Update the progress feeback
     }
 
-    stream_results_cleanup(item);
+    //Cleanup
+    (*item->gw_searchitem_ui_after_search_cleanup)(item);
+    gw_searchitem_do_post_search_clean (item);
 }
 
 

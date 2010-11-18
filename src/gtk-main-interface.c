@@ -3021,8 +3021,10 @@ gboolean gw_ui_cancel_search_by_tab_content (gpointer container)
 //!
 void gw_ui_tab_cancel_all_searches ()
 {
+/*
     GList *list = gw_tab_get_searchitem_list ();
     g_list_foreach (list, (GFunc) gw_ui_cancel_search_by_searchitem, NULL);
+*/
 }
 
 
@@ -3755,11 +3757,6 @@ void gw_ui_pre_search_prep (GwSearchItem *item)
 //!
 void gw_ui_after_search_cleanup (GwSearchItem *item)
 {
-  return;
-#ifdef ENABLE_WIN32
-//BREAKS WIN32
-  return;
-#endif
   gdk_threads_enter();
     //Finish up
     if (item->total_results == 0 &&
@@ -3767,11 +3764,6 @@ void gw_ui_after_search_cleanup (GwSearchItem *item)
     {
       gw_ui_no_result (item);
     }
-    if (item->target == GW_TARGET_RESULTS)
-    {
-      gw_ui_set_total_results_label_by_searchitem (item);
-      gw_ui_set_search_progressbar_by_searchitem (item);
-    }     
   gdk_threads_leave();
 }
 

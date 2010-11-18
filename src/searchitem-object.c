@@ -191,7 +191,7 @@ gboolean gw_searchitem_do_pre_search_prep (GwSearchItem* item)
 void gw_searchitem_do_post_search_clean (GwSearchItem* item)
 {
     item->thread = NULL;
-    item->status = GW_SEARCH_CANCELING;
+
     if (item->fd != NULL)
     {
       fclose(item->fd);
