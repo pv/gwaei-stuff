@@ -664,19 +664,6 @@ void gw_ncurses_append_unknowndict_results (GwSearchItem *item)
 
 
 //!
-//! @brief Called ruetienly to update progress information
-//!
-//! This function is used to update things such as numbers of
-//! results found or progress bars percentages etc.
-//!
-//! @param item A GwSearchItem pointer to get information from
-//!
-void gw_ncurses_update_progress_feedback (GwSearchItem *item)
-{
-}
-
-
-//!
 //! @brief Sets up the interface before each search begins
 //!
 //! @param item A GwSearchItem pointer to get information from
@@ -718,7 +705,6 @@ void gw_ncurses_initialize_interface_output_generics ()
     gw_output_generic_append_examplesdict_results = gw_ncurses_append_examplesdict_results;
     gw_output_generic_append_unknowndict_results = gw_ncurses_append_unknowndict_results;
 
-    gw_output_generic_update_progress_feedback = gw_ncurses_update_progress_feedback;
     gw_output_generic_append_less_relevant_header_to_output = gw_ncurses_append_less_relevant_header_to_output;
     gw_output_generic_append_more_relevant_header_to_output = gw_ncurses_append_more_relevant_header_to_output;
     gw_output_generic_pre_search_prep = gw_ncurses_pre_search_prep;

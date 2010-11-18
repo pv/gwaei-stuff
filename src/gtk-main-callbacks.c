@@ -55,6 +55,7 @@
 #include <gwaei/gtk-radicals-callbacks.h>
 #include <gwaei/gtk-settings-interface.h>
 
+static GwSearchItem *tooltip_item = NULL;
 
 static gint button_press_x = 0;
 static gint button_press_y = 0;
@@ -248,16 +249,27 @@ G_MODULE_EXPORT gboolean do_get_iter_for_button_release (GtkWidget      *widget,
           gtk_window_set_accept_focus (GTK_WINDOW (window), FALSE);
           gtk_container_set_border_width (GTK_CONTAINER (window), 3);
           gtk_widget_set_tooltip_window (tv, GTK_WINDOW (window));
-
+          GtkWindow* parent = GTK_WINDOW (gtk_builder_get_object (builder, "main_window"));
+          gtk_window_set_transient_for (GTK_WINDOW (window), parent);
+          gtk_window_set_opacity (GTK_WINDOW (window), .9);
         }
         if (window != NULL) {
           button_character = unic;
-          gtk_window_move (GTK_WINDOW (window), (event->x_root + 3), (event->y_root + 3));
 
           //Start the search
-          GwSearchItem *item;
-          item = gw_searchitem_new (query, di, GW_TARGET_KANJI);
-          gw_search_get_results (item);
+          if (tooltip_item != NULL)
+          {
+            gw_ui_cancel_search_by_searchitem (tooltip_item);
+            tooltip_item = NULL;
+          }
+
+          tooltip_item = gw_searchitem_new (query, di, GW_TARGET_KANJI);
+          gw_search_get_results (tooltip_item);
+
+          gtk_window_move (GTK_WINDOW (window), (event->x_root + 3), (event->y_root + 3));
+          g_thread_join (tooltip_item->thread); 
+          gtk_widget_show_all (window);
+          gtk_window_present (GTK_WINDOW (window));
         }
       }
       else {
@@ -1708,48 +1720,6 @@ G_MODULE_EXPORT void do_update_button_states_based_on_entry_text (GtkWidget *wid
     //Return widget colors back to normal
     gtk_widget_modify_base (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
     gtk_widget_modify_text (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
-}
-
-
-//!
-//! @brief Finds out if some text is selected and updates the buttons accordingly
-//!
-//! When text is found selected, some buttons become sensitive and some have the
-//! label change.  This tells the user they can save/print sections of the
-//! results.
-//!
-//! @param widget Unused GtkWidget pointer
-//! @param data Unused gpointer
-//!
-G_MODULE_EXPORT gboolean do_update_icons_for_selection (GtkWidget *widget, 
-                                                        GdkEvent  *event,
-                                                        gpointer   data   ) 
-{
-    GtkAction *action;
-    action = GTK_ACTION (gtk_builder_get_object (builder, "file_print_action"));
-    //Set the special buttons
-    if ((event->type == GDK_MOTION_NOTIFY || event->type == GDK_BUTTON_RELEASE) && gw_ui_has_selection_by_target (GW_TARGET_RESULTS))
-    {
-      gw_ui_update_toolbar_buttons();
-      action = GTK_ACTION (gtk_builder_get_object (builder, "file_append_action"));
-      gtk_action_set_label (action, gettext("A_ppend Selected"));
-      action = GTK_ACTION (gtk_builder_get_object (builder, "file_save_as_action"));
-      gtk_action_set_label (action, gettext("Save Selected _As"));
-      action = GTK_ACTION (gtk_builder_get_object (builder, "file_print_action"));
-      gtk_action_set_label (action, gettext("_Print Selected"));
-    }
-    //Reset the buttons to their normal states
-    else if ((event->type == GDK_FOCUS_CHANGE || event->type == GDK_BUTTON_RELEASE || event->type == GDK_KEY_RELEASE || event->type == GDK_LEAVE_NOTIFY) &&  !gw_ui_has_selection_by_target (GW_TARGET_RESULTS))
-    {
-      gw_ui_update_toolbar_buttons();
-      action = GTK_ACTION (gtk_builder_get_object (builder, "file_append_action"));
-      gtk_action_set_label (action, gettext("A_ppend"));
-      action = GTK_ACTION (gtk_builder_get_object (builder, "file_save_as_action"));
-      gtk_action_set_label (action, NULL);
-      action = GTK_ACTION (gtk_builder_get_object (builder, "file_print_action"));
-      gtk_action_set_label (action, NULL);
-    }
-    return FALSE; 
 }
 
 

@@ -650,14 +650,6 @@ void gw_console_append_unknowndict_results (GwSearchItem *item)
 //!
 //! @brief Not yet written
 //!
-void gw_console_update_progress_feedback (GwSearchItem *item)
-{
-}
-
-
-//!
-//! @brief Not yet written
-//!
 void gw_console_append_more_relevant_header_to_output (GwSearchItem *item)
 {
 }
@@ -695,7 +687,6 @@ void gw_console_initialize_interface_output_generics ()
     gw_output_generic_append_examplesdict_results = &gw_console_append_examplesdict_results;
     gw_output_generic_append_unknowndict_results = &gw_console_append_unknowndict_results;
 
-    gw_output_generic_update_progress_feedback = &gw_console_update_progress_feedback;
     gw_output_generic_append_less_relevant_header_to_output = &gw_console_append_less_relevant_header_to_output;
     gw_output_generic_append_more_relevant_header_to_output = &gw_console_append_more_relevant_header_to_output;
     gw_output_generic_pre_search_prep = &gw_console_pre_search_prep;

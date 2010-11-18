@@ -98,7 +98,7 @@ static void append_stored_result_to_output (GwSearchItem *item, GList **results)
 //! @param item a search item to grab the regrexes from
 //! @return Returns one of the integers: LOW_RELEVANCE, MEDIUM_RELEVANCE, or HIGH_RELEVANCE.
 //!
-static int get_relevance (GwSearchItem *item) {
+static int _get_relevance (GwSearchItem *item) {
     if (gw_searchitem_existance_generic_comparison (item, GW_QUERYLINE_HIGH))
       return GW_RESULT_HIGH_RELEVANCE;
     else if (gw_searchitem_existance_generic_comparison (item, GW_QUERYLINE_MED))
@@ -142,9 +142,8 @@ static gboolean stream_results_cleanup (GwSearchItem *item)
 //!
 static void stream_results_thread (gpointer data)
 {
-printf("START\n");
     GwSearchItem *item = (GwSearchItem*) data;
-    if (item->fd == NULL) return;
+    if (item == NULL || item->fd == NULL) return;
     char *line_pointer = NULL;
     int chunk = 0;
 
@@ -173,7 +172,6 @@ printf("START\n");
       (*item->gw_searchitem_parse_result_string)(item->resultline);
 
       //Update the progress feeback
-      (*item->gw_searchitem_ui_update_progress_feedback)(item);
 
 //      if (item->target_tb == (gpointer*) get_gobject_from_target(item->target))
 //        gw_ui_verb_check_with_suggestion (item);
@@ -181,12 +179,10 @@ printf("START\n");
       //Results match, add to the text buffer
       if (gw_searchitem_existance_generic_comparison (item, GW_QUERYLINE_EXIST))
       {
-printf("CLEAR\n");
-        int relevance = get_relevance(item);
+        int relevance = _get_relevance (item);
         switch(relevance)
         {
           case GW_RESULT_HIGH_RELEVANCE:
-printf("HIGH RESULT!\n");
               item->total_results++;
               item->total_relevant_results++;
               if (item->target != GW_TARGET_KANJI)
@@ -259,7 +255,6 @@ printf("HIGH RESULT!\n");
       item->total_results++;
       append_stored_result_to_output(item, &(item->results_medium));
       //Update the progress feeback
-      (*item->gw_searchitem_ui_update_progress_feedback)(item);
     }
 
     //Append the least relevent results
@@ -268,7 +263,6 @@ printf("HIGH RESULT!\n");
       item->total_results++;
       append_stored_result_to_output(item, &(item->results_low));
       //Update the progress feeback
-      (*item->gw_searchitem_ui_update_progress_feedback)(item);
     }
 
     stream_results_cleanup(item);
@@ -308,9 +302,11 @@ void gw_search_get_results (GwSearchItem *item)
     }
     else
     {
-      if (item->thread = g_thread_create((GThreadFunc)stream_results_thread, (gpointer) item, TRUE, NULL) == NULL) {
+      item->thread = g_thread_create((GThreadFunc)stream_results_thread, (gpointer) item, TRUE, NULL);
+      if (item->thread == NULL)
+      {
         g_warning("couldn't create the thread");
-        return;
+        exit(EXIT_FAILURE);
       }
     }
 }

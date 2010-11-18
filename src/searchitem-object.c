@@ -124,7 +124,6 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary, const int 
           temp->gw_searchitem_ui_append_results_to_output = gw_output_generic_append_unknowndict_results;
           break;
     }
-    temp->gw_searchitem_ui_update_progress_feedback = gw_output_generic_update_progress_feedback;
     temp->gw_searchitem_ui_append_less_relevant_header_to_output = gw_output_generic_append_less_relevant_header_to_output;
     temp->gw_searchitem_ui_append_more_relevant_header_to_output = gw_output_generic_append_more_relevant_header_to_output;
     temp->gw_searchitem_ui_pre_search_prep = gw_output_generic_pre_search_prep;
@@ -191,11 +190,7 @@ gboolean gw_searchitem_do_pre_search_prep (GwSearchItem* item)
 //!
 void gw_searchitem_do_post_search_clean (GwSearchItem* item)
 {
-    if (item->thread != NULL)
-    {
-      g_thread_join (item->thread);
-      item->thread = NULL;
-    }
+    item->thread = NULL;
     item->status = GW_SEARCH_CANCELING;
     if (item->fd != NULL)
     {

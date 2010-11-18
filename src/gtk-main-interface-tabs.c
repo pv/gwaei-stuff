@@ -193,8 +193,6 @@ int gw_tab_new ()
     g_signal_connect( G_OBJECT (textview), "drag_leave", G_CALLBACK (do_drag_leave_1), NULL);
     g_signal_connect( G_OBJECT (textview), "drag_data_received", G_CALLBACK (do_search_drag_data_recieved), NULL);
     g_signal_connect( G_OBJECT (textview), "key_press_event", G_CALLBACK (do_focus_change_on_key_press), NULL);
-/*For some reason do_update_icons_for_selection kills gwaei performance now*/
-//    g_signal_connect( G_OBJECT (textview), "event_after", G_CALLBACK (do_update_icons_for_selection), NULL);
     g_signal_connect( G_OBJECT (textview), "populate_popup", G_CALLBACK (do_populate_popup_with_search_options), NULL);
     g_signal_connect( G_OBJECT (textview), "scroll_event", G_CALLBACK (do_scroll_or_zoom), NULL);
 

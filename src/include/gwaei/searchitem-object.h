@@ -92,7 +92,6 @@ struct _GwSearchItem {
 
     void (*gw_searchitem_parse_result_string)(GwResultLine*);
     void (*gw_searchitem_ui_append_results_to_output)(struct _GwSearchItem*);
-    void (*gw_searchitem_ui_update_progress_feedback)(struct _GwSearchItem*);
     void (*gw_searchitem_ui_append_less_relevant_header_to_output)(struct _GwSearchItem*);
     void (*gw_searchitem_ui_append_more_relevant_header_to_output)(struct _GwSearchItem*);
     void (*gw_searchitem_ui_pre_search_prep)(struct _GwSearchItem*);

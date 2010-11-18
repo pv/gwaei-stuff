@@ -117,7 +117,6 @@ void gw_main_initialize_generic_output_functions_to_null ()
     gw_output_generic_append_kanjidict_results = NULL;
     gw_output_generic_append_examplesdict_results = NULL;
     gw_output_generic_append_unknowndict_results = NULL;
-    gw_output_generic_update_progress_feedback = NULL;
     gw_output_generic_append_less_relevant_header_to_output = NULL;
     gw_output_generic_append_more_relevant_header_to_output = NULL;
     gw_output_generic_pre_search_prep = NULL;
@@ -137,8 +136,6 @@ gboolean gw_main_verify_output_generic_functions ()
     if (gw_output_generic_append_examplesdict_results == NULL)
       return FALSE;
     if (gw_output_generic_append_unknowndict_results == NULL)
-      return FALSE;
-    if (gw_output_generic_update_progress_feedback == NULL)
       return FALSE;
     if (gw_output_generic_append_less_relevant_header_to_output == NULL)
       return FALSE;
