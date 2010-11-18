@@ -408,6 +408,11 @@ G_MODULE_EXPORT void do_prep_and_start_search_in_new_tab (GtkWidget *widget, gpo
     }
 }
 
+G_MODULE_EXPORT void do_no_results_search_for_dictionary (GtkWidget *widget, gpointer data)
+{
+    GwDictInfo* di = (GwDictInfo*) data;
+    gw_ui_set_dictionary(di->load_position);
+}
 
 //!
 //! @brief Frees the GwSearchItem memory that is attached to the activate tab callback

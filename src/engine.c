@@ -217,6 +217,7 @@ static void stream_results_thread (gpointer data)
     if (item->target != GW_TARGET_KANJI && item->status != GW_SEARCH_CANCELING && item->total_results > 0)
       (*item->gw_searchitem_ui_append_more_relevant_header_to_output)(item);
 
+
     //Insert the less relevant title header if needed
     if ( item->show_less_relevant_results    &&
          (item->results_medium != NULL || item->results_low != NULL) && item->status != GW_SEARCH_CANCELING )
@@ -233,6 +234,7 @@ static void stream_results_thread (gpointer data)
       //Update the progress feeback
     }
 
+
     //Append the least relevent results
     while (item->results_low != NULL)
     {
@@ -240,6 +242,7 @@ static void stream_results_thread (gpointer data)
       append_stored_result_to_output(item, &(item->results_low));
       //Update the progress feeback
     }
+
 
     //Cleanup
     (*item->gw_searchitem_ui_after_search_cleanup)(item);

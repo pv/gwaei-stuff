@@ -2260,8 +2260,7 @@ void gw_ui_display_no_results_found_page (GwSearchItem *item)
     list = gw_dictlist_get_selected();
     GwDictInfo *di_selected = list->data;
 
-
-
+gdk_threads_enter ();
     //Add the title
     gw_ui_append_to_buffer (item, "\n", "small", NULL, NULL, NULL);
 
@@ -2321,49 +2320,28 @@ void gw_ui_display_no_results_found_page (GwSearchItem *item)
         markup = NULL;
       }
 
-
       //Add internal dictionary links
       i = 0;
-      list = gw_dictlist_get_selected();
       list = gw_dictlist_get_dict_by_load_position (0);
       GwDictInfo *di = list->data;
-      GwSearchItem *temp_item = NULL;
 
       char text[MAX_QUERY];
       while ((list = gw_dictlist_get_dict_by_load_position(i)) != NULL)
       {
-        list = gw_dictlist_get_dict_by_load_position(i);
         di = list->data;
         strncpy(text, query_text, MAX_QUERY);
-        if (di != NULL && (temp_item = gw_searchitem_new (text, di, GW_TARGET_RESULTS)) != NULL)
+        if (di != NULL && di->id != di_selected->id)
         {
-          if (di->id != di_selected->id)
-          {
-            button = gtk_link_button_new_with_label ("Search using internal dictionary.", di->short_name);
-            g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (do_prep_and_start_search_in_new_tab), temp_item);
-            g_signal_connect (G_OBJECT (button), "destroy",  G_CALLBACK (do_destroy_tab_menuitem_searchitem_data), temp_item);
-/*
-          char *path = g_build_filename (DATADIR2, PACKAGE, "book_green.png", NULL);
-            if (path != NULL)
-            {
-              image = gtk_image_new_from_file (path);
-              if (image != NULL) gtk_button_set_image (GTK_BUTTON (button), image);
-              g_free (path);
-              path = NULL;
-            }
-*/
-            gtk_container_add (GTK_CONTAINER (hbox), GTK_WIDGET (button));
-            gtk_widget_show (GTK_WIDGET (button));
-          }
+          button = gtk_button_new_with_label (di->short_name);
+          g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (do_no_results_search_for_dictionary), di);
+          gtk_container_add (GTK_CONTAINER (hbox), GTK_WIDGET (button));
+          gtk_widget_show (GTK_WIDGET (button));
         }
         i++;
       }
 
       gw_ui_append_to_buffer (item, "\n", NULL, NULL, NULL, NULL);
     }
-
-
-
 
     //Add label for links
     hbox = gtk_hbox_new (FALSE, 0);
@@ -2382,7 +2360,6 @@ void gw_ui_display_no_results_found_page (GwSearchItem *item)
       g_free (markup);
       markup = NULL;
     }
-
 
 
     //Add links
@@ -2416,8 +2393,6 @@ void gw_ui_display_no_results_found_page (GwSearchItem *item)
       gtk_widget_show (button);
       i += 3;
     }
-
-
 
 
 
@@ -2607,6 +2582,7 @@ void gw_ui_display_no_results_found_page (GwSearchItem *item)
     gw_ui_append_to_buffer (item,
                                "\n\n",
                                NULL, NULL, NULL, NULL         );
+gdk_threads_leave ();
 }
 
 
@@ -2978,7 +2954,6 @@ void initialize_gui_interface (int argc, char *argv[])
 gboolean gw_ui_cancel_search_by_searchitem (GwSearchItem *item)
 {
     if (item == NULL || item->status == GW_SEARCH_IDLE) return TRUE;
-    if (item->status == GW_SEARCH_CANCELING) return FALSE;
 
     item->status = GW_SEARCH_CANCELING;
     if (item->thread != NULL)
@@ -3696,9 +3671,10 @@ void gw_ui_append_unknowndict_results_to_buffer (GwSearchItem *item)
 //!
 void gw_ui_no_result (GwSearchItem *item)
 {
+  gdk_threads_enter ();
     gtk_text_buffer_set_text (GTK_TEXT_BUFFER (item->target_tb), "", -1);
+  gdk_threads_leave ();
     gw_ui_display_no_results_found_page (item);
-    gw_ui_set_main_window_title_by_searchitem (item);
 }
 
 
@@ -3757,14 +3733,12 @@ void gw_ui_pre_search_prep (GwSearchItem *item)
 //!
 void gw_ui_after_search_cleanup (GwSearchItem *item)
 {
-  gdk_threads_enter();
     //Finish up
     if (item->total_results == 0 &&
-        item->target != GW_TARGET_KANJI)
+        item->target != GW_TARGET_KANJI && item->status != GW_SEARCH_CANCELING)
     {
       gw_ui_no_result (item);
     }
-  gdk_threads_leave();
 }
 
 
