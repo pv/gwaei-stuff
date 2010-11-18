@@ -2996,10 +2996,14 @@ gboolean gw_ui_cancel_search_by_tab_content (gpointer container)
 //!
 void gw_ui_tab_cancel_all_searches ()
 {
-/*
     GList *list = gw_tab_get_searchitem_list ();
-    g_list_foreach (list, (GFunc) gw_ui_cancel_search_by_searchitem, NULL);
-*/
+    GwSearchItem *item = NULL;
+    while (list != NULL)
+    {
+      item = (GwSearchItem*) list->data;
+      gw_ui_cancel_search_by_searchitem (item);
+      list = list->next;
+    }
 }
 
 
