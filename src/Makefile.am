@@ -34,7 +34,7 @@ INCLUDES = -I$(top_srcdir)/src/include  $(DEFINITIONS)
 
 ##WINDOWS SETUP
 if ENABLE_WIN32
-##gwaei_LDFLAGS = -Wl,-subsystem,windows 
+gwaei_LDFLAGS = -Wl,-subsystem,windows 
 gwaei_SOURCES += gtk-main-callbacks.c gtk-main-interface.c gtk-settings-callbacks.c gtk-settings-interface.c gtk-radicals-interface.c gtk-radicals-callbacks.c gtk-printing.c gtk-kanjipad-callbacks.c  gtk-kanjipad-interface.c gtk-kanjipad-interface-candidatearea.c gtk-kanjipad-interface-drawingarea.c gtk-main-interface-tabs.c gtk-settings-interface-install-line.c gtk-gsettings-preferences.c
 
 WINLIBPREFIX = /mingw
