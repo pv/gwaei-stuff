@@ -20,11 +20,11 @@
 *******************************************************************************/
 
 //!
-//! @file src/gtk-gconf-preferences.c
+//! @file src/gtk-gsettings-preferences.c
 //!
-//! @brief Abstraction layer for gconf preferences
+//! @brief Abstraction layer for gsettings preferences
 //!
-//! Allows access to gconf with the ability to specify backup preferences upon
+//! Allows access to gsettings with the ability to specify backup preferences upon
 //! failure to get the preference value.
 //!
 
@@ -40,149 +40,13 @@
 #include <gwaei/definitions.h>
 #include <gwaei/regex.h>
 #include <gwaei/utilities.h>
+#include <gwaei/gsettings-preferences.h>
 
 #include <gwaei/gtk-main-interface.h>
 #ifdef WITH_LIBSEXY
 #include <gwaei/gtk-main-interface-sexy.h>
 #endif
 #include <gwaei/gtk-settings-interface.h>
-
-
-//!
-//! @brief Resets a value in a key
-//!
-//! @param schemaid A string identifying the schema there the key is
-//! @param key A string identifying the key to reset
-//!
-
-void gw_pref_reset_value (const char* schemaid, const char *key)
-{
-    GSettings *settings = NULL;
-    if ((settings = g_settings_new (schemaid)) != NULL)
-    {
-      g_settings_reset (settings, key);
-    }
-}
-
-
-//!
-//! @brief Returns an integer from the preference backend 
-//!
-//! @param schemaid The key to use to look up the pref
-//! @param key The key to use to look up the pref
-//! @param backup the value to return on failure
-//!
-int gw_pref_get_int (const char* schemaid, const char *key)
-{
-    GSettings *settings = NULL;
-    int value = 0;
-
-    if ((settings = g_settings_new (schemaid)) != NULL)
-    {
-      value = g_settings_get_int (settings, key);
-    }
-
-    return value;
-}
-
-
-//!
-//! @brief Sets the int to the key in the preferences backend
-//!
-//! @param schemaid The key to use to look up the pref
-//! @param key The key to use to look up the pref
-//! @param request The value to set
-//!
-void gw_pref_set_int (const char* schemaid, const char *key, const int request)
-{
-    GSettings *settings = NULL;
-
-    if ((settings = g_settings_new (schemaid)) != NULL)
-    {
-      g_settings_set_int (settings, key, request);
-    }
-}
-
-
-//!
-//! @brief Returns an boolean from the preference backend 
-//!
-//! @param schemaid The key to use to look up the pref
-//! @param key The key to use to look up the pref
-//!
-gboolean gw_pref_get_boolean (const char* schemaid, const char *key)
-{
-    GSettings *settings = NULL;
-    gboolean value = FALSE; 
-
-    if ((settings = g_settings_new (schemaid)) != NULL)
-    {
-      value = g_settings_get_boolean (settings, key);
-    }
-
-    return value;
-}
-
-
-//!
-//! @brief Sets the boolean to the key in the preferences backend
-//!
-//! @param schemaid The key to use to look up the pref
-//! @param key The key to use to look up the pref
-//! @param request The value to set
-//!
-void gw_pref_set_boolean (const char* schemaid, const char *key, const gboolean request)
-{
-    GSettings *settings = NULL;
-
-    if ((settings = g_settings_new (schemaid)) != NULL)
-    {
-      g_settings_set_boolean (settings, key, request);
-    }
-}
-
-
-//!
-//! @brief Returns an string from the preference backend 
-//!
-//! @output string to copy the pref to
-//! @param schemaid The key to use to look up the pref
-//! @param key The key to use to look up the pref
-//! @param backup the value to return on failure
-//! @param n The max characters to copy to output
-//!
-void gw_pref_get_string (char *output, const char* schemaid, const char *key, const int n)
-{
-    GSettings *settings = NULL;
-    gchar *value = NULL; 
-
-    if ((settings = g_settings_new (schemaid)) != NULL)
-    {
-      value = g_settings_get_string (settings, key);
-      if (value != NULL) 
-        strncpy(output, value, n);
-      else
-        output[0] = '\0';
-    }
-}
-
-
-//!
-//! @brief Sets the string to the key in the preferences backend
-//!
-//! @param schemaid The key to use to look up the pref
-//! @param key The key to use to look up the pref
-//! @param request The value to set
-//!
-void gw_pref_set_string (const char* schemaid, const char *key, const char* request)
-{
-    GSettings *settings = NULL;
-
-    if ((settings = g_settings_new (schemaid)) != NULL)
-    {
-      g_settings_set_string (settings, key, request);
-    }
-}
 
 
 //!
@@ -485,27 +349,6 @@ void do_color_value_changed_action (GSettings *settings,
     gw_ui_set_color_to_swatch (name, hex_color);
     gw_ui_buffer_reload_tagtable_tags ();
     g_signal_handlers_unblock_by_func (settings, do_color_value_changed_action, NULL);
-}
-
-
-//!
-//! @brief Adds a preference change listener for the selected key
-//!
-//! @param schemaid The key to use to look up the pref
-//! @param key The preference key
-//! @param callback_function The function to call when the key changes
-//! @param data The userdata to pass to the callback function
-//!
-void gw_prefs_add_change_listener (const char* schemaid, const char *key, void (*callback_function) (GSettings*, gchar*, gpointer), gpointer data)
-{
-  GSettings *setting = g_settings_new (schemaid);
-  char signal_name[100];
-  strcpy(signal_name, "changed::");
-  strcat(signal_name, key);
-
-  g_signal_connect (G_OBJECT (setting), signal_name, G_CALLBACK (callback_function), data);
-  GVariant *value = g_settings_get_value(setting, key);
-  if (value != NULL) g_settings_set_value(setting, key, value);
 }
 
 

@@ -29,7 +29,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 0.15.1\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-11-14 01:02-0500\n"
+"POT-Creation-Date: 2010-11-25 02:02-0500\n"
 "PO-Revision-Date: 2010-10-25 14:50+0200\n"
 "Last-Translator: Yusuf BARAN <info@barancolor.net>\n"
 "Language-Team: none\n"
@@ -40,11 +40,11 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-Bookmarks: 65,-1,-1,-1,-1,-1,-1,-1,-1,-1\n"
 
-#: src/console-main-interface.c:68 src/ncurses-main-interface.c:124
+#: src/console-main-interface.c:68 src/ncurses-main-interface.c:123
 msgid "Other Results"
 msgstr "Diğer Sonuçlar"
 
-#: src/console-main-interface.c:77 src/ncurses-main-interface.c:80
+#: src/console-main-interface.c:77 src/ncurses-main-interface.c:79
 msgid "No results found!"
 msgstr "Sonuç Bulunamadı"
 
@@ -78,7 +78,7 @@ msgstr "yok"
 msgid "Available dictionaries are:\n"
 msgstr "Kullanılabilir sözlükler:\n"
 
-#: src/console-main-interface.c:274 src/ncurses-main-interface.c:456
+#: src/console-main-interface.c:274 src/ncurses-main-interface.c:455
 msgid "- Japanese-English dictionary program that allows regex searches"
 msgstr "- Hızlı ve düzenli arama sağlayan Japonca-İngilizce sözlük programı"
 
@@ -119,19 +119,19 @@ msgstr ""
 "  waei -d Nombres %s       Busca un nombre usando el diccionario Nombres\n"
 "  waei -d Lugares %s       Busca un lugar usando el diccionario Lugares"
 
-#: src/console-main-interface.c:301 src/ncurses-main-interface.c:459
+#: src/console-main-interface.c:301 src/ncurses-main-interface.c:458
 msgid "Open up the multisearch window (beta)"
 msgstr "Çoklu arama penceresini açın (Beta)"
 
-#: src/console-main-interface.c:303 src/ncurses-main-interface.c:460
+#: src/console-main-interface.c:303 src/ncurses-main-interface.c:459
 msgid "Do not display less relevant results"
 msgstr "Daha az sonuç gösterme"
 
-#: src/console-main-interface.c:304 src/ncurses-main-interface.c:461
+#: src/console-main-interface.c:304 src/ncurses-main-interface.c:460
 msgid "Display less information"
 msgstr "Daha az bilgi göster"
 
-#: src/console-main-interface.c:305 src/ncurses-main-interface.c:462
+#: src/console-main-interface.c:305 src/ncurses-main-interface.c:461
 msgid "Search using a chosen dictionary"
 msgstr "Seçilen sözlükten arama yap"
 
@@ -152,7 +152,7 @@ msgid "Check the waei version information"
 msgstr "Waei sürüm bilgisi"
 
 #. TRANSLATORS: The "%s" stands for the error message
-#: src/console-main-interface.c:316 src/ncurses-main-interface.c:469
+#: src/console-main-interface.c:316 src/ncurses-main-interface.c:468
 #, c-format
 msgid "Option parsing failed: %s\n"
 msgstr "Seçenek çözümleme Başarısız: %s\n"
@@ -178,7 +178,7 @@ msgstr "%s kurulu değil."
 msgid "%s is not installed. "
 msgstr "%s kurulu değil"
 
-#: src/console-main-interface.c:430 src/ncurses-main-interface.c:489
+#: src/console-main-interface.c:430 src/ncurses-main-interface.c:488
 #, c-format
 msgid "Requested dictionary not found!\n"
 msgstr "İstenen sözlük bulunamadı\n"
@@ -193,8 +193,8 @@ msgstr "Sorgu inceleme hatası\n"
 msgid "Query parse error\n"
 msgstr "Sorgu inceleme hatası\n"
 
-#: src/console-main-interface.c:493 src/gtk-main-interface.c:911
-#: src/ncurses-main-interface.c:402
+#: src/console-main-interface.c:493 src/gtk-main-interface.c:942
+#: src/ncurses-main-interface.c:401
 #, c-format
 msgid "Found %d result"
 msgid_plural "Found %d results"
@@ -202,73 +202,73 @@ msgstr[0] "Sonuç %d bulunan"
 msgstr[1] "Bulunanlar %d sonuçlar"
 
 #. TRANSLATORS: relevant what ? It's the number of "relevant" result(s) displayed while or after searching.
-#: src/console-main-interface.c:494 src/gtk-main-interface.c:915
-#: src/ncurses-main-interface.c:403
+#: src/console-main-interface.c:494 src/gtk-main-interface.c:946
+#: src/ncurses-main-interface.c:402
 #, c-format
 msgid "(%d Relevant)"
 msgid_plural "(%d Relevant)"
 msgstr[0] "(%d İlgili)"
 msgstr[1] "(%d İlgili)"
 
-#: src/console-main-interface.c:559 src/gtk-main-interface.c:3326
-#: src/gtk-main-interface.c:3426 src/ncurses-main-interface.c:586
+#: src/console-main-interface.c:559 src/gtk-main-interface.c:3386
+#: src/gtk-main-interface.c:3486 src/ncurses-main-interface.c:585
 msgid "Radicals:"
 msgstr "Radikaller:"
 
-#: src/console-main-interface.c:564 src/gtk-main-interface.c:3380
-#: src/gtk-main-interface.c:3459 src/ncurses-main-interface.c:591
+#: src/console-main-interface.c:564 src/gtk-main-interface.c:3440
+#: src/gtk-main-interface.c:3519 src/ncurses-main-interface.c:590
 msgid "Stroke:"
 msgstr "Hat:"
 
-#: src/console-main-interface.c:572 src/gtk-main-interface.c:3387
-#: src/gtk-main-interface.c:3466 src/ncurses-main-interface.c:599
+#: src/console-main-interface.c:572 src/gtk-main-interface.c:3447
+#: src/gtk-main-interface.c:3526 src/ncurses-main-interface.c:598
 msgid "Freq:"
 msgstr "Frek:"
 
-#: src/console-main-interface.c:580 src/gtk-main-interface.c:3394
-#: src/gtk-main-interface.c:3473 src/ncurses-main-interface.c:607
+#: src/console-main-interface.c:580 src/gtk-main-interface.c:3454
+#: src/gtk-main-interface.c:3533 src/ncurses-main-interface.c:606
 msgid "Grade:"
 msgstr "Kademe:"
 
-#: src/console-main-interface.c:588 src/gtk-main-interface.c:3400
-#: src/gtk-main-interface.c:3480 src/ncurses-main-interface.c:615
+#: src/console-main-interface.c:588 src/gtk-main-interface.c:3460
+#: src/gtk-main-interface.c:3540 src/ncurses-main-interface.c:614
 msgid "JLPT:"
 msgstr "JLPT:"
 
-#: src/console-main-interface.c:595 src/gtk-main-interface.c:3343
-#: src/gtk-main-interface.c:3434 src/ncurses-main-interface.c:622
+#: src/console-main-interface.c:595 src/gtk-main-interface.c:3403
+#: src/gtk-main-interface.c:3494 src/ncurses-main-interface.c:621
 msgid "Readings:"
 msgstr "Okunuş:"
 
-#: src/console-main-interface.c:597 src/gtk-main-interface.c:3354
-#: src/gtk-main-interface.c:3442 src/ncurses-main-interface.c:624
+#: src/console-main-interface.c:597 src/gtk-main-interface.c:3414
+#: src/gtk-main-interface.c:3502 src/ncurses-main-interface.c:623
 msgid "Name:"
 msgstr "İsim:"
 
-#: src/console-main-interface.c:599 src/gtk-main-interface.c:3365
-#: src/gtk-main-interface.c:3450 src/ncurses-main-interface.c:626
+#: src/console-main-interface.c:599 src/gtk-main-interface.c:3425
+#: src/gtk-main-interface.c:3510 src/ncurses-main-interface.c:625
 msgid "Radical Name:"
 msgstr "Radikal İsmi:"
 
-#: src/console-main-interface.c:602 src/gtk-main-interface.c:3409
-#: src/gtk-main-interface.c:3487 src/ncurses-main-interface.c:629
+#: src/console-main-interface.c:602 src/gtk-main-interface.c:3469
+#: src/gtk-main-interface.c:3547 src/ncurses-main-interface.c:628
 msgid "Meanings:"
 msgstr "Anlamlar:"
 
 #. TRANSLATORS: The "E" stands for "English"
-#: src/console-main-interface.c:619 src/gtk-main-interface.c:3550
+#: src/console-main-interface.c:619 src/gtk-main-interface.c:3602
 msgid "E:\t"
 msgstr ""
 
 #. TRANSLATORS: The "J" stands for "Japanese"
-#: src/console-main-interface.c:625 src/gtk-main-interface.c:3561
+#: src/console-main-interface.c:625 src/gtk-main-interface.c:3613
 msgid ""
 "\n"
 "J:\t"
 msgstr ""
 
 #. TRANSLATORS: The "D" stands for "Detail"
-#: src/console-main-interface.c:631 src/gtk-main-interface.c:3572
+#: src/console-main-interface.c:631 src/gtk-main-interface.c:3624
 msgid ""
 "\n"
 "D:\t"
@@ -351,77 +351,49 @@ msgstr "Almanca"
 msgid "%s Dictionary"
 msgstr "Sözlük %s "
 
-#. TRANSLATORS: The %s stands for the internal (untranslated) short name of the dictionary
-#: src/dictlist-object.c:653
-#, c-format
-msgid "Syncing %s dictionary"
-msgstr "%s sözlüğü eşitleniyor "
-
-#: src/dictlist-object.c:658
-msgid "File read failed"
-msgstr "Dosya okuma hatası"
-
-#: src/dictlist-object.c:683
-msgid "Success"
-msgstr "Başarılı"
-
-#: src/gtk-main-callbacks.c:520
+#: src/gtk-main-callbacks.c:533
 msgid "Save As"
 msgstr "Farklı Kaydet"
 
-#: src/gtk-main-callbacks.c:532 src/gtk-main-callbacks.c:602
+#: src/gtk-main-callbacks.c:545 src/gtk-main-callbacks.c:615
 msgid "vocabulary.txt"
 msgstr "sozluk.txt"
 
-#: src/gtk-main-callbacks.c:592
+#: src/gtk-main-callbacks.c:605
 msgid "Save"
 msgstr "Kaydet"
 
-#: src/gtk-main-callbacks.c:1129
+#: src/gtk-main-callbacks.c:1143
+#, fuzzy
 msgid ""
 "Program for Japanese translation and reference. The\n"
 "dictionaries are supplied by Jim Breen's WWWJDIC.\n"
-"Special thanks to the maker of GJITEN who served as an inspiration."
+"Special thanks to the maker of GJITEN who served as an inspiration.\n"
+" Dedicated to Chuus"
 msgstr ""
 "Bu program Japonca çeviri ve referanslar içindir. Bu\n"
 "sözlük için Jim Breen'in WWWJDIC kullanılmıştır .\n"
 "GJITEN için ilham kaynağı olanlara özel olarak teşekkürler."
 
 #. TRANSLATORS: You can add your own name to the translation of this field, it will be displayed in the "about" box when gwaei is run in your language
-#: src/gtk-main-callbacks.c:1133
+#: src/gtk-main-callbacks.c:1147
 msgid "translator-credits"
 msgstr "çeviri"
 
-#: src/gtk-main-callbacks.c:1733
-msgid "A_ppend Selected"
-msgstr "Seçilene İliştir"
-
-#: src/gtk-main-callbacks.c:1735
-msgid "Save Selected _As"
-msgstr "Seçileni Farklı Kaydet"
-
-#: src/gtk-main-callbacks.c:1737
-msgid "_Print Selected"
-msgstr "Seçileni Yazdır"
-
-#: src/gtk-main-callbacks.c:1744 src/gtk-main-interface.c:404
-msgid "A_ppend"
-msgstr "İliştir"
-
 #. TRANSLATORS: The first variable is the expression to look for, the second is the dictionary full name
-#: src/gtk-main-callbacks.c:1785
+#: src/gtk-main-callbacks.c:1757
 #, c-format
 msgid "Search for \"%s\" in the %s"
 msgstr "\"%s\" için %s içinde ara"
 
 #. TRANSLATORS: The variable is the expression to look for
-#: src/gtk-main-callbacks.c:1787
+#: src/gtk-main-callbacks.c:1759
 #, c-format
 msgid "Search for \"%s\" in a Different Dictionary"
 msgstr "\"%s\" için Farklı Dizinde Ara"
 
 #. TRANSLATORS: The variable is the expression to look for
-#: src/gtk-main-callbacks.c:1789
+#: src/gtk-main-callbacks.c:1761
 #, c-format
 msgid "Cross-reference \"%s\" Online"
 msgstr "Çapraz referans \"%s\" Çevrimiçi"
@@ -434,246 +406,250 @@ msgstr "_Sekmeyi Kapat"
 msgid "_Close"
 msgstr "_Kapat"
 
-#: src/gtk-main-interface-tabs.c:206
+#: src/gtk-main-interface-tabs.c:204
 msgid "(Empty)"
 msgstr "(Boş)"
 
-#: src/gtk-main-interface.c:148 src/gtk-builder-xml/main.glade:7
+#: src/gtk-main-interface.c:179 src/gtk-builder-xml/main.glade:7
 msgid "gWaei Japanese-English Dictionary"
 msgstr "gWaei Japonca-İngilizce Sözlük"
 
-#: src/gtk-main-interface.c:368
+#: src/gtk-main-interface.c:399
 msgid "_New Tab"
 msgstr "_Yeni Sekme"
 
-#: src/gtk-main-interface.c:376
+#: src/gtk-main-interface.c:407
 msgid "Only for Non-Japanese Locals"
 msgstr "Yalnızca Japonca olmayan yereller"
 
-#: src/gtk-main-interface.c:377
+#: src/gtk-main-interface.c:408
 msgid "When Possible"
 msgstr "İmkan Olduğunda"
 
-#: src/gtk-main-interface.c:378
+#: src/gtk-main-interface.c:409
 msgid "Never"
 msgstr "Asla"
 
-#: src/gtk-main-interface.c:379 src/gtk-builder-xml/main.glade:469
+#: src/gtk-main-interface.c:410 src/gtk-builder-xml/main.glade:469
 msgid "Go to the _Project Homepage"
 msgstr "Proje sayfasına git"
 
-#: src/gtk-main-interface.c:380 src/gtk-builder-xml/main.glade:477
+#: src/gtk-main-interface.c:411 src/gtk-builder-xml/main.glade:477
 msgid "Get Help on I_RC"
 msgstr "IRC Yardım bölümüne git"
 
-#: src/gtk-main-interface.c:381
+#: src/gtk-main-interface.c:412
 msgid "Other Dictionaries"
 msgstr "Diğer Sözlükler"
 
-#: src/gtk-main-interface.c:382
+#: src/gtk-main-interface.c:413
 msgid "Main Dictionaries"
 msgstr "Ana Sözlükler"
 
-#: src/gtk-main-interface.c:384 src/gtk-settings-interface.c:288
+#: src/gtk-main-interface.c:415 src/gtk-settings-interface.c:288
 msgid "Order"
 msgstr "Düzen"
 
-#: src/gtk-main-interface.c:385 src/gtk-settings-interface.c:296
+#: src/gtk-main-interface.c:416 src/gtk-settings-interface.c:296
 msgid "Shortcut"
 msgstr "Kısayol"
 
-#: src/gtk-main-interface.c:386 src/gtk-settings-interface.c:303
+#: src/gtk-main-interface.c:417 src/gtk-settings-interface.c:303
 msgid "Dictionary"
 msgstr "Sözlük"
 
-#: src/gtk-main-interface.c:387 src/gtk-builder-xml/kanjipad.glade:75
+#: src/gtk-main-interface.c:418 src/gtk-builder-xml/kanjipad.glade:75
 msgid "_Annotate Strokes"
 msgstr "_Dipnot"
 
-#: src/gtk-main-interface.c:400
+#: src/gtk-main-interface.c:431
 msgid "Edit the current vocabulary list"
 msgstr "Geçerli kelime listesini düzenle"
 
-#: src/gtk-main-interface.c:405
+#: src/gtk-main-interface.c:435 src/gtk-main-interface.c:2814
+msgid "A_ppend"
+msgstr "İliştir"
+
+#: src/gtk-main-interface.c:436
 msgid "Append the current results to a file"
 msgstr "Geçerli sonuçları bir dosyaya iliştir"
 
-#: src/gtk-main-interface.c:410
+#: src/gtk-main-interface.c:441
 msgid "Save the current results to a new file"
 msgstr "Geçerli sonuçları yeni bir dosyaya kaydet"
 
-#: src/gtk-main-interface.c:414
+#: src/gtk-main-interface.c:445
 msgid "Print the current results"
 msgstr "Geçerli sonuçları yazdır"
 
-#: src/gtk-main-interface.c:419
+#: src/gtk-main-interface.c:450
 msgid "_Enlarge Text"
 msgstr "_Metni genişlet"
 
-#: src/gtk-main-interface.c:420 src/gtk-builder-xml/main.glade:661
+#: src/gtk-main-interface.c:451 src/gtk-builder-xml/main.glade:661
 msgid "Enlarge"
 msgstr "Genişlet"
 
-#: src/gtk-main-interface.c:421
+#: src/gtk-main-interface.c:452
 msgid "Enlarge the results text"
 msgstr "Sonuç metnini genişlet"
 
-#: src/gtk-main-interface.c:427
+#: src/gtk-main-interface.c:458
 msgid "_Shrink Text"
 msgstr "_Metni daralt"
 
-#: src/gtk-main-interface.c:428 src/gtk-builder-xml/main.glade:673
+#: src/gtk-main-interface.c:459 src/gtk-builder-xml/main.glade:673
 msgid "Shrink"
 msgstr "Daralt"
 
-#: src/gtk-main-interface.c:429
+#: src/gtk-main-interface.c:460
 msgid "Shrink the results text"
 msgstr "Sonuç metnini daralt"
 
-#: src/gtk-main-interface.c:435
+#: src/gtk-main-interface.c:466
 msgid "_Normal Size"
 msgstr "_Normal boyut"
 
-#: src/gtk-main-interface.c:436
+#: src/gtk-main-interface.c:467
 msgid "Normal"
 msgstr "Normal"
 
-#: src/gtk-main-interface.c:442
+#: src/gtk-main-interface.c:473
 msgid "Show _Toolbar"
 msgstr "Araç Çubuğunu Göster"
 
-#: src/gtk-main-interface.c:446
+#: src/gtk-main-interface.c:477
 msgid "Show _Less Relevant Results"
 msgstr "Daha Az İlgili Sonuçları Göster"
 
-#: src/gtk-main-interface.c:450
+#: src/gtk-main-interface.c:481
 msgid "Using _Kanjipad"
 msgstr "_Kanjipad Kullan"
 
-#: src/gtk-main-interface.c:455
+#: src/gtk-main-interface.c:486
 msgid "Using _Radical Search Tool"
 msgstr "_Radical Bulma Aracını Kullan"
 
-#: src/gtk-main-interface.c:460
+#: src/gtk-main-interface.c:491
 msgid "_Word-edge Mark"
 msgstr "Kelime işaretle"
 
-#: src/gtk-main-interface.c:461
+#: src/gtk-main-interface.c:492
 msgid "_Edge"
 msgstr "_Sınır"
 
-#: src/gtk-main-interface.c:462
+#: src/gtk-main-interface.c:493
 msgid "Insert a word-edge character"
 msgstr "Kelime sınırlı karakter ekle"
 
-#: src/gtk-main-interface.c:468
+#: src/gtk-main-interface.c:499
 msgid "_Not-word-edge Mark"
 msgstr "Kelime sınırı olmayanı işaretle"
 
-#: src/gtk-main-interface.c:469
+#: src/gtk-main-interface.c:500
 msgid "_Not Edge"
 msgstr "_Sınırsız"
 
-#: src/gtk-main-interface.c:470
+#: src/gtk-main-interface.c:501
 msgid "Insert a not-word-edge character"
 msgstr "Kelime sınırı olmayan bir karakter ekle"
 
-#: src/gtk-main-interface.c:475
+#: src/gtk-main-interface.c:506
 msgid "_Unknown Character"
 msgstr "_Tanımsız Karakter"
 
-#: src/gtk-main-interface.c:476
+#: src/gtk-main-interface.c:507
 msgid "_Unknown"
 msgstr "_Tanımsız"
 
-#: src/gtk-main-interface.c:477
+#: src/gtk-main-interface.c:508
 msgid "Insert an unknown character"
 msgstr "Tanımsız bir karakter ekle"
 
-#: src/gtk-main-interface.c:481
+#: src/gtk-main-interface.c:512
 msgid "_Or Character"
 msgstr "Veya Karakteri"
 
-#: src/gtk-main-interface.c:485
+#: src/gtk-main-interface.c:516
 msgid "_And Character"
 msgstr "Ve Karakteri"
 
-#: src/gtk-main-interface.c:489
+#: src/gtk-main-interface.c:520
 msgid "_Previous Search"
 msgstr "_Önceki Arama"
 
-#: src/gtk-main-interface.c:490
+#: src/gtk-main-interface.c:521
 msgid "Previous"
 msgstr "Geri"
 
-#: src/gtk-main-interface.c:491
+#: src/gtk-main-interface.c:522
 msgid "Go to the previous search"
 msgstr "Önceki aramaya git"
 
-#: src/gtk-main-interface.c:496
+#: src/gtk-main-interface.c:527
 msgid "_Next Search"
 msgstr "_Sonraki Arama"
 
-#: src/gtk-main-interface.c:497
+#: src/gtk-main-interface.c:528
 msgid "Next"
 msgstr "Sonraki"
 
-#: src/gtk-main-interface.c:498
+#: src/gtk-main-interface.c:529
 msgid "Go to the next search"
 msgstr "Sonraki aramaya git"
 
-#: src/gtk-main-interface.c:503
+#: src/gtk-main-interface.c:534
 msgid "_Contents"
 msgstr "_İçerik"
 
-#: src/gtk-main-interface.c:504
+#: src/gtk-main-interface.c:535
 msgid "Help"
 msgstr "Yardım"
 
-#: src/gtk-main-interface.c:505
+#: src/gtk-main-interface.c:536
 msgid "Open the help dialog"
 msgstr "Yardım iletisini aç"
 
-#: src/gtk-main-interface.c:510
+#: src/gtk-main-interface.c:541
 msgid "Dictionary _Terminology Glossary"
 msgstr "Açıklayıcı terimler sözlüğü"
 
-#: src/gtk-main-interface.c:517
+#: src/gtk-main-interface.c:548
 msgid "Enable spellcheck for searches"
 msgstr "Aramalarda dilbilgisi denetimini açın"
 
-#: src/gtk-main-interface.c:521
+#: src/gtk-main-interface.c:552
 msgid "Input your query here"
 msgstr "Sorgunuzu buraya girin"
 
-#: src/gtk-main-interface.c:525
+#: src/gtk-main-interface.c:556
 msgid "Select the dictionary you want to use"
 msgstr "Kullanmak istediğiniz sözlüğü seçin"
 
-#: src/gtk-main-interface.c:529
+#: src/gtk-main-interface.c:560
 msgid "Click to start search"
 msgstr "Tıklayıp aramaya başlayın"
 
-#: src/gtk-main-interface.c:909
+#: src/gtk-main-interface.c:940
 msgid "Searching..."
 msgstr "Aranıyor... "
 
-#: src/gtk-main-interface.c:912
+#: src/gtk-main-interface.c:943
 #, c-format
 msgid "Searching... %d result"
 msgid_plural "Searching... %d results"
 msgstr[0] "Aranıyor... %d sonuç"
 msgstr[1] "Aranıyor... %d sonuç"
 
-#: src/gtk-main-interface.c:1190
+#: src/gtk-main-interface.c:1221
 msgid "_Cycle Up"
 msgstr "_Önceki"
 
-#: src/gtk-main-interface.c:1196
+#: src/gtk-main-interface.c:1227
 msgid "Cycle _Down"
 msgstr "Sonraki"
 
-#: src/gtk-main-interface.c:1206
+#: src/gtk-main-interface.c:1237
 #, c-format
 msgid "%d dictionary is being used."
 msgid_plural "%d dictionaries are being used."
@@ -681,25 +657,25 @@ msgstr[0] "%d sözlüğü kullanıldı"
 msgstr[1] "%d sözlükleri kullanıldı"
 
 #. TRANSLATORS: The argument is the dictionary long name
-#: src/gtk-main-interface.c:2250
+#: src/gtk-main-interface.c:2282
 #, c-format
 msgid "Nothing found in the %s!"
 msgstr "%s burada bulunamadı!"
 
-#: src/gtk-main-interface.c:2281
+#: src/gtk-main-interface.c:2313
 msgid "Search Other Dictionary: "
 msgstr "Diğer Sözlükleri Ara: "
 
-#: src/gtk-main-interface.c:2343
+#: src/gtk-main-interface.c:2354
 msgid "Search Online: "
 msgstr "Çevrimiçi Ara:"
 
-#: src/gtk-main-interface.c:2399
+#: src/gtk-main-interface.c:2407
 #, c-format
 msgid "gWaei Usage Tip #%d: "
 msgstr "gWaei İpucu Kullan #%d: "
 
-#: src/gtk-main-interface.c:2412
+#: src/gtk-main-interface.c:2420
 #, c-format
 msgid ""
 "Use the Unknown Character from the Insert menu or toolbar in place of "
@@ -715,15 +691,15 @@ msgstr ""
 "Kanjipadin özelliği kanji karakter çizimi girişidir. Bu giriş tipinde "
 "çizgiler vuruşlar ve noktalar çok önemlidir."
 
-#: src/gtk-main-interface.c:2419
+#: src/gtk-main-interface.c:2427
 msgid "Inputting Unknown Kanji"
 msgstr "Tanımsız Kanji Girişi"
 
-#: src/gtk-main-interface.c:2436
+#: src/gtk-main-interface.c:2444
 msgid "Getting More Exact Matches"
 msgstr "Daha Fazla Eşleşmeye Git"
 
-#: src/gtk-main-interface.c:2442
+#: src/gtk-main-interface.c:2450
 msgid ""
 "Use the Word-edge Mark and the Not-word-edge Mark from the insert menu to "
 "get more relevant results.  fish\\b will return results like fish and "
@@ -733,7 +709,7 @@ msgstr ""
 "kelimeleri kullanın . Balık\\b araması, balıkçı ve balıklama gibi sonuçlar "
 "verir."
 
-#: src/gtk-main-interface.c:2450
+#: src/gtk-main-interface.c:2458
 #, c-format
 msgid ""
 "Use the And Character or Or Character to search for results that contain a "
@@ -745,15 +721,15 @@ msgstr ""
 "arama yapmanıza yardımcı olur. Kediler ve köpekler %s içeren iki kelime kedi "
 "ve köpek sonuçlarını verir."
 
-#: src/gtk-main-interface.c:2456
+#: src/gtk-main-interface.c:2464
 msgid "Searching for Multiple Words"
 msgstr "Çoklu Kelimeler İçin Ara"
 
-#: src/gtk-main-interface.c:2473
+#: src/gtk-main-interface.c:2481
 msgid "Make a Vocabulary List"
 msgstr "Kelime Listesi Yap"
 
-#: src/gtk-main-interface.c:2479
+#: src/gtk-main-interface.c:2487
 msgid ""
 "Specific sections of results can be printed or saved by dragging the mouse "
 "to highlight them.  Using this in combination with the Append command from "
@@ -764,11 +740,11 @@ msgstr ""
 "menüden iliştirme özelliğini kullanabilirsiniz. İliştir menüsü Dosya "
 "menüsünden araç çubuğuna eklenebilir, daha kolay ve hızlı kullanım sağlar."
 
-#: src/gtk-main-interface.c:2489
+#: src/gtk-main-interface.c:2497
 msgid "Why Use the Mouse?"
 msgstr "Neden Fare Kullanıyorsun?"
 
-#: src/gtk-main-interface.c:2495
+#: src/gtk-main-interface.c:2503
 msgid ""
 "Typing something will move the focus to the search input box.  Hitting the "
 "Up or Down arrow key will move the focus to the results pane so you can "
@@ -779,11 +755,11 @@ msgstr ""
 "gezinti yapabilirsiniz, anlam ayrımı sözcüklerde Sayfa kaydır tuşlarını "
 "kullanarak anlamlar arasında gezinti yapabilirsiniz."
 
-#: src/gtk-main-interface.c:2505
+#: src/gtk-main-interface.c:2513
 msgid "Get Ready for the JLPT"
 msgstr "JLPT İçin Başlat"
 
-#: src/gtk-main-interface.c:2511
+#: src/gtk-main-interface.c:2519
 msgid ""
 "The Kanji dictionary has some hidden features.  One such one is the ability "
 "to filter out Kanji that don't meet a certain criteria.  If you are planning "
@@ -798,11 +774,11 @@ msgstr ""
 "Belirli seviye kanfilerde J# filtresini kullanmak işlerinizi "
 "kolaylaştırabilir."
 
-#: src/gtk-main-interface.c:2525
+#: src/gtk-main-interface.c:2533
 msgid "Just drag words in!"
 msgstr "Sadece kelime içine sürükle"
 
-#: src/gtk-main-interface.c:2531
+#: src/gtk-main-interface.c:2539
 #, fuzzy
 msgid ""
 "If you drag and drop a highlighted word into gWaei's search result box, "
@@ -813,11 +789,11 @@ msgstr ""
 "çevirisini yapacaktır, bu durum genellikle web sayfası çevirilerinde işe "
 "yarayan bir özelliktir."
 
-#: src/gtk-main-interface.c:2542
+#: src/gtk-main-interface.c:2550
 msgid "What does (adj-i) mean?"
 msgstr "Bunu mu Demek İstediniz (adj-i)?"
 
-#: src/gtk-main-interface.c:2548
+#: src/gtk-main-interface.c:2556
 msgid ""
 "It is part of the terminalogy used by the EDICT group of dictionaries to "
 "categorize words.  Some are obvious, but there are a number that there is no "
@@ -829,11 +805,11 @@ msgstr ""
 "EDICT sözlük terminolojisi hakkında bilgi sahibi olmak için terminoloji "
 "menüsüne gözatın."
 
-#: src/gtk-main-interface.c:2560
+#: src/gtk-main-interface.c:2568
 msgid "Books are Heavy"
 msgstr "Ağır Kitaplar"
 
-#: src/gtk-main-interface.c:2566
+#: src/gtk-main-interface.c:2574
 msgid ""
 "Aways wear a construction helmet when working with books.  They are "
 "dangerous heavy objects that can at any point fall on and injure you.  "
@@ -845,22 +821,34 @@ msgstr ""
 "sağlayacaktır. Tanıdıklarınıza gönül rahatlığı ile önerebilirsiniz, size "
 "teşekkür edeceklerdir. Gerçekten."
 
-#: src/gtk-main-interface.c:2793
+#: src/gtk-main-interface.c:2803
+msgid "A_ppend Selected"
+msgstr "Seçilene İliştir"
+
+#: src/gtk-main-interface.c:2805
+msgid "Save Selected _As"
+msgstr "Seçileni Farklı Kaydet"
+
+#: src/gtk-main-interface.c:2807
+msgid "_Print Selected"
+msgstr "Seçileni Yazdır"
+
+#: src/gtk-main-interface.c:2849
 msgid "- A dictionary program for Japanese-English translation."
 msgstr "- Japonca ingilizce çeviri yapan sözlük programı"
 
-#: src/gtk-main-interface.c:3155 src/gtk-main-interface.c:3256
+#: src/gtk-main-interface.c:3219 src/gtk-main-interface.c:3318
 msgid "Pop"
 msgstr ""
 
-#: src/gtk-main-interface.c:3679
+#: src/gtk-main-interface.c:3693
 #, c-format
 msgid "Other Result %d"
 msgid_plural "Other Results %d"
 msgstr[0] "Diğer Sonuç %d"
 msgstr[1] "Diğer Sonuçlar %d"
 
-#: src/gtk-main-interface.c:3694
+#: src/gtk-main-interface.c:3708
 #, c-format
 msgid "Main Result %d"
 msgid_plural "Main Results %d"
@@ -883,25 +871,25 @@ msgstr ""
 "<b>Güncel Radikal:</b> %s\n"
 "<b>Radical İsmi:</b> %s"
 
-#: src/gtk-settings-callbacks.c:324
+#: src/gtk-settings-callbacks.c:155
 #: src/gtk-settings-interface-install-line.c:63
 msgid "Installed"
 msgstr "Kurulu"
 
-#: src/gtk-settings-callbacks.c:332 src/gtk-settings-callbacks.c:520
+#: src/gtk-settings-callbacks.c:163 src/gtk-settings-callbacks.c:349
 msgid "Installing..."
 msgstr "Kuruluyor..."
 
-#: src/gtk-settings-callbacks.c:484
+#: src/gtk-settings-callbacks.c:313
 msgid "Cancelling..."
 msgstr "İptal ediliyor..."
 
-#: src/gtk-settings-callbacks.c:500
+#: src/gtk-settings-callbacks.c:329
 #: src/gtk-settings-interface-install-line.c:68
 msgid "Not Installed"
 msgstr "Kurulu Değil"
 
-#: src/gtk-settings-callbacks.c:693
+#: src/gtk-settings-callbacks.c:522
 msgid "Dictionary File Select"
 msgstr "Sözlük Dosyası Seç"
 
@@ -926,72 +914,72 @@ msgstr "Sıfırla"
 msgid "_Use the System Document Font (%s)"
 msgstr "_Sistem Belge Yazıtipini Kullan (%s)"
 
-#: src/io.c:325
+#: src/io.c:326
 msgid "File copy error"
 msgstr "Dosya kopyalama hatası"
 
-#: src/io.c:554 src/io.c:590
+#: src/io.c:555 src/io.c:591
 msgid "gunzip error"
 msgstr "gunzip hatası"
 
 #. TRANSLATORS: The %s stands for a file path
-#: src/io.c:634
+#: src/io.c:635
 #, c-format
 msgid "Removing %s..."
 msgstr "%s Siliniyor..."
 
-#: src/io.c:636
+#: src/io.c:637
 msgid "Removing..."
 msgstr "Siliniyor..."
 
 #. TRANSLATORS: The %s stands for an URL
-#: src/io.c:704
+#: src/io.c:705
 #, c-format
 msgid "Downloading %s..."
 msgstr "İndiriliyor %s..."
 
-#: src/io.c:722
+#: src/io.c:723
 msgid "Unable to create dictionary folder"
 msgstr "Sözlük dizini oluşturma sorunu"
 
-#: src/io.c:746
+#: src/io.c:747
 msgid "Decompressing..."
 msgstr "Açılıyor..."
 
-#: src/io.c:756
+#: src/io.c:757
 msgid "Unzip Error"
 msgstr "Arşiv Çıkarma Hatası"
 
-#: src/io.c:764
+#: src/io.c:765
 msgid "Converting encoding..."
 msgstr "Şifreleme çevriliyor..."
 
-#: src/io.c:778
+#: src/io.c:779
 msgid "Postprocessing..."
 msgstr "İşleniyor..."
 
 #. TRANSLATORS: First part of the sentence : 'Searching for "${query}" in the ${dictionary} dictionary'
-#: src/ncurses-main-interface.c:97
+#: src/ncurses-main-interface.c:96
 msgid "Searching for \""
 msgstr "Bunun için ara \""
 
 #. TRANSLATORS: Second part of the sentence : 'Searching for "${query}" in the ${dictionary} dictionary'
-#: src/ncurses-main-interface.c:102
+#: src/ncurses-main-interface.c:101
 msgid "\" in the "
 msgstr "\" içinde"
 
 #. TRANSLATORS: Third and last part of the sentence : 'Searching for "${query}" in the ${dictionary} dictionary'
-#: src/ncurses-main-interface.c:107
+#: src/ncurses-main-interface.c:106
 msgid " dictionary..."
 msgstr "sözlük..."
 
-#: src/ncurses-main-interface.c:237 src/ncurses-main-interface.c:311
-#: src/ncurses-main-interface.c:420
+#: src/ncurses-main-interface.c:236 src/ncurses-main-interface.c:310
+#: src/ncurses-main-interface.c:419
 msgid "Search: "
 msgstr "Ara:"
 
-#: src/ncurses-main-interface.c:238 src/ncurses-main-interface.c:342
-#: src/ncurses-main-interface.c:406
+#: src/ncurses-main-interface.c:237 src/ncurses-main-interface.c:341
+#: src/ncurses-main-interface.c:405
 msgid "Results: "
 msgstr "Sounçlar:  "
 
@@ -1175,6 +1163,15 @@ msgstr "<b>El ile sözlük yönetimi</b>"
 #: src/gtk-builder-xml/settings.glade:866
 msgid "Advanced"
 msgstr "Gelişmiş"
+
+#~ msgid "Syncing %s dictionary"
+#~ msgstr "%s sözlüğü eşitleniyor "
+
+#~ msgid "File read failed"
+#~ msgstr "Dosya okuma hatası"
+
+#~ msgid "Success"
+#~ msgstr "Başarılı"
 
 #, fuzzy
 #~ msgid ""

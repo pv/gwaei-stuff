@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-11-14 01:02-0500\n"
+"POT-Creation-Date: 2010-11-25 02:02-0500\n"
 "PO-Revision-Date: 2008-11-30 02:35+0500\n"
 "Last-Translator: Zachary Dovel pizzach@gmail.com\n"
 "Language-Team: Not Applicable\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: src/console-main-interface.c:68 src/ncurses-main-interface.c:124
+#: src/console-main-interface.c:68 src/ncurses-main-interface.c:123
 msgid "Other Results"
 msgstr "他の候補"
 
-#: src/console-main-interface.c:77 src/ncurses-main-interface.c:80
+#: src/console-main-interface.c:77 src/ncurses-main-interface.c:79
 msgid "No results found!"
 msgstr "検討がありません!"
 
@@ -55,7 +55,7 @@ msgstr "無い"
 msgid "Available dictionaries are:\n"
 msgstr "現在の所持辞書:\n"
 
-#: src/console-main-interface.c:274 src/ncurses-main-interface.c:456
+#: src/console-main-interface.c:274 src/ncurses-main-interface.c:455
 msgid "- Japanese-English dictionary program that allows regex searches"
 msgstr ""
 
@@ -81,19 +81,19 @@ msgid ""
 "  waei -d Places %s       Look up a place in the places dictionary"
 msgstr ""
 
-#: src/console-main-interface.c:301 src/ncurses-main-interface.c:459
+#: src/console-main-interface.c:301 src/ncurses-main-interface.c:458
 msgid "Open up the multisearch window (beta)"
 msgstr "マルチサーチウィンドで開く(β）"
 
-#: src/console-main-interface.c:303 src/ncurses-main-interface.c:460
+#: src/console-main-interface.c:303 src/ncurses-main-interface.c:459
 msgid "Do not display less relevant results"
 msgstr "不適当な候補を表示しない"
 
-#: src/console-main-interface.c:304 src/ncurses-main-interface.c:461
+#: src/console-main-interface.c:304 src/ncurses-main-interface.c:460
 msgid "Display less information"
 msgstr "verboseをオフにする"
 
-#: src/console-main-interface.c:305 src/ncurses-main-interface.c:462
+#: src/console-main-interface.c:305 src/ncurses-main-interface.c:461
 msgid "Search using a chosen dictionary"
 msgstr "指定した辞書で検索を行う"
 
@@ -114,7 +114,7 @@ msgid "Check the waei version information"
 msgstr "waeiヴァージョン情報を表示する"
 
 #. TRANSLATORS: The "%s" stands for the error message
-#: src/console-main-interface.c:316 src/ncurses-main-interface.c:469
+#: src/console-main-interface.c:316 src/ncurses-main-interface.c:468
 #, c-format
 msgid "Option parsing failed: %s\n"
 msgstr "解読失敗: %s\n"
@@ -140,7 +140,7 @@ msgstr "%sがインストールされていない。"
 msgid "%s is not installed. "
 msgstr "%sがインストールされていない。"
 
-#: src/console-main-interface.c:430 src/ncurses-main-interface.c:489
+#: src/console-main-interface.c:430 src/ncurses-main-interface.c:488
 #, c-format
 msgid "Requested dictionary not found!\n"
 msgstr "望みの辞書が存在しない!\n"
@@ -155,80 +155,80 @@ msgstr ""
 msgid "Query parse error\n"
 msgstr ""
 
-#: src/console-main-interface.c:493 src/gtk-main-interface.c:911
-#: src/ncurses-main-interface.c:402
+#: src/console-main-interface.c:493 src/gtk-main-interface.c:942
+#: src/ncurses-main-interface.c:401
 #, c-format
 msgid "Found %d result"
 msgid_plural "Found %d results"
 msgstr[0] "候補を%dつ見出した。"
 
 #. TRANSLATORS: relevant what ? It's the number of "relevant" result(s) displayed while or after searching.
-#: src/console-main-interface.c:494 src/gtk-main-interface.c:915
-#: src/ncurses-main-interface.c:403
+#: src/console-main-interface.c:494 src/gtk-main-interface.c:946
+#: src/ncurses-main-interface.c:402
 #, c-format
 msgid "(%d Relevant)"
 msgid_plural "(%d Relevant)"
 msgstr[0] "(%dつが一致する)"
 
-#: src/console-main-interface.c:559 src/gtk-main-interface.c:3326
-#: src/gtk-main-interface.c:3426 src/ncurses-main-interface.c:586
+#: src/console-main-interface.c:559 src/gtk-main-interface.c:3386
+#: src/gtk-main-interface.c:3486 src/ncurses-main-interface.c:585
 msgid "Radicals:"
 msgstr "部首:"
 
-#: src/console-main-interface.c:564 src/gtk-main-interface.c:3380
-#: src/gtk-main-interface.c:3459 src/ncurses-main-interface.c:591
+#: src/console-main-interface.c:564 src/gtk-main-interface.c:3440
+#: src/gtk-main-interface.c:3519 src/ncurses-main-interface.c:590
 msgid "Stroke:"
 msgstr "画数:"
 
-#: src/console-main-interface.c:572 src/gtk-main-interface.c:3387
-#: src/gtk-main-interface.c:3466 src/ncurses-main-interface.c:599
+#: src/console-main-interface.c:572 src/gtk-main-interface.c:3447
+#: src/gtk-main-interface.c:3526 src/ncurses-main-interface.c:598
 msgid "Freq:"
 msgstr "頻数:"
 
-#: src/console-main-interface.c:580 src/gtk-main-interface.c:3394
-#: src/gtk-main-interface.c:3473 src/ncurses-main-interface.c:607
+#: src/console-main-interface.c:580 src/gtk-main-interface.c:3454
+#: src/gtk-main-interface.c:3533 src/ncurses-main-interface.c:606
 msgid "Grade:"
 msgstr "段階:"
 
-#: src/console-main-interface.c:588 src/gtk-main-interface.c:3400
-#: src/gtk-main-interface.c:3480 src/ncurses-main-interface.c:615
+#: src/console-main-interface.c:588 src/gtk-main-interface.c:3460
+#: src/gtk-main-interface.c:3540 src/ncurses-main-interface.c:614
 msgid "JLPT:"
 msgstr "JLPT:"
 
-#: src/console-main-interface.c:595 src/gtk-main-interface.c:3343
-#: src/gtk-main-interface.c:3434 src/ncurses-main-interface.c:622
+#: src/console-main-interface.c:595 src/gtk-main-interface.c:3403
+#: src/gtk-main-interface.c:3494 src/ncurses-main-interface.c:621
 msgid "Readings:"
 msgstr "読み:"
 
-#: src/console-main-interface.c:597 src/gtk-main-interface.c:3354
-#: src/gtk-main-interface.c:3442 src/ncurses-main-interface.c:624
+#: src/console-main-interface.c:597 src/gtk-main-interface.c:3414
+#: src/gtk-main-interface.c:3502 src/ncurses-main-interface.c:623
 msgid "Name:"
 msgstr "名:"
 
-#: src/console-main-interface.c:599 src/gtk-main-interface.c:3365
-#: src/gtk-main-interface.c:3450 src/ncurses-main-interface.c:626
+#: src/console-main-interface.c:599 src/gtk-main-interface.c:3425
+#: src/gtk-main-interface.c:3510 src/ncurses-main-interface.c:625
 msgid "Radical Name:"
 msgstr "部首名:"
 
-#: src/console-main-interface.c:602 src/gtk-main-interface.c:3409
-#: src/gtk-main-interface.c:3487 src/ncurses-main-interface.c:629
+#: src/console-main-interface.c:602 src/gtk-main-interface.c:3469
+#: src/gtk-main-interface.c:3547 src/ncurses-main-interface.c:628
 msgid "Meanings:"
 msgstr "意味:"
 
 #. TRANSLATORS: The "E" stands for "English"
-#: src/console-main-interface.c:619 src/gtk-main-interface.c:3550
+#: src/console-main-interface.c:619 src/gtk-main-interface.c:3602
 msgid "E:\t"
 msgstr ""
 
 #. TRANSLATORS: The "J" stands for "Japanese"
-#: src/console-main-interface.c:625 src/gtk-main-interface.c:3561
+#: src/console-main-interface.c:625 src/gtk-main-interface.c:3613
 msgid ""
 "\n"
 "J:\t"
 msgstr ""
 
 #. TRANSLATORS: The "D" stands for "Detail"
-#: src/console-main-interface.c:631 src/gtk-main-interface.c:3572
+#: src/console-main-interface.c:631 src/gtk-main-interface.c:3624
 msgid ""
 "\n"
 "D:\t"
@@ -311,77 +311,48 @@ msgstr "和独"
 msgid "%s Dictionary"
 msgstr "%s辞書"
 
-#. TRANSLATORS: The %s stands for the internal (untranslated) short name of the dictionary
-#: src/dictlist-object.c:653
-#, c-format
-msgid "Syncing %s dictionary"
-msgstr "%sの辞書をシンク中"
-
-#: src/dictlist-object.c:658
-msgid "File read failed"
-msgstr "ファイル読み込み失敗"
-
-#: src/dictlist-object.c:683
-msgid "Success"
-msgstr "成功"
-
-#: src/gtk-main-callbacks.c:520
+#: src/gtk-main-callbacks.c:533
 msgid "Save As"
 msgstr "別名で保存"
 
-#: src/gtk-main-callbacks.c:532 src/gtk-main-callbacks.c:602
+#: src/gtk-main-callbacks.c:545 src/gtk-main-callbacks.c:615
 msgid "vocabulary.txt"
 msgstr "語彙.txt"
 
-#: src/gtk-main-callbacks.c:592
+#: src/gtk-main-callbacks.c:605
 msgid "Save"
 msgstr "保存"
 
-#: src/gtk-main-callbacks.c:1129
+#: src/gtk-main-callbacks.c:1143
 #, fuzzy
 msgid ""
 "Program for Japanese translation and reference. The\n"
 "dictionaries are supplied by Jim Breen's WWWJDIC.\n"
-"Special thanks to the maker of GJITEN who served as an inspiration."
+"Special thanks to the maker of GJITEN who served as an inspiration.\n"
+" Dedicated to Chuus"
 msgstr ""
 "日本語の翻訳や参照の為に作られたプログラムです. 辞書ファイルがJim Breenの"
 "WWWJDICから取られています."
 
 #. TRANSLATORS: You can add your own name to the translation of this field, it will be displayed in the "about" box when gwaei is run in your language
-#: src/gtk-main-callbacks.c:1133
+#: src/gtk-main-callbacks.c:1147
 msgid "translator-credits"
 msgstr "Zachary Dovel"
 
-#: src/gtk-main-callbacks.c:1733
-msgid "A_ppend Selected"
-msgstr "選択のを追加(_P)"
-
-#: src/gtk-main-callbacks.c:1735
-msgid "Save Selected _As"
-msgstr "選択のを別名で保存"
-
-#: src/gtk-main-callbacks.c:1737
-msgid "_Print Selected"
-msgstr "選択のを印刷"
-
-#: src/gtk-main-callbacks.c:1744 src/gtk-main-interface.c:404
-msgid "A_ppend"
-msgstr "追加(_P)"
-
 #. TRANSLATORS: The first variable is the expression to look for, the second is the dictionary full name
-#: src/gtk-main-callbacks.c:1785
+#: src/gtk-main-callbacks.c:1757
 #, c-format
 msgid "Search for \"%s\" in the %s"
 msgstr "「%s」を%sで検索する"
 
 #. TRANSLATORS: The variable is the expression to look for
-#: src/gtk-main-callbacks.c:1787
+#: src/gtk-main-callbacks.c:1759
 #, c-format
 msgid "Search for \"%s\" in a Different Dictionary"
 msgstr "「%s」を別の辞書で検索する"
 
 #. TRANSLATORS: The variable is the expression to look for
-#: src/gtk-main-callbacks.c:1789
+#: src/gtk-main-callbacks.c:1761
 #, c-format
 msgid "Cross-reference \"%s\" Online"
 msgstr "「%s」をオンラインで参照する"
@@ -394,270 +365,274 @@ msgstr "タブを閉じる(_C)"
 msgid "_Close"
 msgstr "閉じる(_C)"
 
-#: src/gtk-main-interface-tabs.c:206
+#: src/gtk-main-interface-tabs.c:204
 msgid "(Empty)"
 msgstr "(空っぽ)"
 
-#: src/gtk-main-interface.c:148 src/gtk-builder-xml/main.glade:7
+#: src/gtk-main-interface.c:179 src/gtk-builder-xml/main.glade:7
 msgid "gWaei Japanese-English Dictionary"
 msgstr "gWaei 和英辞書"
 
-#: src/gtk-main-interface.c:368
+#: src/gtk-main-interface.c:399
 msgid "_New Tab"
 msgstr "新しいタブを開く(_N)"
 
-#: src/gtk-main-interface.c:376
+#: src/gtk-main-interface.c:407
 msgid "Only for Non-Japanese Locals"
 msgstr "日本語のローカル以外だけ"
 
-#: src/gtk-main-interface.c:377
+#: src/gtk-main-interface.c:408
 msgid "When Possible"
 msgstr "できる時だけ"
 
-#: src/gtk-main-interface.c:378
+#: src/gtk-main-interface.c:409
 msgid "Never"
 msgstr "しない"
 
-#: src/gtk-main-interface.c:379 src/gtk-builder-xml/main.glade:469
+#: src/gtk-main-interface.c:410 src/gtk-builder-xml/main.glade:469
 msgid "Go to the _Project Homepage"
 msgstr "プロジェクトホームページへ行く"
 
-#: src/gtk-main-interface.c:380 src/gtk-builder-xml/main.glade:477
+#: src/gtk-main-interface.c:411 src/gtk-builder-xml/main.glade:477
 msgid "Get Help on I_RC"
 msgstr "IRCでヘルプを求める"
 
-#: src/gtk-main-interface.c:381
+#: src/gtk-main-interface.c:412
 msgid "Other Dictionaries"
 msgstr "他の辞書"
 
-#: src/gtk-main-interface.c:382
+#: src/gtk-main-interface.c:413
 msgid "Main Dictionaries"
 msgstr "主な辞書"
 
-#: src/gtk-main-interface.c:384 src/gtk-settings-interface.c:288
+#: src/gtk-main-interface.c:415 src/gtk-settings-interface.c:288
 msgid "Order"
 msgstr "順序"
 
-#: src/gtk-main-interface.c:385 src/gtk-settings-interface.c:296
+#: src/gtk-main-interface.c:416 src/gtk-settings-interface.c:296
 msgid "Shortcut"
 msgstr "ショートカット"
 
-#: src/gtk-main-interface.c:386 src/gtk-settings-interface.c:303
+#: src/gtk-main-interface.c:417 src/gtk-settings-interface.c:303
 msgid "Dictionary"
 msgstr "辞書"
 
-#: src/gtk-main-interface.c:387 src/gtk-builder-xml/kanjipad.glade:75
+#: src/gtk-main-interface.c:418 src/gtk-builder-xml/kanjipad.glade:75
 msgid "_Annotate Strokes"
 msgstr "画数付き(_A)"
 
-#: src/gtk-main-interface.c:400
+#: src/gtk-main-interface.c:431
 msgid "Edit the current vocabulary list"
 msgstr "現在語彙リストを編集する"
 
-#: src/gtk-main-interface.c:405
+#: src/gtk-main-interface.c:435 src/gtk-main-interface.c:2814
+msgid "A_ppend"
+msgstr "追加(_P)"
+
+#: src/gtk-main-interface.c:436
 msgid "Append the current results to a file"
 msgstr "表示されている候補をファイルの尾に追加する"
 
-#: src/gtk-main-interface.c:410
+#: src/gtk-main-interface.c:441
 msgid "Save the current results to a new file"
 msgstr "表示されている候補を新規ファイルに保存する"
 
-#: src/gtk-main-interface.c:414
+#: src/gtk-main-interface.c:445
 msgid "Print the current results"
 msgstr "表示されている候補を印刷する"
 
-#: src/gtk-main-interface.c:419
+#: src/gtk-main-interface.c:450
 msgid "_Enlarge Text"
 msgstr "文字を拡大する(_E)"
 
-#: src/gtk-main-interface.c:420 src/gtk-builder-xml/main.glade:661
+#: src/gtk-main-interface.c:451 src/gtk-builder-xml/main.glade:661
 msgid "Enlarge"
 msgstr "拡大"
 
-#: src/gtk-main-interface.c:421
+#: src/gtk-main-interface.c:452
 msgid "Enlarge the results text"
 msgstr "候補の文字を拡大する"
 
-#: src/gtk-main-interface.c:427
+#: src/gtk-main-interface.c:458
 msgid "_Shrink Text"
 msgstr "文字を縮小する(_S)"
 
-#: src/gtk-main-interface.c:428 src/gtk-builder-xml/main.glade:673
+#: src/gtk-main-interface.c:459 src/gtk-builder-xml/main.glade:673
 msgid "Shrink"
 msgstr "縮小"
 
-#: src/gtk-main-interface.c:429
+#: src/gtk-main-interface.c:460
 msgid "Shrink the results text"
 msgstr "候補の文字を縮小する"
 
-#: src/gtk-main-interface.c:435
+#: src/gtk-main-interface.c:466
 msgid "_Normal Size"
 msgstr "通常の大きさ(_N)"
 
-#: src/gtk-main-interface.c:436
+#: src/gtk-main-interface.c:467
 msgid "Normal"
 msgstr "通常"
 
-#: src/gtk-main-interface.c:442
+#: src/gtk-main-interface.c:473
 msgid "Show _Toolbar"
 msgstr "ツールバーを表示する(_T)"
 
-#: src/gtk-main-interface.c:446
+#: src/gtk-main-interface.c:477
 msgid "Show _Less Relevant Results"
 msgstr "曖昧な候補を表示する(_L)"
 
-#: src/gtk-main-interface.c:450
+#: src/gtk-main-interface.c:481
 msgid "Using _Kanjipad"
 msgstr "漢字パッドを通じて(_K)"
 
-#: src/gtk-main-interface.c:455
+#: src/gtk-main-interface.c:486
 msgid "Using _Radical Search Tool"
 msgstr "部首検索ツールを通じて(_R)"
 
-#: src/gtk-main-interface.c:460
+#: src/gtk-main-interface.c:491
 msgid "_Word-edge Mark"
 msgstr "言葉端マーク(_W)"
 
-#: src/gtk-main-interface.c:461
+#: src/gtk-main-interface.c:492
 msgid "_Edge"
 msgstr "言葉端(_E)"
 
-#: src/gtk-main-interface.c:462
+#: src/gtk-main-interface.c:493
 msgid "Insert a word-edge character"
 msgstr "言葉端の文字を挿入する"
 
-#: src/gtk-main-interface.c:468
+#: src/gtk-main-interface.c:499
 msgid "_Not-word-edge Mark"
 msgstr "非言葉端マーク(_N)"
 
-#: src/gtk-main-interface.c:469
+#: src/gtk-main-interface.c:500
 msgid "_Not Edge"
 msgstr "非言葉端"
 
-#: src/gtk-main-interface.c:470
+#: src/gtk-main-interface.c:501
 msgid "Insert a not-word-edge character"
 msgstr "非言葉端の文字を挿入する"
 
-#: src/gtk-main-interface.c:475
+#: src/gtk-main-interface.c:506
 msgid "_Unknown Character"
 msgstr "未知な文字(_U)"
 
-#: src/gtk-main-interface.c:476
+#: src/gtk-main-interface.c:507
 msgid "_Unknown"
 msgstr "未知"
 
-#: src/gtk-main-interface.c:477
+#: src/gtk-main-interface.c:508
 msgid "Insert an unknown character"
 msgstr "未知の文字を挿入する"
 
-#: src/gtk-main-interface.c:481
+#: src/gtk-main-interface.c:512
 msgid "_Or Character"
 msgstr "オアの文字(_O)"
 
-#: src/gtk-main-interface.c:485
+#: src/gtk-main-interface.c:516
 msgid "_And Character"
 msgstr "アンドの文字(_A)"
 
-#: src/gtk-main-interface.c:489
+#: src/gtk-main-interface.c:520
 msgid "_Previous Search"
 msgstr "前の検索に戻る(_P)"
 
-#: src/gtk-main-interface.c:490
+#: src/gtk-main-interface.c:521
 msgid "Previous"
 msgstr "前"
 
-#: src/gtk-main-interface.c:491
+#: src/gtk-main-interface.c:522
 msgid "Go to the previous search"
 msgstr "次の検索に進む"
 
-#: src/gtk-main-interface.c:496
+#: src/gtk-main-interface.c:527
 msgid "_Next Search"
 msgstr "次の検索に進む(_N)"
 
-#: src/gtk-main-interface.c:497
+#: src/gtk-main-interface.c:528
 msgid "Next"
 msgstr "進む"
 
-#: src/gtk-main-interface.c:498
+#: src/gtk-main-interface.c:529
 msgid "Go to the next search"
 msgstr "次の検索に進む"
 
-#: src/gtk-main-interface.c:503
+#: src/gtk-main-interface.c:534
 msgid "_Contents"
 msgstr "目次(_C)"
 
-#: src/gtk-main-interface.c:504
+#: src/gtk-main-interface.c:535
 msgid "Help"
 msgstr "ヘルプ"
 
-#: src/gtk-main-interface.c:505
+#: src/gtk-main-interface.c:536
 msgid "Open the help dialog"
 msgstr "ヘルプを開く"
 
-#: src/gtk-main-interface.c:510
+#: src/gtk-main-interface.c:541
 msgid "Dictionary _Terminology Glossary"
 msgstr "辞書の用語解説(_T)"
 
-#: src/gtk-main-interface.c:517
+#: src/gtk-main-interface.c:548
 msgid "Enable spellcheck for searches"
 msgstr "スペル・チェックを有効にする"
 
-#: src/gtk-main-interface.c:521
+#: src/gtk-main-interface.c:552
 msgid "Input your query here"
 msgstr "検索内容をここに入れてください"
 
-#: src/gtk-main-interface.c:525
+#: src/gtk-main-interface.c:556
 msgid "Select the dictionary you want to use"
 msgstr "望みの辞書を選んでください"
 
-#: src/gtk-main-interface.c:529
+#: src/gtk-main-interface.c:560
 msgid "Click to start search"
 msgstr "サーチを開始する"
 
-#: src/gtk-main-interface.c:909
+#: src/gtk-main-interface.c:940
 msgid "Searching..."
 msgstr "検索中... "
 
-#: src/gtk-main-interface.c:912
+#: src/gtk-main-interface.c:943
 #, c-format
 msgid "Searching... %d result"
 msgid_plural "Searching... %d results"
 msgstr[0] "検索中... %dつの候補"
 
-#: src/gtk-main-interface.c:1190
+#: src/gtk-main-interface.c:1221
 msgid "_Cycle Up"
 msgstr "循環させる(_C)"
 
-#: src/gtk-main-interface.c:1196
+#: src/gtk-main-interface.c:1227
 msgid "Cycle _Down"
 msgstr "逆循環させる(_D)"
 
-#: src/gtk-main-interface.c:1206
+#: src/gtk-main-interface.c:1237
 #, c-format
 msgid "%d dictionary is being used."
 msgid_plural "%d dictionaries are being used."
 msgstr[0] "辞書は%dつ使われている。"
 
 #. TRANSLATORS: The argument is the dictionary long name
-#: src/gtk-main-interface.c:2250
+#: src/gtk-main-interface.c:2282
 #, c-format
 msgid "Nothing found in the %s!"
 msgstr "%sでマッチがなかった!"
 
-#: src/gtk-main-interface.c:2281
+#: src/gtk-main-interface.c:2313
 msgid "Search Other Dictionary: "
 msgstr "他の辞書で検索する: "
 
-#: src/gtk-main-interface.c:2343
+#: src/gtk-main-interface.c:2354
 msgid "Search Online: "
 msgstr "インターネットで検索する: "
 
-#: src/gtk-main-interface.c:2399
+#: src/gtk-main-interface.c:2407
 #, c-format
 msgid "gWaei Usage Tip #%d: "
 msgstr "gWaeiの利用チップ＃%d: "
 
-#: src/gtk-main-interface.c:2412
+#: src/gtk-main-interface.c:2420
 #, c-format
 msgid ""
 "Use the Unknown Character from the Insert menu or toolbar in place of "
@@ -668,22 +643,22 @@ msgid ""
 "and drawing the strokes in the correct direction is very important."
 msgstr ""
 
-#: src/gtk-main-interface.c:2419
+#: src/gtk-main-interface.c:2427
 msgid "Inputting Unknown Kanji"
 msgstr "未知な漢字の入力"
 
-#: src/gtk-main-interface.c:2436
+#: src/gtk-main-interface.c:2444
 msgid "Getting More Exact Matches"
 msgstr "もっと適当な候補を見出す"
 
-#: src/gtk-main-interface.c:2442
+#: src/gtk-main-interface.c:2450
 msgid ""
 "Use the Word-edge Mark and the Not-word-edge Mark from the insert menu to "
 "get more relevant results.  fish\\b will return results like fish and "
 "selfish , but not fisherman"
 msgstr ""
 
-#: src/gtk-main-interface.c:2450
+#: src/gtk-main-interface.c:2458
 #, c-format
 msgid ""
 "Use the And Character or Or Character to search for results that contain a "
@@ -692,15 +667,15 @@ msgid ""
 "does."
 msgstr ""
 
-#: src/gtk-main-interface.c:2456
+#: src/gtk-main-interface.c:2464
 msgid "Searching for Multiple Words"
 msgstr "直接繋がっていない語句の検索仕方"
 
-#: src/gtk-main-interface.c:2473
+#: src/gtk-main-interface.c:2481
 msgid "Make a Vocabulary List"
 msgstr "語彙リストを作ろう"
 
-#: src/gtk-main-interface.c:2479
+#: src/gtk-main-interface.c:2487
 msgid ""
 "Specific sections of results can be printed or saved by dragging the mouse "
 "to highlight them.  Using this in combination with the Append command from "
@@ -708,11 +683,11 @@ msgid ""
 "possible."
 msgstr ""
 
-#: src/gtk-main-interface.c:2489
+#: src/gtk-main-interface.c:2497
 msgid "Why Use the Mouse?"
 msgstr "モウスを使う必要がない"
 
-#: src/gtk-main-interface.c:2495
+#: src/gtk-main-interface.c:2503
 msgid ""
 "Typing something will move the focus to the search input box.  Hitting the "
 "Up or Down arrow key will move the focus to the results pane so you can "
@@ -720,11 +695,11 @@ msgid ""
 "installed dictionaries."
 msgstr ""
 
-#: src/gtk-main-interface.c:2505
+#: src/gtk-main-interface.c:2513
 msgid "Get Ready for the JLPT"
 msgstr "他の漢字の探し方"
 
-#: src/gtk-main-interface.c:2511
+#: src/gtk-main-interface.c:2519
 msgid ""
 "The Kanji dictionary has some hidden features.  One such one is the ability "
 "to filter out Kanji that don't meet a certain criteria.  If you are planning "
@@ -736,22 +711,22 @@ msgid ""
 "Japanese person would study it at in school."
 msgstr ""
 
-#: src/gtk-main-interface.c:2525
+#: src/gtk-main-interface.c:2533
 msgid "Just drag words in!"
 msgstr "ドラッグだけでいい！"
 
-#: src/gtk-main-interface.c:2531
+#: src/gtk-main-interface.c:2539
 msgid ""
 "If you drag and drop a highlighted word into gWaei's search result box, "
 "gWaei will automatically start a search using that text.  This can be a nice "
 "way to quickly look up words while browsing webpages. "
 msgstr ""
 
-#: src/gtk-main-interface.c:2542
+#: src/gtk-main-interface.c:2550
 msgid "What does (adj-i) mean?"
 msgstr "「(adj-i)」などはどうゆう意味だろう"
 
-#: src/gtk-main-interface.c:2548
+#: src/gtk-main-interface.c:2556
 msgid ""
 "It is part of the terminalogy used by the EDICT group of dictionaries to "
 "categorize words.  Some are obvious, but there are a number that there is no "
@@ -761,11 +736,11 @@ msgid ""
 "the Dictionary Terminology Glossary menuitem in the Help menu to get to it."
 msgstr ""
 
-#: src/gtk-main-interface.c:2560
+#: src/gtk-main-interface.c:2568
 msgid "Books are Heavy"
 msgstr ""
 
-#: src/gtk-main-interface.c:2566
+#: src/gtk-main-interface.c:2574
 msgid ""
 "Aways wear a construction helmet when working with books.  They are "
 "dangerous heavy objects that can at any point fall on and injure you.  "
@@ -773,21 +748,33 @@ msgid ""
 "Really."
 msgstr ""
 
-#: src/gtk-main-interface.c:2793
+#: src/gtk-main-interface.c:2803
+msgid "A_ppend Selected"
+msgstr "選択のを追加(_P)"
+
+#: src/gtk-main-interface.c:2805
+msgid "Save Selected _As"
+msgstr "選択のを別名で保存"
+
+#: src/gtk-main-interface.c:2807
+msgid "_Print Selected"
+msgstr "選択のを印刷"
+
+#: src/gtk-main-interface.c:2849
 msgid "- A dictionary program for Japanese-English translation."
 msgstr ""
 
-#: src/gtk-main-interface.c:3155 src/gtk-main-interface.c:3256
+#: src/gtk-main-interface.c:3219 src/gtk-main-interface.c:3318
 msgid "Pop"
 msgstr ""
 
-#: src/gtk-main-interface.c:3679
+#: src/gtk-main-interface.c:3693
 #, c-format
 msgid "Other Result %d"
 msgid_plural "Other Results %d"
 msgstr[0] "他の候補 %d"
 
-#: src/gtk-main-interface.c:3694
+#: src/gtk-main-interface.c:3708
 #, c-format
 msgid "Main Result %d"
 msgid_plural "Main Results %d"
@@ -809,25 +796,25 @@ msgstr ""
 "<b>本当の部首:</b> %s\n"
 "<b>部首の名:</b> %s"
 
-#: src/gtk-settings-callbacks.c:324
+#: src/gtk-settings-callbacks.c:155
 #: src/gtk-settings-interface-install-line.c:63
 msgid "Installed"
 msgstr "インストールされた"
 
-#: src/gtk-settings-callbacks.c:332 src/gtk-settings-callbacks.c:520
+#: src/gtk-settings-callbacks.c:163 src/gtk-settings-callbacks.c:349
 msgid "Installing..."
 msgstr "インストール中..."
 
-#: src/gtk-settings-callbacks.c:484
+#: src/gtk-settings-callbacks.c:313
 msgid "Cancelling..."
 msgstr "キャンセル中..."
 
-#: src/gtk-settings-callbacks.c:500
+#: src/gtk-settings-callbacks.c:329
 #: src/gtk-settings-interface-install-line.c:68
 msgid "Not Installed"
 msgstr "インストールされていない"
 
-#: src/gtk-settings-callbacks.c:693
+#: src/gtk-settings-callbacks.c:522
 msgid "Dictionary File Select"
 msgstr "辞書ファイルの選択"
 
@@ -852,72 +839,72 @@ msgstr "リセット"
 msgid "_Use the System Document Font (%s)"
 msgstr "システムのデフォルトフォントを使う (%s) (_U)"
 
-#: src/io.c:325
+#: src/io.c:326
 msgid "File copy error"
 msgstr ""
 
-#: src/io.c:554 src/io.c:590
+#: src/io.c:555 src/io.c:591
 msgid "gunzip error"
 msgstr "gunzipエラー"
 
 #. TRANSLATORS: The %s stands for a file path
-#: src/io.c:634
+#: src/io.c:635
 #, c-format
 msgid "Removing %s..."
 msgstr "%sを削除中..."
 
-#: src/io.c:636
+#: src/io.c:637
 msgid "Removing..."
 msgstr "削除中..."
 
 #. TRANSLATORS: The %s stands for an URL
-#: src/io.c:704
+#: src/io.c:705
 #, c-format
 msgid "Downloading %s..."
 msgstr "%sからダウンロード中..."
 
-#: src/io.c:722
+#: src/io.c:723
 msgid "Unable to create dictionary folder"
 msgstr "gWaeiの辞書フォルダーの作成できない(_O)"
 
-#: src/io.c:746
+#: src/io.c:747
 msgid "Decompressing..."
 msgstr "解凍中..."
 
-#: src/io.c:756
+#: src/io.c:757
 msgid "Unzip Error"
 msgstr "Unzipエラー"
 
-#: src/io.c:764
+#: src/io.c:765
 msgid "Converting encoding..."
 msgstr "エンコーディング切り替え中..."
 
-#: src/io.c:778
+#: src/io.c:779
 msgid "Postprocessing..."
 msgstr "ポストプロせスイング中..."
 
 #. TRANSLATORS: First part of the sentence : 'Searching for "${query}" in the ${dictionary} dictionary'
-#: src/ncurses-main-interface.c:97
+#: src/ncurses-main-interface.c:96
 msgid "Searching for \""
 msgstr "「"
 
 #. TRANSLATORS: Second part of the sentence : 'Searching for "${query}" in the ${dictionary} dictionary'
-#: src/ncurses-main-interface.c:102
+#: src/ncurses-main-interface.c:101
 msgid "\" in the "
 msgstr "」を"
 
 #. TRANSLATORS: Third and last part of the sentence : 'Searching for "${query}" in the ${dictionary} dictionary'
-#: src/ncurses-main-interface.c:107
+#: src/ncurses-main-interface.c:106
 msgid " dictionary..."
 msgstr "の辞書で検索中..."
 
-#: src/ncurses-main-interface.c:237 src/ncurses-main-interface.c:311
-#: src/ncurses-main-interface.c:420
+#: src/ncurses-main-interface.c:236 src/ncurses-main-interface.c:310
+#: src/ncurses-main-interface.c:419
 msgid "Search: "
 msgstr "検索: "
 
-#: src/ncurses-main-interface.c:238 src/ncurses-main-interface.c:342
-#: src/ncurses-main-interface.c:406
+#: src/ncurses-main-interface.c:237 src/ncurses-main-interface.c:341
+#: src/ncurses-main-interface.c:405
 msgid "Results: "
 msgstr "候補: "
 
@@ -1101,6 +1088,15 @@ msgstr "<b>手動の辞書管理</b>"
 #: src/gtk-builder-xml/settings.glade:866
 msgid "Advanced"
 msgstr "詳細"
+
+#~ msgid "Syncing %s dictionary"
+#~ msgstr "%sの辞書をシンク中"
+
+#~ msgid "File read failed"
+#~ msgstr "ファイル読み込み失敗"
+
+#~ msgid "Success"
+#~ msgstr "成功"
 
 #~ msgid ""
 #~ "gWaei (C) 2008-2010 Zachary Dovel\n"

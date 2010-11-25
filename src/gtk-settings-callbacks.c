@@ -96,8 +96,12 @@ static void *install_thread (gpointer data)
 
     //Weird hacksh code for the radicals dictionary
     char radicals_source[100];
-    gw_pref_get_string (radicals_source, GW_SCHEMA_DICTIONARY, GW_KEY_RADICALS_SOURCE, 100);
-    if (di->id == GW_DICT_ID_RADICALS) di->source_uri = radicals_source;
+    radicals_source[0] = '\0';
+    if (di->id == GW_DICT_ID_RADICALS)
+    {
+      gw_pref_get_string (radicals_source, GW_SCHEMA_DICTIONARY, GW_KEY_RADICALS_SOURCE, 100);
+      di->source_uri = radicals_source;
+    }
 
     if (di->status != GW_DICT_STATUS_NOT_INSTALLED) return FALSE;
 

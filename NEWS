@@ -1,2 +1,3 @@
-2010-10-08: gWaei 1.4.3
-  New version meant to be easier to compile with the new Fedora/Ubuntu versions coming out by updating the autoconf and gettext files.  There was a bit of makefile cleanup to use -I correctly for the gWaei header files instead of manually compiling them all.  Dictionary line count used for progress is now dynamically calculated during searches and stored in the preferences instead of on each startup.
+2010-11-25: gWaei 1.5.0
+  First version to truely allow compilation on Windows.  Fixed the search thread so it no longer runs in a timer, but truly another thread.  GConf has been dropped for GSettings.  The program compiles with the GTK_DEPRICATED_DISABLE flag on.  The kanjisidebar is now a tooltip.  There has been a bit of scaling back on the interface. Searches now update dynamically as you type.
+

@@ -43,7 +43,6 @@
 #include <gwaei/regex.h>
 #include <gwaei/utilities.h>
 #include <gwaei/dictionary-objects.h>
-#include <gwaei/preferences.h>
 
 
 char save_path[FILENAME_MAX] = { '\0' };
@@ -698,7 +697,7 @@ void gw_io_install_dictinfo (GwDictInfo *di,    int (*callback_function) (char*,
     if (di->source_uri != NULL)
       strncpy(uri, di->source_uri, 100);
     else
-      gw_pref_get_string (uri, GW_SCHEMA_DICTIONARY, di->gskey, 100);
+      gw_util_strncpy_default_from_key (uri, GW_SCHEMA_DICTIONARY, di->gskey, 100);
 
     if (long_messages == TRUE)
     {

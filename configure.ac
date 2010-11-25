@@ -1,4 +1,4 @@
-AC_INIT(gwaei, 1.5.0Dev)
+AC_INIT(gwaei, 1.5.0)
 AC_CONFIG_SRCDIR([src/main.c])
 AM_INIT_AUTOMAKE
 AM_CONFIG_HEADER(config.h)
@@ -80,7 +80,7 @@ yes) ncurses=true ;;
 no)  ncurses=false ;;
 *) AC_MSG_ERROR([bad value ${withval} for --without-ncurses]) ;;
 esac],[ncurses=true])
-AM_CONDITIONAL([WITH_NCURSES], [test x$ncurses = xtrue && test x$win32 = xfalse])
+AM_CONDITIONAL([WITH_NCURSES], [test x$ncurses = xtrue])
 
 AC_ARG_WITH([gnome],
 [  --without-gnome         turn off the gnome gui interface],
@@ -89,7 +89,7 @@ yes) gnome=true ;;
 no)  gnome=false ;;
 *) AC_MSG_ERROR([bad value ${withval} for --without-gnome]) ;;
 esac],[gnome=true])
-AM_CONDITIONAL([WITH_GNOME], [test x$gnome = xtrue && test x$win32 = xfalse])
+AM_CONDITIONAL([WITH_GNOME], [test x$gnome = xtrue || test x$win32 = xtrue])
 
 AC_ARG_WITH([libunique],
 [  --without-libunique         disable libunique],
@@ -119,23 +119,10 @@ PKG_CHECK_MODULES(BASE, glib-2.0           >= $GLIB_REQUIRED_VERSION
                         libcurl            >= $LIBCURL_REQUIRED_VERSION       )
 AC_SUBST(BASE_CFLAGS)
 AC_SUBST(BASE_LIBS)
+GNOME_DOC_INIT[,,,]
 
 
-if test $win32 = true; then
-  PKG_CHECK_MODULES(WIN32, gtk+-2.0           >= $GTK2_REQUIRED_VERSION
-                           glib-2.0           >= $GLIB_REQUIRED_VERSION
-                           gobject-2.0        >= $GLIB_REQUIRED_VERSION
-                           gio-2.0            >= $GIO_REQUIRED_VERSION
-                           gmodule-2.0        >= $GMODULE_EXPORT_REQUIRED_VERSION 
-                           gthread-2.0        >= $GTHREAD_REQUIRED_VERSION      
-                           libcurl            >= $LIBCURL_REQUIRED_VERSION
-                           gnome-doc-utils    >= $GDU_REQUIRED_VERSION           )
-  AC_SUBST(WIN32_CFLAGS)
-  AC_SUBST(WIN32_LIBS)
-  GNOME_DOC_INIT(,,[:])
-fi
-
-if test $gnome = true && test $win32 = false; then
+if test $gnome = true || test $win32 = true; then
   PKG_CHECK_MODULES(GNOME, gtk+-2.0           >= $GTK2_REQUIRED_VERSION
                            glib-2.0           >= $GLIB_REQUIRED_VERSION
                            gobject-2.0        >= $GLIB_REQUIRED_VERSION
@@ -150,19 +137,19 @@ if test $gnome = true && test $win32 = false; then
 fi
 
 
-if test $libunique = true && test $gnome = true && test $win32 = false; then
+if test $gnome = true && test $libunique = true && test $win32 = false; then
   PKG_CHECK_MODULES(LIBUNIQUE, unique-1.0  >= $LIBUNIQUE_REQUIRED_VERSION)
   AC_SUBST(LIBUNIQUE_CFLAGS)
   AC_SUBST(LIBUNIQUE_LIBS)
 fi
 
-if test $libsexy = true && test $gnome = true && test $win32 = false; then
+if test $gnome = true && test $libsexy = true && test $win32 = false; then
   PKG_CHECK_MODULES(LIBSEXY, libsexy  >= $LIBSEXY_REQUIRED_VERSION)
   AC_SUBST(LIBSEXY_CFLAGS)
   AC_SUBST(LIBSEXY_LIBS)
 fi
 
-if test $ncurses = true; then
+if test $ncurses = true && test $win32 = false; then
   NCURSES_LIBS=" -lncursesw "
   AC_SUBST(NCURSES_LIBS)
 fi
@@ -196,22 +183,22 @@ AC_OUTPUT
 
 
 echo ""
-if test $gnome = true && test x$win32 = xfalse; then
+if test $gnome = true || test $win32 = true; then
   echo -e "* Gnome is\tENABLED"
 else
   echo -e "* Gnome is\tDISABLED"
 fi
-if test $libunique = true && test $gnome = true && test x$win32 = xfalse; then
+if test $libunique = true && test $gnome = true && test $win32 = false; then
   echo -e "* Libunique is\tENABLED"
 else
   echo -e "* Libunique is\tDISABLED (Requires Gnome)"
 fi
-if test $libsexy = true && test $gnome = true && test x$win32 = xfalse; then
+if test $libsexy = true && test $gnome = true && test $win32 = false; then
   echo -e "* Libsexy is\tENABLED"
 else
   echo -e "* Libsexy is\tDISABLED (Requires Gnome)"
 fi
-if test $ncurses = true && test x$win32 = xfalse; then
+if test $ncurses = true && test $win32 = false; then
   echo -e "* Ncurses is\tENABLED"
 else
   echo -e "* Ncurses is\tDISABLED"
@@ -220,7 +207,7 @@ fi
 echo ""
 
 if test ${win32} = true; then
-  echo -e "* Win32 is\tENABLED (Only for developer use)"
+  echo -e "* Win32 is\tENABLED (Only for developer use.  Not compatibile with Libunique/Libsexy/Ncurses)"
 else
   echo -e "* Win32 is\tDISABLED (Only for developer use)"
 fi

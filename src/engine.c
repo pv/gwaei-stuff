@@ -49,9 +49,6 @@
 #include <gwaei/engine.h>
 #include <gwaei/utilities.h>
 
-#include <gtk/gtk.h>
-#include <gwaei/gtk-main-interface.h>
-
 
 //!
 //! @brief Gets a stored result in a search item and posts it to the output.

@@ -122,19 +122,16 @@ TABLE OF CONTENTS
 5.0 COMPILING ON WINDOWS:
 
   Work has been started to make gWaei compile and work on windows.  Currently,
-  only waei as of writing this works.  To compile, you will need the MingGW
-  environment, gtk win32 binary, libgnurx win32 binary, xslt win32 binary,
-  libxml win32 binary and curl source, gnome-doc-utils source.
-  
-  You will need to compile the curl dll with only ftp and http and file support
-  to simplify dependancies. There is info on it in the documentation.
-  
-  The xslt and libxml binaries are to simplify gnome-doc-utils installation.
+  only waei as of writing this works.  To compile, you will need the MingGW environment.
+  Most of the dependencies should be installed and setup for use of pkgconfig. Make
+  sure to update the paths in /usr/lib/pkgconfig before trying to compile gwaei.
+
+  Others like gnuregex will require manual placement to match with the makefile.
 
   If you can install these through some other method, go for it.  The actual
   setup and installation of gWaei will look like so:
 
-    ./configure --prefix /usr/local --enable-win32 --disable-schemas-install
+    PKG_CONFIG_PATH="/the/path/to/pkgconfig" ./configure --prefix /usr/local --enable-win32 -
     make
     make install
 
@@ -146,15 +143,7 @@ TABLE OF CONTENTS
 
 6.0 MESSAGE TO PACKAGERS
 
-  Libunique is a new dependancy for gWaei, so please make sure not to miss it.
-  If you still have it written that gWaei depends on libgnome and/or
-  libgnome-ui, please remove those lines.  They have been unneeded for a while.
-
-  I'm trying my best to make things easier for you guys.  Make sure to use the
-  --disable-schemas-install flag on configure to disable both the schemas install
-  call *and* the icon cache updating of the local install.  Otherwise, you will
-  likely get some kind of sandbox error.  You do not need to patch the icon cache
-  update line out. 
+  The requirements of gWaei have changed a bit from previous versions.  No more GConf anymore. This will likely make your life interesting with new sandbox issues.
 
 
 

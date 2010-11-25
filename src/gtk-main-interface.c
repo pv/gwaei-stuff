@@ -2838,8 +2838,10 @@ void initialize_gui_interface (int argc, char *argv[])
     gtk_init (&argc, &argv);
 
 #ifdef ENABLE_WIN32
-    gtk_rc_parse_string ("gtk-theme-name = \"wimp\"");
+/*
+    gtk_rc_parse_string ("gtk-theme-name = \"MS-Windows\"");
     gtk_rc_parse_string ("gtk-icon-theme-name = \"hicolor\"");
+    */
 #endif
 
     //Program flags setup

@@ -39,7 +39,6 @@
 #include <gwaei/utilities.h>
 #include <gwaei/dictionary-objects.h>
 #include <gwaei/search-objects.h>
-#include <gwaei/preferences.h>
 
 #include <gwaei/main.h>
 
@@ -90,7 +89,7 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary, const int 
     temp->queryline = gw_queryline_new ();
     temp->search_relevance_idle_timer = 0;
 
-    temp->show_less_relevant_results = gw_pref_get_boolean (GW_SCHEMA_BASE, GW_KEY_LESS_RELEVANT_SHOW, TRUE);
+    temp->show_less_relevant_results = TRUE;
 
     if (gw_main_verify_output_generic_functions () == FALSE)
     {

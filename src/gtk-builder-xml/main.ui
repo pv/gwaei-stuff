@@ -276,9 +276,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkSeparatorMenuItem" id="menuitem1">
-                        <property name="visible">True</property>
-                      </object>
+                      <object class="GtkSeparatorMenuItem" id="menuitem1"/>
                     </child>
                     <child>
                       <object class="GtkMenuItem" id="previous_tab_menuitem">
@@ -814,10 +812,10 @@
                         <property name="width_request">200</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="scrollable">True</property>
                         <property name="tab_border">0</property>
                         <property name="tab_hborder">4</property>
                         <property name="tab_vborder">0</property>
-                        <property name="scrollable">True</property>
                         <signal name="switch_page" handler="do_tab_switch"/>
                       </object>
                       <packing>
@@ -1028,6 +1026,7 @@
   </object>
   <object class="GtkToggleAction" id="view_less_relevant_results_toggle_action">
     <property name="label">Show _Less Relevant Results</property>
+    <property name="visible">False</property>
     <signal name="toggled" handler="do_less_relevant_results_toggle"/>
   </object>
   <object class="GtkAction" id="insert_kanjipad_action">

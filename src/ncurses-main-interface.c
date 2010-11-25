@@ -42,7 +42,6 @@
 #include <gwaei/dictionary-objects.h>
 #include <gwaei/search-objects.h>
 #include <gwaei/engine.h>
-#include <gwaei/preferences.h>
 #include <gwaei/utilities.h>
 
 #include <gwaei/main.h>
