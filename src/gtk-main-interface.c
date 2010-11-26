@@ -384,7 +384,7 @@ void force_gtk_builder_translation_for_gtk_actions_hack ()
 //    gtk_widget_add_accelerator (GTK_WIDGET (
 //    gtk_builder_get_object (builder, "word_edge_menuitem")),
 //    "activate", accel_group, GDK_b, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
-
+printf("BREAK1\n");
     GtkAccelGroup* accel_group;
     GtkWidget *menu;
     accel_group = GTK_ACCEL_GROUP (gtk_builder_get_object (builder, "main_accelgroup"));
@@ -396,13 +396,18 @@ void force_gtk_builder_translation_for_gtk_actions_hack ()
     GtkWidget *menuitem;
 
 
+printf("BREAK2\n");
     action = gtk_action_new ("new_tab_action", gettext("_New Tab"), NULL, NULL);
+printf("BREAK4\n");
     gtk_action_set_icon_name (action, "stock_new-tab"); 
     g_signal_connect( G_OBJECT (action), "activate", G_CALLBACK (do_new_tab), NULL);
+printf("BREAK5\n");
     gtk_action_set_accel_group (action, accel_group);
     gtk_action_group_add_action_with_accel (action_group, action, "<control>t");
+printf("BREAK6\n");
     menuitem = GTK_WIDGET (gtk_builder_get_object (builder, "new_tab_menuitem"));
     gtk_activatable_set_related_action (GTK_ACTIVATABLE (menuitem), action);
+printf("BREAK7\n");
 
     char *temp = gettext("Only for Non-Japanese Locals");
     char *temp1  = gettext("When Possible");
@@ -416,6 +421,7 @@ void force_gtk_builder_translation_for_gtk_actions_hack ()
     char *temp8 = gettext("Shortcut");
     char *temp9 = gettext("Dictionary");
     char *temp10 = gettext("_Annotate Strokes");
+printf("BREAK2\n");
 
 
     gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "close_menuitem")), "activate", accel_group, GDK_w, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
@@ -429,6 +435,7 @@ void force_gtk_builder_translation_for_gtk_actions_hack ()
     //Edit action
     action = GTK_ACTION (gtk_builder_get_object (builder, "file_edit_action"));
     gtk_action_set_tooltip (action, gettext("Edit the current vocabulary list"));
+printf("BREAK3\n");
 
     //Append action
     action = GTK_ACTION (gtk_builder_get_object (builder, "file_append_action"));
@@ -460,6 +467,7 @@ void force_gtk_builder_translation_for_gtk_actions_hack ()
     gtk_action_set_tooltip (action, gettext("Shrink the results text"));
     gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "zoom_out_menuitem")), "activate", accel_group, GDK_minus, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
     gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "zoom_out_menuitem")), "activate", accel_group, GDK_KP_Subtract, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+printf("BREAK4\n");
 
     //Normal size action
     action = GTK_ACTION (gtk_builder_get_object (builder, "view_zoom_100_action"));
@@ -472,14 +480,11 @@ void force_gtk_builder_translation_for_gtk_actions_hack ()
     action = GTK_ACTION (gtk_builder_get_object (builder, "view_toggle_toolbar_action"));
     gtk_action_set_label (action, gettext("Show _Toolbar"));
 
-    //Show less relevant results action
-    action = GTK_ACTION (gtk_builder_get_object (builder, "view_less_relevant_results_toggle_action"));
-    gtk_action_set_label (action, gettext("Show _Less Relevant Results"));
-
     //Using kanjipad action
     action = GTK_ACTION (gtk_builder_get_object (builder, "insert_kanjipad_action"));
     gtk_action_set_label (action, gettext("Using _Kanjipad"));
     gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "kanjipad_menuitem")), "activate", accel_group, GDK_k, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+printf("BREAK5\n");
 
     //Using radical search tool action
     action = GTK_ACTION (gtk_builder_get_object (builder, "insert_radicals_action"));
@@ -506,6 +511,7 @@ void force_gtk_builder_translation_for_gtk_actions_hack ()
     gtk_action_set_label (action, gettext("_Unknown Character"));
     gtk_action_set_short_label (action, gettext("_Unknown"));
     gtk_action_set_tooltip (action, gettext("Insert an unknown character"));
+printf("BREAK6\n");
 
     //Or action
     action = GTK_ACTION (gtk_builder_get_object (builder, "insert_or_action"));
@@ -528,6 +534,7 @@ void force_gtk_builder_translation_for_gtk_actions_hack ()
     gtk_action_set_short_label (action, gettext("Next"));
     gtk_action_set_tooltip (action, gettext("Go to the next search"));
     gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "forward_menuitem")), "activate", accel_group, GDK_Right, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
+printf("BREAK7\n");
 
     //Help
     action = GTK_ACTION (gtk_builder_get_object (builder, "help_program_action"));
@@ -558,6 +565,7 @@ void force_gtk_builder_translation_for_gtk_actions_hack ()
     //Search button
     widget = GTK_WIDGET (gtk_builder_get_object (builder, "search_entry_submit_button"));
     gtk_widget_set_tooltip_text (GTK_WIDGET (widget), gettext("Click to start search"));
+printf("BREAK8\n");
 }
 
 
@@ -1560,21 +1568,6 @@ void gw_ui_set_toolbar_show (gboolean request)
     g_signal_handlers_block_by_func (action, do_toolbar_toggle, NULL);
     gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), request);
     g_signal_handlers_unblock_by_func (action, do_toolbar_toggle, NULL);
-}
-
-
-//!
-//! @brief Sets the checkbox state of the less relevant show option checkbox
-//!
-//! @param request How to set the preference
-//!
-void gw_ui_set_less_relevant_show (gboolean request)
-{
-  GtkAction *action;
-  action = GTK_ACTION (gtk_builder_get_object(builder, "view_less_relevant_results_toggle_action"));
-  g_signal_handlers_block_by_func (action, do_less_relevant_results_toggle, NULL);
-  gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), request);
-  g_signal_handlers_unblock_by_func (action, do_less_relevant_results_toggle, NULL);
 }
 
 

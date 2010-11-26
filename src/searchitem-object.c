@@ -89,8 +89,6 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary, const int 
     temp->queryline = gw_queryline_new ();
     temp->search_relevance_idle_timer = 0;
 
-    temp->show_less_relevant_results = TRUE;
-
     if (gw_main_verify_output_generic_functions () == FALSE)
     {
       printf("ERROR: The interface hasn't set all the output functions. Please try a different interface.\n");

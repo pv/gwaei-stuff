@@ -74,7 +74,6 @@ struct _GwSearchItem {
     int target;                             //!< What gui element should be outputted to
     long current_line;                      //!< Current line in the dictionary file
     long previous_line;                     //!< Recorderd previous line for determining when to update the progresse
-    gboolean show_less_relevant_results;    //!< Saved search display format
     int search_relevance_idle_timer;        //!< Helps determine if something is added to the history or not
 
 

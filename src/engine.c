@@ -75,7 +75,7 @@ static void append_stored_result_to_output (GwSearchItem *item, GList **results)
     *results = g_list_delete_link(*results, *results);
       
     //Append to the buffer 
-    if (item->status != GW_SEARCH_CANCELING && (item->show_less_relevant_results || item->total_relevant_results == 0))
+    if (item->status != GW_SEARCH_CANCELING)
     {
       (*item->gw_searchitem_ui_append_results_to_output)(item);
     }
@@ -216,8 +216,7 @@ static void stream_results_thread (gpointer data)
 
 
     //Insert the less relevant title header if needed
-    if ( item->show_less_relevant_results    &&
-         (item->results_medium != NULL || item->results_low != NULL) && item->status != GW_SEARCH_CANCELING )
+    if ((item->results_medium != NULL || item->results_low != NULL) && item->status != GW_SEARCH_CANCELING )
     {
       (*item->gw_searchitem_ui_append_less_relevant_header_to_output)(item);
     }
@@ -259,11 +258,6 @@ static void stream_results_thread (gpointer data)
 void gw_search_get_results (GwSearchItem *item)
 {
     gw_util_force_japanese_locale();
-
-    //Misc preparations
-    if (item->target != GW_TARGET_CONSOLE &&
-        (item->dictionary->type == GW_DICT_TYPE_KANJI || item->dictionary->type == GW_DICT_TYPE_RADICALS))
-      item->show_less_relevant_results = TRUE;
 
     if (gw_searchitem_do_pre_search_prep (item) == FALSE)
     {

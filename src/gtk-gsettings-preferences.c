@@ -226,26 +226,6 @@ void do_font_magnification_pref_changed_action (GSettings *settings,
 //! @param entry The preference entry object
 //! @param data Usere data passed to the function
 //!
-void do_less_relevant_show_pref_changed_action (GSettings *settings,
-                                                gchar *key,
-                                                gpointer data       )
-{
-    g_signal_handlers_block_by_func (settings, do_less_relevant_show_pref_changed_action, NULL);
-    gboolean value = g_settings_get_boolean (settings, key);
-
-    gw_ui_set_less_relevant_show (value);
-    g_signal_handlers_unblock_by_func (settings, do_less_relevant_show_pref_changed_action, NULL);
-}
-
-
-//!
-//! @brief Callback action for when preference key changes
-//!
-//! @param client The preference client
-//! @param cnxn_id Unknown
-//! @param entry The preference entry object
-//! @param data Usere data passed to the function
-//!
 void do_roman_kana_conv_pref_changed_action (GSettings *settings,
                                              gchar *key,
                                              gpointer data       )
@@ -364,7 +344,6 @@ void gw_prefs_initialize_preferences()
   gw_prefs_add_change_listener (GW_SCHEMA_FONT, GW_KEY_FONT_MAGNIFICATION, do_font_magnification_pref_changed_action, NULL);
 
   gw_prefs_add_change_listener (GW_SCHEMA_BASE, GW_KEY_TOOLBAR_SHOW, do_toolbar_show_pref_changed_action, NULL);
-  gw_prefs_add_change_listener (GW_SCHEMA_BASE, GW_KEY_LESS_RELEVANT_SHOW, do_less_relevant_show_pref_changed_action, NULL);
   gw_prefs_add_change_listener (GW_SCHEMA_BASE, GW_KEY_ROMAN_KANA, do_roman_kana_conv_pref_changed_action, NULL);
   gw_prefs_add_change_listener (GW_SCHEMA_BASE, GW_KEY_HIRA_KATA, do_hira_kata_conv_pref_changed_action, NULL);
   gw_prefs_add_change_listener (GW_SCHEMA_BASE, GW_KEY_KATA_HIRA, do_kata_hira_conv_pref_changed_action, NULL);

@@ -52,7 +52,6 @@ static char query_text[MAX_QUERY];
 static GMainLoop *main_loop = NULL;
 
 static gboolean ncurses_switch = FALSE;
-static gboolean exact_switch = FALSE;
 static gboolean quiet_switch = FALSE;
 static gboolean list_switch = FALSE;
 static gboolean version_switch = FALSE;
@@ -376,8 +375,6 @@ static gboolean main_loop_function (gpointer data)
         return TRUE;
       }
 
-      item->show_less_relevant_results = !exact_switch;
-
 /*
       WINDOW* subWin;
       subWin = subwin(results, (maxY - 10), (maxX - 10), 2, 2);
@@ -418,8 +415,6 @@ static gboolean main_loop_function (gpointer data)
       wclear(search);
       ncurses_add_intro_and_box(search,gettext("Search: "));
 
-      if (exact_switch == TRUE)
-        wprintw(search, " EXACT ");
       if (quiet_switch == TRUE)
         wprintw(search, " QUIET ");
 
@@ -456,7 +451,6 @@ void initialize_ncurses_interface (int argc, char *argv[])
     GOptionEntry entries[] = 
     {
       { "ncurses", 'n', 0, G_OPTION_ARG_NONE, &ncurses_switch, gettext("Open up the multisearch window (beta)"), NULL },
-      { "exact", 'e', 0, G_OPTION_ARG_NONE, &exact_switch, gettext("Do not display less relevant results"), NULL },
       { "quiet", 'q', 0, G_OPTION_ARG_NONE, &quiet_switch, gettext("Display less information"), NULL },
       { "dictionary", 'd', 0, G_OPTION_ARG_STRING, &dictionary_switch_data, gettext("Search using a chosen dictionary"), NULL },
       { NULL }

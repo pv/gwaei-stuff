@@ -1360,10 +1360,6 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
     gw_ui_strncpy_text_from_widget_by_target (query, GW_TARGET_ENTRY, MAX_QUERY);
 
     gw_guarantee_first_tab ();
-/*
-    if (start_search_in_new_window == TRUE)
-      do_new_tab (NULL, NULL);
-*/
 
     GwHistoryList* hl = gw_historylist_get_list (GW_HISTORYLIST_RESULTS);
 
@@ -1373,8 +1369,6 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
 
     GList *list = gw_dictlist_get_selected ();
     GwDictInfo *dictionary = list->data;
-
-    gboolean show_less_relevant = gw_pref_get_boolean (GW_SCHEMA_BASE, GW_KEY_LESS_RELEVANT_SHOW, TRUE);
 
     //Stop empty searches
     if (strlen (query) == 0)
@@ -1392,8 +1386,7 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
     if (item != NULL &&
         item->queryline != NULL &&
         strcmp (query, item->queryline->string) == 0 &&
-        dictionary->id == item->dictionary->id &&
-        show_less_relevant == item->show_less_relevant_results)
+        dictionary->id == item->dictionary->id)
     {
       if ((hl->current) != NULL && (hl->current)->search_relevance_idle_timer < 50)
         (hl->current)->search_relevance_idle_timer++;
