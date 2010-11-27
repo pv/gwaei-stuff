@@ -6,12 +6,6 @@
       <description>Determines if the toolbar is hidden or not.</description>
     </key>
 
-    <key name="less-relevant-results-show" type="b">
-      <default>true</default>
-      <summary>Toolbar show status</summary>
-      <description>Determines if the toolbar is hidden or not.</description>
-    </key>
-
     <key name="query-katakana-to-hiragana" type="b">
       <default>true</default>
       <summary>Convert Katakana queries to Hiragana</summary>
