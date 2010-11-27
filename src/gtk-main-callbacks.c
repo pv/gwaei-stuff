@@ -1357,6 +1357,7 @@ G_MODULE_EXPORT gboolean do_focus_change_on_key_press (GtkWidget *widget,
 G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
 {
     gchar query[MAX_QUERY];
+    query[0] = '\0';
     gw_ui_strncpy_text_from_widget_by_target (query, GW_TARGET_ENTRY, MAX_QUERY);
 
     gw_guarantee_first_tab ();
@@ -1385,6 +1386,7 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
     //Stop duplicate searches
     if (item != NULL &&
         item->queryline != NULL &&
+        item->queryline->string != NULL &&
         strcmp (query, item->queryline->string) == 0 &&
         dictionary->id == item->dictionary->id)
     {

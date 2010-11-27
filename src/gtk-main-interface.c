@@ -2937,13 +2937,17 @@ gboolean gw_ui_cancel_search_by_searchitem (GwSearchItem *item)
 {
     if (item == NULL || item->status == GW_SEARCH_IDLE) return TRUE;
 
+    if(item->status == GW_SEARCH_CANCELING) return FALSE;
+
     item->status = GW_SEARCH_CANCELING;
+
     if (item->thread != NULL)
     {
       g_thread_join(item->thread);
       item->thread = NULL;
     }
-    return FALSE;
+    item->status== GW_SEARCH_IDLE;
+    return TRUE;
 }
 
 

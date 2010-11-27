@@ -1069,6 +1069,8 @@ gchar* gw_util_prepare_query(char* text, gboolean strip)
 	// (ex: from the anki tool, it has some trailing unicode control char).
 	char* sane_text = gw_util_sanitize_input (text, strip);
 
+/*
+  THIS CODE CAUSES CRASHES WHEN TEXT IS QUICKLY ENTERED PLZ FIX
 	if(gw_util_contains_halfwidth_japanese(sane_text) == TRUE)
 	{
 		char* enlarged_text = gw_util_enlarge_halfwidth_japanese(text);
@@ -1076,6 +1078,7 @@ gchar* gw_util_prepare_query(char* text, gboolean strip)
 		sane_text = enlarged_text;
 		enlarged_text = NULL;
 	}
+  */
 
 	return sane_text;
 }
@@ -1093,7 +1096,7 @@ gchar* gw_util_prepare_query(char* text, gboolean strip)
 //! @return a newly allocated sanitized utf8 encoded string or NULL if text was too.
 //!         If the result is non-NULL it must be freed with g_free(). 
 //!
-gchar* gw_util_sanitize_input(char *text, gboolean strip)
+gchar* gw_util_sanitize_input (char *text, gboolean strip)
 {
   if(text == NULL)
     return NULL;
