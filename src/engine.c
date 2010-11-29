@@ -261,7 +261,7 @@ static void stream_results_thread (gpointer data)
 //!
 //! @param item a GwSearchItem argument.
 //!
-void gw_search_get_results (GwSearchItem *item)
+void gw_search_get_results (GwSearchItem *item, gboolean create_thread)
 {
     gw_util_force_japanese_locale();
 
@@ -274,18 +274,18 @@ void gw_search_get_results (GwSearchItem *item)
     (*item->gw_searchitem_ui_pre_search_prep) (item);
 
     //Start the search
-    if (gw_util_get_runmode () == GW_CONSOLE_RUNMODE || gw_util_get_runmode () == GW_NCURSES_RUNMODE)
-    {
-      stream_results_thread((gpointer) item);
-    }
-    else
+    if (create_thread)
     {
       item->thread = g_thread_create ((GThreadFunc)stream_results_thread, (gpointer) item, TRUE, NULL);
       if (item->thread == NULL)
       {
-        g_warning("couldn't create the thread");
-        exit(EXIT_FAILURE);
+        g_warning("Couldn't create the thread");
+        stream_results_thread ((gpointer) item);
       }
+    }
+    else
+    {
+      stream_results_thread ((gpointer) item);
     }
 }
 

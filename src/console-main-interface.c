@@ -482,7 +482,7 @@ void initialize_console_interface (int argc, char **argv)
     }
 
     //Print the number of results
-    gw_search_get_results (item);
+    gw_search_get_results (item, FALSE);
 
     //Final header
     if (quiet_switch == FALSE)

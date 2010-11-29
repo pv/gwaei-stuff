@@ -140,7 +140,7 @@ G_MODULE_EXPORT void do_radical_search (GtkWidget *widget, gpointer data)
     gw_tab_set_searchitem_by_page_num (hl->current, page_num);
 
     //Start the search
-    gw_search_get_results (hl->current);
+    gw_search_get_results (hl->current, TRUE);
 
     //Cleanup
     if (query_text != NULL)

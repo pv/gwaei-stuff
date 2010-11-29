@@ -390,7 +390,7 @@ static gboolean main_loop_function (gpointer data)
       refresh();
 */
 
-      gw_search_get_results (item); //TODO: Print here?? <---
+      gw_search_get_results (item, FALSE); //TODO: Print here?? <---
 
       //Print the number of results
       if (quiet_switch == FALSE)

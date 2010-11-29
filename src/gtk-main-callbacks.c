@@ -264,7 +264,7 @@ G_MODULE_EXPORT gboolean do_get_iter_for_button_release (GtkWidget      *widget,
           }
 
           tooltip_item = gw_searchitem_new (query, di, GW_TARGET_KANJI);
-          gw_search_get_results (tooltip_item);
+          gw_search_get_results (tooltip_item, TRUE);
 
           gtk_window_move (GTK_WINDOW (window), (event->x_root + 3), (event->y_root + 3));
           g_thread_join (tooltip_item->thread); 
@@ -456,7 +456,7 @@ G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
     int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
     gw_tab_set_searchitem_by_page_num (hl->current, page_num);
 
-    gw_search_get_results (hl->current);
+    gw_search_get_results (hl->current, TRUE);
     gw_ui_update_history_popups ();
     gw_ui_update_toolbar_buttons ();
 
@@ -1446,7 +1446,7 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
     gw_ui_set_query_entry_text_by_searchitem (hl->current);
 
     //Start the search
-    gw_search_get_results (hl->current);
+    gw_search_get_results (hl->current, TRUE);
 
     //Update the toolbar buttons
     gw_ui_update_toolbar_buttons ();

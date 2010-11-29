@@ -2995,7 +2995,6 @@ gboolean gw_ui_cancel_search_by_tab_content (gpointer container)
     if (item == NULL) return TRUE;
 
     gboolean result = gw_ui_cancel_search_by_searchitem (item);
-    printf("CANCEL SEARCH BY TAB CONTENT %d\n", result);
     return result;
 }
 
@@ -3028,7 +3027,6 @@ gboolean gw_ui_cancel_search_by_tab_number (const int page_num)
     if (content == NULL) return TRUE;
 
     gboolean result = gw_ui_cancel_search_by_tab_content (content);
-    printf("CANCEL SEARCH BY TAB NUMBER %d\n", result);
     return result;
 }
 
@@ -3041,7 +3039,6 @@ gboolean gw_ui_cancel_search_for_current_tab ()
     GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
     int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
     gboolean result = gw_ui_cancel_search_by_tab_number (page_num);
-    printf("CANCEL SEARCH FOR CURRENT TAB %d\n", result);
     return result;
 }
 
