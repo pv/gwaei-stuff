@@ -65,6 +65,7 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary, const int 
     temp->results_medium = NULL;
     temp->results_low = NULL;
     temp->thread = NULL;
+    temp->mutex = g_mutex_new ();
     
     if (TARGET != GW_TARGET_RESULTS &&
         TARGET != GW_TARGET_KANJI   &&
@@ -87,7 +88,7 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary, const int 
     temp->backup_resultline = NULL;
     temp->swap_resultline = NULL;
     temp->queryline = gw_queryline_new ();
-    temp->search_relevance_idle_timer = 0;
+    temp->history_relevance_idle_timer = 0;
 
     if (gw_main_verify_output_generic_functions () == FALSE)
     {
@@ -163,11 +164,11 @@ gboolean gw_searchitem_do_pre_search_prep (GwSearchItem* item)
 
     //Reset internal variables
     item->current_line = 0;
-    item->previous_line = 0;
+    item->progress_feedback_line = 0;
     item->total_relevant_results = 0;
     item->total_irrelevant_results = 0;
     item->total_results = 0;
-    item->previous_total_results = 0;
+    item->thread = NULL;
 
     if (item->fd == NULL)
       item->fd = fopen ((item->dictionary)->path, "r");
@@ -186,8 +187,6 @@ gboolean gw_searchitem_do_pre_search_prep (GwSearchItem* item)
 //!
 void gw_searchitem_do_post_search_clean (GwSearchItem* item)
 {
-    item->thread = NULL;
-
     if (item->fd != NULL)
     {
       fclose(item->fd);
@@ -210,6 +209,7 @@ void gw_searchitem_do_post_search_clean (GwSearchItem* item)
       item->backup_resultline = NULL;
     }
 
+    //item->thread = NULL;  This code creates multithreading problems
     item->status = GW_SEARCH_IDLE;
 }
 
@@ -229,6 +229,8 @@ void gw_searchitem_free (GwSearchItem* item)
     item->status = GW_SEARCH_CANCELING;
     g_thread_join(item->thread);
     item->thread = NULL;
+    g_mutex_free (item->mutex);
+    item->mutex = NULL;
   }
   gw_searchitem_do_post_search_clean (item);
   free (item->queryline);

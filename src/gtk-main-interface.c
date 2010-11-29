@@ -96,18 +96,20 @@ gboolean gw_ui_update_progress_feedback (gpointer data)
     int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
     GwSearchItem *item = g_list_nth_data (gw_tab_get_searchitem_list (), page_num);
 
-    if (item == NULL)
+    if (item != NULL) 
     {
+      g_mutex_lock (item->mutex);
+        if (item != progress_feedback_item || item->current_line != item->progress_feedback_line)
+        {
+          progress_feedback_item = item;
+          item->progress_feedback_line = item->current_line;
+          gw_ui_set_search_progressbar_by_searchitem (item);
+          gw_ui_set_total_results_label_by_searchitem (item);
+          gw_ui_set_main_window_title_by_searchitem (item);
+        }
+      g_mutex_unlock (item->mutex);
     }
-    else if  (item != progress_feedback_item || item->current_line != item->previous_line)
-    {
-      progress_feedback_item = item;
-      item->previous_line = item->current_line;
-      gw_ui_set_search_progressbar_by_searchitem (item);
-      item->previous_total_results = item->total_relevant_results;
-      gw_ui_set_total_results_label_by_searchitem (item);
-      gw_ui_set_main_window_title_by_searchitem (item);
-    }
+
    return TRUE;
 }
 
@@ -1242,6 +1244,7 @@ int rebuild_combobox_dictionary_list ()
 //!
 void gw_ui_set_search_progressbar_by_searchitem (GwSearchItem *item)
 {
+  /*
     GtkWidget *progress = GTK_WIDGET (gtk_builder_get_object(builder, "search_progressbar"));
     long current = 0;
     long total = 0;
@@ -1267,6 +1270,7 @@ void gw_ui_set_search_progressbar_by_searchitem (GwSearchItem *item)
       gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR (progress), ((double)current/(double)total));
       gtk_widget_show (GTK_WIDGET (progress));
     }
+    */
 }
 
 
@@ -2899,6 +2903,8 @@ void initialize_gui_interface (int argc, char *argv[])
         gtk_entry_set_text (GTK_ENTRY (search_entry), query_text_data);
         do_search (NULL, NULL);
       }
+
+
       //Enter the main loop
       gdk_threads_enter();
 
@@ -2906,7 +2912,7 @@ void initialize_gui_interface (int argc, char *argv[])
 
       //Add timers
       g_timeout_add_full (G_PRIORITY_LOW, 100, (GSourceFunc)gw_ui_keep_searching, NULL, NULL);
-      g_timeout_add_full (G_PRIORITY_LOW, 300, (GSourceFunc) gw_ui_update_progress_feedback, NULL, NULL);
+      g_timeout_add_full (G_PRIORITY_LOW, 100, (GSourceFunc) gw_ui_update_progress_feedback, NULL, NULL);
       g_timeout_add_full (G_PRIORITY_LOW, 1000, (GSourceFunc) _update_icons_for_selection, NULL, NULL);
 
       gtk_main ();
@@ -2935,19 +2941,41 @@ void initialize_gui_interface (int argc, char *argv[])
 //!
 gboolean gw_ui_cancel_search_by_searchitem (GwSearchItem *item)
 {
-    if (item == NULL || item->status == GW_SEARCH_IDLE) return TRUE;
+    if (item == NULL) return TRUE;
+    
+    g_mutex_lock (item->mutex);
 
-    if(item->status == GW_SEARCH_CANCELING) return FALSE;
+      //Sanity check 1
+      if (item->status == GW_SEARCH_IDLE) 
+      {
+        g_mutex_unlock (item->mutex);
+        return TRUE;
+      }
 
-    item->status = GW_SEARCH_CANCELING;
+      //Sanity check 2
+      if(item != NULL && item->status == GW_SEARCH_CANCELING) 
+      {
+        g_mutex_unlock (item->mutex);
+        return FALSE;
+      }
 
-    if (item->thread != NULL)
-    {
-      g_thread_join(item->thread);
-      item->thread = NULL;
-    }
-    item->status== GW_SEARCH_IDLE;
-    return TRUE;
+      //Sanity check 3
+      if (item->thread == NULL)
+      {
+        item->status = GW_SEARCH_IDLE;
+        g_mutex_unlock (item->mutex);
+        return FALSE;
+      }
+
+      //Do the cancel operation
+      item->status = GW_SEARCH_CANCELING;
+
+    g_mutex_unlock (item->mutex);
+
+    g_thread_join(item->thread);
+    item->thread = NULL;
+
+    return FALSE;
 }
 
 
@@ -2960,20 +2988,15 @@ gboolean gw_ui_cancel_search_by_tab_content (gpointer container)
 {
     GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
     int position = gtk_notebook_page_num (GTK_NOTEBOOK (notebook), container);
-    if (position != -1)
-    {
-      GList *list = gw_tab_get_searchitem_list ();
-      GwSearchItem *item = g_list_nth_data (list, position);
-      if (item == NULL)
-      {
-        return TRUE;
-      }
-      else
-      {
-        return  gw_ui_cancel_search_by_searchitem (item);
-      }
-    }
-    return FALSE;
+    if (position == -1) return FALSE;
+
+    GList *list = gw_tab_get_searchitem_list ();
+    GwSearchItem *item = g_list_nth_data (list, position);
+    if (item == NULL) return TRUE;
+
+    gboolean result = gw_ui_cancel_search_by_searchitem (item);
+    printf("CANCEL SEARCH BY TAB CONTENT %d\n", result);
+    return result;
 }
 
 
@@ -3002,12 +3025,11 @@ gboolean gw_ui_cancel_search_by_tab_number (const int page_num)
 {
     GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
     GtkWidget *content = gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), page_num);
-    if (content != NULL)
-      return gw_ui_cancel_search_by_tab_content (content);
-    else
-    {
-      return TRUE;
-    }
+    if (content == NULL) return TRUE;
+
+    gboolean result = gw_ui_cancel_search_by_tab_content (content);
+    printf("CANCEL SEARCH BY TAB NUMBER %d\n", result);
+    return result;
 }
 
 
@@ -3018,7 +3040,9 @@ gboolean gw_ui_cancel_search_for_current_tab ()
 {
     GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
     int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
-    gw_ui_cancel_search_by_tab_number (page_num);
+    gboolean result = gw_ui_cancel_search_by_tab_number (page_num);
+    printf("CANCEL SEARCH FOR CURRENT TAB %d\n", result);
+    return result;
 }
 
 

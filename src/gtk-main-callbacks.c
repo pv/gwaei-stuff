@@ -430,7 +430,10 @@ G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
 
     //Checks to make sure everything is sane
     if (gw_ui_cancel_search_for_current_tab () == FALSE)
+    {
+      printf("CANCEL SEARCH FOR CURRENT TAB RETURNED FALSE\n");
       return;
+    }
     if (item->dictionary->status != GW_DICT_STATUS_INSTALLED) return;
 
     //Start setting things up;
@@ -1372,9 +1375,9 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
     GwDictInfo *dictionary = list->data;
 
     //Stop empty searches
-    if (strlen (query) == 0)
-      return;
+    if (strlen (query) == 0) return;
 
+/*
     // Run some checks and transformation on a user inputed string before using it
     char* sane_query = gw_util_prepare_query (query, FALSE);
     if (sane_query != NULL) {
@@ -1382,23 +1385,37 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
     	g_free(sane_query);
     	sane_query = NULL;
     }
+    */
 
-    //Stop duplicate searches
-    if (item != NULL &&
-        item->queryline != NULL &&
-        item->queryline->string != NULL &&
-        strcmp (query, item->queryline->string) == 0 &&
-        dictionary->id == item->dictionary->id)
+    strlen(item->queryline->string);
+    strlen(query);
+
+    if (item != NULL)
     {
-      if ((hl->current) != NULL && (hl->current)->search_relevance_idle_timer < 50)
-        (hl->current)->search_relevance_idle_timer++;
-      return;
+      g_mutex_lock (item->mutex);
+
+        //Stop duplicate searches
+        if (item != NULL &&
+            item->queryline != NULL &&
+            item->queryline->string != NULL &&
+            strcmp (query, item->queryline->string) == 0 &&
+            dictionary->id == item->dictionary->id)
+        {
+          if ((hl->current) != NULL && (hl->current)->history_relevance_idle_timer < 50)
+            (hl->current)->history_relevance_idle_timer++;
+          g_mutex_unlock (item->mutex);
+          return;
+        }
+
+      g_mutex_unlock (item->mutex);
     }
 
-    if (gw_ui_cancel_search_for_current_tab () == FALSE)
-      return;
+    //Cancel previous searches
+    if (gw_ui_cancel_search_by_searchitem (item) == FALSE) return;
 
-    if (hl->current != NULL && (hl->current)->total_results && (hl->current)->search_relevance_idle_timer > 30)  
+    //Move the searchitem to the history or destroy it
+    if (hl->current != NULL && (hl->current)->total_results &&
+        (hl->current)->history_relevance_idle_timer > GW_HISTORY_TIME_TO_RELEVANCE)  
     {
       gw_historylist_add_searchitem_to_history (GW_HISTORYLIST_RESULTS, hl->current);
       hl->current = NULL;
@@ -1406,27 +1423,29 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
     }
     else if (hl->current != NULL)
     {
-      gw_ui_cancel_search_by_searchitem (item);
       gw_searchitem_free (hl->current);
       hl->current = NULL;
     }
 
-    //in add_to_history() rather than here
+    //cerate the new searchitem
     hl->current = gw_searchitem_new (query, dictionary, GW_TARGET_RESULTS);
+
+    //Warning message.  It will most likely fail because of a mal-formed query
     if (hl->current == NULL)
     {
-      g_warning ("There was an error creating the searchitem variable.  I will cancel this search.  Please eat some cheese.\n");
+      g_warning ("There was a problem creating your search query.  This warning code should be used more intelligently later....\n");
       return;
     }
 
     //Add tab reference to searchitem
     gw_tab_set_searchitem_by_page_num (hl->current, page_num);
 
-    //Start the search
-    //Set tab text
+    //Update the interface
     gw_guarantee_first_tab ();
     gw_tab_set_current_tab_text (query);
     gw_ui_set_query_entry_text_by_searchitem (hl->current);
+
+    //Start the search
     gw_search_get_results (hl->current);
 
     //Update the toolbar buttons

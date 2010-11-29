@@ -119,13 +119,18 @@ static void stream_results_thread (gpointer data)
     GwSearchItem *item = (GwSearchItem*) data;
     if (item == NULL || item->fd == NULL) return;
     char *line_pointer = NULL;
-    int chunk = 0;
+
+    g_mutex_lock (item->mutex);
 
     //We loop, processing lines of the file until the max chunk size has been
     //reached or we reach the end of the file or a cancel request is recieved.
     while ((line_pointer = fgets(item->resultline->string, MAX_LINE, item->fd)) != NULL &&
            item->status != GW_SEARCH_CANCELING)
     {
+      //Give a chance for something else to run
+      g_mutex_unlock (item->mutex);
+      g_mutex_lock (item->mutex);
+
       item->current_line++;
 
       //Commented input in the dictionary...we should skip over it
@@ -211,14 +216,13 @@ static void stream_results_thread (gpointer data)
 
 
     //Make sure the more relevant header banner is visible
-    if (item->target != GW_TARGET_KANJI && item->status != GW_SEARCH_CANCELING && item->total_results > 0)
-      (*item->gw_searchitem_ui_append_more_relevant_header_to_output)(item);
-
-
-    //Insert the less relevant title header if needed
-    if ((item->results_medium != NULL || item->results_low != NULL) && item->status != GW_SEARCH_CANCELING )
+    if (item->status != GW_SEARCH_CANCELING)
     {
-      (*item->gw_searchitem_ui_append_less_relevant_header_to_output)(item);
+      if (item->target != GW_TARGET_KANJI && item->total_results > 0)
+        (*item->gw_searchitem_ui_append_more_relevant_header_to_output)(item);
+
+      if (item->results_medium != NULL || item->results_low != NULL)
+        (*item->gw_searchitem_ui_append_less_relevant_header_to_output)(item);
     }
 
 
@@ -243,6 +247,8 @@ static void stream_results_thread (gpointer data)
     //Cleanup
     (*item->gw_searchitem_ui_after_search_cleanup)(item);
     gw_searchitem_do_post_search_clean (item);
+
+    g_mutex_unlock (item->mutex);
 }
 
 
@@ -274,7 +280,7 @@ void gw_search_get_results (GwSearchItem *item)
     }
     else
     {
-      item->thread = g_thread_create((GThreadFunc)stream_results_thread, (gpointer) item, TRUE, NULL);
+      item->thread = g_thread_create ((GThreadFunc)stream_results_thread, (gpointer) item, TRUE, NULL);
       if (item->thread == NULL)
       {
         g_warning("couldn't create the thread");
