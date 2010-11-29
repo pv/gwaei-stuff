@@ -1377,7 +1377,6 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
     //Stop empty searches
     if (strlen (query) == 0) return;
 
-/*
     // Run some checks and transformation on a user inputed string before using it
     char* sane_query = gw_util_prepare_query (query, FALSE);
     if (sane_query != NULL) {
@@ -1385,10 +1384,10 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
     	g_free(sane_query);
     	sane_query = NULL;
     }
-    */
 
-    strlen(item->queryline->string);
-    strlen(query);
+    //Make sure the regex doesn't start or end with certain special symbols that cause the program to freeze
+    if (query[0] == '|' || query[0] == '&') return;
+    if (query[strlen(query) - 1] == '|' || query[strlen(query) - 1] == '&') return;
 
     if (item != NULL)
     {
