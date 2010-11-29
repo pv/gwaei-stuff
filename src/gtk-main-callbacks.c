@@ -1429,6 +1429,8 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
 
     //cerate the new searchitem
     hl->current = gw_searchitem_new (query, dictionary, GW_TARGET_RESULTS);
+    //Add tab reference to searchitem
+    gw_tab_set_searchitem_by_page_num (hl->current, page_num);
 
     //Warning message.  It will most likely fail because of a mal-formed query
     if (hl->current == NULL)
@@ -1436,9 +1438,6 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
       g_warning ("There was a problem creating your search query.  This warning code should be used more intelligently later....\n");
       return;
     }
-
-    //Add tab reference to searchitem
-    gw_tab_set_searchitem_by_page_num (hl->current, page_num);
 
     //Update the interface
     gw_guarantee_first_tab ();
