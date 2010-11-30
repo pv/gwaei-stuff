@@ -1069,7 +1069,7 @@ gchar* gw_util_prepare_query(char* text, gboolean strip)
 	// (ex: from the anki tool, it has some trailing unicode control char).
 	char* sane_text = gw_util_sanitize_input (text, strip);
 
-	if(gw_util_contains_halfwidth_japanese(sane_text) == TRUE)
+	if(gw_util_contains_halfwidth_japanese (sane_text) == TRUE)
 	{
 		char* enlarged_text = gw_util_enlarge_halfwidth_japanese (text);
 		g_free (sane_text);
