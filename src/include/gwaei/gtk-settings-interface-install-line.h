@@ -1,26 +1,29 @@
 #ifndef GW_GTK_SETTINGS_INTERFACE_INSTALL_LINE_INCLUDED
 #define GW_GTK_SETTINGS_INTERFACE_INSTALL_LINE_INCLUDED
 
-//Class
+//!
+//! @brief Primitive for storing gui/information for a dictionary 'install line'
+//! in the interface
+//!
 struct _GwUiDictInstallLine {
-    GtkWidget *status_icon;
-    GtkWidget *status_message;
-    GtkWidget *status_progressbar;
-    GtkWidget *status_hbox;
-    GtkWidget *message_hbox;
+    GtkWidget *status_icon;          //!< pointer to the static icon widget
+    GtkWidget *status_message;       //!< pointer to the status message widget
+    GtkWidget *status_progressbar;   //!< pointer to the progressbar widget
+    GtkWidget *status_hbox;          //!< pointer to the status hbox widget
+    GtkWidget *message_hbox;         //!< pointer to the message hbox widget
 
-    GtkWidget *action_button;
-    GtkWidget *action_button_hbox;
+    GtkWidget *action_button;        //!< pointer to the action button widget
+    GtkWidget *action_button_hbox;   //!< poiner to the action button hbox
 
-    GtkWidget *source_uri_entry;
-    GtkWidget *source_browse_button;
-    GtkWidget *source_reset_button;
-    GtkWidget *source_hbox;
+    GtkWidget *source_uri_entry;     //!< pointer to the source uri entry widget
+    GtkWidget *source_browse_button; //!< pointer to the source browse button
+    GtkWidget *source_reset_button;  //!< pointer to the source reset button
+    GtkWidget *source_hbox;          //!< pointer to the source hbox
 
-    GtkWidget *advanced_expander;
-    GtkWidget *advanced_hbox;
+    GtkWidget *advanced_expander;    //!< pointer to the advanced expander widget
+    GtkWidget *advanced_hbox;        //!< pointer to the advanced hbox widget
 
-    GwDictInfo *di;
+    GwDictInfo *di;                  //!< pointer to the dictinfo object
 };
 typedef struct _GwUiDictInstallLine GwUiDictInstallLine;
 

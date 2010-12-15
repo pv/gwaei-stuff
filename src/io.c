@@ -208,14 +208,9 @@ static size_t libcurl_read_func (void *ptr, size_t size, size_t nmemb, FILE *str
 //!
 //! \brief Private struct made to be used with gw_io_download_file
 //!
-//! @param ptr TBA
-//! @param size TBA
-//! @param nmemb TBA
-//! @param stream TBA
-//!
 typedef struct libcurl_callback_func_with_data {
-    int (*callback_function) (char*, int, gpointer);
-    gpointer data;
+    int (*callback_function) (char*, int, gpointer); //!< function pointer
+    gpointer data;                                   //!< gpointer data
 } libcurl_callback_func_with_data; 
 
 

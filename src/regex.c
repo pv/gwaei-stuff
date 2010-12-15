@@ -232,7 +232,7 @@ char* gw_regex_locate_offset (char *string, char *line_start, regex_t *re_locate
 //! of a returned result when the query is a kanji one.
 //!
 //! @param regex A passed regex_t to assign an allocated regext to
-//! @param strang The regex pattern to use
+//! @param string The regex pattern to use
 //! @param flags The regex flags to use
 //! 
 gboolean gw_regex_create_kanji_high_regex (regex_t *regex, char *string, int flags)
@@ -252,7 +252,7 @@ gboolean gw_regex_create_kanji_high_regex (regex_t *regex, char *string, int fla
 //! of a returned result when the query is a kanji one.
 //!
 //! @param regex A passed regex_t to assign an allocated regext to
-//! @param strang The regex pattern to use
+//! @param string The regex pattern to use
 //! @param flags The regex flags to use
 //! 
 gboolean gw_regex_create_kanji_med_regex (regex_t *regex, char *string, int flags)
@@ -272,7 +272,7 @@ gboolean gw_regex_create_kanji_med_regex (regex_t *regex, char *string, int flag
 //! of a returned result when the query is a furigana one.
 //!
 //! @param regex A passed regex_t to assign an allocated regext to
-//! @param strang The regex pattern to use
+//! @param string The regex pattern to use
 //! @param flags The regex flags to use
 //! 
 gboolean gw_regex_create_furi_high_regex (regex_t *regex, char *string, int flags)
@@ -292,7 +292,7 @@ gboolean gw_regex_create_furi_high_regex (regex_t *regex, char *string, int flag
 //! of a returned result when the query is a furigana one.
 //!
 //! @param regex A passed regex_t to assign an allocated regext to
-//! @param strang The regex pattern to use
+//! @param string The regex pattern to use
 //! @param flags The regex flags to use
 //! 
 gboolean gw_regex_create_furi_med_regex (regex_t *regex, char *string, int flags)
@@ -312,7 +312,7 @@ gboolean gw_regex_create_furi_med_regex (regex_t *regex, char *string, int flags
 //! of a returned result when the query is a romaji one.
 //!
 //! @param regex A passed regex_t to assign an allocated regext to
-//! @param strang The regex pattern to use
+//! @param string The regex pattern to use
 //! @param flags The regex flags to use
 //! 
 gboolean gw_regex_create_roma_high_regex (regex_t *regex, char *string, int flags)
@@ -332,7 +332,7 @@ gboolean gw_regex_create_roma_high_regex (regex_t *regex, char *string, int flag
 //! of a returned result when the query is a romaji one.
 //!
 //! @param regex A passed regex_t to assign an allocated regext to
-//! @param strang The regex pattern to use
+//! @param string The regex pattern to use
 //! @param flags The regex flags to use
 //! 
 gboolean gw_regex_create_roma_med_regex (regex_t *regex, char *string, int flags)
@@ -359,7 +359,7 @@ gboolean gw_regex_create_roma_med_regex (regex_t *regex, char *string, int flags
 //! there is kanji/hiragana/romaji mingled throughout.
 //!
 //! @param regex A passed regex_t to assign an allocated regext to
-//! @param strang The regex pattern to use
+//! @param string The regex pattern to use
 //! @param flags The regex flags to use
 //! 
 gboolean gw_regex_create_mix_high_regex (regex_t *regex, char *string, int flags)
@@ -382,7 +382,7 @@ gboolean gw_regex_create_mix_high_regex (regex_t *regex, char *string, int flags
 //! there is kanji/hiragana/romaji mingled throughout.
 //!
 //! @param regex A passed regex_t to assign an allocated regext to
-//! @param strang The regex pattern to use
+//! @param string The regex pattern to use
 //! @param flags The regex flags to use
 //! 
 gboolean gw_regex_create_mix_med_regex (regex_t *regex, char *string, int flags)
@@ -406,7 +406,7 @@ gboolean gw_regex_create_mix_med_regex (regex_t *regex, char *string, int flags)
 //! To be written
 //!
 //! @param regex A passed regex_t to assign an allocated regext to
-//! @param strang The regex pattern to use
+//! @param string The regex pattern to use
 //! @param flags The regex flags to use
 //! 
 gboolean gw_regex_create_exact_regex (regex_t *regex, char *string, int flags)

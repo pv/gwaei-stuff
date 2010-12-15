@@ -1,3 +1,6 @@
-2010-11-25: gWaei 1.5.0
-  First version to truely allow compilation on Windows.  Fixed the search thread so it no longer runs in a timer, but truly another thread.  GConf has been dropped for GSettings.  The program compiles with the GTK_DEPRICATED_DISABLE flag on.  The kanjisidebar is now a tooltip.  There has been a bit of scaling back on the interface. Searches now update dynamically as you type.
+2010-12-15: gWaei 1.5.1
+  Bugfix release. Crashes when &, |, or ( are typed into the query 
+  are now fixed.  Fixed broken thread locking code which removed some
+  random crashing.
+
 

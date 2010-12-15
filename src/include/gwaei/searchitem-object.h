@@ -89,12 +89,12 @@ struct _GwSearchItem {
     GwResultLine* backup_resultline;        //!< Result line kept for comparison purposes from previosu result line
     GwResultLine* swap_resultline;          //!< Swap space for swapping result line and backup_resultline
 
-    void (*gw_searchitem_parse_result_string)(GwResultLine*);
-    void (*gw_searchitem_ui_append_results_to_output)(struct _GwSearchItem*);
-    void (*gw_searchitem_ui_append_less_relevant_header_to_output)(struct _GwSearchItem*);
-    void (*gw_searchitem_ui_append_more_relevant_header_to_output)(struct _GwSearchItem*);
-    void (*gw_searchitem_ui_pre_search_prep)(struct _GwSearchItem*);
-    void (*gw_searchitem_ui_after_search_cleanup)(struct _GwSearchItem*);
+    void (*gw_searchitem_parse_result_string)(GwResultLine*);                              //!< function pointer
+    void (*gw_searchitem_ui_append_results_to_output)(struct _GwSearchItem*);              //!< function pointer
+    void (*gw_searchitem_ui_append_less_relevant_header_to_output)(struct _GwSearchItem*); //!< function pointer
+    void (*gw_searchitem_ui_append_more_relevant_header_to_output)(struct _GwSearchItem*); //!< function pointer
+    void (*gw_searchitem_ui_pre_search_prep)(struct _GwSearchItem*);                       //!< function pointer
+    void (*gw_searchitem_ui_after_search_cleanup)(struct _GwSearchItem*);                  //!< function pointer
 
     gpointer* target_tb;                 //!< Pointer to a buffer that stays constant unlike when the target attribute is used
     gpointer* target_tv;                 //!< Pointer to a buffer that stays constant unlike when the target attribute is used

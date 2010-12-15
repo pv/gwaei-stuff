@@ -1,44 +1,11 @@
-2010-08-17  general fixes <pizzach@gamil.com>
-	* added git tag: 1.4.3
-2010-08-17  general fixes <pizzach@gamil.com>
-	* updated version string: 1.4.3
-	* updated autoconf and gettext files to new versions
-	* gWaei now buffers dictionary line counts in the prefs
-	* Makefile.am no longer manually compiles all gwaei header files
-		and correctly uses -I to include the folder.
+2010-12-01  general fixes <pizzach@gamil.com>
+	* Better uses of mutexes for multithreading leading to less crashes
+	* Various other bug fixes
 
-2010-04-06  gettextize  <bug-gnu-gettext@gnu.org>
+2010-11-29 Freeze while typing search <pizzach@gmail.com>
+	* Fixed regex freeze when typing searches with broken & or |
+	* Fixed regex freeze when typing (
+	* Multithreading is now decided by how the get_results function is called
 
-	* Added chek translation: new file
 
-2010-04-06  gettextize  <bug-gnu-gettext@gnu.org>
-
-	* Makefile.am (EXTRA_DIST): Add m4/ChangeLog.
-	* configure.ac (AC_CONFIG_FILES): Add po/Makefile.in.
-
-2010-04-06  gettextize  <bug-gnu-gettext@gnu.org>
-
-	* configure.ac (AC_CONFIG_FILES): Add intl/Makefile.
-
-2010-04-06  gettextize  <bug-gnu-gettext@gnu.org>
-
-	* Makefile.am (SUBDIRS): Remove intl.
-	* configure.ac (AC_CONFIG_FILES): Remove intl/Makefile.
-
-2010-04-06  gettextize  <bug-gnu-gettext@gnu.org>
-
-	* configure.ac (AC_CONFIG_FILES): Add intl/Makefile.
-
-2010-04-06  gettextize  <bug-gnu-gettext@gnu.org>
-
-	* configure.ac (AC_CONFIG_FILES): Add po/Makefile.in.
-
-2010-04-06  gettextize  <bug-gnu-gettext@gnu.org>
-
-	* configure.ac (AC_CONFIG_FILES): Add po/Makefile.in.
-
-2010-04-06  gettextize  <bug-gnu-gettext@gnu.org>
-
-	* Makefile.am (SUBDIRS): Add intl.
-	* configure.ac (AC_CONFIG_FILES): Add intl/Makefile.
-	(AM_GNU_GETTEXT_VERSION): Bump to 0.17.
+  
