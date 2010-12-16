@@ -119,7 +119,7 @@ PKG_CHECK_MODULES(BASE, glib-2.0           >= $GLIB_REQUIRED_VERSION
                         libcurl            >= $LIBCURL_REQUIRED_VERSION       )
 AC_SUBST(BASE_CFLAGS)
 AC_SUBST(BASE_LIBS)
-GNOME_DOC_INIT[,,,]
+GNOME_DOC_INIT(,,[:]) 
 
 
 if test $gnome = true || test $win32 = true; then
