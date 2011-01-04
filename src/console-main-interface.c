@@ -281,12 +281,14 @@ void initialize_console_interface (int argc, char **argv)
                    "  waei \"cats|dogs\"           Search for results containing cats or dogs\n"
                    "  waei cats dogs             Search for results containing \"cats dogs\"\n"
                    "  waei %s                Search for the Japanese word %s\n"
-                   "  waei -e %s               Search for %s and ignore similar results\n"
+                   //"  waei -e %s               Search for %s and ignore similar results\n"
                    "  waei %s                 When you don't know a kanji character\n"
                    "  waei -d Kanji %s           Find a kanji character in the kanji dictionary\n"
                    "  waei -d Names %s       Look up a name in the names dictionary\n"
                    "  waei -d Places %s       Look up a place in the places dictionary")
-             , "にほん", "にほん", "日本", "日本", "日.語", "魚", "Miyabe", "Tokyo"
+             , "にほん", "にほん", "日本", 
+	     // "日本", 
+	     "日.語", "魚", "Miyabe", "Tokyo"
              );
     if (description_text != NULL)
     {
