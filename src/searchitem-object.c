@@ -89,6 +89,7 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary, const int 
     temp->swap_resultline = NULL;
     temp->queryline = gw_queryline_new ();
     temp->history_relevance_idle_timer = 0;
+    temp->show_only_exact_matches = FALSE;
 
     if (gw_main_verify_output_generic_functions () == FALSE)
     {

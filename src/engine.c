@@ -179,6 +179,7 @@ static void stream_results_thread (gpointer data)
               break;
           case GW_RESULT_MEDIUM_RELEVANCE:
               if ((item->dictionary->type == GW_DICT_TYPE_KANJI || item->total_irrelevant_results < MAX_MEDIUM_IRRELIVENT_RESULTS) &&
+                  !item->show_only_exact_matches && 
                    (item->swap_resultline = gw_resultline_new ()) != NULL && item->target != GW_TARGET_KANJI)
               {
                 //Store the result line and create an empty one in its place
@@ -190,6 +191,7 @@ static void stream_results_thread (gpointer data)
               break;
           default:
               if ((item->dictionary->type == GW_DICT_TYPE_KANJI || item->total_irrelevant_results < MAX_LOW_IRRELIVENT_RESULTS) &&
+                    !item->show_only_exact_matches && 
                    (item->swap_resultline = gw_resultline_new ()) != NULL && item->target != GW_TARGET_KANJI)
               {
                 //Store the result line and create an empty one in its place
@@ -264,7 +266,7 @@ static void stream_results_thread (gpointer data)
 //!
 //! @param item a GwSearchItem argument.
 //!
-void gw_search_get_results (GwSearchItem *item, gboolean create_thread)
+void gw_search_get_results (GwSearchItem *item, gboolean create_thread, gboolean only_exact_matches)
 {
     gw_util_force_japanese_locale();
 
@@ -275,6 +277,8 @@ void gw_search_get_results (GwSearchItem *item, gboolean create_thread)
     }
 
     (*item->gw_searchitem_ui_pre_search_prep) (item);
+
+    if (only_exact_matches) item->show_only_exact_matches = TRUE;
 
     //Start the search
     if (create_thread)

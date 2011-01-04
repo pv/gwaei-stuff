@@ -50,6 +50,7 @@
 
 static gboolean ncurses_switch = FALSE;
 static gboolean quiet_switch = FALSE;
+static gboolean exact_switch = FALSE;
 static gboolean list_switch = FALSE;
 static gboolean version_switch = FALSE;
 
@@ -281,7 +282,7 @@ void initialize_console_interface (int argc, char **argv)
                    "  waei \"cats|dogs\"           Search for results containing cats or dogs\n"
                    "  waei cats dogs             Search for results containing \"cats dogs\"\n"
                    "  waei %s                Search for the Japanese word %s\n"
-                   //"  waei -e %s               Search for %s and ignore similar results\n"
+                   "  waei -e %s               Search for %s and ignore similar results\n"
                    "  waei %s                 When you don't know a kanji character\n"
                    "  waei -d Kanji %s           Find a kanji character in the kanji dictionary\n"
                    "  waei -d Names %s       Look up a name in the names dictionary\n"
@@ -300,6 +301,8 @@ void initialize_console_interface (int argc, char **argv)
     {
 #ifdef WITH_NCURSES
       { "ncurses", 'n', 0, G_OPTION_ARG_NONE, &ncurses_switch, gettext("Open up the multisearch window (beta)"), NULL },
+      { "exact", 'e', 0, G_OPTION_ARG_NONE, &exact_switch, gettext("Do not display less relevant results"), NULL },
+
 #endif
       { "quiet", 'q', 0, G_OPTION_ARG_NONE, &quiet_switch, gettext("Display less information"), NULL },
       { "dictionary", 'd', 0, G_OPTION_ARG_STRING, &dictionary_switch_data, gettext("Search using a chosen dictionary"), NULL },
@@ -484,7 +487,7 @@ void initialize_console_interface (int argc, char **argv)
     }
 
     //Print the number of results
-    gw_search_get_results (item, FALSE);
+    gw_search_get_results (item, FALSE, exact_switch);
 
     //Final header
     if (quiet_switch == FALSE)
