@@ -230,15 +230,17 @@ static void stream_results_thread (gpointer data)
         (*item->gw_searchitem_ui_append_less_relevant_header_to_output)(item);
     }
 
-
     //Append the medium relevent results
     while (item->results_medium != NULL)
     {
       item->total_results++;
       append_stored_result_to_output(item, &(item->results_medium));
       //Update the progress feeback
-    }
 
+      //Give a chance for something else to run
+      g_mutex_unlock (item->mutex);
+      g_mutex_lock (item->mutex);
+    }
 
     //Append the least relevent results
     while (item->results_low != NULL)
@@ -246,6 +248,10 @@ static void stream_results_thread (gpointer data)
       item->total_results++;
       append_stored_result_to_output(item, &(item->results_low));
       //Update the progress feeback
+
+      //Give a chance for something else to run
+      g_mutex_unlock (item->mutex);
+      g_mutex_lock (item->mutex);
     }
 
 
