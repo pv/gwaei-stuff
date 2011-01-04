@@ -159,8 +159,9 @@ int gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
    //Create atoms
    int i = 0;
    char *generic_atoms[MAX_ATOMS];
+   strcpy(ql->atom_string, ql->string);
 
-   generic_atoms[i] = ql->string;
+   generic_atoms[i] = ql->atom_string;
    while ((generic_atoms[i + 1] = g_utf8_strchr (generic_atoms[i], -1, L'&')) != NULL && i < MAX_ATOMS)
    {
      i++;

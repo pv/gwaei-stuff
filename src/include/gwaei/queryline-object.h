@@ -15,6 +15,7 @@
 struct _GwQueryLine {
     char string[MAX_QUERY];
     char hira_string[MAX_QUERY];
+    char atom_string[MAX_QUERY];
 
     regex_t kanji_regex[5][MAX_ATOMS];
     int kanji_total;
