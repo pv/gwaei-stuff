@@ -162,17 +162,20 @@ static void stream_results_thread (gpointer data)
         switch(relevance)
         {
           case GW_RESULT_HIGH_RELEVANCE:
-              item->total_results++;
-              item->total_relevant_results++;
-              if (item->target != GW_TARGET_KANJI)
-                (*item->gw_searchitem_ui_append_more_relevant_header_to_output)(item);
-              (*item->gw_searchitem_ui_append_results_to_output)(item);
+              if (item->total_relevant_results < MAX_HIGH_RELIVENT_RESULTS)
+              {
+                item->total_results++;
+                item->total_relevant_results++;
+                if (item->target != GW_TARGET_KANJI)
+                  (*item->gw_searchitem_ui_append_more_relevant_header_to_output)(item);
+                (*item->gw_searchitem_ui_append_results_to_output)(item);
 
-              //Swap the result lines
-              item->swap_resultline = item->backup_resultline;
-              item->backup_resultline = item->resultline;
-              item->resultline = item->swap_resultline;
-              item->swap_resultline = NULL;
+                //Swap the result lines
+                item->swap_resultline = item->backup_resultline;
+                item->backup_resultline = item->resultline;
+                item->resultline = item->swap_resultline;
+                item->swap_resultline = NULL;
+              }
               break;
           case GW_RESULT_MEDIUM_RELEVANCE:
               if ((item->dictionary->type == GW_DICT_TYPE_KANJI || item->total_irrelevant_results < MAX_MEDIUM_IRRELIVENT_RESULTS) &&
