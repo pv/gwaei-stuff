@@ -37,12 +37,26 @@ dataunknowncharacter16_DATA = 16x16/unknown-character.png
 dataunknowncharacter22_DATA = 22x22/unknown-character.png
 dataunknowncharacter24_DATA = 24x24/unknown-character.png
 
+
+#
+# GTK icon cache
+#
+
+gtk_update_icon_cache = gtk-update-icon-cache -f -t $(datadir)/icons/hicolor
+
 install-data-hook: update-icon-cache
 uninstall-hook: update-icon-cache
 
 
 update-icon-cache:
-	gtk-update-icon-cache $(datadir)/icons/hicolor || true
+	if test -z "$(DESTDIR)"; then \
+		echo "Updating Gtk icon cache."; \
+		$(gtk_update_icon_cache); \
+	else \
+		echo "*** Icon cache not updated.  After (un)install, run this:"; \
+		echo "***   $(gtk_update_icon_cache)"; \
+	fi
+
 
 
 EXTRA_DIST = logo.png 16x16/$(PACKAGE).png 24x24/$(PACKAGE).png 32x32/$(PACKAGE).png 48x48/$(PACKAGE).png 22x22/word-boundary.png 16x16/non-word-boundary.png 16x16/unknown-character.png 24x24/non-word-boundary.png 16x16/word-boundary.png 24x24/unknown-character.png 22x22/non-word-boundary.png 24x24/word-boundary.png 22x22/unknown-character.png goo.png google.png wikipedia.png book_green.png
