@@ -29,7 +29,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 0.15.1\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2010-12-15 17:52-0500\n"
+"POT-Creation-Date: 2011-01-10 07:11-0500\n"
 "PO-Revision-Date: 2010-04-27 23:02-0500\n"
 "Last-Translator: 3dxtrip <3dx@live.com>\n"
 "Language-Team: none\n"
@@ -39,50 +39,50 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/console-main-interface.c:67 src/ncurses-main-interface.c:122
+#: src/console-main-interface.c:68 src/ncurses-main-interface.c:122
 msgid "Other Results"
 msgstr "Otros resultados"
 
-#: src/console-main-interface.c:76 src/ncurses-main-interface.c:78
+#: src/console-main-interface.c:77 src/ncurses-main-interface.c:78
 msgid "No results found!"
 msgstr "¡No se han encontrado resultados!"
 
-#: src/console-main-interface.c:105 src/console-main-interface.c:148
+#: src/console-main-interface.c:106 src/console-main-interface.c:149
 #, c-format
 msgid "Finished\n"
 msgstr "Finalizado\n"
 
-#: src/console-main-interface.c:116
+#: src/console-main-interface.c:117
 #, c-format
 msgid "Trying to install the %s...\n"
 msgstr "Intentando instalar %s...\n"
 
 #. TRANSLATORS: 'Searching for "${query}" in ${dictionary long name}'
-#: src/console-main-interface.c:190
+#: src/console-main-interface.c:191
 #, c-format
 msgid "Searching for \"%s\" in %s...\n"
 msgstr "Buscar por \"%s\" in %s...\n"
 
-#: src/console-main-interface.c:202
+#: src/console-main-interface.c:203
 #, c-format
 msgid "Installable dictionaries are:\n"
 msgstr "Los diccionarios instalables son:\n"
 
-#: src/console-main-interface.c:222 src/console-main-interface.c:253
+#: src/console-main-interface.c:223 src/console-main-interface.c:254
 msgid "none"
 msgstr "nada"
 
-#: src/console-main-interface.c:239
+#: src/console-main-interface.c:240
 #, c-format
 msgid "Available dictionaries are:\n"
 msgstr "Los diccionarios disponibles son:\n"
 
-#: src/console-main-interface.c:273 src/ncurses-main-interface.c:450
+#: src/console-main-interface.c:274 src/ncurses-main-interface.c:450
 msgid "- Japanese-English dictionary program that allows regex searches"
 msgstr ""
 "- diccionario Japonés-Inglés que permite búsquedas por expresiones regulares"
 
-#: src/console-main-interface.c:274
+#: src/console-main-interface.c:275
 msgid ""
 "waei generally outputs directly to the console.  If you want to do multiple\n"
 "searches, please start gWaei with the -n switch for the multisearch mode."
@@ -92,7 +92,7 @@ msgstr ""
 "búsquedas, por favor inicie gWaei con el parámetro -n para el modo de "
 "búsqueda múltiple."
 
-#: src/console-main-interface.c:278
+#: src/console-main-interface.c:279
 #, c-format
 msgid ""
 "Examples:\n"
@@ -123,77 +123,81 @@ msgstr ""
 "  waei -d Nombres %s       Busca un nombre usando el diccionario Nombres\n"
 "  waei -d Lugares %s       Busca un lugar usando el diccionario Lugares"
 
-#: src/console-main-interface.c:300 src/ncurses-main-interface.c:453
+#: src/console-main-interface.c:303 src/ncurses-main-interface.c:453
 msgid "Open up the multisearch window (beta)"
 msgstr "Abrir la ventana de búsqueda múltiple (Beta)"
 
-#: src/console-main-interface.c:302 src/ncurses-main-interface.c:454
+#: src/console-main-interface.c:304
+msgid "Do not display less relevant results"
+msgstr "No mostrar resultados poco relevantes"
+
+#: src/console-main-interface.c:307 src/ncurses-main-interface.c:454
 msgid "Display less information"
 msgstr "Mostrar menos información"
 
-#: src/console-main-interface.c:303 src/ncurses-main-interface.c:455
+#: src/console-main-interface.c:308 src/ncurses-main-interface.c:455
 msgid "Search using a chosen dictionary"
 msgstr "Buscar usando un diccionario específico"
 
-#: src/console-main-interface.c:304
+#: src/console-main-interface.c:309
 msgid "Show available dictionaries for searches"
 msgstr "Mostrar los diccionarios disponibles para búsquedas"
 
-#: src/console-main-interface.c:305
+#: src/console-main-interface.c:310
 msgid "Install dictionary"
 msgstr "Instalar diccionario"
 
-#: src/console-main-interface.c:306
+#: src/console-main-interface.c:311
 msgid "Uninstall dictionary"
 msgstr "Instalar diccionario"
 
-#: src/console-main-interface.c:307
+#: src/console-main-interface.c:312
 msgid "Check the waei version information"
 msgstr "Revisar la información de versión de waei"
 
 #. TRANSLATORS: The "%s" stands for the error message
-#: src/console-main-interface.c:314 src/ncurses-main-interface.c:462
+#: src/console-main-interface.c:319 src/ncurses-main-interface.c:462
 #, c-format
 msgid "Option parsing failed: %s\n"
 msgstr "Opción de división fallida: %s\n"
 
-#: src/console-main-interface.c:382
+#: src/console-main-interface.c:387
 #, c-format
 msgid "%s is already Installed. "
 msgstr "%s ya está instalado. "
 
-#: src/console-main-interface.c:387
+#: src/console-main-interface.c:392
 #, c-format
 msgid "%s is not installable with this mechanism. "
 msgstr "%s no es posible instalar con este procedimiento"
 
-#: src/console-main-interface.c:406
+#: src/console-main-interface.c:411
 #, c-format
 msgid "The %s is not installed. "
 msgstr "El %s no está instalado."
 
 #. TRANSLATORS: The "%s" stands for the value provided by the user to the "waei uninstall"
-#: src/console-main-interface.c:413
+#: src/console-main-interface.c:418
 #, c-format
 msgid "%s is not installed. "
 msgstr "%s no está instalado"
 
-#: src/console-main-interface.c:428 src/ncurses-main-interface.c:482
+#: src/console-main-interface.c:433 src/ncurses-main-interface.c:482
 #, c-format
 msgid "Requested dictionary not found!\n"
 msgstr "El diccionario solicitado no ha sido encontrado\n"
 
-#: src/console-main-interface.c:462
+#: src/console-main-interface.c:467
 #, fuzzy, c-format
 msgid "Query prepare error\n"
 msgstr "Error en consulta de división\n"
 
-#: src/console-main-interface.c:480
+#: src/console-main-interface.c:485
 #, c-format
 msgid "Query parse error\n"
 msgstr "Error en consulta de división\n"
 
-#: src/console-main-interface.c:490 src/gtk-main-interface.c:939
+#: src/console-main-interface.c:495 src/gtk-main-interface.c:939
 #: src/ncurses-main-interface.c:398
 #, c-format
 msgid "Found %d result"
@@ -202,7 +206,7 @@ msgstr[0] "Resultado %d encontrado"
 msgstr[1] "Encontrados %d resultados"
 
 #. TRANSLATORS: relevant what ? It's the number of "relevant" result(s) displayed while or after searching.
-#: src/console-main-interface.c:491 src/gtk-main-interface.c:943
+#: src/console-main-interface.c:496 src/gtk-main-interface.c:943
 #: src/ncurses-main-interface.c:399
 #, c-format
 msgid "(%d Relevant)"
@@ -210,65 +214,65 @@ msgid_plural "(%d Relevant)"
 msgstr[0] "(%d Relevante)"
 msgstr[1] "(%d Relevantes)"
 
-#: src/console-main-interface.c:556 src/gtk-main-interface.c:3391
+#: src/console-main-interface.c:561 src/gtk-main-interface.c:3391
 #: src/gtk-main-interface.c:3491 src/ncurses-main-interface.c:579
 msgid "Radicals:"
 msgstr "Radicales:"
 
-#: src/console-main-interface.c:561 src/gtk-main-interface.c:3445
+#: src/console-main-interface.c:566 src/gtk-main-interface.c:3445
 #: src/gtk-main-interface.c:3524 src/ncurses-main-interface.c:584
 msgid "Stroke:"
 msgstr "Trazo:"
 
-#: src/console-main-interface.c:569 src/gtk-main-interface.c:3452
+#: src/console-main-interface.c:574 src/gtk-main-interface.c:3452
 #: src/gtk-main-interface.c:3531 src/ncurses-main-interface.c:592
 msgid "Freq:"
 msgstr "Freq:"
 
-#: src/console-main-interface.c:577 src/gtk-main-interface.c:3459
+#: src/console-main-interface.c:582 src/gtk-main-interface.c:3459
 #: src/gtk-main-interface.c:3538 src/ncurses-main-interface.c:600
 msgid "Grade:"
 msgstr "Grado:"
 
-#: src/console-main-interface.c:585 src/gtk-main-interface.c:3465
+#: src/console-main-interface.c:590 src/gtk-main-interface.c:3465
 #: src/gtk-main-interface.c:3545 src/ncurses-main-interface.c:608
 msgid "JLPT:"
 msgstr "JLPT:"
 
-#: src/console-main-interface.c:592 src/gtk-main-interface.c:3408
+#: src/console-main-interface.c:597 src/gtk-main-interface.c:3408
 #: src/gtk-main-interface.c:3499 src/ncurses-main-interface.c:615
 msgid "Readings:"
 msgstr "Lecturas:"
 
-#: src/console-main-interface.c:594 src/gtk-main-interface.c:3419
+#: src/console-main-interface.c:599 src/gtk-main-interface.c:3419
 #: src/gtk-main-interface.c:3507 src/ncurses-main-interface.c:617
 msgid "Name:"
 msgstr "Nombres:"
 
-#: src/console-main-interface.c:596 src/gtk-main-interface.c:3430
+#: src/console-main-interface.c:601 src/gtk-main-interface.c:3430
 #: src/gtk-main-interface.c:3515 src/ncurses-main-interface.c:619
 msgid "Radical Name:"
 msgstr "Radicale Nombre:"
 
-#: src/console-main-interface.c:599 src/gtk-main-interface.c:3474
+#: src/console-main-interface.c:604 src/gtk-main-interface.c:3474
 #: src/gtk-main-interface.c:3552 src/ncurses-main-interface.c:622
 msgid "Meanings:"
 msgstr "Significados:"
 
 #. TRANSLATORS: The "E" stands for "English"
-#: src/console-main-interface.c:616 src/gtk-main-interface.c:3607
+#: src/console-main-interface.c:621 src/gtk-main-interface.c:3607
 msgid "E:\t"
 msgstr ""
 
 #. TRANSLATORS: The "J" stands for "Japanese"
-#: src/console-main-interface.c:622 src/gtk-main-interface.c:3618
+#: src/console-main-interface.c:627 src/gtk-main-interface.c:3618
 msgid ""
 "\n"
 "J:\t"
 msgstr ""
 
 #. TRANSLATORS: The "D" stands for "Detail"
-#: src/console-main-interface.c:628 src/gtk-main-interface.c:3629
+#: src/console-main-interface.c:633 src/gtk-main-interface.c:3629
 msgid ""
 "\n"
 "D:\t"
@@ -1178,9 +1182,6 @@ msgstr "<b>Gestión manual de los diccionarios</b>"
 #: src/gtk-builder-xml/settings.glade:866
 msgid "Advanced"
 msgstr "Avanzado"
-
-#~ msgid "Do not display less relevant results"
-#~ msgstr "No mostrar resultados poco relevantes"
 
 #~ msgid "Show _Less Relevant Results"
 #~ msgstr "Mostrar resultados _Poco relevantes"
