@@ -1,11 +1,14 @@
-2010-12-01  general fixes <pizzach@gamil.com>
-	* Better uses of mutexes for multithreading leading to less crashes
-	* Various other bug fixes
+2011-01-10   Lowered Libcurl required version <pizzach@gmail.com>
+    * Lowered the required libcurl version
+		* Updated the language files using make distcheck.
 
-2010-11-29 Freeze while typing search <pizzach@gmail.com>
-	* Fixed regex freeze when typing searches with broken & or |
-	* Fixed regex freeze when typing (
-	* Multithreading is now decided by how the get_results function is called
-
-
-  
+2011-01-04 Various fixes to usage issues <pizzach@gmail.com>
+    * Edits to thread locking during less relevant result display to make the interface
+      more responsive.
+    * Readded exact matching for the console version of gWaei because of how
+		  useful it is there from how consoles autoscroll passed the useful
+			results.
+    * Fixed the & symbol so that the letters after it don't get deleted when
+      a search is started.
+    * Added a max number of relevant/exact results because the program
+      basically dies when trying to output passed 300 or so of them.

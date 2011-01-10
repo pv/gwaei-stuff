@@ -1,6 +1,9 @@
-2010-12-15: gWaei 1.5.1
-  Bugfix release. Crashes when &, |, or ( are typed into the query 
-  are now fixed.  Fixed broken thread locking code which removed some
-  random crashing.
+2010-01-10: gWaei 1.5.2
+  Bugfix release. Searches when using & in the query work again instead of being
+  truncated as you type.  The interface is now more responsive when a search is carried
+  out by edits to thread locking.  Exact matching for the console version
+  of gWaei was readded because it is truly needed there.  The sandboxing issue
+  caused by gtk-update-icon-cache for the package maintainers.  The README has been updated
+  as it was woefully out of date.
 
 
