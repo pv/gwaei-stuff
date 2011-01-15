@@ -780,7 +780,6 @@ void gw_ui_show_window (char *id)
     {
       GtkWidget *main_window;
       main_window = GTK_WIDGET (gtk_builder_get_object(builder, "main_window"));
-
       gtk_window_set_transient_for (GTK_WINDOW (window), GTK_WINDOW (main_window));
       gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER_ON_PARENT);
       gtk_widget_show (window);
@@ -2847,6 +2846,7 @@ void initialize_gui_interface (int argc, char *argv[])
       gw_ui_load_gtk_builder_xml ("radicals.ui");
       gw_ui_load_gtk_builder_xml ("settings.ui");
       gw_ui_load_gtk_builder_xml ("kanjipad.ui");
+      gw_ui_load_gtk_builder_xml ("install.ui");
 
       //Libunique setup
       GtkWidget *main_window;
@@ -2869,10 +2869,10 @@ void initialize_gui_interface (int argc, char *argv[])
       gw_prefs_initialize_preferences ();
       gw_ui_initialize_radicals_table ();
 
-      gw_ui_initialize_dictionary_order_list ();
+      gw_settings_initialize();
 
       //Spring up the prefs dialog if no dictionaries are installed
-      gw_settings_initialize_installed_dictionary_list ();
+      //gw_settings_initialize_installed_dictionary_list ();
       if (rebuild_combobox_dictionary_list () == 0) {
         do_settings(NULL, GINT_TO_POINTER (1));
       }

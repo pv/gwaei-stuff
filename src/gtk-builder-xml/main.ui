@@ -703,7 +703,9 @@
             <child>
               <object class="GtkLabel" id="label3">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Search:</property>
+                <property name="label" translatable="yes">_Search:</property>
+                <property name="use_underline">True</property>
+                <property name="single_line_mode">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1050,11 +1052,11 @@
     <signal name="activate" handler="do_insert_unknown_character"/>
   </object>
   <object class="GtkAction" id="insert_and_action">
-    <property name="label">_And Character</property>
+    <property name="label">Logical _And Character</property>
     <signal name="activate" handler="do_insert_and"/>
   </object>
   <object class="GtkAction" id="insert_or_action">
-    <property name="label">_Or Character</property>
+    <property name="label">Logical _Or Character</property>
     <signal name="activate" handler="do_insert_or"/>
   </object>
   <object class="GtkAction" id="insert_clear_action">
@@ -1123,6 +1125,10 @@
       <!-- column-name shortcut -->
       <column type="gchararray"/>
       <!-- column-name long_name -->
+      <column type="gchararray"/>
+      <!-- column-name progress -->
+      <column type="gint"/>
+      <!-- column-name status -->
       <column type="gchararray"/>
     </columns>
     <signal name="row_inserted" handler="do_add_dictionary_to_order_prefs"/>
