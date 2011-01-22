@@ -19,39 +19,15 @@
       <description>Used for determining the path to install and update the Kanji dictionary from.</description>
     </key>
 
-    <key name="names-source" type="s">
-      <default>'@NAMES_DEFAULT_URI@'</default>
+    <key name="names-places-source" type="s">
+      <default>'@NAMES_PLACES_DEFAULT_URI@'</default>
       <summary>Names dictionary install source</summary>
       <description>Used for determining the path to install and update the Names dictionary from.</description>
-    </key>
-
-    <key name="radicals-source" type="s">
-      <default>'@RADICALS_DEFAULT_URI@'</default>
-      <summary>Radicals dictionary install source</summary>
-      <description>Used for determining the path to install and update the Radicals dictionary from.</description>
     </key>
 
     <key name="examples-source" type="s">
       <default>'@EXAMPLES_DEFAULT_URI@'</default>
       <summary>Examples dictionary install source</summary>
-      <description>Used for determining the path to install and update the Radicals dictionary from.</description>
-    </key>
-
-    <key name="french-source" type="s">
-      <default>'@FRENCH_DEFAULT_URI@'</default>
-      <summary>French dictionary install source</summary>
-      <description>Used for determining the path to install and update the Radicals dictionary from.</description>
-    </key>
-
-    <key name="german-source" type="s">
-      <default>'@GERMAN_DEFAULT_URI@'</default>
-      <summary>German dictionary install source</summary>
-      <description>Used for determining the path to install and update the Radicals dictionary from.</description>
-    </key>
-
-    <key name="spanish-source" type="s">
-      <default>'@SPANISH_DEFAULT_URI@'</default>
-      <summary>Spanish dictionary install source</summary>
       <description>Used for determining the path to install and update the Radicals dictionary from.</description>
     </key>
 

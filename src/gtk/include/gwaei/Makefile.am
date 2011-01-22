@@ -1,0 +1,1 @@
+noinst_HEADERS = common.h kanjipad-callbacks.h kanjipad-candidatearea.h kanjipad-drawingarea.h kanjipad.h main-callbacks.h main.h main-libsexy.h main-tabs.h main-libunique.h preferences.h printing.h radicals-callbacks.h radicals.h settings-callbacks.h settings-dictionary-install-dialog.h settings.h

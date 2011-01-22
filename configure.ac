@@ -1,10 +1,14 @@
 AC_INIT(gwaei, 1.6.0)
-AC_CONFIG_SRCDIR([src/main.c])
+AC_CONFIG_SRCDIR([src/backend/engine.c])
 AM_INIT_AUTOMAKE
 AM_CONFIG_HEADER(config.h)
 
+
 RELEASE=1
 AC_SUBST(RELEASE)
+
+LT_INIT
+AC_SUBST([LIBTOOL_DEPS])
 
 ##General Dependencies
 GLIB_REQUIRED_VERSION=2.25.0
@@ -22,28 +26,16 @@ LIBSEXY_REQUIRED_VERSION=0.1.11
 ENGLISH_DEFAULT_URI=ftp://ftp.monash.edu.au/pub/nihongo/edict.gz
 AC_SUBST(ENGLISH_DEFAULT_URI)
 
-KANJI_DEFAULT_URI=ftp://ftp.monash.edu.au/pub/nihongo/kanjidic.gz
+KANJI_DEFAULT_URI=ftp://ftp.monash.edu.au/pub/nihongo/kanjidic.gz,ftp://ftp.monash.edu.au/pub/nihongo/kradfile.gz
 AC_SUBST(KANJI_DEFAULT_URI)
 
-RADICALS_DEFAULT_URI=ftp://ftp.monash.edu.au/pub/nihongo/kradfile.gz
-AC_SUBST(RADICALS_DEFAULT_URI)
-
-NAMES_DEFAULT_URI=ftp://ftp.monash.edu.au/pub/nihongo/enamdict.gz
-AC_SUBST(NAMES_DEFAULT_URI)
+NAMES_PLACES_DEFAULT_URI=ftp://ftp.monash.edu.au/pub/nihongo/enamdict.gz
+AC_SUBST(NAMES_PLACES_DEFAULT_URI)
 
 EXAMPLES_DEFAULT_URI=http://www.csse.monash.edu.au/~jwb/examples.gz
 AC_SUBST(EXAMPLES_DEFAULT_URI)
 
-FRENCH_DEFAULT_URI=http://dico.fj.free.fr/fj.utf
-AC_SUBST(FRENCH_DEFAULT_URI)
-
-GERMAN_DEFAULT_URI=http://www.bibiko.de/WdJTEUC.zip
-AC_SUBST(GERMAN_DEFAULT_URI)
-
-SPANISH_DEFAULT_URI=http://hispadic.googlepages.com/hispamix_euc.zip
-AC_SUBST(SPANISH_DEFAULT_URI)
-
-LOAD_ORDER_DEFAULT=English,Mix,Kanji,Radicals,Names,Places,Examples
+LOAD_ORDER_DEFAULT=edict\/English\;kanji\/Kanji\;edict\/Names\;edict\/Places\;examples\/Examples
 AC_SUBST(LOAD_ORDER_DEFAULT)
 
 
@@ -173,10 +165,13 @@ AC_PATH_PROG(UNZIP, unzip)
 fi
 
 AC_PROG_CC
+AC_PROG_CC_STDC
+AM_PROG_CC_C_O
+
 AM_GNU_GETTEXT([external])
 AC_CONFIG_MACRO_DIR([m4])
 
-AC_CONFIG_FILES([Makefile src/Makefile mandir/Makefile help/Makefile help/gwaei.omf help/C/gwaei.xml src/gtk-builder-xml/Makefile src/images/Makefile src/schemas/Makefile src/desktop/Makefile src/kpengine/Makefile src/kpengine/conv_jdata.pl rpm/gwaei.spec rpm/fedora/SPECS/gwaei.spec src/include/gwaei/definitions.h po/Makefile.in po/Makefile src/schemas/org.gnome.gwaei.gschema.xml src/schemas/org.gnome.gwaei.highlight.gschema.xml src/schemas/org.gnome.gwaei.dictionary.gschema.xml src/schemas/org.gnome.gwaei.kanjipad_window.gschema.xml src/schemas/org.gnome.gwaei.main_window.gschema.xml src/schemas/org.gnome.gwaei.fonts.gschema.xml src/schemas/org.gnome.gwaei.radicals_window.gschema.xml] Doxyfile)
+AC_CONFIG_FILES([Makefile src/Makefile src/backend/Makefile src/backend/include/gwaei/Makefile src/gtk/Makefile src/gtk/include/gwaei/Makefile mandir/Makefile help/Makefile help/gwaei.omf help/C/gwaei.xml src/gtk/ui/Makefile src/gtk/images/Makefile src/schemas/Makefile src/gtk/desktop/Makefile src/kpengine/Makefile src/kpengine/conv_jdata.pl rpm/gwaei.spec rpm/fedora/SPECS/gwaei.spec src/backend/include/gwaei/definitions.h po/Makefile.in po/Makefile src/schemas/org.gnome.gwaei.gschema.xml src/schemas/org.gnome.gwaei.highlight.gschema.xml src/schemas/org.gnome.gwaei.dictionary.gschema.xml src/schemas/org.gnome.gwaei.kanjipad_window.gschema.xml src/schemas/org.gnome.gwaei.main_window.gschema.xml src/schemas/org.gnome.gwaei.fonts.gschema.xml src/schemas/org.gnome.gwaei.radicals_window.gschema.xml] Doxyfile)
 
 AC_OUTPUT
 

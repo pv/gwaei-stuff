@@ -1,8 +1,14 @@
 *.[oa]
+*.lo
+*.la
 *.exe
 *.gschema.xml
 Makefile
 **/.deps/*
+src/backend/.deps/*
+src/backend/.libs/*
+src/gwaei/.deps/*
+src/console/.deps/*
 *.gmo
 *.rpm
 *.deb
@@ -52,8 +58,8 @@ rpm/rpm_gconf_uninstall_pre.sh
 rpm/BUILD
 rpm/fedora/SPECS/gwaei.spec
 
-src/gwaei
-src/waei
+src/gwaei/gwaei
+src/console/waei
 src/Makefile
 src/desktop/Makefile
 src/img/Makefile
@@ -73,12 +79,14 @@ aclocal.m4
 help/Makefile.in
 mandir/Makefile.in
 src/Makefile.in
-src/desktop/Makefile.in
-src/img/Makefile.in
+src/gtk/desktop/Makefile.in
+src/gtk/images/Makefile.in
 src/kpengine/Makefile.in
 src/schemas/Makefile.in
-src/xml/Makefile.in
+src/gtk/ui/Makefile.in
 src/schemas/org.gnome.*.valid
+src/schemas/gschemas.compiled
+
 
 
 configure

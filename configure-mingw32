@@ -1,3 +1,0 @@
-#!/bin/sh
-PKG_CONFIG_PATH=/mingw/lib/pkgconfig ./configure --enable-win32 --host=i486-mingw32 --prefix /usr/i486-mingw32/local
-#./configure --enable-win32 --prefix=/local --host=i486-mingw32 --build=i486-mingw32
