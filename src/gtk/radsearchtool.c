@@ -318,9 +318,10 @@ static char *radical_array[][5] =
 };
 
 
-void gw_radicals_initialize ()
+void gw_radsearchtool_initialize ()
 {
     GtkBuilder *builder = gw_common_get_builder ();
+    gw_common_load_ui_xml ("radicals.ui");
 
     int total_columns = 14;
     GtkTable *table = GTK_TABLE (gtk_builder_get_object (builder, "radical_selection_table"));
@@ -381,7 +382,7 @@ void gw_radicals_initialize ()
 }
 
 
-void gw_radicals_free ()
+void gw_radsearchtool_free ()
 {
 }
 
@@ -390,7 +391,7 @@ void gw_radicals_free ()
 //! @brief Copies all the lables of the depressed buttons in the radicals window
 //!
 //!
-char* gw_ui_strdup_all_selected_radicals ()
+char* gw_radsearchtool_strdup_all_selected_radicals ()
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
@@ -439,7 +440,7 @@ char* gw_ui_strdup_all_selected_radicals ()
     }
 
     if (!a_button_was_in_pressed_state)
-      gw_ui_deselect_all_radicals ();
+      gw_radsearchtool_deselect_all_radicals ();
 
     return final_string;
 }
@@ -450,7 +451,7 @@ char* gw_ui_strdup_all_selected_radicals ()
 //!
 //! @param string The label to search for
 //!
-void gw_ui_set_button_sensitive_when_label_is (const char *string)
+void gw_radsearchtool_set_button_sensitive_when_label_is (const char *string)
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
@@ -516,7 +517,7 @@ void gw_ui_set_button_sensitive_when_label_is (const char *string)
 //!
 //! @param output The string to copy the prefered stroke count to
 //! @param MAX The max characters to copy
-char* gw_ui_strdup_prefered_stroke_count ()
+char* gw_radsearchtool_strdup_prefered_stroke_count ()
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
@@ -540,7 +541,7 @@ char* gw_ui_strdup_prefered_stroke_count ()
 //!
 //! @brief Matches the sensativity of the strokes spinbutton to the stokes checkbox
 //!
-void gw_ui_update_strokes_checkbox_state ()
+void gw_radsearchtool_update_strokes_checkbox_state ()
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
@@ -564,7 +565,7 @@ void gw_ui_update_strokes_checkbox_state ()
 //!
 //! @brief Resets the states of all the radical buttons
 //!
-void gw_ui_deselect_all_radicals()
+void gw_radsearchtool_deselect_all_radicals()
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
@@ -591,7 +592,7 @@ void gw_ui_deselect_all_radicals()
 //!
 //! @brief Sets the stroke enable checkbox to a specific state
 //!
-void gw_ui_set_strokes_checkbox_state (gboolean state)
+void gw_radsearchtool_set_strokes_checkbox_state (gboolean state)
 {
     GtkBuilder *builder = gw_common_get_builder ();
 

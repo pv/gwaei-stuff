@@ -218,6 +218,7 @@ void gw_kanjipad_initialize ()
     if (_kanjipad_is_initialized == TRUE) return;
 
     GtkBuilder *builder = gw_common_get_builder ();
+    gw_common_load_ui_xml ("kanjipad.ui");
 
     GtkWidget *drawingarea;
     drawingarea = GTK_WIDGET (gtk_builder_get_object (builder, "kdrawing_area"));

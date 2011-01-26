@@ -264,5 +264,8 @@ void gw_historylist_initialize ()
     kanji_history   = gw_historylist_new();
 }
 
+void gw_historylist_free ()
+{
+}
 
 

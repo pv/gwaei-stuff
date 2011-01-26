@@ -146,7 +146,7 @@ G_MODULE_EXPORT gboolean do_get_iter_for_motion (GtkWidget      *widget,
     else
       gw_ui_set_cursor (GDK_XTERM);
 
-    GtkWidget *tv = GTK_WIDGET (get_widget_by_target (GW_TARGET_RESULTS));
+    GtkWidget *tv = GTK_WIDGET (gw_common_get_widget_by_target (GW_TARGET_RESULTS));
     GtkWidget *window = GTK_WIDGET (gtk_widget_get_tooltip_window (tv));
     if (window != NULL && button_character != unic) 
     {
@@ -228,7 +228,7 @@ G_MODULE_EXPORT gboolean do_get_iter_for_button_release (GtkWidget      *widget,
         gint length = g_unichar_to_utf8 (unic, query);
         query[length] = '\0'; 
 
-        GtkWidget *tv = GTK_WIDGET (get_widget_by_target (GW_TARGET_RESULTS));
+        GtkWidget *tv = GTK_WIDGET (gw_common_get_widget_by_target (GW_TARGET_RESULTS));
         GtkWidget *window = GTK_WIDGET (gtk_widget_get_tooltip_window (tv));
         if (window == NULL) {
           button_character = unic;
@@ -263,7 +263,7 @@ G_MODULE_EXPORT gboolean do_get_iter_for_button_release (GtkWidget      *widget,
         }
       }
       else {
-        GtkWidget *tv = GTK_WIDGET (get_widget_by_target (GW_TARGET_RESULTS));
+        GtkWidget *tv = GTK_WIDGET (gw_common_get_widget_by_target (GW_TARGET_RESULTS));
         GtkWidget *window = GTK_WIDGET (gtk_widget_get_tooltip_window (tv));
         if (window != NULL && button_character != unic) 
         {
@@ -417,8 +417,8 @@ G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
     item = (GwSearchItem*) data;
 
     //Make sure searches done from the history are pointing at a valid target
-    item->target_tb = (gpointer) get_gobject_by_target (item->target);
-    item->target_tv = (gpointer) get_widget_by_target (item->target);
+    item->target_tb = (gpointer) gw_common_get_gobject_by_target (item->target);
+    item->target_tv = (gpointer) gw_common_get_widget_by_target (item->target);
 
     //Checks to make sure everything is sane
     if (gw_ui_cancel_search_for_current_tab () == FALSE)
@@ -954,8 +954,8 @@ G_MODULE_EXPORT gboolean do_update_clipboard_on_focus_change (GtkWidget        *
 
 
     //Correct the sensitive state to paste
-    if (gw_ui_widget_equals_target (data, GW_TARGET_RESULTS) ||
-        gw_ui_widget_equals_target (data, GW_TARGET_KANJI)     )
+    if (gw_common_widget_equals_target (data, GW_TARGET_RESULTS) ||
+        gw_common_widget_equals_target (data, GW_TARGET_KANJI)     )
       gtk_action_set_sensitive (GTK_ACTION (paste_action), FALSE);
     else
       gtk_action_set_sensitive (GTK_ACTION (paste_action), TRUE);
@@ -1199,7 +1199,7 @@ G_MODULE_EXPORT gboolean do_key_press_modify_status_update (GtkWidget *widget,
                                                             GdkEvent  *event,
                                                             gpointer  *data  )
 {
-    GtkWidget *tv = GTK_WIDGET (get_widget_by_target (GW_TARGET_RESULTS));
+    GtkWidget *tv = GTK_WIDGET (gw_common_get_widget_by_target (GW_TARGET_RESULTS));
     GtkWidget *window = GTK_WIDGET (gtk_widget_get_tooltip_window (tv));
     if (window != NULL) 
     {
@@ -1208,7 +1208,7 @@ G_MODULE_EXPORT gboolean do_key_press_modify_status_update (GtkWidget *widget,
     }
 
     guint keyval = ((GdkEventKey*)event)->keyval;
-    GtkWidget* search_entry = get_widget_by_target (GW_TARGET_ENTRY);
+    GtkWidget* search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
 
     if ((keyval == GDK_ISO_Enter || keyval == GDK_Return) && gtk_widget_is_focus (search_entry))
     {
@@ -1312,7 +1312,7 @@ G_MODULE_EXPORT gboolean do_focus_change_on_key_press (GtkWidget *widget,
              keyval == GDK_Page_Down   
            ) &&
            (
-             !gw_ui_widget_equals_target (widget, GW_TARGET_RESULTS)
+             !gw_common_widget_equals_target (widget, GW_TARGET_RESULTS)
            )
          )
       {
@@ -1328,7 +1328,7 @@ G_MODULE_EXPORT gboolean do_focus_change_on_key_press (GtkWidget *widget,
                 keyval != GDK_Down      &&
                 keyval != GDK_Page_Up   &&
                 keyval != GDK_Page_Down &&
-                !gw_ui_widget_equals_target (widget, GW_TARGET_ENTRY)
+                !gw_common_widget_equals_target (widget, GW_TARGET_ENTRY)
               )
       {
         gw_ui_text_select_all_by_target (GW_TARGET_ENTRY);
@@ -1677,7 +1677,7 @@ G_MODULE_EXPORT void do_search_drag_data_recieved (GtkWidget        *widget,
     if (name == NULL || strcmp (name, "search_entry") == 0)
       return;
 
-    GtkWidget* entry = get_widget_by_target (GW_TARGET_ENTRY);
+    GtkWidget* entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
    
     char* text = (char*) gtk_selection_data_get_text (data);   
 
@@ -1717,7 +1717,7 @@ G_MODULE_EXPORT void do_search_drag_data_recieved (GtkWidget        *widget,
 G_MODULE_EXPORT void do_update_button_states_based_on_entry_text (GtkWidget *widget,
                                                                   gpointer   data   )
 {
-    GtkWidget *search_entry = get_widget_by_target (GW_TARGET_ENTRY);
+    GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
     int length = gtk_entry_get_text_length (GTK_ENTRY (search_entry));
 
     //Show the clear icon when approprate
@@ -1761,7 +1761,7 @@ void do_populate_popup_with_search_options (GtkTextView *entry, GtkMenu *menu, g
     int i = 0;
 
     //Initializations
-    tb = get_gobject_by_target (GW_TARGET_RESULTS);
+    tb = gw_common_get_gobject_by_target (GW_TARGET_RESULTS);
     // TRANSLATORS: The first variable is the expression to look for, the second is the dictionary full name
     search_for_menuitem_text = gettext("Search for \"%s\" in the %s");
     // TRANSLATORS: The variable is the expression to look for

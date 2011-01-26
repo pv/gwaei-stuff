@@ -38,11 +38,6 @@ static GtkBuilder *_builder = NULL;
 void gw_common_initialize ()
 {
   _builder = gtk_builder_new ();
-  gw_common_load_ui_xml ("main.ui");
-  gw_common_load_ui_xml ("settings.ui");
-  gw_common_load_ui_xml ("install.ui");
-  gw_common_load_ui_xml ("kanjipad.ui");
-  gw_common_load_ui_xml ("radicals.ui");
 }
 
 void gw_common_free ()
@@ -58,6 +53,7 @@ void gw_common_free ()
 //!
 static void _initialize_window_attributes (char* window_id)
 {
+/*
     GtkBuilder *builder = gw_common_get_builder ();
 
     int leftover;
@@ -127,6 +123,7 @@ static void _initialize_window_attributes (char* window_id)
       //Allow a vertical scrollbar
       gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
     }
+*/
 }
 
 
@@ -137,6 +134,7 @@ static void _initialize_window_attributes (char* window_id)
 //!
 void gw_common_close_window (const char* window_id)
 {
+/*
     GtkBuilder *builder = gw_common_get_builder ();
 
     GtkWidget *window;
@@ -161,6 +159,7 @@ void gw_common_close_window (const char* window_id)
     gw_pref_set_int (window_schema, "y", y);
     gw_pref_set_int (window_schema, "width", width);
     gw_pref_set_int (window_schema, "height", height);
+*/
 }
 
 
@@ -171,6 +170,7 @@ void gw_common_close_window (const char* window_id)
 //!
 void gw_common_show_window (char *id)
 {
+/*
     GtkBuilder *builder = gw_common_get_builder ();
 
     GtkWidget *window;
@@ -196,7 +196,7 @@ void gw_common_show_window (char *id)
     else if (strcmp (id, "kanjipad_window") == 0)
     {
       _initialize_window_attributes (id);
-      gw_kanjipad_set_target_text_widget (get_widget_by_target (GW_TARGET_ENTRY));
+      gw_kanjipad_set_target_text_widget (gw_common_get_widget_by_target (GW_TARGET_ENTRY));
       gtk_window_set_type_hint (GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_UTILITY);
       gtk_widget_show (window);
       _initialize_window_attributes (id);
@@ -205,6 +205,7 @@ void gw_common_show_window (char *id)
     {
       gtk_widget_show (window);
     }
+*/
 }
 
 
@@ -215,6 +216,8 @@ GtkBuilder* gw_common_get_builder ()
 {
     return _builder;
 }
+
+
 
 //!
 //! @brief Loads the gtk builder xml file from the usual paths
@@ -270,4 +273,82 @@ gboolean gw_common_load_ui_xml (const char *filename) {
     return FALSE;
 }
 
+
+//!
+//! @brief Retrieves a special GtkWidget designated by the GwTargetOuput signature
+//!
+//! This function would get the target textview instead of the textbuffer.
+//! The focus is on getting the frontend widget.
+//!
+//! @param TARGET A GwTargetOutput designating the target
+//!
+GtkWidget* gw_common_get_widget_by_target (const GwTargetOutput TARGET)
+{
+    GtkBuilder *builder = gw_common_get_builder ();
+
+    GtkWidget *container;
+    GtkWidget *notebook;
+    GtkWidget *page;
+    int page_number;
+
+    switch (TARGET)
+    {
+      case GW_TARGET_RESULTS:
+        notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+        page_number =  gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+        if (page_number == -1) return NULL;
+        page = gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), page_number);
+        if (page == NULL) return NULL;
+        return gtk_bin_get_child (GTK_BIN (page));
+      case GW_TARGET_ENTRY:
+        container = GTK_WIDGET (gtk_builder_get_object (builder, "search_entry_container"));
+        return gtk_bin_get_child (GTK_BIN (container));
+      default:
+        return NULL;
+    }
+}
+
+
+//!
+//! @brief To be written
+//!
+gboolean gw_common_widget_equals_target (GtkWidget* widget, const GwTargetOutput TARGET)
+{
+    GtkWidget* target;
+    target = gw_common_get_widget_by_target (TARGET);
+    return (GTK_WIDGET (widget) == GTK_WIDGET (target));
+}
+
+
+//!
+//! @brief Retrieves a special gobject designated by the GwTargetOuput signature
+//!
+//! This function would get the target textbuffer instead of the targettext view for example.
+//! The focus is on getting the backend widget.
+//!
+//! @param TARGET A GwTargetOutput designating the target
+//!
+gpointer gw_common_get_gobject_by_target (const GwTargetOutput TARGET)
+{
+    GtkBuilder *builder = gw_common_get_builder ();
+
+    GtkWidget *notebook;
+    GtkWidget *page;
+    int page_number;
+    GtkWidget *view;
+
+    switch (TARGET)
+    {
+      case GW_TARGET_RESULTS:
+          notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+          page_number = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+          if (page_number == -1) return NULL;
+          page = gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), page_number);
+          if (page == NULL) return NULL;
+          if ((view = gtk_bin_get_child (GTK_BIN (page))) == NULL) return NULL;
+          return G_OBJECT (gtk_text_view_get_buffer (GTK_TEXT_VIEW (view)));
+      default:
+          return NULL;
+    }
+}
 

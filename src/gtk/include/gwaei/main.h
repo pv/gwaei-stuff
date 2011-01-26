@@ -3,28 +3,16 @@
 
 #include <gtk/gtk.h>
 
-#include <gwaei/searchitem-object.h>
+#include <gwaei/searchitem.h>
 
-void gw_main_initialize (gboolean new_instance);
+void gw_main_initialize ();
 void gw_main_free (void);
 
-gpointer get_gobject_by_target (GwTargetOutput);
-GtkWidget* get_widget_by_target (GwTargetOutput);
-
-void initialize_text_views (void);
-void initialize_window_attributes (char* window_id);
-void save_window_attributes (char* window_id);
-void rebuild_history_menuitem_popup (void);
-int  rebuild_combobox_dictionary_list (void);
 gboolean gw_ui_update_progress_feedback (gpointer);
-void update_toolbar_buttons (void);
-void update_history_popup (void);
 void gw_ui_update_total_results_label (GwSearchItem*);
-gboolean gw_ui_load_xml (const char*);
 char* gw_ui_get_text_slice_from_buffer (int, int, int);
 const char* gw_ui_get_active_dictionary (void);
 char* gw_ui_buffer_get_text_by_target (GwTargetOutput);
-void save_window_attributes_and_hide (const char*);
 
 gboolean gw_ui_cancel_search (gpointer);
 gboolean gw_ui_cancel_search_by_searchitem (GwSearchItem*);
@@ -84,8 +72,6 @@ void gw_ui_buffer_reload_tagtable_tags (void);
 
 void gw_ui_set_dictionary_by_searchitem (GwSearchItem*);
 
-
-gboolean gw_ui_widget_equals_target (gpointer, GwTargetOutput);
 void gw_ui_close_suggestion_box (void);
 void gw_ui_set_katakana_hiragana_conv (gboolean);
 void gw_ui_set_hiragana_katakana_conv (gboolean);

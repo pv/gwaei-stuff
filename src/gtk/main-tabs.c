@@ -268,6 +268,7 @@ G_MODULE_EXPORT void do_new_tab (GtkWidget *widget, gpointer data)
     gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
     gw_ui_set_dictionary(0);
     gw_tabs_update_on_deck_historylist_item_by_current_tab ();
+
     gw_tabs_update_appearance ();
 }
 

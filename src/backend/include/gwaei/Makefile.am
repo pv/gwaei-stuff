@@ -1,2 +1,2 @@
 libraryincludedir = $(includedir)/$(PACKAGE)-backend
-libraryinclude_HEADERS = backend.h definitions.h dictinfo-object.h dictlist-object.h engine.h historylist-object.h io.h queryline-object.h regex.h resultline-object.h searchitem-object.h utilities.h gsettings-preferences.h 
+libraryinclude_HEADERS = backend.h dictinfo.h dictlist.h engine.h historylist.h io.h queryline.h regex.h resultline.h searchitem.h utilities.h preferences.h 

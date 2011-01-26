@@ -236,11 +236,19 @@ char* gw_regex_locate_offset (char *string, char *line_start, regex_t *re_locate
 //! 
 gboolean gw_regex_create_kanji_high_regex (regex_t *regex, char *string, int flags)
 {
-    char expression[MAX_LINE * 2];
-    strcpy (expression, "((^無)|(^不)|(^非)|(^)|(^お)|(^御))(");
-    strcat (expression, string);
-    strcat (expression, ")(($))");
-    return regcomp (regex, expression, flags);
+    int result = 0;
+    char *atom[4];
+    char *expression;
+    atom[0] = "((^無)|(^不)|(^非)|(^)|(^お)|(^御))(";
+    atom[1] = string;
+    atom[2] = ")(($))";
+    atom[3] = NULL;
+
+    expression = g_strjoinv (NULL, atom);
+    result = regcomp (regex, expression, flags);
+    g_free (expression);
+
+    return result;
 }
 
 
@@ -256,11 +264,19 @@ gboolean gw_regex_create_kanji_high_regex (regex_t *regex, char *string, int fla
 //! 
 gboolean gw_regex_create_kanji_med_regex (regex_t *regex, char *string, int flags)
 {
-    char expression[MAX_LINE * 2];
-    strcpy (expression, "((^)|(^お)|(を)|(に)|(で)|(は)|(と))(");
-    strcat (expression, string);
-    strcat (expression, ")((で)|(が)|(の)|(を)|(に)|(で)|(は)|(と)|($))");
-    return regcomp (regex, expression, flags);
+    int result = 0;
+    char *atom[4];
+    char *expression;
+    atom[0] = "((^)|(^お)|(を)|(に)|(で)|(は)|(と))(";
+    atom[1] = string;
+    atom[2] = ")((で)|(が)|(の)|(を)|(に)|(で)|(は)|(と)|($))";
+    atom[3] = NULL;
+
+    expression = g_strjoinv (NULL, atom);
+    result = regcomp (regex, expression, flags);
+    g_free (expression);
+
+    return result;
 }
 
 
@@ -276,11 +292,19 @@ gboolean gw_regex_create_kanji_med_regex (regex_t *regex, char *string, int flag
 //! 
 gboolean gw_regex_create_furi_high_regex (regex_t *regex, char *string, int flags)
 {
-    char expression[MAX_LINE * 2];
-    strcpy (expression, "^((お)|())(");
-    strcat (expression, string);
-    strcat (expression, ")$");
-    return regcomp (regex, expression, flags);
+    int result = 0;
+    char *atom[4];
+    char *expression;
+    atom[0] = "^((お)|())(";
+    atom[1] = string;
+    atom[2] = ")$";
+    atom[3] = NULL;
+
+    expression = g_strjoinv (NULL, atom);
+    result = regcomp (regex, expression, flags);
+    g_free (expression);
+
+    return result;
 }
 
 
@@ -296,11 +320,19 @@ gboolean gw_regex_create_furi_high_regex (regex_t *regex, char *string, int flag
 //! 
 gboolean gw_regex_create_furi_med_regex (regex_t *regex, char *string, int flags)
 {
-    char expression[MAX_LINE * 2];
-    strcpy (expression, "((^)|(^お)|(を)|(に)|(で)|(は)|(と))(");
-    strcat (expression, string);
-    strcat (expression, ")((で)|(が)|(の)|(を)|(に)|(で)|(は)|(と)|($))");
-    return regcomp (regex, expression, flags);
+    int result = 0;
+    char *atom[4];
+    char *expression;
+    atom[0] = "((^)|(^お)|(を)|(に)|(で)|(は)|(と))(";
+    atom[1] = string;
+    atom[2] = ")((で)|(が)|(の)|(を)|(に)|(で)|(は)|(と)|($))";
+    atom[3] = NULL;
+
+    expression = g_strjoinv (NULL, atom);
+    result = regcomp (regex, expression, flags);
+    g_free (expression);
+
+    return result;
 }
 
 
@@ -316,11 +348,19 @@ gboolean gw_regex_create_furi_med_regex (regex_t *regex, char *string, int flags
 //! 
 gboolean gw_regex_create_roma_high_regex (regex_t *regex, char *string, int flags)
 {
-    char expression[MAX_LINE * 2];
-    strcpy (expression, "(^|\\)|(/)|(^to )|\\) )(");
-    strcat (expression, string);
-    strcat (expression, ")(\\(|/|$|!| \\()");
-    return regcomp (regex, expression, flags);
+    int result = 0;
+    char *atom[4];
+    char *expression;
+    atom[0] = "(^|\\)|(/)|(^to )|\\) )(";
+    atom[1] = string;
+    atom[2] = ")(\\(|/|$|!| \\()";
+    atom[3] = NULL;
+
+    expression = g_strjoinv (NULL, atom);
+    result = regcomp (regex, expression, flags);
+    g_free (expression);
+
+    return result;
 }
 
 
@@ -336,17 +376,25 @@ gboolean gw_regex_create_roma_high_regex (regex_t *regex, char *string, int flag
 //! 
 gboolean gw_regex_create_roma_med_regex (regex_t *regex, char *string, int flags)
 {
-    char expression[MAX_LINE * 2];
-    strcpy (expression, "\\{(");
-    strcat (expression, string);
-    strcat (expression, ")\\}|(\\) |/)((\\bto )|(\\bto be )|(\\b))(");
-    strcat (expression, string);
-    strcat (expression, ")(( \\([^/]+\\)/)|(/))|(\\[)(");
-    strcat (expression, string);
-    strcat (expression, ")(\\])|^(");
-    strcat (expression, string);
-    strcat (expression, ")\\b");
-    return regcomp (regex, expression, flags);
+    int result = 0;
+    char *atom[10];
+    char *expression;
+    atom[0] = "\\{(";
+    atom[1] = string;
+    atom[2] = ")\\}|(\\) |/)((\\bto )|(\\bto be )|(\\b))(";
+    atom[3] = string;
+    atom[4] = ")(( \\([^/]+\\)/)|(/))|(\\[)(";
+    atom[5] = string;
+    atom[6] = ")(\\])|^(";
+    atom[7] = string;
+    atom[8] = ")\\b";
+    atom[9] = NULL;
+
+    expression = g_strjoinv (NULL, atom);
+    result = regcomp (regex, expression, flags);
+    g_free (expression);
+
+    return result;
 }
 
 
@@ -363,13 +411,21 @@ gboolean gw_regex_create_roma_med_regex (regex_t *regex, char *string, int flags
 //! 
 gboolean gw_regex_create_mix_high_regex (regex_t *regex, char *string, int flags)
 {
-    char expression[MAX_LINE * 2];
-    strcpy (expression, "(\\b(");
-    strcat (expression, string);
-    strcat (expression, ")\\b|^(");
-    strcat (expression, string);
-    strcat (expression, "))");
-    return regcomp (regex, expression, flags);
+    int result = 0;
+    char *atom[4];
+    char *expression;
+    atom[0] = "(\\b(";
+    atom[1] = string;
+    atom[2] = ")\\b|^(";
+    atom[3] = string;
+    atom[4] = "))";
+    atom[5] = NULL;
+
+    expression = g_strjoinv (NULL, atom);
+    result = regcomp (regex, expression, flags);
+    g_free (expression);
+
+    return result;
 }
 
 
@@ -386,17 +442,25 @@ gboolean gw_regex_create_mix_high_regex (regex_t *regex, char *string, int flags
 //! 
 gboolean gw_regex_create_mix_med_regex (regex_t *regex, char *string, int flags)
 {
-    char expression[MAX_LINE * 2];
-    strcpy (expression, "\\{(");
-    strcat (expression, string);
-    strcat (expression, ")\\}|(\\) |/)((to )|(to be )|())(");
-    strcat (expression, string);
-    strcat (expression, ")(( \\([^/]+\\)/)|(/))|(\\[)(");
-    strcat (expression, string);
-    strcat (expression, ")(\\])|^(");
-    strcat (expression, string);
-    strcat (expression, ")\\b");
-    return regcomp (regex, expression, flags);
+    int result = 0;
+    char *atom[10];
+    char *expression;
+    atom[0] = "\\{(";
+    atom[1] = string;
+    atom[2] = ")\\}|(\\) |/)((to )|(to be )|())(";
+    atom[3] = string;
+    atom[4] = ")(( \\([^/]+\\)/)|(/))|(\\[)(";
+    atom[5] = string;
+    atom[6] = ")(\\])|^(";
+    atom[7] = string;
+    atom[8] = ")\\b";
+    atom[9] = NULL;
+
+    expression = g_strjoinv (NULL, atom);
+    result = regcomp (regex, expression, flags);
+    g_free (expression);
+
+    return result;
 }
 
 //!
@@ -410,9 +474,17 @@ gboolean gw_regex_create_mix_med_regex (regex_t *regex, char *string, int flags)
 //! 
 gboolean gw_regex_create_exact_regex (regex_t *regex, char *string, int flags)
 {
-    char expression[MAX_LINE * 2];
-    strcpy (expression, "^(");
-    strcat (expression, string);
-    strcat (expression, ")$");
-    return regcomp (regex, expression, flags);
+    int result = 0;
+    char *atom[4];
+    char *expression;
+    atom[0] = "^(";
+    atom[1] = string;
+    atom[2] = ")$";
+    atom[3] = NULL;
+
+    expression = g_strjoinv (NULL, atom);
+    result = regcomp (regex, expression, flags);
+    g_free (expression);
+
+    return result;
 }

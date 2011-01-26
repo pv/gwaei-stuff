@@ -1,7 +1,7 @@
 #ifndef GW_GTK_MAIN_INTERFACE_TABS_INCLUDED
 #define GW_GTK_MAIN_INTERFACE_TABS_INCLUDED
 
-#include <gwaei/searchitem-object.h> // needed for the GwSearchItem below
+#include <gwaei/searchitem.h> // needed for the GwSearchItem below
 
 void gw_tabs_initialize (void);
 void gw_tabs_free (void);

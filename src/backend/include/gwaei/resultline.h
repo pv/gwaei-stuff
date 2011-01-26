@@ -22,13 +22,14 @@
 *******************************************************************************/
 
 //!
-//! @file src/include/gwaei/resultline-object.h
+//! @file src/include/gwaei/resultline.h
 //!
 //! @brief To be written.
 //!
 //! To be written.
 //!
 
+#include <gwaei/io.h>
 
 //!
 //! @brief Primitive for storing lists of dictionaries
@@ -38,7 +39,7 @@
 static char *FIRST_DEFINITION_PREFIX_STR = "(1)";
 
 struct _GwResultLine {
-    char string[MAX_LINE];     //!< Character array holding the result line for the pointers to reference
+    char string[GW_IO_MAX_FGETS_LINE];     //!< Character array holding the result line for the pointers to reference
 
     //General result things
     char *def_start[50];        //!< Pointer to the definitions

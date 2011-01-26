@@ -331,7 +331,7 @@ void gw_util_shift_all_chars_in_str_by (char input[], int shift)
     char *input_ptr;
     input_ptr = input;
 
-    char output[MAX_QUERY];
+    char output[strlen(input)];
     char *output_ptr;
     output_ptr = output;
 
@@ -955,55 +955,6 @@ gboolean gw_util_force_japanese_locale ()
          setlocale(LC_COLLATE, "japanese")    == NULL    )
       //All failed, go for the default
       setlocale(LC_COLLATE, "");
-}
-
-
-
-//!
-//! @brief A function that gets the default pref hardwired in.
-//!
-//! This function is made to take things like gconf out of the equation
-//! so that the program can run even if it doesn't have any preferences
-//! stored anywhere.
-//!
-//! @param value The pre-allocated string to copy the value to
-//! @param key the key of the wanted preference
-//! @param n the radix of the size of the value array
-//!
-void gw_util_strncpy_default_from_key (char *value, const char *schemaid, const char *key, int n)
-{
-    if (strcmp (GW_SCHEMA_DICTIONARY, schemaid) == 0)
-    {
-      if (strcmp (GW_KEY_ENGLISH_SOURCE, key) == 0)
-        strncpy (value, GW_ENGLISH_URI_DEFAULT, n);
-      else if (strcmp (GW_KEY_KANJI_SOURCE, key) == 0)
-        strncpy (value, GW_KANJI_URI_DEFAULT, n);
-      else if (strcmp (GW_KEY_NAMES_SOURCE, key) == 0)
-        strncpy (value, GW_NAMES_URI_DEFAULT, n);
-      else if (strcmp (GW_KEY_RADICALS_SOURCE, key) == 0)
-        strncpy (value, GW_RADICALS_URI_DEFAULT, n);
-      else if (strcmp (GW_KEY_EXAMPLES_SOURCE, key) == 0)
-        strncpy (value, GW_EXAMPLES_URI_DEFAULT, n);
-    }
-
-    if (strcmp (GW_SCHEMA_DICTIONARY, schemaid) == 0)
-    {
-      if (strcmp (GW_KEY_MATCH_FG, key) == 0)
-        strncpy (value, GW_MATCH_FG_DEFAULT, n);
-      else if (strcmp (GW_KEY_MATCH_BG, key) == 0)
-        strncpy (value, GW_MATCH_BG_DEFAULT, n);
-      else if (strcmp (GW_KEY_HEADER_FG, key) == 0)
-        strncpy (value, GW_HEADER_FG_DEFAULT, n);
-      else if (strcmp (GW_KEY_HEADER_BG, key) == 0)
-        strncpy (value, GW_HEADER_BG_DEFAULT, n);
-      else if (strcmp (GW_KEY_COMMENT_FG, key) == 0)
-        strncpy (value, GW_COMMENT_FG_DEFAULT, n);
-    }
-
-    else
-    {
-      strncpy (value, "", n);
-    }
 }
 
 

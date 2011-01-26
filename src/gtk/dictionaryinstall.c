@@ -19,6 +19,7 @@
 G_MODULE_EXPORT void do_open_dictionary_install_dialog (GtkWidget *widget, gpointer data)
 {
     GtkBuilder *builder = gw_common_get_builder ();
+    gw_common_load_ui_xml ("install.ui");
 
     GtkWidget *dialog = GTK_WIDGET( gtk_builder_get_object (builder, "dictionary_install_dialog" ));
     GtkWidget *settings_window = GTK_WIDGET(gtk_builder_get_object (builder, "main_window" ));

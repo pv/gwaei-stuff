@@ -27,7 +27,7 @@
 //! File used for implimenting a libsexy entry as the search query.  Libsexy
 //! is nice because it allows spell checking compatibility.  Because some day
 //! I may want to remove the dependeny, this code mingles with the other files
-//! minimally.  One the initialize_sexy() command should be used if you want
+//! minimally.  One the gw_libsexy_initialize () command should be used if you want
 //! to use the libsexy search entry.
 //!
 
@@ -58,7 +58,7 @@ void do_conditionally_enable_spellcheck (GtkWidget *widget, gpointer data)
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
-   GtkWidget *search_entry = GTK_WIDGET (get_widget_by_target (GW_TARGET_ENTRY));
+   GtkWidget *search_entry = GTK_WIDGET (gw_common_get_widget_by_target (GW_TARGET_ENTRY));
 
    gboolean spellcheck_pref;
    spellcheck_pref = gw_pref_get_boolean (GW_SCHEMA_BASE, GW_KEY_SPELLCHECK);
@@ -240,7 +240,7 @@ void do_conditionally_enable_spellcheck (GtkWidget *widget, gpointer data)
 //!
 gboolean do_enable_spellcheck_when_focus_in (GtkWidget *widget, gpointer data)
 {
-    GtkWidget *search_entry = GTK_WIDGET (get_widget_by_target (GW_TARGET_ENTRY));
+    GtkWidget *search_entry = GTK_WIDGET (gw_common_get_widget_by_target (GW_TARGET_ENTRY));
     do_conditionally_enable_spellcheck (NULL, NULL);
     return FALSE;
 }
@@ -259,80 +259,30 @@ gboolean do_enable_spellcheck_when_focus_in (GtkWidget *widget, gpointer data)
 //!
 gboolean do_disable_spellcheck_when_focus_out (GtkWidget *widget, gpointer data)
 {
-    GtkWidget *search_entry = GTK_WIDGET (get_widget_by_target (GW_TARGET_ENTRY));
+    GtkWidget *search_entry = GTK_WIDGET (gw_common_get_widget_by_target (GW_TARGET_ENTRY));
     sexy_spell_entry_set_checked (SEXY_SPELL_ENTRY (search_entry), FALSE);
     return FALSE;
 }
 
 
 //!
-//! @brief Sets up the sexy text entry
+//! @brief Callback action for when preference key changes
 //!
-//! The function takes the time to get rid of the gtkentry and replace it with
-//! a SexySpellEntry.  In the process, it makes sure all of the signals are
-//! connected to the new widget. It also make hidden spellcheck toolbutton
-//! and checkbox visible.
+//! @param client The preference client
+//! @param cnxn_id Unknown
+//! @param entry The preference entry object
+//! @param data Usere data passed to the function
 //!
-void gw_libsexy_initialize (GtkWidget **original_entry)
+void do_spellcheck_pref_changed_action (GSettings *settings,
+                                        gchar *key,
+                                        gpointer data       )
 {
-    GtkBuilder *builder = gw_common_get_builder ();
-
-    //Make the hidden spellcheck toolbutton appear
-    GtkWidget *spellcheck_toolbutton;
-    spellcheck_toolbutton = GTK_WIDGET (gtk_builder_get_object (builder, "spellcheck_toolbutton"));
-    gtk_widget_show (spellcheck_toolbutton);
-
-    //Swap the original entry for the libsexy one
-    gchar *tooltip_text = gtk_widget_get_tooltip_text (*original_entry);
-    gtk_widget_destroy (*original_entry);
-
-    GtkWidget *search_entry = NULL;
-
-    *original_entry = search_entry = GTK_WIDGET (sexy_spell_entry_new ());
-
-    GtkWidget *entry_container;
-    entry_container = GTK_WIDGET (gtk_builder_get_object (builder, "search_entry_container"));
-
-    gtk_container_add (GTK_CONTAINER (entry_container), search_entry);
-    gtk_buildable_set_name (GTK_BUILDABLE (search_entry), "search_entry");
-    if (tooltip_text != NULL)
-    {
-      gtk_widget_set_tooltip_text (search_entry, tooltip_text);
-      g_free (tooltip_text);
-    }
-    gtk_entry_set_max_length (GTK_ENTRY (search_entry), 50);
-    gtk_widget_show (search_entry);
-
-    GtkWidget* results_tv = get_widget_by_target (GW_TARGET_RESULTS);
-    GtkWidget* kanji_tv = get_widget_by_target (GW_TARGET_KANJI);
-
-    //Mimic original callbacks from the original search entry
-    g_signal_connect( G_OBJECT (search_entry), "activate", G_CALLBACK (do_search), NULL);
-    g_signal_connect( G_OBJECT (search_entry), "focus-in-event", G_CALLBACK (do_update_clipboard_on_focus_change), search_entry);
-    g_signal_connect( G_OBJECT (search_entry), "key-press-event", G_CALLBACK (do_focus_change_on_key_press), NULL);
-    g_signal_connect( G_OBJECT (search_entry), "changed", G_CALLBACK (do_update_button_states_based_on_entry_text), NULL);
-//    g_signal_connect( G_OBJECT (search_entry), "changed", G_CALLBACK (do_search), NULL);
-    g_signal_connect( G_OBJECT (search_entry), "icon-release", G_CALLBACK (do_clear_search), NULL);
-
-    //New callbacks specifically for libsexy
-    g_signal_connect( G_OBJECT (search_entry), "changed", G_CALLBACK (do_conditionally_enable_spellcheck), NULL);
-    /*
-    g_signal_connect( G_OBJECT (search_entry), "focus-in-event", G_CALLBACK (do_enable_spellcheck_when_focus_in), search_entry);
-    g_signal_connect( G_OBJECT (results_tv), "focus-in-event", G_CALLBACK (do_disable_spellcheck_when_focus_out), search_entry);
-    g_signal_connect( G_OBJECT (kanji_tv), "focus-in-event", G_CALLBACK (do_disable_spellcheck_when_focus_out), search_entry);
-    */
-
-    //Show the spellcheck checkbox in the preferences
-    GtkWidget *spellcheck_checkbox;
-    spellcheck_checkbox = GTK_WIDGET (gtk_builder_get_object (builder, "query_spellcheck"));
-    gtk_widget_show (spellcheck_checkbox);
-
+    g_signal_handlers_block_by_func (settings, do_spellcheck_pref_changed_action, NULL);
+    gboolean value = g_settings_get_boolean (settings, key);
+    gw_libsexy_ui_set_spellcheck (value);
+    g_signal_handlers_unblock_by_func (settings, do_spellcheck_pref_changed_action, NULL);
 }
 
-void gw_libsexy_free ()
-{
-
-}
 
 //!
 //! @brief Sets the gui widgets consistently to the requested state
@@ -358,4 +308,72 @@ void gw_libsexy_ui_set_spellcheck (gboolean request)
 
     g_signal_handlers_unblock_by_func (pref_checkbox, do_spellcheck_toggle, NULL);
     g_signal_handlers_unblock_by_func (toolbar_button, do_spellcheck_toggle, NULL);
+}
+
+
+//!
+//! @brief Sets up the sexy text entry
+//!
+//! The function takes the time to get rid of the gtkentry and replace it with
+//! a SexySpellEntry.  In the process, it makes sure all of the signals are
+//! connected to the new widget. It also make hidden spellcheck toolbutton
+//! and checkbox visible.
+//!
+void gw_libsexy_initialize ()
+{
+    GtkBuilder *builder = gw_common_get_builder ();
+    GtkWidget *container = GTK_WIDGET (gtk_builder_get_object (builder, "search_entry_container"));
+    GtkWidget *entry = gtk_bin_get_child (GTK_BIN (container));
+
+    //Make the hidden spellcheck toolbutton appear
+    GtkWidget *spellcheck_toolbutton;
+    spellcheck_toolbutton = GTK_WIDGET (gtk_builder_get_object (builder, "spellcheck_toolbutton"));
+    gtk_widget_show (spellcheck_toolbutton);
+
+    //Swap the original entry for the libsexy one
+    gchar *tooltip_text = gtk_widget_get_tooltip_text (entry);
+    gtk_widget_destroy (entry);
+    entry = NULL;
+
+    entry = GTK_WIDGET (sexy_spell_entry_new ());
+
+    gtk_container_add (GTK_CONTAINER (container), entry);
+    gtk_buildable_set_name (GTK_BUILDABLE (entry), "search_entry");
+
+    if (tooltip_text != NULL)
+    {
+      gtk_widget_set_tooltip_text (entry, tooltip_text);
+      g_free (tooltip_text);
+    }
+
+    gtk_entry_set_max_length (GTK_ENTRY (entry), 50);
+    gtk_widget_show (entry);
+
+    GtkWidget* results_tv = gw_common_get_widget_by_target (GW_TARGET_RESULTS);
+    GtkWidget* kanji_tv = gw_common_get_widget_by_target (GW_TARGET_KANJI);
+
+
+    //Mimic original callbacks from the original search entry
+    g_signal_connect (G_OBJECT (entry), "activate", G_CALLBACK (do_search), NULL);
+    g_signal_connect (G_OBJECT (entry), "focus-in-event", G_CALLBACK (do_update_clipboard_on_focus_change), entry);
+    g_signal_connect (G_OBJECT (entry), "key-press-event", G_CALLBACK (do_focus_change_on_key_press), NULL);
+    g_signal_connect (G_OBJECT (entry), "changed", G_CALLBACK (do_update_button_states_based_on_entry_text), NULL);
+    g_signal_connect (G_OBJECT (entry), "icon-release", G_CALLBACK (do_clear_search), NULL);
+
+    //New callbacks specifically for libsexy
+    g_signal_connect (G_OBJECT (entry), "changed", G_CALLBACK (do_conditionally_enable_spellcheck), NULL);
+
+    //Show the spellcheck checkbox in the preferences
+    GtkWidget *spellcheck_checkbox;
+    spellcheck_checkbox = GTK_WIDGET (gtk_builder_get_object (builder, "query_spellcheck"));
+    gtk_widget_show (spellcheck_checkbox);
+
+
+    gw_prefs_add_change_listener (GW_SCHEMA_BASE, GW_KEY_SPELLCHECK, do_spellcheck_pref_changed_action, NULL);
+
+}
+
+void gw_libsexy_free ()
+{
+
 }

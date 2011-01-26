@@ -255,7 +255,6 @@ G_MODULE_EXPORT void do_remove_dictionary_action (GtkWidget *widget, gpointer da
     {
       GwDictInfo *di = list->data;
       gw_io_uninstall_dictinfo (di, NULL, NULL, TRUE);
-      rebuild_combobox_dictionary_list ();
       gw_settings_dictionary_manager_update_items ();
     }
 

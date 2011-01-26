@@ -586,7 +586,6 @@ G_MODULE_EXPORT void do_force_mix_rebuild (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void do_reset_dictionary_orders (GtkWidget *widget, gpointer data)
 {
     gw_pref_reset_value (GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER);
-    rebuild_combobox_dictionary_list();
     gw_ui_update_settings_interface();
 }
 

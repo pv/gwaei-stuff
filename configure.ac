@@ -23,38 +23,6 @@ GDU_REQUIRED_VERSION=0.13.0
 LIBUNIQUE_REQUIRED_VERSION=1.0.0
 LIBSEXY_REQUIRED_VERSION=0.1.11
 
-ENGLISH_DEFAULT_URI=ftp://ftp.monash.edu.au/pub/nihongo/edict.gz
-AC_SUBST(ENGLISH_DEFAULT_URI)
-
-KANJI_DEFAULT_URI=ftp://ftp.monash.edu.au/pub/nihongo/kanjidic.gz,ftp://ftp.monash.edu.au/pub/nihongo/kradfile.gz
-AC_SUBST(KANJI_DEFAULT_URI)
-
-NAMES_PLACES_DEFAULT_URI=ftp://ftp.monash.edu.au/pub/nihongo/enamdict.gz
-AC_SUBST(NAMES_PLACES_DEFAULT_URI)
-
-EXAMPLES_DEFAULT_URI=http://www.csse.monash.edu.au/~jwb/examples.gz
-AC_SUBST(EXAMPLES_DEFAULT_URI)
-
-LOAD_ORDER_DEFAULT=edict\/English\;kanji\/Kanji\;edict\/Names\;edict\/Places\;examples\/Examples
-AC_SUBST(LOAD_ORDER_DEFAULT)
-
-
-MATCH_FG_DEFAULT=#000000
-AC_SUBST(MATCH_FG_DEFAULT)
-
-MATCH_BG_DEFAULT=#CCEECC
-AC_SUBST(MATCH_BG_DEFAULT)
-
-HEADER_FG_DEFAULT=#EE1111
-AC_SUBST(HEADER_FG_DEFAULT)
-
-HEADER_BG_DEFAULT=#FFDEDE
-AC_SUBST(HEADER_BG_DEFAULT)
-
-COMMENT_FG_DEFAULT=#2222DD
-AC_SUBST(COMMENT_FG_DEFAULT)
-
-
 #Custom arguments
 AC_ARG_ENABLE([win32],
 [  --enable-win32         turn on win32 (do not touch: experimental)],
@@ -171,7 +139,7 @@ AM_PROG_CC_C_O
 AM_GNU_GETTEXT([external])
 AC_CONFIG_MACRO_DIR([m4])
 
-AC_CONFIG_FILES([Makefile src/Makefile src/backend/Makefile src/backend/include/gwaei/Makefile src/gtk/Makefile src/gtk/include/gwaei/Makefile mandir/Makefile help/Makefile help/gwaei.omf help/C/gwaei.xml src/gtk/ui/Makefile src/gtk/images/Makefile src/schemas/Makefile src/gtk/desktop/Makefile src/kpengine/Makefile src/kpengine/conv_jdata.pl rpm/gwaei.spec rpm/fedora/SPECS/gwaei.spec src/backend/include/gwaei/definitions.h po/Makefile.in po/Makefile src/schemas/org.gnome.gwaei.gschema.xml src/schemas/org.gnome.gwaei.highlight.gschema.xml src/schemas/org.gnome.gwaei.dictionary.gschema.xml src/schemas/org.gnome.gwaei.kanjipad_window.gschema.xml src/schemas/org.gnome.gwaei.main_window.gschema.xml src/schemas/org.gnome.gwaei.fonts.gschema.xml src/schemas/org.gnome.gwaei.radicals_window.gschema.xml] Doxyfile)
+AC_CONFIG_FILES([Makefile src/Makefile src/backend/Makefile src/backend/include/gwaei/Makefile src/gtk/Makefile src/gtk/include/gwaei/Makefile mandir/Makefile help/Makefile help/gwaei.omf help/C/gwaei.xml src/gtk/ui/Makefile src/gtk/images/Makefile src/schemas/Makefile src/gtk/desktop/Makefile src/kpengine/Makefile src/kpengine/conv_jdata.pl rpm/gwaei.spec rpm/fedora/SPECS/gwaei.spec po/Makefile.in po/Makefile] Doxyfile)
 
 AC_OUTPUT
 

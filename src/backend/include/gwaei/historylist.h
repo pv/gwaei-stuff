@@ -22,7 +22,7 @@
 *******************************************************************************/
 
 //!
-//! @file src/include/gwaei/historylist-object.h
+//! @file src/include/gwaei/historylist.h
 //!
 //! @brief To be written.
 //!
@@ -33,7 +33,7 @@
 //! Historylist targets
 //!
 
-#include <gwaei/searchitem-object.h>
+#include <gwaei/searchitem.h>
 
 typedef enum {
   GW_HISTORYLIST_RESULTS,
@@ -51,8 +51,8 @@ struct _GwHistoryList {
 };
 typedef struct _GwHistoryList GwHistoryList;
 
-
-void gw_history_initialize_history (void);
+void gw_historylist_initialize (void);
+void gw_historylist_free (void);
 
 //Methods
 GwHistoryList* gw_historylist_get_list(const int);

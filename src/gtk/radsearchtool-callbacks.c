@@ -46,8 +46,8 @@
 //!
 G_MODULE_EXPORT void do_radical_clear (GtkWidget *widget, gpointer data)
 {
-  gw_ui_deselect_all_radicals ();
-  gw_ui_set_strokes_checkbox_state (FALSE);
+  gw_radsearchtool_deselect_all_radicals ();
+  gw_radsearchtool_set_strokes_checkbox_state (FALSE);
 
   //Checks to make sure everything is sane
   if (gw_ui_cancel_search_for_current_tab () == FALSE)
@@ -71,8 +71,8 @@ G_MODULE_EXPORT void do_radical_search (GtkWidget *widget, gpointer data)
     //Ininitializations
     GwHistoryList* hl = gw_historylist_get_list(GW_HISTORYLIST_RESULTS);   
     char *query_text = NULL;
-    char *radicals_text = gw_ui_strdup_all_selected_radicals ();
-    char *strokes_text = gw_ui_strdup_prefered_stroke_count ();
+    char *radicals_text = gw_radsearchtool_strdup_all_selected_radicals ();
+    char *strokes_text = gw_radsearchtool_strdup_prefered_stroke_count ();
     GwDictInfo *di = gw_dictlist_get_dictinfo_by_name (GW_DICT_ENGINE_KANJI, "Kanji");
 
     //Create the query string
@@ -153,7 +153,7 @@ G_MODULE_EXPORT void do_radical_search (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void do_radical_kanji_stroke_checkbox_update (GtkWidget *widget, gpointer data)
 {
-    gw_ui_update_strokes_checkbox_state ();
+    gw_radsearchtool_update_strokes_checkbox_state ();
 
     //Start the search
     do_radical_search (NULL, NULL);

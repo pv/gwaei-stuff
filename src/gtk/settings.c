@@ -150,12 +150,14 @@ int gw_ui_update_progressbar (char *message, int percent, gpointer data)
 //!
 void gw_settings_initialize () 
 {
-    gw_dictionary_manager_initialize ();
+    gw_common_load_ui_xml ("settings.ui");
+    gw_settings_listeners_initialize ();
     gw_ui_update_settings_interface ();
 }
 
 void gw_settings_free ()
 {
+    gw_settings_listeners_free ();
     gw_dictionary_manager_free ();
 }
 

@@ -41,7 +41,6 @@
 
 #include <gwaei/backend.h>
 
-
 //Static declarations
 static gboolean _overlay_default_builtin_dictionary_settings (GwDictInfo*);
 
@@ -72,14 +71,9 @@ GwDictInfo* gw_dictinfo_new (GwDictEngine ENGINE, char *name)
     temp->name = NULL;
     temp->short_name = NULL;
     temp->long_name = NULL;
-    temp->source_uri = NULL;
-    temp->gskey = NULL;
     temp->total_lines = 0;
     temp->engine = ENGINE;
-    temp->compression = -1;
-    temp->encoding = -1;      
     temp->status = -1;
-    temp->mutex = g_mutex_new();
 
     //Copy the name of the dictionary over
     temp->name = g_strdup_printf ("%s", name);
@@ -128,14 +122,6 @@ void gw_dictinfo_free(GwDictInfo* di)
 
     g_free (di->long_name);
     di->long_name = NULL;
-
-    g_free (di->gskey);
-    di->gskey = NULL;
-
-    g_mutex_free (di->mutex);
-    di->mutex = NULL;
-
-    di->source_uri = NULL;
 
     free (di);
     di = NULL;

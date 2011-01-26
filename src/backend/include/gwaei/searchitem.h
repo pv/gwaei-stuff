@@ -22,7 +22,7 @@
 *******************************************************************************/
 
 //!
-//! @file src/include/gwaei/searchitem-object.h
+//! @file src/include/gwaei/searchitem.h
 //!
 //! @brief To be written.
 //!
@@ -35,9 +35,9 @@
 
 #include <stdio.h>
 
-#include <gwaei/queryline-object.h>
-#include <gwaei/resultline-object.h>
-#include <gwaei/dictinfo-object.h>
+#include <gwaei/queryline.h>
+#include <gwaei/resultline.h>
+#include <gwaei/dictinfo.h>
 
 
 #define GW_HISTORY_TIME_TO_RELEVANCE 20

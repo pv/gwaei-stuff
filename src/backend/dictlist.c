@@ -67,6 +67,8 @@ GwDictList* gw_dictlist_new ()
 
     temp->list = NULL;
     temp->selected = NULL;
+    temp->mutex = g_mutex_new();
+
     return temp;
 }
 
@@ -183,6 +185,9 @@ void gw_dictlist_free ()
 {
     while (_dictionaries->list != NULL)
       _dictionaries->list = gw_dictlist_remove_first();
+
+    g_mutex_free (_dictionaries->mutex);
+    _dictionaries->mutex = NULL;
 
     g_free(_dictionaries);
     _dictionaries = NULL;

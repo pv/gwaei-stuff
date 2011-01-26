@@ -22,14 +22,14 @@
 *******************************************************************************/
 
 //!
-//! @file src/include/gwaei/dictlist-object.h
+//! @file src/include/gwaei/dictlist.h
 //!
 //! @brief To be written.
 //!
 //! To be written.
 //!
 
-#include <gwaei/dictinfo-object.h>
+#include <gwaei/dictinfo.h>
 
 #define GW_DICTLIST_MAX_DICTIONARIES 20
 
@@ -40,6 +40,7 @@ struct _GwDictList
 {
     GList *list;      //!< GList of the installed dictionaries
     GList *selected;  //!< Pointer to the currently selected dictionary in the GList
+    GMutex *mutex;
 };
 typedef struct _GwDictList GwDictList;
 
@@ -58,6 +59,7 @@ void gw_dictlist_update_load_orders (void);
 
 void gw_dictlist_preform_postprocessing_by_name (char*, GError**);
 int gw_dictlist_get_total_with_status (GwDictStatus);
+void gw_dictlist_load_dictionary_order_from_pref (void);
 
 void gw_dictlist_free ();
 

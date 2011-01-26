@@ -42,128 +42,27 @@
 
 
 //Private variables
-static GwSearchItem *progress_feedback_item = NULL;
-static gboolean prev_selection_icon_state = FALSE;
-static GtkWidget *search_entry = NULL;
-static int gw_previous_tip = 0;
+static GwSearchItem *_progress_feedback_item = NULL;
+static gboolean _prev_selection_icon_state = FALSE;
+static int _previous_tip = 0;
 
 void _initialize_gtk_builder_translation_hack (void);
-static void _initialize_global_widget_pointers (void);
 
 
 //!
 //! @brief Sets up the variables in main-interface.c and main-callbacks.c for use
 //!
-void gw_main_initialize (gboolean new_instance)
+void gw_main_initialize ()
 {
+    gw_common_load_ui_xml ("main.ui");
     _initialize_gtk_builder_translation_hack ();
-    _initialize_global_widget_pointers();
-
     gw_tabs_initialize ();
-
-    #ifdef WITH_LIBUNIQUE
-    gw_libunique_initialize (new_instance);
-    #endif
-
-    #ifdef WITH_LIBSEXY
-    gw_libsexy_initialize (&search_entry);
-    #endif
 }
 
 void gw_main_free ()
 {
-  gw_libsexy_free ();
-  gw_libunique_free ();
   gw_tabs_free ();
 }
-
-
-//!
-//! @brief Retrieves a special gobject designated by the GwTargetOuput signature
-//!
-//! This function would get the target textbuffer instead of the targettext view for example.
-//! The focus is on getting the backend widget.
-//!
-//! @param TARGET A GwTargetOutput designating the target
-//!
-gpointer get_gobject_by_target (GwTargetOutput TARGET)
-{
-    GtkBuilder *builder = gw_common_get_builder ();
-
-    GObject *gobject;
-    GtkWidget *notebook;
-    GtkWidget *page;
-    int page_number;
-    GObject *tb;
-    GtkWidget *view;
-
-    switch (TARGET)
-    {
-      case GW_TARGET_RESULTS:
-          notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
-          page_number = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
-          if (page_number == -1) return NULL;
-          page = gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), page_number);
-          if (page == NULL) return NULL;
-          if ((view = gtk_bin_get_child (GTK_BIN (page))) == NULL) return NULL;
-          tb = G_OBJECT (gtk_text_view_get_buffer (GTK_TEXT_VIEW (view)));
-          return tb;
-      default:
-          return NULL;
-    }
-}
-
-
-//!
-//! @brief Retrieves a special GtkWidget designated by the GwTargetOuput signature
-//!
-//! This function would get the target textview instead of the textbuffer.
-//! The focus is on getting the frontend widget.
-//!
-//! @param TARGET A GwTargetOutput designating the target
-//!
-GtkWidget* get_widget_by_target (GwTargetOutput TARGET)
-{
-    GtkBuilder *builder = gw_common_get_builder ();
-
-    GtkWidget *widget;
-    GtkWidget *notebook;
-    GtkWidget *page;
-    int page_number;
-    GObject *tb;
-    GtkWidget *view;
-
-    switch (TARGET)
-    {
-      case GW_TARGET_RESULTS:
-        notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
-        page_number =  gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
-        if (page_number == -1) return NULL;
-        page = gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), page_number);
-        if (page == NULL) return NULL;
-        view = gtk_bin_get_child (GTK_BIN (page));
-        return view;
-      case GW_TARGET_ENTRY:
-        return search_entry;
-      default:
-        return NULL;
-    }
-}
-
-
-//!
-//! @brief To be written
-//!
-gboolean gw_ui_widget_equals_target (gpointer widget, GwTargetOutput TARGET)
-{
-    GtkWidget* target;
-    target = get_widget_by_target (TARGET);
-    return (GTK_WIDGET (widget) == GTK_WIDGET (target));
-}
-
-
-
-
 
 
 //!
@@ -185,9 +84,9 @@ gboolean gw_ui_update_progress_feedback (gpointer data)
     if (item != NULL) 
     {
       g_mutex_lock (item->mutex);
-        if (item != progress_feedback_item || item->current_line != item->progress_feedback_line)
+        if (item != _progress_feedback_item || item->current_line != item->progress_feedback_line)
         {
-          progress_feedback_item = item;
+          _progress_feedback_item = item;
           item->progress_feedback_line = item->current_line;
           gw_ui_set_search_progressbar_by_searchitem (item);
           gw_ui_set_total_results_label_by_searchitem (item);
@@ -210,6 +109,7 @@ void gw_ui_set_query_entry_text_by_searchitem (GwSearchItem *item)
     //Initializations
     char hex_color_string[100];
     GdkColor color;
+    GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
 
     //If there is no search, set the default colors
     if (item == NULL)
@@ -654,22 +554,12 @@ void _initialize_gtk_builder_translation_hack ()
 
 
 //!
-//! @brief To be written
-//!
-static void _initialize_global_widget_pointers ()
-{
-    GtkBuilder *builder = gw_common_get_builder ();
-    //Setup our text view and text buffer references
-    search_entry = GTK_WIDGET (gtk_builder_get_object (builder, "search_entry"));
-}
-
-
-//!
 //! @brief Updates the states of the toolbar buttons etc in the main interface
 //!
 void gw_ui_update_toolbar_buttons ()
 {
     GtkBuilder *builder = gw_common_get_builder ();
+    GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
 
     const int id_length = 50;
     char id[id_length];
@@ -688,7 +578,7 @@ void gw_ui_update_toolbar_buttons ()
     int current_font_magnification;
     current_font_magnification = gw_pref_get_int (GW_SCHEMA_FONT, GW_KEY_FONT_MAGNIFICATION);
 
-    GtkWidget *results_tv = get_widget_by_target(GW_TARGET_RESULTS);
+    GtkWidget *results_tv = gw_common_get_widget_by_target(GW_TARGET_RESULTS);
 
     //Update Zoom in sensitivity state
     strncpy(id, "view_zoom_in_action", id_length);
@@ -744,7 +634,7 @@ void gw_ui_update_toolbar_buttons ()
 
     //Update cut/copy buttons
     gboolean sensitive;
-    if (gtk_widget_has_focus (search_entry) )
+    if (gtk_widget_has_focus (search_entry))
     {
       sensitive = (gtk_editable_get_selection_bounds (GTK_EDITABLE (search_entry), NULL, NULL));
       strncpy(id, "edit_copy_action", id_length);
@@ -1576,8 +1466,8 @@ void gw_ui_append_to_buffer (GwSearchItem *item, char *text, char *tag1,
 void gw_ui_initialize_buffer_by_searchitem (GwSearchItem *item)
 {
     //Make sure searches done from the history are pointing at a valid target
-    item->target_tb = (gpointer) get_gobject_by_target (item->target);
-    item->target_tv = (gpointer) get_widget_by_target (item->target);
+    item->target_tb = (gpointer) gw_common_get_gobject_by_target (item->target);
+    item->target_tv = (gpointer) gw_common_get_widget_by_target (item->target);
 
     if (item->target_tb == NULL || item->target_tv == NULL) return;
 
@@ -1630,18 +1520,17 @@ void gw_ui_initialize_buffer_by_searchitem (GwSearchItem *item)
 //!
 void gw_ui_search_entry_insert (char* text)
 {
-    GtkWidget *entry;
-    entry = search_entry;
+    GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
 
     glong length;
     length = strlen (text);
 
     gint start, end;
-    gtk_editable_get_selection_bounds (GTK_EDITABLE (entry), &start, &end);
-    gtk_editable_delete_text (GTK_EDITABLE (entry), start, end);
+    gtk_editable_get_selection_bounds (GTK_EDITABLE (search_entry), &start, &end);
+    gtk_editable_delete_text (GTK_EDITABLE (search_entry), start, end);
 
-    gtk_editable_insert_text(GTK_EDITABLE (entry), text, length, &start);
-    gtk_editable_set_position (GTK_EDITABLE (entry), start);
+    gtk_editable_insert_text(GTK_EDITABLE (search_entry), text, length, &start);
+    gtk_editable_set_position (GTK_EDITABLE (search_entry), start);
 }
 
 
@@ -1653,7 +1542,7 @@ void gw_ui_search_entry_insert (char* text)
 void gw_ui_grab_focus_by_target (GwTargetOutput TARGET)
 {
     GtkWidget* widget;
-    widget = get_widget_by_target(TARGET);
+    widget = gw_common_get_widget_by_target(TARGET);
     gtk_widget_grab_focus(widget);
 }
 
@@ -1663,13 +1552,12 @@ void gw_ui_grab_focus_by_target (GwTargetOutput TARGET)
 //!
 void gw_ui_clear_search_entry ()
 {
-    GtkWidget *entry;
-    entry = search_entry;
+    GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
 
     gint start, end;
-    gtk_editable_select_region (GTK_EDITABLE (entry), 0, -1);
-    gtk_editable_get_selection_bounds (GTK_EDITABLE (entry), &start, &end);
-    gtk_editable_delete_text (GTK_EDITABLE(entry), start, end);
+    gtk_editable_select_region (GTK_EDITABLE (search_entry), 0, -1);
+    gtk_editable_get_selection_bounds (GTK_EDITABLE (search_entry), &start, &end);
+    gtk_editable_delete_text (GTK_EDITABLE (search_entry), start, end);
 }
 
 
@@ -1682,13 +1570,13 @@ void gw_ui_clear_search_entry ()
 //!
 void gw_ui_strncpy_text_from_widget_by_target (char* output, GwTargetOutput TARGET, int MAX)
 {
+    GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
+
     //GtkEntry
     if (TARGET == GW_TARGET_ENTRY)
     {
-      GtkWidget *entry;
-      entry = search_entry;
-
-      strncpy(output, gtk_entry_get_text (GTK_ENTRY (entry)), MAX);
+      GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
+      strncpy(output, gtk_entry_get_text (GTK_ENTRY (search_entry)), MAX);
     }
   /*
     //GtkTextView
@@ -1718,13 +1606,12 @@ void gw_ui_strncpy_text_from_widget_by_target (char* output, GwTargetOutput TARG
 //!
 void gw_ui_text_select_all_by_target (GwTargetOutput TARGET)
 {
+    GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
+
     //GtkEntry
     if (TARGET == GW_TARGET_ENTRY)
     {
-      GtkWidget *entry;
-      entry = search_entry;
-
-      gtk_editable_select_region (GTK_EDITABLE (entry), 0,-1);
+      gtk_editable_select_region (GTK_EDITABLE (search_entry), 0,-1);
     }
 
     //GtkTextView
@@ -1733,7 +1620,7 @@ void gw_ui_text_select_all_by_target (GwTargetOutput TARGET)
     {
       //Assertain the target text buffer
       GObject *tb;
-      tb = get_gobject_by_target (TARGET);
+      tb = gw_common_get_gobject_by_target (TARGET);
 
       GtkTextIter start, end;
       gtk_text_buffer_get_start_iter(GTK_TEXT_BUFFER (tb), &start);
@@ -1751,13 +1638,12 @@ void gw_ui_text_select_all_by_target (GwTargetOutput TARGET)
 //!
 void gw_ui_text_select_none_by_target (GwTargetOutput TARGET)
 {
+    GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
+
     //GtkEntry
     if (TARGET == GW_TARGET_ENTRY)
     {
-      GtkWidget *entry;
-      entry = search_entry;
-
-      gtk_editable_select_region (GTK_EDITABLE (entry), -1,-1);
+      gtk_editable_select_region (GTK_EDITABLE (search_entry), -1,-1);
     }
 
     //GtkTextView
@@ -1766,7 +1652,7 @@ void gw_ui_text_select_none_by_target (GwTargetOutput TARGET)
     {
       //Assertain the target text buffer
       GObject *tb;
-      tb = get_gobject_by_target (TARGET);
+      tb = gw_common_get_gobject_by_target (TARGET);
 
       GtkTextIter start, end;
       gtk_text_buffer_get_end_iter(GTK_TEXT_BUFFER (tb), &start);
@@ -1786,13 +1672,10 @@ guint gw_ui_get_current_target_focus (char *window_id)
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
-    GtkWidget *window;
-    window = GTK_WIDGET (gtk_builder_get_object (builder, window_id));
-
-    GtkWidget *widget;
-    widget = GTK_WIDGET (gtk_window_get_focus (GTK_WINDOW (window))); 
-
-    GtkWidget* results_tv = get_widget_by_target(GW_TARGET_RESULTS);
+    GtkWidget *window = GTK_WIDGET (gtk_builder_get_object (builder, window_id));
+    GtkWidget *widget = GTK_WIDGET (gtk_window_get_focus (GTK_WINDOW (window))); 
+    GtkWidget* results_tv = gw_common_get_widget_by_target(GW_TARGET_RESULTS);
+    GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
 
     if (widget == results_tv)
       return GW_TARGET_RESULTS;
@@ -1811,8 +1694,8 @@ guint gw_ui_get_current_target_focus (char *window_id)
 void gw_ui_copy_text (GwTargetOutput TARGET)
 {
     GtkClipboard *clipbd;
-    GObject *results_tb;
-    results_tb = get_gobject_by_target (GW_TARGET_RESULTS);
+    GObject *results_tb = gw_common_get_gobject_by_target (GW_TARGET_RESULTS);
+    GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
 
     switch (TARGET)
     {
@@ -1834,6 +1717,8 @@ void gw_ui_copy_text (GwTargetOutput TARGET)
 //!
 void gw_ui_cut_text (GwTargetOutput TARGET)
 {
+    GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
+
     switch (TARGET)
     {
       case GW_TARGET_ENTRY:
@@ -1850,6 +1735,8 @@ void gw_ui_cut_text (GwTargetOutput TARGET)
 //!
 void gw_ui_paste_text (GwTargetOutput TARGET)
 {
+    GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
+
     switch (TARGET)
     {
       case GW_TARGET_ENTRY:
@@ -1908,9 +1795,9 @@ gboolean gw_ui_set_color_to_tagtable (char    *id,     GwTargetOutput TARGET,
           if (gdk_color_parse (fg_color, &color) == FALSE)
           {
             printf("color failed %s\n", fg_color);
-            gw_util_strncpy_default_from_key (fallback_color, GW_SCHEMA_HIGHLIGHT, key, 100);
-            gw_pref_set_string (GW_SCHEMA_HIGHLIGHT, key, fallback_color);
+            gw_pref_reset_value (GW_SCHEMA_HIGHLIGHT, key);
             g_free (key);
+            key = NULL;
             return FALSE;
           }
           g_free (key);
@@ -1928,9 +1815,9 @@ gboolean gw_ui_set_color_to_tagtable (char    *id,     GwTargetOutput TARGET,
           if (gdk_color_parse (bg_color, &color) == FALSE)
           {
             printf("color failed %s\n", bg_color);
-            gw_util_strncpy_default_from_key (fallback_color, GW_SCHEMA_HIGHLIGHT, key, 100);
-            gw_pref_set_string (GW_SCHEMA_HIGHLIGHT, key, fallback_color);
+            gw_pref_reset_value (GW_SCHEMA_HIGHLIGHT, key);
             g_free (key);
+            key = NULL;
             return FALSE;
           }
           g_free (key);
@@ -1989,7 +1876,7 @@ static void gw_ui_set_tag_to_tagtable (char *id,  GwTargetOutput TARGET,
 {
     //Assertain the target text buffer
     GObject *tb;
-    tb = get_gobject_by_target (TARGET);
+    tb = gw_common_get_gobject_by_target (TARGET);
 
     GtkTextTagTable* table = gtk_text_buffer_get_tag_table (GTK_TEXT_BUFFER (tb)); 
     GtkTextTag* tag = gtk_text_tag_table_lookup (table, id);
@@ -2012,7 +1899,7 @@ char* gw_ui_buffer_get_text_slice_by_target (GwTargetOutput TARGET, int sl, int 
 {
     //Assertain the target text buffer
     GObject *tb;
-    tb = get_gobject_by_target (TARGET);
+    tb = gw_common_get_gobject_by_target (TARGET);
 
     //Set up the text
     GtkTextIter si, ei;
@@ -2034,7 +1921,7 @@ char* gw_ui_buffer_get_text_slice_by_target (GwTargetOutput TARGET, int sl, int 
 gunichar gw_ui_get_hovered_character (int *x, int *y, GtkTextIter *start)
 {
     gint trailing = 0;
-    GtkWidget* results_tv = get_widget_by_target (GW_TARGET_RESULTS);
+    GtkWidget* results_tv = gw_common_get_widget_by_target (GW_TARGET_RESULTS);
 
     gtk_text_view_window_to_buffer_coords (GTK_TEXT_VIEW(results_tv), 
                                            GTK_TEXT_WINDOW_TEXT, 
@@ -2055,7 +1942,7 @@ gunichar gw_ui_get_hovered_character (int *x, int *y, GtkTextIter *start)
 //!
 void gw_ui_set_cursor (GdkCursorType CURSOR)
 {
-    GtkWidget* results_tv = get_widget_by_target (GW_TARGET_RESULTS);
+    GtkWidget* results_tv = gw_common_get_widget_by_target (GW_TARGET_RESULTS);
 
     GdkWindow* gdk_window;
     gdk_window = gtk_text_view_get_window (GTK_TEXT_VIEW (results_tv), 
@@ -2077,10 +1964,10 @@ void gw_ui_display_no_results_found_page (GwSearchItem *item)
     if (item->status == GW_SEARCH_CANCELING) return; 
 
     gint32 temp = g_random_int_range (0,9);
-    while (temp == gw_previous_tip)
+    while (temp == _previous_tip)
       temp = g_random_int_range (0,9);
     const gint32 TIP_NUMBER = temp;
-    gw_previous_tip = temp;
+    _previous_tip = temp;
     GtkTextView *tv = GTK_TEXT_VIEW (item->target_tv);
     GtkTextBuffer *tb = GTK_TEXT_BUFFER (item->target_tb);
     GtkWidget *image = NULL;
@@ -2089,7 +1976,7 @@ void gw_ui_display_no_results_found_page (GwSearchItem *item)
     GtkWidget *label = NULL;
     GtkWidget *hbox = NULL;
     char *body = NULL;
-    GtkWidget *search_entry = GTK_WIDGET (get_widget_by_target (GW_TARGET_ENTRY));
+    GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
     const char *query_text = gtk_entry_get_text (GTK_ENTRY (search_entry));
     GList *list = NULL;
     int i = 0;
@@ -2480,7 +2367,7 @@ void gw_ui_cycle_dictionaries (gboolean cycle_forward)
 char* gw_ui_buffer_get_text_by_target (GwTargetOutput TARGET)
 {
     GObject* tb;
-    tb = get_gobject_by_target (TARGET);
+    tb = gw_common_get_gobject_by_target (TARGET);
 
     GtkTextIter s, e;
     if (gtk_text_buffer_get_has_selection (GTK_TEXT_BUFFER (tb)))
@@ -2511,6 +2398,7 @@ void gw_ui_buffer_reload_tagtable_tags ()
     gw_ui_set_color_to_tagtable ("header",  GW_TARGET_RESULTS, TRUE, FALSE);
     gw_ui_set_color_to_tagtable ("header",  GW_TARGET_KANJI,   TRUE, FALSE);
 
+    GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
     gtk_widget_modify_base (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
     gtk_widget_modify_text (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
 }
@@ -2637,9 +2525,9 @@ gboolean gw_update_icons_for_selection (gpointer data)
     gboolean has_selection = gw_ui_has_selection_by_target (GW_TARGET_RESULTS);
 
     //Set the special buttons
-    if (!prev_selection_icon_state && has_selection)
+    if (!_prev_selection_icon_state && has_selection)
     {
-      prev_selection_icon_state = TRUE;
+      _prev_selection_icon_state = TRUE;
       action = GTK_ACTION (gtk_builder_get_object (builder, "file_append_action"));
       gtk_action_set_label (action, gettext("A_ppend Selected"));
       action = GTK_ACTION (gtk_builder_get_object (builder, "file_save_as_action"));
@@ -2648,9 +2536,9 @@ gboolean gw_update_icons_for_selection (gpointer data)
       gtk_action_set_label (action, gettext("_Print Selected"));
     }
     //Reset the buttons to their normal states
-    else if (prev_selection_icon_state == TRUE && !has_selection)
+    else if (_prev_selection_icon_state == TRUE && !has_selection)
     {
-      prev_selection_icon_state = FALSE;
+      _prev_selection_icon_state = FALSE;
       action = GTK_ACTION (gtk_builder_get_object (builder, "file_append_action"));
       gtk_action_set_label (action, gettext("A_ppend"));
       action = GTK_ACTION (gtk_builder_get_object (builder, "file_save_as_action"));
@@ -2804,7 +2692,7 @@ gboolean gw_ui_cancel_search_by_target (GwTargetOutput TARGET)
 //!
 gboolean gw_ui_has_selection_by_target (GwTargetOutput TARGET)
 {
-    GObject* tb = get_gobject_by_target (TARGET);
+    GObject* tb = gw_common_get_gobject_by_target (TARGET);
     return (tb != NULL && gtk_text_buffer_get_has_selection (GTK_TEXT_BUFFER (tb)));
 }
 
@@ -3136,7 +3024,7 @@ void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item)
         gtk_text_buffer_insert (tb, &iter, "\n", -1);
         gtk_text_buffer_get_iter_at_mark (tb, &iter, mark); line = gtk_text_iter_get_line (&iter);
 
-        gw_ui_set_button_sensitive_when_label_is (resultline->radicals);
+        gw_radsearchtool_set_button_sensitive_when_label_is (resultline->radicals);
       }
 
       //Readings
@@ -3218,7 +3106,7 @@ void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item)
   gdk_threads_leave ();
     }
     
-    if (item->target == GW_TARGET_KANJI && (tv = GTK_WIDGET (get_widget_by_target (GW_TARGET_RESULTS))) != NULL)
+    if (item->target == GW_TARGET_KANJI && (tv = GTK_WIDGET (gw_common_get_widget_by_target (GW_TARGET_RESULTS))) != NULL)
     {
       char markup[1000];
       markup[0] = '\0';
@@ -3464,8 +3352,8 @@ void gw_ui_append_more_relevant_header_to_output (GwSearchItem *item)
 void gw_ui_pre_search_prep (GwSearchItem *item)
 {
     gw_ui_initialize_buffer_by_searchitem (item);
-    item->target_tb = (gpointer) get_gobject_by_target (item->target);
-    item->target_tv = (gpointer) get_widget_by_target (item->target);
+    item->target_tb = (gpointer) gw_common_get_gobject_by_target (item->target);
+    item->target_tv = (gpointer) gw_common_get_widget_by_target (item->target);
 }
 
 

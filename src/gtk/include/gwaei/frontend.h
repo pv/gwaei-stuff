@@ -12,24 +12,26 @@
 
 #include <gwaei/main.h>
 #include <gwaei/main-callbacks.h>
-#ifdef WITH_LIBSEXY
-#include <gwaei/main-libsexy.h>
-#endif
 #include <gwaei/main-tabs.h>
+
 #ifdef WITH_LIBUNIQUE
-#include <gwaei/main-libunique.h>
+#include <gwaei/libunique.h>
 #endif
 
-#include <gwaei/preferences.h>
 #include <gwaei/printing.h>
 
-#include <gwaei/radicals.h>
-#include <gwaei/radicals-callbacks.h>
+#include <gwaei/radsearchtool.h>
+#include <gwaei/radsearchtool-callbacks.h>
 
 #include <gwaei/settings.h>
-#include <gwaei/settings-dictionary-install-dialog.h>
 #include <gwaei/settings-callbacks.h>
-#include <gwaei/settings-dictionary-manager.h>
+
+#include <gwaei/dictionarymanager.h>
+#include <gwaei/dictionaryinstall.h>
+
+#ifdef WITH_LIBSEXY
+#include <gwaei/libsexy.h>
+#endif
 
 void gw_frontend_initialize (int, char**);
 void gw_frontend_free (void);

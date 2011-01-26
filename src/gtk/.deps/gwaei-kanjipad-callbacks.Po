@@ -463,17 +463,16 @@ gwaei-kanjipad-callbacks.o: kanjipad-callbacks.c /usr/include/ctype.h \
  /usr/include/gtk-2.0/gtk/gtkpreview.h \
  /usr/include/gtk-2.0/gtk/gtktipsquery.h \
  ../../src/backend/include/gwaei/backend.h \
- ../../src/backend/include/gwaei/definitions.h \
  ../../src/backend/include/gwaei/regex.h /usr/include/regex.h \
  ../../src/backend/include/gwaei/utilities.h \
- ../../src/backend/include/gwaei/dictinfo-object.h \
- ../../src/backend/include/gwaei/resultline-object.h \
+ ../../src/backend/include/gwaei/dictinfo.h \
+ ../../src/backend/include/gwaei/resultline.h \
  ../../src/backend/include/gwaei/io.h \
- ../../src/backend/include/gwaei/dictlist-object.h \
- ../../src/backend/include/gwaei/gsettings-preferences.h \
- ../../src/backend/include/gwaei/queryline-object.h \
- ../../src/backend/include/gwaei/searchitem-object.h \
- ../../src/backend/include/gwaei/historylist-object.h \
+ ../../src/backend/include/gwaei/dictlist.h \
+ ../../src/backend/include/gwaei/preferences.h \
+ ../../src/backend/include/gwaei/queryline.h \
+ ../../src/backend/include/gwaei/searchitem.h \
+ ../../src/backend/include/gwaei/historylist.h \
  ../../src/backend/include/gwaei/engine.h \
  ../../src/gtk/include/gwaei/frontend.h \
  ../../src/gtk/include/gwaei/common.h \
@@ -483,17 +482,17 @@ gwaei-kanjipad-callbacks.o: kanjipad-callbacks.c /usr/include/ctype.h \
  ../../src/gtk/include/gwaei/kanjipad-callbacks.h \
  ../../src/gtk/include/gwaei/main.h \
  ../../src/gtk/include/gwaei/main-callbacks.h \
- ../../src/gtk/include/gwaei/main-libsexy.h \
  ../../src/gtk/include/gwaei/main-tabs.h \
- ../../src/gtk/include/gwaei/main-libunique.h \
- ../../src/gtk/include/gwaei/preferences.h \
+ ../../src/gtk/include/gwaei/libunique.h \
  ../../src/gtk/include/gwaei/printing.h \
- ../../src/gtk/include/gwaei/radicals.h \
- ../../src/gtk/include/gwaei/radicals-callbacks.h \
+ ../../src/gtk/include/gwaei/radsearchtool.h \
+ ../../src/gtk/include/gwaei/radsearchtool-callbacks.h \
  ../../src/gtk/include/gwaei/settings.h \
- ../../src/gtk/include/gwaei/settings-dictionary-install-dialog.h \
  ../../src/gtk/include/gwaei/settings-callbacks.h \
- ../../src/gtk/include/gwaei/settings-dictionary-manager.h
+ ../../src/gtk/include/gwaei/settings-listeners.h \
+ ../../src/gtk/include/gwaei/dictionarymanager.h \
+ ../../src/gtk/include/gwaei/dictionaryinstall.h \
+ ../../src/gtk/include/gwaei/libsexy.h
 
 /usr/include/ctype.h:
 
@@ -1591,29 +1590,27 @@ gwaei-kanjipad-callbacks.o: kanjipad-callbacks.c /usr/include/ctype.h \
 
 ../../src/backend/include/gwaei/backend.h:
 
-../../src/backend/include/gwaei/definitions.h:
-
 ../../src/backend/include/gwaei/regex.h:
 
 /usr/include/regex.h:
 
 ../../src/backend/include/gwaei/utilities.h:
 
-../../src/backend/include/gwaei/dictinfo-object.h:
+../../src/backend/include/gwaei/dictinfo.h:
 
-../../src/backend/include/gwaei/resultline-object.h:
+../../src/backend/include/gwaei/resultline.h:
 
 ../../src/backend/include/gwaei/io.h:
 
-../../src/backend/include/gwaei/dictlist-object.h:
+../../src/backend/include/gwaei/dictlist.h:
 
-../../src/backend/include/gwaei/gsettings-preferences.h:
+../../src/backend/include/gwaei/preferences.h:
 
-../../src/backend/include/gwaei/queryline-object.h:
+../../src/backend/include/gwaei/queryline.h:
 
-../../src/backend/include/gwaei/searchitem-object.h:
+../../src/backend/include/gwaei/searchitem.h:
 
-../../src/backend/include/gwaei/historylist-object.h:
+../../src/backend/include/gwaei/historylist.h:
 
 ../../src/backend/include/gwaei/engine.h:
 
@@ -1633,24 +1630,24 @@ gwaei-kanjipad-callbacks.o: kanjipad-callbacks.c /usr/include/ctype.h \
 
 ../../src/gtk/include/gwaei/main-callbacks.h:
 
-../../src/gtk/include/gwaei/main-libsexy.h:
-
 ../../src/gtk/include/gwaei/main-tabs.h:
 
-../../src/gtk/include/gwaei/main-libunique.h:
-
-../../src/gtk/include/gwaei/preferences.h:
+../../src/gtk/include/gwaei/libunique.h:
 
 ../../src/gtk/include/gwaei/printing.h:
 
-../../src/gtk/include/gwaei/radicals.h:
+../../src/gtk/include/gwaei/radsearchtool.h:
 
-../../src/gtk/include/gwaei/radicals-callbacks.h:
+../../src/gtk/include/gwaei/radsearchtool-callbacks.h:
 
 ../../src/gtk/include/gwaei/settings.h:
 
-../../src/gtk/include/gwaei/settings-dictionary-install-dialog.h:
-
 ../../src/gtk/include/gwaei/settings-callbacks.h:
 
-../../src/gtk/include/gwaei/settings-dictionary-manager.h:
+../../src/gtk/include/gwaei/settings-listeners.h:
+
+../../src/gtk/include/gwaei/dictionarymanager.h:
+
+../../src/gtk/include/gwaei/dictionaryinstall.h:
+
+../../src/gtk/include/gwaei/libsexy.h:

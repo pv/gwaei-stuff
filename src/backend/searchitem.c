@@ -132,7 +132,7 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary, const int 
 //!
 gboolean gw_searchitem_do_pre_search_prep (GwSearchItem* item)
 {
-    if (item->scratch_buffer != NULL || (item->scratch_buffer = malloc (MAX_LINE)) == NULL)
+    if (item->scratch_buffer != NULL || (item->scratch_buffer = malloc (GW_IO_MAX_FGETS_LINE)) == NULL)
     {
       return FALSE;
     }

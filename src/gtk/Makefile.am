@@ -10,7 +10,7 @@ datadir = @datadir@
 localedir = $(datadir)/locale
 DEFINITIONS =-DLOCALEDIR=\"$(localedir)\" -DVERSION=\"$(VERSION)\" -DPACKAGE=\"$(PACKAGE)\" -DDATADIR2=\"$(datadir)\" -DLIBDIR=\"$(libdir)\" -DGTK_DISABLE_DEPRECATED -DG_SEAL_ENABLE
 
-gwaei_SOURCES = gwaei.c common.c frontend.c main.c main-callbacks.c settings-callbacks.c settings.c radicals.c radicals-callbacks.c printing.c kanjipad-callbacks.c  kanjipad.c kanjipad-candidatearea.c kanjipad-drawingarea.c main-tabs.c settings-dictionary-install-dialog.c settings-dictionary-manager.c preferences.c 
+gwaei_SOURCES = gwaei.c common.c frontend.c main.c main-callbacks.c settings-callbacks.c settings.c radsearchtool.c radsearchtool-callbacks.c printing.c kanjipad-callbacks.c  kanjipad.c kanjipad-candidatearea.c kanjipad-drawingarea.c main-tabs.c dictionaryinstall.c dictionarymanager.c settings-listeners.c 
 gwaei_LDADD =  $(GNOME_LIBS) ../backend/libgwaei-backend.la
 gwaei_CPPFLAGS = $(DEFINITIONS) $(GNOME_CFLAGS) $(GNOME_DEFS) -I$(top_srcdir)/src/backend/include -I$(top_srcdir)/src/gtk/include 
 
@@ -25,14 +25,14 @@ endif
 
 if WITH_LIBUNIQUE
 LIBUNIQUE_DEFS =-DWITH_LIBUNIQUE
-gwaei_SOURCES += main-libunique.c
+gwaei_SOURCES += libunique.c
 gwaei_LDADD += $(LIBUNIQUE_LIBS)
 gwaei_CPPFLAGS +=$(LIBUNIQUE_CFLAGS)$(LIBUNIQUE_DEFS)
 endif
 
 if WITH_LIBSEXY
 LIBSEXY_DEFS =-DWITH_LIBSEXY
-gwaei_SOURCES += main-libsexy.c
+gwaei_SOURCES += libsexy.c
 gwaei_LDADD += $(LIBSEXY_LIBS)
 gwaei_CPPFLAGS +=$(LIBSEXY_CFLAGS)$(LIBSEXY_DEFS)
 endif

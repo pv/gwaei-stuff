@@ -77,15 +77,24 @@ void gw_frontend_initialize (int argc, char* argv[])
 
 
     gw_common_initialize ();
+    gw_main_initialize ();
     gw_settings_initialize();
-    gw_main_initialize (_arg_new_instance);
-    gw_radicals_initialize ();
+
+    #ifdef WITH_LIBUNIQUE
+    gw_libunique_initialize (_arg_new_instance);
+    #endif
+
+    gw_radsearchtool_initialize ();
 
     gdk_threads_enter ();
-      gw_kanjipad_initialize ();
+    gw_kanjipad_initialize ();
     gdk_threads_leave ();
 
-    gw_preferences_initialize ();
+    #ifdef WITH_LIBSEXY
+    gw_libsexy_initialize ();
+    #endif
+
+    gw_dictionary_manager_initialize ();
 }
 
 
@@ -133,7 +142,7 @@ void gw_frontend_start_gtk (int argc, char* argv[])
       g_assert (text != NULL);
       for (i = 0; i < argc; i++) { strcat(text, argv[i]); strcat(text, " "); }
       text[strlen(text) - 1] = '\0';
-      GtkWidget* entry = get_widget_by_target (GW_TARGET_ENTRY);
+      GtkWidget* entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
       gtk_entry_set_text (GTK_ENTRY (entry), text);
       do_search (NULL, NULL);
       g_free (text);
@@ -156,10 +165,11 @@ void gw_frontend_start_gtk (int argc, char* argv[])
 
 void gw_frontend_free ()
 {
+    gw_libsexy_free ();
+    gw_libunique_free ();
     gw_kanjipad_free ();
     gw_settings_free ();
-    gw_radicals_free ();
-    gw_preferences_free ();
+    gw_radsearchtool_free ();
     gw_main_free ();
     gw_engine_free ();
     gw_common_free ();

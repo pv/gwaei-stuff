@@ -13,6 +13,8 @@ src/console/.deps/*
 *.rpm
 *.deb
 *.tar.gz
+*.swp
+*.Po
 
 mandir/Makefile
 

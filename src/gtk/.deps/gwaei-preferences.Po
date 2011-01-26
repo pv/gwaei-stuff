@@ -241,7 +241,6 @@ gwaei-preferences.o: preferences.c /usr/include/string.h \
  /usr/include/gtk-2.0/gdk/gdkwindow.h \
  /usr/include/gtk-2.0/gdk/gdkvisual.h \
  ../../src/backend/include/gwaei/backend.h \
- ../../src/backend/include/gwaei/definitions.h \
  ../../src/backend/include/gwaei/regex.h \
  ../../src/backend/include/gwaei/utilities.h \
  ../../src/backend/include/gwaei/dictinfo-object.h \
@@ -480,9 +479,8 @@ gwaei-preferences.o: preferences.c /usr/include/string.h \
  ../../src/gtk/include/gwaei/kanjipad-callbacks.h \
  ../../src/gtk/include/gwaei/main.h \
  ../../src/gtk/include/gwaei/main-callbacks.h \
- ../../src/gtk/include/gwaei/main-libsexy.h \
  ../../src/gtk/include/gwaei/main-tabs.h \
- ../../src/gtk/include/gwaei/main-libunique.h \
+ ../../src/gtk/include/gwaei/libunique.h \
  ../../src/gtk/include/gwaei/preferences.h \
  ../../src/gtk/include/gwaei/printing.h \
  ../../src/gtk/include/gwaei/radicals.h \
@@ -490,7 +488,8 @@ gwaei-preferences.o: preferences.c /usr/include/string.h \
  ../../src/gtk/include/gwaei/settings.h \
  ../../src/gtk/include/gwaei/settings-dictionary-install-dialog.h \
  ../../src/gtk/include/gwaei/settings-callbacks.h \
- ../../src/gtk/include/gwaei/settings-dictionary-manager.h
+ ../../src/gtk/include/gwaei/settings-dictionary-manager.h \
+ ../../src/gtk/include/gwaei/libsexy.h
 
 /usr/include/string.h:
 
@@ -1110,8 +1109,6 @@ gwaei-preferences.o: preferences.c /usr/include/string.h \
 
 ../../src/backend/include/gwaei/backend.h:
 
-../../src/backend/include/gwaei/definitions.h:
-
 ../../src/backend/include/gwaei/regex.h:
 
 ../../src/backend/include/gwaei/utilities.h:
@@ -1628,11 +1625,9 @@ gwaei-preferences.o: preferences.c /usr/include/string.h \
 
 ../../src/gtk/include/gwaei/main-callbacks.h:
 
-../../src/gtk/include/gwaei/main-libsexy.h:
-
 ../../src/gtk/include/gwaei/main-tabs.h:
 
-../../src/gtk/include/gwaei/main-libunique.h:
+../../src/gtk/include/gwaei/libunique.h:
 
 ../../src/gtk/include/gwaei/preferences.h:
 
@@ -1649,3 +1644,5 @@ gwaei-preferences.o: preferences.c /usr/include/string.h \
 ../../src/gtk/include/gwaei/settings-callbacks.h:
 
 ../../src/gtk/include/gwaei/settings-dictionary-manager.h:
+
+../../src/gtk/include/gwaei/libsexy.h:

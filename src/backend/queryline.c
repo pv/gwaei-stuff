@@ -52,7 +52,7 @@ GwQueryLine* gw_queryline_new ()
     if ((temp = (GwQueryLine*) malloc(sizeof(GwQueryLine))) == NULL) return NULL;
 
     //A place for a copy of the raw string
-    temp->string[0]      = '\0';
+    temp->string = NULL;
     temp->furi_total = 0;
     temp->kanji_total = 0;
     temp->roma_total = 0;
@@ -66,6 +66,9 @@ GwQueryLine* gw_queryline_new ()
 
 void gw_queryline_free (GwQueryLine *ql)
 {
+    g_free (ql->string);
+    ql->string = NULL;
+
     int i;
     for (i = 0; i < ql->furi_total; i++)
     {
@@ -139,10 +142,11 @@ void gw_queryline_free (GwQueryLine *ql)
 int gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
 {
    //Make sure it isn't already created
-   if (strcmp(ql->string, string) == 0) return TRUE;
+   if (ql->string != NULL && strcmp(ql->string, string) == 0) return TRUE;
 
    //Make a perminent copy of the query
-   strncpy(ql->string, string, MAX_QUERY); 
+   g_free (ql->string);
+   ql->string = g_strdup (string);
 
    //Load the preference settings
    int rk_conv_pref = gw_pref_get_int (GW_SCHEMA_BASE, GW_KEY_ROMAN_KANA);
@@ -315,10 +319,11 @@ int gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
 int gw_queryline_parse_kanjidict_string (GwQueryLine *ql, const char* string)
 {
     //Make sure it isn't already created
-    if (strcmp(ql->string, string) == 0) return TRUE;
+    if (ql->string != NULL && strcmp(ql->string, string) == 0) return TRUE;
 
-    //Make a permanent copy of the query
-    strncpy(ql->string, string, MAX_QUERY); 
+    //Make a perminent copy of the query
+    g_free (ql->string);
+    ql->string = g_strdup (string);
 
     //Variable preparations
     char *ptr = ql->string;
@@ -475,11 +480,12 @@ int gw_queryline_parse_kanjidict_string (GwQueryLine *ql, const char* string)
 //!
 int gw_queryline_parse_exampledict_string (GwQueryLine *ql, const char* string)
 {
-   //Make sure it isn't already created
-   if (strcmp(ql->string, string) == 0) return TRUE;
+    //Make sure it isn't already created
+    if (ql->string != NULL && strcmp(ql->string, string) == 0) return TRUE;
 
-   //Make a perminent copy of the query
-   strncpy(ql->string, string, MAX_QUERY); 
+    //Make a perminent copy of the query
+    g_free (ql->string);
+    ql->string = g_strdup (string);
 
    //Load the preference settings
    int rk_conv_pref = gw_pref_get_int (GW_SCHEMA_BASE, GW_KEY_ROMAN_KANA);

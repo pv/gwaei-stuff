@@ -12,7 +12,6 @@ gwaei-common.o: common.c /usr/include/stdlib.h /usr/include/features.h \
  /usr/include/alloca.h /usr/include/string.h /usr/include/xlocale.h \
  /usr/include/bits/string.h /usr/include/bits/string2.h \
  ../../src/backend/include/gwaei/backend.h \
- ../../src/backend/include/gwaei/definitions.h \
  ../../src/backend/include/gwaei/regex.h /usr/include/regex.h \
  /usr/include/glib-2.0/glib.h /usr/include/glib-2.0/glib/galloca.h \
  /usr/include/glib-2.0/glib/gtypes.h \
@@ -78,11 +77,11 @@ gwaei-common.o: common.c /usr/include/stdlib.h /usr/include/features.h \
  /usr/include/glib-2.0/glib/gvarianttype.h \
  /usr/include/glib-2.0/glib/gvariant.h \
  ../../src/backend/include/gwaei/utilities.h \
- ../../src/backend/include/gwaei/dictinfo-object.h \
- ../../src/backend/include/gwaei/resultline-object.h \
+ ../../src/backend/include/gwaei/dictinfo.h \
+ ../../src/backend/include/gwaei/resultline.h \
  ../../src/backend/include/gwaei/io.h \
- ../../src/backend/include/gwaei/dictlist-object.h \
- ../../src/backend/include/gwaei/gsettings-preferences.h \
+ ../../src/backend/include/gwaei/dictlist.h \
+ ../../src/backend/include/gwaei/preferences.h \
  /usr/include/glib-2.0/gio/gio.h /usr/include/glib-2.0/gio/giotypes.h \
  /usr/include/glib-2.0/gio/gioenums.h /usr/include/glib-2.0/glib-object.h \
  /usr/include/glib-2.0/gobject/gbinding.h \
@@ -188,12 +187,11 @@ gwaei-common.o: common.c /usr/include/stdlib.h /usr/include/features.h \
  /usr/include/glib-2.0/gio/gvfs.h /usr/include/glib-2.0/gio/gvolume.h \
  /usr/include/glib-2.0/gio/gzlibcompressor.h \
  /usr/include/glib-2.0/gio/gzlibdecompressor.h \
- ../../src/backend/include/gwaei/queryline-object.h \
- ../../src/backend/include/gwaei/searchitem-object.h /usr/include/stdio.h \
+ ../../src/backend/include/gwaei/queryline.h \
+ ../../src/backend/include/gwaei/searchitem.h /usr/include/stdio.h \
  /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h \
  /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h \
- /usr/include/bits/stdio.h \
- ../../src/backend/include/gwaei/historylist-object.h \
+ /usr/include/bits/stdio.h ../../src/backend/include/gwaei/historylist.h \
  ../../src/backend/include/gwaei/engine.h \
  ../../src/gtk/include/gwaei/frontend.h /usr/include/gtk-2.0/gtk/gtk.h \
  /usr/include/gtk-2.0/gdk/gdk.h \
@@ -481,17 +479,17 @@ gwaei-common.o: common.c /usr/include/stdlib.h /usr/include/features.h \
  ../../src/gtk/include/gwaei/kanjipad-callbacks.h \
  ../../src/gtk/include/gwaei/main.h \
  ../../src/gtk/include/gwaei/main-callbacks.h \
- ../../src/gtk/include/gwaei/main-libsexy.h \
  ../../src/gtk/include/gwaei/main-tabs.h \
- ../../src/gtk/include/gwaei/main-libunique.h \
- ../../src/gtk/include/gwaei/preferences.h \
+ ../../src/gtk/include/gwaei/libunique.h \
  ../../src/gtk/include/gwaei/printing.h \
- ../../src/gtk/include/gwaei/radicals.h \
- ../../src/gtk/include/gwaei/radicals-callbacks.h \
+ ../../src/gtk/include/gwaei/radsearchtool.h \
+ ../../src/gtk/include/gwaei/radsearchtool-callbacks.h \
  ../../src/gtk/include/gwaei/settings.h \
- ../../src/gtk/include/gwaei/settings-dictionary-install-dialog.h \
  ../../src/gtk/include/gwaei/settings-callbacks.h \
- ../../src/gtk/include/gwaei/settings-dictionary-manager.h
+ ../../src/gtk/include/gwaei/settings-listeners.h \
+ ../../src/gtk/include/gwaei/dictionarymanager.h \
+ ../../src/gtk/include/gwaei/dictionaryinstall.h \
+ ../../src/gtk/include/gwaei/libsexy.h
 
 /usr/include/stdlib.h:
 
@@ -548,8 +546,6 @@ gwaei-common.o: common.c /usr/include/stdlib.h /usr/include/features.h \
 /usr/include/bits/string2.h:
 
 ../../src/backend/include/gwaei/backend.h:
-
-../../src/backend/include/gwaei/definitions.h:
 
 ../../src/backend/include/gwaei/regex.h:
 
@@ -739,15 +735,15 @@ gwaei-common.o: common.c /usr/include/stdlib.h /usr/include/features.h \
 
 ../../src/backend/include/gwaei/utilities.h:
 
-../../src/backend/include/gwaei/dictinfo-object.h:
+../../src/backend/include/gwaei/dictinfo.h:
 
-../../src/backend/include/gwaei/resultline-object.h:
+../../src/backend/include/gwaei/resultline.h:
 
 ../../src/backend/include/gwaei/io.h:
 
-../../src/backend/include/gwaei/dictlist-object.h:
+../../src/backend/include/gwaei/dictlist.h:
 
-../../src/backend/include/gwaei/gsettings-preferences.h:
+../../src/backend/include/gwaei/preferences.h:
 
 /usr/include/glib-2.0/gio/gio.h:
 
@@ -977,9 +973,9 @@ gwaei-common.o: common.c /usr/include/stdlib.h /usr/include/features.h \
 
 /usr/include/glib-2.0/gio/gzlibdecompressor.h:
 
-../../src/backend/include/gwaei/queryline-object.h:
+../../src/backend/include/gwaei/queryline.h:
 
-../../src/backend/include/gwaei/searchitem-object.h:
+../../src/backend/include/gwaei/searchitem.h:
 
 /usr/include/stdio.h:
 
@@ -995,7 +991,7 @@ gwaei-common.o: common.c /usr/include/stdlib.h /usr/include/features.h \
 
 /usr/include/bits/stdio.h:
 
-../../src/backend/include/gwaei/historylist-object.h:
+../../src/backend/include/gwaei/historylist.h:
 
 ../../src/backend/include/gwaei/engine.h:
 
@@ -1629,24 +1625,24 @@ gwaei-common.o: common.c /usr/include/stdlib.h /usr/include/features.h \
 
 ../../src/gtk/include/gwaei/main-callbacks.h:
 
-../../src/gtk/include/gwaei/main-libsexy.h:
-
 ../../src/gtk/include/gwaei/main-tabs.h:
 
-../../src/gtk/include/gwaei/main-libunique.h:
-
-../../src/gtk/include/gwaei/preferences.h:
+../../src/gtk/include/gwaei/libunique.h:
 
 ../../src/gtk/include/gwaei/printing.h:
 
-../../src/gtk/include/gwaei/radicals.h:
+../../src/gtk/include/gwaei/radsearchtool.h:
 
-../../src/gtk/include/gwaei/radicals-callbacks.h:
+../../src/gtk/include/gwaei/radsearchtool-callbacks.h:
 
 ../../src/gtk/include/gwaei/settings.h:
 
-../../src/gtk/include/gwaei/settings-dictionary-install-dialog.h:
-
 ../../src/gtk/include/gwaei/settings-callbacks.h:
 
-../../src/gtk/include/gwaei/settings-dictionary-manager.h:
+../../src/gtk/include/gwaei/settings-listeners.h:
+
+../../src/gtk/include/gwaei/dictionarymanager.h:
+
+../../src/gtk/include/gwaei/dictionaryinstall.h:
+
+../../src/gtk/include/gwaei/libsexy.h:

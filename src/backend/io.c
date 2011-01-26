@@ -135,7 +135,7 @@ gboolean gw_io_copy_with_encoding( char *source_path,     char *target_path,
     writefd = fopen (target_path, "w");
     if (writefd == NULL) exit(0);
 
-    int length = MAX_LINE;
+    int length = GW_IO_MAX_FGETS_LINE;
     char buffer[length];
     char output[length];
     gsize inbytes_left, outbytes_left;
@@ -285,9 +285,9 @@ gboolean gw_io_download_file (char *source_path, char *save_path,
       if (di->status != GW_DICT_STATUS_CANCELING)
       {
         GQuark quark;
-        quark = g_quark_from_string (GW_GENERIC_ERROR);
+        quark = g_quark_from_string (GW_IO_ERROR);
         const char *message = gettext(curl_easy_strerror(res));
-        if (error != NULL) *error = g_error_new_literal (quark, GW_FILE_ERROR, message);
+        if (error != NULL) *error = g_error_new_literal (quark, GW_IO_DOWNLOAD_ERROR, message);
       }
     }
 
@@ -307,7 +307,7 @@ gboolean gw_io_copy_file (char *source_path, char *target_path, GError **error)
     if (*error != NULL) return FALSE;
 
     GQuark quark;
-    quark = g_quark_from_string (GW_GENERIC_ERROR);
+    quark = g_quark_from_string (GW_IO_ERROR);
 
     char *contents = NULL;
     gsize length;
@@ -315,7 +315,7 @@ gboolean gw_io_copy_file (char *source_path, char *target_path, GError **error)
          g_file_set_contents(target_path, contents, length, NULL) == FALSE     )
     {
       remove(target_path);
-      if (error != NULL) *error = g_error_new_literal (quark, GW_FILE_ERROR, gettext("File copy error"));
+      if (error != NULL) *error = g_error_new_literal (quark, GW_IO_COPY_ERROR, gettext("File copy error"));
       return FALSE;
     }
     if (contents != NULL) g_free(contents);
@@ -331,19 +331,19 @@ gboolean gw_io_create_mix_dictionary (char *mpath, char *kpath, char *rpath)
     FILE* output_file = fopen(mpath, "w");
     FILE *radicals_file = NULL;
 
-    char radicals_input[MAX_LINE];
+    char radicals_input[GW_IO_MAX_FGETS_LINE];
     char* radicals_ptr = NULL;
 
-    char kanji_input[MAX_LINE];
+    char kanji_input[GW_IO_MAX_FGETS_LINE];
     char* kanji_ptr = NULL;
 
-    char output[MAX_LINE * 2];
+    char output[GW_IO_MAX_FGETS_LINE * 2];
     char* output_ptr = NULL;
 
     char* temp_ptr;
 
     //Loop through the kanji file
-    while ( fgets(kanji_input, MAX_LINE, kanji_file) != NULL )
+    while ( fgets(kanji_input, GW_IO_MAX_FGETS_LINE, kanji_file) != NULL )
     {
       if(kanji_input[0] == '#') continue;
 
@@ -360,7 +360,7 @@ gboolean gw_io_create_mix_dictionary (char *mpath, char *kpath, char *rpath)
 
       //2. Find the relevent radical line and insert it if available
       radicals_file = fopen(rpath, "r");
-      while ( fgets(radicals_input, MAX_LINE, radicals_file) != NULL )
+      while ( fgets(radicals_input, GW_IO_MAX_FGETS_LINE, radicals_file) != NULL )
       {
         //Check for a match
         temp_ptr = kanji_input;
@@ -449,7 +449,7 @@ gboolean gw_io_split_places_from_names_dictionary (char *spath, char *npath, cha
     }
 
     //Buffer
-    char buffer[MAX_LINE];
+    char buffer[GW_IO_MAX_FGETS_LINE];
 
     g_remove (npath);
     g_remove (ppath);
@@ -470,7 +470,7 @@ gboolean gw_io_split_places_from_names_dictionary (char *spath, char *npath, cha
     long total_name_lines  = 0;
 
     //Start writing the child files
-    while ( fgets(buffer, MAX_LINE, input_stream) != NULL &&
+    while ( fgets(buffer, GW_IO_MAX_FGETS_LINE, input_stream) != NULL &&
             place_write_error != EOF &&
             name_write_error  != EOF                            )
     {
@@ -531,21 +531,21 @@ gboolean gw_io_gunzip_file (char *path, GError **error)
     if (*error != NULL) return FALSE;
 
     GQuark quark;
-    quark = g_quark_from_string (GW_GENERIC_ERROR);
+    quark = g_quark_from_string (GW_IO_ERROR);
     gboolean success;
 
-    char command[FILENAME_MAX]; 
-    strcpy(command, GUNZIP);
-    strcat(command, " ");
-    strcat(command, path);
+    char *command = g_strdup_printf ("%s %s", GUNZIP, path);
     printf("command: %s\n", command);
 
     success = (system(command) == 0);
 
+    g_free (command);
+    command = NULL;
+
     if (success == FALSE) {
       g_remove(path);
       const char *message = gettext("gunzip error");
-      if (error != NULL) *error = g_error_new_literal (quark, GW_FILE_ERROR, message);
+      if (error != NULL) *error = g_error_new_literal (quark, GW_IO_DECOMPRESSION_ERROR, message);
     }
 
     return success;
@@ -561,27 +561,27 @@ gboolean gw_io_gunzip_file (char *path, GError **error)
 gboolean gw_io_unzip_file (char *path, GError **error)
 {
     GQuark quark;
-    quark = g_quark_from_string (GW_GENERIC_ERROR);
+    quark = g_quark_from_string (GW_IO_ERROR);
     gboolean success;
 
-    char extraction_directory[FILENAME_MAX];
+    char *extraction_directory = (char*) malloc(strlen(path + 1) * sizeof(char));
     strcpy(extraction_directory, path);
-    *strrchr (extraction_directory, G_DIR_SEPARATOR) = '\0';
+    char* end = strrchr (extraction_directory, G_DIR_SEPARATOR);
+    *end = '\0';
 
-
-    char command[FILENAME_MAX]; 
-    strcpy(command, UNZIP);
-    strcat(command, " -o ");
-    strcat(command, path);
-    strcat(command, " -d ");
-    strcat(command, extraction_directory);
+    char *command = g_strdup_printf ("%s %s %s %s %s", UNZIP, "-o", path, "-d", extraction_directory);
 
     success = (system(command) == 0);
+
+    g_free (command);
+    command = NULL;
+    free(extraction_directory);
+    extraction_directory = NULL;
 
     if (success == FALSE) {
       g_remove(path);
       const char *message = gettext("gunzip error");
-      if (error != NULL) *error = g_error_new_literal (quark, GW_FILE_ERROR, message);
+      if (error != NULL) *error = g_error_new_literal (quark, GW_IO_DECOMPRESSION_ERROR, message);
     }
     return success;
 }
@@ -595,12 +595,12 @@ gboolean gw_io_unzip_file (char *path, GError **error)
 int gw_io_get_total_lines_for_path (char *path)
 {
     //Calculate the number of lines in the dictionary
-    char line[MAX_LINE];
+    char line[GW_IO_MAX_FGETS_LINE];
     int total_lines = 0;
     FILE *fd = fopen (path, "r");
     if (fd != NULL)
     {
-      while (fgets(line, MAX_LINE, fd) != NULL)
+      while (fgets(line, GW_IO_MAX_FGETS_LINE, fd) != NULL)
         total_lines++;
       fclose(fd);
     }
@@ -658,21 +658,20 @@ void gw_io_uninstall_dictinfo (GwDictInfo *di,    int (*callback_function) (char
 void gw_io_install_dictinfo (GwDictInfo *di,    int (*callback_function) (char*, int, gpointer),
                                gpointer data, gboolean long_messages, GError **error            )
 {
+/*
     if (*error != NULL) return;
 
     GQuark quark;
-    quark = g_quark_from_string (GW_GENERIC_ERROR);
+    quark = g_quark_from_string (GW_IO_ERROR);
 
     if (di == NULL || di->status != GW_DICT_STATUS_NOT_INSTALLED) return;
     di->status = GW_DICT_STATUS_INSTALLING;
 
     char *message = NULL;
 
+    g_assert (di->source_uri != NULL);
     char uri[100];
-    if (di->source_uri != NULL)
-      strncpy(uri, di->source_uri, 100);
-    else
-      gw_util_strncpy_default_from_key (uri, GW_SCHEMA_DICTIONARY, di->gskey, 100);
+    strncpy(uri, di->source_uri, 100);
 
     if (long_messages == TRUE)
     {
@@ -744,8 +743,8 @@ void gw_io_install_dictinfo (GwDictInfo *di,    int (*callback_function) (char*,
       gw_io_unzip_file(download_path, error);
       if (*error == NULL && di->status != GW_DICT_STATUS_CANCELING)
       {
-        quark = g_quark_from_string (GW_GENERIC_ERROR);
-        *error = g_error_new_literal (quark, GW_FILE_ERROR, gettext("Unzip Error"));
+        quark = g_quark_from_string (GW_IO_ERROR);
+        *error = g_error_new_literal (quark, GW_IO_DECOMPRESSION_ERROR, gettext("Unzip Error"));
       }
     }
     else
@@ -782,6 +781,7 @@ void gw_io_install_dictinfo (GwDictInfo *di,    int (*callback_function) (char*,
     g_free (encoding_path);
     g_free (download_path);
     g_free (final_path);
+*/
 }
 
 

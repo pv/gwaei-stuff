@@ -23,14 +23,14 @@
 *******************************************************************************/
 
 //!
-//! @file src/include/gwaei/dictinfo-object.h
+//! @file src/include/gwaei/dictinfo.h
 //!
 //! @brief To be written.
 //!
 //! To be written.
 //!
 
-#include <gwaei/resultline-object.h>
+#include <gwaei/resultline.h>
 
 //!
 //! @brief Enumeration of dictionary statuses
@@ -62,20 +62,6 @@ typedef enum {
   GW_DICT_ENGINE_TOTAL
 } GwDictEngine;
 
-typedef enum {
-  GW_DICT_COMPRESSION_ZIP,
-  GW_DICT_COMPRESSION_GZIP,
-  GW_DICT_COMPRESSION_NONE,
-  GW_DICT_COMPRESSION_TOTAL
-} GwDictCompression;
-
-typedef enum {
-  GW_DICT_ENCODING_UTF8,
-  GW_DICT_ENCODING_EUC_JP,
-  GW_DICT_ENCODING_SHIFT_JS,
-  GW_DICT_ENCODING_TOTAL
-} GwDictEncoding;
-
 
 //!
 //! @brief Primitive for storing dictionary information
@@ -87,15 +73,10 @@ struct _GwDictInfo
     char *short_name;                 //!< short name of the file (usually localized)
     GwDictStatus status;              //!< install status of the dictionary
     GwDictEngine engine;              //!< Path to the dictionary file
-    GwDictCompression compression;    //!< Path to the gziped dictionary file
-    GwDictEncoding encoding;          //!< Path to the raw unziped dictionary file
-    char *gskey;                      //!< gckey for the download source
-    char *source_uri;                 //!< gckey for the download source
     int load_position;                //!< load position in the GUI
     long total_lines;                 //!< total lines in the file
     GwResultLine *cached_resultlines;
     GwResultLine *current_resultline;
-    GMutex *mutex;
 };
 typedef struct _GwDictInfo GwDictInfo;
 

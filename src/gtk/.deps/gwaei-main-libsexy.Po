@@ -468,7 +468,6 @@ gwaei-main-libsexy.o: main-libsexy.c /usr/include/stdlib.h \
  /usr/include/libsexy/sexy-tree-view.h \
  /usr/include/libsexy/sexy-url-label.h \
  ../../src/backend/include/gwaei/backend.h \
- ../../src/backend/include/gwaei/definitions.h \
  ../../src/backend/include/gwaei/regex.h \
  ../../src/backend/include/gwaei/utilities.h \
  ../../src/backend/include/gwaei/dictinfo-object.h \
@@ -1615,8 +1614,6 @@ gwaei-main-libsexy.o: main-libsexy.c /usr/include/stdlib.h \
 /usr/include/libsexy/sexy-url-label.h:
 
 ../../src/backend/include/gwaei/backend.h:
-
-../../src/backend/include/gwaei/definitions.h:
 
 ../../src/backend/include/gwaei/regex.h:
 

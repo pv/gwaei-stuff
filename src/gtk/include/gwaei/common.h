@@ -20,5 +20,8 @@ void gw_common_close_window (const char*);
 
 GtkBuilder* gw_common_get_builder (void);
 gboolean gw_common_load_ui_xml (const char*);
+GtkWidget* gw_common_get_widget_by_target (const GwTargetOutput);
+gpointer gw_common_get_gobject_by_target (const GwTargetOutput);
+gboolean gw_common_widget_equals_target (GtkWidget*, const GwTargetOutput);
 
 #endif

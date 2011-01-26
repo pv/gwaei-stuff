@@ -165,7 +165,7 @@ static void _stream_results_thread (gpointer data)
 
     //We loop, processing lines of the file until the max chunk size has been
     //reached or we reach the end of the file or a cancel request is recieved.
-    while ((line_pointer = fgets(item->resultline->string, MAX_LINE, item->fd)) != NULL &&
+    while ((line_pointer = fgets(item->resultline->string, GW_IO_MAX_FGETS_LINE, item->fd)) != NULL &&
            item->status != GW_SEARCH_CANCELING)
     {
       //Give a chance for something else to run
@@ -180,7 +180,7 @@ static void _stream_results_thread (gpointer data)
         continue;
       }
       else if (item->resultline->string[0] == 'A' && item->resultline->string[1] == ':' &&
-               fgets(item->scratch_buffer, MAX_LINE, item->fd) != NULL             )
+               fgets(item->scratch_buffer, GW_IO_MAX_FGETS_LINE, item->fd) != NULL             )
       {
         char *eraser = NULL;
         if ((eraser = g_utf8_strchr (item->resultline->string, -1, L'\n')) != NULL) { *eraser = '\0'; }

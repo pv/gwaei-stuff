@@ -3,6 +3,10 @@
 
 //Starts a search.  Make sure to set target_text_buffer and target_text view
 
+#define MAX_HIGH_RELIVENT_RESULTS 200
+#define MAX_MEDIUM_IRRELIVENT_RESULTS 100
+#define MAX_LOW_IRRELIVENT_RESULTS    50
+
 typedef void(*GwOutputFunc)(GwSearchItem*);
 
 void gw_engine_initialize (

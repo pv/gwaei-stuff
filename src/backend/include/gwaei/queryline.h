@@ -1,6 +1,8 @@
 #ifndef GW_QUERYLINE_OBJECT_INCLUDED
 #define GW_QUERYLINE_OBJECT_INCLUDED
 
+#define MAX_QUERY        250
+
 #define MAX_ATOMS 20
 #define MAX_ATOM_LENGTH 100
 
@@ -13,7 +15,7 @@
 #include <regex.h>	// needed for the regex_t below
 
 struct _GwQueryLine {
-    char string[MAX_QUERY];
+    char *string;
     char hira_string[MAX_QUERY];
     char atom_string[MAX_QUERY];
 

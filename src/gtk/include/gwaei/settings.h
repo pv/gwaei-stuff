@@ -1,6 +1,9 @@
 #ifndef GW_GTK_SETTINGS_INTERFACE_INCLUDED
 #define GW_GTK_SETTINGS_INTERFACE_INCLUDED
 
+#include <gwaei/settings-callbacks.h>
+#include <gwaei/settings-listeners.h>
+
 void gw_settings_initialize (void);
 void gw_settings_free (void);
 
