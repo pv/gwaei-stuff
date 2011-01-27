@@ -92,7 +92,10 @@ void do_conditionally_enable_spellcheck (GtkWidget *widget, gpointer data)
      active = gtk_combo_box_get_active_text (GTK_COMBO_BOX (combobox));
      GError *err;
      err = NULL;
-     GwDictInfo *di = gw_dictlist_get_selected()->data;
+     GList *list = gw_dictlist_get_selected();
+     if (list == NULL) printf("NULL\n!");
+     return;
+     GwDictInfo *di = (GwDictInfo*) list->data;
 
 
      if ((strcmp ("Radicals", di->name) == 0) ||

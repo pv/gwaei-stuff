@@ -2,12 +2,12 @@
 *.lo
 *.la
 *.exe
-*.gschema.xml
 Makefile
 **/.deps/*
 src/backend/.deps/*
 src/backend/.libs/*
-src/gwaei/.deps/*
+src/gtk/.libs
+src/gtk/.deps/*
 src/console/.deps/*
 *.gmo
 *.rpm
@@ -83,9 +83,9 @@ mandir/Makefile.in
 src/Makefile.in
 src/gtk/desktop/Makefile.in
 src/gtk/images/Makefile.in
+src/gtk/ui/Makefile.in
 src/kpengine/Makefile.in
 src/schemas/Makefile.in
-src/gtk/ui/Makefile.in
 src/schemas/org.gnome.*.valid
 src/schemas/gschemas.compiled
 

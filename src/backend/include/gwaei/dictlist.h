@@ -60,6 +60,7 @@ void gw_dictlist_update_load_orders (void);
 void gw_dictlist_preform_postprocessing_by_name (char*, GError**);
 int gw_dictlist_get_total_with_status (GwDictStatus);
 void gw_dictlist_load_dictionary_order_from_pref (void);
+void gw_dictlist_save_dictionary_order_pref (void);
 
 void gw_dictlist_free ();
 

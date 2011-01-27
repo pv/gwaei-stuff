@@ -293,13 +293,13 @@ G_MODULE_EXPORT void do_close (GtkWidget *widget, gpointer data)
 
     if (strcmp (id, "main_window") == 0)
     {
-      gw_common_close_window (id);
+      gw_common_hide_window (id);
       gw_ui_tab_cancel_all_searches ();
       gtk_main_quit ();
     }
     else if (strcmp (id, "radicals_window") == 0 || strcmp (id, "kanjipad_window") == 0)
     {
-      gw_common_close_window (id);
+      gw_common_hide_window (id);
     }
     else if (strcmp (id, "settings_window") == 0)
     {

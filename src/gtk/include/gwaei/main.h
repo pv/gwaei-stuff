@@ -81,7 +81,9 @@ void gw_ui_set_use_global_document_font_checkbox (gboolean);
 void gw_ui_set_toolbar_show (gboolean);
 void gw_ui_set_toolbar_style (const char*);
 void gw_ui_set_color_to_swatch (const char*, const char*);
+
 gboolean gw_update_icons_for_selection (gpointer);
+gboolean gw_ui_keep_searching (gpointer);
 
 
 #endif

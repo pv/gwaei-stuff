@@ -33,7 +33,40 @@
 #include <gwaei/frontend.h>
 
 static GtkBuilder *_builder = NULL;
+static GList* _load_window_prefs (void);
+static void _load_window_prefs_for_id (const char*, int*, int*, int*, int*);
+static void _save_window_prefs_for_id (const char*);
 
+struct _GwWindowData
+{
+  char *id;
+  int x;
+  int y;
+  int width;
+  int height;
+};
+typedef struct _GwWindowData GwWindowData;
+
+GwWindowData* gw_windowdata_new (const char* id, int x, int y, int width, int height)
+{
+  if (id == NULL) return NULL;
+
+  GwWindowData *temp = (GwWindowData*) malloc (sizeof(GwWindowData));
+
+  temp->id = g_strdup (id);
+  temp->x = x;
+  temp->y = y;
+  temp->width = width;
+  temp->height = height;
+  
+  return temp;
+}
+
+void gw_windowdata_free (GwWindowData *wd)
+{
+  g_free(wd->id);
+  free(wd);
+}
 
 void gw_common_initialize ()
 {
@@ -46,62 +79,64 @@ void gw_common_free ()
   _builder = NULL;
 }
 
+
+//!
+//! @brief Gets the window position data for a specific window id as given in the gtkbuilder xml
+//!
+//! @param id The gtkbuilder id for the window
+//! @param x An integer pointer to fill with the x position
+//! @param y An integer pointer to fill with the y position
+//! @param width An integer pointer to fill with the width position
+//! @param height An integer pointer to fill with the height position
+//!
+static void _load_window_prefs_for_id (const char* id, int* x, int* y, int* width, int* height)
+{
+    GwWindowData *wd = NULL;
+    //Get the window pref data
+    GList *list = _load_window_prefs ();
+    GList *iter = NULL;
+    for (iter = list; iter != NULL; iter = iter->next)
+    {
+      wd = (GwWindowData*) iter->data;
+      if (strcmp(wd->id, id) == 0) break;
+    }
+    if (iter != NULL) //Doesn't exist
+    {
+      *x = wd->x;
+      *y = wd->y;
+      *width = wd->width;
+      *height = wd->height;
+    }
+    for (iter = list; iter != NULL; iter = iter->next) gw_windowdata_free ((GwWindowData*)(iter->data));
+    g_list_free (list);
+    list = NULL;
+}
+
+
 //!
 //! @brief Sets the position preferences of the window
 //!
 //! @param window_id The gtkbuilder window id which also acts as a preference key
 //!
-static void _initialize_window_attributes (char* window_id)
+static void _initialize_window_attributes (char* id)
 {
-/*
     GtkBuilder *builder = gw_common_get_builder ();
-
-    int leftover;
-
-    GtkWidget *window;
-    window = GTK_WIDGET (gtk_builder_get_object(builder, window_id));
-
-    //Setup the unique key for the window
-    char *window_schema = g_strdup_printf (GW_SCHEMA_BASE ".%s", gtk_buildable_get_name (GTK_BUILDABLE (window)));
-    if (window_schema == NULL) return;
-
-    //Some other variable declarations
+    GtkWidget *window = GTK_WIDGET (gtk_builder_get_object (builder, id));
     int x = 0, y = 0, width = 100, height = 100;
 
-    //Get the stored attributes from pref
-    x = gw_pref_get_int (window_schema, "x");
-    y = gw_pref_get_int(window_schema, "y");
-    width = gw_pref_get_int(window_schema, "width");
-    height = gw_pref_get_int(window_schema, "height");
-
-    g_free (window_schema);
-
-    //Apply the x and y if they are within the screen size
-    if (x < gdk_screen_width() && y < gdk_screen_height()) {
-      gtk_window_move (GTK_WINDOW (window), x, y);
-    }
+    _load_window_prefs_for_id (id, &x, &y, &width, &height);
 
     //Apply the height and width if they are sane
-    if ( width  >= 100                 &&
-         width  <= gdk_screen_width()  && 
-         height >= 100                 && 
-         height <= gdk_screen_height() &&
-         strcmp (window_id, "main_window") == 0)
+    if (strcmp (id, "main_window") == 0)
     {
-      gtk_window_resize (GTK_WINDOW (window), width, height);
+      //Make sure the size is semi-sane
+      if (width >= 100 && width <= gdk_screen_width() && height >= 100 && height <= gdk_screen_height()) 
+      {
+        gtk_window_resize (GTK_WINDOW (window), width, height);
+      }
+      //Center the window if it is partially off screen
     }
-
-
-    if (strcmp(window_id, "main_window") == 0 &&
-        x == 0 && y == 0                        )
-    {
-      int half_width, half_height;
-      gtk_window_get_size (GTK_WINDOW (window), &width, &height);
-      half_width = (gdk_screen_width() / 2) - (width / 2);
-      half_height =  (gdk_screen_height() / 2) - (height / 2);
-      gtk_window_move (GTK_WINDOW (window), half_width, half_height);
-    }
-    else if (strcmp (window_id, "radicals_window") == 0)
+    else if (strcmp (id, "radicals_window") == 0)
     {
       //Height checking
       GtkWidget *window = GTK_WIDGET (gtk_builder_get_object (builder, "radicals_window"));
@@ -123,7 +158,125 @@ static void _initialize_window_attributes (char* window_id)
       //Allow a vertical scrollbar
       gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
     }
-*/
+
+    //Apply the x and y if they are within the screen size
+    if (x > 0 && x < gdk_screen_width() && y > 0 && y < gdk_screen_height()) {
+      gtk_window_move (GTK_WINDOW (window), x, y);
+    }
+    //Otherwise center the window
+    else
+    {
+      int half_width, half_height;
+      gtk_window_get_size (GTK_WINDOW (window), &width, &height);
+      half_width = (gdk_screen_width() / 2) - (width / 2);
+      half_height =  (gdk_screen_height() / 2) - (height / 2);
+      gtk_window_move (GTK_WINDOW (window), half_width, half_height);
+    }
+
+}
+
+
+//!
+//! @brief Returns a glist of all of the saved window position and size data.
+//!
+//! @returns A GList containing GwWindowData objects
+//!
+static GList* _load_window_prefs ()
+{
+    char* pref = (char*) malloc(300 * sizeof(char));
+    gw_pref_get_string (pref, GW_SCHEMA_BASE, GW_KEY_WINDOW_POSITIONS, 300);
+    char **pref_array = NULL;;
+    pref_array = g_strsplit (pref, ";", -1);
+    char **ptr = NULL;
+    char **window_data = NULL;
+    GList *list = NULL;
+    GwWindowData* wd = NULL;
+    
+    //Format of pref is "window:xcoord,ycoord,width,height;"
+    for (ptr = pref_array; *ptr != NULL; ptr++)
+    {
+      window_data = g_strsplit (*ptr, ",", -1);
+      if (g_strv_length(window_data) == 5)
+      {
+        char* id = window_data[0];
+        int x = (int) g_ascii_strtoll (window_data[1], NULL, 10);
+        int y = (int) g_ascii_strtoll (window_data[2], NULL, 10);
+        int width = (int) g_ascii_strtoll (window_data[3], NULL, 10);
+        int height = (int) g_ascii_strtoll (window_data[4], NULL, 10);
+        wd = gw_windowdata_new (id, x, y, width, height);
+        if (wd != NULL) list = g_list_append (list, (gpointer) wd);
+      }
+      g_strfreev(window_data);
+      window_data = NULL;
+    }
+
+    g_strfreev (pref_array);
+    pref_array = NULL;
+    free(pref);
+    pref = NULL;
+
+    return list;
+}
+
+
+//!
+//! @brief Saves the window position and size settings identified by its id
+//!
+//! @param id An id identifying the window as set in the gtkbuilder xml
+//!
+static void _save_window_prefs_for_id (const char *id)
+{
+    GtkBuilder *builder = gw_common_get_builder ();
+    GtkWidget *window = GTK_WIDGET (gtk_builder_get_object (builder, id));
+    GList *list = _load_window_prefs();
+    GList *iter = NULL;
+    GwWindowData *wd = NULL;
+    int x, y, width, height;
+    gtk_window_get_position (GTK_WINDOW (window), &x, &y);
+    gtk_window_get_size (GTK_WINDOW (window), &width, &height);
+
+    g_assert (id != NULL && window != NULL);
+
+    //Update the window data
+    for (iter = list; iter != NULL; iter = iter->next)
+    {
+      wd = (GwWindowData*) iter->data;
+      if (strcmp(id, wd->id) == 0)
+      {
+        wd->x = x;
+        wd->y = y;
+        wd->width = width;
+        wd->height = height;
+        break;
+      }
+    }
+    if (iter == NULL) //This condition only occures when there is no stored window data to update
+    {
+      wd = gw_windowdata_new (id, x, y, width, height);
+      list = g_list_append (list, (gpointer) wd);
+    }
+
+    //Create a string reflecting the updated values
+    char *pref = NULL;
+    char** atoms = (char**) malloc((g_list_length (list) + 1) * sizeof(char*));
+    char** atoms_iter = atoms;
+    for (iter = list; iter != NULL; iter = iter->next)
+    {
+      wd = (GwWindowData*) iter->data;
+      *atoms_iter = g_strdup_printf("%s,%d,%d,%d,%d", wd->id, wd->x, wd->y, wd->width, wd->height);
+      gw_windowdata_free (wd);
+      atoms_iter++;
+    }
+    *atoms_iter = NULL;
+    g_list_free (list);
+
+    pref = g_strjoinv (";", atoms);
+    gw_pref_set_string (GW_SCHEMA_BASE, GW_KEY_WINDOW_POSITIONS, pref);
+    g_free (pref);
+    pref = NULL;
+
+    g_strfreev (atoms);
+    atoms = NULL;
 }
 
 
@@ -132,34 +285,14 @@ static void _initialize_window_attributes (char* window_id)
 //!
 //! @param window_id The gtkbuilder id of the window
 //!
-void gw_common_close_window (const char* window_id)
+void gw_common_hide_window (const char* id)
 {
-/*
+    g_assert (id != NULL);
     GtkBuilder *builder = gw_common_get_builder ();
+    GtkWidget *window = GTK_WIDGET (gtk_builder_get_object (builder, id));
 
-    GtkWidget *window;
-    window = GTK_WIDGET (gtk_builder_get_object (builder, window_id));
-
-    //Get the window attributes
-    int x, y, width, height;
-    gtk_window_get_position (GTK_WINDOW (window), &x, &y);
-    gtk_window_get_size (GTK_WINDOW (window), &width, &height);
-
-    //Hide the widget now because pref can be slow
+    _save_window_prefs_for_id (id);
     gtk_widget_hide (window);
-
-    //Setup our unique key for the window
-    char window_schema[100];
-    strcpy(window_schema, GW_SCHEMA_BASE);
-    strcat(window_schema, ".");
-    strcat(window_schema, gtk_buildable_get_name (GTK_BUILDABLE (window)));
-
-    //Start sending the attributes to pref for storage
-    gw_pref_set_int (window_schema, "x", x);
-    gw_pref_set_int (window_schema, "y", y);
-    gw_pref_set_int (window_schema, "width", width);
-    gw_pref_set_int (window_schema, "height", height);
-*/
 }
 
 
@@ -170,11 +303,10 @@ void gw_common_close_window (const char* window_id)
 //!
 void gw_common_show_window (char *id)
 {
-/*
-    GtkBuilder *builder = gw_common_get_builder ();
+    g_assert (id != NULL);
 
-    GtkWidget *window;
-    window = GTK_WIDGET (gtk_builder_get_object (builder, id));
+    GtkBuilder *builder = gw_common_get_builder ();
+    GtkWidget *window = GTK_WIDGET (gtk_builder_get_object (builder, id));
     if (gtk_widget_get_visible (window) == TRUE) return;
 
     if (strcmp(id, "main_window") == 0 || strcmp (id, "radicals_window") == 0)
@@ -205,7 +337,6 @@ void gw_common_show_window (char *id)
     {
       gtk_widget_show (window);
     }
-*/
 }
 
 

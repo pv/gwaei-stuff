@@ -577,15 +577,14 @@ static gint _load_order_compare_function (gconstpointer a, gconstpointer b)
 static void _sort_and_normalize_dictlist_load_order ()
 {
     GwDictInfo *di = NULL;
-    GList *list =  gw_dictlist_get_list();
-    GList *iterator = list;
     int load_position = 0;
+    GList *iter = NULL;
 
-    _dictionaries->list = g_list_sort (list, _load_order_compare_function);
+    _dictionaries->list = g_list_sort (_dictionaries->list, _load_order_compare_function);
 
-    for (iterator = list; iterator != NULL; iterator = iterator->next)
+    for (iter = _dictionaries->list; iter != NULL; iter = iter->next)
     {
-      di = (GwDictInfo*) iterator->data;
+      di = (GwDictInfo*) iter->data;
       if (di->status != GW_DICT_STATUS_NOT_INSTALLED)
       {
         di->load_position = load_position;
@@ -607,14 +606,15 @@ void gw_dictlist_save_dictionary_order_pref ()
     char *load_order = NULL;
     GwDictInfo *di = NULL;
     GList *list =  gw_dictlist_get_list();
-    GList *iterator = list;
+    GList *iter = list;
     int max = GW_DICTLIST_MAX_DICTIONARIES;
-    char **atom = (char**) malloc((max + 1) * sizeof(int));
+    char **atom = (char**) malloc((max + 1) * sizeof(char*));
     int i = 0;
 
     //Create the string to write to the prefs with the last one NULL terminated
-    for (iterator = list; iterator != NULL && i < max; iterator = iterator->next)
+    for (iter = list; iter != NULL && i < max; iter = iter->next)
     {
+      di = (GwDictInfo*) iter->data;
       atom[i] = g_strdup_printf ("%s/%s", gw_util_get_engine_name (di->engine), di->name);
       if (atom == NULL) { printf("Out of memory\n"); exit(1); }
       i++;
@@ -622,13 +622,11 @@ void gw_dictlist_save_dictionary_order_pref ()
     atom[i] = NULL;
 
     load_order = g_strjoinv (";", atom);
+    gw_pref_set_string (GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, load_order);
 
     //Free the used memory
-    for (i = 0; i < max; i++)
-    {
-      free (atom[i]);
-      atom[i] = NULL;
-    }
+    g_strfreev (atom);
+    atom = NULL;
     g_free (load_order);
     load_order = NULL;
 }
@@ -688,6 +686,8 @@ void gw_dictlist_load_dictionary_order_from_pref ()
 
     g_strfreev (load_order_array);
     load_order_array = NULL;
+
+    _sort_and_normalize_dictlist_load_order ();
 }
 
 

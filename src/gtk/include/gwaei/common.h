@@ -16,7 +16,7 @@ void gw_common_initialize (void);
 void gw_common_free (void);
 
 void gw_common_show_window (char*);
-void gw_common_close_window (const char*);
+void gw_common_hide_window (const char*);
 
 GtkBuilder* gw_common_get_builder (void);
 gboolean gw_common_load_ui_xml (const char*);

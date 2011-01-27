@@ -754,7 +754,7 @@ void gw_ui_set_dictionary (int request)
     GtkBuilder *builder = gw_common_get_builder ();
 
     //Set the correct dictionary in the dictionary list
-    if (gw_dictlist_set_selected_by_load_position(request) == NULL)
+    if (gw_dictlist_set_selected_by_load_position (request) == NULL)
       return;
 
     //Time to make sure everything matches up in the gui
@@ -2500,7 +2500,12 @@ static void _set_header (GwSearchItem *item, char* text, char* mark_name)
 }
 
 
-static gboolean _keep_searching ()
+//!
+//! @brief A simple search initiater function made to be looped by a timer
+//!
+//! @param data An unused gpointer.  It should always be NULL
+//!
+gboolean gw_ui_keep_searching (gpointer data)
 {
     do_search (NULL, NULL);
     return TRUE;
