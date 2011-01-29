@@ -62,7 +62,7 @@
     </key>
 
     <key name="names-places-source" type="s">
-      <default>'ftp://ftp.monash.edu.au/pub/nihongo/kradfile.gz'</default>
+      <default>'ftp://ftp.monash.edu.au/pub/nihongo/enamdict.gz'</default>
       <summary>Names dictionary install source</summary>
       <description>Used for determining the path to install and update the Names dictionary from.</description>
     </key>

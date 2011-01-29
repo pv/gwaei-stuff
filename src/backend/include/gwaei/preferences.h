@@ -39,23 +39,12 @@
 #define GW_COMMENT_FG_DEFAULT     "#2222DD"
 
 ////////////////////////////
-#define GW_SCHEMA_DICTIONARY   "org.gnome.gwaei.dictionary"
-#define GW_KEY_ENGLISH_SOURCE  "english-source"
-#define GW_KEY_KANJI_SOURCE    "kanji-source"
-#define GW_KEY_NAMES_SOURCE    "names-source"
-#define GW_KEY_PLACES_SOURCE   "places-source"
-#define GW_KEY_RADICALS_SOURCE "radicals-source"
-#define GW_KEY_EXAMPLES_SOURCE "examples-source"
-#define GW_KEY_LOAD_ORDER      "load-order"
-#define GW_KEY_FRENCH_SOURCE   "french-source"
-#define GW_KEY_GERMAN_SOURCE   "german-source"
-#define GW_KEY_SPANISH_SOURCE  "spanish-source"
-
-#define GW_ENGLISH_URI_DEFAULT      "ftp://ftp.monash.edu.au/pub/nihongo/edict.gz"
-#define GW_KANJI_URI_DEFAULT        "ftp://ftp.monash.edu.au/pub/nihongo/kanjidic.gz,ftp://ftp.monash.edu.au/pub/nihongo/kradfile.gz"
-#define GW_NAMES_PLACES_URI_DEFAULT "ftp://ftp.monash.edu.au/pub/nihongo/enamdict.gz"
-#define GW_EXAMPLES_URI_DEFAULT     "http://www.csse.monash.edu.au/~jwb/examples.gz"
-#define GW_LOAD_ORDER_DEFAULT       "edict/English;kanji/Kanji;edict/Names;edict/Places;examples/Examples"
+#define GW_SCHEMA_DICTIONARY       "org.gnome.gwaei.dictionary"
+#define GW_KEY_ENGLISH_SOURCE      "english-source"
+#define GW_KEY_KANJI_SOURCE        "kanji-source"
+#define GW_KEY_NAMES_PLACES_SOURCE "names-places-source"
+#define GW_KEY_EXAMPLES_SOURCE     "examples-source"
+#define GW_KEY_LOAD_ORDER          "load-order"
 
 void gw_pref_set_int (const char*, const char*, const int);
 int gw_pref_get_int (const char*, const char*);

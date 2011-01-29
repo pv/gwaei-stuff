@@ -56,7 +56,7 @@
 //!
 void do_conditionally_enable_spellcheck (GtkWidget *widget, gpointer data)
 {
-    GtkBuilder *builder = gw_common_get_builder ();
+   GtkBuilder *builder = gw_common_get_builder ();
 
    GtkWidget *search_entry = GTK_WIDGET (gw_common_get_widget_by_target (GW_TARGET_ENTRY));
 
@@ -78,25 +78,11 @@ void do_conditionally_enable_spellcheck (GtkWidget *widget, gpointer data)
        is_convertable_to_hiragana == FALSE                     &&
        spellcheck_pref == TRUE                                   )
    {
-     GtkWidget *combobox ;
-     combobox = GTK_WIDGET (gtk_builder_get_object (builder, "dictionary_combobox"));
-
-     //Make sure the combobox is sane
-     if (!gtk_widget_get_sensitive (combobox))
-     {
-       return;
-     }
-
      //Default to the english dictionary when using the english-japanese dict
-     char *active;
-     active = gtk_combo_box_get_active_text (GTK_COMBO_BOX (combobox));
      GError *err;
      err = NULL;
      GList *list = gw_dictlist_get_selected();
-     if (list == NULL) printf("NULL\n!");
-     return;
      GwDictInfo *di = (GwDictInfo*) list->data;
-
 
      if ((strcmp ("Radicals", di->name) == 0) ||
          (strcmp ("Names",    di->name) == 0)   )
@@ -106,7 +92,6 @@ void do_conditionally_enable_spellcheck (GtkWidget *widget, gpointer data)
      }
      else if ((strcmp ("English",  di->name) == 0) ||
               (strcmp ("Kanji",    di->name) == 0) ||
-              (strcmp ("Mix",      di->name) == 0) ||
               (strcmp ("Examples", di->name) == 0) ||
               (strcmp ("Places",   di->name) == 0)   )
      {
@@ -128,94 +113,6 @@ void do_conditionally_enable_spellcheck (GtkWidget *widget, gpointer data)
          sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (search_entry), "es");
        if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (search_entry), "it") == TRUE)
          sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (search_entry), "it");
-     }
-     else if (strcmp ("French", di->name) == 0)
-     {
-       //Set the spellchecked language to french
-       if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (search_entry), "fr") == FALSE)
-         sexy_spell_entry_activate_language (SEXY_SPELL_ENTRY (search_entry), "fr", &err);
-
-       if (err != NULL)
-       {
-         g_error_free (err);
-         err = NULL;
-       }
-       sexy_spell_entry_set_checked (SEXY_SPELL_ENTRY (search_entry), TRUE);
- 
-       if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (search_entry), "en") == TRUE)
-         sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (search_entry), "en");
-       if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (search_entry), "de") == TRUE)
-         sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (search_entry), "de");
-       if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (search_entry), "es") == TRUE)
-         sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (search_entry), "es");
-       if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (search_entry), "it") == TRUE)
-         sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (search_entry), "it");
-     }
-     else if (strcmp ("German", di->name) == 0)
-     {
-       //Set the spellchecked language to german
-       if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (search_entry), "de") == TRUE)
-         sexy_spell_entry_activate_language (SEXY_SPELL_ENTRY (search_entry), "de", &err);
-
-       if (err != NULL)
-       {
-         g_error_free (err);
-         err = NULL;
-       }
-       sexy_spell_entry_set_checked (SEXY_SPELL_ENTRY (search_entry), TRUE);
- 
-       if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (search_entry), "fr") == TRUE)
-         sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (search_entry), "fr");
-       if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (search_entry), "en") == TRUE)
-         sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (search_entry), "en");
-       if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (search_entry), "es") == TRUE)
-         sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (search_entry), "es");
-       if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (search_entry), "it") == TRUE)
-         sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (search_entry), "it");
-     }
-     else if (strcmp ("Spanish", di->name) == 0)
-     {
-       //Set the spellchecked language to spanish
-       if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (search_entry), "es") == TRUE)
-         sexy_spell_entry_activate_language (SEXY_SPELL_ENTRY (search_entry), "es", &err);
-
-       if (err != NULL)
-       {
-         g_error_free (err);
-         err = NULL;
-       }
-       sexy_spell_entry_set_checked (SEXY_SPELL_ENTRY (search_entry), TRUE);
- 
-       if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (search_entry), "fr") == TRUE)
-         sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (search_entry), "fr");
-       if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (search_entry), "de") == TRUE)
-         sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (search_entry), "de");
-       if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (search_entry), "en") == TRUE)
-         sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (search_entry), "en");
-       if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (search_entry), "it") == TRUE)
-         sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (search_entry), "it");
-     }
-     else if (strcmp ("Italian", di->name) == 0)
-     {
-       //Set the spellchecked language to italian
-       if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (search_entry), "it") == TRUE)
-         sexy_spell_entry_activate_language (SEXY_SPELL_ENTRY (search_entry), "it", &err);
-
-       if (err != NULL)
-       {
-         g_error_free (err);
-         err = NULL;
-       }
-       sexy_spell_entry_set_checked (SEXY_SPELL_ENTRY (search_entry), TRUE);
- 
-       if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (search_entry), "fr") == TRUE)
-         sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (search_entry), "fr");
-       if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (search_entry), "de") == TRUE)
-         sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (search_entry), "de");
-       if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (search_entry), "es") == TRUE)
-         sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (search_entry), "es");
-       if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (search_entry), "en") == TRUE)
-         sexy_spell_entry_deactivate_language (SEXY_SPELL_ENTRY (search_entry), "en");
      }
      //Default to the system default otherwise
      else
@@ -354,7 +251,6 @@ void gw_libsexy_initialize ()
 
     GtkWidget* results_tv = gw_common_get_widget_by_target (GW_TARGET_RESULTS);
     GtkWidget* kanji_tv = gw_common_get_widget_by_target (GW_TARGET_KANJI);
-
 
     //Mimic original callbacks from the original search entry
     g_signal_connect (G_OBJECT (entry), "activate", G_CALLBACK (do_search), NULL);

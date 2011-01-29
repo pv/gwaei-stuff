@@ -15,10 +15,7 @@ void gw_settings_dictionary_manager_update_items (void);
 
 static GtkListStore *_model = NULL;
 static GtkTreeView *_view = NULL;
-enum { IMAGE, POSITION, NAME, LONG_NAME, SHORTCUT, PROGRESS, STATUS, DICT_POINTER, TOTAL_FIELDS };
-static GtkCellRenderer *_renderer;
-static GtkTreeViewColumn *_column;
-GtkTreeViewColumn *_status_column;
+enum { IMAGE, POSITION, NAME, LONG_NAME, SHORTCUT, DICT_POINTER, TOTAL_FIELDS };
 static gulong _list_update_handler_id;
 
 
@@ -51,46 +48,46 @@ G_MODULE_EXPORT void do_list_store_row_changed_action (GtkTreeModel *model,
 
 
 
+//!
+//! @brief Sets up the dictionary manager.  This is the backbone of every portion of the GUI that allows editing dictionaries
+//!
 void gw_dictionary_manager_initialize ()
 {
     GtkBuilder *builder = gw_common_get_builder ();
+    GtkCellRenderer *renderer;
+    GtkTreeViewColumn *column;
 
     //Setup the model and view
-    _model = gtk_list_store_new (TOTAL_FIELDS, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INT, G_TYPE_STRING, G_TYPE_POINTER);
+    _model = gtk_list_store_new (TOTAL_FIELDS, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_POINTER);
     _view = GTK_TREE_VIEW (gtk_builder_get_object (builder, "manage_dictionaries_treeview"));
     gtk_tree_view_set_model (GTK_TREE_VIEW (_view), GTK_TREE_MODEL (_model));
 
     //Create the columns and renderer for each column
-    _renderer = gtk_cell_renderer_pixbuf_new();
-    _column = gtk_tree_view_column_new_with_attributes (" ", _renderer, "icon-name", IMAGE, NULL);
-    gtk_tree_view_append_column (_view, _column);
+    renderer = gtk_cell_renderer_pixbuf_new();
+    column = gtk_tree_view_column_new_with_attributes (" ", renderer, "icon-name", IMAGE, NULL);
+    gtk_tree_view_append_column (_view, column);
 
-    _renderer = gtk_cell_renderer_text_new();
-    _column = gtk_tree_view_column_new_with_attributes ("#", _renderer, "text", POSITION, NULL);
-    gtk_tree_view_append_column (_view, _column);
+    renderer = gtk_cell_renderer_text_new();
+    column = gtk_tree_view_column_new_with_attributes ("#", renderer, "text", POSITION, NULL);
+    gtk_tree_view_append_column (_view, column);
 
-    _renderer = gtk_cell_renderer_text_new();
-    _column = gtk_tree_view_column_new_with_attributes ("Dictionary Name", _renderer, "text", NAME, NULL);
-    gtk_tree_view_append_column (_view, _column);
+    renderer = gtk_cell_renderer_text_new();
+    column = gtk_tree_view_column_new_with_attributes ("Dictionary Name", renderer, "text", NAME, NULL);
+    gtk_tree_view_append_column (_view, column);
 
-    _renderer = gtk_cell_renderer_text_new();
-    _column = gtk_tree_view_column_new_with_attributes ("Shortcut", _renderer, "text", SHORTCUT, NULL);
-    gtk_tree_view_append_column (_view, _column);
-
-    _renderer = gtk_cell_renderer_progress_new();
-    _column = gtk_tree_view_column_new_with_attributes ("Status", _renderer, "value", PROGRESS, "text", STATUS, NULL);
-    gtk_tree_view_append_column (_view, _column);
-    _status_column = _column;
+    renderer = gtk_cell_renderer_text_new();
+    column = gtk_tree_view_column_new_with_attributes ("Shortcut", renderer, "text", SHORTCUT, NULL);
+    gtk_tree_view_append_column (_view, column);
 
     GtkWidget *combobox = GTK_WIDGET (gtk_builder_get_object (builder, "dictionary_combobox"));
     gtk_combo_box_set_model (GTK_COMBO_BOX (combobox), GTK_TREE_MODEL (_model));
-    _renderer = gtk_cell_renderer_text_new();
-    gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (combobox), _renderer, FALSE);
-    gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (combobox), _renderer, "text", LONG_NAME);
+    renderer = gtk_cell_renderer_text_new();
+    gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (combobox), renderer, FALSE);
+    gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (combobox), renderer, "text", LONG_NAME);
 
     gw_settings_dictionary_manager_update_items ();
-    //_list_update_handler_id = g_signal_connect_after (G_OBJECT (_model), "row-changed", G_CALLBACK (do_list_store_inserted_action), NULL);
-    _list_update_handler_id = g_signal_connect (G_OBJECT (_model), "row-deleted", G_CALLBACK (do_list_store_row_changed_action), NULL);
+    _list_update_handler_id = g_signal_connect (G_OBJECT (_model), "row-deleted", 
+                                                G_CALLBACK (do_list_store_row_changed_action), NULL);
 }
 
 
@@ -99,6 +96,9 @@ void gw_dictionary_manager_free ()
 }
 
 
+//!
+//! Sets updates the list of dictionaries against the list in the global dictlist
+//!
 void gw_settings_dictionary_manager_update_items ()
 {
     GtkBuilder *builder = gw_common_get_builder ();
@@ -149,8 +149,6 @@ void gw_settings_dictionary_manager_update_items ()
                           NAME, di->short_name,
                           LONG_NAME, di->long_name,
                           SHORTCUT, shortcut_name,
-                          PROGRESS, 100,
-                          STATUS, "complete",
                           DICT_POINTER, di,
                                                  -1);
 
@@ -163,8 +161,7 @@ void gw_settings_dictionary_manager_update_items ()
       if (di->load_position < 9) gtk_widget_add_accelerator (GTK_WIDGET (item), "activate", accel_group, (GDK_0 + di->load_position + 1), GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
       gtk_widget_show (item);
 
-
-
+      //Cleanup
       g_free (order_number);
       order_number = NULL;
       icon_name = NULL;
@@ -195,8 +192,7 @@ void gw_settings_dictionary_manager_update_items ()
 
 
 
-G_MODULE_EXPORT void do_dictionary_cursor_changed_action (GtkTreeView *treeview, 
-                                                              gpointer data     )
+G_MODULE_EXPORT void do_dictionary_cursor_changed_action (GtkTreeView *treeview, gpointer data)
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
@@ -209,56 +205,6 @@ G_MODULE_EXPORT void do_dictionary_cursor_changed_action (GtkTreeView *treeview,
     gtk_widget_set_sensitive (GTK_WIDGET (button), has_selection);
 }
 
-
-
-
-
-
-
-
-/*
-    GtkListStore *liststore;
-    liststore = GTK_LIST_STORE (gtk_builder_get_object (builder, "list_store_dictionaries"));
-    GtkWidget *treeview;
-    treeview = GTK_WIDGET (gtk_builder_get_object (builder, "organize_dictionaries_treeview"));
-    GtkTreeModel *model;
-    model = gtk_tree_view_get_model (GTK_TREE_VIEW (treeview));
-    GtkTreeSelection * selection;
-    selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (treeview));
-   
-    GtkTreeIter selection_iter;
-    if (gtk_tree_selection_get_selected (selection, &model, &selection_iter))
-    {
-      GtkTreePath *selection_path;
-      selection_path = gtk_tree_model_get_path (model, &selection_iter);
-
-      GtkTreeIter comparison_iter;
-      gtk_tree_model_get_iter_first (model, &comparison_iter);
-      GtkTreePath *comparison_path;
-      comparison_path = gtk_tree_model_get_path (model, &comparison_iter);
-
-      gtk_widget_set_sensitive (move_dictionary_up, gtk_tree_path_compare (selection_path, comparison_path) != 0);
-
-      gtk_tree_path_free (comparison_path);
-      comparison_path = NULL;
-      GtkTreeIter previous_iter;
-      while (gtk_tree_model_iter_next (model, &comparison_iter)) previous_iter = comparison_iter;
-      comparison_iter = previous_iter;
-      comparison_path = gtk_tree_model_get_path (model, &comparison_iter);
-
-      gtk_widget_set_sensitive (move_dictionary_down, gtk_tree_path_compare (selection_path, comparison_path) != 0);
-
-      gtk_tree_path_free (comparison_path);
-      comparison_path = NULL;
-      gtk_tree_path_free (selection_path);
-      selection_path = NULL;
-    }
-    else
-    {
-      gtk_widget_set_sensitive (move_dictionary_up, FALSE);
-      gtk_widget_set_sensitive (move_dictionary_down, FALSE);
-    }
-*/
 
 G_MODULE_EXPORT void do_remove_dictionary_action (GtkWidget *widget, gpointer data)
 {

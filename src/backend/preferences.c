@@ -155,6 +155,8 @@ void gw_pref_get_string (char *output, const char* schemaid, const char *key, co
       else
         output[0] = '\0';
     }
+    g_free (value);
+    value = NULL;
 }
 
 
@@ -184,16 +186,17 @@ void gw_pref_set_string (const char* schemaid, const char *key, const char* requ
 //! @param callback_function The function to call when the key changes
 //! @param data The userdata to pass to the callback function
 //!
-void gw_prefs_add_change_listener (const char* schemaid, const char *key, void (*callback_function) (GSettings*, gchar*, gpointer), gpointer data)
+void gw_prefs_add_change_listener (const char* id, const char *key, void (*callback_function) (GSettings*, gchar*, gpointer), gpointer data)
 {
-    GSettings *setting = g_settings_new (schemaid);
-    char signal_name[100];
-    strcpy(signal_name, "changed::");
-    strcat(signal_name, key);
+    GSettings *setting = g_settings_new (id);
+    char *signal_name = g_strdup_printf ("changed::%s", key);
 
     g_signal_connect (G_OBJECT (setting), signal_name, G_CALLBACK (callback_function), data);
     GVariant *value = g_settings_get_value(setting, key);
     if (value != NULL) g_settings_set_value(setting, key, value);
+
+    g_free (signal_name);
+    signal_name = NULL;
 }
 
 

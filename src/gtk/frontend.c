@@ -95,6 +95,7 @@ void gw_frontend_initialize (int argc, char* argv[])
     #endif
 
     gw_dictionary_manager_initialize ();
+    gw_dictionaryinstall_initialize ();
 }
 
 
@@ -165,8 +166,14 @@ void gw_frontend_start_gtk (int argc, char* argv[])
 
 void gw_frontend_free ()
 {
+    gw_dictionaryinstall_free ();
+    gw_dictionary_manager_initialize ();
+    #ifdef WITH_LIBSEXY
     gw_libsexy_free ();
+    #endif
+    #ifdef WITH_LIBUNIQUE
     gw_libunique_free ();
+    #endif
     gw_kanjipad_free ();
     gw_settings_free ();
     gw_radsearchtool_free ();
