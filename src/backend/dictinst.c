@@ -21,7 +21,7 @@ static const char *_encoding_type_to_string (const GwDictInstallerEncoding ENCOD
     switch (ENCODING)
     {
       case GW_DICT_ENCODING_EUC_JP:
-        return "euc-jp;
+        return "euc-jp";
       case GW_DICT_ENCODING_SHIFT_JS:
         return "shift_js";
       case GW_DICT_ENCODING_UTF8:

@@ -2,6 +2,8 @@
 
 SUBDIRS = po src/backend src/gtk src/schemas
 
+INTLTOOL_FILES = intltool-extract.in intltool-merge.in intltool-update.in
+
 LIBTOOL_DEPS = @LIBTOOL_DEPS@
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status libtool
@@ -50,6 +52,7 @@ uninstall-local:
 
 
 ##DISTCLEANFILES = gnome-doc-utils.make
-EXTRA_DIST = m4/ChangeLog  config.rpath m4/ChangeLog config.rpath m4/ChangeLog help/Makefile.am.gnome help/Makefile.am.none mandir/gwaei.1 mandir/waei.1 autogen.sh rpm/create_rpms.sh
+DISTCLEANFILES = intltool-extract intltool-merge intltool-update po/.intltool-merge-cache
+EXTRA_DIST = m4/ChangeLog  config.rpath m4/ChangeLog config.rpath m4/ChangeLog help/Makefile.am.gnome help/Makefile.am.none mandir/gwaei.1 mandir/waei.1 autogen.sh rpm/create_rpms.sh $(INTLTOOL_FILES)
 
 

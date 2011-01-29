@@ -1699,3 +1699,7 @@ msgstr "_Utiliser la police de document du système (%s)"
 
 #~ msgid "Requires rsync to be installed"
 #~ msgstr "Nécessite que l'utilitaire rsync soit installé"
+
+#: src/gtk/desktop/gwaei.desktop.in:5
+msgid "Enter a Japanese or English word to easily get translations."
+msgstr "Entrer un mot en japonais ou en anglais pour facilement obtenir une traduction."

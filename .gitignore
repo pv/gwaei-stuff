@@ -64,6 +64,7 @@ src/gwaei/gwaei
 src/console/waei
 src/Makefile
 src/desktop/Makefile
+src/gtk/desktop/gwaei.desktop
 src/img/Makefile
 src/kpengine/Makefile
 src/schemas/Makefile

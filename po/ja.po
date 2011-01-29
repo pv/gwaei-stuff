@@ -790,23 +790,23 @@ msgstr "システムのデフォルトフォントを使う (%s) (_U)"
 #~ msgid "C_lear"
 #~ msgstr "クリア(_L)"
 
-#~ msgid "_File"
-#~ msgstr "ファイル(_F)"
+msgid "_File"
+msgstr "ファイル(_F)"
 
-#~ msgid "_Dictionaries"
-#~ msgstr "辞書(_D)"
+msgid "_Dictionaries"
+msgstr "辞書(_D)"
 
-#~ msgid "_Edit"
-#~ msgstr "編集(_E)"
+msgid "_Edit"
+msgstr "編集(_E)"
 
-#~ msgid "_View"
-#~ msgstr "表示(_V)"
+msgid "_View"
+msgstr "表示(_V)"
 
-#~ msgid "_Previous Tab"
-#~ msgstr "前のタブ(_P)"
+msgid "_Previous Tab"
+msgstr "前のタブ(_P)"
 
-#~ msgid "Ne_xt Tab"
-#~ msgstr "次のタブ(_X)"
+msgid "Ne_xt Tab"
+msgstr "次のタブ(_X)"
 
 #~ msgid "_Insert"
 #~ msgstr "挿入(_I)"
@@ -1288,5 +1288,6 @@ msgstr "システムのデフォルトフォントを使う (%s) (_U)"
 #~ msgid "<b>Dictionaries</b>"
 #~ msgstr "<b>辞書</b>"
 
-#~ msgid "Enter a Japanese or English word to easily get translations."
-#~ msgstr "英語か日本語の単語を入れて簡単に翻訳を調べます"
+#: src/gtk/desktop/gwaei.desktop.in:5
+msgid "Enter a Japanese or English word to easily get translations."
+msgstr "英語か日本語の単語を入れて簡単に翻訳を調べます"

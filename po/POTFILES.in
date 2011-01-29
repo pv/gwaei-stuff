@@ -8,12 +8,12 @@ src/backend/resultline.c
 src/backend/searchitem.c
 src/backend/utilities.c
 
-src/gtk/ui/dictionaryinstall.ui
-src/gtk/ui/installprogress.ui
-src/gtk/ui/kanjipad.ui
-src/gtk/ui/main.ui
-src/gtk/ui/radicals.ui
-src/gtk/ui/settings.ui
+[type: gettext/glade]src/gtk/ui/dictionaryinstall.ui
+[type: gettext/glade]src/gtk/ui/installprogress.ui
+[type: gettext/glade]src/gtk/ui/kanjipad.ui
+[type: gettext/glade]src/gtk/ui/main.ui
+[type: gettext/glade]src/gtk/ui/radicals.ui
+[type: gettext/glade]src/gtk/ui/settings.ui
 
 src/gtk/common.c
 src/gtk/dictionaryinstall.c
@@ -36,3 +36,5 @@ src/gtk/radsearchtool-callbacks.c
 src/gtk/settings.c
 src/gtk/settings-callbacks.c
 src/gtk/settings-listeners.c
+
+src/gtk/desktop/gwaei.desktop.in

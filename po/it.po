@@ -1673,7 +1673,6 @@ msgstr "_Usa il font dei documenti di sistema (%s)"
 #~ msgstr ""
 #~ " usato con moderazione può aiutare a prevenire la calvizie prematura."
 
-#~ msgid "Enter a Japanese or English word to easily get translations."
-#~ msgstr ""
-#~ "Inserisci un termine Giapponese o Inglese per avere facilmente una "
-#~ "traduzione."
+#: src/gtk/desktop/gwaei.desktop.in:5
+msgid "Enter a Japanese or English word to easily get translations."
+msgstr "Inserisci un termine Giapponese o Inglese per avere facilmente una traduzione."
