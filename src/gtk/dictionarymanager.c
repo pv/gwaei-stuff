@@ -58,7 +58,15 @@ void gw_dictionary_manager_initialize ()
     GtkTreeViewColumn *column;
 
     //Setup the model and view
-    _model = gtk_list_store_new (TOTAL_FIELDS, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_POINTER);
+    _model = gtk_list_store_new (
+        TOTAL_FIELDS, 
+        G_TYPE_STRING, 
+        G_TYPE_STRING, 
+        G_TYPE_STRING, 
+        G_TYPE_STRING, 
+        G_TYPE_STRING, 
+        G_TYPE_POINTER);
+
     _view = GTK_TREE_VIEW (gtk_builder_get_object (builder, "manage_dictionaries_treeview"));
     gtk_tree_view_set_model (GTK_TREE_VIEW (_view), GTK_TREE_MODEL (_model));
 
@@ -117,8 +125,6 @@ void gw_settings_dictionary_manager_update_items ()
         children = g_list_delete_link(children, children);
       }
     }
-
-
 
     //Start filling in the new items
     GwDictInfo *di = NULL;

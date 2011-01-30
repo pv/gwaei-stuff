@@ -10,6 +10,11 @@
 #include <gwaei/frontend.h>
 
 
+static GtkListStore *_model = NULL;
+static GtkTreeView *_view = NULL;
+enum { SHORT_NAME, LONG_NAME, DESC, DICTINST_PTR, CHECKBOX_STATE, TOTAL_FIELDS };
+
+/*
 void do_dictionary_source_updated_action (GSettings *settings, gchar *key, gpointer data)
 {
     char *id = (char*) data;
@@ -27,12 +32,74 @@ void do_dictionary_source_updated_action (GSettings *settings, gchar *key, gpoin
     g_free (value);
 
 }
+*/
+
+
+G_MODULE_EXPORT void _toggled (GtkCellRendererToggle *renderer, gchar *path, gpointer data)
+{
+    GtkTreeIter iter;
+    gboolean state;
+    gtk_tree_model_get_iter_from_string (GTK_TREE_MODEL (_model), &iter, path);
+    gtk_tree_model_get (GTK_TREE_MODEL (_model), &iter, CHECKBOX_STATE, &state, -1);
+    gtk_list_store_set (GTK_LIST_STORE (_model), &iter, CHECKBOX_STATE, !state, -1);
+}
+
+G_MODULE_EXPORT void _cursor_changed (GtkTreeView *view, gpointer data)
+{
+    printf("changed\n");
+    //TODO: FILL THIS DATA USING THE DICTINST OBJECTS
+}
 
 
 void gw_dictionaryinstall_initialize ()
 {
     gw_common_load_ui_xml ("dictionaryinstall.ui");
 
+    GtkBuilder *builder = gw_common_get_builder ();
+    GtkCellRenderer *renderer;
+    GtkTreeViewColumn *column;
+
+    //Setup the model and view
+    _model = gtk_list_store_new (TOTAL_FIELDS, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_INT);
+    _view = GTK_TREE_VIEW (gtk_builder_get_object (builder, "dictionary_install_treeview"));
+    gtk_tree_view_set_model (GTK_TREE_VIEW (_view), GTK_TREE_MODEL (_model));
+    g_signal_connect (G_OBJECT (_view), "cursor-changed", _cursor_changed, NULL);
+
+    //Create the columns and renderer for each column
+    renderer = gtk_cell_renderer_toggle_new ();
+    column = gtk_tree_view_column_new_with_attributes (" ", renderer, "active", CHECKBOX_STATE, NULL);
+    gtk_tree_view_append_column (_view, column);
+    g_signal_connect (G_OBJECT (renderer), "toggled", _toggled, NULL);
+
+    renderer = gtk_cell_renderer_text_new ();
+    column = gtk_tree_view_column_new_with_attributes ("Name", renderer, "text", LONG_NAME, NULL);
+    gtk_tree_view_append_column (_view, column);
+
+
+    GtkTreeIter iter;
+
+    gtk_list_store_append (GTK_LIST_STORE (_model), &iter);
+    gtk_list_store_set (_model, &iter,
+                        SHORT_NAME, "English",
+                        LONG_NAME, "English Dictionary",
+                        DESC, "This is edict.",
+                        DICTINST_PTR, NULL,
+                        CHECKBOX_STATE, TRUE,
+                                               -1);
+
+    gtk_list_store_append (GTK_LIST_STORE (_model), &iter);
+    gtk_list_store_set (_model, &iter,
+                        SHORT_NAME, "Kanji",
+                        LONG_NAME, "Kanji Dictionary",
+                        DESC, "This is kanjidic.",
+                        DICTINST_PTR, NULL,
+                        CHECKBOX_STATE, FALSE,
+                                               -1);
+
+
+
+
+/*
     char *id = NULL;
 
     id = g_strdup ("install_english_source_label");
@@ -46,6 +113,7 @@ void gw_dictionaryinstall_initialize ()
 
     id = g_strdup ("install_examples_source_label");
     gw_prefs_add_change_listener (GW_SCHEMA_DICTIONARY, GW_KEY_EXAMPLES_SOURCE, do_dictionary_source_updated_action, id);
+*/
 
 }
 
