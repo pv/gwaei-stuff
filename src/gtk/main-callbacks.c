@@ -772,11 +772,14 @@ G_MODULE_EXPORT void do_dictionary_changed_action (GtkWidget *widget, gpointer d
     else if (strcmp (G_OBJECT_TYPE_NAME(widget), "GtkRadioMenuItem") == 0 )
     {
       list = gtk_container_get_children (GTK_CONTAINER (shell));
-      while (list != NULL && gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (list->data)) == FALSE)
+      GList *iter = list;
+      while (iter != NULL && gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (iter->data)) == FALSE)
       {
-        list = g_list_next (list);
+        iter = iter->next;
         active++;
       }
+      g_list_free (list);
+      list = NULL;
     }
 
     //Finish up

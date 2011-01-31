@@ -268,8 +268,7 @@ void gw_libsexy_initialize ()
     gtk_widget_show (spellcheck_checkbox);
 
 
-    gw_prefs_add_change_listener (GW_SCHEMA_BASE, GW_KEY_SPELLCHECK, do_spellcheck_pref_changed_action, NULL);
-
+    gw_pref_add_change_listener (GW_SCHEMA_BASE, GW_KEY_SPELLCHECK, do_spellcheck_pref_changed_action, NULL);
 }
 
 void gw_libsexy_free ()

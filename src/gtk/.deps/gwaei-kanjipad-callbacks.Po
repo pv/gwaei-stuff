@@ -468,7 +468,9 @@ gwaei-kanjipad-callbacks.o: kanjipad-callbacks.c /usr/include/ctype.h \
  ../../src/backend/include/gwaei/dictinfo.h \
  ../../src/backend/include/gwaei/resultline.h \
  ../../src/backend/include/gwaei/io.h \
- ../../src/backend/include/gwaei/dictlist.h \
+ ../../src/backend/include/gwaei/dictinfolist.h \
+ ../../src/backend/include/gwaei/dictinst.h \
+ ../../src/backend/include/gwaei/dictinstlist.h \
  ../../src/backend/include/gwaei/preferences.h \
  ../../src/backend/include/gwaei/queryline.h \
  ../../src/backend/include/gwaei/searchitem.h \
@@ -483,7 +485,6 @@ gwaei-kanjipad-callbacks.o: kanjipad-callbacks.c /usr/include/ctype.h \
  ../../src/gtk/include/gwaei/main.h \
  ../../src/gtk/include/gwaei/main-callbacks.h \
  ../../src/gtk/include/gwaei/main-tabs.h \
- ../../src/gtk/include/gwaei/libunique.h \
  ../../src/gtk/include/gwaei/printing.h \
  ../../src/gtk/include/gwaei/radsearchtool.h \
  ../../src/gtk/include/gwaei/radsearchtool-callbacks.h \
@@ -491,8 +492,7 @@ gwaei-kanjipad-callbacks.o: kanjipad-callbacks.c /usr/include/ctype.h \
  ../../src/gtk/include/gwaei/settings-callbacks.h \
  ../../src/gtk/include/gwaei/settings-listeners.h \
  ../../src/gtk/include/gwaei/dictionarymanager.h \
- ../../src/gtk/include/gwaei/dictionaryinstall.h \
- ../../src/gtk/include/gwaei/libsexy.h
+ ../../src/gtk/include/gwaei/dictionaryinstall.h
 
 /usr/include/ctype.h:
 
@@ -1602,7 +1602,11 @@ gwaei-kanjipad-callbacks.o: kanjipad-callbacks.c /usr/include/ctype.h \
 
 ../../src/backend/include/gwaei/io.h:
 
-../../src/backend/include/gwaei/dictlist.h:
+../../src/backend/include/gwaei/dictinfolist.h:
+
+../../src/backend/include/gwaei/dictinst.h:
+
+../../src/backend/include/gwaei/dictinstlist.h:
 
 ../../src/backend/include/gwaei/preferences.h:
 
@@ -1632,8 +1636,6 @@ gwaei-kanjipad-callbacks.o: kanjipad-callbacks.c /usr/include/ctype.h \
 
 ../../src/gtk/include/gwaei/main-tabs.h:
 
-../../src/gtk/include/gwaei/libunique.h:
-
 ../../src/gtk/include/gwaei/printing.h:
 
 ../../src/gtk/include/gwaei/radsearchtool.h:
@@ -1649,5 +1651,3 @@ gwaei-kanjipad-callbacks.o: kanjipad-callbacks.c /usr/include/ctype.h \
 ../../src/gtk/include/gwaei/dictionarymanager.h:
 
 ../../src/gtk/include/gwaei/dictionaryinstall.h:
-
-../../src/gtk/include/gwaei/libsexy.h:

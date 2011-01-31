@@ -442,6 +442,9 @@ char* gw_radsearchtool_strdup_all_selected_radicals ()
     if (!a_button_was_in_pressed_state)
       gw_radsearchtool_deselect_all_radicals ();
 
+    g_list_free (radical_togglebutton_list);
+    radical_togglebutton_list = NULL;
+
     return final_string;
 }
 
@@ -586,6 +589,8 @@ void gw_radsearchtool_deselect_all_radicals()
 
       list = list->next;
     }
+
+    g_list_free (list);
 }
 
 

@@ -2,6 +2,60 @@
 <interface>
   <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy project-wide -->
+  <object class="GtkListStore" id="dictionary_engine_liststore">
+    <columns>
+      <!-- column-name engine -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Edict Parser</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Kanjidic Parser</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Examples Parser</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Unknown Parser</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="dictionary_encoding_liststore">
+    <columns>
+      <!-- column-name Encodings -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">UTF-8</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">EUC-JP</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">SHIFT_JIS</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="dictionary_post_processing_liststore">
+    <columns>
+      <!-- column-name Post -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">None</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Combine Kanji and Radicals</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Split Names and Places</col>
+      </row>
+    </data>
+  </object>
   <object class="GtkDialog" id="dictionary_install_dialog">
     <property name="height_request">300</property>
     <property name="title" translatable="yes">Install Dictionaries</property>
@@ -46,14 +100,16 @@
                     </child>
                   </object>
                   <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkVBox" id="dictionary_install_details_hbox">
-                    <property name="width_request">200</property>
                     <property name="visible">True</property>
                     <property name="orientation">vertical</property>
+                    <property name="spacing">8</property>
                     <child>
                       <object class="GtkHBox" id="hbox2">
                         <property name="visible">True</property>
@@ -176,8 +232,7 @@
                 <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
                 <property name="has_focus">True</property>
-                <property name="has_default">True</property>
-                <property name="receives_default">True</property>
+                <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
                 <signal name="clicked" handler="do_start_dictionary_install"/>
                 <signal name="activate" handler="do_start_dictionary_install"/>
@@ -201,59 +256,5 @@
       <action-widget response="0">button2</action-widget>
       <action-widget response="0">button1</action-widget>
     </action-widgets>
-  </object>
-  <object class="GtkListStore" id="dictionary_engine_liststore">
-    <columns>
-      <!-- column-name engine -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">Edict Parser</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Kanjidic Parser</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Examples Parser</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Unknown Parser</col>
-      </row>
-    </data>
-  </object>
-  <object class="GtkListStore" id="dictionary_encoding_liststore">
-    <columns>
-      <!-- column-name Encodings -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">UTF-8</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">EUC-JP</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">SHIFT_JIS</col>
-      </row>
-    </data>
-  </object>
-  <object class="GtkListStore" id="dictionary_post_processing_liststore">
-    <columns>
-      <!-- column-name Post -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">None</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Combine Kanji and Radicals</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Split Names and Places</col>
-      </row>
-    </data>
   </object>
 </interface>

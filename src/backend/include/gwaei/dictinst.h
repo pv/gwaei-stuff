@@ -1,18 +1,19 @@
-
+#ifndef GW_DICTINST_HEADER_INCLUDED
+#define GW_DICTINST_HEADER_INCLUDED
 
 typedef enum {
 //  GW_DICTINST_COMPRESSION_ZIP, //Unsupported since you can't tell what the file will be named
   GW_DICTINST_COMPRESSION_GZIP,
   GW_DICTINST_COMPRESSION_NONE,
   GW_DICTINST_COMPRESSION_TOTAL
-} GwDictInstallerCompression;
+} GwDictInstCompression;
 
 typedef enum {
   GW_DICTINST_ENCODING_UTF8,
   GW_DICTINST_ENCODING_EUC_JP,
   GW_DICTINST_ENCODING_SHIFT_JS,
   GW_DICTINST_ENCODING_TOTAL
-} GwDictInstallerEncoding;
+} GwDictInstEncoding;
 
 typedef enum {
   GW_DICTINST_DOWNLOAD_SOURCE,
@@ -20,34 +21,52 @@ typedef enum {
   GW_DICTINST_TEXT_ENCODING,
   GW_DICTINST_FINAL_TARGET,
   GW_DICTINST_TOTAL_URI,
-}
+} GwDictInstUri;
 
 
-struct _GwDictInstaller {
+struct _GwDictInst {
+  char *filename;
+  char *shortname;
+  char *longname;
+  char *description;
   char *uri[GW_DICTINST_TOTAL_URI];
   int progress;
   char *status_message;
-  GwDictInstallerCompression compression;    //!< Path to the gziped dictionary file
-  GwDictInstallerEncoding encoding;          //!< Path to the raw unziped dictionary file
+  char *schemaid;
+  char *key;
+  gboolean builtin;
+  gulong listenerid;
+  gboolean listenerid_is_set;
+  GwDictInstCompression compression;    //!< Path to the gziped dictionary file
+  GwDictInstEncoding encoding;          //!< Path to the raw unziped dictionary file
   GwDictEngine engine;
   gboolean split_dictionary;
   gboolean merge_dictionary;
   GMutex *mutex;
 };
-typedef struct _GwDictInstaller GwDicInstaller;
+typedef struct _GwDictInst GwDictInst;
 
-GwDictInstaller* gw_dictinstaller_new_using_pref_uri (const char*, 
-                                                      const char*,
-                                                      const char*,
-                                                      const GwDictEngine,
-                                                      const GwDictInstallerCompression,
-                                                      const GwDictInstallerEncoding,
-                                                      gboolean, gboolean);
+GwDictInst* gw_dictinst_new_using_pref_uri (const char*, 
+                                            const char*,
+                                            const char*,
+                                            const char*,
+                                            const char*,
+                                            const char*,
+                                            const GwDictEngine,
+                                            const GwDictInstCompression,
+                                            const GwDictInstEncoding,
+                                            gboolean, gboolean, gboolean);
 
-GwDictInstaller* gw_dictinstaller_new (const char*,
-                                       const char*,
-                                       const GwDictEngine,
-                                       const GwDictInstallerCompression,
-                                       const GwDictInstallerEncoding,
-                                       gboolean, gboolean);
-gw_dictinstaller_free ();
+GwDictInst* gw_dictinst_new (const char*,
+                             const char*,
+                             const char*,
+                             const char*,
+                             const char*,
+                             const GwDictEngine,
+                             const GwDictInstCompression,
+                             const GwDictInstEncoding,
+                             gboolean, gboolean, gboolean);
+
+void gw_dictinst_free (GwDictInst*);
+
+#endif

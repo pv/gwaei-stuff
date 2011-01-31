@@ -171,6 +171,8 @@ void gw_tabs_set_current_tab_text (const char* string)
     GList *children = gtk_container_get_children (GTK_CONTAINER (hbox));
     GtkWidget *label = GTK_WIDGET (children->data);
     gtk_label_set_text (GTK_LABEL (label), string);
+    g_list_free (children);
+    children = NULL;
 }
 
 

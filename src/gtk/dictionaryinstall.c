@@ -12,7 +12,7 @@
 
 static GtkListStore *_model = NULL;
 static GtkTreeView *_view = NULL;
-enum { SHORT_NAME, LONG_NAME, DESC, DICTINST_PTR, CHECKBOX_STATE, TOTAL_FIELDS };
+enum { SHORT_NAME, LONG_NAME, DICTINST_PTR, CHECKBOX_STATE, TOTAL_FIELDS };
 
 /*
 void do_dictionary_source_updated_action (GSettings *settings, gchar *key, gpointer data)
@@ -44,10 +44,135 @@ G_MODULE_EXPORT void _toggled (GtkCellRendererToggle *renderer, gchar *path, gpo
     gtk_list_store_set (GTK_LIST_STORE (_model), &iter, CHECKBOX_STATE, !state, -1);
 }
 
+
+static void _clear_details_box ()
+{
+    GtkBuilder *builder = gw_common_get_builder ();
+    GtkWidget *hbox = GTK_WIDGET (gtk_builder_get_object (builder, "dictionary_install_details_hbox"));
+    GList *children = gtk_container_get_children (GTK_CONTAINER (hbox));
+    GList *iter = children;
+    while (iter != NULL)
+    {
+      gtk_widget_destroy (GTK_WIDGET (iter->data));
+      iter = iter->next;
+    }
+    g_list_free (children);
+    children = NULL;
+}
+
+
+static void _fill_details_box_not_builtin (GwDictInst *di)
+{
+    GtkBuilder *builder = gw_common_get_builder ();
+    GtkWidget *parent = GTK_WIDGET (gtk_builder_get_object (builder, "dictionary_install_details_hbox"));
+    GtkWidget *vbox = NULL;
+    GtkWidget *button = NULL;
+    GtkWidget *image = NULL;
+    GtkWidget *entry = NULL;
+
+    GtkWidget *label = NULL;
+    gchar *markup = NULL;
+
+    //First row
+    vbox = GTK_HBOX (gtk_hbox_new (FALSE, 0));
+    markup = g_strdup_printf(gettext("<b>%s Details</b>"), di->longname);
+    label = gtk_label_new (NULL);
+    gtk_label_set_markup(GTK_LABEL (label), markup);
+    g_free (markup);
+    gtk_box_pack_start (GTK_BOX (vbox), GTK_WIDGET (label), FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (parent), GTK_WIDGET (vbox), FALSE, FALSE, 0);
+    gtk_widget_show_all (vbox);
+
+    //Second row
+    vbox = GTK_HBOX (gtk_hbox_new (FALSE, 0));
+    markup = g_strdup_printf(gettext("%s"), di->description);
+    label = gtk_label_new (NULL);
+    gtk_label_set_markup(GTK_LABEL (label), markup);
+    g_free (markup);
+    gtk_box_pack_start (GTK_BOX (vbox), GTK_WIDGET (label), FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (parent), GTK_WIDGET (vbox), FALSE, FALSE, 0);
+    gtk_widget_show_all (vbox);
+
+    //Third row
+    vbox = GTK_HBOX (gtk_hbox_new (FALSE, 0));
+
+    label = gtk_label_new (gettext("Source: "));
+    gtk_box_pack_start (GTK_BOX (vbox), GTK_WIDGET (label), FALSE, FALSE, 0);
+
+    entry = gtk_entry_new ();
+    gtk_entry_set_text (entry, di->uri[GW_DICTINST_DOWNLOAD_SOURCE]);
+    gtk_box_pack_start (GTK_BOX (vbox), GTK_WIDGET (entry), FALSE, FALSE, 0);
+
+    button = gtk_button_new();
+    image = gtk_image_new_from_stock (GTK_STOCK_OPEN, GTK_ICON_SIZE_MENU);
+    gtk_container_add (GTK_CONTAINER (button), image);
+    gtk_box_pack_start (GTK_BOX (vbox), GTK_WIDGET (button), FALSE, FALSE, 0);
+
+    button = gtk_button_new();
+    image = gtk_image_new_from_stock (GTK_STOCK_UNDO, GTK_ICON_SIZE_MENU);
+    gtk_container_add (GTK_CONTAINER (button), image);
+    gtk_box_pack_start (GTK_BOX (vbox), GTK_WIDGET (button), FALSE, FALSE, 0);
+
+    //Finish
+    gtk_box_pack_start (GTK_BOX (parent), GTK_WIDGET (vbox), FALSE, FALSE, 0);
+    gtk_widget_show_all (vbox);
+
+
+}
+
+
+
+
+
+static void _fill_details_box_builtin (GwDictInst *di)
+{
+    GtkBuilder *builder = gw_common_get_builder ();
+    GtkWidget *parent = GTK_WIDGET (gtk_builder_get_object (builder, "dictionary_install_details_hbox"));
+    GtkWidget *vbox = NULL;
+
+    GtkWidget *label = NULL;
+    gchar *markup = NULL;
+
+    //First row
+    vbox = GTK_HBOX (gtk_hbox_new (FALSE, 0));
+    markup = g_strdup_printf(gettext("<b>%s Details</b>"), di->longname);
+    label = gtk_label_new (NULL);
+    gtk_label_set_markup(GTK_LABEL (label), markup);
+    g_free (markup);
+    gtk_box_pack_start (GTK_BOX (vbox), GTK_WIDGET (label), FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (parent), GTK_WIDGET (vbox), FALSE, FALSE, 0);
+    gtk_widget_show_all (vbox);
+
+    //Second row
+    vbox = GTK_HBOX (gtk_hbox_new (FALSE, 0));
+    markup = g_strdup_printf(gettext("%s"), di->description);
+    label = gtk_label_new (NULL);
+    gtk_label_set_markup(GTK_LABEL (label), markup);
+    g_free (markup);
+    gtk_box_pack_start (GTK_BOX (vbox), GTK_WIDGET (label), FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (parent), GTK_WIDGET (vbox), FALSE, FALSE, 0);
+    gtk_widget_show_all (vbox);
+}
+
+
 G_MODULE_EXPORT void _cursor_changed (GtkTreeView *view, gpointer data)
 {
+    GtkTreeSelection *selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (view));
+    GwDictInst *di = NULL;
+    GtkTreeIter iter;
+    GtkTreeModel *model = GTK_TREE_MODEL (_model);
+
+    if (!gtk_tree_selection_get_selected (selection, &model, &iter)) return;
+    gtk_tree_model_get (model, &iter, DICTINST_PTR, &di, -1);
+
+    _clear_details_box();
+
+    if (di->builtin)
+      _fill_details_box_builtin (di);
+    else
+      _fill_details_box_not_builtin (di);
+
     printf("changed\n");
-    //TODO: FILL THIS DATA USING THE DICTINST OBJECTS
 }
 
 
@@ -60,7 +185,7 @@ void gw_dictionaryinstall_initialize ()
     GtkTreeViewColumn *column;
 
     //Setup the model and view
-    _model = gtk_list_store_new (TOTAL_FIELDS, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_INT);
+    _model = gtk_list_store_new (TOTAL_FIELDS, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_INT);
     _view = GTK_TREE_VIEW (gtk_builder_get_object (builder, "dictionary_install_treeview"));
     gtk_tree_view_set_model (GTK_TREE_VIEW (_view), GTK_TREE_MODEL (_model));
     g_signal_connect (G_OBJECT (_view), "cursor-changed", _cursor_changed, NULL);
@@ -78,25 +203,22 @@ void gw_dictionaryinstall_initialize ()
 
     GtkTreeIter iter;
 
-    gtk_list_store_append (GTK_LIST_STORE (_model), &iter);
-    gtk_list_store_set (_model, &iter,
-                        SHORT_NAME, "English",
-                        LONG_NAME, "English Dictionary",
-                        DESC, "This is edict.",
-                        DICTINST_PTR, NULL,
-                        CHECKBOX_STATE, TRUE,
-                                               -1);
-
-    gtk_list_store_append (GTK_LIST_STORE (_model), &iter);
-    gtk_list_store_set (_model, &iter,
-                        SHORT_NAME, "Kanji",
-                        LONG_NAME, "Kanji Dictionary",
-                        DESC, "This is kanjidic.",
-                        DICTINST_PTR, NULL,
-                        CHECKBOX_STATE, FALSE,
-                                               -1);
-
-
+    GList *list = gw_dictinstlist_get_list ();
+    GwDictInst* di = NULL;
+    while (list != NULL)
+    {
+      di = (GwDictInst*) list->data;
+      gtk_list_store_append (GTK_LIST_STORE (_model), &iter);
+      gtk_list_store_set (
+        _model, &iter,
+        SHORT_NAME, di->shortname,
+        LONG_NAME, di->longname,
+        DICTINST_PTR, di,
+        CHECKBOX_STATE, FALSE, 
+        -1
+      );
+      list = list->next;
+    }
 
 
 /*

@@ -303,30 +303,30 @@ void do_color_value_changed_action (GSettings *settings,
 
 void gw_settings_listeners_initialize ()
 {
-    gw_prefs_add_change_listener (GW_SCHEMA_FONT, GW_KEY_FONT_USE_GLOBAL_FONT,
+    gw_pref_add_change_listener (GW_SCHEMA_FONT, GW_KEY_FONT_USE_GLOBAL_FONT,
                                   do_use_global_document_font_pref_changed_action, NULL);
-    gw_prefs_add_change_listener (GW_SCHEMA_FONT, GW_KEY_FONT_CUSTOM_FONT,
+    gw_pref_add_change_listener (GW_SCHEMA_FONT, GW_KEY_FONT_CUSTOM_FONT,
                                   do_custom_document_font_pref_changed_action, NULL);
-    gw_prefs_add_change_listener (GW_SCHEMA_FONT, GW_KEY_FONT_MAGNIFICATION,
+    gw_pref_add_change_listener (GW_SCHEMA_FONT, GW_KEY_FONT_MAGNIFICATION,
                                   do_font_magnification_pref_changed_action, NULL);
 
-    gw_prefs_add_change_listener (GW_SCHEMA_BASE, GW_KEY_TOOLBAR_SHOW,
+    gw_pref_add_change_listener (GW_SCHEMA_BASE, GW_KEY_TOOLBAR_SHOW,
                                   do_toolbar_show_pref_changed_action, NULL);
-    gw_prefs_add_change_listener (GW_SCHEMA_BASE, GW_KEY_ROMAN_KANA,
+    gw_pref_add_change_listener (GW_SCHEMA_BASE, GW_KEY_ROMAN_KANA,
                                   do_roman_kana_conv_pref_changed_action, NULL);
-    gw_prefs_add_change_listener (GW_SCHEMA_BASE, GW_KEY_HIRA_KATA,
+    gw_pref_add_change_listener (GW_SCHEMA_BASE, GW_KEY_HIRA_KATA,
                                   do_hira_kata_conv_pref_changed_action, NULL);
-    gw_prefs_add_change_listener (GW_SCHEMA_BASE, GW_KEY_KATA_HIRA,
+    gw_pref_add_change_listener (GW_SCHEMA_BASE, GW_KEY_KATA_HIRA,
                                   do_kata_hira_conv_pref_changed_action, NULL);
-    gw_prefs_add_change_listener (GW_SCHEMA_HIGHLIGHT, GW_KEY_MATCH_FG,
+    gw_pref_add_change_listener (GW_SCHEMA_HIGHLIGHT, GW_KEY_MATCH_FG,
                                   do_color_value_changed_action, NULL);
-    gw_prefs_add_change_listener (GW_SCHEMA_HIGHLIGHT, GW_KEY_MATCH_BG,
+    gw_pref_add_change_listener (GW_SCHEMA_HIGHLIGHT, GW_KEY_MATCH_BG,
                                   do_color_value_changed_action, NULL);
-    gw_prefs_add_change_listener (GW_SCHEMA_HIGHLIGHT, GW_KEY_HEADER_FG, 
+    gw_pref_add_change_listener (GW_SCHEMA_HIGHLIGHT, GW_KEY_HEADER_FG, 
                                   do_color_value_changed_action, NULL);
-    gw_prefs_add_change_listener (GW_SCHEMA_HIGHLIGHT, GW_KEY_HEADER_BG,
+    gw_pref_add_change_listener (GW_SCHEMA_HIGHLIGHT, GW_KEY_HEADER_BG,
                                   do_color_value_changed_action, NULL);
-    gw_prefs_add_change_listener (GW_SCHEMA_HIGHLIGHT, GW_KEY_COMMENT_FG, 
+    gw_pref_add_change_listener (GW_SCHEMA_HIGHLIGHT, GW_KEY_COMMENT_FG, 
                                   do_color_value_changed_action, NULL);
 }
 

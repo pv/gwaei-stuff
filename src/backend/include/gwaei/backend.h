@@ -5,7 +5,9 @@
 #include <gwaei/utilities.h>
 #include <gwaei/io.h>
 #include <gwaei/dictinfo.h>
-#include <gwaei/dictlist.h>
+#include <gwaei/dictinfolist.h>
+#include <gwaei/dictinst.h>
+#include <gwaei/dictinstlist.h>
 #include <gwaei/preferences.h>
 #include <gwaei/resultline.h>
 #include <gwaei/queryline.h>

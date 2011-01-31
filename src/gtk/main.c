@@ -768,6 +768,8 @@ void gw_ui_set_dictionary (int request)
       GList     *children = NULL;
       children = gtk_container_get_children (GTK_CONTAINER (shell));
       GtkWidget *radioitem = g_list_nth_data (children, request);
+      g_list_free (children);
+      children = NULL;
       if (radioitem != NULL)
       {
         gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (radioitem), TRUE);
@@ -1052,17 +1054,20 @@ void gw_ui_update_history_menu_popup()
 
     GList     *children = NULL;
     children = gtk_container_get_children (GTK_CONTAINER (shell));
+    GList *iter = children;
 
     //Skip over the back/forward buttons
-    if (children != NULL) children = g_list_next(children);
-    if (children != NULL) children = g_list_next(children);
+    if (iter != NULL) iter = g_list_next(iter);
+    if (iter != NULL) iter = g_list_next(iter);
 
     //Remove all widgets after the back and forward menuitem buttons
-    while (children != NULL )
+    while (iter != NULL )
     {
-      gtk_widget_destroy(children->data);
-      children = g_list_delete_link(children, children);
+      gtk_widget_destroy(iter->data);
+      iter = g_list_delete_link(iter, iter);
     }
+    g_list_free (children);
+    children = NULL;
 
     //Declarations
     GtkWidget *label;

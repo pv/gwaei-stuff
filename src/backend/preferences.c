@@ -186,20 +186,34 @@ void gw_pref_set_string (const char* schemaid, const char *key, const char* requ
 //! @param callback_function The function to call when the key changes
 //! @param data The userdata to pass to the callback function
 //!
-void gw_prefs_add_change_listener (const char* id, const char *key, void (*callback_function) (GSettings*, gchar*, gpointer), gpointer data)
+//! @returns A gulong used to remove a signal later if desired
+//!
+gulong gw_pref_add_change_listener (const char* schemaid, const char *key, void (*callback_function) (GSettings*, gchar*, gpointer), gpointer data)
 {
-    GSettings *setting = g_settings_new (id);
+    GSettings *settings = g_settings_new (schemaid);
     char *signal_name = g_strdup_printf ("changed::%s", key);
 
-    g_signal_connect (G_OBJECT (setting), signal_name, G_CALLBACK (callback_function), data);
-    GVariant *value = g_settings_get_value(setting, key);
-    if (value != NULL) g_settings_set_value(setting, key, value);
+    gulong id = g_signal_connect (G_OBJECT (settings), signal_name, G_CALLBACK (callback_function), data);
+    GVariant *value = g_settings_get_value(settings, key);
+    if (value != NULL) g_settings_set_value(settings, key, value);
 
     g_free (signal_name);
     signal_name = NULL;
+    return id;
 }
 
-
+//!
+//! @brief Used to remove a listener
+//!
+//! @param schemaid A schemaid of the GSettings object the signal was connected to
+//! @param id The signalid returned by gw_pref_add_change_listener
+//!
+void gw_pref_remove_change_listener (const char* schemaid, gulong id)
+{
+    GSettings *settings = g_settings_new (schemaid);
+    if (g_signal_handler_is_connected (G_OBJECT (settings), id))
+      g_signal_handler_disconnect (G_OBJECT (settings), id);
+}
 
 
 
