@@ -73,7 +73,7 @@ G_MODULE_EXPORT void do_radical_search (GtkWidget *widget, gpointer data)
     char *query_text = NULL;
     char *radicals_text = gw_radsearchtool_strdup_all_selected_radicals ();
     char *strokes_text = gw_radsearchtool_strdup_prefered_stroke_count ();
-    GwDictInfo *di = gw_dictlist_get_dictinfo_by_name (GW_DICT_ENGINE_KANJI, "Kanji");
+    GwDictInfo *di = gw_dictlist_get_dictinfo_by_name (GW_ENGINE_KANJI, "Kanji");
 
     //Create the query string
     if (radicals_text != NULL && strokes_text != NULL)

@@ -56,9 +56,9 @@ static gboolean _overlay_default_builtin_dictionary_settings (GwDictInfo*);
 //! @param name Name of the object to create
 //! @return An allocated GwDictInfo that will be needed to be freed by gw_dictinfo_free ()
 //!
-GwDictInfo* gw_dictinfo_new (GwDictEngine ENGINE, char *name)
+GwDictInfo* gw_dictinfo_new (GwEngine ENGINE, char *name)
 {
-    g_assert (ENGINE >= 0 && ENGINE <= GW_DICT_ENGINE_TOTAL && name != NULL);
+    g_assert (ENGINE >= 0 && ENGINE <= GW_ENGINE_TOTAL && name != NULL);
 
     GwDictInfo *temp;
 
@@ -132,7 +132,7 @@ static gboolean _overlay_default_builtin_dictionary_settings (GwDictInfo *di)
 {
     g_assert (di != NULL);
 
-    if (di->engine == GW_DICT_ENGINE_EDICT)
+    if (di->engine == GW_ENGINE_EDICT)
     {
       if (strcmp(di->name, "English") == 0)
       {
@@ -153,7 +153,7 @@ static gboolean _overlay_default_builtin_dictionary_settings (GwDictInfo *di)
         di->load_position = 4;
       }
     }
-    else if (di->engine == GW_DICT_ENGINE_KANJI)
+    else if (di->engine == GW_ENGINE_KANJI)
     {
       if (strcmp(di->name, "Kanji") == 0)
       {
@@ -162,7 +162,7 @@ static gboolean _overlay_default_builtin_dictionary_settings (GwDictInfo *di)
         di->load_position = 2;
       }
     }
-    else if (di->engine == GW_DICT_ENGINE_EXAMPLES)
+    else if (di->engine == GW_ENGINE_EXAMPLES)
     {
       if (strcmp(di->name, "Examples") == 0)
       {

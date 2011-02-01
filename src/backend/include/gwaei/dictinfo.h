@@ -51,17 +51,6 @@ typedef enum {
   GW_DICT_STATUS_REBUILDING
 } GwDictStatus;
 
-//!
-//! @brief Dictionary type assigned by the program.  It determines the parsing algorithm
-//!
-typedef enum {  
-  GW_DICT_ENGINE_EDICT,         //!< Standard edict format dictionary
-  GW_DICT_ENGINE_KANJI,         //!< Kanjidic format dictionary
-  GW_DICT_ENGINE_EXAMPLES,      //!< Examples format dictionary
-  GW_DICT_ENGINE_UNKNOWN,          //!< Unkown format which should use safe parsing
-  GW_DICT_ENGINE_TOTAL
-} GwDictEngine;
-
 
 //!
 //! @brief Primitive for storing dictionary information
@@ -72,7 +61,7 @@ struct _GwDictInfo
     char *long_name;                  //!< long name of the file (usually localized)
     char *short_name;                 //!< short name of the file (usually localized)
     GwDictStatus status;              //!< install status of the dictionary
-    GwDictEngine engine;              //!< Path to the dictionary file
+    GwEngine engine;              //!< Path to the dictionary file
     int load_position;                //!< load position in the GUI
     long total_lines;                 //!< total lines in the file
     GwResultLine *cached_resultlines;
@@ -81,7 +70,7 @@ struct _GwDictInfo
 typedef struct _GwDictInfo GwDictInfo;
 
 
-GwDictInfo* gw_dictinfo_new (GwDictEngine, char*);
+GwDictInfo* gw_dictinfo_new (GwEngine, char*);
 void gw_dictinfo_free(GwDictInfo*);
 
 

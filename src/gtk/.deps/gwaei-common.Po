@@ -77,9 +77,9 @@ gwaei-common.o: common.c /usr/include/stdlib.h /usr/include/features.h \
  /usr/include/glib-2.0/glib/gvarianttype.h \
  /usr/include/glib-2.0/glib/gvariant.h \
  ../../src/backend/include/gwaei/utilities.h \
+ ../../src/backend/include/gwaei/io.h \
  ../../src/backend/include/gwaei/dictinfo.h \
  ../../src/backend/include/gwaei/resultline.h \
- ../../src/backend/include/gwaei/io.h \
  ../../src/backend/include/gwaei/dictinfolist.h \
  ../../src/backend/include/gwaei/dictinst.h \
  ../../src/backend/include/gwaei/dictinstlist.h \
@@ -735,11 +735,11 @@ gwaei-common.o: common.c /usr/include/stdlib.h /usr/include/features.h \
 
 ../../src/backend/include/gwaei/utilities.h:
 
+../../src/backend/include/gwaei/io.h:
+
 ../../src/backend/include/gwaei/dictinfo.h:
 
 ../../src/backend/include/gwaei/resultline.h:
-
-../../src/backend/include/gwaei/io.h:
 
 ../../src/backend/include/gwaei/dictinfolist.h:
 

@@ -219,7 +219,7 @@ static void _stream_results_thread (gpointer data)
               }
               break;
           case GW_RESULT_MEDIUM_RELEVANCE:
-              if ((item->dictionary->engine == GW_DICT_ENGINE_KANJI || item->total_irrelevant_results < MAX_MEDIUM_IRRELIVENT_RESULTS) &&
+              if ((item->dictionary->engine == GW_ENGINE_KANJI || item->total_irrelevant_results < MAX_MEDIUM_IRRELIVENT_RESULTS) &&
                   !item->show_only_exact_matches && 
                    (item->swap_resultline = gw_resultline_new ()) != NULL && item->target != GW_TARGET_KANJI)
               {
@@ -231,7 +231,7 @@ static void _stream_results_thread (gpointer data)
               }
               break;
           default:
-              if ((item->dictionary->engine == GW_DICT_ENGINE_KANJI || item->total_irrelevant_results < MAX_LOW_IRRELIVENT_RESULTS) &&
+              if ((item->dictionary->engine == GW_ENGINE_KANJI || item->total_irrelevant_results < MAX_LOW_IRRELIVENT_RESULTS) &&
                     !item->show_only_exact_matches && 
                    (item->swap_resultline = gw_resultline_new ()) != NULL && item->target != GW_TARGET_KANJI)
               {

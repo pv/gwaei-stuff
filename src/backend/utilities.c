@@ -53,7 +53,7 @@ const char* gw_util_get_directory (const GwFolderPath PATH)
 {
     g_assert (PATH >= 0 & PATH < GW_PATH_TOTAL);
 
-    GwDictEngine i;
+    GwEngine i;
 
     if (!_paths_initialized)
     {
@@ -62,11 +62,11 @@ const char* gw_util_get_directory (const GwFolderPath PATH)
       _paths[GW_PATH_PLUGIN] = g_build_filename (_paths[GW_PATH_BASE], "plugins", NULL);
       _paths[GW_PATH_CACHE] = g_build_filename (_paths[GW_PATH_BASE], "cache", NULL);
 
-      for (i = 0; i < GW_DICT_ENGINE_TOTAL; i++)
+      for (i = 0; i < GW_ENGINE_TOTAL; i++)
       {
         if (_paths[GW_PATH_DICTIONARY_EDICT + i] != NULL)
         {
-          printf("The GwDictEngine and GwPath variables are not syncing.  Make sure "
+          printf("The GwEngine and GwPath variables are not syncing.  Make sure "
                  "you sync the engines between them when adding or removing engines.\n");
           g_assert(FALSE);
         }
@@ -81,36 +81,36 @@ const char* gw_util_get_directory (const GwFolderPath PATH)
     return _paths[PATH];
 }
 
-const char* gw_util_get_engine_name (const GwDictEngine ENGINE)
+const char* gw_util_get_engine_name (const GwEngine ENGINE)
 {
     switch (ENGINE)
     {
-      case GW_DICT_ENGINE_EDICT:
+      case GW_ENGINE_EDICT:
         return "edict";
-      case GW_DICT_ENGINE_KANJI:
+      case GW_ENGINE_KANJI:
         return "kanji";
-      case GW_DICT_ENGINE_EXAMPLES:
+      case GW_ENGINE_EXAMPLES:
         return "examples";
-      case GW_DICT_ENGINE_UNKNOWN:
+      case GW_ENGINE_UNKNOWN:
         return "unknown";
       default:
         return NULL;
     }
 }
 
-GwDictEngine gw_util_get_engine_from_enginename (const char *enginename)
+GwEngine gw_util_get_engine_from_enginename (const char *enginename)
 {
   char *lower = g_utf8_strdown (enginename, -1);
-  GwDictEngine engine = -1;
+  GwEngine engine = -1;
 
   if (strcmp(lower, "edict") == 0)
-    engine = GW_DICT_ENGINE_EDICT;
+    engine = GW_ENGINE_EDICT;
   else if (strcmp(lower, "kanji") == 0)
-    engine = GW_DICT_ENGINE_KANJI;
+    engine = GW_ENGINE_KANJI;
   else if (strcmp(lower, "examples") == 0)
-    engine = GW_DICT_ENGINE_EXAMPLES;
+    engine = GW_ENGINE_EXAMPLES;
   else if (strcmp(lower, "unknown") == 0)
-    engine = GW_DICT_ENGINE_UNKNOWN;
+    engine = GW_ENGINE_UNKNOWN;
 
   g_free (lower);
   lower = NULL;
@@ -124,20 +124,20 @@ GwDictEngine gw_util_get_engine_from_enginename (const char *enginename)
 //!
 //! @brief Gets a dictionary folder path for the given engine
 //!
-//! @param ENGINE A GwDictEngine to get the dictinary folder for
+//! @param ENGINE A GwEngine to get the dictinary folder for
 //! @return Returns a constant string that should not be freed
 //!
-const char* gw_util_get_directory_for_engine (const GwDictEngine ENGINE)
+const char* gw_util_get_directory_for_engine (const GwEngine ENGINE)
 {
     switch (ENGINE)
     {
-      case GW_DICT_ENGINE_EDICT:
+      case GW_ENGINE_EDICT:
         return gw_util_get_directory (GW_PATH_DICTIONARY_EDICT);
-      case GW_DICT_ENGINE_KANJI:
+      case GW_ENGINE_KANJI:
         return gw_util_get_directory (GW_PATH_DICTIONARY_KANJI);
-      case GW_DICT_ENGINE_EXAMPLES:
+      case GW_ENGINE_EXAMPLES:
         return gw_util_get_directory (GW_PATH_DICTIONARY_EXAMPLES);
-      case GW_DICT_ENGINE_UNKNOWN:
+      case GW_ENGINE_UNKNOWN:
         return gw_util_get_directory (GW_PATH_DICTIONARY_UNKNOWN);
       default:
         printf("Engine doesn't exist. in gw_util_get_directory_for_engine\n");
@@ -145,6 +145,42 @@ const char* gw_util_get_directory_for_engine (const GwDictEngine ENGINE)
         return NULL;
     }
 }
+
+
+const char* gw_util_get_compression_name (const GwCompression COMPRESSION)
+{
+    switch (COMPRESSION)
+    {
+/*
+      case GW_COMPRESSION_ZIP:
+        g_error ("currently unsupported compression type\n");
+        return "zip";
+*/
+      case GW_COMPRESSION_GZIP:
+        return "gz";
+      default:
+        return "uncompressed";
+    }
+}
+
+const char* gw_util_get_encoding_name (const GwEncoding ENCODING)
+{
+    switch (ENCODING)
+    {
+      case GW_ENCODING_EUC_JP:
+        return "euc-jp";
+      case GW_ENCODING_SHIFT_JS:
+        return "shift_js";
+      case GW_ENCODING_UTF8:
+        return "utf8";
+      default:
+        g_error ("Unsupported encoding\n");
+    }
+}
+
+
+
+
 
 //!
 //! @brief Makes sure that all of the characters are in a specific range

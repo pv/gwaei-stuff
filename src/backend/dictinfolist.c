@@ -146,7 +146,7 @@ GList* gw_dictlist_set_selected_by_load_position(int request)
 //!
 //! @param name Name of the dictionary to add
 //!
-void gw_dictlist_add_dictionary(GwDictEngine ENGINE, char *name)
+void gw_dictlist_add_dictionary(GwEngine ENGINE, char *name)
 {
     GwDictInfo *di;
     if  (gw_dictlist_check_if_loaded_by_name (name) == FALSE)
@@ -202,7 +202,7 @@ void gw_dictlist_free ()
 //! @param request a const string to search for in the dictionary names
 //! @return returns the GwDictInfo dictionary object of the result or null.
 //!
-GwDictInfo* gw_dictlist_get_dictinfo_by_name (GwDictEngine ENGINE, const char* request)
+GwDictInfo* gw_dictlist_get_dictinfo_by_name (GwEngine ENGINE, const char* request)
 {
     GList *current;
     current = _dictionaries->list;
@@ -326,7 +326,7 @@ void gw_dictlist_initialize ()
        
     char** dictionaries = gw_io_get_dictionary_file_list ();
     char** atoms = NULL;
-    GwDictEngine engine = -1;
+    GwEngine engine = -1;
     char *dictname = NULL;
     int i = 0;
 
@@ -641,7 +641,7 @@ void gw_dictlist_load_dictionary_order_from_pref ()
     char **load_order_array;
     char **engine_name_array;
     char **ptr = NULL;
-    GwDictEngine engine;
+    GwEngine engine;
     char *name;
     GwDictInfo *di = NULL;
     int load_position = 0;

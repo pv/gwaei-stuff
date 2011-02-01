@@ -138,7 +138,7 @@ G_MODULE_EXPORT gboolean do_get_iter_for_motion (GtkWidget      *widget,
     hovered_word = gtk_text_iter_get_visible_slice (&start, &end);
 
     GwDictInfo *di;
-    di = gw_dictlist_get_dictinfo_by_name (GW_DICT_ENGINE_KANJI, "Kanji");
+    di = gw_dictlist_get_dictinfo_by_name (GW_ENGINE_KANJI, "Kanji");
   
     // Characters above 0xFF00 represent inserted images
     if (unic > L'ー' && unic < 0xFF00 && di->status == GW_DICT_STATUS_INSTALLED)
@@ -214,7 +214,7 @@ G_MODULE_EXPORT gboolean do_get_iter_for_button_release (GtkWidget      *widget,
     unic = gw_ui_get_hovered_character (&x, &y, &iter);
 
     GwDictInfo *di;
-    di = gw_dictlist_get_dictinfo_by_name (GW_DICT_ENGINE_KANJI, "Kanji");
+    di = gw_dictlist_get_dictinfo_by_name (GW_ENGINE_KANJI, "Kanji");
 
     if (di->status == GW_DICT_STATUS_INSTALLED     &&
         abs (button_press_x - x) < 3 &&

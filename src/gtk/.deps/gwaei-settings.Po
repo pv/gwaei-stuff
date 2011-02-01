@@ -462,9 +462,9 @@ gwaei-settings.o: settings.c /usr/include/string.h \
  ../../src/backend/include/gwaei/backend.h \
  ../../src/backend/include/gwaei/regex.h \
  ../../src/backend/include/gwaei/utilities.h \
+ ../../src/backend/include/gwaei/io.h \
  ../../src/backend/include/gwaei/dictinfo.h \
  ../../src/backend/include/gwaei/resultline.h \
- ../../src/backend/include/gwaei/io.h \
  ../../src/backend/include/gwaei/dictinfolist.h \
  ../../src/backend/include/gwaei/dictinst.h \
  ../../src/backend/include/gwaei/dictinstlist.h \
@@ -1591,11 +1591,11 @@ gwaei-settings.o: settings.c /usr/include/string.h \
 
 ../../src/backend/include/gwaei/utilities.h:
 
+../../src/backend/include/gwaei/io.h:
+
 ../../src/backend/include/gwaei/dictinfo.h:
 
 ../../src/backend/include/gwaei/resultline.h:
-
-../../src/backend/include/gwaei/io.h:
 
 ../../src/backend/include/gwaei/dictinfolist.h:
 

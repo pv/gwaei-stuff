@@ -51,7 +51,7 @@ GList* gw_dictlist_get_selected (void);
 
 
 void gw_dictlist_initialize (void);
-GwDictInfo* gw_dictlist_get_dictinfo_by_name (GwDictEngine, const char*);
+GwDictInfo* gw_dictlist_get_dictinfo_by_name (GwEngine, const char*);
 GList* gw_dictlist_get_dict_by_load_position (int);
 GList* gw_dictlist_set_selected_by_load_position (int);
 gboolean gw_dictlist_check_if_loaded_by_name (char*);

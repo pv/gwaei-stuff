@@ -689,13 +689,13 @@ void gw_io_install_dictinfo (GwDictInfo *di,    int (*callback_function) (char*,
     char download_name[strlen(di->name + 30)];
     switch (di->encoding)
     {
-      case GW_DICT_ENCODING_EUC_JP:
+      case GW_ENCODING_EUC_JP:
         strcat(download_name, ".EUC-JP");
         break;
-      case GW_DICT_ENCODING_SHIFT_JS:
+      case GW_ENCODING_SHIFT_JS:
         strcat(download_name, ".SHIFT_JS");
         break;
-      case GW_DICT_ENCODING_UTF8:
+      case GW_ENCODING_UTF8:
         strcat(download_name, ".UTF8");
         break;
     }
@@ -753,15 +753,15 @@ void gw_io_install_dictinfo (GwDictInfo *di,    int (*callback_function) (char*,
     }
 
     //Convert encoding if necessary
-    if (*error == NULL && di->status != GW_DICT_STATUS_CANCELING && di->encoding != GW_DICT_ENCODING_UTF8)
+    if (*error == NULL && di->status != GW_DICT_STATUS_CANCELING && di->encoding != GW_ENCODING_UTF8)
     {
       if (callback_function != NULL) {
         callback_function (gettext("Converting encoding..."), -1, data);
       }
       printf("converting encoding...\n");
       char source_encoding[100];
-      if (di->encoding == GW_DICT_ENCODING_EUC_JP) strcpy(source_encoding, "EUC-JP");
-      if (di->encoding == GW_DICT_ENCODING_SHIFT_JS) strcpy(source_encoding, "Shift-JS");
+      if (di->encoding == GW_ENCODING_EUC_JP) strcpy(source_encoding, "EUC-JP");
+      if (di->encoding == GW_ENCODING_SHIFT_JS) strcpy(source_encoding, "Shift-JS");
       gw_io_copy_with_encoding (encoding_path, final_path, "EUC-JP","UTF-8", error);
     }
     else if (*error == NULL && di->status != GW_DICT_STATUS_CANCELING)
@@ -807,7 +807,7 @@ char** gw_io_get_dictionary_file_list ()
     GError *error = NULL;
 
     //Go through each engine folder looking for dictionaries
-    for (engine = 0; engine < GW_DICT_ENGINE_TOTAL && i < MAX; engine++)
+    for (engine = 0; engine < GW_ENGINE_TOTAL && i < MAX; engine++)
     {
       enginename = gw_util_get_engine_name (engine);
       if ((directory = gw_util_get_directory_for_engine (engine)) != NULL)

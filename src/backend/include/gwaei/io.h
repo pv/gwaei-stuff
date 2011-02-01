@@ -3,8 +3,6 @@
 
 #include <glib.h>
 
-#include <gwaei/dictinfo.h>
-#include <gwaei/io.h>
 
 #define GW_IO_MAX_FGETS_LINE 5000
 #define GW_IO_ERROR "gwaei generic error"

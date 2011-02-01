@@ -36,39 +36,6 @@
 
 #include <gwaei/backend.h>
 
-
-static const char *_compression_type_to_string (const GwDictInstCompression COMPRESSION)
-{
-    switch (COMPRESSION)
-    {
-/*
-      case GW_DICTINST_COMPRESSION_ZIP:
-        g_error ("currently unsupported compression type\n");
-        return "zip";
-*/
-      case GW_DICTINST_COMPRESSION_GZIP:
-        return "gz";
-      default:
-        return "uncompressed";
-    }
-}
-
-static const char *_encoding_type_to_string (const GwDictInstEncoding ENCODING)
-{
-    switch (ENCODING)
-    {
-      case GW_DICTINST_ENCODING_EUC_JP:
-        return "euc-jp";
-      case GW_DICTINST_ENCODING_SHIFT_JS:
-        return "shift_js";
-      case GW_DICTINST_ENCODING_UTF8:
-        return "utf8";
-      default:
-        g_error ("Unsupported encoding\n");
-    }
-}
-
-
 //!
 //! @brief Updates the GwDictInst source uri when the pref changes
 //!
@@ -92,9 +59,9 @@ GwDictInst* gw_dictinst_new_using_pref_uri (const char* filename,
                                             const char* description,
                                             const char* schemaid,
                                             const char* key,
-                                            const GwDictEngine ENGINE,
-                                            const GwDictInstCompression COMPRESSION,
-                                            const GwDictInstEncoding ENCODING,
+                                            const GwEngine ENGINE,
+                                            const GwCompression COMPRESSION,
+                                            const GwEncoding ENCODING,
                                             gboolean split, gboolean merge, gboolean builtin)
 {
     char source_uri[200];
@@ -135,9 +102,9 @@ GwDictInst* gw_dictinst_new (const char* filename,
                              const char* longname,
                              const char* description,
                              const char* source_uri,
-                             const GwDictEngine ENGINE,
-                             const GwDictInstCompression COMPRESSION,
-                             const GwDictInstEncoding ENCODING,
+                             const GwEngine ENGINE,
+                             const GwCompression COMPRESSION,
+                             const GwEncoding ENCODING,
                              gboolean split, gboolean merge, gboolean builtin)
 {
     //Create the temp object to fill
@@ -175,8 +142,8 @@ GwDictInst* gw_dictinst_new (const char* filename,
 
     char *cache_filename = g_build_filename (gw_util_get_directory (GW_PATH_CACHE), filename, NULL);
     char *engine_filename = g_build_filename (gw_util_get_directory_for_engine (ENGINE), filename, NULL);
-    const char *compression_ext = _compression_type_to_string (COMPRESSION);
-    const char *encoding_ext = _encoding_type_to_string (ENCODING);
+    const char *compression_ext = gw_util_get_compression_name (COMPRESSION);
+    const char *encoding_ext = gw_util_get_encoding_name (ENCODING);
 
     temp->uri[GW_DICTINST_DOWNLOAD_SOURCE] = g_strdup (source_uri);
     temp->uri[GW_DICTINST_COMPRESSED_FILE] =  g_strjoin (".", cache_filename, compression_ext, NULL);

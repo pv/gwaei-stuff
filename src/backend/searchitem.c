@@ -89,17 +89,17 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary, const int 
     //Set function pointers
     switch (temp->dictionary->engine)
     {
-        case GW_DICT_ENGINE_EDICT:
+        case GW_ENGINE_EDICT:
           if (!gw_queryline_parse_edict_string (temp->queryline, query)) return NULL;
           temp->gw_searchitem_parse_result_string = &gw_resultline_parse_edict_result_string;
           temp->gw_searchitem_ui_append_results_to_output = gw_engine_get_append_edict_results_func ();
           break;
-        case GW_DICT_ENGINE_KANJI:
+        case GW_ENGINE_KANJI:
           if (!gw_queryline_parse_kanjidict_string (temp->queryline, query)) return NULL;
           temp->gw_searchitem_parse_result_string = &gw_resultline_parse_kanjidict_result_string;
           temp->gw_searchitem_ui_append_results_to_output = gw_engine_get_append_kanjidict_results_func ();
           break;
-        case GW_DICT_ENGINE_EXAMPLES:
+        case GW_ENGINE_EXAMPLES:
           if (!gw_queryline_parse_exampledict_string (temp->queryline, query)) return NULL;
           temp->gw_searchitem_parse_result_string = &gw_resultline_parse_examplesdict_result_string;
           temp->gw_searchitem_ui_append_results_to_output = gw_engine_get_append_examplesdict_results_func ();
@@ -248,7 +248,7 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
 
     //Kanji radical dictionary search
     int i = 0;
-    if (item->dictionary->engine == GW_DICT_ENGINE_KANJI)
+    if (item->dictionary->engine == GW_ENGINE_KANJI)
     {
       gboolean strokes_check_passed = TRUE;
       gboolean frequency_check_passed = TRUE;
