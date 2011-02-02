@@ -135,19 +135,19 @@ void gw_ui_set_query_entry_text_by_searchitem (GwSearchItem *item)
       }
 
       //Set the foreground color
-      gw_pref_get_string (hex_color_string, GW_SCHEMA_HIGHLIGHT, GW_KEY_MATCH_FG, 100);
+      gw_pref_get_string_by_schema (hex_color_string, GW_SCHEMA_HIGHLIGHT, GW_KEY_MATCH_FG, 100);
       if (gdk_color_parse (hex_color_string, &color) == FALSE)
       {
-        gw_pref_reset_value (GW_SCHEMA_HIGHLIGHT, GW_KEY_MATCH_FG);
+        gw_pref_reset_value_by_schema (GW_SCHEMA_HIGHLIGHT, GW_KEY_MATCH_FG);
         return;
       }
       gtk_widget_modify_text (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, &color);
 
       //Set the background color
-      gw_pref_get_string (hex_color_string, GW_SCHEMA_HIGHLIGHT, GW_KEY_MATCH_BG, 100);
+      gw_pref_get_string_by_schema (hex_color_string, GW_SCHEMA_HIGHLIGHT, GW_KEY_MATCH_BG, 100);
       if (gdk_color_parse (hex_color_string, &color) == FALSE)
       {
-        gw_pref_reset_value (GW_SCHEMA_HIGHLIGHT, GW_KEY_MATCH_BG);
+        gw_pref_reset_value_by_schema (GW_SCHEMA_HIGHLIGHT, GW_KEY_MATCH_BG);
         return;
       }
       gtk_widget_modify_base (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, &color);
@@ -576,7 +576,7 @@ void gw_ui_update_toolbar_buttons ()
     GwSearchItem *tab_search_item = g_list_nth_data (gw_tabs_get_searchitem_list (), page_num);
 
     int current_font_magnification;
-    current_font_magnification = gw_pref_get_int (GW_SCHEMA_FONT, GW_KEY_FONT_MAGNIFICATION);
+    current_font_magnification = gw_pref_get_int_by_schema (GW_SCHEMA_FONT, GW_KEY_FONT_MAGNIFICATION);
 
     GtkWidget *results_tv = gw_common_get_widget_by_target(GW_TARGET_RESULTS);
 
@@ -805,7 +805,7 @@ int rebuild_combobox_dictionary_list ()
     char order[5000];
     char new_order[5000];
     GwDictInfo* di = NULL;
-    gw_pref_get_string (order, GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, 5000);
+    gw_pref_get_string_by_schema (order, GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, 5000);
 
     char *names[50];
     char *mix_name = NULL, *kanji_name = NULL, *radicals_name = NULL;
@@ -871,7 +871,7 @@ int rebuild_combobox_dictionary_list ()
     }
     new_order[strlen(new_order) - 1] = '\0';
     names[i] = NULL;
-    gw_pref_set_string (GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, new_order);
+    gw_pref_set_string_by_schema (GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, new_order);
 
     //Initialize variables
     const int id_length = 50;
@@ -1212,7 +1212,7 @@ void gw_ui_set_font (char *font_description_string, int *font_magnification)
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
-    gboolean use_global_font_setting = gw_pref_get_boolean (GW_SCHEMA_FONT, GW_KEY_FONT_USE_GLOBAL_FONT);
+    gboolean use_global_font_setting = gw_pref_get_boolean_by_schema (GW_SCHEMA_FONT, GW_KEY_FONT_USE_GLOBAL_FONT);
     char *new_font_description_string = NULL;
     char font_family[100];
     int font_size = 0;
@@ -1222,9 +1222,9 @@ void gw_ui_set_font (char *font_description_string, int *font_magnification)
     {
       if (use_global_font_setting)
         strcpy(font_family, "Sans 10");
-//        gw_pref_get_string (font_family, GW_SCHEMA_GNOME_INTERFACE, GW_KEY_DOCUMENT_FONT_NAME, GW_DEFAULT_FONT, 100);
+//        gw_pref_get_string_by_schema (font_family, GW_SCHEMA_GNOME_INTERFACE, GW_KEY_DOCUMENT_FONT_NAME, GW_DEFAULT_FONT, 100);
       else
-        gw_pref_get_string (font_family, GW_SCHEMA_FONT, GW_KEY_FONT_CUSTOM_FONT, 100);
+        gw_pref_get_string_by_schema (font_family, GW_SCHEMA_FONT, GW_KEY_FONT_CUSTOM_FONT, 100);
     }
     else
       strcpy (font_family, font_description_string);
@@ -1244,7 +1244,7 @@ void gw_ui_set_font (char *font_description_string, int *font_magnification)
 
     //Add the magnification in to the font size
     if (font_magnification == NULL)
-      font_size += gw_pref_get_int (GW_SCHEMA_FONT, GW_KEY_FONT_MAGNIFICATION);
+      font_size += gw_pref_get_int_by_schema (GW_SCHEMA_FONT, GW_KEY_FONT_MAGNIFICATION);
     else
       font_size += *font_magnification;
 
@@ -1796,11 +1796,11 @@ gboolean gw_ui_set_color_to_tagtable (char    *id,     GwTargetOutput TARGET,
         key = g_strdup_printf ("%s-foreground", id);
         if (key != NULL)
         {
-          gw_pref_get_string (fg_color, GW_SCHEMA_HIGHLIGHT, key, 100);
+          gw_pref_get_string_by_schema (fg_color, GW_SCHEMA_HIGHLIGHT, key, 100);
           if (gdk_color_parse (fg_color, &color) == FALSE)
           {
             printf("color failed %s\n", fg_color);
-            gw_pref_reset_value (GW_SCHEMA_HIGHLIGHT, key);
+            gw_pref_reset_value_by_schema (GW_SCHEMA_HIGHLIGHT, key);
             g_free (key);
             key = NULL;
             return FALSE;
@@ -1816,11 +1816,11 @@ gboolean gw_ui_set_color_to_tagtable (char    *id,     GwTargetOutput TARGET,
         key = g_strdup_printf ("%s-background", id);
         if (key != NULL)
         {
-          gw_pref_get_string (bg_color, GW_SCHEMA_HIGHLIGHT, key, 100);
+          gw_pref_get_string_by_schema (bg_color, GW_SCHEMA_HIGHLIGHT, key, 100);
           if (gdk_color_parse (bg_color, &color) == FALSE)
           {
             printf("color failed %s\n", bg_color);
-            gw_pref_reset_value (GW_SCHEMA_HIGHLIGHT, key);
+            gw_pref_reset_value_by_schema (GW_SCHEMA_HIGHLIGHT, key);
             g_free (key);
             key = NULL;
             return FALSE;

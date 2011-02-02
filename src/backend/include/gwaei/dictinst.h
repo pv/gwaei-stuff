@@ -18,7 +18,7 @@ struct _GwDictInst {
   char *uri[GW_DICTINST_TOTAL_URI];
   int progress;
   char *status_message;
-  char *schemaid;
+  char *schema;
   char *key;
   gboolean builtin;
   gulong listenerid;

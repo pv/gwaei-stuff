@@ -53,9 +53,9 @@ static GOptionEntry _entries[] =
 
 void gw_frontend_initialize (int argc, char* argv[])
 {
-    bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
-    bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
-    textdomain(GETTEXT_PACKAGE);
+    bindtextdomain(PACKAGE, LOCALEDIR);
+    bind_textdomain_codeset(PACKAGE, "UTF-8");
+    textdomain(PACKAGE);
 
     gdk_threads_init();
     gtk_init (&argc, &argv);
@@ -160,8 +160,8 @@ void gw_frontend_start_gtk (int argc, char* argv[])
 
       //Add timers
       g_timeout_add_full (G_PRIORITY_LOW, 200, (GSourceFunc) gw_ui_keep_searching, NULL, NULL);
-      g_timeout_add_full (G_PRIORITY_LOW, 200, (GSourceFunc) gw_ui_update_progress_feedback, NULL, NULL);
-      g_timeout_add_full (G_PRIORITY_LOW, 1000, (GSourceFunc) gw_update_icons_for_selection, NULL, NULL);
+      //g_timeout_add_full (G_PRIORITY_LOW, 200, (GSourceFunc) gw_ui_update_progress_feedback, NULL, NULL);
+      //g_timeout_add_full (G_PRIORITY_LOW, 1000, (GSourceFunc) gw_update_icons_for_selection, NULL, NULL);
 
       gtk_main ();
 

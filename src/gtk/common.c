@@ -184,7 +184,7 @@ static void _initialize_window_attributes (char* id)
 static GList* _load_window_prefs ()
 {
     char* pref = (char*) malloc(300 * sizeof(char));
-    gw_pref_get_string (pref, GW_SCHEMA_BASE, GW_KEY_WINDOW_POSITIONS, 300);
+    gw_pref_get_string_by_schema (pref, GW_SCHEMA_BASE, GW_KEY_WINDOW_POSITIONS, 300);
     char **pref_array = NULL;;
     pref_array = g_strsplit (pref, ";", -1);
     char **ptr = NULL;
@@ -271,7 +271,7 @@ static void _save_window_prefs_for_id (const char *id)
     g_list_free (list);
 
     pref = g_strjoinv (";", atoms);
-    gw_pref_set_string (GW_SCHEMA_BASE, GW_KEY_WINDOW_POSITIONS, pref);
+    gw_pref_set_string_by_schema (GW_SCHEMA_BASE, GW_KEY_WINDOW_POSITIONS, pref);
     g_free (pref);
     pref = NULL;
 

@@ -7,6 +7,7 @@
 #define GW_SCHEMA_GNOME_INTERFACE   "org.gnome.interface"
 #define GW_KEY_TOOLBAR_STYLE        "toolbar-style"
 #define GW_KEY_DOCUMENT_FONT_NAME   "document-font-name"
+#define GW_KEY_PROGRAM_VERSION      "version"
 
 /////////////////////////
 #define GW_SCHEMA_BASE             "org.gnome.gwaei"
@@ -46,19 +47,43 @@
 #define GW_KEY_EXAMPLES_SOURCE     "examples-source"
 #define GW_KEY_LOAD_ORDER          "load-order"
 
-void gw_pref_set_int (const char*, const char*, const int);
-int gw_pref_get_int (const char*, const char*);
 
-void gw_pref_set_boolean (const char*, const char*, const gboolean);
-gboolean gw_pref_get_boolean (const char*, const char*);
+void gw_pref_initialize (void);
+void gw_pref_free (void);
 
-void gw_pref_set_string (const char*, const char*, const char*);
-void gw_pref_get_string (char*, const char*, const char*, const int);
+GSettings* gw_pref_get_settings_object (const char*);
 
-gulong gw_pref_add_change_listener (const char*, const char*, void (GSettings*, gchar*, gpointer), gpointer);
-void gw_pref_remove_change_listener (const char*, gulong);
+void gw_pref_reset_value (GSettings*, const char*);
+void gw_pref_reset_value_by_schema (const char*, const char*);
 
-void gw_pref_reset_value (const char*, const char*);
+int gw_pref_get_int (GSettings*, const char *);
+int gw_pref_get_int_by_schema (const char*, const char *);
+
+void gw_pref_set_int (GSettings*, const char*, const int);
+void gw_pref_set_int_by_schema (const char*, const char*, const int);
+
+gboolean gw_pref_get_boolean (GSettings*, const char *);
+gboolean gw_pref_get_boolean_by_schema (const char*, const char*);
+
+void gw_pref_set_boolean (GSettings*, const char*, const gboolean);
+void gw_pref_set_boolean_by_schema (const char*, const char*, const gboolean);
+
+void gw_pref_get_string (char*, GSettings*, const char*, const int);
+void gw_pref_get_string_by_schema (char*, const char*, const char*, const int);
+
+void gw_pref_set_string (GSettings*, const char*, const char*);
+void gw_pref_set_string_by_schema (const char*, const char*, const char*);
+
+gulong gw_pref_add_change_listener (GSettings*, const char*, void (*callback_function) (GSettings*, gchar*, gpointer), gpointer);
+gulong gw_pref_add_change_listener_by_schema (const char*, const char*, void (*callback_function) (GSettings*, gchar*, gpointer), gpointer);
+
+void gw_pref_remove_change_listener (GSettings*, gulong);
+void gw_pref_remove_change_listener_by_schema (const char*, gulong);
+
 
 #endif
+
+
+
+
 

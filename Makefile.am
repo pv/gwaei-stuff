@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = po src/backend src/gtk src/schemas
+SUBDIRS = po src/backend src/gtk src/schemas src/kpengine
 
 INTLTOOL_FILES = intltool-extract.in intltool-merge.in intltool-update.in
 

@@ -67,7 +67,7 @@ void gw_dictinstlist_initialize ()
     GW_ENCODING_EUC_JP,
     FALSE,
     FALSE,
-    FALSE
+    TRUE 
   );
   _list = g_list_append (_list, di);
 
@@ -83,7 +83,7 @@ void gw_dictinstlist_initialize ()
     GW_ENCODING_EUC_JP,
     FALSE,
     TRUE,
-    FALSE
+    TRUE 
   );
   _list = g_list_append (_list, di);
 
@@ -99,7 +99,7 @@ void gw_dictinstlist_initialize ()
     GW_ENCODING_EUC_JP,
     TRUE,
     FALSE,
-    FALSE
+    TRUE 
   );
   _list = g_list_append (_list, di);
 
@@ -115,7 +115,7 @@ void gw_dictinstlist_initialize ()
     GW_ENCODING_EUC_JP,
     FALSE,
     FALSE,
-    FALSE
+    TRUE 
   );
   _list = g_list_append (_list, di);
 
@@ -130,7 +130,7 @@ void gw_dictinstlist_initialize ()
     GW_ENCODING_UTF8,
     FALSE,
     FALSE,
-    TRUE
+    FALSE
   );
   _list = g_list_append (_list, di);
 }

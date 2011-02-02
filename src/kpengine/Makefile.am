@@ -21,7 +21,7 @@ INCLUDES =  -I jstroke
 
 
 kpengine_SOURCES = jstroke/scoring.c jstroke/util.c kpengine.c jstroke/jstroke.h
-kpengine_LDADD =  $(BASE_LIBS) @LIBINTL@
+kpengine_LDADD =  $(BASE_LIBS) 
 
 
 if ENABLE_WIN32

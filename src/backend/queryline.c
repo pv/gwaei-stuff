@@ -149,12 +149,12 @@ int gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
    ql->string = g_strdup (string);
 
    //Load the preference settings
-   int rk_conv_pref = gw_pref_get_int (GW_SCHEMA_BASE, GW_KEY_ROMAN_KANA);
+   int rk_conv_pref = gw_pref_get_int_by_schema (GW_SCHEMA_BASE, GW_KEY_ROMAN_KANA);
    gboolean want_rk_conv = (rk_conv_pref == 0 || (rk_conv_pref == 2 && !gw_util_is_japanese_locale()));
    gboolean want_hk_conv;
-   want_hk_conv = gw_pref_get_boolean (GW_SCHEMA_BASE, GW_KEY_HIRA_KATA);
+   want_hk_conv = gw_pref_get_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_HIRA_KATA);
    gboolean want_kh_conv;
-   want_kh_conv = gw_pref_get_boolean (GW_SCHEMA_BASE, GW_KEY_KATA_HIRA);
+   want_kh_conv = gw_pref_get_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_KATA_HIRA);
    ql->hira_string[0] = '\0';
 
    //Create atoms
@@ -335,7 +335,7 @@ int gw_queryline_parse_kanjidict_string (GwQueryLine *ql, const char* string)
     int length;
     char atom[MAX_QUERY];
     regmatch_t pmatch[nmatch];
-    int rk_conv_pref = gw_pref_get_int (GW_SCHEMA_BASE, GW_KEY_ROMAN_KANA);
+    int rk_conv_pref = gw_pref_get_int_by_schema (GW_SCHEMA_BASE, GW_KEY_ROMAN_KANA);
     gboolean want_rk_conv = (rk_conv_pref == 0 || (rk_conv_pref == 2 && !gw_util_is_japanese_locale()));
 
     //Get stroke
@@ -488,12 +488,12 @@ int gw_queryline_parse_exampledict_string (GwQueryLine *ql, const char* string)
     ql->string = g_strdup (string);
 
    //Load the preference settings
-   int rk_conv_pref = gw_pref_get_int (GW_SCHEMA_BASE, GW_KEY_ROMAN_KANA);
+   int rk_conv_pref = gw_pref_get_int_by_schema (GW_SCHEMA_BASE, GW_KEY_ROMAN_KANA);
    gboolean want_rk_conv = (rk_conv_pref == 0 || (rk_conv_pref == 2 && !gw_util_is_japanese_locale()));
    gboolean want_hk_conv;
-   want_hk_conv = gw_pref_get_boolean (GW_SCHEMA_BASE, GW_KEY_HIRA_KATA);
+   want_hk_conv = gw_pref_get_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_HIRA_KATA);
    gboolean want_kh_conv;
-   want_kh_conv = gw_pref_get_boolean (GW_SCHEMA_BASE, GW_KEY_KATA_HIRA);
+   want_kh_conv = gw_pref_get_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_KATA_HIRA);
    ql->hira_string[0] = '\0';
 
    //Create atoms

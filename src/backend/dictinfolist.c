@@ -622,7 +622,7 @@ void gw_dictlist_save_dictionary_order_pref ()
     atom[i] = NULL;
 
     load_order = g_strjoinv (";", atom);
-    gw_pref_set_string (GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, load_order);
+    gw_pref_set_string_by_schema (GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, load_order);
 
     //Free the used memory
     g_strfreev (atom);
@@ -646,7 +646,7 @@ void gw_dictlist_load_dictionary_order_from_pref ()
     GwDictInfo *di = NULL;
     int load_position = 0;
     
-    gw_pref_get_string (load_order, GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, 1000);
+    gw_pref_get_string_by_schema (load_order, GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, 1000);
     load_order_array = g_strsplit_set (load_order, ";", GW_DICTLIST_MAX_DICTIONARIES);
     
     for (ptr = load_order_array; *ptr != NULL; ptr++)
@@ -654,7 +654,7 @@ void gw_dictlist_load_dictionary_order_from_pref ()
       //Sanity checking
       if (*ptr == NULL || **ptr == '\0') { 
         printf("failed sanity check 1\n");
-        gw_pref_reset_value (GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER);
+        gw_pref_reset_value_by_schema (GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER);
         gw_dictlist_load_dictionary_order_from_pref ();
         return;
       }
@@ -665,7 +665,7 @@ void gw_dictlist_load_dictionary_order_from_pref ()
       if (engine_name_array[0] == NULL || engine_name_array[1] == NULL)
       {
         printf("failed sanity check 2\n");
-        gw_pref_reset_value (GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER);
+        gw_pref_reset_value_by_schema (GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER);
         gw_dictlist_load_dictionary_order_from_pref ();
         return;
       }

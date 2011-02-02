@@ -20,6 +20,11 @@ enum { ENGINE_STORE_ID, ENGINE_STORE_NAME, ENGINE_STORE_TOTAL_FIELDS };
 enum { COMPRESSION_STORE_ID, COMPRESSION_STORE_NAME, COMPRESSION_STORE_TOTAL_FIELDS };
 enum { ENCODING_STORE_ID, ENCODING_STORE_NAME, ENCODING_STORE_TOTAL_FIELDS };
 
+static gboolean source_entry_listener_is_set = FALSE;
+static gulong source_entry_listenerid = 0;
+static GwDictInst *_di = NULL;
+
+
 /*
 void do_dictionary_source_updated_action (GSettings *settings, gchar *key, gpointer data)
 {
@@ -41,34 +46,37 @@ void do_dictionary_source_updated_action (GSettings *settings, gchar *key, gpoin
 */
 
 
-G_MODULE_EXPORT void _toggled (GtkCellRendererToggle *renderer, gchar *path, gpointer data)
-{
-    GtkTreeIter iter;
-    gboolean state;
-    gtk_tree_model_get_iter_from_string (GTK_TREE_MODEL (_dictionary_store), &iter, path);
-    gtk_tree_model_get (GTK_TREE_MODEL (_dictionary_store), &iter, CHECKBOX_STATE, &state, -1);
-    gtk_list_store_set (GTK_LIST_STORE (_dictionary_store), &iter, CHECKBOX_STATE, !state, -1);
-}
-
 
 static void _clear_details_box ()
 {
-    GtkBuilder *builder = gw_common_get_builder ();
-    GtkWidget *hbox = GTK_WIDGET (gtk_builder_get_object (builder, "dictionary_install_details_hbox"));
-    GList *children = gtk_container_get_children (GTK_CONTAINER (hbox));
-    GList *iter = children;
-    while (iter != NULL)
+    GtkBuilder *builder;
+    GtkWidget *hbox;
+    GList *children;
+    GList *iter;
+
+    builder = gw_common_get_builder ();
+    hbox = GTK_WIDGET (gtk_builder_get_object (builder, "dictionary_install_details_hbox"));
+    children = gtk_container_get_children (GTK_CONTAINER (hbox));
+
+    //Clear the GUI elements
+    for (iter = children; iter != NULL; iter = iter->next)
     {
       gtk_widget_destroy (GTK_WIDGET (iter->data));
-      iter = iter->next;
     }
     g_list_free (children);
     children = NULL;
+
+    //Remove listeners
+    if (source_entry_listener_is_set)
+    {
+      gw_pref_remove_change_listener_by_schema (_di->schema, source_entry_listenerid);
+    }
 }
 
 
 static void _fill_details_box (GwDictInst *di)
 {
+    printf("BREAK 1%s %s %s\n", di->filename, di->schema, di->key);
     GtkBuilder *builder = gw_common_get_builder ();
     GtkWidget *parent = GTK_WIDGET (gtk_builder_get_object (builder, "dictionary_install_details_hbox"));
     GtkWidget *button = NULL;
@@ -81,8 +89,12 @@ static void _fill_details_box (GwDictInst *di)
     GtkWidget *checkbox = NULL;
     GtkCellRenderer *renderer = NULL;
     gchar *markup = NULL;
+    gboolean editable;
 
-    table = gtk_table_new (10, 2, FALSE);
+    table = gtk_table_new (7, 2, FALSE);
+    gtk_table_set_row_spacings (GTK_TABLE (table), 1);
+    gtk_table_set_col_spacings (GTK_TABLE (table), 0);
+    editable = !di->builtin;
 
     //First row
     hbox = GTK_WIDGET (gtk_hbox_new (FALSE, 0));
@@ -112,8 +124,8 @@ static void _fill_details_box (GwDictInst *di)
     entry = gtk_entry_new ();
     gtk_entry_set_text (GTK_ENTRY (entry), di->filename);
     gtk_table_attach_defaults (GTK_TABLE (table), entry, 1, 2, 0, 1);
-    gtk_widget_set_sensitive (GTK_WIDGET (entry), di->builtin);
-    gtk_widget_set_sensitive (GTK_WIDGET (label), di->builtin);
+    gtk_widget_set_sensitive (GTK_WIDGET (entry), editable);
+    gtk_widget_set_sensitive (GTK_WIDGET (label), editable);
 
     //Forth row
     label = gtk_label_new (gettext("Engine: "));
@@ -128,8 +140,8 @@ static void _fill_details_box (GwDictInst *di)
 
     gtk_table_attach_defaults (GTK_TABLE (table), combobox, 1, 2, 1, 2);
     gtk_combo_box_set_active (GTK_COMBO_BOX (combobox), di->engine);
-    gtk_widget_set_sensitive (GTK_WIDGET (combobox), di->builtin);
-    gtk_widget_set_sensitive (GTK_WIDGET (label), di->builtin);
+    gtk_widget_set_sensitive (GTK_WIDGET (combobox), editable);
+    gtk_widget_set_sensitive (GTK_WIDGET (label), editable);
 
 
     //Fifth row
@@ -140,17 +152,26 @@ static void _fill_details_box (GwDictInst *di)
 
     hbox = GTK_WIDGET (gtk_hbox_new (FALSE, 0));
     entry = gtk_entry_new ();
+    if (di->schema != NULL && di->key != NULL)
+    {
+      printf("adding %s %s %s\n", di->filename, di->schema, di->key);
+      source_entry_listenerid = gw_pref_add_change_listener_by_schema (di->schema, di->key, gw_dictionaryinstall_source_changed_cb, entry);
+      source_entry_listener_is_set = TRUE;
+    }
     gtk_entry_set_text (GTK_ENTRY (entry), di->uri[GW_DICTINST_DOWNLOAD_SOURCE]);
-    gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (entry), FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (entry), TRUE, TRUE, 0);
     button = gtk_button_new();
     image = gtk_image_new_from_stock (GTK_STOCK_OPEN, GTK_ICON_SIZE_MENU);
     gtk_container_add (GTK_CONTAINER (button), image);
     gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (button), FALSE, FALSE, 0);
+    g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (gw_dictionaryinstall_select_file_cb), entry);
     button = gtk_button_new();
     image = gtk_image_new_from_stock (GTK_STOCK_UNDO, GTK_ICON_SIZE_MENU);
     gtk_container_add (GTK_CONTAINER (button), image);
     gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (button), FALSE, FALSE, 0);
+    gtk_widget_set_sensitive (GTK_WIDGET (button), !editable);
     gtk_table_attach_defaults (GTK_TABLE (table), hbox, 1, 2, 2, 3);
+    g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (gw_dictionaryinstall_reset_default_uri_cb), di);
 
     //Sixth row
     label = gtk_label_new (gettext("Encoding: "));
@@ -165,8 +186,8 @@ static void _fill_details_box (GwDictInst *di)
     gtk_combo_box_set_active (GTK_COMBO_BOX (combobox), di->encoding);
 
     gtk_table_attach_defaults (GTK_TABLE (table), combobox, 1, 2, 3, 4);
-    gtk_widget_set_sensitive (GTK_WIDGET (combobox), di->builtin);
-    gtk_widget_set_sensitive (GTK_WIDGET (label), di->builtin);
+    gtk_widget_set_sensitive (GTK_WIDGET (combobox), editable);
+    gtk_widget_set_sensitive (GTK_WIDGET (label), editable);
 
     //Seventh row
     label = gtk_label_new (gettext("Compression: "));
@@ -181,8 +202,8 @@ static void _fill_details_box (GwDictInst *di)
     gtk_combo_box_set_active (GTK_COMBO_BOX (combobox), di->compression);
 
     gtk_table_attach_defaults (GTK_TABLE (table), combobox, 1, 2, 4, 5);
-    gtk_widget_set_sensitive (GTK_WIDGET (combobox), di->builtin);
-    gtk_widget_set_sensitive (GTK_WIDGET (label), di->builtin);
+    gtk_widget_set_sensitive (GTK_WIDGET (combobox), editable);
+    gtk_widget_set_sensitive (GTK_WIDGET (label), editable);
 
     //Eighth row
     checkbox = gtk_check_button_new_with_label (gettext("Split Places from Names Dictionary"));
@@ -190,8 +211,8 @@ static void _fill_details_box (GwDictInst *di)
     hbox = GTK_WIDGET (gtk_hbox_new (FALSE, 0));
     gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (checkbox), FALSE, FALSE, 0);
     gtk_table_attach_defaults (GTK_TABLE (table), hbox, 0, 2, 5, 6);
-    gtk_widget_set_sensitive (GTK_WIDGET (checkbox), di->builtin);
-    gtk_widget_set_sensitive (GTK_WIDGET (label), di->builtin);
+    gtk_widget_set_sensitive (GTK_WIDGET (checkbox), editable);
+    gtk_widget_set_sensitive (GTK_WIDGET (label), editable);
 
     //Ninth row
     checkbox = gtk_check_button_new_with_label (gettext("Merge Radicals into Kanji Dictionary"));
@@ -199,29 +220,13 @@ static void _fill_details_box (GwDictInst *di)
     hbox = GTK_WIDGET (gtk_hbox_new (FALSE, 0));
     gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (checkbox), FALSE, FALSE, 0);
     gtk_table_attach_defaults (GTK_TABLE (table), hbox, 0, 2, 6, 7);
-    gtk_widget_set_sensitive (GTK_WIDGET (checkbox), di->builtin);
-    gtk_widget_set_sensitive (GTK_WIDGET (label), di->builtin);
+    gtk_widget_set_sensitive (GTK_WIDGET (checkbox), editable);
+    gtk_widget_set_sensitive (GTK_WIDGET (label), editable);
 
-    gtk_box_pack_start (GTK_BOX (parent), GTK_WIDGET (table), FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (parent), GTK_WIDGET (table), FALSE, FALSE, 5);
     gtk_widget_show_all (GTK_WIDGET (table));
-}
 
-
-G_MODULE_EXPORT void _cursor_changed (GtkTreeView *view, gpointer data)
-{
-    GtkTreeSelection *selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (view));
-    GwDictInst *di = NULL;
-    GtkTreeIter iter;
-    GtkTreeModel *model = GTK_TREE_MODEL (_dictionary_store);
-
-    if (!gtk_tree_selection_get_selected (selection, &model, &iter)) return;
-    gtk_tree_model_get (model, &iter, DICTINST_PTR, &di, -1);
-
-    _clear_details_box();
-
-    _fill_details_box (di);
-
-    printf("changed\n");
+    _di = di;
 }
 
 
@@ -296,12 +301,12 @@ void gw_dictionaryinstall_initialize ()
     //Setup the dictionary list view
     view = GTK_TREE_VIEW (gtk_builder_get_object (builder, "dictionary_install_treeview"));
     gtk_tree_view_set_model (GTK_TREE_VIEW (view), GTK_TREE_MODEL (_dictionary_store));
-    g_signal_connect (G_OBJECT (view), "cursor-changed", G_CALLBACK (_cursor_changed), NULL);
+    g_signal_connect (G_OBJECT (view), "cursor-changed", G_CALLBACK (gw_dictionaryinstall_cursor_changed_cb), NULL);
 
     renderer = gtk_cell_renderer_toggle_new ();
     column = gtk_tree_view_column_new_with_attributes (" ", renderer, "active", CHECKBOX_STATE, NULL);
     gtk_tree_view_append_column (view, column);
-    g_signal_connect (G_OBJECT (renderer), "toggled", G_CALLBACK (_toggled), NULL);
+    g_signal_connect (G_OBJECT (renderer), "toggled", G_CALLBACK (gw_dictionaryinstall_listitem_toggled_cb), NULL);
 
     renderer = gtk_cell_renderer_text_new ();
     column = gtk_tree_view_column_new_with_attributes ("Name", renderer, "text", LONG_NAME, NULL);
@@ -310,24 +315,25 @@ void gw_dictionaryinstall_initialize ()
 
 /*
     char *id = NULL;
-
     id = g_strdup ("install_english_source_label");
-    gw_prefs_add_change_listener (GW_SCHEMA_DICTIONARY, GW_KEY_ENGLISH_SOURCE, do_dictionary_source_updated_action, id);
-
-    id = g_strdup ("install_kanji_source_label");
-    gw_prefs_add_change_listener (GW_SCHEMA_DICTIONARY, GW_KEY_KANJI_SOURCE, do_dictionary_source_updated_action, id);
-
-    id = g_strdup ("install_names_source_label");
-    gw_prefs_add_change_listener (GW_SCHEMA_DICTIONARY, GW_KEY_NAMES_PLACES_SOURCE, do_dictionary_source_updated_action, id);
-
-    id = g_strdup ("install_examples_source_label");
-    gw_prefs_add_change_listener (GW_SCHEMA_DICTIONARY, GW_KEY_EXAMPLES_SOURCE, do_dictionary_source_updated_action, id);
+    gw_prefs_add_change_listener_by_schema (GW_SCHEMA_DICTIONARY, GW_KEY_ENGLISH_SOURCE, do_dictionary_source_updated_action, id);
 */
 
 }
 
 void gw_dictionaryinstall_free ()
 {
+    g_object_unref (_encoding_store);
+    _encoding_store = NULL;
+
+    g_object_unref (_compression_store);
+    _compression_store = NULL;
+
+    g_object_unref (_engine_store);
+    _engine_store = NULL;
+
+    g_object_unref (_dictionary_store);
+    _dictionary_store = NULL;
 }
 
 
@@ -366,4 +372,136 @@ G_MODULE_EXPORT void do_toggle_other_dictionary_show (GtkWidget *widget, gpointe
     else gtk_widget_hide (table);
 }
 
+
+//CALLBACKS//////////////////////////////////////
+
+G_MODULE_EXPORT void gw_dictionaryinstall_source_changed_cb (GSettings *settings, char *key, gpointer data)
+{
+    GtkWidget *entry = GTK_WIDGET (data);
+    char value[200];
+    gw_pref_get_string (value, settings, key, 200);
+    printf("value %s\n", value);
+}
+
+
+G_MODULE_EXPORT void gw_dictionaryinstall_reset_default_uri_cb (GtkWidget *widget, gpointer data)
+{
+    GwDictInst* di = (GwDictInst*) data;
+    char value[200];
+
+    if (di->schema == NULL || di->key == NULL) return;
+
+    gw_pref_reset_value_by_schema (di->schema, di->key);
+}
+
+
+G_MODULE_EXPORT void gw_dictionaryinstall_select_file_cb (GtkWidget *widget, gpointer data)
+{
+    GtkBuilder *builder;
+    GtkWidget *window;
+    GtkWidget *dialog;
+    GtkWidget *entry;
+
+    builder = gw_common_get_builder ();
+    entry = GTK_WIDGET (data);
+    window = GTK_WIDGET (gtk_builder_get_object (builder, "dictionary_install_dialog"));
+    dialog = gtk_file_chooser_dialog_new (
+      "Select File",
+      GTK_WINDOW (window),
+      GTK_FILE_CHOOSER_ACTION_OPEN,
+      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+      GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+      NULL
+    );
+    if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
+    {
+      char *filename;
+      filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+      gtk_entry_set_text (GTK_ENTRY (entry), filename);
+      g_free (filename);
+    }
+    gtk_widget_destroy (dialog);
+}
+
+
+
+G_MODULE_EXPORT void gw_dictionaryinstall_cursor_changed_cb (GtkTreeView *view, gpointer data)
+{
+    //Declarations
+    GtkTreeSelection *selection;
+    GtkWidget *checkbox;
+    GtkWidget *hbox;
+    GtkWidget *dialog;
+    GwDictInst *di;
+    GtkTreeIter iter;
+    gboolean show_details;
+    gboolean has_selection;
+    GtkTreeModel *model;
+    GtkBuilder *builder;
+    gboolean editable;
+    int height;
+    int width;
+
+    //Initializations
+    builder = gw_common_get_builder ();
+    checkbox = GTK_WIDGET (gtk_builder_get_object (builder, "show_dictionary_detail_checkbutton"));
+    hbox = GTK_WIDGET (gtk_builder_get_object (builder, "dictionary_install_details_hbox"));
+    dialog = GTK_WIDGET (gtk_builder_get_object (builder, "dictionary_install_dialog"));
+
+    selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (view));
+    model = GTK_TREE_MODEL (_dictionary_store);
+    has_selection = gtk_tree_selection_get_selected (selection, &model, &iter);
+    show_details = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (checkbox));
+    editable = FALSE;
+
+    //Set the approprate contents of the detail pane
+    if (has_selection)
+    {
+      _clear_details_box();
+      gtk_tree_model_get (model, &iter, DICTINST_PTR, &di, -1);
+      _fill_details_box (di);
+      editable = !di->builtin;
+    }
+
+    //Set the approprate show/hide state of the detail pane
+    if (has_selection && (show_details || editable))
+      gtk_widget_show (hbox);
+    else
+      gtk_widget_hide (hbox);
+
+    //Make the window shrink if the detail pane disappeared
+    gtk_window_get_size (GTK_WINDOW (dialog), &width, &height);
+    gtk_window_resize (GTK_WINDOW (dialog), 1, height);
+}
+
+
+G_MODULE_EXPORT void gw_dictionaryinstall_listitem_toggled_cb (GtkCellRendererToggle *renderer, 
+                                                               gchar *path,
+                                                               gpointer data)
+{
+    GtkTreeIter iter;
+    gboolean state;
+    gtk_tree_model_get_iter_from_string (GTK_TREE_MODEL (_dictionary_store), &iter, path);
+    gtk_tree_model_get (GTK_TREE_MODEL (_dictionary_store), &iter, CHECKBOX_STATE, &state, -1);
+    gtk_list_store_set (GTK_LIST_STORE (_dictionary_store), &iter, CHECKBOX_STATE, !state, -1);
+}
+
+G_MODULE_EXPORT void gw_dictionaryinstall_detail_checkbox_toggled_cb (GtkWidget *widget, gpointer data)
+{
+  //Declarations
+  GtkTreePath *path;
+  GtkTreeViewColumn *column;
+  GtkBuilder *builder;
+  GtkTreeView *view;
+
+  builder = gw_common_get_builder ();
+  view = GTK_TREE_VIEW (gtk_builder_get_object (builder, "dictionary_install_treeview"));
+
+  //Trigger the list item selection callback
+  gtk_tree_view_get_cursor (view, &path, &column);
+  gtk_tree_view_set_cursor (view, path, column, FALSE);
+
+  //Cleanup
+  gtk_tree_path_free (path);
+}
 

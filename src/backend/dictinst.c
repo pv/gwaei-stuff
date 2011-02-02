@@ -44,7 +44,7 @@ static void _update_dictinst_source_uri_cb (GSettings *settings, char* key, gpoi
     GwDictInst *di = (GwDictInst*) data;
     char source_uri[200];
 
-    gw_pref_get_string (source_uri, di->schemaid, di->key, 200);
+    gw_pref_get_string_by_schema (source_uri, di->schema, di->key, 200);
     g_free (di->uri[GW_DICTINST_DOWNLOAD_SOURCE]);
     di->uri[GW_DICTINST_DOWNLOAD_SOURCE] = g_strdup (source_uri);
 }
@@ -57,7 +57,7 @@ GwDictInst* gw_dictinst_new_using_pref_uri (const char* filename,
                                             const char* shortname,
                                             const char* longname,
                                             const char* description,
-                                            const char* schemaid,
+                                            const char* schema,
                                             const char* key,
                                             const GwEngine ENGINE,
                                             const GwCompression COMPRESSION,
@@ -65,7 +65,7 @@ GwDictInst* gw_dictinst_new_using_pref_uri (const char* filename,
                                             gboolean split, gboolean merge, gboolean builtin)
 {
     char source_uri[200];
-    gw_pref_get_string (source_uri, schemaid, key, 200);
+    gw_pref_get_string_by_schema (source_uri, schema, key, 200);
     GwDictInst *di = NULL;
 
     di = gw_dictinst_new (
@@ -82,11 +82,11 @@ GwDictInst* gw_dictinst_new_using_pref_uri (const char* filename,
       builtin
     );
 
-    di->schemaid = g_strdup (schemaid);
+    di->schema = g_strdup (schema);
     di->key = g_strdup (key);
     if (di->listenerid_is_set == TRUE)
-      gw_pref_remove_change_listener (schemaid, di->listenerid);
-    di->listenerid = gw_pref_add_change_listener (schemaid, key, _update_dictinst_source_uri_cb, di);
+      gw_pref_remove_change_listener_by_schema (schema, di->listenerid);
+    di->listenerid = gw_pref_add_change_listener_by_schema (schema, key, _update_dictinst_source_uri_cb, di);
 
     return di;
 }
@@ -120,7 +120,7 @@ GwDictInst* gw_dictinst_new (const char* filename,
     int i = 0;
     for (i = 0; i < GW_DICTINST_TOTAL_URI; i++)
       temp->uri[i] = NULL;
-    temp->schemaid = NULL;
+    temp->schema = NULL;
     temp->key = NULL;
     temp->progress = 0;
     temp->status_message = NULL;
@@ -165,7 +165,7 @@ GwDictInst* gw_dictinst_new (const char* filename,
 void gw_dictinst_free (GwDictInst* di)
 {
     if (di->listenerid_is_set == TRUE)
-      gw_pref_remove_change_listener (di->schemaid, di->listenerid);
+      gw_pref_remove_change_listener_by_schema (di->schema, di->listenerid);
 
     g_free(di->filename);
     g_free(di->shortname);
@@ -180,7 +180,7 @@ void gw_dictinst_free (GwDictInst* di)
     }
     di->progress = 0;
     g_free(di->status_message);
-    g_free (di->schemaid);
+    g_free (di->schema);
     g_free (di->key);
     di->compression = 0;    //!< Path to the gziped dictionary file
     di->encoding = 0;          //!< Path to the raw unziped dictionary file
