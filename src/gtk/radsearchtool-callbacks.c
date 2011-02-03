@@ -68,12 +68,14 @@ G_MODULE_EXPORT void do_radical_search (GtkWidget *widget, gpointer data)
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
+    GwDictInfo *di = gw_dictlist_get_dictinfo (GW_ENGINE_KANJI, "Kanji");
+    if (di == NULL) return;
+
     //Ininitializations
     GwHistoryList* hl = gw_historylist_get_list(GW_HISTORYLIST_RESULTS);   
     char *query_text = NULL;
     char *radicals_text = gw_radsearchtool_strdup_all_selected_radicals ();
     char *strokes_text = gw_radsearchtool_strdup_prefered_stroke_count ();
-    GwDictInfo *di = gw_dictlist_get_dictinfo_by_name (GW_ENGINE_KANJI, "Kanji");
 
     //Create the query string
     if (radicals_text != NULL && strokes_text != NULL)
@@ -105,7 +107,6 @@ G_MODULE_EXPORT void do_radical_search (GtkWidget *widget, gpointer data)
 
     //Sanity checks
     if (query_text == NULL || strlen(query_text) == 0) return;
-    if (di == NULL || di->status != GW_DICT_STATUS_INSTALLED) return;
     if (gw_ui_cancel_search_for_current_tab () == FALSE) return;
 
     //Prep the search
@@ -113,35 +114,25 @@ G_MODULE_EXPORT void do_radical_search (GtkWidget *widget, gpointer data)
     gw_ui_search_entry_insert (query_text);
     gw_ui_text_select_all_by_target (GW_TARGET_ENTRY);
 
-    if (hl->current != NULL && (hl->current)->total_results > 0) 
-    {
-      gw_historylist_add_searchitem_to_history(GW_HISTORYLIST_RESULTS, hl->current);
-      hl->current = NULL;
-      gw_ui_update_history_popups();
-    }
-    else if (hl->current != NULL)
-    {
-      gw_searchitem_free (hl->current);
-      hl->current = NULL;
-    }
- 
-    hl->current = gw_searchitem_new (query_text, di, GW_TARGET_RESULTS);
-    gw_ui_set_dictionary_by_searchitem (hl->current);
+    GwSearchItem* item;
+    item = gw_tabs_get_searchitem ();
 
-    //Set the search item reference in the tabs
-    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
-    int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
-    gw_tabs_set_searchitem_by_page_num (hl->current, page_num);
+    //Move the previous searchitem to the history or destroy it
+    if (gw_searchitem_has_history_relevance (item))
+      gw_historylist_add_searchitem_to_history (GW_HISTORYLIST_RESULTS, item);
+    else
+      gw_searchitem_free (item);
+    
+    item = gw_searchitem_new (query_text, di, GW_TARGET_RESULTS);
+    gw_ui_set_dictionary_by_searchitem (item);
+    gw_tabs_set_searchitem (item);
 
     //Start the search
     gw_engine_get_results (hl->current, TRUE, FALSE);
+    gw_ui_update_history_popups ();
 
     //Cleanup
-    if (query_text != NULL)
-    {
-      g_free (query_text);
-      query_text = NULL;
-    }
+    g_free (query_text);
 }
 
 

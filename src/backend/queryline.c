@@ -146,7 +146,8 @@ int gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
 
    //Make a perminent copy of the query
    g_free (ql->string);
-   ql->string = g_strdup (string);
+   ql->string = gw_util_prepare_query (string, FALSE);
+
 
    //Load the preference settings
    int rk_conv_pref = gw_pref_get_int_by_schema (GW_SCHEMA_BASE, GW_KEY_ROMAN_KANA);
@@ -323,7 +324,7 @@ int gw_queryline_parse_kanjidict_string (GwQueryLine *ql, const char* string)
 
     //Make a perminent copy of the query
     g_free (ql->string);
-    ql->string = g_strdup (string);
+    ql->string = gw_util_prepare_query (string, FALSE);
 
     //Variable preparations
     char *ptr = ql->string;
@@ -485,7 +486,7 @@ int gw_queryline_parse_exampledict_string (GwQueryLine *ql, const char* string)
 
     //Make a perminent copy of the query
     g_free (ql->string);
-    ql->string = g_strdup (string);
+    ql->string = gw_util_prepare_query (string, FALSE);
 
    //Load the preference settings
    int rk_conv_pref = gw_pref_get_int_by_schema (GW_SCHEMA_BASE, GW_KEY_ROMAN_KANA);

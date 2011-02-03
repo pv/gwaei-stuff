@@ -15,7 +15,7 @@ void gw_settings_dictionary_manager_update_items (void);
 
 static GtkListStore *_model = NULL;
 static GtkTreeView *_view = NULL;
-enum { IMAGE, POSITION, NAME, LONG_NAME, SHORTCUT, DICT_POINTER, TOTAL_FIELDS };
+enum { IMAGE, POSITION, NAME, LONG_NAME, ENGINE, SHORTCUT, DICT_POINTER, TOTAL_FIELDS };
 static gulong _list_update_handler_id;
 
 
@@ -65,6 +65,7 @@ void gw_dictionary_manager_initialize ()
         G_TYPE_STRING, 
         G_TYPE_STRING, 
         G_TYPE_STRING, 
+        G_TYPE_STRING, 
         G_TYPE_POINTER);
 
     _view = GTK_TREE_VIEW (gtk_builder_get_object (builder, "manage_dictionaries_treeview"));
@@ -80,11 +81,15 @@ void gw_dictionary_manager_initialize ()
     gtk_tree_view_append_column (_view, column);
 
     renderer = gtk_cell_renderer_text_new();
-    column = gtk_tree_view_column_new_with_attributes ("Dictionary Name", renderer, "text", NAME, NULL);
+    column = gtk_tree_view_column_new_with_attributes (gettext("Name"), renderer, "text", LONG_NAME, NULL);
     gtk_tree_view_append_column (_view, column);
 
     renderer = gtk_cell_renderer_text_new();
-    column = gtk_tree_view_column_new_with_attributes ("Shortcut", renderer, "text", SHORTCUT, NULL);
+    column = gtk_tree_view_column_new_with_attributes (gettext("Engine"), renderer, "text", ENGINE, NULL);
+    gtk_tree_view_append_column (_view, column);
+
+    renderer = gtk_cell_renderer_text_new();
+    column = gtk_tree_view_column_new_with_attributes (gettext("Shortcut"), renderer, "text", SHORTCUT, NULL);
     gtk_tree_view_append_column (_view, column);
 
     GtkWidget *combobox = GTK_WIDGET (gtk_builder_get_object (builder, "dictionary_combobox"));
@@ -128,38 +133,38 @@ void gw_settings_dictionary_manager_update_items ()
 
     //Start filling in the new items
     GwDictInfo *di = NULL;
-    GtkTreeIter iter;
-    char *dictionary_name = NULL;
-    char *long_name = NULL;
-    char *icon_name = NULL;
-    char *shortcut_name = NULL;
+    GtkTreeIter treeiter;
+    char *longname = NULL;
+    char *iconname = NULL;
+    char *shortcutname = NULL;
     char *order_number = NULL;
     char *favorite_icon = "emblem-favorite";
-    GList *dli = NULL;
+    GList *iter = NULL;
     GtkAccelGroup* accel_group = GTK_ACCEL_GROUP (gtk_builder_get_object (builder, "main_accelgroup"));
     GSList* group = NULL;
     GtkWidget *item = NULL;
 
     
-    for (dli = gw_dictlist_get_list(); dli != NULL; dli = dli->next)
+    for (iter = gw_dictlist_get_list(); iter != NULL; iter = iter->next)
     {
       //Recreate the liststore
-      di = (GwDictInfo*) dli->data;
-      if (di->load_position == 0) icon_name = favorite_icon;
-      if (di->load_position < 9) shortcut_name = g_strdup_printf ("Alt-%d", (di->load_position + 1));
+      di = (GwDictInfo*) iter->data;
+      if (di->load_position == 0) iconname = favorite_icon;
+      if (di->load_position < 9) shortcutname = g_strdup_printf ("Alt-%d", (di->load_position + 1));
       order_number = g_strdup_printf ("%d", (di->load_position + 1));
-      gtk_list_store_append (GTK_LIST_STORE (_model), &iter);
-      gtk_list_store_set (_model, &iter,
-                          IMAGE, icon_name,
+      gtk_list_store_append (GTK_LIST_STORE (_model), &treeiter);
+      gtk_list_store_set (_model, &treeiter,
+                          IMAGE, iconname,
                           POSITION, order_number,
-                          NAME, di->short_name,
-                          LONG_NAME, di->long_name,
-                          SHORTCUT, shortcut_name,
+                          NAME, di->shortname,
+                          LONG_NAME, di->longname,
+                          ENGINE, gw_util_get_engine_name (di->engine),
+                          SHORTCUT, shortcutname,
                           DICT_POINTER, di,
                                                  -1);
 
       //Refill the menu
-      item = GTK_WIDGET (gtk_radio_menu_item_new_with_label (group, di->long_name));
+      item = GTK_WIDGET (gtk_radio_menu_item_new_with_label (group, di->longname));
       group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
       gtk_menu_shell_append (GTK_MENU_SHELL (shell),  GTK_WIDGET (item));
       if (di->load_position == 0) gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), TRUE);
@@ -170,9 +175,9 @@ void gw_settings_dictionary_manager_update_items ()
       //Cleanup
       g_free (order_number);
       order_number = NULL;
-      icon_name = NULL;
-      g_free (shortcut_name);
-      shortcut_name = NULL;
+      iconname = NULL;
+      g_free (shortcutname);
+      shortcutname = NULL;
     }
 
     //Fill in the other menu items

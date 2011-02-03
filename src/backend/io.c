@@ -245,6 +245,7 @@ int libcurl_update_progressbar (void   *data,
 gboolean gw_io_download_file (char *source_path, char *save_path,
                               int (*callback_function) (char*, int, gpointer), gpointer data, GError **error)
 {
+  /*
     if (*error != NULL) return FALSE;
 
     CURL *curl;
@@ -292,6 +293,7 @@ gboolean gw_io_download_file (char *source_path, char *save_path,
     }
 
     return (res == 0);
+    */
 }
 
 
@@ -619,6 +621,7 @@ int gw_io_get_total_lines_for_path (char *path)
 void gw_io_uninstall_dictinfo (GwDictInfo *di,    int (*callback_function) (char*, int, gpointer),
                                  gpointer data, gboolean long_messages                            )
 {
+  /*
     if (di == NULL) return;
 
     char *path = g_build_filename (gw_util_get_directory_for_engine (di->engine), di->name);
@@ -644,6 +647,7 @@ void gw_io_uninstall_dictinfo (GwDictInfo *di,    int (*callback_function) (char
 
     di->status = GW_DICT_STATUS_NOT_INSTALLED;
     di->load_position = -1;
+    */
 }
 
 

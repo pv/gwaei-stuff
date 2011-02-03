@@ -45,49 +45,21 @@
 //!
 G_MODULE_EXPORT void gw_ui_update_settings_interface ()
 {
-    GtkBuilder *builder = gw_common_get_builder ();
-
-    //Set the install interface
-    GtkWidget *close_button;
-    close_button = GTK_WIDGET (gtk_builder_get_object (builder, "settings_close_button"));
-
-    GtkWidget *advanced_tab;
-    advanced_tab = GTK_WIDGET (gtk_builder_get_object (builder, "advanced_tab"));
-
-    if (gw_dictlist_get_total_with_status (GW_DICT_STATUS_UPDATING  ) > 0 ||
-        gw_dictlist_get_total_with_status (GW_DICT_STATUS_INSTALLING) > 0 ||
-        gw_dictlist_get_total_with_status (GW_DICT_STATUS_REBUILDING) > 0   )
-    {
-      gtk_widget_set_sensitive (close_button,   FALSE);
-      gtk_widget_set_sensitive (advanced_tab,  FALSE);
-    }
-    else
-    {
-      gtk_widget_set_sensitive (close_button,   TRUE );
-      gtk_widget_set_sensitive (advanced_tab,  TRUE);
-    }
-
-
+    //Declarations
+    GtkBuilder *builder;
     GtkWidget *message;
-    message = GTK_WIDGET (gtk_builder_get_object (builder, "please_install_dictionary_hbox"));
-    if (gw_dictlist_get_total_with_status (GW_DICT_STATUS_INSTALLED  ) > 0)
-    {
-      gtk_widget_hide (message);
-    }
-    else
-    {
-      gtk_widget_show (message);
-    }
+    GList *list;
 
-/*
-THIS CODE BREAKS ON WINDOWS
-printf("MABREAK8\n");
-    char order[5000];
-    gw_pref_get_string (order, GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, 5000);
-printf("MABREAK9\n");
-    gtk_widget_set_sensitive (reset_order_button, (strcmp (order, GW_LOAD_ORDER_DEFAULT) != 0));
-printf("MABREAK10\n");
-*/
+    //Initializations
+    builder = gw_common_get_builder ();
+    message = GTK_WIDGET (gtk_builder_get_object (builder, "please_install_dictionary_hbox"));
+    list = gw_dictlist_get_list ();
+
+    //Set the show state of the dictionaries required message
+    if (g_list_length (list) > 0)
+      gtk_widget_hide (message);
+    else
+      gtk_widget_show (message);
 }
 
 
@@ -155,50 +127,94 @@ void gw_settings_initialize ()
     gw_ui_update_settings_interface ();
 }
 
+
+//!
+//! @brief Frees the memory used by the settings
+//!
 void gw_settings_free ()
 {
+    //Declarations
+    GtkBuilder *builder;
+    GtkWidget *window;
+
+    //Initializations
+    builder = gw_common_get_builder ();
+    window = GTK_WIDGET (gtk_builder_get_object (builder, "settings_window"));
+
+    //Free things
     gw_settings_listeners_free ();
-    gw_dictionary_manager_free ();
+    gtk_widget_destroy (window);
 }
 
 
+//!
+//! @brief Sets the state of the use global document font checkbox without triggering the signal handler
+//!
+//! @param setting The new checked state for the use global document font checkbox 
+//!
 void gw_ui_set_use_global_document_font_checkbox (gboolean setting)
 {
-    GtkBuilder *builder = gw_common_get_builder ();
+    //Declarations
+    GtkBuilder *builder;
+    GtkWidget *checkbox;
+    GtkWidget *hbox;
 
-    GtkWidget *checkbox = GTK_WIDGET (gtk_builder_get_object (builder, "system_font_checkbox"));
-    GtkWidget *child_settings = GTK_WIDGET (gtk_builder_get_object (builder, "system_document_font_hbox"));
+    //Initializations
+    builder = gw_common_get_builder ();
+    checkbox = GTK_WIDGET (gtk_builder_get_object (builder, "system_font_checkbox"));
+    hbox = GTK_WIDGET (gtk_builder_get_object (builder, "system_document_font_hbox"));
 
-    g_signal_handlers_block_by_func (checkbox, do_toggle_use_global_document_font, NULL);
+    //Updates
+    g_signal_handlers_block_by_func (checkbox, gw_settings_use_global_document_font_toggled_cb, NULL);
 
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), setting);
-    gtk_widget_set_sensitive (child_settings, !setting);
+    gtk_widget_set_sensitive (hbox, !setting);
 
-    g_signal_handlers_unblock_by_func (checkbox, do_toggle_use_global_document_font, NULL);
+    g_signal_handlers_unblock_by_func (checkbox, gw_settings_use_global_document_font_toggled_cb, NULL);
 }
 
 
+//!
+//! @brief Updates the default global font label to match that of the system.  The fallback is Sans
+//!
+//! @param font_description_string The font description in the form "Sans 10"
+//!
 void gw_ui_update_global_font_label (const char *font_description_string)
 {
-    GtkBuilder *builder = gw_common_get_builder ();
+    //Declarations
+    GtkBuilder *builder;
+    GtkWidget *checkbox;
+    char *text;
 
-    GtkWidget *checkbox = GTK_WIDGET (gtk_builder_get_object (builder, "system_font_checkbox"));
-    char *text = g_strdup_printf (gettext("_Use the System Document Font (%s)"), font_description_string);
+    //Initializations
+    builder = gw_common_get_builder ();
+    checkbox = GTK_WIDGET (gtk_builder_get_object (builder, "system_font_checkbox"));
+    text = g_strdup_printf (gettext("_Use the System Document Font (%s)"), font_description_string);
 
-    if (text != NULL)
-    {
-      gtk_button_set_label (GTK_BUTTON (checkbox), text);
-      g_free (text);
-      text = NULL;
-    }
+    //Body
+    if (text != NULL) gtk_button_set_label (GTK_BUTTON (checkbox), text);
+
+    //Cleanup
+    g_free (text);
 }
 
 
+//!
+//! @brief Sets the text in the custom document font button
+//!
+//! @param font_description_string The font description in the form "Sans 10"
+//!
 void gw_ui_update_custom_font_button (const char *font_description_string)
 {
-    GtkBuilder *builder = gw_common_get_builder ();
+    //Declarations
+    GtkBuilder *builder;
+    GtkWidget *button;
 
-    GtkWidget *button = GTK_WIDGET (gtk_builder_get_object (builder, "custom_font_fontbutton"));
+    //Initializations
+    builder = gw_common_get_builder ();
+    button = GTK_WIDGET (gtk_builder_get_object (builder, "custom_font_fontbutton"));
+
+    //Body
     gtk_font_button_set_font_name (GTK_FONT_BUTTON (button), font_description_string);
 }
 

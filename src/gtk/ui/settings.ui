@@ -72,7 +72,7 @@
                                 <property name="use_underline">True</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
-                                <signal name="toggled" handler="do_toggle_use_global_document_font"/>
+                                <signal name="toggled" handler="gw_settings_use_global_document_font_toggled_cb"/>
                               </object>
                               <packing>
                                 <property name="position">0</property>
@@ -98,7 +98,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
-                                    <signal name="font_set" handler="do_set_custom_document_font"/>
+                                    <signal name="font_set" handler="gw_settings_custom_document_font_set_cb"/>
                                   </object>
                                   <packing>
                                     <property name="position">1</property>
@@ -160,7 +160,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="color">#000000000000</property>
-                                        <signal name="color_set" handler="do_set_color_to_swatch"/>
+                                        <signal name="color_set" handler="gw_settings_swatch_color_set_cb"/>
                                       </object>
                                       <packing>
                                         <property name="left_attach">2</property>
@@ -176,7 +176,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="color">#000000000000</property>
-                                        <signal name="color_set" handler="do_set_color_to_swatch"/>
+                                        <signal name="color_set" handler="gw_settings_swatch_color_set_cb"/>
                                       </object>
                                       <packing>
                                         <property name="left_attach">2</property>
@@ -192,7 +192,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="color">#000000000000</property>
-                                        <signal name="color_set" handler="do_set_color_to_swatch"/>
+                                        <signal name="color_set" handler="gw_settings_swatch_color_set_cb"/>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -208,7 +208,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="color">#000000000000</property>
-                                        <signal name="color_set" handler="do_set_color_to_swatch"/>
+                                        <signal name="color_set" handler="gw_settings_swatch_color_set_cb"/>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -224,7 +224,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="color">#000000000000</property>
-                                        <signal name="color_set" handler="do_set_color_to_swatch"/>
+                                        <signal name="color_set" handler="gw_settings_swatch_color_set_cb"/>
                                       </object>
                                       <packing>
                                         <property name="top_attach">1</property>
@@ -238,7 +238,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="color">#000000000000</property>
-                                        <signal name="color_set" handler="do_set_color_to_swatch"/>
+                                        <signal name="color_set" handler="gw_settings_swatch_color_set_cb"/>
                                       </object>
                                       <packing>
                                         <property name="top_attach">2</property>
@@ -284,8 +284,8 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="use_underline">True</property>
-                                        <signal name="clicked" handler="do_color_reset_for_swatches"/>
-                                        <signal name="activate" handler="do_color_reset_for_swatches"/>
+                                        <signal name="clicked" handler="gw_settings_swatch_color_reset_cb"/>
+                                        <signal name="activate" handler="gw_settings_swatch_color_reset_cb"/>
                                       </object>
                                       <packing>
                                         <property name="left_attach">3</property>
@@ -442,8 +442,8 @@
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                             <property name="use_stock">True</property>
-                            <signal name="clicked" handler="do_remove_dictionary_action"/>
-                            <signal name="activate" handler="do_remove_dictionary_action"/>
+                            <signal name="clicked" handler="gw_settings_remove_dictionary_cb"/>
+                            <signal name="activate" handler="gw_settings_remove_dictionary_cb"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -613,7 +613,7 @@
                                     <property name="visible">True</property>
                                     <property name="model">query_romaji_to_kana_list_store</property>
                                     <property name="active">0</property>
-                                    <signal name="changed" handler="do_romaji_kana_conv_change"/>
+                                    <signal name="changed" handler="gw_settings_romaji_kana_conv_changed_cb"/>
                                     <child>
                                       <object class="GtkCellRendererText" id="query_romaji_to_kana_cell_renderer"/>
                                       <attributes>
@@ -641,7 +641,7 @@
                                 <property name="receives_default">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="draw_indicator">True</property>
-                                <signal name="toggled" handler="do_hiragana_katakana_conv_toggle"/>
+                                <signal name="toggled" handler="gw_settings_hira_kata_conv_toggled_cb"/>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -657,7 +657,7 @@
                                 <property name="receives_default">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="draw_indicator">True</property>
-                                <signal name="toggled" handler="do_katakana_hiragana_conv_toggle"/>
+                                <signal name="toggled" handler="gw_settings_kata_hira_conv_toggled_cb"/>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -673,7 +673,7 @@
                                 <property name="no_show_all">True</property>
                                 <property name="use_underline">True</property>
                                 <property name="draw_indicator">True</property>
-                                <signal name="toggled" handler="do_spellcheck_toggle"/>
+                                <signal name="toggled" handler="gw_settings_spellcheck_toggled_cb"/>
                               </object>
                               <packing>
                                 <property name="expand">False</property>

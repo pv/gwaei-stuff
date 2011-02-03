@@ -630,7 +630,7 @@
               <object class="GtkToggleToolButton" id="spellcheck_toolbutton">
                 <property name="tooltip_text" translatable="yes">Enable spellcheck for searches</property>
                 <property name="stock_id">gtk-spell-check</property>
-                <signal name="toggled" handler="do_spellcheck_toggle"/>
+                <signal name="toggled" handler="gw_settings_spellcheck_toggled_cb"/>
               </object>
               <packing>
                 <property name="expand">False</property>

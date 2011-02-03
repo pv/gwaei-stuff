@@ -81,10 +81,31 @@ GwDictList* gw_dictlist_new ()
 //!
 //! @return The position in the GwDictList of the GwDictInfo
 //!
-GList* gw_dictlist_get_selected()
+GList* gw_dictlist_get_selected ()
 {
     return _dictionaries->selected;
 }
+
+
+//!
+//! @brief Get the currently selected GwDictInfo object
+//!
+//! A function used for abstracting what is the current dictionary for the GUI
+//! instead of relying on the status of a particular widget.
+//!
+//! @return The position in the GwDictList of the GwDictInfo
+//!
+GwDictInfo* gw_dictlist_get_selected_dictinfo ()
+{
+    GList *iter;
+    GwDictInfo *di;
+
+    iter = _dictionaries->selected;
+    di = (GwDictInfo*) iter->data;
+
+    return di;
+}
+
 
 
 //!
@@ -137,22 +158,24 @@ GList* gw_dictlist_set_selected_by_load_position(int request)
 
 
 //!
-//! @brief Adds a dictionary to the GwDictList
+//! @brief Adds a dictionary to the GwDictList with sanity checks
 //!
-//! This function does not install files or anything.  It just looks for the
-//! dictionary by the name specified in the .waei folder and then sets up it's
-//! initial state using gw_dictinfo_new().  It will also make sure the
-//! dictionary is not added twice.
+//! @param ENGINE Engine of the dictionary to add
+//! @param FILENAME Name of the dictionary to add
 //!
-//! @param name Name of the dictionary to add
-//!
-void gw_dictlist_add_dictionary(GwEngine ENGINE, char *name)
+void gw_dictlist_add_dictionary (const GwEngine ENGINE, const char *FILENAME)
 {
+    //Sanity check
+    if (gw_dictlist_check_if_loaded (ENGINE, FILENAME) == TRUE) return;
+
+    //Declarations
     GwDictInfo *di;
-    if  (gw_dictlist_check_if_loaded_by_name (name) == FALSE)
-      di = gw_dictinfo_new (ENGINE, name);
-    if (di != NULL)
-      _dictionaries->list = g_list_append (_dictionaries->list, di);
+
+    //Initializations
+    di = gw_dictinfo_new (ENGINE, FILENAME);
+
+    //Append to the dictionary list if was loadable
+    if (di != NULL) _dictionaries->list = g_list_append (_dictionaries->list, di);
 }
 
 
@@ -199,22 +222,22 @@ void gw_dictlist_free ()
 //! The function will go through each dictionary until it matches the requested
 //! name.
 //!
-//! @param request a const string to search for in the dictionary names
-//! @return returns the GwDictInfo dictionary object of the result or null.
+//! @param ENGINE The parsing engine of the dictionary wanted.  There can be
+//!               dictionaries with the same name, but different engines.
+//! @param NAME A constant string to search for in the dictionary names.
+//! @returns The requested GwDictInfo object if found or null.
 //!
-GwDictInfo* gw_dictlist_get_dictinfo_by_name (GwEngine ENGINE, const char* request)
+GwDictInfo* gw_dictlist_get_dictinfo (const GwEngine ENGINE, const char* FILENAME)
 {
-    GList *current;
-    current = _dictionaries->list;
+    //Declarations
+    GList *iter;
     GwDictInfo *di;
-    di = NULL;
 
-    while (current != NULL)
+    for (iter = _dictionaries->list; iter != NULL; iter = iter->next)
     {
-      di = (GwDictInfo*) current->data;
-      if (di->engine == ENGINE && strcmp (di->name, request) == 0)
+      di = (GwDictInfo*) iter->data;
+      if (di->engine == ENGINE && strcmp (di->filename, FILENAME) == 0)
         break;
-      current = current->next;
       di = NULL;
     }
 
@@ -229,54 +252,25 @@ GwDictInfo* gw_dictlist_get_dictinfo_by_name (GwEngine ENGINE, const char* reque
 //! negating the need to see if it was added to the dictionary list and if
 //! it has the GW_DICT_STATUS_INSTALLED status set.
 //!
-//! @param request a const string to search for in the dictionary names
+//! @param NAME request a const string to search for in the dictionary names
 //! @return returns true if the dictionary is installed
 //!
-gboolean gw_dictlist_check_if_loaded_by_name (char* name)
+gboolean gw_dictlist_check_if_loaded (const GwEngine ENGINE, const char* FILENAME)
 {
-    GList *current = _dictionaries->list;
+    //Declarations
+    GList *iter;
     GwDictInfo *di;
 
-    while (current != NULL)
+    //Return true if the dictionary exists
+    for (iter = _dictionaries->list; iter != NULL; iter = iter->next)
     {
-      di = (GwDictInfo*) current->data;
-      if (strcmp (di->name, name) == 0 && di->status == GW_DICT_STATUS_INSTALLED)
+      di = (GwDictInfo*) iter->data;
+      if (di->engine == ENGINE && strcmp (di->filename, FILENAME) == 0) 
         return TRUE;
-      current = current->next;
     }
 
+    //Otherwise it doesn't
     return FALSE;
-}
-
-
-//!
-//! @brief Counts how many dictionaries in the dictionary list have a specific status
-//!
-//! The function will loop through each item in the dictionary list,
-//! incrementing its count by 1 for each found dictionary, then returning the
-//! number. The statuses include: GW_DICT_STATUS_INSTALLING, GW_DICT_STATUS_INSTALLED, GW_DICT_STATUS_NOT_INSTALLED,
-//! GW_DICT_STATUS_UPDATING, GW_DICT_STATUS_UPDATED, and GW_DICT_STATUS_CANCELING. See dictionaries.h for the current list.
-//!
-//! @param status the integer status to check for
-//! @return returns the number of dictionaries with the status
-//!
-int gw_dictlist_get_total_with_status (GwDictStatus status)
-{
-    GwDictInfo *di;
-    GList *current = _dictionaries->list;
-    int i = 0;
-
-    while (current != NULL)
-    {
-      di = (GwDictInfo*) current->data;
-      if (di->status == status)
-      {
-        i++;
-      }
-      current = current->next;
-    }
-
-    return i;
 }
 
 
@@ -514,34 +508,6 @@ void gw_dictlist_preform_postprocessing_by_name (char* name, GError **error)
 
 
 //!
-//! @brief All dictionaries with a specific status get switched to the requested one.
-//!
-//! Each dictionary in the dictionary list is examined and if it matches a
-//! a specific status, it is switched to the requested one.  This is a good way
-//! to quickly cleanup after possible installation errors to reset the
-//! dictionaries to an uninstalled status state. The possible statuses include:
-//! GW_DICT_STATUS_INSTALLING, GW_DICT_STATUS_INSTALLED, GW_DICT_STATUS_NOT_INSTALLED, GW_DICT_STATUS_UPDATING, GW_DICT_STATUS_UPDATED, and GW_DICT_STATUS_CANCELING.
-//! See dictionaries.h for the current list.
-//!
-//! @param OLD const int of the current install status
-//! @param NEW const int of the new install status
-//!
-void gw_dictlist_normalize_all_status_from_to (const GwDictStatus OLD, const GwDictStatus NEW)
-{
-    GList *current = _dictionaries->list;
-    GwDictInfo *di;
-
-    while (current != NULL)
-    {
-      di = (GwDictInfo*) current->data;
-      if (di->status == OLD)
-        di->status = NEW;
-      current = current->next;
-    }
-}
-
-
-//!
 //! @brief All dictionaries with a specific status get switched to the requested one
 //!
 //! This function is designed to be passed to g_list_sort and should not be used outside of
@@ -576,20 +542,23 @@ static gint _load_order_compare_function (gconstpointer a, gconstpointer b)
 //
 static void _sort_and_normalize_dictlist_load_order ()
 {
-    GwDictInfo *di = NULL;
-    int load_position = 0;
-    GList *iter = NULL;
+    //Declarations
+    GwDictInfo *di;
+    int load_position;
+    GList *iter;
 
+    //Initializations
+    load_position = 0;
+
+    //Sort the list
     _dictionaries->list = g_list_sort (_dictionaries->list, _load_order_compare_function);
 
+    //Make sure there is no number skipping
     for (iter = _dictionaries->list; iter != NULL; iter = iter->next)
     {
       di = (GwDictInfo*) iter->data;
-      if (di->status != GW_DICT_STATUS_NOT_INSTALLED)
-      {
-        di->load_position = load_position;
-        load_position++;
-      }
+      di->load_position = load_position;
+      load_position++;
     }
 }
 
@@ -602,20 +571,22 @@ void gw_dictlist_save_dictionary_order_pref ()
     //Make sure things are sorted and normal
     _sort_and_normalize_dictlist_load_order ();
 
-    //Declarations and initializations;
-    char *load_order = NULL;
-    GwDictInfo *di = NULL;
-    GList *list =  gw_dictlist_get_list();
-    GList *iter = list;
-    int max = GW_DICTLIST_MAX_DICTIONARIES;
-    char **atom = (char**) malloc((max + 1) * sizeof(char*));
-    int i = 0;
+    //Declarations
+    char *load_order;
+    GwDictInfo *di;
+    GList *iter;
+    char **atom;
+    int i;
+
+    //Initializations;
+    atom = (char**) malloc((GW_DICTLIST_MAX_DICTIONARIES + 1) * sizeof(char*));
+    i = 0;
 
     //Create the string to write to the prefs with the last one NULL terminated
-    for (iter = list; iter != NULL && i < max; iter = iter->next)
+    for (iter = gw_dictlist_get_list (); iter != NULL && i < GW_DICTLIST_MAX_DICTIONARIES; iter = iter->next)
     {
       di = (GwDictInfo*) iter->data;
-      atom[i] = g_strdup_printf ("%s/%s", gw_util_get_engine_name (di->engine), di->name);
+      atom[i] = g_strdup_printf ("%s/%s", gw_util_get_engine_name (di->engine), di->filename);
       if (atom == NULL) { printf("Out of memory\n"); exit(1); }
       i++;
     }
@@ -674,7 +645,7 @@ void gw_dictlist_load_dictionary_order_from_pref ()
       name = engine_name_array[1];
 
       //Sanity Checking
-      if ((di = gw_dictlist_get_dictinfo_by_name (engine, name)) != NULL)
+      if ((di = gw_dictlist_get_dictinfo (engine, name)) != NULL)
       {
         di->load_position = load_position;
         load_position++;

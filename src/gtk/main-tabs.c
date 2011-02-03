@@ -60,10 +60,44 @@ GList *gw_tabs_get_searchitem_list ()
     return _tab_searchitems;
 }
 
-void gw_tabs_set_searchitem_by_page_num (GwSearchItem *item, int page_num)
+
+GwSearchItem* gw_tabs_get_searchitem ()
 {
-    GList* list = g_list_nth (_tab_searchitems, page_num);
-    list->data = item;
+    GList* iter;
+    GwSearchItem *item;
+    GtkBuilder *builder;
+    GtkWidget *notebook;
+    int page_num;
+
+    builder = gw_common_get_builder ();
+    notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+    iter = g_list_nth (_tab_searchitems, page_num);
+    item = (GwSearchItem*) iter->data;
+
+    return item;
+}
+
+
+
+void gw_tabs_set_searchitem (GwSearchItem *item)
+{
+    GList* iter;
+    GtkBuilder *builder;
+    GtkWidget *notebook;
+    int page_num;
+
+    builder = gw_common_get_builder ();
+    notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+    iter = g_list_nth (_tab_searchitems, page_num);
+    iter->data = item;
+    gw_tabs_update_on_deck_historylist_by_searchitem (item);
+
+    //Update the interface
+    gw_tabs_guarantee_first_tab ();
+    gw_tabs_set_current_tab_text (item->queryline->string);
+    gw_ui_set_query_entry_text_by_searchitem (item);
 }
 
 

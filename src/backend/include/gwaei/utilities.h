@@ -73,9 +73,9 @@ gboolean gw_util_all_chars_are_in_range (char*, int, int);
 
 gboolean gw_util_force_japanese_locale (void);
 
-gchar* gw_util_prepare_query(char*, gboolean);
-gchar* gw_util_sanitize_input(char*, gboolean);
-gboolean gw_util_contains_halfwidth_japanese(gchar*);
-gchar* gw_util_enlarge_halfwidth_japanese(gchar*);
+gchar* gw_util_prepare_query(const char*, gboolean);
+gchar* gw_util_sanitize_input(const char*, gboolean);
+gboolean gw_util_contains_halfwidth_japanese(const gchar*);
+gchar* gw_util_enlarge_halfwidth_japanese(const gchar*);
 
 #endif

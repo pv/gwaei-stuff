@@ -138,10 +138,11 @@ G_MODULE_EXPORT gboolean do_get_iter_for_motion (GtkWidget      *widget,
     hovered_word = gtk_text_iter_get_visible_slice (&start, &end);
 
     GwDictInfo *di;
-    di = gw_dictlist_get_dictinfo_by_name (GW_ENGINE_KANJI, "Kanji");
+    di = gw_dictlist_get_dictinfo (GW_ENGINE_KANJI, "Kanji");
+    if (di == NULL) FALSE;
   
     // Characters above 0xFF00 represent inserted images
-    if (unic > L'ー' && unic < 0xFF00 && di->status == GW_DICT_STATUS_INSTALLED)
+    if (unic > L'ー' && unic < 0xFF00)
       gw_ui_set_cursor (GDK_HAND2);
     else
       gw_ui_set_cursor (GDK_XTERM);
@@ -214,11 +215,10 @@ G_MODULE_EXPORT gboolean do_get_iter_for_button_release (GtkWidget      *widget,
     unic = gw_ui_get_hovered_character (&x, &y, &iter);
 
     GwDictInfo *di;
-    di = gw_dictlist_get_dictinfo_by_name (GW_ENGINE_KANJI, "Kanji");
+    di = gw_dictlist_get_dictinfo (GW_ENGINE_KANJI, "Kanji");
+    if (di == NULL) return FALSE;
 
-    if (di->status == GW_DICT_STATUS_INSTALLED     &&
-        abs (button_press_x - x) < 3 &&
-        abs (button_press_y - y) < 3   )
+    if (abs (button_press_x - x) < 3 && abs (button_press_y - y) < 3)
     {
       // Characters above 0xFF00 represent inserted images
       if (unic > L'ー' && unic < 0xFF00 )
@@ -303,7 +303,7 @@ G_MODULE_EXPORT void do_close (GtkWidget *widget, gpointer data)
     }
     else if (strcmp (id, "settings_window") == 0)
     {
-      if (gw_dictlist_get_total_with_status (GW_DICT_STATUS_INSTALLED) > 0)
+      if (gw_dictlist_get_total () > 0)
       {
         gtk_widget_hide (widget);
         gw_ui_update_toolbar_buttons ();
@@ -412,8 +412,9 @@ G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
     gw_tabs_guarantee_first_tab ();
 
     GwHistoryList *hl;
-    hl = gw_historylist_get_list (GW_HISTORYLIST_RESULTS);
     GwSearchItem *item;
+
+    hl = gw_historylist_get_list (GW_HISTORYLIST_RESULTS);
     item = (GwSearchItem*) data;
 
     //Make sure searches done from the history are pointing at a valid target
@@ -426,7 +427,6 @@ G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
       printf("CANCEL SEARCH FOR CURRENT TAB RETURNED FALSE\n");
       return;
     }
-    if (item->dictionary->status != GW_DICT_STATUS_INSTALLED) return;
 
     //Start setting things up;
     if (hl->back != NULL && g_list_find (hl->back, item))
@@ -441,27 +441,24 @@ G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
     }
 
     //Set tab text
-    gw_tabs_set_current_tab_text (hl->current->queryline->string);
+    gw_tabs_set_current_tab_text (item->queryline->string);
 
     //Add tab reference to searchitem
-    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
-    int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
-    gw_tabs_set_searchitem_by_page_num (hl->current, page_num);
-
-    gw_engine_get_results (hl->current, TRUE, FALSE);
+    gw_tabs_set_searchitem (item);
+    gw_engine_get_results (item, TRUE, FALSE);
     gw_ui_update_history_popups ();
     gw_ui_update_toolbar_buttons ();
 
     //Set the search string in the GtkEntry
     gw_ui_clear_search_entry ();
-    gw_ui_search_entry_insert ((hl->current)->queryline->string);
+    gw_ui_search_entry_insert (item->queryline->string);
     gw_ui_text_select_all_by_target (GW_TARGET_ENTRY);
     gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
 
     //Set the correct dictionary in the gui
     GtkWidget *combobox;
     combobox = GTK_WIDGET (gtk_builder_get_object (builder, "dictionary_combobox"));
-    gtk_combo_box_set_active (GTK_COMBO_BOX (combobox), hl->current->dictionary->load_position);
+    gtk_combo_box_set_active (GTK_COMBO_BOX (combobox), item->dictionary->load_position);
 }
 
 
@@ -1358,98 +1355,42 @@ G_MODULE_EXPORT gboolean do_focus_change_on_key_press (GtkWidget *widget,
 //!
 G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
 {
-    GtkBuilder *builder = gw_common_get_builder ();
-
+    //Declarations
     gchar query[MAX_QUERY];
-    query[0] = '\0';
+    GwSearchItem *item, *new_item;
+    GwDictInfo *di;
+
+    //Initializations
     gw_ui_strncpy_text_from_widget_by_target (query, GW_TARGET_ENTRY, MAX_QUERY);
 
-    gw_tabs_guarantee_first_tab ();
+    item = gw_tabs_get_searchitem ();
+    di = gw_dictlist_get_selected_dictinfo ();
 
-    GwHistoryList* hl = gw_historylist_get_list (GW_HISTORYLIST_RESULTS);
+    new_item = gw_searchitem_new (query, di, GW_TARGET_RESULTS);
 
-    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
-    int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
-    GwSearchItem *item = g_list_nth_data (gw_tabs_get_searchitem_list (), page_num);
-
-    GList *list = gw_dictlist_get_selected ();
-    GwDictInfo *dictionary = list->data;
-
-    //Stop empty searches
-    if (strlen (query) == 0) return;
-
-    // Run some checks and transformation on a user inputed string before using it
-    char* sane_query = gw_util_prepare_query (query, FALSE);
-    if (sane_query != NULL) {
-    	g_stpcpy(query, sane_query);
-    	g_free(sane_query);
-    	sane_query = NULL;
-    }
-
-    //Make sure the regex doesn't start or end with certain special symbols that cause the program to freeze
-    if (query[0] == '|' || query[0] == '&') return;
-    if (query[strlen(query) - 1] == '|' || query[strlen(query) - 1] == '&') return;
-
-    if (item != NULL)
+    //Check for problems, and quit if there are
+    if (new_item == NULL || gw_searchitem_is_equal (item, new_item) || !gw_ui_cancel_search_by_searchitem (item))
     {
-      g_mutex_lock (item->mutex);
-
-        //Stop duplicate searches
-        if (item != NULL &&
-            item->queryline != NULL &&
-            item->queryline->string != NULL &&
-            strcmp (query, item->queryline->string) == 0 &&
-            dictionary == item->dictionary
-           )
-        {
-          if ((hl->current) != NULL && (hl->current)->history_relevance_idle_timer < 50)
-            (hl->current)->history_relevance_idle_timer++;
-          g_mutex_unlock (item->mutex);
-          return;
-        }
-
-      g_mutex_unlock (item->mutex);
-    }
-
-    //Cancel previous searches
-    if (gw_ui_cancel_search_by_searchitem (item) == FALSE) return;
-
-    //Move the searchitem to the history or destroy it
-    if (hl->current != NULL && (hl->current)->total_results &&
-        (hl->current)->history_relevance_idle_timer > GW_HISTORY_TIME_TO_RELEVANCE)  
-    {
-      gw_historylist_add_searchitem_to_history (GW_HISTORYLIST_RESULTS, hl->current);
-      hl->current = NULL;
-      gw_ui_update_history_popups ();
-    }
-    else if (hl->current != NULL)
-    {
-      gw_searchitem_free (hl->current);
-      hl->current = NULL;
-    }
-
-    //cerate the new searchitem
-    hl->current = gw_searchitem_new (query, dictionary, GW_TARGET_RESULTS);
-    //Add tab reference to searchitem
-    gw_tabs_set_searchitem_by_page_num (hl->current, page_num);
-
-    //Warning message.  It will most likely fail because of a mal-formed query
-    if (hl->current == NULL)
-    {
-      g_warning ("There was a problem creating your search query.  This warning code should be used more intelligently later....\n");
+      gw_searchitem_increment_history_relevance_timer (item);
+      gw_searchitem_free (new_item);
       return;
     }
 
-    //Update the interface
-    gw_tabs_guarantee_first_tab ();
-    gw_tabs_set_current_tab_text (query);
-    gw_ui_set_query_entry_text_by_searchitem (hl->current);
+    //Move the previous searchitem to the history or destroy it
+    if (gw_searchitem_has_history_relevance (item))
+      gw_historylist_add_searchitem_to_history (GW_HISTORYLIST_RESULTS, item);
+    else
+      gw_searchitem_free (item);
+
+    //Add the needed references for the new search item
+    gw_tabs_set_searchitem (new_item);
 
     //Start the search
-    gw_engine_get_results (hl->current, TRUE, FALSE);
+    gw_engine_get_results (new_item, TRUE, FALSE);
 
-    //Update the toolbar buttons
+    //Update the interface
     gw_ui_update_toolbar_buttons ();
+    gw_ui_update_history_popups ();
 }
 
 
@@ -1883,15 +1824,15 @@ void do_populate_popup_with_search_options (GtkTextView *entry, GtkMenu *menu, g
 
     //Add internal dictionary links
     i = 0;
-    while ((list = gw_dictlist_get_dict_by_load_position(i)) != NULL)
+    while ((list = gw_dictlist_get_dict_by_load_position (i)) != NULL)
     {
-      list = gw_dictlist_get_dict_by_load_position(i);
+      list = gw_dictlist_get_dict_by_load_position (i);
       di = list->data;
       if (di != NULL && (item = gw_searchitem_new (query_text, di, GW_TARGET_RESULTS)) != NULL)
       {
         if (di == di_selected)
         {
-          menu_text = g_strdup_printf (search_for_menuitem_text, item->queryline->string, di->long_name);
+          menu_text = g_strdup_printf (search_for_menuitem_text, item->queryline->string, di->longname);
           if (menu_text != NULL)
           {
             menuitem = GTK_WIDGET (gtk_image_menu_item_new_with_label (menu_text));
@@ -1905,7 +1846,7 @@ void do_populate_popup_with_search_options (GtkTextView *entry, GtkMenu *menu, g
             menu_text = NULL;
           }
         }
-        menu_text = g_strdup_printf ("%s", di->long_name);
+        menu_text = g_strdup_printf ("%s", di->longname);
         if (menu_text != NULL)
         {
           menuitem = GTK_WIDGET (gtk_image_menu_item_new_with_label (menu_text));

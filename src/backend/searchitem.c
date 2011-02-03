@@ -37,6 +37,80 @@
 
 #include <gwaei/backend.h>
 
+static gboolean _query_is_sane (const char* query)
+{
+    //Declarations
+    char *q;
+    gboolean is_sane;
+
+    //Initializations
+    q = gw_util_prepare_query (query, TRUE); 
+    is_sane = TRUE;
+
+    //Tests
+    if (strlen (q) == 0)
+      is_sane = FALSE;
+
+    if (g_str_has_prefix (q, "|") || g_str_has_prefix (q, "&")) 
+      is_sane = FALSE;
+    if (g_str_has_suffix (q, "\\") || g_str_has_suffix (q, "|") || g_str_has_suffix (q, "&")) 
+      is_sane = FALSE;
+
+    const char *ptr;
+    int count;
+
+    count = 0;
+
+    for (ptr = q; *ptr != '\0'; ptr = g_utf8_next_char(ptr))
+    {
+      if (*ptr == '\\' && *(ptr + 1) != '\0')
+      {
+        if (*(ptr + 1) == '.'  ||
+            *(ptr + 1) == '?'  || 
+            *(ptr + 1) == '['  || 
+            *(ptr + 1) == ']'  || 
+            *(ptr + 1) == '^'  || 
+            *(ptr + 1) == '$'  || 
+            *(ptr + 1) == '|'  ||
+            *(ptr + 1) == '*'  || 
+            *(ptr + 1) == '+'  || 
+            *(ptr + 1) == '('  || 
+            *(ptr + 1) == '\\' || 
+            *(ptr + 1) == ')'    )
+          count++;
+        ptr += 2;
+      }
+      else if (*ptr == '.'  || 
+               *ptr == '?'  || 
+               *ptr == '['  || 
+               *ptr == ']'  || 
+               *ptr == '^'  || 
+               *ptr == '$'  || 
+               *ptr == '|'  ||
+               *ptr == '*'  || 
+               *ptr == '+'  || 
+               *ptr == '\\' ||
+               *ptr == ' ' ||
+               *ptr == '('  || 
+               *ptr == ')'    )
+      {
+        ptr += 1;
+      }
+      else
+      {
+        count++;
+        ptr += 1;
+      }
+    }
+
+    if (count == 0) 
+      is_sane = FALSE;
+
+    g_free (q);
+
+    return is_sane;
+}
+
 
 //!
 //! @brief Creates a new GwSearchItem object. 
@@ -52,6 +126,8 @@
 //!
 GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary, const int TARGET)
 {
+    if (!_query_is_sane (query)) return NULL;
+
     GwSearchItem *temp;
 
     //Allocate some memory
@@ -161,7 +237,9 @@ gboolean gw_searchitem_do_pre_search_prep (GwSearchItem* item)
 
     if (item->fd == NULL)
     {
-      char *path = g_build_filename(gw_util_get_directory_for_engine (item->dictionary->engine), item->dictionary->name, NULL);
+      const char *directory = gw_util_get_directory_for_engine (item->dictionary->engine);
+      const char *filename = item->dictionary->filename;
+      char *path = g_build_filename (directory, filename, NULL);
       item->fd = fopen (path, "r");
       g_free (path);
       path = NULL;
@@ -218,6 +296,8 @@ void gw_searchitem_do_post_search_clean (GwSearchItem* item)
 //!
 void gw_searchitem_free (GwSearchItem* item)
 {
+  if (item == NULL) return;
+
   if (item->thread != NULL) 
   {
     item->status = GW_SEARCH_CANCELING;
@@ -418,3 +498,49 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
     }
 }
 
+
+//!
+//! @brief comparison function for determining if two GwSearchItems are equal
+//!
+gboolean gw_searchitem_is_equal (GwSearchItem *item1, GwSearchItem *item2)
+{
+  //Declarations
+  gboolean queries_are_equal;
+  gboolean dictionaries_are_equal;
+
+  //Sanity checks
+  if (item1 == item2) return TRUE;
+  if (item1 == NULL) return FALSE;
+  if (item2 == NULL) return FALSE;
+
+  g_mutex_lock (item1->mutex);
+  g_mutex_lock (item2->mutex);
+
+  //Initializations
+  queries_are_equal = (strcmp(item1->queryline->string, item2->queryline->string) == 0);
+  dictionaries_are_equal = (item1->dictionary == item2->dictionary);
+
+  g_mutex_unlock (item1->mutex);
+  g_mutex_unlock (item2->mutex);
+
+  return (queries_are_equal && dictionaries_are_equal);
+}
+
+
+//!
+//! @brief a method for incrementing an internal integer for determining if a result set has worth
+//!
+void gw_searchitem_increment_history_relevance_timer (GwSearchItem *item)
+{
+  if (item != NULL && item->history_relevance_idle_timer < GW_HISTORY_TIME_TO_RELEVANCE)
+    item->history_relevance_idle_timer++;
+}
+
+
+//!
+//! @brief Checks if the relevant timer has passed a threshold
+//!
+gboolean gw_searchitem_has_history_relevance (GwSearchItem *item)
+{
+  return (item != NULL && item->total_results && item->history_relevance_idle_timer >= GW_HISTORY_TIME_TO_RELEVANCE);
+}

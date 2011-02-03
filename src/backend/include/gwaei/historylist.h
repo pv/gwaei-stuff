@@ -1,5 +1,5 @@
-#ifndef GW_HISTORYLIST_OBJECT_INCLUDED
-#define GW_HISTORYLIST_OBJECT_INCLUDED 
+#ifndef GW_HISTORYLIST_HEADER_INCLUDED
+#define GW_HISTORYLIST_HEADER_INCLUDED 
 /******************************************************************************
     AUTHOR:
     File written and Copyrighted by Zachary Dovel. All Rights Reserved.

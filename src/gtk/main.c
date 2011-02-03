@@ -794,214 +794,6 @@ void gw_ui_set_dictionary_by_searchitem (GwSearchItem *item)
 
 
 //!
-//! @brief Loads up the dictionaries for the GUI
-//!
-int rebuild_combobox_dictionary_list () 
-{
-/*
-    gw_settings_increment_order_list_processes ();
-
-    //Parse the string
-    char order[5000];
-    char new_order[5000];
-    GwDictInfo* di = NULL;
-    gw_pref_get_string_by_schema (order, GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, 5000);
-
-    char *names[50];
-    char *mix_name = NULL, *kanji_name = NULL, *radicals_name = NULL;
-    names[0] = order;
-    int i = 0;
-    while ((names[i + 1] = g_utf8_strchr (names[i], -1, L',')) && i < 50)
-    {
-      i++;
-      *names[i] = '\0';
-      names[i]++;
-    }
-    names[i + 1] = NULL;
-
-    //Add any missing dictionaries
-    int j = 0;
-    GList *list = gw_dictlist_get_list ();
-    while (list != NULL)
-    {
-      di = list->data;
-      j = 0;
-      while (names[j] != NULL && strcmp(di->name, names[j]) != 0)
-        j++;
-
-      if (names[j] == NULL && j > 0 && di->status == GW_DICT_STATUS_INSTALLED)
-      {
-        names[j] = names[j - 1];
-        while (*names[j] != '\0') names[j]++;
-        names[j]++;
-        strcpy(names[j], di->name);
-        names[j + 1] = NULL;
-      }
-      list = g_list_next (list);
-    }
-
-    //Remove not installed dictionaries from the list
-    i = 0;
-    while (names[i] != NULL)
-    {
-      di = gw_dictlist_get_dictinfo_by_name (names[i]);
-      if (di == NULL)
-        *names[i] = '\0';
-      i++;
-    }
-
-    //Collapse the holes
-    j = 0;
-    i = 0;
-    new_order[0] = '\0';
-    while (names[i] != NULL && names[j] != NULL)
-    {
-      if (*names[j] == '\0')
-      {
-        j++;
-      }
-      else if (*names[j] != '\0')
-      {
-        names[i] = names[j];
-        strcat(new_order, names[j]);
-        strcat(new_order, ",");
-        i++;
-        j++;
-      }
-    }
-    new_order[strlen(new_order) - 1] = '\0';
-    names[i] = NULL;
-    gw_pref_set_string_by_schema (GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, new_order);
-
-    //Initialize variables
-    const int id_length = 50;
-    char id[id_length];
-
-    GtkListStore *list_store;
-    list_store = GTK_LIST_STORE (gtk_builder_get_object (builder, "list_store_dictionaries"));
-
-    gtk_list_store_clear (list_store);
-
-    GSList* group = NULL;
-    GtkAccelGroup* accel_group;
-    accel_group = GTK_ACCEL_GROUP (gtk_builder_get_object (builder, "main_accelgroup"));
-    GtkWidget *item = NULL;
-    i = 0;
-
-
-    //Remove all widgets after the back and forward menuitem buttons
-    GtkMenuShell *shell = NULL;
-    shell = GTK_MENU_SHELL (gtk_builder_get_object (builder, "dictionary_popup"));
-    if (shell != NULL)
-    {
-      GList     *children = NULL;
-      children = gtk_container_get_children (GTK_CONTAINER (shell));
-      while (children != NULL )
-      {
-        gtk_widget_destroy(children->data);
-        children = g_list_delete_link(children, children);
-      }
-    }
-
-    printf("\n");
-
-    //Start filling in the new items
-    GwDictInfo *di_alias, *di_name;
-    GtkTreeIter iter;
-    j = 0;
-    char *dictionary_name = NULL;
-    char *long_name = NULL;
-    char *icon_name = NULL;
-    char *shortcut_name = NULL;
-    char *order_number = NULL;
-    char *favorite_icon = "emblem-favorite";
-    while (names[i] != NULL)
-    {
-      di_alias = gw_dictlist_get_dictinfo_by_alias (names[i]);
-      di_name = gw_dictlist_get_dictinfo_by_name (names[i]);
-      di = di_alias;
-      if (strcmp(di_alias->name, di_name->name) == 0 && di_alias->status == GW_DICT_STATUS_INSTALLED)
-      {
-        printf("%d %s\n", j, di_alias->long_name);
-
-        dictionary_name = di_alias->short_name;
-        long_name = di_alias->long_name;
-        if (j == 0)
-          icon_name = favorite_icon;
-        else
-          icon_name = NULL;
-        if (j < 10)
-          shortcut_name = g_strdup_printf ("Alt-%d", j + 1);
-
-        order_number = g_strdup_printf ("%d", j + 1);
-
-        //Refill the combobox
-        gtk_list_store_append (GTK_LIST_STORE (list_store), &iter);
-        gtk_list_store_set (list_store, &iter, 0, dictionary_name, 1, icon_name, 2, order_number, 3, shortcut_name, 4, long_name, -1);
-
-        //Free allocated momory
-        if (shortcut_name != NULL)
-        {
-          g_free (shortcut_name);
-          shortcut_name = NULL;
-        }
-        if (order_number != NULL)
-        {
-          g_free (order_number);
-          order_number = NULL;
-        }
-
-        //Refill the menu
-        item = GTK_WIDGET (gtk_radio_menu_item_new_with_label (group, di->long_name));
-        group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
-        gtk_menu_shell_append (GTK_MENU_SHELL (shell),  GTK_WIDGET (item));
-        if (i == 0) gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), TRUE);
-        g_signal_connect(G_OBJECT (item), "toggled", G_CALLBACK (do_dictionary_changed_action), NULL);
-        if (j + 1 < 10) gtk_widget_add_accelerator (GTK_WIDGET (item), "activate", accel_group, (GDK_0 + j + 1), GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
-        gtk_widget_show (item);
-
-        di->load_position = j;
-        j++;
-      }
-
-      i++;
-    }
-
-    //Set the combobox to the first item
-    GtkWidget *combobox;
-    combobox = GTK_WIDGET (gtk_builder_get_object(builder, "dictionary_combobox"));
-    gtk_combo_box_set_active (GTK_COMBO_BOX (combobox), 0);
-
-    //Fill in the other menu items
-    item = GTK_WIDGET (gtk_separator_menu_item_new());
-    gtk_menu_shell_append (GTK_MENU_SHELL (shell), GTK_WIDGET (item));
-    gtk_widget_show (GTK_WIDGET (item));
-
-    item = GTK_WIDGET (gtk_menu_item_new_with_mnemonic(gettext("_Cycle Up")));
-    gtk_menu_shell_append (GTK_MENU_SHELL (shell), GTK_WIDGET (item));
-    g_signal_connect (G_OBJECT (item), "activate", G_CALLBACK (do_cycle_dictionaries_backward), NULL);
-    gtk_widget_add_accelerator (GTK_WIDGET (item), "activate", accel_group, GDK_Up, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
-    gtk_widget_show (GTK_WIDGET (item));
-
-    item = GTK_WIDGET (gtk_menu_item_new_with_mnemonic(gettext("Cycle _Down")));
-    gtk_menu_shell_append (GTK_MENU_SHELL (shell), GTK_WIDGET (item));
-    g_signal_connect (G_OBJECT (item), "activate", G_CALLBACK (do_cycle_dictionaries_forward), NULL);
-    gtk_widget_add_accelerator (GTK_WIDGET (item), "activate", accel_group, GDK_Down, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
-    gtk_widget_show (GTK_WIDGET (item));
-
-    gw_ui_update_settings_interface();
-    gw_settings_decrement_order_list_processes ();
-
-    //Finish
-    printf(ngettext("%d dictionary is being used.", "%d dictionaries are being used.",j), j);
-    printf("\n\n");
-    return j;
-    */
-return 0;
-}
-
-
-//!
 //! @brief Updates the status of the search progressbar
 //!
 //! @param item A GwSearchItem to gleam information from
@@ -1041,7 +833,7 @@ void gw_ui_set_search_progressbar_by_searchitem (GwSearchItem *item)
 //!
 //! @brief Updates the history menu popup menu
 //!
-void gw_ui_update_history_menu_popup()
+void gw_ui_update_history_menu_popup ()
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
@@ -1093,7 +885,7 @@ void gw_ui_update_history_menu_popup()
 
       GtkWidget *menu_item, *accel_label, *label;
 
-      accel_label = gtk_label_new (item->dictionary->long_name);
+      accel_label = gtk_label_new (item->dictionary->longname);
       gtk_widget_set_sensitive (GTK_WIDGET (accel_label), FALSE);
       label = gtk_label_new (item->queryline->string);
 
@@ -1127,7 +919,7 @@ void gw_ui_update_history_menu_popup()
 //! @param id Id of the popuplist
 //! @param list history list to compair against
 //!
-static void _rebuild_history_button_popup(char* id, GList* list)
+static void _rebuild_history_button_popup (char* id, GList* list)
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
@@ -1368,9 +1160,9 @@ void gw_ui_set_hiragana_katakana_conv (gboolean request)
     GtkWidget *widget;
     if (widget = GTK_WIDGET (gtk_builder_get_object(builder, "query_hiragana_to_katakana")))
     {
-      g_signal_handlers_block_by_func (widget, do_hiragana_katakana_conv_toggle, NULL);
+      g_signal_handlers_block_by_func (widget, gw_settings_hira_kata_conv_toggled_cb, NULL);
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (widget), request);
-      g_signal_handlers_unblock_by_func (widget, do_hiragana_katakana_conv_toggle, NULL);
+      g_signal_handlers_unblock_by_func (widget, gw_settings_hira_kata_conv_toggled_cb, NULL);
     }
 }
 
@@ -1387,10 +1179,10 @@ void gw_ui_set_katakana_hiragana_conv (gboolean request)
     GtkWidget *widget;
     if (widget = GTK_WIDGET (gtk_builder_get_object(builder, "query_katakana_to_hiragana")))
     {
-      g_signal_handlers_block_by_func (widget, do_katakana_hiragana_conv_toggle, NULL);
+      g_signal_handlers_block_by_func (widget, gw_settings_kata_hira_conv_toggled_cb, NULL);
       
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (widget), request);
-      g_signal_handlers_unblock_by_func (widget, do_katakana_hiragana_conv_toggle, NULL);
+      g_signal_handlers_unblock_by_func (widget, gw_settings_kata_hira_conv_toggled_cb, NULL);
     }
 }
 
@@ -2009,7 +1801,7 @@ gdk_threads_enter ();
     label = gtk_label_new (NULL);
     char *message = NULL;
     // TRANSLATORS: The argument is the dictionary long name
-    message = g_strdup_printf(gettext("Nothing found in the %s!"), di_selected->long_name);
+    message = g_strdup_printf(gettext("Nothing found in the %s!"), di_selected->longname);
     if (message != NULL)
     {
       markup = g_markup_printf_escaped ("<big><big><b>%s</b></big></big>", message);
@@ -2030,7 +1822,7 @@ gdk_threads_enter ();
     gw_ui_append_to_buffer (item, "\n\n\n", NULL, NULL, NULL, NULL);
 
 
-    if (gw_dictlist_get_total_with_status (GW_DICT_STATUS_INSTALLED) > 1)
+    if (gw_dictlist_get_total () > 1)
     {
       //Add label for links
       hbox = gtk_hbox_new (FALSE, 0);
@@ -2062,7 +1854,7 @@ gdk_threads_enter ();
         strncpy(text, query_text, MAX_QUERY);
         if (di != NULL && di != di_selected)
         {
-          button = gtk_button_new_with_label (di->short_name);
+          button = gtk_button_new_with_label (di->shortname);
           g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (do_no_results_search_for_dictionary), di);
           gtk_container_add (GTK_CONTAINER (hbox), GTK_WIDGET (button));
           gtk_widget_show (GTK_WIDGET (button));
@@ -2512,7 +2304,15 @@ static void _set_header (GwSearchItem *item, char* text, char* mark_name)
 //!
 gboolean gw_ui_keep_searching (gpointer data)
 {
-    do_search (NULL, NULL);
+    GtkBuilder *builder;
+    GtkWidget *window;
+
+    builder = gw_common_get_builder ();
+    window = GTK_WIDGET (gtk_builder_get_object (builder, "settings_window"));
+    
+    if (gtk_widget_get_visible (window) == FALSE)
+      do_search (NULL, NULL);
+
     return TRUE;
 }
 

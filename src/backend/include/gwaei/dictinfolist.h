@@ -46,23 +46,24 @@ typedef struct _GwDictList GwDictList;
 
 
 GList* gw_dictlist_get_list (void);
-int gw_dictlist_get_total (void);
 GList* gw_dictlist_get_selected (void);
+GwDictInfo* gw_dictlist_get_selected_dictinfo (void);
 
 
 void gw_dictlist_initialize (void);
-GwDictInfo* gw_dictlist_get_dictinfo_by_name (GwEngine, const char*);
+void gw_dictlist_free ();
+
+GwDictInfo* gw_dictlist_get_dictinfo (const GwEngine, const char*);
 GList* gw_dictlist_get_dict_by_load_position (int);
 GList* gw_dictlist_set_selected_by_load_position (int);
-gboolean gw_dictlist_check_if_loaded_by_name (char*);
+gboolean gw_dictlist_check_if_loaded (const GwEngine, const char*);
 void gw_dictlist_update_load_orders (void);
+int gw_dictlist_get_total (void);
 
 void gw_dictlist_preform_postprocessing_by_name (char*, GError**);
-int gw_dictlist_get_total_with_status (GwDictStatus);
 void gw_dictlist_load_dictionary_order_from_pref (void);
 void gw_dictlist_save_dictionary_order_pref (void);
 
-void gw_dictlist_free ();
 
 
 

@@ -50,7 +50,7 @@ static GwHistoryList *kanji_history;
 //!
 //! @param TARGET The target who's history list we want.
 //!
-GwHistoryList* gw_historylist_get_list(const int TARGET)
+GwHistoryList* gw_historylist_get_list (const int TARGET)
 {
     if (TARGET == GW_HISTORYLIST_RESULTS)
       return results_history;
@@ -72,7 +72,7 @@ GwHistoryList* gw_historylist_get_list(const int TARGET)
 GwHistoryList* gw_historylist_new()
 {
     GwHistoryList *temp;
-    if ((temp = malloc(sizeof(GwSearchItem))) != NULL)
+    if ((temp = malloc(sizeof(GwHistoryList))) != NULL)
     {
       temp->back = NULL;
       temp->forward = NULL;
@@ -86,23 +86,57 @@ GwHistoryList* gw_historylist_new()
 //!
 //! @brief Clears the forward history of the desired target.
 //!
-//! This function was designed in mind with the user case of
-//! hitting the back button multiple times, then doing a new
-//! search.  It frees all the search items, then deletes the links
-//! in the list.
-//!
-//! @return Returns the allocated GwHistoryList object.
-//!
-void gw_historylist_clear_forward_history(const int TARGET)
+void gw_historylist_clear_forward_history (const int TARGET)
 {
-    GwHistoryList *hl = gw_historylist_get_list (TARGET);
+    //Declarations
+    GwHistoryList *hl;
+    GwSearchItem *item;
+    GList *iter;
 
-    while (hl->forward != NULL)
+    //Initializations
+    hl = gw_historylist_get_list (TARGET);
+
+    //Free the data of the list
+    for (iter = hl->forward; iter != NULL; iter = iter->next)
     {
-      gw_searchitem_free((hl->forward)->data);
-      hl->forward = g_list_delete_link(hl->forward, hl->forward);
+      item = (GwSearchItem*) iter->data;
+      gw_searchitem_free(item);
+      iter->data = NULL;
     }
+
+    //Free the list itself
+    g_list_free (hl->forward);
+    hl->forward = NULL;
 }
+
+
+//!
+//! @brief Clears the back history of the desired target.
+//!
+void gw_historylist_clear_back_history (const int TARGET)
+{
+    //Declarations
+    GwHistoryList *hl;
+    GwSearchItem *item;
+    GList *iter;
+
+    //Initializations
+    hl = gw_historylist_get_list (TARGET);
+
+    //Free the data of the list
+    for (iter = hl->back; iter != NULL; iter = iter->next)
+    {
+      item = (GwSearchItem*) iter->data;
+      gw_searchitem_free(item);
+      iter->data = NULL;
+    }
+
+    //Free the list itself
+    g_list_free (hl->back);
+    hl->back = NULL;
+}
+
+
 
 
 //!
@@ -114,8 +148,8 @@ void gw_historylist_clear_forward_history(const int TARGET)
 //!
 GList* gw_historylist_get_back_history (const int TARGET)
 {
-    GwHistoryList *list = gw_historylist_get_list (TARGET);
-    return list->back;
+    GwHistoryList *hl = gw_historylist_get_list (TARGET);
+    return hl->back;
 }
 
 
@@ -203,7 +237,7 @@ void gw_historylist_add_searchitem_to_history (const int TARGET, GwSearchItem *i
 //! Data is shifted between the forward, current, and back variables. If current is
 //! null, the list just fills it in rather than shifting the data around.
 //!
-static void shift_history_by_target(const int TARGET, GList **from, GList **to)
+static void _shift_history_by_target (const int TARGET, GList **from, GList **to)
 {
     GwHistoryList *hl = gw_historylist_get_list (TARGET);
     GwSearchItem **current = &(hl->current);
@@ -236,7 +270,7 @@ static void shift_history_by_target(const int TARGET, GList **from, GList **to)
 void gw_historylist_go_back_by_target (const int TARGET)
 { 
     GwHistoryList *hl = gw_historylist_get_list (TARGET);
-    shift_history_by_target (TARGET, &(hl->back), &(hl->forward));
+    _shift_history_by_target (TARGET, &(hl->back), &(hl->forward));
 }
 
 
@@ -248,7 +282,7 @@ void gw_historylist_go_back_by_target (const int TARGET)
 void gw_historylist_go_forward_by_target (const int TARGET)
 { 
     GwHistoryList *hl = gw_historylist_get_list (TARGET);
-    shift_history_by_target (TARGET, &(hl->forward), &(hl->back));
+    _shift_history_by_target (TARGET, &(hl->forward), &(hl->back));
 }
 
 
@@ -266,6 +300,21 @@ void gw_historylist_initialize ()
 
 void gw_historylist_free ()
 {
+    //Free the results history list
+    gw_historylist_clear_forward_history (GW_HISTORYLIST_RESULTS);
+    gw_historylist_clear_back_history (GW_HISTORYLIST_RESULTS);
+    gw_searchitem_free (results_history->current);
+    results_history->current = NULL;
+    free (results_history);
+    results_history = NULL;
+
+    //Free the kanji history list
+    gw_historylist_clear_forward_history (GW_HISTORYLIST_KANJI);
+    gw_historylist_clear_back_history (GW_HISTORYLIST_KANJI);
+    gw_searchitem_free (kanji_history->current);
+    kanji_history->current = NULL;
+    free (kanji_history);
+    kanji_history = NULL;
 }
 
 

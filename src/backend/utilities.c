@@ -1005,25 +1005,23 @@ gboolean gw_util_force_japanese_locale ()
 //! @param strip if true remove leading and trailing spaces
 //! @return a newly allocated utf8 encoded string or NULL if text was too.
 //!         If the result is non-NULL it must be freed with g_free().
-gchar* gw_util_prepare_query(char* text, gboolean strip)
+gchar* gw_util_prepare_query (const char* input, gboolean strip)
 {
-	if(text == NULL)
-	    return NULL;
+    g_assert (input != NULL);
 
-	// Sanitizes text : when drag/dropping text from external sources it
-	// might contains some invalid utf8 data that we should clean.
-	// (ex: from the anki tool, it has some trailing unicode control char).
-	char* sane_text = gw_util_sanitize_input (text, strip);
+    char *output;
+    char *buffer;
 
-	if(gw_util_contains_halfwidth_japanese (sane_text) == TRUE)
-	{
-		char* enlarged_text = gw_util_enlarge_halfwidth_japanese (text);
-		g_free (sane_text);
-		sane_text = enlarged_text;
-		enlarged_text = NULL;
-	}
+    output = gw_util_sanitize_input (input, strip);
 
-	return sane_text;
+    if(gw_util_contains_halfwidth_japanese (output) == TRUE)
+    {
+      buffer == output;
+      output = gw_util_enlarge_halfwidth_japanese (buffer);
+      g_free (buffer);
+    }
+
+    return output;
 }
 
 //!
@@ -1039,37 +1037,36 @@ gchar* gw_util_prepare_query(char* text, gboolean strip)
 //! @return a newly allocated sanitized utf8 encoded string or NULL if text was too.
 //!         If the result is non-NULL it must be freed with g_free(). 
 //!
-gchar* gw_util_sanitize_input (char *text, gboolean strip)
+gchar* gw_util_sanitize_input (const char *text, gboolean strip)
 {
-  if(text == NULL)
-    return NULL;
-  
-  // First validate the utf8 input data
-  char *end; // pointer to the valid end of utf8, it is before or at the end of *text 
-  if (!g_utf8_validate(text, -1, (const char **) &end))
-    *end = '\0'; // uh oh, was not valid utf8, let's put a stop at the last valid position
+    g_assert (text != NULL);
     
-  // Then let's normalize utf8 : there can be several encodings for same glyph, 
-  // let's always use the same for the sake of consistency
-  // see http://library.gnome.org/devel/glib/stable/glib-Unicode-Manipulation.html#g-utf8-normalize
-  // and http://en.wikipedia.org/wiki/Unicode_normalization
-  char *ntext = g_utf8_normalize (text, -1,  G_NORMALIZE_NFC ); // this allocate a new char*
-  
-  // for each unicode symbol replace unprintable symbol bytes with spaces  
-  char *ptr = ntext;  // pointer to the start of current glyph
-  char *next = NULL;  // pointer to the start of original next glyph
-  while (*ptr != '\0') 
-  {
-    next = g_utf8_next_char (ptr);
-    if (!g_unichar_isprint (g_utf8_get_char (ptr)) )
-      strncpy(ptr, "         ", next - ptr);
-    ptr = next;
-  }
+    // First validate the utf8 input data
+    char *end; // pointer to the valid end of utf8, it is before or at the end of *text 
+    if (!g_utf8_validate(text, -1, (const char **) &end))
+      *end = '\0'; // uh oh, was not valid utf8, let's put a stop at the last valid position
+      
+    // Then let's normalize utf8 : there can be several encodings for same glyph, 
+    // let's always use the same for the sake of consistency
+    // see http://library.gnome.org/devel/glib/stable/glib-Unicode-Manipulation.html#g-utf8-normalize
+    // and http://en.wikipedia.org/wiki/Unicode_normalization
+    char *ntext = g_utf8_normalize (text, -1,  G_NORMALIZE_NFC ); // this allocate a new char*
+    
+    // for each unicode symbol replace unprintable symbol bytes with spaces  
+    char *ptr = ntext;  // pointer to the start of current glyph
+    char *next = NULL;  // pointer to the start of original next glyph
+    while (*ptr != '\0') 
+    {
+      next = g_utf8_next_char (ptr);
+      if (!g_unichar_isprint (g_utf8_get_char (ptr)) )
+        strncpy(ptr, "         ", next - ptr);
+      ptr = next;
+    }
 
-  if(strip)    
-    g_strstrip (ntext); // no new allocation, just modifying the string
- 
-  return ntext;
+    if(strip)    
+      g_strstrip (ntext); // no new allocation, just modifying the string
+   
+    return ntext;
 }
 
 //!
@@ -1081,21 +1078,21 @@ gchar* gw_util_sanitize_input (char *text, gboolean strip)
 //! @param text an utf8 encoded string
 //! @return TRUE if the string contains is not null and contains a halfwidth japanese char
 //!
-gboolean gw_util_contains_halfwidth_japanese(gchar* text)
+gboolean gw_util_contains_halfwidth_japanese (const gchar* text)
 {
-	if(text == NULL)
-		return FALSE;
+    if(text == NULL)
+      return FALSE;
 
-	gunichar ucp;
-	gchar *ptr = text;  // pointer to the start of current glyph
-	while (*ptr != '\0')
-	{
-		ucp = g_utf8_get_char (ptr);
-		if(ucp >=0xFF61 && ucp <=0xFF9F) // Halfwidth block
-			return TRUE;
-		ptr = g_utf8_next_char (ptr);
-	}
-	return FALSE;
+    gunichar ucp;
+    const gchar *ptr = text;  // pointer to the start of current glyph
+    while (*ptr != '\0')
+    {
+      ucp = g_utf8_get_char (ptr);
+      if(ucp >=0xFF61 && ucp <=0xFF9F) // Halfwidth block
+        return TRUE;
+      ptr = g_utf8_next_char (ptr);
+    }
+    return FALSE;
 }
 
 //!
@@ -1109,36 +1106,36 @@ gboolean gw_util_contains_halfwidth_japanese(gchar* text)
 //! @return a newly allocated utf8 encoded string without halfwidth japanese char ; or NULL if text was too.
 //!         If the result is non-NULL it must be freed with g_free().
 //!
-gchar* gw_util_enlarge_halfwidth_japanese(gchar* text)
+gchar* gw_util_enlarge_halfwidth_japanese (const gchar* text)
 {
-	if(text == NULL)
-	    return NULL;
+    if(text == NULL)
+        return NULL;
 
-	gchar *ptr = text;  // pointer to the start of current glyph
+    const gchar *ptr = text;  // pointer to the start of current glyph
 
-	GString* nstr = g_string_new( NULL );
-	gunichar ucp = 0;
+    GString* nstr = g_string_new( NULL );
+    gunichar ucp = 0;
 
-	while (*ptr != '\0')
-	{
-		ucp = g_utf8_get_char (ptr);
-		if(ucp >=0xFF61 && ucp <=0xFF9F) // Halfwidth block
-		{
-			// The G_NORMALIZE_ALL will remove the narrow modifier and return the normal wided char
-			// We know halfwidth char from this range take 3 bytes in utf8
-			char *nch = g_utf8_normalize (ptr, 3,  G_NORMALIZE_ALL ); // this allocate a new char*
-			g_string_append (nstr, nch);
-			g_free(nch);
-		}
-		else // just appending the char to the result
-		{
-			g_string_append_unichar (nstr, ucp);
-		}
+    while (*ptr != '\0')
+    {
+      ucp = g_utf8_get_char (ptr);
+      if(ucp >=0xFF61 && ucp <=0xFF9F) // Halfwidth block
+      {
+        // The G_NORMALIZE_ALL will remove the narrow modifier and return the normal wided char
+        // We know halfwidth char from this range take 3 bytes in utf8
+        char *nch = g_utf8_normalize (ptr, 3,  G_NORMALIZE_ALL ); // this allocate a new char*
+        g_string_append (nstr, nch);
+        g_free(nch);
+      }
+      else // just appending the char to the result
+      {
+        g_string_append_unichar (nstr, ucp);
+      }
 
-		ptr = g_utf8_next_char (ptr); // next !
-	}
+      ptr = g_utf8_next_char (ptr); // next !
+    }
 
-	return g_string_free(nstr, FALSE);
+    return g_string_free(nstr, FALSE);
 }
 
 

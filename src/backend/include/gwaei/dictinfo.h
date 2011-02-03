@@ -1,5 +1,5 @@
-#ifndef GW_DICTINFO_OBJECT_INCLUDED
-#define GW_DICTINFO_OBJECT_INCLUDED
+#ifndef GW_DICTINFO_HEADER_INCLUDED
+#define GW_DICTINFO_HEADER_INCLUDED
 
 /******************************************************************************
     AUTHOR:
@@ -32,45 +32,25 @@
 
 #include <gwaei/resultline.h>
 
-//!
-//! @brief Enumeration of dictionary statuses
-//!
-//! Statuses used for clueing thet states of dictionaries added to the
-//! dictionary list.  This helps to set the GUI up correctly and generally
-//! keep havoc from breaking out.
-//!
-typedef enum {
-  GW_DICT_STATUS_INSTALLING,
-  GW_DICT_STATUS_INSTALLED,
-  GW_DICT_STATUS_NOT_INSTALLED,
-  GW_DICT_STATUS_UPDATING,
-  GW_DICT_STATUS_UPDATED,
-  GW_DICT_STATUS_CANCELING,
-  GW_DICT_STATUS_CANCELED,
-  GW_DICT_STATUS_ERRORED,
-  GW_DICT_STATUS_REBUILDING
-} GwDictStatus;
-
 
 //!
 //! @brief Primitive for storing dictionary information
 //!
 struct _GwDictInfo
 {
-    char *name;                       //!< name of the file in the .waei folder
-    char *long_name;                  //!< long name of the file (usually localized)
-    char *short_name;                 //!< short name of the file (usually localized)
-    GwDictStatus status;              //!< install status of the dictionary
-    GwEngine engine;              //!< Path to the dictionary file
+    char *filename;                   //!< name of the file in the gwaei user data folder
+    char *longname;                   //!< long name of the file (usually localized)
+    char *shortname;                  //!< short name of the file (usually localized)
+    GwEngine engine;                  //!< Path to the dictionary file
     int load_position;                //!< load position in the GUI
     long total_lines;                 //!< total lines in the file
-    GwResultLine *cached_resultlines;
-    GwResultLine *current_resultline;
+    GwResultLine *cached_resultlines; //!< Allocated resultline swapped with current_resultline when needed
+    GwResultLine *current_resultline; //!< Allocated resultline where the current parsed result data resides
 };
 typedef struct _GwDictInfo GwDictInfo;
 
 
-GwDictInfo* gw_dictinfo_new (GwEngine, char*);
+GwDictInfo* gw_dictinfo_new (const GwEngine, const char*);
 void gw_dictinfo_free(GwDictInfo*);
 
 

@@ -32,7 +32,6 @@
 
 
 #include <string.h>
-#include <regex.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <libintl.h>
@@ -56,9 +55,9 @@ static gboolean _overlay_default_builtin_dictionary_settings (GwDictInfo*);
 //! @param name Name of the object to create
 //! @return An allocated GwDictInfo that will be needed to be freed by gw_dictinfo_free ()
 //!
-GwDictInfo* gw_dictinfo_new (GwEngine ENGINE, char *name)
+GwDictInfo* gw_dictinfo_new (GwEngine ENGINE, const char *FILENAME)
 {
-    g_assert (ENGINE >= 0 && ENGINE <= GW_ENGINE_TOTAL && name != NULL);
+    g_assert (ENGINE >= 0 && ENGINE <= GW_ENGINE_TOTAL && FILENAME != NULL);
 
     GwDictInfo *temp;
 
@@ -68,33 +67,21 @@ GwDictInfo* gw_dictinfo_new (GwEngine ENGINE, char *name)
     temp->load_position = -1;
 
     //Initialize the members
-    temp->name = NULL;
-    temp->short_name = NULL;
-    temp->long_name = NULL;
+    temp->filename = NULL;
+    temp->shortname = NULL;
+    temp->longname = NULL;
     temp->total_lines = 0;
     temp->engine = ENGINE;
-    temp->status = -1;
 
     //Copy the name of the dictionary over
-    temp->name = g_strdup_printf ("%s", name);
+    temp->filename = g_strdup_printf ("%s", FILENAME);
 
     if (!_overlay_default_builtin_dictionary_settings (temp))
     {
-      temp->long_name = g_strdup_printf (gettext("%s Dictionary"), name);
-      temp->short_name = g_strdup_printf ("%s", name);
+      temp->longname = g_strdup_printf (gettext("%s Dictionary"), FILENAME);
+      temp->shortname = g_strdup_printf ("%s", FILENAME);
       temp->load_position = -1;
     }
-
-    char *path = g_build_filename (gw_util_get_directory_for_engine (ENGINE), name, NULL);
-
-    //Set the initial installation status
-    if (g_file_test(path, G_FILE_TEST_IS_REGULAR) == TRUE)
-      temp->status = GW_DICT_STATUS_INSTALLED;
-    else
-      temp->status = GW_DICT_STATUS_NOT_INSTALLED;
-
-    g_free (path);
-    path = NULL;
 
     temp->cached_resultlines = NULL;
     temp->current_resultline = NULL;
@@ -112,16 +99,16 @@ GwDictInfo* gw_dictinfo_new (GwEngine ENGINE, char *name)
 //!
 //! @param di GwDictInfo object to free
 //!
-void gw_dictinfo_free(GwDictInfo* di)
+void gw_dictinfo_free (GwDictInfo* di)
 {
-    g_free (di->name);
-    di->name = NULL;
+    g_free (di->filename);
+    di->filename = NULL;
 
-    g_free (di->short_name);
-    di->short_name = NULL;
+    g_free (di->shortname);
+    di->shortname = NULL;
 
-    g_free (di->long_name);
-    di->long_name = NULL;
+    g_free (di->longname);
+    di->longname = NULL;
 
     free (di);
     di = NULL;
@@ -134,40 +121,40 @@ static gboolean _overlay_default_builtin_dictionary_settings (GwDictInfo *di)
 
     if (di->engine == GW_ENGINE_EDICT)
     {
-      if (strcmp(di->name, "English") == 0)
+      if (strcmp(di->filename, "English") == 0)
       {
-        di->long_name = g_strdup_printf ("%s", gettext("English Dictionary"));
-        di->short_name = g_strdup_printf ("%s", gettext("English"));
+        di->longname = g_strdup_printf ("%s", gettext("English Dictionary"));
+        di->shortname = g_strdup_printf ("%s", gettext("English"));
         di->load_position = 1;
       }
-      else if (strcmp(di->name, "Names") == 0)
+      else if (strcmp(di->filename, "Names") == 0)
       {
-        di->long_name = g_strdup_printf ("%s", gettext("Names Dictionary"));
-        di->short_name = g_strdup_printf ("%s", gettext("Names"));
+        di->longname = g_strdup_printf ("%s", gettext("Names Dictionary"));
+        di->shortname = g_strdup_printf ("%s", gettext("Names"));
         di->load_position = 3;
       }
-      else if (strcmp(di->name, "Places") == 0)
+      else if (strcmp(di->filename, "Places") == 0)
       {
-        di->long_name = g_strdup_printf ("%s", gettext("Places Dictionary"));
-        di->short_name = g_strdup_printf ("%s", gettext("Places"));
+        di->longname = g_strdup_printf ("%s", gettext("Places Dictionary"));
+        di->shortname = g_strdup_printf ("%s", gettext("Places"));
         di->load_position = 4;
       }
     }
     else if (di->engine == GW_ENGINE_KANJI)
     {
-      if (strcmp(di->name, "Kanji") == 0)
+      if (strcmp(di->filename, "Kanji") == 0)
       {
-        di->long_name = g_strdup_printf ("%s", gettext("Kanji Dictionary"));
-        di->short_name = g_strdup_printf ("%s", gettext("Kanji"));
+        di->longname = g_strdup_printf ("%s", gettext("Kanji Dictionary"));
+        di->shortname = g_strdup_printf ("%s", gettext("Kanji"));
         di->load_position = 2;
       }
     }
     else if (di->engine == GW_ENGINE_EXAMPLES)
     {
-      if (strcmp(di->name, "Examples") == 0)
+      if (strcmp(di->filename, "Examples") == 0)
       {
-        di->long_name = g_strdup_printf ("%s", gettext("Examples Dictionary"));
-        di->short_name = g_strdup_printf ("%s", gettext("Examples"));
+        di->longname = g_strdup_printf ("%s", gettext("Examples Dictionary"));
+        di->shortname = g_strdup_printf ("%s", gettext("Examples"));
         di->load_position = 5;
       }
     }

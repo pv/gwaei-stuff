@@ -114,9 +114,8 @@ void gw_frontend_start_gtk (int argc, char* argv[])
     gw_ui_update_history_popups ();
     gw_common_show_window ("main_window");
 
-    //Spring up the prefs dialog if no dictionaries are installed
-    //gw_settings_initialize_installed_dictionary_list ();
-    if (gw_dictlist_get_total_with_status (GW_DICT_STATUS_INSTALLED) == 0) {
+    //Show the settings dialog if no dictionaries are installed
+    if (gw_dictlist_get_total () == 0) {
       do_settings(NULL, GINT_TO_POINTER (1));
     }
 
