@@ -123,6 +123,7 @@ GwDictInst* gw_dictinst_new (const char* filename,
     temp->schema = NULL;
     temp->key = NULL;
     temp->progress = 0;
+    temp->selected = FALSE;
     temp->status_message = NULL;
     temp->listenerid = 0;
     temp->listenerid_is_set = FALSE;
@@ -130,30 +131,19 @@ GwDictInst* gw_dictinst_new (const char* filename,
     temp->encoding = ENCODING;          //!< Path to the raw unziped dictionary file
     temp->engine = ENGINE;
     temp->builtin = builtin;
-    temp->split_dictionary = split;
-    temp->merge_dictionary = merge;
+    temp->split = split;
+    temp->merge = merge;
     temp->mutex = g_mutex_new ();
 
     //Set the values
-    temp->filename = g_strdup (filename);
+    temp->filename = NULL;
     temp->shortname = g_strdup (shortname);
     temp->longname = g_strdup (longname);
     temp->description = g_strdup (description);
+    
+    gw_dictinst_set_filename (temp, filename);
+    gw_dictinst_set_download_source (temp, source_uri);
 
-    char *cache_filename = g_build_filename (gw_util_get_directory (GW_PATH_CACHE), filename, NULL);
-    char *engine_filename = g_build_filename (gw_util_get_directory_for_engine (ENGINE), filename, NULL);
-    const char *compression_ext = gw_util_get_compression_name (COMPRESSION);
-    const char *encoding_ext = gw_util_get_encoding_name (ENCODING);
-
-    temp->uri[GW_DICTINST_DOWNLOAD_SOURCE] = g_strdup (source_uri);
-    temp->uri[GW_DICTINST_COMPRESSED_FILE] =  g_strjoin (".", cache_filename, compression_ext, NULL);
-    temp->uri[GW_DICTINST_TEXT_ENCODING] =   g_strjoin (".", cache_filename, encoding_ext, NULL);
-    temp->uri[GW_DICTINST_FINAL_TARGET] =  g_strdup (engine_filename);
-
-    g_free (cache_filename);
-    cache_filename = NULL;
-    g_free (engine_filename);
-    engine_filename = NULL;
 
     return temp;
 }
@@ -185,10 +175,158 @@ void gw_dictinst_free (GwDictInst* di)
     di->compression = 0;    //!< Path to the gziped dictionary file
     di->encoding = 0;          //!< Path to the raw unziped dictionary file
     di->engine = 0;
-    di->split_dictionary = FALSE;
-    di->merge_dictionary = FALSE;
+    di->split = FALSE;
+    di->merge = FALSE;
     g_mutex_free (di->mutex);
     free (di);
 }
 
 
+//!
+//! @brief Updates the filename save targets of the GwDictInst.
+//!
+void gw_dictinst_set_filename (GwDictInst *di, const char *filename)
+{
+    g_free (di->filename);
+    di->filename = g_strdup (filename);
+
+    gw_dictinst_regenerate_save_target_uris (di);
+}
+
+
+//!
+//! @brief Updates the engine of the GwDictInst
+//!
+void gw_dictinst_set_engine (GwDictInst *di, const GwEngine ENGINE)
+{
+    di->engine = ENGINE;
+
+    gw_dictinst_regenerate_save_target_uris (di);
+}
+
+
+//!
+//! @brief Updates the encoding of the GwDictInst
+//!
+void gw_dictinst_set_encoding (GwDictInst *di, const GwEncoding ENCODING)
+{
+    di->encoding = ENCODING;
+
+    gw_dictinst_regenerate_save_target_uris (di);
+}
+
+
+//!
+//! @brief Updates the compression of the GwDictInst
+//!
+void gw_dictinst_set_compression (GwDictInst *di, const GwCompression COMPRESSION)
+{
+    di->compression = COMPRESSION;
+
+    gw_dictinst_regenerate_save_target_uris (di);
+}
+
+
+
+
+//!
+//! @brief Updates the download source of the GwDictInst object
+//!
+void gw_dictinst_set_download_source (GwDictInst *di, const char *download_source)
+{
+    g_free (di->uri[GW_DICTINST_DOWNLOAD_SOURCE]);
+    di->uri[GW_DICTINST_DOWNLOAD_SOURCE] = g_strdup (download_source);
+}
+
+
+//!
+//! @brief Updates the merge state of the GwDictInst
+//!
+void gw_dictinst_set_merge (GwDictInst *di, const gboolean MERGE)
+{
+    di->merge = MERGE;
+
+    gw_dictinst_regenerate_save_target_uris (di);
+}
+
+
+//!
+//! @brief Updates the split state of the GwDictInst
+//!
+void gw_dictinst_set_split (GwDictInst *di, const gboolean SPLIT)
+{
+    di->split = SPLIT;
+
+    gw_dictinst_regenerate_save_target_uris (di);
+}
+
+
+//!
+//! @brief This method should be called after the filename, engine, compression,
+//!        or encoding members of the GwDictInst is changed to sync the new paths
+//!
+void gw_dictinst_regenerate_save_target_uris (GwDictInst *di)
+{
+    g_assert (di != NULL && di->filename != NULL);
+
+    //Remove the previous contents
+    g_free (di->uri[GW_DICTINST_COMPRESSED_FILE]);
+    g_free (di->uri[GW_DICTINST_TEXT_ENCODING]);
+    g_free (di->uri[GW_DICTINST_FINAL_TARGET]);
+
+    char *cache_filename = g_build_filename (gw_util_get_directory (GW_PATH_CACHE), di->filename, NULL);
+    char *engine_filename = g_build_filename (gw_util_get_directory_for_engine (di->engine), di->filename, NULL);
+    const char *compression_ext = gw_util_get_compression_name (di->compression);
+    const char *encoding_ext = gw_util_get_encoding_name (di->encoding);
+
+    di->uri[GW_DICTINST_COMPRESSED_FILE] =  g_strjoin (".", cache_filename, compression_ext, NULL);
+    di->uri[GW_DICTINST_TEXT_ENCODING] =   g_strjoin (".", cache_filename, encoding_ext, NULL);
+    di->uri[GW_DICTINST_FINAL_TARGET] =  g_strdup (engine_filename);
+
+    g_free (cache_filename);
+    cache_filename = NULL;
+    g_free (engine_filename);
+    engine_filename = NULL;
+}
+
+
+//!
+//! @brief Tells the installer mechanism if it is going to fail if it tries installing because of missing info
+//!
+gboolean gw_dictinst_data_is_valid (GwDictInst *di)
+{
+    if (!di->selected) return TRUE;
+
+    char *ptr;
+    char **temp_string_array;
+    int total_download_arguments;
+
+    ptr = di->filename;
+    if (ptr == NULL || strlen (ptr) == 0) return FALSE;
+
+    ptr = di->uri[GW_DICTINST_DOWNLOAD_SOURCE];
+    if (ptr == NULL || strlen (ptr) == 0) return FALSE;
+
+    //Make sure the correct number of download arguments are available
+    temp_string_array = g_strsplit (ptr, ";", -1);
+    total_download_arguments = g_strv_length (temp_string_array);
+    g_strfreev (temp_string_array);
+
+    if (di->merge && total_download_arguments != 2) return FALSE;
+    if (!di->merge && total_download_arguments != 1) return FALSE;
+
+    ptr = di->uri[GW_DICTINST_COMPRESSED_FILE];
+    if (ptr == NULL || strlen (ptr) == 0) return FALSE;
+
+    ptr = di->uri[GW_DICTINST_TEXT_ENCODING];
+    if (ptr == NULL || strlen (ptr) == 0) return FALSE;
+
+    ptr = di->uri[GW_DICTINST_FINAL_TARGET];
+    if (ptr == NULL || strlen (ptr) == 0) return FALSE;
+
+    if (di->engine < 0 || di->engine >= GW_ENGINE_TOTAL) return FALSE;
+    if (di->compression < 0 || di->compression >= GW_COMPRESSION_TOTAL) return FALSE;
+    if (di->encoding < 0 || di->encoding >= GW_ENCODING_TOTAL) return FALSE;
+
+    return TRUE;
+}

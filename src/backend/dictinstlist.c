@@ -152,3 +152,25 @@ void gw_dictinstlist_free ()
 }
 
 
+//!
+//! @brief Checks to see if the current DictInstList is installation ready
+//!
+gboolean gw_dictinstlist_data_is_valid ()
+{
+    //Declarations
+    GList *iter;
+    GwDictInst* di;
+    int number_selected;
+
+    //Initializations
+    number_selected = 0;
+
+    for (iter = _list; iter != NULL; iter = iter->next)
+    {
+      di = (GwDictInst*) iter->data;
+      if (!gw_dictinst_data_is_valid (di)) return FALSE;
+      if (di->selected) number_selected++;
+    }
+    return (number_selected > 0);
+}
+

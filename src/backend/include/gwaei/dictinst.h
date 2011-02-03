@@ -18,16 +18,17 @@ struct _GwDictInst {
   char *uri[GW_DICTINST_TOTAL_URI];
   int progress;
   char *status_message;
+  gboolean selected;
   char *schema;
   char *key;
   gboolean builtin;
-  gulong listenerid;
-  gboolean listenerid_is_set;
+  gulong listenerid;            //!< An id to hold the g_signal_connect value when the source copy uri pref is set
+  gboolean listenerid_is_set;   //!< Allows disconnecting the signal on destruction of the GwDictInst
   GwCompression compression;    //!< Path to the gziped dictionary file
   GwEncoding encoding;          //!< Path to the raw unziped dictionary file
   GwEngine engine;
-  gboolean split_dictionary;
-  gboolean merge_dictionary;
+  gboolean split;
+  gboolean merge;
   GMutex *mutex;
 };
 typedef struct _GwDictInst GwDictInst;
@@ -54,5 +55,16 @@ GwDictInst* gw_dictinst_new (const char*,
                              gboolean, gboolean, gboolean);
 
 void gw_dictinst_free (GwDictInst*);
+
+void gw_dictinst_set_filename (GwDictInst*, const char*);
+void gw_dictinst_set_engine (GwDictInst*, const GwEngine);
+void gw_dictinst_set_encoding (GwDictInst*, const GwEncoding);
+void gw_dictinst_set_compression (GwDictInst*, const GwCompression);
+void gw_dictinst_set_download_source (GwDictInst*, const char*);
+void gw_dictinst_set_split (GwDictInst *di, const gboolean);
+void gw_dictinst_set_merge (GwDictInst *di, const gboolean);
+
+void gw_dictinst_regenerate_save_target_uris (GwDictInst*);
+gboolean gw_dictinst_data_is_valid (GwDictInst*);
 
 #endif

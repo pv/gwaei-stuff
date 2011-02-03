@@ -20,32 +20,9 @@ enum { ENGINE_STORE_ID, ENGINE_STORE_NAME, ENGINE_STORE_TOTAL_FIELDS };
 enum { COMPRESSION_STORE_ID, COMPRESSION_STORE_NAME, COMPRESSION_STORE_TOTAL_FIELDS };
 enum { ENCODING_STORE_ID, ENCODING_STORE_NAME, ENCODING_STORE_TOTAL_FIELDS };
 
-static gboolean source_entry_listener_is_set = FALSE;
-static gulong source_entry_listenerid = 0;
 static GwDictInst *_di = NULL;
 
-
-/*
-void do_dictionary_source_updated_action (GSettings *settings, gchar *key, gpointer data)
-{
-    char *id = (char*) data;
-    char *value = g_settings_get_string (settings, key);
-    char *text = NULL;
-    GtkBuilder *builder = gw_common_get_builder ();
-    GtkWidget *label = GTK_WIDGET (gtk_builder_get_object (builder, id));
-
-    if (value != NULL && label != NULL)
-    {
-      text = g_strdup_printf(gettext("Source: <%s>"), value);
-      gtk_label_set_text (GTK_LABEL (label), text);
-      g_free (text);
-    }
-    g_free (value);
-
-}
-*/
-
-
+static void _update_add_button_sensitivity (void);
 
 static void _clear_details_box ()
 {
@@ -65,12 +42,6 @@ static void _clear_details_box ()
     }
     g_list_free (children);
     children = NULL;
-
-    //Remove listeners
-    if (source_entry_listener_is_set)
-    {
-      gw_pref_remove_change_listener_by_schema (_di->schema, source_entry_listenerid);
-    }
 }
 
 
@@ -98,7 +69,7 @@ static void _fill_details_box (GwDictInst *di)
 
     //First row
     hbox = GTK_WIDGET (gtk_hbox_new (FALSE, 0));
-    markup = g_strdup_printf(gettext("<b>%s Details</b>"), di->longname);
+    markup = g_strdup_printf(gettext("<b>%s Install Details</b>"), di->longname);
     label = gtk_label_new (NULL);
     gtk_label_set_markup(GTK_LABEL (label), markup);
     g_free (markup);
@@ -123,6 +94,7 @@ static void _fill_details_box (GwDictInst *di)
     gtk_table_attach_defaults (GTK_TABLE (table), hbox, 0, 1, 0, 1);
     entry = gtk_entry_new ();
     gtk_entry_set_text (GTK_ENTRY (entry), di->filename);
+    g_signal_connect (G_OBJECT (entry), "changed", G_CALLBACK (gw_dictionaryinstall_filename_entry_changed_cb), di);
     gtk_table_attach_defaults (GTK_TABLE (table), entry, 1, 2, 0, 1);
     gtk_widget_set_sensitive (GTK_WIDGET (entry), editable);
     gtk_widget_set_sensitive (GTK_WIDGET (label), editable);
@@ -140,6 +112,7 @@ static void _fill_details_box (GwDictInst *di)
 
     gtk_table_attach_defaults (GTK_TABLE (table), combobox, 1, 2, 1, 2);
     gtk_combo_box_set_active (GTK_COMBO_BOX (combobox), di->engine);
+    g_signal_connect (G_OBJECT (combobox), "changed", G_CALLBACK (gw_dictionaryinstall_engine_combobox_changed_cb), di);
     gtk_widget_set_sensitive (GTK_WIDGET (combobox), editable);
     gtk_widget_set_sensitive (GTK_WIDGET (label), editable);
 
@@ -152,13 +125,8 @@ static void _fill_details_box (GwDictInst *di)
 
     hbox = GTK_WIDGET (gtk_hbox_new (FALSE, 0));
     entry = gtk_entry_new ();
-    if (di->schema != NULL && di->key != NULL)
-    {
-      printf("adding %s %s %s\n", di->filename, di->schema, di->key);
-      source_entry_listenerid = gw_pref_add_change_listener_by_schema (di->schema, di->key, gw_dictionaryinstall_source_changed_cb, entry);
-      source_entry_listener_is_set = TRUE;
-    }
     gtk_entry_set_text (GTK_ENTRY (entry), di->uri[GW_DICTINST_DOWNLOAD_SOURCE]);
+    g_signal_connect (G_OBJECT (entry), "changed", G_CALLBACK (gw_dictionaryinstall_source_entry_changed_cb), di);
     gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (entry), TRUE, TRUE, 0);
     button = gtk_button_new();
     image = gtk_image_new_from_stock (GTK_STOCK_OPEN, GTK_ICON_SIZE_MENU);
@@ -184,6 +152,7 @@ static void _fill_details_box (GwDictInst *di)
     gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (combobox), renderer, "text", ENCODING_STORE_NAME);
     gtk_combo_box_set_model (GTK_COMBO_BOX (combobox), GTK_TREE_MODEL (_encoding_store));
     gtk_combo_box_set_active (GTK_COMBO_BOX (combobox), di->encoding);
+    g_signal_connect (G_OBJECT (combobox), "changed", G_CALLBACK (gw_dictionaryinstall_encoding_combobox_changed_cb), di);
 
     gtk_table_attach_defaults (GTK_TABLE (table), combobox, 1, 2, 3, 4);
     gtk_widget_set_sensitive (GTK_WIDGET (combobox), editable);
@@ -200,6 +169,7 @@ static void _fill_details_box (GwDictInst *di)
     gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (combobox), renderer, "text", COMPRESSION_STORE_NAME);
     gtk_combo_box_set_model (GTK_COMBO_BOX (combobox), GTK_TREE_MODEL (_compression_store));
     gtk_combo_box_set_active (GTK_COMBO_BOX (combobox), di->compression);
+    g_signal_connect (G_OBJECT (combobox), "changed", G_CALLBACK (gw_dictionaryinstall_compression_combobox_changed_cb), di);
 
     gtk_table_attach_defaults (GTK_TABLE (table), combobox, 1, 2, 4, 5);
     gtk_widget_set_sensitive (GTK_WIDGET (combobox), editable);
@@ -207,7 +177,8 @@ static void _fill_details_box (GwDictInst *di)
 
     //Eighth row
     checkbox = gtk_check_button_new_with_label (gettext("Split Places from Names Dictionary"));
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), di->split_dictionary);
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), di->split);
+    g_signal_connect (G_OBJECT (checkbox), "toggled", G_CALLBACK (gw_dictionaryinstall_split_checkbox_changed_cb), di);
     hbox = GTK_WIDGET (gtk_hbox_new (FALSE, 0));
     gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (checkbox), FALSE, FALSE, 0);
     gtk_table_attach_defaults (GTK_TABLE (table), hbox, 0, 2, 5, 6);
@@ -216,7 +187,8 @@ static void _fill_details_box (GwDictInst *di)
 
     //Ninth row
     checkbox = gtk_check_button_new_with_label (gettext("Merge Radicals into Kanji Dictionary"));
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), di->merge_dictionary);
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), di->merge);
+    g_signal_connect (G_OBJECT (checkbox), "toggled", G_CALLBACK (gw_dictionaryinstall_merge_checkbox_changed_cb), di);
     hbox = GTK_WIDGET (gtk_hbox_new (FALSE, 0));
     gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (checkbox), FALSE, FALSE, 0);
     gtk_table_attach_defaults (GTK_TABLE (table), hbox, 0, 2, 6, 7);
@@ -311,14 +283,6 @@ void gw_dictionaryinstall_initialize ()
     renderer = gtk_cell_renderer_text_new ();
     column = gtk_tree_view_column_new_with_attributes ("Name", renderer, "text", LONG_NAME, NULL);
     gtk_tree_view_append_column (view, column);
-
-
-/*
-    char *id = NULL;
-    id = g_strdup ("install_english_source_label");
-    gw_prefs_add_change_listener_by_schema (GW_SCHEMA_DICTIONARY, GW_KEY_ENGLISH_SOURCE, do_dictionary_source_updated_action, id);
-*/
-
 }
 
 void gw_dictionaryinstall_free ()
@@ -375,12 +339,45 @@ G_MODULE_EXPORT void do_toggle_other_dictionary_show (GtkWidget *widget, gpointe
 
 //CALLBACKS//////////////////////////////////////
 
-G_MODULE_EXPORT void gw_dictionaryinstall_source_changed_cb (GSettings *settings, char *key, gpointer data)
+G_MODULE_EXPORT void gw_dictionaryinstall_filename_entry_changed_cb (GtkWidget *widget, gpointer data)
 {
-    GtkWidget *entry = GTK_WIDGET (data);
-    char value[200];
-    gw_pref_get_string (value, settings, key, 200);
-    printf("value %s\n", value);
+    g_assert (data != NULL);
+
+    GwDictInst *di = (GwDictInst*) data;
+    const char *value = gtk_entry_get_text (GTK_ENTRY (widget));
+
+    gw_dictinst_set_filename (di, value);
+
+    _update_add_button_sensitivity ();
+}
+
+G_MODULE_EXPORT void gw_dictionaryinstall_engine_combobox_changed_cb (GtkWidget *widget, gpointer data)
+{
+    g_assert (data != NULL);
+
+    GwDictInst *di = (GwDictInst*) data;
+    int value = gtk_combo_box_get_active (GTK_COMBO_BOX (widget));
+
+    di->engine = value;
+}
+
+G_MODULE_EXPORT void gw_dictionaryinstall_source_entry_changed_cb (GtkWidget *widget, gpointer data)
+{
+    g_assert (data != NULL);
+
+    GwDictInst *di = (GwDictInst*) data;
+    const char *value = gtk_entry_get_text (GTK_ENTRY (widget));
+
+    //Set the GwDictInst value
+    gw_dictinst_set_download_source (di, value);
+
+    //Update the preference if approprate
+    if (di->schema != NULL && di->key != NULL)
+    {
+      gw_pref_set_string_by_schema (di->schema, di->key, value);
+    }
+
+    _update_add_button_sensitivity ();
 }
 
 
@@ -422,6 +419,49 @@ G_MODULE_EXPORT void gw_dictionaryinstall_select_file_cb (GtkWidget *widget, gpo
     }
     gtk_widget_destroy (dialog);
 }
+
+
+G_MODULE_EXPORT void gw_dictionaryinstall_encoding_combobox_changed_cb (GtkWidget *widget, gpointer data)
+{
+    g_assert (data != NULL);
+
+    GwDictInst *di = (GwDictInst*) data;
+    int value = gtk_combo_box_get_active (GTK_COMBO_BOX (widget));
+
+    gw_dictinst_set_encoding (di, value);
+}
+
+G_MODULE_EXPORT void gw_dictionaryinstall_compression_combobox_changed_cb (GtkWidget *widget, gpointer data)
+{
+    g_assert (data != NULL);
+
+    GwDictInst *di = (GwDictInst*) data;
+    int value = gtk_combo_box_get_active (GTK_COMBO_BOX (widget));
+
+    gw_dictinst_set_compression (di, value);
+}
+
+G_MODULE_EXPORT void gw_dictionaryinstall_split_checkbox_changed_cb (GtkWidget *widget, gpointer data)
+{
+    g_assert (data != NULL);
+
+    GwDictInst *di = (GwDictInst*) data;
+    gboolean value = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
+
+    gw_dictinst_set_split (di, value);
+}
+
+G_MODULE_EXPORT void gw_dictionaryinstall_merge_checkbox_changed_cb (GtkWidget *widget, gpointer data)
+{
+    g_assert (data != NULL);
+
+    GwDictInst *di = (GwDictInst*) data;
+    gboolean value = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
+
+    gw_dictinst_set_merge (di, value);
+}
+
+
 
 
 
@@ -481,9 +521,13 @@ G_MODULE_EXPORT void gw_dictionaryinstall_listitem_toggled_cb (GtkCellRendererTo
 {
     GtkTreeIter iter;
     gboolean state;
+    GwDictInst *di;
     gtk_tree_model_get_iter_from_string (GTK_TREE_MODEL (_dictionary_store), &iter, path);
-    gtk_tree_model_get (GTK_TREE_MODEL (_dictionary_store), &iter, CHECKBOX_STATE, &state, -1);
+    gtk_tree_model_get (GTK_TREE_MODEL (_dictionary_store), &iter, CHECKBOX_STATE, &state, DICTINST_PTR, &di, -1);
     gtk_list_store_set (GTK_LIST_STORE (_dictionary_store), &iter, CHECKBOX_STATE, !state, -1);
+    di->selected = !state;
+
+    _update_add_button_sensitivity ();
 }
 
 G_MODULE_EXPORT void gw_dictionaryinstall_detail_checkbox_toggled_cb (GtkWidget *widget, gpointer data)
@@ -505,3 +549,21 @@ G_MODULE_EXPORT void gw_dictionaryinstall_detail_checkbox_toggled_cb (GtkWidget 
   gtk_tree_path_free (path);
 }
 
+//!
+//! @brief Checks the validity of the GwDictInst data and sets the add button sensitivity accordingly
+//!
+static void _update_add_button_sensitivity ()
+{
+    //Declarations
+    GtkBuilder *builder;
+    GtkWidget *button;
+    gboolean sensitivity;
+
+    //Initializations
+    builder = gw_common_get_builder ();
+    button = GTK_WIDGET (gtk_builder_get_object (builder, "dictionary_install_add_button"));
+    sensitivity = gw_dictinstlist_data_is_valid ();
+
+    //Finalize
+    gtk_widget_set_sensitive (button, sensitivity);
+}

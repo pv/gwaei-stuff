@@ -112,7 +112,7 @@
                         <property name="visible">True</property>
                         <child>
                           <object class="GtkCheckButton" id="show_dictionary_detail_checkbutton">
-                            <property name="label" translatable="yes">Show Dictionary Details</property>
+                            <property name="label" translatable="yes">Show Dictionary Install Details</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
@@ -249,7 +249,7 @@
             <property name="visible">True</property>
             <property name="layout_style">end</property>
             <child>
-              <object class="GtkButton" id="button2">
+              <object class="GtkButton" id="dictionary_install_cancel_button">
                 <property name="label">gtk-cancel</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -265,7 +265,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="button1">
+              <object class="GtkButton" id="dictionary_install_add_button">
                 <property name="label">gtk-add</property>
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
@@ -292,8 +292,8 @@
       </object>
     </child>
     <action-widgets>
-      <action-widget response="0">button2</action-widget>
-      <action-widget response="0">button1</action-widget>
+      <action-widget response="0">dictionary_install_cancel_button</action-widget>
+      <action-widget response="0">dictionary_install_add_button</action-widget>
     </action-widgets>
   </object>
 </interface>
