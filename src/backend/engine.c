@@ -36,7 +36,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <regex.h>
 #include <locale.h>
 #include <libintl.h>
 
@@ -136,11 +135,11 @@ static void _append_stored_result_to_output (GwSearchItem *item, GList **results
 //!
 static int _get_relevance (GwSearchItem *item) {
     if (gw_searchitem_existance_generic_comparison (item, GW_QUERYLINE_HIGH))
-      return GW_RESULT_HIGH_RELEVANCE;
+      return GW_RELEVANCE_HIGH;
     else if (gw_searchitem_existance_generic_comparison (item, GW_QUERYLINE_MED))
-      return GW_RESULT_MEDIUM_RELEVANCE;
+      return GW_RELEVANCE_MEDIUM;
     else
-      return GW_RESULT_LOW_RELEVANCE;
+      return GW_RELEVANCE_LOW;
 }
 
 
@@ -202,7 +201,7 @@ static void _stream_results_thread (gpointer data)
         int relevance = _get_relevance (item);
         switch(relevance)
         {
-          case GW_RESULT_HIGH_RELEVANCE:
+          case GW_RELEVANCE_HIGH:
               if (item->total_relevant_results < MAX_HIGH_RELIVENT_RESULTS)
               {
                 item->total_results++;
@@ -218,7 +217,7 @@ static void _stream_results_thread (gpointer data)
                 item->swap_resultline = NULL;
               }
               break;
-          case GW_RESULT_MEDIUM_RELEVANCE:
+          case GW_RELEVANCE_MEDIUM:
               if ((item->dictionary->engine == GW_ENGINE_KANJI || item->total_irrelevant_results < MAX_MEDIUM_IRRELIVENT_RESULTS) &&
                   !item->show_only_exact_matches && 
                    (item->swap_resultline = gw_resultline_new ()) != NULL && item->target != GW_TARGET_KANJI)

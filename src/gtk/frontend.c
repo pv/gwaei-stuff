@@ -153,7 +153,6 @@ void gw_frontend_start_gtk (int argc, char* argv[])
       text = NULL;
     }
 
-
     //Enter the main loop
     gdk_threads_enter();
 

@@ -350,6 +350,11 @@ gboolean gw_util_is_romaji_str (char input[])
     return gw_util_all_chars_are_in_range (input, L'A', L'ž');
 }
 
+gboolean gw_util_is_yojijukugo_str (const char* input)
+{
+  return (g_utf8_strlen (atom, -1) == 4 && gw_util_is_kanji_str (atom));
+}
+
 
 //!
 //! @brief Shifts the characters in a specific direction

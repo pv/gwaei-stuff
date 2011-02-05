@@ -30,7 +30,6 @@
 
 
 #include <string.h>
-#include <regex.h>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -39,30 +38,11 @@
 #include <gwaei/backend.h>
 
 
-gboolean gw_global_regex_expressions_initialized = FALSE;
+static gboolean _regex_expressions_initialized = FALSE;
+GRegex *gw_re[GW_RE_TOTAL + 1];
 
-struct _GwRegexInfo {
-  GwInitialDictonaryRegexIndex index;
-  char *expression;
-  int flags;
-};
-typedef struct _GwRegexInfo GwRegexInfo;
+/*
 
-static GwRegexInfo regex_info_array[] = 
-{
-  { GW_RE_DICT_ENGLISH, "English", GW_REGEX_EFLAGS_EXIST },
-  { GW_RE_DICT_RADICAL, "Radical", GW_REGEX_EFLAGS_EXIST },
-  { GW_RE_DICT_KANJI, "Kanji", GW_REGEX_EFLAGS_EXIST },
-  { GW_RE_DICT_PLACES, "Names", GW_REGEX_EFLAGS_EXIST },
-  { GW_RE_DICT_NAMES, "Places", GW_REGEX_EFLAGS_EXIST },
-  { GW_RE_DICT_MIX, "Mix", GW_REGEX_EFLAGS_EXIST },
-
-  // Searches for this numeric values in Kanji and Mix need to be \\b
-  // in order to avoid false positive hits (XJ07337, I5g19.1, U59f6, DG1, DF1, etc)
-  { GW_RE_QUERY_STROKES, "\\bS[0-9]{1,2}", GW_REGEX_EFLAGS_LOCATE },
-  { GW_RE_QUERY_GRADE, "\\bG[0-9]{1,2}", GW_REGEX_EFLAGS_LOCATE },
-  { GW_RE_QUERY_FREQUENCY, "\\bF[0-9]{1,4}", GW_REGEX_EFLAGS_LOCATE },
-  { GW_RE_QUERY_JLPT, "\\bJ[0-4]{1,1}", GW_REGEX_EFLAGS_LOCATE },
 
   { GW_RE_FILENAME_GZ, "\\.gz$", GW_REGEX_EFLAGS_EXIST },
 
@@ -78,10 +58,7 @@ static GwRegexInfo regex_info_array[] =
   { GW_RE_WORD_NA_ADJ_TE_FORM,     "\\B((で))$", GW_REGEX_EFLAGS_LOCATE },
   { GW_RE_WORD_NA_ADJ_CAUSATIVE,   "\\B((にさせる))$", GW_REGEX_EFLAGS_LOCATE },
   { GW_RE_WORD_NA_ADJ_CONDITIONAL, "\\B((であれば))$", GW_REGEX_EFLAGS_LOCATE },
-  { -1, NULL, -1}
-};
 
-/*
     //Verb forms
     regcomp (re_verb_presentform, "\\B((ます))$", GW_REGEX_EFLAGS_EXIST);
     regcomp (re_verb_politepast, "\\B((ました))$", GW_REGEX_EFLAGS_EXIST);
@@ -105,22 +82,44 @@ static GwRegexInfo regex_info_array[] =
 //!
 void gw_regex_initialize ()
 {
-    if (gw_global_regex_expressions_initialized == TRUE) return;
+    if (_regex_expressions_initialized) return;
 
+    //Declarations
+    GError *error;
     int i;
-    for (i = 0; regex_info_array[i].index != -1; i++)
+    
+    //Initializations
+    error = NULL;
+
+    //Setup the built in regexes
+    for (i = 0; i < GW_RE_TOTAL; i++)
     {
-      if (regex_info_array[i].expression == NULL)
+      switch (i)
       {
-        gw_re[regex_info_array[i].index] = NULL;
-      }
-      else
-      {
-        gw_re[regex_info_array[i].index] = (regex_t*) malloc (sizeof(regex_t));
-        regcomp (gw_re[regex_info_array[i].index], regex_info_array[i].expression, regex_info_array[i].flags);
+        case GW_RE_QUERY_STROKES:
+          gw_re[i] = g_regex_new ("\\bS[0-9]{1,2}",  GW_RE_COMPILE_FLAGS, GW_RE_MATCH_LOCATE_FLAGS, &error);
+          if (error != NULL) exit(EXIT_FAILURE);
+          break;
+        case GW_RE_QUERY_GRADE:
+          gw_re[i] = g_regex_new ("\\bG[0-9]{1,2}",  GW_RE_COMPILE_FLAGS, GW_RE_MATCH_LOCATE_FLAGS, &error);
+          if (error != NULL) exit(EXIT_FAILURE);
+          break;
+        case GW_RE_QUERY_FREQUENCY:
+          gw_re[i] = g_regex_new ("\\bF[0-9]{1,4}",  GW_RE_COMPILE_FLAGS, GW_RE_MATCH_LOCATE_FLAGS, &error);
+          if (error != NULL) exit(EXIT_FAILURE);
+          break;
+    case GW_RE_QUERY_JLPT:
+          gw_re[i] = g_regex_new ("\\bJ[0-4]{1,1}",  GW_RE_COMPILE_FLAGS, GW_RE_MATCH_LOCATE_FLAGS, &error);
+          if (error != NULL) exit(EXIT_FAILURE);
+        default:
+          g_warning ("All built in regex expressions were not initialized.  This shouldn't happen.");
+          g_unreachable ();
+          break;
       }
     }
-    gw_global_regex_expressions_initialized = TRUE;
+    gw_re[i] = NULL;
+
+    _regex_expressions_initialized = TRUE;
 }
 
 
@@ -129,17 +128,16 @@ void gw_regex_initialize ()
 //!
 void gw_regex_free ()
 {
-    if (gw_global_regex_expressions_initialized == FALSE) return;
-    int i;
-    for (i = 0; regex_info_array[i].index != -1; i++)
+    if (_regex_expressions_initialized == FALSE) return;
+
+    //Setup the built in regexes
+    for (i = 0; i < GW_RE_TOTAL; i++)
     {
-      if (&regex_info_array[i] != NULL)
-      {
-        regfree(gw_re[regex_info_array[i].index]);
-        gw_re[regex_info_array[i].index] = NULL;
-      }
+      g_regex_unref (gw_re[i]);
+      gw_re[i] = NULL;
     }
-    gw_global_regex_expressions_initialized = FALSE;
+
+    _regex_expressions_initialized = FALSE;
 }
 
 
@@ -225,266 +223,312 @@ char* gw_regex_locate_offset (char *string, char *line_start, regex_t *re_locate
 
 
 //!
-//! @brief Regex for determining highly relevent kanji atoms
+//! @brief Builds a regex for finding kanji by relevance
 //!
-//! Builds the regex used in engine.c for determining the relevance
-//! of a returned result when the query is a kanji one.
-//!
-//! @param regex A passed regex_t to assign an allocated regext to
-//! @param string The regex pattern to use
-//! @param flags The regex flags to use
+//! @param subject The query text to insert into the regex
+//! @param relevance How relevant a result to search for
+//! @param flags GRegexMatchFlags to apply to the regex compilation.  
+//! @returns A newly allocated GRegex that needs to be freed with g_regex_unref ()
 //! 
-gboolean gw_regex_create_kanji_high_regex (regex_t *regex, char *string, int flags)
+GRegex* gw_regex_kanji_new (const char *subject, GwRelevance relevance)
 {
-    int result = 0;
-    char *atom[4];
+    //Declarations
+    GRegex *re;
+    char **atom;
     char *expression;
-    atom[0] = "((^無)|(^不)|(^非)|(^)|(^お)|(^御))(";
-    atom[1] = string;
-    atom[2] = ")(($))";
-    atom[3] = NULL;
+    GError *error;
 
-    expression = g_strjoinv (NULL, atom);
-    result = regcomp (regex, expression, flags);
-    g_free (expression);
+    //Initializations
+    error = NULL;
 
-    return result;
+    switch (relevance)
+    {
+      case GW_RELEVANCE_HIGH:
+        atom = (char**) malloc(sizeof(char*) * 4);
+        atom[0] = "((^無)|(^不)|(^非)|(^)|(^お)|(^御))(";
+        atom[1] = subject;
+        atom[2] = ")(($))";
+        atom[3] = NULL;
+        expression = g_strjoinv (NULL, atom);
+        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
+        g_free (expression);
+        free (atom);
+        break;
+      case GW_RELEVANCE_MEDIUM:
+        atom = (char**) malloc(sizeof(char*) * 4);
+        atom[0] = "((^)|(^お)|(を)|(に)|(で)|(は)|(と))(";
+        atom[1] = subject;
+        atom[2] = ")((で)|(が)|(の)|(を)|(に)|(で)|(は)|(と)|($))";
+        atom[3] = NULL;
+        expression = g_strjoinv (NULL, atom);
+        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
+        g_free (expression);
+        free (atom);
+        break;
+      case GW_RELEVANCE_LOW:
+        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
+        break;
+      case GW_RELEVANCE_LOCATE:
+        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
+        break;
+      default:
+        g_not_reachable();
+    }
+
+    if (error != NULL) exit(1);
+
+    return re;
 }
 
 
 //!
-//! @brief Regex for determining mediumly relevent kanji atoms
+//! @brief Builds a regex for finding furigana by relevance
 //!
-//! Builds the regex used in engine.c for determining the relevance
-//! of a returned result when the query is a kanji one.
-//!
-//! @param regex A passed regex_t to assign an allocated regext to
-//! @param string The regex pattern to use
-//! @param flags The regex flags to use
+//! @param subject The query text to insert into the regex
+//! @param relevance How relevant a result to search for
+//! @param flags GRegexMatchFlags to apply to the regex compilation.  
+//! @returns A newly allocated GRegex that needs to be freed with g_regex_unref ()
 //! 
-gboolean gw_regex_create_kanji_med_regex (regex_t *regex, char *string, int flags)
+GRegex* gw_regex_furi_new (const char *subject, GwRelevance relevance, GRegexMatchFlags flags)
 {
-    int result = 0;
-    char *atom[4];
+    //Declarations
+    GRegex *re;
+    char **atom;
     char *expression;
-    atom[0] = "((^)|(^お)|(を)|(に)|(で)|(は)|(と))(";
-    atom[1] = string;
-    atom[2] = ")((で)|(が)|(の)|(を)|(に)|(で)|(は)|(と)|($))";
-    atom[3] = NULL;
+    GError *error;
 
-    expression = g_strjoinv (NULL, atom);
-    result = regcomp (regex, expression, flags);
-    g_free (expression);
+    //Declarations
+    error = NULL;
 
-    return result;
+    switch (relevance)
+    {
+      case GW_RELEVANCE_HIGH:
+        atom = (char**) malloc(sizeof(char*) * 4);
+        atom[0] = "^((お)|())(";
+        atom[1] = subject;
+        atom[2] = ")$";
+        atom[3] = NULL;
+        expression = g_strjoinv (NULL, atom);
+        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
+        g_free (expression);
+        free (atom);
+        break;
+      case GW_RELEVANCE_MEDIUM:
+        atom = (char**) malloc(sizeof(char*) * 4);
+        atom[0] = "((^)|(^お)|(を)|(に)|(で)|(は)|(と))(";
+        atom[1] = subject;
+        atom[2] = ")((で)|(が)|(の)|(を)|(に)|(で)|(は)|(と)|($))";
+        atom[3] = NULL;
+        expression = g_strjoinv (NULL, atom);
+        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
+        g_free (expression);
+        free (atom);
+        break;
+      case GW_RELEVANCE_LOW:
+        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
+        break;
+      case GW_RELEVANCE_LOCATE:
+        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
+        break;
+      default:
+        g_not_reachable();
+    }
+
+    if (error != NULL) exit(1);
+
+    return re;
 }
 
 
 //!
-//! @brief Regex for determining highly relevent furigana atoms
+//! @brief Builds a regex for finding romaji by relevance
 //!
-//! Builds the regex used in engine.c for determining the relevance
-//! of a returned result when the query is a furigana one.
-//!
-//! @param regex A passed regex_t to assign an allocated regext to
-//! @param string The regex pattern to use
-//! @param flags The regex flags to use
+//! @param subject The query text to insert into the regex
+//! @param relevance How relevant a result to search for
+//! @param flags GRegexMatchFlags to apply to the regex compilation.  
+//! @returns A newly allocated GRegex that needs to be freed with g_regex_unref ()
 //! 
-gboolean gw_regex_create_furi_high_regex (regex_t *regex, char *string, int flags)
+GRegex* gw_regex_roma_new (const char *subject, GwRelevance relevance)
 {
-    int result = 0;
-    char *atom[4];
+    //Declarations
+    GRegex *re;
+    char **atom;
     char *expression;
-    atom[0] = "^((お)|())(";
-    atom[1] = string;
-    atom[2] = ")$";
-    atom[3] = NULL;
+    GError *error;
 
-    expression = g_strjoinv (NULL, atom);
-    result = regcomp (regex, expression, flags);
-    g_free (expression);
+    //Declarations
+    error = NULL;
 
-    return result;
+    switch (relevance)
+    {
+      case GW_RELEVANCE_HIGH:
+        atom = (char**) malloc(sizeof(char*) * 4);
+        atom[0] = "(^|\\)|(/)|(^to )|\\) )(";
+        atom[1] = subject;
+        atom[2] = ")(\\(|/|$|!| \\()";
+        atom[3] = NULL;
+        expression = g_strjoinv (NULL, atom);
+        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
+        g_free (expression);
+        free (atom);
+        break;
+      case GW_RELEVANCE_MEDIUM:
+        atom = (char**) malloc(sizeof(char*) * 10);
+        atom[0] = "\\{(";
+        atom[1] = subject;
+        atom[2] = ")\\}|(\\) |/)((\\bto )|(\\bto be )|(\\b))(";
+        atom[3] = subject;
+        atom[4] = ")(( \\([^/]+\\)/)|(/))|(\\[)(";
+        atom[5] = subject;
+        atom[6] = ")(\\])|^(";
+        atom[7] = subject;
+        atom[8] = ")\\b";
+        atom[9] = NULL;
+        expression = g_strjoinv (NULL, atom);
+        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
+        g_free (expression);
+        free (atom);
+        break;
+      case GW_RELEVANCE_LOW:
+        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
+        break;
+      case GW_RELEVANCE_LOCATE:
+        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
+        break;
+      default:
+        g_not_reachable();
+    }
+
+    if (error != NULL) exit(1);
+
+    return re;
 }
 
 
 //!
-//! @brief Regex for determining mediumly relevent furigana atoms
+//! @brief Builds a regex for finding mix by relevance
 //!
-//! Builds the regex used in engine.c for determining the relevance
-//! of a returned result when the query is a furigana one.
-//!
-//! @param regex A passed regex_t to assign an allocated regext to
-//! @param string The regex pattern to use
-//! @param flags The regex flags to use
+//! @param subject The query text to insert into the regex
+//! @param relevance How relevant a result to search for
+//! @param flags GRegexMatchFlags to apply to the regex compilation.  
+//! @returns A newly allocated GRegex that needs to be freed with g_regex_unref ()
 //! 
-gboolean gw_regex_create_furi_med_regex (regex_t *regex, char *string, int flags)
+GRegex* gw_regex_mix_new (const char *subject, GwRelevance relevance)
 {
-    int result = 0;
-    char *atom[4];
+    //Declarations
+    GRegex *re;
+    char **atom;
     char *expression;
-    atom[0] = "((^)|(^お)|(を)|(に)|(で)|(は)|(と))(";
-    atom[1] = string;
-    atom[2] = ")((で)|(が)|(の)|(を)|(に)|(で)|(は)|(と)|($))";
-    atom[3] = NULL;
+    GError *error;
 
-    expression = g_strjoinv (NULL, atom);
-    result = regcomp (regex, expression, flags);
-    g_free (expression);
+    //Declarations
+    error = NULL;
 
-    return result;
+    switch (relevance)
+    {
+      case GW_RELEVANCE_HIGH:
+        atom = (char**) malloc(sizeof(char*) * 6);
+        atom[0] = "(\\b(";
+        atom[1] = subject;
+        atom[2] = ")\\b|^(";
+        atom[3] = subject;
+        atom[4] = "))";
+        atom[5] = NULL;
+        expression = g_strjoinv (NULL, atom);
+        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
+        g_free (expression);
+        free (atom);
+        break;
+      case GW_RELEVANCE_MEDIUM:
+        atom = (char**) malloc(sizeof(char*) * 10);
+        atom[0] = "\\{(";
+        atom[1] = subject;
+        atom[2] = ")\\}|(\\) |/)((to )|(to be )|())(";
+        atom[3] = subject;
+        atom[4] = ")(( \\([^/]+\\)/)|(/))|(\\[)(";
+        atom[5] = subject;
+        atom[6] = ")(\\])|^(";
+        atom[7] = subject;
+        atom[8] = ")\\b";
+        atom[9] = NULL;
+        expression = g_strjoinv (NULL, atom);
+        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
+        g_free (expression);
+        free (atom);
+        break;
+      case GW_RELEVANCE_LOW:
+        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
+        break;
+      case GW_RELEVANCE_LOCATE:
+        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
+        break;
+      default:
+        g_not_reachable();
+    }
+
+    if (error != NULL) exit(1);
+
+    return re;
 }
 
 
 //!
-//! @brief Regex for determining highly relevent romaji atoms
+//! @brief Builds a regex for finding mix by relevance
 //!
-//! Builds the regex used in engine.c for determining the relevance
-//! of a returned result when the query is a romaji one.
-//!
-//! @param regex A passed regex_t to assign an allocated regext to
-//! @param string The regex pattern to use
-//! @param flags The regex flags to use
+//! @param subject The query text to insert into the regex
+//! @param relevance How relevant a result to search for
+//! @param flags GRegexMatchFlags to apply to the regex compilation.  
+//! @returns A newly allocated GRegex that needs to be freed with g_regex_unref ()
 //! 
-gboolean gw_regex_create_roma_high_regex (regex_t *regex, char *string, int flags)
+GRegex* gw_regex_new (const char *subject, GwRelevance relevance)
 {
-    int result = 0;
-    char *atom[4];
+    //Declarations
+    GRegex *re;
+    char **atom;
     char *expression;
-    atom[0] = "(^|\\)|(/)|(^to )|\\) )(";
-    atom[1] = string;
-    atom[2] = ")(\\(|/|$|!| \\()";
-    atom[3] = NULL;
+    GError *error;
 
-    expression = g_strjoinv (NULL, atom);
-    result = regcomp (regex, expression, flags);
-    g_free (expression);
+    //Declarations
+    error = NULL;
 
-    return result;
+    switch (relevance)
+    {
+      case GW_RELEVANCE_HIGH:
+        atom = (char**) malloc(sizeof(char*) * 4);
+        atom[0] = "(\\b(";
+        atom[1] = subject;
+        atom[2] = ")\\b";
+        atom[3] = NULL;
+        expression = g_strjoinv (NULL, atom);
+        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
+        g_free (expression);
+        free (atom);
+        break;
+      case GW_RELEVANCE_MEDIUM:
+        atom = (char**) malloc(sizeof(char*) * 4);
+        atom[0] = "(\\b(";
+        atom[1] = subject;
+        atom[2] = ")\\b";
+        atom[3] = NULL;
+        expression = g_strjoinv (NULL, atom);
+        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
+        g_free (expression);
+        free (atom);
+        break;
+      case GW_RELEVANCE_LOW:
+        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
+        break;
+      case GW_RELEVANCE_LOCATE:
+        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
+        break;
+      default:
+        g_not_reachable();
+    }
+
+    if (error != NULL) exit(1);
+
+    return re;
 }
 
 
-//!
-//! @brief Regex for determining mediumly relevent romaji atoms
-//!
-//! Builds the regex used in engine.c for determining the relevance
-//! of a returned result when the query is a romaji one.
-//!
-//! @param regex A passed regex_t to assign an allocated regext to
-//! @param string The regex pattern to use
-//! @param flags The regex flags to use
-//! 
-gboolean gw_regex_create_roma_med_regex (regex_t *regex, char *string, int flags)
-{
-    int result = 0;
-    char *atom[10];
-    char *expression;
-    atom[0] = "\\{(";
-    atom[1] = string;
-    atom[2] = ")\\}|(\\) |/)((\\bto )|(\\bto be )|(\\b))(";
-    atom[3] = string;
-    atom[4] = ")(( \\([^/]+\\)/)|(/))|(\\[)(";
-    atom[5] = string;
-    atom[6] = ")(\\])|^(";
-    atom[7] = string;
-    atom[8] = ")\\b";
-    atom[9] = NULL;
 
-    expression = g_strjoinv (NULL, atom);
-    result = regcomp (regex, expression, flags);
-    g_free (expression);
-
-    return result;
-}
-
-
-//!
-//! @brief Regex for determining highly relevent mix atoms
-//!
-//! Builds the regex used in engine.c for determining the relevance
-//! of a returned result when the query is a mix one. This means
-//! there is kanji/hiragana/romaji mingled throughout.
-//!
-//! @param regex A passed regex_t to assign an allocated regext to
-//! @param string The regex pattern to use
-//! @param flags The regex flags to use
-//! 
-gboolean gw_regex_create_mix_high_regex (regex_t *regex, char *string, int flags)
-{
-    int result = 0;
-    char *atom[4];
-    char *expression;
-    atom[0] = "(\\b(";
-    atom[1] = string;
-    atom[2] = ")\\b|^(";
-    atom[3] = string;
-    atom[4] = "))";
-    atom[5] = NULL;
-
-    expression = g_strjoinv (NULL, atom);
-    result = regcomp (regex, expression, flags);
-    g_free (expression);
-
-    return result;
-}
-
-
-//!
-//! @brief Regex for determining mediumly relevent mix atoms
-//!
-//! Builds the regex used in engine.c for determining the relevance
-//! of a returned result when the query is a mix one. This means
-//! there is kanji/hiragana/romaji mingled throughout.
-//!
-//! @param regex A passed regex_t to assign an allocated regext to
-//! @param string The regex pattern to use
-//! @param flags The regex flags to use
-//! 
-gboolean gw_regex_create_mix_med_regex (regex_t *regex, char *string, int flags)
-{
-    int result = 0;
-    char *atom[10];
-    char *expression;
-    atom[0] = "\\{(";
-    atom[1] = string;
-    atom[2] = ")\\}|(\\) |/)((to )|(to be )|())(";
-    atom[3] = string;
-    atom[4] = ")(( \\([^/]+\\)/)|(/))|(\\[)(";
-    atom[5] = string;
-    atom[6] = ")(\\])|^(";
-    atom[7] = string;
-    atom[8] = ")\\b";
-    atom[9] = NULL;
-
-    expression = g_strjoinv (NULL, atom);
-    result = regcomp (regex, expression, flags);
-    g_free (expression);
-
-    return result;
-}
-
-//!
-//! @brief Regex for determining exact regexes
-//!
-//! To be written
-//!
-//! @param regex A passed regex_t to assign an allocated regext to
-//! @param string The regex pattern to use
-//! @param flags The regex flags to use
-//! 
-gboolean gw_regex_create_exact_regex (regex_t *regex, char *string, int flags)
-{
-    int result = 0;
-    char *atom[4];
-    char *expression;
-    atom[0] = "^(";
-    atom[1] = string;
-    atom[2] = ")$";
-    atom[3] = NULL;
-
-    expression = g_strjoinv (NULL, atom);
-    result = regcomp (regex, expression, flags);
-    g_free (expression);
-
-    return result;
-}

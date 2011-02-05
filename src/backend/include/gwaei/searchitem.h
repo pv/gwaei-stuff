@@ -55,13 +55,6 @@ typedef enum
 
 typedef enum
 {
-  GW_RESULT_HIGH_RELEVANCE,
-  GW_RESULT_MEDIUM_RELEVANCE,
-  GW_RESULT_LOW_RELEVANCE
-} GwResultRelevance;
-
-typedef enum
-{
   GW_TARGET_RESULTS,
   GW_TARGET_KANJI,
   GW_TARGET_ENTRY,

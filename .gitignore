@@ -16,6 +16,8 @@ src/console/.deps/*
 *.swp
 *.Po
 
+libtool
+
 mandir/Makefile
 
 stamp-h1
@@ -60,7 +62,7 @@ rpm/rpm_gconf_uninstall_pre.sh
 rpm/BUILD
 rpm/fedora/SPECS/gwaei.spec
 
-src/gwaei/gwaei
+src/gtk/gwaei
 src/console/waei
 src/Makefile
 src/desktop/Makefile

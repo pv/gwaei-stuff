@@ -1,48 +1,41 @@
 #ifndef GW_REGEX_INCLUDED
 #define GW_REGEX_INCLUDED
 
-#define GW_REGEX_EFLAGS_EXIST    (REG_EXTENDED | REG_ICASE | REG_NOSUB)
-#define GW_REGEX_EFLAGS_LOCATE   (REG_EXTENDED | REG_ICASE)
-
-#include <regex.h>
+#define GW_RE_COMPILE_FLAGS        (G_REGEX_CASELESS | G_REGEX_OPTIMIZE)
+#define GW_RE_LOCATE_FLAGS   (0)
+#define GW_RE_EXIST_FLAGS   (G_REGEX_MATCH_ANCHORED)
 
 #include <glib.h>
+
+typedef enum
+{
+  GW_RELEVANCE_HIGH,
+  GW_RELEVANCE_MEDIUM,
+  GW_RELEVANCE_LOW,
+  GW_QUERYLINE_LOCATE,
+  GW_RELEVANCE_TOTAL
+} GwRelevance;
 
 
 void gw_regex_initialize (void);
 void gw_regex_free (void);
 
-char* gw_regex_locate_offset (char*, char*, regex_t*, gint*, gint*);
-gboolean gw_regex_create_kanji_high_regex (regex_t*, char*, int);
-gboolean gw_regex_create_kanji_med_regex (regex_t*, char*, int);
-gboolean gw_regex_create_furi_high_regex (regex_t*, char*, int);
-gboolean gw_regex_create_furi_med_regex (regex_t*, char*, int);
-gboolean gw_regex_create_roma_high_regex (regex_t*, char*, int);
-gboolean gw_regex_create_roma_med_regex (regex_t*, char*, int);
-gboolean gw_regex_create_mix_high_regex (regex_t*, char*, int);
-gboolean gw_regex_create_mix_med_regex (regex_t*, char*, int);
-gboolean gw_regex_create_exact_regex (regex_t*, char*, int);
+char* gw_regex_locate_offset (char*, char*, GRegex*, gint*, gint*);
+GRegex* gw_regex_kanji_new (const char*, GwRelevance);
+GRegex* gw_regex_furi_new (const char*, GwRelevanceGRegexMatchFlags);
+GRegex* gw_regex_roma_new (const char*, GwRelevance);
+GRegex* gw_regex_mix_new (const char*, GwRelevance);
 
 
 gboolean gw_regex_locate_boundary_byte_pointers (const char*, char*, char**, char **);
 
 
 typedef enum {
-  GW_RE_DICT_ENGLISH,
-  GW_RE_DICT_RADICAL,
-  GW_RE_DICT_KANJI,
-  GW_RE_DICT_PLACES,
-  GW_RE_DICT_NAMES,
-  GW_RE_DICT_MIX,
-
   GW_RE_QUERY_STROKES,
   GW_RE_QUERY_GRADE,
   GW_RE_QUERY_FREQUENCY,
   GW_RE_QUERY_JLPT,
-
-  GW_RE_FILENAME_GZ,
-  GW_RE_COLOR_HEXCOLOR,
-
+/*
   GW_RE_WORD_I_ADJ_PASTFORM,
   GW_RE_WORD_I_ADJ_NEGATIVE,
   GW_RE_WORD_I_ADJ_TE_FORM,
@@ -53,12 +46,10 @@ typedef enum {
   GW_RE_WORD_NA_ADJ_TE_FORM,
   GW_RE_WORD_NA_ADJ_CAUSATIVE,
   GW_RE_WORD_NA_ADJ_CONDITIONAL,
-
+*/
   GW_RE_TOTAL
-} GwInitialDictonaryRegexIndex;
+} GwRegexDataIndex;
 
-regex_t *gw_re[GW_RE_TOTAL];
-
-
+extern GRegex *gw_re[GW_RE_TOTAL + 1];
 
 #endif

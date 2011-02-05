@@ -32,17 +32,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <regex.h>
 
 #include <glib.h>
 
 #include <gwaei/backend.h>
 
-
-#define EFLAGS_EXIST    (REG_EXTENDED | REG_ICASE | REG_NOSUB)
-#define EFLAGS_LOCATE   (REG_EXTENDED | REG_ICASE)
-
-//Create the needed regex for searching and locating
+static GRegex*** _allocate_regex_pointers (int);
+static void _free_regex_pointers (GRegex ***);
 
 
 GwQueryLine* gw_queryline_new ()
@@ -69,66 +65,62 @@ void gw_queryline_free (GwQueryLine *ql)
     g_free (ql->string);
     ql->string = NULL;
 
-    int i;
-    for (i = 0; i < ql->furi_total; i++)
-    {
-      regfree(&(ql->furi_regex[GW_QUERYLINE_EXIST][i]));
-      regfree(&(ql->furi_regex[GW_QUERYLINE_LOCATE][i]));
-      regfree(&(ql->furi_regex[GW_QUERYLINE_HIGH][i]));
-      regfree(&(ql->furi_regex[GW_QUERYLINE_MED][i]));
-    }
-    for (i = 0; i < ql->kanji_total; i++)
-    {
-      regfree(&(ql->kanji_regex[GW_QUERYLINE_EXIST][i]));
-      regfree(&(ql->kanji_regex[GW_QUERYLINE_LOCATE][i]));
-      regfree(&(ql->kanji_regex[GW_QUERYLINE_HIGH][i]));
-      regfree(&(ql->kanji_regex[GW_QUERYLINE_MED][i]));
-    }
-    for (i = 0; i < ql->roma_total; i++)
-    {
-      regfree(&(ql->roma_regex[GW_QUERYLINE_EXIST][i]));
-      regfree(&(ql->roma_regex[GW_QUERYLINE_LOCATE][i]));
-      regfree(&(ql->roma_regex[GW_QUERYLINE_HIGH][i]));
-      regfree(&(ql->roma_regex[GW_QUERYLINE_MED][i]));
-    }
-    for (i = 0; i < ql->mix_total; i++)
-    {
-      regfree(&(ql->mix_regex[GW_QUERYLINE_EXIST][i]));
-      regfree(&(ql->mix_regex[GW_QUERYLINE_LOCATE][i]));
-      regfree(&(ql->mix_regex[GW_QUERYLINE_HIGH][i]));
-      regfree(&(ql->mix_regex[GW_QUERYLINE_MED][i]));
-    }
-    for (i = 0; i < ql->strokes_total; i++)
-    {
-      regfree(&(ql->strokes_regex[GW_QUERYLINE_EXIST][i]));
-      regfree(&(ql->strokes_regex[GW_QUERYLINE_LOCATE][i]));
-      regfree(&(ql->strokes_regex[GW_QUERYLINE_HIGH][i]));
-      regfree(&(ql->strokes_regex[GW_QUERYLINE_MED][i]));
-    }
-    for (i = 0; i < ql->frequency_total; i++)
-    {
-      regfree(&(ql->frequency_regex[GW_QUERYLINE_EXIST][i]));
-      regfree(&(ql->frequency_regex[GW_QUERYLINE_LOCATE][i]));
-      regfree(&(ql->frequency_regex[GW_QUERYLINE_HIGH][i]));
-      regfree(&(ql->frequency_regex[GW_QUERYLINE_MED][i]));
-    }
-    for (i = 0; i < ql->grade_total; i++)
-    {
-      regfree(&(ql->grade_regex[GW_QUERYLINE_EXIST][i]));
-      regfree(&(ql->grade_regex[GW_QUERYLINE_LOCATE][i]));
-      regfree(&(ql->grade_regex[GW_QUERYLINE_HIGH][i]));
-      regfree(&(ql->grade_regex[GW_QUERYLINE_MED][i]));
-    }
-    for (i = 0; i < ql->jlpt_total; i++)
-    {
-      regfree(&(ql->jlpt_regex[GW_QUERYLINE_EXIST][i]));
-      regfree(&(ql->jlpt_regex[GW_QUERYLINE_LOCATE][i]));
-      regfree(&(ql->jlpt_regex[GW_QUERYLINE_HIGH][i]));
-      regfree(&(ql->jlpt_regex[GW_QUERYLINE_MED][i]));
-    }
+    _free_regex_pointers (ql->re_kanji);
+    _free_regex_pointers (ql->re_furi);
+    _free_regex_pointers (ql->re_roma);
+    _free_regex_pointers (ql->re_mix);
+    _free_regex_pointers (ql->re_strokes);
+    _free_regex_pointers (ql->re_frequency);
+    _free_regex_pointers (ql->re_grade);
+    _free_regex_pointers (ql->re_jlpt);
 
     free (ql);
 }
+
+static void _free_regex_pointers (GRegex ***re)
+{
+    //Sanity check
+    if (re == NULL) return;
+
+    //Declarations
+    int i;
+    int j;
+
+    //Free pointers intelligently
+    for (i = 0; re[i] != NULL; i++)
+      for (j = 0; j < GW_RELEVANCE_TOTAL; j++)
+        if (re[i][j] != NULL) g_regex_unref(re[i][j]);
+
+    for (i = 0; re[i] != NULL; i++)
+      free (re[i]);
+
+    free (re);
+}
+
+static GRegex*** _allocate_regex_pointers (int length)
+{
+    //Declarations
+    int i;
+    int j;
+    GRegex ***re;
+
+    //Allocate the memory
+    re = (GRegex***) malloc((length + 1) * sizeof(GRegex**));
+
+    //Initialize it to NULL
+    for (i = 0; i < length; i++)
+    {
+      re[i] = (GRegex**) malloc(GW_RELEVANCE_TOTAL * sizeof (GRegex*));
+      for (j = 0; j < GW_RELEVANCE_TOTAL; j++)
+        re[i][j] = NULL;
+    }
+    re[i] = NULL;
+
+    //Return the address
+    return re;
+}
+
+
 
 
 //!
@@ -139,170 +131,198 @@ void gw_queryline_free (GwQueryLine *ql)
 //! @param ql Pointer to a GwQueryLine object ot parse a query string into.
 //! @param string constant string that is the raw query.
 //!
-int gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
+gboolean gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
 {
-   //Make sure it isn't already created
+   //Sanity check
    if (ql->string != NULL && strcmp(ql->string, string) == 0) return TRUE;
 
-   //Make a perminent copy of the query
+   //Free previously used memory
    g_free (ql->string);
-   ql->string = gw_util_prepare_query (string, FALSE);
 
+   _free_regex_pointers (ql->re_kanji);
+   _free_regex_pointers (ql->re_furi);
+   _free_regex_pointers (ql->re_roma);
+   _free_regex_pointers (ql->re_mix);
+   _free_regex_pointers (ql->re_strokes);
+   _free_regex_pointers (ql->re_frequency);
+   _free_regex_pointers (ql->re_grade);
+   _free_regex_pointers (ql->re_jlpt);
 
-   //Load the preference settings
-   int rk_conv_pref = gw_pref_get_int_by_schema (GW_SCHEMA_BASE, GW_KEY_ROMAN_KANA);
-   gboolean want_rk_conv = (rk_conv_pref == 0 || (rk_conv_pref == 2 && !gw_util_is_japanese_locale()));
+   //Declarations
+   char **atoms;
+   char **iter;
+   char *atom;
+   char *temp;
+   char *expression;
+   char *first_half;
+   char *second_half;
+   char buffer[300];
+   int rk_conv_pref;
+   gboolean want_rk_conv;
    gboolean want_hk_conv;
-   want_hk_conv = gw_pref_get_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_HIRA_KATA);
    gboolean want_kh_conv;
-   want_kh_conv = gw_pref_get_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_KATA_HIRA);
-   ql->hira_string[0] = '\0';
-
-   //Create atoms
-   int i = 0;
-   char *generic_atoms[MAX_ATOMS];
-   strcpy(ql->atom_string, ql->string);
-
-   generic_atoms[i] = ql->atom_string;
-   while ((generic_atoms[i + 1] = g_utf8_strchr (generic_atoms[i], -1, L'&')) != NULL && i < MAX_ATOMS)
-   {
-     i++;
-     *generic_atoms[i] = '\0';
-     *generic_atoms[i]++;
-   }
-   generic_atoms[i + 1] = NULL;
-
-   //Organize atoms
-   i = 0;
-   int kanji_pos = ql->kanji_total;
-   int furi_pos  = ql->furi_total;
-   int mix_pos   = ql->mix_total;
-   int roma_pos  = ql->roma_total;
-   char temp[300];
-   char *temp_ptr = NULL;
    gboolean want_conv;
+   gboolean all_regex_built;
+   int length;
+   GRegex **re;
+   int i;
 
-   while (generic_atoms[i] != NULL && i < MAX_ATOMS)
+   //Memory initializations
+   ql->string = gw_util_prepare_query (string, FALSE);
+   all_regex_built = TRUE;
+
+   rk_conv_pref = gw_pref_get_int_by_schema (GW_SCHEMA_BASE, GW_KEY_ROMAN_KANA);
+   want_rk_conv = (rk_conv_pref == 0 || (rk_conv_pref == 2 && !gw_util_is_japanese_locale()));
+   want_hk_conv = gw_pref_get_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_HIRA_KATA);
+   want_kh_conv = gw_pref_get_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_KATA_HIRA);
+
+   atoms = g_strsplit (ql->string, "&", GW_QUERYLINE_MAX_ATOMS)
+   length = g_strv_length (atoms);
+   
+   ql->re_kanji     = _allocate_regex_pointers (length);
+   ql->re_furi      = _allocate_regex_pointers (length);
+   ql->re_roma      = _allocate_regex_pointers (length);
+   ql->re_mix       = _allocate_regex_pointers (length);
+   ql->re_strokes   = _allocate_regex_pointers (length);
+   ql->re_frequency = _allocate_regex_pointers (length);
+   ql->re_grade     = _allocate_regex_pointers (length);
+   ql->re_jlpt      = _allocate_regex_pointers (length);
+
+
+   //Setup the expression to be used in the base of the regex for kanji-ish strings
+   re = ql->re_kanji;
+   for (iter = atoms; *iter != NULL && re < (ql->re_kanji + length); iter++)
    {
-     if (gw_util_is_kanji_ish_str (generic_atoms[i]) || gw_util_is_kanji_str (generic_atoms[i]))
+     atom = *iter;
+     if (gw_util_is_kanji_ish_str (atom) || gw_util_is_kanji_str (atom)) //Figures out if the string may contain hiragana
      {
-       strcpy(ql->hira_string, "(");
-       strcat(ql->hira_string, generic_atoms[i]);
-       strcat(ql->hira_string, ")");
+       expression = g_strdup_printf ("(%s)", atom);
 
-       if (g_utf8_strlen (generic_atoms[i], -1) == 4 && gw_util_is_kanji_str (generic_atoms[i]))
+       if (g_util_is_yojijukugo_str (atom))  //Check for yojijukugo
        {
-          g_utf8_strncpy (temp, generic_atoms[i], 2);
-          temp_ptr = temp;
-          temp_ptr = g_utf8_find_next_char (temp_ptr, NULL);
-          temp_ptr = g_utf8_find_next_char (temp_ptr, NULL);
-          *temp_ptr = '\0';
+          //First half of the yojijukugo
+          half = g_strndup (atom, g_utf8_next_char(g_utf8_next_char(atom))- atom);
+          temp = g_strdup_printf ("%s|(%s)", expression, half);
+          g_free (expression);
+          expression = temp;
+          g_free (half);
 
-          strcat (ql->hira_string, "|");
-          strcat(ql->hira_string, "(");
-          strcat (ql->hira_string, temp);
-          strcat(ql->hira_string, ")");
-          strcat (ql->hira_string, "|");
-
-          temp_ptr = generic_atoms[i];
-          temp_ptr = g_utf8_find_next_char (temp_ptr, NULL);
-          temp_ptr = g_utf8_find_next_char (temp_ptr, NULL);
-          strcat(ql->hira_string, "(");
-          strcat (ql->hira_string, temp_ptr);
-          strcat(ql->hira_string, ")");
+          //Second half of the yojijukugo
+          half = g_strdup (g_utf8_next_char(g_utf8_next_char(atom)));
+          temp = g_strdup_printf ("%s|(%s)", expression, half);
+          g_free (expression);
+          expression = temp;
+          g_free (half);
        }
 
-       if (regcomp (&(ql->kanji_regex                         [GW_QUERYLINE_EXIST] [kanji_pos]), ql->hira_string, EFLAGS_EXIST)  != 0) return FALSE;
-       if (regcomp (&(ql->kanji_regex                         [GW_QUERYLINE_LOCATE][kanji_pos]), ql->hira_string, EFLAGS_LOCATE) != 0) return FALSE;
-       if (gw_regex_create_kanji_high_regex (&(ql->kanji_regex[GW_QUERYLINE_HIGH]  [kanji_pos]), ql->hira_string, EFLAGS_EXIST)  != 0) return FALSE;
-       if (gw_regex_create_kanji_med_regex (&(ql->kanji_regex [GW_QUERYLINE_MED]   [kanji_pos]), ql->hira_string, EFLAGS_EXIST)  != 0) return FALSE;
-       kanji_pos++;
-       ql->kanji_total++;
-     }
+       //Compile the regexes
+       for (i = 0; i < GW_RELEVANCE_TOTAL; i++)
+         if (((*re)[i] = gw_regex_kanji_new (expression, i)) == NULL) all_regex_built = FALSE;
 
-     else if (gw_util_is_furigana_str (generic_atoms[i]))
+       g_free (expression);
+       re++;
+     }
+   }
+
+
+   //Setup the expression to be used in the base of the regex for furigana strings
+   re = ql->re_furi;
+   for (iter = atoms; *iter != NULL && re < (ql->re_furi + length); iter++)
+   {
+     atom = *iter;
+     if (gw_util_is_furigana_str (atom))
      {
-       strcpy(ql->hira_string, generic_atoms[i]);
-       strcpy(generic_atoms[i], "(");
-       strcat(generic_atoms[i], ql->hira_string);
-       strcat(generic_atoms[i], ")");
+       expression = g_strdup_printf ("(%s)", atom);
 
        if (want_hk_conv && gw_util_is_hiragana_str (ql->hira_string))
        {
-         strcpy(temp, ql->hira_string);
+         temp = g_strdup (atom);
          gw_util_str_shift_hira_to_kata (temp);
-	       strcat(generic_atoms[i], "|");
-         strcat(generic_atoms[i], "(");
-         strcat(generic_atoms[i], temp);
-         strcat(generic_atoms[i], ")");
+         g_free (expression);
+         expression = g_strdup_printf("(%s)|(%s)", atom, temp);
+         g_free (temp);
        }
        else if (want_kh_conv && gw_util_is_katakana_str (ql->hira_string))
        {
-         strcpy(temp, ql->hira_string);
+         temp = g_strdup (atom);
          gw_util_str_shift_kata_to_hira (temp);
-	       strcat(generic_atoms[i], "|");
-         strcat(generic_atoms[i], "(");
-         strcat(generic_atoms[i], temp);
-         strcat(generic_atoms[i], ")");
+         g_free (expression);
+         expression = g_strdup_printf("(%s)|(%s)", atom, temp);
+         g_free (temp);
        }
 
-       if (regcomp (&(ql->furi_regex                        [GW_QUERYLINE_EXIST] [furi_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0)  return FALSE;
-       if (regcomp (&(ql->furi_regex                        [GW_QUERYLINE_LOCATE][furi_pos]), generic_atoms[i], EFLAGS_LOCATE) != 0)  return FALSE;
-       if (gw_regex_create_furi_high_regex (&(ql->furi_regex[GW_QUERYLINE_HIGH]  [furi_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0)  return FALSE;
-       if (gw_regex_create_furi_med_regex  (&(ql->furi_regex[GW_QUERYLINE_MED]   [furi_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0)  return FALSE;
-       furi_pos++;
-       ql->furi_total++;
-       strcpy(generic_atoms[i], ql->hira_string);
-     }
-     else if (gw_util_is_romaji_str (generic_atoms[i]))
-     {
-       strcpy(ql->hira_string, generic_atoms[i]);
-       if (regcomp (&(ql->roma_regex                        [GW_QUERYLINE_EXIST] [roma_pos]), ql->hira_string, EFLAGS_EXIST)  != 0)  return FALSE;
-       if (regcomp (&(ql->roma_regex                        [GW_QUERYLINE_LOCATE][roma_pos]), ql->hira_string, EFLAGS_LOCATE) != 0)  return FALSE;
-       if (gw_regex_create_roma_high_regex (&(ql->roma_regex[GW_QUERYLINE_HIGH]  [roma_pos]), ql->hira_string, EFLAGS_EXIST)  != 0)  return FALSE;
-       if (gw_regex_create_roma_med_regex  (&(ql->roma_regex[GW_QUERYLINE_MED]   [roma_pos]), ql->hira_string, EFLAGS_EXIST)  != 0)  return FALSE;
-       roma_pos++;
-       ql->roma_total++;
+       //Compile the regexes
+       for (i = 0; i < GW_RELEVANCE_TOTAL; i++)
+         if (((*re)[i] = gw_regex_furi_new (expression, i)) == NULL) all_regex_built = FALSE;
 
-       //Add coversions to search on success
-       if (gw_util_str_roma_to_hira (generic_atoms[i], temp, 300) && want_rk_conv)
+       g_free (expression);
+       re++;
+     }
+
+     else if (gw_util_is_romaji_str (atom) && gw_util_str_roma_to_hira (atom, buffer, 300) && want_rk_conv)
+     {
+       expression = g_strdup_printf("(%s)", buffer);
+
+       if (want_hk_conv)
        {
-         //Hiragana
-         strcpy(ql->hira_string, "(");
-         strcat(ql->hira_string, temp);
-         strcat(ql->hira_string, ")");
-
-         if (want_hk_conv)
-         {
-           //Katakana
-	         strcat(ql->hira_string, "|");
-           strcat(ql->hira_string, "(");
-           gw_util_str_shift_hira_to_kata (temp);
-           strcat(ql->hira_string, temp);
-           strcat(ql->hira_string, ")");
-         }
+         temp = g_strdup (buffer);
+         gw_util_str_shift_hira_to_kata (temp);
+         g_free (expression);
+         expression = g_strdup_printf("(%s)|(%s)", buffer, temp);
+         g_free (temp);
        }
-       if (regcomp (&(ql->furi_regex                        [GW_QUERYLINE_EXIST] [furi_pos]), ql->hira_string, EFLAGS_EXIST)  != 0)  return FALSE;
-       if (regcomp (&(ql->furi_regex                        [GW_QUERYLINE_LOCATE][furi_pos]), ql->hira_string, EFLAGS_LOCATE) != 0)  return FALSE;
-       if (gw_regex_create_furi_high_regex (&(ql->furi_regex[GW_QUERYLINE_HIGH]
-       [furi_pos]), ql->hira_string, EFLAGS_EXIST)  != 0)  return FALSE;
-       if (gw_regex_create_furi_med_regex  (&(ql->furi_regex[GW_QUERYLINE_MED]   [furi_pos]), ql->hira_string, EFLAGS_EXIST)  != 0)  return FALSE;
-       furi_pos++;
-       ql->furi_total++;
+
+       //Compile the regexes
+       for (i = 0; i < GW_RELEVANCE_TOTAL; i++)
+         if (((*re)[i] = gw_regex_furi_new (expression, i)) == NULL) all_regex_built = FALSE;
+
+       g_free (expression);
+       re++;
      }
-     else
-     {
-       if (regcomp (&(ql->mix_regex                       [GW_QUERYLINE_EXIST] [mix_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0) return FALSE;
-       if (regcomp (&(ql->mix_regex                       [GW_QUERYLINE_LOCATE][mix_pos]), generic_atoms[i], EFLAGS_LOCATE) != 0) return FALSE;
-       if (gw_regex_create_mix_high_regex (&(ql->mix_regex[GW_QUERYLINE_HIGH]  [mix_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0) return FALSE;
-       if (gw_regex_create_mix_med_regex  (&(ql->mix_regex[GW_QUERYLINE_MED]   [mix_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0) return FALSE;
-       mix_pos++;
-       ql->mix_total++;
-     }
-     i++;
    }
 
-   return TRUE;
+
+   //Setup the expression to be used in the base of the regex
+   re = ql->re_roma;
+   for (iter = atoms; *iter != NULL && re < (ql->re_roma + length); iter++)
+   {
+     atom = *iter;
+     if (gw_util_is_romaji_str (atom))
+     {
+       expression = g_strdup (atom);
+
+       //Compile the regexes
+       for (i = 0; i < GW_RELEVANCE_TOTAL; i++)
+         if (((*re)[i] = gw_regex_romaji_new (expression, i)) == NULL) all_regex_built = FALSE;
+
+       g_free (expression);
+       re++;
+     }
+   }  
+
+
+   //Setup the expression to be used in the base of the regex
+   re = ql->re_mix;
+   for (iter = atoms; iter != NULL; iter++)
+   {
+     atom = *iter;
+     if (!gw_util_is_kanji_ish_str (atom) &&
+         !gw_util_is_kanji_str (atom)     && 
+         !gw_util_is_furigana_str (atom)  &&
+         !gw_util_is_romaji_str (atom)      )
+     {
+       expression = g_strdup (atom);
+
+       //Compile the regexes
+       for (i = 0; i < GW_RELEVANCE_TOTAL; i++)
+         if (((*re)[i] = gw_regex_romaji_new (expression, i)) == NULL) all_regex_built = FALSE;
+
+       g_free (expression);
+       re++;
+     }
+   }
+
+   return all_regex_built;
 }
 
 
@@ -317,7 +337,7 @@ int gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
 //! @param ql Pointer to a GwQueryLine object ot parse a query string into.
 //! @param string constant string that is the raw query.
 //!
-int gw_queryline_parse_kanjidict_string (GwQueryLine *ql, const char* string)
+gboolean gw_queryline_parse_kanjidict_string (GwQueryLine *ql, const char* string)
 {
     //Make sure it isn't already created
     if (ql->string != NULL && strcmp(ql->string, string) == 0) return TRUE;
@@ -326,32 +346,34 @@ int gw_queryline_parse_kanjidict_string (GwQueryLine *ql, const char* string)
     g_free (ql->string);
     ql->string = gw_util_prepare_query (string, FALSE);
 
-    //Variable preparations
-    char *ptr = ql->string;
-    char *next = NULL;
-    char temp[300];
-    gunichar character;
-    size_t nmatch = 1;
-    char *start;
-    int length;
-    char atom[MAX_QUERY];
-    regmatch_t pmatch[nmatch];
-    int rk_conv_pref = gw_pref_get_int_by_schema (GW_SCHEMA_BASE, GW_KEY_ROMAN_KANA);
-    gboolean want_rk_conv = (rk_conv_pref == 0 || (rk_conv_pref == 2 && !gw_util_is_japanese_locale()));
+    //Declarations
+    GMatchInfo *match_info;
+    int rk_conv_pref;
+    gboolean want_rk_conv;
+    char *atom;
+    GRegex **re;
+
+    //Initializations
+    rk_conv_pref = gw_pref_get_int_by_schema (GW_SCHEMA_BASE, GW_KEY_ROMAN_KANA);
+    want_rk_conv = (rk_conv_pref == 0 || (rk_conv_pref == 2 && !gw_util_is_japanese_locale()));
+    all_regex_built = TRUE;
+
 
     //Get stroke
-    if (regexec(gw_re[GW_RE_QUERY_STROKES], ptr, nmatch, pmatch, 0) == 0)
+    re = ql->strokes_regex;
+    g_regex_match (gw_re[GW_RE_QUERY_STROKES], ptr, 0, &match_info);
+    while (g_match_info_matches (match_info))
     {
-      start = ptr + pmatch[0].rm_so + 1;
-      length = pmatch[0].rm_eo - pmatch[0].rm_so - 1;
-      strncpy (atom, start, length);
-      atom[length] = '\0';
-      if (gw_regex_create_exact_regex (&(ql->strokes_regex [GW_QUERYLINE_EXIST]  [ql->strokes_total]), atom, EFLAGS_EXIST)  != 0) return FALSE;
-      if (gw_regex_create_exact_regex (&(ql->strokes_regex [GW_QUERYLINE_LOCATE]  [ql->strokes_total]), atom, EFLAGS_LOCATE)  != 0) return FALSE;
-      if (gw_regex_create_exact_regex (&(ql->strokes_regex [GW_QUERYLINE_HIGH]  [ql->strokes_total]), atom, EFLAGS_EXIST)  != 0) return FALSE;
-      if (gw_regex_create_exact_regex (&(ql->strokes_regex [GW_QUERYLINE_MED]  [ql->strokes_total]), atom, EFLAGS_EXIST)  != 0) return FALSE;
-      ql->strokes_total++;
+      atom = g_match_info_fetch (match_info, 0);
+      printf("%s\n", atom);
+
+      for (i = 0; i < GW_RELEVANCE_TOTAL; i++)
+        if ((*re)[i] gw_regex_new (atom, i) == NULL) all_regex_built = FALSE;
+
+      g_free (atom);
+      re++;
     }
+    g_match_info_free (match_info);
 
     //Get Frequency
     if (regexec(gw_re[GW_RE_QUERY_FREQUENCY], ptr, nmatch, pmatch, 0) == 0)
@@ -467,7 +489,7 @@ int gw_queryline_parse_kanjidict_string (GwQueryLine *ql, const char* string)
       }
     }
 
-    return TRUE;
+    return all_regex_built;
 }
 
 
@@ -479,7 +501,7 @@ int gw_queryline_parse_kanjidict_string (GwQueryLine *ql, const char* string)
 //! @param ql Pointer to a GwQueryLine object ot parse a query string into.
 //! @param string constant string that is the raw query.
 //!
-int gw_queryline_parse_exampledict_string (GwQueryLine *ql, const char* string)
+gboolean gw_queryline_parse_exampledict_string (GwQueryLine *ql, const char* string)
 {
     //Make sure it isn't already created
     if (ql->string != NULL && strcmp(ql->string, string) == 0) return TRUE;
@@ -499,16 +521,16 @@ int gw_queryline_parse_exampledict_string (GwQueryLine *ql, const char* string)
 
    //Create atoms
    int i = 0;
-   char *generic_atoms[MAX_ATOMS];
+   char *atoms[MAX_ATOMS];
 
-   generic_atoms[i] = ql->string;
-   while ((generic_atoms[i + 1] = g_utf8_strchr (generic_atoms[i], -1, L'&')) != NULL && i < MAX_ATOMS)
+   atoms[i] = ql->string;
+   while ((atoms[i + 1] = g_utf8_strchr (atoms[i], -1, L'&')) != NULL && i < MAX_ATOMS)
    {
      i++;
-     *generic_atoms[i] = '\0';
-     *generic_atoms[i]++;
+     *atoms[i] = '\0';
+     *atoms[i]++;
    }
-   generic_atoms[i + 1] = NULL;
+   atoms[i + 1] = NULL;
 
    //Organize atoms
    i = 0;
@@ -519,32 +541,32 @@ int gw_queryline_parse_exampledict_string (GwQueryLine *ql, const char* string)
    char temp[300];
    gboolean want_conv;
 
-   while (generic_atoms[i] != NULL && i < MAX_ATOMS)
+   while (atoms[i] != NULL && i < MAX_ATOMS)
    {
-     if (gw_util_is_kanji_ish_str (generic_atoms[i]) || gw_util_is_kanji_str (generic_atoms[i]))
+     if (gw_util_is_kanji_ish_str (atoms[i]) || gw_util_is_kanji_str (atoms[i]))
      {
-       strcpy(ql->hira_string, generic_atoms[i]);
-       if (regcomp (&(ql->kanji_regex                         [GW_QUERYLINE_EXIST] [kanji_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0) return FALSE;
-       if (regcomp (&(ql->kanji_regex                         [GW_QUERYLINE_LOCATE][kanji_pos]), generic_atoms[i], EFLAGS_LOCATE) != 0) return FALSE;
-       if (regcomp (&(ql->kanji_regex                         [GW_QUERYLINE_HIGH] [kanji_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0) return FALSE;
-       if (gw_regex_create_kanji_med_regex (&(ql->kanji_regex [GW_QUERYLINE_MED]   [kanji_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0) return FALSE;
+       strcpy(ql->hira_string, atoms[i]);
+       if (regcomp (&(ql->kanji_regex                         [GW_QUERYLINE_EXIST] [kanji_pos]), atoms[i], EFLAGS_EXIST)  != 0) return FALSE;
+       if (regcomp (&(ql->kanji_regex                         [GW_QUERYLINE_LOCATE][kanji_pos]), atoms[i], EFLAGS_LOCATE) != 0) return FALSE;
+       if (regcomp (&(ql->kanji_regex                         [GW_QUERYLINE_HIGH] [kanji_pos]), atoms[i], EFLAGS_EXIST)  != 0) return FALSE;
+       if (gw_regex_create_kanji_med_regex (&(ql->kanji_regex [GW_QUERYLINE_MED]   [kanji_pos]), atoms[i], EFLAGS_EXIST)  != 0) return FALSE;
        kanji_pos++;
        ql->kanji_total++;
      }
 
-     else if (gw_util_is_furigana_str (generic_atoms[i]))
+     else if (gw_util_is_furigana_str (atoms[i]))
      {
-       strcpy(ql->hira_string, generic_atoms[i]);
-       if (regcomp (&(ql->furi_regex                        [GW_QUERYLINE_EXIST] [furi_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0)  return FALSE;
-       if (regcomp (&(ql->furi_regex                        [GW_QUERYLINE_LOCATE][furi_pos]), generic_atoms[i], EFLAGS_LOCATE) != 0)  return FALSE;
-       if (regcomp (&(ql->furi_regex                        [GW_QUERYLINE_HIGH] [furi_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0)  return FALSE;
-       if (gw_regex_create_furi_med_regex  (&(ql->furi_regex[GW_QUERYLINE_MED]   [furi_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0)  return FALSE;
+       strcpy(ql->hira_string, atoms[i]);
+       if (regcomp (&(ql->furi_regex                        [GW_QUERYLINE_EXIST] [furi_pos]), atoms[i], EFLAGS_EXIST)  != 0)  return FALSE;
+       if (regcomp (&(ql->furi_regex                        [GW_QUERYLINE_LOCATE][furi_pos]), atoms[i], EFLAGS_LOCATE) != 0)  return FALSE;
+       if (regcomp (&(ql->furi_regex                        [GW_QUERYLINE_HIGH] [furi_pos]), atoms[i], EFLAGS_EXIST)  != 0)  return FALSE;
+       if (gw_regex_create_furi_med_regex  (&(ql->furi_regex[GW_QUERYLINE_MED]   [furi_pos]), atoms[i], EFLAGS_EXIST)  != 0)  return FALSE;
        furi_pos++;
        ql->furi_total++;
 
-       if (want_hk_conv && gw_util_is_hiragana_str (generic_atoms[i]))
+       if (want_hk_conv && gw_util_is_hiragana_str (atoms[i]))
        {
-         strcpy(temp, generic_atoms[i]);
+         strcpy(temp, atoms[i]);
          gw_util_str_shift_hira_to_kata (temp);
          if (regcomp (&(ql->furi_regex                        [GW_QUERYLINE_EXIST] [furi_pos]), temp            , EFLAGS_EXIST)  != 0)  return FALSE;
          if (regcomp (&(ql->furi_regex                        [GW_QUERYLINE_LOCATE][furi_pos]), temp            , EFLAGS_LOCATE) != 0)  return FALSE;
@@ -553,11 +575,11 @@ int gw_queryline_parse_exampledict_string (GwQueryLine *ql, const char* string)
          furi_pos++;
          ql->furi_total++;
        }
-       else if (want_kh_conv && gw_util_is_katakana_str (generic_atoms[i]))
+       else if (want_kh_conv && gw_util_is_katakana_str (atoms[i]))
        {
-         strcpy(temp, generic_atoms[i]);
+         strcpy(temp, atoms[i]);
          gw_util_str_shift_kata_to_hira (temp);
-         strcpy(ql->hira_string, generic_atoms[i]);
+         strcpy(ql->hira_string, atoms[i]);
          if (regcomp (&(ql->furi_regex                        [GW_QUERYLINE_LOCATE][furi_pos]), temp            , EFLAGS_LOCATE) != 0)  return FALSE;
          if (regcomp (&(ql->furi_regex                        [GW_QUERYLINE_EXIST] [furi_pos]), temp            , EFLAGS_EXIST)  != 0)  return FALSE;
          if (regcomp (&(ql->furi_regex                        [GW_QUERYLINE_HIGH][furi_pos]), temp            , EFLAGS_LOCATE) != 0)  return FALSE;
@@ -566,17 +588,17 @@ int gw_queryline_parse_exampledict_string (GwQueryLine *ql, const char* string)
          ql->furi_total++;
        }
      }
-     else if (gw_util_is_romaji_str (generic_atoms[i]))
+     else if (gw_util_is_romaji_str (atoms[i]))
      {
-       if (regcomp (&(ql->roma_regex                        [GW_QUERYLINE_EXIST] [roma_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0)  return FALSE;
-       if (regcomp (&(ql->roma_regex                        [GW_QUERYLINE_LOCATE][roma_pos]), generic_atoms[i], EFLAGS_LOCATE) != 0)  return FALSE;
-       if (gw_regex_create_roma_med_regex  (&(ql->roma_regex[GW_QUERYLINE_HIGH]   [roma_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0)  return FALSE;
-       if (gw_regex_create_roma_med_regex  (&(ql->roma_regex[GW_QUERYLINE_MED]   [roma_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0)  return FALSE;
+       if (regcomp (&(ql->roma_regex                        [GW_QUERYLINE_EXIST] [roma_pos]), atoms[i], EFLAGS_EXIST)  != 0)  return FALSE;
+       if (regcomp (&(ql->roma_regex                        [GW_QUERYLINE_LOCATE][roma_pos]), atoms[i], EFLAGS_LOCATE) != 0)  return FALSE;
+       if (gw_regex_create_roma_med_regex  (&(ql->roma_regex[GW_QUERYLINE_HIGH]   [roma_pos]), atoms[i], EFLAGS_EXIST)  != 0)  return FALSE;
+       if (gw_regex_create_roma_med_regex  (&(ql->roma_regex[GW_QUERYLINE_MED]   [roma_pos]), atoms[i], EFLAGS_EXIST)  != 0)  return FALSE;
        roma_pos++;
        ql->roma_total++;
 
        //Add coversions to search on success
-       if (gw_util_str_roma_to_hira (generic_atoms[i], temp, 300)  && want_rk_conv)
+       if (gw_util_str_roma_to_hira (atoms[i], temp, 300)  && want_rk_conv)
        {
          //Hiragana
          strcpy(ql->hira_string, temp);
@@ -602,17 +624,17 @@ int gw_queryline_parse_exampledict_string (GwQueryLine *ql, const char* string)
      }
      else
      {
-       if (regcomp (&(ql->mix_regex                       [GW_QUERYLINE_EXIST] [mix_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0) return FALSE;
-       if (regcomp (&(ql->mix_regex                       [GW_QUERYLINE_LOCATE][mix_pos]), generic_atoms[i], EFLAGS_LOCATE) != 0) return FALSE;
-       if (gw_regex_create_mix_high_regex (&(ql->mix_regex[GW_QUERYLINE_HIGH]  [mix_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0) return FALSE;
-       if (gw_regex_create_mix_med_regex  (&(ql->mix_regex[GW_QUERYLINE_MED]   [mix_pos]), generic_atoms[i], EFLAGS_EXIST)  != 0) return FALSE;
+       if (regcomp (&(ql->mix_regex                       [GW_QUERYLINE_EXIST] [mix_pos]), atoms[i], EFLAGS_EXIST)  != 0) return FALSE;
+       if (regcomp (&(ql->mix_regex                       [GW_QUERYLINE_LOCATE][mix_pos]), atoms[i], EFLAGS_LOCATE) != 0) return FALSE;
+       if (gw_regex_create_mix_high_regex (&(ql->mix_regex[GW_QUERYLINE_HIGH]  [mix_pos]), atoms[i], EFLAGS_EXIST)  != 0) return FALSE;
+       if (gw_regex_create_mix_med_regex  (&(ql->mix_regex[GW_QUERYLINE_MED]   [mix_pos]), atoms[i], EFLAGS_EXIST)  != 0) return FALSE;
        mix_pos++;
        ql->mix_total++;
      }
      i++;
    }
 
-   return TRUE;
+   return all_regex_built;
 }
 
 

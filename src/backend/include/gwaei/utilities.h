@@ -64,6 +64,7 @@ gboolean gw_util_is_romaji_str (char*);
 gboolean gw_util_is_kanji_ish_str (char*);
 gboolean gw_util_is_kanji_str (char*);
 gboolean gw_util_is_furigana_str (char*);
+gboolean gw_util_is_yojijukugo_str (const char*);
 
 void gw_util_str_shift_kata_to_hira (char*);
 void gw_util_str_shift_hira_to_kata (char*);
