@@ -127,8 +127,8 @@ static void *install_thread (gpointer data)
         gdk_threads_enter();
           gw_ui_dict_install_set_message (il, NULL, gettext("Installing..."));
         gdk_threads_leave();
-        GwDictInfo *radicals_dict = gw_dictlist_get_dictinfo_by_id (GW_DICT_ID_RADICALS);
-        GwDictInfo *kanji_dict = gw_dictlist_get_dictinfo_by_id (GW_DICT_ID_KANJI);
+        GwDictInfo *radicals_dict = gw_dictinfolist_get_dictinfo_by_id (GW_DICT_ID_RADICALS);
+        GwDictInfo *kanji_dict = gw_dictinfolist_get_dictinfo_by_id (GW_DICT_ID_KANJI);
         il->di = radicals_dict;
         install_thread (data);
         il->di = kanji_dict;

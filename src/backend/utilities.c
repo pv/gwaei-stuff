@@ -120,7 +120,6 @@ GwEngine gw_util_get_engine_from_enginename (const char *enginename)
 
 
 
-
 //!
 //! @brief Gets a dictionary folder path for the given engine
 //!
@@ -256,24 +255,7 @@ gboolean gw_util_is_katakana_str (const char *input)
 //!
 gboolean gw_util_is_furigana_str (const char *input)
 {
-    //Declarations
-    gboolean is_consistant;
-    gunichar character;
-    GUnicodeScript script;
-    const char *ptr;
-
-    //Initializations
-    is_consistant = TRUE;
-    
-    //Loop over the string checking for characters inconsistant with the script
-    for (ptr = input; *ptr != '\0' && is_consistant; ptr = g_utf8_next_char (ptr))
-    {
-      character = g_utf8_get_char (ptr);
-      script = g_unichar_get_script (character);
-      if (script != G_UNICODE_SCRIPT_KATAKANA && script != G_UNICODE_SCRIPT_HIRAGANA) is_consistant = FALSE;
-    }
-
-    return is_consistant;
+    return (gw_util_is_katakana_str (input) || gw_util_is_hiragana_str (input));
 }
 
 
@@ -971,6 +953,7 @@ gchar* gw_util_prepare_query (const char* input, gboolean strip)
     return output;
 }
 
+
 //!
 //! @brief Sanitize an input string
 //!
@@ -1094,7 +1077,7 @@ gchar* gw_util_enlarge_halfwidth_japanese (const gchar* text)
 //!
 //! @return Returns true if it is a japanese local
 //!
-gboolean gw_util_is_japanese_locale()
+gboolean gw_util_is_japanese_locale ()
 {
     return ( setlocale(LC_MESSAGES, NULL) != NULL &&
              (

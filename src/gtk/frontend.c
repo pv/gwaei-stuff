@@ -115,7 +115,7 @@ void gw_frontend_start_gtk (int argc, char* argv[])
     gw_common_show_window ("main_window");
 
     //Show the settings dialog if no dictionaries are installed
-    if (gw_dictlist_get_total () == 0) {
+    if (gw_dictinfolist_get_total () == 0) {
       do_settings(NULL, GINT_TO_POINTER (1));
     }
 
@@ -126,7 +126,7 @@ void gw_frontend_start_gtk (int argc, char* argv[])
     //Set the initial dictionary
     if (_arg_dictionary != NULL)
     {
-      GwDictInfo *di = gw_dictlist_get_dictinfo_by_alias (_arg_dictionary);
+      GwDictInfo *di = gw_dictinfolist_get_dictinfo_by_alias (_arg_dictionary);
       if (di != NULL)
       {
         gw_ui_set_dictionary (di->load_position);

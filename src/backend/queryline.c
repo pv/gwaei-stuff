@@ -203,6 +203,7 @@ gboolean gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
    for (iter = atoms; *iter != NULL && re < (ql->re_kanji + length); iter++)
    {
      atom = *iter;
+
      if (gw_util_is_kanji_ish_str (atom) || gw_util_is_kanji_str (atom)) //Figures out if the string may contain hiragana
      {
        expression = g_strdup_printf ("(%s)", atom);
@@ -226,7 +227,7 @@ gboolean gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
 
        //Compile the regexes
        for (i = 0; i < GW_RELEVANCE_TOTAL; i++)
-         if (((*re)[i] = gw_regex_kanji_new (expression, i)) == NULL) all_regex_built = FALSE;
+         if (((*re)[i] = gw_regex_kanji_new (expression, GW_ENGINE_EDICT, i)) == NULL) all_regex_built = FALSE;
 
        g_free (expression);
        re++;
@@ -262,12 +263,11 @@ gboolean gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
 
        //Compile the regexes
        for (i = 0; i < GW_RELEVANCE_TOTAL; i++)
-         if (((*re)[i] = gw_regex_furi_new (expression, i)) == NULL) all_regex_built = FALSE;
+         if (((*re)[i] = gw_regex_furi_new (expression, GW_ENGINE_EDICT, i)) == NULL) all_regex_built = FALSE;
 
        g_free (expression);
        re++;
      }
-
      else if (gw_util_is_romaji_str (atom) && gw_util_str_roma_to_hira (atom, buffer, 300) && want_rk_conv)
      {
        expression = g_strdup_printf("(%s)", buffer);
@@ -283,7 +283,7 @@ gboolean gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
 
        //Compile the regexes
        for (i = 0; i < GW_RELEVANCE_TOTAL; i++)
-         if (((*re)[i] = gw_regex_furi_new (expression, i)) == NULL) all_regex_built = FALSE;
+         if (((*re)[i] = gw_regex_furi_new (expression, GW_ENGINE_EDICT, i)) == NULL) all_regex_built = FALSE;
 
        g_free (expression);
        re++;
@@ -302,7 +302,7 @@ gboolean gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
 
        //Compile the regexes
        for (i = 0; i < GW_RELEVANCE_TOTAL; i++)
-         if (((*re)[i] = gw_regex_romaji_new (expression, i)) == NULL) all_regex_built = FALSE;
+         if (((*re)[i] = gw_regex_romaji_new (expression, GW_ENGINE_EDICT, i)) == NULL) all_regex_built = FALSE;
 
        g_free (expression);
        re++;
@@ -312,7 +312,7 @@ gboolean gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
 
    //Setup the expression to be used in the base of the regex
    re = ql->re_mix;
-   for (iter = atoms; iter != NULL; iter++)
+   for (iter = atoms; *iter != NULL && re < (ql->re_roma + length); iter++)
    {
      atom = *iter;
      if (!gw_util_is_kanji_ish_str (atom) &&
@@ -324,7 +324,7 @@ gboolean gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
 
        //Compile the regexes
        for (i = 0; i < GW_RELEVANCE_TOTAL; i++)
-         if (((*re)[i] = gw_regex_romaji_new (expression, i)) == NULL) all_regex_built = FALSE;
+         if (((*re)[i] = gw_regex_mix_new (expression, GW_ENGINE_EDICT, i)) == NULL) all_regex_built = FALSE;
 
        g_free (expression);
        re++;
@@ -357,7 +357,7 @@ static gboolean _compile_number_search_regex (GRegex ***re, const char* subject,
       expression = g_strdup_printf("\\b%s\\b", match_text);
 
       for (i = 0; all_regex_built && i < GW_RELEVANCE_TOTAL; i++)
-        if (((*iter)[i] = gw_regex_new (expression, i)) == NULL) all_regex_built = FALSE;
+        if (((*iter)[i] = gw_regex_new (expression, GW_ENGINE_KANJI, i)) == NULL) all_regex_built = FALSE;
 
       g_free (expression);
       g_free (match_text);
@@ -472,7 +472,7 @@ gboolean gw_queryline_parse_kanjidict_string (GwQueryLine *ql, const char* strin
         end = g_utf8_next_char (ptr);
         atom = g_strndup (start, end - start);
         for (i = 0; all_regex_built && i < GW_RELEVANCE_TOTAL; i++)
-          (*re)[i] = gw_regex_new (atom, i);
+          (*re)[i] = gw_regex_new (atom, GW_ENGINE_KANJI, i);
         g_free (atom);
         re++;
       }
@@ -499,7 +499,7 @@ gboolean gw_queryline_parse_kanjidict_string (GwQueryLine *ql, const char* strin
         //Create the regexes
         atom = g_strndup (start, end - start);
         for (i = 0; all_regex_built && i < GW_RELEVANCE_TOTAL; i++)
-          (*re)[i] = gw_regex_new (atom, i);
+          (*re)[i] = gw_regex_new (atom, GW_ENGINE_KANJI, i);
         g_free (atom);
         re++;
       }
@@ -526,7 +526,7 @@ gboolean gw_queryline_parse_kanjidict_string (GwQueryLine *ql, const char* strin
         //Create the regexes
         atom = g_strndup (start, end - start);
         for (i = 0; all_regex_built && i < GW_RELEVANCE_TOTAL; i++)
-          if ((*re)[i] = gw_regex_new (atom, i)) == NULL) all_regex_built = FALSE;
+          if ((*re)[i] = gw_regex_new (atom, GW_ENGINE_KANJI, i)) == NULL) all_regex_built = FALSE;
         g_free (atom);
         re++;
       }

@@ -461,7 +461,7 @@ gwaei-frontend.o: frontend.c /usr/include/stdio.h /usr/include/features.h \
  /usr/include/gtk-2.0/gtk/gtkpreview.h \
  /usr/include/gtk-2.0/gtk/gtktipsquery.h \
  ../../src/backend/include/gwaei/backend.h \
- ../../src/backend/include/gwaei/regex.h /usr/include/regex.h \
+ ../../src/backend/include/gwaei/regex.h \
  ../../src/backend/include/gwaei/utilities.h \
  ../../src/backend/include/gwaei/io.h \
  ../../src/backend/include/gwaei/dictinfo.h \
@@ -1593,8 +1593,6 @@ gwaei-frontend.o: frontend.c /usr/include/stdio.h /usr/include/features.h \
 ../../src/backend/include/gwaei/backend.h:
 
 ../../src/backend/include/gwaei/regex.h:
-
-/usr/include/regex.h:
 
 ../../src/backend/include/gwaei/utilities.h:
 

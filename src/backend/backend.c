@@ -60,7 +60,7 @@ void gw_backend_initialize (int argc, char* argv[])
 
     gw_regex_initialize ();
     gw_pref_initialize ();
-    gw_dictlist_initialize ();
+    gw_dictinfolist_initialize ();
     gw_dictinstlist_initialize ();
     gw_historylist_initialize ();
 
@@ -72,7 +72,7 @@ void gw_backend_free ()
 {
     gw_historylist_free ();
     gw_dictinstlist_free ();
-    gw_dictlist_free ();
+    gw_dictinfolist_free ();
     gw_pref_free ();
     gw_regex_free ();
 }

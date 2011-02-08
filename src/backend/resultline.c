@@ -109,7 +109,6 @@ void gw_resultline_free (GwResultLine *item)
 //!
 void gw_resultline_parse_edict_result_string (GwResultLine *rl)
 {
-/*
     //Reinitialize Variables to help prevent craziness
     rl->def_start[0] = NULL;
     rl->def_total = 0;
@@ -218,7 +217,6 @@ void gw_resultline_parse_edict_result_string (GwResultLine *rl)
         *(temp - 1) = '\0';
       }
     }
-*/
 }
 
 

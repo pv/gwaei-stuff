@@ -68,7 +68,7 @@ G_MODULE_EXPORT void do_radical_search (GtkWidget *widget, gpointer data)
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
-    GwDictInfo *di = gw_dictlist_get_dictinfo (GW_ENGINE_KANJI, "Kanji");
+    GwDictInfo *di = gw_dictinfolist_get_dictinfo (GW_ENGINE_KANJI, "Kanji");
     if (di == NULL) return;
 
     //Ininitializations

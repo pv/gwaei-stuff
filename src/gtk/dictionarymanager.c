@@ -41,7 +41,7 @@ G_MODULE_EXPORT void do_list_store_row_changed_action (GtkTreeModel *model,
       }
       while (gtk_tree_model_iter_next (GTK_TREE_MODEL (_model), &iter));
     }
-    gw_dictlist_save_dictionary_order_pref ();
+    gw_dictinfolist_save_dictionary_order_pref ();
     gw_settings_dictionary_manager_update_items ();
     g_signal_handler_unblock (_model, _list_update_handler_id);
 }
@@ -145,7 +145,7 @@ void gw_settings_dictionary_manager_update_items ()
     GtkWidget *item = NULL;
 
     
-    for (iter = gw_dictlist_get_list(); iter != NULL; iter = iter->next)
+    for (iter = gw_dictinfolist_get_list(); iter != NULL; iter = iter->next)
     {
       //Recreate the liststore
       di = (GwDictInfo*) iter->data;
@@ -234,7 +234,7 @@ G_MODULE_EXPORT void do_remove_dictionary_action (GtkWidget *widget, gpointer da
 
     path = gtk_tree_model_get_path (GTK_TREE_MODEL (_model), &iter);
     gint* indices = gtk_tree_path_get_indices (path);
-    list = gw_dictlist_get_dict_by_load_position (*indices);
+    list = gw_dictinfolist_get_dict_by_load_position (*indices);
     gtk_tree_path_free (path);
     path = NULL;
 

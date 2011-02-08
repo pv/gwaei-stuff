@@ -55,9 +55,9 @@ static void     _sort_and_normalize_dictlist_load_order ();
 //!
 //! This object is used to help manage groups of dictionaries in a sane way.
 //!
-//! @return An allocated GwDictList that will be needed to be freed by gw_dictlist_free ()
+//! @return An allocated GwDictList that will be needed to be freed by gw_dictinfolist_free ()
 //!
-GwDictList* gw_dictlist_new ()
+GwDictList* gw_dictinfolist_new ()
 {
     GwDictList *temp;
 
@@ -80,7 +80,7 @@ GwDictList* gw_dictlist_new ()
 //!
 //! @return The position in the GwDictList of the GwDictInfo
 //!
-GList* gw_dictlist_get_selected ()
+GList* gw_dictinfolist_get_selected ()
 {
     return _dictionaries->selected;
 }
@@ -94,7 +94,7 @@ GList* gw_dictlist_get_selected ()
 //!
 //! @return The position in the GwDictList of the GwDictInfo
 //!
-GwDictInfo* gw_dictlist_get_selected_dictinfo ()
+GwDictInfo* gw_dictinfolist_get_selected_dictinfo ()
 {
     GList *iter;
     GwDictInfo *di;
@@ -117,9 +117,9 @@ GwDictInfo* gw_dictlist_get_selected_dictinfo ()
 //! @param request The GUI load position of the desired dictionary
 //! @return The position in the GwDictList of the GwDictInfo
 //!
-GList* gw_dictlist_get_dict_by_load_position (int request)
+GList* gw_dictinfolist_get_dict_by_load_position (int request)
 {
-    GList* current = gw_dictlist_get_list();
+    GList* current = gw_dictinfolist_get_list();
     GwDictInfo *di = NULL;
     do
     {
@@ -141,9 +141,9 @@ GList* gw_dictlist_get_dict_by_load_position (int request)
 //! @param request The GUI load position of the desired dictionary
 //! @return The position in the GwDictList of the GwDictInfo
 //!
-GList* gw_dictlist_set_selected_by_load_position(int request)
+GList* gw_dictinfolist_set_selected_by_load_position(int request)
 {
-    GList* current_dictionary = gw_dictlist_get_list();
+    GList* current_dictionary = gw_dictinfolist_get_list();
     do
     {
        if (((GwDictInfo*)current_dictionary->data)->load_position == request)
@@ -162,10 +162,10 @@ GList* gw_dictlist_set_selected_by_load_position(int request)
 //! @param ENGINE Engine of the dictionary to add
 //! @param FILENAME Name of the dictionary to add
 //!
-void gw_dictlist_add_dictionary (const GwEngine ENGINE, const char *FILENAME)
+void gw_dictinfolist_add_dictionary (const GwEngine ENGINE, const char *FILENAME)
 {
     //Sanity check
-    if (gw_dictlist_check_if_loaded (ENGINE, FILENAME) == TRUE) return;
+    if (gw_dictinfolist_check_if_loaded (ENGINE, FILENAME) == TRUE) return;
 
     //Declarations
     GwDictInfo *di;
@@ -187,7 +187,7 @@ void gw_dictlist_add_dictionary (const GwEngine ENGINE, const char *FILENAME)
 //! @param name Name of the dictionary to add
 //! @return Returns the dictionary object freed or null.
 //!
-GList* gw_dictlist_remove_first()
+GList* gw_dictinfolist_remove_first()
 {
     GList *list;
     list = _dictionaries->list;
@@ -203,10 +203,10 @@ GList* gw_dictlist_remove_first()
 //! The work of freeing each individual dictionary is automatically handled,
 //! removing the chance for mistakes.
 //!
-void gw_dictlist_free ()
+void gw_dictinfolist_free ()
 {
     while (_dictionaries->list != NULL)
-      _dictionaries->list = gw_dictlist_remove_first();
+      _dictionaries->list = gw_dictinfolist_remove_first();
 
     g_mutex_free (_dictionaries->mutex);
     _dictionaries->mutex = NULL;
@@ -226,7 +226,7 @@ void gw_dictlist_free ()
 //! @param NAME A constant string to search for in the dictionary names.
 //! @returns The requested GwDictInfo object if found or null.
 //!
-GwDictInfo* gw_dictlist_get_dictinfo (const GwEngine ENGINE, const char* FILENAME)
+GwDictInfo* gw_dictinfolist_get_dictinfo (const GwEngine ENGINE, const char* FILENAME)
 {
     //Declarations
     GList *iter;
@@ -254,7 +254,7 @@ GwDictInfo* gw_dictlist_get_dictinfo (const GwEngine ENGINE, const char* FILENAM
 //! @param NAME request a const string to search for in the dictionary names
 //! @return returns true if the dictionary is installed
 //!
-gboolean gw_dictlist_check_if_loaded (const GwEngine ENGINE, const char* FILENAME)
+gboolean gw_dictinfolist_check_if_loaded (const GwEngine ENGINE, const char* FILENAME)
 {
     //Declarations
     GList *iter;
@@ -285,7 +285,7 @@ gboolean gw_dictlist_check_if_loaded (const GwEngine ENGINE, const char* FILENAM
 //!
 //! @return Integer representing the number of installed dictionaries
 //!
-int gw_dictlist_get_total()
+int gw_dictinfolist_get_total()
 {
     return g_list_length(_dictionaries->list);
 }
@@ -298,7 +298,7 @@ int gw_dictlist_get_total()
 //!
 //! @return GList of the added dictionaries to the list.
 //!
-GList* gw_dictlist_get_list()
+GList* gw_dictinfolist_get_list()
 {
     return _dictionaries->list;
 }
@@ -310,12 +310,12 @@ GList* gw_dictlist_get_list()
 //! The built in dictionaries are set up, then any additional manually installed
 //! user dictionaries are searched for and set up.
 //!
-void gw_dictlist_initialize ()
+void gw_dictinfolist_initialize ()
 {
     if (_dictionaries != NULL)
-      gw_dictlist_free ();
+      gw_dictinfolist_free ();
 
-    _dictionaries = gw_dictlist_new ();
+    _dictionaries = gw_dictinfolist_new ();
        
     char** dictionaries = gw_io_get_dictionary_file_list ();
     char** atoms = NULL;
@@ -330,13 +330,13 @@ void gw_dictlist_initialize ()
       {
         engine = gw_util_get_engine_from_enginename (atoms[0]);
         dictname = atoms[1];
-        gw_dictlist_add_dictionary (engine, dictname);
+        gw_dictinfolist_add_dictionary (engine, dictname);
       }
       g_strfreev(atoms);
     }
     g_strfreev(dictionaries);
 
-    gw_dictlist_load_dictionary_order_from_pref ();
+    gw_dictinfolist_load_dictionary_order_from_pref ();
 }
 
 
@@ -353,14 +353,14 @@ static gboolean _create_mix_dictionary()
 {
 /*
     GwDictInfo* mix;
-    mix = gw_dictlist_get_dictinfo_by_id(GW_DICT_ID_MIX);
+    mix = gw_dictinfolist_get_dictinfo_by_id(GW_DICT_ID_MIX);
     g_remove (mix->path);
     mix->status = GW_DICT_STATUS_NOT_INSTALLED;
 
     GwDictInfo* kanji;
-    kanji = gw_dictlist_get_dictinfo_by_id(GW_DICT_ID_KANJI);
+    kanji = gw_dictinfolist_get_dictinfo_by_id(GW_DICT_ID_KANJI);
     GwDictInfo* radicals;
-    radicals = gw_dictlist_get_dictinfo_by_id(GW_DICT_ID_RADICALS);
+    radicals = gw_dictinfolist_get_dictinfo_by_id(GW_DICT_ID_RADICALS);
 
     char *mpath = mix->path;
     char *kpath = kanji->path;
@@ -400,9 +400,9 @@ static gboolean _split_places_from_names_dictionary(GError **error)
 {
 /*
     GwDictInfo* di_places;
-    di_places = gw_dictlist_get_dictinfo_by_id (GW_DICT_ID_PLACES);
+    di_places = gw_dictinfolist_get_dictinfo_by_id (GW_DICT_ID_PLACES);
     GwDictInfo* di_names;
-    di_names = gw_dictlist_get_dictinfo_by_id (GW_DICT_ID_NAMES);
+    di_names = gw_dictinfolist_get_dictinfo_by_id (GW_DICT_ID_NAMES);
 
     if (di_names->status == GW_DICT_STATUS_NOT_INSTALLED) return FALSE;
 
@@ -463,12 +463,12 @@ static gboolean _split_places_from_names_dictionary(GError **error)
 //! @param error set a GError to the pointer when an error occurs
 //! @returns Returns true on success
 //!
-void gw_dictlist_preform_postprocessing_by_name (char* name, GError **error)
+void gw_dictinfolist_preform_postprocessing_by_name (char* name, GError **error)
 {
 /*
     //Sanity check
     GwDictInfo* di;
-    di = gw_dictlist_get_dictinfo_by_name (name);
+    di = gw_dictinfolist_get_dictinfo_by_name (name);
     if (di->status != GW_DICT_STATUS_INSTALLING &&
         di->status != GW_DICT_STATUS_UPDATING &&
         di->status != GW_DICT_STATUS_REBUILDING)
@@ -477,9 +477,9 @@ void gw_dictlist_preform_postprocessing_by_name (char* name, GError **error)
       return;
 
     //Setup some pointers
-    GwDictInfo* k_di = gw_dictlist_get_dictinfo_by_id (GW_DICT_ID_KANJI);
-    GwDictInfo* r_di = gw_dictlist_get_dictinfo_by_id (GW_DICT_ID_RADICALS);
-    GwDictInfo* n_di = gw_dictlist_get_dictinfo_by_id (GW_DICT_ID_NAMES);
+    GwDictInfo* k_di = gw_dictinfolist_get_dictinfo_by_id (GW_DICT_ID_KANJI);
+    GwDictInfo* r_di = gw_dictinfolist_get_dictinfo_by_id (GW_DICT_ID_RADICALS);
+    GwDictInfo* n_di = gw_dictinfolist_get_dictinfo_by_id (GW_DICT_ID_NAMES);
 
     //Rebuild the mix dictionary
     if ((di->id == GW_DICT_ID_RADICALS && k_di->status == GW_DICT_STATUS_INSTALLED) || 
@@ -565,7 +565,7 @@ static void _sort_and_normalize_dictlist_load_order ()
 //
 //! @brief Saves the current load order to the preferences
 //
-void gw_dictlist_save_dictionary_order_pref ()
+void gw_dictinfolist_save_dictionary_order_pref ()
 {
     //Make sure things are sorted and normal
     _sort_and_normalize_dictlist_load_order ();
@@ -582,7 +582,7 @@ void gw_dictlist_save_dictionary_order_pref ()
     i = 0;
 
     //Create the string to write to the prefs with the last one NULL terminated
-    for (iter = gw_dictlist_get_list (); iter != NULL && i < GW_DICTLIST_MAX_DICTIONARIES; iter = iter->next)
+    for (iter = gw_dictinfolist_get_list (); iter != NULL && i < GW_DICTLIST_MAX_DICTIONARIES; iter = iter->next)
     {
       di = (GwDictInfo*) iter->data;
       atom[i] = g_strdup_printf ("%s/%s", gw_util_get_engine_name (di->engine), di->filename);
@@ -605,7 +605,7 @@ void gw_dictlist_save_dictionary_order_pref ()
 //
 //! @brief Loads the load order from the preferences
 //
-void gw_dictlist_load_dictionary_order_from_pref ()
+void gw_dictinfolist_load_dictionary_order_from_pref ()
 {
     char load_order[1000];
     char **load_order_array;
@@ -625,7 +625,7 @@ void gw_dictlist_load_dictionary_order_from_pref ()
       if (*ptr == NULL || **ptr == '\0') { 
         printf("failed sanity check 1\n");
         gw_pref_reset_value_by_schema (GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER);
-        gw_dictlist_load_dictionary_order_from_pref ();
+        gw_dictinfolist_load_dictionary_order_from_pref ();
         return;
       }
 
@@ -636,7 +636,7 @@ void gw_dictlist_load_dictionary_order_from_pref ()
       {
         printf("failed sanity check 2\n");
         gw_pref_reset_value_by_schema (GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER);
-        gw_dictlist_load_dictionary_order_from_pref ();
+        gw_dictinfolist_load_dictionary_order_from_pref ();
         return;
       }
 
@@ -644,7 +644,7 @@ void gw_dictlist_load_dictionary_order_from_pref ()
       name = engine_name_array[1];
 
       //Sanity Checking
-      if ((di = gw_dictlist_get_dictinfo (engine, name)) != NULL)
+      if ((di = gw_dictinfolist_get_dictinfo (engine, name)) != NULL)
       {
         di->load_position = load_position;
         load_position++;

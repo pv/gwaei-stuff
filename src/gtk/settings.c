@@ -53,7 +53,7 @@ G_MODULE_EXPORT void gw_ui_update_settings_interface ()
     //Initializations
     builder = gw_common_get_builder ();
     message = GTK_WIDGET (gtk_builder_get_object (builder, "please_install_dictionary_hbox"));
-    list = gw_dictlist_get_list ();
+    list = gw_dictinfolist_get_list ();
 
     //Set the show state of the dictionaries required message
     if (g_list_length (list) > 0)

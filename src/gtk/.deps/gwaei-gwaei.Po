@@ -10,9 +10,8 @@ gwaei-gwaei.o: gwaei.c /usr/include/stdlib.h /usr/include/features.h \
  /usr/include/bits/sigset.h /usr/include/bits/time.h \
  /usr/include/sys/sysmacros.h /usr/include/bits/pthreadtypes.h \
  /usr/include/alloca.h ../../src/backend/include/gwaei/backend.h \
- ../../src/backend/include/gwaei/regex.h /usr/include/regex.h \
- /usr/include/glib-2.0/glib.h /usr/include/glib-2.0/glib/galloca.h \
- /usr/include/glib-2.0/glib/gtypes.h \
+ ../../src/backend/include/gwaei/regex.h /usr/include/glib-2.0/glib.h \
+ /usr/include/glib-2.0/glib/galloca.h /usr/include/glib-2.0/glib/gtypes.h \
  /usr/lib/glib-2.0/include/glibconfig.h \
  /usr/include/glib-2.0/glib/gmacros.h \
  /usr/lib/gcc/i686-pc-linux-gnu/4.5.2/include-fixed/limits.h \
@@ -538,8 +537,6 @@ gwaei-gwaei.o: gwaei.c /usr/include/stdlib.h /usr/include/features.h \
 ../../src/backend/include/gwaei/backend.h:
 
 ../../src/backend/include/gwaei/regex.h:
-
-/usr/include/regex.h:
 
 /usr/include/glib-2.0/glib.h:
 

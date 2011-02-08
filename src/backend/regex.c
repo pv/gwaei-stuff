@@ -108,9 +108,10 @@ void gw_regex_initialize ()
           gw_re[i] = g_regex_new ("\\bF[0-9]{1,4}\\b",  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
           if (error != NULL) exit(EXIT_FAILURE);
           break;
-    case GW_RE_QUERY_JLPT:
+        case GW_RE_QUERY_JLPT:
           gw_re[i] = g_regex_new ("\\bJ[0-4]{1,1}\\b",  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
           if (error != NULL) exit(EXIT_FAILURE);
+          break;
         default:
           g_assert_not_reached();
       }
@@ -150,46 +151,36 @@ void gw_regex_free ()
 //! @param flags GRegexMatchFlags to apply to the regex compilation.  
 //! @returns A newly allocated GRegex that needs to be freed with g_regex_unref ()
 //! 
-GRegex* gw_regex_kanji_new (const char *subject, GwRelevance relevance)
+GRegex* gw_regex_kanji_new (const char *subject, const GwEngine ENGINE, const GwRelevance RELEVANCE)
 {
     //Declarations
     GRegex *re;
-    const char **atom;
+    char *format;
     char *expression;
     GError *error;
 
     //Initializations
     error = NULL;
 
-    switch (relevance)
+    switch (RELEVANCE)
     {
       case GW_RELEVANCE_HIGH:
-        atom = (const char**) malloc(sizeof(char*) * 4);
-        atom[0] = "((^無)|(^不)|(^非)|(^)|(^お)|(^御))(";
-        atom[1] = subject;
-        atom[2] = ")(($))";
-        atom[3] = NULL;
-        expression = g_strjoinv (NULL, atom);
+        format = "^(無|不|非|お|御|)(%s)$";
+        expression = g_strdup_printf(format, subject);
         re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
         g_free (expression);
-        free (atom);
         break;
       case GW_RELEVANCE_MEDIUM:
-        atom = (char**) malloc(sizeof(char*) * 4);
-        atom[0] = "((^)|(^お)|(を)|(に)|(で)|(は)|(と))(";
-        atom[1] = subject;
-        atom[2] = ")((で)|(が)|(の)|(を)|(に)|(で)|(は)|(と)|($))";
-        atom[3] = NULL;
-        expression = g_strjoinv (NULL, atom);
+        format = "^(お|を|に|で|は|と|)(%s)(で|が|の|を|に|で|は|と|$)";
+        expression = g_strdup_printf (format, subject);
         re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
         g_free (expression);
-        free (atom);
         break;
       case GW_RELEVANCE_LOW:
-        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
+        re = g_regex_new (subject,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
         break;
       case GW_RELEVANCE_LOCATE:
-        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
+        re = g_regex_new (subject,  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
         break;
       default:
         g_assert_not_reached();
@@ -208,46 +199,36 @@ GRegex* gw_regex_kanji_new (const char *subject, GwRelevance relevance)
 //! @param relevance How relevant a result to search for
 //! @returns A newly allocated GRegex that needs to be freed with g_regex_unref ()
 //! 
-GRegex* gw_regex_furi_new (const char *subject, GwRelevance relevance)
+GRegex* gw_regex_furi_new (const char *subject, const GwEngine ENGINE, const GwRelevance RELEVANCE)
 {
     //Declarations
     GRegex *re;
-    const char **atom;
+    char *format;
     char *expression;
     GError *error;
 
     //Declarations
     error = NULL;
 
-    switch (relevance)
+    switch (RELEVANCE)
     {
       case GW_RELEVANCE_HIGH:
-        atom = (char**) malloc(sizeof(char*) * 4);
-        atom[0] = "^((お)|())(";
-        atom[1] = subject;
-        atom[2] = ")$";
-        atom[3] = NULL;
-        expression = g_strjoinv (NULL, atom);
+        format = "^(お|)(%s)$";
+        expression = g_strdup_printf (format, subject);
         re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
         g_free (expression);
-        free (atom);
         break;
       case GW_RELEVANCE_MEDIUM:
-        atom = (char**) malloc(sizeof(char*) * 4);
-        atom[0] = "((^)|(^お)|(を)|(に)|(で)|(は)|(と))(";
-        atom[1] = subject;
-        atom[2] = ")((で)|(が)|(の)|(を)|(に)|(で)|(は)|(と)|($))";
-        atom[3] = NULL;
-        expression = g_strjoinv (NULL, atom);
+        format = "^(お|を|に|で|は|と)(%s)(で|が|の|を|に|で|は|と|$)";
+        expression = g_strdup_printf (format, subject);
         re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
         g_free (expression);
-        free (atom);
         break;
       case GW_RELEVANCE_LOW:
-        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
+        re = g_regex_new (subject,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
         break;
       case GW_RELEVANCE_LOCATE:
-        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
+        re = g_regex_new (subject,  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
         break;
       default:
         g_assert_not_reached();
@@ -266,52 +247,39 @@ GRegex* gw_regex_furi_new (const char *subject, GwRelevance relevance)
 //! @param relevance How relevant a result to search for
 //! @returns A newly allocated GRegex that needs to be freed with g_regex_unref ()
 //! 
-GRegex* gw_regex_romaji_new (const char *subject, GwRelevance relevance)
+GRegex* gw_regex_romaji_new (const char *subject, const GwEngine ENGINE, const GwRelevance RELEVANCE)
 {
     //Declarations
     GRegex *re;
-    const char **atom;
+    char *format;
     char *expression;
     GError *error;
 
     //Declarations
     error = NULL;
 
-    switch (relevance)
+    switch (RELEVANCE)
     {
       case GW_RELEVANCE_HIGH:
-        atom = (char**) malloc(sizeof(char*) * 4);
-        atom[0] = "(^|\\)|(/)|(^to )|\\) )(";
-        atom[1] = subject;
-        atom[2] = ")(\\(|/|$|!| \\()";
-        atom[3] = NULL;
-        expression = g_strjoinv (NULL, atom);
+        format = "(^|\\)|/|^to |\\) )(%s)(\\(|/|$|!| \\()";
+        expression = g_strdup_printf (format, subject);
         re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
         g_free (expression);
-        free (atom);
         break;
       case GW_RELEVANCE_MEDIUM:
-        atom = (char**) malloc(sizeof(char*) * 10);
-        atom[0] = "\\{(";
-        atom[1] = subject;
-        atom[2] = ")\\}|(\\) |/)((\\bto )|(\\bto be )|(\\b))(";
-        atom[3] = subject;
-        atom[4] = ")(( \\([^/]+\\)/)|(/))|(\\[)(";
-        atom[5] = subject;
-        atom[6] = ")(\\])|^(";
-        atom[7] = subject;
-        atom[8] = ")\\b";
-        atom[9] = NULL;
-        expression = g_strjoinv (NULL, atom);
+        if (ENGINE == GW_ENGINE_KANJI)
+          format = "\\{(%s)\\}";
+        else
+          format = "(\\) |/)((\\bto )|(\\bto be )|(\\b))(%s)(( \\([^/]+\\)/)|(/))";
+        expression = g_strdup_printf (format, subject);
         re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
         g_free (expression);
-        free (atom);
         break;
       case GW_RELEVANCE_LOW:
-        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
+        re = g_regex_new (subject,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
         break;
       case GW_RELEVANCE_LOCATE:
-        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
+        re = g_regex_new (subject,  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
         break;
       default:
         g_assert_not_reached();
@@ -330,54 +298,39 @@ GRegex* gw_regex_romaji_new (const char *subject, GwRelevance relevance)
 //! @param relevance How relevant a result to search for
 //! @returns A newly allocated GRegex that needs to be freed with g_regex_unref ()
 //! 
-GRegex* gw_regex_mix_new (const char *subject, GwRelevance relevance)
+GRegex* gw_regex_mix_new (const char *subject, const GwEngine ENGINE, const GwRelevance RELEVANCE)
 {
     //Declarations
     GRegex *re;
-    const char **atom;
+    char *format;
     char *expression;
     GError *error;
 
     //Declarations
     error = NULL;
 
-    switch (relevance)
+    switch (RELEVANCE)
     {
       case GW_RELEVANCE_HIGH:
-        atom = (char**) malloc(sizeof(char*) * 6);
-        atom[0] = "(\\b(";
-        atom[1] = subject;
-        atom[2] = ")\\b|^(";
-        atom[3] = subject;
-        atom[4] = "))";
-        atom[5] = NULL;
-        expression = g_strjoinv (NULL, atom);
+        format =  "(^|\\b)(%s)(\\b)";
+        expression = g_strdup_printf (format, subject);
         re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
         g_free (expression);
-        free (atom);
         break;
       case GW_RELEVANCE_MEDIUM:
-        atom = (char**) malloc(sizeof(char*) * 10);
-        atom[0] = "\\{(";
-        atom[1] = subject;
-        atom[2] = ")\\}|(\\) |/)((to )|(to be )|())(";
-        atom[3] = subject;
-        atom[4] = ")(( \\([^/]+\\)/)|(/))|(\\[)(";
-        atom[5] = subject;
-        atom[6] = ")(\\])|^(";
-        atom[7] = subject;
-        atom[8] = ")\\b";
-        atom[9] = NULL;
-        expression = g_strjoinv (NULL, atom);
+        if (ENGINE == GW_ENGINE_KANJI)
+          format = "\\{(%s)\\}";
+        else
+          format = "(\\) |/)((\\bto )|(\\bto be )|(\\b))(%s)(( \\([^/]+\\)/)|(/))";
+        expression = g_strdup_printf (format, subject);
         re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
         g_free (expression);
-        free (atom);
         break;
       case GW_RELEVANCE_LOW:
-        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
+        re = g_regex_new (subject,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
         break;
       case GW_RELEVANCE_LOCATE:
-        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
+        re = g_regex_new (subject,  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
         break;
       default:
         g_assert_not_reached();
@@ -396,46 +349,36 @@ GRegex* gw_regex_mix_new (const char *subject, GwRelevance relevance)
 //! @param relevance How relevant a result to search for
 //! @returns A newly allocated GRegex that needs to be freed with g_regex_unref ()
 //! 
-GRegex* gw_regex_new (const char *subject, GwRelevance relevance)
+GRegex* gw_regex_new (const char *subject, const GwEngine ENGINE, const GwRelevance RELEVANCE)
 {
     //Declarations
     GRegex *re;
-    const char **atom;
+    char *format;
     char *expression;
     GError *error;
 
     //Declarations
     error = NULL;
 
-    switch (relevance)
+    switch (RELEVANCE)
     {
       case GW_RELEVANCE_HIGH:
-        atom = (char**) malloc(sizeof(char*) * 4);
-        atom[0] = "(\\b(";
-        atom[1] = subject;
-        atom[2] = ")\\b";
-        atom[3] = NULL;
-        expression = g_strjoinv (NULL, atom);
+        format = "(\\b(%s)\\b";
+        expression = g_strdup_printf (format, subject);
         re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
         g_free (expression);
-        free (atom);
         break;
       case GW_RELEVANCE_MEDIUM:
-        atom = (char**) malloc(sizeof(char*) * 4);
-        atom[0] = "(\\b(";
-        atom[1] = subject;
-        atom[2] = ")\\b";
-        atom[3] = NULL;
-        expression = g_strjoinv (NULL, atom);
+        format = "(\\b(%s)\\b";
+        expression = g_strdup_printf (format, subject);
         re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
         g_free (expression);
-        free (atom);
         break;
       case GW_RELEVANCE_LOW:
-        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
+        re = g_regex_new (subject,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
         break;
       case GW_RELEVANCE_LOCATE:
-        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
+        re = g_regex_new (subject,  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
         break;
       default:
         g_assert_not_reached();

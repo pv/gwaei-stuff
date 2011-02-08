@@ -12,9 +12,8 @@ gwaei-common.o: common.c /usr/include/stdlib.h /usr/include/features.h \
  /usr/include/alloca.h /usr/include/string.h /usr/include/xlocale.h \
  /usr/include/bits/string.h /usr/include/bits/string2.h \
  ../../src/backend/include/gwaei/backend.h \
- ../../src/backend/include/gwaei/regex.h /usr/include/regex.h \
- /usr/include/glib-2.0/glib.h /usr/include/glib-2.0/glib/galloca.h \
- /usr/include/glib-2.0/glib/gtypes.h \
+ ../../src/backend/include/gwaei/regex.h /usr/include/glib-2.0/glib.h \
+ /usr/include/glib-2.0/glib/galloca.h /usr/include/glib-2.0/glib/gtypes.h \
  /usr/lib/glib-2.0/include/glibconfig.h \
  /usr/include/glib-2.0/glib/gmacros.h \
  /usr/lib/gcc/i686-pc-linux-gnu/4.5.2/include-fixed/limits.h \
@@ -548,8 +547,6 @@ gwaei-common.o: common.c /usr/include/stdlib.h /usr/include/features.h \
 ../../src/backend/include/gwaei/backend.h:
 
 ../../src/backend/include/gwaei/regex.h:
-
-/usr/include/regex.h:
 
 /usr/include/glib-2.0/glib.h:
 

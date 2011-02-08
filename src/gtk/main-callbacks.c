@@ -138,7 +138,7 @@ G_MODULE_EXPORT gboolean do_get_iter_for_motion (GtkWidget      *widget,
     hovered_word = gtk_text_iter_get_visible_slice (&start, &end);
 
     GwDictInfo *di;
-    di = gw_dictlist_get_dictinfo (GW_ENGINE_KANJI, "Kanji");
+    di = gw_dictinfolist_get_dictinfo (GW_ENGINE_KANJI, "Kanji");
     if (di == NULL) FALSE;
   
     // Characters above 0xFF00 represent inserted images
@@ -215,7 +215,7 @@ G_MODULE_EXPORT gboolean do_get_iter_for_button_release (GtkWidget      *widget,
     unic = gw_ui_get_hovered_character (&x, &y, &iter);
 
     GwDictInfo *di;
-    di = gw_dictlist_get_dictinfo (GW_ENGINE_KANJI, "Kanji");
+    di = gw_dictinfolist_get_dictinfo (GW_ENGINE_KANJI, "Kanji");
     if (di == NULL) return FALSE;
 
     if (abs (button_press_x - x) < 3 && abs (button_press_y - y) < 3)
@@ -303,7 +303,7 @@ G_MODULE_EXPORT void do_close (GtkWidget *widget, gpointer data)
     }
     else if (strcmp (id, "settings_window") == 0)
     {
-      if (gw_dictlist_get_total () > 0)
+      if (gw_dictinfolist_get_total () > 0)
       {
         gtk_widget_hide (widget);
         gw_ui_update_toolbar_buttons ();
@@ -1356,15 +1356,15 @@ G_MODULE_EXPORT gboolean do_focus_change_on_key_press (GtkWidget *widget,
 G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
 {
     //Declarations
-    gchar query[MAX_QUERY];
+    gchar query[100];
     GwSearchItem *item, *new_item;
     GwDictInfo *di;
 
     //Initializations
-    gw_ui_strncpy_text_from_widget_by_target (query, GW_TARGET_ENTRY, MAX_QUERY);
+    gw_ui_strncpy_text_from_widget_by_target (query, GW_TARGET_ENTRY, 100);
 
     item = gw_tabs_get_searchitem ();
-    di = gw_dictlist_get_selected_dictinfo ();
+    di = gw_dictinfolist_get_selected_dictinfo ();
 
     new_item = gw_searchitem_new (query, di, GW_TARGET_RESULTS);
 
@@ -1726,12 +1726,12 @@ void do_populate_popup_with_search_options (GtkTextView *entry, GtkMenu *menu, g
     {
       query_text = hovered_word;
     }
-    list_selected = gw_dictlist_get_selected();
+    list_selected = gw_dictinfolist_get_selected();
     di_selected = list_selected->data;
 
 
     //Add webpage links
-    GList* list =  gw_dictlist_get_dict_by_load_position (0);
+    GList* list =  gw_dictinfolist_get_dict_by_load_position (0);
     di = list->data;
     char *website_url_menuitems[] = {
       "Wikipedia", "http://www.wikipedia.org/wiki/%s", "wikipedia.png",
@@ -1770,7 +1770,8 @@ void do_populate_popup_with_search_options (GtkTextView *entry, GtkMenu *menu, g
         char *url = g_strdup_printf(website_url_menuitems[i + 1], query_text);
         if (url != NULL)
         {
-          strncpy(item->queryline->string, url, MAX_QUERY);
+          g_free (item->queryline->string);
+          item->queryline->string = g_strdup (url);
           g_free (url);
           url = NULL;
         }
@@ -1824,9 +1825,9 @@ void do_populate_popup_with_search_options (GtkTextView *entry, GtkMenu *menu, g
 
     //Add internal dictionary links
     i = 0;
-    while ((list = gw_dictlist_get_dict_by_load_position (i)) != NULL)
+    while ((list = gw_dictinfolist_get_dict_by_load_position (i)) != NULL)
     {
-      list = gw_dictlist_get_dict_by_load_position (i);
+      list = gw_dictinfolist_get_dict_by_load_position (i);
       di = list->data;
       if (di != NULL && (item = gw_searchitem_new (query_text, di, GW_TARGET_RESULTS)) != NULL)
       {

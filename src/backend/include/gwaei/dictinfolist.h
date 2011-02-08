@@ -45,24 +45,24 @@ struct _GwDictList
 typedef struct _GwDictList GwDictList;
 
 
-GList* gw_dictlist_get_list (void);
-GList* gw_dictlist_get_selected (void);
-GwDictInfo* gw_dictlist_get_selected_dictinfo (void);
+GList* gw_dictinfolist_get_list (void);
+GList* gw_dictinfolist_get_selected (void);
+GwDictInfo* gw_dictinfolist_get_selected_dictinfo (void);
 
 
-void gw_dictlist_initialize (void);
-void gw_dictlist_free ();
+void gw_dictinfolist_initialize (void);
+void gw_dictinfolist_free ();
 
-GwDictInfo* gw_dictlist_get_dictinfo (const GwEngine, const char*);
-GList* gw_dictlist_get_dict_by_load_position (int);
-GList* gw_dictlist_set_selected_by_load_position (int);
-gboolean gw_dictlist_check_if_loaded (const GwEngine, const char*);
-void gw_dictlist_update_load_orders (void);
-int gw_dictlist_get_total (void);
+GwDictInfo* gw_dictinfolist_get_dictinfo (const GwEngine, const char*);
+GList* gw_dictinfolist_get_dict_by_load_position (int);
+GList* gw_dictinfolist_set_selected_by_load_position (int);
+gboolean gw_dictinfolist_check_if_loaded (const GwEngine, const char*);
+void gw_dictinfolist_update_load_orders (void);
+int gw_dictinfolist_get_total (void);
 
-void gw_dictlist_preform_postprocessing_by_name (char*, GError**);
-void gw_dictlist_load_dictionary_order_from_pref (void);
-void gw_dictlist_save_dictionary_order_pref (void);
+void gw_dictinfolist_preform_postprocessing_by_name (char*, GError**);
+void gw_dictinfolist_load_dictionary_order_from_pref (void);
+void gw_dictinfolist_save_dictionary_order_pref (void);
 
 
 

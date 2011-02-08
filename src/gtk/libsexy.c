@@ -81,19 +81,19 @@ void do_conditionally_enable_spellcheck (GtkWidget *widget, gpointer data)
      //Default to the english dictionary when using the english-japanese dict
      GError *err;
      err = NULL;
-     GList *list = gw_dictlist_get_selected();
+     GList *list = gw_dictinfolist_get_selected();
      GwDictInfo *di = (GwDictInfo*) list->data;
 
-     if ((strcmp ("Radicals", di->name) == 0) ||
-         (strcmp ("Names",    di->name) == 0)   )
+     if ((strcmp ("Radicals", di->filename) == 0) ||
+         (strcmp ("Names",    di->filename) == 0)   )
      {
        //No spell checking needed
        sexy_spell_entry_set_checked (SEXY_SPELL_ENTRY (search_entry), FALSE);
      }
-     else if ((strcmp ("English",  di->name) == 0) ||
-              (strcmp ("Kanji",    di->name) == 0) ||
-              (strcmp ("Examples", di->name) == 0) ||
-              (strcmp ("Places",   di->name) == 0)   )
+     else if ((strcmp ("English",  di->filename) == 0) ||
+              (strcmp ("Kanji",    di->filename) == 0) ||
+              (strcmp ("Examples", di->filename) == 0) ||
+              (strcmp ("Places",   di->filename) == 0)   )
      {
        //Set the spellchecked language to english
        if (sexy_spell_entry_language_is_active(SEXY_SPELL_ENTRY (search_entry), "en") == FALSE)

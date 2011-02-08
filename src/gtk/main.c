@@ -619,7 +619,7 @@ void gw_ui_update_toolbar_buttons ()
     //Update radicals search tool menuitem
     strncpy(id, "insert_radicals_action", id_length);
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
-    enable = (gw_dictlist_dictionary_get_status_by_id (GW_DICT_ID_RADICALS) == GW_DICT_STATUS_INSTALLED);
+    enable = (gw_dictinfolist_dictionary_get_status_by_id (GW_DICT_ID_RADICALS) == GW_DICT_STATUS_INSTALLED);
     gtk_action_set_sensitive(action, enable);
 */
     //Update back button
@@ -754,7 +754,7 @@ void gw_ui_set_dictionary (int request)
     GtkBuilder *builder = gw_common_get_builder ();
 
     //Set the correct dictionary in the dictionary list
-    if (gw_dictlist_set_selected_by_load_position (request) == NULL)
+    if (gw_dictinfolist_set_selected_by_load_position (request) == NULL)
       return;
 
     //Time to make sure everything matches up in the gui
@@ -1779,7 +1779,7 @@ void gw_ui_display_no_results_found_page (GwSearchItem *item)
     int i = 0;
     GtkWidget *button = NULL;
     char *markup = NULL;
-    list = gw_dictlist_get_selected();
+    list = gw_dictinfolist_get_selected();
     GwDictInfo *di_selected = list->data;
 
 gdk_threads_enter ();
@@ -1822,7 +1822,7 @@ gdk_threads_enter ();
     gw_ui_append_to_buffer (item, "\n\n\n", NULL, NULL, NULL, NULL);
 
 
-    if (gw_dictlist_get_total () > 1)
+    if (gw_dictinfolist_get_total () > 1)
     {
       //Add label for links
       hbox = gtk_hbox_new (FALSE, 0);
@@ -1844,14 +1844,12 @@ gdk_threads_enter ();
 
       //Add internal dictionary links
       i = 0;
-      list = gw_dictlist_get_dict_by_load_position (0);
+      list = gw_dictinfolist_get_dict_by_load_position (0);
       GwDictInfo *di = list->data;
 
-      char text[MAX_QUERY];
-      while ((list = gw_dictlist_get_dict_by_load_position(i)) != NULL)
+      while ((list = gw_dictinfolist_get_dict_by_load_position(i)) != NULL)
       {
         di = list->data;
-        strncpy(text, query_text, MAX_QUERY);
         if (di != NULL && di != di_selected)
         {
           button = gtk_button_new_with_label (di->shortname);
@@ -2529,6 +2527,7 @@ static void _add_match_highlights (gint line, gint start_offset, gint end_offset
     char *text = gtk_text_buffer_get_slice (tb, &si, &ei, FALSE);
     char *pos = text;
 
+/*
     //Look for kanji atoms
     for(i = 0; i < ql->kanji_total; i++) {
        pos = text;
@@ -2560,6 +2559,7 @@ static void _add_match_highlights (gint line, gint start_offset, gint end_offset
        }
     }
     g_free (text);
+    */
 }
 
 

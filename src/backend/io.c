@@ -781,7 +781,7 @@ void gw_io_install_dictinfo (GwDictInfo *di,    int (*callback_function) (char*,
       if (callback_function != NULL) {
         callback_function (gettext("Postprocessing..."), -1, data);
       }
-      gw_dictlist_preform_postprocessing_by_name (di->name, error);
+      gw_dictinfolist_preform_postprocessing_by_name (di->name, error);
     }
 
     g_free (encoding_path);

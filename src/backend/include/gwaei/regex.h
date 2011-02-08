@@ -6,6 +6,7 @@
 #define GW_RE_EXIST_FLAGS   (G_REGEX_MATCH_ANCHORED)
 
 #include <glib.h>
+#include <gwaei/utilities.h>
 
 typedef enum
 {
@@ -20,11 +21,11 @@ typedef enum
 void gw_regex_initialize (void);
 void gw_regex_free (void);
 
-GRegex* gw_regex_kanji_new (const char*, GwRelevance);
-GRegex* gw_regex_furi_new (const char*, GwRelevance);
-GRegex* gw_regex_romaji_new (const char*, GwRelevance);
-GRegex* gw_regex_mix_new (const char*, GwRelevance);
-GRegex* gw_regex_new (const char*, GwRelevance);
+GRegex* gw_regex_kanji_new (const char*, GwEngine, GwRelevance);
+GRegex* gw_regex_furi_new (const char*, GwEngine, GwRelevance);
+GRegex* gw_regex_romaji_new (const char*, GwEngine, GwRelevance);
+GRegex* gw_regex_mix_new (const char*, GwEngine, GwRelevance);
+GRegex* gw_regex_new (const char*, GwEngine, GwRelevance);
 
 
 typedef enum {
