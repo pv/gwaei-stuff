@@ -109,6 +109,7 @@ void gw_resultline_free (GwResultLine *item)
 //!
 void gw_resultline_parse_edict_result_string (GwResultLine *rl)
 {
+/*
     //Reinitialize Variables to help prevent craziness
     rl->def_start[0] = NULL;
     rl->def_total = 0;
@@ -217,6 +218,7 @@ void gw_resultline_parse_edict_result_string (GwResultLine *rl)
         *(temp - 1) = '\0';
       }
     }
+*/
 }
 
 
@@ -231,6 +233,7 @@ void gw_resultline_parse_edict_result_string (GwResultLine *rl)
 //!
 void gw_resultline_parse_kanjidict_result_string (GwResultLine *rl)
 {
+/*
     size_t nmatch = 1;
     regmatch_t pmatch[nmatch];
     enum temp_enum { STROKES, FREQUENCY, GRADE, JLPT, LENGTH };
@@ -344,6 +347,7 @@ void gw_resultline_parse_kanjidict_result_string (GwResultLine *rl)
       *end[GRADE] = '\0';
     if (found[JLPT])
       *end[JLPT] = '\0';
+*/
 }
 
 
@@ -357,6 +361,7 @@ void gw_resultline_parse_kanjidict_result_string (GwResultLine *rl)
 //!
 void gw_resultline_parse_examplesdict_result_string (GwResultLine *rl)
 {
+/*
     //Reinitialize Variables to help prevent craziness
     rl->def_start[0] = NULL;
     rl->def_total = 0;
@@ -434,6 +439,7 @@ void gw_resultline_parse_examplesdict_result_string (GwResultLine *rl)
     }
     //Meh.  Deciding not to show this line from the dictionary for now.
     rl->furigana_start = NULL;
+*/
 }
 
 
@@ -448,6 +454,7 @@ void gw_resultline_parse_examplesdict_result_string (GwResultLine *rl)
 //!
 void gw_resultline_parse_unknowndict_result_string (GwResultLine *rl)
 {
+/*
     //Reinitialize Variables to help prevent craziness
     rl->def_start[0] = NULL;
     rl->def_total = 0;
@@ -477,5 +484,6 @@ void gw_resultline_parse_unknowndict_result_string (GwResultLine *rl)
     rl->def_total = 1;
     rl->kanji_start = rl->string;
     rl->furigana_start = rl->string;
+*/
 }
 

@@ -134,9 +134,9 @@ static void _append_stored_result_to_output (GwSearchItem *item, GList **results
 //! @return Returns one of the integers: LOW_RELEVANCE, MEDIUM_RELEVANCE, or HIGH_RELEVANCE.
 //!
 static int _get_relevance (GwSearchItem *item) {
-    if (gw_searchitem_existance_generic_comparison (item, GW_QUERYLINE_HIGH))
+    if (gw_searchitem_existance_generic_comparison (item, GW_RELEVANCE_HIGH))
       return GW_RELEVANCE_HIGH;
-    else if (gw_searchitem_existance_generic_comparison (item, GW_QUERYLINE_MED))
+    else if (gw_searchitem_existance_generic_comparison (item, GW_RELEVANCE_MEDIUM))
       return GW_RELEVANCE_MEDIUM;
     else
       return GW_RELEVANCE_LOW;
@@ -196,7 +196,7 @@ static void _stream_results_thread (gpointer data)
 //        gw_ui_verb_check_with_suggestion (item);
 
       //Results match, add to the text buffer
-      if (gw_searchitem_existance_generic_comparison (item, GW_QUERYLINE_EXIST))
+      if (gw_searchitem_existance_generic_comparison (item, GW_RELEVANCE_LOW))
       {
         int relevance = _get_relevance (item);
         switch(relevance)
@@ -314,8 +314,6 @@ static void _stream_results_thread (gpointer data)
 //!
 void gw_engine_get_results (GwSearchItem *item, gboolean create_thread, gboolean only_exact_matches)
 {
-    gw_util_force_japanese_locale();
-
     if (gw_searchitem_do_pre_search_prep (item) == FALSE)
     {
       gw_searchitem_free(item);

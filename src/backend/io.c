@@ -430,6 +430,7 @@ gboolean gw_io_split_places_from_names_dictionary (char *spath, char *npath, cha
       co - company name (34)
       ---------------------------------------------
     */
+    /*
     int eflags_exist = REG_EXTENDED | REG_NOSUB;
     //Setup the regular expression for Places
     regex_t re_place_line;
@@ -518,6 +519,8 @@ gboolean gw_io_split_places_from_names_dictionary (char *spath, char *npath, cha
       g_remove(npath);
 
     return (place_write_error != EOF && name_write_error != EOF);
+    */
+    return FALSE;
 }
 
 

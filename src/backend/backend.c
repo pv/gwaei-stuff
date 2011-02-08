@@ -51,9 +51,6 @@ void gw_backend_initialize (int argc, char* argv[])
     setlocale(LC_CTYPE, "");
     setlocale(LC_COLLATE, "");
     setlocale(LC_MESSAGES, "");
-    //Check if it's the correct locale
-    if (gw_util_is_japanese_ctype() == FALSE)
-      gw_util_force_japanese_locale();
 
     if (!g_thread_supported ())
       g_thread_init (NULL);

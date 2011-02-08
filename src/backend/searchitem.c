@@ -329,6 +329,7 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
     int i = 0;
     if (item->dictionary->engine == GW_ENGINE_KANJI)
     {
+/*
       gboolean strokes_check_passed = TRUE;
       gboolean frequency_check_passed = TRUE;
       gboolean grade_check_passed = TRUE;
@@ -421,10 +422,12 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
                 furigana_check_passed &&
                 (radical_check_passed | kanji_check_passed));
       }
+      */
     }
     //Standard dictionary search
     else
     {
+/*
       int i;
       int j;
       //Compare kanji atoms
@@ -492,6 +495,7 @@ gboolean gw_searchitem_existance_generic_comparison (GwSearchItem *item, const i
           return TRUE;
         i++;  
       }
+      */
 
       return FALSE;
     }

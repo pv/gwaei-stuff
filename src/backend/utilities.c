@@ -179,85 +179,35 @@ const char* gw_util_get_encoding_name (const GwEncoding ENCODING)
 }
 
 
-
-
-
-//!
-//! @brief Makes sure that all of the characters are in a specific range
-//!
-//! This function was made for the general purpose of quickly figuring out if
-//! a character string is all katakana, hiragana, or romaji.
-//!
-//! @param input The string to check
-//! @param start_unic_boundary the lower bound
-//! @param end_unic_boundary the upper bound
-//! @return Returns true if it is in the range
-//! @see gw_util_is_hiragana_str ()
-//! @see gw_util_is_katakana_str ()
-//! @see gw_util_is_kanji_str ()
-//! @see gw_util_is_romaji_str ()
-//!
-gboolean gw_util_all_chars_are_in_range (char input[],
-                                         int  start_unic_boundary,
-                                         int  end_unic_boundary   )
-{
-    //Setup
-    char *input_ptr;
-    input_ptr = input;
-
-    gunichar unic;
-    unic = g_utf8_get_char(input_ptr);
-
-    gboolean is_in_boundary;
-    is_in_boundary = (unic >= start_unic_boundary && unic <= end_unic_boundary);
-
-    //Check
-    while (*input_ptr != '\0' && is_in_boundary)
-    {
-      input_ptr = g_utf8_next_char(input_ptr);
-      unic = g_utf8_get_char(input_ptr);
-      is_in_boundary = ((unic >= start_unic_boundary && unic <= end_unic_boundary) || unic == '.'
-                                                                                   || unic == '*'
-                                                                                   || (unic >= 0 && unic <= 9)
-                                                                                   || unic == '-'
-                                                                                   || unic == '^'
-                                                                                   || unic == '$'
-                                                                                   || unic == L'ー'
-                                                                                   || unic == '+'
-                                                                                   || unic == '?'
-                                                                                   || unic == '{'
-                                                                                   || unic == '/'
-                                                                                   || unic == '\\'
-                                                                                   || unic == '!'
-                                                                                   || unic == '{'
-                                                                                   || unic == '}'
-                                                                                   || unic == '['
-                                                                                   || unic == ']'
-                                                                                   || unic == '&'
-                                                                                   || unic == '|'
-                                                                                   || unic == ' '
-                                                                                   || unic == '('
-                                                                                   || unic == ')');
-    }
-
-    //Return Results
-    return (input[0] != '\0' && *input_ptr == '\0');
-}
-
-
 //!
 //! @brief Convenience function for seeing if a string is hiragana
 //!
 //! @param input The string to check
 //! @return Returns true if it is in the range
-//! @see gw_util_all_chars_are_in_range ()
 //! @see gw_util_is_katakana_str ()
 //! @see gw_util_is_kanji_str ()
 //! @see gw_util_is_romaji_str ()
 //!
-gboolean gw_util_is_hiragana_str (char input[])
+gboolean gw_util_is_hiragana_str (const char *input)
 {
-    return gw_util_all_chars_are_in_range (input, L'ぁ', L'ん');
+    //Declarations
+    gboolean is_consistant;
+    gunichar character;
+    GUnicodeScript script;
+    const char *ptr;
+
+    //Initializations
+    is_consistant = TRUE;
+    
+    //Loop over the string checking for characters inconsistant with the script
+    for (ptr = input; *ptr != '\0' && is_consistant; ptr = g_utf8_next_char (ptr))
+    {
+      character = g_utf8_get_char (ptr);
+      script = g_unichar_get_script (character);
+      if (script != G_UNICODE_SCRIPT_HIRAGANA) is_consistant = FALSE;
+    }
+
+    return is_consistant;
 }
 
 
@@ -266,14 +216,30 @@ gboolean gw_util_is_hiragana_str (char input[])
 //!
 //! @param input The string to check
 //! @return Returns true if it is in the range
-//! @see gw_util_all_chars_are_in_range ()
 //! @see gw_util_is_hiragana_str ()
 //! @see gw_util_is_kanji_str ()
 //! @see gw_util_is_romaji_str ()
 //!
-gboolean gw_util_is_katakana_str (char input[])
+gboolean gw_util_is_katakana_str (const char *input)
 {
-    return gw_util_all_chars_are_in_range (input, L'ァ', L'ー');
+    //Declarations
+    gboolean is_consistant;
+    gunichar character;
+    GUnicodeScript script;
+    const char *ptr;
+
+    //Initializations
+    is_consistant = TRUE;
+    
+    //Loop over the string checking for characters inconsistant with the script
+    for (ptr = input; *ptr != '\0' && is_consistant; ptr = g_utf8_next_char (ptr))
+    {
+      character = g_utf8_get_char (ptr);
+      script = g_unichar_get_script (character);
+      if (script != G_UNICODE_SCRIPT_KATAKANA) is_consistant = FALSE;
+    }
+
+    return is_consistant;
 }
 
 
@@ -284,14 +250,30 @@ gboolean gw_util_is_katakana_str (char input[])
 //!
 //! @param input The string to check
 //! @return Returns true if it is in the range
-//! @see gw_util_all_chars_are_in_range ()
 //! @see gw_util_is_hiragana_str ()
 //! @see gw_util_is_kanji_str ()
 //! @see gw_util_is_romaji_str ()
 //!
-gboolean gw_util_is_furigana_str (char input[])
+gboolean gw_util_is_furigana_str (const char *input)
 {
-    return gw_util_all_chars_are_in_range (input, L'ぁ', L'ー');
+    //Declarations
+    gboolean is_consistant;
+    gunichar character;
+    GUnicodeScript script;
+    const char *ptr;
+
+    //Initializations
+    is_consistant = TRUE;
+    
+    //Loop over the string checking for characters inconsistant with the script
+    for (ptr = input; *ptr != '\0' && is_consistant; ptr = g_utf8_next_char (ptr))
+    {
+      character = g_utf8_get_char (ptr);
+      script = g_unichar_get_script (character);
+      if (script != G_UNICODE_SCRIPT_KATAKANA && script != G_UNICODE_SCRIPT_HIRAGANA) is_consistant = FALSE;
+    }
+
+    return is_consistant;
 }
 
 
@@ -304,19 +286,24 @@ gboolean gw_util_is_furigana_str (char input[])
 //!
 //! @param input The string to check
 //! @return Returns true if the function things this is a kanji string
-//! @see gw_util_all_chars_are_in_range ()
 //! @see gw_util_is_hiragana_str ()
 //! @see gw_util_is_katakana_str ()
 //! @see gw_util_is_romaji_str ()
 //!
-gboolean gw_util_is_kanji_ish_str (char input[])
+gboolean gw_util_is_kanji_ish_str (const char *input)
 {
-    gboolean hira = gw_util_is_hiragana_str (input);
-    gboolean kata = gw_util_is_katakana_str (input);
-    gboolean roma = gw_util_is_romaji_str (input);
-    gboolean kanji = gw_util_is_kanji_str (input);
+    //Declarations
+    gboolean found_kanji;
+    gboolean found_furigana;
+    gboolean found_romaji;
 
-    return (!hira && !kata && !roma && !kanji);
+    //Initializations
+    found_kanji =    gw_util_is_kanji_str (input);
+    found_furigana = gw_util_is_furigana_str (input);
+    found_romaji =   gw_util_is_romaji_str (input);
+
+    //Return
+    return (found_kanji && found_furigana && !found_romaji);
 }
 
 //!
@@ -324,14 +311,30 @@ gboolean gw_util_is_kanji_ish_str (char input[])
 //!
 //! @param input The string to check
 //! @return Returns true if it is in the range
-//! @see gw_util_all_chars_are_in_range ()
 //! @see gw_util_is_hiragana_str ()
 //! @see gw_util_is_katakana_str ()
 //! @see gw_util_is_romaji_str ()
 //!
-gboolean gw_util_is_kanji_str (char input[])
+gboolean gw_util_is_kanji_str (const char *input)
 {
-    return gw_util_all_chars_are_in_range (input, L'ー', 0xFF00);
+    //Declarations
+    gboolean is_consistant;
+    gunichar character;
+    GUnicodeScript script;
+    const char *ptr;
+
+    //Initializations
+    is_consistant = TRUE;
+    
+    //Loop over the string checking for characters inconsistant with the script
+    for (ptr = input; *ptr != '\0' && is_consistant; ptr = g_utf8_next_char (ptr))
+    {
+      character = g_utf8_get_char (ptr);
+      script = g_unichar_get_script (character);
+      if (script != G_UNICODE_SCRIPT_HAN) is_consistant = FALSE;
+    }
+
+    return is_consistant;
 }
 
 
@@ -340,19 +343,36 @@ gboolean gw_util_is_kanji_str (char input[])
 //!
 //! @param input The string to check
 //! @return Returns true if it is in the range
-//! @see gw_util_all_chars_are_in_range ()
 //! @see gw_util_is_hiragana_str ()
 //! @see gw_util_is_katakana_str ()
 //! @see gw_util_is_kanji_str ()
 //!
-gboolean gw_util_is_romaji_str (char input[])
+gboolean gw_util_is_romaji_str (const char *input)
 {
-    return gw_util_all_chars_are_in_range (input, L'A', L'ž');
+    //Declarations
+    gboolean is_consistant;
+    gunichar character;
+    GUnicodeScript script;
+    const char *ptr;
+
+    //Initializations
+    is_consistant = TRUE;
+    
+    //Loop over the string checking for characters inconsistant with the script
+    for (ptr = input; *ptr != '\0' && is_consistant; ptr = g_utf8_next_char (ptr))
+    {
+      character = g_utf8_get_char (ptr);
+      script = g_unichar_get_script (character);
+      if (script != G_UNICODE_SCRIPT_LATIN) is_consistant = FALSE;
+    }
+
+    return is_consistant;
 }
+
 
 gboolean gw_util_is_yojijukugo_str (const char* input)
 {
-  return (g_utf8_strlen (atom, -1) == 4 && gw_util_is_kanji_str (atom));
+  return (g_utf8_strlen (input, -1) == 4 && gw_util_is_kanji_str (input));
 }
 
 
@@ -366,7 +386,7 @@ gboolean gw_util_is_yojijukugo_str (const char* input)
 //! @see gw_util_str_shift_hira_to_kata ()
 //! @see gw_util_str_shift_kata_to_hira ()
 //!
-void gw_util_shift_all_chars_in_str_by (char input[], int shift)
+void gw_util_shift_all_chars_in_str_by (char *input, int shift)
 {
     //Setup
     char *input_ptr;
@@ -922,84 +942,6 @@ gboolean gw_util_str_roma_to_hira (char* input, char* output, int max)
 
 
 //!
-//! @brief Checks for a Japanese ctype localization setting
-//!
-//! @return Returns true if it is a japanese ctype
-//!
-gboolean gw_util_is_japanese_ctype ()
-{
-    return (setlocale(LC_CTYPE, NULL) != NULL &&
-            (
-              strcmp(setlocale(LC_CTYPE, NULL), "ja_JP.UTF8")  == 0 ||
-              strcmp(setlocale(LC_CTYPE, NULL), "ja_JP.UTF-8") == 0 ||
-              strcmp(setlocale(LC_CTYPE, NULL), "ja_JP.utf8")  == 0 ||
-              strcmp(setlocale(LC_CTYPE, NULL), "ja_JP.utf-8") == 0 ||
-              strcmp(setlocale(LC_CTYPE, NULL), "ja_JP")       == 0 ||
-              strcmp(setlocale(LC_CTYPE, NULL), "ja")          == 0 ||
-              strcmp(setlocale(LC_CTYPE, NULL), "japanese")    == 0
-            )
-           );
-}
-
-
-//!
-//! @brief Checks for a Japanese local messages setting
-//!
-//! Basically this checks if the interface is supposed to come out to be
-//! Japanese in the program or not.
-//!
-//! @return Returns true if it is a japanese local
-//!
-gboolean gw_util_is_japanese_locale()
-{
-    return ( setlocale(LC_MESSAGES, NULL) != NULL &&
-             (
-               strcmp(setlocale(LC_MESSAGES, NULL), "ja_JP.UTF8")  == 0 ||
-               strcmp(setlocale(LC_MESSAGES, NULL), "ja_JP.UTF-8") == 0 ||
-               strcmp(setlocale(LC_MESSAGES, NULL), "ja_JP.utf8")  == 0 ||
-               strcmp(setlocale(LC_MESSAGES, NULL), "ja_JP.utf-8") == 0 ||
-               strcmp(setlocale(LC_MESSAGES, NULL), "ja_JP")       == 0 ||
-               strcmp(setlocale(LC_MESSAGES, NULL), "ja")          == 0 ||
-               strcmp(setlocale(LC_MESSAGES, NULL), "japanese")    == 0
-             )
-           );
-}
-
-
-//!
-//! @brief Attempting to force a japanese CTYPE for better regex handling
-//!
-//! @return Returns whether the attempt was successful or not
-//!
-gboolean gw_util_force_japanese_locale ()
-{
-    //Try forcing a correct or better setting
-    //This will have nice effects like antialiased text
-    if ( setlocale(LC_CTYPE, "ja_JP.UTF8")  == NULL &&
-         setlocale(LC_CTYPE, "ja_JP.utf8")  == NULL &&
-         setlocale(LC_CTYPE, "ja_JP.UTF-8") == NULL &&
-         setlocale(LC_CTYPE, "ja_JP.utf-8") == NULL &&
-         setlocale(LC_CTYPE, "ja_JP")       == NULL &&
-         setlocale(LC_CTYPE, "ja")          == NULL &&
-         setlocale(LC_CTYPE, "japanese")    == NULL    )
-      //All failed, go for the default
-      setlocale(LC_CTYPE, "");
-
-    //printf("Set CTYPE locale to %s\n", setlocale(LC_CTYPE, NULL));
-
-    if ( setlocale(LC_COLLATE, "ja_JP.UTF8")  == NULL &&
-         setlocale(LC_COLLATE, "ja_JP.utf8")  == NULL &&
-         setlocale(LC_COLLATE, "ja_JP.UTF-8") == NULL &&
-         setlocale(LC_COLLATE, "ja_JP.utf-8") == NULL &&
-         setlocale(LC_COLLATE, "ja_JP")       == NULL &&
-         setlocale(LC_COLLATE, "ja")          == NULL &&
-         setlocale(LC_COLLATE, "japanese")    == NULL    )
-      //All failed, go for the default
-      setlocale(LC_COLLATE, "");
-}
-
-
-//!
 //! @brief Prepare an input query string
 //!
 //! Run some checks and transformation on a string before using it for a search :
@@ -1141,6 +1083,30 @@ gchar* gw_util_enlarge_halfwidth_japanese (const gchar* text)
     }
 
     return g_string_free(nstr, FALSE);
+}
+
+
+//!
+//! @brief Checks for a Japanese local messages setting
+//!
+//! Basically this checks if the interface is supposed to come out to be
+//! Japanese in the program or not.
+//!
+//! @return Returns true if it is a japanese local
+//!
+gboolean gw_util_is_japanese_locale()
+{
+    return ( setlocale(LC_MESSAGES, NULL) != NULL &&
+             (
+               strcmp(setlocale(LC_MESSAGES, NULL), "ja_JP.UTF8")  == 0 ||
+               strcmp(setlocale(LC_MESSAGES, NULL), "ja_JP.UTF-8") == 0 ||
+               strcmp(setlocale(LC_MESSAGES, NULL), "ja_JP.utf8")  == 0 ||
+               strcmp(setlocale(LC_MESSAGES, NULL), "ja_JP.utf-8") == 0 ||
+               strcmp(setlocale(LC_MESSAGES, NULL), "ja_JP")       == 0 ||
+               strcmp(setlocale(LC_MESSAGES, NULL), "ja")          == 0 ||
+               strcmp(setlocale(LC_MESSAGES, NULL), "japanese")    == 0
+             )
+           );
 }
 
 

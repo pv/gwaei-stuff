@@ -12,7 +12,7 @@ typedef enum
   GW_RELEVANCE_HIGH,
   GW_RELEVANCE_MEDIUM,
   GW_RELEVANCE_LOW,
-  GW_QUERYLINE_LOCATE,
+  GW_RELEVANCE_LOCATE,
   GW_RELEVANCE_TOTAL
 } GwRelevance;
 
@@ -20,14 +20,11 @@ typedef enum
 void gw_regex_initialize (void);
 void gw_regex_free (void);
 
-char* gw_regex_locate_offset (char*, char*, GRegex*, gint*, gint*);
 GRegex* gw_regex_kanji_new (const char*, GwRelevance);
-GRegex* gw_regex_furi_new (const char*, GwRelevanceGRegexMatchFlags);
-GRegex* gw_regex_roma_new (const char*, GwRelevance);
+GRegex* gw_regex_furi_new (const char*, GwRelevance);
+GRegex* gw_regex_romaji_new (const char*, GwRelevance);
 GRegex* gw_regex_mix_new (const char*, GwRelevance);
-
-
-gboolean gw_regex_locate_boundary_byte_pointers (const char*, char*, char**, char **);
+GRegex* gw_regex_new (const char*, GwRelevance);
 
 
 typedef enum {
