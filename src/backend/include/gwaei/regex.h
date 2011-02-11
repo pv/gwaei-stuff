@@ -3,7 +3,7 @@
 
 #define GW_RE_COMPILE_FLAGS        (G_REGEX_CASELESS | G_REGEX_OPTIMIZE)
 #define GW_RE_LOCATE_FLAGS   (0)
-#define GW_RE_EXIST_FLAGS   (G_REGEX_MATCH_ANCHORED)
+#define GW_RE_EXIST_FLAGS   (0)
 
 #include <glib.h>
 #include <gwaei/utilities.h>
@@ -29,10 +29,10 @@ GRegex* gw_regex_new (const char*, GwEngine, GwRelevance);
 
 
 typedef enum {
-  GW_RE_QUERY_STROKES,
-  GW_RE_QUERY_GRADE,
-  GW_RE_QUERY_FREQUENCY,
-  GW_RE_QUERY_JLPT,
+  GW_RE_STROKES,
+  GW_RE_GRADE,
+  GW_RE_FREQUENCY,
+  GW_RE_JLPT,
 /*
   GW_RE_WORD_I_ADJ_PASTFORM,
   GW_RE_WORD_I_ADJ_NEGATIVE,

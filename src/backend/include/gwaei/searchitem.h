@@ -111,7 +111,7 @@ GwSearchItem* gw_searchitem_new (char*, GwDictInfo*, const int);
 void gw_searchitem_do_post_search_clean (GwSearchItem*);
 gboolean gw_searchitem_do_pre_search_prep (GwSearchItem*);
 
-gboolean gw_searchitem_existance_generic_comparison (GwSearchItem*, const int);
+gboolean gw_searchitem_run_comparison (GwSearchItem*, const GwRelevance);
 gboolean gw_searchitem_is_equal (GwSearchItem*, GwSearchItem*);
 gboolean gw_searchitem_has_history_relevance (GwSearchItem*);
 void gw_searchitem_increment_history_relevance_timer (GwSearchItem*);

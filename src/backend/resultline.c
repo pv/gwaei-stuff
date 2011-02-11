@@ -231,12 +231,11 @@ void gw_resultline_parse_edict_result_string (GwResultLine *rl)
 //!
 void gw_resultline_parse_kanjidict_result_string (GwResultLine *rl)
 {
-/*
-    size_t nmatch = 1;
-    regmatch_t pmatch[nmatch];
-    enum temp_enum { STROKES, FREQUENCY, GRADE, JLPT, LENGTH };
-    char *end[LENGTH];
-    gboolean found[LENGTH];
+    GMatchInfo* match_info;
+    int start[GW_RE_TOTAL];
+    int end[GW_RE_TOTAL];
+    GUnicodeScript script;
+    gunichar character;
     char *ptr = rl->string;
 
     //Reinitialize Variables to help prevent craziness
@@ -257,95 +256,121 @@ void gw_resultline_parse_kanjidict_result_string (GwResultLine *rl)
 
     //Get strokes
     rl->strokes = NULL;
-    if (found[STROKES] = (regexec(gw_re[GW_RE_QUERY_STROKES], ptr, nmatch, pmatch, 0) == 0))
+    g_regex_match (gw_re[GW_RE_STROKES], ptr, 0, &match_info);
+    if (g_match_info_matches (match_info))
     {
-      rl->strokes = ptr + pmatch[0].rm_so + 1;
-      end[STROKES] = ptr + pmatch[0].rm_eo;
+      g_match_info_fetch_pos (match_info, 0, &start[GW_RE_STROKES], &end[GW_RE_STROKES]);
+      rl->strokes = ptr + start[GW_RE_STROKES] + 1;
     }
+    g_match_info_free (match_info);
+
 
     //Get frequency
     rl->frequency = NULL;
-    if (found[FREQUENCY] = (regexec(gw_re[GW_RE_QUERY_FREQUENCY], ptr, nmatch, pmatch, 0) == 0))
+    g_regex_match (gw_re[GW_RE_FREQUENCY], ptr, 0, &match_info);
+    if (g_match_info_matches (match_info))
     {
-      rl->frequency = ptr + pmatch[0].rm_so + 1;
-      end[FREQUENCY] = ptr + pmatch[0].rm_eo;
+      g_match_info_fetch_pos (match_info, 0, &start[GW_RE_FREQUENCY], &end[GW_RE_FREQUENCY]);
+      rl->frequency = ptr + start[GW_RE_FREQUENCY] + 1;
     }
+    g_match_info_free (match_info);
 
-    //Get grade
+
+    //Get grade level
     rl->grade = NULL;
-    if (found[GRADE] = (regexec(gw_re[GW_RE_QUERY_GRADE], ptr, nmatch, pmatch, 0) == 0))
+    g_regex_match (gw_re[GW_RE_GRADE], ptr, 0, &match_info);
+    if (g_match_info_matches (match_info))
     {
-      rl->grade = ptr + pmatch[0].rm_so + 1;
-      end[GRADE] = ptr + pmatch[0].rm_eo;
+      g_match_info_fetch_pos (match_info, 0, &start[GW_RE_GRADE], &end[GW_RE_GRADE]);
+      rl->grade = ptr + start[GW_RE_GRADE] + 1;
     }
+    g_match_info_free (match_info);
 
-    //Get JLPT
+
+    //Get JLPT level
     rl->jlpt = NULL;
-    if (found[JLPT] = (regexec(gw_re[GW_RE_QUERY_JLPT], ptr, nmatch, pmatch, 0) == 0))
+    g_regex_match (gw_re[GW_RE_JLPT], ptr, 0, &match_info);
+    if (g_match_info_matches (match_info))
     {
-      rl->jlpt = ptr + pmatch[0].rm_so + 1;
-      end[JLPT] = ptr + pmatch[0].rm_eo;
+      g_match_info_fetch_pos (match_info, 0, &start[GW_RE_JLPT], &end[GW_RE_JLPT]);
+      rl->jlpt = ptr + start[GW_RE_JLPT] + 1;
     }
+    g_match_info_free (match_info);
 
 
     //Get the kanji character
     rl->kanji = ptr;
-    while (g_utf8_get_char(ptr) != L' ') {
-      ptr = g_utf8_next_char(ptr);
+    ptr = g_utf8_strchr (ptr, -1, g_utf8_get_char (" "));
+    if (ptr == NULL)
+    {
+      printf("This dictionary is incorrectly formatted\n");
+      exit (1);
     }
     *ptr = '\0';
     ptr++;
 
     //Test if the radicals information is present
-    if(g_utf8_get_char(ptr) > 3040)
+    rl->radicals = NULL;
+    script = g_unichar_get_script (g_utf8_get_char (ptr));
+    if (script != G_UNICODE_SCRIPT_LATIN)
     {
       rl->radicals = ptr;
-      while((g_utf8_get_char(ptr) > 3040 || g_utf8_get_char(ptr) == L' '))
+      ptr = g_utf8_next_char (ptr);
+      script = g_unichar_get_script (g_utf8_get_char (ptr));
+      while (*ptr == ' ' || script != G_UNICODE_SCRIPT_LATIN && script != G_UNICODE_SCRIPT_COMMON)
       {
         ptr = g_utf8_next_char(ptr);
+        script = g_unichar_get_script (g_utf8_get_char (ptr));
       }
       *(ptr - 1) = '\0';
     }
-    else
-      rl->radicals = NULL;
 
     //Go to the readings section
-    while (g_utf8_get_char(ptr) < 3041 && *ptr != '\0')
+    script = g_unichar_get_script (g_utf8_get_char(ptr));
+    while (script != G_UNICODE_SCRIPT_KATAKANA && script != G_UNICODE_SCRIPT_HIRAGANA && *ptr != '\0')
+    {
       ptr = g_utf8_next_char (ptr);
+      script = g_unichar_get_script (g_utf8_get_char(ptr));
+    }
     rl->readings[0] = ptr;
 
     //Copy the rest of the data
-    char *next = ptr;
-    while (*ptr != '\0' && (next = g_utf8_next_char(ptr)) != NULL && g_utf8_get_char(next) != '{')
+    while (*ptr != '\0' && *ptr != '{')
     {
       //The strange T1 character between kana readings
-      if (g_utf8_get_char (ptr) == L'T' && g_utf8_get_char(next) == L'1') {
-        *(ptr - 1) = '\0';
-        rl->readings[1] = next + 2;
+      if (g_utf8_get_char (ptr) == g_utf8_get_char ("T")) {
+        ptr = g_utf8_next_char (ptr);
+        if (g_utf8_get_char (ptr) == g_utf8_get_char ("1"))
+        {
+          *(ptr - 1) = '\0';
+          ptr = g_utf8_next_char (ptr);
+          ptr = g_utf8_next_char (ptr);
+          rl->readings[1] = ptr;
+        }
+        else if (g_utf8_get_char (ptr) == g_utf8_get_char ("2"))
+        {
+          *(ptr - 1) = '\0';
+          ptr = g_utf8_next_char (ptr);
+          ptr = g_utf8_next_char (ptr);
+          rl->readings[2] = ptr;
+        }
       }
-      //The strange T2 character between kana readings
-      if (g_utf8_get_char (ptr) == L'T' && g_utf8_get_char(next) == L'2') {
-        *(ptr - 1) = '\0';
-        rl->readings[2] = next + 2;
+      else
+      {
+        ptr = g_utf8_next_char (ptr);
       }
-      ptr = next;
     }
-    *ptr = '\0';
-    rl->meanings = next;
+    *(ptr - 1) = '\0';
 
-    ptr++;
-    if ((ptr = g_utf8_strrchr (ptr, -1, '\n')))
+    rl->meanings = ptr;
+
+    if (ptr = g_utf8_strrchr (ptr, -1, g_utf8_get_char ("\n")))
       *ptr = '\0';
 
-    if (found[STROKES])
-      *end[STROKES] = '\0';
-    if (found[FREQUENCY])
-      *end[FREQUENCY] = '\0';
-    if (found[GRADE])
-      *end[GRADE] = '\0';
-    if (found[JLPT])
-      *end[JLPT] = '\0';
-*/
+    if (rl->strokes)   *(rl->string + end[GW_RE_STROKES]) = '\0';
+    if (rl->frequency) *(rl->string + end[GW_RE_FREQUENCY]) = '\0';
+    if (rl->grade)     *(rl->string + end[GW_RE_GRADE]) = '\0';
+    if (rl->jlpt)      *(rl->string + end[GW_RE_JLPT]) = '\0';
 }
 
 

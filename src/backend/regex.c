@@ -96,27 +96,30 @@ void gw_regex_initialize ()
     {
       switch (i)
       {
-        case GW_RE_QUERY_STROKES:
+        case GW_RE_STROKES:
           gw_re[i] = g_regex_new ("\\bS[0-9]{1,2}\\b",  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
-          if (error != NULL) exit(EXIT_FAILURE);
           break;
-        case GW_RE_QUERY_GRADE:
+        case GW_RE_GRADE:
           gw_re[i] = g_regex_new ("\\bG[0-9]{1,2}\\b",  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
-          if (error != NULL) exit(EXIT_FAILURE);
           break;
-        case GW_RE_QUERY_FREQUENCY:
+        case GW_RE_FREQUENCY:
           gw_re[i] = g_regex_new ("\\bF[0-9]{1,4}\\b",  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
-          if (error != NULL) exit(EXIT_FAILURE);
           break;
-        case GW_RE_QUERY_JLPT:
+        case GW_RE_JLPT:
           gw_re[i] = g_regex_new ("\\bJ[0-4]{1,1}\\b",  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
-          if (error != NULL) exit(EXIT_FAILURE);
           break;
         default:
           g_assert_not_reached();
       }
     }
     gw_re[i] = NULL;
+
+    if (error != NULL)
+    {
+       fprintf (stderr, "Unable to read file: %s\n", error->message);
+       g_error_free (error);
+       exit(1);
+    }
 
     _regex_expressions_initialized = TRUE;
 }
@@ -165,13 +168,19 @@ GRegex* gw_regex_kanji_new (const char *subject, const GwEngine ENGINE, const Gw
     switch (RELEVANCE)
     {
       case GW_RELEVANCE_HIGH:
-        format = "^(無|不|非|お|御|)(%s)$";
+        if (ENGINE == GW_ENGINE_KANJI)
+          format = "^(%s)$";
+        else
+          format = "^(無|不|非|お|御|)(%s)$";
         expression = g_strdup_printf(format, subject);
         re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
         g_free (expression);
         break;
       case GW_RELEVANCE_MEDIUM:
-        format = "^(お|を|に|で|は|と|)(%s)(で|が|の|を|に|で|は|と|$)";
+        if (ENGINE == GW_ENGINE_KANJI)
+          format = "%s";
+        else
+          format = "^(お|を|に|で|は|と|)(%s)(で|が|の|を|に|で|は|と|$)";
         expression = g_strdup_printf (format, subject);
         re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
         g_free (expression);
@@ -186,7 +195,12 @@ GRegex* gw_regex_kanji_new (const char *subject, const GwEngine ENGINE, const Gw
         g_assert_not_reached();
     }
 
-    if (error != NULL) exit(1);
+    if (error != NULL)
+    {
+       fprintf (stderr, "Unable to read file: %s\n", error->message);
+       g_error_free (error);
+       exit(1);
+    }
 
     return re;
 }
@@ -213,19 +227,25 @@ GRegex* gw_regex_furi_new (const char *subject, const GwEngine ENGINE, const GwR
     switch (RELEVANCE)
     {
       case GW_RELEVANCE_HIGH:
-        format = "^(お|)(%s)$";
+        if (ENGINE == GW_ENGINE_KANJI)
+          format = "(^|\\s)%s(\\s|$)";
+        else
+          format = "^(お|)(%s)$";
         expression = g_strdup_printf (format, subject);
         re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
         g_free (expression);
         break;
       case GW_RELEVANCE_MEDIUM:
-        format = "^(お|を|に|で|は|と)(%s)(で|が|の|を|に|で|は|と|$)";
+        if (ENGINE == GW_ENGINE_KANJI)
+          format = "(^|\\s)(%s)(\\s|$)";
+        else
+          format = "(^お|を|に|で|は|と)(%s)(で|が|の|を|に|で|は|と|$)";
         expression = g_strdup_printf (format, subject);
         re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
         g_free (expression);
         break;
       case GW_RELEVANCE_LOW:
-        re = g_regex_new (subject,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
+        re = g_regex_new (subject, GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
         break;
       case GW_RELEVANCE_LOCATE:
         re = g_regex_new (subject,  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
@@ -234,7 +254,13 @@ GRegex* gw_regex_furi_new (const char *subject, const GwEngine ENGINE, const GwR
         g_assert_not_reached();
     }
 
-    if (error != NULL) exit(1);
+    if (error != NULL)
+    {
+       fprintf (stderr, "Unable to read file: %s\n", error->message);
+       g_error_free (error);
+       exit(1);
+    }
+
 
     return re;
 }
@@ -261,14 +287,17 @@ GRegex* gw_regex_romaji_new (const char *subject, const GwEngine ENGINE, const G
     switch (RELEVANCE)
     {
       case GW_RELEVANCE_HIGH:
-        format = "(^|\\)|/|^to |\\) )(%s)(\\(|/|$|!| \\()";
+        if (ENGINE == GW_ENGINE_KANJI)
+          format = "\\{(%s)\\}";
+        else
+          format = "(^|\\)|/|^to |\\) )(%s)(\\(|/|$|!| \\()";
         expression = g_strdup_printf (format, subject);
         re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
         g_free (expression);
         break;
       case GW_RELEVANCE_MEDIUM:
         if (ENGINE == GW_ENGINE_KANJI)
-          format = "\\{(%s)\\}";
+          format = "\\b(%s)\\b";
         else
           format = "(\\) |/)((\\bto )|(\\bto be )|(\\b))(%s)(( \\([^/]+\\)/)|(/))";
         expression = g_strdup_printf (format, subject);
@@ -285,7 +314,13 @@ GRegex* gw_regex_romaji_new (const char *subject, const GwEngine ENGINE, const G
         g_assert_not_reached();
     }
 
-    if (error != NULL) exit(1);
+    if (error != NULL)
+    {
+       fprintf (stderr, "Unable to read file: %s\n", error->message);
+       g_error_free (error);
+       exit(1);
+    }
+
 
     return re;
 }
@@ -336,7 +371,13 @@ GRegex* gw_regex_mix_new (const char *subject, const GwEngine ENGINE, const GwRe
         g_assert_not_reached();
     }
 
-    if (error != NULL) exit(1);
+    if (error != NULL)
+    {
+       fprintf (stderr, "Unable to read file: %s\n", error->message);
+       g_error_free (error);
+       exit(1);
+    }
+
 
     return re;
 }
@@ -363,13 +404,13 @@ GRegex* gw_regex_new (const char *subject, const GwEngine ENGINE, const GwReleva
     switch (RELEVANCE)
     {
       case GW_RELEVANCE_HIGH:
-        format = "(\\b(%s)\\b";
+        format = "\\b(%s)\\b";
         expression = g_strdup_printf (format, subject);
         re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
         g_free (expression);
         break;
       case GW_RELEVANCE_MEDIUM:
-        format = "(\\b(%s)\\b";
+        format = "\\b(%s)\\b";
         expression = g_strdup_printf (format, subject);
         re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
         g_free (expression);
@@ -384,7 +425,12 @@ GRegex* gw_regex_new (const char *subject, const GwEngine ENGINE, const GwReleva
         g_assert_not_reached();
     }
 
-    if (error != NULL) exit(1);
+    if (error != NULL)
+    {
+      fprintf (stderr, "Unable to read file: %s\n", error->message);
+      g_error_free (error);
+      exit(1);
+    }
 
     return re;
 }

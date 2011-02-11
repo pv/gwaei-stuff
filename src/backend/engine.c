@@ -134,9 +134,9 @@ static void _append_stored_result_to_output (GwSearchItem *item, GList **results
 //! @return Returns one of the integers: LOW_RELEVANCE, MEDIUM_RELEVANCE, or HIGH_RELEVANCE.
 //!
 static int _get_relevance (GwSearchItem *item) {
-    if (gw_searchitem_existance_generic_comparison (item, GW_RELEVANCE_HIGH))
+    if (gw_searchitem_run_comparison (item, GW_RELEVANCE_HIGH))
       return GW_RELEVANCE_HIGH;
-    else if (gw_searchitem_existance_generic_comparison (item, GW_RELEVANCE_MEDIUM))
+    else if (gw_searchitem_run_comparison (item, GW_RELEVANCE_MEDIUM))
       return GW_RELEVANCE_MEDIUM;
     else
       return GW_RELEVANCE_LOW;
@@ -196,7 +196,7 @@ static void _stream_results_thread (gpointer data)
 //        gw_ui_verb_check_with_suggestion (item);
 
       //Results match, add to the text buffer
-      if (gw_searchitem_existance_generic_comparison (item, GW_RELEVANCE_LOW))
+      if (gw_searchitem_run_comparison (item, GW_RELEVANCE_LOW))
       {
         int relevance = _get_relevance (item);
         switch(relevance)
@@ -293,7 +293,6 @@ static void _stream_results_thread (gpointer data)
       g_mutex_unlock (item->mutex);
       g_mutex_lock (item->mutex);
     }
-
 
     //Cleanup
     (*item->gw_searchitem_ui_after_search_cleanup)(item);
