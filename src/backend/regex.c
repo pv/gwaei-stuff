@@ -168,7 +168,9 @@ GRegex* gw_regex_kanji_new (const char *subject, const GwEngine ENGINE, const Gw
     switch (RELEVANCE)
     {
       case GW_RELEVANCE_HIGH:
-        if (ENGINE == GW_ENGINE_KANJI)
+        if (ENGINE == GW_ENGINE_EXAMPLES)
+          format = "%s";
+        else if (ENGINE == GW_ENGINE_KANJI)
           format = "^(%s)$";
         else
           format = "^(無|不|非|お|御|)(%s)$";
@@ -227,7 +229,9 @@ GRegex* gw_regex_furi_new (const char *subject, const GwEngine ENGINE, const GwR
     switch (RELEVANCE)
     {
       case GW_RELEVANCE_HIGH:
-        if (ENGINE == GW_ENGINE_KANJI)
+        if (ENGINE == GW_ENGINE_EXAMPLES)
+          format = "%s";
+        else if (ENGINE == GW_ENGINE_KANJI)
           format = "(^|\\s)%s(\\s|$)";
         else
           format = "^(お|)(%s)$";
@@ -287,7 +291,9 @@ GRegex* gw_regex_romaji_new (const char *subject, const GwEngine ENGINE, const G
     switch (RELEVANCE)
     {
       case GW_RELEVANCE_HIGH:
-        if (ENGINE == GW_ENGINE_KANJI)
+        if (ENGINE == GW_ENGINE_EXAMPLES)
+          format = "%s";
+        else if (ENGINE == GW_ENGINE_KANJI)
           format = "\\{(%s)\\}";
         else
           format = "(^|\\)|/|^to |\\) )(%s)(\\(|/|$|!| \\()";

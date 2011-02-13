@@ -384,7 +384,6 @@ void gw_resultline_parse_kanjidict_result_string (GwResultLine *rl)
 //!
 void gw_resultline_parse_examplesdict_result_string (GwResultLine *rl)
 {
-/*
     //Reinitialize Variables to help prevent craziness
     rl->def_start[0] = NULL;
     rl->def_total = 0;
@@ -462,7 +461,6 @@ void gw_resultline_parse_examplesdict_result_string (GwResultLine *rl)
     }
     //Meh.  Deciding not to show this line from the dictionary for now.
     rl->furigana_start = NULL;
-*/
 }
 
 
