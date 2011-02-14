@@ -59,6 +59,7 @@ void gw_main_initialize ()
     gw_tabs_initialize ();
 }
 
+
 void gw_main_free ()
 {
   gw_tabs_free ();
@@ -2515,51 +2516,88 @@ gboolean gw_ui_has_selection_by_target (GwTargetOutput TARGET)
 //!
 static void _add_match_highlights (gint line, gint start_offset, gint end_offset, GwSearchItem* item)
 {
+    //Declarations
     GtkTextBuffer *tb;
-    tb = GTK_TEXT_BUFFER (item->target_tb);
-    GwQueryLine *ql = item->queryline;
-    
-    int i;
-    int match_so, match_eo;
-    GtkTextIter si, ei;
-    gtk_text_buffer_get_iter_at_line_offset (tb, &si, line, start_offset);
-    gtk_text_buffer_get_iter_at_line_offset (tb, &ei, line, end_offset);
-    char *text = gtk_text_buffer_get_slice (tb, &si, &ei, FALSE);
-    char *pos = text;
+    GwQueryLine *ql;
+    int match_start_byte_offset;
+    int match_end_byte_offset;
+    int match_character_offset;
+    GtkTextIter start_iter;
+    GtkTextIter end_iter;
+    char *text;
+    GRegex *re;
+    GRegex ***iter;
+    GMatchInfo *match_info;
 
-/*
+    //Initializations
+    tb = GTK_TEXT_BUFFER (item->target_tb);
+    ql = item->queryline;
+    gtk_text_buffer_get_iter_at_line_offset (tb, &start_iter, line, start_offset);
+    gtk_text_buffer_get_iter_at_line_offset (tb, &end_iter, line, end_offset);
+    text = gtk_text_buffer_get_slice (tb, &start_iter, &end_iter, FALSE);
+
     //Look for kanji atoms
-    for(i = 0; i < ql->kanji_total; i++) {
-       pos = text;
-       while ((pos = gw_regex_locate_offset (pos, text, &(ql->kanji_regex[GW_QUERYLINE_LOCATE][i]), &match_so, &match_eo)) != NULL )
-       {
-          gtk_text_buffer_get_iter_at_line_offset (tb, &si, line, match_so + start_offset);
-          gtk_text_buffer_get_iter_at_line_offset (tb, &ei, line, match_eo + start_offset);
-          gtk_text_buffer_apply_tag_by_name (tb, "match", &si, &ei);
-       }
+    for (iter = ql->re_kanji; *iter != NULL && **iter != NULL; iter++)
+    {
+      re = (*iter)[GW_RELEVANCE_LOCATE];
+      if (g_regex_match (re, text, 0, &match_info))
+      { 
+        while (g_match_info_matches (match_info))
+        {
+          g_match_info_fetch_pos (match_info, 0, &match_start_byte_offset, &match_end_byte_offset);
+          match_character_offset = g_utf8_pointer_to_offset (text, text + match_start_byte_offset);
+          gtk_text_buffer_get_iter_at_line_offset (tb, &start_iter, line, match_character_offset + start_offset);
+          match_character_offset = g_utf8_pointer_to_offset (text, text + match_end_byte_offset);
+          gtk_text_buffer_get_iter_at_line_offset (tb, &end_iter, line, match_character_offset + start_offset);
+          gtk_text_buffer_apply_tag_by_name (tb, "match", &start_iter, &end_iter);
+          g_match_info_next (match_info, NULL);
+        }
+        g_match_info_free (match_info);
+      }
     }
+
     //Look for furigana atoms
-    for(i = 0; i < ql->furi_total; i++) {
-       pos = text;
-       while ((pos = gw_regex_locate_offset (pos, text, &(ql->furi_regex[GW_QUERYLINE_LOCATE][i]), &match_so, &match_eo)) != NULL )
-       {
-          gtk_text_buffer_get_iter_at_line_offset (tb, &si, line, match_so + start_offset);
-          gtk_text_buffer_get_iter_at_line_offset (tb, &ei, line, match_eo + start_offset);
-          gtk_text_buffer_apply_tag_by_name (tb, "match", &si, &ei);
-       }
+    for (iter = ql->re_furi; *iter != NULL && **iter != NULL; iter++)
+    {
+      re = (*iter)[GW_RELEVANCE_LOCATE];
+      if (g_regex_match (re, text, 0, &match_info))
+      { 
+        while (g_match_info_matches (match_info))
+        {
+          g_match_info_fetch_pos (match_info, 0, &match_start_byte_offset, &match_end_byte_offset);
+          match_character_offset = g_utf8_pointer_to_offset (text, text + match_start_byte_offset);
+          gtk_text_buffer_get_iter_at_line_offset (tb, &start_iter, line, match_character_offset + start_offset);
+          match_character_offset = g_utf8_pointer_to_offset (text, text + match_end_byte_offset);
+          gtk_text_buffer_get_iter_at_line_offset (tb, &end_iter, line, match_character_offset + start_offset);
+          gtk_text_buffer_apply_tag_by_name (tb, "match", &start_iter, &end_iter);
+          g_match_info_next (match_info, NULL);
+        }
+        g_match_info_free (match_info);
+      }
     }
+
     //Look for romaji atoms
-    for(i = 0; i < ql->roma_total; i++) {
-       pos = text;
-       while ((pos = gw_regex_locate_offset (pos, text, &(ql->roma_regex[GW_QUERYLINE_LOCATE][i]), &match_so, &match_eo)) != NULL )
-       {
-          gtk_text_buffer_get_iter_at_line_offset (tb, &si, line, match_so + start_offset);
-          gtk_text_buffer_get_iter_at_line_offset (tb, &ei, line, match_eo + start_offset);
-          gtk_text_buffer_apply_tag_by_name (tb, "match", &si, &ei);
-       }
+    for (iter = ql->re_roma; *iter != NULL && **iter != NULL; iter++)
+    {
+      re = (*iter)[GW_RELEVANCE_LOCATE];
+      if (g_regex_match (re, text, 0, &match_info))
+      { 
+        while (g_match_info_matches (match_info))
+        {
+          g_match_info_fetch_pos (match_info, 0, &match_start_byte_offset, &match_end_byte_offset);
+          match_character_offset = g_utf8_pointer_to_offset (text, text + match_start_byte_offset);
+          gtk_text_buffer_get_iter_at_line_offset (tb, &start_iter, line, match_character_offset + start_offset);
+          match_character_offset = g_utf8_pointer_to_offset (text, text + match_end_byte_offset);
+          gtk_text_buffer_get_iter_at_line_offset (tb, &end_iter, line, match_character_offset + start_offset);
+          gtk_text_buffer_apply_tag_by_name (tb, "match", &start_iter, &end_iter);
+          g_match_info_next (match_info, NULL);
+        }
+        g_match_info_free (match_info);
+      }
     }
+
+    //Cleanup
     g_free (text);
-    */
 }
 
 
