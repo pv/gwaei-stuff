@@ -2577,11 +2577,12 @@ static void _add_match_highlights (gint line, gint start_offset, gint end_offset
     }
 
     //Look for romaji atoms
-    for (iter = ql->re_roma; *iter != NULL && **iter != NULL; iter++)
+    for (iter = ql->re_roma; *iter != NULL; iter++)
     {
       re = (*iter)[GW_RELEVANCE_LOCATE];
-      if (g_regex_match (re, text, 0, &match_info))
+      if (re != NULL && g_regex_match (re, text, 0, &match_info))
       { 
+        printf("expression: %s\n", g_regex_get_pattern (re));
         while (g_match_info_matches (match_info))
         {
           g_match_info_fetch_pos (match_info, 0, &match_start_byte_offset, &match_end_byte_offset);

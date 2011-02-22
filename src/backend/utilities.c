@@ -1092,4 +1092,152 @@ gboolean gw_util_is_japanese_locale ()
            );
 }
 
+static gboolean _is_script_type (const char* type, GUnicodeScript script)
+{
+    if (strcmp(type, "kanji") == 0)
+      return (script == G_UNICODE_SCRIPT_HAN);
+    else if (strcmp(type, "kanjiish") == 0)
+      return (script == G_UNICODE_SCRIPT_HAN || script == G_UNICODE_SCRIPT_HIRAGANA);
+    else if (strcmp(type, "furigana") == 0)
+      return (script == G_UNICODE_SCRIPT_KATAKANA || script == G_UNICODE_SCRIPT_HIRAGANA);
+    else if (strcmp(type, "romaji") == 0)
+      return (script == G_UNICODE_SCRIPT_LATIN);
+
+    g_assert_not_reached ();
+}
+
+
+//!
+//! @brief Returns the furigana atoms in a string as an array of atoms
+//! @param string The string to get the furigana atoms from
+//! @returns An allocated array of strings that should be freed with g_strfreev()
+//!
+char** gw_util_get_romaji_atoms_from_string (const char *string)
+{
+    //Declarations
+    gunichar character;
+    GUnicodeScript script;
+    char *buffer;
+    const char *string_ptr;
+    char *buffer_ptr;
+/*
+    char *previous_buffer_atom;
+*/
+    const char* delimitor;
+    char *buffer_delimitor_ptr;
+    char **string_array;
+    gboolean new_atom_start;
+    int offset;
+
+    //Initializations;
+    delimitor = "&";
+    buffer = (char*) malloc(sizeof(char) * (strlen(string) * 2) + 1); //max size is if there is a delimitor for every character
+    string_ptr = string;
+    buffer_ptr = buffer;
+    new_atom_start = FALSE;
+
+    //Create a string with only furigana atoms delimited by the delimitor
+    while (*string_ptr != '\0')
+    {
+      character = g_utf8_get_char (string_ptr);
+      script = g_unichar_get_script (character);
+      if (strncmp(buffer_ptr, delimitor, strlen(delimitor)) == 0)
+      {
+        new_atom_start = TRUE;
+        string_ptr = g_utf8_next_char (string_ptr);
+      }
+      else if (script == G_UNICODE_SCRIPT_LATIN || script == G_UNICODE_SCRIPT_COMMON)
+      {
+        if (new_atom_start && buffer_ptr != buffer)
+        {
+          new_atom_start = FALSE;
+          strcpy(buffer_ptr, delimitor);
+          buffer_ptr += strlen(delimitor);
+        }
+
+        offset = g_unichar_to_utf8 (character, buffer_ptr);
+        buffer_ptr += offset;
+        *buffer_ptr = '\0';
+      }
+      else
+      {
+        new_atom_start = TRUE;
+      }
+      string_ptr = g_utf8_next_char (string_ptr);
+    }
+    *buffer_ptr = '\0';
+    printf("atoms: %s\n", buffer);
+
+    //Convert the string into an array of strings
+    string_array = g_strsplit (buffer, delimitor, GW_QUERYLINE_MAX_ATOMS);
+    
+    //Cleanup
+    free(buffer);
+
+    //Finish
+    return string_array;
+}
+
+
+//!
+//! @brief Returns the furigana atoms in a string as an array of atoms
+//! @param string The string to get the furigana atoms from
+//! @returns An allocated array of strings that should be freed with g_strfreev()
+//!
+char** gw_util_get_furigana_atoms_from_string (const char *string)
+{
+    //Declarations
+    gunichar character;
+    GUnicodeScript script;
+    char *buffer;
+    const char *string_ptr;
+    char *buffer_ptr;
+    const char* delimitor;
+    char *buffer_delimitor_ptr;
+    char **string_array;
+    int offset;
+    gboolean new_atom_start;
+
+    //Initializations;
+    delimitor = "&";
+    buffer = (char*) malloc(sizeof(char) * (strlen(string) * 2) + 1); //max size is if there is a delimitor for every character
+    string_ptr = string;
+    buffer_ptr = buffer;
+    new_atom_start = FALSE;
+
+    //Create a string with only furigana atoms delimited by the delimitor
+    while (*string_ptr != '\0')
+    {
+      character = g_utf8_get_char (string_ptr);
+      script = g_unichar_get_script (character);
+      if (script == G_UNICODE_SCRIPT_KATAKANA || script == G_UNICODE_SCRIPT_HIRAGANA)
+      {
+        if (new_atom_start && buffer_ptr != buffer)
+        {
+          new_atom_start = FALSE;
+          strcpy(buffer_ptr, delimitor);
+          buffer_ptr += strlen(delimitor);
+        }
+
+        offset = g_unichar_to_utf8 (character, buffer_ptr);
+        buffer_ptr += offset;
+        *buffer_ptr = '\0';
+      }
+      else
+      {
+        new_atom_start = TRUE;
+      }
+      string_ptr = g_utf8_next_char (string_ptr);
+    }
+    *buffer_ptr = '\0';
+
+    //Convert the string into an array of strings
+    string_array = g_strsplit (buffer, delimitor, GW_QUERYLINE_MAX_ATOMS);
+    
+    //Cleanup
+    free(buffer);
+
+    //Finish
+    return string_array;
+}
 

@@ -406,24 +406,29 @@ static gboolean _kanji_existance_comparison (GwQueryLine *ql, GwResultLine *rl, 
     kanji_check_passed = TRUE;
     radical_check_passed = TRUE;
 
+    printf("BREAK1\n");
+
     //Calculate the strokes check
     if (rl->strokes != NULL)
     {
-      for (iter = ql->re_strokes; iter != NULL && *iter != NULL && **iter != NULL; iter++)
+      printf("BREAK2\n");
+      for (iter = ql->re_strokes; iter != NULL && *iter != NULL; iter++)
       {
+        printf("BREAK3\n");
         re = (*iter)[RELEVANCE];
-        if (g_regex_match (re, rl->strokes, 0, NULL) == FALSE) 
+        if (re != NULL && g_regex_match (re, rl->strokes, 0, NULL) == FALSE) 
           strokes_check_passed = FALSE;
+        printf("pattern: %s resultline: %s\n", g_regex_get_pattern (re), rl->strokes);
       }
     }
 
     //Calculate the frequency check
     if (rl->frequency != NULL)
     {
-      for (iter = ql->re_frequency; iter != NULL && *iter != NULL && **iter != NULL; iter++)
+      for (iter = ql->re_frequency; iter != NULL && *iter != NULL; iter++)
       {
         re = (*iter)[RELEVANCE];
-        if (g_regex_match (re, rl->frequency, 0, NULL) == FALSE) 
+        if (re != NULL && g_regex_match (re, rl->frequency, 0, NULL) == FALSE) 
           frequency_check_passed = FALSE;
       }
     }
@@ -431,10 +436,10 @@ static gboolean _kanji_existance_comparison (GwQueryLine *ql, GwResultLine *rl, 
     //Calculate the grade check
     if (rl->grade != NULL)
     {
-      for (iter = ql->re_grade; iter != NULL && *iter != NULL && **iter != NULL; iter++)
+      for (iter = ql->re_grade; iter != NULL && *iter != NULL; iter++)
       {
         re = (*iter)[RELEVANCE];
-        if (g_regex_match (re, rl->grade, 0, NULL) == FALSE) 
+        if (re != NULL && g_regex_match (re, rl->grade, 0, NULL) == FALSE) 
           grade_check_passed = FALSE;
       }
     }
@@ -442,27 +447,32 @@ static gboolean _kanji_existance_comparison (GwQueryLine *ql, GwResultLine *rl, 
     //Calculate the jlpt check
     if (rl->jlpt != NULL)
     {
-      for (iter = ql->re_jlpt; iter != NULL && *iter != NULL && **iter != NULL; iter++)
+      for (iter = ql->re_jlpt; iter != NULL && *iter != NULL; iter++)
       {
         re = (*iter)[RELEVANCE];
-        if (g_regex_match (re, rl->jlpt, 0, NULL) == FALSE) 
+        if (re != NULL && g_regex_match (re, rl->jlpt, 0, NULL) == FALSE) 
           jlpt_check_passed = FALSE;
       }
     }
 
+
     //Calculate the romaji check
     if (rl->meanings != NULL)
     {
-      if (ql->re_roma[0] != NULL && ql->re_roma[0][0] != NULL) romaji_check_passed = FALSE;
-
-      for (iter = ql->re_roma; *iter != NULL && **iter != NULL; iter++)
+      for (iter = ql->re_roma; ql->re_roma[0] != NULL && iter != NULL && *iter != NULL; iter++)
       {
-        printf("romaji: %s\n", g_regex_get_pattern (ql->re_roma[0][0]));
         re = (*iter)[RELEVANCE];
-        if (g_regex_match (re, rl->meanings, 0, NULL) == TRUE) 
+        if (re != NULL) romaji_check_passed = FALSE;
+      }
+      //if (ql->re_roma[0] != NULL && ql->re_roma[0][0] != NULL) romaji_check_passed = FALSE;
+
+      for (iter = ql->re_roma; iter != NULL && *iter != NULL; iter++)
+      {
+        re = (*iter)[RELEVANCE];
+
+        if (re != NULL && g_regex_match (re, rl->meanings, 0, NULL) == TRUE) 
         {
           romaji_check_passed = TRUE;
-          printf("roma check passed\n");
         }
       }
     }
@@ -472,19 +482,17 @@ static gboolean _kanji_existance_comparison (GwQueryLine *ql, GwResultLine *rl, 
     if (*(ql->re_furi) != NULL && (rl->readings[0] != NULL || rl->readings[1] != NULL || rl->readings[2] != NULL))
     {
        furigana_check_passed = FALSE;
-       printf("furi: %s\n", g_regex_get_pattern (ql->re_furi[0][0]));
     }
     for (i = 0; i < 3; i++)
     {
       if (rl->readings[i] == NULL) continue;
 
-      for (iter = ql->re_furi; *iter != NULL && **iter != NULL; iter++)
+      for (iter = ql->re_furi; iter != NULL && *iter != NULL; iter++)
       {
         re = (*iter)[RELEVANCE];
-        if (g_regex_match (re, rl->readings[i], 0, NULL) == TRUE) 
+        if (re != NULL && g_regex_match (re, rl->readings[i], 0, NULL) == TRUE) 
         {
           furigana_check_passed = TRUE;
-          printf("furi check passed\n");
         }
       }
     }
@@ -492,13 +500,12 @@ static gboolean _kanji_existance_comparison (GwQueryLine *ql, GwResultLine *rl, 
     //Calculate the kanji check
     if (*(ql->re_kanji) != NULL && rl->kanji != NULL)
     {
-      for (iter = ql->re_kanji; iter != NULL && *iter != NULL && **iter != NULL; iter++)
+      for (iter = ql->re_kanji; iter != NULL && *iter != NULL; iter++)
       {
         re = (*iter)[RELEVANCE];
-        if (g_regex_match (re, rl->kanji, 0, NULL) == FALSE) 
+        if (re != NULL && g_regex_match (re, rl->kanji, 0, NULL) == FALSE) 
         {
           kanji_check_passed = FALSE;
-          printf("kanji check failed\n");
         }
       }
     }
@@ -507,19 +514,15 @@ static gboolean _kanji_existance_comparison (GwQueryLine *ql, GwResultLine *rl, 
     if (rl->radicals != NULL)
     {
       if (*(ql->re_kanji) != NULL) radical_check_passed = FALSE;
-      for (iter = ql->re_kanji; iter != NULL && *iter != NULL && **iter != NULL; iter++)
+      for (iter = ql->re_kanji; iter != NULL && *iter != NULL; iter++)
       {
         re = (*iter)[RELEVANCE];
-        if (g_regex_match (re, rl->radicals, 0, NULL) == TRUE) 
+        if (re != NULL && g_regex_match (re, rl->radicals, 0, NULL) == TRUE) 
         {
           radical_check_passed = TRUE;
-          printf("radical check failed\n");
         }
       }
     }
-
-    printf("%d && %d && %d && %d && %d && %d && (%d || %d)\n", 
-    strokes_check_passed, frequency_check_passed, grade_check_passed, jlpt_check_passed, romaji_check_passed, furigana_check_passed, radical_check_passed, kanji_check_passed);
 
     //Return our results
     return (strokes_check_passed &&
@@ -552,8 +555,12 @@ gboolean gw_searchitem_run_comparison (GwSearchItem *item, const GwRelevance REL
     int i = 0;
     switch (item->dictionary->engine)
     {
+      case GW_ENGINE_EDICT:
+        return _edict_existance_comparison (ql, rl, RELEVANCE);
       case GW_ENGINE_KANJI:
         return _kanji_existance_comparison (ql, rl, RELEVANCE);
+      case GW_ENGINE_EXAMPLES:
+        return _edict_existance_comparison (ql, rl, RELEVANCE);
       default:
         return _edict_existance_comparison (ql, rl, RELEVANCE);
     }

@@ -29,6 +29,7 @@ GRegex* gw_regex_new (const char*, GwEngine, GwRelevance);
 
 
 typedef enum {
+  GW_RE_NUMBER,
   GW_RE_STROKES,
   GW_RE_GRADE,
   GW_RE_FREQUENCY,

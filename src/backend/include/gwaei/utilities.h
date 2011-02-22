@@ -76,4 +76,7 @@ gchar* gw_util_enlarge_halfwidth_japanese(const gchar*);
 
 gboolean gw_util_is_japanese_locale (void);
 
+char** gw_util_get_romaji_atoms_from_string (const char*);
+char** gw_util_get_furigana_atoms_from_string (const char*);
+
 #endif

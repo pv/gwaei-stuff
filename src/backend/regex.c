@@ -96,6 +96,9 @@ void gw_regex_initialize ()
     {
       switch (i)
       {
+        case GW_RE_NUMBER:
+          gw_re[i] = g_regex_new ("\\b[a-zA-Z][0-9]{1,4}\\b",  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
+          break;
         case GW_RE_STROKES:
           gw_re[i] = g_regex_new ("\\bS[0-9]{1,2}\\b",  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
           break;
