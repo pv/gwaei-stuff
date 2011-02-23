@@ -358,50 +358,41 @@ GtkBuilder* gw_common_get_builder ()
 gboolean gw_common_load_ui_xml (const char *filename) {
     g_assert (_builder != NULL);
 
-    char *path = NULL;
+    //Declarations
+    char *paths[4];
+    char **iter;
+    char *path;
+    gboolean loaded;
 
-    //Try a local path first
-    if (
-        (path = g_build_filename ("ui", filename, NULL)) != NULL &&
-         g_file_test (path, G_FILE_TEST_IS_REGULAR) &&
-         gtk_builder_add_from_file (_builder, path,  NULL)
-       )
+    //Initializations
+    paths[0] = g_build_filename ("ui", filename, NULL);
+    paths[1] = g_build_filename ("..", "share", PACKAGE, filename, NULL);
+    paths[2] = g_build_filename (DATADIR2, PACKAGE, filename, NULL);
+    paths[3] = NULL;
+    loaded = FALSE;
+
+    //Search for the files
+    for (iter = paths; *iter != NULL && loaded == FALSE; iter++)
     {
-      gtk_builder_connect_signals (_builder, NULL);
-      g_free (path);
-      path = NULL;
-      return TRUE;
-    }
-    //Try a local path first
-    if (
-        (path = g_build_filename ("..", "share", PACKAGE, filename, NULL)) != NULL &&
-         g_file_test (path, G_FILE_TEST_IS_REGULAR) &&
-         gtk_builder_add_from_file (_builder, path,  NULL)
-       )
-    {
-      gtk_builder_connect_signals (_builder, NULL);
-      g_free (path);
-      path = NULL;
-      return TRUE;
-    }
-    //Try the global path next
-    else if (
-             (path = g_build_filename (DATADIR2, PACKAGE, filename, NULL)) != NULL &&
-              g_file_test (path, G_FILE_TEST_IS_REGULAR) &&
-             gtk_builder_add_from_file (_builder, path,  NULL)
-            )
-    {
-      gtk_builder_connect_signals (_builder, NULL);
-      g_free (path);
-      path = NULL;
-      return TRUE;
-    }
-    else {
-      printf("Failed to build path. Exiting\n");
-      exit (EXIT_FAILURE);
+      path = *iter;
+      if (g_file_test (path, G_FILE_TEST_IS_REGULAR) && gtk_builder_add_from_file (_builder, path,  NULL))
+      {
+        gtk_builder_connect_signals (_builder, NULL);
+        loaded = TRUE;
+      }
     }
 
-    return FALSE;
+    //Cleanup
+    for (iter = paths; *iter != NULL; iter++)
+    {
+      g_free (*iter);
+    }
+
+    //Bug test
+    g_assert (loaded);
+
+    //Return
+    return loaded;
 }
 
 

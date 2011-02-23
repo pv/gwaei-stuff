@@ -32,8 +32,11 @@
                     <child>
                       <object class="GtkImageMenuItem" id="new_tab_menuitem">
                         <property name="visible">True</property>
+                        <property name="related_action">file_new_tab_action</property>
+                        <property name="use_action_appearance">True</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <accelerator key="t" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -701,10 +704,12 @@
             <property name="border_width">6</property>
             <property name="spacing">4</property>
             <child>
-              <object class="GtkLabel" id="label3">
+              <object class="GtkLabel" id="label1">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">_Search:</property>
+                <property name="label" translatable="yes">Sear_ch:</property>
                 <property name="use_underline">True</property>
+                <property name="selectable">True</property>
+                <property name="mnemonic_widget">search_entry</property>
                 <property name="single_line_mode">True</property>
               </object>
               <packing>
@@ -1106,5 +1111,11 @@
   </object>
   <object class="GtkMenu" id="back_popup">
     <property name="visible">True</property>
+  </object>
+  <object class="GtkAction" id="file_new_tab_action">
+    <property name="label">New _Tab</property>
+    <property name="short_label">New Tab</property>
+    <property name="stock_id">stock_new-tab</property>
+    <signal name="activate" handler="do_new_tab"/>
   </object>
 </interface>

@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file src/gtk-main-interface.c
+//! @file src/gtk/main.c
 //!
 //! @brief Abstraction layer for gtk objects
 //!
@@ -46,8 +46,6 @@ static GwSearchItem *_progress_feedback_item = NULL;
 static gboolean _prev_selection_icon_state = FALSE;
 static int _previous_tip = 0;
 
-void _initialize_gtk_builder_translation_hack (void);
-
 
 //!
 //! @brief Sets up the variables in main-interface.c and main-callbacks.c for use
@@ -55,7 +53,6 @@ void _initialize_gtk_builder_translation_hack (void);
 void gw_main_initialize ()
 {
     gw_common_load_ui_xml ("main.ui");
-    _initialize_gtk_builder_translation_hack ();
     gw_tabs_initialize ();
 }
 
@@ -358,199 +355,6 @@ void gw_ui_verb_check_with_suggestion (GwSearchItem *item)
       }
     }
 */
-}
-
-
-
-//!
-//! \brief Hacks to make the gtkbuilder file from glade 2.6.7 work correctly
-//!
-//! Likely the problem is that other packages just haven't gotten to suporting
-//! it yet. So hopefully we can just clean delete this function in time.
-//!
-//! @see initialize_gui_interface ()
-//!
-void _initialize_gtk_builder_translation_hack ()
-{
-      GtkBuilder *builder = gw_common_get_builder ();
-    /*Note: this code doesn't work for adding an accelerator*/
-//    gtk_action_set_accel_group (action, accel_group);
-//    gtk_action_group_add_action_with_accel (action_group, action, "<control>r");
-//    gtk_action_connect_accelerator (action);
-
-    /*Note: but this code does*/
-//    gtk_widget_add_accelerator (GTK_WIDGET (
-//    gtk_builder_get_object (builder, "word_edge_menuitem")),
-//    "activate", accel_group, GDK_b, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
-    GtkAccelGroup* accel_group;
-    GtkWidget *menu;
-    accel_group = GTK_ACCEL_GROUP (gtk_builder_get_object (builder, "main_accelgroup"));
-    GtkActionGroup* action_group;
-    action_group = GTK_ACTION_GROUP (gtk_builder_get_object (builder, "main_actiongroup"));
-    const int id_length = 50;
-    char id[id_length];
-    GtkAction *action;
-    GtkWidget *menuitem;
-
-
-    action = gtk_action_new ("new_tab_action", gettext("_New Tab"), NULL, NULL);
-    gtk_action_set_icon_name (action, "stock_new-tab"); 
-    g_signal_connect( G_OBJECT (action), "activate", G_CALLBACK (do_new_tab), NULL);
-    gtk_action_set_accel_group (action, accel_group);
-    gtk_action_group_add_action_with_accel (action_group, action, "<control>t");
-    menuitem = GTK_WIDGET (gtk_builder_get_object (builder, "new_tab_menuitem"));
-    gtk_activatable_set_related_action (GTK_ACTIVATABLE (menuitem), action);
-
-    char *temp = gettext("Only for Non-Japanese Locals");
-    char *temp1  = gettext("When Possible");
-    char *temp2  = gettext("Never");
-    char *temp3 = gettext("Go to the _Project Homepage");
-    char *temp4 = gettext("Get Help on I_RC");
-    char *temp5 = gettext("Other Dictionaries");
-    char *temp6 = gettext("Main Dictionaries");
-
-    char *temp7 = gettext("Order");
-    char *temp8 = gettext("Shortcut");
-    char *temp9 = gettext("Dictionary");
-    char *temp10 = gettext("_Annotate Strokes");
-
-
-    gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "close_menuitem")), "activate", accel_group, GDK_w, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
-    gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "quit_menuitem")), "activate", accel_group, GDK_q, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
-    gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "clear_menuitem")), "activate", accel_group, GDK_l, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
-    gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "copy_menuitem")), "activate", accel_group, GDK_c, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
-    gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "paste_menuitem")), "activate", accel_group, GDK_v, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
-    gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "select_all_menuitem")), "activate", accel_group, GDK_a, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
-    gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "cut_menuitem")), "activate", accel_group, GDK_x, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
-
-    //Edit action
-    action = GTK_ACTION (gtk_builder_get_object (builder, "file_edit_action"));
-    gtk_action_set_tooltip (action, gettext("Edit the current vocabulary list"));
-
-    //Append action
-    action = GTK_ACTION (gtk_builder_get_object (builder, "file_append_action"));
-    gtk_action_set_label (action, gettext("A_ppend"));
-    gtk_action_set_tooltip (action, gettext("Append the current results to a file"));
-    gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "append_menuitem")), "activate", accel_group, GDK_s, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
-
-    //Save as action
-    action = GTK_ACTION (gtk_builder_get_object (builder, "file_save_as_action"));
-    gtk_action_set_tooltip (action, gettext("Save the current results to a new file"));
-
-    //Print action
-    action = GTK_ACTION (gtk_builder_get_object (builder, "file_print_action"));
-    gtk_action_set_tooltip (action, gettext("Print the current results"));
-    gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "print_menuitem")), "activate", accel_group, GDK_p, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
-
-    //Zoom in action
-    action = GTK_ACTION (gtk_builder_get_object (builder, "view_zoom_in_action"));
-    gtk_action_set_label (action, gettext("_Enlarge Text"));
-    gtk_action_set_short_label (action, gettext("Enlarge"));
-    gtk_action_set_tooltip (action, gettext("Enlarge the results text"));
-    gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "zoom_in_menuitem")), "activate", accel_group, GDK_plus, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
-    gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "zoom_in_menuitem")), "activate", accel_group, GDK_KP_Add, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
-
-    //Zoom out action
-    action = GTK_ACTION (gtk_builder_get_object (builder, "view_zoom_out_action"));
-    gtk_action_set_label (action, gettext("_Shrink Text"));
-    gtk_action_set_short_label (action, gettext("Shrink"));
-    gtk_action_set_tooltip (action, gettext("Shrink the results text"));
-    gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "zoom_out_menuitem")), "activate", accel_group, GDK_minus, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
-    gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "zoom_out_menuitem")), "activate", accel_group, GDK_KP_Subtract, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
-
-    //Normal size action
-    action = GTK_ACTION (gtk_builder_get_object (builder, "view_zoom_100_action"));
-    gtk_action_set_label (action, gettext("_Normal Size"));
-    gtk_action_set_short_label (action, gettext("Normal"));
-    gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "zoom_100_menuitem")), "activate", accel_group, GDK_0, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
-    gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "zoom_100_menuitem")), "activate", accel_group, GDK_KP_0, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
-
-    //Show toolbar action
-    action = GTK_ACTION (gtk_builder_get_object (builder, "view_toggle_toolbar_action"));
-    gtk_action_set_label (action, gettext("Show _Toolbar"));
-
-    //Using kanjipad action
-    action = GTK_ACTION (gtk_builder_get_object (builder, "insert_kanjipad_action"));
-    gtk_action_set_label (action, gettext("Using _Kanjipad"));
-    gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "kanjipad_menuitem")), "activate", accel_group, GDK_k, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
-
-    //Using radical search tool action
-    action = GTK_ACTION (gtk_builder_get_object (builder, "insert_radicals_action"));
-    gtk_action_set_label (action, gettext("Using _Radical Search Tool"));
-    gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "radicals_menuitem")), "activate", accel_group, GDK_r, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
-
-    //Word boundary action
-    action = GTK_ACTION (gtk_builder_get_object (builder, "insert_word_edge_action"));
-    gtk_action_set_label (action, gettext("_Word-edge Mark"));
-    gtk_action_set_short_label (action, gettext("_Edge"));
-    gtk_action_set_tooltip (action, gettext("Insert a word-edge character"));
-    gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "word_edge_menuitem")), "activate", accel_group, GDK_b, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
-
-
-    //Not Word boundary action
-    action = GTK_ACTION (gtk_builder_get_object (builder, "insert_not_word_edge_action"));
-    gtk_action_set_label (action, gettext("_Not-word-edge Mark"));
-    gtk_action_set_short_label (action, gettext("_Not Edge"));
-    gtk_action_set_tooltip (action, gettext("Insert a not-word-edge character"));
-    gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "not_word_edge_menuitem")), "activate", accel_group, GDK_b, (GDK_CONTROL_MASK|GDK_SHIFT_MASK), GTK_ACCEL_VISIBLE);
-
-    //Unknown character action
-    action = GTK_ACTION (gtk_builder_get_object (builder, "insert_unknown_character_action"));
-    gtk_action_set_label (action, gettext("_Unknown Character"));
-    gtk_action_set_short_label (action, gettext("_Unknown"));
-    gtk_action_set_tooltip (action, gettext("Insert an unknown character"));
-
-    //Or action
-    action = GTK_ACTION (gtk_builder_get_object (builder, "insert_or_action"));
-    gtk_action_set_label (action, gettext("_Or Character"));
-
-    //And action
-    action = GTK_ACTION (gtk_builder_get_object (builder, "insert_and_action"));
-    gtk_action_set_label (action, gettext("_And Character"));
-
-    //Previous
-    action = GTK_ACTION (gtk_builder_get_object (builder, "history_back_action"));
-    gtk_action_set_label (action, gettext("_Previous Search"));
-    gtk_action_set_short_label (action, gettext("Previous"));
-    gtk_action_set_tooltip (action, gettext("Go to the previous search"));
-    gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "back_menuitem")), "activate", accel_group, GDK_Left, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
-
-    //Next
-    action = GTK_ACTION (gtk_builder_get_object (builder, "history_forward_action"));
-    gtk_action_set_label (action, gettext("_Next Search"));
-    gtk_action_set_short_label (action, gettext("Next"));
-    gtk_action_set_tooltip (action, gettext("Go to the next search"));
-    gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "forward_menuitem")), "activate", accel_group, GDK_Right, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
-
-    //Help
-    action = GTK_ACTION (gtk_builder_get_object (builder, "help_program_action"));
-    gtk_action_set_label (action, gettext("_Contents"));
-    gtk_action_set_short_label (action, gettext("Help"));
-    gtk_action_set_tooltip (action, gettext("Open the help dialog"));
-    gtk_widget_add_accelerator (GTK_WIDGET (gtk_builder_get_object (builder, "help_menuitem")), "activate", accel_group, GDK_F1, 0, GTK_ACCEL_VISIBLE);
-
-    //Help glossary
-    action = GTK_ACTION (gtk_builder_get_object (builder, "help_glossary_action"));
-    gtk_action_set_label (action, gettext("Dictionary _Terminology Glossary"));
-
-
-    GtkWidget *widget;
-
-    //Spellcheck button
-    widget = GTK_WIDGET (gtk_builder_get_object (builder, "spellcheck_toolbutton"));
-    gtk_widget_set_tooltip_text (GTK_WIDGET (widget), gettext("Enable spellcheck for searches"));
-
-    //Search Entry
-    widget = GTK_WIDGET (gtk_builder_get_object (builder, "search_entry"));
-    gtk_widget_set_tooltip_text (GTK_WIDGET (widget), gettext("Input your query here"));
-
-    //Dictionary Combobox
-    widget = GTK_WIDGET (gtk_builder_get_object (builder, "dictionary_combobox"));
-    gtk_widget_set_tooltip_text (GTK_WIDGET (widget), gettext("Select the dictionary you want to use"));
-
-    //Search button
-    widget = GTK_WIDGET (gtk_builder_get_object (builder, "search_entry_submit_button"));
-    gtk_widget_set_tooltip_text (GTK_WIDGET (widget), gettext("Click to start search"));
 }
 
 
