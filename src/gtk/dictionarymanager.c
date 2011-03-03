@@ -10,7 +10,7 @@
 #include <gwaei/backend.h>
 #include <gwaei/frontend.h>
 
-void gw_settings_dictionary_manager_update_items (void);
+void gw_dictionarymanager_update_items (void);
 
 
 static GtkListStore *_model = NULL;
@@ -42,7 +42,7 @@ G_MODULE_EXPORT void do_list_store_row_changed_action (GtkTreeModel *model,
       while (gtk_tree_model_iter_next (GTK_TREE_MODEL (_model), &iter));
     }
     gw_dictinfolist_save_dictionary_order_pref ();
-    gw_settings_dictionary_manager_update_items ();
+    gw_dictionarymanager_update_items ();
     g_signal_handler_unblock (_model, _list_update_handler_id);
 }
 
@@ -51,7 +51,7 @@ G_MODULE_EXPORT void do_list_store_row_changed_action (GtkTreeModel *model,
 //!
 //! @brief Sets up the dictionary manager.  This is the backbone of every portion of the GUI that allows editing dictionaries
 //!
-void gw_dictionary_manager_initialize ()
+void gw_dictionarymanager_initialize ()
 {
     GtkBuilder *builder = gw_common_get_builder ();
     GtkCellRenderer *renderer;
@@ -98,13 +98,13 @@ void gw_dictionary_manager_initialize ()
     gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (combobox), renderer, FALSE);
     gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (combobox), renderer, "text", LONG_NAME);
 
-    gw_settings_dictionary_manager_update_items ();
+    gw_dictionarymanager_update_items ();
     _list_update_handler_id = g_signal_connect (G_OBJECT (_model), "row-deleted", 
                                                 G_CALLBACK (do_list_store_row_changed_action), NULL);
 }
 
 
-void gw_dictionary_manager_free ()
+void gw_dictionarymanager_free ()
 {
 }
 
@@ -112,7 +112,7 @@ void gw_dictionary_manager_free ()
 //!
 //! Sets updates the list of dictionaries against the list in the global dictlist
 //!
-void gw_settings_dictionary_manager_update_items ()
+void gw_dictionarymanager_update_items ()
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
@@ -242,7 +242,7 @@ G_MODULE_EXPORT void do_remove_dictionary_action (GtkWidget *widget, gpointer da
     {
       GwDictInfo *di = list->data;
       gw_io_uninstall_dictinfo (di, NULL, NULL, TRUE);
-      gw_settings_dictionary_manager_update_items ();
+      gw_dictionarymanager_update_items ();
     }
 
     gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);

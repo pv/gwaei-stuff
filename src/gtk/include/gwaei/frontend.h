@@ -28,6 +28,7 @@
 
 #include <gwaei/dictionarymanager.h>
 #include <gwaei/dictionaryinstall.h>
+#include <gwaei/installprogress.h>
 
 #ifdef WITH_LIBSEXY
 #include <gwaei/libsexy.h>

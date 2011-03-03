@@ -167,11 +167,11 @@ const char* gw_util_get_encoding_name (const GwEncoding ENCODING)
     switch (ENCODING)
     {
       case GW_ENCODING_EUC_JP:
-        return "euc-jp";
+        return "EUC-JP";
       case GW_ENCODING_SHIFT_JS:
-        return "shift_js";
+        return "Shift-JS";
       case GW_ENCODING_UTF8:
-        return "utf8";
+        return "UTF-8";
       default:
         g_error ("Unsupported encoding\n");
     }

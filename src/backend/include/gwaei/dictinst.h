@@ -1,6 +1,14 @@
 #ifndef GW_DICTINST_HEADER_INCLUDED
 #define GW_DICTINST_HEADER_INCLUDED
 
+#define GW_DICTINST_ERROR "gWaei Dictionary Installer Error"
+
+typedef enum {
+  GW_DICTINST_ERROR_SOURCE_PATH,
+  GW_DICTINST_ERROR_TARGET_PATH,
+  GW_DICTINST_ERROR_FILE_MOVE
+} GwDictInstError;
+
 typedef enum {
   GW_DICTINST_DOWNLOAD_SOURCE,
   GW_DICTINST_COMPRESSED_FILE,
@@ -8,7 +16,6 @@ typedef enum {
   GW_DICTINST_FINAL_TARGET,
   GW_DICTINST_TOTAL_URI,
 } GwDictInstUri;
-
 
 struct _GwDictInst {
   char *filename;

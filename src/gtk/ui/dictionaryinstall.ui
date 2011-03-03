@@ -273,8 +273,8 @@
                 <property name="has_focus">True</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
-                <signal name="clicked" handler="do_start_dictionary_install"/>
-                <signal name="activate" handler="do_start_dictionary_install"/>
+                <signal name="clicked" handler="gw_installprogress_start_cb"/>
+                <signal name="activate" handler="gw_installprogress_start_cb"/>
               </object>
               <packing>
                 <property name="expand">False</property>
