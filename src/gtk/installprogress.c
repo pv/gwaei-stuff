@@ -10,7 +10,7 @@
 #include <gwaei/frontend.h>
 
 
-static void _update_install_progress (void);
+static void _update_install_progress (GwDictInst *di);
 
 
 void gw_installprogress_initialize ()
@@ -53,7 +53,7 @@ G_MODULE_EXPORT void gw_installprogress_start_cb (GtkWidget *widget, gpointer da
     for (iter = list; iter != NULL; iter = iter->next)
     {
       di = (GwDictInst*) iter->data;
-      gw_dictinst_install_dictionary (di, _update_install_progress)
+      //gw_dictinst_install_dictionary (di, _update_install_progress);
     }
 
 }
@@ -67,7 +67,7 @@ static void _update_install_progress (GwDictInst *di)
     GtkWidget *label;
     GList *list;
     GList *iter;
-    GwDictInst *di;
+    //GwDictInst *di;
     int left_to_install;
     GwDictInst *current;
     char *text;

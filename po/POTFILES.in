@@ -1,5 +1,7 @@
 src/backend/dictinfo.c
-src/backend/dictlist.c
+src/backend/dictinfolist.c
+src/backend/dictinst.c
+src/backend/dictinstlist.c
 src/backend/engine.c
 src/backend/io.c
 src/backend/queryline.c

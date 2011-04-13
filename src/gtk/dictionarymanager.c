@@ -241,7 +241,7 @@ G_MODULE_EXPORT void do_remove_dictionary_action (GtkWidget *widget, gpointer da
     if (list != NULL)
     {
       GwDictInfo *di = list->data;
-      gw_io_uninstall_dictinfo (di, NULL, NULL, TRUE);
+      //gw_io_uninstall_dictinfo (di, NULL, NULL, TRUE);
       gw_dictionarymanager_update_items ();
     }
 

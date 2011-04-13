@@ -51,10 +51,12 @@ po/en@quot.po
 po/en@boldquot.po~
 po/en@quot.po~
 po/POTFILES
+po/gwaei.pot
 
 po/remove-potcdate.sed
 po/Makevars.template
 po/stamp-it
+po/messages.po
 
 rpm/gwaei.spec
 rpm/rpm_gconf_install_post.sh
@@ -87,6 +89,7 @@ src/Makefile.in
 src/gtk/desktop/Makefile.in
 src/gtk/images/Makefile.in
 src/gtk/ui/Makefile.in
+src/gtk/ui/*.glade
 src/kpengine/Makefile.in
 src/schemas/Makefile.in
 src/schemas/org.gnome.*.valid
