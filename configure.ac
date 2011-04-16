@@ -1,4 +1,4 @@
-AC_INIT(gwaei, 1.6.0)
+AC_INIT(gwaei, 3.0.0)
 AC_CONFIG_SRCDIR([src/backend/engine.c])
 AM_INIT_AUTOMAKE
 AM_CONFIG_HEADER(config.h)

@@ -41,7 +41,30 @@
 #include <gwaei/backend.h>
 
 
-char save_path[500] = { '\0' };
+static gchar *_savepath = NULL;
+
+
+//!
+//! @brief Creates a savepath that is used with the save/save as functions
+//!
+//! @param PATH a path to save to
+//!
+void gw_io_set_savepath (const gchar *PATH)
+{
+    if (_savepath != NULL)
+    {
+      g_free (_savepath);
+      _savepath = NULL;
+    }
+
+    if (PATH != NULL)
+      _savepath = g_strdup (PATH);
+}
+
+const gchar* gw_io_get_savepath ()
+{
+  return _savepath;
+}
 
 
 //!
@@ -56,55 +79,32 @@ char save_path[500] = { '\0' };
 //! @param write_mode A constant char representing the write mode to be used (w,a)
 //! @param text A char pointer to some text to save.
 //!
-void gw_io_write_file (const char* write_mode, gchar *text)
+void gw_io_write_file (const char* path, const char* mode, gchar *text, GwIoProgressCallback cb, gpointer data, GError **error)
 {
-    if (save_path[0] != '\0')
-    {
-      //Get the data for the file
-      gchar *text_ptr;
-      int status = 0;
+    //Sanity checks
+    g_assert (path != NULL && mode != NULL && text != NULL);
+    if (*error != NULL) return;
 
-      text_ptr = &text[0];
+    //Declarations
+    gchar *text_ptr;
+    int status;
+    FILE* fd;
 
-      //Write it
-      FILE* fd;
-      fd = fopen(save_path, write_mode);
+    //Initializations
+    status = 0;
+    text_ptr = &text[0];
+    fd = fopen(_savepath, mode);
 
-      while (*text_ptr != '\0' && (status = fputc(*text_ptr, fd)) != EOF)
-        text_ptr++;
+    while (*text_ptr != '\0' && (status = fputc(*text_ptr, fd)) != EOF)
+      text_ptr++;
 
-      if (status != EOF) fputc('\n', fd);
-      //if (status != EOF) fputc('\0', fd);
+    if (status != EOF) fputc('\n', fd);
 
-      fclose(fd);
-      fd = NULL;
-
-      //Cleanup
-      text_ptr = NULL;
-    }
+    //Cleanup
+    fclose(fd);
+    fd = NULL;
+    text_ptr = NULL;
 }
-
-
-//!
-//! \brief Checks to see if rsync is available
-//!
-//! The variable that this checks is set at compile time, so if the program
-//! was compiled when rsync wasn't available, the option will be preminiently
-//! disabled.
-//!
-//! @return The status of the existance of rsync
-//!
-/*
-gboolean gw_io_check_for_rsync ()
-{
-    gboolean rsync_exists;
-    rsync_exists = ( RSYNC != NULL     &&
-                     strlen(RSYNC) > 0 &&
-                     g_file_test(RSYNC, G_FILE_TEST_IS_EXECUTABLE)
-                   );
-    return rsync_exists;
-}
-*/
 
 
 //!
@@ -120,9 +120,9 @@ gboolean gw_io_check_for_rsync ()
 //!
 //! @return The status of the conversion opertaion
 //!
-gboolean gw_io_copy_with_encoding(const char *source_path, const char *target_path,
-                                  const char *source_encoding, const char *target_encoding,
-                                  GError **error)
+gboolean gw_io_copy_with_encoding (const char *source_path, const char *target_path,
+                                   const char *source_encoding, const char *target_encoding,
+                                   GwIoProgressCallback cb, gpointer data, GError **error   )
 {
     if (*error != NULL) return FALSE;
 
@@ -200,7 +200,6 @@ static size_t _libcurl_read_func (void *ptr, size_t size, size_t nmemb, FILE *st
     return fread (ptr, size, nmemb, stream);
 }
 
-
 //!
 //! \brief Private struct made to be used with gw_io_download_file
 //!
@@ -209,28 +208,26 @@ static size_t _libcurl_read_func (void *ptr, size_t size, size_t nmemb, FILE *st
 //! @param nmemb TBA
 //! @param stream TBA
 //!
-static int _libcurl_update_progress (void   *data,
-                                     double  dltotal,
-                                     double  dlnow,
-                                     double  ultotal,
-                                     double  ulnow   )
+static int _libcurl_update_progress (void  *custom,
+                                     double dltotal,
+                                     double dlnow,
+                                     double ultotal,
+                                     double ulnow   )
 {
-  /*
     //Declarations
-    GwIoDownloadCallback cb;
-    gdouble percent;
-
+    GwIoProgressCallbackWithData *cbwdata;
+    GwIoProgressCallback cb;
+    gpointer data;
+    double percent;
+    
     //Initializations
-    cb = (GwIoDownloadCallback) data;
-    percent = 0.0;
+    cbwdata = (GwIoProgressCallbackWithData*) custom;
+    cb = cbwdata->cb;
+    data = cbwdata->data;
+    percent = dlnow / dltotal;
 
-    if (dltotal > 0.0)
-      percent = (dlnow / dltotal * 100.0);
-
-    cb (percent);
-    */
-
-    return 0;
+    //Update the interface
+    return cb (percent, data);
 }
 
 
@@ -240,53 +237,59 @@ static int _libcurl_update_progress (void   *data,
 //! \brief Downloads a file using libcurl
 //!
 //! @param source_path String of the source url
-//! @param save_path String of the path to save the file locally
-//! @param func Pointer to a function to update
+//! @param target_path String of the path to save the file locally
+//! @param cb Pointer to a function to update
 //! @param data gpointer to data to pass to the function pointer
 //! @param error Error handling
 //!
-gboolean gw_io_download_file (char *source_path, char *save_path,
-                              GwIoDownloadCallback cb, gpointer data, GError **error)
+gboolean gw_io_download_file (char *source_path, char *target_path, GwIoProgressCallback cb,
+                              gpointer data, GError **error)
 {
     if (*error != NULL) return FALSE;
 
+    //Declarations
+    GQuark quark;
     CURL *curl;
     CURLcode res;
-    FILE *outfile = NULL;
-    GwDictInfo *di = (GwDictInfo*) data;
+    FILE *outfile;
+    char *message;
+    GwIoProgressCallbackWithData cbwdata;
 
+    //Initializations
     curl = curl_easy_init ();
+    outfile = fopen(target_path, "wb");
+    cbwdata.cb = cb;
+    cbwdata.data = data;
 
-    if (curl == NULL) return FALSE;
-
-    outfile = fopen(save_path, "wb");
-
-    curl_easy_setopt(curl, CURLOPT_URL, source_path);
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, outfile);
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, _libcurl_write_func);
-    curl_easy_setopt(curl, CURLOPT_READFUNCTION, _libcurl_read_func);
-
-    if (cb != NULL)
+    if (curl != NULL || outfile != NULL)
     {
-      curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0L);
-      curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, _libcurl_update_progress);
-      curl_easy_setopt(curl, CURLOPT_PROGRESSDATA, (gpointer) cb);
-    }
+      curl_easy_setopt(curl, CURLOPT_URL, source_path);
+      curl_easy_setopt(curl, CURLOPT_WRITEDATA, outfile);
+      curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, _libcurl_write_func);
+      curl_easy_setopt(curl, CURLOPT_READFUNCTION, _libcurl_read_func);
 
-    res = curl_easy_perform(curl);
+      if (cb != NULL)
+      {
+        curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0L);
+        curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, _libcurl_update_progress);
+        curl_easy_setopt(curl, CURLOPT_PROGRESSDATA, &cbwdata);
+      }
+
+      res = curl_easy_perform(curl);
+    }
      
     fclose(outfile);
     curl_easy_cleanup(curl);
 
     if (res != 0)
     {
-      g_remove(save_path);
-/*
-      GQuark quark;
-      quark = g_quark_from_string (GW_IO_ERROR);
-      const char *message = gettext(curl_easy_strerror(res));
-      if (error != NULL) *error = g_error_new_literal (quark, GW_IO_DOWNLOAD_ERROR, message);
-*/
+      g_remove (target_path);
+
+      if (error != NULL) {
+        *error = g_error_new_literal (quark, GW_IO_DOWNLOAD_ERROR, message);
+        quark = g_quark_from_string (GW_IO_ERROR);
+        message = gettext(curl_easy_strerror(res));
+      }
     }
 
     return (res == 0);
@@ -297,18 +300,23 @@ gboolean gw_io_download_file (char *source_path, char *save_path,
 //! \brief Copies a local file to another local location
 //!
 //! @param source_path String of the source url
-//! @param save_path String of the path to save the file locally
+//! @param target_path String of the path to save the file locally
 //! @param error Error handling
 //!
-gboolean gw_io_copy_file (char *source_path, char *target_path, GError **error)
+gboolean gw_io_copy_file (char *source_path, char *target_path, GwIoProgressCallback cb, gpointer data, GError **error)
 {
     if (*error != NULL) return FALSE;
 
+    //Declarations
     GQuark quark;
-    quark = g_quark_from_string (GW_IO_ERROR);
-
-    char *contents = NULL;
+    char *contents;
     gsize length;
+
+    //Initalizations
+    quark = g_quark_from_string (GW_IO_ERROR);
+    contents = NULL;
+
+    //Copy the file
     if (g_file_get_contents(source_path, &contents, &length, NULL) == FALSE ||
         g_file_set_contents(target_path, contents, length, NULL) == FALSE     )
     {
@@ -316,7 +324,9 @@ gboolean gw_io_copy_file (char *source_path, char *target_path, GError **error)
       if (error != NULL) *error = g_error_new_literal (quark, GW_IO_COPY_ERROR, gettext("File copy error"));
       return FALSE;
     }
-    if (contents != NULL) g_free(contents);
+
+    //Cleanup
+    if (contents != NULL) g_free (contents);
 
     return TRUE;
 }
@@ -332,6 +342,8 @@ gboolean gw_io_copy_file (char *source_path, char *target_path, GError **error)
 gboolean gw_io_create_mix_dictionary (const char *output_path, 
                                       const char *kanji_dictionary_path, 
                                       const char *radicals_dictionary_path, 
+                                      GwIoProgressCallback cb,
+                                      gpointer data,
                                       GError **error)
 {
     if (*error != NULL) return FALSE;
@@ -425,6 +437,8 @@ gboolean gw_io_create_mix_dictionary (const char *output_path,
 gboolean gw_io_split_places_from_names_dictionary (const char *names_dictionary_path, 
                                                    const char* names_output_path,
                                                    const char* places_output_path,
+                                                   GwIoProgressCallback cb,
+                                                   gpointer data,
                                                    GError **error                    )
 {
     if (*error != NULL) return FALSE;
@@ -556,7 +570,7 @@ gboolean gw_io_split_places_from_names_dictionary (const char *names_dictionary_
 //! @param path String representing the path of the file to gunzip
 //! @param error Error handling
 //!
-gboolean gw_io_gunzip_file (char *path, GError **error)
+gboolean gw_io_gunzip_file (char *path, GwIoProgressCallback cb, gpointer data, GError **error)
 {
     if (*error != NULL) return FALSE;
 
@@ -588,7 +602,7 @@ gboolean gw_io_gunzip_file (char *path, GError **error)
 //! @param path String representing the path of the file to unzip
 //! @param error Error handling
 //!
-gboolean gw_io_unzip_file (char *path, GError **error)
+gboolean gw_io_unzip_file (char *path, GwIoProgressCallback cb, gpointer data, GError **error)
 {
     GQuark quark;
     quark = g_quark_from_string (GW_IO_ERROR);

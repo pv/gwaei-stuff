@@ -519,10 +519,18 @@ G_MODULE_EXPORT void do_forward (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void do_save_as (GtkWidget *widget, gpointer data)
 {
-    GtkBuilder *builder = gw_common_get_builder ();
-
     //Declarations
+    GtkBuilder *builder = gw_common_get_builder ();
+    const gchar *savepath;
     GtkWidget *dialog, *window;
+    GtkAction *edit;
+    gchar *text;
+    gchar *temp;
+
+    //Initializations
+    savepath = gw_io_get_savepath ();
+    temp = NULL;
+    text = gw_ui_buffer_get_text_by_target (GW_TARGET_RESULTS);
     window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
     dialog = gtk_file_chooser_dialog_new (gettext ("Save As"),
                 GTK_WINDOW (window),
@@ -532,40 +540,35 @@ G_MODULE_EXPORT void do_save_as (GtkWidget *widget, gpointer data)
                 NULL);
     gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dialog), TRUE);
 
-    //See if the user has already saved.  If they did, reuse the path
-    if (save_path[0] == '\0')
+    //Set the default save path if none is set
+    if (savepath == NULL)
     {
         gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), "");
         gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dialog), gettext ("vocabulary.txt"));
     }
+    //Otherwise use the already existing one
     else
     {
-        gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (dialog), save_path);
+        gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (dialog), savepath);
     }
-
-    //Prepare the text
-    gchar *text;
-    //Get the region of text to be saved if some text is highlighted
-    text = gw_ui_buffer_get_text_by_target (GW_TARGET_RESULTS);
 
     //Run the save as dialog
     if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
     {
-        char *filename;
-        filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
-        strncpy (save_path,
-                 gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog)),
-                 FILENAME_MAX                                               );
-        g_free (filename);
-        filename = NULL;
+        //Set the new savepath
+        temp = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+        gw_io_set_savepath (temp);
+        g_free (temp);
+        temp = NULL;
+        savepath = gw_io_get_savepath ();
 
-        gw_io_write_file ("w", text);
+        gw_io_write_file (savepath, "w", text, NULL, NULL, NULL);
 
-        GtkAction *edit;
         edit = GTK_ACTION (gtk_builder_get_object (builder, "file_edit_action"));
         gtk_action_set_sensitive (edit, TRUE);
     }
 
+    //Cleanup
     gtk_widget_destroy (dialog);
     g_free (text);
     text = NULL;
@@ -583,62 +586,36 @@ G_MODULE_EXPORT void do_save_as (GtkWidget *widget, gpointer data)
 //! @see do_save_as ()
 //! @param widget Unused GtkWidget pointer.
 //! @param data Unused gpointer
-//!
+//0
 G_MODULE_EXPORT void do_save (GtkWidget *widget, gpointer data)
 {
-    GtkBuilder *builder = gw_common_get_builder ();
-
-    GtkWidget *dialog, *window;
-    window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
-
+    //Declarations
     gchar *text;
+    const gchar *savepath;
+    GError *error = NULL;
+
+    //Initializations
+    savepath = gw_io_get_savepath ();
+
+    //Sanity check for an empty save path
+    if (savepath == NULL || *savepath == '\0')
+    {
+      do_save_as (NULL, NULL);
+      return;
+    }
+
+    //Carry out the save
     text = gw_ui_buffer_get_text_by_target (GW_TARGET_RESULTS);
-
-    //Pop up a save dialog if the user hasn't saved before
-    if (save_path[0] == '\0')
-    {
-      //Setup the save dialog
-      dialog = gtk_file_chooser_dialog_new (gettext ("Save"),
-                  GTK_WINDOW (window),
-                  GTK_FILE_CHOOSER_ACTION_SAVE,
-                  GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                  GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
-                  NULL);
-      gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dialog), TRUE);
-
-      //Set the default save path
-      gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), "");
-      gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dialog), gettext ("vocabulary.txt"));
-
-      //Run the save dialog
-      if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
-      {
-          char *filename;
-          filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
-          strncpy (save_path,
-                   gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog)),
-                   FILENAME_MAX                                              );
-          g_free (filename);
-          filename = NULL;
-
-          gw_io_write_file ("a", text);
-
-          GtkAction *edit;
-          edit = GTK_ACTION (gtk_builder_get_object (builder, "file_edit_action"));
-          gtk_action_set_sensitive (edit, TRUE);
-      }
-
-      gtk_widget_destroy (dialog);
-    }
-
-    //Write the file without opening a dialog
-    else
-    {
-        gw_io_write_file ("a", text);
-    }
-
+    gw_io_write_file (savepath, "a", text, NULL, NULL, &error);
     g_free (text);
     text = NULL;
+
+    //Error handling
+    if (error != NULL)
+    {
+      printf("ERROR: %s\n", error->message);
+      g_error_free (error);
+    }
 }
 
 
@@ -1023,13 +1000,26 @@ G_MODULE_EXPORT void do_radical_search_tool (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void do_edit (GtkWidget *widget, gpointer data)
 {
-    char *uri = g_build_filename ("file://", save_path, NULL);
+    //Declarations
+    char *uri;
+    GError *error;
+    const char *savepath;
 
-    GError *err = NULL;
-    gtk_show_uri (NULL, uri, gtk_get_current_event_time (), &err);
-    if (err != NULL)
-      g_error_free (err);
+    //Initializations
+    savepath = gw_io_get_savepath ();
+    uri = g_build_filename ("file://", savepath, NULL);
+    error = NULL;
 
+    gtk_show_uri (NULL, uri, gtk_get_current_event_time (), &error);
+
+    //Error handling
+    if (error != NULL)
+    {
+      printf("ERROR: %s\n", error->message);
+      g_error_free (error);
+    }
+
+    //Cleanup
     g_free (uri);
 }
 

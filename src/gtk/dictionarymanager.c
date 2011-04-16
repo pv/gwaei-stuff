@@ -219,6 +219,7 @@ G_MODULE_EXPORT void do_dictionary_cursor_changed_action (GtkTreeView *treeview,
 
 G_MODULE_EXPORT void do_remove_dictionary_action (GtkWidget *widget, gpointer data)
 {
+/*
     GtkBuilder *builder = gw_common_get_builder ();
 
     GtkWidget *button = GTK_WIDGET (gtk_builder_get_object (builder, "remove_dictionary_button"));
@@ -241,11 +242,12 @@ G_MODULE_EXPORT void do_remove_dictionary_action (GtkWidget *widget, gpointer da
     if (list != NULL)
     {
       GwDictInfo *di = list->data;
-      //gw_io_uninstall_dictinfo (di, NULL, NULL, TRUE);
+      gw_dictinst_uninstall (di, NULL, NULL);
       gw_dictionarymanager_update_items ();
     }
 
     gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
     gw_ui_update_settings_interface ();
+*/
 }
 
