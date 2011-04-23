@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file src/gwaei.c
+//! @file src/console/waei.c
 //!
 //! @brief Main entrance into the program.
 //!
@@ -29,15 +29,40 @@
 
 #include <stdlib.h>
 
+#include <glib.h>
+
 #include <gwaei/backend.h>
 #include <gwaei/frontend.h>
+
+#ifdef WITH_NCURSES
+static gboolean _ncurses_switch = FALSE;
+
+static GOptionEntry _entries[] = 
+{
+  { "ncurses", 'n', 0, G_OPTION_ARG_NONE, &_ncurses_switch, "", NULL },
+  { NULL }
+};
+#endif
 
 int main (int argc, char *argv[])
 {    
     gw_backend_initialize (&argc, argv);
     gw_frontend_initialize (&argc, argv);
 
-    gw_frontend_start_gtk (argc, argv);
+#ifdef WITH_NCURSES
+    GOptionContext *context;
+    context = g_option_context_new (" ");
+    g_option_context_add_main_entries (context, _entries, PACKAGE);
+    g_option_context_set_help_enabled (context, FALSE);
+    g_option_context_parse (context, &argc, &argv, &error);
+    g_option_context_free (context);
+    context = NULL;
+
+    if (_ncurses_switch)
+      ;
+    else
+#endif
+      gw_frontend_start_console (argc, argv);
 
     gw_frontend_free ();
     gw_backend_free();

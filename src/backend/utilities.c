@@ -902,11 +902,18 @@ char* gw_util_roma_char_to_hira (char *input, char *output)
 //!
 gboolean gw_util_str_roma_to_hira (char* input, char* output, int max)
 {
-    //Try converting to hiragana
-    char *input_ptr = input;
-    char *kana_ptr = output;
+    //Declarations
+    char *input_ptr;
+    char *kana_ptr;
+    int leftover;
+
+    //Initializations
+    input_ptr = input;
+    kana_ptr = output;
     *kana_ptr = '\0';
-    int leftover = max;
+    leftover = max;
+
+    //Try converting to hiragana
     while (leftover-- > 0)
     {
       kana_ptr = gw_util_roma_char_to_hira (input_ptr, kana_ptr);
@@ -936,11 +943,14 @@ gboolean gw_util_str_roma_to_hira (char* input, char* output, int max)
 //!         If the result is non-NULL it must be freed with g_free().
 gchar* gw_util_prepare_query (const char* input, gboolean strip)
 {
+    //Sanity check
     g_assert (input != NULL);
 
+    //Declarations
     char *output;
     char *buffer;
 
+    //Initializations
     output = gw_util_sanitize_input (input, strip);
 
     if(gw_util_contains_halfwidth_japanese (output) == TRUE)
@@ -969,6 +979,7 @@ gchar* gw_util_prepare_query (const char* input, gboolean strip)
 //!
 gchar* gw_util_sanitize_input (const char *text, gboolean strip)
 {
+    //Sanity Check
     g_assert (text != NULL);
     
     // First validate the utf8 input data
@@ -1010,11 +1021,17 @@ gchar* gw_util_sanitize_input (const char *text, gboolean strip)
 //!
 gboolean gw_util_contains_halfwidth_japanese (const gchar* text)
 {
+    //Sanity check
     if(text == NULL)
       return FALSE;
 
+    //Declarations
     gunichar ucp;
-    const gchar *ptr = text;  // pointer to the start of current glyph
+    const gchar *ptr;
+
+    //Initializations
+    ptr = text; 
+
     while (*ptr != '\0')
     {
       ucp = g_utf8_get_char (ptr);
@@ -1022,6 +1039,7 @@ gboolean gw_util_contains_halfwidth_japanese (const gchar* text)
         return TRUE;
       ptr = g_utf8_next_char (ptr);
     }
+
     return FALSE;
 }
 
@@ -1041,10 +1059,15 @@ gchar* gw_util_enlarge_halfwidth_japanese (const gchar* text)
     if(text == NULL)
         return NULL;
 
-    const gchar *ptr = text;  // pointer to the start of current glyph
+    //Declarations
+    const gchar *ptr;
+    GString* nstr;
+    gunichar ucp;
 
-    GString* nstr = g_string_new( NULL );
-    gunichar ucp = 0;
+    //Initializations
+    ptr = text; 
+    nstr = g_string_new( NULL );
+    ucp = 0;
 
     while (*ptr != '\0')
     {
@@ -1071,10 +1094,7 @@ gchar* gw_util_enlarge_halfwidth_japanese (const gchar* text)
 
 //!
 //! @brief Checks for a Japanese local messages setting
-//!
-//! Basically this checks if the interface is supposed to come out to be
-//! Japanese in the program or not.
-//!
+//! @returns A boolean stating whether the locale is a Japanese utf8 one
 //! @return Returns true if it is a japanese local
 //!
 gboolean gw_util_is_japanese_locale ()
@@ -1120,9 +1140,6 @@ char** gw_util_get_romaji_atoms_from_string (const char *string)
     char *buffer;
     const char *string_ptr;
     char *buffer_ptr;
-/*
-    char *previous_buffer_atom;
-*/
     const char* delimitor;
     char *buffer_delimitor_ptr;
     char **string_array;
@@ -1166,7 +1183,6 @@ char** gw_util_get_romaji_atoms_from_string (const char *string)
       string_ptr = g_utf8_next_char (string_ptr);
     }
     *buffer_ptr = '\0';
-    printf("atoms: %s\n", buffer);
 
     //Convert the string into an array of strings
     string_array = g_strsplit (buffer, delimitor, GW_QUERYLINE_MAX_ATOMS);
@@ -1239,5 +1255,60 @@ char** gw_util_get_furigana_atoms_from_string (const char *string)
 
     //Finish
     return string_array;
+}
+
+
+//!
+//! @brief Converts the arguments passed to the program into a query search string
+//! @param argc The argc argument passed to main
+//! @param argv The argv argument passed to main
+//! @returns An allocated string that must be freed with g_free
+//!
+gchar* gw_util_get_query_from_args (int argc, char** argv)
+{
+    //Sanity check
+    if (argc < 2) return NULL;
+
+    //Declarations
+    char *text;
+    char *query;
+    int i;
+    int length;
+    char *ptr;
+
+    //Initializations
+    text = NULL;
+    query = NULL;
+    length = 0;
+
+    //Get the required length of the combined string
+    for (i = 1; i < argc; i++) 
+    {
+      length += strlen (argv[i]) + 1;
+    }
+
+    //Allocate it and set up the iterator
+    text = (char*) malloc(length * sizeof(char) + 1);
+    if (text == NULL) return NULL;
+    ptr = text;
+
+    //Copy the argument words into the query
+    for (i = 1; i < argc; i++)
+    { 
+      strcpy(ptr, argv[i]);
+      ptr += strlen(argv[i]);
+
+      if (i == argc - 1) break;
+
+      strcpy(ptr, " ");
+      ptr += strlen(" ");
+    }
+
+   	query = gw_util_prepare_query (text, FALSE);
+
+    //Cleanup
+    if (text != NULL) free (text);
+
+    return query;
 }
 

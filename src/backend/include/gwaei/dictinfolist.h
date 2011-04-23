@@ -54,6 +54,9 @@ void gw_dictinfolist_initialize (void);
 void gw_dictinfolist_free ();
 
 GwDictInfo* gw_dictinfolist_get_dictinfo (const GwEngine, const char*);
+GwDictInfo* gw_dictinfolist_get_dictinfo_by_filename (const char*);
+GwDictInfo* gw_dictinfolist_get_dictinfo_by_idstring (const char*);
+GwDictInfo* gw_dictinfolist_get_dictinfo_fuzzy (const char*);
 GList* gw_dictinfolist_get_dict_by_load_position (int);
 GList* gw_dictinfolist_set_selected_by_load_position (int);
 gboolean gw_dictinfolist_check_if_loaded (const GwEngine, const char*);

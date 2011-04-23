@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file src/ncurses-main-interface.c
+//! @file src/ncurses.c
 //!
 //! @brief Abstraction layer for gtk objects
 //!
@@ -31,21 +31,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <libintl.h>
-#include <regex.h>
 
 #include <glib.h>
 #include <curses.h>
 #include <errno.h>
 
-#include <gwaei/definitions.h>
-#include <gwaei/regex.h>
-#include <gwaei/dictionary-objects.h>
-#include <gwaei/search-objects.h>
-#include <gwaei/engine.h>
-#include <gwaei/utilities.h>
-
-#include <gwaei/main.h>
-#include <gwaei/ncurses-main-interface.h>
+#include <gwaei/backend.h>
+#include <gwaei/ncurses.h>
 
 static GwDictInfo *di = NULL;
 static char query_text[MAX_QUERY];

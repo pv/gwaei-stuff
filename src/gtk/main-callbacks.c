@@ -521,14 +521,15 @@ G_MODULE_EXPORT void do_save_as (GtkWidget *widget, gpointer data)
 {
     //Declarations
     GtkBuilder *builder = gw_common_get_builder ();
-    const gchar *savepath;
+    const gchar *path;
     GtkWidget *dialog, *window;
     GtkAction *edit;
     gchar *text;
     gchar *temp;
+    GError *error;
 
     //Initializations
-    savepath = gw_io_get_savepath ();
+    path = gw_io_get_savepath ();
     temp = NULL;
     text = gw_ui_buffer_get_text_by_target (GW_TARGET_RESULTS);
     window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
@@ -539,9 +540,10 @@ G_MODULE_EXPORT void do_save_as (GtkWidget *widget, gpointer data)
                 GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
                 NULL);
     gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dialog), TRUE);
+    error = NULL;
 
     //Set the default save path if none is set
-    if (savepath == NULL)
+    if (path == NULL)
     {
         gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), "");
         gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dialog), gettext ("vocabulary.txt"));
@@ -549,7 +551,7 @@ G_MODULE_EXPORT void do_save_as (GtkWidget *widget, gpointer data)
     //Otherwise use the already existing one
     else
     {
-        gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (dialog), savepath);
+        gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (dialog), path);
     }
 
     //Run the save as dialog
@@ -560,9 +562,9 @@ G_MODULE_EXPORT void do_save_as (GtkWidget *widget, gpointer data)
         gw_io_set_savepath (temp);
         g_free (temp);
         temp = NULL;
-        savepath = gw_io_get_savepath ();
+        path = gw_io_get_savepath ();
 
-        gw_io_write_file (savepath, "w", text, NULL, NULL, NULL);
+        gw_io_write_file (path, "w", text, NULL, NULL, &error);
 
         edit = GTK_ACTION (gtk_builder_get_object (builder, "file_edit_action"));
         gtk_action_set_sensitive (edit, TRUE);
@@ -572,6 +574,7 @@ G_MODULE_EXPORT void do_save_as (GtkWidget *widget, gpointer data)
     gtk_widget_destroy (dialog);
     g_free (text);
     text = NULL;
+    gw_ui_handle_error (&error, TRUE);
 }
 
 
@@ -591,14 +594,14 @@ G_MODULE_EXPORT void do_save (GtkWidget *widget, gpointer data)
 {
     //Declarations
     gchar *text;
-    const gchar *savepath;
+    const gchar *path;
     GError *error = NULL;
 
     //Initializations
-    savepath = gw_io_get_savepath ();
+    path = gw_io_get_savepath ();
 
     //Sanity check for an empty save path
-    if (savepath == NULL || *savepath == '\0')
+    if (path == NULL || *path == '\0')
     {
       do_save_as (NULL, NULL);
       return;
@@ -606,16 +609,11 @@ G_MODULE_EXPORT void do_save (GtkWidget *widget, gpointer data)
 
     //Carry out the save
     text = gw_ui_buffer_get_text_by_target (GW_TARGET_RESULTS);
-    gw_io_write_file (savepath, "a", text, NULL, NULL, &error);
+    gw_io_write_file (path, "a", text, NULL, NULL, &error);
     g_free (text);
     text = NULL;
 
-    //Error handling
-    if (error != NULL)
-    {
-      printf("ERROR: %s\n", error->message);
-      g_error_free (error);
-    }
+    gw_ui_handle_error (&error, TRUE);
 }
 
 
@@ -1012,12 +1010,7 @@ G_MODULE_EXPORT void do_edit (GtkWidget *widget, gpointer data)
 
     gtk_show_uri (NULL, uri, gtk_get_current_event_time (), &error);
 
-    //Error handling
-    if (error != NULL)
-    {
-      printf("ERROR: %s\n", error->message);
-      g_error_free (error);
-    }
+    gw_ui_handle_error (&error, TRUE);
 
     //Cleanup
     g_free (uri);
@@ -1034,10 +1027,16 @@ G_MODULE_EXPORT void do_edit (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void do_irc_channel (GtkWidget *widget, gpointer data)
 {
-    GError *err = NULL;
-    gtk_show_uri (NULL, "irc://irc.freenode.net/gWaei", gtk_get_current_event_time (), &err);
-    if (err != NULL)
-      g_error_free (err);
+    //Initializations
+    GError *error;
+
+    //Declarations
+    error = NULL;
+
+    gtk_show_uri (NULL, "irc://irc.freenode.net/gWaei", gtk_get_current_event_time (), &error);
+
+    //Cleanup
+    gw_ui_handle_error (&error, TRUE);
 }
 
 
@@ -1051,10 +1050,16 @@ G_MODULE_EXPORT void do_irc_channel (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void do_homepage (GtkWidget *widget, gpointer data)
 {
-    GError *err = NULL;
-    gtk_show_uri (NULL, "http://gwaei.sourceforge.net/", gtk_get_current_event_time (), &err);
-    if (err != NULL)
-      g_error_free (err);
+    //Declarations
+    GError *error;
+
+    //Initializations
+    error = NULL;
+
+    gtk_show_uri (NULL, "http://gwaei.sourceforge.net/", gtk_get_current_event_time (), &error);
+
+    //Cleanup
+    gw_ui_handle_error (&error, TRUE);
 }
 
 
@@ -1068,10 +1073,16 @@ G_MODULE_EXPORT void do_homepage (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void do_help (GtkWidget *widget, gpointer data)
 {
-    GError *err = NULL;
-    gtk_show_uri (NULL, "ghelp:gwaei", gtk_get_current_event_time (), &err);
-    if (err != NULL)
-      g_error_free (err);
+    //Declarations
+    GError *error;
+
+    //Initializations
+    error = NULL;
+
+    gtk_show_uri (NULL, "ghelp:gwaei", gtk_get_current_event_time (), &error);
+
+    //Cleanup
+    gw_ui_handle_error (&error, TRUE);
 }
 
 
@@ -1086,13 +1097,18 @@ G_MODULE_EXPORT void do_help (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void do_glossary (GtkWidget *widget, gpointer data)
 {
-    char *uri = g_build_filename ("ghelp://", DATADIR2, "gnome", "help", "gwaei", "C", "glossary.xml", NULL);
+    //Declarations
+    char *uri;
+    GError *error;
 
-    GError *err = NULL;
-    gtk_show_uri (NULL, uri, gtk_get_current_event_time (), &err);
-    if (err != NULL)
-      g_error_free (err);
+    //Initializations
+    uri = g_build_filename ("ghelp://", DATADIR2, "gnome", "help", "gwaei", "C", "glossary.xml", NULL);
+    error = NULL;
 
+    gtk_show_uri (NULL, uri, gtk_get_current_event_time (), &error);
+
+    //Cleanup
+    gw_ui_handle_error (&error, TRUE);
     g_free (uri);
 }
 
@@ -1506,13 +1522,19 @@ G_MODULE_EXPORT void do_clear_search (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void do_open_dictionary_folder (GtkWidget *widget, gpointer data) 
 {
-    const char *directory = gw_util_get_directory (GW_PATH_DICTIONARY);
-    char *uri = g_build_filename ("file://", directory, NULL);
+    //Declarations
+    const char *directory;
+    char *uri;
+    GError *error;
 
-    GError *err = NULL;
-    gtk_show_uri (NULL, uri, gtk_get_current_event_time (), &err);
-    if (err != NULL)
-      g_error_free (err);
+    //Initializations
+    directory = gw_util_get_directory (GW_PATH_DICTIONARY);
+    uri = g_build_filename ("file://", directory, NULL);
+    error = NULL;
+
+    gtk_show_uri (NULL, uri, gtk_get_current_event_time (), &error);
+
+    gw_ui_handle_error (&error, TRUE);
 
     g_free (uri);
 }
@@ -1868,11 +1890,8 @@ G_MODULE_EXPORT void do_search_for_searchitem_online (GtkWidget *widget, gpointe
     {
       GError *error = NULL;
       gtk_show_uri (NULL, item->queryline->string, gtk_get_current_event_time (), &error);
-      if (error != NULL)
-      {
-        g_error_free (error);
-        error = NULL;
-      }
+
+      gw_ui_handle_error (&error, TRUE);
     }
 }
 

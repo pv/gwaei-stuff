@@ -39,7 +39,7 @@
 #include <gwaei/backend.h>
 
 
-void gw_backend_initialize (int argc, char* argv[])
+void gw_backend_initialize (int *argc, char* argv[])
 {
     //Setup for localized messages
     setlocale(LC_MESSAGES, "");

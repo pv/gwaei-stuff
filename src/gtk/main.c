@@ -3031,3 +3031,48 @@ void gw_ui_after_search_cleanup (GwSearchItem *item)
 }
 
 
+//!
+//! @brief Optionally displays an error dialog and frees memory from an error
+//!
+//! @param error A pointer to an error pointer
+//! @param show_dialog Whether to show a dialog or not.
+//!
+void gw_ui_handle_error (GError **error, gboolean show_dialog)
+{
+    //Sanity checks
+    if (error == NULL || *error == NULL) return;
+
+    //Declarations
+    GtkBuilder *builder;
+    GtkWidget *dialog;
+    GtkWindow *main_window;
+    gchar *markup;
+    gint response;
+
+    //Initializations
+    builder = gw_common_get_builder ();
+    main_window = GTK_WINDOW (gtk_builder_get_object (builder, "main_window"));
+    markup = g_strdup_printf ("<b>%s</b>\n\n%s", "An Error Occured", (*error)->message);
+
+    //Handle the error
+    if (show_dialog)
+    {
+      dialog = gtk_message_dialog_new_with_markup (main_window,
+                                                   GTK_DIALOG_DESTROY_WITH_PARENT,
+                                                   GTK_MESSAGE_ERROR,
+                                                   GTK_BUTTONS_CLOSE,
+                                                   markup                         );
+      response = gtk_dialog_run (GTK_DIALOG (dialog));
+    }
+    else
+    {
+      printf("ERROR: %s\n", (*error)->message);
+    }
+
+    //Cleanup
+    g_free (markup);
+    g_error_free (*error);
+    *error = NULL;
+}
+
+

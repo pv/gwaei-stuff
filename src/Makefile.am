@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = backend schemas kpengine
+SUBDIRS = backend console schemas kpengine
 
 if WITH_GNOME
 SUBDIRS += gtk

@@ -145,7 +145,7 @@ AM_GLIB_GNU_GETTEXT
 
 AC_CONFIG_MACRO_DIR([m4])
 
-AC_CONFIG_FILES([Makefile src/Makefile src/backend/Makefile src/backend/include/gwaei/Makefile src/gtk/Makefile src/gtk/include/gwaei/Makefile mandir/Makefile help/Makefile help/gwaei.omf help/C/gwaei.xml src/gtk/ui/Makefile src/gtk/images/Makefile src/schemas/Makefile src/gtk/desktop/Makefile src/kpengine/Makefile src/kpengine/conv_jdata.pl rpm/gwaei.spec rpm/fedora/SPECS/gwaei.spec po/Makefile.in po/Makefile] Doxyfile)
+AC_CONFIG_FILES([Makefile src/Makefile src/backend/Makefile src/backend/include/gwaei/Makefile src/console/Makefile src/gtk/Makefile src/gtk/include/gwaei/Makefile mandir/Makefile help/Makefile help/gwaei.omf help/C/gwaei.xml src/gtk/ui/Makefile src/gtk/images/Makefile src/schemas/Makefile src/gtk/desktop/Makefile src/kpengine/Makefile src/kpengine/conv_jdata.pl rpm/gwaei.spec rpm/fedora/SPECS/gwaei.spec po/Makefile.in po/Makefile] Doxyfile)
 
 AC_OUTPUT
 

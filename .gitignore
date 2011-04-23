@@ -6,7 +6,8 @@ Makefile
 **/.deps/*
 src/backend/.deps/*
 src/backend/.libs/*
-src/gtk/.libs
+src/gtk/.libs/*
+src/console/.libs/*
 src/gtk/.deps/*
 src/console/.deps/*
 *.gmo

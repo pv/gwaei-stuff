@@ -32,33 +32,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <libintl.h>
-#include <regex.h>
 
 #include <glib.h>
 
-#include <gwaei/definitions.h>
-#include <gwaei/regex.h>
-#include <gwaei/dictionary-objects.h>
-#include <gwaei/search-objects.h>
-#include <gwaei/engine.h>
-#include <gwaei/preferences.h>
-#include <gwaei/utilities.h>
-#include <gwaei/io.h>
+#include <gwaei/backend.h>
+#include <gwaei/frontend.h>
 
-#include <gwaei/console-main-interface.h>
-#include <gwaei/main.h>
-
-static gboolean ncurses_switch = FALSE;
-static gboolean quiet_switch = FALSE;
-static gboolean exact_switch = FALSE;
-static gboolean list_switch = FALSE;
-static gboolean version_switch = FALSE;
-
-static char* dictionary_switch_data = NULL;
-static char* install_switch_data = NULL;
-static char* uninstall_switch_data = NULL;
-static char* query_text_data = NULL;
-
+static int _console_progress_cb (double percent, gpointer data);
 
 //!
 //! @brief Print the "less relevant" header where necessary.
@@ -72,7 +52,7 @@ void gw_console_append_less_relevant_header_to_output(GwSearchItem *item)
 //!
 //! @brief Print the "no result" message where necessary.
 //!
-void gw_console_no_result(GwSearchItem *item)
+void gw_console_no_result (GwSearchItem *item)
 {
     printf("%s\n\n", gettext("No results found!"));
 }
@@ -85,7 +65,7 @@ void gw_console_no_result(GwSearchItem *item)
 //! @param percent An integer of how much a progress bar should be filled.  1-100.
 //! @param data Currently unused gpointer.
 //!
-static int print_message_to_console (char *message, int percent, gpointer data)
+static int _print_message_to_console (char *message, int percent, gpointer data)
 {
     if (message != NULL) printf("%s", message);
     if (percent > -1 && percent < 101) printf("%d%s", percent, "%");
@@ -100,10 +80,20 @@ static int print_message_to_console (char *message, int percent, gpointer data)
 //!
 //! @param name A string of the name of the dictionary to uninstall.
 //!
-void gw_console_uninstall_dictinfo (GwDictInfo *di)
+void gw_console_uninstall_dictinst (GwDictInst *di)
 {
-    gw_io_uninstall_dictinfo (di, &print_message_to_console, NULL, TRUE);
+    //Declarations
+    GError *error;
+
+    //Initializations
+    error = NULL;
+
+    //gw_dictinst_uninstall (di, _console_progress_cb, &error);
     printf(gettext("Finished\n"));
+
+    //Cleanup
+    g_error_free (error);
+    error = NULL;
 }
 
 
@@ -112,8 +102,9 @@ void gw_console_uninstall_dictinfo (GwDictInfo *di)
 //!
 //! @param name A string of the name of the dictionary to install.
 //!
-gboolean gw_console_install_dictinfo (GwDictInfo *di)
+gboolean gw_console_install_dictinst (GwDictInst *di)
 {
+/*
     printf(gettext("Trying to install the %s...\n"), di->long_name);
 
     GQuark quark;
@@ -122,18 +113,18 @@ gboolean gw_console_install_dictinfo (GwDictInfo *di)
 
     if (di->status != GW_DICT_STATUS_NOT_INSTALLED) return FALSE;
 
-    gw_io_install_dictinfo (di, &print_message_to_console, NULL, TRUE, &error);
+    gw_io_install_dictinfo (di, &_print_message_to_console, NULL, TRUE, &error);
 
     //Install auxillery dictionaries when appropriate
     if (error == NULL && di->id == GW_DICT_ID_KANJI)
     {
       di = gw_dictlist_get_dictinfo_by_id (GW_DICT_ID_RADICALS);
-      gw_io_install_dictinfo (di, &print_message_to_console, NULL, TRUE, &error);
+      gw_io_install_dictinfo (di, &_print_message_to_console, NULL, TRUE, &error);
     }
     else if (error == NULL && di->id == GW_DICT_ID_RADICALS)
     {
       di = gw_dictlist_get_dictinfo_by_id (GW_DICT_ID_KANJI);
-      gw_io_install_dictinfo (di, &print_message_to_console, NULL, TRUE, &error);
+      gw_io_install_dictinfo (di, &_print_message_to_console, NULL, TRUE, &error);
     }
 
     //Print final messages
@@ -148,7 +139,7 @@ gboolean gw_console_install_dictinfo (GwDictInfo *di)
     {
       printf(gettext("Finished\n"));
     }
-
+*/
     return TRUE;
 }
 
@@ -156,7 +147,7 @@ gboolean gw_console_install_dictinfo (GwDictInfo *di)
 //!
 //! @brief Prints to the terminal the about message for the program.
 //!
-static void print_about_program ()
+void gw_console_about ()
 {
 #ifdef WITH_GTK
     printf ("gWaei version %s with the Gnome font end compiled in.", VERSION);
@@ -185,7 +176,7 @@ static void print_about_program ()
 //! @param query The query string we are searching
 //! @param dictionary The name (string) of the dictionary used
 //!
-static void print_search_start_banner (char *query, char *dictionary)
+void gw_console_start_banner (char *query, char *dictionary)
 {
     // TRANSLATORS: 'Searching for "${query}" in ${dictionary long name}'
     printf(gettext("Searching for \"%s\" in %s...\n"), query, dictionary);
@@ -196,9 +187,10 @@ static void print_search_start_banner (char *query, char *dictionary)
 //!
 //! @brief Prints out the yet uninstalled available dictionaries.
 //!
-static void print_installable_dictionaries ()
+static void _print_installable_dictionaries ()
 {
-    if (quiet_switch == FALSE)
+/*
+    if (_quiet_switch == FALSE)
     {
       printf(gettext("Installable dictionaries are:\n"));
     }
@@ -223,19 +215,21 @@ static void print_installable_dictionaries ()
       printf("  %s\n", gettext("none"));
 
     printf ("\n");
+*/
 }
 
 
 //!
 //! @brief Not yet written
 //!
-static void print_available_dictionaries()
+static void _print_available_dictionaries ()
 {
+/*
     int i = 0;
     GwDictInfo* di;
     GList *list;
 
-	  if (quiet_switch == FALSE)
+	  if (_quiet_switch == FALSE)
     {
     	printf(gettext("Available dictionaries are:\n"));
     }
@@ -254,6 +248,7 @@ static void print_available_dictionaries()
       printf("  %s\n", gettext("none"));
 
     printf ("\n");
+*/
 }
 
 
@@ -268,64 +263,11 @@ static void print_available_dictionaries()
 //!
 void initialize_console_interface (int argc, char **argv)
 {
+  /*
     GwDictInfo *di = NULL;
     GError *error = NULL;
-    GOptionContext *context;
-    context = g_option_context_new (gettext("- Japanese-English dictionary program that allows regex searches"));
-    char *summary_text = gettext("waei generally outputs directly to the console.  If you want to do multiple\nsearches, please start gWaei with the -n switch for the multisearch mode.");
-    g_option_context_set_summary (context, summary_text);
-    char *description_text = NULL;
-    description_text = g_strdup_printf(gettext(
-                   "Examples:\n"
-                   "  waei English               Search for the english word English\n"
-                   "  waei \"cats&dogs\"           Search for results containing cats and dogs\n"
-                   "  waei \"cats|dogs\"           Search for results containing cats or dogs\n"
-                   "  waei cats dogs             Search for results containing \"cats dogs\"\n"
-                   "  waei %s                Search for the Japanese word %s\n"
-                   "  waei -e %s               Search for %s and ignore similar results\n"
-                   "  waei %s                 When you don't know a kanji character\n"
-                   "  waei -d Kanji %s           Find a kanji character in the kanji dictionary\n"
-                   "  waei -d Names %s       Look up a name in the names dictionary\n"
-                   "  waei -d Places %s       Look up a place in the places dictionary")
-             , "にほん", "にほん", "日本", "日本", "日.語", "魚", "Miyabe", "Tokyo"
-             );
-    if (description_text != NULL)
-    {
-      g_option_context_set_description (context, description_text);
-      g_free (description_text);
-      description_text = NULL;
-    }
-    GOptionEntry entries[] = 
-    {
-#ifdef WITH_NCURSES
-      { "ncurses", 'n', 0, G_OPTION_ARG_NONE, &ncurses_switch, gettext("Open up the multisearch window (beta)"), NULL },
-      { "exact", 'e', 0, G_OPTION_ARG_NONE, &exact_switch, gettext("Do not display less relevant results"), NULL },
 
-#endif
-      { "quiet", 'q', 0, G_OPTION_ARG_NONE, &quiet_switch, gettext("Display less information"), NULL },
-      { "dictionary", 'd', 0, G_OPTION_ARG_STRING, &dictionary_switch_data, gettext("Search using a chosen dictionary"), NULL },
-      { "list", 'l', 0, G_OPTION_ARG_NONE, &list_switch, gettext("Show available dictionaries for searches"), NULL },
-      { "install", 'i', 0, G_OPTION_ARG_STRING, &install_switch_data, gettext("Install dictionary"), NULL },
-      { "uninstall", 'u', 0, G_OPTION_ARG_STRING, &uninstall_switch_data, gettext("Uninstall dictionary"), NULL },
-      { "version", 'v', 0, G_OPTION_ARG_NONE, &version_switch, gettext("Check the waei version information"), NULL },
-      { NULL }
-    };
-    g_option_context_add_main_entries (context, entries, PACKAGE);
-    if (!g_option_context_parse (context, &argc, &argv, &error))
-    {
-      // TRANSLATORS: The "%s" stands for the error message
-      g_print (gettext("Option parsing failed: %s\n"), error->message);
-      exit (EXIT_FAILURE);
-    }
-    if (error != NULL)
-    {
-      printf("%s\n", error->message);
-      g_error_free (error);
-      error = NULL;
-      exit (EXIT_FAILURE);
-    }
-
-    if (list_switch)
+    if (_list_switch)
     {
       print_available_dictionaries ();
       print_installable_dictionaries();
@@ -333,14 +275,13 @@ void initialize_console_interface (int argc, char **argv)
     }
 
     //User wants to see the version of waei
-    if (version_switch)
+    if (_version_switch)
     {
       print_about_program ();
       exit (EXIT_SUCCESS);
     }
 
     //User wants to sync dictionaries
-/*
     else if (rsync_switch)
     {
       printf("");
@@ -373,13 +314,11 @@ void initialize_console_interface (int argc, char **argv)
 
       return;
     }
-  */
 
     //User wants to install dictionary
-    if (install_switch_data != NULL)
+    if (_install_switch_data != NULL)
     {
-
-      di = gw_dictlist_get_dictinfo_by_name (install_switch_data);
+      di = gw_dictlist_get_dictinfo_by_name (_install_switch_data);
       if (di != NULL && di->status != GW_DICT_STATUS_NOT_INSTALLED && di->gskey[0] != '\0')
       {
         printf(gettext("%s is already Installed. "), di->long_name);
@@ -387,7 +326,7 @@ void initialize_console_interface (int argc, char **argv)
       }
       else if (di == NULL || di->gskey[0] == '\0' || di->id == GW_DICT_ID_RADICALS || di->id == GW_DICT_ID_MIX)
       {
-        printf(gettext("%s is not installable with this mechanism. "), install_switch_data);
+        printf(gettext("%s is not installable with this mechanism. "), _install_switch_data);
         print_installable_dictionaries();
       }
       else if (di != NULL)
@@ -396,10 +335,9 @@ void initialize_console_interface (int argc, char **argv)
     }
 
     //User wants to uninstall dictionary
-    if (uninstall_switch_data != NULL)
+    if (_uninstall_switch_data != NULL)
     {
-
-      di = gw_dictlist_get_dictinfo_by_name (uninstall_switch_data);
+      di = gw_dictlist_get_dictinfo_by_name (_uninstall_switch_data);
       if (di != NULL)
       {
         if (di->status = GW_DICT_STATUS_INSTALLED && di->id != GW_DICT_ID_RADICALS && di->id != GW_DICT_ID_MIX)
@@ -413,7 +351,7 @@ void initialize_console_interface (int argc, char **argv)
       else
       {
         // TRANSLATORS: The "%s" stands for the value provided by the user to the "waei uninstall"
-        printf(gettext("%s is not installed. "), uninstall_switch_data);
+        printf(gettext("%s is not installed. "), _uninstall_switch_data);
         print_available_dictionaries();
       }
       exit (EXIT_SUCCESS);
@@ -422,10 +360,10 @@ void initialize_console_interface (int argc, char **argv)
     //We weren't interupted by any switches! Now to the search....
 
     //Set dictionary
-    if (dictionary_switch_data == NULL)
+    if (_dictionary_switch_data == NULL)
       di = gw_dictlist_get_dictinfo_by_alias ("English");
     else
-      di = gw_dictlist_get_dictinfo_by_alias (dictionary_switch_data);
+      di = gw_dictlist_get_dictinfo_by_alias (_dictionary_switch_data);
     if (di == NULL || di->status != GW_DICT_STATUS_INSTALLED)
     {
       printf (gettext("Requested dictionary not found!\n"));
@@ -433,10 +371,10 @@ void initialize_console_interface (int argc, char **argv)
     }
 
     //Set query text
-    if (argc > 1 && query_text_data == NULL)
+    if (argc > 1 && _query_text_data == NULL)
     {
-      query_text_data = gw_util_strdup_args_to_query (argc, argv);
-      if (query_text_data == NULL)
+      _query_text_data = gw_util_strdup_args_to_query (argc, argv);
+      if (_query_text_data == NULL)
       {
         printf ("Memory error creating initial query string!\n");
         exit (EXIT_FAILURE);
@@ -459,25 +397,25 @@ void initialize_console_interface (int argc, char **argv)
     gw_console_initialize_interface_output_generics ();
 
     // Run some checks and transformation on a user inputed string before using it
-   	char* sane_query = gw_util_prepare_query (query_text_data, FALSE);
+   	char* sane_query = gw_util_prepare_query (_query_text_data, FALSE);
    	if (sane_query == NULL)
    	{
    	  printf(gettext("Query prepare error\n"));
    	  exit (EXIT_FAILURE);
    	}
-   	g_stpcpy(query_text_data, sane_query);
+   	g_stpcpy(_query_text_data, sane_query);
    	g_free(sane_query);
    	sane_query = NULL;
 
     //Print the search intro
-    if (!quiet_switch)
+    if (!_quiet_switch)
     {
-      print_search_start_banner (query_text_data, di->long_name);
+      gw_console_start_banner (_query_text_data, di->long_name);
     }
 
     //Start the search
     GwSearchItem *item;
-    item = gw_searchitem_new (query_text_data, di, GW_TARGET_CONSOLE);
+    item = gw_searchitem_new (_query_text_data, di, GW_TARGET_CONSOLE);
     if (item == NULL)
     {
       printf(gettext("Query parse error\n"));
@@ -485,10 +423,10 @@ void initialize_console_interface (int argc, char **argv)
     }
 
     //Print the number of results
-    gw_search_get_results (item, FALSE, exact_switch);
+    gw_search_get_results (item, FALSE, _exact_switch);
 
     //Final header
-    if (quiet_switch == FALSE)
+    if (_quiet_switch == FALSE)
     {
       char *message_total = ngettext("Found %d result", "Found %d results", item->total_results);
       char *message_relevant = ngettext("(%d Relevant)", "(%d Relevant)", item->total_relevant_results);
@@ -500,12 +438,13 @@ void initialize_console_interface (int argc, char **argv)
 
     //Cleanup
     gw_searchitem_free (item);
-    if (query_text_data != NULL)
+    if (_query_text_data != NULL)
     {
-      g_free (query_text_data);
-      query_text_data = NULL;
+      g_free (_query_text_data);
+      _query_text_data = NULL;
     }
 
+*/
     //Finish
     exit (EXIT_SUCCESS);
 }
@@ -514,7 +453,7 @@ void initialize_console_interface (int argc, char **argv)
 //!
 //! @brief Not yet written
 //!
-void gw_console_append_edict_results (GwSearchItem *item)
+void gw_console_append_edict_results_to_buffer (GwSearchItem *item)
 {
     //Definitions
     int cont = 0;
@@ -545,7 +484,7 @@ void gw_console_append_edict_results (GwSearchItem *item)
 //!
 //! @brief Not yet written
 //!
-void gw_console_append_kanjidict_results (GwSearchItem *item)
+void gw_console_append_kanjidict_results_to_buffer (GwSearchItem *item)
 {
     if (item == NULL) return;
 
@@ -607,7 +546,7 @@ void gw_console_append_kanjidict_results (GwSearchItem *item)
 //!
 //! @brief Not yet written
 //!
-void gw_console_append_examplesdict_results (GwSearchItem *item)
+void gw_console_append_examplesdict_results_to_buffer (GwSearchItem *item)
 {
     if (item == NULL) return;
 
@@ -639,7 +578,7 @@ void gw_console_append_examplesdict_results (GwSearchItem *item)
 //!
 //! @brief Not yet written
 //!
-void gw_console_append_unknowndict_results (GwSearchItem *item)
+void gw_console_append_unknowndict_results_to_buffer (GwSearchItem *item)
 {
     if (item == NULL) return;
 
@@ -677,19 +616,32 @@ void gw_console_after_search_cleanup (GwSearchItem *item)
 }
 
 
-//!
-//! @brief Set the output generics functions when a search is being done
-//!
-void gw_console_initialize_interface_output_generics ()
+static int _console_progress_cb (double percent, gpointer data)
 {
-    gw_output_generic_append_edict_results = &gw_console_append_edict_results;
-    gw_output_generic_append_kanjidict_results = &gw_console_append_kanjidict_results;
-    gw_output_generic_append_examplesdict_results = &gw_console_append_examplesdict_results;
-    gw_output_generic_append_unknowndict_results = &gw_console_append_unknowndict_results;
+  //Declarations
+  GwDictInst *di;
+  char *status;
 
-    gw_output_generic_append_less_relevant_header_to_output = &gw_console_append_less_relevant_header_to_output;
-    gw_output_generic_append_more_relevant_header_to_output = &gw_console_append_more_relevant_header_to_output;
-    gw_output_generic_pre_search_prep = &gw_console_pre_search_prep;
-    gw_output_generic_after_search_cleanup = &gw_console_after_search_cleanup;
+  //Initializations
+  di = data;
+  status = gw_dictinst_get_status_string (di, TRUE);
+
+  //Body
+  printf("%s\n", status);
+
+  //Cleanup
+  g_free (status);
+  status = NULL;
 }
+
+//!
+//! @brief Lists the currently installed and installable dictionaries
+//!
+void gw_console_list ()
+{
+    _print_available_dictionaries ();
+    _print_installable_dictionaries();
+}
+
+
 

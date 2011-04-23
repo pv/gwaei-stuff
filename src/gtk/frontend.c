@@ -40,33 +40,33 @@
 static gchar   *_arg_dictionary = NULL;
 static gboolean _arg_exact = FALSE;
 static gboolean _arg_new_instance = FALSE;
-static GOptionEntry _entries[] =
-{
-  { "dictionary", 'd', 0, G_OPTION_ARG_STRING, &_arg_dictionary, "Choose the dictionary to use", "English" },
-#ifdef WITH_LIBUNIQUE
-  { "new-instance", 'n', 0, G_OPTION_ARG_NONE, &_arg_new_instance, "Open a new instance of gWaei", NULL },
-#endif
-  { NULL }
-};
+static GOptionContext *_context = NULL;
 
 
-
-void gw_frontend_initialize (int argc, char* argv[])
+void gw_frontend_initialize (int* argc, char* argv[])
 {
     bindtextdomain(PACKAGE, LOCALEDIR);
     bind_textdomain_codeset(PACKAGE, "UTF-8");
     textdomain(PACKAGE);
 
     gdk_threads_init();
-    gtk_init (&argc, &argv);
+    gtk_init (argc, &argv);
+
+    GOptionEntry entries[] =
+    {
+      { "dictionary", 'd', 0, G_OPTION_ARG_STRING, &_arg_dictionary, gettext("Choose the dictionary to use"), "English" },
+#ifdef WITH_LIBUNIQUE
+      { "new-instance", 'n', 0, G_OPTION_ARG_NONE, &_arg_new_instance, gettext("Open a new instance of gWaei"), NULL },
+#endif
+      { NULL }
+    };
 
     //Program flags setup
     GError *error = NULL;
-    GOptionContext *context = g_option_context_new (gettext("- A dictionary program for Japanese-English translation."));
-    g_option_context_add_main_entries (context, _entries, PACKAGE);
-    g_option_context_add_group (context, gtk_get_option_group (TRUE));
-    g_option_context_parse (context, &argc, &argv, &error);
-    g_option_context_free (context);
+    _context = g_option_context_new (gettext("- A dictionary program for Japanese-English translation."));
+    g_option_context_add_main_entries (_context, entries, PACKAGE);
+    g_option_context_add_group (_context, gtk_get_option_group (TRUE));
+    g_option_context_parse (_context, argc, &argv, &error);
 
     gw_engine_initialize (
                          gw_ui_append_edict_results_to_buffer,
@@ -112,6 +112,11 @@ void gw_frontend_initialize (int argc, char* argv[])
 //!
 void gw_frontend_start_gtk (int argc, char* argv[])
 {
+    //Declarations
+    char *query;
+    GtkWidget* entry;
+    GwDictInfo *di;
+
     gw_ui_update_history_popups ();
     gw_common_show_window ("main_window");
 
@@ -123,35 +128,19 @@ void gw_frontend_start_gtk (int argc, char* argv[])
     //Set the initial focus to the search bar
     gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
 
-/*
     //Set the initial dictionary
-    if (_arg_dictionary != NULL)
+    if (_arg_dictionary != NULL) printf("%s\n", _arg_dictionary);
+    if ((di = gw_dictinfolist_get_dictinfo_fuzzy (_arg_dictionary)) != NULL)
     {
-      GwDictInfo *di = gw_dictinfolist_get_dictinfo_by_alias (_arg_dictionary);
-      if (di != NULL)
-      {
-        gw_ui_set_dictionary (di->load_position);
-      }
+      gw_ui_set_dictionary (di->load_position);
     }
-*/
 
-    //Set the initial query text
-    if (argc > 1)
+    //Set the initial query text if it was passed as an argument to the program
+    if ((query = gw_util_get_query_from_args (argc, argv)) != NULL)
     {
-      //Setup the query text
-      char *text = NULL;
-      int i = 0;
-      int length = 0;
-      for (i = 0; i < argc; i++) length += strlen (argv[i]) + 1;
-      text = (char*) malloc(length * sizeof(char) + 1);
-      g_assert (text != NULL);
-      for (i = 0; i < argc; i++) { strcat(text, argv[i]); strcat(text, " "); }
-      text[strlen(text) - 1] = '\0';
-      GtkWidget* entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
-      gtk_entry_set_text (GTK_ENTRY (entry), text);
-      do_search (NULL, NULL);
-      g_free (text);
-      text = NULL;
+      entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
+      gtk_entry_set_text (GTK_ENTRY (entry), query);
+      g_free(query);
     }
 
     //Enter the main loop
@@ -183,5 +172,6 @@ void gw_frontend_free ()
     gw_main_free ();
     gw_engine_free ();
     gw_common_free ();
+    g_option_context_free (_context);
 }
 

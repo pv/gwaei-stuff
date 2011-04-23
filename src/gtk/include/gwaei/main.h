@@ -84,6 +84,7 @@ void gw_ui_set_color_to_swatch (const char*, const char*);
 
 gboolean gw_update_icons_for_selection (gpointer);
 gboolean gw_ui_keep_searching (gpointer);
+void gw_ui_handle_error (GError**, gboolean);
 
 
 #endif

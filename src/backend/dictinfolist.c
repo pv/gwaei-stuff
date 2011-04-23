@@ -243,6 +243,110 @@ GwDictInfo* gw_dictinfolist_get_dictinfo (const GwEngine ENGINE, const char* FIL
     return di;
 }
 
+//!
+//!  @brief  Gets a GwDictInfo object by a fuzzy string description.
+//!          It can be either of the form "parser/dictionary" or 
+//!          just be the dictionary name.  Case is ignored.
+//!  @param FUZZY_DESCRIPTION A fuzzy description of the wanted dictionary.
+//!  @returns A matching GwDictInfo object or NULL
+//!
+GwDictInfo* gw_dictinfolist_get_dictinfo_fuzzy (const char* FUZZY_DESCRIPTION)
+{
+    //Declarations
+    GwDictInfo *di;
+
+    //Initializations
+    di = NULL;
+
+    //Try getting the first dictionary if none is specified
+    if (FUZZY_DESCRIPTION == NULL )
+    {
+      if (g_list_length (_dictionaries->list))
+        di = _dictionaries->list->data;
+      else
+        di = NULL;
+    }
+
+    //Otherwise try getting a dictionary using a few different string parsers
+    else
+    {
+      if (di == NULL)
+        di = gw_dictinfolist_get_dictinfo_by_idstring (FUZZY_DESCRIPTION);
+      if (di == NULL)
+        di = gw_dictinfolist_get_dictinfo_by_filename (FUZZY_DESCRIPTION);
+    }
+
+    return di;
+}
+
+//!
+//! @brief Grabs the first dictionary with a matching dictionary 
+//!        filename.  If you have dictionaries with different 
+//!        parsers but the same name, the others will not 
+//!        be accessible with this function.
+//! @param NAME A constant string to search for in the dictionary names.  
+//!             This is a fuzzy search, ignoring ENGINE and case
+//! @returns The requested GwDictInfo object if found or null.
+//!
+GwDictInfo* gw_dictinfolist_get_dictinfo_by_filename (const char* FILENAME)
+{
+    //Declarations
+    GList *iter;
+    GwDictInfo *di;
+
+    for (iter = _dictionaries->list; iter != NULL; iter = iter->next)
+    {
+      di = (GwDictInfo*) iter->data;
+      if (g_ascii_strcasecmp (di->filename, FILENAME) == 0)
+        break;
+      di = NULL;
+    }
+
+    return di;
+}
+
+
+//!
+//! @brief Finds a dictionary by using an id string of the form of 
+//!        "engine/dictionary". Case is ignored.
+//! @param ENGINE_AND_FILENAME A string in the form "engine/dictionary"
+//!                            used to search for a dictionary
+//! @returns The requested GwDictInfo object if found or NULL.
+//!
+GwDictInfo* gw_dictinfolist_get_dictinfo_by_idstring (const char* ENGINE_AND_FILENAME)
+{
+    //Declarations
+    GList *iter;
+    GwDictInfo *di;
+    char **tokens;
+    char *filename;
+    GwEngine engine;
+
+    //Initializations
+    iter = NULL;
+    di = NULL;
+    tokens = g_strsplit (ENGINE_AND_FILENAME, "/", 2);
+
+    if (g_strv_length (tokens) == 2)
+    {
+      engine = gw_util_get_engine_from_enginename (tokens[0]);
+      filename = tokens[1];
+
+      for (iter = _dictionaries->list; iter != NULL; iter = iter->next)
+      {
+        di = (GwDictInfo*) iter->data;
+        if (di->engine == engine && g_ascii_strcasecmp (di->filename, filename) == 0)
+          break;
+        di = NULL;
+      }
+    }
+
+    g_strfreev (tokens);
+
+    return di;
+}
+
+
 
 //!
 //! @brief Searchs for a specific dictionary by name to see if it is installed

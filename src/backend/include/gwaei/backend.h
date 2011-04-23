@@ -15,7 +15,7 @@
 #include <gwaei/historylist.h>
 #include <gwaei/engine.h>
 
-void gw_backend_initialize (int, char**);
+void gw_backend_initialize (int*, char**);
 void gw_backend_free(void);
 
 
