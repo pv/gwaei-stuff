@@ -5,6 +5,6 @@
 
 void gw_frontend_initialize (int*, char**);
 void gw_frontend_free (void);
-void gw_frontend_start_console (int, char**);
+int gw_frontend_start_console (int, char**);
 
 #endif

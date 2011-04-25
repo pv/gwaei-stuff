@@ -126,6 +126,7 @@ gboolean gw_io_copy_with_encoding (const char *source_path, const char *target_p
 {
     if (*error != NULL) return FALSE;
 
+
     FILE* readfd = NULL;
     readfd = fopen (source_path, "r");
     if (readfd == NULL) exit(0);
@@ -188,8 +189,7 @@ static size_t _libcurl_write_func (void *ptr, size_t size, size_t nmemb, FILE *s
  
 
 //!
-//! \brief Private function made to be used with gw_io_download_file
-//!
+//! @brief Private function made to be used with gw_io_download_file
 //! @param ptr TBA
 //! @param size TBA
 //! @param nmemb TBA
@@ -201,8 +201,7 @@ static size_t _libcurl_read_func (void *ptr, size_t size, size_t nmemb, FILE *st
 }
 
 //!
-//! \brief Private struct made to be used with gw_io_download_file
-//!
+//! @brief Private struct made to be used with gw_io_download_file
 //! @param ptr TBA
 //! @param size TBA
 //! @param nmemb TBA
@@ -224,7 +223,10 @@ static int _libcurl_update_progress (void  *custom,
     cbwdata = (GwIoProgressCallbackWithData*) custom;
     cb = cbwdata->cb;
     data = cbwdata->data;
-    percent = dlnow / dltotal;
+    if (dltotal == 0.0)
+      percent = 0.0;
+    else
+      percent = dlnow / dltotal;
 
     //Update the interface
     return cb (percent, data);
@@ -286,9 +288,9 @@ gboolean gw_io_download_file (char *source_path, char *target_path, GwIoProgress
       g_remove (target_path);
 
       if (error != NULL) {
-        *error = g_error_new_literal (quark, GW_IO_DOWNLOAD_ERROR, message);
-        quark = g_quark_from_string (GW_IO_ERROR);
         message = gettext(curl_easy_strerror(res));
+        quark = g_quark_from_string (GW_IO_ERROR);
+        *error = g_error_new_literal (quark, GW_IO_DOWNLOAD_ERROR, message);
       }
     }
 

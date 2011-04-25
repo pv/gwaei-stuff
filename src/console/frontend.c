@@ -47,6 +47,10 @@ static char* _uninstall_switch_data = NULL;
 static char* _query_text_data = NULL;
 static GOptionContext *_context = NULL;
 
+
+//!
+//! @brief Initializes the memory associated with frontend.c
+//!
 void gw_frontend_initialize (int* argc, char* argv[])
 {
     bindtextdomain(PACKAGE, LOCALEDIR);
@@ -128,83 +132,48 @@ void gw_frontend_initialize (int* argc, char* argv[])
 
 //!
 //! @brief Equivalent to the main function for many programs.  This is what starts the program
-//!
 //! @param argc Your argc from your main function
 //! @param argv Your array of strings from main
 //!
-void gw_frontend_start_console (int argc, char* argv[])
+int gw_frontend_start_console (int argc, char* argv[])
 {
     //Declarations
-    GwDictInfo *di;
     GError *error;
-    char *message_total;
-    char *message_relevant;
-    GwSearchItem *item;
+    gboolean resolution;
 
     //Initializations
-    di = NULL;
     error = NULL;
+    resolution = 0;
 
+    //User wants to see what dictionaries are available
     if (_list_switch)
-    {
       gw_console_list ();
-      exit (EXIT_SUCCESS);
-    }
 
     //User wants to see the version of waei
-    if (_version_switch)
-    {
+    else if (_version_switch)
       gw_console_about ();
-      exit (EXIT_SUCCESS);
-    }
 
-    //Set the dictionary
-    di = gw_dictinfolist_get_dictinfo_fuzzy (_dictionary_switch_data);
-    if (di == NULL)
-    {
-      printf (gettext("Requested dictionary not found!\n"));
-      exit (EXIT_FAILURE);
-    }
+    //User wants to install a dictionary
+    else if (_install_switch_data != NULL)
+      resolution = gw_console_install_dictinst (_install_switch_data, &error);
 
-    //Set the query text
-    if (_query_text_data == NULL)
-    {
+    //User wants to do a search
+    else if (_query_text_data != NULL)
+      resolution = gw_console_search (_query_text_data, _dictionary_switch_data, _quiet_switch, _exact_switch, &error);
+
+    //User didn't specify enough information for an action
+    else 
       printf("%s\n", g_option_context_get_help (_context, TRUE, NULL));
-      exit (EXIT_FAILURE);
-    }
-
-    //Print the search intro
-    if (!_quiet_switch)
-    {
-      gw_console_start_banner (_query_text_data, di->longname);
-    }
-
-    //Start the search
-    item = gw_searchitem_new (_query_text_data, di, GW_TARGET_CONSOLE);
-    if (item == NULL)
-    {
-      printf(gettext("Query parse error\n"));
-      exit (EXIT_FAILURE);
-    }
-
-    //Print the number of results
-    gw_engine_get_results (item, FALSE, _exact_switch);
-
-    //Final header
-    if (_quiet_switch == FALSE)
-    {
-      message_total = ngettext("Found %d result", "Found %d results", item->total_results);
-      message_relevant = ngettext("(%d Relevant)", "(%d Relevant)", item->total_relevant_results);
-      printf(message_total, item->total_results);
-      if (item->total_relevant_results != item->total_results)
-        printf(message_relevant, item->total_relevant_results);
-      printf("\n");
-    }
 
     //Cleanup
-    gw_searchitem_free (item);
+    gw_console_handle_error (&error);
+    return resolution;
 }
 
+
+//!
+//! @brief Frees the memory associated with frontend.c
+//!
 void gw_frontend_free ()
 {
     gw_engine_free ();

@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file src/console-main-interface.c
+//! @file src/console/console.c
 //!
 //! @brief Abstraction layer for the console
 //!
@@ -38,7 +38,6 @@
 #include <gwaei/backend.h>
 #include <gwaei/frontend.h>
 
-static int _console_progress_cb (double percent, gpointer data);
 
 //!
 //! @brief Print the "less relevant" header where necessary.
@@ -59,23 +58,6 @@ void gw_console_no_result (GwSearchItem *item)
 
 
 //!
-//! @brief Callback function for printing a status message to the console
-//!
-//! @param message String of message to be shown.
-//! @param percent An integer of how much a progress bar should be filled.  1-100.
-//! @param data Currently unused gpointer.
-//!
-static int _print_message_to_console (char *message, int percent, gpointer data)
-{
-    if (message != NULL) printf("%s", message);
-    if (percent > -1 && percent < 101) printf("%d%s", percent, "%");
-    if (message != NULL || (percent > -1 && percent < 101)) printf("\n");
-
-    return FALSE;
-}
-
-
-//!
 //! @brief Uninstalls the named dictionary, deleting it.
 //!
 //! @param name A string of the name of the dictionary to uninstall.
@@ -88,7 +70,7 @@ void gw_console_uninstall_dictinst (GwDictInst *di)
     //Initializations
     error = NULL;
 
-    //gw_dictinst_uninstall (di, _console_progress_cb, &error);
+    //gw_dictinst_uninstall (di, gw_console_progress_cb, &error);
     printf(gettext("Finished\n"));
 
     //Cleanup
@@ -102,45 +84,25 @@ void gw_console_uninstall_dictinst (GwDictInst *di)
 //!
 //! @param name A string of the name of the dictionary to install.
 //!
-gboolean gw_console_install_dictinst (GwDictInst *di)
+gboolean gw_console_install_dictinst (char *fuzzy, GError **error)
 {
-/*
-    printf(gettext("Trying to install the %s...\n"), di->long_name);
+    //Declarations
+    GwDictInst *di;
 
-    GQuark quark;
-    quark = g_quark_from_string (GW_GENERIC_ERROR);
-    GError *error = NULL;
+    //Initializations
+    di = gw_dictinstlist_get_dictinst_fuzzy (fuzzy);
 
-    if (di->status != GW_DICT_STATUS_NOT_INSTALLED) return FALSE;
-
-    gw_io_install_dictinfo (di, &_print_message_to_console, NULL, TRUE, &error);
-
-    //Install auxillery dictionaries when appropriate
-    if (error == NULL && di->id == GW_DICT_ID_KANJI)
+    if (di != NULL)
     {
-      di = gw_dictlist_get_dictinfo_by_id (GW_DICT_ID_RADICALS);
-      gw_io_install_dictinfo (di, &_print_message_to_console, NULL, TRUE, &error);
-    }
-    else if (error == NULL && di->id == GW_DICT_ID_RADICALS)
-    {
-      di = gw_dictlist_get_dictinfo_by_id (GW_DICT_ID_KANJI);
-      gw_io_install_dictinfo (di, &_print_message_to_console, NULL, TRUE, &error);
-    }
-
-    //Print final messages
-    if (error != NULL)
-    {
-      printf("%s\n", error->message);
-		  g_error_free (error);
-      error = NULL;
-      return FALSE;
+      gw_dictinst_install (di, gw_console_progress_cb, error);
     }
     else
     {
-      printf(gettext("Finished\n"));
+      printf("\n%s was not found!\n\n", fuzzy);
+      gw_console_print_installable_dictionaries ();
     }
-*/
-    return TRUE;
+
+    return (*error == NULL);
 }
 
 
@@ -187,266 +149,71 @@ void gw_console_start_banner (char *query, char *dictionary)
 //!
 //! @brief Prints out the yet uninstalled available dictionaries.
 //!
-static void _print_installable_dictionaries ()
+void gw_console_print_installable_dictionaries ()
 {
-/*
-    if (_quiet_switch == FALSE)
-    {
-      printf(gettext("Installable dictionaries are:\n"));
-    }
+    printf(gettext("Installable dictionaries are:\n"));
 
-    int i = 0; 
+    //Declarations
+    int i;
+    int j;
+    GList *iter;
+    GwDictInst* di;
 
-    GwDictInfo* di;
-    GList *list = gw_dictlist_get_list ();
-    while (list != NULL)
+    //Initializations
+    i = 0; 
+    iter = gw_dictinstlist_get_list ();
+
+    while (iter != NULL)
     {
-      di = (GwDictInfo*) list->data;
-      if (di->gskey != NULL && di->status == GW_DICT_STATUS_NOT_INSTALLED &&
-          di->id != GW_DICT_ID_RADICALS && di->id != GW_DICT_ID_MIX            )
+      di = (GwDictInst*) iter->data;
+      if (gw_dictinst_data_is_valid (di))
       {
-        printf("  %s (AKA: %s)\n", di->name, di->long_name);
+        printf("  %s", di->filename);
+        for (j = strlen(di->filename); j < 20; j++) printf(" ");
+        printf("(AKA: %s)\n", di->longname);
         i++;
       }
-      list = list->next;
+      iter = iter->next;
     }
 
     if (i == 0)
+    {
       printf("  %s\n", gettext("none"));
-
-    printf ("\n");
-*/
+    }
 }
 
 
 //!
 //! @brief Not yet written
 //!
-static void _print_available_dictionaries ()
+void gw_console_print_available_dictionaries ()
 {
-/*
-    int i = 0;
+    //Declarations
+    int i;
+    int j;
     GwDictInfo* di;
-    GList *list;
+    GList *iter;
 
-	  if (_quiet_switch == FALSE)
-    {
-    	printf(gettext("Available dictionaries are:\n"));
-    }
+    //Initializations
+    i = 0;
+    j = 0;
+	  iter = gw_dictinfolist_get_list();
 
-	  list = gw_dictlist_get_list();
-    while (list != NULL) {
-      di = list->data;
-      if (di->status == GW_DICT_STATUS_INSTALLED && di->id != GW_DICT_ID_RADICALS && di->id != GW_DICT_ID_MIX) {
-        printf("  %s (AKA: %s)\n", di->name, di->long_name);
-        i++;
-      }
-      list = list->next;
+    printf(gettext("Available dictionaries are:\n"));
+
+    while (iter != NULL) {
+      di = iter->data;
+      printf("  %s", di->filename);
+      for (j = strlen(di->filename); j < 20; j++) printf(" ");
+      printf("(AKA: %s)\n", di->longname);
+      i++;
+      iter = iter->next;
     }
 
     if (i == 0)
+    {
       printf("  %s\n", gettext("none"));
-
-    printf ("\n");
-*/
-}
-
-
-//!
-//! @brief CONSOLE Main function
-//!
-//! This function will NOT use GError because it have
-//! nobody to report to.
-//!
-//! @param argc Standard argc from main
-//! @param argv Standard argv from main
-//!
-void initialize_console_interface (int argc, char **argv)
-{
-  /*
-    GwDictInfo *di = NULL;
-    GError *error = NULL;
-
-    if (_list_switch)
-    {
-      print_available_dictionaries ();
-      print_installable_dictionaries();
-      exit (EXIT_SUCCESS);
     }
-
-    //User wants to see the version of waei
-    if (_version_switch)
-    {
-      print_about_program ();
-      exit (EXIT_SUCCESS);
-    }
-
-    //User wants to sync dictionaries
-    else if (rsync_switch)
-    {
-      printf("");
-      printf(gettext("Syncing possible installed dictionaries..."));
-      printf("[0m\n");
-
-      GwDictInfo* di;
-      GList *list = gw_dictlist_get_list();
-
-      while (list != NULL && error == NULL) {
-        di = list->data;
-        gw_dictlist_sync_dictionary (di, &error);
-        list = list->next;
-      }
-
-      if (error == NULL)
-      {
-        printf("");
-        printf(gettext("Finished"));
-        printf("[0m\n");
-      }
-      else
-      {
-        printf("");
-        printf("%s", error->message);
-        printf("[0m\n");
-        g_error_free (error);
-        error = NULL;
-      }
-
-      return;
-    }
-
-    //User wants to install dictionary
-    if (_install_switch_data != NULL)
-    {
-      di = gw_dictlist_get_dictinfo_by_name (_install_switch_data);
-      if (di != NULL && di->status != GW_DICT_STATUS_NOT_INSTALLED && di->gskey[0] != '\0')
-      {
-        printf(gettext("%s is already Installed. "), di->long_name);
-        print_installable_dictionaries();
-      }
-      else if (di == NULL || di->gskey[0] == '\0' || di->id == GW_DICT_ID_RADICALS || di->id == GW_DICT_ID_MIX)
-      {
-        printf(gettext("%s is not installable with this mechanism. "), _install_switch_data);
-        print_installable_dictionaries();
-      }
-      else if (di != NULL)
-        gw_console_install_dictinfo (di);
-      exit (EXIT_SUCCESS);
-    }
-
-    //User wants to uninstall dictionary
-    if (_uninstall_switch_data != NULL)
-    {
-      di = gw_dictlist_get_dictinfo_by_name (_uninstall_switch_data);
-      if (di != NULL)
-      {
-        if (di->status = GW_DICT_STATUS_INSTALLED && di->id != GW_DICT_ID_RADICALS && di->id != GW_DICT_ID_MIX)
-          gw_console_uninstall_dictinfo (di);
-        else
-        {
-          printf(gettext("The %s is not installed. "), di->long_name);
-          print_available_dictionaries();
-        }
-      }
-      else
-      {
-        // TRANSLATORS: The "%s" stands for the value provided by the user to the "waei uninstall"
-        printf(gettext("%s is not installed. "), _uninstall_switch_data);
-        print_available_dictionaries();
-      }
-      exit (EXIT_SUCCESS);
-    }
-
-    //We weren't interupted by any switches! Now to the search....
-
-    //Set dictionary
-    if (_dictionary_switch_data == NULL)
-      di = gw_dictlist_get_dictinfo_by_alias ("English");
-    else
-      di = gw_dictlist_get_dictinfo_by_alias (_dictionary_switch_data);
-    if (di == NULL || di->status != GW_DICT_STATUS_INSTALLED)
-    {
-      printf (gettext("Requested dictionary not found!\n"));
-      exit (EXIT_FAILURE);
-    }
-
-    //Set query text
-    if (argc > 1 && _query_text_data == NULL)
-    {
-      _query_text_data = gw_util_strdup_args_to_query (argc, argv);
-      if (_query_text_data == NULL)
-      {
-        printf ("Memory error creating initial query string!\n");
-        exit (EXIT_FAILURE);
-      }
-    }
-    else
-    {
-      //No query means to print the help screen
-      char *help_text = g_option_context_get_help (context, TRUE, NULL);
-      if (help_text != NULL)
-      {
-        printf("%s\n", help_text);
-        g_free (help_text);
-        help_text = NULL;
-      }
-      exit (EXIT_SUCCESS);
-    }
-
-    //Set the output generic functions
-    gw_console_initialize_interface_output_generics ();
-
-    // Run some checks and transformation on a user inputed string before using it
-   	char* sane_query = gw_util_prepare_query (_query_text_data, FALSE);
-   	if (sane_query == NULL)
-   	{
-   	  printf(gettext("Query prepare error\n"));
-   	  exit (EXIT_FAILURE);
-   	}
-   	g_stpcpy(_query_text_data, sane_query);
-   	g_free(sane_query);
-   	sane_query = NULL;
-
-    //Print the search intro
-    if (!_quiet_switch)
-    {
-      gw_console_start_banner (_query_text_data, di->long_name);
-    }
-
-    //Start the search
-    GwSearchItem *item;
-    item = gw_searchitem_new (_query_text_data, di, GW_TARGET_CONSOLE);
-    if (item == NULL)
-    {
-      printf(gettext("Query parse error\n"));
-      exit (EXIT_FAILURE);
-    }
-
-    //Print the number of results
-    gw_search_get_results (item, FALSE, _exact_switch);
-
-    //Final header
-    if (_quiet_switch == FALSE)
-    {
-      char *message_total = ngettext("Found %d result", "Found %d results", item->total_results);
-      char *message_relevant = ngettext("(%d Relevant)", "(%d Relevant)", item->total_relevant_results);
-      printf(message_total, item->total_results);
-      if (item->total_relevant_results != item->total_results)
-        printf(message_relevant, item->total_relevant_results);
-      printf("\n");
-    }
-
-    //Cleanup
-    gw_searchitem_free (item);
-    if (_query_text_data != NULL)
-    {
-      g_free (_query_text_data);
-      _query_text_data = NULL;
-    }
-
-*/
-    //Finish
-    exit (EXIT_SUCCESS);
 }
 
 
@@ -616,7 +383,7 @@ void gw_console_after_search_cleanup (GwSearchItem *item)
 }
 
 
-static int _console_progress_cb (double percent, gpointer data)
+int gw_console_progress_cb (double percent, gpointer data)
 {
   //Declarations
   GwDictInst *di;
@@ -624,24 +391,97 @@ static int _console_progress_cb (double percent, gpointer data)
 
   //Initializations
   di = data;
-  status = gw_dictinst_get_status_string (di, TRUE);
 
-  //Body
-  printf("%s\n", status);
+  if (percent == 0.0) di->progress = 0.0;
 
-  //Cleanup
-  g_free (status);
-  status = NULL;
+  if (percent - di->progress >= 0.01);
+  {
+    printf("\r");
+
+    status = gw_dictinst_get_status_string (di, TRUE);
+    printf("%s", status);
+    g_free (status);
+  }
+
+  di->progress = percent;
+
+  return FALSE;
 }
 
+
 //!
-//! @brief Lists the currently installed and installable dictionaries
+//! @brief Lists the available and installable dictionaries
 //!
 void gw_console_list ()
 {
-    _print_available_dictionaries ();
-    _print_installable_dictionaries();
+    gw_console_print_available_dictionaries ();
+    gw_console_print_installable_dictionaries ();
 }
 
 
+//!
+//! @brief If the GError is set, it prints it and frees the memory
+//! @param error A pointer to a gerror pointer
+//!
+void gw_console_handle_error (GError **error)
+{
+    if (*error != NULL)
+    {
+      printf("Error: %s\n", (*error)->message);
+      g_error_free (*error);
+      *error = NULL;
+    }
+}
 
+
+gboolean gw_console_search (char* query, char* fuzzy, gboolean quiet, gboolean exact, GError **error)
+{
+    //Sanity check
+    if (*error != NULL) return FALSE;
+
+    //Declarations
+    GwSearchItem *item;
+    char *message_total;
+    char *message_relevant;
+    GwDictInfo *di;
+
+    //Initializations
+    di = gw_dictinfolist_get_dictinfo_fuzzy (fuzzy);
+    if (di == NULL)
+    {
+      printf (gettext("Requested dictionary not found!\n"));
+      return FALSE;
+    }
+
+    item = gw_searchitem_new (query, di, GW_TARGET_CONSOLE);
+    if (item == NULL)
+    {
+      printf(gettext("Query parse error\n"));
+      return FALSE;
+    }
+
+    //Print the search intro
+    if (!quiet)
+    {
+      gw_console_start_banner (query, di->longname);
+    }
+
+    //Print the results
+    gw_engine_get_results (item, FALSE, exact);
+
+    //Print final header
+    if (quiet == FALSE)
+    {
+      message_total = ngettext("Found %d result", "Found %d results", item->total_results);
+      message_relevant = ngettext("(%d Relevant)", "(%d Relevant)", item->total_relevant_results);
+      printf(message_total, item->total_results);
+      if (item->total_relevant_results != item->total_results)
+        printf(message_relevant, item->total_relevant_results);
+      printf("\n");
+    }
+
+    //Cleanup
+    gw_searchitem_free (item);
+
+    return TRUE;
+}

@@ -106,7 +106,6 @@ GwDictInfo* gw_dictinfolist_get_selected_dictinfo ()
 }
 
 
-
 //!
 //! @brief Gets the dictionary by load position in the GUI
 //!
@@ -131,6 +130,7 @@ GList* gw_dictinfolist_get_dict_by_load_position (int request)
     return current;
 }
 
+
 //!
 //! @brief Gets the dictionary by load position in the GUI
 //!
@@ -141,7 +141,7 @@ GList* gw_dictinfolist_get_dict_by_load_position (int request)
 //! @param request The GUI load position of the desired dictionary
 //! @return The position in the GwDictList of the GwDictInfo
 //!
-GList* gw_dictinfolist_set_selected_by_load_position(int request)
+GList* gw_dictinfolist_set_selected_by_load_position (int request)
 {
     GList* current_dictionary = gw_dictinfolist_get_list();
     do

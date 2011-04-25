@@ -46,6 +46,10 @@ static GOptionEntry _entries[] =
 
 int main (int argc, char *argv[])
 {    
+    //Declarations
+    int resolution;
+
+    //Initializations
     gw_backend_initialize (&argc, argv);
     gw_frontend_initialize (&argc, argv);
 
@@ -58,16 +62,18 @@ int main (int argc, char *argv[])
     g_option_context_free (context);
     context = NULL;
 
+    //Start the program
     if (_ncurses_switch)
       ;
     else
 #endif
-      gw_frontend_start_console (argc, argv);
+      resolution = gw_frontend_start_console (argc, argv);
 
+    //Cleanup
     gw_frontend_free ();
     gw_backend_free();
 
-    return EXIT_SUCCESS;
+    return resolution;
 }
 
 

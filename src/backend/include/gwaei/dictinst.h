@@ -13,6 +13,7 @@ typedef enum {
   GW_DICTINST_DOWNLOAD_SOURCE,
   GW_DICTINST_COMPRESSED_FILE,
   GW_DICTINST_TEXT_ENCODING,
+  GW_DICTINST_POSTPROCESSING,
   GW_DICTINST_FINAL_TARGET,
   GW_DICTINST_TOTAL_URIS,
 } GwDictInstUri;
@@ -37,7 +38,7 @@ struct _GwDictInst {
   char *longname;
   char *description;
   char *uri[GW_DICTINST_TOTAL_URIS];
-  int progress;
+  double progress;
   gboolean selected;
   char *schema;
   char *key;
