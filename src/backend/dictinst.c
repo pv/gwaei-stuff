@@ -278,6 +278,7 @@ void gw_dictinst_set_status (GwDictInst *di, const GwDictInstStatus STATUS)
 {
     g_assert (STATUS >= 0 && STATUS < GW_DICTINST_TOTAL_STATUSES);
     di->status = STATUS;
+    di->progress = 0.0;
 }
 
 
@@ -323,13 +324,18 @@ void gw_dictinst_regenerate_save_target_uris (GwDictInst *di)
     temp[0][GW_DICTINST_NEEDS_FINALIZATION] =  g_strdup (cache_filename);
     temp[0][GW_DICTINST_NEEDS_NOTHING] =  g_strdup (engine_filename);
 
-    //Set up for the split dictionary and join dictionary cases
+    //Adjust the uris for the split dictionary exception case
     if (di->split)
     {
+      g_free (temp[0][GW_DICTINST_NEEDS_FINALIZATION]);
+      temp[0][GW_DICTINST_NEEDS_FINALIZATION] = g_build_filename (gw_util_get_directory (GW_PATH_CACHE), "Names", NULL);
+      temp[1][GW_DICTINST_NEEDS_FINALIZATION] = g_build_filename (gw_util_get_directory (GW_PATH_CACHE), "Places", NULL);
+
       g_free (temp[0][GW_DICTINST_NEEDS_NOTHING]);
-      temp[0][GW_DICTINST_NEEDS_NOTHING] = g_build_filename (gw_util_get_directory (GW_PATH_CACHE), "Names", NULL);
-      temp[1][GW_DICTINST_NEEDS_NOTHING] = g_build_filename (gw_util_get_directory (GW_PATH_CACHE), "Places", NULL);
+      temp[0][GW_DICTINST_NEEDS_NOTHING] = g_build_filename (gw_util_get_directory_for_engine (di->engine), "Names", NULL);
+      temp[1][GW_DICTINST_NEEDS_NOTHING] = g_build_filename (gw_util_get_directory_for_engine (di->engine), "Places", NULL);
     }
+    //Adjust the uris for the merge dictionary exception case
     else if (di->merge)
     {
       radicals_cache_filename = g_build_filename (gw_util_get_directory (GW_PATH_CACHE), "Radicals", NULL);
@@ -415,7 +421,6 @@ gboolean gw_dictinst_data_is_valid (GwDictInst *di)
 //! @see gw_dictinst_convert_encoding
 //! @see gw_dictinst_postprocess
 //! @see gw_dictinst_install
-//! @see gw_dictinst_uninstall
 //!
 gboolean gw_dictinst_download (GwDictInst *di, GwIoProgressCallback cb, GError **error)
 {
@@ -469,7 +474,6 @@ gboolean gw_dictinst_download (GwDictInst *di, GwIoProgressCallback cb, GError *
 //! @see gw_dictinst_convert_encoding
 //! @see gw_dictinst_postprocess
 //! @see gw_dictinst_install
-//! @see gw_dictinst_uninstall
 //!
 gboolean gw_dictinst_decompress (GwDictInst *di, GwIoProgressCallback cb, GError **error)
 {
@@ -529,7 +533,6 @@ gboolean gw_dictinst_decompress (GwDictInst *di, GwIoProgressCallback cb, GError
 //! @see gw_dictinst_convert_encoding
 //! @see gw_dictinst_postprocess
 //! @see gw_dictinst_install
-//! @see gw_dictinst_uninstall
 //!
 gboolean gw_dictinst_convert_encoding (GwDictInst *di, GwIoProgressCallback cb, GError **error)
 {
@@ -579,7 +582,6 @@ gboolean gw_dictinst_convert_encoding (GwDictInst *di, GwIoProgressCallback cb, 
 //! @see gw_dictinst_convert_encoding
 //! @see gw_dictinst_postprocess
 //! @see gw_dictinst_install
-//! @see gw_dictinst_uninstall
 //!
 gboolean gw_dictinst_postprocess (GwDictInst *di, GwIoProgressCallback cb, GError **error)
 {
@@ -635,7 +637,6 @@ gboolean gw_dictinst_postprocess (GwDictInst *di, GwIoProgressCallback cb, GErro
 //! @see gw_dictinst_convert_encoding
 //! @see gw_dictinst_postprocess
 //! @see gw_dictinst_install
-//! @see gw_dictinst_uninstall
 //!
 gboolean gw_dictinst_finalize (GwDictInst *di, GwIoProgressCallback cb, GError **error)
 {
@@ -700,54 +701,19 @@ void gw_dictinst_clean (GwDictInst *di, GwIoProgressCallback cb)
 //! @see gw_dictinst_convert_encoding
 //! @see gw_dictinst_postprocess
 //! @see gw_dictinst_install
-//! @see gw_dictinst_uninstall
 //!
 gboolean gw_dictinst_install (GwDictInst *di, GwIoProgressCallback cb, GError **error)
 {
     g_assert (*error == NULL && di != NULL);
 
-//    gw_dictinst_download (di, cb, error);
+    //gw_dictinst_download (di, cb, error);
     gw_dictinst_decompress (di, cb, error);
     gw_dictinst_convert_encoding (di, cb, error);
     gw_dictinst_postprocess (di, cb, error);
     gw_dictinst_finalize (di, cb, error);
     /*
     gw_dictinst_clean (di, cb);
-
-    if (*error == NULL) gw_dictinst_set_status (di, GW_DICTINST_STATUS_INSTALLED);
-    else gw_dictinst_set_status (di, GW_DICTINST_STATUS_NOT_INSTALLED);
 */
-exit(0);
-
-    return (*error == NULL);
-}
-
-
-//!
-//! @brief Installs a GwDictInst object using the provided gui update callback
-//!        This function should normally only be used in the gw_dictinst_uninstall function.
-//! @param path String representing the path of the file to gunzip.
-//! @param error Error handling
-//! @see gw_dictinst_download
-//! @see gw_dictinst_convert_encoding
-//! @see gw_dictinst_postprocess
-//! @see gw_dictinst_install
-//! @see gw_dictinst_uninstall
-//!
-gboolean gw_dictinst_uninstall (GwDictInst *di, GwIoProgressCallback cb, GError **error)
-{
-    g_assert (*error != NULL && di != NULL && di->uri[GW_DICTINST_NEEDS_NOTHING] != NULL);
-
-    //Declarations
-    char *uri;
-
-    //Initializations
-    uri = di->uri[GW_DICTINST_NEEDS_NOTHING];
-
-    gw_dictinst_set_status (di, GW_DICTINST_STATUS_REMOVING);
-    if (*error == NULL) g_remove (uri);
-    if (*error == NULL) gw_dictinst_clean (di, cb);
-    gw_dictinst_set_status (di, GW_DICTINST_STATUS_NOT_INSTALLED);
 
     return (*error == NULL);
 }

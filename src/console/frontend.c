@@ -157,6 +157,10 @@ int gw_frontend_start_console (int argc, char* argv[])
     else if (_install_switch_data != NULL)
       resolution = gw_console_install_dictinst (_install_switch_data, &error);
 
+    //User wants to uninstall a dictionary
+    else if (_uninstall_switch_data != NULL)
+      resolution = gw_console_uninstall_dictinfo (_uninstall_switch_data, &error);
+
     //User wants to do a search
     else if (_query_text_data != NULL)
       resolution = gw_console_search (_query_text_data, _dictionary_switch_data, _quiet_switch, _exact_switch, &error);
@@ -166,7 +170,11 @@ int gw_frontend_start_console (int argc, char* argv[])
       printf("%s\n", g_option_context_get_help (_context, TRUE, NULL));
 
     //Cleanup
-    gw_console_handle_error (&error);
+    if (error != NULL)
+      gw_console_handle_error (&error);
+    else
+      printf("\nDone\n\n");
+
     return resolution;
 }
 

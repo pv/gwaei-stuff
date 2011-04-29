@@ -135,7 +135,7 @@ gboolean gw_io_copy_with_encoding (const char *source_path, const char *target_p
     size_t curpos;
     size_t end;
     GIConv conv;
-    double percent;
+    double fraction;
 
     //Initializations
     readfd = fopen (source_path, "r");
@@ -143,9 +143,9 @@ gboolean gw_io_copy_with_encoding (const char *source_path, const char *target_p
     conv = g_iconv_open (target_encoding, source_encoding);
     prev_inbytes = 0;
     written = 0;
-    end = gw_io_get_filesize(source_path);
+    end = gw_io_get_filesize (source_path);
     curpos = 0;
-    percent = ((double) curpos / (double) end);
+    fraction = ((double) curpos / (double) end);
 
     while (fgets(buffer, MAX, readfd) != NULL)
     {
@@ -168,8 +168,8 @@ gboolean gw_io_copy_with_encoding (const char *source_path, const char *target_p
         outptr = outptr + strlen(outptr) - outbytes_left;
       }
       written = fwrite(output, 1, strlen(output), writefd); 
-      percent = ((double) curpos / (double) end);
-      if (cb != NULL) cb (percent, data);
+      fraction = ((double) curpos / (double) end);
+      if (cb != NULL) cb (fraction, data);
     }
 
     //Cleanup
@@ -223,19 +223,19 @@ static int _libcurl_update_progress (void  *custom,
     GwIoProgressCallbackWithData *cbwdata;
     GwIoProgressCallback cb;
     gpointer data;
-    double percent;
+    double fraction;
     
     //Initializations
     cbwdata = (GwIoProgressCallbackWithData*) custom;
     cb = cbwdata->cb;
     data = cbwdata->data;
     if (dltotal == 0.0)
-      percent = 0.0;
+      fraction = 0.0;
     else
-      percent = dlnow / dltotal;
+      fraction = dlnow / dltotal;
 
     //Update the interface
-    return cb (percent, data);
+    return cb (fraction, data);
 }
 
 
@@ -322,7 +322,7 @@ gboolean gw_io_copy (const char *source_path, const char *target_path,
     size_t curpos;
     const int MAX_CHUNK = 128;
     char buffer[MAX_CHUNK];
-    double percent;
+    double fraction;
 
     //Initalizations
     in = fopen(source_path, "rb");
@@ -330,16 +330,18 @@ gboolean gw_io_copy (const char *source_path, const char *target_path,
     chunk = 1;
     end = gw_io_get_filesize (source_path);
     curpos = 0;
-    percent = 0;
+    fraction = 0.0;
 
     while (chunk)
     {
+      fraction = ((double) curpos) / ((double) end);
+      if (cb != NULL) cb (fraction, data);
       chunk = fread(buffer, sizeof(char), MAX_CHUNK, in);
       chunk = fwrite(buffer, sizeof(char), chunk, out);
       curpos += chunk;
-      percent = ((double) curpos) / ((double) end);
-      if (cb != NULL) cb(percent, data);
     }
+    fraction = 1.0;
+    if (cb != NULL) cb (fraction, data);
 
     //Cleanup
     fclose(in);
@@ -375,7 +377,7 @@ gboolean gw_io_create_mix_dictionary (const char *output_path,
 
     size_t curpos;
     size_t end;
-    double percent;
+    double fraction;
 
     //Initializations
     kanji_file =  fopen(kanji_dictionary_path, "r");
@@ -387,14 +389,15 @@ gboolean gw_io_create_mix_dictionary (const char *output_path,
 
     curpos = 0;
     end = gw_io_get_filesize (kanji_dictionary_path);
-    percent = 0.0;
+    fraction = 0.0;
 
     //Loop through the kanji file
     while (fgets(kanji_input, GW_IO_MAX_FGETS_LINE, kanji_file) != NULL )
     {
+      fraction = ((double) curpos)/((double) end);
+      if (cb != NULL) cb (fraction, data);
+
       curpos += strlen (kanji_input);
-      percent = ((double) curpos)/((double) end);
-      if (cb != NULL) cb (percent, data);
 
       if (kanji_input[0] == '#') continue;
 
@@ -454,6 +457,8 @@ gboolean gw_io_create_mix_dictionary (const char *output_path,
       fputs(output, output_file);
       output[0] = '\0';
     }
+    fraction = 1.0;
+    if (cb != NULL) cb (fraction, data);
 
     //Cleanup
     fclose(kanji_file);
@@ -464,9 +469,9 @@ gboolean gw_io_create_mix_dictionary (const char *output_path,
 }
 
 
-gboolean gw_io_split_places_from_names_dictionary (const char *names_places_path, 
-                                                   const char* names_path,
-                                                   const char* places_path,
+gboolean gw_io_split_places_from_names_dictionary (const char *output_names_path, 
+                                                   const char* output_places_path,
+                                                   const char* input_names_places_path,
                                                    GwIoProgressCallback cb,
                                                    gpointer data,
                                                    GError **error                    )
@@ -493,7 +498,7 @@ gboolean gw_io_split_places_from_names_dictionary (const char *names_places_path
     FILE *inputf;
     size_t curpos;
     size_t end;
-    double percent;
+    double fraction;
 
     FILE *placesf;
     GRegex *re_place;
@@ -506,17 +511,17 @@ gboolean gw_io_split_places_from_names_dictionary (const char *names_places_path
     int  name_write_error;
 
     //Initializations
-    inputf = fopen(names_places_path, "r");
+    inputf = fopen(input_names_places_path, "r");
     curpos = 0;
-    end = gw_io_get_filesize (names_places_path);
-    percent = 0.0;
+    end = gw_io_get_filesize (input_names_places_path);
+    fraction = 0.0;
 
     re_place = g_regex_new (place_pattern,  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, error);
-    placesf = fopen(places_path, "w");
+    placesf = fopen(output_places_path, "w");
     place_write_error = 0;
 
     re_name = g_regex_new (name_pattern,  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, error);
-    namesf = fopen(names_path, "w");
+    namesf = fopen(output_names_path, "w");
     name_write_error  = 0;
 
 
@@ -526,14 +531,17 @@ gboolean gw_io_split_places_from_names_dictionary (const char *names_places_path
            name_write_error  != EOF &&
            *error == NULL                                        )
     {
+      fraction = ((double) curpos) / ((double) end);
+      if (cb != NULL) cb (fraction, data);
+
       if (placesf != NULL && g_regex_match (re_place, buffer, 0, NULL))
         place_write_error = fputs(buffer, placesf);
       if (namesf != NULL && g_regex_match(re_name, buffer, 0, NULL))
         name_write_error =  fputs(buffer, namesf);
       curpos += strlen(buffer);
-      percent = ((double) curpos) / ((double) end);
-      if (cb != NULL) cb (percent, data);
     }
+    fraction = 1.0;
+    if (cb != NULL) cb (fraction, data);
 
     //Cleanup
     fclose(inputf);
@@ -622,6 +630,9 @@ char** gw_io_get_dictionary_file_list ()
 
 size_t gw_io_get_filesize (const char *URI)
 {
+    //Sanity check
+    g_assert (g_file_test (URI, G_FILE_TEST_IS_REGULAR));
+
     //Declarations
     const int MAX_CHUNK = 128;
     char buffer[MAX_CHUNK];
@@ -650,7 +661,7 @@ gpointer _stdin_func (gpointer data)
     size_t chunk;
     size_t curpos;
     size_t end;
-    double percent;
+    double fraction;
     FILE *file;
     FILE *stream;
     GwIoProcessFdData* in;
@@ -661,25 +672,23 @@ gpointer _stdin_func (gpointer data)
     in = data;
     chunk = 0;
     curpos = 0;
-    end = gw_io_get_filesize(in->uri);
-    percent = ((double) curpos / (double) end);
+    end = gw_io_get_filesize (in->uri);
+    fraction = 0.0;
     file = fopen(in->uri, "rb");
     stream = fdopen(in->fd, "ab");
 
     while (!feof(file))
     {
-        if (percent != ((double) curpos / (double) end))
-        {
-          percent = ((double) curpos / (double) end);
-          if (in->cb != NULL) in->cb((double) percent, in->data);
-        }
+        fraction = ((double) curpos / (double) end);
+        if (in->cb != NULL) in->cb (fraction, in->data);
+
         chunk = fread(buffer, sizeof(char), MAX_CHUNK, file);
         curpos += chunk;
         chunk = fwrite(buffer, sizeof(char), chunk, stream);
         fflush(stream);
     }
-    percent = ((double) curpos / (double) end);
-    if (in->cb != NULL) in->cb((double) percent, in->data);
+    fraction = 1.0;
+    if (in->cb != NULL) in->cb (fraction, in->data);
 
     if (ferror(file) != 0)
     {
@@ -832,5 +841,15 @@ gboolean gw_io_pipe_data (char **argv,
     return (*error == NULL);
 } 
 
+gboolean gw_io_remove (const char *URI, GError **error)
+{
+  //Declarations
+  int resolution;
+
+  //Initializations
+  resolution = g_remove (URI);
+
+  return (error == NULL && *error == NULL);
+}
 
 

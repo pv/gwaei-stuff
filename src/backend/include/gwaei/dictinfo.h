@@ -53,5 +53,8 @@ typedef struct _GwDictInfo GwDictInfo;
 GwDictInfo* gw_dictinfo_new (const GwEngine, const char*);
 void gw_dictinfo_free(GwDictInfo*);
 
+GwDictInfo* gw_dictinfolist_get_dictinfo_fuzzy (const char*);
+gboolean gw_dictinfo_uninstall (GwDictInfo*, GwIoProgressCallback, GError**);
+
 
 #endif

@@ -62,20 +62,26 @@ void gw_console_no_result (GwSearchItem *item)
 //!
 //! @param name A string of the name of the dictionary to uninstall.
 //!
-void gw_console_uninstall_dictinst (GwDictInst *di)
+gboolean gw_console_uninstall_dictinfo (const char *FUZZY, GError **error)
 {
     //Declarations
-    GError *error;
+    GwDictInfo *di;
 
     //Initializations
-    error = NULL;
+    di = gw_dictinfolist_get_dictinfo_fuzzy (FUZZY);
 
-    //gw_dictinst_uninstall (di, gw_console_progress_cb, &error);
-    printf(gettext("Finished\n"));
+    if (di != NULL)
+    {
+      printf(gettext("Uninstalling %s...\n"), di->longname);
+      gw_dictinfo_uninstall (di, gw_console_uninstall_progress_cb, error);
+    }
+    else
+    {
+      printf("\n%s was not found!\n\n", FUZZY);
+      gw_console_print_available_dictionaries ();
+    }
 
-    //Cleanup
-    g_error_free (error);
-    error = NULL;
+    return (*error == NULL);
 }
 
 
@@ -84,21 +90,22 @@ void gw_console_uninstall_dictinst (GwDictInst *di)
 //!
 //! @param name A string of the name of the dictionary to install.
 //!
-gboolean gw_console_install_dictinst (char *fuzzy, GError **error)
+gboolean gw_console_install_dictinst (const char *FUZZY, GError **error)
 {
     //Declarations
     GwDictInst *di;
 
     //Initializations
-    di = gw_dictinstlist_get_dictinst_fuzzy (fuzzy);
+    di = gw_dictinstlist_get_dictinst_fuzzy (FUZZY);
 
     if (di != NULL)
     {
-      gw_dictinst_install (di, gw_console_progress_cb, error);
+      printf(gettext("Installing %s...\n"), di->longname);
+      gw_dictinst_install (di, gw_console_install_progress_cb, error);
     }
     else
     {
-      printf("\n%s was not found!\n\n", fuzzy);
+      printf("\n%s was not found!\n\n", FUZZY);
       gw_console_print_installable_dictionaries ();
     }
 
@@ -383,34 +390,56 @@ void gw_console_after_search_cleanup (GwSearchItem *item)
 }
 
 
-int gw_console_progress_cb (double percent, gpointer data)
+int gw_console_uninstall_progress_cb (double fraction, gpointer data)
+{
+  //Declarations
+  GwDictInfo *di;
+  char *uri;
+
+  //Initializations
+  di = data;
+  uri = g_build_filename (gw_util_get_directory_for_engine (di->engine), di->filename, NULL);
+
+  printf("Removing %s...\n", uri);
+
+  g_free (uri);
+
+  return FALSE;
+}
+
+
+
+
+
+int gw_console_install_progress_cb (double fraction, gpointer data)
 {
   //Declarations
   GwDictInst *di;
   char *status;
+  int current_percent;
+  int previous_percent;
 
   //Initializations
   di = data;
-
-  //Set the initial dictinst progress state
-  if (percent == 0.0) di->progress = 0.0;
+  current_percent = (int) (100.0 * fraction); 
+  previous_percent = (int) (100.0 * di->progress); 
+  if (di->progress <= 1.0) di->progress = fraction;
 
   //Update the dictinst progress state only when the delta is large enough
-  if (percent - di->progress >= 0.01 && di->progress != 1.0);
+  if (current_percent - previous_percent >= 1 && di->progress < 1.0)
   {
     status = gw_dictinst_get_status_string (di, TRUE);
-    printf("\r%s", status);
+    printf("\r  %s", status);
     g_free (status);
-
-    di->progress = percent;
   }
 
   //Display the final progress 
-  if (di->progress == 1.0)
+  else if (di->progress == 1.0)
   {
     status = gw_dictinst_get_status_string (di, TRUE);
-    printf("\r%s\n", status);
+    printf("\r  %s\n", status);
     g_free (status);
+    di->progress = 1.1;
   }
 
   return FALSE;

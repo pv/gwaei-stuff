@@ -32,6 +32,7 @@ gboolean gw_io_create_mix_dictionary (const char*, const char*, const char*, GwI
 gboolean gw_io_split_places_from_names_dictionary (const char*, const char*, const char*, GwIoProgressCallback, gpointer, GError**);
 gboolean gw_io_copy_with_encoding (const char*, const char*, const char*, const char*, GwIoProgressCallback, gpointer, GError**);
 gboolean gw_io_copy (const char*, const char*, GwIoProgressCallback, gpointer, GError**);
+gboolean gw_io_remove (const char*, GError**);
 gboolean gw_io_download (char*, char*, GwIoProgressCallback, gpointer, GError**);
 gboolean gw_io_gunzip_file (const char*, const char*, GwIoProgressCallback, gpointer, GError **);
 gboolean gw_io_unzip_file (char*, GwIoProgressCallback, gpointer, GError**);

@@ -13,7 +13,8 @@ void gw_console_append_more_relevant_header_to_output (GwSearchItem*);
 void gw_console_pre_search_prep (GwSearchItem*);
 void gw_console_after_search_cleanup (GwSearchItem*);
 
-int gw_console_progress_cb (double, gpointer);
+int gw_console_install_progress_cb (double, gpointer);
+int gw_console_uninstall_progress_cb (double, gpointer);
 
 void gw_console_about (void);
 void gw_console_list (void);
@@ -21,7 +22,9 @@ void gw_console_start_banner (char *, char *);
 void gw_console_print_available_dictionaries (void);
 void gw_console_print_installable_dictionaries (void);
 
-gboolean gw_console_install_dictinst (char*, GError**);
+gboolean gw_console_install_dictinst (const char*, GError**);
+gboolean gw_console_uninstall_dictinfo (const char*, GError**);
+
 void gw_console_handle_error (GError**);
 gboolean gw_console_search (char*, char*, gboolean, gboolean, GError**);
 

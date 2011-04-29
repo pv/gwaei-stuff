@@ -93,7 +93,6 @@ gchar* gw_dictinst_get_status_string (GwDictInst*, gboolean);
 void gw_dictinst_regenerate_save_target_uris (GwDictInst*);
 gboolean gw_dictinst_data_is_valid (GwDictInst*);
 
-gboolean gw_dictinst_uninstall (GwDictInst*, GwIoProgressCallback, GError**);
 gboolean gw_dictinst_install (GwDictInst*, GwIoProgressCallback, GError**);
 
 #endif

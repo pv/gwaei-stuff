@@ -162,3 +162,31 @@ static gboolean _overlay_default_builtin_dictionary_settings (GwDictInfo *di)
     return (di->load_position > -1);
 }
 
+
+//!
+//! @brief Installs a GwDictInst object using the provided gui update callback
+//!        This function should normally only be used in the gw_dictinfo_uninstall function.
+//! @param path String representing the path of the file to gunzip.
+//! @param error Error handling
+//!
+gboolean gw_dictinfo_uninstall (GwDictInfo *di, GwIoProgressCallback cb, GError **error)
+{
+    //Sanity check
+    if (error != NULL && *error != NULL) return FALSE;
+    g_assert (di != NULL);
+
+    //Declarations
+    char *uri;
+
+    //Initializations
+    uri =  g_build_filename (gw_util_get_directory_for_engine (di->engine), di->filename, NULL);
+
+    gw_io_remove (uri, error);
+    if (cb != NULL) cb (1.0, di);
+
+    g_free (uri);
+
+    return (*error == NULL);
+}
+
+
