@@ -24,8 +24,6 @@
 //!
 //! @brief File reading and writing.
 //!
-//! Functions that mostly deal with reading and writing files.
-//!
 
 
 #include <stdlib.h>
@@ -43,10 +41,19 @@
 
 static gchar *_savepath = NULL;
 
+struct _GwIoProcessFdData {
+  const char* uri;
+  int fd;
+  GwIoProgressCallback cb; //< Callback to update progress
+  gpointer data;           //< Data to be passed to the GwIoProgressCallback
+  GError *error;
+};
+typedef struct _GwIoProcessFdData GwIoProcessFdData;
+
+
 
 //!
 //! @brief Creates a savepath that is used with the save/save as functions
-//!
 //! @param PATH a path to save to
 //!
 void gw_io_set_savepath (const gchar *PATH)
@@ -68,21 +75,14 @@ const gchar* gw_io_get_savepath ()
 
 
 //!
-//! \brief Writes a file using the given text and write mode
-//!
-//! This function is an extension of the save as/append buttons.
-//! Thus, the program currently only uses the write and append write modes.
-//! The save path is gathered using some's build in function for a dialog, and the
-//! path is saved for as long as the program is running, so it doesn't need to be
-//! asked a second time.
-//!
+//! @brief Writes a file using the given text and write mode
 //! @param write_mode A constant char representing the write mode to be used (w,a)
 //! @param text A char pointer to some text to save.
 //!
-void gw_io_write_file (const char* path, const char* mode, gchar *text, GwIoProgressCallback cb, gpointer data, GError **error)
+void gw_io_write_file (const char* PATH, const char* mode, gchar *text, GwIoProgressCallback cb, gpointer data, GError **error)
 {
     //Sanity checks
-    g_assert (path != NULL && mode != NULL && text != NULL);
+    g_assert (PATH != NULL && mode != NULL && text != NULL);
     if (*error != NULL) return;
 
     //Declarations
@@ -108,11 +108,7 @@ void gw_io_write_file (const char* path, const char* mode, gchar *text, GwIoProg
 
 
 //!
-//! \brief Copies a file and creates a new one using the new encoding
-//!
-//! This function is made to be risilient to errors unlike the built in easy
-//! to use g_convert.  It will skip over any characters it has problems converting.
-//!
+//! @brief Copies a file and creates a new one using the new encoding
 //! @param source_path The source file to change the encoding on.
 //! @param target_path The place to save the new file with the new encoding.
 //! @param source_encoding The encoding of the source file.
@@ -126,28 +122,36 @@ gboolean gw_io_copy_with_encoding (const char *source_path, const char *target_p
 {
     if (*error != NULL) return FALSE;
 
-
+    //Declarations
     FILE* readfd = NULL;
-    readfd = fopen (source_path, "r");
-    if (readfd == NULL) exit(0);
-
     FILE* writefd = NULL;
-    writefd = fopen (target_path, "w");
-    if (writefd == NULL) exit(0);
-
-    int length = GW_IO_MAX_FGETS_LINE;
-    char buffer[length];
-    char output[length];
+    const int MAX = GW_IO_MAX_FGETS_LINE;
+    char buffer[MAX];
+    char output[MAX];
     gsize inbytes_left, outbytes_left;
     char *inptr, *outptr;
-    char prev_inbytes = 0;
-
+    char prev_inbytes;
     size_t written;
-    GIConv conv = g_iconv_open (target_encoding, source_encoding);
-    while (fgets(buffer, length, readfd) != NULL)
+    size_t curpos;
+    size_t end;
+    GIConv conv;
+    double percent;
+
+    //Initializations
+    readfd = fopen (source_path, "r");
+    writefd = fopen (target_path, "w");
+    conv = g_iconv_open (target_encoding, source_encoding);
+    prev_inbytes = 0;
+    written = 0;
+    end = gw_io_get_filesize(source_path);
+    curpos = 0;
+    percent = ((double) curpos / (double) end);
+
+    while (fgets(buffer, MAX, readfd) != NULL)
     {
+      curpos += strlen(buffer);
       inptr = buffer; outptr = output;
-      inbytes_left = length; outbytes_left = length;
+      inbytes_left = MAX; outbytes_left = MAX;
       while (inbytes_left && outbytes_left)
       {
         if (g_iconv (conv, &inptr, &inbytes_left, &outptr, &outbytes_left) == -1) break;
@@ -164,9 +168,12 @@ gboolean gw_io_copy_with_encoding (const char *source_path, const char *target_p
         outptr = outptr + strlen(outptr) - outbytes_left;
       }
       written = fwrite(output, 1, strlen(output), writefd); 
+      percent = ((double) curpos / (double) end);
+      if (cb != NULL) cb (percent, data);
     }
-    g_iconv_close (conv);
 
+    //Cleanup
+    g_iconv_close (conv);
     fclose(readfd);
     fclose(writefd);
 
@@ -175,8 +182,7 @@ gboolean gw_io_copy_with_encoding (const char *source_path, const char *target_p
 
 
 //!
-//! \brief Private function made to be used with gw_io_download_file
-//!
+//! @brief Private function made to be used with gw_io_download
 //! @param ptr TBA
 //! @param size TBA
 //! @param nmemb TBA
@@ -189,7 +195,7 @@ static size_t _libcurl_write_func (void *ptr, size_t size, size_t nmemb, FILE *s
  
 
 //!
-//! @brief Private function made to be used with gw_io_download_file
+//! @brief Private function made to be used with gw_io_download
 //! @param ptr TBA
 //! @param size TBA
 //! @param nmemb TBA
@@ -201,7 +207,7 @@ static size_t _libcurl_read_func (void *ptr, size_t size, size_t nmemb, FILE *st
 }
 
 //!
-//! @brief Private struct made to be used with gw_io_download_file
+//! @brief Private struct made to be used with gw_io_download
 //! @param ptr TBA
 //! @param size TBA
 //! @param nmemb TBA
@@ -236,15 +242,14 @@ static int _libcurl_update_progress (void  *custom,
 
 
 //!
-//! \brief Downloads a file using libcurl
-//!
+//! @brief Downloads a file using libcurl
 //! @param source_path String of the source url
 //! @param target_path String of the path to save the file locally
 //! @param cb Pointer to a function to update
 //! @param data gpointer to data to pass to the function pointer
 //! @param error Error handling
 //!
-gboolean gw_io_download_file (char *source_path, char *target_path, GwIoProgressCallback cb,
+gboolean gw_io_download (char *source_path, char *target_path, GwIoProgressCallback cb,
                               gpointer data, GError **error)
 {
     if (*error != NULL) return FALSE;
@@ -299,38 +304,48 @@ gboolean gw_io_download_file (char *source_path, char *target_path, GwIoProgress
 
 
 //!
-//! \brief Copies a local file to another local location
-//!
+//! @brief Copies a local file to another local location
 //! @param source_path String of the source url
 //! @param target_path String of the path to save the file locally
 //! @param error Error handling
 //!
-gboolean gw_io_copy_file (char *source_path, char *target_path, GwIoProgressCallback cb, gpointer data, GError **error)
+gboolean gw_io_copy (const char *source_path, const char *target_path, 
+                     GwIoProgressCallback cb, gpointer data, GError **error)
 {
     if (*error != NULL) return FALSE;
 
     //Declarations
-    GQuark quark;
-    char *contents;
-    gsize length;
+    FILE *in;
+    FILE *out;
+    size_t chunk;
+    size_t end;
+    size_t curpos;
+    const int MAX_CHUNK = 128;
+    char buffer[MAX_CHUNK];
+    double percent;
 
     //Initalizations
-    quark = g_quark_from_string (GW_IO_ERROR);
-    contents = NULL;
+    in = fopen(source_path, "rb");
+    out = fopen(target_path, "wb");
+    chunk = 1;
+    end = gw_io_get_filesize (source_path);
+    curpos = 0;
+    percent = 0;
 
-    //Copy the file
-    if (g_file_get_contents(source_path, &contents, &length, NULL) == FALSE ||
-        g_file_set_contents(target_path, contents, length, NULL) == FALSE     )
+    while (chunk)
     {
-      remove(target_path);
-      if (error != NULL) *error = g_error_new_literal (quark, GW_IO_COPY_ERROR, gettext("File copy error"));
-      return FALSE;
+      chunk = fread(buffer, sizeof(char), MAX_CHUNK, in);
+      chunk = fwrite(buffer, sizeof(char), chunk, out);
+      curpos += chunk;
+      percent = ((double) curpos) / ((double) end);
+      if (cb != NULL) cb(percent, data);
     }
 
     //Cleanup
-    if (contents != NULL) g_free (contents);
+    fclose(in);
+    fclose(out);
 
-    return TRUE;
+    return (error == NULL && *error == NULL);;
 }
 
 
@@ -348,6 +363,7 @@ gboolean gw_io_create_mix_dictionary (const char *output_path,
                                       gpointer data,
                                       GError **error)
 {
+    //Sanity check
     if (*error != NULL) return FALSE;
 
     //Declarations
@@ -357,6 +373,10 @@ gboolean gw_io_create_mix_dictionary (const char *output_path,
     char output[GW_IO_MAX_FGETS_LINE * 2];
     char *radicals_ptr, *kanji_ptr, *output_ptr, *temp_ptr;
 
+    size_t curpos;
+    size_t end;
+    double percent;
+
     //Initializations
     kanji_file =  fopen(kanji_dictionary_path, "r");
     radicals_file = fopen(radicals_dictionary_path, "r");
@@ -365,9 +385,17 @@ gboolean gw_io_create_mix_dictionary (const char *output_path,
     kanji_ptr = NULL;
     output_ptr = NULL;
 
+    curpos = 0;
+    end = gw_io_get_filesize (kanji_dictionary_path);
+    percent = 0.0;
+
     //Loop through the kanji file
     while (fgets(kanji_input, GW_IO_MAX_FGETS_LINE, kanji_file) != NULL )
     {
+      curpos += strlen (kanji_input);
+      percent = ((double) curpos)/((double) end);
+      if (cb != NULL) cb (percent, data);
+
       if (kanji_input[0] == '#') continue;
 
       kanji_ptr = kanji_input;
@@ -383,7 +411,7 @@ gboolean gw_io_create_mix_dictionary (const char *output_path,
 
       //2. Find the relevent radical line and insert it if available
       rewind (radicals_file);
-      while ( fgets(radicals_input, GW_IO_MAX_FGETS_LINE, radicals_file) != NULL)
+      while (fgets(radicals_input, GW_IO_MAX_FGETS_LINE, radicals_file) != NULL)
       {
         //Check for a match
         temp_ptr = kanji_input;
@@ -412,7 +440,6 @@ gboolean gw_io_create_mix_dictionary (const char *output_path,
           break;
         }
       }
-      fclose(radicals_file);
 
       //3. Copy the rest of the kanji line to output
       while (*kanji_ptr != '\0')
@@ -431,31 +458,20 @@ gboolean gw_io_create_mix_dictionary (const char *output_path,
     //Cleanup
     fclose(kanji_file);
     fclose(output_file);
+    fclose(radicals_file);
 
     return TRUE;
 }
 
 
-gboolean gw_io_split_places_from_names_dictionary (const char *names_dictionary_path, 
-                                                   const char* names_output_path,
-                                                   const char* places_output_path,
+gboolean gw_io_split_places_from_names_dictionary (const char *names_places_path, 
+                                                   const char* names_path,
+                                                   const char* places_path,
                                                    GwIoProgressCallback cb,
                                                    gpointer data,
                                                    GError **error                    )
 {
-    if (*error != NULL) return FALSE;
-/*
-      buffer = g_strdup (names);
-      ptr = buffer + strlen(buffer) 
-      while (g_utf8_get_char (ptr) != g_utf8_get_char (G_DIR_SEPARATOR_S) && ptr != buffer)
-        ptr = g_utf8_prev_char (ptr);
-      strcpy(ptr, "Places");
-
-
-      g_free (buffer);
-*/
-
-
+    if (error != NULL && *error != NULL) return FALSE;
 
     /*
       Current composition of the Enamdic dictionary
@@ -472,191 +488,96 @@ gboolean gw_io_split_places_from_names_dictionary (const char *names_dictionary_
       ---------------------------------------------
     */
 
-    /*
-    int eflags_exist = REG_EXTENDED | REG_NOSUB;
-    //Setup the regular expression for Places
-    regex_t re_place_line;
-    char *place_pattern = "([\\(,])((p)|(st))([\\),])";
-    if (regcomp(&re_place_line, place_pattern, eflags_exist) != 0)
-    {
-      printf("A problem occured while setting the regular expression for place\n");
-      return FALSE; 
-    }
-
-    //Setup the regular expression for Names
-    regex_t re_name_line;
-    char *name_pattern = "([\\(,])((s)|(u)|(g)|(f)|(m)|(h)|(pr)|(co))([\\),])";
-    if (regcomp(&re_name_line, name_pattern, eflags_exist) != 0)
-    {
-      printf("A problem occured while setting the regular expression for name\n");
-      return FALSE;
-    }
-
-    //Buffer
+    //Declarations
     char buffer[GW_IO_MAX_FGETS_LINE];
+    FILE *inputf;
+    size_t curpos;
+    size_t end;
+    double percent;
 
-    g_remove (npath);
-    g_remove (ppath);
+    FILE *placesf;
+    GRegex *re_place;
+    const char *place_pattern = "([\\(,])((p)|(st))([\\),])";
+    int  place_write_error;
 
-    //Setup the file descriptors
-    FILE *input_stream = NULL;
-    input_stream = fopen(spath, "r");
-    FILE *places_stream;
-    places_stream = fopen(ppath, "w");
-    FILE *names_stream = NULL;
-    names_stream = fopen(npath, "w");
-    
+    FILE *namesf;
+    GRegex *re_name;
+    const char *name_pattern = "([\\(,])((s)|(u)|(g)|(f)|(m)|(h)|(pr)|(co))([\\),])";
+    int  name_write_error;
 
-    //Error checking
-    int  place_write_error = 0;
-    long total_place_lines = 0;
-    int  name_write_error  = 0;
-    long total_name_lines  = 0;
+    //Initializations
+    inputf = fopen(names_places_path, "r");
+    curpos = 0;
+    end = gw_io_get_filesize (names_places_path);
+    percent = 0.0;
+
+    re_place = g_regex_new (place_pattern,  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, error);
+    placesf = fopen(places_path, "w");
+    place_write_error = 0;
+
+    re_name = g_regex_new (name_pattern,  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, error);
+    namesf = fopen(names_path, "w");
+    name_write_error  = 0;
+
 
     //Start writing the child files
-    while ( fgets(buffer, GW_IO_MAX_FGETS_LINE, input_stream) != NULL &&
-            place_write_error != EOF &&
-            name_write_error  != EOF                            )
+    while (fgets(buffer, GW_IO_MAX_FGETS_LINE, inputf) != NULL &&
+           place_write_error != EOF &&
+           name_write_error  != EOF &&
+           *error == NULL                                        )
     {
-      if (places_stream != NULL && regexec(&re_place_line, buffer, 1, NULL, 0) == 0)
-      {
-        place_write_error = fputs(buffer, places_stream);
-        total_place_lines++;
-      }
-      if (names_stream != NULL && regexec(&re_name_line, buffer, 1, NULL, 0) == 0)
-      {
-        name_write_error =  fputs(buffer, names_stream);
-        total_name_lines++;
-      }
+      if (placesf != NULL && g_regex_match (re_place, buffer, 0, NULL))
+        place_write_error = fputs(buffer, placesf);
+      if (namesf != NULL && g_regex_match(re_name, buffer, 0, NULL))
+        name_write_error =  fputs(buffer, namesf);
+      curpos += strlen(buffer);
+      percent = ((double) curpos) / ((double) end);
+      if (cb != NULL) cb (percent, data);
     }
-
-    //Check for failure
-    ;
 
     //Cleanup
-    if (input_stream != NULL)
-    {
-      fclose(input_stream);
-      input_stream = NULL;
-    }
-
-    if (places_stream != NULL)
-    {
-      fclose(places_stream);
-      places_stream = NULL;
-    }
-    regfree(&re_place_line);
-
-    if (names_stream != NULL)
-    {
-      fclose(names_stream);
-      names_stream = NULL;
-    }
-    regfree(&re_name_line);
-
-
-    if (total_place_lines == 0 && ppath != NULL)
-      g_remove(ppath);
-    if (total_name_lines == 0 && npath != NULL)
-      g_remove(npath);
+    fclose(inputf);
+    fclose(placesf);
+    fclose(namesf);
+    g_regex_unref (re_place);
+    g_regex_unref (re_name);
 
     return (place_write_error != EOF && name_write_error != EOF);
-    */
-    return FALSE;
 }
 
 
 //!
-//! \brief Gunzips a file
-//!
+//! @brief Decompresses a gzip file
 //! @param path String representing the path of the file to gunzip
 //! @param error Error handling
 //!
-gboolean gw_io_gunzip_file (char *path, GwIoProgressCallback cb, gpointer data, GError **error)
+gboolean gw_io_gunzip_file (const char *source_path, const char *target_path,
+                            GwIoProgressCallback cb, gpointer data, GError **error)
 {
     if (*error != NULL) return FALSE;
 
-    GQuark quark;
-    quark = g_quark_from_string (GW_IO_ERROR);
-    gboolean success;
+    //Declarations
+    char *argv[] = { GZIP, "-cd", NULL };
 
-    char *command = g_strdup_printf ("%s %s", GUNZIP, path);
-    printf("command: %s\n", command);
+    gw_io_pipe_data (argv, source_path, target_path, cb, data, error);
 
-    success = (system(command) == 0);
-
-    g_free (command);
-    command = NULL;
-
-    if (success == FALSE) {
-      g_remove(path);
-      const char *message = gettext("gunzip error");
-      if (error != NULL) *error = g_error_new_literal (quark, GW_IO_DECOMPRESSION_ERROR, message);
-    }
-
-    return success;
+    return (error == NULL || *error == NULL);
 } 
 
 
 //!
-//! \brief Unzips a file
-//!
+//! @brief Decompresses a zip file
 //! @param path String representing the path of the file to unzip
 //! @param error Error handling
 //!
 gboolean gw_io_unzip_file (char *path, GwIoProgressCallback cb, gpointer data, GError **error)
 {
-    GQuark quark;
-    quark = g_quark_from_string (GW_IO_ERROR);
-    gboolean success;
-
-    char *extraction_directory = (char*) malloc(strlen(path + 1) * sizeof(char));
-    strcpy(extraction_directory, path);
-    char* end = strrchr (extraction_directory, G_DIR_SEPARATOR);
-    *end = '\0';
-
-    char *command = g_strdup_printf ("%s %s %s %s %s", UNZIP, "-o", path, "-d", extraction_directory);
-
-    success = (system(command) == 0);
-
-    g_free (command);
-    command = NULL;
-    free(extraction_directory);
-    extraction_directory = NULL;
-
-    if (success == FALSE) {
-      g_remove(path);
-      const char *message = gettext("gunzip error");
-      if (error != NULL) *error = g_error_new_literal (quark, GW_IO_DECOMPRESSION_ERROR, message);
-    }
-    return success;
-}
-
-
-//!
-//! \brief Returns the total lines in a dictionary file for processing purposes.
-//!
-//! @param path The string representing path to the dictionary file
-//!
-int gw_io_get_total_lines_for_path (char *path)
-{
-    //Calculate the number of lines in the dictionary
-    char line[GW_IO_MAX_FGETS_LINE];
-    int total_lines = 0;
-    FILE *fd = fopen (path, "r");
-    if (fd != NULL)
-    {
-      while (fgets(line, GW_IO_MAX_FGETS_LINE, fd) != NULL)
-        total_lines++;
-      fclose(fd);
-    }
-    return total_lines;
+    return TRUE;
 }
 
 
 //!
 //! @brief Gets a list of the currently installed dictionaries as an array of strings.
-//!
 //! The format will be ENGINE/FILENAME and the array is null terminated.  Both the array
 //! and string themselves must be freed after.
 //!
@@ -696,5 +617,220 @@ char** gw_io_get_dictionary_file_list ()
 
     return atoms;
 }
+
+
+
+size_t gw_io_get_filesize (const char *URI)
+{
+    //Declarations
+    const int MAX_CHUNK = 128;
+    char buffer[MAX_CHUNK];
+    FILE *file;
+    size_t size;
+
+    //Initializations
+    file = fopen(URI, "rb");
+    size = 0;
+
+    while (!feof(file))
+        size += fread(buffer, sizeof(char), MAX_CHUNK, file);
+
+    //Cleanup
+    fclose(file);
+
+    return size;
+}
+
+
+gpointer _stdin_func (gpointer data)
+{
+    //Declarations
+    const int MAX_CHUNK = 128;
+    char buffer[MAX_CHUNK];
+    size_t chunk;
+    size_t curpos;
+    size_t end;
+    double percent;
+    FILE *file;
+    FILE *stream;
+    GwIoProcessFdData* in;
+    const char *message;
+    GQuark domain;
+
+    //Initalizations
+    in = data;
+    chunk = 0;
+    curpos = 0;
+    end = gw_io_get_filesize(in->uri);
+    percent = ((double) curpos / (double) end);
+    file = fopen(in->uri, "rb");
+    stream = fdopen(in->fd, "ab");
+
+    while (!feof(file))
+    {
+        if (percent != ((double) curpos / (double) end))
+        {
+          percent = ((double) curpos / (double) end);
+          if (in->cb != NULL) in->cb((double) percent, in->data);
+        }
+        chunk = fread(buffer, sizeof(char), MAX_CHUNK, file);
+        curpos += chunk;
+        chunk = fwrite(buffer, sizeof(char), chunk, stream);
+        fflush(stream);
+    }
+    percent = ((double) curpos / (double) end);
+    if (in->cb != NULL) in->cb((double) percent, in->data);
+
+    if (ferror(file) != 0)
+    {
+      domain = g_quark_from_string (GW_IO_ERROR);
+      message = gettext("Unable to read data from the input file.");
+      in->error = g_error_new (domain, GW_IO_READ_ERROR, message);
+    }
+    else if(ferror(stream) != 0)
+    {
+      domain = g_quark_from_string (GW_IO_ERROR);
+      message = gettext("Unable to write to the external program's input stream.");
+      in->error = g_error_new (domain, GW_IO_WRITE_ERROR, message);
+    }
+
+    //Cleanup
+    fclose(file);
+    fclose(stream);
+
+    return (in->error);
+}
+
+
+gpointer _stdout_func (gpointer data)
+{
+    //Declarations
+    const int MAX_CHUNK = 128;
+    char buffer[MAX_CHUNK];
+    size_t chunk;
+    size_t curpos;
+    FILE *file;
+    FILE *stream;
+    GwIoProcessFdData* out;
+    const char *message;
+    GQuark domain;
+
+    //Initalizations
+    out = data;
+    chunk = 1;
+    curpos = 0;
+    file = fopen(out->uri, "wb");
+    stream = fdopen(out->fd, "rb");
+
+    while (chunk != 0)
+    {
+        chunk = fread(buffer, sizeof(char), MAX_CHUNK, stream);
+        curpos += chunk;
+        chunk = fwrite(buffer, sizeof(char), chunk, file);
+    }
+
+    if (ferror(stream) != 0)
+    {
+      domain = g_quark_from_string (GW_IO_ERROR);
+      message = gettext("Unable to read data from the external program's pipe.");
+      out->error = g_error_new (domain, GW_IO_READ_ERROR, message);
+    }
+    else if(ferror(stream) != 0)
+    {
+      domain = g_quark_from_string (GW_IO_ERROR);
+      message = gettext("Unable to write the stream's output to a file.");
+      out->error = g_error_new (domain, GW_IO_WRITE_ERROR, message);
+    }
+
+    //Cleanup
+    fclose(stream);
+    fclose(file);
+
+    return (out->error);
+}
+
+
+
+//!
+//! @brief Gunzips a file
+//! @param path String representing the path of the file to gunzip
+//! @param error Error handling
+//!
+gboolean gw_io_pipe_data (char **argv, 
+                          const char *source_path, 
+                          const char *target_path, 
+                          GwIoProgressCallback cb, 
+                          gpointer data, 
+                          GError **error          )
+{
+    //Sanity check
+    if (error != NULL && *error != NULL) return FALSE;
+
+    //Declarations
+    gint stdin_fd;
+    gint stdout_fd;
+    GPid pid;
+    GThread *stdin_thread;
+    GThread *stdout_thread;
+    GwIoProcessFdData stdin_data;
+    GwIoProcessFdData stdout_data;
+
+    //Initalizations
+    g_spawn_async_with_pipes (
+          NULL,
+          argv, 
+          NULL, 
+          G_SPAWN_STDERR_TO_DEV_NULL, 
+          NULL, 
+          NULL, 
+          &pid, 
+          &stdin_fd, 
+          &stdout_fd, 
+          NULL, 
+          error
+    );
+
+    stdin_data.uri = source_path;
+    stdin_data.fd = stdin_fd;
+    stdin_data.cb = cb;
+    stdin_data.data = data;
+    stdin_data.error = NULL;
+
+    stdout_data.uri = target_path;
+    stdout_data.fd = stdout_fd;
+    stdout_data.cb = cb;
+    stdout_data.data = data;
+    stdout_data.error = NULL;
+
+    //Process the data through the external program
+    stdin_thread = g_thread_create (_stdin_func, &stdin_data, TRUE, error);
+    stdout_thread = g_thread_create (_stdout_func, &stdout_data, TRUE, error);
+
+    //Wait for it to finish
+    g_thread_join (stdin_thread);
+    g_thread_join (stdout_thread);
+
+    //Set the first error from the streams if there or no ther ones already there
+    if (stdin_data.error != NULL)
+    {
+      if (error != NULL && *error == NULL)
+        *error = stdin_data.error;
+      else
+        g_error_free (stdin_data.error);
+    }
+    if (stdout_data.error != NULL)
+    {
+      if (error != NULL && *error == NULL)
+        *error = stdout_data.error;
+      else
+        g_error_free (stdout_data.error);
+    }
+
+    //Cleanup
+    g_spawn_close_pid (pid);
+
+    return (*error == NULL);
+} 
+
 
 

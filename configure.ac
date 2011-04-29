@@ -123,12 +123,12 @@ AC_PATH_PROG(RPMDIR, rpm)
 AC_PATH_PROG(RPMBUILD, rpmbuild)
 AC_PATH_PROG(DPKG_DEB, dpkg-deb)
 if test x$win32 = xtrue; then
-  GUNZIP="gzip.exe\ -d"
-  AC_SUBST(GUNZIP)
+  GZIP="gzip.exe"
+  AC_SUBST(GZIP)
   UNZIP="unzip.exe"
   AC_SUBST(UNZIP)
 else
-AC_PATH_PROG(GUNZIP, gunzip)
+AC_PATH_PROG(GZIP, gzip)
 AC_PATH_PROG(UNZIP, unzip)
 fi
 

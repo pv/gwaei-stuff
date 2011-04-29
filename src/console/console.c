@@ -392,18 +392,26 @@ int gw_console_progress_cb (double percent, gpointer data)
   //Initializations
   di = data;
 
+  //Set the initial dictinst progress state
   if (percent == 0.0) di->progress = 0.0;
 
-  if (percent - di->progress >= 0.01);
+  //Update the dictinst progress state only when the delta is large enough
+  if (percent - di->progress >= 0.01 && di->progress != 1.0);
   {
-    printf("\r");
-
     status = gw_dictinst_get_status_string (di, TRUE);
-    printf("%s", status);
+    printf("\r%s", status);
     g_free (status);
+
+    di->progress = percent;
   }
 
-  di->progress = percent;
+  //Display the final progress 
+  if (di->progress == 1.0)
+  {
+    status = gw_dictinst_get_status_string (di, TRUE);
+    printf("\r%s\n", status);
+    g_free (status);
+  }
 
   return FALSE;
 }

@@ -20,9 +20,9 @@
 *******************************************************************************/
 
 //!
-//!  @file src/dictinst.c
+//!  @file src/backend/dictinst.c
 //!
-//!  @brief Basic construct that hold data needed for installing a GwDictInfo item
+//!  @brief Basic construct that hold data needed for installing a GwDictInst item
 //!
 
 
@@ -49,8 +49,8 @@ static void _update_dictinst_source_uri_cb (GSettings *settings, char* key, gpoi
     char source_uri[200];
 
     gw_pref_get_string_by_schema (source_uri, di->schema, di->key, 200);
-    g_free (di->uri[GW_DICTINST_DOWNLOAD_SOURCE]);
-    di->uri[GW_DICTINST_DOWNLOAD_SOURCE] = g_strdup (source_uri);
+    g_free (di->uri[GW_DICTINST_NEEDS_DOWNLOADING]);
+    di->uri[GW_DICTINST_NEEDS_DOWNLOADING] = g_strdup (source_uri);
 }
 
 
@@ -245,8 +245,8 @@ void gw_dictinst_set_compression (GwDictInst *di, const GwCompression COMPRESSIO
 //!
 void gw_dictinst_set_download_source (GwDictInst *di, const char *SOURCE)
 {
-    g_free (di->uri[GW_DICTINST_DOWNLOAD_SOURCE]);
-    di->uri[GW_DICTINST_DOWNLOAD_SOURCE] = g_strdup (SOURCE);
+    g_free (di->uri[GW_DICTINST_NEEDS_DOWNLOADING]);
+    di->uri[GW_DICTINST_NEEDS_DOWNLOADING] = g_strdup (SOURCE);
 }
 
 
@@ -295,12 +295,21 @@ void gw_dictinst_regenerate_save_target_uris (GwDictInst *di)
     char *engine_filename;
     const char *compression_ext;
     const char *encoding_ext;
+    char *temp[2][GW_DICTINST_TOTAL_URIS];
+    char *radicals_cache_filename;
+    int i, j;
 
     //Remove the previous contents
-    g_free (di->uri[GW_DICTINST_COMPRESSED_FILE]);
-    g_free (di->uri[GW_DICTINST_TEXT_ENCODING]);
-    g_free (di->uri[GW_DICTINST_POSTPROCESSING]);
-    g_free (di->uri[GW_DICTINST_FINAL_TARGET]);
+    g_free (di->uri[GW_DICTINST_NEEDS_DECOMPRESSION]);
+    g_free (di->uri[GW_DICTINST_NEEDS_TEXT_ENCODING]);
+    g_free (di->uri[GW_DICTINST_NEEDS_POSTPROCESSING]);
+    g_free (di->uri[GW_DICTINST_NEEDS_FINALIZATION]);
+    g_free (di->uri[GW_DICTINST_NEEDS_NOTHING]);
+
+    //Initialize the array
+    for (i = 0; i < 2; i++)
+      for (j = 1; j < GW_DICTINST_TOTAL_URIS; j++)
+        temp[i][j] = NULL;
 
     //Initializations
     cache_filename = g_build_filename (gw_util_get_directory (GW_PATH_CACHE), di->filename, NULL);
@@ -308,14 +317,48 @@ void gw_dictinst_regenerate_save_target_uris (GwDictInst *di)
     compression_ext = gw_util_get_compression_name (di->compression);
     encoding_ext = gw_util_get_encoding_name (di->encoding);
 
-    di->uri[GW_DICTINST_COMPRESSED_FILE] =  g_strjoin (".", cache_filename, compression_ext, NULL);
-    di->uri[GW_DICTINST_TEXT_ENCODING] =   g_strjoin (".", cache_filename, encoding_ext, NULL);
-    di->uri[GW_DICTINST_POSTPROCESSING] =   g_strjoin (".", cache_filename, "UTF8", NULL);
-    di->uri[GW_DICTINST_FINAL_TARGET] =  g_strdup (engine_filename);
+    temp[0][GW_DICTINST_NEEDS_DECOMPRESSION] =  g_strjoin (".", cache_filename, compression_ext, NULL);
+    temp[0][GW_DICTINST_NEEDS_TEXT_ENCODING] =   g_strjoin (".", cache_filename, encoding_ext, NULL);
+    temp[0][GW_DICTINST_NEEDS_POSTPROCESSING] =   g_strjoin (".", cache_filename, "UTF8", NULL);
+    temp[0][GW_DICTINST_NEEDS_FINALIZATION] =  g_strdup (cache_filename);
+    temp[0][GW_DICTINST_NEEDS_NOTHING] =  g_strdup (engine_filename);
+
+    //Set up for the split dictionary and join dictionary cases
+    if (di->split)
+    {
+      g_free (temp[0][GW_DICTINST_NEEDS_NOTHING]);
+      temp[0][GW_DICTINST_NEEDS_NOTHING] = g_build_filename (gw_util_get_directory (GW_PATH_CACHE), "Names", NULL);
+      temp[1][GW_DICTINST_NEEDS_NOTHING] = g_build_filename (gw_util_get_directory (GW_PATH_CACHE), "Places", NULL);
+    }
+    else if (di->merge)
+    {
+      radicals_cache_filename = g_build_filename (gw_util_get_directory (GW_PATH_CACHE), "Radicals", NULL);
+      temp[1][GW_DICTINST_NEEDS_DECOMPRESSION] =  g_strjoin (".", radicals_cache_filename, "gz", NULL);
+      temp[1][GW_DICTINST_NEEDS_TEXT_ENCODING] =   g_strjoin (".", radicals_cache_filename, "EUC-JP", NULL);
+      temp[1][GW_DICTINST_NEEDS_POSTPROCESSING] =   g_strjoin (".", radicals_cache_filename, "UTF8", NULL);
+      temp[1][GW_DICTINST_NEEDS_FINALIZATION] =  g_strdup (radicals_cache_filename);
+      g_free (radicals_cache_filename);
+    }
+
+    //Join the strings if appropriate
+    for (i = 1; i < GW_DICTINST_TOTAL_URIS; i++)
+    {
+      di->uri[i] = g_strjoin (";", temp[0][i], temp[1][i], NULL);
+    }
 
     //Cleanup
+    for (i = 0; i < 2; i++)
+      for (j = 1; j < GW_DICTINST_TOTAL_URIS; j++)
+        if (temp[i][j] != NULL) g_free (temp[i][j]);
+
     g_free (cache_filename);
     g_free (engine_filename);
+
+/*
+    for (i = 1; i < GW_DICTINST_TOTAL_URIS; i++)
+      printf("%s\n", di->uri[i]);
+      printf("\n");
+*/
 }
 
 
@@ -332,7 +375,7 @@ gboolean gw_dictinst_data_is_valid (GwDictInst *di)
     ptr = di->filename;
     if (ptr == NULL || strlen (ptr) == 0) return FALSE;
 
-    ptr = di->uri[GW_DICTINST_DOWNLOAD_SOURCE];
+    ptr = di->uri[GW_DICTINST_NEEDS_DOWNLOADING];
     if (ptr == NULL || strlen (ptr) == 0) return FALSE;
 
     //Make sure the correct number of download arguments are available
@@ -343,16 +386,16 @@ gboolean gw_dictinst_data_is_valid (GwDictInst *di)
     if (di->merge && total_download_arguments != 2) return FALSE;
     if (!di->merge && total_download_arguments != 1) return FALSE;
 
-    ptr = di->uri[GW_DICTINST_COMPRESSED_FILE];
+    ptr = di->uri[GW_DICTINST_NEEDS_DECOMPRESSION];
     if (ptr == NULL || strlen (ptr) == 0) return FALSE;
 
-    ptr = di->uri[GW_DICTINST_TEXT_ENCODING];
+    ptr = di->uri[GW_DICTINST_NEEDS_TEXT_ENCODING];
     if (ptr == NULL || strlen (ptr) == 0) return FALSE;
 
-    ptr = di->uri[GW_DICTINST_POSTPROCESSING];
+    ptr = di->uri[GW_DICTINST_NEEDS_POSTPROCESSING];
     if (ptr == NULL || strlen (ptr) == 0) return FALSE;
 
-    ptr = di->uri[GW_DICTINST_FINAL_TARGET];
+    ptr = di->uri[GW_DICTINST_NEEDS_FINALIZATION];
     if (ptr == NULL || strlen (ptr) == 0) return FALSE;
 
     if (di->engine < 0 || di->engine >= GW_ENGINE_TOTAL) return FALSE;
@@ -381,28 +424,37 @@ gboolean gw_dictinst_download (GwDictInst *di, GwIoProgressCallback cb, GError *
     if (*error != NULL) FALSE;
 
     //Declarations
-    char *source;
-    char *target;
+    char **source_paths;
+    char **target_paths;
     gpointer data;
+    int i;
 
     //Initializations
-    source = di->uri[GW_DICTINST_DOWNLOAD_SOURCE];
-    target = di->uri[GW_DICTINST_COMPRESSED_FILE];
+    source_paths = g_strsplit (di->uri[GW_DICTINST_NEEDS_DOWNLOADING], ";", -1);
+    target_paths = g_strsplit (di->uri[GW_DICTINST_NEEDS_DECOMPRESSION], ";", -1);
     data = di;
+    i = 0;
 
-    //File is located locally so copy it
-    if (g_file_test (source, G_FILE_TEST_IS_REGULAR))
+    while (source_paths[i] != NULL && target_paths[i] != NULL)
     {
-      gw_dictinst_set_status (di, GW_DICTINST_STATUS_COPYING);
-      gw_io_copy_file (source, target, (GwIoProgressCallback) cb, data, error);
+      //File is located locally so copy it
+      if (g_file_test (source_paths[i], G_FILE_TEST_IS_REGULAR))
+      {
+        gw_dictinst_set_status (di, GW_DICTINST_STATUS_COPYING);
+        gw_io_copy (source_paths[i], target_paths[i], (GwIoProgressCallback) cb, data, error);
+      }
+
+      //Download the file
+      else
+      {
+        gw_dictinst_set_status (di, GW_DICTINST_STATUS_DOWNLOADING);
+        gw_io_download (source_paths[i], target_paths[i], cb, data, error);
+      }
+      i++;
     }
 
-    //Download the file
-    else
-    {
-      gw_dictinst_set_status (di, GW_DICTINST_STATUS_DOWNLOADING);
-      gw_io_download_file (source, target, cb, data, error);
-    }
+    g_strfreev (source_paths);
+    g_strfreev (target_paths);
 
     return (*error == NULL);
 }
@@ -421,36 +473,50 @@ gboolean gw_dictinst_download (GwDictInst *di, GwIoProgressCallback cb, GError *
 //!
 gboolean gw_dictinst_decompress (GwDictInst *di, GwIoProgressCallback cb, GError **error)
 {
-    //Sanity check
-    g_assert (g_file_test (di->uri[GW_DICTINST_COMPRESSED_FILE], G_FILE_TEST_IS_REGULAR));
-
     //Declarations
     gint status;
     gpointer data;
-    gchar *source;
-    gchar *target;
+    char **source_paths;
+    char **target_paths;
+    int i;
 
     //Initializations
     data = di;
-    source = di->uri[GW_DICTINST_COMPRESSED_FILE];
-    target = di->uri[GW_DICTINST_TEXT_ENCODING];
+    source_paths = g_strsplit (di->uri[GW_DICTINST_NEEDS_DECOMPRESSION], ";", -1);
+    target_paths = g_strsplit (di->uri[GW_DICTINST_NEEDS_TEXT_ENCODING], ";", -1);
+    i = 0;
 
     gw_dictinst_set_status (di, GW_DICTINST_STATUS_DECOMPRESSING);
 
-    //Preform the correct decompression
-    switch (di->compression)
+    if (source_paths[0] != NULL && target_paths[0] != NULL)
     {
-      case GW_COMPRESSION_GZIP:
-        status = gw_io_gunzip_file (source, cb, data, error);
-/*
-      case GW_COMPRESSION_ZIP:
-        status = gw_io_unzip_file (source, cb, data, error);
-*/
-      case GW_COMPRESSION_NONE:
-        status =  g_rename (source, target);
+      //Sanity check
+      g_assert (g_file_test (source_paths[0], G_FILE_TEST_IS_REGULAR));
+
+      //Preform the correct decompression
+      switch (di->compression)
+      {
+        case GW_COMPRESSION_GZIP:
+          status = gw_io_gunzip_file (source_paths[0], target_paths[0], cb, data, error);
+          break;
+        case GW_COMPRESSION_NONE:
+          status =  gw_io_copy (source_paths[0], target_paths[0], cb, data, error);
+          break;
+      }
+      //If there is another path, it is assumed to be the radicals dictionary
+      if (source_paths[1] != NULL && target_paths[1] != NULL)
+      {
+        //Sanity check
+        g_assert (g_file_test (source_paths[1], G_FILE_TEST_IS_REGULAR));
+
+        status = gw_io_gunzip_file (source_paths[1], target_paths[1], cb, data, error);
+      }
     }
 
-    return status;
+    g_strfreev (source_paths);
+    g_strfreev (target_paths);
+
+    return (error == NULL && *error == NULL);
 }
 
 
@@ -470,25 +536,92 @@ gboolean gw_dictinst_convert_encoding (GwDictInst *di, GwIoProgressCallback cb, 
     if (*error != NULL) return FALSE;
 
     //Declarations
-    char *source_path;
-    char *target_path;
+    char **source_paths;
+    char **target_paths;
     const char *encoding_name;
     gpointer data;
 
     //Initializations
-    source_path = di->uri[GW_DICTINST_TEXT_ENCODING];
-    target_path = di->uri[GW_DICTINST_POSTPROCESSING];
+    source_paths = g_strsplit (di->uri[GW_DICTINST_NEEDS_TEXT_ENCODING], ";", -1);
+    target_paths = g_strsplit (di->uri[GW_DICTINST_NEEDS_POSTPROCESSING], ";", -1);
     encoding_name = gw_util_get_encoding_name (di->encoding);
     data = di;
 
     gw_dictinst_set_status (di, GW_DICTINST_STATUS_ENCODING);
-    if (cb) cb (1.0, data);
 
-    if (di->encoding == GW_ENCODING_UTF8)
-      gw_io_copy_file (source_path, target_path, cb, data, error);
+    if (source_paths[0] != NULL && target_paths[0] != NULL)
+    {
+      if (di->encoding == GW_ENCODING_UTF8)
+        gw_io_copy (source_paths[0], target_paths[0], cb, data, error);
+      else
+        gw_io_copy_with_encoding (source_paths[0], target_paths[0], encoding_name, "UTF-8", cb, data, error);
+
+      //If there is another path, it is assumed to be the radicals dictionary
+      if (source_paths[1] != NULL && target_paths[1] != NULL)
+      {
+        gw_io_copy_with_encoding (source_paths[1], target_paths[1], encoding_name, "UTF-8", cb, data, error);
+      }
+    }
+
+    g_strfreev (source_paths);
+    g_strfreev (target_paths);
+
+    return (*error == NULL);
+}
+
+
+//!
+//! @brief does the required postprocessing on a dictionary
+//!        This function should normally only be used in the gw_dictinst_install function.
+//! @param path String representing the path of the file to gunzip.
+//! @param error Error handling
+//! @see gw_dictinst_download
+//! @see gw_dictinst_convert_encoding
+//! @see gw_dictinst_postprocess
+//! @see gw_dictinst_install
+//! @see gw_dictinst_uninstall
+//!
+gboolean gw_dictinst_postprocess (GwDictInst *di, GwIoProgressCallback cb, GError **error)
+{
+    if (*error != NULL) return FALSE;
+
+    //Declarations
+    gchar **source_paths;
+    gchar **target_paths;
+    gpointer data;
+
+    //Initializations
+    source_paths = g_strsplit (di->uri[GW_DICTINST_NEEDS_POSTPROCESSING], ";", -1);
+    target_paths = g_strsplit (di->uri[GW_DICTINST_NEEDS_FINALIZATION], ";", -1);
+    data = di;
+
+    gw_dictinst_set_status (di, GW_DICTINST_STATUS_POSTPROCESSING);
+
+    //Rebuild the mix dictionary
+    if (di->merge)
+    {
+      g_assert (g_strv_length (source_paths) == 2);
+      gw_io_create_mix_dictionary (target_paths[0], source_paths[0], source_paths[1], cb, data, error);
+    }
+
+    //Rebuild the names dictionary
+    else if(di->split)
+    {
+      g_assert (g_strv_length (source_paths) == 1);
+      gw_io_split_places_from_names_dictionary (target_paths[0], target_paths[1], source_paths[0], cb, data, error);
+    }
+
+    //Just copy the file no postprocessing required
     else
-      gw_io_copy_with_encoding (source_path, target_path, encoding_name, "UTF-8", cb, data, error);
+    {
+      gw_io_copy (source_paths[0], target_paths[0], cb, data, error);
+    }
 
+    //Cleanup
+    g_strfreev (source_paths);
+    g_strfreev (target_paths);
+
+    //Finish
     return (*error == NULL);
 }
 
@@ -507,78 +640,29 @@ gboolean gw_dictinst_convert_encoding (GwDictInst *di, GwIoProgressCallback cb, 
 gboolean gw_dictinst_finalize (GwDictInst *di, GwIoProgressCallback cb, GError **error)
 {
     if (*error != NULL) return FALSE;
-    printf("start finalization\n");
 
     //Declarations
-    gchar **source_paths;
-    gchar **target_paths;
-    char *buffer;
-    char *ptr;
-    char *message;
-    GQuark quark;
-    gboolean file_copy_failed;
+    char **source_paths;
+    char **target_paths;
     gpointer data;
+    int i = 0;
 
     //Initializations
-    source_paths = NULL;
-    target_paths = NULL;
-    file_copy_failed = FALSE;
-    quark = g_quark_from_string (GW_DICTINST_ERROR);
-    source_paths = g_strsplit (di->uri[GW_DICTINST_POSTPROCESSING], ";", 1);
-    target_paths = g_strsplit (di->uri[GW_DICTINST_FINAL_TARGET], ";", 1);
+    source_paths = g_strsplit (di->uri[GW_DICTINST_NEEDS_FINALIZATION], ";", -1);
+    target_paths = g_strsplit (di->uri[GW_DICTINST_NEEDS_NOTHING], ";", -1);
     data = di;
 
-    gw_dictinst_set_status (di, GW_DICTINST_STATUS_POSTPROCESSING);
-    if (cb) cb (1.0, di);
+    gw_dictinst_set_status (di, GW_DICTINST_STATUS_FINALIZING);
 
-    //Rebuild the mix dictionary
-    if (di->merge)
+    while (source_paths[i] != NULL && target_paths[i] != NULL)
     {
-      if (g_strv_length (source_paths) != 2)
-      {
-        message = gettext("The incorrect number of source paths were specified for "
-                          "merging the Kanji and Radical dictionaries.");
-        *error = g_error_new (quark, GW_DICTINST_ERROR_SOURCE_PATH, message);
-      }
-      else 
-      {
-        gw_io_create_mix_dictionary (target_paths[0], source_paths[0], source_paths[1], cb, data, error);
-      }
-    }
-
-    //Rebuild the names dictionary
-    else if(di->split)
-    {
-      if (g_strv_length (source_paths) != 1)
-      {
-        message = gettext("The incorrect number of source paths were specified for "
-                          "splitting the places from the Names dictionary.");
-        *error = g_error_new (quark, GW_DICTINST_ERROR_SOURCE_PATH, message);
-      }
-      else
-      {
-        gw_io_split_places_from_names_dictionary (target_paths[0], target_paths[1], source_paths[0], cb, data, error);
-      }
-    }
-
-    //Just copy the file no postprocessing required
-    else
-    {
-      g_remove (target_paths[0]);
-      if (g_rename (source_paths[0], target_paths[0]) != 0) file_copy_failed = TRUE;
+      gw_io_copy (source_paths[i], target_paths[i], cb, data, error);
+      i++;
     }
 
     //Cleanup
     g_strfreev (source_paths);
     g_strfreev (target_paths);
-
-    //Check if all of the files were sucessfully copied after everything
-    if (file_copy_failed)
-    {
-      message = gettext("Dictionary failed to copy into the dictionaries "
-                        "folder. Another program may be using the file.");
-      *error = g_error_new (quark, GW_DICTINST_ERROR_FILE_MOVE, message);
-    }
 
     //Finish
     return (*error == NULL);
@@ -599,7 +683,7 @@ void gw_dictinst_clean (GwDictInst *di, GwIoProgressCallback cb)
     uri = NULL;
 
     //Loop through all of the uris except the final destination
-    while (i < GW_DICTINST_FINAL_TARGET)
+    while (i < GW_DICTINST_NEEDS_NOTHING)
     {
       uri = di->uri[i];
       g_remove (uri);
@@ -622,16 +706,18 @@ gboolean gw_dictinst_install (GwDictInst *di, GwIoProgressCallback cb, GError **
 {
     g_assert (*error == NULL && di != NULL);
 
-    if (*error == NULL) gw_dictinst_download (di, cb, error);
-    if (*error == NULL) gw_dictinst_decompress (di, cb, error);
-    if (*error == NULL) gw_dictinst_convert_encoding (di, cb, error);
-    if (*error == NULL) gw_dictinst_finalize (di, cb, error);
-/*
+//    gw_dictinst_download (di, cb, error);
+    gw_dictinst_decompress (di, cb, error);
+    gw_dictinst_convert_encoding (di, cb, error);
+    gw_dictinst_postprocess (di, cb, error);
+    gw_dictinst_finalize (di, cb, error);
+    /*
     gw_dictinst_clean (di, cb);
-*/
 
     if (*error == NULL) gw_dictinst_set_status (di, GW_DICTINST_STATUS_INSTALLED);
     else gw_dictinst_set_status (di, GW_DICTINST_STATUS_NOT_INSTALLED);
+*/
+exit(0);
 
     return (*error == NULL);
 }
@@ -650,13 +736,13 @@ gboolean gw_dictinst_install (GwDictInst *di, GwIoProgressCallback cb, GError **
 //!
 gboolean gw_dictinst_uninstall (GwDictInst *di, GwIoProgressCallback cb, GError **error)
 {
-    g_assert (*error != NULL && di != NULL && di->uri[GW_DICTINST_FINAL_TARGET] != NULL);
+    g_assert (*error != NULL && di != NULL && di->uri[GW_DICTINST_NEEDS_NOTHING] != NULL);
 
     //Declarations
     char *uri;
 
     //Initializations
-    uri = di->uri[GW_DICTINST_FINAL_TARGET];
+    uri = di->uri[GW_DICTINST_NEEDS_NOTHING];
 
     gw_dictinst_set_status (di, GW_DICTINST_STATUS_REMOVING);
     if (*error == NULL) g_remove (uri);
@@ -685,37 +771,37 @@ gchar* gw_dictinst_get_status_string (GwDictInst *di, gboolean long_form)
 
     switch (di->status) {
       case GW_DICTINST_STATUS_UNSET:
-        string = g_strdup_printf ("");
+        string = g_strdup_printf (" ");
         break;
       case GW_DICTINST_STATUS_DOWNLOADING:
         if (long_form)
-          string = g_strdup_printf ("[%d\%] Downloading from %s...", percent, di->uri[GW_DICTINST_DOWNLOAD_SOURCE]);
+          string = g_strdup_printf ("[%d\%] Downloading from %s...", percent, di->uri[GW_DICTINST_NEEDS_DOWNLOADING]);
         else
           string = g_strdup_printf ("[%d\%] Downloading...", percent);
         break;
       case GW_DICTINST_STATUS_COPYING:
-        if (long_form)
-          string = g_strdup_printf ("Copying from %s...", di->uri[GW_DICTINST_DOWNLOAD_SOURCE]);
-        else
-          string = g_strdup_printf ("Copying...");
+        string = g_strdup_printf ("[%d\%] Copying...", percent);
         break;
       case GW_DICTINST_STATUS_ENCODING:
         if (long_form)
-          string = g_strdup_printf ("Converting the encoding from %s to UTF-8...", gw_util_get_encoding_name (di->encoding));
+          string = g_strdup_printf ("[%d\%] Converting the encoding from %s to UTF-8...", percent, gw_util_get_encoding_name (di->encoding));
         else
-          string = g_strdup_printf ("Converting the encoding to UTF-8...");
+          string = g_strdup_printf ("[%d\%] Converting the encoding to UTF-8...", percent);
         break;
       case GW_DICTINST_STATUS_DECOMPRESSING:
         if (long_form)
-          string = g_strdup_printf ("Decompressing %s file...", gw_util_get_compression_name (di->compression));
+          string = g_strdup_printf ("[%d\%] Decompressing %s file...", percent, gw_util_get_compression_name (di->compression));
         else
-          string = g_strdup_printf ("Decompressing...");
+          string = g_strdup_printf ("[%d\%] Decompressing...", percent);
         break;
       case GW_DICTINST_STATUS_POSTPROCESSING:
         if (long_form)
-          string = g_strdup_printf ("Doing postprocessing...");
+          string = g_strdup_printf ("[%d\%] Doing postprocessing...", percent);
         else
-          string = g_strdup_printf ("Postprocessing...");
+          string = g_strdup_printf ("[%d\%] Postprocessing...", percent);
+        break;
+      case GW_DICTINST_STATUS_FINALIZING:
+        string = g_strdup_printf ("[%d\%] Finalizing installation...", percent);
         break;
       case GW_DICTINST_STATUS_INSTALLED:
         string = g_strdup_printf ("Installed.");
@@ -725,12 +811,12 @@ gchar* gw_dictinst_get_status_string (GwDictInst *di, gboolean long_form)
         break;
       case GW_DICTINST_STATUS_REMOVING:
         if (long_form)
-          string = g_strdup_printf ("Deleting %s...", di->uri[GW_DICTINST_FINAL_TARGET]);
+          string = g_strdup_printf ("Deleting %s...", di->uri[GW_DICTINST_NEEDS_NOTHING]);
         else
           string = g_strdup_printf ("Deleting...");
         break;
       default:
-        string = g_strdup_printf ("");
+        string = g_strdup_printf (" ");
         break;
     }
 
