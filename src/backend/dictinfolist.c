@@ -118,16 +118,21 @@ GwDictInfo* gw_dictinfolist_get_selected_dictinfo ()
 //!
 GList* gw_dictinfolist_get_dict_by_load_position (int request)
 {
-    GList* current = gw_dictinfolist_get_list();
-    GwDictInfo *di = NULL;
+    GList *list;
+    GList *iter;
+    GwDictInfo *di;
+
+    list = gw_dictinfolist_get_list();
+    iter = list;
     do
     {
-       di = (GwDictInfo*) current->data;
-       if (current && di && di->load_position == request)
+       di = (GwDictInfo*) iter->data;
+       if (iter != NULL && di != NULL && di->load_position == request)
          break;
-       current = g_list_next (current);
-    } while (current);
-    return current;
+       iter = iter->next;
+    } while (iter != NULL);
+
+    return iter;
 }
 
 

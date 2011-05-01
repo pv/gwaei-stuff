@@ -114,6 +114,7 @@ void gw_dictionarymanager_free ()
 //!
 void gw_dictionarymanager_update_items ()
 {
+    if (_list_update_handler_id > 0) g_signal_handler_block (_model, _list_update_handler_id);
     GtkBuilder *builder = gw_common_get_builder ();
 
     //Clear the previous items all over the gui
@@ -127,7 +128,7 @@ void gw_dictionarymanager_update_items ()
       while (children != NULL )
       {
         gtk_widget_destroy(children->data);
-        children = g_list_delete_link(children, children);
+        children = g_list_delete_link (children, children);
       }
     }
 
@@ -199,6 +200,7 @@ void gw_dictionarymanager_update_items ()
 
     GtkWidget *combobox = GTK_WIDGET (gtk_builder_get_object (builder, "dictionary_combobox"));
     gtk_combo_box_set_active (GTK_COMBO_BOX (combobox), 0);
+    if (_list_update_handler_id > 0) g_signal_handler_unblock (_model, _list_update_handler_id);
 }
 
 
@@ -219,35 +221,45 @@ G_MODULE_EXPORT void do_dictionary_cursor_changed_action (GtkTreeView *treeview,
 
 G_MODULE_EXPORT void do_remove_dictionary_action (GtkWidget *widget, gpointer data)
 {
-/*
-    GtkBuilder *builder = gw_common_get_builder ();
-
-    GtkWidget *button = GTK_WIDGET (gtk_builder_get_object (builder, "remove_dictionary_button"));
-    GtkTreeViewColumn *focus_column = NULL;
-    GtkTreePath *path = NULL;
+    //Declarations
+    GtkBuilder *builder;
+    GtkWidget *button;
+    GtkTreeViewColumn *focus_column;
+    GtkTreePath *path;
     GtkTreeIter iter;
-    GList *list = NULL;
+    GList *list;
+    GError *error;
+    GtkTreeSelection *selection;
+    GtkTreeModel *tmodel;
+    gboolean has_selection;
+    gint* indices;
+    GwDictInfo *di;
 
-    GtkTreeSelection *selection = gtk_tree_view_get_selection (_view);
-    GtkTreeModel *tmodel = GTK_TREE_MODEL (_model);
-    gboolean has_selection = gtk_tree_selection_get_selected (selection, &tmodel, &iter);
+    //Initializations
+    builder = gw_common_get_builder ();
+    button = GTK_WIDGET (gtk_builder_get_object (builder, "remove_dictionary_button"));
+    selection = gtk_tree_view_get_selection (_view);
+    tmodel = GTK_TREE_MODEL (_model);
+    has_selection = gtk_tree_selection_get_selected (selection, &tmodel, &iter);
+    error = NULL;
+
+    //Sanity cehck
     if (!has_selection) return;
 
     path = gtk_tree_model_get_path (GTK_TREE_MODEL (_model), &iter);
-    gint* indices = gtk_tree_path_get_indices (path);
+    indices = gtk_tree_path_get_indices (path);
     list = gw_dictinfolist_get_dict_by_load_position (*indices);
-    gtk_tree_path_free (path);
-    path = NULL;
 
     if (list != NULL)
     {
-      GwDictInfo *di = list->data;
-      gw_dictinst_uninstall (di, NULL, NULL);
+      di = list->data;
+      gw_dictinfo_uninstall (di, NULL, &error);
       gw_dictionarymanager_update_items ();
     }
 
+    //Cleanup
+    gtk_tree_path_free (path);
+
     gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
-    gw_ui_update_settings_interface ();
-*/
 }
 

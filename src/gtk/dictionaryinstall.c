@@ -125,7 +125,7 @@ static void _fill_details_box (GwDictInst *di)
 
     hbox = GTK_WIDGET (gtk_hbox_new (FALSE, 0));
     entry = gtk_entry_new ();
-    gtk_entry_set_text (GTK_ENTRY (entry), di->uri[GW_DICTINST_DOWNLOAD_SOURCE]);
+    gtk_entry_set_text (GTK_ENTRY (entry), di->uri[GW_DICTINST_NEEDS_DOWNLOADING]);
     g_signal_connect (G_OBJECT (entry), "changed", G_CALLBACK (gw_dictionaryinstall_source_entry_changed_cb), di);
     gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (entry), TRUE, TRUE, 0);
     button = gtk_button_new();

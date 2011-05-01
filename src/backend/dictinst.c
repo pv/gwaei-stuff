@@ -404,6 +404,9 @@ gboolean gw_dictinst_data_is_valid (GwDictInst *di)
     ptr = di->uri[GW_DICTINST_NEEDS_FINALIZATION];
     if (ptr == NULL || strlen (ptr) == 0) return FALSE;
 
+    ptr = di->uri[GW_DICTINST_NEEDS_NOTHING];
+    if (ptr == NULL || strlen (ptr) == 0) return FALSE;
+
     if (di->engine < 0 || di->engine >= GW_ENGINE_TOTAL) return FALSE;
     if (di->compression < 0 || di->compression >= GW_COMPRESSION_TOTAL) return FALSE;
     if (di->encoding < 0 || di->encoding >= GW_ENCODING_TOTAL) return FALSE;

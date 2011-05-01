@@ -186,6 +186,8 @@ gboolean gw_dictinfo_uninstall (GwDictInfo *di, GwIoProgressCallback cb, GError 
 
     g_free (uri);
 
+    gw_dictinfolist_initialize ();
+
     return (*error == NULL);
 }
 

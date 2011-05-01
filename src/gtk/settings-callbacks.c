@@ -304,9 +304,11 @@ G_MODULE_EXPORT void gw_settings_custom_document_font_set_cb (GtkWidget *widget,
 //!
 G_MODULE_EXPORT void gw_settings_remove_dictionary_cb (GtkWidget *widget, gpointer data)
 {
-   GList *iter;
+   do_remove_dictionary_action (NULL, NULL);
+
 
    //Clear the search history it is broken since the dictionaries may be now missing
+   /*
    gw_historylist_free ();
    gw_historylist_initialize ();
    gw_ui_update_history_popups ();
@@ -316,6 +318,7 @@ G_MODULE_EXPORT void gw_settings_remove_dictionary_cb (GtkWidget *widget, gpoint
      gw_searchitem_free (iter->data);
      iter->data = NULL;
    }
+   */
 
 }
 
