@@ -127,9 +127,11 @@ gboolean _installprogress_update_ui_timeout (gpointer data)
     GtkBuilder *builder;
     GtkWidget *progressbar;
     GtkWidget *label;
+    GtkWidget *sublabel;
     GList *list;
     GList *iter;
     int left_to_install;
+    int total_to_install;
     GwDictInst *di;
     char *text_installing;
     char *text_left;
@@ -140,9 +142,11 @@ gboolean _installprogress_update_ui_timeout (gpointer data)
     di = data;
     builder = gw_common_get_builder ();
     label = GTK_WIDGET (gtk_builder_get_object (builder, "install_progress_label"));
+    sublabel = GTK_WIDGET (gtk_builder_get_object (builder, "sub_install_progress_label"));
     progressbar = GTK_WIDGET (gtk_builder_get_object (builder, "install_progress_progressbar"));
     list = gw_dictinstlist_get_list ();
     left_to_install = 0;
+    total_to_install = 0;
 
     //Calculate the number of dictionaries left to install
     for (iter = list; iter != NULL; iter = iter->next)
@@ -154,17 +158,19 @@ gboolean _installprogress_update_ui_timeout (gpointer data)
       {
         left_to_install++;
       }
+      total_to_install++;
       g_mutex_unlock (di->mutex);
     }
 
     di = data;
     text_progressbar = gw_dictinst_get_status_string (di, TRUE);
-    text_left = g_strdup_printf (ngettext("%d Dictionary left to process...", "%d Dictionaries left to process...", left_to_install), left_to_install);
-    text_installing =  g_strdup_printf (gettext("Installing %s..."), di->longname);
-    text_message = g_markup_printf_escaped ("%s\n\n<b>%s</b>", text_left, text_installing);
+    text_left = g_strdup_printf (gettext("Installing dictionary %d of %d..."), left_to_install, total_to_install);
+    text_message = g_markup_printf_escaped ("<big><big>%s</big></big>", text_left, text_installing);
+    text_installing =  g_markup_printf_escaped (gettext("Installing %s..."), di->filename);
 
     g_mutex_lock (di->mutex);
       gtk_label_set_markup (GTK_LABEL (label), text_message);
+      gtk_label_set_markup (GTK_LABEL (sublabel), text_installing);
       gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (progressbar), di->progress);
       gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progressbar), text_progressbar);
     g_mutex_unlock (di->mutex);
