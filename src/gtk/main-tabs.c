@@ -256,6 +256,26 @@ int gw_tabs_new ()
     gtk_misc_set_padding (GTK_MISC (button_image), 0, 0);
     gtk_widget_set_size_request (GTK_WIDGET (button_image), 8, 8);
 
+    //Declarations
+    GtkCssProvider *provider;
+    char *style_data;
+    GtkStyleContext *context;
+
+    //Initializations
+    style_data = "* {\n"
+                 "-GtkButton-default-border : 0;\n"
+                 "-GtkButton-default-outside-border : 0;\n"
+                 "-GtkButton-inner-border: 0;\n"
+                 "-GtkWidget-focus-line-width : 0;\n"
+                 "-GtkWidget-focus-padding : 0;\n"
+                 "padding: 0;\n"
+                 "}";
+    provider = gtk_css_provider_new ();
+    context = gtk_widget_get_style_context (close_button);
+
+    gtk_css_provider_load_from_data (provider,  style_data, strlen(style_data), NULL); 
+    gtk_style_context_add_provider (context, GTK_STYLE_PROVIDER (provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+
     //Put all the elements together
     gtk_container_add (GTK_CONTAINER (close_button), button_image);
     g_signal_connect (G_OBJECT (close_button), "clicked", G_CALLBACK (do_tab_remove), scrolledwindow);
