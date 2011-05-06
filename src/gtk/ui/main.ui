@@ -143,6 +143,14 @@
     <property name="icon_name">word-boundary</property>
     <signal name="activate" handler="do_insert_word_edge" swapped="no"/>
   </object>
+  <object class="GtkMenu" id="back_popup">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+  </object>
+  <object class="GtkMenu" id="forward_popup">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+  </object>
   <object class="GtkAccelGroup" id="main_accelgroup"/>
   <object class="GtkActionGroup" id="main_actiongroup"/>
   <object class="GtkToggleAction" id="view_toggle_toolbar_action">
@@ -169,20 +177,14 @@
     <property name="stock_id">gtk-zoom-out</property>
     <signal name="activate" handler="do_zoom_out" swapped="no"/>
   </object>
-  <object class="GtkMenu" id="back_popup">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-  </object>
-  <object class="GtkMenu" id="forward_popup">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-  </object>
   <object class="GtkWindow" id="main_window">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">gWaei Japanese-English Dictionary</property>
+    <property name="window_position">mouse</property>
     <property name="default_width">620</property>
     <property name="default_height">500</property>
     <property name="icon_name">gwaei</property>
+    <property name="has_resize_grip">False</property>
     <accel-groups>
       <group name="main_accelgroup"/>
     </accel-groups>
@@ -437,8 +439,8 @@
                         <property name="related_action">view_zoom_in_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="KP_Add" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                         <accelerator key="plus" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                        <accelerator key="KP_Add" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -448,8 +450,8 @@
                         <property name="related_action">view_zoom_out_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="KP_Subtract" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                         <accelerator key="minus" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                        <accelerator key="KP_Subtract" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -459,8 +461,8 @@
                         <property name="related_action">view_zoom_100_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="KP_0" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                         <accelerator key="0" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                        <accelerator key="KP_0" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>

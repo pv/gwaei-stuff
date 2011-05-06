@@ -227,7 +227,7 @@ int gw_tabs_new ()
     gtk_text_view_set_cursor_visible (GTK_TEXT_VIEW (textview), FALSE);
     gtk_text_view_set_editable (GTK_TEXT_VIEW (textview), FALSE);
     gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
-    //gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow), GTK_SHADOW_IN);
+    gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow), GTK_SHADOW_IN);
     gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (textview), GTK_WRAP_WORD);
 
     g_signal_connect( G_OBJECT (textview), "drag_motion", G_CALLBACK (do_drag_motion_1), NULL);
@@ -254,7 +254,7 @@ int gw_tabs_new ()
     gtk_button_set_focus_on_click (GTK_BUTTON (close_button), FALSE);
     gtk_container_set_border_width (GTK_CONTAINER (close_button), 0);
     gtk_misc_set_padding (GTK_MISC (button_image), 0, 0);
-    gtk_widget_set_size_request (GTK_WIDGET (button_image), 14, 14);
+    gtk_widget_set_size_request (GTK_WIDGET (button_image), 8, 8);
 
     //Put all the elements together
     gtk_container_add (GTK_CONTAINER (close_button), button_image);

@@ -20,7 +20,6 @@
   </object>
   <object class="GtkWindow" id="settings_window">
     <property name="can_focus">False</property>
-    <property name="border_width">5</property>
     <property name="title" translatable="yes">gWaei Settings</property>
     <property name="resizable">False</property>
     <property name="modal">True</property>
@@ -36,7 +35,7 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="border_width">8</property>
-        <property name="spacing">10</property>
+        <property name="spacing">8</property>
         <child>
           <object class="GtkNotebook" id="settings_notebook">
             <property name="visible">True</property>
@@ -433,17 +432,10 @@
                             <child>
                               <object class="GtkTreeView" id="manage_dictionaries_treeview">
                                 <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="has_tooltip">True</property>
-                                <property name="reorderable">True</property>
-                                <property name="enable_search">False</property>
-                                <property name="search_column">2</property>
+                                <property name="can_focus">False</property>
+                                <property name="headers_clickable">False</property>
                                 <property name="show_expanders">False</property>
-                                <property name="tooltip_column">0</property>
                                 <signal name="cursor-changed" handler="do_dictionary_cursor_changed_action" swapped="no"/>
-                                <child internal-child="selection">
-                                  <object class="GtkTreeSelection" id="treeview-selection"/>
-                                </child>
                               </object>
                             </child>
                           </object>
@@ -541,6 +533,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="hscrollbar_policy">never</property>
+                        <property name="shadow_type">in</property>
                         <child>
                           <object class="GtkViewport" id="organize_plugins_viewport">
                             <property name="visible">True</property>

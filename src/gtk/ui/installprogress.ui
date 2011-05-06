@@ -2,6 +2,7 @@
 <interface>
   <requires lib="gtk+" version="2.16"/>
   <object class="GtkWindow" id="install_progress_dialog">
+    <property name="width_request">400</property>
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Installing Dictionaries...</property>
     <property name="resizable">False</property>
@@ -15,9 +16,9 @@
       <object class="GtkBox" id="box1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="border_width">6</property>
+        <property name="border_width">8</property>
         <property name="orientation">vertical</property>
-        <property name="spacing">6</property>
+        <property name="spacing">8</property>
         <child>
           <object class="GtkHBox" id="hbox1">
             <property name="visible">True</property>

@@ -274,11 +274,13 @@ void gw_dictionaryinstall_initialize ()
     g_signal_connect (G_OBJECT (view), "cursor-changed", G_CALLBACK (gw_dictionaryinstall_cursor_changed_cb), NULL);
 
     renderer = gtk_cell_renderer_toggle_new ();
+    gtk_cell_renderer_set_padding (GTK_CELL_RENDERER (renderer), 6, 5);
     column = gtk_tree_view_column_new_with_attributes (" ", renderer, "active", CHECKBOX_STATE, NULL);
     gtk_tree_view_append_column (view, column);
     g_signal_connect (G_OBJECT (renderer), "toggled", G_CALLBACK (gw_dictionaryinstall_listitem_toggled_cb), NULL);
 
     renderer = gtk_cell_renderer_text_new ();
+    gtk_cell_renderer_set_padding (GTK_CELL_RENDERER (renderer), 6, 0);
     column = gtk_tree_view_column_new_with_attributes ("Name", renderer, "text", LONG_NAME, NULL);
     gtk_tree_view_append_column (view, column);
 }
@@ -312,9 +314,10 @@ G_MODULE_EXPORT void gw_dictionaryinstall_show_cb (GtkWidget *widget, gpointer d
     GtkWidget *settings_window = GTK_WIDGET (gtk_builder_get_object (builder, "settings_window" ));
     gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (settings_window));
     gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ON_PARENT);
-    gtk_widget_show_all (GTK_WIDGET (dialog));
+    gtk_widget_show (GTK_WIDGET (dialog));
 }
 
+/*
 
 G_MODULE_EXPORT void do_toggle_other_dictionary_show (GtkWidget *widget, gpointer data)
 {
@@ -328,6 +331,7 @@ G_MODULE_EXPORT void do_toggle_other_dictionary_show (GtkWidget *widget, gpointe
     if (active) gtk_widget_show (table);
     else gtk_widget_hide (table);
 }
+*/
 
 
 //CALLBACKS//////////////////////////////////////

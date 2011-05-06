@@ -53,6 +53,16 @@ static int _previous_tip = 0;
 void gw_main_initialize ()
 {
     gw_common_load_ui_xml ("main.ui");
+
+    //Declarations
+    GtkWidget *toolbar;
+    GtkBuilder *builder;
+
+    //Initializations
+    builder = gw_common_get_builder ();
+    toolbar = GTK_WIDGET (gtk_builder_get_object (builder, "toolbar"));
+    gtk_style_context_add_class (gtk_widget_get_style_context (toolbar), GTK_STYLE_CLASS_PRIMARY_TOOLBAR);
+
     gw_tabs_initialize ();
 }
 
