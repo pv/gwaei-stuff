@@ -1,108 +1,65 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <requires lib="gtk+" version="2.16"/>
-  <!-- interface-naming-policy project-wide -->
-  <object class="GtkListStore" id="dictionary_engine_liststore">
-    <columns>
-      <!-- column-name engine -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">Edict Parser</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Kanjidic Parser</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Examples Parser</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Unknown Parser</col>
-      </row>
-    </data>
-  </object>
-  <object class="GtkListStore" id="dictionary_encoding_liststore">
-    <columns>
-      <!-- column-name Encodings -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">UTF-8</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">EUC-JP</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">SHIFT_JIS</col>
-      </row>
-    </data>
-  </object>
-  <object class="GtkListStore" id="dictionary_post_processing_liststore">
-    <columns>
-      <!-- column-name Post -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">None</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Combine Kanji and Radicals</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Split Names and Places</col>
-      </row>
-    </data>
-  </object>
-  <object class="GtkDialog" id="dictionary_install_dialog">
-    <property name="title" translatable="yes">Install Dictionaries</property>
-    <property name="modal">True</property>
+  <!-- interface-requires gtk+ 3.0 -->
+  <object class="GtkWindow" id="dictionary_install_dialog">
+    <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Select Dictionaries...</property>
     <property name="window_position">center-on-parent</property>
     <property name="default_height">300</property>
     <property name="destroy_with_parent">True</property>
+    <property name="icon_name">gwaei</property>
     <property name="type_hint">dialog</property>
     <property name="skip_taskbar_hint">True</property>
     <property name="skip_pager_hint">True</property>
-    <property name="deletable">False</property>
-    <child internal-child="vbox">
-      <object class="GtkVBox" id="dialog-vbox1">
+    <property name="has_resize_grip">False</property>
+    <child>
+      <object class="GtkBox" id="box1">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="border_width">6</property>
         <property name="orientation">vertical</property>
+        <property name="spacing">6</property>
         <child>
           <object class="GtkVBox" id="vbox1">
             <property name="visible">True</property>
-            <property name="orientation">vertical</property>
+            <property name="can_focus">False</property>
             <child>
               <object class="GtkHBox" id="hbox1">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <child>
                   <object class="GtkVBox" id="vbox2">
                     <property name="visible">True</property>
-                    <property name="orientation">vertical</property>
+                    <property name="can_focus">False</property>
                     <property name="spacing">2</property>
                     <child>
                       <object class="GtkScrolledWindow" id="scrolledwindow1">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="hscrollbar_policy">never</property>
-                        <property name="vscrollbar_policy">automatic</property>
+                        <property name="shadow_type">in</property>
                         <child>
                           <object class="GtkViewport" id="viewport1">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="resize_mode">queue</property>
                             <child>
                               <object class="GtkTreeView" id="dictionary_install_treeview">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="show_expanders">False</property>
+                                <signal name="cursor-changed" handler="gw_dictionaryinstall_cursor_changed_cb" swapped="no"/>
+                                <child internal-child="selection">
+                                  <object class="GtkTreeSelection" id="treeview-selection3"/>
+                                </child>
                               </object>
                             </child>
                           </object>
                         </child>
                       </object>
                       <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
                         <property name="padding">6</property>
                         <property name="position">0</property>
                       </packing>
@@ -110,14 +67,17 @@
                     <child>
                       <object class="GtkHBox" id="hbox4">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <child>
                           <object class="GtkCheckButton" id="show_dictionary_detail_checkbutton">
                             <property name="label" translatable="yes">Show Dictionary Install Details</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
+                            <property name="use_action_appearance">False</property>
+                            <property name="xalign">0</property>
                             <property name="draw_indicator">True</property>
-                            <signal name="toggled" handler="gw_dictionaryinstall_detail_checkbox_toggled_cb"/>
+                            <signal name="toggled" handler="gw_dictionaryinstall_detail_checkbox_toggled_cb" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -134,6 +94,8 @@
                     </child>
                   </object>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="padding">6</property>
                     <property name="position">0</property>
                   </packing>
@@ -141,18 +103,21 @@
                 <child>
                   <object class="GtkAlignment" id="alignment1">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="top_padding">4</property>
                     <child>
                       <object class="GtkVBox" id="dictionary_install_details_hbox">
+                        <property name="can_focus">False</property>
                         <property name="border_width">6</property>
-                        <property name="orientation">vertical</property>
                         <property name="spacing">8</property>
                         <child>
                           <object class="GtkHBox" id="hbox2">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <child>
                               <object class="GtkLabel" id="dictionary_install_details_title_label">
                                 <property name="visible">True</property>
+                                <property name="can_focus">False</property>
                                 <property name="label" translatable="yes">&lt;b&gt;Details&lt;/b&gt;</property>
                                 <property name="use_markup">True</property>
                               </object>
@@ -172,9 +137,11 @@
                         <child>
                           <object class="GtkHBox" id="hbox3">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <child>
                               <object class="GtkLabel" id="dictionary_install_details_description_label">
                                 <property name="visible">True</property>
+                                <property name="can_focus">False</property>
                                 <property name="label" translatable="yes">label</property>
                                 <property name="wrap">True</property>
                               </object>
@@ -194,11 +161,14 @@
                         <child>
                           <object class="GtkHBox" id="dictionary_install_details_control_hbox">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <child>
                               <placeholder/>
                             </child>
                           </object>
                           <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
                             <property name="position">2</property>
                           </packing>
                         </child>
@@ -206,28 +176,37 @@
                     </child>
                   </object>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
               </object>
               <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
                 <property name="position">0</property>
               </packing>
             </child>
           </object>
           <packing>
-            <property name="position">1</property>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
           </packing>
         </child>
         <child>
           <object class="GtkHBox" id="hbox7">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <child>
               <object class="GtkLinkButton" id="linkbutton1">
                 <property name="label" translatable="yes">Where can I get other dictionaries?</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="has_tooltip">True</property>
+                <property name="use_action_appearance">False</property>
                 <property name="relief">none</property>
                 <property name="uri">http://gwaei.sourceforge.net/dictionaries.html</property>
               </object>
@@ -241,12 +220,14 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">False</property>
-            <property name="position">2</property>
+            <property name="position">1</property>
           </packing>
         </child>
-        <child internal-child="action_area">
-          <object class="GtkHButtonBox" id="dialog-action_area1">
+        <child>
+          <object class="GtkButtonBox" id="buttonbox1">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="spacing">6</property>
             <property name="layout_style">end</property>
             <child>
               <object class="GtkButton" id="dictionary_install_cancel_button">
@@ -254,9 +235,10 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
-                <signal name="clicked" handler="do_close" object="dictionary_install_dialog"/>
-                <signal name="activate" handler="do_close" object="dictionary_install_dialog"/>
+                <signal name="activate" handler="do_close" swapped="no"/>
+                <signal name="activate" handler="do_close" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -270,11 +252,11 @@
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
-                <property name="has_focus">True</property>
-                <property name="receives_default">False</property>
+                <property name="receives_default">True</property>
+                <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
-                <signal name="clicked" handler="gw_installprogress_start_cb"/>
-                <signal name="activate" handler="gw_installprogress_start_cb"/>
+                <signal name="activate" handler="gw_installprogress_start_cb" swapped="no"/>
+                <signal name="clicked" handler="gw_installprogress_start_cb" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -285,15 +267,11 @@
           </object>
           <packing>
             <property name="expand">False</property>
-            <property name="pack_type">end</property>
-            <property name="position">0</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
           </packing>
         </child>
       </object>
     </child>
-    <action-widgets>
-      <action-widget response="0">dictionary_install_cancel_button</action-widget>
-      <action-widget response="0">dictionary_install_add_button</action-widget>
-    </action-widgets>
   </object>
 </interface>

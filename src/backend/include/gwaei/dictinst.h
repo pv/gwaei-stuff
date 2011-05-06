@@ -16,22 +16,8 @@ typedef enum {
   GW_DICTINST_NEEDS_POSTPROCESSING,
   GW_DICTINST_NEEDS_FINALIZATION,
   GW_DICTINST_NEEDS_NOTHING,
-  GW_DICTINST_TOTAL_URIS,
+  GW_DICTINST_TOTAL_URIS
 } GwDictInstUri;
-
-typedef enum {
-  GW_DICTINST_STATUS_UNSET,
-  GW_DICTINST_STATUS_DOWNLOADING,
-  GW_DICTINST_STATUS_COPYING,
-  GW_DICTINST_STATUS_ENCODING,
-  GW_DICTINST_STATUS_DECOMPRESSING,
-  GW_DICTINST_STATUS_POSTPROCESSING,
-  GW_DICTINST_STATUS_FINALIZING,
-  GW_DICTINST_STATUS_INSTALLED,
-  GW_DICTINST_STATUS_NOT_INSTALLED,
-  GW_DICTINST_STATUS_REMOVING,
-  GW_DICTINST_TOTAL_STATUSES
-} GwDictInstStatus;
 
 
 struct _GwDictInst {
@@ -50,7 +36,10 @@ struct _GwDictInst {
   GwCompression compression;    //!< Path to the gziped dictionary file
   GwEncoding encoding;          //!< Path to the raw unziped dictionary file
   GwEngine engine;
-  GwDictInstStatus status;
+  GwDictInstUri uri_group_index;
+  int uri_atom_index;
+  char **current_source_uris;
+  char **current_target_uris;
   gboolean split;
   gboolean merge;
   GMutex *mutex;
@@ -87,12 +76,15 @@ void gw_dictinst_set_compression (GwDictInst*, const GwCompression);
 void gw_dictinst_set_download_source (GwDictInst*, const char*);
 void gw_dictinst_set_split (GwDictInst *di, const gboolean);
 void gw_dictinst_set_merge (GwDictInst *di, const gboolean);
-void gw_dictinst_set_status (GwDictInst *di, const GwDictInstStatus);
+void gw_dictinst_set_status (GwDictInst *di, const GwDictInstUri);
 gchar* gw_dictinst_get_status_string (GwDictInst*, gboolean);
 
 void gw_dictinst_regenerate_save_target_uris (GwDictInst*);
 gboolean gw_dictinst_data_is_valid (GwDictInst*);
 
 gboolean gw_dictinst_install (GwDictInst*, GwIoProgressCallback, GError**);
+char* gw_dictinst_get_target_uri (GwDictInst*, const GwDictInstUri, const int);
+char* gw_dictinst_get_source_uri (GwDictInst*, const GwDictInstUri, const int);
+double gw_dictinst_get_progress (GwDictInst*);
 
 #endif

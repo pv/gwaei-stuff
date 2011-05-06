@@ -30,11 +30,11 @@
 
 
 #include <string.h>
-#include <regex.h>
 #include <stdlib.h>
 #include <libintl.h>
 
 #include <gdk/gdkkeysyms.h>
+#include <gdk/gdk.h>
 #include <gtk/gtk.h>
 
 #include <gwaei/backend.h>
@@ -98,7 +98,6 @@ G_MODULE_EXPORT void do_settings (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void do_kanjipad (GtkWidget *widget, gpointer data)
 {
-    gw_common_show_window ("kanjipad_window");
 }
 
 
@@ -305,14 +304,18 @@ G_MODULE_EXPORT void do_close (GtkWidget *widget, gpointer data)
     {
       if (gw_dictinfolist_get_total () > 0)
       {
-        gtk_widget_hide (widget);
         gw_ui_update_toolbar_buttons ();
+        gw_common_hide_window (id);
       }
       else
       {
         gw_ui_tab_cancel_all_searches ();
         gtk_main_quit ();
       }
+    }
+    else
+    {
+      gw_common_hide_window (id);
     }
 }
 
@@ -351,6 +354,7 @@ G_MODULE_EXPORT gboolean do_close_on_escape (GtkWidget *widget,
                                              GdkEvent  *event,
                                              gpointer  *data   )
 {
+  /*
     guint keyval = ((GdkEventKey*)event)->keyval;
     guint state = ((GdkEventKey*)event)->state;
     guint modifiers = ( 
@@ -362,15 +366,13 @@ G_MODULE_EXPORT gboolean do_close_on_escape (GtkWidget *widget,
                       );
 
     //Make sure no modifier keys are pressed
-    if (((state & modifiers) == 0 ) && keyval == GDK_Escape)
+    if (((state & modifiers) == 0 ) && keyval == GDK_KEY_Escape)
     {
       do_close (widget, data);
       return TRUE;
     }
-    else
-    {
-      return FALSE;
-    }
+    */
+    return FALSE;
 }
 
 
@@ -1205,6 +1207,7 @@ G_MODULE_EXPORT gboolean do_key_press_modify_status_update (GtkWidget *widget,
                                                             GdkEvent  *event,
                                                             gpointer  *data  )
 {
+  /*
     GtkWidget *tv = GTK_WIDGET (gw_common_get_widget_by_target (GW_TARGET_RESULTS));
     GtkWidget *window = GTK_WIDGET (gtk_widget_get_tooltip_window (tv));
     if (window != NULL) 
@@ -1216,16 +1219,17 @@ G_MODULE_EXPORT gboolean do_key_press_modify_status_update (GtkWidget *widget,
     guint keyval = ((GdkEventKey*)event)->keyval;
     GtkWidget* search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
 
-    if ((keyval == GDK_ISO_Enter || keyval == GDK_Return) && gtk_widget_is_focus (search_entry))
+    if ((keyval == GDK_KEY_ISO_Enter || keyval == GDK_KEY_Return) && gtk_widget_is_focus (search_entry))
     {
       gtk_widget_activate (search_entry);
       return FALSE;
     }
 
-    if (keyval == GDK_Shift_L || keyval == GDK_Shift_R || keyval == GDK_ISO_Next_Group || keyval == GDK_ISO_Prev_Group)
+    if (keyval == GDK_KEY_Shift_L || keyval == GDK_KEY_Shift_R || keyval == GDK_KEY_ISO_Next_Group || keyval == GDK_KEY_ISO_Prev_Group)
     {
       start_search_in_new_window = TRUE;
     }
+    */
     return FALSE;
 }
 
@@ -1244,11 +1248,13 @@ G_MODULE_EXPORT gboolean do_key_release_modify_status_update (GtkWidget *widget,
                                                               GdkEvent  *event,
                                                               gpointer  *data  )
 {
+  /*
     guint keyval = ((GdkEventKey*)event)->keyval;
-    if (keyval == GDK_Shift_L || keyval == GDK_Shift_R || keyval == GDK_ISO_Next_Group || keyval == GDK_ISO_Prev_Group)
+    if (keyval == GDK_KEY_Shift_L || keyval == GDK_KEY_Shift_R || keyval == GDK_KEY_ISO_Next_Group || keyval == GDK_KEY_ISO_Prev_Group)
     {
       start_search_in_new_window = FALSE;
     }
+    */
     return FALSE;
 }
 
@@ -1269,6 +1275,7 @@ G_MODULE_EXPORT gboolean do_focus_change_on_key_press (GtkWidget *widget,
                                                        GdkEvent  *event,
                                                        gpointer  *focus  )
 {
+  /*
     gw_ui_close_suggestion_box ();
     guint state = ((GdkEventKey*)event)->state;
     guint keyval = ((GdkEventKey*)event)->keyval;
@@ -1277,45 +1284,45 @@ G_MODULE_EXPORT gboolean do_focus_change_on_key_press (GtkWidget *widget,
                         GDK_CONTROL_MASK |
                         GDK_SUPER_MASK   |
                         GDK_HYPER_MASK   |
-                        GDK_META_MASK      |
-                        GDK_Meta_L    |
-                        GDK_Meta_R    |
-                        GDK_Alt_L     |
-                        GDK_Alt_R
+                        GDK_META_MASK    |
+                        GDK_KEY_Meta_L       |
+                        GDK_KEY_Meta_R       |
+                        GDK_KEY_Alt_L        |
+                        GDK_KEY_Alt_R
                       );
 
     //Make sure no modifier keys are pressed
     if (
           (state & modifiers) == 0   &&
-          keyval != GDK_Tab          &&
-          keyval != GDK_ISO_Left_Tab &&
-          keyval != GDK_Shift_L      &&
-          keyval != GDK_Shift_R      &&
-          keyval != GDK_Control_L    &&
-          keyval != GDK_Control_R    &&
-          keyval != GDK_Caps_Lock    &&
-          keyval != GDK_Shift_Lock   &&
-          keyval != GDK_Meta_L       &&
-          keyval != GDK_Meta_R       &&
-          keyval != GDK_Alt_L        &&
-          keyval != GDK_Alt_R        &&
-          keyval != GDK_Super_L      &&
-          keyval != GDK_Super_R      &&
-          keyval != GDK_Hyper_L      &&
-          keyval != GDK_Hyper_R      &&
-          keyval != GDK_Num_Lock     &&
-          keyval != GDK_Scroll_Lock  &&
-          keyval != GDK_Pause        &&
-          keyval != GDK_Home         &&
-          keyval != GDK_End
+          keyval != GDK_KEY_Tab          &&
+          keyval != GDK_KEY_ISO_Left_Tab &&
+          keyval != GDK_KEY_Shift_L      &&
+          keyval != GDK_KEY_Shift_R      &&
+          keyval != GDK_KEY_Control_L    &&
+          keyval != GDK_KEY_Control_R    &&
+          keyval != GDK_KEY_Caps_Lock    &&
+          keyval != GDK_KEY_Shift_Lock   &&
+          keyval != GDK_KEY_Meta_L       &&
+          keyval != GDK_KEY_Meta_R       &&
+          keyval != GDK_KEY_Alt_L        &&
+          keyval != GDK_KEY_Alt_R        &&
+          keyval != GDK_KEY_Super_L      &&
+          keyval != GDK_KEY_Super_R      &&
+          keyval != GDK_KEY_Hyper_L      &&
+          keyval != GDK_KEY_Hyper_R      &&
+          keyval != GDK_KEY_Num_Lock     &&
+          keyval != GDK_KEY_Scroll_Lock  &&
+          keyval != GDK_KEY_Pause        &&
+          keyval != GDK_KEY_Home         &&
+          keyval != GDK_KEY_End
        )
     {
       //Change focus to the text view if is an arrow key or page key
       if ( 
-           ( keyval == GDK_Up        ||
-             keyval == GDK_Down      ||
-             keyval == GDK_Page_Up   ||
-             keyval == GDK_Page_Down   
+           ( keyval == GDK_KEY_Up        ||
+             keyval == GDK_KEY_Down      ||
+             keyval == GDK_KEY_Page_Up   ||
+             keyval == GDK_KEY_Page_Down   
            ) &&
            (
              !gw_common_widget_equals_target (widget, GW_TARGET_RESULTS)
@@ -1330,10 +1337,10 @@ G_MODULE_EXPORT gboolean do_focus_change_on_key_press (GtkWidget *widget,
 
       //Change focus to the entry if other key
       else if (
-                keyval != GDK_Up        &&
-                keyval != GDK_Down      &&
-                keyval != GDK_Page_Up   &&
-                keyval != GDK_Page_Down &&
+                keyval != GDK_KEY_Up        &&
+                keyval != GDK_KEY_Down      &&
+                keyval != GDK_KEY_Page_Up   &&
+                keyval != GDK_KEY_Page_Down &&
                 !gw_common_widget_equals_target (widget, GW_TARGET_ENTRY)
               )
       {
@@ -1343,6 +1350,7 @@ G_MODULE_EXPORT gboolean do_focus_change_on_key_press (GtkWidget *widget,
         return TRUE;
       }
     }
+    */
     return FALSE;
 }
 
@@ -1627,17 +1635,22 @@ G_MODULE_EXPORT void do_search_drag_data_recieved (GtkWidget        *widget,
                                                    guint             time,
                                                    gpointer          user_data    )
 {
-    if (widget == NULL) 
-      return;
+/*
+    //Sanity checks
+    if (widget == NULL) return;
     const char *name = gtk_buildable_get_name (GTK_BUILDABLE (widget));
     if (name == NULL || strcmp (name, "search_entry") == 0)
       return;
 
-    GtkWidget* entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
-   
-    char* text = (char*) gtk_selection_data_get_text (data);   
+    //Declarations
+    GtkWidget* entry;
+    char* text;
 
-    if ((data->length >= 0) && (data->format == 8) && text != NULL)
+    //Initializations
+    entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
+    text = (char*) gtk_selection_data_get_text (data);   
+
+    if (text != NULL && data->length >= 0 && data->format == 8)
     {
       do_clear_search (entry, NULL);
       gtk_entry_set_text (GTK_ENTRY (entry), text);
@@ -1651,12 +1664,9 @@ G_MODULE_EXPORT void do_search_drag_data_recieved (GtkWidget        *widget,
       gtk_drag_finish (drag_context, FALSE, FALSE, time);
     }
 
-    if (text != NULL)
-    {
-      g_free (text);
-      text = NULL;
-    }
-
+    //Cleanup
+    if (text != NULL) g_free (text);
+*/
 }
 
 
@@ -1901,7 +1911,7 @@ G_MODULE_EXPORT void do_search_for_searchitem_online (GtkWidget *widget, gpointe
 //! @param widget Unused GtkWidget pointer.
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT gboolean do_scroll_or_zoom(GtkWidget *widget, GdkEventScroll *event, gpointer data)
+G_MODULE_EXPORT gboolean do_scroll_or_zoom (GtkWidget *widget, GdkEventScroll *event, gpointer data)
 {
     // If "control" is being pressed
     if( (event->state & GDK_CONTROL_MASK) == GDK_CONTROL_MASK )

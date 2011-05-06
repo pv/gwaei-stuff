@@ -1,7 +1,6 @@
 #!/bin/sh
 
 gettextize --force \
-&& libtoolize --copy --force \
 && gnome-doc-prepare --copy --force \
 && aclocal -I m4 --force \
 && autoheader -f \

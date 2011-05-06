@@ -10,22 +10,17 @@ src/backend/resultline.c
 src/backend/searchitem.c
 src/backend/utilities.c
 
-[type: gettext/glade]src/gtk/ui/dictionaryinstall.ui
-[type: gettext/glade]src/gtk/ui/installprogress.ui
-[type: gettext/glade]src/gtk/ui/kanjipad.ui
-[type: gettext/glade]src/gtk/ui/main.ui
-[type: gettext/glade]src/gtk/ui/radicals.ui
-[type: gettext/glade]src/gtk/ui/settings.ui
+src/gtk/ui/dictionaryinstall.glade
+src/gtk/ui/installprogress.glade
+src/gtk/ui/main.glade
+src/gtk/ui/radicals.glade
+src/gtk/ui/settings.glade
 
 src/gtk/common.c
 src/gtk/dictionaryinstall.c
 src/gtk/dictionarymanager.c
 src/gtk/frontend.c
 src/gtk/gwaei.c
-src/gtk/kanjipad.c
-src/gtk/kanjipad-callbacks.c
-src/gtk/kanjipad-candidatearea.c
-src/gtk/kanjipad-drawingarea.c
 src/gtk/libsexy.c
 src/gtk/libunique.c
 src/gtk/main.c

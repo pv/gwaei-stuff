@@ -17,7 +17,7 @@ void do_cut (GtkWidget *widget, gpointer data);
 void do_copy (GtkWidget *widget, gpointer data);
 void do_about(GtkWidget *widget, gpointer data);
 void do_settings (GtkWidget *widget, gpointer data);
-void do_destroy(GtkObject*, gpointer);
+void do_destroy(GObject*, gpointer);
 void do_search (GtkWidget *widget, gpointer data);
 void do_search_from_history (GtkWidget*, gpointer);
 void do_clear_search(GtkWidget*, gpointer);

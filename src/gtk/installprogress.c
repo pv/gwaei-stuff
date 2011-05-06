@@ -1,5 +1,4 @@
 #include <string.h>
-#include <regex.h>
 #include <stdlib.h>
 #include <locale.h>
 #include <libintl.h>
@@ -10,19 +9,25 @@
 #include <gwaei/frontend.h>
 
 
-gpointer _installprogress_install_thread (gpointer);
-int _update_dictinst_install_progress_cb (double, gpointer);
-GThread *_thread = NULL;
-gint _timeoutid = 0;
-gboolean _installprogress_update_ui_timeout (gpointer);
+//Static declarations
+static gpointer _installprogress_install_thread (gpointer);
+static int _installprogress_update_dictinst_cb (double, gpointer);
+static gboolean _installprogress_update_ui_timeout (gpointer);
+static GThread *_thread = NULL;
+static gint _timeoutid = 0;
 
 
+//!
+//! @brief Setup the installprogress.c source code
+//!
 void gw_installprogress_initialize ()
 {
-    gw_common_load_ui_xml ("installprogress.ui");
 }
 
 
+//!
+//! @brief Free the memory used by the installprogress.c source code
+//!
 void gw_installprogress_free ()
 {
 }
@@ -32,30 +37,38 @@ void gw_installprogress_free ()
 //!
 G_MODULE_EXPORT void gw_installprogress_start_cb (GtkWidget *widget, gpointer data)
 {
+printf("BREAK1\n");
+    gw_common_load_ui_xml ("installprogress.ui");
+
+    //Declarations
     GtkBuilder *builder;
-    GtkWidget *install_progress_dialog;
-    GtkWidget *dictionary_install_dialog;
-    GtkWidget *settings_window;
+    GtkWidget *dialog_installprogress;
+    GtkWidget *dialog_dictionaryinstall;
+    GtkWidget *window_settings;
     GError *error;
+printf("BREAK2\n");
 
     //Initializations
     builder = gw_common_get_builder ();
-    install_progress_dialog = GTK_WIDGET (gtk_builder_get_object (builder, "install_progress_dialog"));
-    dictionary_install_dialog = GTK_WIDGET (gtk_builder_get_object (builder, "dictionary_install_dialog"));
-    settings_window = GTK_WIDGET (gtk_builder_get_object (builder, "settings_window"));
+    dialog_installprogress = GTK_WIDGET (gtk_builder_get_object (builder, "install_progress_dialog"));
+    dialog_dictionaryinstall = GTK_WIDGET (gtk_builder_get_object (builder, "dictionary_install_dialog"));
+    window_settings = GTK_WIDGET (gtk_builder_get_object (builder, "settings_window"));
     error = NULL;
+printf("BREAK3\n");
 
     //Remove the prevous window
-    gtk_widget_destroy (GTK_WIDGET (dictionary_install_dialog));
+    gtk_widget_destroy (GTK_WIDGET (dialog_dictionaryinstall));
 
     //Set the new window
-    gtk_window_set_transient_for (GTK_WINDOW (install_progress_dialog), GTK_WINDOW (settings_window));
-    gtk_window_set_position (GTK_WINDOW (settings_window), GTK_WIN_POS_CENTER_ON_PARENT);
-    gtk_widget_show (GTK_WIDGET (install_progress_dialog));
+    gtk_window_set_transient_for (GTK_WINDOW (dialog_installprogress), GTK_WINDOW (window_settings));
+    gtk_window_set_position (GTK_WINDOW (window_settings), GTK_WIN_POS_CENTER_ON_PARENT);
+    gtk_widget_show (GTK_WIDGET (dialog_installprogress));
+printf("BREAK4\n");
 
     if (_thread == NULL)
       _thread = g_thread_create (_installprogress_install_thread, NULL, TRUE, &error);
 
+printf("BREAK5\n");
     gw_ui_handle_error (&error, TRUE);
 }
 
@@ -67,6 +80,8 @@ gpointer _installprogress_install_thread (gpointer data)
     GList *iter;
     GwDictInst *di;
     GError *error;
+    GtkBuilder *builder;
+    GtkWidget *dialog_installprogress;
 
     //Initializations
     list = gw_dictinstlist_get_list ();
@@ -79,38 +94,30 @@ gpointer _installprogress_install_thread (gpointer data)
       if (di->selected)
       {
         _timeoutid = g_timeout_add (100, _installprogress_update_ui_timeout, di);
-        gw_dictinst_install (di, _update_dictinst_install_progress_cb, &error);
-        g_mutex_lock (di->mutex);
-          di->selected = FALSE;
-        g_mutex_unlock (di->mutex);
+        gw_dictinst_install (di, _installprogress_update_dictinst_cb, &error);
+        g_source_remove (_timeoutid);
       }
     }
 
     //Cleanup
     gw_ui_handle_error (&error, TRUE);
-
     _thread = NULL;
-    g_source_remove (_timeoutid);
 
-    GtkBuilder *builder;
-    GtkWidget *install_progress_dialog;
     gdk_threads_enter ();
       builder = gw_common_get_builder ();
-      install_progress_dialog = GTK_WIDGET (gtk_builder_get_object (builder, "install_progress_dialog"));
-      gtk_widget_destroy (GTK_WIDGET (install_progress_dialog));
+      dialog_installprogress = GTK_WIDGET (gtk_builder_get_object (builder, "install_progress_dialog"));
+      gtk_widget_hide (GTK_WIDGET (dialog_installprogress));
     gdk_threads_leave ();
 }
 
 
-int _update_dictinst_install_progress_cb (double fraction, gpointer data)
+int _installprogress_update_dictinst_cb (double fraction, gpointer data)
 {
     //Declarations
     GwDictInst *di;
-    int percent;
 
     //Initializations
     di = data;
-    percent = (int) (fraction * 100.0);
 
     g_mutex_lock (di->mutex); 
     di->progress = fraction;
@@ -123,6 +130,7 @@ int _update_dictinst_install_progress_cb (double fraction, gpointer data)
 //!
 gboolean _installprogress_update_ui_timeout (gpointer data)
 {
+  printf("BREAK1\n");
     //Declarations
     GtkBuilder *builder;
     GtkWidget *progressbar;
@@ -130,7 +138,7 @@ gboolean _installprogress_update_ui_timeout (gpointer data)
     GtkWidget *sublabel;
     GList *list;
     GList *iter;
-    int left_to_install;
+    int current_to_install;
     int total_to_install;
     GwDictInst *di;
     char *text_installing;
@@ -140,39 +148,59 @@ gboolean _installprogress_update_ui_timeout (gpointer data)
 
     //Initializations
     di = data;
+    g_mutex_lock (di->mutex);
+
     builder = gw_common_get_builder ();
     label = GTK_WIDGET (gtk_builder_get_object (builder, "install_progress_label"));
     sublabel = GTK_WIDGET (gtk_builder_get_object (builder, "sub_install_progress_label"));
     progressbar = GTK_WIDGET (gtk_builder_get_object (builder, "install_progress_progressbar"));
     list = gw_dictinstlist_get_list ();
-    left_to_install = 0;
+    current_to_install = 0;
     total_to_install = 0;
+  printf("BREAK2\n");
+
 
     //Calculate the number of dictionaries left to install
     for (iter = list; iter != NULL; iter = iter->next)
     {
       di = iter->data;
-
-      g_mutex_lock (di->mutex);
       if (di->selected)
       {
-        left_to_install++;
+        current_to_install++;
       }
-      total_to_install++;
-      g_mutex_unlock (di->mutex);
+      if (iter->data == data) break;
     }
+  printf("BREAK3\n");
 
+    //Calculate the number of dictionaries left to install
+    for (iter = list; iter != NULL; iter = iter->next)
+    {
+      di = iter->data;
+      if (di->selected)
+      {
+        total_to_install++;
+      }
+    }
+  printf("BREAK4\n");
+    
     di = data;
-    text_progressbar = gw_dictinst_get_status_string (di, TRUE);
-    text_left = g_strdup_printf (gettext("Installing dictionary %d of %d..."), left_to_install, total_to_install);
-    text_message = g_markup_printf_escaped ("<big><big>%s</big></big>", text_left, text_installing);
-    text_installing =  g_markup_printf_escaped (gettext("Installing %s..."), di->filename);
 
-    g_mutex_lock (di->mutex);
-      gtk_label_set_markup (GTK_LABEL (label), text_message);
-      gtk_label_set_markup (GTK_LABEL (sublabel), text_installing);
-      gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (progressbar), di->progress);
-      gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progressbar), text_progressbar);
+  printf("BREAK5\n");
+    text_progressbar =  g_markup_printf_escaped (gettext("Installing %s..."), di->filename);
+    text_left = g_strdup_printf (gettext("Installing dictionary %d of %d..."), current_to_install, total_to_install);
+    text_message = g_markup_printf_escaped ("<big><big><b>%s</b></big></big>", text_left);
+    text_installing = gw_dictinst_get_status_string (di, TRUE);
+  printf("BREAK6\n");
+
+    gtk_label_set_markup (GTK_LABEL (label), text_message);
+  printf("BREAK7\n");
+    gtk_label_set_markup (GTK_LABEL (sublabel), text_installing);
+  printf("BREAK8\n");
+    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (progressbar), gw_dictinst_get_progress (di));
+  printf("BREAK9\n");
+    gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progressbar), text_progressbar);
+  printf("BREAK10\n");
+
     g_mutex_unlock (di->mutex);
 
     //Cleanup
@@ -180,8 +208,13 @@ gboolean _installprogress_update_ui_timeout (gpointer data)
     g_free (text_left);
     g_free (text_installing);
     g_free (text_message);
+  printf("BREAK6\n");
 
     return TRUE;
 }
 
 
+G_MODULE_EXPORT void gw_installprogress_cancel_cb (GtkWidget *widget, gpointer data)
+{
+    printf("cancel button was clicked!\n");
+}

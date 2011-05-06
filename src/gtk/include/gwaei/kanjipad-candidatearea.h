@@ -1,5 +1,5 @@
-#ifndef GW_KANJIPAD_INTERFACE_CANDIDATEAREA_INCLUDED
-#define GW_KANJIPAD_INTERFACE_CANDIDATEAREA_INCLUDED
+#ifndef GW_KANJIPAD_CANDIDATEAREA_INCLUDED
+#define GW_KANJIPAD_CANDIDATEAREA_INCLUDED
 
 gboolean candidatearea_configure_event (GtkWidget*, GdkEventConfigure*);
 gboolean candidatearea_expose_event (GtkWidget*, GdkEventExpose*);

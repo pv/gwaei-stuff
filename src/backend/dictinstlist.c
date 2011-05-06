@@ -105,7 +105,7 @@ void gw_dictinstlist_initialize ()
   di = gw_dictinst_new_using_pref_uri (
     "Examples",
     gettext("Examples"),
-    gettext("Exmaples Dictionary"),
+    gettext("Examples Dictionary"),
     gettext("This is the example dictionary."),
     GW_SCHEMA_DICTIONARY,
     GW_KEY_EXAMPLES_SOURCE,
@@ -279,3 +279,6 @@ GwDictInst* gw_dictinstlist_get_dictinst_by_idstring (const char* ENGINE_AND_FIL
 }
 
 
+double gw_dictinstlist_get_progress ()
+{
+}

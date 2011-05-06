@@ -1,5 +1,5 @@
-#ifndef GW_GTK_MAIN_INTERFACE_SEXY_INCLUDED
-#define GW_GTK_MAIN_INTERFACE_SEXY_INCLUDED
+#ifndef GW_LIBSEXY_INCLUDED
+#define GW_LIBSEXY_INCLUDED
 
 void gw_libsexy_initialize (void);
 void gw_libsexy_free (void);

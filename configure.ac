@@ -1,8 +1,7 @@
 AC_INIT(gwaei, 3.0.0)
 AC_CONFIG_SRCDIR([src/backend/engine.c])
-AM_INIT_AUTOMAKE
 AM_CONFIG_HEADER(config.h)
-
+AM_INIT_AUTOMAKE
 
 RELEASE=1
 AC_SUBST(RELEASE)
@@ -17,7 +16,7 @@ GTHREAD_REQUIRED_VERSION=2.25.0
 LIBCURL_REQUIRED_VERSION=7.21.0
 GMODULE_EXPORT_REQUIRED_VERSION=2.25.0
 #GTK Base Dependencies
-GTK2_REQUIRED_VERSION=2.22.0
+GTK3_REQUIRED_VERSION=3.0.0
 GDU_REQUIRED_VERSION=0.13.0
 #GTK Optional Dependencies
 LIBUNIQUE_REQUIRED_VERSION=1.0.0
@@ -83,7 +82,7 @@ GNOME_DOC_INIT(,,[:])
 
 
 if test $gnome = true || test $win32 = true; then
-  PKG_CHECK_MODULES(GNOME, gtk+-2.0           >= $GTK2_REQUIRED_VERSION
+  PKG_CHECK_MODULES(GNOME, gtk+-3.0           >= $GTK3_REQUIRED_VERSION
                            glib-2.0           >= $GLIB_REQUIRED_VERSION
                            gobject-2.0        >= $GLIB_REQUIRED_VERSION
                            gio-2.0            >= $GIO_REQUIRED_VERSION
@@ -140,12 +139,12 @@ AC_HEADER_STDC
 GETTEXT_PACKAGE=gwaei
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], ["$GETTEXT_PACKAGE"], [The domain to use with gettext])
-IT_PROG_INTLTOOL([0.40.0])
-AM_GLIB_GNU_GETTEXT
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION
 
 AC_CONFIG_MACRO_DIR([m4])
 
-AC_CONFIG_FILES([Makefile src/Makefile src/backend/Makefile src/backend/include/gwaei/Makefile src/console/Makefile src/gtk/Makefile src/gtk/include/gwaei/Makefile mandir/Makefile help/Makefile help/gwaei.omf help/C/gwaei.xml src/gtk/ui/Makefile src/gtk/images/Makefile src/schemas/Makefile src/gtk/desktop/Makefile src/kpengine/Makefile src/kpengine/conv_jdata.pl rpm/gwaei.spec rpm/fedora/SPECS/gwaei.spec po/Makefile.in po/Makefile] Doxyfile)
+AC_CONFIG_FILES([Makefile src/Makefile src/backend/Makefile src/backend/include/gwaei/Makefile src/console/Makefile src/console/include/gwaei/Makefile src/gtk/Makefile src/gtk/include/gwaei/Makefile mandir/Makefile src/gtk/help/Makefile src/gtk/help/gwaei.omf src/gtk/help/C/gwaei.xml src/gtk/ui/Makefile src/gtk/images/Makefile src/schemas/Makefile src/gtk/desktop/Makefile rpm/gwaei.spec rpm/fedora/SPECS/gwaei.spec po/Makefile.in] Doxyfile)
 
 AC_OUTPUT
 

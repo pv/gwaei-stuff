@@ -1,5 +1,5 @@
-#ifndef GW_GTK_MAIN_INTERFACE_INCLUDED
-#define GW_GTK_MAIN_INTERFACE_INCLUDED
+#ifndef GW_MAIN_INCLUDED
+#define GW_MAIN_INCLUDED
 
 #include <gtk/gtk.h>
 

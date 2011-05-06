@@ -1,5 +1,4 @@
 #include <string.h>
-#include <regex.h>
 #include <stdlib.h>
 #include <locale.h>
 #include <libintl.h>
@@ -8,7 +7,6 @@
 
 #include <gwaei/backend.h>
 #include <gwaei/frontend.h>
-
 
 static GtkListStore *_encoding_store = NULL;
 static GtkListStore *_compression_store = NULL;
@@ -307,14 +305,14 @@ void gw_dictionaryinstall_free ()
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void do_open_dictionary_install_dialog (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_dictionaryinstall_show_cb (GtkWidget *widget, gpointer data)
 {
     GtkBuilder *builder = gw_common_get_builder ();
     GtkWidget *dialog = GTK_WIDGET (gtk_builder_get_object (builder, "dictionary_install_dialog"));
     GtkWidget *settings_window = GTK_WIDGET (gtk_builder_get_object (builder, "settings_window" ));
     gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (settings_window));
     gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ON_PARENT);
-    gtk_widget_show (GTK_WIDGET (dialog));
+    gtk_widget_show_all (GTK_WIDGET (dialog));
 }
 
 
@@ -412,7 +410,7 @@ G_MODULE_EXPORT void gw_dictionaryinstall_select_file_cb (GtkWidget *widget, gpo
       gtk_entry_set_text (GTK_ENTRY (entry), filename);
       g_free (filename);
     }
-    gtk_widget_destroy (dialog);
+    gtk_widget_hide (dialog);
 }
 
 
@@ -525,24 +523,27 @@ G_MODULE_EXPORT void gw_dictionaryinstall_listitem_toggled_cb (GtkCellRendererTo
     _update_add_button_sensitivity ();
 }
 
+
 G_MODULE_EXPORT void gw_dictionaryinstall_detail_checkbox_toggled_cb (GtkWidget *widget, gpointer data)
 {
-  //Declarations
-  GtkTreePath *path;
-  GtkTreeViewColumn *column;
-  GtkBuilder *builder;
-  GtkTreeView *view;
+    //Declarations
+    GtkTreePath *path;
+    GtkTreeViewColumn *column;
+    GtkBuilder *builder;
+    GtkTreeView *view;
 
-  builder = gw_common_get_builder ();
-  view = GTK_TREE_VIEW (gtk_builder_get_object (builder, "dictionary_install_treeview"));
+    //Declarations
+    builder = gw_common_get_builder ();
+    view = GTK_TREE_VIEW (gtk_builder_get_object (builder, "dictionary_install_treeview"));
 
-  //Trigger the list item selection callback
-  gtk_tree_view_get_cursor (view, &path, &column);
-  gtk_tree_view_set_cursor (view, path, column, FALSE);
+    //Trigger the list item selection callback
+    gtk_tree_view_get_cursor (view, &path, &column);
+    gtk_tree_view_set_cursor (view, path, column, FALSE);
 
-  //Cleanup
-  gtk_tree_path_free (path);
+    //Cleanup
+    gtk_tree_path_free (path);
 }
+
 
 //!
 //! @brief Checks the validity of the GwDictInst data and sets the add button sensitivity accordingly
@@ -562,3 +563,4 @@ static void _update_add_button_sensitivity ()
     //Finalize
     gtk_widget_set_sensitive (button, sensitivity);
 }
+

@@ -325,14 +325,6 @@ void gw_common_show_window (char *id)
       gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER_ON_PARENT);
       gtk_widget_show (window);
     }
-    else if (strcmp (id, "kanjipad_window") == 0)
-    {
-      _initialize_window_attributes (id);
-      gw_kanjipad_set_target_text_widget (gw_common_get_widget_by_target (GW_TARGET_ENTRY));
-      gtk_window_set_type_hint (GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_UTILITY);
-      gtk_widget_show (window);
-      _initialize_window_attributes (id);
-    }
     else
     {
       gtk_widget_show (window);

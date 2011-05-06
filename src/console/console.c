@@ -423,13 +423,14 @@ int gw_console_install_progress_cb (double fraction, gpointer data)
   di = data;
   current_percent = (int) (100.0 * fraction); 
   previous_percent = (int) (100.0 * di->progress); 
+  if (fraction == 0.0) di->progress = 0.0;
   if (di->progress <= 1.0) di->progress = fraction;
 
   //Update the dictinst progress state only when the delta is large enough
   if (current_percent - previous_percent >= 1 && di->progress < 1.0)
   {
     status = gw_dictinst_get_status_string (di, TRUE);
-    printf("\r  %s", status);
+    printf("\r [%d%] %s", (int) (di->progress * 100.0), status);
     g_free (status);
   }
 
@@ -437,7 +438,7 @@ int gw_console_install_progress_cb (double fraction, gpointer data)
   else if (di->progress == 1.0)
   {
     status = gw_dictinst_get_status_string (di, TRUE);
-    printf("\r  %s\n", status);
+    printf("\r [%d%] %s\n", (int) (di->progress * 100.0), status);
     g_free (status);
     di->progress = 1.1;
   }

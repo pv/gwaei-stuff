@@ -30,10 +30,10 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <regex.h>
 #include <locale.h>
 #include <libintl.h>
 
+#include <gdk/gdk.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
@@ -65,19 +65,22 @@ void gw_main_free ()
 
 //!
 //! @brief Updates the progress information based on the GwSearchItem info
-//!
-//! This method isn't called directly, but through the global output funcion pointers
-//! set at the beginning of the program.
-//!
 //! @param item A GwSearchItem pointer to gleam information from.
+//! @returns Currently always returns TRUE
 //!
 gboolean gw_ui_update_progress_feedback (gpointer data)
 {
-    GtkBuilder *builder = gw_common_get_builder ();
+    //Declarations
+    GtkBuilder *builder;
+    GtkWidget *notebook;
+    int page_num;
+    GwSearchItem *item;
 
-    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
-    int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
-    GwSearchItem *item = g_list_nth_data (gw_tabs_get_searchitem_list (), page_num);
+    //Initializations
+    builder = gw_common_get_builder ();
+    notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+    item = g_list_nth_data (gw_tabs_get_searchitem_list (), page_num);
 
     if (item != NULL) 
     {
@@ -104,10 +107,13 @@ gboolean gw_ui_update_progress_feedback (gpointer data)
 //!
 void gw_ui_set_query_entry_text_by_searchitem (GwSearchItem *item)
 {
-    //Initializations
+    //Declarations
     char hex_color_string[100];
     GdkColor color;
-    GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
+    GtkWidget *search_entry;
+
+    //Initializations
+    search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
 
     //If there is no search, set the default colors
     if (item == NULL)
@@ -2386,7 +2392,6 @@ static void _add_match_highlights (gint line, gint start_offset, gint end_offset
       re = (*iter)[GW_RELEVANCE_LOCATE];
       if (re != NULL && g_regex_match (re, text, 0, &match_info))
       { 
-        printf("expression: %s\n", g_regex_get_pattern (re));
         while (g_match_info_matches (match_info))
         {
           g_match_info_fetch_pos (match_info, 0, &match_start_byte_offset, &match_end_byte_offset);

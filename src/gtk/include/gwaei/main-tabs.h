@@ -15,7 +15,7 @@ void do_new_tab (GtkWidget*, gpointer);
 void do_tab_remove (GtkWidget*, gpointer);
 void do_prep_and_start_search_in_new_tab (GtkWidget*, gpointer);
 void do_no_results_search_for_dictionary (GtkWidget*, gpointer);
-void do_destroy_tab_menuitem_searchitem_data (GtkObject*, gpointer);
+void do_destroy_tab_menuitem_searchitem_data (GObject*, gpointer);
 void gw_tabs_set_current_tab_text (const char*);
 void gw_tabs_set_searchitem (GwSearchItem *item);
 GwSearchItem* gw_tabs_get_searchitem (void);

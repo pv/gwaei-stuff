@@ -33,7 +33,6 @@
 
 
 #include <stdlib.h>
-#include <regex.h>
 #include <string.h>
 #include <locale.h>
 #include <libintl.h>

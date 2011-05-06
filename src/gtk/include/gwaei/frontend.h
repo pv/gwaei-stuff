@@ -1,14 +1,9 @@
 #ifndef GW_FRONTEND_INCLUDED
-#define GW_FRONTED_INCLUDED
+#define GW_FRONTEND_INCLUDED
 
 #include <gtk/gtk.h>
 
 #include <gwaei/common.h>
-
-#include <gwaei/kanjipad.h>
-#include <gwaei/kanjipad-drawingarea.h>
-#include <gwaei/kanjipad-candidatearea.h>
-#include <gwaei/kanjipad-callbacks.h>
 
 #include <gwaei/main.h>
 #include <gwaei/main-callbacks.h>

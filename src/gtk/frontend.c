@@ -91,7 +91,6 @@ void gw_frontend_initialize (int* argc, char* argv[])
     gw_radsearchtool_initialize ();
 
     gdk_threads_enter ();
-    gw_kanjipad_initialize ();
     gdk_threads_leave ();
 
     #ifdef WITH_LIBSEXY
@@ -166,7 +165,6 @@ void gw_frontend_free ()
     #ifdef WITH_LIBUNIQUE
     gw_libunique_free ();
     #endif
-    gw_kanjipad_free ();
     gw_settings_free ();
     gw_radsearchtool_free ();
     gw_main_free ();

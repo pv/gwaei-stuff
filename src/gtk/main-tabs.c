@@ -31,7 +31,6 @@
 
 #include <string.h>
 #include <stdlib.h>
-#include <regex.h>
 #include <locale.h>
 #include <libintl.h>
 
@@ -118,6 +117,7 @@ void gw_tabs_update_appearance_with_searchitem (GwSearchItem *item)
     //gtk_notebook_set_show_tabs (GTK_NOTEBOOK (notebook), TRUE);
     
     GtkWidget *close_menuitem = GTK_WIDGET (gtk_builder_get_object (builder, "close_menuitem"));
+
     gtk_menu_item_set_label (GTK_MENU_ITEM (close_menuitem), gettext("_Close Tab"));
     //if (pages > 0) gtk_menu_item_set_label (GTK_MENU_ITEM (close_menuitem), gettext("_Close Tab"));
     //gtk_widget_set_sensitive (close_menuitem, (pages > 0));
@@ -227,7 +227,7 @@ int gw_tabs_new ()
     gtk_text_view_set_cursor_visible (GTK_TEXT_VIEW (textview), FALSE);
     gtk_text_view_set_editable (GTK_TEXT_VIEW (textview), FALSE);
     gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
-    gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow), GTK_SHADOW_IN);
+    //gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow), GTK_SHADOW_IN);
     gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (textview), GTK_WRAP_WORD);
 
     g_signal_connect( G_OBJECT (textview), "drag_motion", G_CALLBACK (do_drag_motion_1), NULL);
@@ -480,7 +480,7 @@ G_MODULE_EXPORT void do_no_results_search_for_dictionary (GtkWidget *widget, gpo
 //! @param widget Currently unused widget pointe
 //! @param data gpointer to a GwSearchItem to be freed
 //!
-G_MODULE_EXPORT void do_destroy_tab_menuitem_searchitem_data (GtkObject *object, gpointer data)
+G_MODULE_EXPORT void do_destroy_tab_menuitem_searchitem_data (GObject *object, gpointer data)
 {
     GwSearchItem *item = (GwSearchItem*) data;
     if (item != NULL)

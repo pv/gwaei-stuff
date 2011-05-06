@@ -1,5 +1,4 @@
 #include <string.h>
-#include <regex.h>
 #include <stdlib.h>
 #include <locale.h>
 #include <libintl.h>
@@ -170,7 +169,7 @@ void gw_dictionarymanager_update_items ()
       gtk_menu_shell_append (GTK_MENU_SHELL (shell),  GTK_WIDGET (item));
       if (di->load_position == 0) gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), TRUE);
       g_signal_connect(G_OBJECT (item), "toggled", G_CALLBACK (do_dictionary_changed_action), NULL);
-      if (di->load_position < 9) gtk_widget_add_accelerator (GTK_WIDGET (item), "activate", accel_group, (GDK_0 + di->load_position + 1), GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
+      if (di->load_position < 9) gtk_widget_add_accelerator (GTK_WIDGET (item), "activate", accel_group, (GDK_KEY_0 + di->load_position + 1), GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
       gtk_widget_show (item);
 
       //Cleanup
@@ -189,13 +188,13 @@ void gw_dictionarymanager_update_items ()
     item = GTK_WIDGET (gtk_menu_item_new_with_mnemonic(gettext("_Cycle Up")));
     gtk_menu_shell_append (GTK_MENU_SHELL (shell), GTK_WIDGET (item));
     g_signal_connect (G_OBJECT (item), "activate", G_CALLBACK (do_cycle_dictionaries_backward), NULL);
-    gtk_widget_add_accelerator (GTK_WIDGET (item), "activate", accel_group, GDK_Up, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
+    gtk_widget_add_accelerator (GTK_WIDGET (item), "activate", accel_group, GDK_KEY_Up, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
     gtk_widget_show (GTK_WIDGET (item));
 
     item = GTK_WIDGET (gtk_menu_item_new_with_mnemonic(gettext("Cycle _Down")));
     gtk_menu_shell_append (GTK_MENU_SHELL (shell), GTK_WIDGET (item));
     g_signal_connect (G_OBJECT (item), "activate", G_CALLBACK (do_cycle_dictionaries_forward), NULL);
-    gtk_widget_add_accelerator (GTK_WIDGET (item), "activate", accel_group, GDK_Down, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
+    gtk_widget_add_accelerator (GTK_WIDGET (item), "activate", accel_group, GDK_KEY_Down, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
     gtk_widget_show (GTK_WIDGET (item));
 
     GtkWidget *combobox = GTK_WIDGET (gtk_builder_get_object (builder, "dictionary_combobox"));

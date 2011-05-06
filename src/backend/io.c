@@ -145,10 +145,12 @@ gboolean gw_io_copy_with_encoding (const char *source_path, const char *target_p
     written = 0;
     end = gw_io_get_filesize (source_path);
     curpos = 0;
-    fraction = ((double) curpos / (double) end);
 
     while (fgets(buffer, MAX, readfd) != NULL)
     {
+      fraction = ((double) curpos / (double) end);
+      if (cb != NULL) cb (fraction, data);
+
       curpos += strlen(buffer);
       inptr = buffer; outptr = output;
       inbytes_left = MAX; outbytes_left = MAX;
@@ -168,9 +170,9 @@ gboolean gw_io_copy_with_encoding (const char *source_path, const char *target_p
         outptr = outptr + strlen(outptr) - outbytes_left;
       }
       written = fwrite(output, 1, strlen(output), writefd); 
-      fraction = ((double) curpos / (double) end);
-      if (cb != NULL) cb (fraction, data);
     }
+    fraction = ((double) curpos / (double) end);
+    if (cb != NULL) cb (fraction, data);
 
     //Cleanup
     g_iconv_close (conv);
