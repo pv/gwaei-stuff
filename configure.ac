@@ -97,7 +97,7 @@ fi
 
 
 if test $gnome = true && test $libunique = true && test $win32 = false; then
-  PKG_CHECK_MODULES(LIBUNIQUE, unique-1.0  >= $LIBUNIQUE_REQUIRED_VERSION)
+  PKG_CHECK_MODULES(LIBUNIQUE, unique-3.0  >= $LIBUNIQUE_REQUIRED_VERSION)
   AC_SUBST(LIBUNIQUE_CFLAGS)
   AC_SUBST(LIBUNIQUE_LIBS)
 fi

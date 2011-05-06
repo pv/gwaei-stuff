@@ -35,7 +35,6 @@
 
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
-#include <libsexy/sexy.h>
 #include <unique/unique.h>
 
 #include <gwaei/backend.h>
@@ -88,25 +87,25 @@ static UniqueResponse _message_received_cb (UniqueApp         *app,
         case UNIQUE_ACTIVATE:
           if (gtk_widget_get_visible (main_window))
           {
-          gdk_x11_window_move_to_current_desktop (main_window->window);
+          gdk_x11_window_move_to_current_desktop (gtk_widget_get_window (main_window));
           gtk_window_set_screen (GTK_WINDOW (main_window), unique_message_data_get_screen (message));
           gtk_window_present_with_time (GTK_WINDOW (main_window), time_);
           }
           if (gtk_widget_get_visible (kanjipad_window))
           {
-            gdk_x11_window_move_to_current_desktop (main_window->window);
+            gdk_x11_window_move_to_current_desktop (gtk_widget_get_window (main_window));
             gtk_window_set_screen (GTK_WINDOW (kanjipad_window), unique_message_data_get_screen (message));
             gtk_window_present_with_time (GTK_WINDOW (kanjipad_window), time_);
           }
           if (gtk_widget_get_visible (radicals_window))
           {
-            gdk_x11_window_move_to_current_desktop (radicals_window->window);
+            gdk_x11_window_move_to_current_desktop (gtk_widget_get_window (radicals_window));
             gtk_window_set_screen (GTK_WINDOW (radicals_window), unique_message_data_get_screen (message));
             gtk_window_present_with_time (GTK_WINDOW (radicals_window), time_);
           }
           if (gtk_widget_get_visible (settings_window))
           {
-            gdk_x11_window_move_to_current_desktop (settings_window->window);
+            gdk_x11_window_move_to_current_desktop (gtk_widget_get_window (settings_window));
             gtk_window_set_screen (GTK_WINDOW (settings_window), unique_message_data_get_screen (message));
             gtk_window_present_with_time (GTK_WINDOW (settings_window), time_);
           }
