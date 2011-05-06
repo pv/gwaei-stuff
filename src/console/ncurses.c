@@ -38,6 +38,8 @@
 
 #include <gwaei/backend.h>
 #include <gwaei/ncurses.h>
+#include <gwaei/console.h>
+#define MAX_QUERY 100
 
 static GwDictInfo *di = NULL;
 static char query_text[MAX_QUERY];
@@ -80,7 +82,7 @@ void gw_ncurses_no_result(GwSearchItem *item)
 //! @param query The query string we are searching
 //! @param dictionary The name (string) of the dictionary used
 //!
-static void print_search_start_banner(char *query, char *dictionary)
+static void gw_ncurses_start_banner (char *query, char *dictionary)
 {
     wprintw(screen, " ");
     // TRANSLATORS: First part of the sentence : 'Searching for "${query}" in the ${dictionary} dictionary'
@@ -106,7 +108,7 @@ static void print_search_start_banner(char *query, char *dictionary)
 //!
 //! @param item A GwSearchItem to gleam information from
 //!
-void gw_ncurses_append_less_relevant_header_to_output(GwSearchItem *item)
+void gw_ncurses_append_less_relevant_header_to_output (GwSearchItem *item)
 {
     wattron(results, COLOR_PAIR(GW_NCCOLORS_REDONBLACK));
     wprintw(results,"\n*** ");
@@ -126,7 +128,7 @@ void gw_ncurses_append_less_relevant_header_to_output(GwSearchItem *item)
 //!
 //! @param item A GwSearchItem to gleam information from
 //!
-void gw_ncurses_append_more_relevant_header_to_output(GwSearchItem *item)
+void gw_ncurses_append_more_relevant_header_to_output (GwSearchItem *item)
 {
 }
 
@@ -186,8 +188,6 @@ static void ncurses_add_intro_and_box (WINDOW* thisWin, char* intro)
 
 //!
 //! @brief Screen Initialization
-//!
-//! The main screen is initialized and configured.
 //!
 static int ncurses_screen_init ()
 {
@@ -351,7 +351,7 @@ static gboolean main_loop_function (gpointer data)
       }
 
       if (quiet_switch == FALSE)
-        print_search_start_banner (query_text, di->name);
+        gw_ncurses_start_banner (query_text, di->filename);
 
       if (query_text[0] == '\0')
         return TRUE;
@@ -382,7 +382,7 @@ static gboolean main_loop_function (gpointer data)
       refresh();
 */
 
-      gw_search_get_results (item, FALSE, FALSE); //TODO: Print here?? <---
+      gw_engine_get_results (item, FALSE, FALSE); //TODO: Print here?? <---
 
       //Print the number of results
       if (quiet_switch == FALSE)
@@ -434,7 +434,7 @@ static gboolean main_loop_function (gpointer data)
 //! @param argc The number of arguments
 //! @param argv An array of strings
 //!
-void initialize_ncurses_interface (int argc, char *argv[])
+void gw_ncurses_start (int argc, char *argv[])
 {
     di = NULL;
     GError *error = NULL;
@@ -442,7 +442,6 @@ void initialize_ncurses_interface (int argc, char *argv[])
     context = g_option_context_new (gettext("- Japanese-English dictionary program that allows regex searches"));
     GOptionEntry entries[] = 
     {
-      { "ncurses", 'n', 0, G_OPTION_ARG_NONE, &ncurses_switch, gettext("Open up the multisearch window (beta)"), NULL },
       { "quiet", 'q', 0, G_OPTION_ARG_NONE, &quiet_switch, gettext("Display less information"), NULL },
       { "dictionary", 'd', 0, G_OPTION_ARG_STRING, &dictionary_switch_data, gettext("Search using a chosen dictionary"), NULL },
       { NULL }
@@ -466,20 +465,15 @@ void initialize_ncurses_interface (int argc, char *argv[])
 
     //Set dictionary
     if (dictionary_switch_data == NULL)
-      di = gw_dictlist_get_dictinfo_by_alias ("English");
+      di = gw_dictinfolist_get_dictinfo_fuzzy ("English");
     else
-      di = gw_dictlist_get_dictinfo_by_alias (dictionary_switch_data);
-    if (di == NULL || di->status != GW_DICT_STATUS_INSTALLED)
-    {
-      printf (gettext("Requested dictionary not found!\n"));
-      exit (EXIT_FAILURE);
-    }
+      di = gw_dictinfolist_get_dictinfo_fuzzy (dictionary_switch_data);
 
     //Set query text
     static char* query_text_data;
     if (argc > 1 && query_text_data == NULL)
     {
-      query_text_data = gw_util_strdup_args_to_query (argc, argv);
+      query_text_data = gw_util_get_query_from_args (argc, argv);
       if (query_text_data == NULL)
       {
         printf ("Memory error creating initial query string!\n");
@@ -495,7 +489,6 @@ void initialize_ncurses_interface (int argc, char *argv[])
 
     //nCurses initializations
     if (ncurses_screen_init() == ERR) return;
-    gw_ncurses_initialize_interface_output_generics ();
 
     //Enter the main loop of ncurses
     main_loop = g_main_loop_new (NULL, TRUE);
@@ -513,7 +506,7 @@ void initialize_ncurses_interface (int argc, char *argv[])
 //!
 //! @brief Not yet written
 //!
-void gw_ncurses_append_edict_results (GwSearchItem *item)
+void gw_ncurses_append_edict_results_to_buffer (GwSearchItem *item)
 {
 		//Definitions
 		int cont = 0;
@@ -557,7 +550,7 @@ void gw_ncurses_append_edict_results (GwSearchItem *item)
 //!
 //! @brief Not yet written
 //!
-void gw_ncurses_append_kanjidict_results (GwSearchItem *item)
+void gw_ncurses_append_kanjidict_results_to_buffer (GwSearchItem *item)
 {
 		char line_started = FALSE;
 	    GwResultLine *resultline = item->resultline;
@@ -619,7 +612,7 @@ void gw_ncurses_append_kanjidict_results (GwSearchItem *item)
 //!
 //! @brief Not yet written
 //!
-void gw_ncurses_append_examplesdict_results (GwSearchItem *item)
+void gw_ncurses_append_examplesdict_results_to_buffer (GwSearchItem *item)
 {
 		GwResultLine *resultline = item->resultline;
 		int i = 0;
@@ -642,7 +635,7 @@ void gw_ncurses_append_examplesdict_results (GwSearchItem *item)
 //!
 //! @brief Not yet written
 //!
-void gw_ncurses_append_unknowndict_results (GwSearchItem *item)
+void gw_ncurses_append_unknowndict_results_to_buffer (GwSearchItem *item)
 {
   	wprintw(results,"%s\n", item->resultline->string);
 }
@@ -679,20 +672,4 @@ void gw_ncurses_after_search_cleanup (GwSearchItem *item)
     }
 }
 
-
-//!
-//! @brief Set the output generics functions when a search is being done
-//!
-void gw_ncurses_initialize_interface_output_generics ()
-{
-    gw_output_generic_append_edict_results = gw_ncurses_append_edict_results;
-    gw_output_generic_append_kanjidict_results = gw_ncurses_append_kanjidict_results;
-    gw_output_generic_append_examplesdict_results = gw_ncurses_append_examplesdict_results;
-    gw_output_generic_append_unknowndict_results = gw_ncurses_append_unknowndict_results;
-
-    gw_output_generic_append_less_relevant_header_to_output = gw_ncurses_append_less_relevant_header_to_output;
-    gw_output_generic_append_more_relevant_header_to_output = gw_ncurses_append_more_relevant_header_to_output;
-    gw_output_generic_pre_search_prep = gw_ncurses_pre_search_prep;
-    gw_output_generic_after_search_cleanup = gw_ncurses_after_search_cleanup;
-}
 

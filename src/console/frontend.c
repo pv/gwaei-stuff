@@ -40,6 +40,7 @@ static gboolean _quiet_switch = FALSE;
 static gboolean _exact_switch = FALSE;
 static gboolean _list_switch = FALSE;
 static gboolean _version_switch = FALSE;
+static gboolean _ncurses_switch = FALSE;
 
 static char* _dictionary_switch_data = NULL;
 static char* _install_switch_data = NULL;
@@ -177,6 +178,33 @@ int gw_frontend_start_console (int argc, char* argv[])
 
     return resolution;
 }
+
+
+//!
+//! @brief Equivalent to the main function for many programs.  This is what starts the program
+//! @param argc Your argc from your main function
+//! @param argv Your array of strings from main
+//!
+int gw_frontend_start_ncurses (int argc, char* argv[])
+{
+  printf("ncurses\n");
+
+    gw_engine_initialize (
+                         gw_ncurses_append_edict_results_to_buffer,
+                         gw_ncurses_append_kanjidict_results_to_buffer,
+                         gw_ncurses_append_examplesdict_results_to_buffer,
+                         gw_ncurses_append_unknowndict_results_to_buffer,
+                         gw_ncurses_append_less_relevant_header_to_output,
+                         gw_ncurses_append_more_relevant_header_to_output,
+                         gw_ncurses_pre_search_prep,
+                         gw_ncurses_after_search_cleanup
+                        );
+
+    gw_ncurses_start (argc, argv);
+
+    return TRUE;
+}
+
 
 
 //!

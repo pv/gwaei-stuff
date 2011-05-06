@@ -34,37 +34,39 @@
 #include <gwaei/backend.h>
 #include <gwaei/frontend.h>
 
-#ifdef WITH_NCURSES
 static gboolean _ncurses_switch = FALSE;
-
-static GOptionEntry _entries[] = 
-{
-  { "ncurses", 'n', 0, G_OPTION_ARG_NONE, &_ncurses_switch, "", NULL },
-  { NULL }
-};
-#endif
 
 int main (int argc, char *argv[])
 {    
     //Declarations
     int resolution;
-
-    //Initializations
-    gw_backend_initialize (&argc, argv);
-    gw_frontend_initialize (&argc, argv);
+    GError *error;
 
 #ifdef WITH_NCURSES
+    GOptionEntry entries[] = 
+    {
+      { "ncurses", 'n', 0, G_OPTION_ARG_NONE, &_ncurses_switch, "description", NULL },
+      { NULL }
+    };
+
     GOptionContext *context;
-    context = g_option_context_new (" ");
-    g_option_context_add_main_entries (context, _entries, PACKAGE);
+    context = g_option_context_new ("ncurses");
+    g_option_context_add_main_entries (context, entries, PACKAGE);
     g_option_context_set_help_enabled (context, FALSE);
     g_option_context_parse (context, &argc, &argv, &error);
     g_option_context_free (context);
     context = NULL;
+#endif
 
+    //Initializations
+    error = NULL;
+    gw_backend_initialize (&argc, argv);
+    gw_frontend_initialize (&argc, argv);
+
+#ifdef WITH_NCURSES
     //Start the program
     if (_ncurses_switch)
-      ;
+      resolution = gw_frontend_start_ncurses (argc, argv);
     else
 #endif
       resolution = gw_frontend_start_console (argc, argv);
