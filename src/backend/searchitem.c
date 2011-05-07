@@ -406,15 +406,11 @@ static gboolean _kanji_existance_comparison (GwQueryLine *ql, GwResultLine *rl, 
     kanji_check_passed = TRUE;
     radical_check_passed = TRUE;
 
-    printf("BREAK1\n");
-
     //Calculate the strokes check
     if (rl->strokes != NULL)
     {
-      printf("BREAK2\n");
       for (iter = ql->re_strokes; iter != NULL && *iter != NULL; iter++)
       {
-        printf("BREAK3\n");
         re = (*iter)[RELEVANCE];
         if (re != NULL && g_regex_match (re, rl->strokes, 0, NULL) == FALSE) 
           strokes_check_passed = FALSE;

@@ -2856,7 +2856,6 @@ void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item)
       strcat(markup2, "</span>");
 
 
-      int x, y, width, height;
       GtkWidget *window = GTK_WIDGET (gtk_widget_get_tooltip_window (tv));
       if (window != NULL) {
         GtkWidget *hbox = GTK_WIDGET (gtk_hbox_new (FALSE, 3));
@@ -2869,6 +2868,8 @@ void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item)
         label = GTK_WIDGET (gtk_label_new (NULL));
         gtk_label_set_markup (GTK_LABEL (label), markup);
         gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (label), FALSE, FALSE, 0);
+
+        gtk_widget_show_all (hbox);
       }
     }
 }

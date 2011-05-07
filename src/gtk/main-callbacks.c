@@ -229,6 +229,7 @@ G_MODULE_EXPORT gboolean do_get_iter_for_button_release (GtkWidget      *widget,
 
         GtkWidget *tv = GTK_WIDGET (gw_common_get_widget_by_target (GW_TARGET_RESULTS));
         GtkWidget *window = GTK_WIDGET (gtk_widget_get_tooltip_window (tv));
+        GtkWindow* parent = GTK_WINDOW (gtk_builder_get_object (builder, "main_window"));
         if (window == NULL) {
           button_character = unic;
           window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
@@ -238,9 +239,11 @@ G_MODULE_EXPORT gboolean do_get_iter_for_button_release (GtkWidget      *widget,
           gtk_window_set_accept_focus (GTK_WINDOW (window), FALSE);
           gtk_container_set_border_width (GTK_CONTAINER (window), 3);
           gtk_widget_set_tooltip_window (tv, GTK_WINDOW (window));
-          GtkWindow* parent = GTK_WINDOW (gtk_builder_get_object (builder, "main_window"));
-          gtk_window_set_transient_for (GTK_WINDOW (window), parent);
+          gtk_window_set_resizable (GTK_WINDOW (window), FALSE);
+          gtk_window_set_transient_for (GTK_WINDOW (window), NULL);
           gtk_window_set_opacity (GTK_WINDOW (window), .9);
+          gtk_window_set_type_hint (GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_TOOLTIP);
+          gtk_widget_set_name (GTK_WIDGET (window), "gtk-tooltip");
         }
         if (window != NULL) {
           button_character = unic;
@@ -255,10 +258,12 @@ G_MODULE_EXPORT gboolean do_get_iter_for_button_release (GtkWidget      *widget,
           tooltip_item = gw_searchitem_new (query, di, GW_TARGET_KANJI);
           gw_engine_get_results (tooltip_item, TRUE, FALSE);
 
-          gtk_window_move (GTK_WINDOW (window), (event->x_root + 3), (event->y_root + 3));
           g_thread_join (tooltip_item->thread); 
-          gtk_widget_show_all (window);
-          gtk_window_present (GTK_WINDOW (window));
+
+          int winx, winy;
+          gtk_window_get_position (GTK_WINDOW (window), &winx, &winy);
+          gtk_window_move (GTK_WINDOW (window), event->x_root + winx - 3, event->y_root + winy - 3);
+          gtk_widget_show_now (GTK_WIDGET (window));
         }
       }
       else {
@@ -266,8 +271,9 @@ G_MODULE_EXPORT gboolean do_get_iter_for_button_release (GtkWidget      *widget,
         GtkWidget *window = GTK_WIDGET (gtk_widget_get_tooltip_window (tv));
         if (window != NULL && button_character != unic) 
         {
-          gtk_widget_destroy (window);
           gtk_widget_set_tooltip_window (tv, NULL);
+          gtk_widget_destroy (window);
+          window = NULL;
         }
       }
     }
