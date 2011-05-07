@@ -6,5 +6,5 @@ VERSION = @VERSION@
 datadesktopdir = $(prefix)/share/applications
 datadesktop_DATA = $(PACKAGE).desktop
 
-EXTRA_DIST = $(PACKAGE).desktop
+EXTRA_DIST = $(PACKAGE).desktop.in
 

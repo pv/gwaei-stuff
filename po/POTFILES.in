@@ -21,7 +21,6 @@ src/gtk/dictionaryinstall.c
 src/gtk/dictionarymanager.c
 src/gtk/frontend.c
 src/gtk/gwaei.c
-src/gtk/libsexy.c
 src/gtk/libunique.c
 src/gtk/main.c
 src/gtk/main-callbacks.c

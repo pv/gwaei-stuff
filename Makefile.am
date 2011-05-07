@@ -53,6 +53,6 @@ uninstall-local:
 
 ##DISTCLEANFILES = gnome-doc-utils.make
 #DISTCLEANFILES = intltool-extract intltool-merge intltool-update po/.intltool-merge-cache
-EXTRA_DIST = m4/ChangeLog  config.rpath m4/ChangeLog config.rpath m4/ChangeLog help/Makefile.am.gnome help/Makefile.am.none mandir/gwaei.1 mandir/waei.1 autogen.sh rpm/create_rpms.sh $(INTLTOOL_FILES)
+EXTRA_DIST = m4/ChangeLog  config.rpath m4/ChangeLog config.rpath m4/ChangeLog mandir/gwaei.1 mandir/waei.1 autogen.sh rpm/create_rpms.sh $(INTLTOOL_FILES)
 
 

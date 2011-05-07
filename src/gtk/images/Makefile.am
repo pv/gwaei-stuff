@@ -61,5 +61,5 @@ update-icon-cache:
 
 
 
-EXTRA_DIST = logo.png 16x16/$(PACKAGE).png 24x24/$(PACKAGE).png 32x32/$(PACKAGE).png 48x48/$(PACKAGE).png 22x22/word-boundary.png 16x16/non-word-boundary.png 16x16/unknown-character.png 24x24/non-word-boundary.png 16x16/word-boundary.png 24x24/unknown-character.png 22x22/non-word-boundary.png 24x24/word-boundary.png 22x22/unknown-character.png goo.png google.png wikipedia.png book_green.png
+EXTRA_DIST = logo.png 16x16/$(PACKAGE).png 24x24/$(PACKAGE).png 32x32/$(PACKAGE).png 48x48/$(PACKAGE).png scalable/$(PACKAGE).svg 22x22/word-boundary.png 16x16/non-word-boundary.png 16x16/unknown-character.png 24x24/non-word-boundary.png 16x16/word-boundary.png 24x24/unknown-character.png 22x22/non-word-boundary.png 24x24/word-boundary.png 22x22/unknown-character.png goo.png google.png wikipedia.png book_green.png 
 
