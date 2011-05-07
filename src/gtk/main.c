@@ -62,6 +62,12 @@ void gw_main_initialize ()
     builder = gw_common_get_builder ();
     toolbar = GTK_WIDGET (gtk_builder_get_object (builder, "toolbar"));
     gtk_style_context_add_class (gtk_widget_get_style_context (toolbar), GTK_STYLE_CLASS_PRIMARY_TOOLBAR);
+#ifdef G_OS_WIN32
+    gtk_toolbar_set_style (GTK_TOOLBAR (toolbar), GTK_TOOLBAR_ICONS);
+#else
+    gtk_toolbar_unset_style (GTK_TOOLBAR (toolbar));
+#endif
+
 
     gw_tabs_initialize ();
 }

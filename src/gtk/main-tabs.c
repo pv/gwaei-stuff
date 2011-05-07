@@ -193,20 +193,37 @@ void gw_tabs_guarantee_first_tab ()
 
 //!
 //! @brief Sets the title text of the current tab.
+//! @param TEXT The text to set to the tab
 //!
-void gw_tabs_set_current_tab_text (const char* string)
+void gw_tabs_set_current_tab_text (const char* TEXT)
 {
-    GtkBuilder *builder = gw_common_get_builder ();
+    //Declarations
+    GtkBuilder *builder;
+    GtkWidget *notebook;
+    int page_num;
+    GtkWidget *container;
+    GtkWidget *hbox;
+    GtkWidget *vbox;
+    GList *hchildren;
+    GList *vchildren;
+    GtkWidget *label;
 
-    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
-    int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
-    GtkWidget *container = gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), page_num);
-    GtkWidget *hbox = GTK_WIDGET (gtk_notebook_get_tab_label(GTK_NOTEBOOK (notebook), GTK_WIDGET (container)));
-    GList *children = gtk_container_get_children (GTK_CONTAINER (hbox));
-    GtkWidget *label = GTK_WIDGET (children->data);
-    gtk_label_set_text (GTK_LABEL (label), string);
-    g_list_free (children);
-    children = NULL;
+    //Initializations
+    builder = gw_common_get_builder ();
+    notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+    container = gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), page_num);
+    hbox = GTK_WIDGET (gtk_notebook_get_tab_label(GTK_NOTEBOOK (notebook), GTK_WIDGET (container)));
+    hchildren = gtk_container_get_children (GTK_CONTAINER (hbox));
+    vbox = GTK_WIDGET (hchildren->data);
+    vchildren = gtk_container_get_children (GTK_CONTAINER (vbox));
+    label = GTK_WIDGET (vchildren->data);
+
+    gtk_label_set_text (GTK_LABEL (label), TEXT);
+
+    //Cleanup
+    g_list_free (hchildren);
+    g_list_free (vchildren);
 }
 
 
@@ -246,7 +263,8 @@ int gw_tabs_new ()
     gtk_widget_show_all (GTK_WIDGET (scrolledwindow));
 
     //Create create tab label
-    GtkWidget *hbox = GTK_WIDGET (gtk_hbox_new(FALSE, 0));
+    GtkWidget *vbox;
+    GtkWidget *hbox = GTK_WIDGET (gtk_hbox_new(FALSE, 3));
     GtkWidget *label = GTK_WIDGET (gtk_label_new(gettext("(Empty)")));
     GtkWidget *close_button = GTK_WIDGET (gtk_button_new ());
     gtk_button_set_relief (GTK_BUTTON (close_button), GTK_RELIEF_NONE);
@@ -254,7 +272,7 @@ int gw_tabs_new ()
     gtk_button_set_focus_on_click (GTK_BUTTON (close_button), FALSE);
     gtk_container_set_border_width (GTK_CONTAINER (close_button), 0);
     gtk_misc_set_padding (GTK_MISC (button_image), 0, 0);
-    gtk_widget_set_size_request (GTK_WIDGET (button_image), 8, 8);
+    gtk_widget_set_size_request (GTK_WIDGET (button_image), 14, 14);
 
     //Declarations
     GtkCssProvider *provider;
@@ -279,8 +297,12 @@ int gw_tabs_new ()
     //Put all the elements together
     gtk_container_add (GTK_CONTAINER (close_button), button_image);
     g_signal_connect (G_OBJECT (close_button), "clicked", G_CALLBACK (do_tab_remove), scrolledwindow);
-    gtk_container_add (GTK_CONTAINER (hbox), label);
-    gtk_container_add (GTK_CONTAINER (hbox), close_button);
+    vbox = GTK_WIDGET (gtk_vbox_new(FALSE, 0));
+    gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, TRUE, 0);
+    vbox = GTK_WIDGET (gtk_vbox_new(FALSE, 0));
+    gtk_box_pack_start (GTK_BOX (vbox), close_button, FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, TRUE, 0);
     gtk_widget_show_all (GTK_WIDGET (hbox));
 
     //Shrink the close button
