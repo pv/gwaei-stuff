@@ -320,7 +320,6 @@ static char *radical_array[][5] =
 
 void gw_radsearchtool_initialize ()
 {
-  /*
     GtkBuilder *builder = gw_common_get_builder ();
     gw_common_load_ui_xml ("radicals.ui");
 
@@ -333,20 +332,13 @@ void gw_radsearchtool_initialize ()
     char *stroke;
     GtkWidget *button;
     GtkWidget *label;
-    GValue vncols = {0};
-    GValue vnrows = {0};
     int ncols;
     int nrows;
 
     //Initializations
     total_columns = 14;
-    g_object_get_property (G_OBJECT (table), "n-columns", &vncols);
-    g_object_get_property (G_OBJECT (table), "n-rows", &vnrows);
-    ncols = g_value_get_int (&vncols);
-    nrows = g_value_get_int (&vnrows);
-    g_value_unset (&vncols);
-    g_value_unset (&vnrows);
     table = GTK_TABLE (gtk_builder_get_object (builder, "radical_selection_table"));
+    g_object_get (G_OBJECT (table), "n-columns", &ncols, "n-rows", &nrows, NULL);
     if (ncols < total_columns) gtk_table_resize (table, nrows, total_columns);
     rows = nrows - 1;
 
@@ -375,9 +367,7 @@ void gw_radsearchtool_initialize ()
       //Add a radical button
       else
       {
-        g_object_get_property (G_OBJECT (table), "n-columns", &vncols);
-        ncols = g_value_get_int (&vncols);
-        g_value_unset (&vncols);
+        g_object_get (G_OBJECT (table), "n-columns", &ncols, NULL);
         if (cols == total_columns && rows != 0) gtk_table_resize (table, rows, ncols);
         button = gtk_toggle_button_new_with_label (radical_array[i][GW_RADARRAY_ACTUAL]);
         gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
@@ -406,7 +396,6 @@ void gw_radsearchtool_initialize ()
       }
     }
     gtk_widget_show_all (GTK_WIDGET (table));
-    */
 }
 
 

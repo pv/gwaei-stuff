@@ -33,4 +33,4 @@ src/gtk/settings.c
 src/gtk/settings-callbacks.c
 src/gtk/settings-listeners.c
 
-src/gtk/desktop/gwaei.desktop.in
+src/gtk/desktop/gwaei.desktop
