@@ -712,7 +712,7 @@ gboolean gw_dictinst_install (GwDictInst *di, GwIoProgressCallback cb, GError **
 {
     g_assert (*error == NULL && di != NULL);
 
-    //gw_dictinst_download (di, cb, error);
+    gw_dictinst_download (di, cb, error);
     gw_dictinst_decompress (di, cb, error);
     gw_dictinst_convert_encoding (di, cb, error);
     gw_dictinst_postprocess (di, cb, error);

@@ -38,10 +38,10 @@ deb/DEBIAN/control
 deb/DEBIAN/postinst
 deb/DEBIAN/prerm
 
-help/C/gwaei.xml
-help/Makefile
-help/gwaei-C.omf
-help/gwaei.omf
+src/gtk/help/C/gwaei.xml
+src/gtk/help/Makefile
+src/gtk/help/gwaei-C.omf
+src/gtk/help/gwaei.omf
 
 po/Makefile
 po/Makefile.in
