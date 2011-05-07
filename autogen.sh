@@ -1,6 +1,7 @@
 #!/bin/sh
 
 gettextize --force \
+&& intltoolize --copy --force --automake \
 && gnome-doc-prepare --copy --force \
 && aclocal -I m4 --force \
 && autoheader -f \
@@ -8,4 +9,3 @@ gettextize --force \
 && autoconf --force
 
 #this line should go after gettextize
-#&& intltoolize --copy --force --automake \

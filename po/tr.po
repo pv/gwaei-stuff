@@ -29,7 +29,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 0.15.1\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2011-05-06 23:40-0400\n"
+"POT-Creation-Date: 2011-05-07 13:35-0400\n"
 "PO-Revision-Date: 2010-10-25 14:50+0200\n"
 "Last-Translator: Yusuf BARAN <info@barancolor.net>\n"
 "Language-Team: none\n"
@@ -171,7 +171,7 @@ msgstr "Kuruluyor..."
 msgid "description"
 msgstr ""
 
-#: src/gtk/ui/main.glade:182 src/gtk/main.c:183
+#: src/gtk/ui/main.glade:182 src/gtk/main.c:189
 msgid "gWaei Japanese-English Dictionary"
 msgstr "gWaei Japonca-İngilizce Sözlük"
 
@@ -453,18 +453,18 @@ msgstr ""
 msgid "- A dictionary program for Japanese-English translation."
 msgstr "- Japonca ingilizce çeviri yapan sözlük programı"
 
-#: src/gtk/main.c:515
+#: src/gtk/main.c:521
 msgid "Searching..."
 msgstr "Aranıyor... "
 
-#: src/gtk/main.c:517
+#: src/gtk/main.c:523
 #, c-format
 msgid "Found %d result"
 msgid_plural "Found %d results"
 msgstr[0] "Sonuç %d bulunan"
 msgstr[1] "Bulunanlar %d sonuçlar"
 
-#: src/gtk/main.c:518
+#: src/gtk/main.c:524
 #, c-format
 msgid "Searching... %d result"
 msgid_plural "Searching... %d results"
@@ -472,7 +472,7 @@ msgstr[0] "Aranıyor... %d sonuç"
 msgstr[1] "Aranıyor... %d sonuç"
 
 #. TRANSLATORS: relevant what ? It's the number of "relevant" result(s) displayed while or after searching.
-#: src/gtk/main.c:521
+#: src/gtk/main.c:527
 #, c-format
 msgid "(%d Relevant)"
 msgid_plural "(%d Relevant)"
@@ -480,25 +480,25 @@ msgstr[0] "(%d İlgili)"
 msgstr[1] "(%d İlgili)"
 
 #. TRANSLATORS: The argument is the dictionary long name
-#: src/gtk/main.c:1625
+#: src/gtk/main.c:1631
 #, c-format
 msgid "Nothing found in the %s!"
 msgstr "%s burada bulunamadı!"
 
-#: src/gtk/main.c:1656
+#: src/gtk/main.c:1662
 msgid "Search Other Dictionary: "
 msgstr "Diğer Sözlükleri Ara: "
 
-#: src/gtk/main.c:1695
+#: src/gtk/main.c:1701
 msgid "Search Online: "
 msgstr "Çevrimiçi Ara:"
 
-#: src/gtk/main.c:1748
+#: src/gtk/main.c:1754
 #, c-format
 msgid "gWaei Usage Tip #%d: "
 msgstr "gWaei İpucu Kullan #%d: "
 
-#: src/gtk/main.c:1761
+#: src/gtk/main.c:1767
 #, c-format
 msgid ""
 "Use the Unknown Character from the Insert menu or toolbar in place of "
@@ -514,15 +514,15 @@ msgstr ""
 "Kanjipadin özelliği kanji karakter çizimi girişidir. Bu giriş tipinde "
 "çizgiler vuruşlar ve noktalar çok önemlidir."
 
-#: src/gtk/main.c:1768
+#: src/gtk/main.c:1774
 msgid "Inputting Unknown Kanji"
 msgstr "Tanımsız Kanji Girişi"
 
-#: src/gtk/main.c:1785
+#: src/gtk/main.c:1791
 msgid "Getting More Exact Matches"
 msgstr "Daha Fazla Eşleşmeye Git"
 
-#: src/gtk/main.c:1791
+#: src/gtk/main.c:1797
 msgid ""
 "Use the Word-edge Mark and the Not-word-edge Mark from the insert menu to "
 "get more relevant results.  fish\\b will return results like fish and "
@@ -532,7 +532,7 @@ msgstr ""
 "kelimeleri kullanın . Balık\\b araması, balıkçı ve balıklama gibi sonuçlar "
 "verir."
 
-#: src/gtk/main.c:1799
+#: src/gtk/main.c:1805
 #, c-format
 msgid ""
 "Use the And Character or Or Character to search for results that contain a "
@@ -544,15 +544,15 @@ msgstr ""
 "arama yapmanıza yardımcı olur. Kediler ve köpekler %s içeren iki kelime kedi "
 "ve köpek sonuçlarını verir."
 
-#: src/gtk/main.c:1805
+#: src/gtk/main.c:1811
 msgid "Searching for Multiple Words"
 msgstr "Çoklu Kelimeler İçin Ara"
 
-#: src/gtk/main.c:1822
+#: src/gtk/main.c:1828
 msgid "Make a Vocabulary List"
 msgstr "Kelime Listesi Yap"
 
-#: src/gtk/main.c:1828
+#: src/gtk/main.c:1834
 msgid ""
 "Specific sections of results can be printed or saved by dragging the mouse "
 "to highlight them.  Using this in combination with the Append command from "
@@ -563,11 +563,11 @@ msgstr ""
 "menüden iliştirme özelliğini kullanabilirsiniz. İliştir menüsü Dosya "
 "menüsünden araç çubuğuna eklenebilir, daha kolay ve hızlı kullanım sağlar."
 
-#: src/gtk/main.c:1838
+#: src/gtk/main.c:1844
 msgid "Why Use the Mouse?"
 msgstr "Neden Fare Kullanıyorsun?"
 
-#: src/gtk/main.c:1844
+#: src/gtk/main.c:1850
 msgid ""
 "Typing something will move the focus to the search input box.  Hitting the "
 "Up or Down arrow key will move the focus to the results pane so you can "
@@ -578,11 +578,11 @@ msgstr ""
 "gezinti yapabilirsiniz, anlam ayrımı sözcüklerde Sayfa kaydır tuşlarını "
 "kullanarak anlamlar arasında gezinti yapabilirsiniz."
 
-#: src/gtk/main.c:1854
+#: src/gtk/main.c:1860
 msgid "Get Ready for the JLPT"
 msgstr "JLPT İçin Başlat"
 
-#: src/gtk/main.c:1860
+#: src/gtk/main.c:1866
 msgid ""
 "The Kanji dictionary has some hidden features.  One such one is the ability "
 "to filter out Kanji that don't meet a certain criteria.  If you are planning "
@@ -597,11 +597,11 @@ msgstr ""
 "Belirli seviye kanfilerde J# filtresini kullanmak işlerinizi "
 "kolaylaştırabilir."
 
-#: src/gtk/main.c:1874
+#: src/gtk/main.c:1880
 msgid "Just drag words in!"
 msgstr "Sadece kelime içine sürükle"
 
-#: src/gtk/main.c:1880
+#: src/gtk/main.c:1886
 #, fuzzy
 msgid ""
 "If you drag and drop a highlighted word into gWaei's search result box, "
@@ -612,11 +612,11 @@ msgstr ""
 "çevirisini yapacaktır, bu durum genellikle web sayfası çevirilerinde işe "
 "yarayan bir özelliktir."
 
-#: src/gtk/main.c:1891
+#: src/gtk/main.c:1897
 msgid "What does (adj-i) mean?"
 msgstr "Bunu mu Demek İstediniz (adj-i)?"
 
-#: src/gtk/main.c:1897
+#: src/gtk/main.c:1903
 msgid ""
 "It is part of the terminalogy used by the EDICT group of dictionaries to "
 "categorize words.  Some are obvious, but there are a number that there is no "
@@ -628,11 +628,11 @@ msgstr ""
 "EDICT sözlük terminolojisi hakkında bilgi sahibi olmak için terminoloji "
 "menüsüne gözatın."
 
-#: src/gtk/main.c:1909
+#: src/gtk/main.c:1915
 msgid "Books are Heavy"
 msgstr "Ağır Kitaplar"
 
-#: src/gtk/main.c:1915
+#: src/gtk/main.c:1921
 msgid ""
 "Aways wear a construction helmet when working with books.  They are "
 "dangerous heavy objects that can at any point fall on and injure you.  "
@@ -644,104 +644,104 @@ msgstr ""
 "sağlayacaktır. Tanıdıklarınıza gönül rahatlığı ile önerebilirsiniz, size "
 "teşekkür edeceklerdir. Gerçekten."
 
-#: src/gtk/main.c:2161
+#: src/gtk/main.c:2167
 msgid "A_ppend Selected"
 msgstr "Seçilene İliştir"
 
-#: src/gtk/main.c:2163
+#: src/gtk/main.c:2169
 msgid "Save Selected _As"
 msgstr "Seçileni Farklı Kaydet"
 
-#: src/gtk/main.c:2165
+#: src/gtk/main.c:2171
 msgid "_Print Selected"
 msgstr "Seçileni Yazdır"
 
-#: src/gtk/main.c:2172
+#: src/gtk/main.c:2178
 msgid "A_ppend"
 msgstr "İliştir"
 
-#: src/gtk/main.c:2517 src/gtk/main.c:2616
+#: src/gtk/main.c:2523 src/gtk/main.c:2622
 msgid "Pop"
 msgstr ""
 
-#: src/gtk/main.c:2684 src/gtk/main.c:2784
+#: src/gtk/main.c:2690 src/gtk/main.c:2793
 msgid "Radicals:"
 msgstr "Radikaller:"
 
-#: src/gtk/main.c:2701 src/gtk/main.c:2792
+#: src/gtk/main.c:2707 src/gtk/main.c:2803
 msgid "Readings:"
 msgstr "Okunuş:"
 
-#: src/gtk/main.c:2712 src/gtk/main.c:2800
+#: src/gtk/main.c:2718 src/gtk/main.c:2813
 msgid "Name:"
 msgstr "İsim:"
 
-#: src/gtk/main.c:2723 src/gtk/main.c:2808
+#: src/gtk/main.c:2729 src/gtk/main.c:2822
 msgid "Radical Name:"
 msgstr "Radikal İsmi:"
 
-#: src/gtk/main.c:2738 src/gtk/main.c:2817
+#: src/gtk/main.c:2744 src/gtk/main.c:2831
 msgid "Stroke:"
 msgstr "Hat:"
 
-#: src/gtk/main.c:2745 src/gtk/main.c:2824
+#: src/gtk/main.c:2751 src/gtk/main.c:2838
 msgid "Freq:"
 msgstr "Frek:"
 
-#: src/gtk/main.c:2752 src/gtk/main.c:2831
+#: src/gtk/main.c:2758 src/gtk/main.c:2845
 msgid "Grade:"
 msgstr "Kademe:"
 
-#: src/gtk/main.c:2758 src/gtk/main.c:2838
+#: src/gtk/main.c:2764 src/gtk/main.c:2852
 msgid "JLPT:"
 msgstr "JLPT:"
 
-#: src/gtk/main.c:2767 src/gtk/main.c:2845
+#: src/gtk/main.c:2773 src/gtk/main.c:2861
 msgid "Meanings:"
 msgstr "Anlamlar:"
 
 #. TRANSLATORS: The "E" stands for "English"
-#: src/gtk/main.c:2901
+#: src/gtk/main.c:2918
 msgid "E:\t"
 msgstr ""
 
 #. TRANSLATORS: The "J" stands for "Japanese"
-#: src/gtk/main.c:2912
+#: src/gtk/main.c:2929
 msgid ""
 "\n"
 "J:\t"
 msgstr ""
 
 #. TRANSLATORS: The "D" stands for "Detail"
-#: src/gtk/main.c:2923
+#: src/gtk/main.c:2940
 msgid ""
 "\n"
 "D:\t"
 msgstr ""
 
-#: src/gtk/main.c:2992
+#: src/gtk/main.c:3009
 #, c-format
 msgid "Other Result %d"
 msgid_plural "Other Results %d"
 msgstr[0] "Diğer Sonuç %d"
 msgstr[1] "Diğer Sonuçlar %d"
 
-#: src/gtk/main.c:3007
+#: src/gtk/main.c:3024
 #, c-format
 msgid "Main Result %d"
 msgid_plural "Main Results %d"
 msgstr[0] "Genel Sonuç %d"
 msgstr[1] "Genel Sonuçlar %d"
 
-#: src/gtk/main-callbacks.c:543
+#: src/gtk/main-callbacks.c:539
 msgid "Save As"
 msgstr "Farklı Kaydet"
 
-#: src/gtk/main-callbacks.c:556
+#: src/gtk/main-callbacks.c:552
 msgid "vocabulary.txt"
 msgstr "sozluk.txt"
 
-#: src/gtk/main-callbacks.c:1155
+#: src/gtk/main-callbacks.c:1151
 #, fuzzy
 msgid ""
 "Program for Japanese translation and reference. The\n"
@@ -754,24 +754,24 @@ msgstr ""
 "GJITEN için ilham kaynağı olanlara özel olarak teşekkürler."
 
 #. TRANSLATORS: You can add your own name to the translation of this field, it will be displayed in the "about" box when gwaei is run in your language
-#: src/gtk/main-callbacks.c:1159
+#: src/gtk/main-callbacks.c:1155
 msgid "translator-credits"
 msgstr "çeviri"
 
 #. TRANSLATORS: The first variable is the expression to look for, the second is the dictionary full name
-#: src/gtk/main-callbacks.c:1734
+#: src/gtk/main-callbacks.c:1730
 #, c-format
 msgid "Search for \"%s\" in the %s"
 msgstr "\"%s\" için %s içinde ara"
 
 #. TRANSLATORS: The variable is the expression to look for
-#: src/gtk/main-callbacks.c:1736
+#: src/gtk/main-callbacks.c:1732
 #, c-format
 msgid "Search for \"%s\" in a Different Dictionary"
 msgstr "\"%s\" için Farklı Dizinde Ara"
 
 #. TRANSLATORS: The variable is the expression to look for
-#: src/gtk/main-callbacks.c:1738
+#: src/gtk/main-callbacks.c:1734
 #, c-format
 msgid "Cross-reference \"%s\" Online"
 msgstr "Çapraz referans \"%s\" Çevrimiçi"
@@ -784,7 +784,7 @@ msgstr "_Sekmeyi Kapat"
 msgid "_Close"
 msgstr "_Kapat"
 
-#: src/gtk/main-tabs.c:250
+#: src/gtk/main-tabs.c:268
 msgid "(Empty)"
 msgstr "(Boş)"
 
@@ -792,6 +792,17 @@ msgstr "(Boş)"
 #, c-format
 msgid "Page %d"
 msgstr "Sayfa %d"
+
+#: src/gtk/radsearchtool.c:376
+#, c-format
+msgid ""
+"<b>Substitution Radical:</b> %s\n"
+"<b>Actual Radical:</b> %s\n"
+"<b>Radical Name:</b> %s"
+msgstr ""
+"<b>Radical Yerine:</b> %s\n"
+"<b>Güncel Radikal:</b> %s\n"
+"<b>Radical İsmi:</b> %s"
 
 #: src/gtk/settings.c:191
 #, c-format
@@ -939,15 +950,6 @@ msgstr "_Sistem Belge Yazıtipini Kullan (%s)"
 
 #~ msgid "Save"
 #~ msgstr "Kaydet"
-
-#~ msgid ""
-#~ "<b>Substitution Radical:</b> %s\n"
-#~ "<b>Actual Radical:</b> %s\n"
-#~ "<b>Radical Name:</b> %s"
-#~ msgstr ""
-#~ "<b>Radical Yerine:</b> %s\n"
-#~ "<b>Güncel Radikal:</b> %s\n"
-#~ "<b>Radical İsmi:</b> %s"
 
 #~ msgid "Other Results"
 #~ msgstr "Diğer Sonuçlar"

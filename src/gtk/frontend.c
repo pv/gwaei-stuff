@@ -45,7 +45,7 @@ static GOptionContext *_context = NULL;
 
 void gw_frontend_initialize (int* argc, char* argv[])
 {
-    bindtextdomain(PACKAGE, LOCALEDIR);
+    bindtextdomain(PACKAGE, GWAEI_LOCALEDIR);
     bind_textdomain_codeset(PACKAGE, "UTF-8");
     textdomain(PACKAGE);
 

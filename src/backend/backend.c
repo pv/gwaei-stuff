@@ -43,7 +43,7 @@ void gw_backend_initialize (int *argc, char* argv[])
 {
     //Setup for localized messages
     setlocale(LC_MESSAGES, "");
-    bindtextdomain(PACKAGE, LOCALEDIR);
+    bindtextdomain(PACKAGE, GWAEI_LOCALEDIR);
     bind_textdomain_codeset (PACKAGE, "UTF-8");
     textdomain(PACKAGE);
 

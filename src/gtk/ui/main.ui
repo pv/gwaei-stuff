@@ -18,7 +18,7 @@
     <signal name="activate" handler="do_settings" swapped="no"/>
   </object>
   <object class="GtkAction" id="file_append_action">
-    <property name="label">A_ppend</property>
+    <property name="label" translatable="yes">A_ppend</property>
     <property name="tooltip">Append the current results to a file</property>
     <property name="stock_id">gtk-save</property>
     <property name="is_important">True</property>
@@ -37,7 +37,7 @@
     <signal name="activate" handler="do_edit" swapped="no"/>
   </object>
   <object class="GtkAction" id="file_new_tab_action">
-    <property name="label">New _Tab</property>
+    <property name="label" translatable="yes">New _Tab</property>
     <property name="short_label">New Tab</property>
     <property name="stock_id">stock_new-tab</property>
     <signal name="activate" handler="do_new_tab" swapped="no"/>
@@ -63,28 +63,28 @@
     <signal name="activate" handler="do_about" swapped="no"/>
   </object>
   <object class="GtkAction" id="help_glossary_action">
-    <property name="label">Dictionary _Terminology Glossary</property>
+    <property name="label" translatable="yes">Dictionary _Terminology Glossary</property>
     <signal name="activate" handler="do_glossary" swapped="no"/>
   </object>
   <object class="GtkAction" id="help_homepage_action">
-    <property name="label">Go to _Homepage</property>
+    <property name="label" translatable="yes">Go to _Homepage</property>
     <property name="short_label">Homepage</property>
     <signal name="activate" handler="do_homepage" swapped="no"/>
   </object>
   <object class="GtkAction" id="help_irc_action">
-    <property name="label">Get Help on I_RC</property>
+    <property name="label" translatable="yes">Get Help on I_RC</property>
     <property name="short_label">IRC Channel</property>
     <signal name="activate" handler="do_irc_channel" swapped="no"/>
   </object>
   <object class="GtkAction" id="help_program_action">
-    <property name="label">_Contents</property>
+    <property name="label" translatable="yes">_Contents</property>
     <property name="short_label">Help</property>
     <property name="tooltip">Open the help dialog</property>
     <property name="stock_id">gtk-help</property>
     <signal name="activate" handler="do_help" swapped="no"/>
   </object>
   <object class="GtkAction" id="history_back_action">
-    <property name="label">_Previous Search</property>
+    <property name="label" translatable="yes">_Previous Search</property>
     <property name="short_label">Previous</property>
     <property name="tooltip">Go to the previous search</property>
     <property name="stock_id">gtk-go-back</property>
@@ -92,7 +92,7 @@
     <signal name="activate" handler="do_back" swapped="no"/>
   </object>
   <object class="GtkAction" id="history_forward_action">
-    <property name="label">_Next Search</property>
+    <property name="label" translatable="yes">_Next Search</property>
     <property name="short_label">Next</property>
     <property name="tooltip">Go to the next search</property>
     <property name="stock_id">gtk-go-forward</property>
@@ -100,7 +100,7 @@
     <signal name="activate" handler="do_forward" swapped="no"/>
   </object>
   <object class="GtkAction" id="insert_and_action">
-    <property name="label">Logical _And Character</property>
+    <property name="label" translatable="yes">Logical _And Character</property>
     <signal name="activate" handler="do_insert_and" swapped="no"/>
   </object>
   <object class="GtkAction" id="insert_clear_action">
@@ -108,28 +108,28 @@
     <signal name="activate" handler="do_clear_search" swapped="no"/>
   </object>
   <object class="GtkAction" id="insert_kanjipad_action">
-    <property name="label">Using _Kanjipad</property>
+    <property name="label" translatable="yes">Using _Kanjipad</property>
     <property name="stock_id">gtk-edit</property>
     <signal name="activate" handler="do_kanjipad" swapped="no"/>
   </object>
   <object class="GtkAction" id="insert_not_word_edge_action">
-    <property name="label">_Not-word-edge Mark</property>
+    <property name="label" translatable="yes">_Not-word-edge Mark</property>
     <property name="short_label">Not Edge</property>
     <property name="tooltip">Insert a not word-edege character</property>
     <property name="icon_name">non-word-boundary</property>
     <signal name="activate" handler="do_insert_not_word_edge" swapped="no"/>
   </object>
   <object class="GtkAction" id="insert_or_action">
-    <property name="label">Logical _Or Character</property>
+    <property name="label" translatable="yes">Logical _Or Character</property>
     <signal name="activate" handler="do_insert_or" swapped="no"/>
   </object>
   <object class="GtkAction" id="insert_radicals_action">
-    <property name="label">Using _Radical Search Tool</property>
+    <property name="label" translatable="yes">Using _Radical Search Tool</property>
     <property name="stock_id">gtk-find</property>
     <signal name="activate" handler="do_radical_search_tool" swapped="no"/>
   </object>
   <object class="GtkAction" id="insert_unknown_character_action">
-    <property name="label">_Unknown Character</property>
+    <property name="label" translatable="yes">_Unknown Character</property>
     <property name="short_label">Unknown</property>
     <property name="tooltip">Insert an unknown character</property>
     <property name="icon_name">unknown-character</property>
@@ -137,28 +137,19 @@
     <signal name="activate" handler="do_insert_unknown_character" swapped="no"/>
   </object>
   <object class="GtkAction" id="insert_word_edge_action">
-    <property name="label">_Word-edge Mark</property>
+    <property name="label" translatable="yes">_Word-edge Mark</property>
     <property name="short_label">Edge</property>
     <property name="tooltip">Insert a word-edge character</property>
     <property name="icon_name">word-boundary</property>
     <signal name="activate" handler="do_insert_word_edge" swapped="no"/>
   </object>
-  <object class="GtkMenu" id="back_popup">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-  </object>
-  <object class="GtkMenu" id="forward_popup">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-  </object>
-  <object class="GtkAccelGroup" id="main_accelgroup"/>
   <object class="GtkActionGroup" id="main_actiongroup"/>
   <object class="GtkToggleAction" id="view_toggle_toolbar_action">
-    <property name="label">Show _Toolbar</property>
+    <property name="label" translatable="yes">Show _Toolbar</property>
     <signal name="toggled" handler="do_toolbar_toggle" swapped="no"/>
   </object>
   <object class="GtkAction" id="view_zoom_100_action">
-    <property name="label">_Normal Size</property>
+    <property name="label" translatable="yes">_Normal Size</property>
     <property name="short_label">Normal</property>
     <property name="stock_id">gtk-zoom-100</property>
     <signal name="activate" handler="do_zoom_100" swapped="no"/>
@@ -177,6 +168,15 @@
     <property name="stock_id">gtk-zoom-out</property>
     <signal name="activate" handler="do_zoom_out" swapped="no"/>
   </object>
+  <object class="GtkMenu" id="back_popup">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+  </object>
+  <object class="GtkMenu" id="forward_popup">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+  </object>
+  <object class="GtkAccelGroup" id="main_accelgroup"/>
   <object class="GtkWindow" id="main_window">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">gWaei Japanese-English Dictionary</property>

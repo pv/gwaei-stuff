@@ -29,7 +29,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 0.15.1\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2011-05-06 23:40-0400\n"
+"POT-Creation-Date: 2011-05-07 13:35-0400\n"
 "PO-Revision-Date: 2010-04-27 23:02-0500\n"
 "Last-Translator: 3dxtrip <3dx@live.com>\n"
 "Language-Team: none\n"
@@ -170,7 +170,7 @@ msgstr "Instalando..."
 msgid "description"
 msgstr ""
 
-#: src/gtk/ui/main.glade:182 src/gtk/main.c:183
+#: src/gtk/ui/main.glade:182 src/gtk/main.c:189
 msgid "gWaei Japanese-English Dictionary"
 msgstr "Diccionario Japonés-Inglés gWaei"
 
@@ -453,19 +453,19 @@ msgid "- A dictionary program for Japanese-English translation."
 msgstr ""
 "- Un programa diseñado como diccionario para la traducción del Japonés-Inglés"
 
-#: src/gtk/main.c:515
+#: src/gtk/main.c:521
 #, fuzzy
 msgid "Searching..."
 msgstr "Buscando... "
 
-#: src/gtk/main.c:517
+#: src/gtk/main.c:523
 #, c-format
 msgid "Found %d result"
 msgid_plural "Found %d results"
 msgstr[0] "Resultado %d encontrado"
 msgstr[1] "Encontrados %d resultados"
 
-#: src/gtk/main.c:518
+#: src/gtk/main.c:524
 #, c-format
 msgid "Searching... %d result"
 msgid_plural "Searching... %d results"
@@ -473,7 +473,7 @@ msgstr[0] "Buscando... %d resultado"
 msgstr[1] "Buscando... %d resultados"
 
 #. TRANSLATORS: relevant what ? It's the number of "relevant" result(s) displayed while or after searching.
-#: src/gtk/main.c:521
+#: src/gtk/main.c:527
 #, c-format
 msgid "(%d Relevant)"
 msgid_plural "(%d Relevant)"
@@ -481,27 +481,27 @@ msgstr[0] "(%d Relevante)"
 msgstr[1] "(%d Relevantes)"
 
 #. TRANSLATORS: The argument is the dictionary long name
-#: src/gtk/main.c:1625
+#: src/gtk/main.c:1631
 #, c-format
 msgid "Nothing found in the %s!"
 msgstr ""
 
-#: src/gtk/main.c:1656
+#: src/gtk/main.c:1662
 #, fuzzy
 msgid "Search Other Dictionary: "
 msgstr "Otros diccionarios"
 
-#: src/gtk/main.c:1695
+#: src/gtk/main.c:1701
 #, fuzzy
 msgid "Search Online: "
 msgstr "Buscar:"
 
-#: src/gtk/main.c:1748
+#: src/gtk/main.c:1754
 #, c-format
 msgid "gWaei Usage Tip #%d: "
 msgstr "Tip para usar gWaei #%d: "
 
-#: src/gtk/main.c:1761
+#: src/gtk/main.c:1767
 #, c-format
 msgid ""
 "Use the Unknown Character from the Insert menu or toolbar in place of "
@@ -518,15 +518,15 @@ msgstr ""
 "funcionamiento del Kanjipad, dibujar con el correcto número de trazos y "
 "orden es muy importante."
 
-#: src/gtk/main.c:1768
+#: src/gtk/main.c:1774
 msgid "Inputting Unknown Kanji"
 msgstr "Entrada desconocida de Kanji"
 
-#: src/gtk/main.c:1785
+#: src/gtk/main.c:1791
 msgid "Getting More Exact Matches"
 msgstr "Obteniendo equivalencias más exactas"
 
-#: src/gtk/main.c:1791
+#: src/gtk/main.c:1797
 msgid ""
 "Use the Word-edge Mark and the Not-word-edge Mark from the insert menu to "
 "get more relevant results.  fish\\b will return results like fish and "
@@ -536,7 +536,7 @@ msgstr ""
 "Insertar para obtener resultados más relevantes. fish\\b mostrará resultados "
 "como fish y selfish, pero no fisherman"
 
-#: src/gtk/main.c:1799
+#: src/gtk/main.c:1805
 #, c-format
 msgid ""
 "Use the And Character or Or Character to search for results that contain a "
@@ -548,15 +548,15 @@ msgstr ""
 "combinación de palabras que puedan no estar uno al lado del otro. cats&dogs "
 "retornará resultados que contengan ambas palabras como lo hace %s."
 
-#: src/gtk/main.c:1805
+#: src/gtk/main.c:1811
 msgid "Searching for Multiple Words"
 msgstr "Buscar con múltiples palabras"
 
-#: src/gtk/main.c:1822
+#: src/gtk/main.c:1828
 msgid "Make a Vocabulary List"
 msgstr "Hacer una lista de vocabulario"
 
-#: src/gtk/main.c:1828
+#: src/gtk/main.c:1834
 msgid ""
 "Specific sections of results can be printed or saved by dragging the mouse "
 "to highlight them.  Using this in combination with the Append command from "
@@ -568,11 +568,11 @@ msgstr ""
 "Anexar del menú Archivo o la barra de herramientas, es posible crear de "
 "manera fácil y rápida una lista de vocabulario."
 
-#: src/gtk/main.c:1838
+#: src/gtk/main.c:1844
 msgid "Why Use the Mouse?"
 msgstr "¿Por qué usar el ratón?"
 
-#: src/gtk/main.c:1844
+#: src/gtk/main.c:1850
 msgid ""
 "Typing something will move the focus to the search input box.  Hitting the "
 "Up or Down arrow key will move the focus to the results pane so you can "
@@ -584,11 +584,11 @@ msgstr ""
 "manera puede consultarlos. Presionando Alt-Arriba o Alt-Abajo refrescará los "
 "diccionarios instalados."
 
-#: src/gtk/main.c:1854
+#: src/gtk/main.c:1860
 msgid "Get Ready for the JLPT"
 msgstr "Prepárese para el JLPT"
 
-#: src/gtk/main.c:1860
+#: src/gtk/main.c:1866
 msgid ""
 "The Kanji dictionary has some hidden features.  One such one is the ability "
 "to filter out Kanji that don't meet a certain criteria.  If you are planning "
@@ -609,11 +609,11 @@ msgstr ""
 "Además, el parámetro G# filtrará los Kanjis de acuerdo al nivel en el que "
 "una persona estudiaría en una escuela."
 
-#: src/gtk/main.c:1874
+#: src/gtk/main.c:1880
 msgid "Just drag words in!"
 msgstr "¡Sólo arrastre las palabras dentro!"
 
-#: src/gtk/main.c:1880
+#: src/gtk/main.c:1886
 #, fuzzy
 msgid ""
 "If you drag and drop a highlighted word into gWaei's search result box, "
@@ -625,11 +625,11 @@ msgstr ""
 "Puede ser una manera fácil de buscar rápidamente mientras navega en páginas "
 "web."
 
-#: src/gtk/main.c:1891
+#: src/gtk/main.c:1897
 msgid "What does (adj-i) mean?"
 msgstr "¿Que significa (adj-i)?"
 
-#: src/gtk/main.c:1897
+#: src/gtk/main.c:1903
 msgid ""
 "It is part of the terminalogy used by the EDICT group of dictionaries to "
 "categorize words.  Some are obvious, but there are a number that there is no "
@@ -645,11 +645,11 @@ msgstr ""
 "gWaei incluye alguna documentación de EDICT en el manual de ayuda. Haga clic "
 "en el Glosario de Términos del Diccionario en el menú Ayuda para consultarlo."
 
-#: src/gtk/main.c:1909
+#: src/gtk/main.c:1915
 msgid "Books are Heavy"
 msgstr "Los libros son pesados"
 
-#: src/gtk/main.c:1915
+#: src/gtk/main.c:1921
 msgid ""
 "Aways wear a construction helmet when working with books.  They are "
 "dangerous heavy objects that can at any point fall on and injure you.  "
@@ -660,104 +660,104 @@ msgstr ""
 "que pueden herirlo en cualquier momento.  Por favor, advierta a todos sus "
 "amigos.  Se lo agradecerán después. No es broma."
 
-#: src/gtk/main.c:2161
+#: src/gtk/main.c:2167
 msgid "A_ppend Selected"
 msgstr "A_nexar seleccionado"
 
-#: src/gtk/main.c:2163
+#: src/gtk/main.c:2169
 msgid "Save Selected _As"
 msgstr "Guardar selección _Como"
 
-#: src/gtk/main.c:2165
+#: src/gtk/main.c:2171
 msgid "_Print Selected"
 msgstr "_Imprimir selección"
 
-#: src/gtk/main.c:2172
+#: src/gtk/main.c:2178
 msgid "A_ppend"
 msgstr "A_nexar"
 
-#: src/gtk/main.c:2517 src/gtk/main.c:2616
+#: src/gtk/main.c:2523 src/gtk/main.c:2622
 msgid "Pop"
 msgstr ""
 
-#: src/gtk/main.c:2684 src/gtk/main.c:2784
+#: src/gtk/main.c:2690 src/gtk/main.c:2793
 msgid "Radicals:"
 msgstr "Radicales:"
 
-#: src/gtk/main.c:2701 src/gtk/main.c:2792
+#: src/gtk/main.c:2707 src/gtk/main.c:2803
 msgid "Readings:"
 msgstr "Lecturas:"
 
-#: src/gtk/main.c:2712 src/gtk/main.c:2800
+#: src/gtk/main.c:2718 src/gtk/main.c:2813
 msgid "Name:"
 msgstr "Nombres:"
 
-#: src/gtk/main.c:2723 src/gtk/main.c:2808
+#: src/gtk/main.c:2729 src/gtk/main.c:2822
 msgid "Radical Name:"
 msgstr "Radicale Nombre:"
 
-#: src/gtk/main.c:2738 src/gtk/main.c:2817
+#: src/gtk/main.c:2744 src/gtk/main.c:2831
 msgid "Stroke:"
 msgstr "Trazo:"
 
-#: src/gtk/main.c:2745 src/gtk/main.c:2824
+#: src/gtk/main.c:2751 src/gtk/main.c:2838
 msgid "Freq:"
 msgstr "Freq:"
 
-#: src/gtk/main.c:2752 src/gtk/main.c:2831
+#: src/gtk/main.c:2758 src/gtk/main.c:2845
 msgid "Grade:"
 msgstr "Grado:"
 
-#: src/gtk/main.c:2758 src/gtk/main.c:2838
+#: src/gtk/main.c:2764 src/gtk/main.c:2852
 msgid "JLPT:"
 msgstr "JLPT:"
 
-#: src/gtk/main.c:2767 src/gtk/main.c:2845
+#: src/gtk/main.c:2773 src/gtk/main.c:2861
 msgid "Meanings:"
 msgstr "Significados:"
 
 #. TRANSLATORS: The "E" stands for "English"
-#: src/gtk/main.c:2901
+#: src/gtk/main.c:2918
 msgid "E:\t"
 msgstr ""
 
 #. TRANSLATORS: The "J" stands for "Japanese"
-#: src/gtk/main.c:2912
+#: src/gtk/main.c:2929
 msgid ""
 "\n"
 "J:\t"
 msgstr ""
 
 #. TRANSLATORS: The "D" stands for "Detail"
-#: src/gtk/main.c:2923
+#: src/gtk/main.c:2940
 msgid ""
 "\n"
 "D:\t"
 msgstr ""
 
-#: src/gtk/main.c:2992
+#: src/gtk/main.c:3009
 #, c-format
 msgid "Other Result %d"
 msgid_plural "Other Results %d"
 msgstr[0] "Otro resultado %d"
 msgstr[1] "Otros resultados %d"
 
-#: src/gtk/main.c:3007
+#: src/gtk/main.c:3024
 #, c-format
 msgid "Main Result %d"
 msgid_plural "Main Results %d"
 msgstr[0] "Resultado principale %d"
 msgstr[1] "Resultados principales %d"
 
-#: src/gtk/main-callbacks.c:543
+#: src/gtk/main-callbacks.c:539
 msgid "Save As"
 msgstr "Guardar como"
 
-#: src/gtk/main-callbacks.c:556
+#: src/gtk/main-callbacks.c:552
 msgid "vocabulary.txt"
 msgstr "vocabulario.txt"
 
-#: src/gtk/main-callbacks.c:1155
+#: src/gtk/main-callbacks.c:1151
 #, fuzzy
 msgid ""
 "Program for Japanese translation and reference. The\n"
@@ -770,24 +770,24 @@ msgstr ""
 "Agradecimiento especial al creador de GJITEN quien sirvió como inspiración."
 
 #. TRANSLATORS: You can add your own name to the translation of this field, it will be displayed in the "about" box when gwaei is run in your language
-#: src/gtk/main-callbacks.c:1159
+#: src/gtk/main-callbacks.c:1155
 msgid "translator-credits"
 msgstr "4packed (Dean)"
 
 #. TRANSLATORS: The first variable is the expression to look for, the second is the dictionary full name
-#: src/gtk/main-callbacks.c:1734
+#: src/gtk/main-callbacks.c:1730
 #, c-format
 msgid "Search for \"%s\" in the %s"
 msgstr "Buscar por \"%s\" en %s"
 
 #. TRANSLATORS: The variable is the expression to look for
-#: src/gtk/main-callbacks.c:1736
+#: src/gtk/main-callbacks.c:1732
 #, c-format
 msgid "Search for \"%s\" in a Different Dictionary"
 msgstr "Buscar por \"%s\" en un diccionario diferente"
 
 #. TRANSLATORS: The variable is the expression to look for
-#: src/gtk/main-callbacks.c:1738
+#: src/gtk/main-callbacks.c:1734
 #, c-format
 msgid "Cross-reference \"%s\" Online"
 msgstr "Referencia-cruzada \"%s\" En línea"
@@ -800,7 +800,7 @@ msgstr "_Cerrar pestaña"
 msgid "_Close"
 msgstr "_Cerrar"
 
-#: src/gtk/main-tabs.c:250
+#: src/gtk/main-tabs.c:268
 msgid "(Empty)"
 msgstr "(Vacío)"
 
@@ -808,6 +808,17 @@ msgstr "(Vacío)"
 #, c-format
 msgid "Page %d"
 msgstr "Página %d"
+
+#: src/gtk/radsearchtool.c:376
+#, c-format
+msgid ""
+"<b>Substitution Radical:</b> %s\n"
+"<b>Actual Radical:</b> %s\n"
+"<b>Radical Name:</b> %s"
+msgstr ""
+"<b>Radical Substituto:</b> %s\n"
+"<b>Radical Actual:</b> %s\n"
+"<b>Nombre del Radical:</b> %s"
 
 #: src/gtk/settings.c:191
 #, c-format
@@ -955,15 +966,6 @@ msgstr "_Usar el tipo de letra del documento del sistema (%s)"
 
 #~ msgid "Save"
 #~ msgstr "Guardar"
-
-#~ msgid ""
-#~ "<b>Substitution Radical:</b> %s\n"
-#~ "<b>Actual Radical:</b> %s\n"
-#~ "<b>Radical Name:</b> %s"
-#~ msgstr ""
-#~ "<b>Radical Substituto:</b> %s\n"
-#~ "<b>Radical Actual:</b> %s\n"
-#~ "<b>Nombre del Radical:</b> %s"
 
 #~ msgid "Other Results"
 #~ msgstr "Otros resultados"
