@@ -9,10 +9,12 @@ data16dir = $(datadir)/icons/hicolor/16x16/apps
 data24dir = $(datadir)/icons/hicolor/24x24/apps
 data32dir = $(datadir)/icons/hicolor/32x32/apps
 data48dir = $(datadir)/icons/hicolor/48x48/apps
+datascalabledir = $(datadir)/icons/hicolor/scalable/apps
 data16_DATA = 16x16/$(PACKAGE).png
 data24_DATA = 24x24/$(PACKAGE).png
 data32_DATA = 32x32/$(PACKAGE).png
 data48_DATA = 48x48/$(PACKAGE).png
+datascalable_DATA = scalable/$(PACKAGE).svg
 
 #Install Application Logo
 pkgdata_DATA = logo.png goo.png google.png wikipedia.png book_green.png
