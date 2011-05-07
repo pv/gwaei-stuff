@@ -2778,9 +2778,12 @@ void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item)
     {
       char markup[1000];
       markup[0] = '\0';
+      gboolean first = TRUE;
 
       if (resultline->radicals) {
-        strcat(markup, "\n<b>");
+        if (!first) strcat(markup, "\n");
+        first = FALSE;
+        strcat(markup, "<b>");
         strcat(markup, gettext("Radicals:"));
         strcat(markup, " ");
         strcat(markup, "</b>");
@@ -2788,7 +2791,9 @@ void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item)
         strcat(markup, " ");
       }
       if (resultline->readings[0]) {
-        strcat(markup, "\n<b>");
+        if (!first) strcat(markup, "\n");
+        first = FALSE;
+        strcat(markup, "<b>");
         strcat(markup, gettext("Readings:"));
         strcat(markup, " ");
         strcat(markup, "</b>");
@@ -2796,7 +2801,9 @@ void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item)
         strcat(markup, " ");
       } 
       if (resultline->readings[1]) {
-        strcat(markup, "\n<b>");
+        if (!first) strcat(markup, "\n");
+        first = FALSE;
+        strcat(markup, "<b>");
         strcat(markup, gettext("Name:"));
         strcat(markup, " ");
         strcat(markup, "</b>");
@@ -2804,7 +2811,8 @@ void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item)
         strcat(markup, " ");
       }
       if (resultline->readings[2]) {
-        strcat(markup, "\n<b>");
+        if (!first) strcat(markup, "\n");
+        strcat(markup, "<b>");
         strcat(markup, gettext("Radical Name:"));
         strcat(markup, " ");
         strcat(markup, "</b>");
@@ -2841,7 +2849,9 @@ void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item)
         strcat(markup, " ");
       }
       if (resultline->meanings) {
-        strcat(markup, "\n<b>");
+        if (!first) strcat(markup, "\n");
+        first = FALSE;
+        strcat(markup, "<b>");
         strcat(markup, gettext("Meanings:"));
         strcat(markup, "</b> ");
         strcat(markup, resultline->meanings);
@@ -2859,15 +2869,16 @@ void gw_ui_append_kanjidict_results_to_buffer (GwSearchItem *item)
       GtkWidget *window = GTK_WIDGET (gtk_widget_get_tooltip_window (tv));
       if (window != NULL) {
         GtkWidget *hbox = GTK_WIDGET (gtk_hbox_new (FALSE, 3));
+        gtk_container_set_border_width (GTK_CONTAINER (hbox), 10);
         gtk_container_add (GTK_CONTAINER (window), GTK_WIDGET (hbox));
 
         GtkWidget *label = GTK_WIDGET (gtk_label_new (NULL));
         gtk_label_set_markup (GTK_LABEL (label), markup2);
-        gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (label), FALSE, FALSE, 0);
+        gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (label), FALSE, TRUE, 0);
 
         label = GTK_WIDGET (gtk_label_new (NULL));
         gtk_label_set_markup (GTK_LABEL (label), markup);
-        gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (label), FALSE, FALSE, 0);
+        gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (label), FALSE, TRUE, 0);
 
         gtk_widget_show_all (hbox);
       }

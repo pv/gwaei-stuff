@@ -232,16 +232,12 @@ G_MODULE_EXPORT gboolean do_get_iter_for_button_release (GtkWidget      *widget,
         GtkWindow* parent = GTK_WINDOW (gtk_builder_get_object (builder, "main_window"));
         if (window == NULL) {
           button_character = unic;
-          window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-          gtk_window_set_decorated (GTK_WINDOW (window), FALSE);
+          window = gtk_window_new (GTK_WINDOW_POPUP);
           gtk_window_set_skip_taskbar_hint (GTK_WINDOW (window), TRUE);
           gtk_window_set_skip_pager_hint (GTK_WINDOW (window), TRUE);
           gtk_window_set_accept_focus (GTK_WINDOW (window), FALSE);
-          gtk_container_set_border_width (GTK_CONTAINER (window), 3);
           gtk_widget_set_tooltip_window (tv, GTK_WINDOW (window));
-          gtk_window_set_resizable (GTK_WINDOW (window), FALSE);
           gtk_window_set_transient_for (GTK_WINDOW (window), NULL);
-          gtk_window_set_opacity (GTK_WINDOW (window), .9);
           gtk_window_set_type_hint (GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_TOOLTIP);
           gtk_widget_set_name (GTK_WIDGET (window), "gtk-tooltip");
         }
