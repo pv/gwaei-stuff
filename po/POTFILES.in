@@ -16,11 +16,11 @@ src/gtk/ui/main.glade
 src/gtk/ui/radicals.glade
 src/gtk/ui/settings.glade
 
-src/gtk/ui/dictionaryinstall.ui
-src/gtk/ui/installprogress.ui
-src/gtk/ui/main.ui
-src/gtk/ui/radicals.ui
-src/gtk/ui/settings.ui
+[type: gettext/glade] src/gtk/ui/dictionaryinstall.ui
+[type: gettext/glade] src/gtk/ui/installprogress.ui
+[type: gettext/glade] src/gtk/ui/main.ui
+[type: gettext/glade] src/gtk/ui/radicals.ui
+[type: gettext/glade] src/gtk/ui/settings.ui
 
 src/gtk/common.c
 src/gtk/dictionaryinstall.c
