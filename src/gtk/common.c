@@ -415,8 +415,7 @@ GtkWidget* gw_common_get_widget_by_target (const GwTargetOutput TARGET)
         if (page == NULL) return NULL;
         return gtk_bin_get_child (GTK_BIN (page));
       case GW_TARGET_ENTRY:
-        container = GTK_WIDGET (gtk_builder_get_object (builder, "search_entry_container"));
-        return gtk_bin_get_child (GTK_BIN (container));
+        return GTK_WIDGET (gtk_builder_get_object (builder, "search_entry"));
       default:
         return NULL;
     }

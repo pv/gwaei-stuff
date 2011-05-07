@@ -354,7 +354,6 @@ G_MODULE_EXPORT gboolean do_close_on_escape (GtkWidget *widget,
                                              GdkEvent  *event,
                                              gpointer  *data   )
 {
-  /*
     guint keyval = ((GdkEventKey*)event)->keyval;
     guint state = ((GdkEventKey*)event)->state;
     guint modifiers = ( 
@@ -371,7 +370,7 @@ G_MODULE_EXPORT gboolean do_close_on_escape (GtkWidget *widget,
       do_close (widget, data);
       return TRUE;
     }
-    */
+
     return FALSE;
 }
 
@@ -1207,7 +1206,6 @@ G_MODULE_EXPORT gboolean do_key_press_modify_status_update (GtkWidget *widget,
                                                             GdkEvent  *event,
                                                             gpointer  *data  )
 {
-  /*
     GtkWidget *tv = GTK_WIDGET (gw_common_get_widget_by_target (GW_TARGET_RESULTS));
     GtkWidget *window = GTK_WIDGET (gtk_widget_get_tooltip_window (tv));
     if (window != NULL) 
@@ -1229,7 +1227,7 @@ G_MODULE_EXPORT gboolean do_key_press_modify_status_update (GtkWidget *widget,
     {
       start_search_in_new_window = TRUE;
     }
-    */
+
     return FALSE;
 }
 
@@ -1248,13 +1246,12 @@ G_MODULE_EXPORT gboolean do_key_release_modify_status_update (GtkWidget *widget,
                                                               GdkEvent  *event,
                                                               gpointer  *data  )
 {
-  /*
     guint keyval = ((GdkEventKey*)event)->keyval;
     if (keyval == GDK_KEY_Shift_L || keyval == GDK_KEY_Shift_R || keyval == GDK_KEY_ISO_Next_Group || keyval == GDK_KEY_ISO_Prev_Group)
     {
       start_search_in_new_window = FALSE;
     }
-    */
+
     return FALSE;
 }
 
@@ -1275,7 +1272,6 @@ G_MODULE_EXPORT gboolean do_focus_change_on_key_press (GtkWidget *widget,
                                                        GdkEvent  *event,
                                                        gpointer  *focus  )
 {
-  /*
     gw_ui_close_suggestion_box ();
     guint state = ((GdkEventKey*)event)->state;
     guint keyval = ((GdkEventKey*)event)->keyval;
@@ -1350,7 +1346,7 @@ G_MODULE_EXPORT gboolean do_focus_change_on_key_press (GtkWidget *widget,
         return TRUE;
       }
     }
-    */
+
     return FALSE;
 }
 
@@ -1933,4 +1929,24 @@ G_MODULE_EXPORT gboolean do_scroll_or_zoom (GtkWidget *widget, GdkEventScroll *e
 
     // return false and propagate event for regular scroll
     return FALSE;
+}
+
+
+G_MODULE_EXPORT int gw_main_entry_text_changed_cb (GtkEditable *widget, gpointer data)
+{
+    //Declarations
+    GtkWidget *entry;
+    const char *text;
+    char *command;
+
+    //Initializations
+    entry = GTK_WIDGET (gw_common_get_widget_by_target (GW_TARGET_ENTRY));
+    text = gtk_entry_get_text (GTK_ENTRY (entry));
+    command = g_strjoin (" ", "/bin/echo \"", text, "\" |", ENCHANT, "-d en -a", NULL);
+    printf("command: %s\n", command);
+
+    system(command);
+
+    //Cleanup
+    g_free (command);
 }

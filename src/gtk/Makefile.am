@@ -8,7 +8,7 @@ bin_PROGRAMS = gwaei
 
 datadir = @datadir@
 localedir = $(datadir)/locale
-DEFINITIONS =-DLOCALEDIR=\"$(localedir)\" -DVERSION=\"$(VERSION)\" -DPACKAGE=\"$(PACKAGE)\" -DDATADIR2=\"$(datadir)\" -DLIBDIR=\"$(libdir)\"
+DEFINITIONS =-DLOCALEDIR=\"$(localedir)\" -DVERSION=\"$(VERSION)\" -DPACKAGE=\"$(PACKAGE)\" -DDATADIR2=\"$(datadir)\" -DLIBDIR=\"$(libdir)\" -DENCHANT=\"$(ENCHANT)\"
 
 gwaei_SOURCES = gwaei.c common.c frontend.c main.c main-callbacks.c settings-callbacks.c settings.c radsearchtool.c radsearchtool-callbacks.c printing.c main-tabs.c dictionaryinstall.c installprogress.c dictionarymanager.c settings-listeners.c 
 gwaei_LDADD =  $(GNOME_LIBS) ../backend/libgwaei-backend.la
@@ -29,10 +29,4 @@ gwaei_LDADD += $(LIBUNIQUE_LIBS)
 gwaei_CPPFLAGS +=$(LIBUNIQUE_CFLAGS)$(LIBUNIQUE_DEFS)
 endif
 
-if WITH_LIBSEXY
-LIBSEXY_DEFS =-DWITH_LIBSEXY
-gwaei_SOURCES += libsexy.c
-gwaei_LDADD += $(LIBSEXY_LIBS)
-gwaei_CPPFLAGS +=$(LIBSEXY_CFLAGS)$(LIBSEXY_DEFS)
-endif
 

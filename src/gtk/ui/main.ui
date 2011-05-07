@@ -143,15 +143,6 @@
     <property name="icon_name">word-boundary</property>
     <signal name="activate" handler="do_insert_word_edge" swapped="no"/>
   </object>
-  <object class="GtkMenu" id="back_popup">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-  </object>
-  <object class="GtkMenu" id="forward_popup">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-  </object>
-  <object class="GtkAccelGroup" id="main_accelgroup"/>
   <object class="GtkActionGroup" id="main_actiongroup"/>
   <object class="GtkToggleAction" id="view_toggle_toolbar_action">
     <property name="label">Show _Toolbar</property>
@@ -177,6 +168,15 @@
     <property name="stock_id">gtk-zoom-out</property>
     <signal name="activate" handler="do_zoom_out" swapped="no"/>
   </object>
+  <object class="GtkMenu" id="back_popup">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+  </object>
+  <object class="GtkMenu" id="forward_popup">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+  </object>
+  <object class="GtkAccelGroup" id="main_accelgroup"/>
   <object class="GtkWindow" id="main_window">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">gWaei Japanese-English Dictionary</property>
@@ -439,8 +439,8 @@
                         <property name="related_action">view_zoom_in_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="plus" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                         <accelerator key="KP_Add" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                        <accelerator key="plus" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -450,8 +450,8 @@
                         <property name="related_action">view_zoom_out_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="minus" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                         <accelerator key="KP_Subtract" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                        <accelerator key="minus" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -461,8 +461,8 @@
                         <property name="related_action">view_zoom_100_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="0" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                         <accelerator key="KP_0" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                        <accelerator key="0" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -950,8 +950,6 @@
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Sear_ch:</property>
                 <property name="use_underline">True</property>
-                <property name="selectable">True</property>
-                <property name="mnemonic_widget">search_entry</property>
                 <property name="single_line_mode">True</property>
               </object>
               <packing>
@@ -965,21 +963,28 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkEntry" id="search_entry">
+                  <object class="GtkComboBox" id="search_combobox">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="has_focus">True</property>
-                    <property name="is_focus">True</property>
-                    <property name="can_default">True</property>
-                    <property name="has_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Input your query here</property>
-                    <property name="max_length">50</property>
-                    <property name="caps_lock_warning">False</property>
-                    <signal name="changed" handler="do_update_button_states_based_on_entry_text" swapped="no"/>
-                    <signal name="activate" handler="do_search" swapped="no"/>
-                    <signal name="key-press-event" handler="do_focus_change_on_key_press" swapped="no"/>
-                    <signal name="focus-in-event" handler="do_update_clipboard_on_focus_change" swapped="no"/>
-                    <signal name="icon-release" handler="do_clear_search" swapped="no"/>
+                    <property name="can_focus">False</property>
+                    <property name="has_entry">True</property>
+                    <child internal-child="entry">
+                      <object class="GtkEntry" id="search_entry">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="tooltip_markup" translatable="yes">Input your query here</property>
+                        <property name="tooltip_text" translatable="yes">Input your query here</property>
+                        <property name="buffer">search_entrybuffer</property>
+                        <property name="max_length">50</property>
+                        <property name="activates_default">True</property>
+                        <property name="caps_lock_warning">False</property>
+                        <property name="primary_icon_activatable">False</property>
+                        <property name="primary_icon_sensitive">False</property>
+                        <signal name="changed" handler="gw_main_entry_text_changed_cb" swapped="no"/>
+                        <signal name="activate" handler="do_search" swapped="no"/>
+                        <signal name="key-press-event" handler="do_focus_change_on_key_press" swapped="no"/>
+                        <signal name="icon-release" handler="do_clear_search" swapped="no"/>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>
@@ -1217,5 +1222,6 @@
     </child>
   </object>
   <object class="GtkTextBuffer" id="results_text_buffer"/>
+  <object class="GtkEntryBuffer" id="search_entrybuffer"/>
   <object class="GtkTextBuffer" id="textbuffer1"/>
 </interface>

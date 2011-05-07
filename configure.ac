@@ -20,7 +20,6 @@ GTK3_REQUIRED_VERSION=3.0.0
 GDU_REQUIRED_VERSION=0.13.0
 #GTK Optional Dependencies
 LIBUNIQUE_REQUIRED_VERSION=1.0.0
-LIBSEXY_REQUIRED_VERSION=0.1.11
 
 #Custom arguments
 AC_ARG_ENABLE([win32],
@@ -59,15 +58,6 @@ no)  libunique=false ;;
 esac],[libunique=true])
 AM_CONDITIONAL([WITH_LIBUNIQUE], [test x$libunique = xtrue && test x$gnome = xtrue && test x$win32 = xfalse])
 
-AC_ARG_WITH([libsexy],
-[  --without-libsexy         disable libsexy],
-[case "${withval}" in
-yes) libsexy=true ;;
-no)  libsexy=false ;;
-*) AC_MSG_ERROR([bad value ${withval} for --without-libsexy]) ;;
-esac],[libsexy=true])
-AM_CONDITIONAL([WITH_LIBSEXY], [test x$libsexy = xtrue && test x$gnome = xtrue && test x$win32 = xfalse])
-
 AC_CHECK_LIB(m, sqrt)
 
 PKG_CHECK_MODULES(BASE, glib-2.0           >= $GLIB_REQUIRED_VERSION
@@ -102,12 +92,6 @@ if test $gnome = true && test $libunique = true && test $win32 = false; then
   AC_SUBST(LIBUNIQUE_LIBS)
 fi
 
-if test $gnome = true && test $libsexy = true && test $win32 = false; then
-  PKG_CHECK_MODULES(LIBSEXY, libsexy  >= $LIBSEXY_REQUIRED_VERSION)
-  AC_SUBST(LIBSEXY_CFLAGS)
-  AC_SUBST(LIBSEXY_LIBS)
-fi
-
 if test $ncurses = true && test $win32 = false; then
   NCURSES_LIBS=" -lncursesw "
   AC_SUBST(NCURSES_LIBS)
@@ -121,6 +105,7 @@ AC_PATH_PROG(KILLALL, killall)
 AC_PATH_PROG(RPMDIR, rpm)
 AC_PATH_PROG(RPMBUILD, rpmbuild)
 AC_PATH_PROG(DPKG_DEB, dpkg-deb)
+AC_PATH_PROG(ENCHANT, enchant)
 if test x$win32 = xtrue; then
   GZIP="gzip.exe"
   AC_SUBST(GZIP)
@@ -160,11 +145,6 @@ if test $libunique = true && test $gnome = true && test $win32 = false; then
   echo -e "* Libunique is\tENABLED"
 else
   echo -e "* Libunique is\tDISABLED (Requires Gnome)"
-fi
-if test $libsexy = true && test $gnome = true && test $win32 = false; then
-  echo -e "* Libsexy is\tENABLED"
-else
-  echo -e "* Libsexy is\tDISABLED (Requires Gnome)"
 fi
 if test $ncurses = true && test $win32 = false; then
   echo -e "* Ncurses is\tENABLED"

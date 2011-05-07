@@ -93,10 +93,6 @@ void gw_frontend_initialize (int* argc, char* argv[])
     gdk_threads_enter ();
     gdk_threads_leave ();
 
-    #ifdef WITH_LIBSEXY
-    gw_libsexy_initialize ();
-    #endif
-
     gw_dictionarymanager_initialize ();
     gw_dictionaryinstall_initialize ();
     gw_installprogress_initialize ();
@@ -159,9 +155,6 @@ void gw_frontend_free ()
 {
     gw_dictionaryinstall_free ();
     gw_dictionarymanager_free ();
-    #ifdef WITH_LIBSEXY
-    gw_libsexy_free ();
-    #endif
     #ifdef WITH_LIBUNIQUE
     gw_libunique_free ();
     #endif

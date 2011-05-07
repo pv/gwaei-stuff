@@ -25,10 +25,6 @@
 #include <gwaei/dictionaryinstall.h>
 #include <gwaei/installprogress.h>
 
-#ifdef WITH_LIBSEXY
-#include <gwaei/libsexy.h>
-#endif
-
 void gw_frontend_initialize (int*, char**);
 void gw_frontend_free (void);
 void gw_frontend_start_gtk (int, char**);
