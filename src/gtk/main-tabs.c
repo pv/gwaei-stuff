@@ -227,7 +227,7 @@ int gw_tabs_new ()
     gtk_text_view_set_cursor_visible (GTK_TEXT_VIEW (textview), FALSE);
     gtk_text_view_set_editable (GTK_TEXT_VIEW (textview), FALSE);
     gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
-    gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow), GTK_SHADOW_IN);
+    //gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow), GTK_SHADOW_IN);
     gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (textview), GTK_WRAP_WORD);
 
     g_signal_connect( G_OBJECT (textview), "drag_motion", G_CALLBACK (do_drag_motion_1), NULL);
