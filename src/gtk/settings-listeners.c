@@ -54,7 +54,7 @@ void do_dictionary_source_pref_key_changed_action (GSettings *settings,
     gchar *value = g_settings_get_string (settings, key);
     if (value != NULL)
     {
-      gw_ui_set_dictionary_source (data, value);
+      gw_settings_set_dictionary_source (data, value);
     }
     g_free (value);
     g_signal_handlers_unblock_by_func (settings, do_dictionary_source_pref_key_changed_action, NULL);
@@ -119,7 +119,7 @@ void do_use_global_document_font_pref_changed_action (GSettings *settings,
 {
     g_signal_handlers_block_by_func (settings, do_use_global_document_font_pref_changed_action, NULL);
     gboolean value = g_settings_get_boolean (settings, key);
-    gw_ui_set_use_global_document_font_checkbox (value);
+    gw_settings_set_use_global_document_font_checkbox (value);
     gw_ui_set_font (NULL, NULL);
     g_signal_handlers_unblock_by_func (settings, do_use_global_document_font_pref_changed_action, NULL);
 }
@@ -140,7 +140,7 @@ void do_global_document_font_pref_changed_action (GSettings *settings,
     gchar *value = g_settings_get_string (settings, key);
     if (value != NULL)
     {
-      gw_ui_update_global_font_label (value);
+      gw_settings_update_global_font_label (value);
       gw_ui_set_font (NULL, NULL);
     }
     g_free (value);
@@ -163,7 +163,7 @@ void do_custom_document_font_pref_changed_action (GSettings *settings,
     gchar *value = g_settings_get_string (settings, key);
     if (value != NULL)
     {
-      gw_ui_update_custom_font_button (value);
+      gw_settings_update_custom_font_button (value);
       gw_ui_set_font (NULL, NULL);
     }
     g_free (value);

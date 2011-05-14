@@ -42,7 +42,7 @@
 //!
 //! @brief Disables portions of the interface depending on the currently queued jobs.
 //!
-G_MODULE_EXPORT void gw_ui_update_settings_interface ()
+G_MODULE_EXPORT void gw_settings_update_interface ()
 {
     //Declarations
     GtkBuilder *builder;
@@ -68,51 +68,12 @@ G_MODULE_EXPORT void gw_ui_update_settings_interface ()
 //! @param widget Pointer to a GtkEntry to set the text of
 //! @param value The constant string to use as the source for the text
 //!
-void gw_ui_set_dictionary_source (GtkWidget *widget, const char* value)
+void gw_settings_set_dictionary_source (GtkWidget *widget, const char* value)
 {
     if (widget != NULL && value != NULL)
     {
       gtk_entry_set_text (GTK_ENTRY (widget), value);
     }
-}
-
-
-//!
-//! @brief A progressbar update function made specifially to be used with curl when downloading
-//!
-//! @param message
-//! @param percent
-//! @param data
-//!
-int gw_ui_update_progressbar (char *message, int percent, gpointer data)
-{
-/*
-    gdk_threads_enter();
-
-    GwUiDictInstallLine *il = (GwUiDictInstallLine*) data;
-    GtkWidget *progressbar = il->status_progressbar;
-
-    if (il->di->status != GW_DICT_STATUS_CANCELING)
-    {
-      if (percent < 0)
-      {
-        gw_ui_dict_install_set_message (il, NULL, message);
-      }
-      else if (percent == 0)
-      {
-      }
-      else
-      {
-        gdouble ratio = ((gdouble) percent) / 100.0;
-        gw_ui_progressbar_set_fraction_by_install_line (il, ratio);
-      }
-      gdk_threads_leave ();
-      return FALSE;
-    }
-
-    gdk_threads_leave ();
-*/
-    return TRUE;
 }
 
 
@@ -123,7 +84,7 @@ void gw_settings_initialize ()
 {
     gw_common_load_ui_xml ("settings.ui");
     gw_settings_listeners_initialize ();
-    gw_ui_update_settings_interface ();
+    gw_settings_update_interface ();
 }
 
 
@@ -151,7 +112,7 @@ void gw_settings_free ()
 //!
 //! @param setting The new checked state for the use global document font checkbox 
 //!
-void gw_ui_set_use_global_document_font_checkbox (gboolean setting)
+void gw_settings_set_use_global_document_font_checkbox (gboolean setting)
 {
     //Declarations
     GtkBuilder *builder;
@@ -178,7 +139,7 @@ void gw_ui_set_use_global_document_font_checkbox (gboolean setting)
 //!
 //! @param font_description_string The font description in the form "Sans 10"
 //!
-void gw_ui_update_global_font_label (const char *font_description_string)
+void gw_settings_update_global_font_label (const char *font_description_string)
 {
     //Declarations
     GtkBuilder *builder;
@@ -203,7 +164,7 @@ void gw_ui_update_global_font_label (const char *font_description_string)
 //!
 //! @param font_description_string The font description in the form "Sans 10"
 //!
-void gw_ui_update_custom_font_button (const char *font_description_string)
+void gw_settings_update_custom_font_button (const char *font_description_string)
 {
     //Declarations
     GtkBuilder *builder;

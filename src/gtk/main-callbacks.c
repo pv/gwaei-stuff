@@ -82,7 +82,7 @@ G_MODULE_EXPORT void do_settings (GtkWidget *widget, gpointer data)
     }
 
     //get some needed window references
-    gw_ui_update_settings_interface ();
+    gw_settings_update_interface ();
     gw_common_show_window ("settings_window");
 }
 
