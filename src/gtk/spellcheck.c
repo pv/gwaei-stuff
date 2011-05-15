@@ -5,11 +5,16 @@
 
 static GList *_corrections = NULL;
 static GMutex *_mutex = NULL;
+static gboolean _needs_spellcheck = FALSE;
+static char* _query_text = NULL;
 
 static void _menuitem_activated_cb (GtkWidget*, gpointer);
 static void _populate_popup_cb (GtkEntry*, GtkMenu*, gpointer);
 static gboolean _draw_underline_cb (GtkWidget*, cairo_t*, gpointer);
-static void _spellcheck_cb (GtkEditable*, gpointer);
+static void _queue_spellcheck_cb (GtkEditable*, gpointer);
+static gboolean _update_spellcheck_timeout (gpointer);
+
+void gw_spellcheck_attach_to_entry (GtkEntry*);
 
 struct _SpellingReplacementData {
   GtkEntry *entry;
@@ -105,6 +110,24 @@ static gpointer _outfunc (gpointer data)
   return NULL;
 }
 
+//!
+//! @brief Attached the spellchecking listeners to a GtkEntry.  It can only be attached once.
+//! @param entry A GtkEntry to attach to
+//!
+void gw_spellcheck_attach_to_entry (GtkEntry *entry)
+{
+  //Sanity check
+  g_assert (_mutex == NULL);
+
+  //Initializations
+  _mutex = g_mutex_new ();
+
+  g_signal_connect_after (G_OBJECT (entry), "draw", G_CALLBACK (_draw_underline_cb), NULL);
+  g_signal_connect (G_OBJECT (entry), "changed", G_CALLBACK (_queue_spellcheck_cb), NULL);
+  g_signal_connect (G_OBJECT (entry), "populate-popup", G_CALLBACK (_populate_popup_cb), NULL);
+  g_timeout_add (500, (GSourceFunc) _update_spellcheck_timeout, (gpointer) entry);
+}
+
 
 int main (int argc, char** argv)
 {
@@ -117,16 +140,11 @@ int main (int argc, char** argv)
 
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   entry = gtk_entry_new ();
+  gw_spellcheck_attach_to_entry (GTK_ENTRY (entry));
   area = gtk_drawing_area_new ();
-  _mutex = g_mutex_new ();
   gtk_widget_set_size_request (area, 100, 100);
 
   gtk_container_add (GTK_CONTAINER (window), GTK_WIDGET (entry));
-
-  g_signal_connect_after (G_OBJECT (entry), "draw", G_CALLBACK (_draw_underline_cb), NULL);
-  g_signal_connect (G_OBJECT (entry), "changed", G_CALLBACK (_spellcheck_cb), NULL);
-  g_signal_connect (G_OBJECT (entry), "populate-popup", G_CALLBACK (_populate_popup_cb), NULL);
-
   gtk_widget_show_all (GTK_WIDGET (window));
 
   gtk_main ();
@@ -251,9 +269,10 @@ void _populate_popup_cb (GtkEntry *entry, GtkMenu *menu, gpointer data)
     xoffset = _get_x_offset (entry);
     yoffset = _get_y_offset (entry);
     x = xpointer - xoffset;
-    y = ypointer - yoffset;
+    y = yoffset; //Since a GtkEntry is single line, we want the y to always be in the area
     index =  _get_string_index (entry, x, y);
 
+    g_mutex_lock (_mutex);
     for (iter = _corrections; index > -1 && iter != NULL; iter = iter->next)
     {
       //Create the start and end offsets 
@@ -295,6 +314,7 @@ void _populate_popup_cb (GtkEntry *entry, GtkMenu *menu, gpointer data)
       g_strfreev (split);
       g_strfreev (info);
     }
+    g_mutex_unlock (_mutex);
 }
 
 gboolean _get_line_coordinates (GtkEntry *entry, int startindex, int endindex, int *x, int *y, int *x2, int *y2)
@@ -334,6 +354,38 @@ gboolean _get_line_coordinates (GtkEntry *entry, int startindex, int endindex, i
     return (x > 0 && y > 0 && x2 > 0 && y2 > 0);
 }
 
+void _draw_line (cairo_t *cr, int x, int y, int x2, int y2)
+{
+    //Declarations
+    int ydelta;
+    int xdelta;
+    int i;
+    gboolean up;
+
+    //Initializations
+    xdelta = 2;
+    ydelta = 2;
+    up = FALSE;
+    y += ydelta;
+    x++;
+
+    cairo_set_line_width (cr, 0.8);
+    cairo_set_source_rgba (cr, 1.0, 0.0, 0.0, 0.8);
+
+    cairo_move_to (cr, x, y2);
+    for (i = x + xdelta; i < x2; i += xdelta)
+    {
+      if (up)
+        y2 -= ydelta;
+      if (!up)
+        y2 += ydelta;
+      up = !up;
+
+      cairo_line_to (cr, i, y2);
+    }
+    cairo_stroke (cr);
+}
+
 
 
 gboolean _draw_underline_cb (GtkWidget *widget, cairo_t *cr, gpointer data)
@@ -365,11 +417,7 @@ gboolean _draw_underline_cb (GtkWidget *widget, cairo_t *cr, gpointer data)
     //Calculate the line
     if (_get_line_coordinates (GTK_ENTRY (widget), start_offset, end_offset, &x, &y, &x2, &y2))
     {
-      cairo_set_line_width (cr, 1.0);
-      cairo_set_source_rgba (cr, 6.0, 0.0, 0.0, 0.8);
-      cairo_move_to (cr, x, y2);
-      cairo_line_to (cr, x2, y2);
-      cairo_stroke (cr);
+      _draw_line (cr, x, y, x2, y2);
     }
 
     g_strfreev (info);
@@ -381,8 +429,36 @@ gboolean _draw_underline_cb (GtkWidget *widget, cairo_t *cr, gpointer data)
 }
 
 
-void _spellcheck_cb (GtkEditable *editable, gpointer data)
+void _queue_spellcheck_cb (GtkEditable *editable, gpointer data)
 {
+    g_mutex_lock (_mutex);
+
+    if (_query_text == NULL)
+      _query_text = g_strdup (gtk_entry_get_text (GTK_ENTRY (editable)));
+
+    if (strcmp(_query_text, gtk_entry_get_text (GTK_ENTRY (editable))) != 0)
+    {
+      //Clear out the old links
+      while (_corrections != NULL)
+      {
+        g_free (_corrections->data);
+        _corrections = g_list_delete_link (_corrections, _corrections);
+      }
+
+      g_free (_query_text);
+      _query_text = g_strdup (gtk_entry_get_text (GTK_ENTRY (editable)));
+      _needs_spellcheck = TRUE;
+    }
+    g_mutex_unlock (_mutex);
+}
+
+static gboolean _update_spellcheck_timeout (gpointer data)
+{
+    if (_needs_spellcheck == FALSE) return TRUE;
+
+    _needs_spellcheck = FALSE;
+
+    GtkEditable *editable;
     char *argv[] = { "/usr/bin/enchant", "-a", "-d", "en", NULL};
     char *text;
     GPid pid;
@@ -395,6 +471,7 @@ void _spellcheck_cb (GtkEditable *editable, gpointer data)
     _StreamWithData indata;
     _StreamWithData outdata;
 
+    editable = GTK_EDITABLE (data);
     text = g_strdup (gtk_entry_get_text (GTK_ENTRY (editable)));
     error = NULL;
 
@@ -435,6 +512,10 @@ void _spellcheck_cb (GtkEditable *editable, gpointer data)
       printf("ERROR: %s\n", error->message);
       g_error_free (error);
     }
+
+    gtk_widget_queue_draw (GTK_WIDGET (data));
+  
+    return TRUE;
 }
 
 
