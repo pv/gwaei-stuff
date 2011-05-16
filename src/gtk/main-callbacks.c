@@ -1934,21 +1934,3 @@ G_MODULE_EXPORT gboolean do_scroll_or_zoom (GtkWidget *widget, GdkEventScroll *e
 }
 
 
-G_MODULE_EXPORT int gw_main_entry_text_changed_cb (GtkEditable *widget, gpointer data)
-{
-    //Declarations
-    GtkWidget *entry;
-    const char *text;
-    char *command;
-
-    //Initializations
-    entry = GTK_WIDGET (gw_common_get_widget_by_target (GW_TARGET_ENTRY));
-    text = gtk_entry_get_text (GTK_ENTRY (entry));
-    command = g_strjoin (" ", "/bin/echo \"", text, "\" |", ENCHANT, "-d en -a", NULL);
-    printf("command: %s\n", command);
-
-    system(command);
-
-    //Cleanup
-    g_free (command);
-}

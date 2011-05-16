@@ -10,7 +10,7 @@ datadir = @datadir@
 localedir = $(datadir)/locale
 DEFINITIONS =-DLOCALEDIR=\"$(localedir)\" -DVERSION=\"$(VERSION)\" -DPACKAGE=\"$(PACKAGE)\" -DDATADIR2=\"$(datadir)\" -DLIBDIR=\"$(libdir)\" -DENCHANT=\"$(ENCHANT)\" -DGWAEI_LOCALEDIR=\"${GWAEI_LOCALEDIR}\"
 
-gwaei_SOURCES = gwaei.c common.c frontend.c main.c main-callbacks.c settings-callbacks.c settings.c radsearchtool.c radsearchtool-callbacks.c printing.c main-tabs.c dictionaryinstall.c installprogress.c dictionarymanager.c settings-listeners.c pluginmanager.c
+gwaei_SOURCES = gwaei.c common.c frontend.c main.c main-callbacks.c settings-callbacks.c settings.c radsearchtool.c radsearchtool-callbacks.c printing.c main-tabs.c dictionaryinstall.c installprogress.c dictionarymanager.c settings-listeners.c pluginmanager.c spellcheck.c
 gwaei_LDADD =  $(GNOME_LIBS) ../backend/libgwaei-backend.la
 gwaei_CPPFLAGS = $(DEFINITIONS) $(GNOME_CFLAGS) $(GNOME_DEFS) -I$(top_srcdir)/src/backend/include -I$(top_srcdir)/src/gtk/include 
 

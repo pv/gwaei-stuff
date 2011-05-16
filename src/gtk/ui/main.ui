@@ -978,7 +978,6 @@
                         <property name="caps_lock_warning">False</property>
                         <property name="primary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">False</property>
-                        <signal name="changed" handler="gw_main_entry_text_changed_cb" swapped="no"/>
                         <signal name="activate" handler="do_search" swapped="no"/>
                         <signal name="key-press-event" handler="do_focus_change_on_key_press" swapped="no"/>
                         <signal name="icon-release" handler="do_clear_search" swapped="no"/>

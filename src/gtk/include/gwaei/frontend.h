@@ -25,6 +25,8 @@
 #include <gwaei/dictionaryinstall.h>
 #include <gwaei/installprogress.h>
 
+#include <gwaei/spellcheck.h>
+
 void gw_frontend_initialize (int*, char**);
 void gw_frontend_free (void);
 void gw_frontend_start_gtk (int, char**);

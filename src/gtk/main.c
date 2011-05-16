@@ -67,7 +67,7 @@ void gw_main_initialize ()
 #else
     gtk_toolbar_unset_style (GTK_TOOLBAR (toolbar));
 #endif
-
+    gw_spellcheck_attach_to_entry (gw_common_get_widget_by_target (GW_TARGET_ENTRY));
 
     gw_tabs_initialize ();
 }

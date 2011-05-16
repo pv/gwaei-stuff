@@ -129,30 +129,6 @@ void gw_spellcheck_attach_to_entry (GtkEntry *entry)
 }
 
 
-int main (int argc, char** argv)
-{
-  g_thread_init (NULL);
-  gtk_init (&argc, &argv);
-
-  GtkWidget *window;
-  GtkWidget *entry;
-  GtkWidget *area;
-
-  window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  entry = gtk_entry_new ();
-  gw_spellcheck_attach_to_entry (GTK_ENTRY (entry));
-  area = gtk_drawing_area_new ();
-  gtk_widget_set_size_request (area, 100, 100);
-
-  gtk_container_add (GTK_CONTAINER (window), GTK_WIDGET (entry));
-  gtk_widget_show_all (GTK_WIDGET (window));
-
-  gtk_main ();
-
-  return 0;
-}
-
-
 
 //
 //Callbacks
