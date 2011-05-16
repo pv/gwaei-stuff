@@ -759,7 +759,8 @@ G_MODULE_EXPORT void do_dictionary_changed_action (GtkWidget *widget, gpointer d
 
     //Finish up
     gw_ui_set_dictionary (active);
-    //gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
+
+    gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
 }
 
 
@@ -1329,7 +1330,6 @@ G_MODULE_EXPORT gboolean do_focus_change_on_key_press (GtkWidget *widget,
       {
         gw_ui_text_select_none_by_target (GW_TARGET_ENTRY);
         gw_ui_grab_focus_by_target (GW_TARGET_RESULTS);
-        return FALSE;
         return TRUE;
       }
 
@@ -1344,7 +1344,6 @@ G_MODULE_EXPORT gboolean do_focus_change_on_key_press (GtkWidget *widget,
       {
         gw_ui_text_select_all_by_target (GW_TARGET_ENTRY);
         gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
-        return FALSE;
         return TRUE;
       }
     }
@@ -1691,8 +1690,8 @@ G_MODULE_EXPORT void do_update_button_states_based_on_entry_text (GtkWidget *wid
       gtk_entry_set_icon_from_stock (GTK_ENTRY (search_entry), GTK_ENTRY_ICON_SECONDARY, NULL);
 
     //Return widget colors back to normal
-    gtk_widget_modify_base (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
-    gtk_widget_modify_text (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
+    gtk_widget_override_background_color (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
+    gtk_widget_override_color (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
 }
 
 

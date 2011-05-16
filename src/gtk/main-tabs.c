@@ -305,14 +305,6 @@ int gw_tabs_new ()
     gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, TRUE, 0);
     gtk_widget_show_all (GTK_WIDGET (hbox));
 
-    //Shrink the close button
-    GtkRcStyle *rcstyle;
-    rcstyle = gtk_rc_style_new ();
-    rcstyle->xthickness = rcstyle->ythickness = 0;
-    gtk_widget_modify_style (close_button, rcstyle);
-    g_object_unref (rcstyle);
-
-
     //Finish
     int current = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
     int position = gtk_notebook_append_page (GTK_NOTEBOOK (notebook), scrolledwindow, hbox);

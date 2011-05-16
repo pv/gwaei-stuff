@@ -125,7 +125,7 @@ void gw_ui_set_query_entry_text_by_searchitem (GwSearchItem *item)
 {
     //Declarations
     char hex_color_string[100];
-    GdkColor color;
+    GdkRGBA color;
     GtkWidget *search_entry;
 
     //Initializations
@@ -135,8 +135,8 @@ void gw_ui_set_query_entry_text_by_searchitem (GwSearchItem *item)
     if (item == NULL)
     {
       gtk_entry_set_text (GTK_ENTRY (search_entry), "");
-      gtk_widget_modify_base (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
-      gtk_widget_modify_text (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
+      gtk_widget_override_background_color (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
+      gtk_widget_override_color (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
     }
     //There was previously a search, set the match colors from the prefs
     else
@@ -156,21 +156,21 @@ void gw_ui_set_query_entry_text_by_searchitem (GwSearchItem *item)
 
       //Set the foreground color
       gw_pref_get_string_by_schema (hex_color_string, GW_SCHEMA_HIGHLIGHT, GW_KEY_MATCH_FG, 100);
-      if (gdk_color_parse (hex_color_string, &color) == FALSE)
+      if (gdk_rgba_parse (&color, hex_color_string) == FALSE)
       {
         gw_pref_reset_value_by_schema (GW_SCHEMA_HIGHLIGHT, GW_KEY_MATCH_FG);
         return;
       }
-      gtk_widget_modify_text (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, &color);
+      gtk_widget_override_color (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, &color);
 
       //Set the background color
       gw_pref_get_string_by_schema (hex_color_string, GW_SCHEMA_HIGHLIGHT, GW_KEY_MATCH_BG, 100);
-      if (gdk_color_parse (hex_color_string, &color) == FALSE)
+      if (gdk_rgba_parse (&color, hex_color_string) == FALSE)
       {
         gw_pref_reset_value_by_schema (GW_SCHEMA_HIGHLIGHT, GW_KEY_MATCH_BG);
         return;
       }
-      gtk_widget_modify_base (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, &color);
+      gtk_widget_override_background_color (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, &color);
     }
 }
 
@@ -304,9 +304,9 @@ void gw_ui_verb_check_with_suggestion (GwSearchItem *item)
     suggestion_eventbox = GTK_WIDGET (gtk_builder_get_object (builder, "suggestion_eventbox"));
     GtkWidget *window;
     window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
-    GdkColor fgcolor;
+    GdkRGBA fgcolor;
     fgcolor = window->style->fg[GTK_STATE_SELECTED];
-    GdkColor bgcolor;
+    GdkRGBA bgcolor;
     bgcolor = window->style->bg[GTK_STATE_SELECTED];
 
     gtk_event_box_set_visible_window (GTK_EVENT_BOX (suggestion_eventbox), TRUE);
@@ -888,7 +888,7 @@ void gw_ui_set_font (char *font_description_string, int *font_magnification)
       while ((scrolledwindow = GTK_WIDGET (gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), i))) != NULL)
       {
         textview = GTK_WIDGET (gtk_bin_get_child (GTK_BIN (scrolledwindow)));
-        gtk_widget_modify_font (GTK_WIDGET (textview), desc);
+        gtk_widget_override_font (GTK_WIDGET (textview), desc);
         i++;
       }
       pango_font_description_free (desc);
@@ -1407,7 +1407,7 @@ gboolean gw_ui_set_color_to_tagtable (char    *id,     GwTargetOutput TARGET,
       char bg_color[100];
       char fallback_color[100];
 
-      GdkColor color;
+      GdkRGBA color;
 
       //Set the foreground color and reset if the value is odd
       if (set_fg)
@@ -1416,7 +1416,7 @@ gboolean gw_ui_set_color_to_tagtable (char    *id,     GwTargetOutput TARGET,
         if (key != NULL)
         {
           gw_pref_get_string_by_schema (fg_color, GW_SCHEMA_HIGHLIGHT, key, 100);
-          if (gdk_color_parse (fg_color, &color) == FALSE)
+          if (gdk_rgba_parse (&color, fg_color) == FALSE)
           {
             printf("color failed %s\n", fg_color);
             gw_pref_reset_value_by_schema (GW_SCHEMA_HIGHLIGHT, key);
@@ -1436,7 +1436,7 @@ gboolean gw_ui_set_color_to_tagtable (char    *id,     GwTargetOutput TARGET,
         if (key != NULL)
         {
           gw_pref_get_string_by_schema (bg_color, GW_SCHEMA_HIGHLIGHT, key, 100);
-          if (gdk_color_parse (bg_color, &color) == FALSE)
+          if (gdk_rgba_parse (&color, bg_color) == FALSE)
           {
             printf("color failed %s\n", bg_color);
             gw_pref_reset_value_by_schema (GW_SCHEMA_HIGHLIGHT, key);
@@ -2021,8 +2021,8 @@ void gw_ui_buffer_reload_tagtable_tags ()
     gw_ui_set_color_to_tagtable ("header",  GW_TARGET_KANJI,   TRUE, FALSE);
 
     GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
-    gtk_widget_modify_base (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
-    gtk_widget_modify_text (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
+    gtk_widget_override_background_color (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
+    gtk_widget_override_color (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
 }
 
 

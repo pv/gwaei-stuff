@@ -143,6 +143,7 @@
     <property name="icon_name">word-boundary</property>
     <signal name="activate" handler="do_insert_word_edge" swapped="no"/>
   </object>
+  <object class="GtkAccelGroup" id="main_accelgroup"/>
   <object class="GtkActionGroup" id="main_actiongroup"/>
   <object class="GtkToggleAction" id="view_toggle_toolbar_action">
     <property name="label" translatable="yes">Show _Toolbar</property>
@@ -176,7 +177,6 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
   </object>
-  <object class="GtkAccelGroup" id="main_accelgroup"/>
   <object class="GtkWindow" id="main_window">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">gWaei Japanese-English Dictionary</property>
@@ -971,6 +971,7 @@
                     <property name="text" translatable="yes">Search</property>
                     <signal name="changed" handler="do_update_button_states_based_on_entry_text" swapped="no"/>
                     <signal name="activate" handler="do_search" swapped="no"/>
+                    <signal name="focus-in-event" handler="do_update_clipboard_on_focus_change" swapped="no"/>
                     <signal name="icon-release" handler="do_clear_search" swapped="no"/>
                   </object>
                 </child>
