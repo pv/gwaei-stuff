@@ -143,6 +143,7 @@ static void _menuitem_activated_cb (GtkWidget *widget, gpointer data)
   char *replacement;
   int start_offset;
   int end_offset;
+  int index;
 
   //Initializations
   srd = data;
@@ -156,7 +157,11 @@ static void _menuitem_activated_cb (GtkWidget *widget, gpointer data)
   strcpy (buffer + start_offset, replacement);
   strcat (buffer, text + end_offset);
 
+  index = gtk_editable_get_position (GTK_EDITABLE (srd->entry));
+  if (index > end_offset || index > start_offset + strlen(replacement))
+    index = index - (end_offset - start_offset) + strlen(replacement);
   gtk_entry_set_text (GTK_ENTRY (srd->entry), buffer);
+  gtk_editable_set_position (GTK_EDITABLE (srd->entry), index);
 
   //Cleanup
   free (buffer);
@@ -435,7 +440,7 @@ static gboolean _update_spellcheck_timeout (gpointer data)
     _needs_spellcheck = FALSE;
 
     GtkEditable *editable;
-    char *argv[] = { "/usr/bin/enchant", "-a", "-d", "en", NULL};
+    char *argv[] = { ENCHANT, "-a", "-d", "en", NULL};
     char *text;
     GPid pid;
     int stdin_stream;
