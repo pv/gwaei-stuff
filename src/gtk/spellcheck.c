@@ -14,8 +14,6 @@ static gboolean _draw_underline_cb (GtkWidget*, cairo_t*, gpointer);
 static void _queue_spellcheck_cb (GtkEditable*, gpointer);
 static gboolean _update_spellcheck_timeout (gpointer);
 
-void gw_spellcheck_attach_to_entry (GtkEntry*);
-
 struct _SpellingReplacementData {
   GtkEntry *entry;
   int start_offset;

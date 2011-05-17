@@ -44,7 +44,7 @@
 //! @param widget Currently unused GtkWidget pointer
 //! @param data Currently unused gpointer
 //!
-G_MODULE_EXPORT void do_radical_clear (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_radsearchtool_clear_cb (GtkWidget *widget, gpointer data)
 {
   gw_radsearchtool_deselect_all_radicals ();
   gw_radsearchtool_set_strokes_checkbox_state (FALSE);
@@ -64,7 +64,7 @@ G_MODULE_EXPORT void do_radical_clear (GtkWidget *widget, gpointer data)
 //! @param widget Currently unused GtkWidget pointer
 //! @param data Currently unused gpointer
 //!
-G_MODULE_EXPORT void do_radical_search (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_radsearchtool_search_cb (GtkWidget *widget, gpointer data)
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
@@ -142,12 +142,12 @@ G_MODULE_EXPORT void do_radical_search (GtkWidget *widget, gpointer data)
 //! @param widget Currently unused GtkWidget pointer
 //! @param data Currently unused gpointer
 //!
-G_MODULE_EXPORT void do_radical_kanji_stroke_checkbox_update (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_radsearchtool_radical_kanji_stroke_checkbox_update_cb (GtkWidget *widget, gpointer data)
 {
     gw_radsearchtool_update_strokes_checkbox_state ();
 
     //Start the search
-    do_radical_search (NULL, NULL);
+    gw_radsearchtool_search_cb (NULL, NULL);
 }
 
 

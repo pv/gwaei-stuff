@@ -117,7 +117,7 @@ void gw_frontend_start_gtk (int argc, char* argv[])
 
     //Show the settings dialog if no dictionaries are installed
     if (gw_dictinfolist_get_total () == 0) {
-      do_settings (NULL, GINT_TO_POINTER (1));
+      gw_main_settings_cb (NULL, GINT_TO_POINTER (1));
     }
 
     //Set the initial focus to the search bar

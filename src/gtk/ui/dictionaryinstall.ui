@@ -240,8 +240,8 @@
                 <property name="receives_default">True</property>
                 <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
-                <signal name="activate" handler="do_close" object="dictionary_install_dialog" swapped="yes"/>
-                <signal name="clicked" handler="do_close" object="dictionary_install_dialog" swapped="yes"/>
+                <signal name="activate" handler="gw_main_close_cb" object="dictionary_install_dialog" swapped="yes"/>
+                <signal name="clicked" handler="gw_main_close_cb" object="dictionary_install_dialog" swapped="yes"/>
               </object>
               <packing>
                 <property name="expand">False</property>

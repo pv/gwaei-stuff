@@ -383,7 +383,7 @@ void gw_radsearchtool_initialize ()
           g_free (tooltip);
           tooltip = NULL;
         }
-        g_signal_connect(button, "toggled", G_CALLBACK (do_radical_search), NULL);
+        g_signal_connect(button, "toggled", G_CALLBACK (gw_radsearchtool_search_cb), NULL);
         gtk_table_attach (table, button, cols, cols + 1, rows, rows + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
         i++;
       }
@@ -598,10 +598,10 @@ void gw_radsearchtool_deselect_all_radicals()
 
     while (list != NULL)
     {
-      g_signal_handlers_block_by_func (list->data, do_radical_search, NULL);
+      g_signal_handlers_block_by_func (list->data, gw_radsearchtool_search_cb, NULL);
       if (G_OBJECT_TYPE(list->data) == g_type_from_name("GtkToggleButton"))
          gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(list->data), FALSE);
-      g_signal_handlers_unblock_by_func (list->data, do_radical_search, NULL);
+      g_signal_handlers_unblock_by_func (list->data, gw_radsearchtool_search_cb, NULL);
       gtk_widget_set_sensitive (GTK_WIDGET (list->data), TRUE);
 
       list = list->next;

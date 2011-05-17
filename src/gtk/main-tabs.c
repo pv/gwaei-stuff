@@ -44,7 +44,7 @@ static GList *_tab_searchitems = NULL;
 
 void gw_tabs_initialize ()
 {
-    gw_tabs_guarantee_first_tab ();
+    gw_tabs_guarantee_first ();
 }
 
 void gw_tabs_free ()
@@ -94,7 +94,7 @@ void gw_tabs_set_searchitem (GwSearchItem *item)
     gw_tabs_update_on_deck_historylist_by_searchitem (item);
 
     //Update the interface
-    gw_tabs_guarantee_first_tab ();
+    gw_tabs_guarantee_first ();
     gw_tabs_set_current_tab_text (item->queryline->string);
     gw_ui_set_query_entry_text_by_searchitem (item);
 }
@@ -177,7 +177,7 @@ void gw_tabs_update_on_deck_historylist_item_by_current_tab ()
 //!
 //! @brief Makes sure that at least one tab is available to output search results.
 //!
-void gw_tabs_guarantee_first_tab ()
+void gw_tabs_guarantee_first ()
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
@@ -185,7 +185,7 @@ void gw_tabs_guarantee_first_tab ()
     int pages = gtk_notebook_get_n_pages (GTK_NOTEBOOK (notebook));
     if (pages == 0)
     {
-      gw_tabs_new ();
+      gw_tabs_new_cb (NULL, NULL);
       gw_tabs_update_appearance ();
     }
 }
@@ -228,7 +228,7 @@ void gw_tabs_set_current_tab_text (const char* TEXT)
 
 
 //!
-//! @brief Creats a new tab.  The focus and other details are handled by do_new_tab()
+//! @brief Creats a new tab.  The focus and other details are handled by gw_tabs_new_cb ()
 //!
 int gw_tabs_new ()
 {
@@ -247,17 +247,17 @@ int gw_tabs_new ()
     //gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow), GTK_SHADOW_IN);
     gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (textview), GTK_WRAP_WORD);
 
-    g_signal_connect( G_OBJECT (textview), "drag_motion", G_CALLBACK (do_drag_motion_1), NULL);
-    g_signal_connect( G_OBJECT (textview), "focus_in_event", G_CALLBACK (do_update_clipboard_on_focus_change), textview);
-    g_signal_connect( G_OBJECT (textview), "button_press_event", G_CALLBACK (do_get_position_for_button_press), NULL);
-    g_signal_connect( G_OBJECT (textview), "motion_notify_event", G_CALLBACK (do_get_iter_for_motion), NULL);
-    g_signal_connect( G_OBJECT (textview), "drag_drop", G_CALLBACK (do_drag_drop_1), NULL);
-    g_signal_connect( G_OBJECT (textview), "button_release_event", G_CALLBACK (do_get_iter_for_button_release), NULL);
-    g_signal_connect( G_OBJECT (textview), "drag_leave", G_CALLBACK (do_drag_leave_1), NULL);
-    g_signal_connect( G_OBJECT (textview), "drag_data_received", G_CALLBACK (do_search_drag_data_recieved), NULL);
-    g_signal_connect( G_OBJECT (textview), "key_press_event", G_CALLBACK (do_focus_change_on_key_press), NULL);
-    g_signal_connect( G_OBJECT (textview), "populate_popup", G_CALLBACK (do_populate_popup_with_search_options), NULL);
-    g_signal_connect( G_OBJECT (textview), "scroll_event", G_CALLBACK (do_scroll_or_zoom), NULL);
+    g_signal_connect( G_OBJECT (textview), "drag_motion", G_CALLBACK (gw_main_drag_motion_1_cb), NULL);
+    g_signal_connect( G_OBJECT (textview), "focus_in_event", G_CALLBACK (gw_main_update_clipboard_on_focus_change_cb), textview);
+    g_signal_connect( G_OBJECT (textview), "button_press_event", G_CALLBACK (gw_main_get_position_for_button_press_cb), NULL);
+    g_signal_connect( G_OBJECT (textview), "motion_notify_event", G_CALLBACK (gw_main_get_iter_for_motion_cb), NULL);
+    g_signal_connect( G_OBJECT (textview), "drag_drop", G_CALLBACK (gw_main_drag_drop_1_cb), NULL);
+    g_signal_connect( G_OBJECT (textview), "button_release_event", G_CALLBACK (gw_main_get_iter_for_button_release_cb), NULL);
+    g_signal_connect( G_OBJECT (textview), "drag_leave", G_CALLBACK (gw_main_drag_leave_1_cb), NULL);
+    g_signal_connect( G_OBJECT (textview), "drag_data_received", G_CALLBACK (gw_main_search_drag_data_recieved_cb), NULL);
+    g_signal_connect( G_OBJECT (textview), "key_press_event", G_CALLBACK (gw_main_focus_change_on_key_press_cb), NULL);
+    g_signal_connect( G_OBJECT (textview), "populate_popup", G_CALLBACK (gw_main_populate_popup_with_search_options_cb), NULL);
+    g_signal_connect( G_OBJECT (textview), "scroll_event", G_CALLBACK (gw_main_scroll_or_zoom_cb), NULL);
 
     gtk_container_add (GTK_CONTAINER (scrolledwindow), textview);
     gtk_widget_show_all (GTK_WIDGET (scrolledwindow));
@@ -296,7 +296,7 @@ int gw_tabs_new ()
 
     //Put all the elements together
     gtk_container_add (GTK_CONTAINER (close_button), button_image);
-    g_signal_connect (G_OBJECT (close_button), "clicked", G_CALLBACK (do_tab_remove), scrolledwindow);
+    g_signal_connect (G_OBJECT (close_button), "clicked", G_CALLBACK (gw_tabs_remove_cb), scrolledwindow);
     vbox = GTK_WIDGET (gtk_vbox_new(FALSE, 0));
     gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 0);
     gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, TRUE, 0);
@@ -327,7 +327,7 @@ int gw_tabs_new ()
 //! @param widget Currently unused widget pointer
 //! @param data Currently unused gpointer
 //!
-G_MODULE_EXPORT void do_new_tab (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_tabs_new_cb (GtkWidget *widget, gpointer data)
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
@@ -349,7 +349,7 @@ G_MODULE_EXPORT void do_new_tab (GtkWidget *widget, gpointer data)
 //! @param widget Currently unused widget pointer
 //! @param data Currently unused gpointer
 //!
-G_MODULE_EXPORT void do_tab_remove (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_tabs_remove_cb (GtkWidget *widget, gpointer data)
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
@@ -390,7 +390,7 @@ G_MODULE_EXPORT void do_tab_remove (GtkWidget *widget, gpointer data)
 //! @param widget Currently unused widget pointer
 //! @param data Currently unused gpointer
 //!
-G_MODULE_EXPORT void do_tab_remove_current (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_tabs_remove_current_cb (GtkWidget *widget, gpointer data)
 {
 
     GtkBuilder *builder = gw_common_get_builder ();
@@ -435,7 +435,7 @@ G_MODULE_EXPORT void do_tab_remove_current (GtkWidget *widget, gpointer data)
 //! @param widget Currently unused widget pointer
 //! @param data Currently unused gpointer
 //!
-G_MODULE_EXPORT void do_tab_switch (GtkNotebook *notebook, GtkWidget *page, int page_num, gpointer data)
+G_MODULE_EXPORT void gw_tabs_switch_cb (GtkNotebook *notebook, GtkWidget *page, int page_num, gpointer data)
 {
     GwSearchItem *item = g_list_nth_data (_tab_searchitems, page_num);
     gw_tabs_update_appearance_with_searchitem (item);
@@ -449,7 +449,7 @@ G_MODULE_EXPORT void do_tab_switch (GtkNotebook *notebook, GtkWidget *page, int 
 //! @param widget Currently unused widget pointer
 //! @param data Currently unused gpointer
 //!
-G_MODULE_EXPORT void do_next_tab (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_tabs_next_cb (GtkWidget *widget, gpointer data)
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
@@ -466,7 +466,7 @@ G_MODULE_EXPORT void do_next_tab (GtkWidget *widget, gpointer data)
 //! @param widget Currently unused widget pointer
 //! @param data Currently unused gpointer
 //!
-G_MODULE_EXPORT void do_previous_tab (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_tabs_previous_cb (GtkWidget *widget, gpointer data)
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
@@ -483,7 +483,7 @@ G_MODULE_EXPORT void do_previous_tab (GtkWidget *widget, gpointer data)
 //! @param widget Currently unused widget pointer
 //! @param data A gpointer to a GwSearchItem that hold the search information
 //!
-G_MODULE_EXPORT void do_prep_and_start_search_in_new_tab (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_tabs_prep_and_start_search_in_new_cb (GtkWidget *widget, gpointer data)
 {
     GwSearchItem *item = (GwSearchItem*) data;
     if (item != NULL)
@@ -495,14 +495,14 @@ G_MODULE_EXPORT void do_prep_and_start_search_in_new_tab (GtkWidget *widget, gpo
       GwSearchItem *current_item = g_list_nth_data (gw_tabs_get_searchitem_list (), page_num);
 
       if (current_item != NULL && current_item->total_results > 0)
-        do_new_tab (NULL, NULL);
+        gw_tabs_new ();
       gw_ui_set_dictionary_by_searchitem (item);
       gw_ui_set_query_entry_text_by_searchitem (item);
-      do_search (NULL, NULL);
+      gw_main_search_cb (NULL, NULL);
     }
 }
 
-G_MODULE_EXPORT void do_no_results_search_for_dictionary (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_tabs_no_results_search_for_dictionary_cb (GtkWidget *widget, gpointer data)
 {
     GwDictInfo* di = (GwDictInfo*) data;
     gw_ui_set_dictionary(di->load_position);
@@ -514,7 +514,7 @@ G_MODULE_EXPORT void do_no_results_search_for_dictionary (GtkWidget *widget, gpo
 //! @param widget Currently unused widget pointe
 //! @param data gpointer to a GwSearchItem to be freed
 //!
-G_MODULE_EXPORT void do_destroy_tab_menuitem_searchitem_data (GObject *object, gpointer data)
+G_MODULE_EXPORT void gw_tabs_destroy_tab_menuitem_searchitem_data_cb (GObject *object, gpointer data)
 {
     GwSearchItem *item = (GwSearchItem*) data;
     if (item != NULL)

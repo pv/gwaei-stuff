@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file src/gtk-main-callbacks.c
+//! @file src/gtk/main-callbacks.c
 //!
 //! @brief Abstraction layer for gtk callbacks
 //!
@@ -62,7 +62,7 @@ static char* hovered_word = NULL;
 //! @param widget Currently unused widget pointer
 //! @param data Currently unused gpointer
 //!
-G_MODULE_EXPORT void do_settings (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_main_settings_cb (GtkWidget *widget, gpointer data)
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
@@ -88,36 +88,22 @@ G_MODULE_EXPORT void do_settings (GtkWidget *widget, gpointer data)
 
 
 //!
-//! @brief Brings up the kanjipad dialog to change settings
-//!
-//! Sets kanjipad to paste the selected result to the search entry
-//! and then makes the dialog to appear.
-//!
-//! @param widget Currently unused widget pointer
-//! @param data Currently unused gpointer
-//!
-G_MODULE_EXPORT void do_kanjipad (GtkWidget *widget, gpointer data)
-{
-}
-
-
-//!
 //! @brief Sets the cursor type depending on the character hovered
 //!
 //! If the character hovered is a kanji character, the hand turns into a
 //! pointer in order to show that the selection is clickable. It will open
-//! the kanji sidebar using do_get_position_for_button_press () and
-//! do_get_iter_for_button_release ().
+//! the kanji sidebar using gw_main_get_position_for_button_press_cb () and
+//! gw_main_get_iter_for_button_release_cb ().
 //! 
-//! @see do_get_position_for_button_press ()
-//! @see do_get_iter_for_button_release ()
+//! @see gw_main_get_position_for_button_press_cb ()
+//! @see gw_main_get_iter_for_button_release_cb ()
 //! @param widget Currently unused widget pointer
 //! @param data Currently unused gpointer
 //! @return Always returns false
 //!
-G_MODULE_EXPORT gboolean do_get_iter_for_motion (GtkWidget      *widget,
-                                                 GdkEventButton *event,
-                                                 gpointer        data   )
+G_MODULE_EXPORT gboolean gw_main_get_iter_for_motion_cb (GtkWidget      *widget,
+                                                         GdkEventButton *event,
+                                                         gpointer        data   )
 {
     gunichar unic;
     GtkTextIter iter, start, end;
@@ -162,17 +148,17 @@ G_MODULE_EXPORT gboolean do_get_iter_for_motion (GtkWidget      *widget,
 //! @brief Gets the position of the cursor click and stores it
 //!
 //! The function stores the location of the button press, but takes no action
-//! by itself.  do_get_iter_for_button_release () uses the saved x and y
+//! by itself.  gw_main_get_iter_for_button_release_cb () uses the saved x and y
 //! coordinates and determines if an action should be taken then.
 //! 
-//! @see do_get_iter_for_button_release ()
+//! @see gw_main_get_iter_for_button_release_cb ()
 //! @param widget Currently unused widget pointer
 //! @param data Currently unused gpointer
 //! @return Always returns false
 //!
-G_MODULE_EXPORT gboolean do_get_position_for_button_press (GtkWidget      *widget,
-                                                           GdkEventButton *event,
-                                                           gpointer        data    )
+G_MODULE_EXPORT gboolean gw_main_get_position_for_button_press_cb (GtkWidget      *widget,
+                                                                   GdkEventButton *event,
+                                                                   gpointer        data    )
 {
     GtkTextIter iter;
     //Window coordinates
@@ -188,19 +174,19 @@ G_MODULE_EXPORT gboolean do_get_position_for_button_press (GtkWidget      *widge
 //!
 //! @brief Gets the position of the cursor click then opens the kanji sidebar
 //!
-//! Compares the x and y coordinates fetch by do_get_position_for_button_press
+//! Compares the x and y coordinates fetch by gw_main_get_position_for_button_press_cb
 //! for the cursor, and if the difference is below a certain threshhold,
 //! decides if the user wants to open the kanji character under cursor in the
 //! kanji sidebar or not.
 //! 
-//! @see do_get_position_for_button_press ()
+//! @see gw_main_get_position_for_button_press_cb ()
 //! @param widget Currently unused widget pointer
 //! @param data Currently unused gpointer
 //! @return Always returns false
 //!
-G_MODULE_EXPORT gboolean do_get_iter_for_button_release (GtkWidget      *widget,
-                                                         GdkEventButton *event,
-                                                         gpointer        data    )
+G_MODULE_EXPORT gboolean gw_main_get_iter_for_button_release_cb (GtkWidget      *widget,
+                                                                 GdkEventButton *event,
+                                                                 gpointer        data    )
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
@@ -288,7 +274,7 @@ G_MODULE_EXPORT gboolean do_get_iter_for_button_release (GtkWidget      *widget,
 //! @param widget GtkWidget pointer to the window to close
 //! @param data Currently unused gpointer
 //!
-G_MODULE_EXPORT void do_close (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_main_close_cb (GtkWidget *widget, gpointer data)
 {
     const char *id = gtk_buildable_get_name (GTK_BUILDABLE (widget));
 
@@ -325,16 +311,16 @@ G_MODULE_EXPORT void do_close (GtkWidget *widget, gpointer data)
 //!
 //! @brief Preforms the action the window manager close event
 //!
-//! This function currently acts as a proxy for the do_close () function.
+//! This function currently acts as a proxy for the gw_main_close_cb () function.
 //! 
-//! @see do_close ()
+//! @see gw_main_close_cb ()
 //! @param widget GtkWidget pointer to the window to close
 //! @param data Currently unused gpointer
 //! @return Always returns true
 //!
-G_MODULE_EXPORT gboolean do_delete_event_action (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT gboolean gw_main_delete_event_action_cb (GtkWidget *widget, gpointer data)
 { 
-    do_close (widget, data);
+    gw_main_close_cb (widget, data);
     return TRUE;
 }
 
@@ -343,18 +329,18 @@ G_MODULE_EXPORT gboolean do_delete_event_action (GtkWidget *widget, gpointer dat
 //! @brief Closes the current window when the escape key is pressed
 //!
 //! Checks for a pure escape press with no modifiers then closes the window
-//! passed to the function through the widget pointer is do_close(). This
+//! passed to the function through the widget pointer is gw_main_close_cb (). This
 //! function is generally only attached to windows you could picture a cancel
 //! button being attached to in the right context.
 //! 
-//! @see do_close ()
+//! @see gw_main_close_cb ()
 //! @param widget GtkWidget pointer to the window to close
 //! @param data Currently unused gpointer
 //! @return Returns true when escape key is pressed
 //!
-G_MODULE_EXPORT gboolean do_close_on_escape (GtkWidget *widget,
-                                             GdkEvent  *event,
-                                             gpointer  *data   )
+G_MODULE_EXPORT gboolean gw_main_close_on_escape_cb (GtkWidget *widget,
+                                                     GdkEvent  *event,
+                                                     gpointer  *data   )
 {
     guint keyval = ((GdkEventKey*)event)->keyval;
     guint state = ((GdkEventKey*)event)->state;
@@ -369,7 +355,7 @@ G_MODULE_EXPORT gboolean do_close_on_escape (GtkWidget *widget,
     //Make sure no modifier keys are pressed
     if (((state & modifiers) == 0 ) && keyval == GDK_KEY_Escape)
     {
-      do_close (widget, data);
+      gw_main_close_cb (widget, data);
       return TRUE;
     }
 
@@ -380,18 +366,18 @@ G_MODULE_EXPORT gboolean do_close_on_escape (GtkWidget *widget,
 //!
 //! @brief Quits out of the application
 //!
-//! This function quits gWaei out.  But before it does, it calls the do_close
+//! This function quits gWaei out.  But before it does, it calls the gw_main_close_cb
 //! function an the calling window to make sure it's current coordinates are
 //! recorded for the next time the application is started.
 //! 
-//! @see do_close ()
+//! @see gw_main_close_cb ()
 //! @param widget GtkWidget pointer to the window to close
 //! @param data Currently unused gpointer
 //!
-G_MODULE_EXPORT void do_quit (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_main_quit_cb (GtkWidget *widget, gpointer data)
 {
     gw_ui_tab_cancel_all_searches ();
-    do_close (widget, data);
+    gw_main_close_cb (widget, data);
     gtk_main_quit ();
 }
 
@@ -404,15 +390,15 @@ G_MODULE_EXPORT void do_quit (GtkWidget *widget, gpointer data)
 //! history lists so the GwSearchItem is in the current position of the
 //! Historylist.
 //! 
-//! @see do_search ()
+//! @see gw_main_search_cb ()
 //! @param widget Unused GtkWidget pointer.
 //! @param data pointer to a specially attached GwSearchItem variable
 //!
-G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_main_search_from_history_cb (GtkWidget *widget, gpointer data)
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
-    gw_tabs_guarantee_first_tab ();
+    gw_tabs_guarantee_first ();
 
     GwHistoryList *hl;
     GwSearchItem *item;
@@ -469,20 +455,20 @@ G_MODULE_EXPORT void do_search_from_history (GtkWidget *widget, gpointer data)
 //! @brief Goes back one step in the search history
 //! 
 //! This function checks the top of the back historylist and uses the
-//! GwSearchItem in it to invoke do_search_from_history () using it.
+//! GwSearchItem in it to invoke gw_main_search_from_history_cb () using it.
 //!
-//! @see do_search_from_history ()
-//! @see do_forward ()
+//! @see gw_main_search_from_history_cb ()
+//! @see gw_main_forward_cb ()
 //! @param widget Unused GtkWidget pointer.
 //! @param data pointer to a specially attached GwSearchItem variable
 //!
-G_MODULE_EXPORT void do_back (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_main_back_cb (GtkWidget *widget, gpointer data)
 {
     GwHistoryList *hl;
     hl = gw_historylist_get_list (GW_HISTORYLIST_RESULTS);
     if (hl->back != NULL)
     {
-      do_search_from_history (NULL, hl->back->data);
+      gw_main_search_from_history_cb (NULL, hl->back->data);
     }
 }
 
@@ -491,20 +477,20 @@ G_MODULE_EXPORT void do_back (GtkWidget *widget, gpointer data)
 //! @brief Goes forward one step in the search history
 //! 
 //! This function checks the top of the forward historylist and uses the
-//! GwSearchItem in it to invoke do_search_from_history () using it.
+//! GwSearchItem in it to invoke gw_main_search_from_history_cb () using it.
 //!
-//! @see do_search_from_history ()
-//! @see do_back ()
+//! @see gw_main_search_from_history_cb ()
+//! @see gw_main_back_cb ()
 //! @param widget Unused GtkWidget pointer.
 //! @param data pointer to a specially attached GwSearchItem variable
 //!
-G_MODULE_EXPORT void do_forward (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_main_forward_cb (GtkWidget *widget, gpointer data)
 {
     GwHistoryList *hl;
     hl = gw_historylist_get_list (GW_HISTORYLIST_RESULTS);
     if (hl->forward != NULL)
     {
-      do_search_from_history (NULL, hl->forward->data);
+      gw_main_search_from_history_cb (NULL, hl->forward->data);
     }
 }
 
@@ -516,11 +502,11 @@ G_MODULE_EXPORT void do_forward (GtkWidget *widget, gpointer data)
 //! it to a file, overwriting it if it already exists.  If part of the results
 //! are highlighted, only that gets saved.
 //!
-//! @see do_save ()
+//! @see gw_main_save_cb ()
 //! @param widget Unused GtkWidget pointer.
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void do_save_as (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_main_save_as_cb (GtkWidget *widget, gpointer data)
 {
     //Declarations
     GtkBuilder *builder = gw_common_get_builder ();
@@ -589,11 +575,11 @@ G_MODULE_EXPORT void do_save_as (GtkWidget *widget, gpointer data)
 //! keep appending to the same file. If part of the results are highlighted,
 //! only that gets appended.
 //!
-//! @see do_save_as ()
+//! @see gw_main_save_as_cb ()
 //! @param widget Unused GtkWidget pointer.
 //! @param data Unused gpointer
 //0
-G_MODULE_EXPORT void do_save (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_main_save_cb (GtkWidget *widget, gpointer data)
 {
     //Declarations
     gchar *text;
@@ -606,7 +592,7 @@ G_MODULE_EXPORT void do_save (GtkWidget *widget, gpointer data)
     //Sanity check for an empty save path
     if (path == NULL || *path == '\0')
     {
-      do_save_as (NULL, NULL);
+      gw_main_save_as_cb (NULL, NULL);
       return;
     }
 
@@ -631,7 +617,7 @@ G_MODULE_EXPORT void do_save (GtkWidget *widget, gpointer data)
 //! @param widget Unused GtkWidget pointer.
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void do_zoom_in (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_main_zoom_in_cb (GtkWidget *widget, gpointer data)
 {
     int size;
     size = gw_pref_get_int_by_schema (GW_SCHEMA_FONT, GW_KEY_FONT_MAGNIFICATION) + GW_FONT_ZOOM_STEP;
@@ -651,7 +637,7 @@ G_MODULE_EXPORT void do_zoom_in (GtkWidget *widget, gpointer data)
 //! @param widget Unused GtkWidget pointer.
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void do_zoom_out (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_main_zoom_out_cb (GtkWidget *widget, gpointer data)
 {
     int size;
     size = gw_pref_get_int_by_schema (GW_SCHEMA_FONT, GW_KEY_FONT_MAGNIFICATION) - GW_FONT_ZOOM_STEP;
@@ -671,7 +657,7 @@ G_MODULE_EXPORT void do_zoom_out (GtkWidget *widget, gpointer data)
 //! @param widget Unused GtkWidget pointer.
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void do_zoom_100 (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_main_zoom_100_cb (GtkWidget *widget, gpointer data)
 {
     gw_pref_reset_value_by_schema (GW_SCHEMA_FONT, GW_KEY_FONT_MAGNIFICATION);
 }
@@ -689,7 +675,7 @@ G_MODULE_EXPORT void do_zoom_100 (GtkWidget *widget, gpointer data)
 //! @param widget Unused GtkWidget pointer.
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void do_less_relevant_results_toggle (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_main_less_relevant_results_toggle_cb (GtkWidget *widget, gpointer data)
 {
     gboolean state;
     state = gw_pref_get_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_LESS_RELEVANT_SHOW);
@@ -708,7 +694,7 @@ G_MODULE_EXPORT void do_less_relevant_results_toggle (GtkWidget *widget, gpointe
 //! @param widget Unused GtkWidget pointer.
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void do_toolbar_toggle (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_main_toolbar_toggle_cb (GtkWidget *widget, gpointer data)
 {
     gboolean state;
     state = gw_pref_get_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_TOOLBAR_SHOW);
@@ -726,7 +712,7 @@ G_MODULE_EXPORT void do_toolbar_toggle (GtkWidget *widget, gpointer data)
 //! @param widget pointer to the GtkWidget that changed dictionaries
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void do_dictionary_changed_action (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_main_dictionary_changed_action_cb (GtkWidget *widget, gpointer data)
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
@@ -771,14 +757,14 @@ G_MODULE_EXPORT void do_dictionary_changed_action (GtkWidget *widget, gpointer d
 //! the dictionary of the widget that was modified.  The selected dictionary
 //! in the dictionarylist acts as the central reference for the GUI.
 //!
-//! @see do_cut ()
-//! @see do_copy ()
-//! @see do_paste ()
-//! @see do_update_clipboard_on_focus_change ()
+//! @see gw_main_cut_cb ()
+//! @see gw_main_copy_cb ()
+//! @see gw_main_paste_cb ()
+//! @see gw_main_update_clipboard_on_focus_change_cb ()
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void do_select_all (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_main_select_all_cb (GtkWidget *widget, gpointer data)
 {
     guint TARGET;
     TARGET = gw_ui_get_current_target_focus ("main_window");
@@ -794,14 +780,14 @@ G_MODULE_EXPORT void do_select_all (GtkWidget *widget, gpointer data)
 //! the dictionary of the widget that was modified.  The selected dictionary
 //! in the dictionarylist acts as the central reference for the GUI.
 //!
-//! @see do_cut ()
-//! @see do_copy ()
-//! @see do_select_all ()
-//! @see do_update_clipboard_on_focus_change ()
+//! @see gw_main_cut_cb ()
+//! @see gw_main_copy_cb ()
+//! @see gw_main_select_all_cb ()
+//! @see gw_main_update_clipboard_on_focus_change_cb ()
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void do_paste (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_main_paste_cb (GtkWidget *widget, gpointer data)
 {
     guint TARGET;
     TARGET = gw_ui_get_current_target_focus ("main_window");
@@ -816,14 +802,14 @@ G_MODULE_EXPORT void do_paste (GtkWidget *widget, gpointer data)
 //! the dictionary of the widget that was modified.  The selected dictionary
 //! in the dictionarylist acts as the central reference for the GUI.
 //!
-//! @see do_paste ()
-//! @see do_copy ()
-//! @see do_select_all ()
-//! @see do_update_clipboard_on_focus_change ()
+//! @see gw_main_paste_cb ()
+//! @see gw_main_copy_cb ()
+//! @see gw_main_select_all_cb ()
+//! @see gw_main_update_clipboard_on_focus_change_cb ()
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void do_cut (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_main_cut_cb (GtkWidget *widget, gpointer data)
 {
     guint TARGET;
     TARGET = gw_ui_get_current_target_focus ("main_window");
@@ -838,14 +824,14 @@ G_MODULE_EXPORT void do_cut (GtkWidget *widget, gpointer data)
 //! the dictionary of the widget that was modified.  The selected dictionary
 //! in the dictionarylist acts as the central reference for the GUI.
 //!
-//! @see do_cut ()
-//! @see do_paste ()
-//! @see do_select_all ()
-//! @see do_update_clipboard_on_focus_change ()
+//! @see gw_main_cut_cb ()
+//! @see gw_main_paste_cb ()
+//! @see gw_main_select_all_cb ()
+//! @see gw_main_update_clipboard_on_focus_change_cb ()
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void do_copy (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_main_copy_cb (GtkWidget *widget, gpointer data)
 {
     guint TARGET;
     TARGET = gw_ui_get_current_target_focus ("main_window");
@@ -860,17 +846,17 @@ G_MODULE_EXPORT void do_copy (GtkWidget *widget, gpointer data)
 //! update button states approprately and connect the signal handlers to the
 //! approprate widgets.
 //!
-//! @see do_cut ()
-//! @see do_copy ()
-//! @see do_paste ()
-//! @see do_select_all ()
+//! @see gw_main_cut_cb ()
+//! @see gw_main_copy_cb ()
+//! @see gw_main_paste_cb ()
+//! @see gw_main_select_all_cb ()
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //! @return Always returns false
 //!
-G_MODULE_EXPORT gboolean do_update_clipboard_on_focus_change (GtkWidget        *widget, 
-                                                              GtkDirectionType  arg1,
-                                                              gpointer          data   ) 
+G_MODULE_EXPORT gboolean gw_main_update_clipboard_on_focus_change_cb (GtkWidget        *widget, 
+                                                                      GtkDirectionType  arg1,
+                                                                      gpointer          data   ) 
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
@@ -916,19 +902,19 @@ G_MODULE_EXPORT gboolean do_update_clipboard_on_focus_change (GtkWidget        *
     //Create new ones pointed at the correct widget
     copy_handler_id = g_signal_connect       ( copy_action,
                                                "activate",
-                                               G_CALLBACK (do_copy),
+                                               G_CALLBACK (gw_main_copy_cb),
                                                widget                      );
     cut_handler_id = g_signal_connect        ( cut_action,
                                                "activate",
-                                               G_CALLBACK (do_cut),
+                                               G_CALLBACK (gw_main_cut_cb),
                                                widget                      );
     paste_handler_id = g_signal_connect      ( paste_action,
                                                "activate",
-                                               G_CALLBACK (do_paste),
+                                               G_CALLBACK (gw_main_paste_cb),
                                                widget                      );
     select_all_handler_id = g_signal_connect ( select_all_action,
                                                "activate",
-                                               G_CALLBACK (do_select_all),
+                                               G_CALLBACK (gw_main_select_all_cb),
                                                widget                      );
 
 
@@ -953,7 +939,7 @@ G_MODULE_EXPORT gboolean do_update_clipboard_on_focus_change (GtkWidget        *
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void do_print (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_main_print_cb (GtkWidget *widget, gpointer data)
 {
     gw_ui_tab_cancel_all_searches ();
     gw_print ();
@@ -972,7 +958,7 @@ G_MODULE_EXPORT void do_print (GtkWidget *widget, gpointer data)
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void do_radical_search_tool (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_main_radical_search_tool_cb (GtkWidget *widget, gpointer data)
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
@@ -983,7 +969,7 @@ G_MODULE_EXPORT void do_radical_search_tool (GtkWidget *widget, gpointer data)
     spinbutton = GTK_WIDGET (gtk_builder_get_object (builder, "strokes_spinbutton"));
     gtk_spin_button_set_value (GTK_SPIN_BUTTON (spinbutton), 1.0);
 
-    do_radical_clear (NULL, NULL);
+    gw_radsearchtool_clear_cb (NULL, NULL);
 
     //Show the window
     gw_common_show_window ("radicals_window");
@@ -1000,7 +986,7 @@ G_MODULE_EXPORT void do_radical_search_tool (GtkWidget *widget, gpointer data)
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void do_edit (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_main_edit_cb (GtkWidget *widget, gpointer data)
 {
     //Declarations
     char *uri;
@@ -1029,7 +1015,7 @@ G_MODULE_EXPORT void do_edit (GtkWidget *widget, gpointer data)
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void do_irc_channel (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_main_irc_channel_cb (GtkWidget *widget, gpointer data)
 {
     //Initializations
     GError *error;
@@ -1052,7 +1038,7 @@ G_MODULE_EXPORT void do_irc_channel (GtkWidget *widget, gpointer data)
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void do_homepage (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_main_homepage_cb (GtkWidget *widget, gpointer data)
 {
     //Declarations
     GError *error;
@@ -1075,7 +1061,7 @@ G_MODULE_EXPORT void do_homepage (GtkWidget *widget, gpointer data)
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void do_help (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_main_help_cb (GtkWidget *widget, gpointer data)
 {
     //Declarations
     GError *error;
@@ -1099,7 +1085,7 @@ G_MODULE_EXPORT void do_help (GtkWidget *widget, gpointer data)
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void do_glossary (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_main_glossary_cb (GtkWidget *widget, gpointer data)
 {
     //Declarations
     char *uri;
@@ -1126,7 +1112,7 @@ G_MODULE_EXPORT void do_glossary (GtkWidget *widget, gpointer data)
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void do_about (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_main_about_cb (GtkWidget *widget, gpointer data)
 {
     char *global_path = DATADIR2 G_DIR_SEPARATOR_S PACKAGE G_DIR_SEPARATOR_S "logo.png";
     char *local_path = ".." G_DIR_SEPARATOR_S "share" G_DIR_SEPARATOR_S PACKAGE G_DIR_SEPARATOR_S "logo.png";
@@ -1169,11 +1155,11 @@ G_MODULE_EXPORT void do_about (GtkWidget *widget, gpointer data)
 //! This function cycles the dictionaries down the list.  If it reaches the
 //! end, it will loop back to the top.
 //!
-//! @see do_cycle_dictionaries_backward ()
+//! @see gw_main_cycle_dictionaries_backward_cb ()
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void do_cycle_dictionaries_forward (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_main_cycle_dictionaries_forward_cb (GtkWidget *widget, gpointer data)
 {
     gw_ui_cycle_dictionaries (TRUE);
 }
@@ -1185,11 +1171,11 @@ G_MODULE_EXPORT void do_cycle_dictionaries_forward (GtkWidget *widget, gpointer 
 //! This function cycles the dictionaries up the list.  If it reaches the
 //! end, it will loop back to the bottom.
 //!
-//! @see do_cycle_dictionaries_forward ()
+//! @see gw_main_cycle_dictionaries_forward_cb ()
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void do_cycle_dictionaries_backward (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_main_cycle_dictionaries_backward_cb (GtkWidget *widget, gpointer data)
 {
     gw_ui_cycle_dictionaries (FALSE);
 }
@@ -1205,9 +1191,9 @@ G_MODULE_EXPORT void do_cycle_dictionaries_backward (GtkWidget *widget, gpointer
 //! @param data Currently unused gpointer
 //! @return Always returns FALSE
 //!
-G_MODULE_EXPORT gboolean do_key_press_modify_status_update (GtkWidget *widget,
-                                                            GdkEvent  *event,
-                                                            gpointer  *data  )
+G_MODULE_EXPORT gboolean gw_main_key_press_modify_status_update_cb (GtkWidget *widget,
+                                                                    GdkEvent  *event,
+                                                                    gpointer  *data  )
 {
     GtkWidget *tv = GTK_WIDGET (gw_common_get_widget_by_target (GW_TARGET_RESULTS));
     GtkWidget *window = GTK_WIDGET (gtk_widget_get_tooltip_window (tv));
@@ -1245,9 +1231,9 @@ G_MODULE_EXPORT gboolean do_key_press_modify_status_update (GtkWidget *widget,
 //! @param data Currently unused gpointer
 //! @return Always returns FALSE
 //!
-G_MODULE_EXPORT gboolean do_key_release_modify_status_update (GtkWidget *widget,
-                                                              GdkEvent  *event,
-                                                              gpointer  *data  )
+G_MODULE_EXPORT gboolean gw_main_key_release_modify_status_update_cb (GtkWidget *widget,
+                                                                      GdkEvent  *event,
+                                                                      gpointer  *data  )
 {
     guint keyval = ((GdkEventKey*)event)->keyval;
     if (keyval == GDK_KEY_Shift_L || keyval == GDK_KEY_Shift_R || keyval == GDK_KEY_ISO_Next_Group || keyval == GDK_KEY_ISO_Prev_Group)
@@ -1271,7 +1257,7 @@ G_MODULE_EXPORT gboolean do_key_release_modify_status_update (GtkWidget *widget,
 //! @param data Unused gpointer
 //! @return Always returns false
 //!
-G_MODULE_EXPORT gboolean do_focus_change_on_key_press (GtkWidget *widget,
+G_MODULE_EXPORT gboolean gw_main_focus_change_on_key_press_cb (GtkWidget *widget,
                                                        GdkEvent  *event,
                                                        gpointer  *focus  )
 {
@@ -1359,12 +1345,12 @@ G_MODULE_EXPORT gboolean do_focus_change_on_key_press (GtkWidget *widget,
 //! correctness, shift the previously completed search to the history list,
 //! creates the searchitem, and then initiates the search.
 //!
-//! @see do_search_from_history ()
+//! @see gw_main_search_from_history_cb ()
 //! @see gw_search_get_results ()
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_main_search_cb (GtkWidget *widget, gpointer data)
 {
     //Declarations
     gchar query[100];
@@ -1411,14 +1397,14 @@ G_MODULE_EXPORT void do_search (GtkWidget *widget, gpointer data)
 //! Used to help users discover regex searches.  It just insert a period
 //! wherever the cursor presently is in the search entry.
 //!
-//! @see do_insert_word_edge ()
-//! @see do_insert_not_word_edge ()
-//! @see do_insert_and ()
-//! @see do_insert_or ()
+//! @see gw_main_insert_word_edge_cb ()
+//! @see gw_main_insert_not_word_edge_cb ()
+//! @see gw_main_insert_and_cb ()
+//! @see gw_main_insert_or_cb ()
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void do_insert_unknown_character (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_main_insert_unknown_character_cb (GtkWidget *widget, gpointer data)
 {
     gw_ui_search_entry_insert (".");
 }
@@ -1430,14 +1416,14 @@ G_MODULE_EXPORT void do_insert_unknown_character (GtkWidget *widget, gpointer da
 //! Used to help users discover regex searches.  It just insert \\b
 //! wherever the cursor presently is in the search entry.
 //!
-//! @see do_insert_unknown_character ()
-//! @see do_insert_not_word_edge ()
-//! @see do_insert_and ()
-//! @see do_insert_or ()
+//! @see gw_main_insert_unknown_character_cb ()
+//! @see gw_main_insert_not_word_edge_cb ()
+//! @see gw_main_insert_and_cb ()
+//! @see gw_main_insert_or_cb ()
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void do_insert_word_edge (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_main_insert_word_edge_cb (GtkWidget *widget, gpointer data)
 {
     gw_ui_search_entry_insert ("\\b");
 }
@@ -1449,14 +1435,14 @@ G_MODULE_EXPORT void do_insert_word_edge (GtkWidget *widget, gpointer data)
 //! Used to help users discover regex searches.  It just insert \\B
 //! wherever the cursor presently is in the search entry.
 //!
-//! @see do_insert_unknown_character ()
-//! @see do_insert_word_edge ()
-//! @see do_insert_and ()
-//! @see do_insert_or ()
+//! @see gw_main_insert_unknown_character_cb ()
+//! @see gw_main_insert_word_edge_cb ()
+//! @see gw_main_insert_and_cb ()
+//! @see gw_main_insert_or_cb ()
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void do_insert_not_word_edge (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_main_insert_not_word_edge_cb (GtkWidget *widget, gpointer data)
 {
     gw_ui_search_entry_insert ("\\B");
 }
@@ -1468,14 +1454,14 @@ G_MODULE_EXPORT void do_insert_not_word_edge (GtkWidget *widget, gpointer data)
 //! Used to help users discover regex searches.  It just insert &
 //! wherever the cursor presently is in the search entry.
 //!
-//! @see do_insert_unknown_character ()
-//! @see do_insert_word_edge ()
-//! @see do_insert_not_word_edge ()
-//! @see do_insert_or ()
+//! @see gw_main_insert_unknown_character_cb ()
+//! @see gw_main_insert_word_edge_cb ()
+//! @see gw_main_insert_not_word_edge_cb ()
+//! @see gw_main_insert_or_cb ()
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void do_insert_and (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_main_insert_and_cb (GtkWidget *widget, gpointer data)
 {
     gw_ui_search_entry_insert ("&");
 }
@@ -1487,14 +1473,14 @@ G_MODULE_EXPORT void do_insert_and (GtkWidget *widget, gpointer data)
 //! Used to help users discover regex searches.  It just insert |
 //! wherever the cursor presently is in the search entry.
 //!
-//! @see do_insert_unknown_character ()
-//! @see do_insert_word_edge ()
-//! @see do_insert_not_word_edge ()
-//! @see do_insert_and ()
+//! @see gw_main_insert_unknown_character_cb ()
+//! @see gw_main_insert_word_edge_cb ()
+//! @see gw_main_insert_not_word_edge_cb ()
+//! @see gw_main_insert_and_cb ()
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void do_insert_or (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_main_insert_or_cb (GtkWidget *widget, gpointer data)
 {
     gw_ui_search_entry_insert ("|");
 }
@@ -1510,7 +1496,7 @@ G_MODULE_EXPORT void do_insert_or (GtkWidget *widget, gpointer data)
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void do_clear_search (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_main_clear_search_cb (GtkWidget *widget, gpointer data)
 {
     gw_ui_clear_search_entry ();
     gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
@@ -1525,7 +1511,7 @@ G_MODULE_EXPORT void do_clear_search (GtkWidget *widget, gpointer data)
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void do_open_dictionary_folder (GtkWidget *widget, gpointer data) 
+G_MODULE_EXPORT void gw_main_open_dictionary_folder_cb (GtkWidget *widget, gpointer data) 
 {
     //Declarations
     const char *directory;
@@ -1551,17 +1537,17 @@ G_MODULE_EXPORT void do_open_dictionary_folder (GtkWidget *widget, gpointer data
 //! Part of a group of four functions to handle drag drops of text into
 //! the main text buffer which will initialize a search based on that text.
 //!
-//! @see do_search_drag_data_recieved ()
-//! @see do_drag_leave_1 ()
-//! @see do_drag_drop_1 ()
+//! @see gw_main_search_drag_data_recieved_cb ()
+//! @see gw_main_drag_leave_1_cb ()
+//! @see gw_main_drag_drop_1_cb ()
 //! @return Always returns true
 //!
-G_MODULE_EXPORT gboolean do_drag_motion_1 (GtkWidget      *widget,
-                                           GdkDragContext *drag_context,
-                                           gint            x,
-                                           gint            y,
-                                           guint           time,
-                                           gpointer        user_data)
+G_MODULE_EXPORT gboolean gw_main_drag_motion_1_cb (GtkWidget      *widget,
+                                                   GdkDragContext *drag_context,
+                                                   gint            x,
+                                                   gint            y,
+                                                   guint           time,
+                                                   gpointer        user_data)
 {
     gdk_drag_status (drag_context, GDK_ACTION_COPY, time);
     gtk_drag_highlight (widget);
@@ -1575,11 +1561,11 @@ G_MODULE_EXPORT gboolean do_drag_motion_1 (GtkWidget      *widget,
 //! Part of a group of four functions to handle drag drops of text into
 //! the main text buffer which will initialize a search based on that text.
 //!
-//! @see do_search_drag_data_recieved ()
-//! @see do_drag_drop_1 ()
-//! @see do_drag_motion_1 ()
+//! @see gw_main_search_drag_data_recieved_cb ()
+//! @see gw_main_drag_drop_1_cb ()
+//! @see gw_main_drag_motion_1_cb ()
 //!
-G_MODULE_EXPORT void do_drag_leave_1 (GtkWidget      *widget,
+G_MODULE_EXPORT void gw_main_drag_leave_1_cb (GtkWidget      *widget,
                                       GdkDragContext *drag_context,
                                       guint           time,
                                       gpointer        user_data) 
@@ -1594,12 +1580,12 @@ G_MODULE_EXPORT void do_drag_leave_1 (GtkWidget      *widget,
 //! Part of a group of four functions to handle drag drops of text into
 //! the main text buffer which will initialize a search based on that text.
 //!
-//! @see do_search_drag_data_recieved ()
-//! @see do_drag_leave_1 ()
-//! @see do_drag_motion_1 ()
+//! @see gw_main_search_drag_data_recieved_cb ()
+//! @see gw_main_drag_leave_1_cb ()
+//! @see gw_main_drag_motion_1_cb ()
 //! @return Always returns true
 //!
-G_MODULE_EXPORT gboolean do_drag_drop_1 (GtkWidget      *widget,
+G_MODULE_EXPORT gboolean gw_main_drag_drop_1_cb (GtkWidget      *widget,
                                          GdkDragContext *drag_context,
                                          gint            x,
                                          gint            y,
@@ -1619,20 +1605,20 @@ G_MODULE_EXPORT gboolean do_drag_drop_1 (GtkWidget      *widget,
 //! Part of a group of four functions to handle drag drops of text into
 //! the main text buffer which will initialize a search based on that text.
 //!
-//! @see do_drag_leave_1 ()
-//! @see do_drag_drop_1 ()
-//! @see do_drag_motion_1 ()
+//! @see gw_main_drag_leave_1_cb ()
+//! @see gw_main_drag_drop_1_cb ()
+//! @see gw_main_drag_motion_1_cb ()
 //!
-G_MODULE_EXPORT void do_search_drag_data_recieved (GtkWidget        *widget,
-                                                   GdkDragContext   *drag_context,
-                                                   gint              x,
-                                                   gint              y,
-                                                   GtkSelectionData *data,
-                                                   guint             info,
-                                                   guint             time,
-                                                   gpointer          user_data    )
+G_MODULE_EXPORT void gw_main_search_drag_data_recieved_cb (GtkWidget        *widget,
+                                                           GdkDragContext   *drag_context,
+                                                           gint              x,
+                                                           gint              y,
+                                                           GtkSelectionData *data,
+                                                           guint             info,
+                                                           guint             time,
+                                                           gpointer          user_data    )
 {
-/*
+  /*
     //Sanity checks
     if (widget == NULL) return;
     const char *name = gtk_buildable_get_name (GTK_BUILDABLE (widget));
@@ -1649,9 +1635,9 @@ G_MODULE_EXPORT void do_search_drag_data_recieved (GtkWidget        *widget,
 
     if (text != NULL && data->length >= 0 && data->format == 8)
     {
-      do_clear_search (entry, NULL);
+      gw_main_clear_search_cb (entry, NULL);
       gtk_entry_set_text (GTK_ENTRY (entry), text);
-      do_search (NULL, NULL);
+      gw_main_search_cb (NULL, NULL);
 
       drag_context->action = GDK_ACTION_COPY;
       gtk_drag_finish (drag_context, TRUE, FALSE, time);
@@ -1663,7 +1649,7 @@ G_MODULE_EXPORT void do_search_drag_data_recieved (GtkWidget        *widget,
 
     //Cleanup
     if (text != NULL) g_free (text);
-*/
+    */
 }
 
 
@@ -1677,8 +1663,8 @@ G_MODULE_EXPORT void do_search_drag_data_recieved (GtkWidget        *widget,
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void do_update_button_states_based_on_entry_text (GtkWidget *widget,
-                                                                  gpointer   data   )
+G_MODULE_EXPORT void gw_main_update_button_states_based_on_entry_text_cb (GtkWidget *widget,
+                                                                          gpointer   data   )
 {
     GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
     int length = gtk_entry_get_text_length (GTK_ENTRY (search_entry));
@@ -1702,7 +1688,7 @@ G_MODULE_EXPORT void do_update_button_states_based_on_entry_text (GtkWidget *wid
 //! @param menu The Popup menu to populate
 //! @param data  Currently unused gpointer containing user data
 //!
-void do_populate_popup_with_search_options (GtkTextView *entry, GtkMenu *menu, gpointer data)
+void gw_main_populate_popup_with_search_options_cb (GtkTextView *entry, GtkMenu *menu, gpointer data)
 {
     if (hovered_word == NULL) return;
 
@@ -1809,8 +1795,8 @@ void do_populate_popup_with_search_options (GtkTextView *entry, GtkMenu *menu, g
             g_free (path);
             path = NULL;
           }
-          g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (do_search_for_searchitem_online), item);
-          g_signal_connect (G_OBJECT (menuitem), "destroy",  G_CALLBACK (do_destroy_tab_menuitem_searchitem_data), item);
+          g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (gw_main_search_for_searchitem_online_cb), item);
+          g_signal_connect (G_OBJECT (menuitem), "destroy",  G_CALLBACK (gw_tabs_destroy_tab_menuitem_searchitem_data_cb), item);
           gtk_menu_shell_append (GTK_MENU_SHELL (web_menu), GTK_WIDGET (menuitem));
           gtk_widget_show (GTK_WIDGET (menuitem));
           gtk_widget_show (GTK_WIDGET (menuimage));
@@ -1858,7 +1844,7 @@ void do_populate_popup_with_search_options (GtkTextView *entry, GtkMenu *menu, g
             menuitem = GTK_WIDGET (gtk_image_menu_item_new_with_label (menu_text));
             menuimage = gtk_image_new_from_icon_name ("stock_new-tab", GTK_ICON_SIZE_MENU);
             gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menuitem), GTK_WIDGET (menuimage));
-            g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (do_prep_and_start_search_in_new_tab), item);
+            g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (gw_tabs_prep_and_start_search_in_new_cb), item);
             gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), GTK_WIDGET (menuitem));
             gtk_widget_show (GTK_WIDGET (menuitem));
             gtk_widget_show (GTK_WIDGET (menuimage));
@@ -1870,8 +1856,8 @@ void do_populate_popup_with_search_options (GtkTextView *entry, GtkMenu *menu, g
         if (menu_text != NULL)
         {
           menuitem = GTK_WIDGET (gtk_image_menu_item_new_with_label (menu_text));
-          g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (do_prep_and_start_search_in_new_tab), item);
-          g_signal_connect (G_OBJECT (menuitem), "destroy",  G_CALLBACK (do_destroy_tab_menuitem_searchitem_data), item);
+          g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (gw_tabs_prep_and_start_search_in_new_cb), item);
+          g_signal_connect (G_OBJECT (menuitem), "destroy",  G_CALLBACK (gw_tabs_destroy_tab_menuitem_searchitem_data_cb), item);
           gtk_menu_shell_append (GTK_MENU_SHELL (dictionaries_menu), GTK_WIDGET (menuitem));
           gtk_widget_show (GTK_WIDGET (menuitem));
           gtk_widget_show (GTK_WIDGET (menuimage));
@@ -1890,7 +1876,7 @@ void do_populate_popup_with_search_options (GtkTextView *entry, GtkMenu *menu, g
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void do_search_for_searchitem_online (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_main_search_for_searchitem_online_cb (GtkWidget *widget, gpointer data)
 {
     GwSearchItem *item = (GwSearchItem*) data;
     if (item != NULL)
@@ -1908,7 +1894,7 @@ G_MODULE_EXPORT void do_search_for_searchitem_online (GtkWidget *widget, gpointe
 //! @param widget Unused GtkWidget pointer.
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT gboolean do_scroll_or_zoom (GtkWidget *widget, GdkEventScroll *event, gpointer data)
+G_MODULE_EXPORT gboolean gw_main_scroll_or_zoom_cb (GtkWidget *widget, GdkEventScroll *event, gpointer data)
 {
     // If "control" is being pressed
     if( (event->state & GDK_CONTROL_MASK) == GDK_CONTROL_MASK )
@@ -1916,14 +1902,14 @@ G_MODULE_EXPORT gboolean do_scroll_or_zoom (GtkWidget *widget, GdkEventScroll *e
 	// On wheel direction up ~ zoom out
 	if(event->direction == GDK_SCROLL_UP)
 	{
-	  do_zoom_out(widget, data);
+	  gw_main_zoom_out_cb (widget, data);
 	  return TRUE; // dont propagate event, no scroll
 	}
 
 	// On wheel direction down ~ zoom in
 	if(event->direction == GDK_SCROLL_DOWN)
 	{
-	  do_zoom_in(widget, data);
+	  gw_main_zoom_in_cb (widget, data);
 	  return TRUE; // dont propagate event, no scroll
 	}
     }

@@ -8,8 +8,8 @@
     <property name="destroy_with_parent">True</property>
     <property name="icon_name">gwaei</property>
     <property name="type_hint">utility</property>
-    <signal name="key_press_event" handler="do_close_on_escape" object="radicals_window"/>
-    <signal name="delete_event" handler="do_delete_event_action" object="radicals_window"/>
+    <signal name="key_press_event" handler="gw_main_close_on_escape_cb" object="radicals_window"/>
+    <signal name="delete_event" handler="gw_main_delete_event_action_cb" object="radicals_window"/>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
@@ -65,7 +65,7 @@
                     <property name="receives_default">False</property>
                     <property name="use_underline">True</property>
                     <property name="draw_indicator">True</property>
-                    <signal name="toggled" handler="do_radical_kanji_stroke_checkbox_update" object="strokes_spinbutton"/>
+                    <signal name="toggled" handler="gw_radsearchtool_radical_kanji_stroke_checkbox_update_cb" object="strokes_spinbutton"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -83,7 +83,7 @@
                     <property name="adjustment">stroke_count_adjustment</property>
                     <property name="numeric">True</property>
                     <property name="update_policy">if-valid</property>
-                    <signal name="value_changed" handler="do_radical_search"/>
+                    <signal name="value_changed" handler="gw_radsearchtool_search_cb"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -121,8 +121,8 @@
                     <property name="receives_default">True</property>
                     <property name="image">image1</property>
                     <property name="use_underline">True</property>
-                    <signal name="clicked" handler="do_radical_clear" object="radical_selection_table"/>
-                    <signal name="activate" handler="do_radical_clear" object="radical_selection_table"/>
+                    <signal name="clicked" handler="gw_radsearchtool_clear_cb" object="radical_selection_table"/>
+                    <signal name="activate" handler="gw_radsearchtool_clear_cb" object="radical_selection_table"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -138,10 +138,10 @@
                     <property name="receives_default">True</property>
                     <property name="use_stock">True</property>
                     <accelerator key="w" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                    <signal name="clicked" handler="do_close" object="radicals_window"/>
-                    <signal name="clicked" handler="do_radical_clear" object="radical_selection_table"/>
-                    <signal name="activate" handler="do_close" object="radicals_window"/>
-                    <signal name="activate" handler="do_radical_clear" object="radical_selection_table"/>
+                    <signal name="clicked" handler="gw_main_close_cb" object="radicals_window"/>
+                    <signal name="clicked" handler="gw_radsearchtool_clear_cb" object="radical_selection_table"/>
+                    <signal name="activate" handler="gw_main_close_cb" object="radicals_window"/>
+                    <signal name="activate" handler="gw_radsearchtool_clear_cb" object="radical_selection_table"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>

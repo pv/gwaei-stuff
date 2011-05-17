@@ -28,8 +28,8 @@
     <property name="icon_name">gwaei</property>
     <property name="type_hint">dialog</property>
     <property name="skip_taskbar_hint">True</property>
-    <signal name="key-press-event" handler="do_close_on_escape" object="settings_window" swapped="yes"/>
-    <signal name="delete-event" handler="do_delete_event_action" swapped="no"/>
+    <signal name="key-press-event" handler="gw_main_close_on_escape_cb" object="settings_window" swapped="yes"/>
+    <signal name="delete-event" handler="gw_main_delete_event_action_cb" swapped="no"/>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
@@ -792,8 +792,8 @@
                                 <property name="receives_default">True</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
-                                <signal name="activate" handler="do_open_dictionary_folder" swapped="no"/>
-                                <signal name="clicked" handler="do_open_dictionary_folder" swapped="no"/>
+                                <signal name="activate" handler="gw_main_open_dictionary_folder_cb" swapped="no"/>
+                                <signal name="clicked" handler="gw_main_open_dictionary_folder_cb" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="expand">True</property>
@@ -872,8 +872,8 @@
                 <property name="receives_default">True</property>
                 <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
-                <signal name="activate" handler="do_help" swapped="no"/>
-                <signal name="clicked" handler="do_help" swapped="no"/>
+                <signal name="activate" handler="gw_main_help_cb" swapped="no"/>
+                <signal name="clicked" handler="gw_main_help_cb" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -890,8 +890,8 @@
                 <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
                 <accelerator key="w" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                <signal name="activate" handler="do_close" object="settings_window" swapped="yes"/>
-                <signal name="clicked" handler="do_close" object="settings_window" swapped="yes"/>
+                <signal name="activate" handler="gw_main_close_cb" object="settings_window" swapped="yes"/>
+                <signal name="clicked" handler="gw_main_close_cb" object="settings_window" swapped="yes"/>
               </object>
               <packing>
                 <property name="expand">False</property>

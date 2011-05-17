@@ -67,7 +67,7 @@ void gw_main_initialize ()
 #else
     gtk_toolbar_unset_style (GTK_TOOLBAR (toolbar));
 #endif
-    gw_spellcheck_attach_to_entry (gw_common_get_widget_by_target (GW_TARGET_ENTRY));
+    gw_spellcheck_attach_to_entry (GTK_ENTRY (gw_common_get_widget_by_target (GW_TARGET_ENTRY)));
 
     gw_tabs_initialize ();
 }
@@ -595,13 +595,13 @@ void gw_ui_set_dictionary (int request)
       GList     *children = NULL;
       children = gtk_container_get_children (GTK_CONTAINER (shell));
       GtkWidget *radioitem = g_list_nth_data (children, request);
-      g_list_free (children);
-      children = NULL;
-      if (radioitem != NULL)
+      if (g_list_length (children) > 3 && radioitem != NULL)
       {
         gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (radioitem), TRUE);
         gtk_combo_box_set_active (GTK_COMBO_BOX (combobox), request);
       }
+      g_list_free (children);
+      children = NULL;
     }
 }
 
@@ -722,7 +722,7 @@ void gw_ui_update_history_menu_popup ()
       menu_item = gtk_menu_item_new();
       g_signal_connect (GTK_WIDGET (menu_item), 
                         "activate",
-                        G_CALLBACK (do_search_from_history), 
+                        G_CALLBACK (gw_main_search_from_history_cb), 
                         item                               );
 
       gtk_menu_shell_append(GTK_MENU_SHELL (shell), GTK_WIDGET (menu_item));
@@ -798,7 +798,7 @@ static void _rebuild_history_button_popup (char* id, GList* list)
       gtk_widget_show  (menuitem);
       g_signal_connect (GTK_WIDGET (menuitem), 
                         "activate",
-                        G_CALLBACK (do_search_from_history), 
+                        G_CALLBACK (gw_main_search_from_history_cb), 
                         item                               );
    
       children = children->next;
@@ -953,9 +953,9 @@ void gw_ui_set_toolbar_show (gboolean request)
     GtkAction *action;
     action = GTK_ACTION (gtk_builder_get_object (builder, "view_toggle_toolbar_action"));
 
-    g_signal_handlers_block_by_func (action, do_toolbar_toggle, NULL);
+    g_signal_handlers_block_by_func (action, gw_main_toolbar_toggle_cb, NULL);
     gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), request);
-    g_signal_handlers_unblock_by_func (action, do_toolbar_toggle, NULL);
+    g_signal_handlers_unblock_by_func (action, gw_main_toolbar_toggle_cb, NULL);
 }
 
 
@@ -1680,7 +1680,7 @@ gdk_threads_enter ();
         if (di != NULL && di != di_selected)
         {
           button = gtk_button_new_with_label (di->shortname);
-          g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (do_no_results_search_for_dictionary), di);
+          g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (gw_tabs_no_results_search_for_dictionary_cb), di);
           gtk_container_add (GTK_CONTAINER (hbox), GTK_WIDGET (button));
           gtk_widget_show (GTK_WIDGET (button));
         }
@@ -2136,7 +2136,7 @@ gboolean gw_ui_keep_searching (gpointer data)
     window = GTK_WIDGET (gtk_builder_get_object (builder, "settings_window"));
     
     if (gtk_widget_get_visible (window) == FALSE)
-      do_search (NULL, NULL);
+      gw_main_search_cb (NULL, NULL);
 
     return TRUE;
 }
