@@ -234,7 +234,7 @@ static char *radical_array[][5] =
   {"6", "行", "行", "ゆきがまえ、ぎょうがまえ", NULL },
   {"6", "衣", "衣", "ころも", NULL },
   {"6", "西", "西", "にし", NULL },
-  {"6", "西", "覀", "おおいかんむり", NULL },
+//  {"6", "西", "覀", "おおいかんむり", NULL },
 
   {"7", "臣", "臣", "", NULL },
   {"7", "見", "見", "みる", NULL },
@@ -370,7 +370,7 @@ void gw_radsearchtool_initialize ()
         g_object_get (G_OBJECT (table), "n-columns", &ncols, NULL);
         if (cols == total_columns && rows != 0) gtk_table_resize (table, rows, ncols);
         button = gtk_toggle_button_new_with_label (radical_array[i][GW_RADARRAY_ACTUAL]);
-        gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
+        gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_HALF);
 
         char *tooltip = g_markup_printf_escaped (
             gettext("<b>Substitution Radical:</b> %s\n<b>Actual Radical:</b> %s\n<b>Radical Name:</b> %s"),
