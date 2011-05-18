@@ -25,9 +25,9 @@ typedef struct _GwQueryLine GwQueryLine;
 GwQueryLine* gw_queryline_new (void );
 void gw_queryline_free (GwQueryLine*);
 
-int gw_queryline_parse_edict_string (GwQueryLine*l, const char*);
-int gw_queryline_parse_kanjidict_string (GwQueryLine*, const char*);
-int gw_queryline_parse_exampledict_string (GwQueryLine*, const char*);
-int gw_queryline_parse_edict_string (GwQueryLine*, const char*);
+int gw_queryline_parse_edict_string (GwQueryLine*l, const char*, GError**);
+int gw_queryline_parse_kanjidict_string (GwQueryLine*, const char*, GError**);
+int gw_queryline_parse_exampledict_string (GwQueryLine*, const char*, GError**);
+int gw_queryline_parse_edict_string (GwQueryLine*, const char*, GError**);
 
 #endif

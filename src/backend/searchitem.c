@@ -123,7 +123,7 @@ static gboolean _query_is_sane (const char* query)
 //! @param TARGET The widget to output the results to
 //! @return Returns an allocated GwSearchItem object
 //!
-GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary, const int TARGET)
+GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary, const int TARGET, GError **error)
 {
     if (!_query_is_sane (query)) return NULL;
 
@@ -165,22 +165,22 @@ GwSearchItem* gw_searchitem_new (char* query, GwDictInfo* dictionary, const int 
     switch (temp->dictionary->engine)
     {
         case GW_ENGINE_EDICT:
-          if (!gw_queryline_parse_edict_string (temp->queryline, query)) return NULL;
+          if (!gw_queryline_parse_edict_string (temp->queryline, query, error)) return NULL;
           temp->gw_searchitem_parse_result_string = &gw_resultline_parse_edict_result_string;
           temp->gw_searchitem_ui_append_results_to_output = gw_engine_get_append_edict_results_func ();
           break;
         case GW_ENGINE_KANJI:
-          if (!gw_queryline_parse_kanjidict_string (temp->queryline, query)) return NULL;
+          if (!gw_queryline_parse_kanjidict_string (temp->queryline, query, error)) return NULL;
           temp->gw_searchitem_parse_result_string = &gw_resultline_parse_kanjidict_result_string;
           temp->gw_searchitem_ui_append_results_to_output = gw_engine_get_append_kanjidict_results_func ();
           break;
         case GW_ENGINE_EXAMPLES:
-          if (!gw_queryline_parse_exampledict_string (temp->queryline, query)) return NULL;
+          if (!gw_queryline_parse_exampledict_string (temp->queryline, query, error)) return NULL;
           temp->gw_searchitem_parse_result_string = &gw_resultline_parse_examplesdict_result_string;
           temp->gw_searchitem_ui_append_results_to_output = gw_engine_get_append_examplesdict_results_func ();
         break;
         default:
-          if (!gw_queryline_parse_edict_string (temp->queryline, query)) return NULL;
+          if (!gw_queryline_parse_edict_string (temp->queryline, query, error)) return NULL;
           temp->gw_searchitem_parse_result_string = &gw_resultline_parse_unknowndict_result_string;
           temp->gw_searchitem_ui_append_results_to_output = gw_engine_get_append_unknowndict_results_func ();
           break;

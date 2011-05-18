@@ -188,19 +188,26 @@ G_MODULE_EXPORT gboolean gw_main_get_iter_for_button_release_cb (GtkWidget      
                                                                  GdkEventButton *event,
                                                                  gpointer        data    )
 {
-    GtkBuilder *builder = gw_common_get_builder ();
-
-    //Window coordinates
-    gint x = event->x;
-    gint y = event->y;
-    gint trailing = 0;
+    //Declarations
+    GtkBuilder *builder;
+    gint x;
+    gint y;
+    gint trailing;
     GtkTextIter iter;
-
     gunichar unic;
-    unic = gw_ui_get_hovered_character (&x, &y, &iter);
-
     GwDictInfo *di;
+    GError *error;
+
+    //Initializations
+    builder = gw_common_get_builder ();
+    x = event->x;
+    y = event->y;
+    trailing = 0;
+    unic = gw_ui_get_hovered_character (&x, &y, &iter);
     di = gw_dictinfolist_get_dictinfo (GW_ENGINE_KANJI, "Kanji");
+    error = NULL;
+
+    //Sanity cehck
     if (di == NULL) return FALSE;
 
     if (abs (button_press_x - x) < 3 && abs (button_press_y - y) < 3)
@@ -237,7 +244,7 @@ G_MODULE_EXPORT gboolean gw_main_get_iter_for_button_release_cb (GtkWidget      
             tooltip_item = NULL;
           }
 
-          tooltip_item = gw_searchitem_new (query, di, GW_TARGET_KANJI);
+          tooltip_item = gw_searchitem_new (query, di, GW_TARGET_KANJI, &error);
           gw_engine_get_results (tooltip_item, TRUE, FALSE);
 
           g_thread_join (tooltip_item->thread); 
@@ -257,6 +264,12 @@ G_MODULE_EXPORT gboolean gw_main_get_iter_for_button_release_cb (GtkWidget      
           gtk_widget_destroy (window);
           window = NULL;
         }
+      }
+
+      if (error != NULL)
+      {
+        printf("%s\n", error->message);
+        g_error_free (error);
       }
     }
 
@@ -1356,20 +1369,29 @@ G_MODULE_EXPORT void gw_main_search_cb (GtkWidget *widget, gpointer data)
     gchar query[100];
     GwSearchItem *item, *new_item;
     GwDictInfo *di;
+    GError *error;
 
     //Initializations
+    error = NULL;
     gw_ui_strncpy_text_from_widget_by_target (query, GW_TARGET_ENTRY, 100);
 
     item = gw_tabs_get_searchitem ();
     di = gw_dictinfolist_get_selected_dictinfo ();
 
-    new_item = gw_searchitem_new (query, di, GW_TARGET_RESULTS);
+    new_item = gw_searchitem_new (query, di, GW_TARGET_RESULTS, &error);
 
     //Check for problems, and quit if there are
-    if (new_item == NULL || gw_searchitem_is_equal (item, new_item) || !gw_ui_cancel_search_by_searchitem (item))
+    if (error != NULL || new_item == NULL || gw_searchitem_is_equal (item, new_item) || !gw_ui_cancel_search_by_searchitem (item))
     {
       gw_searchitem_increment_history_relevance_timer (item);
       gw_searchitem_free (new_item);
+
+      if (error != NULL)
+      {
+        printf("%s\n", error->message);
+        g_error_free (error);
+      }
+
       return;
     }
 
@@ -1768,7 +1790,7 @@ void gw_main_populate_popup_with_search_options_cb (GtkTextView *entry, GtkMenu 
     i = 0;
     while (website_url_menuitems[i] != NULL)
     {
-      if (di != NULL && (item = gw_searchitem_new (query_text, di, GW_TARGET_RESULTS)) != NULL)
+      if (di != NULL && (item = gw_searchitem_new (query_text, di, GW_TARGET_RESULTS, NULL)) != NULL)
       {
         //Create handy variables
         char *name = website_url_menuitems[i];
@@ -1834,7 +1856,7 @@ void gw_main_populate_popup_with_search_options_cb (GtkTextView *entry, GtkMenu 
     {
       list = gw_dictinfolist_get_dict_by_load_position (i);
       di = list->data;
-      if (di != NULL && (item = gw_searchitem_new (query_text, di, GW_TARGET_RESULTS)) != NULL)
+      if (di != NULL && (item = gw_searchitem_new (query_text, di, GW_TARGET_RESULTS, NULL)) != NULL)
       {
         if (di == di_selected)
         {

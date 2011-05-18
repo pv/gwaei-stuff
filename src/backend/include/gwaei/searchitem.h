@@ -106,7 +106,7 @@ struct _GwSearchItem {
 typedef struct _GwSearchItem GwSearchItem;
 
 //Methods
-GwSearchItem* gw_searchitem_new (char*, GwDictInfo*, const int);
+GwSearchItem* gw_searchitem_new (char*, GwDictInfo*, const int, GError **error);
 
 void gw_searchitem_do_post_search_clean (GwSearchItem*);
 gboolean gw_searchitem_do_pre_search_prep (GwSearchItem*);

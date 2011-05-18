@@ -156,16 +156,15 @@ void gw_regex_free ()
 //! @param flags GRegexMatchFlags to apply to the regex compilation.  
 //! @returns A newly allocated GRegex that needs to be freed with g_regex_unref ()
 //! 
-GRegex* gw_regex_kanji_new (const char *subject, const GwEngine ENGINE, const GwRelevance RELEVANCE)
+GRegex* gw_regex_kanji_new (const char *subject, const GwEngine ENGINE, const GwRelevance RELEVANCE, GError **error)
 {
+    //Sanity check
+    if (error != NULL && *error != NULL) return NULL;
+
     //Declarations
     GRegex *re;
     char *format;
     char *expression;
-    GError *error;
-
-    //Initializations
-    error = NULL;
 
     switch (RELEVANCE)
     {
@@ -177,7 +176,7 @@ GRegex* gw_regex_kanji_new (const char *subject, const GwEngine ENGINE, const Gw
         else
           format = "^(無|不|非|お|御|)(%s)$";
         expression = g_strdup_printf(format, subject);
-        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
+        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, error);
         g_free (expression);
         break;
       case GW_RELEVANCE_MEDIUM:
@@ -186,23 +185,17 @@ GRegex* gw_regex_kanji_new (const char *subject, const GwEngine ENGINE, const Gw
         else
           format = "^(お|を|に|で|は|と|)(%s)(で|が|の|を|に|で|は|と|$)";
         expression = g_strdup_printf (format, subject);
-        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
+        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, error);
         g_free (expression);
         break;
       case GW_RELEVANCE_LOW:
-        re = g_regex_new (subject,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
+        re = g_regex_new (subject,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, error);
         break;
       case GW_RELEVANCE_LOCATE:
-        re = g_regex_new (subject,  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
+        re = g_regex_new (subject,  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, error);
         break;
       default:
         g_assert_not_reached();
-    }
-
-    if (error != NULL)
-    {
-       fprintf (stderr, "Unable to read file: %s\n", error->message);
-       g_error_free (error);
     }
 
     return re;
@@ -216,16 +209,15 @@ GRegex* gw_regex_kanji_new (const char *subject, const GwEngine ENGINE, const Gw
 //! @param relevance How relevant a result to search for
 //! @returns A newly allocated GRegex that needs to be freed with g_regex_unref ()
 //! 
-GRegex* gw_regex_furi_new (const char *subject, const GwEngine ENGINE, const GwRelevance RELEVANCE)
+GRegex* gw_regex_furi_new (const char *subject, const GwEngine ENGINE, const GwRelevance RELEVANCE, GError **error)
 {
+    //Sanity check
+    if (error != NULL && *error != NULL) return NULL;
+
     //Declarations
     GRegex *re;
     char *format;
     char *expression;
-    GError *error;
-
-    //Declarations
-    error = NULL;
 
     switch (RELEVANCE)
     {
@@ -237,7 +229,7 @@ GRegex* gw_regex_furi_new (const char *subject, const GwEngine ENGINE, const GwR
         else
           format = "^(お|)(%s)$";
         expression = g_strdup_printf (format, subject);
-        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
+        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, error);
         g_free (expression);
         break;
       case GW_RELEVANCE_MEDIUM:
@@ -246,25 +238,18 @@ GRegex* gw_regex_furi_new (const char *subject, const GwEngine ENGINE, const GwR
         else
           format = "(^お|を|に|で|は|と)(%s)(で|が|の|を|に|で|は|と|$)";
         expression = g_strdup_printf (format, subject);
-        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
+        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, error);
         g_free (expression);
         break;
       case GW_RELEVANCE_LOW:
-        re = g_regex_new (subject, GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
+        re = g_regex_new (subject, GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, error);
         break;
       case GW_RELEVANCE_LOCATE:
-        re = g_regex_new (subject,  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
+        re = g_regex_new (subject,  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, error);
         break;
       default:
         g_assert_not_reached();
     }
-
-    if (error != NULL)
-    {
-       fprintf (stderr, "Unable to read file: %s\n", error->message);
-       g_error_free (error);
-    }
-
 
     return re;
 }
@@ -277,16 +262,15 @@ GRegex* gw_regex_furi_new (const char *subject, const GwEngine ENGINE, const GwR
 //! @param relevance How relevant a result to search for
 //! @returns A newly allocated GRegex that needs to be freed with g_regex_unref ()
 //! 
-GRegex* gw_regex_romaji_new (const char *subject, const GwEngine ENGINE, const GwRelevance RELEVANCE)
+GRegex* gw_regex_romaji_new (const char *subject, const GwEngine ENGINE, const GwRelevance RELEVANCE, GError **error)
 {
+    //Sanity check
+    if (error != NULL && *error != NULL) return NULL;
+
     //Declarations
     GRegex *re;
     char *format;
     char *expression;
-    GError *error;
-
-    //Declarations
-    error = NULL;
 
     switch (RELEVANCE)
     {
@@ -298,8 +282,7 @@ GRegex* gw_regex_romaji_new (const char *subject, const GwEngine ENGINE, const G
         else
           format = "(^|\\)|/|^to |\\) )(%s)(\\(|/|$|!| \\()";
         expression = g_strdup_printf (format, subject);
-        printf("high: %s\n", expression);
-        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
+        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, error);
         g_free (expression);
         break;
       case GW_RELEVANCE_MEDIUM:
@@ -308,28 +291,18 @@ GRegex* gw_regex_romaji_new (const char *subject, const GwEngine ENGINE, const G
         else
           format = "(\\) |/)((\\bto )|(\\bto be )|(\\b))(%s)(( \\([^/]+\\)/)|(/))";
         expression = g_strdup_printf (format, subject);
-        printf("medium: %s\n", expression);
-        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
+        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, error);
         g_free (expression);
         break;
       case GW_RELEVANCE_LOW:
-        re = g_regex_new (subject,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
-        printf("low: %s\n", subject);
+        re = g_regex_new (subject,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, error);
         break;
       case GW_RELEVANCE_LOCATE:
-        printf("locate: %s\n", subject);
-        re = g_regex_new (subject,  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
+        re = g_regex_new (subject,  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, error);
         break;
       default:
         g_assert_not_reached();
     }
-
-    if (error != NULL)
-    {
-       fprintf (stderr, "Unable to read file: %s\n", error->message);
-       g_error_free (error);
-    }
-
 
     return re;
 }
@@ -342,23 +315,22 @@ GRegex* gw_regex_romaji_new (const char *subject, const GwEngine ENGINE, const G
 //! @param relevance How relevant a result to search for
 //! @returns A newly allocated GRegex that needs to be freed with g_regex_unref ()
 //! 
-GRegex* gw_regex_mix_new (const char *subject, const GwEngine ENGINE, const GwRelevance RELEVANCE)
+GRegex* gw_regex_mix_new (const char *subject, const GwEngine ENGINE, const GwRelevance RELEVANCE, GError **error)
 {
+    //Sanity check
+    if (error != NULL && *error != NULL) return NULL;
+
     //Declarations
     GRegex *re;
     char *format;
     char *expression;
-    GError *error;
-
-    //Declarations
-    error = NULL;
 
     switch (RELEVANCE)
     {
       case GW_RELEVANCE_HIGH:
         format =  "(^|\\b)(%s)(\\b)";
         expression = g_strdup_printf (format, subject);
-        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
+        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, error);
         g_free (expression);
         break;
       case GW_RELEVANCE_MEDIUM:
@@ -367,25 +339,18 @@ GRegex* gw_regex_mix_new (const char *subject, const GwEngine ENGINE, const GwRe
         else
           format = "(\\) |/)((\\bto )|(\\bto be )|(\\b))(%s)(( \\([^/]+\\)/)|(/))";
         expression = g_strdup_printf (format, subject);
-        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
+        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, error);
         g_free (expression);
         break;
       case GW_RELEVANCE_LOW:
-        re = g_regex_new (subject,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
+        re = g_regex_new (subject,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, error);
         break;
       case GW_RELEVANCE_LOCATE:
-        re = g_regex_new (subject,  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
+        re = g_regex_new (subject,  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, error);
         break;
       default:
         g_assert_not_reached();
     }
-
-    if (error != NULL)
-    {
-       fprintf (stderr, "Unable to read file: %s\n", error->message);
-       g_error_free (error);
-    }
-
 
     return re;
 }
@@ -398,45 +363,38 @@ GRegex* gw_regex_mix_new (const char *subject, const GwEngine ENGINE, const GwRe
 //! @param relevance How relevant a result to search for
 //! @returns A newly allocated GRegex that needs to be freed with g_regex_unref ()
 //! 
-GRegex* gw_regex_new (const char *subject, const GwEngine ENGINE, const GwRelevance RELEVANCE)
+GRegex* gw_regex_new (const char *subject, const GwEngine ENGINE, const GwRelevance RELEVANCE, GError **error)
 {
+    //Sanity check
+    if (error != NULL && *error != NULL) return NULL;
+
     //Declarations
     GRegex *re;
     char *format;
     char *expression;
-    GError *error;
-
-    //Declarations
-    error = NULL;
 
     switch (RELEVANCE)
     {
       case GW_RELEVANCE_HIGH:
         format = "\\b(%s)\\b";
         expression = g_strdup_printf (format, subject);
-        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
+        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, error);
         g_free (expression);
         break;
       case GW_RELEVANCE_MEDIUM:
         format = "\\b(%s)\\b";
         expression = g_strdup_printf (format, subject);
-        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
+        re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, error);
         g_free (expression);
         break;
       case GW_RELEVANCE_LOW:
-        re = g_regex_new (subject,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
+        re = g_regex_new (subject,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, error);
         break;
       case GW_RELEVANCE_LOCATE:
-        re = g_regex_new (subject,  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
+        re = g_regex_new (subject,  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, error);
         break;
       default:
         g_assert_not_reached();
-    }
-
-    if (error != NULL)
-    {
-      fprintf (stderr, "Unable to read file: %s\n", error->message);
-      g_error_free (error);
     }
 
     return re;

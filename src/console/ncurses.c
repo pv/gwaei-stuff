@@ -357,13 +357,16 @@ static gboolean main_loop_function (gpointer data)
         return TRUE;
 
       GwSearchItem *item = NULL;
-      item = gw_searchitem_new (query_text, di, GW_TARGET_CONSOLE);
+      GError *error = NULL;
+      item = gw_searchitem_new (query_text, di, GW_TARGET_CONSOLE, &error);
       if (item == NULL)
       {
         wprintw(screen, "There was an error creating your search.");
         wrefresh(screen);
         cbreak(); wgetch(search); endwin();
         query_text[0] = '\0';
+        g_error_free (error);
+        error = NULL;
         return TRUE;
       }
 

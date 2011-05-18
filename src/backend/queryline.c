@@ -175,8 +175,11 @@ static GRegex*** _allocate_regex_pointers (int length)
 //! @param ql Pointer to a GwQueryLine object ot parse a query string into.
 //! @param string constant string that is the raw query.
 //!
-gboolean gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
+gboolean gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string, GError **error)
 {
+   //Sanity check
+   if (error != NULL && *error != NULL) return FALSE;
+
    //Sanity check
    if (ql->string != NULL && strcmp(ql->string, string) == 0) return TRUE;
 
@@ -241,7 +244,7 @@ gboolean gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
 
        //Compile the regexes
        for (i = 0; i < GW_RELEVANCE_TOTAL; i++)
-         if (((*re)[i] = gw_regex_kanji_new (expression, GW_ENGINE_EDICT, i)) == NULL) all_regex_built = FALSE;
+         if (((*re)[i] = gw_regex_kanji_new (expression, GW_ENGINE_EDICT, i, error)) == NULL) all_regex_built = FALSE;
 
        g_free (expression);
        re++;
@@ -277,7 +280,7 @@ gboolean gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
 
        //Compile the regexes
        for (i = 0; i < GW_RELEVANCE_TOTAL; i++)
-         if (((*re)[i] = gw_regex_furi_new (expression, GW_ENGINE_EDICT, i)) == NULL) all_regex_built = FALSE;
+         if (((*re)[i] = gw_regex_furi_new (expression, GW_ENGINE_EDICT, i, error)) == NULL) all_regex_built = FALSE;
 
        g_free (expression);
        re++;
@@ -297,7 +300,7 @@ gboolean gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
 
        //Compile the regexes
        for (i = 0; i < GW_RELEVANCE_TOTAL; i++)
-         if (((*re)[i] = gw_regex_furi_new (expression, GW_ENGINE_EDICT, i)) == NULL) all_regex_built = FALSE;
+         if (((*re)[i] = gw_regex_furi_new (expression, GW_ENGINE_EDICT, i, error)) == NULL) all_regex_built = FALSE;
 
        g_free (expression);
        re++;
@@ -316,7 +319,7 @@ gboolean gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
 
        //Compile the regexes
        for (i = 0; i < GW_RELEVANCE_TOTAL; i++)
-         if (((*re)[i] = gw_regex_romaji_new (expression, GW_ENGINE_EDICT, i)) == NULL) all_regex_built = FALSE;
+         if (((*re)[i] = gw_regex_romaji_new (expression, GW_ENGINE_EDICT, i, error)) == NULL) all_regex_built = FALSE;
 
        g_free (expression);
        re++;
@@ -338,7 +341,7 @@ gboolean gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
 
        //Compile the regexes
        for (i = 0; i < GW_RELEVANCE_TOTAL; i++)
-         if (((*re)[i] = gw_regex_mix_new (expression, GW_ENGINE_EDICT, i)) == NULL) all_regex_built = FALSE;
+         if (((*re)[i] = gw_regex_mix_new (expression, GW_ENGINE_EDICT, i, error)) == NULL) all_regex_built = FALSE;
 
        g_free (expression);
        re++;
@@ -349,8 +352,11 @@ gboolean gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string)
 }
 
 
-static GRegex*** _compile_and_allocate_number_search_regex (const char* subject, const GwRegexDataIndex INDEX)
+static GRegex*** _compile_and_allocate_number_search_regex (const char* subject, const GwRegexDataIndex INDEX, GError **error)
 {
+    //Sanity check
+    if (error != NULL && *error != NULL) return NULL;
+
     //Declarations
     GRegex ***re;
     GRegex ***iter;
@@ -378,7 +384,7 @@ static GRegex*** _compile_and_allocate_number_search_regex (const char* subject,
       printf("stroke expression: %s\n", expression);
 
       for (i = 0; all_regex_built && i < GW_RELEVANCE_TOTAL; i++)
-        if (((*iter)[i] = gw_regex_new (expression, GW_ENGINE_KANJI, i)) == NULL) all_regex_built = FALSE;
+        if (((*iter)[i] = gw_regex_new (expression, GW_ENGINE_KANJI, i, error)) == NULL) all_regex_built = FALSE;
 
       g_free (expression);
       g_free (match_text);
@@ -417,8 +423,11 @@ static GRegex*** _compile_and_allocate_number_search_regex (const char* subject,
 //! @param ql Pointer to a GwQueryLine object ot parse a query string into.
 //! @param string constant string that is the raw query.
 //!
-gboolean gw_queryline_parse_kanjidict_string (GwQueryLine *ql, const char* string)
+gboolean gw_queryline_parse_kanjidict_string (GwQueryLine *ql, const char* string, GError **error)
 {
+    //Sanity check
+    if (error != NULL && *error != NULL) return FALSE;
+
     //Make sure it isn't already created
     if (ql->string != NULL && strcmp(ql->string, string) == 0) return TRUE;
 
@@ -450,19 +459,19 @@ gboolean gw_queryline_parse_kanjidict_string (GwQueryLine *ql, const char* strin
     ql->string = gw_util_prepare_query (string, FALSE);
 
     //Get stroke
-    if ((ql->re_strokes = _compile_and_allocate_number_search_regex (string, GW_RE_STROKES)) == NULL)
+    if ((ql->re_strokes = _compile_and_allocate_number_search_regex (string, GW_RE_STROKES, error)) == NULL)
       all_regex_built = FALSE;
 
     //Get frequency
-    if ((ql->re_frequency = _compile_and_allocate_number_search_regex (string, GW_RE_FREQUENCY)) == NULL)
+    if ((ql->re_frequency = _compile_and_allocate_number_search_regex (string, GW_RE_FREQUENCY, error)) == NULL)
       all_regex_built = FALSE;
 
     //Get grade level
-    if ((ql->re_grade = _compile_and_allocate_number_search_regex (string, GW_RE_GRADE)) == NULL)
+    if ((ql->re_grade = _compile_and_allocate_number_search_regex (string, GW_RE_GRADE, error)) == NULL)
       all_regex_built = FALSE;
 
     //Get JLPT level
-    if ((ql->re_jlpt = _compile_and_allocate_number_search_regex (string, GW_RE_JLPT)) == NULL)
+    if ((ql->re_jlpt = _compile_and_allocate_number_search_regex (string, GW_RE_JLPT, error)) == NULL)
       all_regex_built = FALSE;
 
     //Get Kanji
@@ -486,7 +495,7 @@ gboolean gw_queryline_parse_kanjidict_string (GwQueryLine *ql, const char* strin
         end = g_utf8_next_char (ptr);
         atom = g_strndup (start, end - start);
         for (i = 0; all_regex_built && i < GW_RELEVANCE_TOTAL; i++)
-          (*re)[i] = gw_regex_kanji_new (atom, GW_ENGINE_KANJI, i);
+          (*re)[i] = gw_regex_kanji_new (atom, GW_ENGINE_KANJI, i, error);
         g_free (atom);
         re++;
       }
@@ -504,7 +513,7 @@ gboolean gw_queryline_parse_kanjidict_string (GwQueryLine *ql, const char* strin
       atom = *iter;
 
       for (i = 0; all_regex_built && i < GW_RELEVANCE_TOTAL; i++)
-        if (((*re)[i] = gw_regex_furi_new (atom, GW_ENGINE_KANJI, i)) == NULL) all_regex_built = FALSE;
+        if (((*re)[i] = gw_regex_furi_new (atom, GW_ENGINE_KANJI, i, error)) == NULL) all_regex_built = FALSE;
 
       re++;
     }
@@ -533,7 +542,7 @@ gboolean gw_queryline_parse_kanjidict_string (GwQueryLine *ql, const char* strin
       else
       {
         for (i = 0; all_regex_built && i < GW_RELEVANCE_TOTAL; i++)
-          if (((*re)[i] = gw_regex_romaji_new (atom, GW_ENGINE_KANJI, i)) == NULL) all_regex_built = FALSE;
+          if (((*re)[i] = gw_regex_romaji_new (atom, GW_ENGINE_KANJI, i, error)) == NULL) all_regex_built = FALSE;
       }
 
       re++;
@@ -554,8 +563,11 @@ gboolean gw_queryline_parse_kanjidict_string (GwQueryLine *ql, const char* strin
 //! @param ql Pointer to a GwQueryLine object ot parse a query string into.
 //! @param string constant string that is the raw query.
 //!
-gboolean gw_queryline_parse_exampledict_string (GwQueryLine *ql, const char* string)
+gboolean gw_queryline_parse_exampledict_string (GwQueryLine *ql, const char* string, GError **error)
 {
+    //Sanity check
+    if (error != NULL && *error != NULL) return FALSE;
+
     //Make sure it isn't already created
     if (ql->string != NULL && strcmp(ql->string, string) == 0) return TRUE;
 
@@ -595,7 +607,7 @@ gboolean gw_queryline_parse_exampledict_string (GwQueryLine *ql, const char* str
       if (gw_util_is_kanji_ish_str (atom) || gw_util_is_kanji_str (atom))
       {
         for (i = 0; all_regex_built && i < GW_RELEVANCE_TOTAL; i++)
-          (*re)[i] = gw_regex_kanji_new (atom, GW_ENGINE_EXAMPLES, i);
+          (*re)[i] = gw_regex_kanji_new (atom, GW_ENGINE_EXAMPLES, i, error);
         re++;
       }
     }
@@ -628,7 +640,7 @@ gboolean gw_queryline_parse_exampledict_string (GwQueryLine *ql, const char* str
 
         //Compile the regexes
         for (i = 0; i < GW_RELEVANCE_TOTAL; i++)
-          if (((*re)[i] = gw_regex_furi_new (expression, GW_ENGINE_EDICT, i)) == NULL) all_regex_built = FALSE;
+          if (((*re)[i] = gw_regex_furi_new (expression, GW_ENGINE_EDICT, i, error)) == NULL) all_regex_built = FALSE;
 
         g_free (expression);
         re++;
@@ -648,7 +660,7 @@ gboolean gw_queryline_parse_exampledict_string (GwQueryLine *ql, const char* str
 
         //Compile the regexes
         for (i = 0; i < GW_RELEVANCE_TOTAL; i++)
-          if (((*re)[i] = gw_regex_furi_new (expression, GW_ENGINE_EDICT, i)) == NULL) all_regex_built = FALSE;
+          if (((*re)[i] = gw_regex_furi_new (expression, GW_ENGINE_EDICT, i, error)) == NULL) all_regex_built = FALSE;
 
         g_free (expression);
         re++;
@@ -666,7 +678,7 @@ gboolean gw_queryline_parse_exampledict_string (GwQueryLine *ql, const char* str
  
        //Compile the regexes
         for (i = 0; i < GW_RELEVANCE_TOTAL; i++)
-          if (((*re)[i] = gw_regex_romaji_new (expression, GW_ENGINE_EDICT, i)) == NULL) all_regex_built = FALSE;
+          if (((*re)[i] = gw_regex_romaji_new (expression, GW_ENGINE_EDICT, i, error)) == NULL) all_regex_built = FALSE;
  
         g_free (expression);
         re++;

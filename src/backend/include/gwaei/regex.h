@@ -21,11 +21,11 @@ typedef enum
 void gw_regex_initialize (void);
 void gw_regex_free (void);
 
-GRegex* gw_regex_kanji_new (const char*, GwEngine, GwRelevance);
-GRegex* gw_regex_furi_new (const char*, GwEngine, GwRelevance);
-GRegex* gw_regex_romaji_new (const char*, GwEngine, GwRelevance);
-GRegex* gw_regex_mix_new (const char*, GwEngine, GwRelevance);
-GRegex* gw_regex_new (const char*, GwEngine, GwRelevance);
+GRegex* gw_regex_kanji_new (const char*, GwEngine, GwRelevance, GError**);
+GRegex* gw_regex_furi_new (const char*, GwEngine, GwRelevance, GError**);
+GRegex* gw_regex_romaji_new (const char*, GwEngine, GwRelevance, GError**);
+GRegex* gw_regex_mix_new (const char*, GwEngine, GwRelevance, GError**);
+GRegex* gw_regex_new (const char*, GwEngine, GwRelevance, GError**);
 
 
 typedef enum {

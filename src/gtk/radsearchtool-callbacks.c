@@ -66,16 +66,26 @@ G_MODULE_EXPORT void gw_radsearchtool_clear_cb (GtkWidget *widget, gpointer data
 //!
 G_MODULE_EXPORT void gw_radsearchtool_search_cb (GtkWidget *widget, gpointer data)
 {
-    GtkBuilder *builder = gw_common_get_builder ();
+    //Declarations
+    GtkBuilder *builder;
+    GwDictInfo *di;
+    GwHistoryList* hl;
+    char *query_text;
+    char *radicals_text;
+    char *strokes_text;
+    GError *error;
 
-    GwDictInfo *di = gw_dictinfolist_get_dictinfo (GW_ENGINE_KANJI, "Kanji");
+    //Initializations
+    builder = gw_common_get_builder ();
+    di = gw_dictinfolist_get_dictinfo (GW_ENGINE_KANJI, "Kanji");
+    hl = gw_historylist_get_list(GW_HISTORYLIST_RESULTS);   
+    query_text = NULL;
+    radicals_text = gw_radsearchtool_strdup_all_selected_radicals ();
+    strokes_text = gw_radsearchtool_strdup_prefered_stroke_count ();
+    error = NULL;
+
+    //Sanity check
     if (di == NULL) return;
-
-    //Ininitializations
-    GwHistoryList* hl = gw_historylist_get_list(GW_HISTORYLIST_RESULTS);   
-    char *query_text = NULL;
-    char *radicals_text = gw_radsearchtool_strdup_all_selected_radicals ();
-    char *strokes_text = gw_radsearchtool_strdup_prefered_stroke_count ();
 
     //Create the query string
     if (radicals_text != NULL && strokes_text != NULL)
@@ -123,13 +133,23 @@ G_MODULE_EXPORT void gw_radsearchtool_search_cb (GtkWidget *widget, gpointer dat
     else
       gw_searchitem_free (item);
     
-    item = gw_searchitem_new (query_text, di, GW_TARGET_RESULTS);
-    gw_ui_set_dictionary_by_searchitem (item);
-    gw_tabs_set_searchitem (item);
+    item = gw_searchitem_new (query_text, di, GW_TARGET_RESULTS, &error);
+    
+    if (item != NULL) 
+    {
+      gw_ui_set_dictionary_by_searchitem (item);
+      gw_tabs_set_searchitem (item);
 
-    //Start the search
-    gw_engine_get_results (hl->current, TRUE, FALSE);
-    gw_ui_update_history_popups ();
+      //Start the search
+      gw_engine_get_results (hl->current, TRUE, FALSE);
+      gw_ui_update_history_popups ();
+    }
+
+    if (error != NULL)
+    {
+      printf("%s\n", error->message);
+      g_error_free (error);
+    }
 
     //Cleanup
     g_free (query_text);

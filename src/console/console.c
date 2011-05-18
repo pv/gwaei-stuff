@@ -491,10 +491,10 @@ gboolean gw_console_search (char* query, char* fuzzy, gboolean quiet, gboolean e
       return FALSE;
     }
 
-    item = gw_searchitem_new (query, di, GW_TARGET_CONSOLE);
+    item = gw_searchitem_new (query, di, GW_TARGET_CONSOLE, error);
     if (item == NULL)
     {
-      printf(gettext("Query parse error\n"));
+      printf("%s\n", (*error)->message);
       return FALSE;
     }
 
