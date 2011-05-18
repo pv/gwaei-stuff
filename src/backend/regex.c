@@ -121,7 +121,6 @@ void gw_regex_initialize ()
     {
        fprintf (stderr, "Unable to read file: %s\n", error->message);
        g_error_free (error);
-       exit(1);
     }
 
     _regex_expressions_initialized = TRUE;
@@ -204,7 +203,6 @@ GRegex* gw_regex_kanji_new (const char *subject, const GwEngine ENGINE, const Gw
     {
        fprintf (stderr, "Unable to read file: %s\n", error->message);
        g_error_free (error);
-       exit(1);
     }
 
     return re;
@@ -265,7 +263,6 @@ GRegex* gw_regex_furi_new (const char *subject, const GwEngine ENGINE, const GwR
     {
        fprintf (stderr, "Unable to read file: %s\n", error->message);
        g_error_free (error);
-       exit(1);
     }
 
 
@@ -301,6 +298,7 @@ GRegex* gw_regex_romaji_new (const char *subject, const GwEngine ENGINE, const G
         else
           format = "(^|\\)|/|^to |\\) )(%s)(\\(|/|$|!| \\()";
         expression = g_strdup_printf (format, subject);
+        printf("high: %s\n", expression);
         re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
         g_free (expression);
         break;
@@ -310,13 +308,16 @@ GRegex* gw_regex_romaji_new (const char *subject, const GwEngine ENGINE, const G
         else
           format = "(\\) |/)((\\bto )|(\\bto be )|(\\b))(%s)(( \\([^/]+\\)/)|(/))";
         expression = g_strdup_printf (format, subject);
+        printf("medium: %s\n", expression);
         re = g_regex_new (expression,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
         g_free (expression);
         break;
       case GW_RELEVANCE_LOW:
         re = g_regex_new (subject,  GW_RE_COMPILE_FLAGS, GW_RE_EXIST_FLAGS, &error);
+        printf("low: %s\n", subject);
         break;
       case GW_RELEVANCE_LOCATE:
+        printf("locate: %s\n", subject);
         re = g_regex_new (subject,  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
         break;
       default:
@@ -327,7 +328,6 @@ GRegex* gw_regex_romaji_new (const char *subject, const GwEngine ENGINE, const G
     {
        fprintf (stderr, "Unable to read file: %s\n", error->message);
        g_error_free (error);
-       exit(1);
     }
 
 
@@ -384,7 +384,6 @@ GRegex* gw_regex_mix_new (const char *subject, const GwEngine ENGINE, const GwRe
     {
        fprintf (stderr, "Unable to read file: %s\n", error->message);
        g_error_free (error);
-       exit(1);
     }
 
 
@@ -438,7 +437,6 @@ GRegex* gw_regex_new (const char *subject, const GwEngine ENGINE, const GwReleva
     {
       fprintf (stderr, "Unable to read file: %s\n", error->message);
       g_error_free (error);
-      exit(1);
     }
 
     return re;

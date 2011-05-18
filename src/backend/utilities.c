@@ -203,7 +203,7 @@ gboolean gw_util_is_hiragana_str (const char *input)
     {
       character = g_utf8_get_char (ptr);
       script = g_unichar_get_script (character);
-      if (script != G_UNICODE_SCRIPT_HIRAGANA) is_consistant = FALSE;
+      if (script != G_UNICODE_SCRIPT_HIRAGANA && character != g_utf8_get_char(".")) is_consistant = FALSE;
     }
 
     return is_consistant;
@@ -235,7 +235,7 @@ gboolean gw_util_is_katakana_str (const char *input)
     {
       character = g_utf8_get_char (ptr);
       script = g_unichar_get_script (character);
-      if (script != G_UNICODE_SCRIPT_KATAKANA) is_consistant = FALSE;
+      if (script != G_UNICODE_SCRIPT_KATAKANA && character != g_utf8_get_char(".")) is_consistant = FALSE;
     }
 
     return is_consistant;
@@ -313,7 +313,7 @@ gboolean gw_util_is_kanji_str (const char *input)
     {
       character = g_utf8_get_char (ptr);
       script = g_unichar_get_script (character);
-      if (script != G_UNICODE_SCRIPT_HAN) is_consistant = FALSE;
+      if (script != G_UNICODE_SCRIPT_HAN && character != g_utf8_get_char(".")) is_consistant = FALSE;
     }
 
     return is_consistant;
@@ -345,7 +345,7 @@ gboolean gw_util_is_romaji_str (const char *input)
     {
       character = g_utf8_get_char (ptr);
       script = g_unichar_get_script (character);
-      if (script != G_UNICODE_SCRIPT_LATIN) is_consistant = FALSE;
+      if (script != G_UNICODE_SCRIPT_LATIN && character != g_utf8_get_char(".")) is_consistant = FALSE;
     }
 
     return is_consistant;

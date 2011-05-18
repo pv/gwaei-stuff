@@ -69,10 +69,10 @@ void gw_util_str_shift_hira_to_kata (char*);
 
 gboolean gw_util_all_chars_are_in_range (char*, int, int);
 
-gchar* gw_util_prepare_query(const char*, gboolean);
-gchar* gw_util_sanitize_input(const char*, gboolean);
-gboolean gw_util_contains_halfwidth_japanese(const gchar*);
-gchar* gw_util_enlarge_halfwidth_japanese(const gchar*);
+gchar* gw_util_prepare_query (const char*, gboolean);
+gchar* gw_util_sanitize_input (const char*, gboolean);
+gboolean gw_util_contains_halfwidth_japanese (const gchar*);
+gchar* gw_util_enlarge_halfwidth_japanese (const gchar*);
 
 gboolean gw_util_is_japanese_locale (void);
 
