@@ -65,7 +65,7 @@ printf("BREAK3\n");
     if (_thread == NULL)
       _thread = g_thread_create (_installprogress_install_thread, NULL, TRUE, &error);
 
-    gw_ui_handle_error (&error, TRUE);
+    gw_main_handle_error (&error, TRUE);
 }
 
 
@@ -96,7 +96,7 @@ gpointer _installprogress_install_thread (gpointer data)
     }
 
     //Cleanup
-    gw_ui_handle_error (&error, TRUE);
+    gw_main_handle_error (&error, TRUE);
     _thread = NULL;
 
     gdk_threads_enter ();

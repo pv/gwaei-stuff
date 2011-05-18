@@ -69,14 +69,14 @@ void gw_frontend_initialize (int* argc, char* argv[])
     g_option_context_parse (_context, argc, &argv, &error);
 
     gw_engine_initialize (
-                         gw_ui_append_edict_results_to_buffer,
-                         gw_ui_append_kanjidict_results_to_buffer,
-                         gw_ui_append_examplesdict_results_to_buffer,
-                         gw_ui_append_unknowndict_results_to_buffer,
-                         gw_ui_append_less_relevant_header_to_output,
-                         gw_ui_append_more_relevant_header_to_output,
-                         gw_ui_pre_search_prep,
-                         gw_ui_after_search_cleanup
+                         gw_output_append_edict_results_cb,
+                         gw_output_append_kanjidict_results_cb,
+                         gw_output_append_examplesdict_results_cb,
+                         gw_output_append_unknowndict_results_cb,
+                         gw_output_append_less_relevant_header_cb,
+                         gw_output_append_more_relevant_header_cb,
+                         gw_output_pre_search_prep_cb,
+                         gw_output_after_search_cleanup_cb
                         );
 
 
@@ -112,7 +112,7 @@ void gw_frontend_start_gtk (int argc, char* argv[])
     GtkWidget* entry;
     GwDictInfo *di;
 
-    gw_ui_update_history_popups ();
+    gw_main_update_history_popups ();
     gw_common_show_window ("main_window");
 
     //Show the settings dialog if no dictionaries are installed
@@ -121,13 +121,13 @@ void gw_frontend_start_gtk (int argc, char* argv[])
     }
 
     //Set the initial focus to the search bar
-    gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
+    gw_main_grab_focus_by_target (GW_TARGET_ENTRY);
 
     //Set the initial dictionary
     if (_arg_dictionary != NULL) printf("%s\n", _arg_dictionary);
     if ((di = gw_dictinfolist_get_dictinfo_fuzzy (_arg_dictionary)) != NULL)
     {
-      gw_ui_set_dictionary (di->load_position);
+      gw_main_set_dictionary (di->load_position);
     }
 
     //Set the initial query text if it was passed as an argument to the program
@@ -142,8 +142,8 @@ void gw_frontend_start_gtk (int argc, char* argv[])
     gdk_threads_enter();
 
       //Add timers
-      g_timeout_add_full (G_PRIORITY_LOW, 200, (GSourceFunc) gw_ui_keep_searching, NULL, NULL);
-      g_timeout_add_full (G_PRIORITY_LOW, 200, (GSourceFunc) gw_ui_update_progress_feedback, NULL, NULL);
+      g_timeout_add_full (G_PRIORITY_LOW, 200, (GSourceFunc) gw_main_keep_searching_timeout, NULL, NULL);
+      g_timeout_add_full (G_PRIORITY_LOW, 200, (GSourceFunc) gw_main_update_progress_feedback_timeout, NULL, NULL);
       //g_timeout_add_full (G_PRIORITY_LOW, 1000, (GSourceFunc) gw_update_icons_for_selection, NULL, NULL);
 
       gtk_main ();

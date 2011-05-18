@@ -12,8 +12,7 @@ int gw_tabs_new (void);
 void gw_tabs_guarantee_first (void);
 
 void gw_tabs_new_cb (GtkWidget*, gpointer);
-void gw_tabs_tab_cb (GtkWidget*, gpointer);
-void gw_tabs_prep_and_start_search_in_new_cb (GtkWidget*, gpointer);
+void gw_tabs_new_with_search_cb (GtkWidget*, gpointer);
 void gw_tabs_no_results_search_for_dictionary_cb (GtkWidget*, gpointer);
 void gw_tabs_destroy_tab_menuitem_searchitem_data_cb (GObject*, gpointer);
 void gw_tabs_remove_cb (GtkWidget*, gpointer);

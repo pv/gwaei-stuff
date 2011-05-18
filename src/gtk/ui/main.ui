@@ -125,7 +125,7 @@
   <object class="GtkAction" id="insert_radicals_action">
     <property name="label" translatable="yes">Using _Radical Search Tool</property>
     <property name="stock_id">gtk-find</property>
-    <signal name="activate" handler="gw_main_radical_search_tool_cb" swapped="no"/>
+    <signal name="activate" handler="gw_radsearchtool_show_cb" swapped="no"/>
   </object>
   <object class="GtkAction" id="insert_unknown_character_action">
     <property name="label" translatable="yes">_Unknown Character</property>

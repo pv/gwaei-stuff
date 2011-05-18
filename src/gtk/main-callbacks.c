@@ -66,8 +66,8 @@ G_MODULE_EXPORT void gw_main_settings_cb (GtkWidget *widget, gpointer data)
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
-    gw_ui_tab_cancel_all_searches ();
-    gw_ui_cancel_search_by_target (GW_TARGET_KANJI);
+    gw_main_tab_cancel_all_searches ();
+    gw_main_cancel_search_by_target (GW_TARGET_KANJI);
 
     //Setup please install dictionary message and notebook page
     GtkWidget *notebook;
@@ -111,7 +111,7 @@ G_MODULE_EXPORT gboolean gw_main_get_iter_for_motion_cb (GtkWidget      *widget,
     gint y = event->y;
 
     //get unichar
-    unic = gw_ui_get_hovered_character (&x, &y, &iter);
+    unic = gw_main_get_hovered_character (&x, &y, &iter);
 
     //get word
     if (gtk_text_iter_starts_word (&iter) == FALSE)
@@ -128,9 +128,9 @@ G_MODULE_EXPORT gboolean gw_main_get_iter_for_motion_cb (GtkWidget      *widget,
   
     // Characters above 0xFF00 represent inserted images
     if (unic > L'ー' && unic < 0xFF00)
-      gw_ui_set_cursor (GDK_HAND2);
+      gw_main_set_cursor (GDK_HAND2);
     else
-      gw_ui_set_cursor (GDK_XTERM);
+      gw_main_set_cursor (GDK_XTERM);
 
     GtkWidget *tv = GTK_WIDGET (gw_common_get_widget_by_target (GW_TARGET_RESULTS));
     GtkWidget *window = GTK_WIDGET (gtk_widget_get_tooltip_window (tv));
@@ -165,7 +165,7 @@ G_MODULE_EXPORT gboolean gw_main_get_position_for_button_press_cb (GtkWidget    
     button_press_x = event->x;
     button_press_y = event->y;
 
-    gw_ui_get_hovered_character (&button_press_x, &button_press_y, &iter);
+    gw_main_get_hovered_character (&button_press_x, &button_press_y, &iter);
 
     return FALSE;
 }
@@ -203,7 +203,7 @@ G_MODULE_EXPORT gboolean gw_main_get_iter_for_button_release_cb (GtkWidget      
     x = event->x;
     y = event->y;
     trailing = 0;
-    unic = gw_ui_get_hovered_character (&x, &y, &iter);
+    unic = gw_main_get_hovered_character (&x, &y, &iter);
     di = gw_dictinfolist_get_dictinfo (GW_ENGINE_KANJI, "Kanji");
     error = NULL;
 
@@ -240,7 +240,7 @@ G_MODULE_EXPORT gboolean gw_main_get_iter_for_button_release_cb (GtkWidget      
           //Start the search
           if (tooltip_item != NULL)
           {
-            gw_ui_cancel_search_by_searchitem (tooltip_item);
+            gw_main_cancel_search_by_searchitem (tooltip_item);
             tooltip_item = NULL;
           }
 
@@ -294,7 +294,7 @@ G_MODULE_EXPORT void gw_main_close_cb (GtkWidget *widget, gpointer data)
     if (strcmp (id, "main_window") == 0)
     {
       gw_common_hide_window (id);
-      gw_ui_tab_cancel_all_searches ();
+      gw_main_tab_cancel_all_searches ();
       gtk_main_quit ();
     }
     else if (strcmp (id, "radicals_window") == 0 || strcmp (id, "kanjipad_window") == 0)
@@ -305,12 +305,12 @@ G_MODULE_EXPORT void gw_main_close_cb (GtkWidget *widget, gpointer data)
     {
       if (gw_dictinfolist_get_total () > 0)
       {
-        gw_ui_update_toolbar_buttons ();
+        gw_main_update_toolbar_buttons ();
         gw_common_hide_window (id);
       }
       else
       {
-        gw_ui_tab_cancel_all_searches ();
+        gw_main_tab_cancel_all_searches ();
         gtk_main_quit ();
       }
     }
@@ -389,7 +389,7 @@ G_MODULE_EXPORT gboolean gw_main_close_on_escape_cb (GtkWidget *widget,
 //!
 G_MODULE_EXPORT void gw_main_quit_cb (GtkWidget *widget, gpointer data)
 {
-    gw_ui_tab_cancel_all_searches ();
+    gw_main_tab_cancel_all_searches ();
     gw_main_close_cb (widget, data);
     gtk_main_quit ();
 }
@@ -424,7 +424,7 @@ G_MODULE_EXPORT void gw_main_search_from_history_cb (GtkWidget *widget, gpointer
     item->target_tv = (gpointer) gw_common_get_widget_by_target (item->target);
 
     //Checks to make sure everything is sane
-    if (gw_ui_cancel_search_for_current_tab () == FALSE)
+    if (gw_main_cancel_search_for_current_tab () == FALSE)
     {
       printf("CANCEL SEARCH FOR CURRENT TAB RETURNED FALSE\n");
       return;
@@ -448,14 +448,14 @@ G_MODULE_EXPORT void gw_main_search_from_history_cb (GtkWidget *widget, gpointer
     //Add tab reference to searchitem
     gw_tabs_set_searchitem (item);
     gw_engine_get_results (item, TRUE, FALSE);
-    gw_ui_update_history_popups ();
-    gw_ui_update_toolbar_buttons ();
+    gw_main_update_history_popups ();
+    gw_main_update_toolbar_buttons ();
 
     //Set the search string in the GtkEntry
-    gw_ui_clear_search_entry ();
-    gw_ui_search_entry_insert (item->queryline->string);
-    gw_ui_text_select_all_by_target (GW_TARGET_ENTRY);
-    gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
+    gw_main_clear_search_entry ();
+    gw_main_search_entry_insert (item->queryline->string);
+    gw_main_text_select_all_by_target (GW_TARGET_ENTRY);
+    gw_main_grab_focus_by_target (GW_TARGET_ENTRY);
 
     //Set the correct dictionary in the gui
     GtkWidget *combobox;
@@ -533,7 +533,7 @@ G_MODULE_EXPORT void gw_main_save_as_cb (GtkWidget *widget, gpointer data)
     //Initializations
     path = gw_io_get_savepath ();
     temp = NULL;
-    text = gw_ui_buffer_get_text_by_target (GW_TARGET_RESULTS);
+    text = gw_main_buffer_get_text_by_target (GW_TARGET_RESULTS);
     window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
     dialog = gtk_file_chooser_dialog_new (gettext ("Save As"),
                 GTK_WINDOW (window),
@@ -576,7 +576,7 @@ G_MODULE_EXPORT void gw_main_save_as_cb (GtkWidget *widget, gpointer data)
     gtk_widget_destroy (dialog);
     g_free (text);
     text = NULL;
-    gw_ui_handle_error (&error, TRUE);
+    gw_main_handle_error (&error, TRUE);
 }
 
 
@@ -610,12 +610,12 @@ G_MODULE_EXPORT void gw_main_save_cb (GtkWidget *widget, gpointer data)
     }
 
     //Carry out the save
-    text = gw_ui_buffer_get_text_by_target (GW_TARGET_RESULTS);
+    text = gw_main_buffer_get_text_by_target (GW_TARGET_RESULTS);
     gw_io_write_file (path, "a", text, NULL, NULL, &error);
     g_free (text);
     text = NULL;
 
-    gw_ui_handle_error (&error, TRUE);
+    gw_main_handle_error (&error, TRUE);
 }
 
 
@@ -626,7 +626,7 @@ G_MODULE_EXPORT void gw_main_save_cb (GtkWidget *widget, gpointer data)
 //! and then sets the pref in gconf which will trigger the font size setting
 //! function.
 //!
-//! @see gw_ui_set_font()
+//! @see gw_main_set_font()
 //! @param widget Unused GtkWidget pointer.
 //! @param data Unused gpointer
 //!
@@ -646,7 +646,7 @@ G_MODULE_EXPORT void gw_main_zoom_in_cb (GtkWidget *widget, gpointer data)
 //! and then sets the pref in gconf which will trigger the font size setting
 //! function.
 //!
-//! @see gw_ui_set_font()
+//! @see gw_main_set_font()
 //! @param widget Unused GtkWidget pointer.
 //! @param data Unused gpointer
 //!
@@ -666,7 +666,7 @@ G_MODULE_EXPORT void gw_main_zoom_out_cb (GtkWidget *widget, gpointer data)
 //! sets it, which makes gconf call the font size setting function since the
 //! stored value changed.
 //!
-//! @see gw_ui_set_font()
+//! @see gw_main_set_font()
 //! @param widget Unused GtkWidget pointer.
 //! @param data Unused gpointer
 //!
@@ -684,7 +684,7 @@ G_MODULE_EXPORT void gw_main_zoom_100_cb (GtkWidget *widget, gpointer data)
 //! this, you will need to do a new search if you want to change how things are
 //! displayed.
 //!
-//! @see gw_ui_set_less_relevant_show ()
+//! @see gw_main_set_less_relevant_show ()
 //! @param widget Unused GtkWidget pointer.
 //! @param data Unused gpointer
 //!
@@ -703,7 +703,7 @@ G_MODULE_EXPORT void gw_main_less_relevant_results_toggle_cb (GtkWidget *widget,
 //! The gconf value changed callback then updates the state of the toolbar
 //! to match the pref.
 //!
-//! @see gw_ui_set_toolbar_show ()
+//! @see gw_main_set_toolbar_show ()
 //! @param widget Unused GtkWidget pointer.
 //! @param data Unused gpointer
 //!
@@ -757,9 +757,9 @@ G_MODULE_EXPORT void gw_main_dictionary_changed_action_cb (GtkWidget *widget, gp
     }
 
     //Finish up
-    gw_ui_set_dictionary (active);
+    gw_main_set_dictionary (active);
 
-    gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
+    gw_main_grab_focus_by_target (GW_TARGET_ENTRY);
 }
 
 
@@ -780,9 +780,9 @@ G_MODULE_EXPORT void gw_main_dictionary_changed_action_cb (GtkWidget *widget, gp
 G_MODULE_EXPORT void gw_main_select_all_cb (GtkWidget *widget, gpointer data)
 {
     guint TARGET;
-    TARGET = gw_ui_get_current_target_focus ("main_window");
+    TARGET = gw_main_get_current_target_focus ("main_window");
 
-    gw_ui_text_select_all_by_target (TARGET);
+    gw_main_text_select_all_by_target (TARGET);
 }
 
 
@@ -803,8 +803,8 @@ G_MODULE_EXPORT void gw_main_select_all_cb (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void gw_main_paste_cb (GtkWidget *widget, gpointer data)
 {
     guint TARGET;
-    TARGET = gw_ui_get_current_target_focus ("main_window");
-    gw_ui_paste_text (TARGET);
+    TARGET = gw_main_get_current_target_focus ("main_window");
+    gw_main_paste_text (TARGET);
 }
 
 
@@ -825,8 +825,8 @@ G_MODULE_EXPORT void gw_main_paste_cb (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void gw_main_cut_cb (GtkWidget *widget, gpointer data)
 {
     guint TARGET;
-    TARGET = gw_ui_get_current_target_focus ("main_window");
-    gw_ui_cut_text (TARGET);
+    TARGET = gw_main_get_current_target_focus ("main_window");
+    gw_main_cut_text (TARGET);
 }
 
 
@@ -847,8 +847,8 @@ G_MODULE_EXPORT void gw_main_cut_cb (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void gw_main_copy_cb (GtkWidget *widget, gpointer data)
 {
     guint TARGET;
-    TARGET = gw_ui_get_current_target_focus ("main_window");
-    gw_ui_copy_text (TARGET);
+    TARGET = gw_main_get_current_target_focus ("main_window");
+    gw_main_copy_text (TARGET);
 }
 
 
@@ -873,9 +873,9 @@ G_MODULE_EXPORT gboolean gw_main_update_clipboard_on_focus_change_cb (GtkWidget 
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
-    gw_ui_close_suggestion_box ();
+    gw_main_close_suggestion_box ();
     guint TARGET;
-    TARGET = gw_ui_get_current_target_focus ("main_window");
+    TARGET = gw_main_get_current_target_focus ("main_window");
 
     //Set up the references to the actions
     GtkAction *copy_action, *cut_action, *paste_action, *select_all_action;
@@ -954,38 +954,8 @@ G_MODULE_EXPORT gboolean gw_main_update_clipboard_on_focus_change_cb (GtkWidget 
 //!
 G_MODULE_EXPORT void gw_main_print_cb (GtkWidget *widget, gpointer data)
 {
-    gw_ui_tab_cancel_all_searches ();
+    gw_main_tab_cancel_all_searches ();
     gw_print ();
-}
-
-
-//!
-//! @brief Brings up the search tool dialog
-//! 
-//! This function sets up the radical search tool dialog as needed, then makes
-//! it appear.  Before showing it, it makes sure that the strokes spinner is 
-//! visable if the needed dictionaries are available and sets the spinner to
-//! default to 1 stroke.
-//!
-//! @see gw_print ()
-//! @param widget Unused GtkWidget pointer
-//! @param data Unused gpointer
-//!
-G_MODULE_EXPORT void gw_main_radical_search_tool_cb (GtkWidget *widget, gpointer data)
-{
-    GtkBuilder *builder = gw_common_get_builder ();
-
-    GtkWidget *hbox;
-    hbox = GTK_WIDGET (gtk_builder_get_object (builder, "strokes_hbox"));
-
-    GtkWidget *spinbutton;
-    spinbutton = GTK_WIDGET (gtk_builder_get_object (builder, "strokes_spinbutton"));
-    gtk_spin_button_set_value (GTK_SPIN_BUTTON (spinbutton), 1.0);
-
-    gw_radsearchtool_clear_cb (NULL, NULL);
-
-    //Show the window
-    gw_common_show_window ("radicals_window");
 }
 
 
@@ -1013,7 +983,7 @@ G_MODULE_EXPORT void gw_main_edit_cb (GtkWidget *widget, gpointer data)
 
     gtk_show_uri (NULL, uri, gtk_get_current_event_time (), &error);
 
-    gw_ui_handle_error (&error, TRUE);
+    gw_main_handle_error (&error, TRUE);
 
     //Cleanup
     g_free (uri);
@@ -1039,7 +1009,7 @@ G_MODULE_EXPORT void gw_main_irc_channel_cb (GtkWidget *widget, gpointer data)
     gtk_show_uri (NULL, "irc://irc.freenode.net/gWaei", gtk_get_current_event_time (), &error);
 
     //Cleanup
-    gw_ui_handle_error (&error, TRUE);
+    gw_main_handle_error (&error, TRUE);
 }
 
 
@@ -1062,7 +1032,7 @@ G_MODULE_EXPORT void gw_main_homepage_cb (GtkWidget *widget, gpointer data)
     gtk_show_uri (NULL, "http://gwaei.sourceforge.net/", gtk_get_current_event_time (), &error);
 
     //Cleanup
-    gw_ui_handle_error (&error, TRUE);
+    gw_main_handle_error (&error, TRUE);
 }
 
 
@@ -1085,7 +1055,7 @@ G_MODULE_EXPORT void gw_main_help_cb (GtkWidget *widget, gpointer data)
     gtk_show_uri (NULL, "ghelp:gwaei", gtk_get_current_event_time (), &error);
 
     //Cleanup
-    gw_ui_handle_error (&error, TRUE);
+    gw_main_handle_error (&error, TRUE);
 }
 
 
@@ -1111,7 +1081,7 @@ G_MODULE_EXPORT void gw_main_glossary_cb (GtkWidget *widget, gpointer data)
     gtk_show_uri (NULL, uri, gtk_get_current_event_time (), &error);
 
     //Cleanup
-    gw_ui_handle_error (&error, TRUE);
+    gw_main_handle_error (&error, TRUE);
     g_free (uri);
 }
 
@@ -1174,7 +1144,7 @@ G_MODULE_EXPORT void gw_main_about_cb (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void gw_main_cycle_dictionaries_forward_cb (GtkWidget *widget, gpointer data)
 {
-    gw_ui_cycle_dictionaries (TRUE);
+    gw_main_cycle_dictionaries (TRUE);
 }
 
 
@@ -1190,7 +1160,7 @@ G_MODULE_EXPORT void gw_main_cycle_dictionaries_forward_cb (GtkWidget *widget, g
 //!
 G_MODULE_EXPORT void gw_main_cycle_dictionaries_backward_cb (GtkWidget *widget, gpointer data)
 {
-    gw_ui_cycle_dictionaries (FALSE);
+    gw_main_cycle_dictionaries (FALSE);
 }
 
 
@@ -1274,7 +1244,7 @@ G_MODULE_EXPORT gboolean gw_main_focus_change_on_key_press_cb (GtkWidget *widget
                                                        GdkEvent  *event,
                                                        gpointer  *focus  )
 {
-    gw_ui_close_suggestion_box ();
+    gw_main_close_suggestion_box ();
     guint state = ((GdkEventKey*)event)->state;
     guint keyval = ((GdkEventKey*)event)->keyval;
     guint modifiers = ( 
@@ -1327,8 +1297,8 @@ G_MODULE_EXPORT gboolean gw_main_focus_change_on_key_press_cb (GtkWidget *widget
            )
          )
       {
-        gw_ui_text_select_none_by_target (GW_TARGET_ENTRY);
-        gw_ui_grab_focus_by_target (GW_TARGET_RESULTS);
+        gw_main_text_select_none_by_target (GW_TARGET_ENTRY);
+        gw_main_grab_focus_by_target (GW_TARGET_RESULTS);
         return TRUE;
       }
 
@@ -1341,8 +1311,8 @@ G_MODULE_EXPORT gboolean gw_main_focus_change_on_key_press_cb (GtkWidget *widget
                 !gw_common_widget_equals_target (widget, GW_TARGET_ENTRY)
               )
       {
-        gw_ui_text_select_all_by_target (GW_TARGET_ENTRY);
-        gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
+        gw_main_text_select_all_by_target (GW_TARGET_ENTRY);
+        gw_main_grab_focus_by_target (GW_TARGET_ENTRY);
         return TRUE;
       }
     }
@@ -1373,7 +1343,7 @@ G_MODULE_EXPORT void gw_main_search_cb (GtkWidget *widget, gpointer data)
 
     //Initializations
     error = NULL;
-    gw_ui_strncpy_text_from_widget_by_target (query, GW_TARGET_ENTRY, 100);
+    gw_main_strncpy_text_from_widget_by_target (query, GW_TARGET_ENTRY, 100);
 
     item = gw_tabs_get_searchitem ();
     di = gw_dictinfolist_get_selected_dictinfo ();
@@ -1381,7 +1351,7 @@ G_MODULE_EXPORT void gw_main_search_cb (GtkWidget *widget, gpointer data)
     new_item = gw_searchitem_new (query, di, GW_TARGET_RESULTS, &error);
 
     //Check for problems, and quit if there are
-    if (error != NULL || new_item == NULL || gw_searchitem_is_equal (item, new_item) || !gw_ui_cancel_search_by_searchitem (item))
+    if (error != NULL || new_item == NULL || gw_searchitem_is_equal (item, new_item) || !gw_main_cancel_search_by_searchitem (item))
     {
       gw_searchitem_increment_history_relevance_timer (item);
       gw_searchitem_free (new_item);
@@ -1408,8 +1378,8 @@ G_MODULE_EXPORT void gw_main_search_cb (GtkWidget *widget, gpointer data)
     gw_engine_get_results (new_item, TRUE, FALSE);
 
     //Update the interface
-    gw_ui_update_toolbar_buttons ();
-    gw_ui_update_history_popups ();
+    gw_main_update_toolbar_buttons ();
+    gw_main_update_history_popups ();
 }
 
 
@@ -1428,7 +1398,7 @@ G_MODULE_EXPORT void gw_main_search_cb (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void gw_main_insert_unknown_character_cb (GtkWidget *widget, gpointer data)
 {
-    gw_ui_search_entry_insert (".");
+    gw_main_search_entry_insert (".");
 }
 
 
@@ -1447,7 +1417,7 @@ G_MODULE_EXPORT void gw_main_insert_unknown_character_cb (GtkWidget *widget, gpo
 //!
 G_MODULE_EXPORT void gw_main_insert_word_edge_cb (GtkWidget *widget, gpointer data)
 {
-    gw_ui_search_entry_insert ("\\b");
+    gw_main_search_entry_insert ("\\b");
 }
 
 
@@ -1466,7 +1436,7 @@ G_MODULE_EXPORT void gw_main_insert_word_edge_cb (GtkWidget *widget, gpointer da
 //!
 G_MODULE_EXPORT void gw_main_insert_not_word_edge_cb (GtkWidget *widget, gpointer data)
 {
-    gw_ui_search_entry_insert ("\\B");
+    gw_main_search_entry_insert ("\\B");
 }
 
 
@@ -1485,7 +1455,7 @@ G_MODULE_EXPORT void gw_main_insert_not_word_edge_cb (GtkWidget *widget, gpointe
 //!
 G_MODULE_EXPORT void gw_main_insert_and_cb (GtkWidget *widget, gpointer data)
 {
-    gw_ui_search_entry_insert ("&");
+    gw_main_search_entry_insert ("&");
 }
 
 
@@ -1504,7 +1474,7 @@ G_MODULE_EXPORT void gw_main_insert_and_cb (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void gw_main_insert_or_cb (GtkWidget *widget, gpointer data)
 {
-    gw_ui_search_entry_insert ("|");
+    gw_main_search_entry_insert ("|");
 }
 
 
@@ -1514,14 +1484,14 @@ G_MODULE_EXPORT void gw_main_insert_or_cb (GtkWidget *widget, gpointer data)
 //! This function acts as a quick way for the user to get back to the search
 //! entry and do another search whereever they are.
 //!
-//! @see gw_ui_clear_search_entry ()
+//! @see gw_main_clear_search_entry ()
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
 G_MODULE_EXPORT void gw_main_clear_search_cb (GtkWidget *widget, gpointer data)
 {
-    gw_ui_clear_search_entry ();
-    gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
+    gw_main_clear_search_entry ();
+    gw_main_grab_focus_by_target (GW_TARGET_ENTRY);
 }
 
 
@@ -1547,7 +1517,7 @@ G_MODULE_EXPORT void gw_main_open_dictionary_folder_cb (GtkWidget *widget, gpoin
 
     gtk_show_uri (NULL, uri, gtk_get_current_event_time (), &error);
 
-    gw_ui_handle_error (&error, TRUE);
+    gw_main_handle_error (&error, TRUE);
 
     g_free (uri);
 }
@@ -1871,7 +1841,7 @@ void gw_main_populate_popup_with_search_options_cb (GtkTextView *entry, GtkMenu 
             menuitem = GTK_WIDGET (gtk_image_menu_item_new_with_label (menu_text));
             menuimage = gtk_image_new_from_icon_name ("stock_new-tab", GTK_ICON_SIZE_MENU);
             gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menuitem), GTK_WIDGET (menuimage));
-            g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (gw_tabs_prep_and_start_search_in_new_cb), item);
+            g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (gw_tabs_new_with_search_cb), item);
             gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), GTK_WIDGET (menuitem));
             gtk_widget_show (GTK_WIDGET (menuitem));
             gtk_widget_show (GTK_WIDGET (menuimage));
@@ -1883,7 +1853,7 @@ void gw_main_populate_popup_with_search_options_cb (GtkTextView *entry, GtkMenu 
         if (menu_text != NULL)
         {
           menuitem = GTK_WIDGET (gtk_image_menu_item_new_with_label (menu_text));
-          g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (gw_tabs_prep_and_start_search_in_new_cb), item);
+          g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (gw_tabs_new_with_search_cb), item);
           g_signal_connect (G_OBJECT (menuitem), "destroy",  G_CALLBACK (gw_tabs_destroy_tab_menuitem_searchitem_data_cb), item);
           gtk_menu_shell_append (GTK_MENU_SHELL (dictionaries_menu), GTK_WIDGET (menuitem));
           gtk_widget_show (GTK_WIDGET (menuitem));
@@ -1911,7 +1881,7 @@ G_MODULE_EXPORT void gw_main_search_for_searchitem_online_cb (GtkWidget *widget,
       GError *error = NULL;
       gtk_show_uri (NULL, item->queryline->string, gtk_get_current_event_time (), &error);
 
-      gw_ui_handle_error (&error, TRUE);
+      gw_main_handle_error (&error, TRUE);
     }
 }
 

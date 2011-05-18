@@ -96,7 +96,7 @@ void gw_tabs_set_searchitem (GwSearchItem *item)
     //Update the interface
     gw_tabs_guarantee_first ();
     gw_tabs_set_current_tab_text (item->queryline->string);
-    gw_ui_set_query_entry_text_by_searchitem (item);
+    gw_main_set_entry_text_by_searchitem (item);
 }
 
 
@@ -125,12 +125,12 @@ void gw_tabs_update_appearance_with_searchitem (GwSearchItem *item)
     else gtk_menu_item_set_label (GTK_MENU_ITEM (close_menuitem), gettext("_Close"));
 
     //Force correct querytext
-    gw_ui_set_query_entry_text_by_searchitem (item);
-    gw_ui_set_total_results_label_by_searchitem (item);
-    gw_ui_set_search_progressbar_by_searchitem (item);
-    gw_ui_set_query_entry_text_by_searchitem (item);
-    gw_ui_set_main_window_title_by_searchitem (item);
-    gw_ui_set_dictionary_by_searchitem (item);
+    gw_main_set_entry_text_by_searchitem (item);
+    gw_main_set_total_results_label_by_searchitem (item);
+    gw_main_set_search_progressbar_by_searchitem (item);
+    gw_main_set_entry_text_by_searchitem (item);
+    gw_main_set_main_window_title_by_searchitem (item);
+    gw_main_set_dictionary_by_searchitem (item);
 }
 
 
@@ -139,14 +139,21 @@ void gw_tabs_update_appearance_with_searchitem (GwSearchItem *item)
 //!
 void gw_tabs_update_appearance ()
 {
-    GtkBuilder *builder = gw_common_get_builder ();
+    //Declarations
+    GtkBuilder *builder;
+    GtkWidget *notebook;
+    int current_page;
+    GwSearchItem *item;
 
-    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
-    int current_page = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
-    GwSearchItem *item = g_list_nth_data (_tab_searchitems, current_page);
+    //Initializations
+    builder = gw_common_get_builder ();
+    notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    current_page = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+    item = g_list_nth_data (_tab_searchitems, current_page);
+
     gw_tabs_update_appearance_with_searchitem (item);
 
-    gw_ui_set_font (NULL, NULL);
+    gw_main_set_font (NULL, NULL);
 }
 
 
@@ -155,7 +162,12 @@ void gw_tabs_update_appearance ()
 //!
 void gw_tabs_update_on_deck_historylist_by_searchitem (GwSearchItem *item)
 {
-    GwHistoryList *hl = gw_historylist_get_list (GW_TARGET_RESULTS);
+    //Declaratios
+    GwHistoryList *hl;
+
+    //Initializations
+    hl = gw_historylist_get_list (GW_TARGET_RESULTS);
+
     hl->current = item;
 }
 
@@ -165,11 +177,18 @@ void gw_tabs_update_on_deck_historylist_by_searchitem (GwSearchItem *item)
 //!
 void gw_tabs_update_on_deck_historylist_item_by_current_tab ()
 {
-    GtkBuilder *builder = gw_common_get_builder ();
+    //Declarations
+    GtkBuilder *builder;
+    GtkWidget *notebook;
+    int page_num;
+    GwSearchItem *item;
 
-    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
-    int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
-    GwSearchItem *item = g_list_nth_data (_tab_searchitems, page_num);
+    //Initializations
+    builder = gw_common_get_builder ();
+    notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+    item = g_list_nth_data (_tab_searchitems, page_num);
+
     gw_tabs_update_on_deck_historylist_by_searchitem (item);
 }
 
@@ -179,10 +198,16 @@ void gw_tabs_update_on_deck_historylist_item_by_current_tab ()
 //!
 void gw_tabs_guarantee_first ()
 {
-    GtkBuilder *builder = gw_common_get_builder ();
+    //Declarations
+    GtkBuilder *builder;
+    GtkWidget *notebook;
+    int pages;
 
-    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
-    int pages = gtk_notebook_get_n_pages (GTK_NOTEBOOK (notebook));
+    //Initializations
+    builder = gw_common_get_builder ();
+    notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    pages = gtk_notebook_get_n_pages (GTK_NOTEBOOK (notebook));
+
     if (pages == 0)
     {
       gw_tabs_new_cb (NULL, NULL);
@@ -298,10 +323,10 @@ int gw_tabs_new ()
     gtk_container_add (GTK_CONTAINER (close_button), button_image);
     g_signal_connect (G_OBJECT (close_button), "clicked", G_CALLBACK (gw_tabs_remove_cb), scrolledwindow);
     vbox = GTK_WIDGET (gtk_vbox_new(FALSE, 0));
-    gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 1);
     gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, TRUE, 0);
     vbox = GTK_WIDGET (gtk_vbox_new(FALSE, 0));
-    gtk_box_pack_start (GTK_BOX (vbox), close_button, FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (vbox), close_button, FALSE, FALSE, 1);
     gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, TRUE, 0);
     gtk_widget_show_all (GTK_WIDGET (hbox));
 
@@ -310,12 +335,12 @@ int gw_tabs_new ()
     int position = gtk_notebook_append_page (GTK_NOTEBOOK (notebook), scrolledwindow, hbox);
     gtk_notebook_set_tab_reorderable (GTK_NOTEBOOK (notebook), scrolledwindow, TRUE);
     gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), position);
-    gw_ui_buffer_initialize_tags();
+    gw_main_buffer_initialize_tags();
     gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), current);
-    gw_ui_buffer_initialize_marks (textbuffer);
+    gw_main_buffer_initialize_marks (textbuffer);
     _tab_searchitems = g_list_append (_tab_searchitems, NULL);
     gw_tabs_update_appearance ();
-    gw_ui_update_toolbar_buttons ();
+    gw_main_update_toolbar_buttons ();
 
     return position;
 }
@@ -329,14 +354,20 @@ int gw_tabs_new ()
 //!
 G_MODULE_EXPORT void gw_tabs_new_cb (GtkWidget *widget, gpointer data)
 {
-    GtkBuilder *builder = gw_common_get_builder ();
+    //Declarations
+    GtkBuilder *builder;
+    int position;
+    GtkWidget *notebook;
 
-    int position = gw_tabs_new ();
-    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    //Initializations
+    builder = gw_common_get_builder ();
+    position = gw_tabs_new ();
+    notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+
     gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), position);
-    gw_ui_set_query_entry_text_by_searchitem (NULL);
-    gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
-    gw_ui_set_dictionary(0);
+    gw_main_set_entry_text_by_searchitem (NULL);
+    gw_main_grab_focus_by_target (GW_TARGET_ENTRY);
+    gw_main_set_dictionary(0);
     gw_tabs_update_on_deck_historylist_item_by_current_tab ();
 
     gw_tabs_update_appearance ();
@@ -351,36 +382,48 @@ G_MODULE_EXPORT void gw_tabs_new_cb (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void gw_tabs_remove_cb (GtkWidget *widget, gpointer data)
 {
-    GtkBuilder *builder = gw_common_get_builder ();
+    //Declarations
+    GtkBuilder *builder;
+    GtkWidget *notebook;
+    int pages;
+    int page_num;
+    GList *iter;
+    GwSearchItem *item;
 
-    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
-    int pages = gtk_notebook_get_n_pages (GTK_NOTEBOOK (notebook));
-    //if (pages < 1) return;
+    //Initializations
+    builder = gw_common_get_builder ();
+    notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    pages = gtk_notebook_get_n_pages (GTK_NOTEBOOK (notebook));
+    page_num = gtk_notebook_page_num (GTK_NOTEBOOK (notebook), GTK_WIDGET (data));
+
+    //Sanity check
     if (pages < 2) exit (EXIT_SUCCESS);
-    int page_num = gtk_notebook_page_num (GTK_NOTEBOOK (notebook), GTK_WIDGET (data));
-    gw_ui_cancel_search_by_tab_number (page_num);
+
+    gw_main_cancel_search_by_tab_number (page_num);
     gtk_notebook_remove_page (GTK_NOTEBOOK (notebook), page_num);
 
-    GList *listitem = g_list_nth (_tab_searchitems, page_num);
-    if (listitem != NULL)
+    iter = g_list_nth (_tab_searchitems, page_num);
+    if (iter != NULL)
     {
-      if (listitem->data != NULL && ((GwSearchItem*) listitem->data)->total_results)
+      item = iter->data;
+      if (iter->data != NULL && item->total_results > 0)
       {
-        gw_historylist_add_searchitem_to_history (GW_HISTORYLIST_RESULTS, listitem->data);
-        gw_ui_update_history_popups ();
+        gw_historylist_add_searchitem_to_history (GW_HISTORYLIST_RESULTS, item);
+        gw_main_update_history_popups ();
       }
-      else if (listitem->data != NULL)
+      else if (item != NULL)
       {
-        gw_searchitem_free (listitem->data);
-        gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
+        gw_searchitem_free (item);
+        iter->data = NULL;
+        gw_main_grab_focus_by_target (GW_TARGET_ENTRY);
       }
-      listitem->data = NULL;
     }
-    _tab_searchitems = g_list_delete_link (_tab_searchitems, listitem);
+    _tab_searchitems = g_list_delete_link (_tab_searchitems, iter);
 
     gw_tabs_update_on_deck_historylist_item_by_current_tab ();
     gw_tabs_update_appearance ();
-    if (pages == 1) gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
+
+    if (pages == 1) gw_main_grab_focus_by_target (GW_TARGET_ENTRY);
 }
 
 
@@ -392,37 +435,46 @@ G_MODULE_EXPORT void gw_tabs_remove_cb (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void gw_tabs_remove_current_cb (GtkWidget *widget, gpointer data)
 {
+    //Declarations
+    GtkBuilder *builder;
+    GtkWidget *notebook;
+    int pages;
+    int page_num;
+    GList *iter;
+    GwSearchItem *item;
 
-    GtkBuilder *builder = gw_common_get_builder ();
+    //Initializations
+    builder = gw_common_get_builder ();
+    notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    pages = gtk_notebook_get_n_pages (GTK_NOTEBOOK (notebook));
+    page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+    iter = g_list_nth (_tab_searchitems, page_num);
 
-    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
-    int pages = gtk_notebook_get_n_pages (GTK_NOTEBOOK (notebook));
-    //if (pages < 1) return;
     if (pages < 2) exit (EXIT_SUCCESS);
-    int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
-    gw_ui_cancel_search_by_tab_number (page_num);
 
-    GList *listitem = g_list_nth (_tab_searchitems, page_num);
-    if (listitem != NULL)
+    gw_main_cancel_search_by_tab_number (page_num);
+
+    if (iter != NULL)
     {
-      if (listitem->data != NULL && ((GwSearchItem*) listitem->data)->total_results)
+      item = iter->data;
+      if (item != NULL && item->total_results > 0)
       {
-        gw_historylist_add_searchitem_to_history (GW_HISTORYLIST_RESULTS, listitem->data);
-        gw_ui_update_history_popups ();
+        gw_historylist_add_searchitem_to_history (GW_HISTORYLIST_RESULTS, item);
+        gw_main_update_history_popups ();
       }
-      else if (listitem->data != NULL)
+      else if (item != NULL)
       {
-        gw_searchitem_free (listitem->data);
+        gw_searchitem_free (item);
+        item = NULL;
       }
-      listitem->data = NULL;
     }
-    _tab_searchitems = g_list_delete_link (_tab_searchitems, listitem);
+    _tab_searchitems = g_list_delete_link (_tab_searchitems, iter);
 
     gtk_notebook_remove_page (GTK_NOTEBOOK (notebook), page_num);
-
     gw_tabs_update_on_deck_historylist_item_by_current_tab ();
     gw_tabs_update_appearance ();
-    if (pages == 1) gw_ui_grab_focus_by_target (GW_TARGET_ENTRY);
+
+    if (pages == 1) gw_main_grab_focus_by_target (GW_TARGET_ENTRY);
 }
 
 
@@ -437,7 +489,12 @@ G_MODULE_EXPORT void gw_tabs_remove_current_cb (GtkWidget *widget, gpointer data
 //!
 G_MODULE_EXPORT void gw_tabs_switch_cb (GtkNotebook *notebook, GtkWidget *page, int page_num, gpointer data)
 {
-    GwSearchItem *item = g_list_nth_data (_tab_searchitems, page_num);
+    //Declarations
+    GwSearchItem *item;
+
+    //Initializations
+    item = g_list_nth_data (_tab_searchitems, page_num);
+
     gw_tabs_update_appearance_with_searchitem (item);
     gw_tabs_update_on_deck_historylist_by_searchitem (item);
 }
@@ -451,9 +508,14 @@ G_MODULE_EXPORT void gw_tabs_switch_cb (GtkNotebook *notebook, GtkWidget *page, 
 //!
 G_MODULE_EXPORT void gw_tabs_next_cb (GtkWidget *widget, gpointer data)
 {
-    GtkBuilder *builder = gw_common_get_builder ();
+    //Declarations
+    GtkBuilder *builder;
+    GtkWidget *notebook;
 
-    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    //Initializations
+    builder = gw_common_get_builder ();
+    notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+
     gtk_notebook_next_page (GTK_NOTEBOOK (notebook));
     gw_tabs_update_appearance ();
     gw_tabs_update_on_deck_historylist_item_by_current_tab ();
@@ -468,9 +530,14 @@ G_MODULE_EXPORT void gw_tabs_next_cb (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void gw_tabs_previous_cb (GtkWidget *widget, gpointer data)
 {
-    GtkBuilder *builder = gw_common_get_builder ();
+    //Declarations
+    GtkBuilder *builder;
+    GtkWidget *notebook;
 
-    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    //Initializations
+    builder = gw_common_get_builder ();
+    notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+
     gtk_notebook_prev_page (GTK_NOTEBOOK (notebook));
     gw_tabs_update_appearance ();
     gw_tabs_update_on_deck_historylist_item_by_current_tab ();
@@ -483,29 +550,42 @@ G_MODULE_EXPORT void gw_tabs_previous_cb (GtkWidget *widget, gpointer data)
 //! @param widget Currently unused widget pointer
 //! @param data A gpointer to a GwSearchItem that hold the search information
 //!
-G_MODULE_EXPORT void gw_tabs_prep_and_start_search_in_new_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_tabs_new_with_search_cb (GtkWidget *widget, gpointer data)
 {
-    GwSearchItem *item = (GwSearchItem*) data;
+    //Declarations
+    GtkBuilder *builder;
+    GwSearchItem *item;
+    GwSearchItem *current_item;
+    GtkWidget *notebook;
+    int page_num;
+
+    //Initializations
+    builder = gw_common_get_builder ();
+    item = (GwSearchItem*) data;
+    current_item = g_list_nth_data (gw_tabs_get_searchitem_list (), page_num);
+    notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+
     if (item != NULL)
     {
-      GtkBuilder *builder = gw_common_get_builder ();
-
-      GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
-      int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
-      GwSearchItem *current_item = g_list_nth_data (gw_tabs_get_searchitem_list (), page_num);
-
       if (current_item != NULL && current_item->total_results > 0)
         gw_tabs_new ();
-      gw_ui_set_dictionary_by_searchitem (item);
-      gw_ui_set_query_entry_text_by_searchitem (item);
+      gw_main_set_dictionary_by_searchitem (item);
+      gw_main_set_entry_text_by_searchitem (item);
       gw_main_search_cb (NULL, NULL);
     }
 }
 
+
 G_MODULE_EXPORT void gw_tabs_no_results_search_for_dictionary_cb (GtkWidget *widget, gpointer data)
 {
-    GwDictInfo* di = (GwDictInfo*) data;
-    gw_ui_set_dictionary(di->load_position);
+    //Declarations
+    GwDictInfo* di;
+
+    //Initializations
+    di = (GwDictInfo*) data;
+
+    gw_main_set_dictionary (di->load_position);
 }
 
 //!
@@ -516,7 +596,12 @@ G_MODULE_EXPORT void gw_tabs_no_results_search_for_dictionary_cb (GtkWidget *wid
 //!
 G_MODULE_EXPORT void gw_tabs_destroy_tab_menuitem_searchitem_data_cb (GObject *object, gpointer data)
 {
-    GwSearchItem *item = (GwSearchItem*) data;
+    //Declarations
+    GwSearchItem *item;
+
+    //Initializations
+    item = (GwSearchItem*) data;
+
     if (item != NULL)
     {
       gw_searchitem_free (item);

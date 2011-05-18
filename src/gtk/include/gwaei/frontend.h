@@ -27,6 +27,8 @@
 
 #include <gwaei/spellcheck.h>
 
+#include <gwaei/output-callbacks.h>
+
 void gw_frontend_initialize (int*, char**);
 void gw_frontend_free (void);
 void gw_frontend_start_gtk (int, char**);

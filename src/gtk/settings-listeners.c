@@ -76,11 +76,11 @@ void do_toolbar_style_pref_changed_action (GSettings *settings,
     gchar *value = g_settings_get_string (settings, key);
     if (value != NULL)
     {
-      gw_ui_set_toolbar_style (value);
+      gw_main_set_toolbar_style (value);
     }
     else
     {
-      gw_ui_set_toolbar_style ("both");
+      gw_main_set_toolbar_style ("both");
     }
     g_free (value);
 }
@@ -100,7 +100,7 @@ void do_toolbar_show_pref_changed_action (GSettings *settings,
 {
     g_signal_handlers_block_by_func (settings, do_toolbar_show_pref_changed_action, NULL);
     gboolean value = g_settings_get_boolean (settings, key);
-    gw_ui_set_toolbar_show (value);
+    gw_main_set_toolbar_show (value);
     g_signal_handlers_unblock_by_func (settings, do_toolbar_show_pref_changed_action, NULL);
 }
 
@@ -120,7 +120,7 @@ void do_use_global_document_font_pref_changed_action (GSettings *settings,
     g_signal_handlers_block_by_func (settings, do_use_global_document_font_pref_changed_action, NULL);
     gboolean value = g_settings_get_boolean (settings, key);
     gw_settings_set_use_global_document_font_checkbox (value);
-    gw_ui_set_font (NULL, NULL);
+    gw_main_set_font (NULL, NULL);
     g_signal_handlers_unblock_by_func (settings, do_use_global_document_font_pref_changed_action, NULL);
 }
 
@@ -141,7 +141,7 @@ void do_global_document_font_pref_changed_action (GSettings *settings,
     if (value != NULL)
     {
       gw_settings_update_global_font_label (value);
-      gw_ui_set_font (NULL, NULL);
+      gw_main_set_font (NULL, NULL);
     }
     g_free (value);
 }
@@ -164,7 +164,7 @@ void do_custom_document_font_pref_changed_action (GSettings *settings,
     if (value != NULL)
     {
       gw_settings_update_custom_font_button (value);
-      gw_ui_set_font (NULL, NULL);
+      gw_main_set_font (NULL, NULL);
     }
     g_free (value);
     g_signal_handlers_unblock_by_func (settings, do_custom_document_font_pref_changed_action, NULL);
@@ -200,8 +200,8 @@ void do_font_magnification_pref_changed_action (GSettings *settings,
     //Set the new font
     else
     {
-      gw_ui_set_font (NULL, &magnification);
-      gw_ui_update_toolbar_buttons ();
+      gw_main_set_font (NULL, &magnification);
+      gw_main_update_toolbar_buttons ();
     }
     g_signal_handlers_unblock_by_func (settings, do_font_magnification_pref_changed_action, NULL);
 }
@@ -222,9 +222,9 @@ void do_roman_kana_conv_pref_changed_action (GSettings *settings,
     g_signal_handlers_block_by_func (settings, do_roman_kana_conv_pref_changed_action, NULL);
     int selection = g_settings_get_int (settings, key);
     if (selection <= 2 && selection >= 0)
-      gw_ui_set_romaji_kana_conv(selection);
+      gw_main_set_romaji_kana_conv(selection);
     else
-      gw_ui_set_romaji_kana_conv(2);
+      gw_main_set_romaji_kana_conv(2);
     g_signal_handlers_unblock_by_func (settings, do_roman_kana_conv_pref_changed_action, NULL);
 }
 
@@ -243,7 +243,7 @@ void do_hira_kata_conv_pref_changed_action (GSettings *settings,
 {
     g_signal_handlers_block_by_func (settings, do_hira_kata_conv_pref_changed_action, NULL);
     gboolean value = g_settings_get_boolean (settings, key);
-    gw_ui_set_hiragana_katakana_conv(value);
+    gw_main_set_hiragana_katakana_conv(value);
     g_signal_handlers_unblock_by_func (settings, do_hira_kata_conv_pref_changed_action, NULL);
 }
 
@@ -262,7 +262,7 @@ void do_kata_hira_conv_pref_changed_action (GSettings *settings,
 {
     g_signal_handlers_block_by_func (settings, do_kata_hira_conv_pref_changed_action, NULL);
     gboolean value = g_settings_get_boolean (settings, key);
-    gw_ui_set_katakana_hiragana_conv(value);
+    gw_main_set_katakana_hiragana_conv(value);
     g_signal_handlers_unblock_by_func (settings, do_kata_hira_conv_pref_changed_action, NULL);
 }
 
@@ -295,8 +295,8 @@ void do_color_value_changed_action (GSettings *settings,
     char *name = key;
     char *letter  = strchr(name, '-');
     if (letter != NULL) *letter = '_';
-    gw_ui_set_color_to_swatch (name, hex_color);
-    gw_ui_buffer_reload_tagtable_tags ();
+    gw_main_set_color_to_swatch (name, hex_color);
+    gw_main_buffer_reload_tagtable_tags ();
     g_signal_handlers_unblock_by_func (settings, do_color_value_changed_action, NULL);
 }
 
