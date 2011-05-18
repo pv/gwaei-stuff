@@ -9,18 +9,15 @@
 #include <gwaei/backend.h>
 #include <gwaei/frontend.h>
 
-void gw_dictionarymanager_update_items (void);
-
-
 static GtkListStore *_model = NULL;
 static GtkTreeView *_view = NULL;
 enum { IMAGE, POSITION, NAME, LONG_NAME, ENGINE, SHORTCUT, DICT_POINTER, TOTAL_FIELDS };
 static gulong _list_update_handler_id;
 
 
-G_MODULE_EXPORT void do_list_store_row_changed_action (GtkTreeModel *model,
-                                                       GtkTreePath *path,
-                                                       gpointer data)
+G_MODULE_EXPORT void gw_dictionarymanager_list_store_row_changed_action_cb (GtkTreeModel *model,
+                                                                            GtkTreePath *path,
+                                                                            gpointer data)
 {
     g_signal_handler_block (_model, _list_update_handler_id);
     int position = 0;
@@ -104,7 +101,7 @@ void gw_dictionarymanager_initialize ()
 
     gw_dictionarymanager_update_items ();
     _list_update_handler_id = g_signal_connect (G_OBJECT (_model), "row-deleted", 
-                                                G_CALLBACK (do_list_store_row_changed_action), NULL);
+                                                G_CALLBACK (gw_dictionarymanager_list_store_row_changed_action_cb), NULL);
 }
 
 
@@ -209,7 +206,7 @@ void gw_dictionarymanager_update_items ()
 
 
 
-G_MODULE_EXPORT void do_dictionary_cursor_changed_action (GtkTreeView *treeview, gpointer data)
+G_MODULE_EXPORT void gw_dictionarymanager_cursor_changed_cb (GtkTreeView *treeview, gpointer data)
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
@@ -223,7 +220,7 @@ G_MODULE_EXPORT void do_dictionary_cursor_changed_action (GtkTreeView *treeview,
 }
 
 
-G_MODULE_EXPORT void do_remove_dictionary_action (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_dictionarymanager_remove_cb (GtkWidget *widget, gpointer data)
 {
     //Declarations
     GtkBuilder *builder;
@@ -247,7 +244,7 @@ G_MODULE_EXPORT void do_remove_dictionary_action (GtkWidget *widget, gpointer da
     has_selection = gtk_tree_selection_get_selected (selection, &tmodel, &iter);
     error = NULL;
 
-    //Sanity cehck
+    //Sanity check
     if (!has_selection) return;
 
     path = gtk_tree_model_get_path (GTK_TREE_MODEL (_model), &iter);

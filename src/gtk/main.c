@@ -126,32 +126,32 @@ void gw_ui_set_query_entry_text_by_searchitem (GwSearchItem *item)
     //Declarations
     char hex_color_string[100];
     GdkRGBA color;
-    GtkWidget *search_entry;
+    GtkWidget *entry;
 
     //Initializations
-    search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
+    entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
 
     //If there is no search, set the default colors
     if (item == NULL)
     {
-      gtk_entry_set_text (GTK_ENTRY (search_entry), "");
-      gtk_widget_override_background_color (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
-      gtk_widget_override_color (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
+      gtk_entry_set_text (GTK_ENTRY (entry), "");
+      gtk_widget_override_background_color (GTK_WIDGET (entry), GTK_STATE_NORMAL, NULL);
+      gtk_widget_override_color (GTK_WIDGET (entry), GTK_STATE_NORMAL, NULL);
     }
     //There was previously a search, set the match colors from the prefs
     else
     {
       if (item->queryline != NULL && strlen(item->queryline->string) > 0)
       {
-        if (strcmp(gtk_entry_get_text (GTK_ENTRY (search_entry)), item->queryline->string) != 0)
+        if (strcmp(gtk_entry_get_text (GTK_ENTRY (entry)), item->queryline->string) != 0)
         {
-          gtk_entry_set_text (GTK_ENTRY (search_entry), item->queryline->string);
-          gtk_editable_set_position (GTK_EDITABLE (search_entry), -1);
+          gtk_entry_set_text (GTK_ENTRY (entry), item->queryline->string);
+          gtk_editable_set_position (GTK_EDITABLE (entry), -1);
         }
       }
       else
       {
-        gtk_entry_set_text (GTK_ENTRY (search_entry), "");
+        gtk_entry_set_text (GTK_ENTRY (entry), "");
       }
 
       //Set the foreground color
@@ -161,7 +161,7 @@ void gw_ui_set_query_entry_text_by_searchitem (GwSearchItem *item)
         gw_pref_reset_value_by_schema (GW_SCHEMA_HIGHLIGHT, GW_KEY_MATCH_FG);
         return;
       }
-      gtk_widget_override_color (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, &color);
+      //gtk_widget_override_color (GTK_WIDGET (entry), GTK_STATE_NORMAL, &color);
 
       //Set the background color
       gw_pref_get_string_by_schema (hex_color_string, GW_SCHEMA_HIGHLIGHT, GW_KEY_MATCH_BG, 100);
@@ -170,7 +170,7 @@ void gw_ui_set_query_entry_text_by_searchitem (GwSearchItem *item)
         gw_pref_reset_value_by_schema (GW_SCHEMA_HIGHLIGHT, GW_KEY_MATCH_BG);
         return;
       }
-      gtk_widget_override_background_color (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, &color);
+      //gtk_widget_override_background_color (GTK_WIDGET (entry), GTK_STATE_NORMAL, &color);
     }
 }
 
@@ -388,13 +388,11 @@ void gw_ui_update_toolbar_buttons ()
     GtkBuilder *builder = gw_common_get_builder ();
     GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
 
-    const int id_length = 50;
-    char id[id_length];
-
     //Delarations
     GtkAction *action;
     GtkWidget *menuitem;
     gboolean enable;
+    char *id;
 
     GwSearchItem* history_search_item = gw_historylist_get_current (GW_TARGET_RESULTS);
     GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
@@ -408,54 +406,54 @@ void gw_ui_update_toolbar_buttons ()
     GtkWidget *results_tv = gw_common_get_widget_by_target(GW_TARGET_RESULTS);
 
     //Update Zoom in sensitivity state
-    strncpy(id, "view_zoom_in_action", id_length);
+    id = "view_zoom_in_action";
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
     enable = (tab_search_item != NULL && current_font_magnification < GW_MAX_FONT_MAGNIFICATION);
     gtk_action_set_sensitive(action, enable);
 
     //Update Zoom out sensitivity state
-    strncpy(id, "view_zoom_out_action", id_length);
+    id = "view_zoom_out_action";
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
     enable = (tab_search_item != NULL && current_font_magnification > GW_MIN_FONT_MAGNIFICATION);
     gtk_action_set_sensitive(action, enable);
 
     //Update Zoom 100 sensitivity state
-    strncpy(id, "view_zoom_100_action", id_length);
+    id = "view_zoom_100_action";
     action = GTK_ACTION (gtk_builder_get_object(builder, id));
     enable = (tab_search_item != NULL && current_font_magnification != GW_DEFAULT_FONT_MAGNIFICATION);
     gtk_action_set_sensitive(action, enable);
 
     //Update Save sensitivity state
-    strncpy(id, "file_append_action", id_length);
+    id = "file_append_action";
     action = GTK_ACTION (gtk_builder_get_object(builder, id));
     enable = (tab_search_item != NULL);
     gtk_action_set_sensitive(action, enable);
 
     //Update Save as sensitivity state
-    strncpy(id, "file_save_as_action", id_length);
+    id = "file_save_as_action";
     action = GTK_ACTION (gtk_builder_get_object(builder, id));
     enable = (tab_search_item != NULL);
     gtk_action_set_sensitive(action, enable);
 
     //Update Print sensitivity state
-    strncpy(id, "file_print_action", id_length);
+    id = "file_print_action";
     action = GTK_ACTION (gtk_builder_get_object(builder, id));
     enable = (tab_search_item != NULL);
     gtk_action_set_sensitive(action, enable);
 /*
     //Update radicals search tool menuitem
-    strncpy(id, "insert_radicals_action", id_length);
+    id = "insert_radicals_action";
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
     enable = (gw_dictinfolist_dictionary_get_status_by_id (GW_DICT_ID_RADICALS) == GW_DICT_STATUS_INSTALLED);
     gtk_action_set_sensitive(action, enable);
 */
     //Update back button
-    strncpy(id, "history_back_action", id_length);
+    id = "history_back_action";
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
       gtk_action_set_sensitive (action, (gw_historylist_get_back_history (GW_TARGET_RESULTS) != NULL));
 
     //Update forward button
-    strncpy(id, "history_forward_action", id_length);
+    id = "history_forward_action";
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
       gtk_action_set_sensitive (action, (gw_historylist_get_forward_history (GW_TARGET_RESULTS) != NULL));
 
@@ -464,29 +462,29 @@ void gw_ui_update_toolbar_buttons ()
     if (gtk_widget_has_focus (search_entry))
     {
       sensitive = (gtk_editable_get_selection_bounds (GTK_EDITABLE (search_entry), NULL, NULL));
-      strncpy(id, "edit_copy_action", id_length);
+      id = "edit_copy_action";
       action = GTK_ACTION (gtk_builder_get_object (builder, id));
       gtk_action_set_sensitive (action, sensitive);
-      strncpy(id, "edit_cut_action", id_length);
+      id = "edit_cut_action";
       action = GTK_ACTION (gtk_builder_get_object (builder, id));
       gtk_action_set_sensitive (action, sensitive);
     }
     else if (results_tv != NULL && gtk_widget_has_focus (results_tv))
     {
       sensitive = (gw_ui_has_selection_by_target (GW_TARGET_RESULTS));
-      strncpy(id, "edit_copy_action", id_length);
+      id = "edit_copy_action";
       action = GTK_ACTION (gtk_builder_get_object (builder, id));
       gtk_action_set_sensitive (action, sensitive);
-      strncpy(id, "edit_cut_action", id_length);
+      id = "edit_cut_action";
       action = GTK_ACTION (gtk_builder_get_object (builder, id));
       gtk_action_set_sensitive (action, FALSE);
     }
 
-    strncpy(id, "previous_tab_menuitem", id_length);
+    id = "previous_tab_menuitem";
     menuitem = GTK_WIDGET (gtk_builder_get_object (builder, id));
     gtk_widget_set_sensitive (menuitem, (pages > 1));
 
-    strncpy(id, "next_tab_menuitem", id_length);
+    id = "next_tab_menuitem";
     menuitem = GTK_WIDGET (gtk_builder_get_object (builder, id));
     gtk_widget_set_sensitive (menuitem, (pages > 1));
 }
@@ -664,11 +662,10 @@ void gw_ui_update_history_menu_popup ()
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
-    const int id_length = 50;
-    char id[id_length];
+    char *id;
 
     GtkMenuShell *shell;
-    strncpy (id, "history_popup", id_length);
+    id = "history_popup";
     shell = GTK_MENU_SHELL (gtk_builder_get_object(builder, id));
 
     GList     *children = NULL;
@@ -1544,16 +1541,16 @@ char* gw_ui_buffer_get_text_slice_by_target (GwTargetOutput TARGET, int sl, int 
 //!
 gunichar gw_ui_get_hovered_character (int *x, int *y, GtkTextIter *start)
 {
-    gint trailing = 0;
-    GtkWidget* results_tv = gw_common_get_widget_by_target (GW_TARGET_RESULTS);
+    //Declarations;
+    gint trailing;
+    GtkWidget* results_tv;
 
-    gtk_text_view_window_to_buffer_coords (GTK_TEXT_VIEW(results_tv), 
-                                           GTK_TEXT_WINDOW_TEXT, 
-                                           *x,  *y, x, y             );
+    //Initializations
+    trailing = 0;
+    results_tv = gw_common_get_widget_by_target (GW_TARGET_RESULTS);
 
-    gtk_text_view_get_iter_at_position (GTK_TEXT_VIEW (results_tv),
-                                        start, &trailing,
-                                        *x, *y                      );
+    gtk_text_view_window_to_buffer_coords (GTK_TEXT_VIEW(results_tv), GTK_TEXT_WINDOW_TEXT, *x, *y, x, y);
+    gtk_text_view_get_iter_at_position (GTK_TEXT_VIEW (results_tv), start, &trailing, *x, *y);
 
     return gtk_text_iter_get_char (start);
 } 
@@ -1566,13 +1563,16 @@ gunichar gw_ui_get_hovered_character (int *x, int *y, GtkTextIter *start)
 //!
 void gw_ui_set_cursor (GdkCursorType CURSOR)
 {
-    GtkWidget* results_tv = gw_common_get_widget_by_target (GW_TARGET_RESULTS);
-
+    //Declarations
+    GtkWidget* results_tv;
     GdkWindow* gdk_window;
-    gdk_window = gtk_text_view_get_window (GTK_TEXT_VIEW (results_tv), 
-                                           GTK_TEXT_WINDOW_TEXT        );
     GdkCursor* cursor;
+
+    //Initializations
+    results_tv = gw_common_get_widget_by_target (GW_TARGET_RESULTS);
+    gdk_window = gtk_text_view_get_window (GTK_TEXT_VIEW (results_tv), GTK_TEXT_WINDOW_TEXT);
     cursor = gdk_cursor_new (CURSOR);
+
     gdk_window_set_cursor (gdk_window, cursor);
     gdk_cursor_unref (cursor);
 }
@@ -2011,6 +2011,12 @@ char* gw_ui_buffer_get_text_by_target (GwTargetOutput TARGET)
 //!
 void gw_ui_buffer_reload_tagtable_tags ()
 {
+    //Declarations
+    GtkWidget *entry;
+
+    //Initializations
+    entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
+
     gw_ui_set_color_to_tagtable ("comment", GW_TARGET_RESULTS, TRUE, FALSE);
     gw_ui_set_color_to_tagtable ("comment", GW_TARGET_KANJI,   TRUE, FALSE);
 
@@ -2020,9 +2026,8 @@ void gw_ui_buffer_reload_tagtable_tags ()
     gw_ui_set_color_to_tagtable ("header",  GW_TARGET_RESULTS, TRUE, FALSE);
     gw_ui_set_color_to_tagtable ("header",  GW_TARGET_KANJI,   TRUE, FALSE);
 
-    GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
-    gtk_widget_override_background_color (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
-    gtk_widget_override_color (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
+    gtk_widget_override_background_color (GTK_WIDGET (entry), GTK_STATE_NORMAL, NULL);
+    gtk_widget_override_color (GTK_WIDGET (entry), GTK_STATE_NORMAL, NULL);
 }
 
 
@@ -2086,12 +2091,15 @@ void gw_ui_buffer_initialize_marks (gpointer tb)
 static void _set_header (GwSearchItem *item, char* text, char* mark_name)
 {
   gdk_threads_enter();
-    GObject *results_tb = G_OBJECT (item->target_tb);
-
+    //Declarations
+    GObject *results_tb;
     GtkTextIter iter;
     GtkTextMark *mark;
     gint line;
+    char *new_text;
 
+    //Initializations
+    results_tb = G_OBJECT (item->target_tb);
     mark = gtk_text_buffer_get_mark (GTK_TEXT_BUFFER (results_tb), mark_name);
     gtk_text_buffer_get_iter_at_mark (GTK_TEXT_BUFFER (results_tb), &iter, mark);
     line = gtk_text_iter_get_line (&iter);
@@ -2107,7 +2115,7 @@ static void _set_header (GwSearchItem *item, char* text, char* mark_name)
     }
 
     //Update the header text
-    char *new_text = g_strdup_printf ("%s\n", text);
+    new_text = g_strdup_printf ("%s\n", text);
     if (new_text != NULL)
     {
       GtkTextIter end_iter;
@@ -2129,9 +2137,11 @@ static void _set_header (GwSearchItem *item, char* text, char* mark_name)
 //!
 gboolean gw_ui_keep_searching (gpointer data)
 {
+    //Declarations
     GtkBuilder *builder;
     GtkWidget *window;
 
+    //Initializations
     builder = gw_common_get_builder ();
     window = GTK_WIDGET (gtk_builder_get_object (builder, "settings_window"));
     
@@ -2154,10 +2164,15 @@ gboolean gw_ui_keep_searching (gpointer data)
 //!
 gboolean gw_update_icons_for_selection (gpointer data) 
 {
-    GtkBuilder *builder = gw_common_get_builder ();
+    //Declarations
+    GtkBuilder *builder;
+    GtkAction *action;
+    gboolean has_selection;
 
-    GtkAction *action = NULL;
-    gboolean has_selection = gw_ui_has_selection_by_target (GW_TARGET_RESULTS);
+    //Initializations;
+    builder = gw_common_get_builder ();
+    action = NULL;
+    has_selection = gw_ui_has_selection_by_target (GW_TARGET_RESULTS);
 
     //Set the special buttons
     if (!_prev_selection_icon_state && has_selection)
@@ -2181,7 +2196,9 @@ gboolean gw_update_icons_for_selection (gpointer data)
       action = GTK_ACTION (gtk_builder_get_object (builder, "file_print_action"));
       gtk_action_set_label (action, NULL);
     }
+
     gw_ui_update_toolbar_buttons();
+
     return TRUE; 
 }
 
@@ -2240,17 +2257,30 @@ gboolean gw_ui_cancel_search_by_searchitem (GwSearchItem *item)
 //!
 gboolean gw_ui_cancel_search_by_tab_content (gpointer container)
 {
-    GtkBuilder *builder = gw_common_get_builder ();
+    //Declarations
+    GtkBuilder *builder;
+    GtkWidget *notebook;
+    int position;
+    GList *list;
+    GwSearchItem *item;
+    gboolean result;
 
-    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
-    int position = gtk_notebook_page_num (GTK_NOTEBOOK (notebook), container);
+    //Initializations
+    builder = gw_common_get_builder ();
+    notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    position = gtk_notebook_page_num (GTK_NOTEBOOK (notebook), container);
+
+    //Sanity check
     if (position == -1) return FALSE;
 
-    GList *list = gw_tabs_get_searchitem_list ();
-    GwSearchItem *item = g_list_nth_data (list, position);
+    list = gw_tabs_get_searchitem_list ();
+    item = g_list_nth_data (list, position);
+
+    //Sanity check
     if (item == NULL) return TRUE;
 
-    gboolean result = gw_ui_cancel_search_by_searchitem (item);
+    result = gw_ui_cancel_search_by_searchitem (item);
+
     return result;
 }
 
@@ -2260,13 +2290,14 @@ gboolean gw_ui_cancel_search_by_tab_content (gpointer container)
 //!
 void gw_ui_tab_cancel_all_searches ()
 {
-    GList *list = gw_tabs_get_searchitem_list ();
-    GwSearchItem *item = NULL;
-    while (list != NULL)
+    //Declarations
+    GList *iter;
+    GwSearchItem *item;
+
+    for (iter = gw_tabs_get_searchitem_list (); iter != NULL; iter = iter->next)
     {
-      item = (GwSearchItem*) list->data;
+      item = (GwSearchItem*) iter->data;
       gw_ui_cancel_search_by_searchitem (item);
-      list = list->next;
     }
 }
 
@@ -2278,13 +2309,22 @@ void gw_ui_tab_cancel_all_searches ()
 //!
 gboolean gw_ui_cancel_search_by_tab_number (const int page_num)
 {
-    GtkBuilder *builder = gw_common_get_builder ();
+    //Declarations
+    GtkBuilder *builder;
+    GtkWidget *notebook;
+    GtkWidget *content;
+    gboolean result;
 
-    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
-    GtkWidget *content = gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), page_num);
+    //Initializations
+    builder = gw_common_get_builder ();
+    notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    content = gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), page_num);
+
+    //Sanity check
     if (content == NULL) return TRUE;
 
-    gboolean result = gw_ui_cancel_search_by_tab_content (content);
+    result = gw_ui_cancel_search_by_tab_content (content);
+
     return result;
 }
 
@@ -2294,11 +2334,18 @@ gboolean gw_ui_cancel_search_by_tab_number (const int page_num)
 //!
 gboolean gw_ui_cancel_search_for_current_tab ()
 {
-    GtkBuilder *builder = gw_common_get_builder ();
+    //Declarations
+    GtkBuilder *builder;
+    GtkWidget *notebook;
+    int page_num;
+    gboolean result;
 
-    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
-    int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
-    gboolean result = gw_ui_cancel_search_by_tab_number (page_num);
+    //Initializations
+    builder = gw_common_get_builder ();
+    notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+    result = gw_ui_cancel_search_by_tab_number (page_num);
+
     return result;
 }
 
@@ -2308,12 +2355,18 @@ gboolean gw_ui_cancel_search_for_current_tab ()
 //!
 gboolean gw_ui_cancel_search_by_target (GwTargetOutput TARGET)
 {
+    //Declarations
+    GwHistoryList* hl;
+    GwSearchItem *item;
+
     if (TARGET == GW_TARGET_KANJI)
     {
-      GwHistoryList* hl = gw_historylist_get_list(GW_HISTORYLIST_RESULTS);
-      GwSearchItem *item = hl->current;
+      hl = gw_historylist_get_list(GW_HISTORYLIST_RESULTS);
+      item = hl->current;
       return  gw_ui_cancel_search_by_searchitem (item);
     }
+
+    return FALSE;
 }
 
 
@@ -2327,7 +2380,12 @@ gboolean gw_ui_cancel_search_by_target (GwTargetOutput TARGET)
 //!
 gboolean gw_ui_has_selection_by_target (GwTargetOutput TARGET)
 {
-    GObject* tb = gw_common_get_gobject_by_target (TARGET);
+    //Declarations
+    GObject* tb;
+
+    //Initializations
+    tb = gw_common_get_gobject_by_target (TARGET);
+
     return (tb != NULL && gtk_text_buffer_get_has_selection (GTK_TEXT_BUFFER (tb)));
 }
 
@@ -2435,13 +2493,16 @@ static void _add_match_highlights (gint line, gint start_offset, gint end_offset
 //!
 static void _shift_stay_mark (GwSearchItem *item, char *name)
 {
+    //Declarations
     GObject *results_tb;
-    results_tb = G_OBJECT (item->target_tb);
-
     GtkTextMark *mark;
     GtkTextIter iter;
+
+    //Initializations
+    results_tb = G_OBJECT (item->target_tb);
     mark = gtk_text_buffer_get_mark (GTK_TEXT_BUFFER (results_tb), "content_insertion_mark");
     gtk_text_buffer_get_iter_at_mark (GTK_TEXT_BUFFER (results_tb), &iter, mark);
+
     if ((mark = gtk_text_buffer_get_mark (GTK_TEXT_BUFFER (results_tb), name)) == NULL)
       gtk_text_buffer_create_mark (GTK_TEXT_BUFFER (results_tb), name, &iter, TRUE);
     else
@@ -2458,12 +2519,13 @@ static void _shift_stay_mark (GwSearchItem *item, char *name)
 //!
 static void _shift_append_mark (GwSearchItem *item, char *stay_name, char *append_name)
 {
+    //Declarations
     GObject *results_tb;
-    results_tb = G_OBJECT (item->target_tb);
-
     GtkTextIter iter;
     GtkTextMark *stay_mark, *append_mark;
 
+    //Initializations
+    results_tb = G_OBJECT (item->target_tb);
     stay_mark = gtk_text_buffer_get_mark (GTK_TEXT_BUFFER (results_tb), stay_name);
     gtk_text_buffer_get_iter_at_mark (GTK_TEXT_BUFFER (results_tb), &iter, stay_mark);
 
@@ -2483,12 +2545,16 @@ static void _shift_append_mark (GwSearchItem *item, char *stay_name, char *appen
 //!
 static void _append_def_same_to_buffer (GwSearchItem* item)
 {
-    GwResultLine* resultline = item->resultline;
+    //Declarations
+    GwResultLine* resultline;
+    GtkTextBuffer *tb;
+    GtkTextMark *mark;
 
-    GtkTextBuffer *tb = GTK_TEXT_BUFFER (item->target_tb);
+    //Initializations
+    resultline = item->resultline;
+    tb = GTK_TEXT_BUFFER (item->target_tb);
 
     _shift_append_mark (item, "previous_result", "new_result");
-    GtkTextMark *mark;
     if ((mark = gtk_text_buffer_get_mark (tb, "previous_result")) != NULL)
     {
       GtkTextIter iter;

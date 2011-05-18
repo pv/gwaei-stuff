@@ -196,30 +196,5 @@ G_MODULE_EXPORT void gw_settings_custom_document_font_set_cb (GtkWidget *widget,
 }
 
 
-//!
-//! @brief Removes a dictionary
-//! 
-//! @param widget Unused GtkWidget pointer.
-//! @param data Unused gpointer
-//!
-G_MODULE_EXPORT void gw_settings_remove_dictionary_cb (GtkWidget *widget, gpointer data)
-{
-   do_remove_dictionary_action (NULL, NULL);
-
-
-   //Clear the search history it is broken since the dictionaries may be now missing
-   /*
-   gw_historylist_free ();
-   gw_historylist_initialize ();
-   gw_ui_update_history_popups ();
-   gw_tabs_set_searchitem (NULL);
-   for (iter = gw_tabs_get_searchitem_list(); iter != NULL; iter = iter->next)
-   {
-     gw_searchitem_free (iter->data);
-     iter->data = NULL;
-   }
-   */
-
-}
 
 

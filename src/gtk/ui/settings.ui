@@ -435,7 +435,7 @@
                                 <property name="can_focus">False</property>
                                 <property name="headers_clickable">False</property>
                                 <property name="show_expanders">False</property>
-                                <signal name="cursor-changed" handler="do_dictionary_cursor_changed_action" swapped="no"/>
+                                <signal name="cursor-changed" handler="gw_dictionarymanager_cursor_changed_cb" swapped="no"/>
                               </object>
                             </child>
                           </object>
@@ -479,8 +479,8 @@
                             <property name="receives_default">True</property>
                             <property name="use_action_appearance">False</property>
                             <property name="use_stock">True</property>
-                            <signal name="activate" handler="gw_settings_remove_dictionary_cb" swapped="no"/>
-                            <signal name="clicked" handler="gw_settings_remove_dictionary_cb" swapped="no"/>
+                            <signal name="activate" handler="gw_dictionarymanager_remove_cb" swapped="no"/>
+                            <signal name="clicked" handler="gw_dictionarymanager_remove_cb" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>

@@ -1688,18 +1688,23 @@ G_MODULE_EXPORT void gw_main_search_drag_data_recieved_cb (GtkWidget        *wid
 G_MODULE_EXPORT void gw_main_update_button_states_based_on_entry_text_cb (GtkWidget *widget,
                                                                           gpointer   data   )
 {
-    GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
-    int length = gtk_entry_get_text_length (GTK_ENTRY (search_entry));
+    //Declarations
+    GtkWidget *entry;
+    int length;
+
+    //Initializations
+    entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
+    length = gtk_entry_get_text_length (GTK_ENTRY (entry));
 
     //Show the clear icon when approprate
     if (length > 0)
-      gtk_entry_set_icon_from_stock (GTK_ENTRY (search_entry), GTK_ENTRY_ICON_SECONDARY, GTK_STOCK_CLEAR);
+      gtk_entry_set_icon_from_stock (GTK_ENTRY (entry), GTK_ENTRY_ICON_SECONDARY, GTK_STOCK_CLEAR);
     else
-      gtk_entry_set_icon_from_stock (GTK_ENTRY (search_entry), GTK_ENTRY_ICON_SECONDARY, NULL);
+      gtk_entry_set_icon_from_stock (GTK_ENTRY (entry), GTK_ENTRY_ICON_SECONDARY, NULL);
 
     //Return widget colors back to normal
-    gtk_widget_override_background_color (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
-    gtk_widget_override_color (GTK_WIDGET (search_entry), GTK_STATE_NORMAL, NULL);
+    gtk_widget_override_background_color (GTK_WIDGET (entry), GTK_STATE_NORMAL, NULL);
+    gtk_widget_override_color (GTK_WIDGET (entry), GTK_STATE_NORMAL, NULL);
 }
 
 

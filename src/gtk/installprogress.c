@@ -103,6 +103,8 @@ gpointer _installprogress_install_thread (gpointer data)
       builder = gw_common_get_builder ();
       dialog_installprogress = GTK_WIDGET (gtk_builder_get_object (builder, "install_progress_dialog"));
       gtk_widget_hide (GTK_WIDGET (dialog_installprogress));
+      gw_dictinfolist_initialize ();
+      gw_dictionarymanager_update_items ();
     gdk_threads_leave ();
 }
 
