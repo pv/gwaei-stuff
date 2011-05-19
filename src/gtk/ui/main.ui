@@ -143,6 +143,8 @@
     <property name="icon_name">word-boundary</property>
     <signal name="activate" handler="gw_main_insert_word_edge_cb" swapped="no"/>
   </object>
+  <object class="GtkAccelGroup" id="main_accelgroup"/>
+  <object class="GtkActionGroup" id="main_actiongroup"/>
   <object class="GtkToggleAction" id="view_toggle_toolbar_action">
     <property name="label" translatable="yes">Show _Toolbar</property>
     <signal name="toggled" handler="gw_main_toolbar_toggle_cb" swapped="no"/>
@@ -175,8 +177,6 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
   </object>
-  <object class="GtkAccelGroup" id="main_accelgroup"/>
-  <object class="GtkActionGroup" id="main_actiongroup"/>
   <object class="GtkWindow" id="main_window">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">gWaei Japanese-English Dictionary</property>
@@ -438,8 +438,8 @@
                         <property name="related_action">view_zoom_in_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="KP_Add" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                         <accelerator key="plus" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                        <accelerator key="KP_Add" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -449,8 +449,8 @@
                         <property name="related_action">view_zoom_out_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="KP_Subtract" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                         <accelerator key="minus" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                        <accelerator key="KP_Subtract" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -460,8 +460,8 @@
                         <property name="related_action">view_zoom_100_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="KP_0" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                         <accelerator key="0" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                        <accelerator key="KP_0" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -903,27 +903,6 @@
                 <property name="can_focus">False</property>
                 <property name="related_action">view_zoom_out_action</property>
                 <property name="label" translatable="yes">Shrink</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="homogeneous">True</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkSeparatorToolItem" id="separatortoolitem5">
-                <property name="can_focus">False</property>
-                <property name="no_show_all">True</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkToolButton" id="help_toolbutton">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="no_show_all">True</property>
-                <property name="use_action_appearance">False</property>
               </object>
               <packing>
                 <property name="expand">False</property>
