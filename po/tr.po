@@ -29,7 +29,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 0.15.1\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2011-05-18 19:48-0400\n"
+"POT-Creation-Date: 2011-05-19 01:31-0400\n"
 "PO-Revision-Date: 2010-10-25 14:50+0200\n"
 "Last-Translator: Yusuf BARAN <info@barancolor.net>\n"
 "Language-Team: none\n"
@@ -354,7 +354,7 @@ msgstr "menüaracı2"
 msgid " _strokes"
 msgstr " _vuruş"
 
-#: ../src/gtk/ui/radicals.ui.h:2
+#: ../src/gtk/ui/radicals.ui.h:2 ../src/gtk/ui/kanjipad.ui.h:1
 msgid "C_lear"
 msgstr "T_emizle"
 
@@ -466,6 +466,14 @@ msgstr "gWaei Ayarları"
 #: ../src/gtk/ui/settings.ui.h:25
 msgid "gWaei requires at least one dictionary to be installed."
 msgstr "gWaei kullanımı en az bir sözlüğün kurulu olmasını gerektirir"
+
+#: ../src/gtk/ui/kanjipad.ui.h:2
+msgid "_Annotate Strokes"
+msgstr "_Dipnot"
+
+#: ../src/gtk/ui/kanjipad.ui.h:3
+msgid "gWaei Kanjipad"
+msgstr "gWaei Kanji tahtası"
 
 #: ../src/gtk/dictionaryinstall.c:70
 #, c-format
@@ -755,15 +763,15 @@ msgstr "Seçileni Farklı Kaydet"
 msgid "_Print Selected"
 msgstr "Seçileni Yazdır"
 
-#: ../src/gtk/main-callbacks.c:538
+#: ../src/gtk/main-callbacks.c:505
 msgid "Save As"
 msgstr "Farklı Kaydet"
 
-#: ../src/gtk/main-callbacks.c:551
+#: ../src/gtk/main-callbacks.c:518
 msgid "vocabulary.txt"
 msgstr "sozluk.txt"
 
-#: ../src/gtk/main-callbacks.c:1121
+#: ../src/gtk/main-callbacks.c:1088
 #, fuzzy
 msgid ""
 "Program for Japanese translation and reference. The\n"
@@ -776,24 +784,24 @@ msgstr ""
 "GJITEN için ilham kaynağı olanlara özel olarak teşekkürler."
 
 #. TRANSLATORS: You can add your own name to the translation of this field, it will be displayed in the "about" box when gwaei is run in your language
-#: ../src/gtk/main-callbacks.c:1125
+#: ../src/gtk/main-callbacks.c:1092
 msgid "translator-credits"
 msgstr "çeviri"
 
 #. TRANSLATORS: The first variable is the expression to look for, the second is the dictionary full name
-#: ../src/gtk/main-callbacks.c:1712
+#: ../src/gtk/main-callbacks.c:1679
 #, c-format
 msgid "Search for \"%s\" in the %s"
 msgstr "\"%s\" için %s içinde ara"
 
 #. TRANSLATORS: The variable is the expression to look for
-#: ../src/gtk/main-callbacks.c:1714
+#: ../src/gtk/main-callbacks.c:1681
 #, c-format
 msgid "Search for \"%s\" in a Different Dictionary"
 msgstr "\"%s\" için Farklı Dizinde Ara"
 
 #. TRANSLATORS: The variable is the expression to look for
-#: ../src/gtk/main-callbacks.c:1716
+#: ../src/gtk/main-callbacks.c:1683
 #, c-format
 msgid "Cross-reference \"%s\" Online"
 msgstr "Çapraz referans \"%s\" Çevrimiçi"
@@ -898,9 +906,6 @@ msgstr ""
 
 #~ msgid "Dictionary"
 #~ msgstr "Sözlük"
-
-#~ msgid "_Annotate Strokes"
-#~ msgstr "_Dipnot"
 
 #~ msgid "Edit the current vocabulary list"
 #~ msgstr "Geçerli kelime listesini düzenle"
@@ -1146,9 +1151,6 @@ msgstr ""
 
 #~ msgid "Results: "
 #~ msgstr "Sounçlar:  "
-
-#~ msgid "gWaei Kanjipad"
-#~ msgstr "gWaei Kanji tahtası"
 
 #~ msgid "Kanji Lookup:"
 #~ msgstr "Kanji Görüntüle:"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2011-05-18 19:48-0400\n"
+"POT-Creation-Date: 2011-05-19 01:31-0400\n"
 "PO-Revision-Date: 2008-11-30 02:35+0500\n"
 "Last-Translator: Zachary Dovel pizzach@gmail.com\n"
 "Language-Team: Not Applicable\n"
@@ -317,7 +317,7 @@ msgstr ""
 msgid " _strokes"
 msgstr "つに限定する(_S)"
 
-#: ../src/gtk/ui/radicals.ui.h:2
+#: ../src/gtk/ui/radicals.ui.h:2 ../src/gtk/ui/kanjipad.ui.h:1
 msgid "C_lear"
 msgstr "クリア(_L)"
 
@@ -428,6 +428,14 @@ msgstr "gWaeiの設定"
 #: ../src/gtk/ui/settings.ui.h:25
 msgid "gWaei requires at least one dictionary to be installed."
 msgstr "gWaeiはインストールせれている辞書が必要です。"
+
+#: ../src/gtk/ui/kanjipad.ui.h:2
+msgid "_Annotate Strokes"
+msgstr "画数付き(_A)"
+
+#: ../src/gtk/ui/kanjipad.ui.h:3
+msgid "gWaei Kanjipad"
+msgstr "gWaei 漢字パッド"
 
 #: ../src/gtk/dictionaryinstall.c:70
 #, c-format
@@ -678,15 +686,15 @@ msgstr "選択のを別名で保存"
 msgid "_Print Selected"
 msgstr "選択のを印刷"
 
-#: ../src/gtk/main-callbacks.c:538
+#: ../src/gtk/main-callbacks.c:505
 msgid "Save As"
 msgstr "別名で保存"
 
-#: ../src/gtk/main-callbacks.c:551
+#: ../src/gtk/main-callbacks.c:518
 msgid "vocabulary.txt"
 msgstr "語彙.txt"
 
-#: ../src/gtk/main-callbacks.c:1121
+#: ../src/gtk/main-callbacks.c:1088
 msgid ""
 "Program for Japanese translation and reference. The\n"
 "dictionaries are supplied by Jim Breen's WWWJDIC.\n"
@@ -697,24 +705,24 @@ msgstr ""
 "WWWJDICから取られています."
 
 #. TRANSLATORS: You can add your own name to the translation of this field, it will be displayed in the "about" box when gwaei is run in your language
-#: ../src/gtk/main-callbacks.c:1125
+#: ../src/gtk/main-callbacks.c:1092
 msgid "translator-credits"
 msgstr "Zachary Dovel"
 
 #. TRANSLATORS: The first variable is the expression to look for, the second is the dictionary full name
-#: ../src/gtk/main-callbacks.c:1712
+#: ../src/gtk/main-callbacks.c:1679
 #, c-format
 msgid "Search for \"%s\" in the %s"
 msgstr "「%s」を%sで検索する"
 
 #. TRANSLATORS: The variable is the expression to look for
-#: ../src/gtk/main-callbacks.c:1714
+#: ../src/gtk/main-callbacks.c:1681
 #, c-format
 msgid "Search for \"%s\" in a Different Dictionary"
 msgstr "「%s」を別の辞書で検索する"
 
 #. TRANSLATORS: The variable is the expression to look for
-#: ../src/gtk/main-callbacks.c:1716
+#: ../src/gtk/main-callbacks.c:1683
 #, c-format
 msgid "Cross-reference \"%s\" Online"
 msgstr "「%s」をオンラインで参照する"
@@ -813,9 +821,6 @@ msgstr "英語か日本語の単語を入れて簡単に翻訳を調べます"
 
 #~ msgid "Dictionary"
 #~ msgstr "辞書"
-
-#~ msgid "_Annotate Strokes"
-#~ msgstr "画数付き(_A)"
 
 #~ msgid "Edit the current vocabulary list"
 #~ msgstr "現在語彙リストを編集する"
@@ -1012,9 +1017,6 @@ msgstr "英語か日本語の単語を入れて簡単に翻訳を調べます"
 
 #~ msgid "Results: "
 #~ msgstr "候補: "
-
-#~ msgid "gWaei Kanjipad"
-#~ msgstr "gWaei 漢字パッド"
 
 #~ msgid "Kanji Lookup:"
 #~ msgstr "漢字の参照:"

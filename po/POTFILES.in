@@ -15,6 +15,7 @@ src/backend/utilities.c
 [type: gettext/glade] src/gtk/ui/main.ui
 [type: gettext/glade] src/gtk/ui/radicals.ui
 [type: gettext/glade] src/gtk/ui/settings.ui
+[type: gettext/glade] src/gtk/ui/kanjipad.ui
 
 src/gtk/common.c
 src/gtk/dictionaryinstall.c

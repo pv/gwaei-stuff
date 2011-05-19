@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2011-05-18 19:48-0400\n"
+"POT-Creation-Date: 2011-05-19 01:31-0400\n"
 "PO-Revision-Date: 2010-04-08 18:40+0100\n"
 "Last-Translator: Fabrizio Sabatini <jecnua@gmail.com>\n"
 "Language-Team: Not Applicable\n"
@@ -331,7 +331,7 @@ msgstr ""
 msgid " _strokes"
 msgstr " _tratti"
 
-#: ../src/gtk/ui/radicals.ui.h:2
+#: ../src/gtk/ui/radicals.ui.h:2 ../src/gtk/ui/kanjipad.ui.h:1
 msgid "C_lear"
 msgstr "Pu_lisci"
 
@@ -443,6 +443,14 @@ msgstr "Opzioni gWaei"
 #: ../src/gtk/ui/settings.ui.h:25
 msgid "gWaei requires at least one dictionary to be installed."
 msgstr "gWaei necessita di almeno un dizionario installato."
+
+#: ../src/gtk/ui/kanjipad.ui.h:2
+msgid "_Annotate Strokes"
+msgstr "Tratti _Annotati"
+
+#: ../src/gtk/ui/kanjipad.ui.h:3
+msgid "gWaei Kanjipad"
+msgstr "gWaei Kanjipad"
 
 #: ../src/gtk/dictionaryinstall.c:70
 #, c-format
@@ -748,15 +756,15 @@ msgstr "S_alva selezione come"
 msgid "_Print Selected"
 msgstr "Stampa Selezione"
 
-#: ../src/gtk/main-callbacks.c:538
+#: ../src/gtk/main-callbacks.c:505
 msgid "Save As"
 msgstr "Salva con nome..."
 
-#: ../src/gtk/main-callbacks.c:551
+#: ../src/gtk/main-callbacks.c:518
 msgid "vocabulary.txt"
 msgstr "vocabolario.txt"
 
-#: ../src/gtk/main-callbacks.c:1121
+#: ../src/gtk/main-callbacks.c:1088
 #, fuzzy
 msgid ""
 "Program for Japanese translation and reference. The\n"
@@ -768,24 +776,24 @@ msgstr ""
 "I dizionari sono forniti da Jim Breen's WWWJDIC."
 
 #. TRANSLATORS: You can add your own name to the translation of this field, it will be displayed in the "about" box when gwaei is run in your language
-#: ../src/gtk/main-callbacks.c:1125
+#: ../src/gtk/main-callbacks.c:1092
 msgid "translator-credits"
 msgstr "Fabrizio Sabatini"
 
 #. TRANSLATORS: The first variable is the expression to look for, the second is the dictionary full name
-#: ../src/gtk/main-callbacks.c:1712
+#: ../src/gtk/main-callbacks.c:1679
 #, fuzzy, c-format
 msgid "Search for \"%s\" in the %s"
 msgstr "Sto cercando \"%s\" in %s...\n"
 
 #. TRANSLATORS: The variable is the expression to look for
-#: ../src/gtk/main-callbacks.c:1714
+#: ../src/gtk/main-callbacks.c:1681
 #, fuzzy, c-format
 msgid "Search for \"%s\" in a Different Dictionary"
 msgstr "Cerca usando il dizionario scelto"
 
 #. TRANSLATORS: The variable is the expression to look for
-#: ../src/gtk/main-callbacks.c:1716
+#: ../src/gtk/main-callbacks.c:1683
 #, c-format
 msgid "Cross-reference \"%s\" Online"
 msgstr ""
@@ -886,9 +894,6 @@ msgstr ""
 
 #~ msgid "Dictionary"
 #~ msgstr "Dizionario"
-
-#~ msgid "_Annotate Strokes"
-#~ msgstr "Tratti _Annotati"
 
 #~ msgid "Edit the current vocabulary list"
 #~ msgstr "Modifica la lista dei vocabolari correnti"
@@ -1126,9 +1131,6 @@ msgstr ""
 
 #~ msgid "Results: "
 #~ msgstr "Risultati: "
-
-#~ msgid "gWaei Kanjipad"
-#~ msgstr "gWaei Kanjipad"
 
 #~ msgid "Kanji Lookup:"
 #~ msgstr "Kanji Lookup:"
