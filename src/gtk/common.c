@@ -307,19 +307,23 @@ void gw_common_show_window (char *id)
 
     GtkBuilder *builder = gw_common_get_builder ();
     GtkWidget *window = GTK_WIDGET (gtk_builder_get_object (builder, id));
+    GtkWidget *main_window;
     if (gtk_widget_get_visible (window) == TRUE) return;
 
-    if (strcmp(id, "main_window") == 0 || strcmp (id, "radicals_window") == 0)
+    if (strcmp(id, "main_window") == 0 || strcmp (id, "radicals_window") == 0 || strcmp (id, "kanjipad_window") == 0)
     {
-      if (strcmp (id, "radicals_window") == 0)
+      if (strcmp (id, "radicals_window") == 0 || strcmp (id, "kanjipad_window") == 0)
+      {
+        main_window = GTK_WIDGET (gtk_builder_get_object(builder, "main_window"));
+        gtk_window_set_transient_for (GTK_WINDOW (window), GTK_WINDOW (main_window));
         gtk_window_set_type_hint (GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_UTILITY);
+      }
       _initialize_window_attributes (id);
       gtk_widget_show (window);
       _initialize_window_attributes (id);
     }
     else if (strcmp (id, "settings_window") == 0)
     {
-      GtkWidget *main_window;
       main_window = GTK_WIDGET (gtk_builder_get_object(builder, "main_window"));
       gtk_window_set_transient_for (GTK_WINDOW (window), GTK_WINDOW (main_window));
       gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER_ON_PARENT);

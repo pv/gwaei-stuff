@@ -397,7 +397,7 @@ G_MODULE_EXPORT void gw_tabs_remove_cb (GtkWidget *widget, gpointer data)
     page_num = gtk_notebook_page_num (GTK_NOTEBOOK (notebook), GTK_WIDGET (data));
 
     //Sanity check
-    if (pages < 2) exit (EXIT_SUCCESS);
+    if (pages < 2) gtk_main_quit ();
 
     gw_main_cancel_search_by_tab_number (page_num);
     gtk_notebook_remove_page (GTK_NOTEBOOK (notebook), page_num);
@@ -450,7 +450,7 @@ G_MODULE_EXPORT void gw_tabs_remove_current_cb (GtkWidget *widget, gpointer data
     page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
     iter = g_list_nth (_tab_searchitems, page_num);
 
-    if (pages < 2) exit (EXIT_SUCCESS);
+    if (pages < 2) gtk_main_quit ();
 
     gw_main_cancel_search_by_tab_number (page_num);
 

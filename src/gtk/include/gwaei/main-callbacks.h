@@ -16,7 +16,6 @@ void gw_main_paste_cb (GtkWidget *widget, gpointer data);
 void gw_main_cut_cb (GtkWidget *widget, gpointer data);
 void gw_main_copy_cb (GtkWidget *widget, gpointer data);
 void gw_main_about_cb (GtkWidget *widget, gpointer data);
-void gw_main_settings_cb (GtkWidget *widget, gpointer data);
 void gw_main_destroy_cb (GObject*, gpointer);
 void gw_main_search_cb (GtkWidget *widget, gpointer data);
 void gw_main_search_from_history_cb (GtkWidget*, gpointer);

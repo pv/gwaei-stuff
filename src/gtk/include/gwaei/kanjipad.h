@@ -1,5 +1,5 @@
-#ifndef GW_KANJIPAD_INCLUDED
-#define GW_KANJIPAD_INCLUDED
+#ifndef GW_GTK_KANJIPAD_INTERFACE_INCLUDED
+#define GW_GTK_KANJIPAD_INTERFACE_INCLUDED
 
 //Defines
 #define MAX_GUESSES 10
@@ -13,8 +13,8 @@ struct _GwKanjipad {
   GList *strokes;
 
   //Private
-  cairo_surface_t *pixmap;
-  cairo_surface_t *kpixmap;
+  cairo_surface_t *surface;
+  cairo_surface_t *ksurface;
   GList *curstroke;
   int instroke;
 

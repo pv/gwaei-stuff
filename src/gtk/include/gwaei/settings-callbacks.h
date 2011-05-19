@@ -2,6 +2,7 @@
 #define GW_GTK_SETTINGS_CALLBACKS_INCLUDED
 
 
+void gw_settings_show_cb (GtkWidget *widget, gpointer data);
 void gw_settings_spellcheck_toggled_cb (GtkWidget*, gpointer);
 void gw_settings_hira_kata_conv_toggled_cb (GtkWidget*, gpointer);
 void gw_settings_kata_hira_conv_toggled_cb (GtkWidget*, gpointer);

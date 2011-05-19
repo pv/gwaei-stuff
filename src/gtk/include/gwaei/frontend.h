@@ -27,6 +27,12 @@
 
 #include <gwaei/spellcheck.h>
 
+#include <gwaei/kanjipad.h>
+#include <gwaei/kanjipad-callbacks.h>
+#include <gwaei/kanjipad-candidatearea.h>
+#include <gwaei/kanjipad-drawingarea.h>
+
+
 #include <gwaei/output-callbacks.h>
 
 void gw_frontend_initialize (int*, char**);

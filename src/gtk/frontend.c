@@ -96,6 +96,7 @@ void gw_frontend_initialize (int* argc, char* argv[])
     gw_dictionarymanager_initialize ();
     gw_dictionaryinstall_initialize ();
     gw_installprogress_initialize ();
+    gw_kanjipad_initialize ();
 }
 
 
@@ -117,7 +118,7 @@ void gw_frontend_start_gtk (int argc, char* argv[])
 
     //Show the settings dialog if no dictionaries are installed
     if (gw_dictinfolist_get_total () == 0) {
-      gw_main_settings_cb (NULL, GINT_TO_POINTER (1));
+      gw_settings_show_cb (NULL, GINT_TO_POINTER (1));
     }
 
     //Set the initial focus to the search bar
@@ -153,6 +154,7 @@ void gw_frontend_start_gtk (int argc, char* argv[])
 
 void gw_frontend_free ()
 {
+    gw_kanjipad_free ();
     gw_dictionaryinstall_free ();
     gw_dictionarymanager_free ();
     #ifdef WITH_LIBUNIQUE

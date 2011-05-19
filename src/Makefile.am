@@ -3,6 +3,6 @@
 SUBDIRS = backend console schemas
 
 if WITH_GNOME
-SUBDIRS += gtk
+SUBDIRS += gtk kpengine
 endif
 
