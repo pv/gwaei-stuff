@@ -42,6 +42,9 @@ int main (int argc, char *argv[])
     int resolution;
     GError *error;
 
+    //Initializations
+    error = NULL;
+
 #ifdef WITH_NCURSES
     GOptionEntry entries[] = 
     {
@@ -53,13 +56,12 @@ int main (int argc, char *argv[])
     context = g_option_context_new ("ncurses");
     g_option_context_add_main_entries (context, entries, PACKAGE);
     g_option_context_set_help_enabled (context, FALSE);
-    g_option_context_parse (context, &argc, &argv, &error);
+    g_option_context_parse (context, &argc, &argv, NULL);
     g_option_context_free (context);
     context = NULL;
 #endif
 
     //Initializations
-    error = NULL;
     gw_backend_initialize (&argc, argv);
     gw_frontend_initialize (&argc, argv);
 
