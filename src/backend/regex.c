@@ -97,19 +97,19 @@ void gw_regex_initialize ()
       switch (i)
       {
         case GW_RE_NUMBER:
-          gw_re[i] = g_regex_new ("\\b[a-zA-Z][0-9]{1,4}\\b",  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
+          gw_re[i] = g_regex_new ("[a-zA-Z][0-9]{1,4}",  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
           break;
         case GW_RE_STROKES:
-          gw_re[i] = g_regex_new ("\\bS[0-9]{1,2}\\b",  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
+          gw_re[i] = g_regex_new ("S[0-9]{1,2}",  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
           break;
         case GW_RE_GRADE:
-          gw_re[i] = g_regex_new ("\\bG[0-9]{1,2}\\b",  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
+          gw_re[i] = g_regex_new ("G[0-9]{1,2}",  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
           break;
         case GW_RE_FREQUENCY:
-          gw_re[i] = g_regex_new ("\\bF[0-9]{1,4}\\b",  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
+          gw_re[i] = g_regex_new ("F[0-9]{1,4}",  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
           break;
         case GW_RE_JLPT:
-          gw_re[i] = g_regex_new ("\\bJ[0-4]{1,1}\\b",  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
+          gw_re[i] = g_regex_new ("J[0-4]{1,1}",  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, &error);
           break;
         default:
           g_assert_not_reached();

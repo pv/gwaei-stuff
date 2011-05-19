@@ -390,6 +390,8 @@ static gboolean _kanji_existance_comparison (GwQueryLine *ql, GwResultLine *rl, 
     gboolean furigana_check_passed;
     gboolean kanji_check_passed;
     gboolean radical_check_passed;
+    int kanji_index;
+    int radical_index;
 
     GRegex ***iter;
     GRegex *re;
@@ -405,6 +407,8 @@ static gboolean _kanji_existance_comparison (GwQueryLine *ql, GwResultLine *rl, 
     furigana_check_passed = TRUE;
     kanji_check_passed = TRUE;
     radical_check_passed = TRUE;
+    kanji_index = -1;
+    radical_index = -1;
 
     //Calculate the strokes check
     if (rl->strokes != NULL)
@@ -414,7 +418,6 @@ static gboolean _kanji_existance_comparison (GwQueryLine *ql, GwResultLine *rl, 
         re = (*iter)[RELEVANCE];
         if (re != NULL && g_regex_match (re, rl->strokes, 0, NULL) == FALSE) 
           strokes_check_passed = FALSE;
-        printf("pattern: %s resultline: %s\n", g_regex_get_pattern (re), rl->strokes);
       }
     }
 
@@ -496,27 +499,32 @@ static gboolean _kanji_existance_comparison (GwQueryLine *ql, GwResultLine *rl, 
     //Calculate the kanji check
     if (*(ql->re_kanji) != NULL && rl->kanji != NULL)
     {
+      kanji_index = 0;
       for (iter = ql->re_kanji; iter != NULL && *iter != NULL; iter++)
       {
         re = (*iter)[RELEVANCE];
         if (re != NULL && g_regex_match (re, rl->kanji, 0, NULL) == FALSE) 
         {
           kanji_check_passed = FALSE;
+          kanji_index = -1;
         }
+        if (kanji_check_passed == TRUE) kanji_index++;
       }
     }
 
     //Calculate the radical check
     if (rl->radicals != NULL)
     {
-      if (*(ql->re_kanji) != NULL) radical_check_passed = FALSE;
+      radical_index = 0;
       for (iter = ql->re_kanji; iter != NULL && *iter != NULL; iter++)
       {
         re = (*iter)[RELEVANCE];
-        if (re != NULL && g_regex_match (re, rl->radicals, 0, NULL) == TRUE) 
+        if (re != NULL && g_regex_match (re, rl->radicals, 0, NULL) == FALSE) 
         {
-          radical_check_passed = TRUE;
+          if (radical_index != kanji_index) //Make sure the radical wasn't found as a kanji before setting false
+             radical_check_passed = FALSE;
         }
+        radical_index++;
       }
     }
 

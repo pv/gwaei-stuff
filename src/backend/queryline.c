@@ -127,6 +127,7 @@ static char** _initialize_queryline_pointers (GwQueryLine *ql, const char *strin
     //Initializations
     ql->string = gw_util_prepare_query (string, FALSE);
     atoms = g_strsplit (ql->string, "&", GW_QUERYLINE_MAX_ATOMS);
+
     length = g_strv_length (atoms);
 
     //Allocations
@@ -313,7 +314,8 @@ gboolean gw_queryline_parse_edict_string (GwQueryLine *ql, const char* string, G
    for (iter = atoms; *iter != NULL && re < (ql->re_roma + length); iter++)
    {
      atom = *iter;
-     if (gw_util_is_romaji_str (atom))
+     g_strstrip(atom);
+     if (strlen(atom) > 0 && gw_util_is_romaji_str (atom) && g_regex_match (gw_re[GW_RE_NUMBER], atom, 0, NULL) == FALSE)
      {
        expression = g_strdup (atom);
 
@@ -550,7 +552,6 @@ gboolean gw_queryline_parse_kanjidict_string (GwQueryLine *ql, const char* strin
 
     g_strfreev (atoms);
 
-
     return all_regex_built;
 }
 
@@ -672,7 +673,8 @@ gboolean gw_queryline_parse_exampledict_string (GwQueryLine *ql, const char* str
     for (iter = atoms; *iter != NULL && re < (ql->re_roma + length); iter++)
     {
       atom = *iter;
-      if (gw_util_is_romaji_str (atom))
+      g_strstrip(atom);
+      if (strlen(atom) > 0 && gw_util_is_romaji_str (atom) && g_regex_match (gw_re[GW_RE_NUMBER], atom, 0, NULL) == FALSE)
       {
         expression = g_strdup (atom);
  

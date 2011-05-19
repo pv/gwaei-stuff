@@ -345,7 +345,10 @@ gboolean gw_util_is_romaji_str (const char *input)
     {
       character = g_utf8_get_char (ptr);
       script = g_unichar_get_script (character);
-      if (script != G_UNICODE_SCRIPT_LATIN && character != g_utf8_get_char(".")) is_consistant = FALSE;
+      if (script != G_UNICODE_SCRIPT_LATIN && 
+          script != G_UNICODE_SCRIPT_COMMON &&
+          character != g_utf8_get_char("."))
+        is_consistant = FALSE;
     }
 
     return is_consistant;
@@ -1145,6 +1148,7 @@ char** gw_util_get_romaji_atoms_from_string (const char *string)
     char **string_array;
     gboolean new_atom_start;
     int offset;
+    gboolean first_romaji_found;
 
     //Initializations;
     delimitor = "&";
@@ -1152,6 +1156,7 @@ char** gw_util_get_romaji_atoms_from_string (const char *string)
     string_ptr = string;
     buffer_ptr = buffer;
     new_atom_start = FALSE;
+    first_romaji_found = FALSE;
 
     //Create a string with only furigana atoms delimited by the delimitor
     while (*string_ptr != '\0')
@@ -1165,13 +1170,14 @@ char** gw_util_get_romaji_atoms_from_string (const char *string)
       }
       else if (script == G_UNICODE_SCRIPT_LATIN || script == G_UNICODE_SCRIPT_COMMON)
       {
-        if (new_atom_start && buffer_ptr != buffer)
+        if (new_atom_start && buffer_ptr != buffer && first_romaji_found == FALSE)
         {
           new_atom_start = FALSE;
           strcpy(buffer_ptr, delimitor);
           buffer_ptr += strlen(delimitor);
         }
 
+        first_romaji_found = TRUE;
         offset = g_unichar_to_utf8 (character, buffer_ptr);
         buffer_ptr += offset;
         *buffer_ptr = '\0';
