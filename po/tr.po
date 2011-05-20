@@ -29,7 +29,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 0.15.1\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2011-05-19 02:16-0400\n"
+"POT-Creation-Date: 2011-05-20 06:50-0400\n"
 "PO-Revision-Date: 2010-10-25 14:50+0200\n"
 "Last-Translator: Yusuf BARAN <info@barancolor.net>\n"
 "Language-Team: none\n"
@@ -841,49 +841,85 @@ msgstr ""
 msgid "_Use the System Document Font (%s)"
 msgstr "_Sistem Belge Yazıtipini Kullan (%s)"
 
+#: ../src/gtk/output-callbacks.c:289 ../src/gtk/output-callbacks.c:388
+msgid "Pop"
+msgstr ""
+
+#: ../src/gtk/output-callbacks.c:456 ../src/gtk/output-callbacks.c:559
+msgid "Radicals:"
+msgstr "Radikaller:"
+
+#: ../src/gtk/output-callbacks.c:473 ../src/gtk/output-callbacks.c:569
+msgid "Readings:"
+msgstr "Okunuş:"
+
+#: ../src/gtk/output-callbacks.c:484 ../src/gtk/output-callbacks.c:579
+msgid "Name:"
+msgstr "İsim:"
+
+#: ../src/gtk/output-callbacks.c:495 ../src/gtk/output-callbacks.c:588
+msgid "Radical Name:"
+msgstr "Radikal İsmi:"
+
+#: ../src/gtk/output-callbacks.c:510 ../src/gtk/output-callbacks.c:597
+msgid "Stroke:"
+msgstr "Hat:"
+
+#: ../src/gtk/output-callbacks.c:517 ../src/gtk/output-callbacks.c:604
+msgid "Freq:"
+msgstr "Frek:"
+
+#: ../src/gtk/output-callbacks.c:524 ../src/gtk/output-callbacks.c:611
+msgid "Grade:"
+msgstr "Kademe:"
+
+#: ../src/gtk/output-callbacks.c:530 ../src/gtk/output-callbacks.c:618
+msgid "JLPT:"
+msgstr "JLPT:"
+
+#: ../src/gtk/output-callbacks.c:539 ../src/gtk/output-callbacks.c:627
+msgid "Meanings:"
+msgstr "Anlamlar:"
+
+#. TRANSLATORS: The "E" stands for "English"
+#: ../src/gtk/output-callbacks.c:688
+msgid "E:\t"
+msgstr ""
+
+#. TRANSLATORS: The "J" stands for "Japanese"
+#: ../src/gtk/output-callbacks.c:699
+msgid ""
+"\n"
+"J:\t"
+msgstr ""
+
+#. TRANSLATORS: The "D" stands for "Detail"
+#: ../src/gtk/output-callbacks.c:710
+msgid ""
+"\n"
+"D:\t"
+msgstr ""
+
+#: ../src/gtk/output-callbacks.c:765
+#, c-format
+msgid "Other Result %d"
+msgid_plural "Other Results %d"
+msgstr[0] "Diğer Sonuç %d"
+msgstr[1] "Diğer Sonuçlar %d"
+
+#: ../src/gtk/output-callbacks.c:780
+#, c-format
+msgid "Main Result %d"
+msgid_plural "Main Results %d"
+msgstr[0] "Genel Sonuç %d"
+msgstr[1] "Genel Sonuçlar %d"
+
 #: ../src/gtk/desktop/gwaei.desktop.in.h:1
 msgid "Enter a Japanese or English word to easily get translations."
 msgstr ""
 
 #~ msgid "Input your query here"
 #~ msgstr "Sorgunuzu buraya girin"
-
-#~ msgid "Radicals:"
-#~ msgstr "Radikaller:"
-
-#~ msgid "Readings:"
-#~ msgstr "Okunuş:"
-
-#~ msgid "Name:"
-#~ msgstr "İsim:"
-
-#~ msgid "Radical Name:"
-#~ msgstr "Radikal İsmi:"
-
-#~ msgid "Stroke:"
-#~ msgstr "Hat:"
-
-#~ msgid "Freq:"
-#~ msgstr "Frek:"
-
-#~ msgid "Grade:"
-#~ msgstr "Kademe:"
-
-#~ msgid "JLPT:"
-#~ msgstr "JLPT:"
-
-#~ msgid "Meanings:"
-#~ msgstr "Anlamlar:"
-
-#~ msgid "Other Result %d"
-#~ msgid_plural "Other Results %d"
-#~ msgstr[0] "Diğer Sonuç %d"
-#~ msgstr[1] "Diğer Sonuçlar %d"
-
-#~ msgid "Main Result %d"
-#~ msgid_plural "Main Results %d"
-#~ msgstr[0] "Genel Sonuç %d"
-#~ msgstr[1] "Genel Sonuçlar %d"
 
 #, fuzzy
 #~ msgid "Install Dictionaries"

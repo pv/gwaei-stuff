@@ -33,5 +33,6 @@ src/gtk/radsearchtool-callbacks.c
 src/gtk/settings.c
 src/gtk/settings-callbacks.c
 src/gtk/settings-listeners.c
+src/gtk/output-callbacks.c
 
 src/gtk/desktop/gwaei.desktop.in
