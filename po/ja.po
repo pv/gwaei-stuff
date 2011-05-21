@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2011-05-20 06:50-0400\n"
+"POT-Creation-Date: 2011-05-20 22:23-0400\n"
 "PO-Revision-Date: 2008-11-30 02:35+0500\n"
 "Last-Translator: Zachary Dovel pizzach@gmail.com\n"
 "Language-Team: Not Applicable\n"
@@ -455,7 +455,7 @@ msgstr ""
 #. Forth row
 #: ../src/gtk/dictionaryinstall.c:101
 msgid "Engine: "
-msgstr ""
+msgstr "エンジン: "
 
 #. Fifth row
 #: ../src/gtk/dictionaryinstall.c:119
@@ -488,7 +488,7 @@ msgstr "名前"
 
 #: ../src/gtk/dictionarymanager.c:88
 msgid "Engine"
-msgstr ""
+msgstr "エンジン"
 
 #: ../src/gtk/dictionarymanager.c:93
 msgid "Shortcut"
