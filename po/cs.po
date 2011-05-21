@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 1.4.0\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2011-05-20 22:23-0400\n"
+"POT-Creation-Date: 2011-05-21 13:23-0400\n"
 "PO-Revision-Date: 2004-01-01 20:41+0100\n"
 "Last-Translator: Pavel Fric <pavelfric@seznam.cz>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
@@ -68,9 +68,14 @@ msgstr "Slovník příkladů"
 msgid "Examples"
 msgstr "Příklady"
 
-#: ../src/backend/dictinstlist.c:61 ../src/backend/dictinstlist.c:77
-#: ../src/backend/dictinstlist.c:93
-msgid "This is the edict dictionary."
+#: ../src/backend/dictinstlist.c:61
+#, fuzzy
+msgid "The venerable Japanese-English Dictionary developed by Jim Breen."
+msgstr "Japonsko-anglický slovník gWaei "
+
+#: ../src/backend/dictinstlist.c:77
+msgid ""
+"A Kanji dictionary based off of kanjidic with radical information combined."
 msgstr ""
 
 #: ../src/backend/dictinstlist.c:91
@@ -83,21 +88,28 @@ msgstr "  waei -d Places "
 msgid "Names and Places Dictionary"
 msgstr "Slovník míst"
 
-#: ../src/backend/dictinstlist.c:109
-#, fuzzy
-msgid "This is the example dictionary."
-msgstr "Slovník příkladů"
+#: ../src/backend/dictinstlist.c:93
+msgid ""
+"Based off of Enamdic, but with the names split from the places for 2 "
+"separate dictionaries."
+msgstr ""
 
-#: ../src/backend/dictinstlist.c:123
-msgid "Other"
+#: ../src/backend/dictinstlist.c:109
+msgid ""
+"A collection of Japanese/English sentences initially compiledby Professor "
+"Yasuhito Tanaka at Hyogo University and his students."
 msgstr ""
 
 #: ../src/backend/dictinstlist.c:124
+msgid "Other"
+msgstr ""
+
+#: ../src/backend/dictinstlist.c:125
 #, fuzzy
 msgid "Other Dictionary"
 msgstr "Jiné slovníky"
 
-#: ../src/backend/dictinstlist.c:125
+#: ../src/backend/dictinstlist.c:126
 #, fuzzy
 msgid "Install a custom dictionary."
 msgstr "Nainstalovat slovník"
@@ -120,25 +132,16 @@ msgstr ""
 
 #: ../src/gtk/ui/dictionaryinstall.ui.h:1
 #, fuzzy
-msgid "<b>Details</b>"
-msgstr "<b>Fonctionnalités</b>"
-
-#: ../src/gtk/ui/dictionaryinstall.ui.h:2
-#, fuzzy
 msgid "Select Dictionaries..."
 msgstr "Hlavní slovníky"
 
-#: ../src/gtk/ui/dictionaryinstall.ui.h:3
+#: ../src/gtk/ui/dictionaryinstall.ui.h:2
 msgid "Show Dictionary Install Details"
 msgstr ""
 
-#: ../src/gtk/ui/dictionaryinstall.ui.h:4
+#: ../src/gtk/ui/dictionaryinstall.ui.h:3
 msgid "Where can I get other dictionaries?"
 msgstr "Kde lze získat další slovníky?"
-
-#: ../src/gtk/ui/dictionaryinstall.ui.h:5
-msgid "label"
-msgstr ""
 
 #: ../src/gtk/ui/installprogress.ui.h:1
 #, fuzzy
@@ -457,73 +460,68 @@ msgstr "_Opatřit tahy vysvětlivkami"
 msgid "gWaei Kanjipad"
 msgstr "gWaei Kanjipad"
 
-#: ../src/gtk/dictionaryinstall.c:70
+#: ../src/gtk/dictionaryinstall.c:69
 #, c-format
 msgid "<b>%s Install Details</b>"
 msgstr ""
 
-#: ../src/gtk/dictionaryinstall.c:80
-#, c-format
-msgid "%s"
-msgstr ""
-
 #. Third row
-#: ../src/gtk/dictionaryinstall.c:89
+#: ../src/gtk/dictionaryinstall.c:91
 msgid "Filename: "
 msgstr ""
 
 #. Forth row
-#: ../src/gtk/dictionaryinstall.c:101
+#: ../src/gtk/dictionaryinstall.c:103
 msgid "Engine: "
 msgstr ""
 
 #. Fifth row
-#: ../src/gtk/dictionaryinstall.c:119
+#: ../src/gtk/dictionaryinstall.c:121
 #, fuzzy
 msgid "Source: "
 msgstr "Zdroj: "
 
 #. Sixth row
-#: ../src/gtk/dictionaryinstall.c:143
+#: ../src/gtk/dictionaryinstall.c:145
 msgid "Encoding: "
 msgstr ""
 
 #. Seventh row
-#: ../src/gtk/dictionaryinstall.c:160
+#: ../src/gtk/dictionaryinstall.c:162
 #, fuzzy
 msgid "Compression: "
 msgstr "Rozbaluje se..."
 
 #. Eighth row
-#: ../src/gtk/dictionaryinstall.c:177
+#: ../src/gtk/dictionaryinstall.c:179
 #, fuzzy
 msgid "Split Places from Names Dictionary"
 msgstr "Slovník míst"
 
 #. Ninth row
-#: ../src/gtk/dictionaryinstall.c:187
+#: ../src/gtk/dictionaryinstall.c:189
 #, fuzzy
 msgid "Merge Radicals into Kanji Dictionary"
 msgstr "Slovník radikálů"
 
-#: ../src/gtk/dictionarymanager.c:83
+#: ../src/gtk/dictionarymanager.c:86
 #, fuzzy
 msgid "Name"
 msgstr "Jména"
 
-#: ../src/gtk/dictionarymanager.c:88
+#: ../src/gtk/dictionarymanager.c:92
 msgid "Engine"
 msgstr ""
 
-#: ../src/gtk/dictionarymanager.c:93
+#: ../src/gtk/dictionarymanager.c:97
 msgid "Shortcut"
 msgstr "Zkratka"
 
-#: ../src/gtk/dictionarymanager.c:190
+#: ../src/gtk/dictionarymanager.c:194
 msgid "_Cycle Up"
 msgstr "Vrátit se k _předchozímu"
 
-#: ../src/gtk/dictionarymanager.c:196
+#: ../src/gtk/dictionarymanager.c:200
 msgid "Cycle _Down"
 msgstr "Vrátit se k _dalšímu"
 
@@ -924,6 +922,14 @@ msgstr[1] "%d résultats principaux"
 #: ../src/gtk/desktop/gwaei.desktop.in.h:1
 msgid "Enter a Japanese or English word to easily get translations."
 msgstr ""
+
+#, fuzzy
+#~ msgid "This is the example dictionary."
+#~ msgstr "Slovník příkladů"
+
+#, fuzzy
+#~ msgid "<b>Details</b>"
+#~ msgstr "<b>Fonctionnalités</b>"
 
 #~ msgid "Input your query here"
 #~ msgstr "Zde zadejte své požadavky"

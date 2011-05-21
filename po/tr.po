@@ -29,7 +29,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 0.15.1\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2011-05-20 22:23-0400\n"
+"POT-Creation-Date: 2011-05-21 13:23-0400\n"
 "PO-Revision-Date: 2010-10-25 14:50+0200\n"
 "Last-Translator: Yusuf BARAN <info@barancolor.net>\n"
 "Language-Team: none\n"
@@ -85,11 +85,15 @@ msgstr "Örnekler Sözlüğü"
 msgid "Examples"
 msgstr "Örnekler"
 
-#: ../src/backend/dictinstlist.c:61 ../src/backend/dictinstlist.c:77
-#: ../src/backend/dictinstlist.c:93
+#: ../src/backend/dictinstlist.c:61
 #, fuzzy
-msgid "This is the edict dictionary."
-msgstr " podrá moverse entre los diccionarios instalados."
+msgid "The venerable Japanese-English Dictionary developed by Jim Breen."
+msgstr "gWaei Japonca-İngilizce Sözlük"
+
+#: ../src/backend/dictinstlist.c:77
+msgid ""
+"A Kanji dictionary based off of kanjidic with radical information combined."
+msgstr ""
 
 #: ../src/backend/dictinstlist.c:91
 #, fuzzy
@@ -101,21 +105,28 @@ msgstr "  waei -d Lugares"
 msgid "Names and Places Dictionary"
 msgstr " del diccionario de Nombres y Lugares."
 
-#: ../src/backend/dictinstlist.c:109
-#, fuzzy
-msgid "This is the example dictionary."
-msgstr "Örnekler Sözlüğü"
+#: ../src/backend/dictinstlist.c:93
+msgid ""
+"Based off of Enamdic, but with the names split from the places for 2 "
+"separate dictionaries."
+msgstr ""
 
-#: ../src/backend/dictinstlist.c:123
-msgid "Other"
+#: ../src/backend/dictinstlist.c:109
+msgid ""
+"A collection of Japanese/English sentences initially compiledby Professor "
+"Yasuhito Tanaka at Hyogo University and his students."
 msgstr ""
 
 #: ../src/backend/dictinstlist.c:124
+msgid "Other"
+msgstr ""
+
+#: ../src/backend/dictinstlist.c:125
 #, fuzzy
 msgid "Other Dictionary"
 msgstr "Diğer Sözlükler"
 
-#: ../src/backend/dictinstlist.c:125
+#: ../src/backend/dictinstlist.c:126
 #, fuzzy
 msgid "Install a custom dictionary."
 msgstr "Sözlük yükleyin"
@@ -138,25 +149,16 @@ msgstr ""
 
 #: ../src/gtk/ui/dictionaryinstall.ui.h:1
 #, fuzzy
-msgid "<b>Details</b>"
-msgstr "<b>Diccionarios</b>"
-
-#: ../src/gtk/ui/dictionaryinstall.ui.h:2
-#, fuzzy
 msgid "Select Dictionaries..."
 msgstr "Ana Sözlükler"
 
-#: ../src/gtk/ui/dictionaryinstall.ui.h:3
+#: ../src/gtk/ui/dictionaryinstall.ui.h:2
 msgid "Show Dictionary Install Details"
 msgstr ""
 
-#: ../src/gtk/ui/dictionaryinstall.ui.h:4
+#: ../src/gtk/ui/dictionaryinstall.ui.h:3
 msgid "Where can I get other dictionaries?"
 msgstr "Diğer sözlüklere nereden ulaşabilirim?"
-
-#: ../src/gtk/ui/dictionaryinstall.ui.h:5
-msgid "label"
-msgstr ""
 
 #: ../src/gtk/ui/installprogress.ui.h:1
 #, fuzzy
@@ -475,73 +477,68 @@ msgstr "_Dipnot"
 msgid "gWaei Kanjipad"
 msgstr "gWaei Kanji tahtası"
 
-#: ../src/gtk/dictionaryinstall.c:70
+#: ../src/gtk/dictionaryinstall.c:69
 #, c-format
 msgid "<b>%s Install Details</b>"
 msgstr ""
 
-#: ../src/gtk/dictionaryinstall.c:80
-#, c-format
-msgid "%s"
-msgstr ""
-
 #. Third row
-#: ../src/gtk/dictionaryinstall.c:89
+#: ../src/gtk/dictionaryinstall.c:91
 msgid "Filename: "
 msgstr ""
 
 #. Forth row
-#: ../src/gtk/dictionaryinstall.c:101
+#: ../src/gtk/dictionaryinstall.c:103
 msgid "Engine: "
 msgstr ""
 
 #. Fifth row
-#: ../src/gtk/dictionaryinstall.c:119
+#: ../src/gtk/dictionaryinstall.c:121
 #, fuzzy
 msgid "Source: "
 msgstr "Kaynak: "
 
 #. Sixth row
-#: ../src/gtk/dictionaryinstall.c:143
+#: ../src/gtk/dictionaryinstall.c:145
 msgid "Encoding: "
 msgstr ""
 
 #. Seventh row
-#: ../src/gtk/dictionaryinstall.c:160
+#: ../src/gtk/dictionaryinstall.c:162
 #, fuzzy
 msgid "Compression: "
 msgstr "Açılıyor..."
 
 #. Eighth row
-#: ../src/gtk/dictionaryinstall.c:177
+#: ../src/gtk/dictionaryinstall.c:179
 #, fuzzy
 msgid "Split Places from Names Dictionary"
 msgstr "Forzar la división del _Diccionario Nombres"
 
 #. Ninth row
-#: ../src/gtk/dictionaryinstall.c:187
+#: ../src/gtk/dictionaryinstall.c:189
 #, fuzzy
 msgid "Merge Radicals into Kanji Dictionary"
 msgstr "Radikaller Sözlüğü"
 
-#: ../src/gtk/dictionarymanager.c:83
+#: ../src/gtk/dictionarymanager.c:86
 #, fuzzy
 msgid "Name"
 msgstr "İsimler"
 
-#: ../src/gtk/dictionarymanager.c:88
+#: ../src/gtk/dictionarymanager.c:92
 msgid "Engine"
 msgstr ""
 
-#: ../src/gtk/dictionarymanager.c:93
+#: ../src/gtk/dictionarymanager.c:97
 msgid "Shortcut"
 msgstr "Kısayol"
 
-#: ../src/gtk/dictionarymanager.c:190
+#: ../src/gtk/dictionarymanager.c:194
 msgid "_Cycle Up"
 msgstr "_Önceki"
 
-#: ../src/gtk/dictionarymanager.c:196
+#: ../src/gtk/dictionarymanager.c:200
 msgid "Cycle _Down"
 msgstr "Sonraki"
 
@@ -917,6 +914,18 @@ msgstr[1] "Genel Sonuçlar %d"
 #: ../src/gtk/desktop/gwaei.desktop.in.h:1
 msgid "Enter a Japanese or English word to easily get translations."
 msgstr ""
+
+#, fuzzy
+#~ msgid "This is the edict dictionary."
+#~ msgstr " podrá moverse entre los diccionarios instalados."
+
+#, fuzzy
+#~ msgid "This is the example dictionary."
+#~ msgstr "Örnekler Sözlüğü"
+
+#, fuzzy
+#~ msgid "<b>Details</b>"
+#~ msgstr "<b>Diccionarios</b>"
 
 #~ msgid "Input your query here"
 #~ msgstr "Sorgunuzu buraya girin"

@@ -69,27 +69,31 @@ void gw_dictionarymanager_initialize ()
 
     //Create the columns and renderer for each column
     renderer = gtk_cell_renderer_pixbuf_new();
-    gtk_cell_renderer_set_padding (GTK_CELL_RENDERER (renderer), 6, 5);
-    column = gtk_tree_view_column_new_with_attributes (" ", renderer, "icon-name", IMAGE, NULL);
+    gtk_cell_renderer_set_padding (GTK_CELL_RENDERER (renderer), 6, 4);
+    column = gtk_tree_view_column_new ();
+    gtk_tree_view_column_set_title (column, " ");
+    gtk_tree_view_column_pack_start (column, renderer, TRUE);
+    gtk_tree_view_column_set_attributes (column, renderer, "icon-name", IMAGE, NULL);
     gtk_tree_view_append_column (_view, column);
 
     renderer = gtk_cell_renderer_text_new();
-    gtk_cell_renderer_set_padding (GTK_CELL_RENDERER (renderer), 6, 5);
+    gtk_cell_renderer_set_padding (GTK_CELL_RENDERER (renderer), 6, 4);
     column = gtk_tree_view_column_new_with_attributes ("#", renderer, "text", POSITION, NULL);
     gtk_tree_view_append_column (_view, column);
 
     renderer = gtk_cell_renderer_text_new();
-    gtk_cell_renderer_set_padding (GTK_CELL_RENDERER (renderer), 6, 5);
+    gtk_cell_renderer_set_padding (GTK_CELL_RENDERER (renderer), 6, 4);
     column = gtk_tree_view_column_new_with_attributes (gettext("Name"), renderer, "text", LONG_NAME, NULL);
+    gtk_tree_view_column_set_min_width (column, 100);
     gtk_tree_view_append_column (_view, column);
 
     renderer = gtk_cell_renderer_text_new();
-    gtk_cell_renderer_set_padding (GTK_CELL_RENDERER (renderer), 6, 5);
+    gtk_cell_renderer_set_padding (GTK_CELL_RENDERER (renderer), 6, 4);
     column = gtk_tree_view_column_new_with_attributes (gettext("Engine"), renderer, "text", ENGINE, NULL);
     gtk_tree_view_append_column (_view, column);
 
     renderer = gtk_cell_renderer_text_new();
-    gtk_cell_renderer_set_padding (GTK_CELL_RENDERER (renderer), 6, 5);
+    gtk_cell_renderer_set_padding (GTK_CELL_RENDERER (renderer), 6, 4);
     column = gtk_tree_view_column_new_with_attributes (gettext("Shortcut"), renderer, "text", SHORTCUT, NULL);
     gtk_tree_view_append_column (_view, column);
 

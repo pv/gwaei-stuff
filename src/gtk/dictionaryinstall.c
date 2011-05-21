@@ -45,7 +45,6 @@ static void _clear_details_box ()
 
 static void _fill_details_box (GwDictInst *di)
 {
-    printf("BREAK 1%s %s %s\n", di->filename, di->schema, di->key);
     GtkBuilder *builder = gw_common_get_builder ();
     GtkWidget *parent = GTK_WIDGET (gtk_builder_get_object (builder, "dictionary_install_details_hbox"));
     GtkWidget *button = NULL;
@@ -69,7 +68,7 @@ static void _fill_details_box (GwDictInst *di)
     hbox = GTK_WIDGET (gtk_hbox_new (FALSE, 0));
     markup = g_strdup_printf(gettext("<b>%s Install Details</b>"), di->longname);
     label = gtk_label_new (NULL);
-    gtk_label_set_markup(GTK_LABEL (label), markup);
+    gtk_label_set_markup (GTK_LABEL (label), markup);
     g_free (markup);
     gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (label), FALSE, FALSE, 0);
     gtk_box_pack_start (GTK_BOX (parent), GTK_WIDGET (hbox), FALSE, FALSE, 0);
@@ -77,8 +76,11 @@ static void _fill_details_box (GwDictInst *di)
 
     //Second row
     hbox = GTK_WIDGET (gtk_hbox_new (FALSE, 0));
-    markup = g_strdup_printf(gettext("%s"), di->description);
+    markup = g_strdup_printf("%s", di->description);
     label = gtk_label_new (NULL);
+    gtk_widget_set_size_request (GTK_WIDGET (label), 300, -1);
+    gtk_misc_set_alignment (GTK_MISC (label), 0, 0);
+    gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
     gtk_label_set_markup(GTK_LABEL (label), markup);
     g_free (markup);
     gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (label), FALSE, FALSE, 0);

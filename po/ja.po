@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2011-05-20 22:23-0400\n"
+"POT-Creation-Date: 2011-05-21 13:23-0400\n"
 "PO-Revision-Date: 2008-11-30 02:35+0500\n"
 "Last-Translator: Zachary Dovel pizzach@gmail.com\n"
 "Language-Team: Not Applicable\n"
@@ -62,9 +62,14 @@ msgstr "例文辞書"
 msgid "Examples"
 msgstr "例文"
 
-#: ../src/backend/dictinstlist.c:61 ../src/backend/dictinstlist.c:77
-#: ../src/backend/dictinstlist.c:93
-msgid "This is the edict dictionary."
+#: ../src/backend/dictinstlist.c:61
+#, fuzzy
+msgid "The venerable Japanese-English Dictionary developed by Jim Breen."
+msgstr "gWaei 和英辞書"
+
+#: ../src/backend/dictinstlist.c:77
+msgid ""
+"A Kanji dictionary based off of kanjidic with radical information combined."
 msgstr ""
 
 #: ../src/backend/dictinstlist.c:91
@@ -73,21 +78,29 @@ msgstr ""
 
 #: ../src/backend/dictinstlist.c:92
 msgid "Names and Places Dictionary"
-msgstr " 名前場所辞書"
+msgstr "名前場所辞書"
+
+#: ../src/backend/dictinstlist.c:93
+msgid ""
+"Based off of Enamdic, but with the names split from the places for 2 "
+"separate dictionaries."
+msgstr ""
 
 #: ../src/backend/dictinstlist.c:109
-msgid "This is the example dictionary."
-msgstr "例文辞書です"
-
-#: ../src/backend/dictinstlist.c:123
-msgid "Other"
+msgid ""
+"A collection of Japanese/English sentences initially compiledby Professor "
+"Yasuhito Tanaka at Hyogo University and his students."
 msgstr ""
 
 #: ../src/backend/dictinstlist.c:124
-msgid "Other Dictionary"
-msgstr "他の辞書"
+msgid "Other"
+msgstr "その他"
 
 #: ../src/backend/dictinstlist.c:125
+msgid "Other Dictionary"
+msgstr "辞書のその他"
+
+#: ../src/backend/dictinstlist.c:126
 msgid "Install a custom dictionary."
 msgstr "カスタムな 辞書をインストールする"
 
@@ -108,24 +121,16 @@ msgid "Unable to write the stream's output to a file."
 msgstr ""
 
 #: ../src/gtk/ui/dictionaryinstall.ui.h:1
-msgid "<b>Details</b>"
-msgstr "<b>詳細</b>"
-
-#: ../src/gtk/ui/dictionaryinstall.ui.h:2
 msgid "Select Dictionaries..."
 msgstr "辞書がインストール中..."
 
-#: ../src/gtk/ui/dictionaryinstall.ui.h:3
+#: ../src/gtk/ui/dictionaryinstall.ui.h:2
 msgid "Show Dictionary Install Details"
-msgstr ""
+msgstr "辞書インストールの詳細を表示"
 
-#: ../src/gtk/ui/dictionaryinstall.ui.h:4
+#: ../src/gtk/ui/dictionaryinstall.ui.h:3
 msgid "Where can I get other dictionaries?"
 msgstr "何処で他の辞書を会得する事ができるでしょか?"
-
-#: ../src/gtk/ui/dictionaryinstall.ui.h:5
-msgid "label"
-msgstr ""
 
 #: ../src/gtk/ui/installprogress.ui.h:1
 msgid "Installing Dictionaries..."
@@ -212,9 +217,8 @@ msgid "Sear_ch:"
 msgstr "検索(_S): "
 
 #: ../src/gtk/ui/main.ui.h:19
-#, fuzzy
 msgid "Search"
-msgstr "検索(S):"
+msgstr "検索"
 
 #: ../src/gtk/ui/main.ui.h:20
 msgid "Select the dictionary you want to use"
@@ -437,68 +441,63 @@ msgstr "画数付き(_A)"
 msgid "gWaei Kanjipad"
 msgstr "gWaei 漢字パッド"
 
-#: ../src/gtk/dictionaryinstall.c:70
+#: ../src/gtk/dictionaryinstall.c:69
 #, c-format
 msgid "<b>%s Install Details</b>"
-msgstr ""
-
-#: ../src/gtk/dictionaryinstall.c:80
-#, c-format
-msgid "%s"
-msgstr ""
+msgstr "<b>%sインストール詳細</b>"
 
 #. Third row
-#: ../src/gtk/dictionaryinstall.c:89
+#: ../src/gtk/dictionaryinstall.c:91
 msgid "Filename: "
-msgstr ""
+msgstr "ファイル名: "
 
 #. Forth row
-#: ../src/gtk/dictionaryinstall.c:101
+#: ../src/gtk/dictionaryinstall.c:103
 msgid "Engine: "
 msgstr "エンジン: "
 
 #. Fifth row
-#: ../src/gtk/dictionaryinstall.c:119
+#: ../src/gtk/dictionaryinstall.c:121
 msgid "Source: "
 msgstr "ソース: "
 
 #. Sixth row
-#: ../src/gtk/dictionaryinstall.c:143
+#: ../src/gtk/dictionaryinstall.c:145
 msgid "Encoding: "
-msgstr ""
+msgstr "エンコーディング: "
 
 #. Seventh row
-#: ../src/gtk/dictionaryinstall.c:160
+#: ../src/gtk/dictionaryinstall.c:162
 msgid "Compression: "
 msgstr "圧縮: "
 
 #. Eighth row
-#: ../src/gtk/dictionaryinstall.c:177
+#: ../src/gtk/dictionaryinstall.c:179
 msgid "Split Places from Names Dictionary"
 msgstr "名前辞書を再分割させる(_N)"
 
 #. Ninth row
-#: ../src/gtk/dictionaryinstall.c:187
+#: ../src/gtk/dictionaryinstall.c:189
 msgid "Merge Radicals into Kanji Dictionary"
 msgstr "部首辞書合体させる"
 
-#: ../src/gtk/dictionarymanager.c:83
+#: ../src/gtk/dictionarymanager.c:86
 msgid "Name"
 msgstr "名前"
 
-#: ../src/gtk/dictionarymanager.c:88
+#: ../src/gtk/dictionarymanager.c:92
 msgid "Engine"
 msgstr "エンジン"
 
-#: ../src/gtk/dictionarymanager.c:93
+#: ../src/gtk/dictionarymanager.c:97
 msgid "Shortcut"
 msgstr "ショートカット"
 
-#: ../src/gtk/dictionarymanager.c:190
+#: ../src/gtk/dictionarymanager.c:194
 msgid "_Cycle Up"
 msgstr "循環させる(_C)"
 
-#: ../src/gtk/dictionarymanager.c:196
+#: ../src/gtk/dictionarymanager.c:200
 msgid "Cycle _Down"
 msgstr "逆循環させる(_D)"
 
@@ -836,6 +835,12 @@ msgstr[0] "一致する候補 %d"
 #: ../src/gtk/desktop/gwaei.desktop.in.h:1
 msgid "Enter a Japanese or English word to easily get translations."
 msgstr "英語か日本語の単語を入れて簡単に翻訳を調べます"
+
+#~ msgid "This is the example dictionary."
+#~ msgstr "例文辞書です"
+
+#~ msgid "<b>Details</b>"
+#~ msgstr "<b>詳細</b>"
 
 #~ msgid "Input your query here"
 #~ msgstr "検索内容をここに入れてください"
