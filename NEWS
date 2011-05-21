@@ -1,9 +1,9 @@
-2010-01-10: gWaei 1.5.2
-  Bugfix release. Searches when using & in the query work again instead of being
-  truncated as you type.  The interface is now more responsive when a search is carried
-  out by edits to thread locking.  Exact matching for the console version
-  of gWaei was readded because it is truly needed there.  The sandboxing issue
-  caused by gtk-update-icon-cache for the package maintainers.  The README has been updated
-  as it was woefully out of date.
+2010-01-10: gWaei 3.0.0
+  New version of gwaei made to compile against gtk+-3.0 and match other Gnome 3 apps.  Most of the code has been rewritten and the advantages won't all appear until futuer versions of the program.
 
-
+  -Spellcheck is now don't directly with enchant instead of relying on libsexy
+  -The backend is now separated into a libtool library for cleaner code.
+  -The dictionary folder is now in ~/.config/gwaei instead of ~/.waei.
+  -Manual installation of dictionaries is now easier and more straight forward.
+  -Translations are now handled by intltool instead of gettext
+  -Much of the code now uses GError for proper error handling and message passing

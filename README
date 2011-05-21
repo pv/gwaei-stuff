@@ -20,22 +20,19 @@ TABLE OF CONTENTS
 
 1.0 PREREQUISITES:
 
-  To run gWaei 1.5.x, an environment with at least gtk+-2.22/glib-2.25.0,
-  curl 7.19.6, gnome-doc-utils-0.14.0, libncurses5-5.7, and libsexy-0.1.11
-  are required.  Additionally, you will want to have gunzip, and unzip.
-  Most of these are satisfied with a default install of Gnome 2.31 or newer
-  which should come with Ubuntu 10.10 and Fedora 14. If you want to be able to
-  see kanji stroke orders in the program, it is recommended you install
-  ttf-kanjistrokeorders along with gWaei.
+  To run gWaei 1.5.x, an environment with at least gtk+-3.0.0/glib-2.25.0,
+  curl 7.19.6, gnome-doc-utils-0.14.0, libncurses5-5.7, and libunique-3.0
+  are required.  Additionally, you will want to have gunzip, unzip, and
+  enchant, and ttf-kanjistrokeorders available.
 
   An example of a command that Ubuntu/Debian users might use to get the
   required runtime dependancies is:
 
-  sudo apt-get install libcurl3 libgtk2.0-0 libsexy2  ttf-kanjistrokeorders \
+  sudo apt-get install libcurl3 libgtk3.0-0 enchant ttf-kanjistrokeorders \
   gnome-doc-utils libncurses5
 
   To compile the program, you will have to have the dev files for GTK+, CURL3,
-  NCURSES and LIBSEXY and available. Users with binary based distributions
+  LIBUNIQUE and NCURSES available. Users with binary based distributions
   should install the approprate "dev" or "devel" files for the above dependencies
   using their package manager. Automake and GCC will come in handy too, as they
   are standard build tools for GNU systems.
@@ -43,8 +40,8 @@ TABLE OF CONTENTS
   An example of a command that Ubuntu/Debian users might use to get the
   required compilation dependancies is:
 
-  sudo apt-get install libcurl4-gnutls-dev libgtk2.0-dev libsexy-dev\
- build-essential gnome-doc-utils libunique-dev libncurses5-dev
+  sudo apt-get install libcurl4-gnutls-dev libgtk2.0-dev libunique-dev\
+ build-essential gnome-doc-utils libncurses5-dev
   libncursesw5-dev gcc autoconf automake
 
   For inputing Japanese queries, installing some software for Japanese
