@@ -548,94 +548,115 @@ void gw_output_append_kanjidict_results_cb (GwSearchItem *item)
     
     if (item->target == GW_TARGET_KANJI && (tv = GTK_WIDGET (gw_common_get_widget_by_target (GW_TARGET_RESULTS))) != NULL)
     {
-      char markup[1000];
-      markup[0] = '\0';
+      char *markup;
+      char *new;
+      char *base;
+      char *linebreak;
       gboolean first = TRUE;
 
+      markup = g_strdup ("");
+      new = NULL;
+      base = NULL;
+      linebreak = NULL;
+
       if (resultline->radicals) {
-        if (!first) strcat(markup, "\n");
         first = FALSE;
-        strcat(markup, "<b>");
-        strcat(markup, gettext("Radicals:"));
-        strcat(markup, " ");
-        strcat(markup, "</b>");
-        strcat(markup, resultline->radicals);
-        strcat(markup, " ");
+        base = markup;
+        new = g_markup_printf_escaped ("<b>%s </b>%s\n", gettext("Radicals:"), resultline->radicals);
+        markup = g_strjoin ("", base, new, NULL);
+        g_free (base);
+        base = NULL;
+        g_free (new);
+        new = NULL;
       }
       if (resultline->readings[0]) {
-        if (!first) strcat(markup, "\n");
         first = FALSE;
-        strcat(markup, "<b>");
-        strcat(markup, gettext("Readings:"));
-        strcat(markup, " ");
-        strcat(markup, "</b>");
-        strcat(markup, resultline->readings[0]);
-        strcat(markup, " ");
+        base = markup;
+        new = g_markup_printf_escaped ("<b>%s </b>%s\n", gettext("Readings:"), resultline->readings[0]);
+        markup = g_strjoin ("", base, new, NULL);
+        g_free (base);
+        base = NULL;
+        g_free (new);
+        new = NULL;
       } 
       if (resultline->readings[1]) {
-        if (!first) strcat(markup, "\n");
         first = FALSE;
-        strcat(markup, "<b>");
-        strcat(markup, gettext("Name:"));
-        strcat(markup, " ");
-        strcat(markup, "</b>");
-        strcat(markup, resultline->readings[1]);
-        strcat(markup, " ");
+        base = markup;
+        new = g_markup_printf_escaped ("<b>%s </b>%s\n", gettext("Readings:"), resultline->readings[1]);
+        markup = g_strjoin ("", base, new, NULL);
+        g_free (base);
+        base = NULL;
+        g_free (new);
+        new = NULL;
       }
       if (resultline->readings[2]) {
-        if (!first) strcat(markup, "\n");
-        strcat(markup, "<b>");
-        strcat(markup, gettext("Radical Name:"));
-        strcat(markup, " ");
-        strcat(markup, "</b>");
-        strcat(markup, resultline->readings[2]);
-        strcat(markup, " ");
+        first = FALSE;
+        base = markup;
+        new = g_markup_printf_escaped ("<b>%s: </b>%s\n", gettext("Radical Name"), resultline->readings[2]);
+        markup = g_strjoin ("", base, new, NULL);
+        g_free (base);
+        base = NULL;
+        g_free (new);
+        new = NULL;
       }
-      strcat(markup, "\n");
+
       if (resultline->strokes) {
-        strcat(markup, "<b>");
-        strcat(markup, gettext("Stroke:"));
-        strcat(markup, "</b> ");
-        strcat(markup, resultline->strokes);
-        strcat(markup, " ");
+        base = markup;
+        new = g_markup_printf_escaped ("<b>%s </b>%s   ", gettext("Stroke:"), resultline->strokes);
+        markup = g_strjoin ("", base, new, NULL);
+        g_free (base);
+        base = NULL;
+        g_free (new);
+        new = NULL;
       }
       if (resultline->frequency) {
-        strcat(markup, "<b>");
-        strcat(markup, gettext("Freq:"));
-        strcat(markup, "</b> ");
-        strcat(markup, resultline->frequency);
-        strcat(markup, " ");
+        base = markup;
+        new = g_markup_printf_escaped ("<b>%s </b>%s   ", gettext("Freq:"), resultline->frequency);
+        markup = g_strjoin ("", base, new, NULL);
+        g_free (base);
+        base = NULL;
+        g_free (new);
+        new = NULL;
       }
       if (resultline->grade) {
-        strcat(markup, "<b>");
-        strcat(markup, gettext("Grade:"));
-        strcat(markup, "</b> ");
-        strcat(markup, resultline->grade);
-        strcat(markup, " ");
+        base = markup;
+        new = g_markup_printf_escaped ("<b>%s </b>%s   ", gettext("Grade:"), resultline->grade);
+        markup = g_strjoin ("", base, new, NULL);
+        g_free (base);
+        base = NULL;
+        g_free (new);
+        new = NULL;
       }
       if (resultline->jlpt) {
-        strcat(markup, "<b>");
-        strcat(markup, gettext("JLPT:"));
-        strcat(markup, "</b> ");
-        strcat(markup, resultline->jlpt);
-        strcat(markup, " ");
+        base = markup;
+        new = g_markup_printf_escaped ("<b>%s </b>%s   ", gettext("JLPT:"), resultline->jlpt);
+        markup = g_strjoin ("", base, new, NULL);
+        g_free (base);
+        base = NULL;
+        g_free (new);
+        new = NULL;
       }
+
+      base = markup;
+      new = g_markup_printf_escaped ("\n");
+      markup = g_strjoin ("", base, new, NULL);
+      g_free (base);
+      base = NULL;
+      g_free (new);
+      new = NULL;
+
       if (resultline->meanings) {
-        if (!first) strcat(markup, "\n");
-        first = FALSE;
-        strcat(markup, "<b>");
-        strcat(markup, gettext("Meanings:"));
-        strcat(markup, "</b> ");
-        strcat(markup, resultline->meanings);
-        strcat(markup, " ");
+        base = markup;
+        new = g_markup_printf_escaped ("<b>%s </b>%s", gettext("Meanings:"), resultline->meanings);
+        markup = g_strjoin ("", base, new, NULL);
+        g_free (base);
+        base = NULL;
+        g_free (new);
+        new = NULL;
       }
 
-      char markup2[1000];
-      markup2[0] = '\0';
-
-      strcat(markup2, "<span font=\"KanjiStrokeOrders 80\">");
-      strcat(markup2, resultline->kanji);
-      strcat(markup2, "</span>");
+      char *markup2;
+      markup2 = g_markup_printf_escaped ("<span font=\"KanjiStrokeOrders 80\">%s</span>", resultline->kanji);
 
 
       GtkWidget *window = GTK_WIDGET (gtk_widget_get_tooltip_window (tv));
@@ -654,6 +675,9 @@ void gw_output_append_kanjidict_results_cb (GwSearchItem *item)
 
         gtk_widget_show_all (hbox);
       }
+
+      g_free (markup);
+      g_free (markup2);
     }
 }
 

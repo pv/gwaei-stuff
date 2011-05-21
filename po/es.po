@@ -29,7 +29,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 0.15.1\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2011-05-21 13:31-0400\n"
+"POT-Creation-Date: 2011-05-21 14:14-0400\n"
 "PO-Revision-Date: 2010-04-27 23:02-0500\n"
 "Last-Translator: 3dxtrip <3dx@live.com>\n"
 "Language-Team: none\n"
@@ -858,69 +858,75 @@ msgstr "_Usar el tipo de letra del documento del sistema (%s)"
 msgid "Pop"
 msgstr ""
 
-#: ../src/gtk/output-callbacks.c:456 ../src/gtk/output-callbacks.c:559
+#: ../src/gtk/output-callbacks.c:456 ../src/gtk/output-callbacks.c:565
 msgid "Radicals:"
 msgstr "Radicales:"
 
-#: ../src/gtk/output-callbacks.c:473 ../src/gtk/output-callbacks.c:569
+#: ../src/gtk/output-callbacks.c:473 ../src/gtk/output-callbacks.c:575
+#: ../src/gtk/output-callbacks.c:585
 msgid "Readings:"
 msgstr "Lecturas:"
 
-#: ../src/gtk/output-callbacks.c:484 ../src/gtk/output-callbacks.c:579
+#: ../src/gtk/output-callbacks.c:484
 msgid "Name:"
 msgstr "Nombres:"
 
-#: ../src/gtk/output-callbacks.c:495 ../src/gtk/output-callbacks.c:588
+#: ../src/gtk/output-callbacks.c:495
 msgid "Radical Name:"
 msgstr "Radicale Nombre:"
 
-#: ../src/gtk/output-callbacks.c:510 ../src/gtk/output-callbacks.c:597
+#: ../src/gtk/output-callbacks.c:510 ../src/gtk/output-callbacks.c:605
 msgid "Stroke:"
 msgstr "Trazo:"
 
-#: ../src/gtk/output-callbacks.c:517 ../src/gtk/output-callbacks.c:604
+#: ../src/gtk/output-callbacks.c:517 ../src/gtk/output-callbacks.c:614
 msgid "Freq:"
 msgstr "Freq:"
 
-#: ../src/gtk/output-callbacks.c:524 ../src/gtk/output-callbacks.c:611
+#: ../src/gtk/output-callbacks.c:524 ../src/gtk/output-callbacks.c:623
 msgid "Grade:"
 msgstr "Grado:"
 
-#: ../src/gtk/output-callbacks.c:530 ../src/gtk/output-callbacks.c:618
+#: ../src/gtk/output-callbacks.c:530 ../src/gtk/output-callbacks.c:632
 msgid "JLPT:"
 msgstr "JLPT:"
 
-#: ../src/gtk/output-callbacks.c:539 ../src/gtk/output-callbacks.c:627
+#: ../src/gtk/output-callbacks.c:539 ../src/gtk/output-callbacks.c:650
 msgid "Meanings:"
 msgstr "Significados:"
 
+#: ../src/gtk/output-callbacks.c:595
+#, fuzzy
+msgid "Radical Name"
+msgstr "Radicale Nombre:"
+
 #. TRANSLATORS: The "E" stands for "English"
-#: ../src/gtk/output-callbacks.c:688
+#: ../src/gtk/output-callbacks.c:712
 msgid "E:\t"
 msgstr ""
 
 #. TRANSLATORS: The "J" stands for "Japanese"
-#: ../src/gtk/output-callbacks.c:699
+#: ../src/gtk/output-callbacks.c:723
 msgid ""
 "\n"
 "J:\t"
 msgstr ""
 
 #. TRANSLATORS: The "D" stands for "Detail"
-#: ../src/gtk/output-callbacks.c:710
+#: ../src/gtk/output-callbacks.c:734
 msgid ""
 "\n"
 "D:\t"
 msgstr ""
 
-#: ../src/gtk/output-callbacks.c:765
+#: ../src/gtk/output-callbacks.c:789
 #, c-format
 msgid "Other Result %d"
 msgid_plural "Other Results %d"
 msgstr[0] "Otro resultado %d"
 msgstr[1] "Otros resultados %d"
 
-#: ../src/gtk/output-callbacks.c:780
+#: ../src/gtk/output-callbacks.c:804
 #, c-format
 msgid "Main Result %d"
 msgid_plural "Main Results %d"
@@ -930,6 +936,33 @@ msgstr[1] "Resultados principales %d"
 #: ../src/gtk/desktop/gwaei.desktop.in.h:1
 msgid "Enter a Japanese or English word to easily get translations."
 msgstr ""
+
+#~ msgid "Radicals"
+#~ msgstr "Radicales"
+
+#, fuzzy
+#~ msgid "Readings"
+#~ msgstr "Lecturas:"
+
+#, fuzzy
+#~ msgid "Stroke"
+#~ msgstr "Trazo:"
+
+#, fuzzy
+#~ msgid "Freq"
+#~ msgstr "Freq:"
+
+#, fuzzy
+#~ msgid "Grade"
+#~ msgstr "Grado:"
+
+#, fuzzy
+#~ msgid "JLPT"
+#~ msgstr "JLPT:"
+
+#, fuzzy
+#~ msgid "Meanings"
+#~ msgstr "Significados:"
 
 #, fuzzy
 #~ msgid "This is the edict dictionary."
@@ -1150,9 +1183,6 @@ msgstr ""
 
 #~ msgid "Spanish"
 #~ msgstr "Español"
-
-#~ msgid "Radicals"
-#~ msgstr "Radicales"
 
 #~ msgid "French Dictionary"
 #~ msgstr "Diccionario en Francés"

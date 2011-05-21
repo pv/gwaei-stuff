@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 1.4.0\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2011-05-21 13:31-0400\n"
+"POT-Creation-Date: 2011-05-21 14:14-0400\n"
 "PO-Revision-Date: 2004-01-01 20:41+0100\n"
 "Last-Translator: Pavel Fric <pavelfric@seznam.cz>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
@@ -843,51 +843,57 @@ msgstr "_Používat písmo dokumentů používané systémem (%s)"
 msgid "Pop"
 msgstr "Vyskočit"
 
-#: ../src/gtk/output-callbacks.c:456 ../src/gtk/output-callbacks.c:559
+#: ../src/gtk/output-callbacks.c:456 ../src/gtk/output-callbacks.c:565
 msgid "Radicals:"
 msgstr "Radikály:"
 
-#: ../src/gtk/output-callbacks.c:473 ../src/gtk/output-callbacks.c:569
+#: ../src/gtk/output-callbacks.c:473 ../src/gtk/output-callbacks.c:575
+#: ../src/gtk/output-callbacks.c:585
 msgid "Readings:"
 msgstr "Čtení:"
 
-#: ../src/gtk/output-callbacks.c:484 ../src/gtk/output-callbacks.c:579
+#: ../src/gtk/output-callbacks.c:484
 msgid "Name:"
 msgstr "Název:"
 
-#: ../src/gtk/output-callbacks.c:495 ../src/gtk/output-callbacks.c:588
+#: ../src/gtk/output-callbacks.c:495
 msgid "Radical Name:"
 msgstr "Název radikálu:"
 
-#: ../src/gtk/output-callbacks.c:510 ../src/gtk/output-callbacks.c:597
+#: ../src/gtk/output-callbacks.c:510 ../src/gtk/output-callbacks.c:605
 msgid "Stroke:"
 msgstr "Tahy:"
 
-#: ../src/gtk/output-callbacks.c:517 ../src/gtk/output-callbacks.c:604
+#: ../src/gtk/output-callbacks.c:517 ../src/gtk/output-callbacks.c:614
 msgid "Freq:"
 msgstr "Častost:"
 
-#: ../src/gtk/output-callbacks.c:524 ../src/gtk/output-callbacks.c:611
+#: ../src/gtk/output-callbacks.c:524 ../src/gtk/output-callbacks.c:623
 msgid "Grade:"
 msgstr "Třída:"
 
-#: ../src/gtk/output-callbacks.c:530 ../src/gtk/output-callbacks.c:618
+#: ../src/gtk/output-callbacks.c:530 ../src/gtk/output-callbacks.c:632
 msgid "JLPT:"
 msgstr "JLPT:"
 
-#: ../src/gtk/output-callbacks.c:539 ../src/gtk/output-callbacks.c:627
+#: ../src/gtk/output-callbacks.c:539 ../src/gtk/output-callbacks.c:650
 msgid "Meanings:"
 msgstr "Význam: "
 
+#: ../src/gtk/output-callbacks.c:595
+#, fuzzy
+msgid "Radical Name"
+msgstr "Název radikálu:"
+
 # E: English
 #. TRANSLATORS: The "E" stands for "English"
-#: ../src/gtk/output-callbacks.c:688
+#: ../src/gtk/output-callbacks.c:712
 msgid "E:\t"
 msgstr "E:\t"
 
 # J: Japanese
 #. TRANSLATORS: The "J" stands for "Japanese"
-#: ../src/gtk/output-callbacks.c:699
+#: ../src/gtk/output-callbacks.c:723
 msgid ""
 "\n"
 "J:\t"
@@ -897,7 +903,7 @@ msgstr ""
 
 # D: Detail
 #. TRANSLATORS: The "D" stands for "Detail"
-#: ../src/gtk/output-callbacks.c:710
+#: ../src/gtk/output-callbacks.c:734
 msgid ""
 "\n"
 "D:\t"
@@ -905,14 +911,14 @@ msgstr ""
 "\n"
 "D:\t"
 
-#: ../src/gtk/output-callbacks.c:765
+#: ../src/gtk/output-callbacks.c:789
 #, c-format
 msgid "Other Result %d"
 msgid_plural "Other Results %d"
 msgstr[0] "Podobný výsledek %d"
 msgstr[1] "%d résultats similaires"
 
-#: ../src/gtk/output-callbacks.c:780
+#: ../src/gtk/output-callbacks.c:804
 #, c-format
 msgid "Main Result %d"
 msgid_plural "Main Results %d"
@@ -922,6 +928,33 @@ msgstr[1] "%d résultats principaux"
 #: ../src/gtk/desktop/gwaei.desktop.in.h:1
 msgid "Enter a Japanese or English word to easily get translations."
 msgstr ""
+
+#~ msgid "Radicals"
+#~ msgstr "Radikály"
+
+#, fuzzy
+#~ msgid "Readings"
+#~ msgstr "Čtení:"
+
+#, fuzzy
+#~ msgid "Stroke"
+#~ msgstr "Tahy:"
+
+#, fuzzy
+#~ msgid "Freq"
+#~ msgstr "Častost:"
+
+#, fuzzy
+#~ msgid "Grade"
+#~ msgstr "Třída:"
+
+#, fuzzy
+#~ msgid "JLPT"
+#~ msgstr "JLPT:"
+
+#, fuzzy
+#~ msgid "Meanings"
+#~ msgstr "Význam: "
 
 #, fuzzy
 #~ msgid "This is the example dictionary."
@@ -1137,9 +1170,6 @@ msgstr ""
 
 #~ msgid "Spanish"
 #~ msgstr "Španělština"
-
-#~ msgid "Radicals"
-#~ msgstr "Radikály"
 
 #~ msgid "French Dictionary"
 #~ msgstr "Francouzský slovník"
