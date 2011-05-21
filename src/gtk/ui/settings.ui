@@ -736,13 +736,13 @@
                             <child>
                               <object class="GtkCheckButton" id="query_spellcheck">
                                 <property name="label" translatable="yes">Enable Spell _Checking</property>
+                                <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="no_show_all">True</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="draw_indicator">True</property>
-                                <signal name="toggled" handler="gw_settings_spellcheck_toggled_cb" swapped="no"/>
+                                <signal name="toggled" handler="gw_spellcheck_toggle_cb" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="expand">False</property>

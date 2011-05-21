@@ -300,6 +300,23 @@ void do_color_value_changed_action (GSettings *settings,
     g_signal_handlers_unblock_by_func (settings, do_color_value_changed_action, NULL);
 }
 
+//!
+//! @param client The preference client
+//! @param cnxn_id Unknown
+//! @param entry The preference entry object
+//! @param data Usere data passed to the function
+//!
+void do_spellcheck_pref_changed_action (GSettings *settings,
+                                        gchar *key,
+                                        gpointer data       )
+{
+    g_signal_handlers_block_by_func (settings, do_spellcheck_pref_changed_action, NULL);
+    gboolean value = g_settings_get_boolean (settings, key);
+    gw_spellcheck_set_enabled (value);
+    g_signal_handlers_unblock_by_func (settings, do_spellcheck_pref_changed_action, NULL);
+}
+
+
 
 void gw_settings_listeners_initialize ()
 {
@@ -328,6 +345,9 @@ void gw_settings_listeners_initialize ()
                                   do_color_value_changed_action, NULL);
     gw_pref_add_change_listener_by_schema (GW_SCHEMA_HIGHLIGHT, GW_KEY_COMMENT_FG, 
                                   do_color_value_changed_action, NULL);
+    gw_pref_add_change_listener_by_schema (GW_SCHEMA_BASE, GW_KEY_SPELLCHECK,
+                                  do_spellcheck_pref_changed_action, NULL);
+
 }
 
 

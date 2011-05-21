@@ -1,18 +1,25 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+
 #include <gtk/gtk.h>
+
+#include <gwaei/backend.h>
+#include <gwaei/frontend.h>
 
 static GList *_corrections = NULL;
 static GMutex *_mutex = NULL;
 static gboolean _needs_spellcheck = FALSE;
 static char* _query_text = NULL;
+static gboolean _sensitive = TRUE;
 
 static void _menuitem_activated_cb (GtkWidget*, gpointer);
 static void _populate_popup_cb (GtkEntry*, GtkMenu*, gpointer);
 static gboolean _draw_underline_cb (GtkWidget*, cairo_t*, gpointer);
 static void _queue_spellcheck_cb (GtkEditable*, gpointer);
 static gboolean _update_spellcheck_timeout (gpointer);
+static void _update_button_sensitivities (void);
+
 
 struct _SpellingReplacementData {
   GtkEntry *entry;
@@ -412,10 +419,18 @@ void _queue_spellcheck_cb (GtkEditable *editable, gpointer data)
 {
     g_mutex_lock (_mutex);
 
+    _update_button_sensitivities ();
+
     if (_query_text == NULL)
       _query_text = g_strdup (gtk_entry_get_text (GTK_ENTRY (editable)));
 
-    if (strcmp(_query_text, gtk_entry_get_text (GTK_ENTRY (editable))) != 0)
+    //Declarations
+    const char *query;
+
+    //Initializations
+    query = gtk_entry_get_text (GTK_ENTRY (editable));
+
+    if (strcmp(_query_text, query) != 0)
     {
       //Clear out the old links
       while (_corrections != NULL)
@@ -426,6 +441,7 @@ void _queue_spellcheck_cb (GtkEditable *editable, gpointer data)
 
       g_free (_query_text);
       _query_text = g_strdup (gtk_entry_get_text (GTK_ENTRY (editable)));
+
       _needs_spellcheck = TRUE;
     }
     g_mutex_unlock (_mutex);
@@ -433,10 +449,34 @@ void _queue_spellcheck_cb (GtkEditable *editable, gpointer data)
 
 static gboolean _update_spellcheck_timeout (gpointer data)
 {
-    if (_needs_spellcheck == FALSE) return TRUE;
+    //Declarations
+    gboolean spellcheck_pref;
+    int rk_conv_pref;
+    gboolean want_conv;
+    GtkWidget *entry;
+    char *query;
+    gboolean is_convertable_to_hiragana;
+    const int MAX = 300;
+    char kana[MAX];
+    
+    //Initializations
+    rk_conv_pref = gw_pref_get_int_by_schema (GW_SCHEMA_BASE, GW_KEY_ROMAN_KANA);
+    want_conv = (rk_conv_pref == 0 || (rk_conv_pref == 2 && !gw_util_is_japanese_locale()));
+    entry = GTK_WIDGET (gw_common_get_widget_by_target (GW_TARGET_ENTRY));
+    query = gtk_editable_get_chars (GTK_EDITABLE (entry), 0, -1);
+    is_convertable_to_hiragana = (want_conv && gw_util_str_roma_to_hira (query, kana, MAX));
+    spellcheck_pref = gw_pref_get_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_SPELLCHECK);
+
+    //Sanity checks
+    if (!spellcheck_pref || !_sensitive || !_needs_spellcheck || is_convertable_to_hiragana)
+    {
+      gtk_widget_queue_draw (GTK_WIDGET (data));
+      return TRUE;
+    }
 
     _needs_spellcheck = FALSE;
 
+    //Declarations
     GtkEditable *editable;
     char *argv[] = { ENCHANT, "-a", "-d", "en", NULL};
     char *text;
@@ -450,6 +490,7 @@ static gboolean _update_spellcheck_timeout (gpointer data)
     _StreamWithData indata;
     _StreamWithData outdata;
 
+    //Initializations
     editable = GTK_EDITABLE (data);
     text = g_strdup (gtk_entry_get_text (GTK_ENTRY (editable)));
     error = NULL;
@@ -497,4 +538,89 @@ static gboolean _update_spellcheck_timeout (gpointer data)
     return TRUE;
 }
 
+//!
+//! @brief Callback to toggle spellcheck in the search entry
+//!
+//! @param widget Unused pointer to a GtkWidget
+//! @param data Unused gpointer
+//!
+G_MODULE_EXPORT void gw_spellcheck_toggle_cb (GtkWidget *widget, gpointer data)
+{
+    gboolean state;
+    state = gw_pref_get_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_SPELLCHECK);
+    gw_pref_set_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_SPELLCHECK, !state);
+    g_free (_query_text);
+    _query_text = g_strdup ("FORCE UPDATE");
+}
 
+
+
+//!
+//! @brief Sets the gui widgets consistently to the requested state
+//!
+//! The function makes sure that both of the widgets in the gui are the same
+//! when the user clicks a one of them to change the settings.
+//!
+//! @param request the requested state for spellchecking widgets
+//!
+void gw_spellcheck_set_enabled (gboolean request)
+{
+    //Declarations
+    GtkBuilder *builder;
+    GtkWidget *checkbox;
+    GtkWidget *toolbutton;
+    GtkWidget *entry;
+
+    //Initializations
+    builder = gw_common_get_builder ();
+    checkbox = GTK_WIDGET (gtk_builder_get_object (builder, "query_spellcheck"));
+    toolbutton = GTK_WIDGET (gtk_builder_get_object (builder, "spellcheck_toolbutton"));
+    entry = GTK_WIDGET (gw_common_get_widget_by_target (GW_TARGET_ENTRY));
+
+    g_signal_handlers_block_by_func (checkbox, gw_spellcheck_toggle_cb, NULL);
+    g_signal_handlers_block_by_func (toolbutton, gw_spellcheck_toggle_cb, NULL);
+
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), request);
+    gtk_toggle_tool_button_set_active (GTK_TOGGLE_TOOL_BUTTON (toolbutton), request);
+    _queue_spellcheck_cb (GTK_EDITABLE (entry), NULL);
+
+    g_signal_handlers_unblock_by_func (checkbox, gw_spellcheck_toggle_cb, NULL);
+    g_signal_handlers_unblock_by_func (toolbutton, gw_spellcheck_toggle_cb, NULL);
+}
+
+static void _update_button_sensitivities ()
+{
+    //Declarations
+    GtkBuilder *builder;
+    GtkWidget *checkbox;
+    GtkWidget *toolbutton;
+    GtkWidget *entry;
+    gboolean exists;
+
+    //Initializations
+    builder = gw_common_get_builder ();
+    entry = GTK_WIDGET (gw_common_get_widget_by_target (GW_TARGET_ENTRY));
+    checkbox = GTK_WIDGET (gtk_builder_get_object (builder, "query_spellcheck"));
+    toolbutton = GTK_WIDGET (gtk_builder_get_object (builder, "spellcheck_toolbutton"));
+    exists = g_file_test (ENCHANT, G_FILE_TEST_IS_REGULAR);
+
+    if (exists && !_sensitive)
+    {
+      _sensitive = exists;
+      gtk_widget_set_sensitive (GTK_WIDGET (checkbox), TRUE);
+      gtk_widget_set_sensitive (GTK_WIDGET (toolbutton), TRUE);
+      g_free (_query_text);
+      _query_text = g_strdup ("FORCE UPDATE");
+      gtk_widget_queue_draw (GTK_WIDGET (entry));
+    }
+    else if (!exists && _sensitive)
+    {
+      _sensitive = exists;
+      gtk_widget_set_sensitive (GTK_WIDGET (checkbox), FALSE);
+      gtk_widget_set_sensitive (GTK_WIDGET (toolbutton), FALSE);
+      g_free (_query_text);
+      _query_text = g_strdup ("FORCE UPDATE");
+      gtk_widget_queue_draw (GTK_WIDGET (entry));
+    }
+
+}
