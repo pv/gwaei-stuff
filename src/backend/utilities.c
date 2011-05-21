@@ -203,7 +203,9 @@ gboolean gw_util_is_hiragana_str (const char *input)
     {
       character = g_utf8_get_char (ptr);
       script = g_unichar_get_script (character);
-      if (script != G_UNICODE_SCRIPT_HIRAGANA && character != g_utf8_get_char(".")) is_consistant = FALSE;
+      if (script != G_UNICODE_SCRIPT_HIRAGANA &&
+          script != G_UNICODE_SCRIPT_COMMON)
+        is_consistant = FALSE;
     }
 
     return is_consistant;
@@ -235,7 +237,9 @@ gboolean gw_util_is_katakana_str (const char *input)
     {
       character = g_utf8_get_char (ptr);
       script = g_unichar_get_script (character);
-      if (script != G_UNICODE_SCRIPT_KATAKANA && character != g_utf8_get_char(".")) is_consistant = FALSE;
+      if (script != G_UNICODE_SCRIPT_KATAKANA &&
+          script != G_UNICODE_SCRIPT_COMMON)
+        is_consistant = FALSE;
     }
 
     return is_consistant;
@@ -275,17 +279,27 @@ gboolean gw_util_is_furigana_str (const char *input)
 gboolean gw_util_is_kanji_ish_str (const char *input)
 {
     //Declarations
-    gboolean found_kanji;
-    gboolean found_furigana;
-    gboolean found_romaji;
+    gboolean is_consistant;
+    gunichar character;
+    GUnicodeScript script;
+    const char *ptr;
 
     //Initializations
-    found_kanji =    gw_util_is_kanji_str (input);
-    found_furigana = gw_util_is_furigana_str (input);
-    found_romaji =   gw_util_is_romaji_str (input);
+    is_consistant = TRUE;
+    
+    //Loop over the string checking for characters inconsistant with the script
+    for (ptr = input; *ptr != '\0' && is_consistant; ptr = g_utf8_next_char (ptr))
+    {
+      character = g_utf8_get_char (ptr);
+      script = g_unichar_get_script (character);
+      if (script != G_UNICODE_SCRIPT_HAN &&
+          script != G_UNICODE_SCRIPT_HIRAGANA &&
+          script != G_UNICODE_SCRIPT_KATAKANA &&
+          script != G_UNICODE_SCRIPT_COMMON)
+        is_consistant = FALSE;
+    }
 
-    //Return
-    return (found_kanji && found_furigana && !found_romaji);
+    return is_consistant;
 }
 
 //!
@@ -313,7 +327,9 @@ gboolean gw_util_is_kanji_str (const char *input)
     {
       character = g_utf8_get_char (ptr);
       script = g_unichar_get_script (character);
-      if (script != G_UNICODE_SCRIPT_HAN && character != g_utf8_get_char(".")) is_consistant = FALSE;
+      if (script != G_UNICODE_SCRIPT_HAN &&
+          script != G_UNICODE_SCRIPT_COMMON)
+        is_consistant = FALSE;
     }
 
     return is_consistant;
@@ -346,8 +362,7 @@ gboolean gw_util_is_romaji_str (const char *input)
       character = g_utf8_get_char (ptr);
       script = g_unichar_get_script (character);
       if (script != G_UNICODE_SCRIPT_LATIN && 
-          script != G_UNICODE_SCRIPT_COMMON &&
-          character != g_utf8_get_char("."))
+          script != G_UNICODE_SCRIPT_COMMON)
         is_consistant = FALSE;
     }
 
