@@ -532,11 +532,20 @@ gboolean gw_queryline_parse_kanjidict_string (GwQueryLine *ql, const char* strin
     for (iter = atoms; *iter != NULL; iter++)
     {
       atom = *iter;
+      GMatchInfo *match_info;
+      int match_start_byte_offset;
+      int match_end_byte_offset;
 
       //This was a special regex that shouldn't be placed in the romaji area
-      if (g_regex_match (gw_re[GW_RE_NUMBER], atom, 0, NULL) == TRUE)
+      if (g_regex_match (gw_re[GW_RE_NUMBER], atom, 0, &match_info) == TRUE)
       {
-        for (i = 0; all_regex_built && i < GW_RELEVANCE_TOTAL; i++)
+        //Attepm to remove it
+        g_match_info_fetch_pos (match_info, 0, &match_start_byte_offset, &match_end_byte_offset);
+        for (i = match_start_byte_offset; i < match_end_byte_offset; i++)
+          atom[i] = ' ';
+        g_strstrip (atom);
+
+        for (i = 0; strlen(atom) > 0 && all_regex_built && i < GW_RELEVANCE_TOTAL; i++)
           (*re)[i] = NULL;;
 
       }
@@ -547,6 +556,7 @@ gboolean gw_queryline_parse_kanjidict_string (GwQueryLine *ql, const char* strin
           if (((*re)[i] = gw_regex_romaji_new (atom, GW_ENGINE_KANJI, i, error)) == NULL) all_regex_built = FALSE;
       }
 
+      g_match_info_free (match_info);
       re++;
     }
 
