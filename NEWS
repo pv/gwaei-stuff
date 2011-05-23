@@ -7,3 +7,4 @@
   -Manual installation of dictionaries is now easier and more straight forward.
   -Translations are now handled by intltool instead of gettext
   -Much of the code now uses GError for proper error handling and message passing
+  -The code now uses GRegex instead of the C regex library included with the OS, making the program more cross platform friendly
