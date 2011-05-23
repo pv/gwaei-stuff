@@ -37,6 +37,7 @@
 
 
 static GList *_list = NULL;
+static gboolean _cancel = FALSE;
 
 
 //!
@@ -280,6 +281,10 @@ GwDictInst* gw_dictinstlist_get_dictinst_by_idstring (const char* ENGINE_AND_FIL
 }
 
 
-double gw_dictinstlist_get_progress ()
+void gw_dictinstlist_set_cancel_operations (gboolean state)
 {
+    _cancel = state;
+    gw_dictinst_set_cancel_operations (NULL, state);
 }
+
+

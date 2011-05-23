@@ -86,5 +86,6 @@ gboolean gw_dictinst_install (GwDictInst*, GwIoProgressCallback, GError**);
 char* gw_dictinst_get_target_uri (GwDictInst*, const GwDictInstUri, const int);
 char* gw_dictinst_get_source_uri (GwDictInst*, const GwDictInstUri, const int);
 double gw_dictinst_get_progress (GwDictInst*);
+void gw_dictinst_set_cancel_operations (GwDictInst*, gboolean);
 
 #endif

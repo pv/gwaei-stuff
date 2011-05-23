@@ -36,6 +36,8 @@
 
 #include <gwaei/backend.h>
 
+static gboolean _cancel = FALSE;
+
 
 //!
 //! @brief Updates the GwDictInst source uri when the pref changes
@@ -424,6 +426,7 @@ gboolean gw_dictinst_download (GwDictInst *di, GwIoProgressCallback cb, GError *
 {
     //Sanity check
     if (error != NULL && *error != NULL) return FALSE;
+    if (_cancel) return FALSE;
     g_assert (di != NULL);
 
     //Declarations
@@ -469,6 +472,7 @@ gboolean gw_dictinst_decompress (GwDictInst *di, GwIoProgressCallback cb, GError
 {
     //Sanity check
     if (error != NULL && *error != NULL) return FALSE;
+    if (_cancel) return FALSE;
     g_assert (di != NULL);
 
     //Declarations
@@ -534,6 +538,7 @@ gboolean gw_dictinst_convert_encoding (GwDictInst *di, GwIoProgressCallback cb, 
 {
     //Sanity check
     if (error != NULL && *error != NULL) return FALSE;
+    if (_cancel) return FALSE;
     g_assert (di != NULL);
 
     //Declarations
@@ -582,6 +587,7 @@ gboolean gw_dictinst_postprocess (GwDictInst *di, GwIoProgressCallback cb, GErro
 {
     //Sanity check
     if (error != NULL && *error != NULL) return FALSE;
+    if (_cancel) return FALSE;
     g_assert (di != NULL);
 
     //Declarations
@@ -644,6 +650,7 @@ gboolean gw_dictinst_finalize (GwDictInst *di, GwIoProgressCallback cb, GError *
 {
     //Sanity check
     if (error != NULL && *error != NULL) return FALSE;
+    if (_cancel) return FALSE;
     g_assert (di != NULL);
 
     //Declarations
@@ -727,9 +734,7 @@ gboolean gw_dictinst_install (GwDictInst *di, GwIoProgressCallback cb, GError **
     gw_dictinst_convert_encoding (di, cb, error);
     gw_dictinst_postprocess (di, cb, error);
     gw_dictinst_finalize (di, cb, error);
-    /*
     gw_dictinst_clean (di, cb);
-*/
 
     return (*error == NULL);
 }
@@ -912,3 +917,11 @@ char* gw_dictinst_get_target_uri (GwDictInst *di, const GwDictInstUri GROUP_INDE
 
     return uri;
 }
+
+
+void gw_dictinst_set_cancel_operations (GwDictInst *di, gboolean state)
+{
+    _cancel = state;
+    gw_io_set_cancel_operations (state);
+}
+

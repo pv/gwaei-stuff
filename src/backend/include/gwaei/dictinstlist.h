@@ -9,5 +9,6 @@ gboolean gw_dictinstlist_data_is_valid (void);
 GwDictInst* gw_dictinstlist_get_dictinst_fuzzy (const char*);
 GwDictInst* gw_dictinstlist_get_dictinst_by_idstring (const char*);
 GwDictInst* gw_dictinstlist_get_dictinst_by_filename (const char*);
+void gw_dictinstlist_set_cancel_operations (gboolean);
 
 #endif

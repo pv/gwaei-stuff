@@ -101,6 +101,7 @@ gpointer _installprogress_install_thread (gpointer data)
 
     //Cleanup
   gdk_threads_enter ();
+    gw_dictinstlist_set_cancel_operations (FALSE);
     gtk_widget_hide (dialog);
     gw_main_handle_error (&error, GTK_WINDOW (window_settings), TRUE);
     _thread = NULL;
@@ -208,5 +209,6 @@ gboolean _installprogress_update_ui_timeout (gpointer data)
 
 G_MODULE_EXPORT void gw_installprogress_cancel_cb (GtkWidget *widget, gpointer data)
 {
-    printf("cancel button was clicked!\n");
+    gw_dictinstlist_set_cancel_operations (TRUE);
 }
+

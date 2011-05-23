@@ -40,6 +40,7 @@
 
 
 static gchar *_savepath = NULL;
+static gboolean _cancel = FALSE;
 
 struct _GwIoProcessFdData {
   const char* uri;
@@ -236,8 +237,10 @@ static int _libcurl_update_progress (void  *custom,
     else
       fraction = dlnow / dltotal;
 
+printf("update interface %d\n", _cancel);
     //Update the interface
-    return cb (fraction, data);
+    if (_cancel) return 1;
+    else return cb (fraction, data);
 }
 
 
@@ -290,7 +293,7 @@ gboolean gw_io_download (char *source_path, char *target_path, GwIoProgressCallb
     fclose(outfile);
     curl_easy_cleanup(curl);
 
-    if (res != 0)
+    if (res != 0 && _cancel == FALSE)
     {
       g_remove (target_path);
 
@@ -334,7 +337,7 @@ gboolean gw_io_copy (const char *source_path, const char *target_path,
     curpos = 0;
     fraction = 0.0;
 
-    while (chunk)
+    while (chunk && !_cancel)
     {
       fraction = ((double) curpos) / ((double) end);
       if (cb != NULL) cb (fraction, data);
@@ -394,7 +397,7 @@ gboolean gw_io_create_mix_dictionary (const char *output_path,
     fraction = 0.0;
 
     //Loop through the kanji file
-    while (fgets(kanji_input, GW_IO_MAX_FGETS_LINE, kanji_file) != NULL )
+    while (fgets(kanji_input, GW_IO_MAX_FGETS_LINE, kanji_file) != NULL && !_cancel)
     {
       fraction = ((double) curpos)/((double) end);
       if (cb != NULL) cb (fraction, data);
@@ -531,7 +534,8 @@ gboolean gw_io_split_places_from_names_dictionary (const char *output_names_path
     while (fgets(buffer, GW_IO_MAX_FGETS_LINE, inputf) != NULL &&
            place_write_error != EOF &&
            name_write_error  != EOF &&
-           *error == NULL                                        )
+           *error == NULL &&
+           !_cancel)
     {
       fraction = ((double) curpos) / ((double) end);
       if (cb != NULL) cb (fraction, data);
@@ -564,7 +568,7 @@ gboolean gw_io_split_places_from_names_dictionary (const char *output_names_path
 gboolean gw_io_gunzip_file (const char *source_path, const char *target_path,
                             GwIoProgressCallback cb, gpointer data, GError **error)
 {
-    if (*error != NULL) return FALSE;
+    if (error != NULL && *error != NULL) return FALSE;
 
     //Declarations
     char *argv[] = { GZIP, "-cd", NULL };
@@ -679,7 +683,7 @@ gpointer _stdin_func (gpointer data)
     file = fopen(in->uri, "rb");
     stream = fdopen(in->fd, "ab");
 
-    while (!feof(file))
+    while (!feof(file) && !_cancel)
     {
         fraction = ((double) curpos / (double) end);
         if (in->cb != NULL) in->cb (fraction, in->data);
@@ -852,6 +856,12 @@ gboolean gw_io_remove (const char *URI, GError **error)
   resolution = g_remove (URI);
 
   return (error == NULL && *error == NULL);
+}
+
+
+void gw_io_set_cancel_operations (gboolean state)
+{
+    _cancel = state;
 }
 
 
