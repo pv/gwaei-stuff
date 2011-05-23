@@ -65,7 +65,7 @@ printf("BREAK3\n");
     if (_thread == NULL)
       _thread = g_thread_create (_installprogress_install_thread, NULL, TRUE, &error);
 
-    gw_main_handle_error (&error, TRUE);
+    gw_main_handle_error (&error, GTK_WINDOW (window_settings), TRUE);
 }
 
 
@@ -77,10 +77,14 @@ gpointer _installprogress_install_thread (gpointer data)
     GwDictInst *di;
     GError *error;
     GtkBuilder *builder;
-    GtkWidget *dialog_installprogress;
+    GtkWidget *dialog;
+    GtkWidget *window_settings;
 
     //Initializations
+    builder = gw_common_get_builder ();
     list = gw_dictinstlist_get_list ();
+    dialog = GTK_WIDGET (gtk_builder_get_object (builder, "install_progress_dialog"));
+    window_settings = GTK_WIDGET (gtk_builder_get_object (builder, "settings_window"));
     error = NULL;
 
     //Do the installation
@@ -96,16 +100,14 @@ gpointer _installprogress_install_thread (gpointer data)
     }
 
     //Cleanup
-    gw_main_handle_error (&error, TRUE);
+  gdk_threads_enter ();
+    gtk_widget_hide (dialog);
+    gw_main_handle_error (&error, GTK_WINDOW (window_settings), TRUE);
     _thread = NULL;
 
-    gdk_threads_enter ();
-      builder = gw_common_get_builder ();
-      dialog_installprogress = GTK_WIDGET (gtk_builder_get_object (builder, "install_progress_dialog"));
-      gtk_widget_hide (GTK_WIDGET (dialog_installprogress));
-      gw_dictinfolist_initialize ();
-      gw_dictionarymanager_update_items ();
-    gdk_threads_leave ();
+    gw_dictinfolist_initialize ();
+    gw_dictionarymanager_update_items ();
+  gdk_threads_leave ();
 }
 
 

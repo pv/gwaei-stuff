@@ -2350,31 +2350,28 @@ gboolean gw_main_has_selection_by_target (GwTargetOutput TARGET)
 //! @param error A pointer to an error pointer
 //! @param show_dialog Whether to show a dialog or not.
 //!
-void gw_main_handle_error (GError **error, gboolean show_dialog)
+void gw_main_handle_error (GError **error, GtkWindow *parent, gboolean show_dialog)
 {
     //Sanity checks
     if (error == NULL || *error == NULL) return;
 
     //Declarations
-    GtkBuilder *builder;
     GtkWidget *dialog;
-    GtkWindow *main_window;
-    gchar *markup;
     gint response;
-
-    //Initializations
-    builder = gw_common_get_builder ();
-    main_window = GTK_WINDOW (gtk_builder_get_object (builder, "main_window"));
-    markup = g_strdup_printf ("<b>%s</b>\n\n%s", "An Error Occured", (*error)->message);
 
     //Handle the error
     if (show_dialog)
     {
-      dialog = gtk_message_dialog_new_with_markup (main_window,
-                                                   GTK_DIALOG_DESTROY_WITH_PARENT,
+      dialog = gtk_message_dialog_new_with_markup (parent,
+                                                   GTK_DIALOG_MODAL,
                                                    GTK_MESSAGE_ERROR,
                                                    GTK_BUTTONS_CLOSE,
-                                                   markup                         );
+                                                   "<b>%s</b>\n\n%s",
+                                                   "An Error Occured",
+                                                   (*error)->message
+                                                  );
+      g_signal_connect_swapped (dialog, "response", G_CALLBACK (gtk_widget_destroy), dialog);
+      gtk_widget_show_all (GTK_WIDGET (dialog));
       response = gtk_dialog_run (GTK_DIALOG (dialog));
     }
     else
@@ -2383,7 +2380,6 @@ void gw_main_handle_error (GError **error, gboolean show_dialog)
     }
 
     //Cleanup
-    g_free (markup);
     g_error_free (*error);
     *error = NULL;
 }

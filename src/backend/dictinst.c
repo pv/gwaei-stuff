@@ -423,8 +423,8 @@ gboolean gw_dictinst_data_is_valid (GwDictInst *di)
 gboolean gw_dictinst_download (GwDictInst *di, GwIoProgressCallback cb, GError **error)
 {
     //Sanity check
+    if (error != NULL && *error != NULL) return FALSE;
     g_assert (di != NULL);
-    if (*error != NULL) FALSE;
 
     //Declarations
     char *source;
@@ -467,6 +467,10 @@ gboolean gw_dictinst_download (GwDictInst *di, GwIoProgressCallback cb, GError *
 //!
 gboolean gw_dictinst_decompress (GwDictInst *di, GwIoProgressCallback cb, GError **error)
 {
+    //Sanity check
+    if (error != NULL && *error != NULL) return FALSE;
+    g_assert (di != NULL);
+
     //Declarations
     gint status;
     gpointer data;
@@ -528,7 +532,9 @@ gboolean gw_dictinst_decompress (GwDictInst *di, GwIoProgressCallback cb, GError
 //!
 gboolean gw_dictinst_convert_encoding (GwDictInst *di, GwIoProgressCallback cb, GError **error)
 {
-    if (*error != NULL) return FALSE;
+    //Sanity check
+    if (error != NULL && *error != NULL) return FALSE;
+    g_assert (di != NULL);
 
     //Declarations
     char *source;
@@ -574,7 +580,9 @@ gboolean gw_dictinst_convert_encoding (GwDictInst *di, GwIoProgressCallback cb, 
 //!
 gboolean gw_dictinst_postprocess (GwDictInst *di, GwIoProgressCallback cb, GError **error)
 {
-    if (*error != NULL) return FALSE;
+    //Sanity check
+    if (error != NULL && *error != NULL) return FALSE;
+    g_assert (di != NULL);
 
     //Declarations
     gpointer data;
@@ -634,7 +642,9 @@ gboolean gw_dictinst_postprocess (GwDictInst *di, GwIoProgressCallback cb, GErro
 //!
 gboolean gw_dictinst_finalize (GwDictInst *di, GwIoProgressCallback cb, GError **error)
 {
-    if (*error != NULL) return FALSE;
+    //Sanity check
+    if (error != NULL && *error != NULL) return FALSE;
+    g_assert (di != NULL);
 
     //Declarations
     char *source;

@@ -254,7 +254,7 @@ static int _libcurl_update_progress (void  *custom,
 gboolean gw_io_download (char *source_path, char *target_path, GwIoProgressCallback cb,
                               gpointer data, GError **error)
 {
-    if (*error != NULL) return FALSE;
+    if (error != NULL && *error != NULL) return FALSE;
 
     //Declarations
     GQuark quark;
