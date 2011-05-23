@@ -420,6 +420,9 @@ static gboolean _kanji_existance_comparison (GwQueryLine *ql, GwResultLine *rl, 
           strokes_check_passed = FALSE;
       }
     }
+    else
+      if (ql->re_strokes != NULL && *(ql->re_strokes) != NULL)
+        strokes_check_passed = FALSE;
 
     //Calculate the frequency check
     if (rl->frequency != NULL)
@@ -431,6 +434,10 @@ static gboolean _kanji_existance_comparison (GwQueryLine *ql, GwResultLine *rl, 
           frequency_check_passed = FALSE;
       }
     }
+    else
+      if (ql->re_frequency != NULL && *(ql->re_frequency) != NULL)
+        frequency_check_passed = FALSE;
+
 
     //Calculate the grade check
     if (rl->grade != NULL)
@@ -442,6 +449,10 @@ static gboolean _kanji_existance_comparison (GwQueryLine *ql, GwResultLine *rl, 
           grade_check_passed = FALSE;
       }
     }
+    else
+      if (ql->re_grade != NULL && *(ql->re_grade) != NULL)
+        grade_check_passed = FALSE;
+
 
     //Calculate the jlpt check
     if (rl->jlpt != NULL)
@@ -453,6 +464,10 @@ static gboolean _kanji_existance_comparison (GwQueryLine *ql, GwResultLine *rl, 
           jlpt_check_passed = FALSE;
       }
     }
+    else
+      if (ql->re_jlpt != NULL && *(ql->re_jlpt) != NULL)
+        jlpt_check_passed = FALSE;
+
 
 
     //Calculate the romaji check

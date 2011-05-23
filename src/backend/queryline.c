@@ -383,7 +383,6 @@ static GRegex*** _compile_and_allocate_number_search_regex (const char* subject,
     {
       match_text = g_match_info_fetch (match_info, 0);
       expression = g_strdup_printf("\\b%s\\b", match_text + 1);
-      printf("stroke expression: %s\n", expression);
 
       for (i = 0; all_regex_built && i < GW_RELEVANCE_TOTAL; i++)
         if (((*iter)[i] = gw_regex_new (expression, GW_ENGINE_KANJI, i, error)) == NULL) all_regex_built = FALSE;
