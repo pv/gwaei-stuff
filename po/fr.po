@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 1.5.1\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2011-05-21 14:14-0400\n"
+"POT-Creation-Date: 2011-05-24 02:24-0400\n"
 "PO-Revision-Date: 2011-01-01 23:44+0100\n"
 "Last-Translator: Nicolas Laurent\n"
 "Language-Team: none\n"
@@ -20,110 +20,110 @@ msgstr ""
 "X-Poedit-Country: FRANCE\n"
 "X-Poedit-Basepath: /home/nicolas/dev/japanese/gwaei\n"
 
-#: ../src/backend/dictinfo.c:81
+#: ../src/backend/dictinfo.c:83
 #, c-format
 msgid "%s Dictionary"
 msgstr "Dictionnaire %s"
 
-#: ../src/backend/dictinfo.c:126 ../src/backend/dictinstlist.c:60
+#: ../src/backend/dictinfo.c:128 ../src/backend/dictinstlist.c:61
 msgid "English Dictionary"
 msgstr "Dictionnaire Anglais"
 
-#: ../src/backend/dictinfo.c:127 ../src/backend/dictinstlist.c:59
+#: ../src/backend/dictinfo.c:129 ../src/backend/dictinstlist.c:60
 msgid "English"
 msgstr "Anglais"
 
-#: ../src/backend/dictinfo.c:132
+#: ../src/backend/dictinfo.c:134
 msgid "Names Dictionary"
 msgstr "Dictionnaire des noms"
 
-#: ../src/backend/dictinfo.c:133
+#: ../src/backend/dictinfo.c:135
 msgid "Names"
 msgstr "Noms"
 
-#: ../src/backend/dictinfo.c:138
+#: ../src/backend/dictinfo.c:140
 msgid "Places Dictionary"
 msgstr "Dictionnaire des lieux"
 
-#: ../src/backend/dictinfo.c:139
+#: ../src/backend/dictinfo.c:141
 msgid "Places"
 msgstr "Lieux"
 
-#: ../src/backend/dictinfo.c:147 ../src/backend/dictinstlist.c:76
+#: ../src/backend/dictinfo.c:149 ../src/backend/dictinstlist.c:77
 msgid "Kanji Dictionary"
 msgstr "Dictionnaire de kanjis"
 
-#: ../src/backend/dictinfo.c:148 ../src/backend/dictinstlist.c:75
+#: ../src/backend/dictinfo.c:150 ../src/backend/dictinstlist.c:76
 msgid "Kanji"
 msgstr "Kanjis"
 
-#: ../src/backend/dictinfo.c:156 ../src/backend/dictinstlist.c:108
+#: ../src/backend/dictinfo.c:158 ../src/backend/dictinstlist.c:109
 msgid "Examples Dictionary"
 msgstr "Dictionnaire des exemples"
 
-#: ../src/backend/dictinfo.c:157 ../src/backend/dictinstlist.c:107
+#: ../src/backend/dictinfo.c:159 ../src/backend/dictinstlist.c:108
 msgid "Examples"
 msgstr "Exemples"
 
-#: ../src/backend/dictinstlist.c:61
+#: ../src/backend/dictinstlist.c:62
 #, fuzzy
 msgid "The venerable Japanese-English Dictionary developed by Jim Breen."
 msgstr "Dictionnaire Japonais-Anglais gWaei"
 
-#: ../src/backend/dictinstlist.c:77
+#: ../src/backend/dictinstlist.c:78
 msgid ""
 "A Kanji dictionary based off of kanjidic with radical information combined."
 msgstr ""
 
-#: ../src/backend/dictinstlist.c:91
+#: ../src/backend/dictinstlist.c:92
 #, fuzzy
 msgid "Names and Places"
 msgstr "  waei -d Places "
 
-#: ../src/backend/dictinstlist.c:92
+#: ../src/backend/dictinstlist.c:93
 #, fuzzy
 msgid "Names and Places Dictionary"
 msgstr "Dictionnaire des lieux"
 
-#: ../src/backend/dictinstlist.c:93
+#: ../src/backend/dictinstlist.c:94
 msgid ""
 "Based off of Enamdic, but with the names split from the places for 2 "
 "separate dictionaries."
 msgstr ""
 
-#: ../src/backend/dictinstlist.c:109
+#: ../src/backend/dictinstlist.c:110
 msgid ""
 "A collection of Japanese/English sentences initially compiled by Professor "
 "Yasuhito Tanaka at Hyogo University and his students."
 msgstr ""
 
-#: ../src/backend/dictinstlist.c:124
+#: ../src/backend/dictinstlist.c:125
 msgid "Other"
 msgstr ""
 
-#: ../src/backend/dictinstlist.c:125
+#: ../src/backend/dictinstlist.c:126
 #, fuzzy
 msgid "Other Dictionary"
 msgstr "Autres dictionnaires"
 
-#: ../src/backend/dictinstlist.c:126
+#: ../src/backend/dictinstlist.c:127
 #, fuzzy
 msgid "Install a custom dictionary."
 msgstr "Installer un dictionnaire"
 
-#: ../src/backend/io.c:698
+#: ../src/backend/io.c:702
 msgid "Unable to read data from the input file."
 msgstr ""
 
-#: ../src/backend/io.c:704
+#: ../src/backend/io.c:708
 msgid "Unable to write to the external program's input stream."
 msgstr ""
 
-#: ../src/backend/io.c:746
+#: ../src/backend/io.c:750
 msgid "Unable to read data from the external program's pipe."
 msgstr ""
 
-#: ../src/backend/io.c:752
+#: ../src/backend/io.c:756
 msgid "Unable to write the stream's output to a file."
 msgstr ""
 
@@ -153,7 +153,7 @@ msgstr "Installation en cours ..."
 msgid "description"
 msgstr ""
 
-#: ../src/gtk/ui/main.ui.h:1 ../src/gtk/main.c:2147
+#: ../src/gtk/ui/main.ui.h:1 ../src/gtk/main.c:2148
 msgid "A_ppend"
 msgstr "A_jouter"
 
@@ -562,26 +562,26 @@ msgstr[0] "(%d pertinent)"
 msgstr[1] "(%d pertinents)"
 
 #. TRANSLATORS: The argument is the dictionary long name
-#: ../src/gtk/main.c:1635
+#: ../src/gtk/main.c:1636
 #, c-format
 msgid "Nothing found in the %s!"
 msgstr "Aucun résultat trouvé dans le %s !"
 
-#: ../src/gtk/main.c:1666
+#: ../src/gtk/main.c:1667
 msgid "Search Other Dictionary: "
 msgstr "Rechercher dans d'autres dictionnaires : "
 
-#: ../src/gtk/main.c:1705
+#: ../src/gtk/main.c:1706
 msgid "Search Online: "
 msgstr "Rechercher sur Internet : "
 
-#: ../src/gtk/main.c:1758
+#: ../src/gtk/main.c:1759
 #, c-format
 msgid "gWaei Usage Tip #%d: "
 msgstr "Astuce d'utilisation de gWaei n°%d :"
 
 #. Tip 1
-#: ../src/gtk/main.c:1771
+#: ../src/gtk/main.c:1772
 #, c-format
 msgid ""
 "Use the Unknown Character from the Insert menu or toolbar in place of "
@@ -599,15 +599,15 @@ msgstr ""
 "dont Kanjipad fonctionne, il est très important de dessiner les kanjis avec "
 "le nombre correct de traits et de les tracer dans le bon sens."
 
-#: ../src/gtk/main.c:1778
+#: ../src/gtk/main.c:1779
 msgid "Inputting Unknown Kanji"
 msgstr "Entrer un kanji inconnu"
 
-#: ../src/gtk/main.c:1795
+#: ../src/gtk/main.c:1796
 msgid "Getting More Exact Matches"
 msgstr "Obtenir plus de résultat exacts"
 
-#: ../src/gtk/main.c:1801
+#: ../src/gtk/main.c:1802
 msgid ""
 "Use the Word-edge Mark and the Not-word-edge Mark from the insert menu to "
 "get more relevant results.  fish\\b will return results like fish and "
@@ -620,7 +620,7 @@ msgstr ""
 "où \"fish\" n'est pas en bordure de mot, comme \"fisherman\"."
 
 #. Tip 3
-#: ../src/gtk/main.c:1809
+#: ../src/gtk/main.c:1810
 #, c-format
 msgid ""
 "Use the And Character or Or Character to search for results that contain a "
@@ -633,15 +633,15 @@ msgstr ""
 "qui pourraient ne pas être consécutifs.« cat&dogs » retournera seulement les "
 "résultats qui contiennent les deux mots, comme « %s »."
 
-#: ../src/gtk/main.c:1815
+#: ../src/gtk/main.c:1816
 msgid "Searching for Multiple Words"
 msgstr "Recherche de mots multiples"
 
-#: ../src/gtk/main.c:1832
+#: ../src/gtk/main.c:1833
 msgid "Make a Vocabulary List"
 msgstr "Faire une liste de vocabulaire"
 
-#: ../src/gtk/main.c:1838
+#: ../src/gtk/main.c:1839
 msgid ""
 "Specific sections of results can be printed or saved by dragging the mouse "
 "to highlight them.  Using this in combination with the Append command from "
@@ -654,11 +654,11 @@ msgstr ""
 "le menu « Fichier » ou depuis la barre d'outils, permet de rapidement et "
 "facilement créer des listes de vocabulaire."
 
-#: ../src/gtk/main.c:1848
+#: ../src/gtk/main.c:1849
 msgid "Why Use the Mouse?"
 msgstr "Pourquoi donc utiliser la souris ?"
 
-#: ../src/gtk/main.c:1854
+#: ../src/gtk/main.c:1855
 msgid ""
 "Typing something will move the focus to the search input box.  Hitting the "
 "Up or Down arrow key will move the focus to the results pane so you can "
@@ -671,11 +671,11 @@ msgstr ""
 "combinaison Alt-Haut ou Alt-Bas permettra de basculer le dictionnaire actif "
 "parmi tous les dictionnaires installés."
 
-#: ../src/gtk/main.c:1864
+#: ../src/gtk/main.c:1865
 msgid "Get Ready for the JLPT"
 msgstr "Préparez vous pour le JLPT"
 
-#: ../src/gtk/main.c:1870
+#: ../src/gtk/main.c:1871
 msgid ""
 "The Kanji dictionary has some hidden features.  One such one is the ability "
 "to filter out Kanji that don't meet a certain criteria.  If you are planning "
@@ -696,11 +696,11 @@ msgstr ""
 "Une autre de ces fonctions cachées, est la possible de filtrer les kanjis "
 "par niveau d'étude au Japon, à l'aide du code G# (où # est l'année d'étude)."
 
-#: ../src/gtk/main.c:1884
+#: ../src/gtk/main.c:1885
 msgid "Just drag words in!"
 msgstr "Glissez et déposez les mots !"
 
-#: ../src/gtk/main.c:1890
+#: ../src/gtk/main.c:1891
 msgid ""
 "If you drag and drop a highlighted word into gWaei's search result box, "
 "gWaei will automatically start a search using that text.  This can be a nice "
@@ -711,11 +711,11 @@ msgstr ""
 "un bon moyen de rapidement vérifier des mots lors de vos recherches sur le "
 "web."
 
-#: ../src/gtk/main.c:1901
+#: ../src/gtk/main.c:1902
 msgid "What does (adj-i) mean?"
 msgstr "Que signifie (adj-i) ?"
 
-#: ../src/gtk/main.c:1907
+#: ../src/gtk/main.c:1908
 msgid ""
 "It is part of the terminalogy used by the EDICT group of dictionaries to "
 "categorize words.  Some are obvious, but there are a number that there is no "
@@ -732,11 +732,11 @@ msgstr ""
 "sur l'entrée du menu d'aide intitulée « Glossaire terminologique du "
 "dictionnaire » pour y avoir accès."
 
-#: ../src/gtk/main.c:1919
+#: ../src/gtk/main.c:1920
 msgid "Books are Heavy"
 msgstr "Les livres sont lourds"
 
-#: ../src/gtk/main.c:1925
+#: ../src/gtk/main.c:1926
 msgid ""
 "Aways wear a construction helmet when working with books.  They are "
 "dangerous heavy objects that can at any point fall on and injure you.  "
@@ -748,15 +748,15 @@ msgstr ""
 "Avertissez tous vos amis. Ils vous en remercieront plus tard. Si si, "
 "Vraiment."
 
-#: ../src/gtk/main.c:2136
+#: ../src/gtk/main.c:2137
 msgid "A_ppend Selected"
 msgstr "A_jouter la sélection dans"
 
-#: ../src/gtk/main.c:2138
+#: ../src/gtk/main.c:2139
 msgid "Save Selected _As"
 msgstr "Enregister la sélection _sous"
 
-#: ../src/gtk/main.c:2140
+#: ../src/gtk/main.c:2141
 msgid "_Print Selected"
 msgstr "_Imprimer la sélection"
 
@@ -768,7 +768,7 @@ msgstr "Enregistrer sous"
 msgid "vocabulary.txt"
 msgstr "vocabulaire.txt"
 
-#: ../src/gtk/main-callbacks.c:1088
+#: ../src/gtk/main-callbacks.c:1113
 msgid ""
 "Program for Japanese translation and reference. The\n"
 "dictionaries are supplied by Jim Breen's WWWJDIC.\n"
@@ -782,24 +782,24 @@ msgstr ""
 "Dédié à Chuus."
 
 #. TRANSLATORS: You can add your own name to the translation of this field, it will be displayed in the "about" box when gwaei is run in your language
-#: ../src/gtk/main-callbacks.c:1092
+#: ../src/gtk/main-callbacks.c:1117
 msgid "translator-credits"
 msgstr "Nicolas Laurent (2009-2011)"
 
 #. TRANSLATORS: The first variable is the expression to look for, the second is the dictionary full name
-#: ../src/gtk/main-callbacks.c:1679
+#: ../src/gtk/main-callbacks.c:1708
 #, c-format
 msgid "Search for \"%s\" in the %s"
 msgstr "Recherche de \"%s\" dans le %s"
 
 #. TRANSLATORS: The variable is the expression to look for
-#: ../src/gtk/main-callbacks.c:1681
+#: ../src/gtk/main-callbacks.c:1710
 #, c-format
 msgid "Search for \"%s\" in a Different Dictionary"
 msgstr "Rechercher \"%s\" dans un autre dictionnaire"
 
 #. TRANSLATORS: The variable is the expression to look for
-#: ../src/gtk/main-callbacks.c:1683
+#: ../src/gtk/main-callbacks.c:1712
 #, c-format
 msgid "Cross-reference \"%s\" Online"
 msgstr "Rechercher \"%s\" sur Internet"

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 1.4.0\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2011-05-21 14:14-0400\n"
+"POT-Creation-Date: 2011-05-24 02:24-0400\n"
 "PO-Revision-Date: 2004-01-01 20:41+0100\n"
 "Last-Translator: Pavel Fric <pavelfric@seznam.cz>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
@@ -23,110 +23,110 @@ msgstr ""
 "X-Poedit-Basepath: /home/nicolas/dev/japanese/gwaei\n"
 "X-Generator: Lokalize 1.0\n"
 
-#: ../src/backend/dictinfo.c:81
+#: ../src/backend/dictinfo.c:83
 #, c-format
 msgid "%s Dictionary"
 msgstr "Slovník %s"
 
-#: ../src/backend/dictinfo.c:126 ../src/backend/dictinstlist.c:60
+#: ../src/backend/dictinfo.c:128 ../src/backend/dictinstlist.c:61
 msgid "English Dictionary"
 msgstr "Anglický slovník"
 
-#: ../src/backend/dictinfo.c:127 ../src/backend/dictinstlist.c:59
+#: ../src/backend/dictinfo.c:129 ../src/backend/dictinstlist.c:60
 msgid "English"
 msgstr "Angličtina"
 
-#: ../src/backend/dictinfo.c:132
+#: ../src/backend/dictinfo.c:134
 msgid "Names Dictionary"
 msgstr "Slovník jmen"
 
-#: ../src/backend/dictinfo.c:133
+#: ../src/backend/dictinfo.c:135
 msgid "Names"
 msgstr "Jména"
 
-#: ../src/backend/dictinfo.c:138
+#: ../src/backend/dictinfo.c:140
 msgid "Places Dictionary"
 msgstr "Slovník míst"
 
-#: ../src/backend/dictinfo.c:139
+#: ../src/backend/dictinfo.c:141
 msgid "Places"
 msgstr "Místa"
 
-#: ../src/backend/dictinfo.c:147 ../src/backend/dictinstlist.c:76
+#: ../src/backend/dictinfo.c:149 ../src/backend/dictinstlist.c:77
 msgid "Kanji Dictionary"
 msgstr "Slovník kanji"
 
-#: ../src/backend/dictinfo.c:148 ../src/backend/dictinstlist.c:75
+#: ../src/backend/dictinfo.c:150 ../src/backend/dictinstlist.c:76
 msgid "Kanji"
 msgstr "Kanji"
 
-#: ../src/backend/dictinfo.c:156 ../src/backend/dictinstlist.c:108
+#: ../src/backend/dictinfo.c:158 ../src/backend/dictinstlist.c:109
 msgid "Examples Dictionary"
 msgstr "Slovník příkladů"
 
-#: ../src/backend/dictinfo.c:157 ../src/backend/dictinstlist.c:107
+#: ../src/backend/dictinfo.c:159 ../src/backend/dictinstlist.c:108
 msgid "Examples"
 msgstr "Příklady"
 
-#: ../src/backend/dictinstlist.c:61
+#: ../src/backend/dictinstlist.c:62
 #, fuzzy
 msgid "The venerable Japanese-English Dictionary developed by Jim Breen."
 msgstr "Japonsko-anglický slovník gWaei "
 
-#: ../src/backend/dictinstlist.c:77
+#: ../src/backend/dictinstlist.c:78
 msgid ""
 "A Kanji dictionary based off of kanjidic with radical information combined."
 msgstr ""
 
-#: ../src/backend/dictinstlist.c:91
+#: ../src/backend/dictinstlist.c:92
 #, fuzzy
 msgid "Names and Places"
 msgstr "  waei -d Places "
 
-#: ../src/backend/dictinstlist.c:92
+#: ../src/backend/dictinstlist.c:93
 #, fuzzy
 msgid "Names and Places Dictionary"
 msgstr "Slovník míst"
 
-#: ../src/backend/dictinstlist.c:93
+#: ../src/backend/dictinstlist.c:94
 msgid ""
 "Based off of Enamdic, but with the names split from the places for 2 "
 "separate dictionaries."
 msgstr ""
 
-#: ../src/backend/dictinstlist.c:109
+#: ../src/backend/dictinstlist.c:110
 msgid ""
 "A collection of Japanese/English sentences initially compiled by Professor "
 "Yasuhito Tanaka at Hyogo University and his students."
 msgstr ""
 
-#: ../src/backend/dictinstlist.c:124
+#: ../src/backend/dictinstlist.c:125
 msgid "Other"
 msgstr ""
 
-#: ../src/backend/dictinstlist.c:125
+#: ../src/backend/dictinstlist.c:126
 #, fuzzy
 msgid "Other Dictionary"
 msgstr "Jiné slovníky"
 
-#: ../src/backend/dictinstlist.c:126
+#: ../src/backend/dictinstlist.c:127
 #, fuzzy
 msgid "Install a custom dictionary."
 msgstr "Nainstalovat slovník"
 
-#: ../src/backend/io.c:698
+#: ../src/backend/io.c:702
 msgid "Unable to read data from the input file."
 msgstr ""
 
-#: ../src/backend/io.c:704
+#: ../src/backend/io.c:708
 msgid "Unable to write to the external program's input stream."
 msgstr ""
 
-#: ../src/backend/io.c:746
+#: ../src/backend/io.c:750
 msgid "Unable to read data from the external program's pipe."
 msgstr ""
 
-#: ../src/backend/io.c:752
+#: ../src/backend/io.c:756
 msgid "Unable to write the stream's output to a file."
 msgstr ""
 
@@ -156,7 +156,7 @@ msgstr "Instaluje se..."
 msgid "description"
 msgstr ""
 
-#: ../src/gtk/ui/main.ui.h:1 ../src/gtk/main.c:2147
+#: ../src/gtk/ui/main.ui.h:1 ../src/gtk/main.c:2148
 msgid "A_ppend"
 msgstr "Při_pojit"
 
@@ -565,26 +565,26 @@ msgstr[0] "(%d odpovídá)"
 msgstr[1] "(%d pertinents)"
 
 #. TRANSLATORS: The argument is the dictionary long name
-#: ../src/gtk/main.c:1635
+#: ../src/gtk/main.c:1636
 #, c-format
 msgid "Nothing found in the %s!"
 msgstr "V %s nebyl nalezen žádný výsledek!"
 
-#: ../src/gtk/main.c:1666
+#: ../src/gtk/main.c:1667
 msgid "Search Other Dictionary: "
 msgstr "Hledat v ostatních slovnících: "
 
-#: ../src/gtk/main.c:1705
+#: ../src/gtk/main.c:1706
 msgid "Search Online: "
 msgstr "Hledat na internetu: "
 
-#: ../src/gtk/main.c:1758
+#: ../src/gtk/main.c:1759
 #, c-format
 msgid "gWaei Usage Tip #%d: "
 msgstr "Rada pro používání gWaei n°%d :"
 
 #. Tip 1
-#: ../src/gtk/main.c:1771
+#: ../src/gtk/main.c:1772
 #, c-format
 msgid ""
 "Use the Unknown Character from the Insert menu or toolbar in place of "
@@ -602,15 +602,15 @@ msgstr ""
 "způsobem Kanjipad uvnitř pracuje, je velmi důležité kanji kreslit se "
 "správným počtem tahů  a kreslit je ve správném směru."
 
-#: ../src/gtk/main.c:1778
+#: ../src/gtk/main.c:1779
 msgid "Inputting Unknown Kanji"
 msgstr "Zadat neznámý kanji"
 
-#: ../src/gtk/main.c:1795
+#: ../src/gtk/main.c:1796
 msgid "Getting More Exact Matches"
 msgstr "Obdržet více přesných shod"
 
-#: ../src/gtk/main.c:1801
+#: ../src/gtk/main.c:1802
 msgid ""
 "Use the Word-edge Mark and the Not-word-edge Mark from the insert menu to "
 "get more relevant results.  fish\\b will return results like fish and "
@@ -623,7 +623,7 @@ msgstr ""
 "není na okraji slova, jako je \"fisherman\"."
 
 #. Tip 3
-#: ../src/gtk/main.c:1809
+#: ../src/gtk/main.c:1810
 #, c-format
 msgid ""
 "Use the And Character or Or Character to search for results that contain a "
@@ -635,15 +635,15 @@ msgstr ""
 "výsledky, které obsahují spojení slov, jež nemusejí následovat hned po sobě. "
 "« cat&dogs » vrátí pouze výsledky, které obsahují dvě slova, jako « %s »."
 
-#: ../src/gtk/main.c:1815
+#: ../src/gtk/main.c:1816
 msgid "Searching for Multiple Words"
 msgstr "Hledají se vícenásobná slova"
 
-#: ../src/gtk/main.c:1832
+#: ../src/gtk/main.c:1833
 msgid "Make a Vocabulary List"
 msgstr "Udělat seznam se slovní zásobou"
 
-#: ../src/gtk/main.c:1838
+#: ../src/gtk/main.c:1839
 msgid ""
 "Specific sections of results can be printed or saved by dragging the mouse "
 "to highlight them.  Using this in combination with the Append command from "
@@ -655,11 +655,11 @@ msgstr ""
 "dostupný přes nabídku « Soubor » nebo z pruhu s nástroji, umožněno rychlé a "
 "snadné vytváření seznamů slovíček."
 
-#: ../src/gtk/main.c:1848
+#: ../src/gtk/main.c:1849
 msgid "Why Use the Mouse?"
 msgstr "Proč tedy používat myš?"
 
-#: ../src/gtk/main.c:1854
+#: ../src/gtk/main.c:1855
 msgid ""
 "Typing something will move the focus to the search input box.  Hitting the "
 "Up or Down arrow key will move the focus to the results pane so you can "
@@ -671,11 +671,11 @@ msgstr ""
 "můžete posunovat výsledky. Stisknutí spojení kláves Alt + šipka nahoru nebo "
 "Alt + šipka dolů budete točit nyní nainstalovanými slovníky."
 
-#: ../src/gtk/main.c:1864
+#: ../src/gtk/main.c:1865
 msgid "Get Ready for the JLPT"
 msgstr "Připravte se na JLPT"
 
-#: ../src/gtk/main.c:1870
+#: ../src/gtk/main.c:1871
 msgid ""
 "The Kanji dictionary has some hidden features.  One such one is the ability "
 "to filter out Kanji that don't meet a certain criteria.  If you are planning "
@@ -696,11 +696,11 @@ msgstr ""
 "Jinou z těchto skrytých funkcí je možnost filtrovat kanji na úrovni, jaká se "
 "učí v japonských školách - kód G# (kde # je rokem studia)."
 
-#: ../src/gtk/main.c:1884
+#: ../src/gtk/main.c:1885
 msgid "Just drag words in!"
 msgstr "Prostě přetáhněte slova!"
 
-#: ../src/gtk/main.c:1890
+#: ../src/gtk/main.c:1891
 msgid ""
 "If you drag and drop a highlighted word into gWaei's search result box, "
 "gWaei will automatically start a search using that text.  This can be a nice "
@@ -711,11 +711,11 @@ msgstr ""
 "text. To může být hezkou cestou pro rychlé hledání slov při procházení "
 "internetových stránek. "
 
-#: ../src/gtk/main.c:1901
+#: ../src/gtk/main.c:1902
 msgid "What does (adj-i) mean?"
 msgstr "Co znamená (adj-i)?"
 
-#: ../src/gtk/main.c:1907
+#: ../src/gtk/main.c:1908
 msgid ""
 "It is part of the terminalogy used by the EDICT group of dictionaries to "
 "categorize words.  Some are obvious, but there are a number that there is no "
@@ -733,11 +733,11 @@ msgstr ""
 "položku Slovníček pojmů nacházejících se ve slovníku, kterou najdete v "
 "nabídce Nápověda, abyste se k ní dostal."
 
-#: ../src/gtk/main.c:1919
+#: ../src/gtk/main.c:1920
 msgid "Books are Heavy"
 msgstr "Knihy jsou těžké"
 
-#: ../src/gtk/main.c:1925
+#: ../src/gtk/main.c:1926
 msgid ""
 "Aways wear a construction helmet when working with books.  They are "
 "dangerous heavy objects that can at any point fall on and injure you.  "
@@ -748,15 +748,15 @@ msgstr ""
 "těžké předměty, které mohou začít kdykoli padat a poranit vás. Povězte o tom "
 "také, prosím, všem svým přátelům. Později vám poděkují. Opravdu."
 
-#: ../src/gtk/main.c:2136
+#: ../src/gtk/main.c:2137
 msgid "A_ppend Selected"
 msgstr "Při_pojit vybrané"
 
-#: ../src/gtk/main.c:2138
+#: ../src/gtk/main.c:2139
 msgid "Save Selected _As"
 msgstr "Uložit výběr _jako"
 
-#: ../src/gtk/main.c:2140
+#: ../src/gtk/main.c:2141
 msgid "_Print Selected"
 msgstr "_Vytisknout vybrané"
 
@@ -768,7 +768,7 @@ msgstr "Uložit jako"
 msgid "vocabulary.txt"
 msgstr "slovník.txt"
 
-#: ../src/gtk/main-callbacks.c:1088
+#: ../src/gtk/main-callbacks.c:1113
 #, fuzzy
 msgid ""
 "Program for Japanese translation and reference. The\n"
@@ -782,24 +782,24 @@ msgstr ""
 "námět."
 
 #. TRANSLATORS: You can add your own name to the translation of this field, it will be displayed in the "about" box when gwaei is run in your language
-#: ../src/gtk/main-callbacks.c:1092
+#: ../src/gtk/main-callbacks.c:1117
 msgid "translator-credits"
 msgstr "www.fripohled.blogspot.com"
 
 #. TRANSLATORS: The first variable is the expression to look for, the second is the dictionary full name
-#: ../src/gtk/main-callbacks.c:1679
+#: ../src/gtk/main-callbacks.c:1708
 #, c-format
 msgid "Search for \"%s\" in the %s"
 msgstr "Hledat \"%s\" v %s"
 
 #. TRANSLATORS: The variable is the expression to look for
-#: ../src/gtk/main-callbacks.c:1681
+#: ../src/gtk/main-callbacks.c:1710
 #, c-format
 msgid "Search for \"%s\" in a Different Dictionary"
 msgstr "Hledat \"%s\" v jiném slovníku"
 
 #. TRANSLATORS: The variable is the expression to look for
-#: ../src/gtk/main-callbacks.c:1683
+#: ../src/gtk/main-callbacks.c:1712
 #, c-format
 msgid "Cross-reference \"%s\" Online"
 msgstr "Hledat \"%s\" na internetu"
