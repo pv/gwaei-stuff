@@ -188,9 +188,7 @@ gboolean gw_searchitem_do_pre_search_prep (GwSearchItem* item)
 
     if (item->fd == NULL)
     {
-      const char *directory = gw_util_get_directory_for_engine (item->dictionary->engine);
-      const char *filename = item->dictionary->filename;
-      char *path = g_build_filename (directory, filename, NULL);
+      char *path = gw_dictinfo_get_uri (item->dictionary);
       item->fd = fopen (path, "r");
       g_free (path);
       path = NULL;

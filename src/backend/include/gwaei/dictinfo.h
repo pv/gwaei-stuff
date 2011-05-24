@@ -55,6 +55,7 @@ void gw_dictinfo_free(GwDictInfo*);
 
 GwDictInfo* gw_dictinfolist_get_dictinfo_fuzzy (const char*);
 gboolean gw_dictinfo_uninstall (GwDictInfo*, GwIoProgressCallback, GError**);
+char* gw_dictinfo_get_uri (GwDictInfo*);
 
 
 #endif

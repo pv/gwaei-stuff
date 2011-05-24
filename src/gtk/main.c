@@ -625,10 +625,16 @@ void gw_main_set_dictionary_by_searchitem (GwSearchItem *item)
 //!
 void gw_main_set_search_progressbar_by_searchitem (GwSearchItem *item)
 {
-  /*
-    GtkWidget *progress = GTK_WIDGET (gtk_builder_get_object(builder, "search_progressbar"));
-    long current = 0;
-    long total = 0;
+    //Declarations
+    GtkWidget *entry;
+    long current;
+    long total;
+    double fraction;
+
+    //Initializations
+    entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
+    current = 0;
+    total = 0;
 
     if (item != NULL && item->dictionary != NULL)
     {
@@ -636,22 +642,17 @@ void gw_main_set_search_progressbar_by_searchitem (GwSearchItem *item)
       total = item->dictionary->total_lines;
     }
 
-    if (total == 0) {
-      gtk_progress_bar_pulse (GTK_PROGRESS_BAR (progress));
-      gtk_progress_bar_set_pulse_step (GTK_PROGRESS_BAR (progress), 0.05);
-    }
+    if (current == 0) fraction = 0.0;
+    else fraction = (double)current / (double)total;
 
-    else if (item == NULL || item->dictionary == NULL || total == 0 || ((double)current/(double)total) > 1.0 || item->status == GW_SEARCH_IDLE || item->status == GW_SEARCH_FINISHING)
+    if (item == NULL || item->dictionary == NULL || total == 0 || fraction > 1.0 || item->status == GW_SEARCH_IDLE || item->status == GW_SEARCH_FINISHING)
     {
-      gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR (progress), 0.0);
-      gtk_widget_show (GTK_WIDGET (progress));
+      gtk_entry_set_progress_fraction (GTK_ENTRY (entry), 0.0);
     }
     else
     {
-      gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR (progress), ((double)current/(double)total));
-      gtk_widget_show (GTK_WIDGET (progress));
+      gtk_entry_set_progress_fraction (GTK_ENTRY (entry), fraction);
     }
-    */
 }
 
 

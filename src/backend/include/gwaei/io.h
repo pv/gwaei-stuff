@@ -42,5 +42,6 @@ const gchar* gw_io_get_savepath (void);
 
 gboolean gw_io_pipe_data (char**, const char *source_path, const char *target_path, GwIoProgressCallback cb, gpointer data, GError **error);
 void gw_io_set_cancel_operations (gboolean);
+int gw_io_get_total_lines_for_file (const char*);
 
 #endif

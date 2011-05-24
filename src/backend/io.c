@@ -864,4 +864,26 @@ void gw_io_set_cancel_operations (gboolean state)
     _cancel = state;
 }
 
+int gw_io_get_total_lines_for_file (const char *filename)
+{
+    //Declarations
+    const int MAX = 512;
+    FILE *file;
+    char buffer[MAX];
+    int total;
+
+    //Initializations
+    file = fopen (filename, "r");
+    total = 0;
+
+    while (fgets(buffer, MAX, file) != NULL)
+    {
+      total++;
+    }
+
+    //Cleanup
+    fclose(file);
+   
+    return total;
+}
 

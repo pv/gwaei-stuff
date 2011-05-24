@@ -60,6 +60,7 @@ GwDictInfo* gw_dictinfo_new (GwEngine ENGINE, const char *FILENAME)
     g_assert (ENGINE >= 0 && ENGINE <= GW_ENGINE_TOTAL && FILENAME != NULL);
 
     GwDictInfo *temp;
+    char *uri;
 
     //Allocate some memory
     if ((temp = malloc(sizeof(GwDictInfo))) == NULL) return NULL;
@@ -70,11 +71,12 @@ GwDictInfo* gw_dictinfo_new (GwEngine ENGINE, const char *FILENAME)
     temp->filename = NULL;
     temp->shortname = NULL;
     temp->longname = NULL;
-    temp->total_lines = 0;
     temp->engine = ENGINE;
-
-    //Copy the name of the dictionary over
     temp->filename = g_strdup_printf ("%s", FILENAME);
+
+    uri = gw_dictinfo_get_uri (temp);
+    temp->total_lines = gw_io_get_total_lines_for_file (uri);
+    g_free (uri);
 
     if (!_overlay_default_builtin_dictionary_settings (temp))
     {
@@ -190,5 +192,20 @@ gboolean gw_dictinfo_uninstall (GwDictInfo *di, GwIoProgressCallback cb, GError 
 
     return (*error == NULL);
 }
+ 
 
+char* gw_dictinfo_get_uri (GwDictInfo *di)
+{
+    //Declarations
+    const char *directory;
+    const char *filename;
+    char *path;
+
+    //Initializations
+    directory = gw_util_get_directory_for_engine (di->engine);
+    filename = di->filename;
+    path = g_build_filename (directory, filename, NULL);
+
+    return path;
+}
 
