@@ -75,7 +75,6 @@ void gw_main_set_color_to_swatch (const char*, const char*);
 
 gboolean gw_update_icons_for_selection (gpointer);
 gboolean gw_main_keep_searching_timeout (gpointer);
-void gw_main_handle_error (GError**, GtkWindow*, gboolean);
 
 
 #endif

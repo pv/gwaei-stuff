@@ -24,4 +24,6 @@ GtkWidget* gw_common_get_widget_by_target (const GwTargetOutput);
 gpointer gw_common_get_gobject_by_target (const GwTargetOutput);
 gboolean gw_common_widget_equals_target (GtkWidget*, const GwTargetOutput);
 
+void gw_common_handle_error (GError**, GtkWindow*, gboolean);
+
 #endif

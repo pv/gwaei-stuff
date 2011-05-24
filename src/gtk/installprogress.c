@@ -65,7 +65,7 @@ printf("BREAK3\n");
     if (_thread == NULL)
       _thread = g_thread_create (_installprogress_install_thread, NULL, TRUE, &error);
 
-    gw_main_handle_error (&error, GTK_WINDOW (window_settings), TRUE);
+    gw_common_handle_error (&error, GTK_WINDOW (window_settings), TRUE);
 }
 
 
@@ -103,7 +103,7 @@ gpointer _installprogress_install_thread (gpointer data)
   gdk_threads_enter ();
     gw_dictinstlist_set_cancel_operations (FALSE);
     gtk_widget_hide (dialog);
-    gw_main_handle_error (&error, GTK_WINDOW (window_settings), TRUE);
+    gw_common_handle_error (&error, GTK_WINDOW (window_settings), TRUE);
     _thread = NULL;
 
     gw_dictinfolist_initialize ();

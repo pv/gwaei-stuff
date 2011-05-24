@@ -543,7 +543,7 @@ G_MODULE_EXPORT void gw_main_save_as_cb (GtkWidget *widget, gpointer data)
     gtk_widget_destroy (dialog);
     g_free (text);
     text = NULL;
-    gw_main_handle_error (&error, GTK_WINDOW (window), TRUE);
+    gw_common_handle_error (&error, GTK_WINDOW (window), TRUE);
 }
 
 
@@ -587,7 +587,7 @@ G_MODULE_EXPORT void gw_main_save_cb (GtkWidget *widget, gpointer data)
     g_free (text);
     text = NULL;
 
-    gw_main_handle_error (&error, GTK_WINDOW (window), TRUE);
+    gw_common_handle_error (&error, GTK_WINDOW (window), TRUE);
 }
 
 
@@ -959,7 +959,7 @@ G_MODULE_EXPORT void gw_main_edit_cb (GtkWidget *widget, gpointer data)
 
     gtk_show_uri (NULL, uri, gtk_get_current_event_time (), &error);
 
-    gw_main_handle_error (&error, GTK_WINDOW (window), TRUE);
+    gw_common_handle_error (&error, GTK_WINDOW (window), TRUE);
 
     //Cleanup
     g_free (uri);
@@ -989,7 +989,7 @@ G_MODULE_EXPORT void gw_main_irc_channel_cb (GtkWidget *widget, gpointer data)
     gtk_show_uri (NULL, "irc://irc.freenode.net/gWaei", gtk_get_current_event_time (), &error);
 
     //Cleanup
-    gw_main_handle_error (&error, GTK_WINDOW (window), TRUE);
+    gw_common_handle_error (&error, GTK_WINDOW (window), TRUE);
 }
 
 
@@ -1016,7 +1016,7 @@ G_MODULE_EXPORT void gw_main_homepage_cb (GtkWidget *widget, gpointer data)
     gtk_show_uri (NULL, "http://gwaei.sourceforge.net/", gtk_get_current_event_time (), &error);
 
     //Cleanup
-    gw_main_handle_error (&error, GTK_WINDOW (window), TRUE);
+    gw_common_handle_error (&error, GTK_WINDOW (window), TRUE);
 }
 
 
@@ -1043,7 +1043,7 @@ G_MODULE_EXPORT void gw_main_help_cb (GtkWidget *widget, gpointer data)
     gtk_show_uri (NULL, "ghelp:gwaei", gtk_get_current_event_time (), &error);
 
     //Cleanup
-    gw_main_handle_error (&error, GTK_WINDOW (window), TRUE);
+    gw_common_handle_error (&error, GTK_WINDOW (window), TRUE);
 }
 
 
@@ -1073,7 +1073,7 @@ G_MODULE_EXPORT void gw_main_glossary_cb (GtkWidget *widget, gpointer data)
     gtk_show_uri (NULL, uri, gtk_get_current_event_time (), &error);
 
     //Cleanup
-    gw_main_handle_error (&error, GTK_WINDOW (window), TRUE);
+    gw_common_handle_error (&error, GTK_WINDOW (window), TRUE);
     g_free (uri);
 }
 
@@ -1513,7 +1513,7 @@ G_MODULE_EXPORT void gw_main_open_dictionary_folder_cb (GtkWidget *widget, gpoin
 
     gtk_show_uri (NULL, uri, gtk_get_current_event_time (), &error);
 
-    gw_main_handle_error (&error, GTK_WINDOW (window), TRUE);
+    gw_common_handle_error (&error, GTK_WINDOW (window), TRUE);
 
     g_free (uri);
 }
@@ -1883,7 +1883,7 @@ G_MODULE_EXPORT void gw_main_search_for_searchitem_online_cb (GtkWidget *widget,
       builder = gw_common_get_builder ();
       window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
 
-      gw_main_handle_error (&error, GTK_WINDOW (window), TRUE);
+      gw_common_handle_error (&error, GTK_WINDOW (window), TRUE);
     }
 }
 
