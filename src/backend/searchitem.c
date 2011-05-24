@@ -41,6 +41,8 @@ static gboolean _query_is_sane (const char* query)
     //Declarations
     char *q;
     gboolean is_sane;
+    const char *ptr;
+    int count;
 
     //Initializations
     q = gw_util_prepare_query (query, TRUE); 
@@ -53,56 +55,6 @@ static gboolean _query_is_sane (const char* query)
     if (g_str_has_prefix (q, "|") || g_str_has_prefix (q, "&")) 
       is_sane = FALSE;
     if (g_str_has_suffix (q, "\\") || g_str_has_suffix (q, "|") || g_str_has_suffix (q, "&")) 
-      is_sane = FALSE;
-
-    const char *ptr;
-    int count;
-
-    count = 0;
-
-    for (ptr = q; *ptr != '\0'; ptr = g_utf8_next_char(ptr))
-    {
-      if (*ptr == '\\' && *(ptr + 1) != '\0')
-      {
-        if (*(ptr + 1) == '.'  ||
-            *(ptr + 1) == '?'  || 
-            *(ptr + 1) == '['  || 
-            *(ptr + 1) == ']'  || 
-            *(ptr + 1) == '^'  || 
-            *(ptr + 1) == '$'  || 
-            *(ptr + 1) == '|'  ||
-            *(ptr + 1) == '*'  || 
-            *(ptr + 1) == '+'  || 
-            *(ptr + 1) == '('  || 
-            *(ptr + 1) == '\\' || 
-            *(ptr + 1) == ')'    )
-          count++;
-        ptr += 2;
-      }
-      else if (*ptr == '.'  || 
-               *ptr == '?'  || 
-               *ptr == '['  || 
-               *ptr == ']'  || 
-               *ptr == '^'  || 
-               *ptr == '$'  || 
-               *ptr == '|'  ||
-               *ptr == '*'  || 
-               *ptr == '+'  || 
-               *ptr == '\\' ||
-               *ptr == ' ' ||
-               *ptr == '('  || 
-               *ptr == ')'    )
-      {
-        ptr += 1;
-      }
-      else
-      {
-        count++;
-        ptr += 1;
-      }
-    }
-
-    if (count == 0) 
       is_sane = FALSE;
 
     g_free (q);
@@ -594,7 +546,6 @@ gboolean gw_searchitem_is_equal (GwSearchItem *item1, GwSearchItem *item2)
   //Declarations
   gboolean queries_are_equal;
   gboolean dictionaries_are_equal;
-
   //Sanity checks
   if (item1 == item2) return TRUE;
   if (item1 == NULL) return FALSE;
