@@ -52,8 +52,7 @@ void gw_backend_initialize (int *argc, char* argv[])
     setlocale(LC_COLLATE, "");
     setlocale(LC_MESSAGES, "");
 
-    if (!g_thread_supported ())
-      g_thread_init (NULL);
+    g_thread_init (NULL);
 
     g_type_init ();
     curl_global_init (CURL_GLOBAL_ALL);
@@ -63,8 +62,6 @@ void gw_backend_initialize (int *argc, char* argv[])
     gw_dictinfolist_initialize ();
     gw_dictinstlist_initialize ();
     gw_historylist_initialize ();
-
-    g_thread_init(NULL);
 }
 
 

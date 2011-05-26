@@ -66,7 +66,7 @@ static gpointer _infunc (gpointer data)
   text = swd->data;
   file = fdopen(stream, "w");
 
-  if (file != NULL)
+  if (file != NULL && ferror(file) == 0 && feof(file) == 0)
   {
     chunk = fwrite(text, sizeof(char), strlen(text), file);
     fclose(file);
@@ -101,7 +101,7 @@ static gpointer _outfunc (gpointer data)
     }
 
     //Add the new links
-    while (fgets(buffer, MAX, file) != NULL)
+    while (file != NULL && ferror(file) == 0 && feof(file) == 0 && fgets(buffer, MAX, file) != NULL)
     {
       if (buffer[0] != '@' && buffer[0] != '*' && strlen(buffer) > 1)
         _corrections = g_list_append (_corrections, g_strdup (buffer));
@@ -517,14 +517,14 @@ static gboolean _update_spellcheck_timeout (gpointer data)
     {
       indata.stream = stdin_stream;
       indata.data = text;
-      inthread = g_thread_create (_infunc, (gpointer) &indata, TRUE, &error);
-
       outdata.stream = stdout_stream;
       outdata.data = text;
-      outthread = g_thread_create (_outfunc, (gpointer) &outdata, TRUE, &error);
 
-      g_thread_join (inthread);
+      outthread = g_thread_create (_outfunc, (gpointer) &outdata, TRUE, &error);
+      inthread = g_thread_create (_infunc, (gpointer) &indata, TRUE, &error);
+
       g_thread_join (outthread);
+      g_thread_join (inthread);
 
       g_spawn_close_pid (pid);
     }
@@ -586,7 +586,7 @@ void gw_spellcheck_set_enabled (gboolean request)
 
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), request);
     gtk_toggle_tool_button_set_active (GTK_TOGGLE_TOOL_BUTTON (toolbutton), request);
-    _queue_spellcheck_cb (GTK_EDITABLE (entry), NULL);
+//    _queue_spellcheck_cb (GTK_EDITABLE (entry), NULL); //THIS FUNCTION CALL CAUSES PROBLEMS PIZZACH
 
     g_signal_handlers_unblock_by_func (checkbox, gw_spellcheck_toggle_cb, NULL);
     g_signal_handlers_unblock_by_func (toolbutton, gw_spellcheck_toggle_cb, NULL);

@@ -1606,7 +1606,6 @@ G_MODULE_EXPORT void gw_main_search_drag_data_recieved_cb (GtkWidget        *wid
                                                            guint             time,
                                                            gpointer          user_data    )
 {
-  /*
     //Sanity checks
     if (widget == NULL) return;
     const char *name = gtk_buildable_get_name (GTK_BUILDABLE (widget));
@@ -1621,13 +1620,13 @@ G_MODULE_EXPORT void gw_main_search_drag_data_recieved_cb (GtkWidget        *wid
     entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
     text = (char*) gtk_selection_data_get_text (data);   
 
-    if (text != NULL && data->length >= 0 && data->format == 8)
+    if (text != NULL && strlen(text) > 0)
     {
       gw_main_clear_search_cb (entry, NULL);
       gtk_entry_set_text (GTK_ENTRY (entry), text);
       gw_main_search_cb (NULL, NULL);
 
-      drag_context->action = GDK_ACTION_COPY;
+      gdk_drag_status (drag_context, GDK_ACTION_COPY, time);
       gtk_drag_finish (drag_context, TRUE, FALSE, time);
     }
     else
@@ -1637,7 +1636,6 @@ G_MODULE_EXPORT void gw_main_search_drag_data_recieved_cb (GtkWidget        *wid
 
     //Cleanup
     if (text != NULL) g_free (text);
-    */
 }
 
 

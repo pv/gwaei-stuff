@@ -87,24 +87,28 @@ void gw_io_write_file (const char* PATH, const char* mode, gchar *text, GwIoProg
     if (*error != NULL) return;
 
     //Declarations
-    gchar *text_ptr;
-    int status;
-    FILE* fd;
+    gchar *ptr;
+    FILE* file;
 
     //Initializations
-    status = 0;
-    text_ptr = &text[0];
-    fd = fopen(_savepath, mode);
+    ptr = &text[0];
+    file = fopen(_savepath, mode);
 
-    while (*text_ptr != '\0' && (status = fputc(*text_ptr, fd)) != EOF)
-      text_ptr++;
+    while (*ptr != '\0' && feof(file) == 0 && ferror(file) == 0)
+    {
+      fputc(*ptr, file);
+      ptr++;
+    }
 
-    if (status != EOF) fputc('\n', fd);
+    if (feof(file) == 0 && ferror(file) == 0)
+    {
+      fputc('\n', file);
+    }
 
     //Cleanup
-    fclose(fd);
-    fd = NULL;
-    text_ptr = NULL;
+    fclose(file);
+    file = NULL;
+    ptr = NULL;
 }
 
 
@@ -147,8 +151,9 @@ gboolean gw_io_copy_with_encoding (const char *source_path, const char *target_p
     end = gw_io_get_filesize (source_path);
     curpos = 0;
 
-    while (fgets(buffer, MAX, readfd) != NULL)
+    while (ferror(readfd) == 0 && feof(readfd) == 0 && ferror(writefd) == 0 && feof(writefd) == 0)
     {
+      fgets(buffer, MAX, readfd);
       fraction = ((double) curpos / (double) end);
       if (cb != NULL) cb (fraction, data);
 
@@ -649,7 +654,7 @@ size_t gw_io_get_filesize (const char *URI)
     file = fopen(URI, "rb");
     size = 0;
 
-    while (!feof(file))
+    while (file != NULL && ferror(file) == 0 && feof(file) == 0)
         size += fread(buffer, sizeof(char), MAX_CHUNK, file);
 
     //Cleanup
@@ -683,7 +688,7 @@ gpointer _stdin_func (gpointer data)
     file = fopen(in->uri, "rb");
     stream = fdopen(in->fd, "ab");
 
-    while (!feof(file) && !_cancel)
+    while (file != NULL && ferror(file) == 0 && feof(file) == 0 && !_cancel)
     {
         fraction = ((double) curpos / (double) end);
         if (in->cb != NULL) in->cb (fraction, in->data);
@@ -737,7 +742,7 @@ gpointer _stdout_func (gpointer data)
     file = fopen(out->uri, "wb");
     stream = fdopen(out->fd, "rb");
 
-    while (chunk != 0)
+    while (file != NULL && ferror(file) == 0 && feof(file) == 0 && chunk != 0)
     {
         chunk = fread(buffer, sizeof(char), MAX_CHUNK, stream);
         curpos += chunk;
