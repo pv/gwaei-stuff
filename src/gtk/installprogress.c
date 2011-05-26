@@ -52,7 +52,6 @@ G_MODULE_EXPORT void gw_installprogress_start_cb (GtkWidget *widget, gpointer da
     dialog_dictionaryinstall = GTK_WIDGET (gtk_builder_get_object (builder, "dictionary_install_dialog"));
     window_settings = GTK_WIDGET (gtk_builder_get_object (builder, "settings_window"));
     error = NULL;
-printf("BREAK3\n");
 
     //Remove the prevous window
     gtk_widget_hide (GTK_WIDGET (dialog_dictionaryinstall));

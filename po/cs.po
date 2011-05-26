@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 1.4.0\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2011-05-24 02:24-0400\n"
+"POT-Creation-Date: 2011-05-26 17:06-0400\n"
 "PO-Revision-Date: 2004-01-01 20:41+0100\n"
 "Last-Translator: Pavel Fric <pavelfric@seznam.cz>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
@@ -68,6 +68,56 @@ msgstr "Slovník příkladů"
 msgid "Examples"
 msgstr "Příklady"
 
+#: ../src/backend/dictinst.c:759
+#, c-format
+msgid "Downloading %s..."
+msgstr "Stahuje se %s..."
+
+#: ../src/backend/dictinst.c:761
+#, c-format
+msgid "Downloading..."
+msgstr "Stahuje se..."
+
+#: ../src/backend/dictinst.c:765
+#, fuzzy, c-format
+msgid "Converting the encoding of %s from %s to UTF-8..."
+msgstr "Převádí se kódování..."
+
+#: ../src/backend/dictinst.c:767
+#, fuzzy, c-format
+msgid "Converting the encoding to UTF-8..."
+msgstr "Převádí se kódování..."
+
+#: ../src/backend/dictinst.c:771
+#, c-format
+msgid "Decompressing %s from %s file..."
+msgstr ""
+
+#: ../src/backend/dictinst.c:773
+#, fuzzy, c-format
+msgid "Decompressing..."
+msgstr "Následné zpracování..."
+
+#: ../src/backend/dictinst.c:777
+#, fuzzy, c-format
+msgid "Doing postprocessing on %s..."
+msgstr "Následné zpracování..."
+
+#: ../src/backend/dictinst.c:779
+#, c-format
+msgid "Postprocessing..."
+msgstr "Následné zpracování..."
+
+#: ../src/backend/dictinst.c:782
+#, fuzzy, c-format
+msgid "Finalizing installation of %s..."
+msgstr "Finalisation des changements dans le %s ..."
+
+#: ../src/backend/dictinst.c:785
+#, fuzzy, c-format
+msgid "Installed."
+msgstr "Nainstalován"
+
 #: ../src/backend/dictinstlist.c:62
 #, fuzzy
 msgid "The venerable Japanese-English Dictionary developed by Jim Breen."
@@ -114,19 +164,19 @@ msgstr "Jiné slovníky"
 msgid "Install a custom dictionary."
 msgstr "Nainstalovat slovník"
 
-#: ../src/backend/io.c:702
+#: ../src/backend/io.c:707
 msgid "Unable to read data from the input file."
 msgstr ""
 
-#: ../src/backend/io.c:708
+#: ../src/backend/io.c:713
 msgid "Unable to write to the external program's input stream."
 msgstr ""
 
-#: ../src/backend/io.c:750
+#: ../src/backend/io.c:755
 msgid "Unable to read data from the external program's pipe."
 msgstr ""
 
-#: ../src/backend/io.c:756
+#: ../src/backend/io.c:761
 msgid "Unable to write the stream's output to a file."
 msgstr ""
 
@@ -460,6 +510,16 @@ msgstr "_Opatřit tahy vysvětlivkami"
 msgid "gWaei Kanjipad"
 msgstr "gWaei Kanjipad"
 
+#: ../src/gtk/installprogress.c:185
+#, fuzzy, c-format
+msgid "Installing %s..."
+msgstr "Instaluje se..."
+
+#: ../src/gtk/installprogress.c:186
+#, fuzzy, c-format
+msgid "Installing dictionary %d of %d..."
+msgstr "Hlavní slovníky"
+
 #: ../src/gtk/dictionaryinstall.c:69
 #, c-format
 msgid "<b>%s Install Details</b>"
@@ -787,19 +847,19 @@ msgid "translator-credits"
 msgstr "www.fripohled.blogspot.com"
 
 #. TRANSLATORS: The first variable is the expression to look for, the second is the dictionary full name
-#: ../src/gtk/main-callbacks.c:1708
+#: ../src/gtk/main-callbacks.c:1706
 #, c-format
 msgid "Search for \"%s\" in the %s"
 msgstr "Hledat \"%s\" v %s"
 
 #. TRANSLATORS: The variable is the expression to look for
-#: ../src/gtk/main-callbacks.c:1710
+#: ../src/gtk/main-callbacks.c:1708
 #, c-format
 msgid "Search for \"%s\" in a Different Dictionary"
 msgstr "Hledat \"%s\" v jiném slovníku"
 
 #. TRANSLATORS: The variable is the expression to look for
-#: ../src/gtk/main-callbacks.c:1712
+#: ../src/gtk/main-callbacks.c:1710
 #, c-format
 msgid "Cross-reference \"%s\" Online"
 msgstr "Hledat \"%s\" na internetu"
@@ -1188,9 +1248,6 @@ msgstr ""
 #~ msgstr[0] "%d slovníky jsou používány."
 #~ msgstr[1] "%d slovníků jsou používáno."
 
-#~ msgid "Installed"
-#~ msgstr "Nainstalován"
-
 #~ msgid "Cancelling..."
 #~ msgstr "Ruší se..."
 
@@ -1200,29 +1257,17 @@ msgstr ""
 #~ msgid "Dictionary File Select"
 #~ msgstr "Výběr souboru se slovníkem"
 
-#~ msgid "Downloading..."
-#~ msgstr "Stahuje se..."
-
 #~ msgid "Browse..."
 #~ msgstr "Procházet..."
 
 #~ msgid "Reset"
 #~ msgstr "Nastavit znovu"
 
-#~ msgid "Downloading %s..."
-#~ msgstr "Stahuje se %s..."
-
 #~ msgid "Unable to create dictionary folder"
 #~ msgstr "Nelze vytvořit složku pro slovník"
 
 #~ msgid "Unzip Error"
 #~ msgstr "Chyba při rozbalování (unzip)"
-
-#~ msgid "Converting encoding..."
-#~ msgstr "Převádí se kódování..."
-
-#~ msgid "Postprocessing..."
-#~ msgstr "Následné zpracování..."
 
 #~ msgid "Searching for \""
 #~ msgstr "Hledá se \""
@@ -1275,9 +1320,6 @@ msgstr ""
 
 #~ msgid "Syncing %s with server..."
 #~ msgstr "Synchronisation du %s avec le serveur ..."
-
-#~ msgid "Finalizing %s changes..."
-#~ msgstr "Finalisation des changements dans le %s ..."
 
 #~ msgid "Recreating Mixed dictionary..."
 #~ msgstr "Re-création du dictionnaire mixte ..."

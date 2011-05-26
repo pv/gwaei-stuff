@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 1.5.1\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2011-05-24 02:24-0400\n"
+"POT-Creation-Date: 2011-05-26 17:06-0400\n"
 "PO-Revision-Date: 2011-01-01 23:44+0100\n"
 "Last-Translator: Nicolas Laurent\n"
 "Language-Team: none\n"
@@ -65,6 +65,56 @@ msgstr "Dictionnaire des exemples"
 msgid "Examples"
 msgstr "Exemples"
 
+#: ../src/backend/dictinst.c:759
+#, c-format
+msgid "Downloading %s..."
+msgstr "Téléchargement depuis %s ..."
+
+#: ../src/backend/dictinst.c:761
+#, c-format
+msgid "Downloading..."
+msgstr "Téléchargement ..."
+
+#: ../src/backend/dictinst.c:765
+#, fuzzy, c-format
+msgid "Converting the encoding of %s from %s to UTF-8..."
+msgstr "Conversion de l'encodage ..."
+
+#: ../src/backend/dictinst.c:767
+#, fuzzy, c-format
+msgid "Converting the encoding to UTF-8..."
+msgstr "Conversion de l'encodage ..."
+
+#: ../src/backend/dictinst.c:771
+#, c-format
+msgid "Decompressing %s from %s file..."
+msgstr ""
+
+#: ../src/backend/dictinst.c:773
+#, fuzzy, c-format
+msgid "Decompressing..."
+msgstr "Traitements ..."
+
+#: ../src/backend/dictinst.c:777
+#, fuzzy, c-format
+msgid "Doing postprocessing on %s..."
+msgstr "Traitements ..."
+
+#: ../src/backend/dictinst.c:779
+#, c-format
+msgid "Postprocessing..."
+msgstr "Traitements ..."
+
+#: ../src/backend/dictinst.c:782
+#, fuzzy, c-format
+msgid "Finalizing installation of %s..."
+msgstr "Finalisation des changements dans le %s ..."
+
+#: ../src/backend/dictinst.c:785
+#, fuzzy, c-format
+msgid "Installed."
+msgstr "Installé"
+
 #: ../src/backend/dictinstlist.c:62
 #, fuzzy
 msgid "The venerable Japanese-English Dictionary developed by Jim Breen."
@@ -111,19 +161,19 @@ msgstr "Autres dictionnaires"
 msgid "Install a custom dictionary."
 msgstr "Installer un dictionnaire"
 
-#: ../src/backend/io.c:702
+#: ../src/backend/io.c:707
 msgid "Unable to read data from the input file."
 msgstr ""
 
-#: ../src/backend/io.c:708
+#: ../src/backend/io.c:713
 msgid "Unable to write to the external program's input stream."
 msgstr ""
 
-#: ../src/backend/io.c:750
+#: ../src/backend/io.c:755
 msgid "Unable to read data from the external program's pipe."
 msgstr ""
 
-#: ../src/backend/io.c:756
+#: ../src/backend/io.c:761
 msgid "Unable to write the stream's output to a file."
 msgstr ""
 
@@ -457,6 +507,16 @@ msgstr "_Annoter les traits"
 msgid "gWaei Kanjipad"
 msgstr "gWaei Kanjipad"
 
+#: ../src/gtk/installprogress.c:185
+#, fuzzy, c-format
+msgid "Installing %s..."
+msgstr "Installation en cours ..."
+
+#: ../src/gtk/installprogress.c:186
+#, fuzzy, c-format
+msgid "Installing dictionary %d of %d..."
+msgstr "Dictionnaires principaux"
+
 #: ../src/gtk/dictionaryinstall.c:69
 #, c-format
 msgid "<b>%s Install Details</b>"
@@ -787,19 +847,19 @@ msgid "translator-credits"
 msgstr "Nicolas Laurent (2009-2011)"
 
 #. TRANSLATORS: The first variable is the expression to look for, the second is the dictionary full name
-#: ../src/gtk/main-callbacks.c:1708
+#: ../src/gtk/main-callbacks.c:1706
 #, c-format
 msgid "Search for \"%s\" in the %s"
 msgstr "Recherche de \"%s\" dans le %s"
 
 #. TRANSLATORS: The variable is the expression to look for
-#: ../src/gtk/main-callbacks.c:1710
+#: ../src/gtk/main-callbacks.c:1708
 #, c-format
 msgid "Search for \"%s\" in a Different Dictionary"
 msgstr "Rechercher \"%s\" dans un autre dictionnaire"
 
 #. TRANSLATORS: The variable is the expression to look for
-#: ../src/gtk/main-callbacks.c:1712
+#: ../src/gtk/main-callbacks.c:1710
 #, c-format
 msgid "Cross-reference \"%s\" Online"
 msgstr "Rechercher \"%s\" sur Internet"
@@ -1190,9 +1250,6 @@ msgstr ""
 #~ msgstr[0] "%d dictionnaire utilisé."
 #~ msgstr[1] "%d dictionnaires utilisés."
 
-#~ msgid "Installed"
-#~ msgstr "Installé"
-
 #~ msgid "Cancelling..."
 #~ msgstr "Annulation ..."
 
@@ -1202,29 +1259,17 @@ msgstr ""
 #~ msgid "Dictionary File Select"
 #~ msgstr "Sélection du fichier du dictionnaire"
 
-#~ msgid "Downloading..."
-#~ msgstr "Téléchargement ..."
-
 #~ msgid "Browse..."
 #~ msgstr "Explorer ..."
 
 #~ msgid "Reset"
 #~ msgstr "Réinitialiser"
 
-#~ msgid "Downloading %s..."
-#~ msgstr "Téléchargement depuis %s ..."
-
 #~ msgid "Unable to create dictionary folder"
 #~ msgstr "Impossible de créer le dossier des dictionnaires"
 
 #~ msgid "Unzip Error"
 #~ msgstr "Erreur de décompression unzip"
-
-#~ msgid "Converting encoding..."
-#~ msgstr "Conversion de l'encodage ..."
-
-#~ msgid "Postprocessing..."
-#~ msgstr "Traitements ..."
 
 #~ msgid "Searching for \""
 #~ msgstr "Recherche de \""
@@ -1277,9 +1322,6 @@ msgstr ""
 
 #~ msgid "Syncing %s with server..."
 #~ msgstr "Synchronisation du %s avec le serveur ..."
-
-#~ msgid "Finalizing %s changes..."
-#~ msgstr "Finalisation des changements dans le %s ..."
 
 #~ msgid "Recreating Mixed dictionary..."
 #~ msgstr "Re-création du dictionnaire mixte ..."

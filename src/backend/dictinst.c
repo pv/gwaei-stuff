@@ -339,7 +339,6 @@ void gw_dictinst_regenerate_save_target_uris (GwDictInst *di)
       temp[1][GW_DICTINST_NEEDS_DECOMPRESSION] =  g_strjoin (".", radicals_cache_filename, "gz", NULL);
       temp[1][GW_DICTINST_NEEDS_TEXT_ENCODING] =   g_strjoin (".", radicals_cache_filename, "EUC-JP", NULL);
       temp[1][GW_DICTINST_NEEDS_POSTPROCESSING] =   g_strjoin (".", radicals_cache_filename, "UTF8", NULL);
-      temp[1][GW_DICTINST_NEEDS_FINALIZATION] =  g_strdup (radicals_cache_filename);
       g_free (radicals_cache_filename);
     }
 
@@ -684,6 +683,7 @@ gboolean gw_dictinst_finalize (GwDictInst *di, GwIoProgressCallback cb, GError *
 //!
 void gw_dictinst_clean (GwDictInst *di, GwIoProgressCallback cb)
 {
+  /*
     //Declarations
     GwDictInstUri group_index;
     int i;
@@ -712,6 +712,7 @@ void gw_dictinst_clean (GwDictInst *di, GwIoProgressCallback cb)
     di->current_target_uris = NULL;
     di->uri_group_index = -1;
     di->uri_atom_index = -1;
+    */
 }
 
 
@@ -755,33 +756,33 @@ gchar* gw_dictinst_get_status_string (GwDictInst *di, gboolean long_form)
     switch (di->uri_group_index) {
       case GW_DICTINST_NEEDS_DOWNLOADING:
         if (long_form)
-          string = g_strdup_printf ("Downloading...");
+          string = g_strdup_printf (gettext("Downloading %s..."), di->longname);
         else
-          string = g_strdup_printf ("Downloading...");
+          string = g_strdup_printf (gettext("Downloading..."));
         break;
       case GW_DICTINST_NEEDS_TEXT_ENCODING:
         if (long_form)
-          string = g_strdup_printf ("Converting the encoding from %s to UTF-8...", gw_util_get_encoding_name (di->encoding));
+          string = g_strdup_printf (gettext("Converting the encoding of %s from %s to UTF-8..."), di->longname, gw_util_get_encoding_name (di->encoding));
         else
-          string = g_strdup_printf ("Converting the encoding to UTF-8...");
+          string = g_strdup_printf (gettext("Converting the encoding to UTF-8..."));
         break;
       case GW_DICTINST_NEEDS_DECOMPRESSION:
         if (long_form)
-          string = g_strdup_printf ("Decompressing %s file...", gw_util_get_compression_name (di->compression));
+          string = g_strdup_printf (gettext("Decompressing %s from %s file..."), di->longname, gw_util_get_compression_name (di->compression));
         else
-          string = g_strdup_printf ("Decompressing...");
+          string = g_strdup_printf (gettext("Decompressing..."));
         break;
       case GW_DICTINST_NEEDS_POSTPROCESSING:
         if (long_form)
-          string = g_strdup_printf ("Doing postprocessing...");
+          string = g_strdup_printf (gettext("Doing postprocessing on %s..."), di->longname);
         else
-          string = g_strdup_printf ("Postprocessing...");
+          string = g_strdup_printf (gettext("Postprocessing..."));
         break;
       case GW_DICTINST_NEEDS_FINALIZATION:
-        string = g_strdup_printf ("Finalizing installation...");
+        string = g_strdup_printf (gettext("Finalizing installation of %s..."), di->longname);
         break;
       case GW_DICTINST_NEEDS_NOTHING:
-        string = g_strdup_printf ("Installed.");
+        string = g_strdup_printf (gettext("Installed."));
         break;
       default:
         string = g_strdup_printf (" ");
@@ -804,38 +805,31 @@ double gw_dictinst_get_progress (GwDictInst *di)
     current = 0.0;
     final = 0.0;
 
-    for (i = 0; i < di->uri_group_index && GW_DICTINST_NEEDS_NOTHING; i++)
+    for (i = 0; i < di->uri_group_index && i < GW_DICTINST_NEEDS_NOTHING; i++)
     {
-      //For all processes except post processing extra uris means extra jobs
-      if (i == GW_DICTINST_NEEDS_POSTPROCESSING)
+      for (ptr = di->uri[i]; ptr != NULL; ptr = strchr(ptr, ';'))
       {
-        current += 1.0;
-      }
-      else
-      {
-        for (ptr = di->uri[i]; ptr != NULL; ptr = strchr(ptr, ';'))
-        {
+        if (i == GW_DICTINST_NEEDS_DOWNLOADING)
+          current += 1.0 * 3.0;
+        else
           current += 1.0;
-          ptr++;
-        }
+        ptr++;
       }
     }
-    current += di->progress;
+    if (i == GW_DICTINST_NEEDS_DOWNLOADING)
+      current += (di->progress + (double) di->uri_atom_index) * 3.0;
+    else
+      current += di->progress + (double) di->uri_atom_index;
 
     for (i = 0; i < GW_DICTINST_NEEDS_NOTHING; i++)
     {
-      //For all processes except post processing extra uris means extra jobs
-      if (i == GW_DICTINST_NEEDS_POSTPROCESSING)
+      for (ptr = di->uri[i]; ptr != NULL; ptr = strchr(ptr, ';'))
       {
-        final += 1.0;
-      }
-      else
-      {
-        for (ptr = di->uri[i]; ptr != NULL; ptr = strchr(ptr, ';'))
-        {
+        if (i == GW_DICTINST_NEEDS_DOWNLOADING)
+          final += 1.0 * 3.0;
+        else
           final += 1.0;
-          ptr++;
-        }
+        ptr++;
       }
     }
 
@@ -858,18 +852,20 @@ char* gw_dictinst_get_source_uri (GwDictInst *di, const GwDictInstUri GROUP_INDE
     //Declarations
     char *uri;
 
+    //Set up the backbone if it isn't already
     if (GROUP_INDEX != di->uri_group_index)
     {
-      di->uri_group_index = GROUP_INDEX;
-      di->progress = 0.0;
       if (di->current_source_uris != NULL) g_strfreev (di->current_source_uris);
       if (di->current_target_uris != NULL) g_strfreev (di->current_target_uris);
       di->current_source_uris = g_strsplit (di->uri[GROUP_INDEX], ";", -1);
       di->current_target_uris = g_strsplit (di->uri[GROUP_INDEX + 1], ";", -1);
     }
 
+    //Get the information we came here for
     if (ATOM_INDEX >= 0 && ATOM_INDEX < g_strv_length (di->current_target_uris))
     {
+      di->uri_group_index = GROUP_INDEX;
+      di->progress = 0.0;
       di->uri_atom_index = ATOM_INDEX;
       uri = di->current_source_uris[ATOM_INDEX];
     }
@@ -895,16 +891,18 @@ char* gw_dictinst_get_target_uri (GwDictInst *di, const GwDictInstUri GROUP_INDE
     //Declarations
     char *uri;
 
+    //Set up the backbone if it isn't already
     if (GROUP_INDEX != di->uri_group_index)
     {
       di->uri_group_index = GROUP_INDEX;
-      di->progress = 0.0;
+      //di->progress = 0.0;
       if (di->current_source_uris != NULL) g_strfreev (di->current_source_uris);
       if (di->current_target_uris != NULL) g_strfreev (di->current_target_uris);
       di->current_source_uris = g_strsplit (di->uri[GROUP_INDEX], ";", -1);
       di->current_target_uris = g_strsplit (di->uri[GROUP_INDEX + 1], ";", -1);
     }
 
+    //Get the information we came here for
     if (ATOM_INDEX >= 0 && ATOM_INDEX < g_strv_length (di->current_target_uris))
     {
       //di->uri_atom_index = ATOM_INDEX; //Only source sets this variable.  not target.

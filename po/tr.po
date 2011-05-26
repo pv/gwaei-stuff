@@ -29,7 +29,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 0.15.1\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2011-05-24 02:24-0400\n"
+"POT-Creation-Date: 2011-05-26 17:06-0400\n"
 "PO-Revision-Date: 2010-10-25 14:50+0200\n"
 "Last-Translator: Yusuf BARAN <info@barancolor.net>\n"
 "Language-Team: none\n"
@@ -85,6 +85,56 @@ msgstr "Örnekler Sözlüğü"
 msgid "Examples"
 msgstr "Örnekler"
 
+#: ../src/backend/dictinst.c:759
+#, c-format
+msgid "Downloading %s..."
+msgstr "İndiriliyor %s..."
+
+#: ../src/backend/dictinst.c:761
+#, c-format
+msgid "Downloading..."
+msgstr "İndiriliyor..."
+
+#: ../src/backend/dictinst.c:765
+#, fuzzy, c-format
+msgid "Converting the encoding of %s from %s to UTF-8..."
+msgstr "Şifreleme çevriliyor..."
+
+#: ../src/backend/dictinst.c:767
+#, fuzzy, c-format
+msgid "Converting the encoding to UTF-8..."
+msgstr "Şifreleme çevriliyor..."
+
+#: ../src/backend/dictinst.c:771
+#, c-format
+msgid "Decompressing %s from %s file..."
+msgstr ""
+
+#: ../src/backend/dictinst.c:773
+#, fuzzy, c-format
+msgid "Decompressing..."
+msgstr "İşleniyor..."
+
+#: ../src/backend/dictinst.c:777
+#, fuzzy, c-format
+msgid "Doing postprocessing on %s..."
+msgstr "İşleniyor..."
+
+#: ../src/backend/dictinst.c:779
+#, c-format
+msgid "Postprocessing..."
+msgstr "İşleniyor..."
+
+#: ../src/backend/dictinst.c:782
+#, fuzzy, c-format
+msgid "Finalizing installation of %s..."
+msgstr "Finalizando "
+
+#: ../src/backend/dictinst.c:785
+#, fuzzy, c-format
+msgid "Installed."
+msgstr "Kurulu"
+
 #: ../src/backend/dictinstlist.c:62
 #, fuzzy
 msgid "The venerable Japanese-English Dictionary developed by Jim Breen."
@@ -131,19 +181,19 @@ msgstr "Diğer Sözlükler"
 msgid "Install a custom dictionary."
 msgstr "Sözlük yükleyin"
 
-#: ../src/backend/io.c:702
+#: ../src/backend/io.c:707
 msgid "Unable to read data from the input file."
 msgstr ""
 
-#: ../src/backend/io.c:708
+#: ../src/backend/io.c:713
 msgid "Unable to write to the external program's input stream."
 msgstr ""
 
-#: ../src/backend/io.c:750
+#: ../src/backend/io.c:755
 msgid "Unable to read data from the external program's pipe."
 msgstr ""
 
-#: ../src/backend/io.c:756
+#: ../src/backend/io.c:761
 msgid "Unable to write the stream's output to a file."
 msgstr ""
 
@@ -477,6 +527,16 @@ msgstr "_Dipnot"
 msgid "gWaei Kanjipad"
 msgstr "gWaei Kanji tahtası"
 
+#: ../src/gtk/installprogress.c:185
+#, fuzzy, c-format
+msgid "Installing %s..."
+msgstr "Kuruluyor..."
+
+#: ../src/gtk/installprogress.c:186
+#, fuzzy, c-format
+msgid "Installing dictionary %d of %d..."
+msgstr "Ana Sözlükler"
+
 #: ../src/gtk/dictionaryinstall.c:69
 #, c-format
 msgid "<b>%s Install Details</b>"
@@ -786,19 +846,19 @@ msgid "translator-credits"
 msgstr "çeviri"
 
 #. TRANSLATORS: The first variable is the expression to look for, the second is the dictionary full name
-#: ../src/gtk/main-callbacks.c:1708
+#: ../src/gtk/main-callbacks.c:1706
 #, c-format
 msgid "Search for \"%s\" in the %s"
 msgstr "\"%s\" için %s içinde ara"
 
 #. TRANSLATORS: The variable is the expression to look for
-#: ../src/gtk/main-callbacks.c:1710
+#: ../src/gtk/main-callbacks.c:1708
 #, c-format
 msgid "Search for \"%s\" in a Different Dictionary"
 msgstr "\"%s\" için Farklı Dizinde Ara"
 
 #. TRANSLATORS: The variable is the expression to look for
-#: ../src/gtk/main-callbacks.c:1712
+#: ../src/gtk/main-callbacks.c:1710
 #, c-format
 msgid "Cross-reference \"%s\" Online"
 msgstr "Çapraz referans \"%s\" Çevrimiçi"
@@ -1179,9 +1239,6 @@ msgstr ""
 #~ msgstr[0] "%d sözlüğü kullanıldı"
 #~ msgstr[1] "%d sözlükleri kullanıldı"
 
-#~ msgid "Installed"
-#~ msgstr "Kurulu"
-
 #~ msgid "Cancelling..."
 #~ msgstr "İptal ediliyor..."
 
@@ -1191,29 +1248,17 @@ msgstr ""
 #~ msgid "Dictionary File Select"
 #~ msgstr "Sözlük Dosyası Seç"
 
-#~ msgid "Downloading..."
-#~ msgstr "İndiriliyor..."
-
 #~ msgid "Browse..."
 #~ msgstr "Araştır..."
 
 #~ msgid "Reset"
 #~ msgstr "Sıfırla"
 
-#~ msgid "Downloading %s..."
-#~ msgstr "İndiriliyor %s..."
-
 #~ msgid "Unable to create dictionary folder"
 #~ msgstr "Sözlük dizini oluşturma sorunu"
 
 #~ msgid "Unzip Error"
 #~ msgstr "Arşiv Çıkarma Hatası"
-
-#~ msgid "Converting encoding..."
-#~ msgstr "Şifreleme çevriliyor..."
-
-#~ msgid "Postprocessing..."
-#~ msgstr "İşleniyor..."
 
 #~ msgid "Searching for \""
 #~ msgstr "Bunun için ara \""
@@ -1269,10 +1314,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "Syncing %s with server..."
 #~ msgstr " el diccionario con el servidor..."
-
-#, fuzzy
-#~ msgid "Finalizing %s changes..."
-#~ msgstr "Finalizando "
 
 #~ msgid "Recreating Mixed dictionary..."
 #~ msgstr "Recreando diccionario Mixto..."

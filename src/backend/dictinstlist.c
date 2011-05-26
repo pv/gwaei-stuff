@@ -171,7 +171,6 @@ gboolean gw_dictinstlist_data_is_valid ()
       di = (GwDictInst*) iter->data;
       if (!gw_dictinst_data_is_valid (di) && di->selected) return FALSE;
       if (di->selected) number_selected++;
-      printf("number selected: %d\n", number_selected);
     }
     return (number_selected > 0);
 }

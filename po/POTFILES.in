@@ -18,6 +18,7 @@ src/backend/utilities.c
 [type: gettext/glade] src/gtk/ui/kanjipad.ui
 
 src/gtk/common.c
+src/gtk/installprogress.c
 src/gtk/dictionaryinstall.c
 src/gtk/dictionarymanager.c
 src/gtk/frontend.c

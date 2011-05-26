@@ -242,7 +242,7 @@ static int _libcurl_update_progress (void  *custom,
     else
       fraction = dlnow / dltotal;
 
-printf("update interface %d\n", _cancel);
+//printf("update interface %d\n", _cancel);
     //Update the interface
     if (_cancel) return 1;
     else return cb (fraction, data);

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2011-05-24 02:24-0400\n"
+"POT-Creation-Date: 2011-05-26 17:06-0400\n"
 "PO-Revision-Date: 2008-11-30 02:35+0500\n"
 "Last-Translator: Zachary Dovel pizzach@gmail.com\n"
 "Language-Team: Not Applicable\n"
@@ -62,6 +62,56 @@ msgstr "例文辞書"
 msgid "Examples"
 msgstr "例文"
 
+#: ../src/backend/dictinst.c:759
+#, c-format
+msgid "Downloading %s..."
+msgstr "%sがダウンロード中..."
+
+#: ../src/backend/dictinst.c:761
+#, c-format
+msgid "Downloading..."
+msgstr "ダウンロード中..."
+
+#: ../src/backend/dictinst.c:765
+#, c-format
+msgid "Converting the encoding of %s from %s to UTF-8..."
+msgstr "%sのエンコーディングを%sからUTF-8に切り替え中..."
+
+#: ../src/backend/dictinst.c:767
+#, c-format
+msgid "Converting the encoding to UTF-8..."
+msgstr "エンコーディングをUTF-8に切り替え中..."
+
+#: ../src/backend/dictinst.c:771
+#, c-format
+msgid "Decompressing %s from %s file..."
+msgstr "%sがi%sから凍結中..."
+
+#: ../src/backend/dictinst.c:773
+#, c-format
+msgid "Decompressing..."
+msgstr "凍結中..."
+
+#: ../src/backend/dictinst.c:777
+#, c-format
+msgid "Doing postprocessing on %s..."
+msgstr "%sがポストプロせスイング中..."
+
+#: ../src/backend/dictinst.c:779
+#, c-format
+msgid "Postprocessing..."
+msgstr "ポストプロせスイング中..."
+
+#: ../src/backend/dictinst.c:782
+#, c-format
+msgid "Finalizing installation of %s..."
+msgstr "%sを仕上げ中..."
+
+#: ../src/backend/dictinst.c:785
+#, c-format
+msgid "Installed."
+msgstr "インストールされた"
+
 #: ../src/backend/dictinstlist.c:62
 #, fuzzy
 msgid "The venerable Japanese-English Dictionary developed by Jim Breen."
@@ -104,19 +154,19 @@ msgstr "辞書のその他"
 msgid "Install a custom dictionary."
 msgstr "カスタムな 辞書をインストールする"
 
-#: ../src/backend/io.c:702
+#: ../src/backend/io.c:707
 msgid "Unable to read data from the input file."
 msgstr ""
 
-#: ../src/backend/io.c:708
+#: ../src/backend/io.c:713
 msgid "Unable to write to the external program's input stream."
 msgstr ""
 
-#: ../src/backend/io.c:750
+#: ../src/backend/io.c:755
 msgid "Unable to read data from the external program's pipe."
 msgstr ""
 
-#: ../src/backend/io.c:756
+#: ../src/backend/io.c:761
 msgid "Unable to write the stream's output to a file."
 msgstr ""
 
@@ -441,6 +491,16 @@ msgstr "画数付き(_A)"
 msgid "gWaei Kanjipad"
 msgstr "gWaei 漢字パッド"
 
+#: ../src/gtk/installprogress.c:185
+#, c-format
+msgid "Installing %s..."
+msgstr "%sがインストール中..."
+
+#: ../src/gtk/installprogress.c:186
+#, c-format
+msgid "Installing dictionary %d of %d..."
+msgstr "辞書の%d／%d札目がインストール中..."
+
 #: ../src/gtk/dictionaryinstall.c:69
 #, c-format
 msgid "<b>%s Install Details</b>"
@@ -709,19 +769,19 @@ msgid "translator-credits"
 msgstr "Zachary Dovel"
 
 #. TRANSLATORS: The first variable is the expression to look for, the second is the dictionary full name
-#: ../src/gtk/main-callbacks.c:1708
+#: ../src/gtk/main-callbacks.c:1706
 #, c-format
 msgid "Search for \"%s\" in the %s"
 msgstr "「%s」を%sで検索する"
 
 #. TRANSLATORS: The variable is the expression to look for
-#: ../src/gtk/main-callbacks.c:1710
+#: ../src/gtk/main-callbacks.c:1708
 #, c-format
 msgid "Search for \"%s\" in a Different Dictionary"
 msgstr "「%s」を別の辞書で検索する"
 
 #. TRANSLATORS: The variable is the expression to look for
-#: ../src/gtk/main-callbacks.c:1712
+#: ../src/gtk/main-callbacks.c:1710
 #, c-format
 msgid "Cross-reference \"%s\" Online"
 msgstr "「%s」をオンラインで参照する"
@@ -1034,9 +1094,6 @@ msgstr "英語か日本語の単語を入れて簡単に翻訳を調べます"
 #~ msgid_plural "%d dictionaries are being used."
 #~ msgstr[0] "辞書は%dつ使われている。"
 
-#~ msgid "Installed"
-#~ msgstr "インストールされた"
-
 #~ msgid "Cancelling..."
 #~ msgstr "キャンセル中..."
 
@@ -1046,29 +1103,17 @@ msgstr "英語か日本語の単語を入れて簡単に翻訳を調べます"
 #~ msgid "Dictionary File Select"
 #~ msgstr "辞書ファイルの選択"
 
-#~ msgid "Downloading..."
-#~ msgstr "ダウンロード中..."
-
 #~ msgid "Browse..."
 #~ msgstr "参照..."
 
 #~ msgid "Reset"
 #~ msgstr "リセット"
 
-#~ msgid "Downloading %s..."
-#~ msgstr "%sからダウンロード中..."
-
 #~ msgid "Unable to create dictionary folder"
 #~ msgstr "gWaeiの辞書フォルダーの作成できない(_O)"
 
 #~ msgid "Unzip Error"
 #~ msgstr "Unzipエラー"
-
-#~ msgid "Converting encoding..."
-#~ msgstr "エンコーディング切り替え中..."
-
-#~ msgid "Postprocessing..."
-#~ msgstr "ポストプロせスイング中..."
 
 #~ msgid "Searching for \""
 #~ msgstr "「"
@@ -1120,9 +1165,6 @@ msgstr "英語か日本語の単語を入れて簡単に翻訳を調べます"
 
 #~ msgid "Syncing %s with server..."
 #~ msgstr "%s辞書をシンク中..."
-
-#~ msgid "Finalizing %s changes..."
-#~ msgstr "%sを仕上げ中..."
 
 #~ msgid "Recreating Mixed dictionary..."
 #~ msgstr "統合辞書を再生成中..."
