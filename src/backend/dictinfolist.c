@@ -236,6 +236,9 @@ void gw_dictinfolist_free ()
 //!
 GwDictInfo* gw_dictinfolist_get_dictinfo (const GwEngine ENGINE, const char* FILENAME)
 {
+    //Sanity checks
+    g_assert (ENGINE >= 0 && FILENAME != NULL);
+
     //Declarations
     GList *iter;
     GwDictInfo *di;
@@ -298,6 +301,9 @@ GwDictInfo* gw_dictinfolist_get_dictinfo_fuzzy (const char* FUZZY_DESCRIPTION)
 //!
 GwDictInfo* gw_dictinfolist_get_dictinfo_by_filename (const char* FILENAME)
 {
+    //Sanity checks
+    g_assert (FILENAME != NULL);
+
     //Declarations
     GList *iter;
     GwDictInfo *di;
@@ -323,6 +329,9 @@ GwDictInfo* gw_dictinfolist_get_dictinfo_by_filename (const char* FILENAME)
 //!
 GwDictInfo* gw_dictinfolist_get_dictinfo_by_idstring (const char* ENGINE_AND_FILENAME)
 {
+    //Sanity checks
+    g_assert (ENGINE_AND_FILENAME != NULL);
+
     //Declarations
     GList *iter;
     GwDictInfo *di;
@@ -368,6 +377,9 @@ GwDictInfo* gw_dictinfolist_get_dictinfo_by_idstring (const char* ENGINE_AND_FIL
 //!
 gboolean gw_dictinfolist_check_if_loaded (const GwEngine ENGINE, const char* FILENAME)
 {
+    //Sanity checks
+    g_assert (ENGINE >= 0 && FILENAME != NULL);
+
     //Declarations
     GList *iter;
     GwDictInfo *di;
@@ -556,7 +568,7 @@ void gw_dictinfolist_load_dictionary_order_from_pref ()
     char load_order[1000];
     char **load_order_array;
     char **engine_name_array;
-    char **ptr = NULL;
+    char **iter = NULL;
     GwEngine engine;
     char *name;
     GwDictInfo *di = NULL;
@@ -565,17 +577,17 @@ void gw_dictinfolist_load_dictionary_order_from_pref ()
     gw_pref_get_string_by_schema (load_order, GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, 1000);
     load_order_array = g_strsplit_set (load_order, ";", GW_DICTLIST_MAX_DICTIONARIES);
     
-    for (ptr = load_order_array; *ptr != NULL; ptr++)
+    for (iter = load_order_array; *iter != NULL; iter++)
     {
       //Sanity checking
-      if (*ptr == NULL || **ptr == '\0') { 
+      if (*iter == NULL || **iter == '\0') { 
         printf("failed sanity check 1\n");
         gw_pref_reset_value_by_schema (GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER);
         gw_dictinfolist_load_dictionary_order_from_pref ();
         return;
       }
 
-      engine_name_array = g_strsplit_set (*ptr, "/", -1); 
+      engine_name_array = g_strsplit_set (*iter, "/", -1); 
 
       //Sanity checking
       if (engine_name_array[0] == NULL || engine_name_array[1] == NULL)

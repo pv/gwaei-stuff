@@ -458,6 +458,7 @@ static gboolean _update_spellcheck_timeout (gpointer data)
     gboolean is_convertable_to_hiragana;
     const int MAX = 300;
     char kana[MAX];
+    gboolean exists;
     
     //Initializations
     rk_conv_pref = gw_pref_get_int_by_schema (GW_SCHEMA_BASE, GW_KEY_ROMAN_KANA);
@@ -466,8 +467,11 @@ static gboolean _update_spellcheck_timeout (gpointer data)
     query = gtk_editable_get_chars (GTK_EDITABLE (entry), 0, -1);
     is_convertable_to_hiragana = (want_conv && gw_util_str_roma_to_hira (query, kana, MAX));
     spellcheck_pref = gw_pref_get_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_SPELLCHECK);
+    exists = g_file_test (ENCHANT, G_FILE_TEST_IS_REGULAR);
 
     //Sanity checks
+    if (exists == FALSE || strlen(query) == 0)
+      return TRUE;
     if (!spellcheck_pref || !_sensitive || !_needs_spellcheck || is_convertable_to_hiragana)
     {
       gtk_widget_queue_draw (GTK_WIDGET (data));
