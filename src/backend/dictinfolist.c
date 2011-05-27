@@ -243,6 +243,9 @@ GwDictInfo* gw_dictinfolist_get_dictinfo (const GwEngine ENGINE, const char* FIL
     GList *iter;
     GwDictInfo *di;
 
+    //Initializations
+    di = NULL;
+
     for (iter = _dictionaries->list; iter != NULL; iter = iter->next)
     {
       di = (GwDictInfo*) iter->data;
@@ -307,6 +310,9 @@ GwDictInfo* gw_dictinfolist_get_dictinfo_by_filename (const char* FILENAME)
     //Declarations
     GList *iter;
     GwDictInfo *di;
+
+    //Initializations
+    di = NULL;
 
     for (iter = _dictionaries->list; iter != NULL; iter = iter->next)
     {

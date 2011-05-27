@@ -91,7 +91,7 @@ G_MODULE_EXPORT gboolean gw_main_get_iter_for_motion_cb (GtkWidget      *widget,
 
     GwDictInfo *di;
     di = gw_dictinfolist_get_dictinfo (GW_ENGINE_KANJI, "Kanji");
-    if (di == NULL) FALSE;
+    if (di == NULL) return FALSE;
   
     // Characters above 0xFF00 represent inserted images
     if (unic > L'ー' && unic < 0xFF00)
