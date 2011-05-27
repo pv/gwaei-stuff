@@ -656,7 +656,7 @@ void gw_output_append_kanjidict_results_cb (GwSearchItem *item)
       }
 
       char *markup2;
-      markup2 = g_markup_printf_escaped ("<span font=\"KanjiStrokeOrders 80\">%s</span>", resultline->kanji);
+      markup2 = g_markup_printf_escaped ("<span font=\"KanjiStrokeOrders 100\">%s</span>", resultline->kanji);
 
 
       GtkWidget *window = GTK_WIDGET (gtk_widget_get_tooltip_window (tv));
