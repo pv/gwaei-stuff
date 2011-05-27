@@ -135,7 +135,7 @@ void gw_spellcheck_attach_to_entry (GtkEntry *entry)
   g_signal_connect_after (G_OBJECT (entry), "draw", G_CALLBACK (_draw_underline_cb), NULL);
   g_signal_connect (G_OBJECT (entry), "changed", G_CALLBACK (_queue_spellcheck_cb), NULL);
   g_signal_connect (G_OBJECT (entry), "populate-popup", G_CALLBACK (_populate_popup_cb), NULL);
-  g_timeout_add (200, (GSourceFunc) _update_spellcheck_timeout, (gpointer) entry);
+  g_timeout_add (100, (GSourceFunc) _update_spellcheck_timeout, (gpointer) entry);
 }
 
 
@@ -456,7 +456,7 @@ void _queue_spellcheck_cb (GtkEditable *editable, gpointer data)
 
 static gboolean _update_spellcheck_timeout (gpointer data)
 {
-    if (_timer < 5)
+    if (_timer < 3)
     {
       _timer++;
       return TRUE;
