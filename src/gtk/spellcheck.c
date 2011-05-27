@@ -19,6 +19,7 @@ static gboolean _draw_underline_cb (GtkWidget*, cairo_t*, gpointer);
 static void _queue_spellcheck_cb (GtkEditable*, gpointer);
 static gboolean _update_spellcheck_timeout (gpointer);
 static void _update_button_sensitivities (void);
+static int _timer = 0;
 
 
 struct _SpellingReplacementData {
@@ -130,7 +131,7 @@ void gw_spellcheck_attach_to_entry (GtkEntry *entry)
   g_signal_connect_after (G_OBJECT (entry), "draw", G_CALLBACK (_draw_underline_cb), NULL);
   g_signal_connect (G_OBJECT (entry), "changed", G_CALLBACK (_queue_spellcheck_cb), NULL);
   g_signal_connect (G_OBJECT (entry), "populate-popup", G_CALLBACK (_populate_popup_cb), NULL);
-  g_timeout_add (500, (GSourceFunc) _update_spellcheck_timeout, (gpointer) entry);
+  g_timeout_add (100, (GSourceFunc) _update_spellcheck_timeout, (gpointer) entry);
 }
 
 
@@ -421,6 +422,8 @@ void _queue_spellcheck_cb (GtkEditable *editable, gpointer data)
 
     _update_button_sensitivities ();
 
+    _timer = 0;
+
     if (_query_text == NULL)
       _query_text = g_strdup (gtk_entry_get_text (GTK_ENTRY (editable)));
 
@@ -449,6 +452,12 @@ void _queue_spellcheck_cb (GtkEditable *editable, gpointer data)
 
 static gboolean _update_spellcheck_timeout (gpointer data)
 {
+    if (_timer < 5)
+    {
+      _timer++;
+      return;
+    }
+
     //Declarations
     gboolean spellcheck_pref;
     int rk_conv_pref;
