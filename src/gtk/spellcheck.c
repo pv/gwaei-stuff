@@ -67,9 +67,13 @@ static gpointer _infunc (gpointer data)
   text = swd->data;
   file = fdopen(stream, "w");
 
-  if (file != NULL && ferror(file) == 0 && feof(file) == 0)
+  if (file != NULL)
   {
-    chunk = fwrite(text, sizeof(char), strlen(text), file);
+    if (ferror(file) == 0 && feof(file) == 0)
+    {
+      chunk = fwrite(text, sizeof(char), strlen(text), file);
+    }
+
     fclose(file);
   }
 
@@ -104,7 +108,7 @@ static gpointer _outfunc (gpointer data)
     //Add the new links
     while (file != NULL && ferror(file) == 0 && feof(file) == 0 && fgets(buffer, MAX, file) != NULL)
     {
-      if (buffer[0] != '@' && buffer[0] != '*' && strlen(buffer) > 1)
+      if (buffer[0] != '@' && buffer[0] != '*' && buffer[0] != '#' && strlen(buffer) > 1)
         _corrections = g_list_append (_corrections, g_strdup (buffer));
     }
     g_mutex_unlock (_mutex);
@@ -131,7 +135,7 @@ void gw_spellcheck_attach_to_entry (GtkEntry *entry)
   g_signal_connect_after (G_OBJECT (entry), "draw", G_CALLBACK (_draw_underline_cb), NULL);
   g_signal_connect (G_OBJECT (entry), "changed", G_CALLBACK (_queue_spellcheck_cb), NULL);
   g_signal_connect (G_OBJECT (entry), "populate-popup", G_CALLBACK (_populate_popup_cb), NULL);
-  g_timeout_add (100, (GSourceFunc) _update_spellcheck_timeout, (gpointer) entry);
+  g_timeout_add (200, (GSourceFunc) _update_spellcheck_timeout, (gpointer) entry);
 }
 
 
@@ -455,7 +459,7 @@ static gboolean _update_spellcheck_timeout (gpointer data)
     if (_timer < 5)
     {
       _timer++;
-      return;
+      return TRUE;
     }
 
     //Declarations
