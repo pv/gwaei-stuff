@@ -41,6 +41,7 @@ static gboolean _exact_switch = FALSE;
 static gboolean _list_switch = FALSE;
 static gboolean _version_switch = FALSE;
 static gboolean _ncurses_switch = FALSE;
+static gboolean _color_switch = FALSE;
 
 static char* _dictionary_switch_data = NULL;
 static char* _install_switch_data = NULL;
@@ -91,6 +92,7 @@ void gw_frontend_initialize (int* argc, char* argv[])
 #endif
       { "exact", 'e', 0, G_OPTION_ARG_NONE, &_exact_switch, gettext("Do not display less relevant results"), NULL },
       { "quiet", 'q', 0, G_OPTION_ARG_NONE, &_quiet_switch, gettext("Display less information"), NULL },
+      { "color", 'c', 0, G_OPTION_ARG_NONE, &_color_switch, gettext("Display results with color"), NULL },
       { "dictionary", 'd', 0, G_OPTION_ARG_STRING, &_dictionary_switch_data, gettext("Search using a chosen dictionary"), NULL },
       { "list", 'l', 0, G_OPTION_ARG_NONE, &_list_switch, gettext("Show available dictionaries for searches"), NULL },
       { "install", 'i', 0, G_OPTION_ARG_STRING, &_install_switch_data, gettext("Install dictionary"), NULL },
@@ -173,7 +175,7 @@ int gw_frontend_start_console (int argc, char* argv[])
     //Cleanup
     if (error != NULL)
       gw_console_handle_error (&error);
-    else
+    else if (_quiet_switch == FALSE)
       printf("\nDone\n\n");
 
     return resolution;
@@ -203,6 +205,11 @@ int gw_frontend_start_ncurses (int argc, char* argv[])
     gw_ncurses_start (argc, argv);
 
     return TRUE;
+}
+
+gboolean gw_frontend_get_color_switch ()
+{
+  return _color_switch;
 }
 
 

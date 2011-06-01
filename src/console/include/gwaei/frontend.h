@@ -8,5 +8,6 @@ void gw_frontend_initialize (int*, char**);
 void gw_frontend_free (void);
 int gw_frontend_start_console (int, char**);
 int gw_frontend_start_ncurses (int, char**);
+gboolean gw_frontend_get_color_switch (void);
 
 #endif
