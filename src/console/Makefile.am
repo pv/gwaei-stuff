@@ -13,7 +13,7 @@ DEFINITIONS =-DLOCALEDIR=\"$(localedir)\" -DVERSION=\"$(VERSION)\" -DPACKAGE=\"$
 
 
 waei_SOURCES = waei.c frontend.c console.c
-waei_LDADD =  $(BASE_LIBS) ../backend/libgwaei-backend.la
+waei_LDADD =  $(BASE_LIBS) ../backend/libwaei.la
 waei_CPPFLAGS = $(DEFINITIONS) $(BASE_CFLAGS) $(BASE_DEFS) -I$(top_srcdir)/src/backend/include -I$(top_srcdir)/src/console/include
 
 

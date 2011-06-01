@@ -11,7 +11,7 @@ localedir = $(datadir)/locale
 DEFINITIONS =-DLOCALEDIR=\"$(localedir)\" -DVERSION=\"$(VERSION)\" -DPACKAGE=\"$(PACKAGE)\" -DDATADIR2=\"$(datadir)\" -DLIBDIR=\"$(libdir)\" -DENCHANT=\"$(ENCHANT)\" -DGWAEI_LOCALEDIR=\"${GWAEI_LOCALEDIR}\" -DGTK_DISABLE_DEPRECATED -DG_SEAL_ENABLE
 
 gwaei_SOURCES = gwaei.c common.c frontend.c main.c main-callbacks.c settings-callbacks.c settings.c radsearchtool.c radsearchtool-callbacks.c printing.c main-tabs.c dictionaryinstall.c installprogress.c dictionarymanager.c settings-listeners.c pluginmanager.c spellcheck.c output-callbacks.c kanjipad.c kanjipad-candidatearea.c kanjipad-callbacks.c kanjipad-drawingarea.c
-gwaei_LDADD =  $(GNOME_LIBS) ../backend/libgwaei-backend.la
+gwaei_LDADD =  $(GNOME_LIBS) ../backend/libwaei.la
 gwaei_CPPFLAGS = $(DEFINITIONS) $(GNOME_CFLAGS) $(GNOME_DEFS) -I$(top_srcdir)/src/backend/include -I$(top_srcdir)/src/gtk/include 
 
 if ENABLE_WIN32
