@@ -502,7 +502,6 @@ static gboolean _update_spellcheck_timeout (gpointer data)
     int stdout_stream;
     GError *error;
     gboolean success;
-    GThread *inthread;
     GThread *outthread;
     _StreamWithData indata;
     _StreamWithData outdata;
@@ -533,11 +532,10 @@ static gboolean _update_spellcheck_timeout (gpointer data)
       outdata.stream = stdout_stream;
       outdata.data = text;
 
+      _infunc ((gpointer) &indata);
       outthread = g_thread_create (_outfunc, (gpointer) &outdata, TRUE, &error);
-      inthread = g_thread_create (_infunc, (gpointer) &indata, TRUE, &error);
 
       g_thread_join (outthread);
-      g_thread_join (inthread);
 
       g_spawn_close_pid (pid);
     }
