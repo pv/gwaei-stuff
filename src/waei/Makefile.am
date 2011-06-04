@@ -10,7 +10,7 @@ datadir = @datadir@
 localedir = $(datadir)/locale
 DEFINITIONS =-DLOCALEDIR=\"$(localedir)\" -DVERSION=\"$(VERSION)\" -DPACKAGE=\"$(PACKAGE)\" -DBINDIR=\"$(bindir)\" -DUNZIP=\"$(UNZIP)\" -DGUNZIP=\"$(GUNZIP)\" -DDATADIR2=\"$(datadir)\" -DLIBDIR=\"$(libdir)\" -DGTK_DISABLE_DEPRECATED -DG_SEAL_ENABLE
 
-waei_SOURCES = waei.c frontend.c console.c
+waei_SOURCES = waei.c console.c
 waei_LDADD =  $(BASE_LIBS) ../libwaei/libwaei.la
 waei_CPPFLAGS = $(DEFINITIONS) $(BASE_CFLAGS) $(BASE_DEFS) -I$(top_srcdir)/src/libwaei/include -I$(top_srcdir)/src/waei/include
 

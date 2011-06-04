@@ -43,7 +43,7 @@
 //!
 void w_console_append_less_relevant_header_to_output(GwSearchItem *item)
 {
-    if (w_frontend_get_color_switch ())
+    if (w_get_color_switch ())
       printf("\n[0;31m***[0m[1m%s[0;31m***************************[0m\n\n\n", gettext("Other Results"));
     else
       printf("\n***%s***************************\n\n\n", gettext("Other Results"));
@@ -236,7 +236,7 @@ void w_console_append_edict_results_to_buffer (GwSearchItem *item)
     GwResultLine *resultline = item->resultline;
 
     //Kanji
-    if (w_frontend_get_color_switch ())
+    if (w_get_color_switch ())
       printf("[32m%s", resultline->kanji_start);
     else
       printf("%s", resultline->kanji_start);
@@ -245,13 +245,13 @@ void w_console_append_edict_results_to_buffer (GwSearchItem *item)
       printf(" [%s]", resultline->furigana_start);
     //Other info
     if (resultline->classification_start)
-      if (w_frontend_get_color_switch ())
+      if (w_get_color_switch ())
         printf("[0m %s", resultline->classification_start);
       else
         printf("%s", resultline->classification_start);
     //Important Flag
     if (resultline->important)
-      if (w_frontend_get_color_switch ())
+      if (w_get_color_switch ())
         printf("[0m %s", "P");
       else
         printf("%s", "P");
@@ -259,7 +259,7 @@ void w_console_append_edict_results_to_buffer (GwSearchItem *item)
     printf("\n");
     while (cont < resultline->def_total)
     {
-      if (w_frontend_get_color_switch ())
+      if (w_get_color_switch ())
         printf("[0m      [35m%s [0m%s\n", resultline->number[cont], resultline->def_start[cont]);
       else
         printf("      %s %s\n", resultline->number[cont], resultline->def_start[cont]);
@@ -280,7 +280,7 @@ void w_console_append_kanjidict_results_to_buffer (GwSearchItem *item)
       GwResultLine *resultline = item->resultline;
 
     //Kanji
-    if (w_frontend_get_color_switch ())
+    if (w_get_color_switch ())
       printf("[32;1m%s[0m\n", resultline->kanji);
     else
       printf("%s\n", resultline->kanji);
@@ -346,7 +346,7 @@ void w_console_append_examplesdict_results_to_buffer (GwSearchItem *item)
 
     if (resultline->def_start[0] != NULL)
     {
-      if (w_frontend_get_color_switch ())
+      if (w_get_color_switch ())
         printf ("[32;1m%s[0m", gettext("E:\t"));
       else
         printf ("%s", gettext("E:\t"));
@@ -355,7 +355,7 @@ void w_console_append_examplesdict_results_to_buffer (GwSearchItem *item)
 
     if (resultline->kanji_start != NULL)
     {
-      if (w_frontend_get_color_switch ())
+      if (w_get_color_switch ())
         printf ("[32;1m%s[0m", gettext("\nJ:\t"));
       else
         printf ("%s", gettext("\nJ:\t"));
@@ -364,7 +364,7 @@ void w_console_append_examplesdict_results_to_buffer (GwSearchItem *item)
 
     if (resultline->furigana_start != NULL)
     {
-      if (w_frontend_get_color_switch ())
+      if (w_get_color_switch ())
         printf("[32;1m%s[0m", gettext("\nD:\t"));
       else
         printf("%s", gettext("\nD:\t"));
