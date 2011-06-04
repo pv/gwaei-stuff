@@ -1,8 +1,8 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = backend console schemas
+SUBDIRS = libwaei waei schemas
 
 if WITH_GNOME
-SUBDIRS += gtk kpengine
+SUBDIRS += gwaei kpengine desktop images
 endif
 

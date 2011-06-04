@@ -4,18 +4,24 @@
 *.exe
 Makefile
 **/.deps/*
-src/backend/.deps/*
-src/backend/.libs/*
-src/gtk/.libs/*
-src/console/.libs/*
-src/gtk/.deps/*
-src/console/.deps/*
+src/libwaei/.deps/*
+src/libwaei/.libs/*
+src/gwaei/.libs/*
+src/waei/.libs/*
+src/gwaei/.deps/*
+src/waei/.deps/*
 *.gmo
 *.rpm
 *.deb
 *.tar.gz
 *.swp
 *.Po
+doxyfile
+.libs
+gwaei.desktop
+src/gwaei/gwaei
+src/waei/waei
+vgdump
 
 libtool
 
@@ -39,10 +45,10 @@ deb/DEBIAN/control
 deb/DEBIAN/postinst
 deb/DEBIAN/prerm
 
-src/gtk/help/C/gwaei.xml
-src/gtk/help/Makefile
-src/gtk/help/gwaei-C.omf
-src/gtk/help/gwaei.omf
+src/gwaei/help/C/gwaei.xml
+src/gwaei/help/Makefile
+src/gwaei/help/gwaei-C.omf
+src/gwaei/help/gwaei.omf
 
 po/Makefile
 po/Makefile.in
@@ -66,11 +72,11 @@ rpm/rpm_gconf_uninstall_pre.sh
 rpm/BUILD
 rpm/fedora/SPECS/gwaei.spec
 
-src/gtk/gwaei
-src/console/waei
+src/gwaei/gwaei
+src/waei/waei
 src/Makefile
 src/desktop/Makefile
-src/gtk/desktop/gwaei.desktop
+src/gwaei/desktop/gwaei.desktop
 src/img/Makefile
 src/kpengine/Makefile
 src/schemas/Makefile
@@ -88,10 +94,8 @@ aclocal.m4
 help/Makefile.in
 mandir/Makefile.in
 src/Makefile.in
-src/gtk/desktop/Makefile.in
-src/gtk/images/Makefile.in
-src/gtk/ui/Makefile.in
-src/gtk/ui/*.glade
+src/gwaei/ui/Makefile.in
+src/gwaei/ui/*.glade
 src/kpengine/Makefile.in
 src/schemas/Makefile.in
 src/schemas/org.gnome.*.valid

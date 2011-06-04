@@ -1,5 +1,5 @@
 AC_INIT(gwaei, 3.0.0)
-AC_CONFIG_SRCDIR([src/backend/engine.c])
+AC_CONFIG_SRCDIR([src/libwaei/engine.c])
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE
 
@@ -132,7 +132,7 @@ AC_SUBST(GWAEI_LOCALEDIR)
 
 AC_CONFIG_MACRO_DIR([m4])
 
-AC_CONFIG_FILES([Makefile src/Makefile src/backend/Makefile src/backend/include/gwaei/Makefile src/console/Makefile src/console/include/gwaei/Makefile src/gtk/Makefile src/gtk/include/gwaei/Makefile mandir/Makefile src/gtk/help/Makefile src/gtk/help/gwaei.omf src/gtk/help/C/gwaei.xml src/gtk/ui/Makefile src/gtk/images/Makefile src/schemas/Makefile src/gtk/desktop/Makefile rpm/gwaei.spec rpm/fedora/SPECS/gwaei.spec po/Makefile.in src/kpengine/Makefile] Doxyfile)
+AC_CONFIG_FILES([Makefile src/Makefile src/libwaei/Makefile src/libwaei/include/libwaei/Makefile src/waei/Makefile src/waei/include/waei/Makefile src/gwaei/Makefile src/gwaei/include/gwaei/Makefile mandir/Makefile src/gwaei/help/Makefile src/gwaei/help/gwaei.omf src/gwaei/help/C/gwaei.xml src/gwaei/ui/Makefile src/desktop/Makefile src/images/Makefile src/schemas/Makefile rpm/gwaei.spec rpm/fedora/SPECS/gwaei.spec po/Makefile.in src/kpengine/Makefile] src/libwaei/doxyfile src/waei/doxyfile src/gwaei/doxyfile)
 
 AC_OUTPUT
 
