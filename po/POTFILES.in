@@ -1,39 +1,42 @@
-src/backend/dictinfo.c
-src/backend/dictinfolist.c
-src/backend/dictinst.c
-src/backend/dictinstlist.c
-src/backend/engine.c
-src/backend/io.c
-src/backend/queryline.c
-src/backend/regex.c
-src/backend/resultline.c
-src/backend/searchitem.c
-src/backend/utilities.c
+src/libwaei/dictinfo.c
+src/libwaei/dictinfolist.c
+src/libwaei/dictinst.c
+src/libwaei/dictinstlist.c
+src/libwaei/engine.c
+src/libwaei/io.c
+src/libwaei/queryline.c
+src/libwaei/regex.c
+src/libwaei/resultline.c
+src/libwaei/searchitem.c
+src/libwaei/utilities.c
 
-[type: gettext/glade] src/gtk/ui/dictionaryinstall.ui
-[type: gettext/glade] src/gtk/ui/installprogress.ui
-[type: gettext/glade] src/gtk/ui/main.ui
-[type: gettext/glade] src/gtk/ui/radicals.ui
-[type: gettext/glade] src/gtk/ui/settings.ui
-[type: gettext/glade] src/gtk/ui/kanjipad.ui
+src/waei/console.c
+src/waei/ncurses.c
+src/waei/waei.c
 
-src/gtk/common.c
-src/gtk/installprogress.c
-src/gtk/dictionaryinstall.c
-src/gtk/dictionarymanager.c
-src/gtk/frontend.c
-src/gtk/gwaei.c
-src/gtk/libunique.c
-src/gtk/main.c
-src/gtk/main-callbacks.c
-src/gtk/main-tabs.c
-src/gtk/pluginmanager.c
-src/gtk/printing.c
-src/gtk/radsearchtool.c
-src/gtk/radsearchtool-callbacks.c
-src/gtk/settings.c
-src/gtk/settings-callbacks.c
-src/gtk/settings-listeners.c
-src/gtk/output-callbacks.c
+[type: gettext/glade] src/gwaei/ui/dictionaryinstall.ui
+[type: gettext/glade] src/gwaei/ui/installprogress.ui
+[type: gettext/glade] src/gwaei/ui/main.ui
+[type: gettext/glade] src/gwaei/ui/radicals.ui
+[type: gettext/glade] src/gwaei/ui/settings.ui
+[type: gettext/glade] src/gwaei/ui/kanjipad.ui
 
-src/gtk/desktop/gwaei.desktop.in
+src/gwaei/common.c
+src/gwaei/installprogress.c
+src/gwaei/dictionaryinstall.c
+src/gwaei/dictionarymanager.c
+src/gwaei/gwaei.c
+src/gwaei/libunique.c
+src/gwaei/main.c
+src/gwaei/main-callbacks.c
+src/gwaei/main-tabs.c
+src/gwaei/pluginmanager.c
+src/gwaei/printing.c
+src/gwaei/radsearchtool.c
+src/gwaei/radsearchtool-callbacks.c
+src/gwaei/settings.c
+src/gwaei/settings-callbacks.c
+src/gwaei/settings-listeners.c
+src/gwaei/output-callbacks.c
+
+src/desktop/gwaei.desktop.in
