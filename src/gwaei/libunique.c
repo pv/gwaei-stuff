@@ -42,6 +42,7 @@
 
 static UniqueApp *_app;
 static UniqueResponse response;
+static gboolean _initialized = FALSE;
 
 static void _add_window_watcher (GtkWidget*);
 static gboolean _is_unique (gboolean);
@@ -50,16 +51,34 @@ static gboolean _is_unique (gboolean);
 
 void gw_libunique_initialize (gboolean new_instance)
 {
+
+    //Declarations
+    GtkBuilder *builder;
+    GtkWidget *window;
+
+    //Initializations
+    builder = gw_common_get_builder ();
+    window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
+
+    if (_initialized == TRUE) gw_libunique_free();
+
+    _app = unique_app_new ("org.dictionary.gWaei", NULL);
+    _initialized = TRUE;
+
+    //Sanity check
     if (!_is_unique (new_instance)) exit(0);
 
-    GtkBuilder *builder = gw_common_get_builder ();
-
-    GtkWidget *window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
     _add_window_watcher (window);
 }
 
+
 void gw_libunique_free ()
 {
+    //Sanity check;
+    if (!_initialized) return; 
+
+    g_object_unref (G_OBJECT (_app));
+    _app = NULL;
 }
 
 
@@ -120,16 +139,18 @@ static UniqueResponse _message_received_cb (UniqueApp         *app,
 
 static gboolean _is_unique (gboolean arg_create_new_instance)
 {
+    //Initializaitons
     gboolean status;
 
-    //Activate the main window in the program is already open
+    //Declarations
     status = TRUE;
-    _app = unique_app_new ("org.dictionary.gWaei", NULL);
+
     if (arg_create_new_instance == FALSE && unique_app_is_running (_app))
     {
       response = unique_app_send_message (_app, UNIQUE_ACTIVATE, NULL);
       status = FALSE;
     }
+
     return status;
 }
 

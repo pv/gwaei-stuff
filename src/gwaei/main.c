@@ -439,13 +439,13 @@ void gw_main_update_toolbar_buttons ()
     action = GTK_ACTION (gtk_builder_get_object(builder, id));
     enable = (tab_search_item != NULL);
     gtk_action_set_sensitive(action, enable);
-/*
+
     //Update radicals search tool menuitem
     id = "insert_radicals_action";
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
-    enable = (lw_dictinfolist_dictionary_get_status_by_id (GW_DICT_ID_RADICALS) == GW_DICT_STATUS_INSTALLED);
+    enable = (lw_dictinfolist_get_dictinfo (GW_ENGINE_KANJI, "Kanji") != NULL);
     gtk_action_set_sensitive(action, enable);
-*/
+
     //Update back button
     id = "history_back_action";
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
@@ -532,7 +532,7 @@ void gw_main_set_total_results_label_by_searchitem (LwSearchItem* item)
         case GW_SEARCH_IDLE:
         case GW_SEARCH_FINISHING:
             if (item->current_line == 0)
-              gtk_label_set_text(GTK_LABEL (label), idle_message_none);
+              gtk_label_set_text (GTK_LABEL (label), idle_message_none);
             else if (relevant == total)
               final_message = g_strdup_printf (idle_message_total, total);
             else
@@ -826,12 +826,25 @@ void gw_main_update_history_popups ()
 //!
 void gw_main_set_font (char *font_description_string, int *font_magnification)
 {
-    GtkBuilder *builder = gw_common_get_builder ();
-
-    gboolean use_global_font_setting = lw_pref_get_boolean_by_schema (GW_SCHEMA_FONT, GW_KEY_FONT_USE_GLOBAL_FONT);
-    char *new_font_description_string = NULL;
+    //Declarations
+    GtkBuilder *builder;
+    GtkWidget *notebook;
+    GtkWidget *textview;
+    GtkWidget *scrolledwindow;
+    gboolean use_global_font_setting;
+    char *new_font_description_string;
     char font_family[100];
-    int font_size = 0;
+    int font_size;
+    int i;
+    char *pos;
+    PangoFontDescription *desc;
+
+    //Initializations
+    builder = gw_common_get_builder ();
+    notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    textview = NULL;
+    scrolledwindow = NULL;
+    use_global_font_setting = lw_pref_get_boolean_by_schema (GW_SCHEMA_FONT, GW_KEY_FONT_USE_GLOBAL_FONT);
 
     //Get the font family
     if (font_description_string == NULL)
@@ -843,10 +856,12 @@ void gw_main_set_font (char *font_description_string, int *font_magnification)
         lw_pref_get_string_by_schema (font_family, GW_SCHEMA_FONT, GW_KEY_FONT_CUSTOM_FONT, 100);
     }
     else
+    {
       strcpy (font_family, font_description_string);
+    }
 
     //Get the font size
-    char *pos = strrchr (font_family, ' ');
+    pos = strrchr (font_family, ' ');
     if (pos != NULL)
     {
       *pos = '\0';
@@ -874,26 +889,22 @@ void gw_main_set_font (char *font_description_string, int *font_magnification)
     new_font_description_string = g_strdup_printf("%s %d", font_family, font_size);
 
     //Set it
-    PangoFontDescription *desc;
     desc = pango_font_description_from_string (new_font_description_string);
     if (desc != NULL && new_font_description_string != NULL)
     {
-      GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
-      GtkWidget *textview = NULL;
-      GtkWidget *scrolledwindow = NULL;
-      int i = 0;
+      i = 0;
       while ((scrolledwindow = GTK_WIDGET (gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), i))) != NULL)
       {
         textview = GTK_WIDGET (gtk_bin_get_child (GTK_BIN (scrolledwindow)));
         gtk_widget_override_font (GTK_WIDGET (textview), desc);
         i++;
       }
-      pango_font_description_free (desc);
     }
 
     //Cleanup
     if (desc != NULL)
     {
+      pango_font_description_free (desc);
       desc = NULL;
     }
     if (new_font_description_string != NULL)

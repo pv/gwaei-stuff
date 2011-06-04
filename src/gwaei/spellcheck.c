@@ -465,50 +465,48 @@ static gboolean _update_spellcheck_timeout (gpointer data)
     gboolean spellcheck_pref;
     int rk_conv_pref;
     gboolean want_conv;
-    GtkWidget *entry;
+    GtkEditable *editable;
     char *query;
     gboolean is_convertable_to_hiragana;
     const int MAX = 300;
     char kana[MAX];
     gboolean exists;
+    GError *error;
+
+    char *argv[] = { ENCHANT, "-a", "-d", "en", NULL};
+    GPid pid;
+    int stdin_stream;
+    int stdout_stream;
+    gboolean success;
+    GThread *outthread;
+    _StreamWithData indata;
+    _StreamWithData outdata;
     
     //Initializations
     rk_conv_pref = lw_pref_get_int_by_schema (GW_SCHEMA_BASE, GW_KEY_ROMAN_KANA);
     want_conv = (rk_conv_pref == 0 || (rk_conv_pref == 2 && !lw_util_is_japanese_locale()));
-    entry = GTK_WIDGET (gw_common_get_widget_by_target (GW_TARGET_ENTRY));
-    query = gtk_editable_get_chars (GTK_EDITABLE (entry), 0, -1);
+    editable = GTK_EDITABLE (data);
+    query = gtk_editable_get_chars (editable, 0, -1);
     is_convertable_to_hiragana = (want_conv && lw_util_str_roma_to_hira (query, kana, MAX));
     spellcheck_pref = lw_pref_get_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_SPELLCHECK);
     exists = g_file_test (ENCHANT, G_FILE_TEST_IS_REGULAR);
+    error = NULL;
+
 
     //Sanity checks
     if (exists == FALSE || strlen(query) == 0)
+    {
+      g_free (query);
       return TRUE;
+    }
     if (!spellcheck_pref || !_sensitive || !_needs_spellcheck || is_convertable_to_hiragana)
     {
+      g_free (query);
       gtk_widget_queue_draw (GTK_WIDGET (data));
       return TRUE;
     }
 
     _needs_spellcheck = FALSE;
-
-    //Declarations
-    GtkEditable *editable;
-    char *argv[] = { ENCHANT, "-a", "-d", "en", NULL};
-    char *text;
-    GPid pid;
-    int stdin_stream;
-    int stdout_stream;
-    GError *error;
-    gboolean success;
-    GThread *outthread;
-    _StreamWithData indata;
-    _StreamWithData outdata;
-
-    //Initializations
-    editable = GTK_EDITABLE (data);
-    text = g_strdup (gtk_entry_get_text (GTK_ENTRY (editable)));
-    error = NULL;
 
     success = g_spawn_async_with_pipes (
       NULL, 
@@ -527,9 +525,9 @@ static gboolean _update_spellcheck_timeout (gpointer data)
     if (success)
     {
       indata.stream = stdin_stream;
-      indata.data = text;
+      indata.data = query;
       outdata.stream = stdout_stream;
-      outdata.data = text;
+      outdata.data = query;
 
       _infunc ((gpointer) &indata);
       outthread = g_thread_create (_outfunc, (gpointer) &outdata, TRUE, &error);
@@ -540,10 +538,13 @@ static gboolean _update_spellcheck_timeout (gpointer data)
     }
 
     //Cleanup
-    if (text != NULL) g_free (text);
+    if (query != NULL)
+    {
+      g_free (query);
+    }
     if (error !=NULL) 
     {
-      printf("ERROR: %s\n", error->message);
+      fprintf(stderr, "ERROR: %s\n", error->message);
       g_error_free (error);
     }
 
