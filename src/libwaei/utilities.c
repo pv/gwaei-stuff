@@ -49,11 +49,11 @@ static gboolean _paths_initialized = FALSE;
 //! @param PATH Used to determine which folder path to return
 //! @return Returns a constant string that should not be freed
 //!
-const char* lw_util_get_directory (const GwFolderPath PATH) 
+const char* lw_util_get_directory (const LwFolderPath PATH) 
 {
     g_assert (PATH >= 0 & PATH < GW_PATH_TOTAL);
 
-    GwEngine i;
+    LwEngine i;
 
     if (!_paths_initialized)
     {
@@ -66,7 +66,7 @@ const char* lw_util_get_directory (const GwFolderPath PATH)
       {
         if (_paths[GW_PATH_DICTIONARY_EDICT + i] != NULL)
         {
-          printf("The GwEngine and GwPath variables are not syncing.  Make sure "
+          printf("The LwEngine and LwPath variables are not syncing.  Make sure "
                  "you sync the engines between them when adding or removing engines.\n");
           g_assert(FALSE);
         }
@@ -81,7 +81,7 @@ const char* lw_util_get_directory (const GwFolderPath PATH)
     return _paths[PATH];
 }
 
-const char* lw_util_get_engine_name (const GwEngine ENGINE)
+const char* lw_util_get_engine_name (const LwEngine ENGINE)
 {
     switch (ENGINE)
     {
@@ -98,10 +98,10 @@ const char* lw_util_get_engine_name (const GwEngine ENGINE)
     }
 }
 
-GwEngine lw_util_get_engine_from_enginename (const char *enginename)
+LwEngine lw_util_get_engine_from_enginename (const char *enginename)
 {
   char *lower = g_utf8_strdown (enginename, -1);
-  GwEngine engine = -1;
+  LwEngine engine = -1;
 
   if (strcmp(lower, "edict") == 0)
     engine = GW_ENGINE_EDICT;
@@ -123,10 +123,10 @@ GwEngine lw_util_get_engine_from_enginename (const char *enginename)
 //!
 //! @brief Gets a dictionary folder path for the given engine
 //!
-//! @param ENGINE A GwEngine to get the dictinary folder for
+//! @param ENGINE A LwEngine to get the dictinary folder for
 //! @return Returns a constant string that should not be freed
 //!
-const char* lw_util_get_directory_for_engine (const GwEngine ENGINE)
+const char* lw_util_get_directory_for_engine (const LwEngine ENGINE)
 {
     switch (ENGINE)
     {
@@ -146,7 +146,7 @@ const char* lw_util_get_directory_for_engine (const GwEngine ENGINE)
 }
 
 
-const char* lw_util_get_compression_name (const GwCompression COMPRESSION)
+const char* lw_util_get_compression_name (const LwCompression COMPRESSION)
 {
     switch (COMPRESSION)
     {
@@ -162,7 +162,7 @@ const char* lw_util_get_compression_name (const GwCompression COMPRESSION)
     }
 }
 
-const char* lw_util_get_encoding_name (const GwEncoding ENCODING)
+const char* lw_util_get_encoding_name (const LwEncoding ENCODING)
 {
     switch (ENCODING)
     {

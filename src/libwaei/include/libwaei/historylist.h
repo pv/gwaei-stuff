@@ -38,29 +38,29 @@
 typedef enum {
   GW_HISTORYLIST_RESULTS,
   GW_HISTORYLIST_KANJI
-} GwHistoryListTarget;
+} LwHistoryListTarget;
 
 
 //!
 //! @brief Primitive for storing search items in intelligent ways
 //!
-struct _GwHistoryList {
+struct _LwHistoryList {
     GList *back;           //!< A GList of past search items
     GList *forward;        //!< A GList where past search items get stacked when the user goes back.
-    GwSearchItem *current; //!< The current search before it gets pushed only into a history list.
+    LwSearchItem *current; //!< The current search before it gets pushed only into a history list.
 };
-typedef struct _GwHistoryList GwHistoryList;
+typedef struct _LwHistoryList LwHistoryList;
 
 void lw_historylist_initialize (void);
 void lw_historylist_free (void);
 
 //Methods
-GwHistoryList* lw_historylist_get_list(const int);
-GwSearchItem* lw_historylist_get_current (const int);
+LwHistoryList* lw_historylist_get_list(const int);
+LwSearchItem* lw_historylist_get_current (const int);
 GList* lw_historylist_get_back_history (const int);
 GList* lw_historylist_get_forward_history (const int);
 GList* lw_historylist_get_combined_history_list (const int);
-void lw_historylist_add_searchitem_to_history (const int, GwSearchItem*);
+void lw_historylist_add_searchitem_to_history (const int, LwSearchItem*);
 void lw_historylist_go_back_by_target (const int);
 void lw_historylist_go_forward_by_target (const int);
 

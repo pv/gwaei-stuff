@@ -38,7 +38,7 @@
 
 static char *FIRST_DEFINITION_PREFIX_STR = "(1)";
 
-struct _GwResultLine {
+struct _LwResultLine {
     char string[GW_IO_MAX_FGETS_LINE];     //!< Character array holding the result line for the pointers to reference
 
     //General result things
@@ -62,17 +62,17 @@ struct _GwResultLine {
     gboolean important; //!< Weather a word/phrase has a high frequency of usage.
 
 };
-typedef struct _GwResultLine GwResultLine;
+typedef struct _LwResultLine LwResultLine;
 
 
-GwResultLine* lw_resultline_new (void );
-void lw_resultline_parse_edict_result_string (GwResultLine*);
-void lw_resultline_parse_kanjidict_result_string (GwResultLine*);
-void lw_resultline_parse_radicaldict_result_string (GwResultLine*);
-void lw_resultline_parse_examplesdict_result_string (GwResultLine*);
-void lw_resultline_parse_unknowndict_result_string (GwResultLine*);
+LwResultLine* lw_resultline_new (void );
+void lw_resultline_parse_edict_result_string (LwResultLine*);
+void lw_resultline_parse_kanjidict_result_string (LwResultLine*);
+void lw_resultline_parse_radicaldict_result_string (LwResultLine*);
+void lw_resultline_parse_examplesdict_result_string (LwResultLine*);
+void lw_resultline_parse_unknowndict_result_string (LwResultLine*);
 
-void lw_resultline_free (GwResultLine*);
+void lw_resultline_free (LwResultLine*);
 
 
 #endif

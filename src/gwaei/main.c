@@ -41,7 +41,7 @@
 
 
 //Private variables
-static GwSearchItem *_progress_feedback_item = NULL;
+static LwSearchItem *_progress_feedback_item = NULL;
 static gboolean _prev_selection_icon_state = FALSE;
 static int _previous_tip = 0;
 
@@ -79,8 +79,8 @@ void gw_main_free ()
 
 
 //!
-//! @brief Updates the progress information based on the GwSearchItem info
-//! @param item A GwSearchItem pointer to gleam information from.
+//! @brief Updates the progress information based on the LwSearchItem info
+//! @param item A LwSearchItem pointer to gleam information from.
 //! @returns Currently always returns TRUE
 //!
 gboolean gw_main_update_progress_feedback_timeout (gpointer data)
@@ -89,7 +89,7 @@ gboolean gw_main_update_progress_feedback_timeout (gpointer data)
     GtkBuilder *builder;
     GtkWidget *notebook;
     int page_num;
-    GwSearchItem *item;
+    LwSearchItem *item;
 
     //Initializations
     builder = gw_common_get_builder ();
@@ -118,9 +118,9 @@ gboolean gw_main_update_progress_feedback_timeout (gpointer data)
 //!
 //! @brief Sets the query text of the program using the informtion from the searchitem
 //!
-//! @param item a GwSearchItem argument.
+//! @param item a LwSearchItem argument.
 //!
-void gw_main_set_entry_text_by_searchitem (GwSearchItem *item)
+void gw_main_set_entry_text_by_searchitem (LwSearchItem *item)
 {
     //Declarations
     char hex_color_string[100];
@@ -177,9 +177,9 @@ void gw_main_set_entry_text_by_searchitem (GwSearchItem *item)
 //!
 //! @brief Sets the main window title text of the program using the informtion from the searchitem
 //!
-//! @param item a GwSearchItem argument.
+//! @param item a LwSearchItem argument.
 //!
-void gw_main_set_main_window_title_by_searchitem (GwSearchItem *item)
+void gw_main_set_main_window_title_by_searchitem (LwSearchItem *item)
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
@@ -263,9 +263,9 @@ void gw_main_set_information_box_label (const char* string, const char* query, i
 //!
 //! @brief Currently unused function
 //!
-//! @param item A GwSearchItem pointer to gleam information from
+//! @param item A LwSearchItem pointer to gleam information from
 //!
-void gw_main_verb_check_with_suggestion (GwSearchItem *item)
+void gw_main_verb_check_with_suggestion (LwSearchItem *item)
 {
 /*
     if (item == NULL || item->queryline == NULL || item->resultline == NULL || item->target != GW_TARGET_RESULTS) return;
@@ -278,7 +278,7 @@ void gw_main_verb_check_with_suggestion (GwSearchItem *item)
     if (gtk_widget_get_visible (suggestion_hbox) == TRUE) return;
 
     char *query = item->queryline->hira_string;
-    GwResultLine *rl = item->resultline;
+    LwResultLine *rl = item->resultline;
 
     if (query[0] == '\0' || rl->kanji_start == NULL)
       return;
@@ -393,11 +393,11 @@ void gw_main_update_toolbar_buttons ()
     gboolean enable;
     char *id;
 
-    GwSearchItem* history_search_item = lw_historylist_get_current (GW_TARGET_RESULTS);
+    LwSearchItem* history_search_item = lw_historylist_get_current (GW_TARGET_RESULTS);
     GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
     int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
     int pages = gtk_notebook_get_n_pages (GTK_NOTEBOOK (notebook));
-    GwSearchItem *tab_search_item = g_list_nth_data (gw_tabs_get_searchitem_list (), page_num);
+    LwSearchItem *tab_search_item = g_list_nth_data (gw_tabs_get_searchitem_list (), page_num);
 
     int current_font_magnification;
     current_font_magnification = lw_pref_get_int_by_schema (GW_SCHEMA_FONT, GW_KEY_FONT_MAGNIFICATION);
@@ -492,9 +492,9 @@ void gw_main_update_toolbar_buttons ()
 //!
 //! @brief Set's the progress label of the program using the inforamtion from the searchitem
 //!
-//! @param item A GwSearchItem pointer to gleam information from
+//! @param item A LwSearchItem pointer to gleam information from
 //!
-void gw_main_set_total_results_label_by_searchitem (GwSearchItem* item)
+void gw_main_set_total_results_label_by_searchitem (LwSearchItem* item)
 {
     GtkBuilder *builder = gw_common_get_builder ();
     GtkWidget *label = GTK_WIDGET (gtk_builder_get_object(builder, "progress_label"));
@@ -604,13 +604,13 @@ void gw_main_set_dictionary (int request)
 
 
 //!
-//! @brief Uses a GwSearchItem to set the currently active dictionary
+//! @brief Uses a LwSearchItem to set the currently active dictionary
 //!
 //! This function is greatly useful for doing searches from the history.
 //!
-//! @param item A GwSearchItem to gleam information from
+//! @param item A lnSearchItem to gleam information from
 //!
-void gw_main_set_dictionary_by_searchitem (GwSearchItem *item)
+void gw_main_set_dictionary_by_searchitem (LwSearchItem *item)
 {
     if (item != NULL && item->dictionary != NULL)
       gw_main_set_dictionary (item->dictionary->load_position);
@@ -620,9 +620,9 @@ void gw_main_set_dictionary_by_searchitem (GwSearchItem *item)
 //!
 //! @brief Updates the status of the search progressbar
 //!
-//! @param item A GwSearchItem to gleam information from
+//! @param item A LwSearchItem to gleam information from
 //!
-void gw_main_set_search_progressbar_by_searchitem (GwSearchItem *item)
+void gw_main_set_search_progressbar_by_searchitem (LwSearchItem *item)
 {
     //Declarations
     GtkWidget *entry;
@@ -688,7 +688,7 @@ void gw_main_update_history_menu_popup ()
     //Declarations
     GtkWidget *label;
     const char *text;
-    GwSearchItem *item;
+    LwSearchItem *item;
     GtkWidget *menuitem;
 
     children = lw_historylist_get_combined_history_list (GW_HISTORYLIST_RESULTS);
@@ -770,7 +770,7 @@ static void _rebuild_history_button_popup (char* id, GList* list)
     //Declarations
     GtkWidget *label;
     const char *text;
-    GwSearchItem *item;
+    LwSearchItem *item;
 
     children = list;
     while (children != NULL)
@@ -1035,14 +1035,14 @@ void gw_main_set_color_to_swatch (const char *widget_id, const char *hex_color_s
 //!
 //! @brief Appends some text to the text buffer
 //!
-//! @param item A GwSearchItem to gleam information from
+//! @param item A LwSearchItem to gleam information from
 //! @param text The text to append to the buffer
 //! @param tag1 A tag to apply to the text or NULL
 //! @param tag2 A tag to apply to the text or NULL
 //! @param start_line Returns the start line of the text inserted
 //! @param end_line Returns the end line of the text inserted
 //!
-void gw_main_append_to_buffer (GwSearchItem *item, char *text, char *tag1,
+void gw_main_append_to_buffer (LwSearchItem *item, char *text, char *tag1,
                                char *tag2, int *start_line, int *end_line)
 {
     //Assertain the target text buffer
@@ -1080,11 +1080,11 @@ void gw_main_append_to_buffer (GwSearchItem *item, char *text, char *tag1,
 //!
 //! @brief Performs initializations absolutely necessary before a search can take place
 //!
-//! Correctly the pointer in the GwSearchItem to the correct textbuffer and moves marks
+//! Correctly the pointer in the LwSearchItem to the correct textbuffer and moves marks
 //!
-//! @param item A GwSearchItem to gleam information from
+//! @param item A LwSearchItem to gleam information from
 //!
-void gw_main_initialize_buffer_by_searchitem (GwSearchItem *item)
+void gw_main_initialize_buffer_by_searchitem (LwSearchItem *item)
 {
     //Make sure searches done from the history are pointing at a valid target
     item->target_tb = (gpointer) gw_common_get_gobject_by_target (item->target);
@@ -1158,9 +1158,9 @@ void gw_main_search_entry_insert (char* text)
 //!
 //! @brief Sets the focus to a specific target widget
 //! 
-//! @param TARGET A GwTargetOutput specifying a specific target
+//! @param TARGET A LwTargetOutput specifying a specific target
 //!
-void gw_main_grab_focus_by_target (GwTargetOutput TARGET)
+void gw_main_grab_focus_by_target (LwTargetOutput TARGET)
 {
     GtkWidget* widget;
     widget = gw_common_get_widget_by_target(TARGET);
@@ -1189,7 +1189,7 @@ void gw_main_clear_search_entry ()
 //! @param TARGET The widget to copy the text from identified by a target
 //! @param MAX The Max characters to copy
 //!
-void gw_main_strncpy_text_from_widget_by_target (char* output, GwTargetOutput TARGET, int MAX)
+void gw_main_strncpy_text_from_widget_by_target (char* output, LwTargetOutput TARGET, int MAX)
 {
     GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
 
@@ -1225,7 +1225,7 @@ void gw_main_strncpy_text_from_widget_by_target (char* output, GwTargetOutput TA
 //!
 //! @param TARGET The widget where to select all text
 //!
-void gw_main_text_select_all_by_target (GwTargetOutput TARGET)
+void gw_main_text_select_all_by_target (LwTargetOutput TARGET)
 {
     GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
 
@@ -1257,7 +1257,7 @@ void gw_main_text_select_all_by_target (GwTargetOutput TARGET)
 //!
 //! @param TARGET The widget where to deselect all text
 //!
-void gw_main_text_select_none_by_target (GwTargetOutput TARGET)
+void gw_main_text_select_none_by_target (LwTargetOutput TARGET)
 {
     GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
 
@@ -1310,9 +1310,9 @@ guint gw_main_get_current_target_focus (char *window_id)
 //!
 //! @brief Copy Text into the target output
 //!
-//! TARGET GwTargetOutput to specify where the text should come from
+//! TARGET LwTargetOutput to specify where the text should come from
 //!
-void gw_main_copy_text (GwTargetOutput TARGET)
+void gw_main_copy_text (LwTargetOutput TARGET)
 {
     GtkClipboard *clipbd;
     GObject *results_tb = gw_common_get_gobject_by_target (GW_TARGET_RESULTS);
@@ -1334,9 +1334,9 @@ void gw_main_copy_text (GwTargetOutput TARGET)
 //!
 //! @brief Cut Text into the target output
 //!
-//! TARGET GwTargetOutput to specify where the text should come from
+//! TARGET LwTargetOutput to specify where the text should come from
 //!
-void gw_main_cut_text (GwTargetOutput TARGET)
+void gw_main_cut_text (LwTargetOutput TARGET)
 {
     GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
 
@@ -1352,9 +1352,9 @@ void gw_main_cut_text (GwTargetOutput TARGET)
 //!
 //! @brief Pastes Text into the target output
 //!
-//! TARGET GwTargetOutput to specify where the text should go
+//! TARGET LwTargetOutput to specify where the text should go
 //!
-void gw_main_paste_text (GwTargetOutput TARGET)
+void gw_main_paste_text (LwTargetOutput TARGET)
 {
     GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
 
@@ -1375,7 +1375,7 @@ void gw_main_paste_text (GwTargetOutput TARGET)
 //! @param set_fg Boolean whether to set the foreground color or not
 //! @param set_bg Boolean whether to set the background color or not
 //!
-gboolean _set_color_to_tagtable (char    *id,     GwTargetOutput TARGET,
+gboolean _set_color_to_tagtable (char    *id,     LwTargetOutput TARGET,
                                         gboolean set_fg, gboolean set_bg  )
 {
     GtkBuilder *builder = gw_common_get_builder ();
@@ -1492,7 +1492,7 @@ gboolean _set_color_to_tagtable (char    *id,     GwTargetOutput TARGET,
 //! @param atr The attribute to set
 //! @param val the value to set to the attribute
 //!
-static void gw_main_set_tag_to_tagtable (char *id,  GwTargetOutput TARGET,
+static void gw_main_set_tag_to_tagtable (char *id,  LwTargetOutput TARGET,
                                          char *atr, gpointer val          )
 {
     //Assertain the target text buffer
@@ -1512,11 +1512,11 @@ static void gw_main_set_tag_to_tagtable (char *id,  GwTargetOutput TARGET,
 //!
 //! @brief Returns the slice of characters between to line numbers in the target output buffer
 //!
-//! @param TARGET The GwTargetOutput to get the text slice from
+//! @param TARGET The LwTargetOutput to get the text slice from
 //! @param sl The start line number
 //! @param el The end line number
 //!
-char* gw_main_buffer_get_text_slice_by_target (GwTargetOutput TARGET, int sl, int el)
+char* gw_main_buffer_get_text_slice_by_target (LwTargetOutput TARGET, int sl, int el)
 {
     //Assertain the target text buffer
     GObject *tb;
@@ -1581,9 +1581,9 @@ void gw_main_set_cursor (GdkCursorType CURSOR)
 //!
 //! @brief Sets the no results page to the output buffer
 //!
-//! @param item A GwSearchItem pointer to gleam information from
+//! @param item A LwSearchItem pointer to gleam information from
 //!
-void gw_main_display_no_results_found_page (GwSearchItem *item)
+void gw_main_display_no_results_found_page (LwSearchItem *item)
 {
     if (item->status == GW_SEARCH_CANCELING) return; 
 
@@ -1611,7 +1611,7 @@ void gw_main_display_no_results_found_page (GwSearchItem *item)
     GtkWidget *button = NULL;
     char *markup = NULL;
     list = lw_dictinfolist_get_selected();
-    GwDictInfo *di_selected = list->data;
+    LwDictInfo *di_selected = list->data;
 
 gdk_threads_enter ();
     //Add the title
@@ -1676,7 +1676,7 @@ gdk_threads_enter ();
       //Add internal dictionary links
       i = 0;
       list = lw_dictinfolist_get_dict_by_load_position (0);
-      GwDictInfo *di = list->data;
+      LwDictInfo *di = list->data;
 
       while ((list = lw_dictinfolist_get_dict_by_load_position(i)) != NULL)
       {
@@ -1988,9 +1988,9 @@ void gw_main_cycle_dictionaries (gboolean cycle_forward)
 //! The fancy thing about this function is it will only return the
 //! highlighted text if some is highlighted.
 //!
-//! @param TARGET a GwTargetOutput to get the data from
+//! @param TARGET a LwTargetOutput to get the data from
 //!
-char* gw_main_buffer_get_text_by_target (GwTargetOutput TARGET)
+char* gw_main_buffer_get_text_by_target (LwTargetOutput TARGET)
 {
     GObject* tb;
     tb = gw_common_get_gobject_by_target (TARGET);
@@ -2162,9 +2162,9 @@ gboolean gw_update_icons_for_selection (gpointer data)
 //!
 //! @brief Uses a searchitem to cancel a search
 //!
-//! @param item A GwSearchItem to gleam information from
+//! @param item A LwSearchItem to gleam information from
 //!
-gboolean gw_main_cancel_search_by_searchitem (GwSearchItem *item)
+gboolean gw_main_cancel_search_by_searchitem (LwSearchItem *item)
 {
     if (item == NULL) return TRUE;
     
@@ -2216,7 +2216,7 @@ gboolean gw_main_cancel_search_by_tab_content (gpointer container)
     GtkWidget *notebook;
     int position;
     GList *list;
-    GwSearchItem *item;
+    LwSearchItem *item;
     gboolean result;
 
     //Initializations
@@ -2246,11 +2246,11 @@ void gw_main_tab_cancel_all_searches ()
 {
     //Declarations
     GList *iter;
-    GwSearchItem *item;
+    LwSearchItem *item;
 
     for (iter = gw_tabs_get_searchitem_list (); iter != NULL; iter = iter->next)
     {
-      item = (GwSearchItem*) iter->data;
+      item = (LwSearchItem*) iter->data;
       gw_main_cancel_search_by_searchitem (item);
     }
 }
@@ -2305,13 +2305,13 @@ gboolean gw_main_cancel_search_for_current_tab ()
 
 
 //!
-//! @brief Cancels a search using a GwTargetOutput as identification
+//! @brief Cancels a search using a LwTargetOutput as identification
 //!
-gboolean gw_main_cancel_search_by_target (GwTargetOutput TARGET)
+gboolean gw_main_cancel_search_by_target (LwTargetOutput TARGET)
 {
     //Declarations
-    GwHistoryList* hl;
-    GwSearchItem *item;
+    LwHistoryList* hl;
+    LwSearchItem *item;
 
     if (TARGET == GW_TARGET_KANJI)
     {
@@ -2330,9 +2330,9 @@ gboolean gw_main_cancel_search_by_target (GwTargetOutput TARGET)
 //! It gets the requested text buffer and then returns if it has text selected
 //! or not.
 //!
-//! @param TARGET A GwTargetOutput
+//! @param TARGET A LwTargetOutput
 //!
-gboolean gw_main_has_selection_by_target (GwTargetOutput TARGET)
+gboolean gw_main_has_selection_by_target (LwTargetOutput TARGET)
 {
     //Declarations
     GObject* tb;

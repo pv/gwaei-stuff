@@ -40,7 +40,7 @@
 
 #define MAX_QUERY 100
 
-static GwDictInfo *di = NULL;
+static LwDictInfo *di = NULL;
 static char query_text[MAX_QUERY];
 static GMainLoop *main_loop = NULL;
 
@@ -66,7 +66,7 @@ static int cursesSupportColorFlag = TRUE;	//TODO: use this
 //!
 //! @brief Print the "no result" message where necessary.
 //!
-void w_ncurses_no_result (GwSearchItem *item)
+void w_ncurses_no_result (LwSearchItem *item)
 {
     wprintw(results,"%s\n\n", gettext("No results found!"));
 }
@@ -105,9 +105,9 @@ static void w_ncurses_start_banner (char *query, char *dictionary)
 //!
 //! @brief Print the "less relevant" header where necessary.
 //!
-//! @param item A GwSearchItem to gleam information from
+//! @param item A LwSearchItem to gleam information from
 //!
-void w_ncurses_append_less_relevant_header_to_output (GwSearchItem *item)
+void w_ncurses_append_less_relevant_header_to_output (LwSearchItem *item)
 {
     wattron(results, COLOR_PAIR(GW_NCCOLORS_REDONBLACK));
     wprintw(results,"\n*** ");
@@ -125,9 +125,9 @@ void w_ncurses_append_less_relevant_header_to_output (GwSearchItem *item)
 //! is found.  You either need to use it to update the line once
 //! written, or make sure that it only prints once.
 //!
-//! @param item A GwSearchItem to gleam information from
+//! @param item A LwSearchItem to gleam information from
 //!
-void w_ncurses_append_more_relevant_header_to_output (GwSearchItem *item)
+void w_ncurses_append_more_relevant_header_to_output (LwSearchItem *item)
 {
 }
 
@@ -355,7 +355,7 @@ static gboolean main_loop_function (gpointer data)
       if (query_text[0] == '\0')
         return TRUE;
 
-      GwSearchItem *item = NULL;
+      LwSearchItem *item = NULL;
       GError *error = NULL;
       item = lw_searchitem_new (query_text, di, GW_TARGET_CONSOLE, &error);
       if (item == NULL)
@@ -508,11 +508,11 @@ void w_ncurses_start (int argc, char *argv[])
 //!
 //! @brief Not yet written
 //!
-void w_ncurses_append_edict_results_to_buffer (GwSearchItem *item)
+void w_ncurses_append_edict_results_to_buffer (LwSearchItem *item)
 {
 		//Definitions
 		int cont = 0;
-		GwResultLine *resultline = item->resultline;
+		LwResultLine *resultline = item->resultline;
 
 		wattron(results, COLOR_PAIR(1));
 
@@ -552,10 +552,10 @@ void w_ncurses_append_edict_results_to_buffer (GwSearchItem *item)
 //!
 //! @brief Not yet written
 //!
-void w_ncurses_append_kanjidict_results_to_buffer (GwSearchItem *item)
+void w_ncurses_append_kanjidict_results_to_buffer (LwSearchItem *item)
 {
 		char line_started = FALSE;
-	    GwResultLine *resultline = item->resultline;
+	    LwResultLine *resultline = item->resultline;
 
 		//Kanji
 		wattron(results, COLOR_PAIR(GW_NCCOLORS_GREENONBLACK));
@@ -614,9 +614,9 @@ void w_ncurses_append_kanjidict_results_to_buffer (GwSearchItem *item)
 //!
 //! @brief Not yet written
 //!
-void w_ncurses_append_examplesdict_results_to_buffer (GwSearchItem *item)
+void w_ncurses_append_examplesdict_results_to_buffer (LwSearchItem *item)
 {
-		GwResultLine *resultline = item->resultline;
+		LwResultLine *resultline = item->resultline;
 		int i = 0;
 		while (resultline->number[i] != NULL && resultline->def_start[i] != NULL)
 		{
@@ -637,7 +637,7 @@ void w_ncurses_append_examplesdict_results_to_buffer (GwSearchItem *item)
 //!
 //! @brief Not yet written
 //!
-void w_ncurses_append_unknowndict_results_to_buffer (GwSearchItem *item)
+void w_ncurses_append_unknowndict_results_to_buffer (LwSearchItem *item)
 {
   	wprintw(results,"%s\n", item->resultline->string);
 }
@@ -646,9 +646,9 @@ void w_ncurses_append_unknowndict_results_to_buffer (GwSearchItem *item)
 //!
 //! @brief Sets up the interface before each search begins
 //!
-//! @param item A GwSearchItem pointer to get information from
+//! @param item A LwSearchItem pointer to get information from
 //!
-void w_ncurses_pre_search_prep (GwSearchItem *item)
+void w_ncurses_pre_search_prep (LwSearchItem *item)
 {
 }
 
@@ -661,9 +661,9 @@ void w_ncurses_pre_search_prep (GwSearchItem *item)
 //! "no results found" pages.  Before this function is called, the searchitem search
 //! status changes from GW_SEARCH_SEARCHING to GW_SEARCH_FINISHING.
 //!
-//! @param item A GwSearchItem pointer to get information from
+//! @param item A LwSearchItem pointer to get information from
 //!
-void w_ncurses_after_search_cleanup (GwSearchItem *item)
+void w_ncurses_after_search_cleanup (LwSearchItem *item)
 {
     //Finish up
     if (item->total_results == 0 &&

@@ -15,17 +15,17 @@ typedef enum
   GW_RELEVANCE_LOW,
   GW_RELEVANCE_LOCATE,
   GW_RELEVANCE_TOTAL
-} GwRelevance;
+} LwRelevance;
 
 
 void lw_regex_initialize (void);
 void lw_regex_free (void);
 
-GRegex* lw_regex_kanji_new (const char*, GwEngine, GwRelevance, GError**);
-GRegex* lw_regex_furi_new (const char*, GwEngine, GwRelevance, GError**);
-GRegex* lw_regex_romaji_new (const char*, GwEngine, GwRelevance, GError**);
-GRegex* lw_regex_mix_new (const char*, GwEngine, GwRelevance, GError**);
-GRegex* lw_regex_new (const char*, GwEngine, GwRelevance, GError**);
+GRegex* lw_regex_kanji_new (const char*, LwEngine, LwRelevance, GError**);
+GRegex* lw_regex_furi_new (const char*, LwEngine, LwRelevance, GError**);
+GRegex* lw_regex_romaji_new (const char*, LwEngine, LwRelevance, GError**);
+GRegex* lw_regex_mix_new (const char*, LwEngine, LwRelevance, GError**);
+GRegex* lw_regex_new (const char*, LwEngine, LwRelevance, GError**);
 
 
 typedef enum {
@@ -47,7 +47,7 @@ typedef enum {
   GW_RE_WORD_NA_ADJ_CONDITIONAL,
 */
   GW_RE_TOTAL
-} GwRegexDataIndex;
+} LwRegexDataIndex;
 
 extern GRegex *lw_re[GW_RE_TOTAL + 1];
 

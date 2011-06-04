@@ -20,7 +20,7 @@ G_MODULE_EXPORT void gw_dictionarymanager_list_store_row_changed_action_cb (GtkT
 {
     g_signal_handler_block (_model, _list_update_handler_id);
     int position = 0;
-    GwDictInfo *di = NULL;
+    LwDictInfo *di = NULL;
     gpointer ptr;
     GtkTreeIter iter;
     if (gtk_tree_model_get_iter_first (GTK_TREE_MODEL (_model), &iter))
@@ -29,7 +29,7 @@ G_MODULE_EXPORT void gw_dictionarymanager_list_store_row_changed_action_cb (GtkT
         gtk_tree_model_get (GTK_TREE_MODEL (_model), &iter, DICT_POINTER, &ptr, -1);
         if (ptr != NULL)
         {
-          di = (GwDictInfo*) ptr;
+          di = (LwDictInfo*) ptr;
           di->load_position = position;
           position++;
         }
@@ -137,7 +137,7 @@ void gw_dictionarymanager_update_items ()
     }
 
     //Start filling in the new items
-    GwDictInfo *di = NULL;
+    LwDictInfo *di = NULL;
     GtkTreeIter treeiter;
     char *longname = NULL;
     char *iconname = NULL;
@@ -153,7 +153,7 @@ void gw_dictionarymanager_update_items ()
     for (iter = lw_dictinfolist_get_list(); iter != NULL; iter = iter->next)
     {
       //Recreate the liststore
-      di = (GwDictInfo*) iter->data;
+      di = (LwDictInfo*) iter->data;
       if (di->load_position == 0) iconname = favorite_icon;
       if (di->load_position < 9) shortcutname = g_strdup_printf ("Alt-%d", (di->load_position + 1));
       order_number = g_strdup_printf ("%d", (di->load_position + 1));
@@ -237,7 +237,7 @@ G_MODULE_EXPORT void gw_dictionarymanager_remove_cb (GtkWidget *widget, gpointer
     GtkTreeModel *tmodel;
     gboolean has_selection;
     gint* indices;
-    GwDictInfo *di;
+    LwDictInfo *di;
 
     //Initializations
     builder = gw_common_get_builder ();

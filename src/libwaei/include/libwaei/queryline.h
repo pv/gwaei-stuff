@@ -3,7 +3,7 @@
 
 #define GW_QUERYLINE_MAX_ATOMS 20
 
-struct _GwQueryLine {
+struct _LwQueryLine {
     //Storage for the original query string
     char *string;
 
@@ -19,15 +19,15 @@ struct _GwQueryLine {
     GRegex*** re_grade;
     GRegex*** re_jlpt;
 };
-typedef struct _GwQueryLine GwQueryLine;
+typedef struct _LwQueryLine LwQueryLine;
 
 
-GwQueryLine* lw_queryline_new (void );
-void lw_queryline_free (GwQueryLine*);
+LwQueryLine* lw_queryline_new (void );
+void lw_queryline_free (LwQueryLine*);
 
-int lw_queryline_parse_edict_string (GwQueryLine*l, const char*, GError**);
-int lw_queryline_parse_kanjidict_string (GwQueryLine*, const char*, GError**);
-int lw_queryline_parse_exampledict_string (GwQueryLine*, const char*, GError**);
-int lw_queryline_parse_edict_string (GwQueryLine*, const char*, GError**);
+int lw_queryline_parse_edict_string (LwQueryLine*l, const char*, GError**);
+int lw_queryline_parse_kanjidict_string (LwQueryLine*, const char*, GError**);
+int lw_queryline_parse_exampledict_string (LwQueryLine*, const char*, GError**);
+int lw_queryline_parse_edict_string (LwQueryLine*, const char*, GError**);
 
 #endif

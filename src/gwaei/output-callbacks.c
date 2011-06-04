@@ -42,12 +42,12 @@
 //!
 //! @brief PRIVATE FUNCTION. A Stes the text of the desired mark.
 //!
-//! @param item A GwSearchItem to gleam information from
+//! @param item A LwSearchItem to gleam information from
 //! @param text The desired text to set to the mark
 //! @param mark_name The name of the mark to set the new attributes to
 //!
 //!
-static void _set_header (GwSearchItem *item, char* text, char* mark_name)
+static void _set_header (LwSearchItem *item, char* text, char* mark_name)
 {
   gdk_threads_enter();
     //Declarations
@@ -95,13 +95,13 @@ static void _set_header (GwSearchItem *item, char* text, char* mark_name)
 //! @param line An integer showing the line in the buffer to tag
 //! @param start_offset the ending character in the line to highlight
 //! @param end_offset The ending character in the line to highlight
-//! @param item A GwSearchItem to get general information from
+//! @param item A LwSearchItem to get general information from
 //!
-static void _add_match_highlights (gint line, gint start_offset, gint end_offset, GwSearchItem* item)
+static void _add_match_highlights (gint line, gint start_offset, gint end_offset, LwSearchItem* item)
 {
     //Declarations
     GtkTextBuffer *tb;
-    GwQueryLine *ql;
+    LwQueryLine *ql;
     int match_start_byte_offset;
     int match_end_byte_offset;
     int match_character_offset;
@@ -187,10 +187,10 @@ static void _add_match_highlights (gint line, gint start_offset, gint end_offset
 //!
 //! @brief PRIVATE FUNCTION. Moves the content insertion mark to another mark's spot
 //!
-//! @param item A GwSearchItem pointer to gleam information from
+//! @param item A LwSearchItem pointer to gleam information from
 //! @param name The name of the mark to move the content insertion mark to
 //!
-static void _shift_stay_mark (GwSearchItem *item, char *name)
+static void _shift_stay_mark (LwSearchItem *item, char *name)
 {
     //Declarations
     GObject *results_tb;
@@ -212,11 +212,11 @@ static void _shift_stay_mark (GwSearchItem *item, char *name)
 //!
 //! @brief PRIVATE FUNCTION.  Updates the position of a mark to accomidate new results.
 //!
-//! @param item A GwSearchItem to gleam information from.
+//! @param item A LwSearchItem to gleam information from.
 //! @param stay_name The name of the mark that stays in place before the new result.
 //! @param append_name The name of the mark that moves to the end after the new result is added.
 //!
-static void _shift_append_mark (GwSearchItem *item, char *stay_name, char *append_name)
+static void _shift_append_mark (LwSearchItem *item, char *stay_name, char *append_name)
 {
     //Declarations
     GObject *results_tb;
@@ -240,12 +240,12 @@ static void _shift_append_mark (GwSearchItem *item, char *stay_name, char *appen
 //!
 //! This function is made to help readability of edict results since there is a lot of repeating.
 //!
-//! @param item A GwSearchItem pointer to use for data.
+//! @param item A LwSearchItem pointer to use for data.
 //!
-static void _append_def_same_to_buffer (GwSearchItem* item)
+static void _append_def_same_to_buffer (LwSearchItem* item)
 {
     //Declarations
-    GwResultLine* resultline;
+    LwResultLine* resultline;
     GtkTextBuffer *tb;
     GtkTextMark *mark;
 
@@ -299,9 +299,9 @@ static void _append_def_same_to_buffer (GwSearchItem* item)
 //! This is a part of a set of functions used for the global output function pointers and
 //! isn't used directly
 //!
-//! @param item A GwSearchItem to gleam information from.
+//! @param item A LwSearchItem to gleam information from.
 //!
-void gw_output_append_edict_results_cb (GwSearchItem *item)
+void gw_output_append_edict_results_cb (LwSearchItem *item)
 {
   gdk_threads_enter();
     //Some checks
@@ -333,7 +333,7 @@ void gw_output_append_edict_results_cb (GwSearchItem *item)
     gboolean remove_last_linebreak = (!skip && same_kanji && same_first_def);
 
     //Start output
-    GwResultLine* rl = item->resultline;
+    LwResultLine* rl = item->resultline;
 
     GtkTextBuffer *tb = GTK_TEXT_BUFFER (item->target_tb);
     GtkTextMark *mark;
@@ -419,11 +419,11 @@ void gw_output_append_edict_results_cb (GwSearchItem *item)
 //! This is a part of a set of functions used for the global output function pointers and
 //! isn't used directly
 //!
-//! @param item A GwSearchItem to gleam information from.
+//! @param item A LwSearchItem to gleam information from.
 //!
-void gw_output_append_kanjidict_results_cb (GwSearchItem *item)
+void gw_output_append_kanjidict_results_cb (LwSearchItem *item)
 {
-    GwResultLine* resultline = item->resultline;
+    LwResultLine* resultline = item->resultline;
     GtkTextBuffer *tb = NULL;
     GtkWidget *tv = NULL;
 
@@ -687,13 +687,13 @@ void gw_output_append_kanjidict_results_cb (GwSearchItem *item)
 //! This is a part of a set of functions used for the global output function pointers and
 //! isn't used directly
 //!
-//! @param item A GwSearchItem to gleam information from.
+//! @param item A LwSearchItem to gleam information from.
 //!
-void gw_output_append_examplesdict_results_cb (GwSearchItem *item)
+void gw_output_append_examplesdict_results_cb (LwSearchItem *item)
 {
   gdk_threads_enter();
       //Declarations
-      GwResultLine* resultline;
+      LwResultLine* resultline;
       GtkTextBuffer *tb;
       int line, start_offset, end_offset;
       GtkTextMark *mark;
@@ -750,12 +750,12 @@ void gw_output_append_examplesdict_results_cb (GwSearchItem *item)
 //! This is a part of a set of functions used for the global output function pointers and
 //! isn't used directly.  This is the fallback safe function for unknown dictionaries.
 //!
-//! @param item A GwSearchItem to gleam information from.
+//! @param item A LwSearchItem to gleam information from.
 //!
-void gw_output_append_unknowndict_results_cb (GwSearchItem *item)
+void gw_output_append_unknowndict_results_cb (LwSearchItem *item)
 {
   gdk_threads_enter();
-      GwResultLine* resultline = item->resultline;
+      LwResultLine* resultline = item->resultline;
       GtkTextBuffer *tb = GTK_TEXT_BUFFER (item->target_tb);
       GtkTextIter iter;
       GtkTextMark *mark;
@@ -782,7 +782,7 @@ void gw_output_append_unknowndict_results_cb (GwSearchItem *item)
 //!
 //! @brief Add an header to irrelevant "other" results with number of matches
 //!
-void gw_output_append_less_relevant_header_cb (GwSearchItem *item)
+void gw_output_append_less_relevant_header_cb (LwSearchItem *item)
 {
     int irrelevant = item->total_irrelevant_results;
     char *message = g_strdup_printf (ngettext("Other Result %d", "Other Results %d", irrelevant), irrelevant);
@@ -797,7 +797,7 @@ void gw_output_append_less_relevant_header_cb (GwSearchItem *item)
 //!
 //! @brief Add an header to relevant "main" results with number of matches
 //!
-void gw_output_append_more_relevant_header_cb (GwSearchItem *item)
+void gw_output_append_more_relevant_header_cb (LwSearchItem *item)
 {
     int relevant = item->total_relevant_results;
     char *message = g_strdup_printf (ngettext("Main Result %d", "Main Results %d", relevant), relevant);
@@ -812,9 +812,9 @@ void gw_output_append_more_relevant_header_cb (GwSearchItem *item)
 //!
 //! @brief Sets up the interface before each search begins
 //!
-//! @param item A GwSearchItem pointer to get information from
+//! @param item A LwSearchItem pointer to get information from
 //!
-void gw_output_pre_search_prep_cb (GwSearchItem *item)
+void gw_output_pre_search_prep_cb (LwSearchItem *item)
 {
     gw_main_initialize_buffer_by_searchitem (item);
     item->target_tb = (gpointer) gw_common_get_gobject_by_target (item->target);
@@ -830,9 +830,9 @@ void gw_output_pre_search_prep_cb (GwSearchItem *item)
 //! "no results found" pages.  Before this function is called, the searchitem search
 //! status changes from GW_SEARCH_SEARCHING to GW_SEARCH_FINISHING.
 //!
-//! @param item A GwSearchItem pointer to get information from
+//! @param item A LwSearchItem pointer to get information from
 //!
-void gw_output_after_search_cleanup_cb (GwSearchItem *item)
+void gw_output_after_search_cleanup_cb (LwSearchItem *item)
 {
     //Finish up
     if (item->total_results == 0 &&

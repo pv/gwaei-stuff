@@ -37,8 +37,8 @@
 #include <libwaei/libwaei.h>
 
 
-static GwHistoryList *results_history;
-static GwHistoryList *kanji_history;
+static LwHistoryList *results_history;
+static LwHistoryList *kanji_history;
 
 
 //!
@@ -49,7 +49,7 @@ static GwHistoryList *kanji_history;
 //!
 //! @param TARGET The target who's history list we want.
 //!
-GwHistoryList* lw_historylist_get_list (const int TARGET)
+LwHistoryList* lw_historylist_get_list (const int TARGET)
 {
     if (TARGET == GW_HISTORYLIST_RESULTS)
       return results_history;
@@ -61,17 +61,17 @@ GwHistoryList* lw_historylist_get_list (const int TARGET)
 
 
 //!
-//! @brief Creates a new GwHistoryList object. 
+//! @brief Creates a new LwHistoryList object. 
 //!
 //! Creates a new history list object which null pointers
-//! a a back, forward history list and a current GwSearchItem.
+//! a a back, forward history list and a current LwSearchItem.
 //!
-//! @return Returns the allocated GwHistoryList object.
+//! @return Returns the allocated LwHistoryList object.
 //!
-GwHistoryList* lw_historylist_new()
+LwHistoryList* lw_historylist_new()
 {
-    GwHistoryList *temp;
-    if ((temp = malloc(sizeof(GwHistoryList))) != NULL)
+    LwHistoryList *temp;
+    if ((temp = malloc(sizeof(LwHistoryList))) != NULL)
     {
       temp->back = NULL;
       temp->forward = NULL;
@@ -88,8 +88,8 @@ GwHistoryList* lw_historylist_new()
 void lw_historylist_clear_forward_history (const int TARGET)
 {
     //Declarations
-    GwHistoryList *hl;
-    GwSearchItem *item;
+    LwHistoryList *hl;
+    LwSearchItem *item;
     GList *iter;
 
     //Initializations
@@ -98,7 +98,7 @@ void lw_historylist_clear_forward_history (const int TARGET)
     //Free the data of the list
     for (iter = hl->forward; iter != NULL; iter = iter->next)
     {
-      item = (GwSearchItem*) iter->data;
+      item = (LwSearchItem*) iter->data;
       lw_searchitem_free(item);
       iter->data = NULL;
     }
@@ -115,8 +115,8 @@ void lw_historylist_clear_forward_history (const int TARGET)
 void lw_historylist_clear_back_history (const int TARGET)
 {
     //Declarations
-    GwHistoryList *hl;
-    GwSearchItem *item;
+    LwHistoryList *hl;
+    LwSearchItem *item;
     GList *iter;
 
     //Initializations
@@ -125,7 +125,7 @@ void lw_historylist_clear_back_history (const int TARGET)
     //Free the data of the list
     for (iter = hl->back; iter != NULL; iter = iter->next)
     {
-      item = (GwSearchItem*) iter->data;
+      item = (LwSearchItem*) iter->data;
       lw_searchitem_free(item);
       iter->data = NULL;
     }
@@ -143,11 +143,11 @@ void lw_historylist_clear_back_history (const int TARGET)
 //!
 //! @see lw_historylist_get_forward_history ()
 //! @see lw_historylist_get_current ()
-//! @return Returns a GList containing the GwSearchItem back history
+//! @return Returns a GList containing the LwSearchItem back history
 //!
 GList* lw_historylist_get_back_history (const int TARGET)
 {
-    GwHistoryList *hl = lw_historylist_get_list (TARGET);
+    LwHistoryList *hl = lw_historylist_get_list (TARGET);
     return hl->back;
 }
 
@@ -157,11 +157,11 @@ GList* lw_historylist_get_back_history (const int TARGET)
 //!
 //! @see lw_historylist_get_back_history ()
 //! @see lw_historylist_get_current ()
-//! @return Returns a GList containing the GwSearchItem forward history
+//! @return Returns a GList containing the LwSearchItem forward history
 //!
 GList* lw_historylist_get_forward_history (const int TARGET)
 {
-    GwHistoryList *list = lw_historylist_get_list (TARGET);
+    LwHistoryList *list = lw_historylist_get_list (TARGET);
     return list->forward;
 }
 
@@ -176,11 +176,11 @@ GList* lw_historylist_get_forward_history (const int TARGET)
 //!
 //! @see lw_historylist_get_back_history ()
 //! @see lw_historylist_get_forward_history ()
-//! @return Returns a GList containing the GwSearchItem forward history
+//! @return Returns a GList containing the LwSearchItem forward history
 //!
-GwSearchItem* lw_historylist_get_current (const int TARGET)
+LwSearchItem* lw_historylist_get_current (const int TARGET)
 {
-    GwHistoryList *list = lw_historylist_get_list (TARGET);
+    LwHistoryList *list = lw_historylist_get_list (TARGET);
     return list->current;
 }
 
@@ -197,7 +197,7 @@ GwSearchItem* lw_historylist_get_current (const int TARGET)
 //!
 GList* lw_historylist_get_combined_history_list (const int TARGET)
 {
-    GwHistoryList *hl = lw_historylist_get_list (TARGET);
+    LwHistoryList *hl = lw_historylist_get_list (TARGET);
     GList *back_copy = g_list_copy (hl->back);
 
     GList *out = NULL;
@@ -212,12 +212,12 @@ GList* lw_historylist_get_combined_history_list (const int TARGET)
 //!
 //! @brief Moves an item to the back history
 //!
-//! The current variable has its GwSearchItem moved into the backhistory list.  The
+//! The current variable has its LwSearchItem moved into the backhistory list.  The
 //! forward history is also cleared at this time.
 //!
-void lw_historylist_add_searchitem_to_history (const int TARGET, GwSearchItem *item)
+void lw_historylist_add_searchitem_to_history (const int TARGET, LwSearchItem *item)
 { 
-    GwHistoryList *hl = lw_historylist_get_list (TARGET);
+    LwHistoryList *hl = lw_historylist_get_list (TARGET);
     lw_historylist_clear_forward_history(TARGET);
 
     if (g_list_length(hl->back) >= 20)
@@ -238,8 +238,8 @@ void lw_historylist_add_searchitem_to_history (const int TARGET, GwSearchItem *i
 //!
 static void _shift_history_by_target (const int TARGET, GList **from, GList **to)
 {
-    GwHistoryList *hl = lw_historylist_get_list (TARGET);
-    GwSearchItem **current = &(hl->current);
+    LwHistoryList *hl = lw_historylist_get_list (TARGET);
+    LwSearchItem **current = &(hl->current);
 
     //Handle the current searchitem if it exists
     if (*current != NULL)
@@ -268,7 +268,7 @@ static void _shift_history_by_target (const int TARGET, GList **from, GList **to
 //!
 void lw_historylist_go_back_by_target (const int TARGET)
 { 
-    GwHistoryList *hl = lw_historylist_get_list (TARGET);
+    LwHistoryList *hl = lw_historylist_get_list (TARGET);
     _shift_history_by_target (TARGET, &(hl->back), &(hl->forward));
 }
 
@@ -280,7 +280,7 @@ void lw_historylist_go_back_by_target (const int TARGET)
 //!
 void lw_historylist_go_forward_by_target (const int TARGET)
 { 
-    GwHistoryList *hl = lw_historylist_get_list (TARGET);
+    LwHistoryList *hl = lw_historylist_get_list (TARGET);
     _shift_history_by_target (TARGET, &(hl->forward), &(hl->back));
 }
 

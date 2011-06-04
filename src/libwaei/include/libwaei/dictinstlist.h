@@ -6,9 +6,9 @@ void lw_dictinstlist_free (void);
 
 GList* lw_dictinstlist_get_list (void);
 gboolean lw_dictinstlist_data_is_valid (void);
-GwDictInst* lw_dictinstlist_get_dictinst_fuzzy (const char*);
-GwDictInst* lw_dictinstlist_get_dictinst_by_idstring (const char*);
-GwDictInst* lw_dictinstlist_get_dictinst_by_filename (const char*);
+LwDictInst* lw_dictinstlist_get_dictinst_fuzzy (const char*);
+LwDictInst* lw_dictinstlist_get_dictinst_by_idstring (const char*);
+LwDictInst* lw_dictinstlist_get_dictinst_by_filename (const char*);
 void lw_dictinstlist_set_cancel_operations (gboolean);
 
 #endif

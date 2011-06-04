@@ -156,7 +156,7 @@ void lw_regex_free ()
 //! @param flags GRegexMatchFlags to apply to the regex compilation.  
 //! @returns A newly allocated GRegex that needs to be freed with g_regex_unref ()
 //! 
-GRegex* lw_regex_kanji_new (const char *subject, const GwEngine ENGINE, const GwRelevance RELEVANCE, GError **error)
+GRegex* lw_regex_kanji_new (const char *subject, const LwEngine ENGINE, const LwRelevance RELEVANCE, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return NULL;
@@ -209,7 +209,7 @@ GRegex* lw_regex_kanji_new (const char *subject, const GwEngine ENGINE, const Gw
 //! @param relevance How relevant a result to search for
 //! @returns A newly allocated GRegex that needs to be freed with g_regex_unref ()
 //! 
-GRegex* lw_regex_furi_new (const char *subject, const GwEngine ENGINE, const GwRelevance RELEVANCE, GError **error)
+GRegex* lw_regex_furi_new (const char *subject, const LwEngine ENGINE, const LwRelevance RELEVANCE, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return NULL;
@@ -262,7 +262,7 @@ GRegex* lw_regex_furi_new (const char *subject, const GwEngine ENGINE, const GwR
 //! @param relevance How relevant a result to search for
 //! @returns A newly allocated GRegex that needs to be freed with g_regex_unref ()
 //! 
-GRegex* lw_regex_romaji_new (const char *subject, const GwEngine ENGINE, const GwRelevance RELEVANCE, GError **error)
+GRegex* lw_regex_romaji_new (const char *subject, const LwEngine ENGINE, const LwRelevance RELEVANCE, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return NULL;
@@ -315,7 +315,7 @@ GRegex* lw_regex_romaji_new (const char *subject, const GwEngine ENGINE, const G
 //! @param relevance How relevant a result to search for
 //! @returns A newly allocated GRegex that needs to be freed with g_regex_unref ()
 //! 
-GRegex* lw_regex_mix_new (const char *subject, const GwEngine ENGINE, const GwRelevance RELEVANCE, GError **error)
+GRegex* lw_regex_mix_new (const char *subject, const LwEngine ENGINE, const LwRelevance RELEVANCE, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return NULL;
@@ -363,7 +363,7 @@ GRegex* lw_regex_mix_new (const char *subject, const GwEngine ENGINE, const GwRe
 //! @param relevance How relevant a result to search for
 //! @returns A newly allocated GRegex that needs to be freed with g_regex_unref ()
 //! 
-GRegex* lw_regex_new (const char *subject, const GwEngine ENGINE, const GwRelevance RELEVANCE, GError **error)
+GRegex* lw_regex_new (const char *subject, const LwEngine ENGINE, const LwRelevance RELEVANCE, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return NULL;

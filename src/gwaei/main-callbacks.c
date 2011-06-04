@@ -40,7 +40,7 @@
 #include <gwaei/gwaei.h>
 
 
-static GwSearchItem *tooltip_item = NULL;
+static LwSearchItem *tooltip_item = NULL;
 
 static gint button_press_x = 0;
 static gint button_press_y = 0;
@@ -88,7 +88,7 @@ G_MODULE_EXPORT gboolean gw_main_get_iter_for_motion_cb (GtkWidget      *widget,
     end = iter;
     hovered_word = gtk_text_iter_get_visible_slice (&start, &end);
 
-    GwDictInfo *di;
+    LwDictInfo *di;
     di = lw_dictinfolist_get_dictinfo (GW_ENGINE_KANJI, "Kanji");
     if (di == NULL) return FALSE;
   
@@ -161,7 +161,7 @@ G_MODULE_EXPORT gboolean gw_main_get_iter_for_button_release_cb (GtkWidget      
     gint trailing;
     GtkTextIter iter;
     gunichar unic;
-    GwDictInfo *di;
+    LwDictInfo *di;
     GError *error;
 
     //Initializations
@@ -364,14 +364,14 @@ G_MODULE_EXPORT void gw_main_quit_cb (GtkWidget *widget, gpointer data)
 //!
 //! @brief Preforms a search from the history.
 //!
-//! The function uses the gpointer data to fetch a GwSearchItem that was pased
+//! The function uses the gpointer data to fetch a LwSearchItem that was pased
 //! to the function for the search.  It will reflow the back and forward
-//! history lists so the GwSearchItem is in the current position of the
+//! history lists so the LwSearchItem is in the current position of the
 //! Historylist.
 //! 
 //! @see gw_main_search_cb ()
 //! @param widget Unused GtkWidget pointer.
-//! @param data pointer to a specially attached GwSearchItem variable
+//! @param data pointer to a specially attached LwSearchItem variable
 //!
 G_MODULE_EXPORT void gw_main_search_from_history_cb (GtkWidget *widget, gpointer data)
 {
@@ -379,11 +379,11 @@ G_MODULE_EXPORT void gw_main_search_from_history_cb (GtkWidget *widget, gpointer
 
     gw_tabs_guarantee_first ();
 
-    GwHistoryList *hl;
-    GwSearchItem *item;
+    LwHistoryList *hl;
+    LwSearchItem *item;
 
     hl = lw_historylist_get_list (GW_HISTORYLIST_RESULTS);
-    item = (GwSearchItem*) data;
+    item = (LwSearchItem*) data;
 
     //Make sure searches done from the history are pointing at a valid target
     item->target_tb = (gpointer) gw_common_get_gobject_by_target (item->target);
@@ -434,16 +434,16 @@ G_MODULE_EXPORT void gw_main_search_from_history_cb (GtkWidget *widget, gpointer
 //! @brief Goes back one step in the search history
 //! 
 //! This function checks the top of the back historylist and uses the
-//! GwSearchItem in it to invoke gw_main_search_from_history_cb () using it.
+//! LwSearchItem in it to invoke gw_main_search_from_history_cb () using it.
 //!
 //! @see gw_main_search_from_history_cb ()
 //! @see gw_main_forward_cb ()
 //! @param widget Unused GtkWidget pointer.
-//! @param data pointer to a specially attached GwSearchItem variable
+//! @param data pointer to a specially attached LwSearchItem variable
 //!
 G_MODULE_EXPORT void gw_main_back_cb (GtkWidget *widget, gpointer data)
 {
-    GwHistoryList *hl;
+    LwHistoryList *hl;
     hl = lw_historylist_get_list (GW_HISTORYLIST_RESULTS);
     if (hl->back != NULL)
     {
@@ -456,16 +456,16 @@ G_MODULE_EXPORT void gw_main_back_cb (GtkWidget *widget, gpointer data)
 //! @brief Goes forward one step in the search history
 //! 
 //! This function checks the top of the forward historylist and uses the
-//! GwSearchItem in it to invoke gw_main_search_from_history_cb () using it.
+//! LwSearchItem in it to invoke gw_main_search_from_history_cb () using it.
 //!
 //! @see gw_main_search_from_history_cb ()
 //! @see gw_main_back_cb ()
 //! @param widget Unused GtkWidget pointer.
-//! @param data pointer to a specially attached GwSearchItem variable
+//! @param data pointer to a specially attached LwSearchItem variable
 //!
 G_MODULE_EXPORT void gw_main_forward_cb (GtkWidget *widget, gpointer data)
 {
-    GwHistoryList *hl;
+    LwHistoryList *hl;
     hl = lw_historylist_get_list (GW_HISTORYLIST_RESULTS);
     if (hl->forward != NULL)
     {
@@ -651,7 +651,7 @@ G_MODULE_EXPORT void gw_main_zoom_100_cb (GtkWidget *widget, gpointer data)
 //! @brief Sets the less relevant results show boolean
 //! 
 //! Makes the gconf pref match the current state of the triggering widget.
-//! Each separate GwSearchItem stores this individually, so even if you flip
+//! Each separate LwSearchItem stores this individually, so even if you flip
 //! this, you will need to do a new search if you want to change how things are
 //! displayed.
 //!
@@ -1328,8 +1328,8 @@ G_MODULE_EXPORT void gw_main_search_cb (GtkWidget *widget, gpointer data)
 {
     //Declarations
     gchar query[100];
-    GwSearchItem *item, *new_item;
-    GwDictInfo *di;
+    LwSearchItem *item, *new_item;
+    LwDictInfo *di;
     GError *error;
 
     //Initializations
@@ -1683,8 +1683,8 @@ void gw_main_populate_popup_with_search_options_cb (GtkTextView *entry, GtkMenu 
     if (hovered_word == NULL) return;
 
     //Declarations
-    GwSearchItem *item = NULL;
-    GwDictInfo *di = NULL;
+    LwSearchItem *item = NULL;
+    LwDictInfo *di = NULL;
     char *menu_text = NULL;
     GtkWidget *menuitem = NULL;
     GtkWidget *menuimage = NULL;
@@ -1696,7 +1696,7 @@ void gw_main_populate_popup_with_search_options_cb (GtkTextView *entry, GtkMenu 
     GObject* tb = NULL;
     GtkTextIter start_iter, end_iter;
     GList *list_selected = NULL;
-    GwDictInfo *di_selected = NULL;
+    LwDictInfo *di_selected = NULL;
     int i = 0;
 
     //Initializations
@@ -1868,7 +1868,7 @@ void gw_main_populate_popup_with_search_options_cb (GtkTextView *entry, GtkMenu 
 //!
 G_MODULE_EXPORT void gw_main_search_for_searchitem_online_cb (GtkWidget *widget, gpointer data)
 {
-    GwSearchItem *item = (GwSearchItem*) data;
+    LwSearchItem *item = (LwSearchItem*) data;
     GtkBuilder *builder;
     GtkWidget *window;
     GError *error;

@@ -64,25 +64,25 @@ static gboolean _query_is_sane (const char* query)
 
 
 //!
-//! @brief Creates a new GwSearchItem object. 
+//! @brief Creates a new LwSearchItem object. 
 //!
 //! Takes the query and parses it according to the dictionary and TARGET give
 //! to it.  Searchitem also stores various variables such as the file
 //! it uses and the tallied results.
 //!
 //! @param query The text to be search for
-//! @param dictionary The GwDictInfo object to use
+//! @param dictionary The LwDictInfo object to use
 //! @param TARGET The widget to output the results to
-//! @return Returns an allocated GwSearchItem object
+//! @return Returns an allocated LwSearchItem object
 //!
-GwSearchItem* lw_searchitem_new (char* query, GwDictInfo* dictionary, const int TARGET, GError **error)
+LwSearchItem* lw_searchitem_new (char* query, LwDictInfo* dictionary, const int TARGET, GError **error)
 {
     if (!_query_is_sane (query)) return NULL;
 
-    GwSearchItem *temp;
+    LwSearchItem *temp;
 
     //Allocate some memory
-    if ((temp = malloc(sizeof(GwSearchItem))) == NULL) return NULL;
+    if ((temp = malloc(sizeof(LwSearchItem))) == NULL) return NULL;
 
     temp->results_medium = NULL;
     temp->results_low = NULL;
@@ -154,10 +154,10 @@ GwSearchItem* lw_searchitem_new (char* query, GwDictInfo* dictionary, const int 
 //! reset to it's initial state, the search status set to
 //! SEARCHING, and the file descriptior is opened.
 //!
-//! @param item The GwSearchItem to its variables prepared
+//! @param item The LwSearchItem to its variables prepared
 //! @return Returns false on seachitem prep failure.
 //!
-gboolean lw_searchitem_do_pre_search_prep (GwSearchItem* item)
+gboolean lw_searchitem_do_pre_search_prep (LwSearchItem* item)
 {
     if (item->scratch_buffer != NULL || (item->scratch_buffer = malloc (GW_IO_MAX_FGETS_LINE)) == NULL)
     {
@@ -204,9 +204,9 @@ gboolean lw_searchitem_do_pre_search_prep (GwSearchItem* item)
 //! The file descriptior is closed, various variables are
 //! reset, and the search status is set to IDLE.
 //!
-//! @param item The GwSearchItem to its state reset.
+//! @param item The LwSearchItem to its state reset.
 //!
-void lw_searchitem_do_post_search_clean (GwSearchItem* item)
+void lw_searchitem_do_post_search_clean (LwSearchItem* item)
 {
     if (item->fd != NULL)
     {
@@ -236,14 +236,14 @@ void lw_searchitem_do_post_search_clean (GwSearchItem* item)
 
 
 //!
-//! @brief Releases a GwSearchItem object from memory. 
+//! @brief Releases a LwSearchItem object from memory. 
 //!
-//! All of the various interally allocated memory in the GwSearchItem is freed.
+//! All of the various interally allocated memory in the LwSearchItem is freed.
 //! The file descriptiors and such are made sure to also be closed.
 //!
-//! @param item The GwSearchItem to have it's memory freed.
+//! @param item The LwSearchItem to have it's memory freed.
 //!
-void lw_searchitem_free (GwSearchItem* item)
+void lw_searchitem_free (LwSearchItem* item)
 {
   if (item == NULL) return;
 
@@ -262,7 +262,7 @@ void lw_searchitem_free (GwSearchItem* item)
 }
 
 
-static gboolean _edict_existance_comparison (GwQueryLine *ql, GwResultLine *rl, const GwRelevance RELEVANCE)
+static gboolean _edict_existance_comparison (LwQueryLine *ql, LwResultLine *rl, const LwRelevance RELEVANCE)
 {
     //Declarations
     int i;
@@ -329,7 +329,7 @@ static gboolean _edict_existance_comparison (GwQueryLine *ql, GwResultLine *rl, 
 }
 
 
-static gboolean _kanji_existance_comparison (GwQueryLine *ql, GwResultLine *rl, const GwRelevance RELEVANCE)
+static gboolean _kanji_existance_comparison (LwQueryLine *ql, LwResultLine *rl, const LwRelevance RELEVANCE)
 {
     //Declarations
     gboolean strokes_check_passed;
@@ -505,16 +505,16 @@ static gboolean _kanji_existance_comparison (GwQueryLine *ql, GwResultLine *rl, 
 
 
 //!
-//! @brief Comparison function that should be moved to the GwSearchItem file when it matures
+//! @brief Comparison function that should be moved to the LwSearchItem file when it matures
 //!
-//! @param item A GwSearchItem to get search information from
-//! @param RELEVANCE A GwRelevance
+//! @param item A LwSearchItem to get search information from
+//! @param RELEVANCE A LwRelevance
 //!
-gboolean lw_searchitem_run_comparison (GwSearchItem *item, const GwRelevance RELEVANCE)
+gboolean lw_searchitem_run_comparison (LwSearchItem *item, const LwRelevance RELEVANCE)
 {
     //Declarations
-    GwResultLine *rl;
-    GwQueryLine *ql;
+    LwResultLine *rl;
+    LwQueryLine *ql;
 
     //Initializations
     rl = item->resultline;
@@ -537,9 +537,9 @@ gboolean lw_searchitem_run_comparison (GwSearchItem *item, const GwRelevance REL
 
 
 //!
-//! @brief comparison function for determining if two GwSearchItems are equal
+//! @brief comparison function for determining if two LwSearchItems are equal
 //!
-gboolean lw_searchitem_is_equal (GwSearchItem *item1, GwSearchItem *item2)
+gboolean lw_searchitem_is_equal (LwSearchItem *item1, LwSearchItem *item2)
 {
   //Declarations
   gboolean queries_are_equal;
@@ -566,7 +566,7 @@ gboolean lw_searchitem_is_equal (GwSearchItem *item1, GwSearchItem *item2)
 //!
 //! @brief a method for incrementing an internal integer for determining if a result set has worth
 //!
-void lw_searchitem_increment_history_relevance_timer (GwSearchItem *item)
+void lw_searchitem_increment_history_relevance_timer (LwSearchItem *item)
 {
   if (item != NULL && item->history_relevance_idle_timer < GW_HISTORY_TIME_TO_RELEVANCE)
     item->history_relevance_idle_timer++;
@@ -576,7 +576,7 @@ void lw_searchitem_increment_history_relevance_timer (GwSearchItem *item)
 //!
 //! @brief Checks if the relevant timer has passed a threshold
 //!
-gboolean lw_searchitem_has_history_relevance (GwSearchItem *item)
+gboolean lw_searchitem_has_history_relevance (LwSearchItem *item)
 {
   return (item != NULL && item->total_results && item->history_relevance_idle_timer >= GW_HISTORY_TIME_TO_RELEVANCE);
 }

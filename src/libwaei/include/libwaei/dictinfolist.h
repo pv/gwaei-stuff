@@ -36,30 +36,30 @@
 //!
 //! @brief Primitive for storing lists of dictionaries
 //!
-struct _GwDictList
+struct _LwDictList
 {
     GList *list;      //!< GList of the installed dictionaries
     GList *selected;  //!< Pointer to the currently selected dictionary in the GList
     GMutex *mutex;
 };
-typedef struct _GwDictList GwDictList;
+typedef struct _LwDictList LwDictList;
 
 
 GList* lw_dictinfolist_get_list (void);
 GList* lw_dictinfolist_get_selected (void);
-GwDictInfo* lw_dictinfolist_get_selected_dictinfo (void);
+LwDictInfo* lw_dictinfolist_get_selected_dictinfo (void);
 
 
 void lw_dictinfolist_initialize (void);
 void lw_dictinfolist_free ();
 
-GwDictInfo* lw_dictinfolist_get_dictinfo (const GwEngine, const char*);
-GwDictInfo* lw_dictinfolist_get_dictinfo_by_filename (const char*);
-GwDictInfo* lw_dictinfolist_get_dictinfo_by_idstring (const char*);
-GwDictInfo* lw_dictinfolist_get_dictinfo_fuzzy (const char*);
+LwDictInfo* lw_dictinfolist_get_dictinfo (const LwEngine, const char*);
+LwDictInfo* lw_dictinfolist_get_dictinfo_by_filename (const char*);
+LwDictInfo* lw_dictinfolist_get_dictinfo_by_idstring (const char*);
+LwDictInfo* lw_dictinfolist_get_dictinfo_fuzzy (const char*);
 GList* lw_dictinfolist_get_dict_by_load_position (int);
 GList* lw_dictinfolist_set_selected_by_load_position (int);
-gboolean lw_dictinfolist_check_if_loaded (const GwEngine, const char*);
+gboolean lw_dictinfolist_check_if_loaded (const LwEngine, const char*);
 void lw_dictinfolist_update_load_orders (void);
 int lw_dictinfolist_get_total (void);
 

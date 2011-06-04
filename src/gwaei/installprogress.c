@@ -72,7 +72,7 @@ gpointer _installprogress_install_thread (gpointer data)
     //Declarations
     GList *list;
     GList *iter;
-    GwDictInst *di;
+    LwDictInst *di;
     GError *error;
     GtkBuilder *builder;
     GtkWidget *dialog;
@@ -88,7 +88,7 @@ gpointer _installprogress_install_thread (gpointer data)
     //Do the installation
     for (iter = list; iter != NULL && error == NULL; iter = iter->next)
     {
-      di = (GwDictInst*) iter->data;
+      di = (LwDictInst*) iter->data;
       if (di->selected)
       {
         _timeoutid = g_timeout_add (100, _installprogress_update_ui_timeout, di);
@@ -113,7 +113,7 @@ gpointer _installprogress_install_thread (gpointer data)
 int _installprogress_update_dictinst_cb (double fraction, gpointer data)
 {
     //Declarations
-    GwDictInst *di;
+    LwDictInst *di;
 
     //Initializations
     di = data;
@@ -138,7 +138,7 @@ gboolean _installprogress_update_ui_timeout (gpointer data)
     GList *iter;
     int current_to_install;
     int total_to_install;
-    GwDictInst *di;
+    LwDictInst *di;
     char *text_installing;
     char *text_installing_markup;
     char *text_left;

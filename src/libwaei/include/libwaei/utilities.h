@@ -14,7 +14,7 @@ typedef enum {
   GW_PATH_PLUGIN,
   GW_PATH_CACHE,
   GW_PATH_TOTAL
-} GwFolderPath;
+} LwFolderPath;
 
 //!
 //! @brief Dictionary type assigned by the program.  It determines the parsing algorithm
@@ -25,29 +25,29 @@ typedef enum {
   GW_ENGINE_EXAMPLES,      //!< Examples format dictionary
   GW_ENGINE_UNKNOWN,          //!< Unkown format which should use safe parsing
   GW_ENGINE_TOTAL
-} GwEngine;
+} LwEngine;
 
 typedef enum {
 //  GW_COMPRESSION_ZIP, //Unsupported since you can't tell what the file will be named
   GW_COMPRESSION_GZIP,
   GW_COMPRESSION_NONE,
   GW_COMPRESSION_TOTAL
-} GwCompression;
+} LwCompression;
 
 typedef enum {
   GW_ENCODING_UTF8,
   GW_ENCODING_EUC_JP,
   GW_ENCODING_SHIFT_JS,
   GW_ENCODING_TOTAL
-} GwEncoding;
+} LwEncoding;
 
 
-const char* lw_util_get_directory (const GwFolderPath);
-const char* lw_util_get_directory_for_engine (const GwEngine);
-const char* lw_util_get_engine_name (const GwEngine ENGINE);
-GwEngine lw_util_get_engine_from_enginename (const char*);
-const char* lw_util_get_compression_name (const GwCompression);
-const char* lw_util_get_encoding_name (const GwEncoding);
+const char* lw_util_get_directory (const LwFolderPath);
+const char* lw_util_get_directory_for_engine (const LwEngine);
+const char* lw_util_get_engine_name (const LwEngine ENGINE);
+LwEngine lw_util_get_engine_from_enginename (const char*);
+const char* lw_util_get_compression_name (const LwCompression);
+const char* lw_util_get_encoding_name (const LwEncoding);
 
 
 char* lw_util_next_hira_char_from_roma (char*);

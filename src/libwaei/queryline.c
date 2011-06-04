@@ -24,7 +24,7 @@
 //!
 //! @brief Currently unused preliminary query object
 //!
-//! The GwQueryLine object will be used for parsing
+//! The LwQueryLine object will be used for parsing
 //! the query into token so comparisons can be more
 //! intelligently handled.
 //!
@@ -40,15 +40,15 @@
 //Private function declarations
 static GRegex*** _allocate_regex_pointers (int);
 static void _free_regex_pointers (GRegex***);
-static void _free_queryline_pointers (GwQueryLine*);
-static char** _initialize_queryline_pointers (GwQueryLine*, const char*);
+static void _free_queryline_pointers (LwQueryLine*);
+static char** _initialize_queryline_pointers (LwQueryLine*, const char*);
 
 
-GwQueryLine* lw_queryline_new ()
+LwQueryLine* lw_queryline_new ()
 {
-    GwQueryLine* temp;
+    LwQueryLine* temp;
 
-    if ((temp = (GwQueryLine*) malloc(sizeof(GwQueryLine))) == NULL) return NULL;
+    if ((temp = (LwQueryLine*) malloc(sizeof(LwQueryLine))) == NULL) return NULL;
 
     //A place for a copy of the raw string
     temp->string = NULL;
@@ -65,7 +65,7 @@ GwQueryLine* lw_queryline_new ()
 }
 
 
-void lw_queryline_free (GwQueryLine *ql)
+void lw_queryline_free (LwQueryLine *ql)
 {
     _free_queryline_pointers (ql);
     free (ql);
@@ -93,7 +93,7 @@ static void _free_regex_pointer (GRegex ***re)
 }
 
 
-static void _free_queryline_pointers (GwQueryLine *ql)
+static void _free_queryline_pointers (LwQueryLine *ql)
 {
    g_free (ql->string);
 
@@ -118,7 +118,7 @@ static void _free_queryline_pointers (GwQueryLine *ql)
 }
    
 
-static char** _initialize_queryline_pointers (GwQueryLine *ql, const char *string)
+static char** _initialize_queryline_pointers (LwQueryLine *ql, const char *string)
 {
     //Declarations
     char **atoms;
@@ -173,10 +173,10 @@ static GRegex*** _allocate_regex_pointers (int length)
 //!
 //! The program will (to be written)
 //!
-//! @param ql Pointer to a GwQueryLine object ot parse a query string into.
+//! @param ql Pointer to a LwQueryLine object ot parse a query string into.
 //! @param string constant string that is the raw query.
 //!
-gboolean lw_queryline_parse_edict_string (GwQueryLine *ql, const char* string, GError **error)
+gboolean lw_queryline_parse_edict_string (LwQueryLine *ql, const char* string, GError **error)
 {
    //Sanity check
    if (error != NULL && *error != NULL) return FALSE;
@@ -354,7 +354,7 @@ gboolean lw_queryline_parse_edict_string (GwQueryLine *ql, const char* string, G
 }
 
 
-static GRegex*** _compile_and_allocate_number_search_regex (const char* subject, const GwRegexDataIndex INDEX, GError **error)
+static GRegex*** _compile_and_allocate_number_search_regex (const char* subject, const LwRegexDataIndex INDEX, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return NULL;
@@ -421,10 +421,10 @@ static GRegex*** _compile_and_allocate_number_search_regex (const char* subject,
 //! will try to parse out are hiragana words, kanji/radicals, english
 //! phrases.
 //!
-//! @param ql Pointer to a GwQueryLine object ot parse a query string into.
+//! @param ql Pointer to a LwQueryLine object ot parse a query string into.
 //! @param string constant string that is the raw query.
 //!
-gboolean lw_queryline_parse_kanjidict_string (GwQueryLine *ql, const char* string, GError **error)
+gboolean lw_queryline_parse_kanjidict_string (LwQueryLine *ql, const char* string, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return FALSE;
@@ -570,10 +570,10 @@ gboolean lw_queryline_parse_kanjidict_string (GwQueryLine *ql, const char* strin
 //!
 //! The program will (to be written)
 //!
-//! @param ql Pointer to a GwQueryLine object ot parse a query string into.
+//! @param ql Pointer to a LwQueryLine object ot parse a query string into.
 //! @param string constant string that is the raw query.
 //!
-gboolean lw_queryline_parse_exampledict_string (GwQueryLine *ql, const char* string, GError **error)
+gboolean lw_queryline_parse_exampledict_string (LwQueryLine *ql, const char* string, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return FALSE;

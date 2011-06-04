@@ -17,7 +17,7 @@ enum { ENGINE_STORE_ID, ENGINE_STORE_NAME, ENGINE_STORE_TOTAL_FIELDS };
 enum { COMPRESSION_STORE_ID, COMPRESSION_STORE_NAME, COMPRESSION_STORE_TOTAL_FIELDS };
 enum { ENCODING_STORE_ID, ENCODING_STORE_NAME, ENCODING_STORE_TOTAL_FIELDS };
 
-static GwDictInst *_di = NULL;
+static LwDictInst *_di = NULL;
 
 static void _update_add_button_sensitivity (void);
 
@@ -42,7 +42,7 @@ static void _clear_details_box ()
 }
 
 
-static void _fill_details_box (GwDictInst *di)
+static void _fill_details_box (LwDictInst *di)
 {
     GtkBuilder *builder = gw_common_get_builder ();
     GtkWidget *parent = GTK_WIDGET (gtk_builder_get_object (builder, "dictionary_install_details_hbox"));
@@ -210,7 +210,7 @@ void gw_dictionaryinstall_initialize ()
     GtkTreeViewColumn *column;
     GtkTreeView *view;
     GList *list;
-    GwDictInst *di;
+    LwDictInst *di;
     GtkTreeIter treeiter;
     int i;
 
@@ -218,7 +218,7 @@ void gw_dictionaryinstall_initialize ()
     _dictionary_store = gtk_list_store_new (DICTIONARY_STORE_TOTAL_FIELDS, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_INT);
     for (list = lw_dictinstlist_get_list (); list != NULL; list = list->next)
     {
-      di = (GwDictInst*) list->data;
+      di = (LwDictInst*) list->data;
       gtk_list_store_append (GTK_LIST_STORE (_dictionary_store), &treeiter);
       gtk_list_store_set (
         _dictionary_store, &treeiter,
@@ -341,7 +341,7 @@ G_MODULE_EXPORT void gw_dictionaryinstall_filename_entry_changed_cb (GtkWidget *
 {
     g_assert (data != NULL);
 
-    GwDictInst *di = (GwDictInst*) data;
+    LwDictInst *di = (LwDictInst*) data;
     const char *value = gtk_entry_get_text (GTK_ENTRY (widget));
 
     lw_dictinst_set_filename (di, value);
@@ -353,7 +353,7 @@ G_MODULE_EXPORT void gw_dictionaryinstall_engine_combobox_changed_cb (GtkWidget 
 {
     g_assert (data != NULL);
 
-    GwDictInst *di = (GwDictInst*) data;
+    LwDictInst *di = (LwDictInst*) data;
     int value = gtk_combo_box_get_active (GTK_COMBO_BOX (widget));
 
     di->engine = value;
@@ -363,10 +363,10 @@ G_MODULE_EXPORT void gw_dictionaryinstall_source_entry_changed_cb (GtkWidget *wi
 {
     g_assert (data != NULL);
 
-    GwDictInst *di = (GwDictInst*) data;
+    LwDictInst *di = (LwDictInst*) data;
     const char *value = gtk_entry_get_text (GTK_ENTRY (widget));
 
-    //Set the GwDictInst value
+    //Set the LwDictInst value
     lw_dictinst_set_download_source (di, value);
 
     //Update the preference if approprate
@@ -381,7 +381,7 @@ G_MODULE_EXPORT void gw_dictionaryinstall_source_entry_changed_cb (GtkWidget *wi
 
 G_MODULE_EXPORT void gw_dictionaryinstall_reset_default_uri_cb (GtkWidget *widget, gpointer data)
 {
-    GwDictInst* di = (GwDictInst*) data;
+    LwDictInst* di = (LwDictInst*) data;
     char value[200];
 
     if (di->schema == NULL || di->key == NULL) return;
@@ -423,7 +423,7 @@ G_MODULE_EXPORT void gw_dictionaryinstall_encoding_combobox_changed_cb (GtkWidge
 {
     g_assert (data != NULL);
 
-    GwDictInst *di = (GwDictInst*) data;
+    LwDictInst *di = (LwDictInst*) data;
     int value = gtk_combo_box_get_active (GTK_COMBO_BOX (widget));
 
     lw_dictinst_set_encoding (di, value);
@@ -433,7 +433,7 @@ G_MODULE_EXPORT void gw_dictionaryinstall_compression_combobox_changed_cb (GtkWi
 {
     g_assert (data != NULL);
 
-    GwDictInst *di = (GwDictInst*) data;
+    LwDictInst *di = (LwDictInst*) data;
     int value = gtk_combo_box_get_active (GTK_COMBO_BOX (widget));
 
     lw_dictinst_set_compression (di, value);
@@ -443,7 +443,7 @@ G_MODULE_EXPORT void gw_dictionaryinstall_split_checkbox_changed_cb (GtkWidget *
 {
     g_assert (data != NULL);
 
-    GwDictInst *di = (GwDictInst*) data;
+    LwDictInst *di = (LwDictInst*) data;
     gboolean value = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
 
     lw_dictinst_set_split (di, value);
@@ -453,7 +453,7 @@ G_MODULE_EXPORT void gw_dictionaryinstall_merge_checkbox_changed_cb (GtkWidget *
 {
     g_assert (data != NULL);
 
-    GwDictInst *di = (GwDictInst*) data;
+    LwDictInst *di = (LwDictInst*) data;
     gboolean value = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
 
     lw_dictinst_set_merge (di, value);
@@ -470,7 +470,7 @@ G_MODULE_EXPORT void gw_dictionaryinstall_cursor_changed_cb (GtkTreeView *view, 
     GtkWidget *checkbox;
     GtkWidget *hbox;
     GtkWidget *dialog;
-    GwDictInst *di;
+    LwDictInst *di;
     GtkTreeIter iter;
     gboolean show_details;
     gboolean has_selection;
@@ -519,7 +519,7 @@ G_MODULE_EXPORT void gw_dictionaryinstall_listitem_toggled_cb (GtkCellRendererTo
 {
     GtkTreeIter iter;
     gboolean state;
-    GwDictInst *di;
+    LwDictInst *di;
     gtk_tree_model_get_iter_from_string (GTK_TREE_MODEL (_dictionary_store), &iter, path);
     gtk_tree_model_get (GTK_TREE_MODEL (_dictionary_store), &iter, CHECKBOX_STATE, &state, DICTINST_PTR, &di, -1);
     gtk_list_store_set (GTK_LIST_STORE (_dictionary_store), &iter, CHECKBOX_STATE, !state, -1);
@@ -551,7 +551,7 @@ G_MODULE_EXPORT void gw_dictionaryinstall_detail_checkbox_toggled_cb (GtkWidget 
 
 
 //!
-//! @brief Checks the validity of the GwDictInst data and sets the add button sensitivity accordingly
+//! @brief Checks the validity of the LwDictInst data and sets the add button sensitivity accordingly
 //!
 static void _update_add_button_sensitivity ()
 {

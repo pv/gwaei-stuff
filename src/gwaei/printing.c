@@ -66,7 +66,7 @@ GwPageInfo* gw_pageinfo_new()
     if ((temp = (GwPageInfo*)malloc(sizeof(GwPageInfo))) == NULL)
       return NULL;
 
-    GwHistoryList *hl = lw_historylist_get_list (GW_HISTORYLIST_RESULTS);
+    LwHistoryList *hl = lw_historylist_get_list (GW_HISTORYLIST_RESULTS);
     GObject *tb = gw_common_get_gobject_by_target (GW_TARGET_RESULTS);
 
     //Start from the start of the highlighted text
@@ -146,7 +146,7 @@ static gboolean paginate(GtkPrintOperation *operation,
 {
     printf("paginate!\n");
 
-    GwHistoryList *hl = lw_historylist_get_list (GW_HISTORYLIST_RESULTS);
+    LwHistoryList *hl = lw_historylist_get_list (GW_HISTORYLIST_RESULTS);
     GObject *tb = gw_common_get_gobject_by_target (GW_TARGET_RESULTS);
 
     GwPageInfo *pi  = user_data;
@@ -252,7 +252,7 @@ static void draw_page (GtkPrintOperation *operation,
                        gpointer           data      )
 {
     GwPageInfo *pi  = data;
-    GwHistoryList *hl = lw_historylist_get_list (GW_HISTORYLIST_RESULTS);
+    LwHistoryList *hl = lw_historylist_get_list (GW_HISTORYLIST_RESULTS);
     GObject *tb = gw_common_get_gobject_by_target (GW_TARGET_RESULTS);
 
     GList *page = pi->pages;

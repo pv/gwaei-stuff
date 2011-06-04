@@ -35,11 +35,11 @@
 
 
 
-GwResultLine* lw_resultline_new ()
+LwResultLine* lw_resultline_new ()
 {
-    GwResultLine* temp;
+    LwResultLine* temp;
 
-    if ((temp = (GwResultLine*) malloc(sizeof(GwResultLine))) == NULL) return NULL;
+    if ((temp = (LwResultLine*) malloc(sizeof(LwResultLine))) == NULL) return NULL;
 
     //A place for a copy of the raw string
     temp->string[0] = '\0';
@@ -67,7 +67,7 @@ GwResultLine* lw_resultline_new ()
     return temp;
 }
 
-void lw_resultline_clear_variables (GwResultLine *temp)
+void lw_resultline_clear_variables (LwResultLine *temp)
 {
     //A place for a copy of the raw string
     temp->string[0] = '\0';
@@ -93,7 +93,7 @@ void lw_resultline_clear_variables (GwResultLine *temp)
     temp->radicals = NULL;
 }
 
-void lw_resultline_free (GwResultLine *item)
+void lw_resultline_free (LwResultLine *item)
 {
     free (item);
 }
@@ -107,7 +107,7 @@ void lw_resultline_free (GwResultLine *item)
 //! @param line line
 //! @param string string
 //!
-void lw_resultline_parse_edict_result_string (GwResultLine *rl)
+void lw_resultline_parse_edict_result_string (LwResultLine *rl)
 {
     //Reinitialize Variables to help prevent craziness
     rl->def_start[0] = NULL;
@@ -229,7 +229,7 @@ void lw_resultline_parse_edict_result_string (GwResultLine *rl)
 //! @param line line
 //! @param string string
 //!
-void lw_resultline_parse_kanjidict_result_string (GwResultLine *rl)
+void lw_resultline_parse_kanjidict_result_string (LwResultLine *rl)
 {
     GMatchInfo* match_info;
     int start[GW_RE_TOTAL];
@@ -382,7 +382,7 @@ void lw_resultline_parse_kanjidict_result_string (GwResultLine *rl)
 //! @param line line
 //! @param string string
 //!
-void lw_resultline_parse_examplesdict_result_string (GwResultLine *rl)
+void lw_resultline_parse_examplesdict_result_string (LwResultLine *rl)
 {
     //Reinitialize Variables to help prevent craziness
     rl->def_start[0] = NULL;
@@ -473,7 +473,7 @@ void lw_resultline_parse_examplesdict_result_string (GwResultLine *rl)
 //! @param line line
 //! @param string string
 //!
-void lw_resultline_parse_unknowndict_result_string (GwResultLine *rl)
+void lw_resultline_parse_unknowndict_result_string (LwResultLine *rl)
 {
 /*
     //Reinitialize Variables to help prevent craziness

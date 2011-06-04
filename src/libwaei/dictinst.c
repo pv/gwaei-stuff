@@ -22,7 +22,7 @@
 //!
 //!  @file src/backend/dictinst.c
 //!
-//!  @brief Basic construct that hold data needed for installing a GwDictInst item
+//!  @brief Basic construct that hold data needed for installing a LwDictInst item
 //!
 
 
@@ -40,14 +40,14 @@ static gboolean _cancel = FALSE;
 
 
 //!
-//! @brief Updates the GwDictInst source uri when the pref changes
+//! @brief Updates the LwDictInst source uri when the pref changes
 //! @param settting A GSetting object
 //! @param key The key of the pref
 //! @param data User data passed to the preference listener
 //!
 static void _update_dictinst_source_uri_cb (GSettings *settings, char* key, gpointer data)
 {
-    GwDictInst *di = (GwDictInst*) data;
+    LwDictInst *di = (LwDictInst*) data;
     char source_uri[200];
 
     lw_pref_get_string_by_schema (source_uri, di->schema, di->key, 200);
@@ -57,22 +57,22 @@ static void _update_dictinst_source_uri_cb (GSettings *settings, char* key, gpoi
 
 
 //!
-//! @brief Creates a new GwDictInst object.  It also connects a listener to the preference so it updates automatically.
+//! @brief Creates a new LwDictInst object.  It also connects a listener to the preference so it updates automatically.
 //!
-GwDictInst* lw_dictinst_new_using_pref_uri (const char* filename,
+LwDictInst* lw_dictinst_new_using_pref_uri (const char* filename,
                                             const char* shortname,
                                             const char* longname,
                                             const char* description,
                                             const char* schema,
                                             const char* key,
-                                            const GwEngine ENGINE,
-                                            const GwCompression COMPRESSION,
-                                            const GwEncoding ENCODING,
+                                            const LwEngine ENGINE,
+                                            const LwCompression COMPRESSION,
+                                            const LwEncoding ENCODING,
                                             gboolean split, gboolean merge, gboolean builtin)
 {
     char source_uri[200];
     lw_pref_get_string_by_schema (source_uri, schema, key, 200);
-    GwDictInst *di = NULL;
+    LwDictInst *di = NULL;
 
     di = lw_dictinst_new (
       filename,
@@ -100,23 +100,23 @@ GwDictInst* lw_dictinst_new_using_pref_uri (const char* filename,
 
 
 //!
-//! @brief Creates a GwDictInst Object
+//! @brief Creates a LwDictInst Object
 //! 
 
-GwDictInst* lw_dictinst_new (const char* filename,
+LwDictInst* lw_dictinst_new (const char* filename,
                              const char* shortname,
                              const char* longname,
                              const char* description,
                              const char* source_uri,
-                             const GwEngine ENGINE,
-                             const GwCompression COMPRESSION,
-                             const GwEncoding ENCODING,
+                             const LwEngine ENGINE,
+                             const LwCompression COMPRESSION,
+                             const LwEncoding ENCODING,
                              gboolean split, gboolean merge, gboolean builtin)
 {
     //Create the temp object to fill
-    GwDictInst *temp = NULL;
-    temp = (GwDictInst*) malloc (sizeof(GwDictInst));
-    if (temp == NULL) g_error ("Out of memory. Could not create GwDictInst\n");
+    LwDictInst *temp = NULL;
+    temp = (LwDictInst*) malloc (sizeof(LwDictInst));
+    if (temp == NULL) g_error ("Out of memory. Could not create LwDictInst\n");
 
     //Initialize the variables for safety
     temp->filename = NULL;
@@ -159,9 +159,9 @@ GwDictInst* lw_dictinst_new (const char* filename,
 
 
 //!
-//! @brief Frees a GwDictInst object
+//! @brief Frees a LwDictInst object
 //! 
-void lw_dictinst_free (GwDictInst* di)
+void lw_dictinst_free (LwDictInst* di)
 {
     if (di->listenerid_is_set == TRUE)
       lw_pref_remove_change_listener_by_schema (di->schema, di->listenerid);
@@ -193,11 +193,11 @@ void lw_dictinst_free (GwDictInst* di)
 
 
 //!
-//! @brief Updates the filename save targets of the GwDictInst.
-//! @param di The GwDictInst object to set the filename to
-//! @param filename to copy to the GwDictInst object and use to generate uris
+//! @brief Updates the filename save targets of the LwDictInst.
+//! @param di The LwDictInst object to set the filename to
+//! @param filename to copy to the LwDictInst object and use to generate uris
 //!
-void lw_dictinst_set_filename (GwDictInst *di, const char *filename)
+void lw_dictinst_set_filename (LwDictInst *di, const char *filename)
 {
     g_free (di->filename);
     di->filename = g_strdup (filename);
@@ -207,11 +207,11 @@ void lw_dictinst_set_filename (GwDictInst *di, const char *filename)
 
 
 //!
-//! @brief Updates the engine of the GwDictInst
-//! @param The GwDictInst object to set the ENGINE to
+//! @brief Updates the engine of the LwDictInst
+//! @param The LwDictInst object to set the ENGINE to
 //! @param ENGINE the engine that you want to set
 //!
-void lw_dictinst_set_engine (GwDictInst *di, const GwEngine ENGINE)
+void lw_dictinst_set_engine (LwDictInst *di, const LwEngine ENGINE)
 {
     di->engine = ENGINE;
 
@@ -220,11 +220,11 @@ void lw_dictinst_set_engine (GwDictInst *di, const GwEngine ENGINE)
 
 
 //!
-//! @brief Updates the encoding of the GwDictInst
-//! @param di The GwDictInfo object to set the ENCODING to
-//! @param ENCODING Tells the GwDictInfo object what the initial character encoding of the downloaded file will be
+//! @brief Updates the encoding of the LwDictInst
+//! @param di The LwDictInfo object to set the ENCODING to
+//! @param ENCODING Tells the LwDictInfo object what the initial character encoding of the downloaded file will be
 //!
-void lw_dictinst_set_encoding (GwDictInst *di, const GwEncoding ENCODING)
+void lw_dictinst_set_encoding (LwDictInst *di, const LwEncoding ENCODING)
 {
     di->encoding = ENCODING;
 
@@ -233,11 +233,11 @@ void lw_dictinst_set_encoding (GwDictInst *di, const GwEncoding ENCODING)
 
 
 //!
-//! @brief Updates the compression of the GwDictInst
-//! @param di The GwDictInfo objcet to set the COMPRESSION variable on
-//! @param COMPRESSION Tells the GwDictInfo object what kind of compression the downloaded dictionary file will have.
+//! @brief Updates the compression of the LwDictInst
+//! @param di The LwDictInfo objcet to set the COMPRESSION variable on
+//! @param COMPRESSION Tells the LwDictInfo object what kind of compression the downloaded dictionary file will have.
 //!
-void lw_dictinst_set_compression (GwDictInst *di, const GwCompression COMPRESSION)
+void lw_dictinst_set_compression (LwDictInst *di, const LwCompression COMPRESSION)
 {
     di->compression = COMPRESSION;
 
@@ -248,9 +248,9 @@ void lw_dictinst_set_compression (GwDictInst *di, const GwCompression COMPRESSIO
 
 
 //!
-//! @brief Updates the download source of the GwDictInst object
+//! @brief Updates the download source of the LwDictInst object
 //!
-void lw_dictinst_set_download_source (GwDictInst *di, const char *SOURCE)
+void lw_dictinst_set_download_source (LwDictInst *di, const char *SOURCE)
 {
     g_free (di->uri[GW_DICTINST_NEEDS_DOWNLOADING]);
     di->uri[GW_DICTINST_NEEDS_DOWNLOADING] = g_strdup (SOURCE);
@@ -258,9 +258,9 @@ void lw_dictinst_set_download_source (GwDictInst *di, const char *SOURCE)
 
 
 //!
-//! @brief Updates the merge state of the GwDictInst
+//! @brief Updates the merge state of the LwDictInst
 //!
-void lw_dictinst_set_merge (GwDictInst *di, const gboolean MERGE)
+void lw_dictinst_set_merge (LwDictInst *di, const gboolean MERGE)
 {
     di->merge = MERGE;
 
@@ -269,9 +269,9 @@ void lw_dictinst_set_merge (GwDictInst *di, const gboolean MERGE)
 
 
 //!
-//! @brief Updates the split state of the GwDictInst
+//! @brief Updates the split state of the LwDictInst
 //!
-void lw_dictinst_set_split (GwDictInst *di, const gboolean SPLIT)
+void lw_dictinst_set_split (LwDictInst *di, const gboolean SPLIT)
 {
     di->split = SPLIT;
 
@@ -281,9 +281,9 @@ void lw_dictinst_set_split (GwDictInst *di, const gboolean SPLIT)
 
 //!
 //! @brief This method should be called after the filename, engine, compression,
-//!        or encoding members of the GwDictInst is changed to sync the new paths
+//!        or encoding members of the LwDictInst is changed to sync the new paths
 //!
-void lw_dictinst_regenerate_save_target_uris (GwDictInst *di)
+void lw_dictinst_regenerate_save_target_uris (LwDictInst *di)
 {
     //Sanity check
     g_assert (di != NULL && di->filename != NULL);
@@ -367,7 +367,7 @@ void lw_dictinst_regenerate_save_target_uris (GwDictInst *di)
 //!
 //! @brief Tells the installer mechanism if it is going to fail if it tries installing because of missing info
 //!
-gboolean lw_dictinst_data_is_valid (GwDictInst *di)
+gboolean lw_dictinst_data_is_valid (LwDictInst *di)
 {
     //Declarations
     char *ptr;
@@ -421,7 +421,7 @@ gboolean lw_dictinst_data_is_valid (GwDictInst *di)
 //! @see lw_dictinst_postprocess
 //! @see lw_dictinst_install
 //!
-gboolean lw_dictinst_download (GwDictInst *di, GwIoProgressCallback cb, GError **error)
+gboolean lw_dictinst_download (LwDictInst *di, LwIoProgressCallback cb, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return FALSE;
@@ -433,7 +433,7 @@ gboolean lw_dictinst_download (GwDictInst *di, GwIoProgressCallback cb, GError *
     char *target;
     gpointer data;
     int i;
-    GwDictInstUri group_index;
+    LwDictInstUri group_index;
 
     //Initializations
     group_index = GW_DICTINST_NEEDS_DOWNLOADING;
@@ -446,7 +446,7 @@ gboolean lw_dictinst_download (GwDictInst *di, GwIoProgressCallback cb, GError *
     {
       //File is located locally so copy it
       if (g_file_test (source, G_FILE_TEST_IS_REGULAR))
-        lw_io_copy (source, target, (GwIoProgressCallback) cb, data, error);
+        lw_io_copy (source, target, (LwIoProgressCallback) cb, data, error);
       //Download the file
       else
         lw_io_download (source, target, cb, data, error);
@@ -467,7 +467,7 @@ gboolean lw_dictinst_download (GwDictInst *di, GwIoProgressCallback cb, GError *
 //! @see lw_dictinst_postprocess
 //! @see lw_dictinst_install
 //!
-gboolean lw_dictinst_decompress (GwDictInst *di, GwIoProgressCallback cb, GError **error)
+gboolean lw_dictinst_decompress (LwDictInst *di, LwIoProgressCallback cb, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return FALSE;
@@ -480,7 +480,7 @@ gboolean lw_dictinst_decompress (GwDictInst *di, GwIoProgressCallback cb, GError
     char *source;
     char *target;
     int i;
-    GwDictInstUri group_index;
+    LwDictInstUri group_index;
 
     //Initializations
     data = di;
@@ -533,7 +533,7 @@ gboolean lw_dictinst_decompress (GwDictInst *di, GwIoProgressCallback cb, GError
 //! @see lw_dictinst_postprocess
 //! @see lw_dictinst_install
 //!
-gboolean lw_dictinst_convert_encoding (GwDictInst *di, GwIoProgressCallback cb, GError **error)
+gboolean lw_dictinst_convert_encoding (LwDictInst *di, LwIoProgressCallback cb, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return FALSE;
@@ -545,7 +545,7 @@ gboolean lw_dictinst_convert_encoding (GwDictInst *di, GwIoProgressCallback cb, 
     char *target;
     const char *encoding_name;
     gpointer data;
-    GwDictInstUri group_index;
+    LwDictInstUri group_index;
 
     //Initializations
     group_index = GW_DICTINST_NEEDS_TEXT_ENCODING;
@@ -582,7 +582,7 @@ gboolean lw_dictinst_convert_encoding (GwDictInst *di, GwIoProgressCallback cb, 
 //! @see lw_dictinst_postprocess
 //! @see lw_dictinst_install
 //!
-gboolean lw_dictinst_postprocess (GwDictInst *di, GwIoProgressCallback cb, GError **error)
+gboolean lw_dictinst_postprocess (LwDictInst *di, LwIoProgressCallback cb, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return FALSE;
@@ -595,7 +595,7 @@ gboolean lw_dictinst_postprocess (GwDictInst *di, GwIoProgressCallback cb, GErro
     gchar *source2;
     gchar *target;
     gchar *target2;
-    GwDictInstUri group_index;
+    LwDictInstUri group_index;
 
     //Initializations
     data = di;
@@ -645,7 +645,7 @@ gboolean lw_dictinst_postprocess (GwDictInst *di, GwIoProgressCallback cb, GErro
 //! @see lw_dictinst_postprocess
 //! @see lw_dictinst_install
 //!
-gboolean lw_dictinst_finalize (GwDictInst *di, GwIoProgressCallback cb, GError **error)
+gboolean lw_dictinst_finalize (LwDictInst *di, LwIoProgressCallback cb, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return FALSE;
@@ -656,7 +656,7 @@ gboolean lw_dictinst_finalize (GwDictInst *di, GwIoProgressCallback cb, GError *
     char *source;
     char *target;
     gpointer data;
-    GwDictInstUri group_index;
+    LwDictInstUri group_index;
     int atom_index;
     int i;
 
@@ -681,11 +681,11 @@ gboolean lw_dictinst_finalize (GwDictInst *di, GwIoProgressCallback cb, GError *
 //!
 //! @brief removes temporary files created by installation in the dictionary cache folder
 //!
-void lw_dictinst_clean (GwDictInst *di, GwIoProgressCallback cb)
+void lw_dictinst_clean (LwDictInst *di, LwIoProgressCallback cb)
 {
   /*
     //Declarations
-    GwDictInstUri group_index;
+    LwDictInstUri group_index;
     int i;
     char *uri;
     char *source;
@@ -717,7 +717,7 @@ void lw_dictinst_clean (GwDictInst *di, GwIoProgressCallback cb)
 
 
 //!
-//! @brief Installs a GwDictInst object using the provided gui update callback
+//! @brief Installs a LwDictInst object using the provided gui update callback
 //!        This function should normally only be used in the lw_dictinst_install function.
 //! @param path String representing the path of the file to gunzip.
 //! @param error Error handling
@@ -726,7 +726,7 @@ void lw_dictinst_clean (GwDictInst *di, GwIoProgressCallback cb)
 //! @see lw_dictinst_postprocess
 //! @see lw_dictinst_install
 //!
-gboolean lw_dictinst_install (GwDictInst *di, GwIoProgressCallback cb, GError **error)
+gboolean lw_dictinst_install (LwDictInst *di, LwIoProgressCallback cb, GError **error)
 {
     g_assert (*error == NULL && di != NULL);
 
@@ -743,12 +743,12 @@ gboolean lw_dictinst_install (GwDictInst *di, GwIoProgressCallback cb, GError **
 
 //!
 //! @brief Returns a status string describing the current process being taken
-//!        on a GwDictInst object
-//! @param di A GwDictInst to get the status of
+//!        on a LwDictInst object
+//! @param di A LwDictInst to get the status of
 //! @param long_form Whether you want the long or short form of the status messages.
 //! @returns An allocated string that should be freed with gfree when finished
 //!
-gchar* lw_dictinst_get_status_string (GwDictInst *di, gboolean long_form)
+gchar* lw_dictinst_get_status_string (LwDictInst *di, gboolean long_form)
 {
     //Declarations
     gchar *string;
@@ -793,7 +793,7 @@ gchar* lw_dictinst_get_status_string (GwDictInst *di, gboolean long_form)
 }
 
 
-double lw_dictinst_get_progress (GwDictInst *di)
+double lw_dictinst_get_progress (LwDictInst *di)
 {
     //Declarations
     double fraction, current, final;
@@ -840,11 +840,11 @@ double lw_dictinst_get_progress (GwDictInst *di)
 
 
 //!
-//! @brief Gets the uris saved in the GwDictInfo in the form of an array.  It should not be freed.
-//! @param INDEX The GwDictInstUri index
-//! @returns An allocated string internal to the GwDictInst that should not be freed
+//! @brief Gets the uris saved in the LwDictInfo in the form of an array.  It should not be freed.
+//! @param INDEX The LwDictInstUri index
+//! @returns An allocated string internal to the LwDictInst that should not be freed
 //!
-char* lw_dictinst_get_source_uri (GwDictInst *di, const GwDictInstUri GROUP_INDEX, const int ATOM_INDEX)
+char* lw_dictinst_get_source_uri (LwDictInst *di, const LwDictInstUri GROUP_INDEX, const int ATOM_INDEX)
 {
     //Sanity check
     g_assert (GROUP_INDEX >= 0 && GROUP_INDEX < GW_DICTINST_NEEDS_NOTHING);
@@ -879,11 +879,11 @@ char* lw_dictinst_get_source_uri (GwDictInst *di, const GwDictInstUri GROUP_INDE
 
 
 //!
-//! @brief Gets the uris saved in the GwDictInfo in the form of an array.  It should not be freed.
-//! @param INDEX The GwDictInstUri index
-//! @returns An allocated string internal to the GwDictInst that should not be freed
+//! @brief Gets the uris saved in the LwDictInfo in the form of an array.  It should not be freed.
+//! @param INDEX The LwDictInstUri index
+//! @returns An allocated string internal to the LwDictInst that should not be freed
 //!
-char* lw_dictinst_get_target_uri (GwDictInst *di, const GwDictInstUri GROUP_INDEX, const int ATOM_INDEX)
+char* lw_dictinst_get_target_uri (LwDictInst *di, const LwDictInstUri GROUP_INDEX, const int ATOM_INDEX)
 {
     //Sanity check
     g_assert (GROUP_INDEX >= 0 && GROUP_INDEX < GW_DICTINST_NEEDS_NOTHING);
@@ -917,7 +917,7 @@ char* lw_dictinst_get_target_uri (GwDictInst *di, const GwDictInstUri GROUP_INDE
 }
 
 
-void lw_dictinst_set_cancel_operations (GwDictInst *di, gboolean state)
+void lw_dictinst_set_cancel_operations (LwDictInst *di, gboolean state)
 {
     _cancel = state;
     lw_io_set_cancel_operations (state);

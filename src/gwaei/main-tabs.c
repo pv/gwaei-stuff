@@ -59,10 +59,10 @@ GList *gw_tabs_get_searchitem_list ()
 }
 
 
-GwSearchItem* gw_tabs_get_searchitem ()
+LwSearchItem* gw_tabs_get_searchitem ()
 {
     GList* iter;
-    GwSearchItem *item;
+    LwSearchItem *item;
     GtkBuilder *builder;
     GtkWidget *notebook;
     int page_num;
@@ -71,14 +71,14 @@ GwSearchItem* gw_tabs_get_searchitem ()
     notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
     page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
     iter = g_list_nth (_tab_searchitems, page_num);
-    item = (GwSearchItem*) iter->data;
+    item = (LwSearchItem*) iter->data;
 
     return item;
 }
 
 
 
-void gw_tabs_set_searchitem (GwSearchItem *item)
+void gw_tabs_set_searchitem (LwSearchItem *item)
 {
     GList* iter;
     GtkBuilder *builder;
@@ -102,9 +102,9 @@ void gw_tabs_set_searchitem (GwSearchItem *item)
 //!
 //! @brief Updates the tab and surrounding interface to reflect the current tab
 //!
-//! @param item pointer to a GwSearchItem to use to update the interface.
+//! @param item pointer to a LwSearchItem to use to update the interface.
 //!
-void gw_tabs_update_appearance_with_searchitem (GwSearchItem *item)
+void gw_tabs_update_appearance_with_searchitem (LwSearchItem *item)
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
@@ -142,7 +142,7 @@ void gw_tabs_update_appearance ()
     GtkBuilder *builder;
     GtkWidget *notebook;
     int current_page;
-    GwSearchItem *item;
+    LwSearchItem *item;
 
     //Initializations
     builder = gw_common_get_builder ();
@@ -159,10 +159,10 @@ void gw_tabs_update_appearance ()
 //!
 //! @brief Sets the current SearchItem in the historylist to the one in the argument
 //!
-void gw_tabs_update_on_deck_historylist_by_searchitem (GwSearchItem *item)
+void gw_tabs_update_on_deck_historylist_by_searchitem (LwSearchItem *item)
 {
     //Declaratios
-    GwHistoryList *hl;
+    LwHistoryList *hl;
 
     //Initializations
     hl = lw_historylist_get_list (GW_TARGET_RESULTS);
@@ -180,7 +180,7 @@ void gw_tabs_update_on_deck_historylist_item_by_current_tab ()
     GtkBuilder *builder;
     GtkWidget *notebook;
     int page_num;
-    GwSearchItem *item;
+    LwSearchItem *item;
 
     //Initializations
     builder = gw_common_get_builder ();
@@ -387,7 +387,7 @@ G_MODULE_EXPORT void gw_tabs_remove_cb (GtkWidget *widget, gpointer data)
     int pages;
     int page_num;
     GList *iter;
-    GwSearchItem *item;
+    LwSearchItem *item;
 
     //Initializations
     builder = gw_common_get_builder ();
@@ -440,7 +440,7 @@ G_MODULE_EXPORT void gw_tabs_remove_current_cb (GtkWidget *widget, gpointer data
     int pages;
     int page_num;
     GList *iter;
-    GwSearchItem *item;
+    LwSearchItem *item;
 
     //Initializations
     builder = gw_common_get_builder ();
@@ -489,7 +489,7 @@ G_MODULE_EXPORT void gw_tabs_remove_current_cb (GtkWidget *widget, gpointer data
 G_MODULE_EXPORT void gw_tabs_switch_cb (GtkNotebook *notebook, GtkWidget *page, int page_num, gpointer data)
 {
     //Declarations
-    GwSearchItem *item;
+    LwSearchItem *item;
 
     //Initializations
     item = g_list_nth_data (_tab_searchitems, page_num);
@@ -547,20 +547,20 @@ G_MODULE_EXPORT void gw_tabs_previous_cb (GtkWidget *widget, gpointer data)
 //! @brief Sets up an initites a new search in a new tab
 //!
 //! @param widget Currently unused widget pointer
-//! @param data A gpointer to a GwSearchItem that hold the search information
+//! @param data A gpointer to a LwSearchItem that hold the search information
 //!
 G_MODULE_EXPORT void gw_tabs_new_with_search_cb (GtkWidget *widget, gpointer data)
 {
     //Declarations
     GtkBuilder *builder;
-    GwSearchItem *item;
-    GwSearchItem *current_item;
+    LwSearchItem *item;
+    LwSearchItem *current_item;
     GtkWidget *notebook;
     int page_num;
 
     //Initializations
     builder = gw_common_get_builder ();
-    item = (GwSearchItem*) data;
+    item = (LwSearchItem*) data;
     current_item = g_list_nth_data (gw_tabs_get_searchitem_list (), page_num);
     notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
     page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
@@ -579,27 +579,27 @@ G_MODULE_EXPORT void gw_tabs_new_with_search_cb (GtkWidget *widget, gpointer dat
 G_MODULE_EXPORT void gw_tabs_no_results_search_for_dictionary_cb (GtkWidget *widget, gpointer data)
 {
     //Declarations
-    GwDictInfo* di;
+    LwDictInfo* di;
 
     //Initializations
-    di = (GwDictInfo*) data;
+    di = (LwDictInfo*) data;
 
     gw_main_set_dictionary (di->load_position);
 }
 
 //!
-//! @brief Frees the GwSearchItem memory that is attached to the activate tab callback
+//! @brief Frees the LwSearchItem memory that is attached to the activate tab callback
 //!
 //! @param widget Currently unused widget pointe
-//! @param data gpointer to a GwSearchItem to be freed
+//! @param data gpointer to a LwSearchItem to be freed
 //!
 G_MODULE_EXPORT void gw_tabs_destroy_tab_menuitem_searchitem_data_cb (GObject *object, gpointer data)
 {
     //Declarations
-    GwSearchItem *item;
+    LwSearchItem *item;
 
     //Initializations
-    item = (GwSearchItem*) data;
+    item = (LwSearchItem*) data;
 
     if (item != NULL)
     {

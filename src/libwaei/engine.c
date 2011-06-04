@@ -45,46 +45,46 @@
 
 
 //Function pointers that should be set on program startup
-static void (*_output_append_edict_results)(GwSearchItem*) = NULL;
-static void (*_output_append_kanjidict_results)(GwSearchItem*) = NULL;
-static void (*_output_append_examplesdict_results)(GwSearchItem*) = NULL;
-static void (*_output_append_unknowndict_results)(GwSearchItem*) = NULL;
+static void (*_output_append_edict_results)(LwSearchItem*) = NULL;
+static void (*_output_append_kanjidict_results)(LwSearchItem*) = NULL;
+static void (*_output_append_examplesdict_results)(LwSearchItem*) = NULL;
+static void (*_output_append_unknowndict_results)(LwSearchItem*) = NULL;
 
-static void (*_output_append_less_relevant_header)(GwSearchItem*) = NULL;
-static void (*_output_append_more_relevant_header)(GwSearchItem*) = NULL;
-static void (*_output_pre_search_prep)(GwSearchItem*) = NULL;
-static void (*_output_after_search_cleanup)(GwSearchItem*) = NULL;
+static void (*_output_append_less_relevant_header)(LwSearchItem*) = NULL;
+static void (*_output_append_more_relevant_header)(LwSearchItem*) = NULL;
+static void (*_output_pre_search_prep)(LwSearchItem*) = NULL;
+static void (*_output_after_search_cleanup)(LwSearchItem*) = NULL;
 
 
-GwOutputFunc lw_engine_get_append_edict_results_func ()
+LwOutputFunc lw_engine_get_append_edict_results_func ()
 {
   return _output_append_edict_results;
 }
-GwOutputFunc lw_engine_get_append_kanjidict_results_func ()
+LwOutputFunc lw_engine_get_append_kanjidict_results_func ()
 {
   return _output_append_kanjidict_results;
 }
-GwOutputFunc lw_engine_get_append_examplesdict_results_func ()
+LwOutputFunc lw_engine_get_append_examplesdict_results_func ()
 {
   return _output_append_examplesdict_results;
 }
-GwOutputFunc lw_engine_get_append_unknowndict_results_func ()
+LwOutputFunc lw_engine_get_append_unknowndict_results_func ()
 {
   return _output_append_unknowndict_results;
 }
-GwOutputFunc lw_engine_get_append_less_relevant_header_func ()
+LwOutputFunc lw_engine_get_append_less_relevant_header_func ()
 {
   return _output_append_less_relevant_header;
 }
-GwOutputFunc lw_engine_get_append_more_relevant_header_func ()
+LwOutputFunc lw_engine_get_append_more_relevant_header_func ()
 {
   return _output_append_more_relevant_header;
 }
-GwOutputFunc lw_engine_get_pre_search_prep_func ()
+LwOutputFunc lw_engine_get_pre_search_prep_func ()
 {
   return _output_pre_search_prep;
 }
-GwOutputFunc lw_engine_get_after_search_cleanup_func ()
+LwOutputFunc lw_engine_get_after_search_cleanup_func ()
 {
   return _output_after_search_cleanup;
 }
@@ -97,10 +97,10 @@ GwOutputFunc lw_engine_get_after_search_cleanup_func ()
 //! sure to cleanly free it and then post it to the approprate output, be it the
 //! terminal or a text buffer widget.
 //!
-//! @param item a GwSearchItem
+//! @param item a LwSearchItem
 //! @param results the result stored in a GList to free
 //!
-static void _append_stored_result_to_output (GwSearchItem *item, GList **results)
+static void _append_stored_result_to_output (LwSearchItem *item, GList **results)
 {
     //Swap the lines
     item->swap_resultline = item->backup_resultline;
@@ -111,7 +111,7 @@ static void _append_stored_result_to_output (GwSearchItem *item, GList **results
     //Replace the current result line with the stored one
     if (item->resultline != NULL)
       lw_resultline_free (item->resultline);
-    item->resultline = (GwResultLine*)(*results)->data;
+    item->resultline = (LwResultLine*)(*results)->data;
     *results = g_list_delete_link(*results, *results);
       
     //Append to the buffer 
@@ -126,14 +126,14 @@ static void _append_stored_result_to_output (GwSearchItem *item, GList **results
 //! @brief Find the relevance of a returned result
 //!
 //! THIS IS A PRIVATE FUNCTION. Function uses the stored relevance regrex
-//! expressions in the GwSearchItem to get the relevance of a returned result.  It
+//! expressions in the LwSearchItem to get the relevance of a returned result.  It
 //! then returns the answer to the caller in the form of an int.
 //!
 //! @param text a string to check the relevance of
 //! @param item a search item to grab the regrexes from
 //! @return Returns one of the integers: LOW_RELEVANCE, MEDIUM_RELEVANCE, or HIGH_RELEVANCE.
 //!
-static int _get_relevance (GwSearchItem *item) {
+static int _get_relevance (LwSearchItem *item) {
     if (lw_searchitem_run_comparison (item, GW_RELEVANCE_HIGH))
       return GW_RELEVANCE_HIGH;
     else if (lw_searchitem_run_comparison (item, GW_RELEVANCE_MEDIUM))
@@ -151,12 +151,12 @@ static int _get_relevance (GwSearchItem *item) {
 //! searching the whole file.  It works in specified chunks before going back to
 //! the thread to help improve speed.  
 //!
-//! @param data A GwSearchItem to search with
+//! @param data A LwSearchItem to search with
 //! @return Returns true when the search isn't finished yet.
 //!
 static void _stream_results_thread (gpointer data)
 {
-    GwSearchItem *item = (GwSearchItem*) data;
+    LwSearchItem *item = (LwSearchItem*) data;
     if (item == NULL || item->fd == NULL) return;
     char *line_pointer = NULL;
 
@@ -309,9 +309,9 @@ static void _stream_results_thread (gpointer data)
 //! query, checking things that need to be checked before the final go, and
 //! initializing the search loop or thread.
 //!
-//! @param item a GwSearchItem argument.
+//! @param item a LwSearchItem argument.
 //!
-void lw_engine_get_results (GwSearchItem *item, gboolean create_thread, gboolean only_exact_matches)
+void lw_engine_get_results (LwSearchItem *item, gboolean create_thread, gboolean only_exact_matches)
 {
     if (lw_searchitem_do_pre_search_prep (item) == FALSE)
     {
@@ -341,14 +341,14 @@ void lw_engine_get_results (GwSearchItem *item, gboolean create_thread, gboolean
 
 
 void lw_engine_initialize (
-                                     void (*append_edict_results)(GwSearchItem*),
-                                     void (*append_kanjidict_results)(GwSearchItem*),
-                                     void (*append_examplesdict_results)(GwSearchItem*),
-                                     void (*append_unknowndict_results)(GwSearchItem*),
-                                     void (*append_less_relevant_header)(GwSearchItem*),
-                                     void (*append_more_relevant_header)(GwSearchItem*),
-                                     void (*pre_search_prep)(GwSearchItem*),
-                                     void (*after_search_cleanup)(GwSearchItem*)
+                                     void (*append_edict_results)(LwSearchItem*),
+                                     void (*append_kanjidict_results)(LwSearchItem*),
+                                     void (*append_examplesdict_results)(LwSearchItem*),
+                                     void (*append_unknowndict_results)(LwSearchItem*),
+                                     void (*append_less_relevant_header)(LwSearchItem*),
+                                     void (*append_more_relevant_header)(LwSearchItem*),
+                                     void (*pre_search_prep)(LwSearchItem*),
+                                     void (*after_search_cleanup)(LwSearchItem*)
                                     )
 {
     _output_append_edict_results = append_edict_results;

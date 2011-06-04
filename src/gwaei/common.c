@@ -392,14 +392,14 @@ gboolean gw_common_load_ui_xml (const char *filename) {
 
 
 //!
-//! @brief Retrieves a special GtkWidget designated by the GwTargetOuput signature
+//! @brief Retrieves a special GtkWidget designated by the LwTargetOuput signature
 //!
 //! This function would get the target textview instead of the textbuffer.
 //! The focus is on getting the frontend widget.
 //!
-//! @param TARGET A GwTargetOutput designating the target
+//! @param TARGET A LwTargetOutput designating the target
 //!
-GtkWidget* gw_common_get_widget_by_target (const GwTargetOutput TARGET)
+GtkWidget* gw_common_get_widget_by_target (const LwTargetOutput TARGET)
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
@@ -428,7 +428,7 @@ GtkWidget* gw_common_get_widget_by_target (const GwTargetOutput TARGET)
 //!
 //! @brief To be written
 //!
-gboolean gw_common_widget_equals_target (GtkWidget* widget, const GwTargetOutput TARGET)
+gboolean gw_common_widget_equals_target (GtkWidget* widget, const LwTargetOutput TARGET)
 {
     GtkWidget* target;
     target = gw_common_get_widget_by_target (TARGET);
@@ -437,14 +437,14 @@ gboolean gw_common_widget_equals_target (GtkWidget* widget, const GwTargetOutput
 
 
 //!
-//! @brief Retrieves a special gobject designated by the GwTargetOuput signature
+//! @brief Retrieves a special gobject designated by the LwTargetOuput signature
 //!
 //! This function would get the target textbuffer instead of the targettext view for example.
 //! The focus is on getting the backend widget.
 //!
-//! @param TARGET A GwTargetOutput designating the target
+//! @param TARGET A LwTargetOutput designating the target
 //!
-gpointer gw_common_get_gobject_by_target (const GwTargetOutput TARGET)
+gpointer gw_common_get_gobject_by_target (const LwTargetOutput TARGET)
 {
     GtkBuilder *builder = gw_common_get_builder ();
 

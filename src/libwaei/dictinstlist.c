@@ -53,7 +53,7 @@ GList* lw_dictinstlist_get_list ()
 //!
 void lw_dictinstlist_initialize ()
 {
-  GwDictInst *di = NULL;
+  LwDictInst *di = NULL;
 
   di = lw_dictinst_new_using_pref_uri (
     "English",
@@ -140,10 +140,10 @@ void lw_dictinstlist_initialize ()
 void lw_dictinstlist_free ()
 {
     GList *iter = _list;
-    GwDictInst *di = NULL;
+    LwDictInst *di = NULL;
     while (iter != NULL)
     {
-      di = (GwDictInst*) iter->data;
+      di = (LwDictInst*) iter->data;
       lw_dictinst_free (di);
       iter->data = NULL;
       iter = iter->next;
@@ -160,7 +160,7 @@ gboolean lw_dictinstlist_data_is_valid ()
 {
     //Declarations
     GList *iter;
-    GwDictInst* di;
+    LwDictInst* di;
     int number_selected;
 
     //Initializations
@@ -168,7 +168,7 @@ gboolean lw_dictinstlist_data_is_valid ()
 
     for (iter = _list; iter != NULL; iter = iter->next)
     {
-      di = (GwDictInst*) iter->data;
+      di = (LwDictInst*) iter->data;
       if (!lw_dictinst_data_is_valid (di) && di->selected) return FALSE;
       if (di->selected) number_selected++;
     }
@@ -177,16 +177,16 @@ gboolean lw_dictinstlist_data_is_valid ()
 
 
 //!
-//!  @brief  Gets a GwDictInst object by a fuzzy string description.
+//!  @brief  Gets a LwDictInst object by a fuzzy string description.
 //!          It can be either of the form "parser/dictionary" or 
 //!          just be the dictionary name.  Case is ignored.
 //!  @param FUZZY_DESCRIPTION A fuzzy description of the wanted dictionary.
-//!  @returns A matching GwDictInst object or NULL
+//!  @returns A matching LwDictInst object or NULL
 //!
-GwDictInst* lw_dictinstlist_get_dictinst_fuzzy (const char* FUZZY_DESCRIPTION)
+LwDictInst* lw_dictinstlist_get_dictinst_fuzzy (const char* FUZZY_DESCRIPTION)
 {
     //Declarations
-    GwDictInst *di;
+    LwDictInst *di;
 
     //Initializations
     di = NULL;
@@ -219,17 +219,17 @@ GwDictInst* lw_dictinstlist_get_dictinst_fuzzy (const char* FUZZY_DESCRIPTION)
 //!        be accessible with this function.
 //! @param NAME A constant string to search for in the dictionary names.  
 //!             This is a fuzzy search, ignoring ENGINE and case
-//! @returns The requested GwDictInst object if found or null.
+//! @returns The requested LwDictInst object if found or null.
 //!
-GwDictInst* lw_dictinstlist_get_dictinst_by_filename (const char* FILENAME)
+LwDictInst* lw_dictinstlist_get_dictinst_by_filename (const char* FILENAME)
 {
     //Declarations
     GList *iter;
-    GwDictInst *di;
+    LwDictInst *di;
 
     for (iter = _list; iter != NULL; iter = iter->next)
     {
-      di = (GwDictInst*) iter->data;
+      di = (LwDictInst*) iter->data;
       if (g_ascii_strcasecmp (di->filename, FILENAME) == 0)
         break;
       di = NULL;
@@ -244,16 +244,16 @@ GwDictInst* lw_dictinstlist_get_dictinst_by_filename (const char* FILENAME)
 //!        "engine/dictionary". Case is ignored.
 //! @param ENGINE_AND_FILENAME A string in the form "engine/dictionary"
 //!                            used to search for a dictionary
-//! @returns The requested GwDictInst object if found or NULL.
+//! @returns The requested LwDictInst object if found or NULL.
 //!
-GwDictInst* lw_dictinstlist_get_dictinst_by_idstring (const char* ENGINE_AND_FILENAME)
+LwDictInst* lw_dictinstlist_get_dictinst_by_idstring (const char* ENGINE_AND_FILENAME)
 {
     //Declarations
     GList *iter;
-    GwDictInst *di;
+    LwDictInst *di;
     char **tokens;
     char *filename;
-    GwEngine engine;
+    LwEngine engine;
 
     //Initializations
     iter = NULL;
@@ -267,7 +267,7 @@ GwDictInst* lw_dictinstlist_get_dictinst_by_idstring (const char* ENGINE_AND_FIL
 
       for (iter = _list; iter != NULL; iter = iter->next)
       {
-        di = (GwDictInst*) iter->data;
+        di = (LwDictInst*) iter->data;
         if (di->engine == engine && g_ascii_strcasecmp (di->filename, filename) == 0)
           break;
         di = NULL;

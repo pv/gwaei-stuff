@@ -41,7 +41,7 @@
 //!
 //! @brief Print the "less relevant" header where necessary.
 //!
-void w_console_append_less_relevant_header_to_output(GwSearchItem *item)
+void w_console_append_less_relevant_header_to_output(LwSearchItem *item)
 {
     if (w_get_color_switch ())
       printf("\n[0;31m***[0m[1m%s[0;31m***************************[0m\n\n\n", gettext("Other Results"));
@@ -53,7 +53,7 @@ void w_console_append_less_relevant_header_to_output(GwSearchItem *item)
 //!
 //! @brief Print the "no result" message where necessary.
 //!
-void w_console_no_result (GwSearchItem *item)
+void w_console_no_result (LwSearchItem *item)
 {
     printf("%s\n\n", gettext("No results found!"));
 }
@@ -67,7 +67,7 @@ void w_console_no_result (GwSearchItem *item)
 gboolean w_console_uninstall_dictinfo (const char *FUZZY, GError **error)
 {
     //Declarations
-    GwDictInfo *di;
+    LwDictInfo *di;
 
     //Initializations
     di = lw_dictinfolist_get_dictinfo_fuzzy (FUZZY);
@@ -95,7 +95,7 @@ gboolean w_console_uninstall_dictinfo (const char *FUZZY, GError **error)
 gboolean w_console_install_dictinst (const char *FUZZY, GError **error)
 {
     //Declarations
-    GwDictInst *di;
+    LwDictInst *di;
 
     //Initializations
     di = lw_dictinstlist_get_dictinst_fuzzy (FUZZY);
@@ -166,7 +166,7 @@ void w_console_print_installable_dictionaries ()
     int i;
     int j;
     GList *iter;
-    GwDictInst* di;
+    LwDictInst* di;
 
     //Initializations
     i = 0; 
@@ -174,7 +174,7 @@ void w_console_print_installable_dictionaries ()
 
     while (iter != NULL)
     {
-      di = (GwDictInst*) iter->data;
+      di = (LwDictInst*) iter->data;
       if (lw_dictinst_data_is_valid (di))
       {
         printf("  %s", di->filename);
@@ -200,7 +200,7 @@ void w_console_print_available_dictionaries ()
     //Declarations
     int i;
     int j;
-    GwDictInfo* di;
+    LwDictInfo* di;
     GList *iter;
 
     //Initializations
@@ -229,11 +229,11 @@ void w_console_print_available_dictionaries ()
 //!
 //! @brief Not yet written
 //!
-void w_console_append_edict_results_to_buffer (GwSearchItem *item)
+void w_console_append_edict_results_to_buffer (LwSearchItem *item)
 {
     //Definitions
     int cont = 0;
-    GwResultLine *resultline = item->resultline;
+    LwResultLine *resultline = item->resultline;
 
     //Kanji
     if (w_get_color_switch ())
@@ -272,12 +272,12 @@ void w_console_append_edict_results_to_buffer (GwSearchItem *item)
 //!
 //! @brief Not yet written
 //!
-void w_console_append_kanjidict_results_to_buffer (GwSearchItem *item)
+void w_console_append_kanjidict_results_to_buffer (LwSearchItem *item)
 {
     if (item == NULL) return;
 
     char line_started = FALSE;
-      GwResultLine *resultline = item->resultline;
+      LwResultLine *resultline = item->resultline;
 
     //Kanji
     if (w_get_color_switch ())
@@ -337,11 +337,11 @@ void w_console_append_kanjidict_results_to_buffer (GwSearchItem *item)
 //!
 //! @brief Not yet written
 //!
-void w_console_append_examplesdict_results_to_buffer (GwSearchItem *item)
+void w_console_append_examplesdict_results_to_buffer (LwSearchItem *item)
 {
     if (item == NULL) return;
 
-    GwResultLine *resultline = item->resultline;
+    LwResultLine *resultline = item->resultline;
 
 
     if (resultline->def_start[0] != NULL)
@@ -378,7 +378,7 @@ void w_console_append_examplesdict_results_to_buffer (GwSearchItem *item)
 //!
 //! @brief Not yet written
 //!
-void w_console_append_unknowndict_results_to_buffer (GwSearchItem *item)
+void w_console_append_unknowndict_results_to_buffer (LwSearchItem *item)
 {
     if (item == NULL) return;
 
@@ -389,7 +389,7 @@ void w_console_append_unknowndict_results_to_buffer (GwSearchItem *item)
 //!
 //! @brief Not yet written
 //!
-void w_console_append_more_relevant_header_to_output (GwSearchItem *item)
+void w_console_append_more_relevant_header_to_output (LwSearchItem *item)
 {
 }
 
@@ -397,14 +397,14 @@ void w_console_append_more_relevant_header_to_output (GwSearchItem *item)
 //!
 //! @brief Not yet written
 //!
-void w_console_pre_search_prep (GwSearchItem *item)
+void w_console_pre_search_prep (LwSearchItem *item)
 {
 }
 
 //!
 //! @brief Not yet written
 //!
-void w_console_after_search_cleanup (GwSearchItem *item)
+void w_console_after_search_cleanup (LwSearchItem *item)
 {
     //Finish up
     if (item->total_results == 0 &&
@@ -419,7 +419,7 @@ void w_console_after_search_cleanup (GwSearchItem *item)
 int w_console_uninstall_progress_cb (double fraction, gpointer data)
 {
   //Declarations
-  GwDictInfo *di;
+  LwDictInfo *di;
   char *uri;
 
   //Initializations
@@ -440,7 +440,7 @@ int w_console_uninstall_progress_cb (double fraction, gpointer data)
 int w_console_install_progress_cb (double fraction, gpointer data)
 {
   //Declarations
-  GwDictInst *di;
+  LwDictInst *di;
   char *status;
   int current_percent;
   int previous_percent;
@@ -504,10 +504,10 @@ gboolean w_console_search (char* query, char* fuzzy, gboolean quiet, gboolean ex
     if (*error != NULL) return FALSE;
 
     //Declarations
-    GwSearchItem *item;
+    LwSearchItem *item;
     char *message_total;
     char *message_relevant;
-    GwDictInfo *di;
+    LwDictInfo *di;
 
     //Initializations
     di = lw_dictinfolist_get_dictinfo_fuzzy (fuzzy);

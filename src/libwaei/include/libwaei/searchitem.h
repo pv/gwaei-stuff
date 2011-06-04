@@ -51,7 +51,7 @@ typedef enum
   GW_SEARCH_SEARCHING,
   GW_SEARCH_FINISHING,
   GW_SEARCH_CANCELING
-} GwSearchState;
+} LwSearchState;
 
 typedef enum
 {
@@ -59,24 +59,24 @@ typedef enum
   GW_TARGET_KANJI,
   GW_TARGET_ENTRY,
   GW_TARGET_CONSOLE
-} GwTargetOutput;
+} LwTargetOutput;
 
 
 //!
 //! @brief Primitive for storing search item information
 //!
 //Object
-struct _GwSearchItem {
-    GwQueryLine* queryline;                 //!< Result line to store parsed result
-    GwDictInfo* dictionary;                 //!< Pointer to the dictionary used
+struct _LwSearchItem {
+    LwQueryLine* queryline;                 //!< Result line to store parsed result
+    LwDictInfo* dictionary;                 //!< Pointer to the dictionary used
 
     FILE* fd;                               //!< File descriptor for file search position
     GThread *thread;                        //!< Thread the search is processed in
     GMutex *mutex;                          //!< Mutext to help ensure threadsafe operation
 
-    GwSearchState status;                   //!< Used to test if a search is in progress.
+    LwSearchState status;                   //!< Used to test if a search is in progress.
     char *scratch_buffer;                   //!< Scratch space
-    GwTargetOutput target;                  //!< What gui element should be outputted to
+    LwTargetOutput target;                  //!< What gui element should be outputted to
     long current_line;                      //!< Current line in the dictionary file
     long progress_feedback_line;            //!< Recorderd previous line for determining when to update the progresse
     int history_relevance_idle_timer;       //!< Helps determine if something is added to the history or not
@@ -89,35 +89,35 @@ struct _GwSearchItem {
     GList *results_medium;                  //!< Buffer storing mediumly relevant result for later display
     GList *results_low;                     //!< Buffer storing lowly relevant result for later display
 
-    GwResultLine* resultline;               //!< Result line to store parsed result
-    GwResultLine* backup_resultline;        //!< Result line kept for comparison purposes from previosu result line
-    GwResultLine* swap_resultline;          //!< Swap space for swapping result line and backup_resultline
+    LwResultLine* resultline;               //!< Result line to store parsed result
+    LwResultLine* backup_resultline;        //!< Result line kept for comparison purposes from previosu result line
+    LwResultLine* swap_resultline;          //!< Swap space for swapping result line and backup_resultline
 
-    void (*lw_searchitem_parse_result_string)(GwResultLine*);                              //!< function pointer
-    void (*lw_searchitem_ui_append_results_to_output)(struct _GwSearchItem*);              //!< function pointer
-    void (*lw_searchitem_ui_append_less_relevant_header_to_output)(struct _GwSearchItem*); //!< function pointer
-    void (*lw_searchitem_ui_append_more_relevant_header_to_output)(struct _GwSearchItem*); //!< function pointer
-    void (*lw_searchitem_ui_pre_search_prep)(struct _GwSearchItem*);                       //!< function pointer
-    void (*lw_searchitem_ui_after_search_cleanup)(struct _GwSearchItem*);                  //!< function pointer
+    void (*lw_searchitem_parse_result_string)(LwResultLine*);                              //!< function pointer
+    void (*lw_searchitem_ui_append_results_to_output)(struct _LwSearchItem*);              //!< function pointer
+    void (*lw_searchitem_ui_append_less_relevant_header_to_output)(struct _LwSearchItem*); //!< function pointer
+    void (*lw_searchitem_ui_append_more_relevant_header_to_output)(struct _LwSearchItem*); //!< function pointer
+    void (*lw_searchitem_ui_pre_search_prep)(struct _LwSearchItem*);                       //!< function pointer
+    void (*lw_searchitem_ui_after_search_cleanup)(struct _LwSearchItem*);                  //!< function pointer
 
     gpointer* target_tb;                 //!< Pointer to a buffer that stays constant unlike when the target attribute is used
     gpointer* target_tv;                 //!< Pointer to a buffer that stays constant unlike when the target attribute is used
 };
-typedef struct _GwSearchItem GwSearchItem;
+typedef struct _LwSearchItem LwSearchItem;
 
 //Methods
-GwSearchItem* lw_searchitem_new (char*, GwDictInfo*, const int, GError **error);
+LwSearchItem* lw_searchitem_new (char*, LwDictInfo*, const int, GError **error);
 
-void lw_searchitem_do_post_search_clean (GwSearchItem*);
-gboolean lw_searchitem_do_pre_search_prep (GwSearchItem*);
+void lw_searchitem_do_post_search_clean (LwSearchItem*);
+gboolean lw_searchitem_do_pre_search_prep (LwSearchItem*);
 
-gboolean lw_searchitem_run_comparison (GwSearchItem*, const GwRelevance);
-gboolean lw_searchitem_is_equal (GwSearchItem*, GwSearchItem*);
-gboolean lw_searchitem_has_history_relevance (GwSearchItem*);
-void lw_searchitem_increment_history_relevance_timer (GwSearchItem*);
+gboolean lw_searchitem_run_comparison (LwSearchItem*, const LwRelevance);
+gboolean lw_searchitem_is_equal (LwSearchItem*, LwSearchItem*);
+gboolean lw_searchitem_has_history_relevance (LwSearchItem*);
+void lw_searchitem_increment_history_relevance_timer (LwSearchItem*);
 
 
-void lw_searchitem_free (GwSearchItem*);
+void lw_searchitem_free (LwSearchItem*);
 
 
 #endif

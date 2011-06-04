@@ -36,26 +36,26 @@
 //!
 //! @brief Primitive for storing dictionary information
 //!
-struct _GwDictInfo
+struct _LwDictInfo
 {
     char *filename;                   //!< name of the file in the gwaei user data folder
     char *longname;                   //!< long name of the file (usually localized)
     char *shortname;                  //!< short name of the file (usually localized)
-    GwEngine engine;                  //!< Path to the dictionary file
+    LwEngine engine;                  //!< Path to the dictionary file
     int load_position;                //!< load position in the GUI
     long total_lines;                 //!< total lines in the file
-    GwResultLine *cached_resultlines; //!< Allocated resultline swapped with current_resultline when needed
-    GwResultLine *current_resultline; //!< Allocated resultline where the current parsed result data resides
+    LwResultLine *cached_resultlines; //!< Allocated resultline swapped with current_resultline when needed
+    LwResultLine *current_resultline; //!< Allocated resultline where the current parsed result data resides
 };
-typedef struct _GwDictInfo GwDictInfo;
+typedef struct _LwDictInfo LwDictInfo;
 
 
-GwDictInfo* lw_dictinfo_new (const GwEngine, const char*);
-void lw_dictinfo_free(GwDictInfo*);
+LwDictInfo* lw_dictinfo_new (const LwEngine, const char*);
+void lw_dictinfo_free(LwDictInfo*);
 
-GwDictInfo* lw_dictinfolist_get_dictinfo_fuzzy (const char*);
-gboolean lw_dictinfo_uninstall (GwDictInfo*, GwIoProgressCallback, GError**);
-char* lw_dictinfo_get_uri (GwDictInfo*);
+LwDictInfo* lw_dictinfolist_get_dictinfo_fuzzy (const char*);
+gboolean lw_dictinfo_uninstall (LwDictInfo*, LwIoProgressCallback, GError**);
+char* lw_dictinfo_get_uri (LwDictInfo*);
 
 
 #endif

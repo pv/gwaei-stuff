@@ -2,16 +2,16 @@
 #define GW_CONSOLE_INCLUDED
 
 
-void w_console_append_edict_results_to_buffer (GwSearchItem*);
-void w_console_append_kanjidict_results_to_buffer (GwSearchItem*);
-void w_console_append_examplesdict_results_to_buffer (GwSearchItem*);
-void w_console_append_unknowndict_results_to_buffer (GwSearchItem*);
-void w_console_update_progress_feedback (GwSearchItem*);
-void w_console_no_result(GwSearchItem*);
-void w_console_append_less_relevant_header_to_output (GwSearchItem*);
-void w_console_append_more_relevant_header_to_output (GwSearchItem*);
-void w_console_pre_search_prep (GwSearchItem*);
-void w_console_after_search_cleanup (GwSearchItem*);
+void w_console_append_edict_results_to_buffer (LwSearchItem*);
+void w_console_append_kanjidict_results_to_buffer (LwSearchItem*);
+void w_console_append_examplesdict_results_to_buffer (LwSearchItem*);
+void w_console_append_unknowndict_results_to_buffer (LwSearchItem*);
+void w_console_update_progress_feedback (LwSearchItem*);
+void w_console_no_result(LwSearchItem*);
+void w_console_append_less_relevant_header_to_output (LwSearchItem*);
+void w_console_append_more_relevant_header_to_output (LwSearchItem*);
+void w_console_pre_search_prep (LwSearchItem*);
+void w_console_after_search_cleanup (LwSearchItem*);
 
 int w_console_install_progress_cb (double, gpointer);
 int w_console_uninstall_progress_cb (double, gpointer);

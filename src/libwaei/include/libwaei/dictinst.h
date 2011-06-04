@@ -7,7 +7,7 @@ typedef enum {
   GW_DICTINST_ERROR_SOURCE_PATH,
   GW_DICTINST_ERROR_TARGET_PATH,
   GW_DICTINST_ERROR_FILE_MOVE
-} GwDictInstError;
+} LwDictInstError;
 
 typedef enum {
   GW_DICTINST_NEEDS_DOWNLOADING,
@@ -17,10 +17,10 @@ typedef enum {
   GW_DICTINST_NEEDS_FINALIZATION,
   GW_DICTINST_NEEDS_NOTHING,
   GW_DICTINST_TOTAL_URIS
-} GwDictInstUri;
+} LwDictInstUri;
 
 
-struct _GwDictInst {
+struct _LwDictInst {
   char *filename;
   char *shortname;
   char *longname;
@@ -32,11 +32,11 @@ struct _GwDictInst {
   char *key;
   gboolean builtin;
   gulong listenerid;            //!< An id to hold the g_signal_connect value when the source copy uri pref is set
-  gboolean listenerid_is_set;   //!< Allows disconnecting the signal on destruction of the GwDictInst
-  GwCompression compression;    //!< Path to the gziped dictionary file
-  GwEncoding encoding;          //!< Path to the raw unziped dictionary file
-  GwEngine engine;
-  GwDictInstUri uri_group_index;
+  gboolean listenerid_is_set;   //!< Allows disconnecting the signal on destruction of the LwDictInst
+  LwCompression compression;    //!< Path to the gziped dictionary file
+  LwEncoding encoding;          //!< Path to the raw unziped dictionary file
+  LwEngine engine;
+  LwDictInstUri uri_group_index;
   int uri_atom_index;
   char **current_source_uris;
   char **current_target_uris;
@@ -44,48 +44,48 @@ struct _GwDictInst {
   gboolean merge;
   GMutex *mutex;
 };
-typedef struct _GwDictInst GwDictInst;
+typedef struct _LwDictInst LwDictInst;
 
-GwDictInst* lw_dictinst_new_using_pref_uri (const char*, 
+LwDictInst* lw_dictinst_new_using_pref_uri (const char*, 
                                             const char*,
                                             const char*,
                                             const char*,
                                             const char*,
                                             const char*,
-                                            const GwEngine,
-                                            const GwCompression,
-                                            const GwEncoding,
+                                            const LwEngine,
+                                            const LwCompression,
+                                            const LwEncoding,
                                             gboolean, gboolean, gboolean);
 
-GwDictInst* lw_dictinst_new (const char*,
+LwDictInst* lw_dictinst_new (const char*,
                              const char*,
                              const char*,
                              const char*,
                              const char*,
-                             const GwEngine,
-                             const GwCompression,
-                             const GwEncoding,
+                             const LwEngine,
+                             const LwCompression,
+                             const LwEncoding,
                              gboolean, gboolean, gboolean);
 
-void lw_dictinst_free (GwDictInst*);
+void lw_dictinst_free (LwDictInst*);
 
-void lw_dictinst_set_filename (GwDictInst*, const char*);
-void lw_dictinst_set_engine (GwDictInst*, const GwEngine);
-void lw_dictinst_set_encoding (GwDictInst*, const GwEncoding);
-void lw_dictinst_set_compression (GwDictInst*, const GwCompression);
-void lw_dictinst_set_download_source (GwDictInst*, const char*);
-void lw_dictinst_set_split (GwDictInst *di, const gboolean);
-void lw_dictinst_set_merge (GwDictInst *di, const gboolean);
-void lw_dictinst_set_status (GwDictInst *di, const GwDictInstUri);
-gchar* lw_dictinst_get_status_string (GwDictInst*, gboolean);
+void lw_dictinst_set_filename (LwDictInst*, const char*);
+void lw_dictinst_set_engine (LwDictInst*, const LwEngine);
+void lw_dictinst_set_encoding (LwDictInst*, const LwEncoding);
+void lw_dictinst_set_compression (LwDictInst*, const LwCompression);
+void lw_dictinst_set_download_source (LwDictInst*, const char*);
+void lw_dictinst_set_split (LwDictInst *di, const gboolean);
+void lw_dictinst_set_merge (LwDictInst *di, const gboolean);
+void lw_dictinst_set_status (LwDictInst *di, const LwDictInstUri);
+gchar* lw_dictinst_get_status_string (LwDictInst*, gboolean);
 
-void lw_dictinst_regenerate_save_target_uris (GwDictInst*);
-gboolean lw_dictinst_data_is_valid (GwDictInst*);
+void lw_dictinst_regenerate_save_target_uris (LwDictInst*);
+gboolean lw_dictinst_data_is_valid (LwDictInst*);
 
-gboolean lw_dictinst_install (GwDictInst*, GwIoProgressCallback, GError**);
-char* lw_dictinst_get_target_uri (GwDictInst*, const GwDictInstUri, const int);
-char* lw_dictinst_get_source_uri (GwDictInst*, const GwDictInstUri, const int);
-double lw_dictinst_get_progress (GwDictInst*);
-void lw_dictinst_set_cancel_operations (GwDictInst*, gboolean);
+gboolean lw_dictinst_install (LwDictInst*, LwIoProgressCallback, GError**);
+char* lw_dictinst_get_target_uri (LwDictInst*, const LwDictInstUri, const int);
+char* lw_dictinst_get_source_uri (LwDictInst*, const LwDictInstUri, const int);
+double lw_dictinst_get_progress (LwDictInst*);
+void lw_dictinst_set_cancel_operations (LwDictInst*, gboolean);
 
 #endif

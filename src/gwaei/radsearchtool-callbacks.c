@@ -91,8 +91,8 @@ G_MODULE_EXPORT void gw_radsearchtool_search_cb (GtkWidget *widget, gpointer dat
 {
     //Declarations
     GtkBuilder *builder;
-    GwDictInfo *di;
-    GwHistoryList* hl;
+    LwDictInfo *di;
+    LwHistoryList* hl;
     char *query_text;
     char *radicals_text;
     char *strokes_text;
@@ -147,7 +147,7 @@ G_MODULE_EXPORT void gw_radsearchtool_search_cb (GtkWidget *widget, gpointer dat
     gw_main_search_entry_insert (query_text);
     gw_main_text_select_all_by_target (GW_TARGET_ENTRY);
 
-    GwSearchItem* item;
+    LwSearchItem* item;
     item = gw_tabs_get_searchitem ();
 
     //Move the previous searchitem to the history or destroy it

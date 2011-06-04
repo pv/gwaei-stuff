@@ -25,7 +25,7 @@
 //!  @brief Management of dictionary objects
 //!
 //!  The functions her generally manage the creation, destruction, and searching
-//!  of dictionaries.  The GwDictInfo objects also are used as a convenient
+//!  of dictionaries.  The LwDictInfo objects also are used as a convenient
 //!  container for variables pointing towards download locations, install locations
 //!  etc.
 //!
@@ -41,29 +41,29 @@
 #include <libwaei/libwaei.h>
 
 //Static declarations
-static gboolean _overlay_default_builtin_dictionary_settings (GwDictInfo*);
+static gboolean _overlay_default_builtin_dictionary_settings (LwDictInfo*);
 
 
 //!
-//! @brief Creates a new GwDictInfo object
+//! @brief Creates a new LwDictInfo object
 //!
-//! Memory for a new GwDictInfo object will be allocated, and the name passed
+//! Memory for a new LwDictInfo object will be allocated, and the name passed
 //! to the function as a param will be searched for in the .waei folder.  If 
 //! it is a known name, the long name of the object will betranslated and if
 //! it is installed, the status variable set to GW_DICT_STATUS_INSTALLED.
 //!
 //! @param name Name of the object to create
-//! @return An allocated GwDictInfo that will be needed to be freed by lw_dictinfo_free ()
+//! @return An allocated LwDictInfo that will be needed to be freed by lw_dictinfo_free ()
 //!
-GwDictInfo* lw_dictinfo_new (GwEngine ENGINE, const char *FILENAME)
+LwDictInfo* lw_dictinfo_new (LwEngine ENGINE, const char *FILENAME)
 {
     g_assert (ENGINE >= 0 && ENGINE <= GW_ENGINE_TOTAL && FILENAME != NULL);
 
-    GwDictInfo *temp;
+    LwDictInfo *temp;
     char *uri;
 
     //Allocate some memory
-    if ((temp = malloc(sizeof(GwDictInfo))) == NULL) return NULL;
+    if ((temp = malloc(sizeof(LwDictInfo))) == NULL) return NULL;
 
     temp->load_position = -1;
 
@@ -94,14 +94,14 @@ GwDictInfo* lw_dictinfo_new (GwEngine ENGINE, const char *FILENAME)
 
 
 //!
-//! @brief Releases a GwDictInfo object from memory.
+//! @brief Releases a LwDictInfo object from memory.
 //!
-//! Takes care of any of the work needed to release a GwDictInfo object from
+//! Takes care of any of the work needed to release a LwDictInfo object from
 //! memory.
 //!
-//! @param di GwDictInfo object to free
+//! @param di LwDictInfo object to free
 //!
-void lw_dictinfo_free (GwDictInfo* di)
+void lw_dictinfo_free (LwDictInfo* di)
 {
     g_free (di->filename);
     di->filename = NULL;
@@ -117,7 +117,7 @@ void lw_dictinfo_free (GwDictInfo* di)
 }
 
 
-static gboolean _overlay_default_builtin_dictionary_settings (GwDictInfo *di)
+static gboolean _overlay_default_builtin_dictionary_settings (LwDictInfo *di)
 {
     g_assert (di != NULL);
 
@@ -166,12 +166,12 @@ static gboolean _overlay_default_builtin_dictionary_settings (GwDictInfo *di)
 
 
 //!
-//! @brief Installs a GwDictInst object using the provided gui update callback
+//! @brief Installs a LwDictInst object using the provided gui update callback
 //!        This function should normally only be used in the lw_dictinfo_uninstall function.
 //! @param path String representing the path of the file to gunzip.
 //! @param error Error handling
 //!
-gboolean lw_dictinfo_uninstall (GwDictInfo *di, GwIoProgressCallback cb, GError **error)
+gboolean lw_dictinfo_uninstall (LwDictInfo *di, LwIoProgressCallback cb, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return FALSE;
@@ -194,7 +194,7 @@ gboolean lw_dictinfo_uninstall (GwDictInfo *di, GwIoProgressCallback cb, GError 
 }
  
 
-char* lw_dictinfo_get_uri (GwDictInfo *di)
+char* lw_dictinfo_get_uri (LwDictInfo *di)
 {
     //Declarations
     const char *directory;

@@ -113,7 +113,7 @@ void gw_start_gtk (int argc, char* argv[])
     //Declarations
     char *query;
     GtkWidget* entry;
-    GwDictInfo *di;
+    LwDictInfo *di;
 
     gw_main_update_history_popups ();
     gw_common_show_window ("main_window");

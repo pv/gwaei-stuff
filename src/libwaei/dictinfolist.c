@@ -25,7 +25,7 @@
 //! @brief Management of dictionary objects
 //!
 //! The functions her generally manage the creation, destruction, and searching
-//! of dictionaries.  The GwDictInfo objects also are used as a convenient
+//! of dictionaries.  The LwDictInfo objects also are used as a convenient
 //! container for variables pointing towards download locations, install locations
 //! etc.
 //!
@@ -42,7 +42,7 @@
 #include <libwaei/libwaei.h>
 
 //Private member and method declarations
-static GwDictList *_dictionaries;
+static LwDictList *_dictionaries;
 
 static gboolean _create_mix_dictionary ();
 static gboolean _split_places_from_names_dictionary (GError**);
@@ -55,14 +55,14 @@ static void     _sort_and_normalize_dictlist_load_order ();
 //!
 //! This object is used to help manage groups of dictionaries in a sane way.
 //!
-//! @return An allocated GwDictList that will be needed to be freed by lw_dictinfolist_free ()
+//! @return An allocated LwDictList that will be needed to be freed by lw_dictinfolist_free ()
 //!
-GwDictList* lw_dictinfolist_new ()
+LwDictList* lw_dictinfolist_new ()
 {
-    GwDictList *temp;
+    LwDictList *temp;
 
     //Allocate some memory
-    if ((temp = malloc(sizeof(GwDictList))) == NULL) return NULL;
+    if ((temp = malloc(sizeof(LwDictList))) == NULL) return NULL;
 
     temp->list = NULL;
     temp->selected = NULL;
@@ -73,12 +73,12 @@ GwDictList* lw_dictinfolist_new ()
 
 
 //!
-//! @brief Get the currently selected GwDictInfo object
+//! @brief Get the currently selected LwDictInfo object
 //!
 //! A function used for abstracting what is the current dictionary for the GUI
 //! instead of relying on the status of a particular widget.
 //!
-//! @return The position in the GwDictList of the GwDictInfo
+//! @return The position in the LwDictList of the LwDictInfo
 //!
 GList* lw_dictinfolist_get_selected ()
 {
@@ -87,20 +87,20 @@ GList* lw_dictinfolist_get_selected ()
 
 
 //!
-//! @brief Get the currently selected GwDictInfo object
+//! @brief Get the currently selected LwDictInfo object
 //!
 //! A function used for abstracting what is the current dictionary for the GUI
 //! instead of relying on the status of a particular widget.
 //!
-//! @return The position in the GwDictList of the GwDictInfo
+//! @return The position in the LwDictList of the LwDictInfo
 //!
-GwDictInfo* lw_dictinfolist_get_selected_dictinfo ()
+LwDictInfo* lw_dictinfolist_get_selected_dictinfo ()
 {
     GList *iter;
-    GwDictInfo *di;
+    LwDictInfo *di;
 
     iter = _dictionaries->selected;
-    di = (GwDictInfo*) iter->data;
+    di = (LwDictInfo*) iter->data;
 
     return di;
 }
@@ -111,22 +111,22 @@ GwDictInfo* lw_dictinfolist_get_selected_dictinfo ()
 //!
 //! Each dictionary has a load position recorded in the GUI when it is added to
 //! it.  This function makes it easy for a GUI callback to find that exact
-//! dictionary in the GwDictList.
+//! dictionary in the LwDictList.
 //!
 //! @param request The GUI load position of the desired dictionary
-//! @return The position in the GwDictList of the GwDictInfo
+//! @return The position in the LwDictList of the LwDictInfo
 //!
 GList* lw_dictinfolist_get_dict_by_load_position (int request)
 {
     GList *list;
     GList *iter;
-    GwDictInfo *di;
+    LwDictInfo *di;
 
     list = lw_dictinfolist_get_list();
     iter = list;
     do
     {
-       di = (GwDictInfo*) iter->data;
+       di = (LwDictInfo*) iter->data;
        if (iter != NULL && di != NULL && di->load_position == request)
          break;
        iter = iter->next;
@@ -141,16 +141,16 @@ GList* lw_dictinfolist_get_dict_by_load_position (int request)
 //!
 //! Each dictionary has a load position recorded in the GUI when it is added to
 //! it.  This function makes it easy for a GUI callback to find that exact
-//! dictionary in the GwDictList.
+//! dictionary in the LwDictList.
 //!
 //! @param request The GUI load position of the desired dictionary
-//! @return The position in the GwDictList of the GwDictInfo
+//! @return The position in the LwDictList of the LwDictInfo
 //!
 GList* lw_dictinfolist_set_selected_by_load_position (int request)
 {
     //Declarations
     GList* iter;
-    GwDictInfo *di;
+    LwDictInfo *di;
 
     for (iter = lw_dictinfolist_get_list(); iter != NULL; iter = g_list_next (iter))
     {
@@ -165,18 +165,18 @@ GList* lw_dictinfolist_set_selected_by_load_position (int request)
 
 
 //!
-//! @brief Adds a dictionary to the GwDictList with sanity checks
+//! @brief Adds a dictionary to the LwDictList with sanity checks
 //!
 //! @param ENGINE Engine of the dictionary to add
 //! @param FILENAME Name of the dictionary to add
 //!
-void lw_dictinfolist_add_dictionary (const GwEngine ENGINE, const char *FILENAME)
+void lw_dictinfolist_add_dictionary (const LwEngine ENGINE, const char *FILENAME)
 {
     //Sanity check
     if (lw_dictinfolist_check_if_loaded (ENGINE, FILENAME) == TRUE) return;
 
     //Declarations
-    GwDictInfo *di;
+    LwDictInfo *di;
 
     //Initializations
     di = lw_dictinfo_new (ENGINE, FILENAME);
@@ -187,10 +187,10 @@ void lw_dictinfolist_add_dictionary (const GwEngine ENGINE, const char *FILENAME
 
 
 //!
-//! @brief Removes the first dictionary in the GwDictList
+//! @brief Removes the first dictionary in the LwDictList
 //!
-//! Does the work of asking for the GwDictInfo object to free it's memory
-//! and then removing the empty object from the GwDictList dictionary list.
+//! Does the work of asking for the LwDictInfo object to free it's memory
+//! and then removing the empty object from the LwDictList dictionary list.
 //!
 //! @param name Name of the dictionary to add
 //! @return Returns the dictionary object freed or null.
@@ -206,7 +206,7 @@ GList* lw_dictinfolist_remove_first()
 
 
 //!
-//! @brief Frees up the GwDictList dictionary list
+//! @brief Frees up the LwDictList dictionary list
 //!
 //! The work of freeing each individual dictionary is automatically handled,
 //! removing the chance for mistakes.
@@ -232,23 +232,23 @@ void lw_dictinfolist_free ()
 //! @param ENGINE The parsing engine of the dictionary wanted.  There can be
 //!               dictionaries with the same name, but different engines.
 //! @param NAME A constant string to search for in the dictionary names.
-//! @returns The requested GwDictInfo object if found or null.
+//! @returns The requested LwDictInfo object if found or null.
 //!
-GwDictInfo* lw_dictinfolist_get_dictinfo (const GwEngine ENGINE, const char* FILENAME)
+LwDictInfo* lw_dictinfolist_get_dictinfo (const LwEngine ENGINE, const char* FILENAME)
 {
     //Sanity checks
     g_assert (ENGINE >= 0 && FILENAME != NULL);
 
     //Declarations
     GList *iter;
-    GwDictInfo *di;
+    LwDictInfo *di;
 
     //Initializations
     di = NULL;
 
     for (iter = _dictionaries->list; iter != NULL; iter = iter->next)
     {
-      di = (GwDictInfo*) iter->data;
+      di = (LwDictInfo*) iter->data;
       if (di->engine == ENGINE && strcmp (di->filename, FILENAME) == 0)
         break;
       di = NULL;
@@ -258,16 +258,16 @@ GwDictInfo* lw_dictinfolist_get_dictinfo (const GwEngine ENGINE, const char* FIL
 }
 
 //!
-//!  @brief  Gets a GwDictInfo object by a fuzzy string description.
+//!  @brief  Gets a LwDictInfo object by a fuzzy string description.
 //!          It can be either of the form "parser/dictionary" or 
 //!          just be the dictionary name.  Case is ignored.
 //!  @param FUZZY_DESCRIPTION A fuzzy description of the wanted dictionary.
-//!  @returns A matching GwDictInfo object or NULL
+//!  @returns A matching LwDictInfo object or NULL
 //!
-GwDictInfo* lw_dictinfolist_get_dictinfo_fuzzy (const char* FUZZY_DESCRIPTION)
+LwDictInfo* lw_dictinfolist_get_dictinfo_fuzzy (const char* FUZZY_DESCRIPTION)
 {
     //Declarations
-    GwDictInfo *di;
+    LwDictInfo *di;
 
     //Initializations
     di = NULL;
@@ -300,23 +300,23 @@ GwDictInfo* lw_dictinfolist_get_dictinfo_fuzzy (const char* FUZZY_DESCRIPTION)
 //!        be accessible with this function.
 //! @param NAME A constant string to search for in the dictionary names.  
 //!             This is a fuzzy search, ignoring ENGINE and case
-//! @returns The requested GwDictInfo object if found or null.
+//! @returns The requested LwDictInfo object if found or null.
 //!
-GwDictInfo* lw_dictinfolist_get_dictinfo_by_filename (const char* FILENAME)
+LwDictInfo* lw_dictinfolist_get_dictinfo_by_filename (const char* FILENAME)
 {
     //Sanity checks
     g_assert (FILENAME != NULL);
 
     //Declarations
     GList *iter;
-    GwDictInfo *di;
+    LwDictInfo *di;
 
     //Initializations
     di = NULL;
 
     for (iter = _dictionaries->list; iter != NULL; iter = iter->next)
     {
-      di = (GwDictInfo*) iter->data;
+      di = (LwDictInfo*) iter->data;
       if (g_ascii_strcasecmp (di->filename, FILENAME) == 0)
         break;
       di = NULL;
@@ -331,19 +331,19 @@ GwDictInfo* lw_dictinfolist_get_dictinfo_by_filename (const char* FILENAME)
 //!        "engine/dictionary". Case is ignored.
 //! @param ENGINE_AND_FILENAME A string in the form "engine/dictionary"
 //!                            used to search for a dictionary
-//! @returns The requested GwDictInfo object if found or NULL.
+//! @returns The requested LwDictInfo object if found or NULL.
 //!
-GwDictInfo* lw_dictinfolist_get_dictinfo_by_idstring (const char* ENGINE_AND_FILENAME)
+LwDictInfo* lw_dictinfolist_get_dictinfo_by_idstring (const char* ENGINE_AND_FILENAME)
 {
     //Sanity checks
     g_assert (ENGINE_AND_FILENAME != NULL);
 
     //Declarations
     GList *iter;
-    GwDictInfo *di;
+    LwDictInfo *di;
     char **tokens;
     char *filename;
-    GwEngine engine;
+    LwEngine engine;
 
     //Initializations
     iter = NULL;
@@ -357,7 +357,7 @@ GwDictInfo* lw_dictinfolist_get_dictinfo_by_idstring (const char* ENGINE_AND_FIL
 
       for (iter = _dictionaries->list; iter != NULL; iter = iter->next)
       {
-        di = (GwDictInfo*) iter->data;
+        di = (LwDictInfo*) iter->data;
         if (di->engine == engine && g_ascii_strcasecmp (di->filename, filename) == 0)
           break;
         di = NULL;
@@ -381,19 +381,19 @@ GwDictInfo* lw_dictinfolist_get_dictinfo_by_idstring (const char* ENGINE_AND_FIL
 //! @param NAME request a const string to search for in the dictionary names
 //! @return returns true if the dictionary is installed
 //!
-gboolean lw_dictinfolist_check_if_loaded (const GwEngine ENGINE, const char* FILENAME)
+gboolean lw_dictinfolist_check_if_loaded (const LwEngine ENGINE, const char* FILENAME)
 {
     //Sanity checks
     g_assert (ENGINE >= 0 && FILENAME != NULL);
 
     //Declarations
     GList *iter;
-    GwDictInfo *di;
+    LwDictInfo *di;
 
     //Return true if the dictionary exists
     for (iter = _dictionaries->list; iter != NULL; iter = iter->next)
     {
-      di = (GwDictInfo*) iter->data;
+      di = (LwDictInfo*) iter->data;
       if (di->engine == ENGINE && strcmp (di->filename, FILENAME) == 0) 
         return TRUE;
     }
@@ -422,9 +422,9 @@ int lw_dictinfolist_get_total()
 
 
 //!
-//! @brief Returns a pointer to the list of dictionaries in GwDictList
+//! @brief Returns a pointer to the list of dictionaries in LwDictList
 //!
-//! Gets the list variable inside of the GwDictList object and returns it.
+//! Gets the list variable inside of the LwDictList object and returns it.
 //!
 //! @return GList of the added dictionaries to the list.
 //!
@@ -449,7 +449,7 @@ void lw_dictinfolist_initialize ()
        
     char** dictionaries = lw_io_get_dictionary_file_list ();
     char** atoms = NULL;
-    GwEngine engine = -1;
+    LwEngine engine = -1;
     char *dictname = NULL;
     int i = 0;
 
@@ -476,15 +476,15 @@ void lw_dictinfolist_initialize ()
 //! This function is designed to be passed to g_list_sort and should not be used outside of
 //! the dictlist-object.c file.  
 //!
-//! @param a Pointer to GwDictInfo object a
-//! @param b Pointer to GwDictInfo object b
+//! @param a Pointer to LwDictInfo object a
+//! @param b Pointer to LwDictInfo object b
 //! @returns Whether the position of a is less than (-1), equal (0) or greater than b (1)
 //!
 static gint _load_order_compare_function (gconstpointer a, gconstpointer b)
 {
     //Declarations and initializations
-    GwDictInfo *di_a = (GwDictInfo*) a;
-    GwDictInfo *di_b = (GwDictInfo*) b;
+    LwDictInfo *di_a = (LwDictInfo*) a;
+    LwDictInfo *di_b = (LwDictInfo*) b;
     int lpa = di_a->load_position;
     int lpb = di_b->load_position;
 
@@ -506,7 +506,7 @@ static gint _load_order_compare_function (gconstpointer a, gconstpointer b)
 static void _sort_and_normalize_dictlist_load_order ()
 {
     //Declarations
-    GwDictInfo *di;
+    LwDictInfo *di;
     int load_position;
     GList *iter;
 
@@ -519,7 +519,7 @@ static void _sort_and_normalize_dictlist_load_order ()
     //Make sure there is no number skipping
     for (iter = _dictionaries->list; iter != NULL; iter = iter->next)
     {
-      di = (GwDictInfo*) iter->data;
+      di = (LwDictInfo*) iter->data;
       di->load_position = load_position;
       load_position++;
     }
@@ -536,7 +536,7 @@ void lw_dictinfolist_save_dictionary_order_pref ()
 
     //Declarations
     char *load_order;
-    GwDictInfo *di;
+    LwDictInfo *di;
     GList *iter;
     char **atom;
     int i;
@@ -548,7 +548,7 @@ void lw_dictinfolist_save_dictionary_order_pref ()
     //Create the string to write to the prefs with the last one NULL terminated
     for (iter = lw_dictinfolist_get_list (); iter != NULL && i < GW_DICTLIST_MAX_DICTIONARIES; iter = iter->next)
     {
-      di = (GwDictInfo*) iter->data;
+      di = (LwDictInfo*) iter->data;
       atom[i] = g_strdup_printf ("%s/%s", lw_util_get_engine_name (di->engine), di->filename);
       if (atom == NULL) { printf("Out of memory\n"); exit(1); }
       i++;
@@ -575,9 +575,9 @@ void lw_dictinfolist_load_dictionary_order_from_pref ()
     char **load_order_array;
     char **engine_name_array;
     char **iter = NULL;
-    GwEngine engine;
+    LwEngine engine;
     char *name;
-    GwDictInfo *di = NULL;
+    LwDictInfo *di = NULL;
     int load_position = 0;
     
     lw_pref_get_string_by_schema (load_order, GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, 1000);

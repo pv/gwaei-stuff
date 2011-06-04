@@ -42,14 +42,14 @@
 static gchar *_savepath = NULL;
 static gboolean _cancel = FALSE;
 
-struct _GwIoProcessFdData {
+struct _LwIoProcessFdData {
   const char* uri;
   int fd;
-  GwIoProgressCallback cb; //< Callback to update progress
-  gpointer data;           //< Data to be passed to the GwIoProgressCallback
+  LwIoProgressCallback cb; //< Callback to update progress
+  gpointer data;           //< Data to be passed to the LwIoProgressCallback
   GError *error;
 };
-typedef struct _GwIoProcessFdData GwIoProcessFdData;
+typedef struct _LwIoProcessFdData LwIoProcessFdData;
 
 
 
@@ -80,7 +80,7 @@ const gchar* lw_io_get_savepath ()
 //! @param write_mode A constant char representing the write mode to be used (w,a)
 //! @param text A char pointer to some text to save.
 //!
-void lw_io_write_file (const char* PATH, const char* mode, gchar *text, GwIoProgressCallback cb, gpointer data, GError **error)
+void lw_io_write_file (const char* PATH, const char* mode, gchar *text, LwIoProgressCallback cb, gpointer data, GError **error)
 {
     //Sanity checks
     g_assert (PATH != NULL && mode != NULL && text != NULL);
@@ -123,7 +123,7 @@ void lw_io_write_file (const char* PATH, const char* mode, gchar *text, GwIoProg
 //!
 gboolean lw_io_copy_with_encoding (const char *source_path, const char *target_path,
                                    const char *source_encoding, const char *target_encoding,
-                                   GwIoProgressCallback cb, gpointer data, GError **error   )
+                                   LwIoProgressCallback cb, gpointer data, GError **error   )
 {
     if (*error != NULL) return FALSE;
 
@@ -228,13 +228,13 @@ static int _libcurl_update_progress (void  *custom,
                                      double ulnow   )
 {
     //Declarations
-    GwIoProgressCallbackWithData *cbwdata;
-    GwIoProgressCallback cb;
+    LwIoProgressCallbackWithData *cbwdata;
+    LwIoProgressCallback cb;
     gpointer data;
     double fraction;
     
     //Initializations
-    cbwdata = (GwIoProgressCallbackWithData*) custom;
+    cbwdata = (LwIoProgressCallbackWithData*) custom;
     cb = cbwdata->cb;
     data = cbwdata->data;
     if (dltotal == 0.0)
@@ -259,7 +259,7 @@ static int _libcurl_update_progress (void  *custom,
 //! @param data gpointer to data to pass to the function pointer
 //! @param error Error handling
 //!
-gboolean lw_io_download (char *source_path, char *target_path, GwIoProgressCallback cb,
+gboolean lw_io_download (char *source_path, char *target_path, LwIoProgressCallback cb,
                               gpointer data, GError **error)
 {
     if (error != NULL && *error != NULL) return FALSE;
@@ -270,7 +270,7 @@ gboolean lw_io_download (char *source_path, char *target_path, GwIoProgressCallb
     CURLcode res;
     FILE *outfile;
     char *message;
-    GwIoProgressCallbackWithData cbwdata;
+    LwIoProgressCallbackWithData cbwdata;
 
     //Initializations
     curl = curl_easy_init ();
@@ -320,7 +320,7 @@ gboolean lw_io_download (char *source_path, char *target_path, GwIoProgressCallb
 //! @param error Error handling
 //!
 gboolean lw_io_copy (const char *source_path, const char *target_path, 
-                     GwIoProgressCallback cb, gpointer data, GError **error)
+                     LwIoProgressCallback cb, gpointer data, GError **error)
 {
     if (*error != NULL) return FALSE;
 
@@ -371,7 +371,7 @@ gboolean lw_io_copy (const char *source_path, const char *target_path,
 gboolean lw_io_create_mix_dictionary (const char *output_path, 
                                       const char *kanji_dictionary_path, 
                                       const char *radicals_dictionary_path, 
-                                      GwIoProgressCallback cb,
+                                      LwIoProgressCallback cb,
                                       gpointer data,
                                       GError **error)
 {
@@ -482,7 +482,7 @@ gboolean lw_io_create_mix_dictionary (const char *output_path,
 gboolean lw_io_split_places_from_names_dictionary (const char *output_names_path, 
                                                    const char* output_places_path,
                                                    const char* input_names_places_path,
-                                                   GwIoProgressCallback cb,
+                                                   LwIoProgressCallback cb,
                                                    gpointer data,
                                                    GError **error                    )
 {
@@ -571,7 +571,7 @@ gboolean lw_io_split_places_from_names_dictionary (const char *output_names_path
 //! @param error Error handling
 //!
 gboolean lw_io_gunzip_file (const char *source_path, const char *target_path,
-                            GwIoProgressCallback cb, gpointer data, GError **error)
+                            LwIoProgressCallback cb, gpointer data, GError **error)
 {
     if (error != NULL && *error != NULL) return FALSE;
 
@@ -589,7 +589,7 @@ gboolean lw_io_gunzip_file (const char *source_path, const char *target_path,
 //! @param path String representing the path of the file to unzip
 //! @param error Error handling
 //!
-gboolean lw_io_unzip_file (char *path, GwIoProgressCallback cb, gpointer data, GError **error)
+gboolean lw_io_unzip_file (char *path, LwIoProgressCallback cb, gpointer data, GError **error)
 {
     return TRUE;
 }
@@ -675,7 +675,7 @@ gpointer _stdin_func (gpointer data)
     double fraction;
     FILE *file;
     FILE *stream;
-    GwIoProcessFdData* in;
+    LwIoProcessFdData* in;
     const char *message;
     GQuark domain;
 
@@ -731,7 +731,7 @@ gpointer _stdout_func (gpointer data)
     size_t curpos;
     FILE *file;
     FILE *stream;
-    GwIoProcessFdData* out;
+    LwIoProcessFdData* out;
     const char *message;
     GQuark domain;
 
@@ -779,7 +779,7 @@ gpointer _stdout_func (gpointer data)
 gboolean lw_io_pipe_data (char **argv, 
                           const char *source_path, 
                           const char *target_path, 
-                          GwIoProgressCallback cb, 
+                          LwIoProgressCallback cb, 
                           gpointer data, 
                           GError **error          )
 {
@@ -792,8 +792,8 @@ gboolean lw_io_pipe_data (char **argv,
     GPid pid;
     GThread *stdin_thread;
     GThread *stdout_thread;
-    GwIoProcessFdData stdin_data;
-    GwIoProcessFdData stdout_data;
+    LwIoProcessFdData stdin_data;
+    LwIoProcessFdData stdout_data;
 
     //Initalizations
     g_spawn_async_with_pipes (
