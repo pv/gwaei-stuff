@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file src/gtk-radicals-interface.c
+//! @file src/gwaei/radsearchtool.c
 //!
 //! @brief Abstraction layer for gtk objects 
 //!

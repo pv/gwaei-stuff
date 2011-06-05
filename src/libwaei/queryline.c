@@ -350,6 +350,10 @@ gboolean lw_queryline_parse_edict_string (LwQueryLine *ql, const char* string, G
      }
    }
 
+   //Cleanup
+   g_strfreev (atoms);
+   atoms = NULL;
+
    return all_regex_built;
 }
 
@@ -695,6 +699,10 @@ gboolean lw_queryline_parse_exampledict_string (LwQueryLine *ql, const char* str
         re++;
       }
     }  
+
+    //Cleanup
+    g_strfreev (atoms);
+    atoms = NULL;
 
     return all_regex_built;
 }

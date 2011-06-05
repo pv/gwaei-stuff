@@ -1462,14 +1462,11 @@ gboolean _set_color_to_tagtable (char    *id,     LwTargetOutput TARGET,
       if ((tag = gtk_text_tag_table_lookup (GTK_TEXT_TAG_TABLE (table), id)) == NULL)
       {
         if (set_fg && set_bg)
-          tag = gtk_text_buffer_create_tag (GTK_TEXT_BUFFER (tb), id,
-                                            "foreground", fg_color, "background", bg_color, NULL );
+          tag = gtk_text_buffer_create_tag (GTK_TEXT_BUFFER (tb), id, "foreground", fg_color, "background", bg_color, NULL );
         else if (set_fg)
-          tag = gtk_text_buffer_create_tag (GTK_TEXT_BUFFER (tb), id,
-                                            "foreground", fg_color, NULL               );
+          tag = gtk_text_buffer_create_tag (GTK_TEXT_BUFFER (tb), id, "foreground", fg_color, NULL);
         else if (set_bg)
-          tag = gtk_text_buffer_create_tag (GTK_TEXT_BUFFER (tb), id,
-                                            "background", bg_color, NULL               );
+          tag = gtk_text_buffer_create_tag (GTK_TEXT_BUFFER (tb), id, "background", bg_color, NULL);
       }
       //Update the tags
       else
@@ -1481,12 +1478,14 @@ gboolean _set_color_to_tagtable (char    *id,     LwTargetOutput TARGET,
           g_value_init (&fg_value, G_TYPE_STRING);
           g_value_set_string (&fg_value, fg_color);
           g_object_set_property (G_OBJECT (tag), "foreground", &fg_value);
+          g_value_unset (&fg_value);
         }
         if (set_bg)
         {
           g_value_init (&bg_value, G_TYPE_STRING);
           g_value_set_string (&bg_value, bg_color);
           g_object_set_property (G_OBJECT (tag), "background", &bg_value);
+          g_value_unset (&bg_value);
         }
       }
       i++;

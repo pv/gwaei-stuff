@@ -256,7 +256,7 @@ void lw_searchitem_free (LwSearchItem* item)
     item->mutex = NULL;
   }
   lw_searchitem_do_post_search_clean (item);
-  free (item->queryline);
+  lw_queryline_free (item->queryline);
   free (item);
   item = NULL;
 }
