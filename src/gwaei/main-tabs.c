@@ -551,6 +551,7 @@ G_MODULE_EXPORT void gw_tabs_previous_cb (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void gw_tabs_new_with_search_cb (GtkWidget *widget, gpointer data)
 {
+  printf("new with search\n");
     //Declarations
     GtkBuilder *builder;
     LwSearchItem *item;
@@ -567,8 +568,7 @@ G_MODULE_EXPORT void gw_tabs_new_with_search_cb (GtkWidget *widget, gpointer dat
 
     if (item != NULL)
     {
-      if (current_item != NULL && current_item->total_results > 0)
-        gw_tabs_new ();
+      gw_tabs_new_cb (NULL, NULL);
       gw_main_set_dictionary_by_searchitem (item);
       gw_main_set_entry_text_by_searchitem (item);
       gw_main_search_cb (NULL, NULL);
