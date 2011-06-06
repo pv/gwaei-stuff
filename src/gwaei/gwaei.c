@@ -43,7 +43,7 @@ static gchar   *_arg_dictionary = NULL;
 static gboolean _arg_exact = FALSE;
 static gboolean _arg_new_instance = FALSE;
 static GOptionContext *_context = NULL;
-
+static gboolean _version_switch = FALSE;
 
 void gw_initialize (int* argc, char* argv[])
 {
@@ -60,6 +60,7 @@ void gw_initialize (int* argc, char* argv[])
 #ifdef WITH_LIBUNIQUE
       { "new-instance", 'n', 0, G_OPTION_ARG_NONE, &_arg_new_instance, gettext("Open a new instance of gWaei"), NULL },
 #endif
+      { "version", 'v', 0, G_OPTION_ARG_NONE, &_version_switch, gettext("Check the gWaei version information"), NULL },
       { NULL }
     };
 
@@ -99,6 +100,23 @@ void gw_initialize (int* argc, char* argv[])
     gw_dictionaryinstall_initialize ();
     gw_installprogress_initialize ();
     gw_kanjipad_initialize ();
+}
+
+
+//!
+//! @brief Prints to the terminal the about message for the program.
+//!
+static void _print_about ()
+{
+    printf ("gWaei version %s", VERSION);
+
+    printf ("\n\n");
+
+    printf ("Check for the latest updates at <http://gwaei.sourceforge.net/>\n");
+    printf ("Code Copyright (C) 2009-2011 Zachary Dovel\n\n");
+
+    printf ("License:\n");
+    printf ("Copyright (C) 2008 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\nThis is free software: you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.\n\n");
 }
 
 
@@ -177,7 +195,10 @@ int main (int argc, char *argv[])
     lw_initialize (&argc, argv);
     gw_initialize (&argc, argv);
 
-    gw_start_gtk (argc, argv);
+    if (_version_switch)
+      _print_about ();
+    else
+      gw_start_gtk (argc, argv);
 
     gw_free ();
     lw_free();
