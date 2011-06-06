@@ -134,7 +134,7 @@ void gw_spellcheck_attach_to_entry (GtkEntry *entry)
   g_signal_connect_after (G_OBJECT (entry), "draw", G_CALLBACK (_draw_underline_cb), NULL);
   g_signal_connect (G_OBJECT (entry), "changed", G_CALLBACK (_queue_spellcheck_cb), NULL);
   g_signal_connect (G_OBJECT (entry), "populate-popup", G_CALLBACK (_populate_popup_cb), NULL);
-  g_timeout_add (100, (GSourceFunc) _update_spellcheck_timeout, (gpointer) entry);
+  g_timeout_add (300, (GSourceFunc) _update_spellcheck_timeout, (gpointer) entry);
 }
 
 
@@ -494,15 +494,16 @@ static gboolean _update_spellcheck_timeout (gpointer data)
 
 
     //Sanity checks
-    if (exists == FALSE || strlen(query) == 0)
+    if (
+      exists == FALSE    || 
+      strlen(query) == 0 || 
+      !spellcheck_pref   || 
+      !_sensitive        || 
+      !_needs_spellcheck || 
+      is_convertable_to_hiragana
+    )
     {
       g_free (query);
-      return TRUE;
-    }
-    if (!spellcheck_pref || !_sensitive || !_needs_spellcheck || is_convertable_to_hiragana)
-    {
-      g_free (query);
-      gtk_widget_queue_draw (GTK_WIDGET (data));
       return TRUE;
     }
 
@@ -561,10 +562,15 @@ static gboolean _update_spellcheck_timeout (gpointer data)
 //!
 G_MODULE_EXPORT void gw_spellcheck_toggle_cb (GtkWidget *widget, gpointer data)
 {
+    //Declarations
     gboolean state;
+
+    //Initializations
     state = lw_pref_get_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_SPELLCHECK);
+
     lw_pref_set_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_SPELLCHECK, !state);
-    g_free (_query_text);
+
+    if (_query_text != NULL) g_free (_query_text);
     _query_text = g_strdup ("FORCE UPDATE");
 }
 
@@ -597,7 +603,7 @@ void gw_spellcheck_set_enabled (gboolean request)
 
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), request);
     gtk_toggle_tool_button_set_active (GTK_TOGGLE_TOOL_BUTTON (toolbutton), request);
-//    _queue_spellcheck_cb (GTK_EDITABLE (entry), NULL); //THIS FUNCTION CALL CAUSES PROBLEMS PIZZACH
+    _queue_spellcheck_cb (GTK_EDITABLE (entry), NULL);
 
     g_signal_handlers_unblock_by_func (checkbox, gw_spellcheck_toggle_cb, NULL);
     g_signal_handlers_unblock_by_func (toolbutton, gw_spellcheck_toggle_cb, NULL);
@@ -626,7 +632,6 @@ static void _update_button_sensitivities ()
       gtk_widget_set_sensitive (GTK_WIDGET (toolbutton), TRUE);
       g_free (_query_text);
       _query_text = g_strdup ("FORCE UPDATE");
-      gtk_widget_queue_draw (GTK_WIDGET (entry));
     }
     else if (!exists && _sensitive)
     {
@@ -635,7 +640,6 @@ static void _update_button_sensitivities ()
       gtk_widget_set_sensitive (GTK_WIDGET (toolbutton), FALSE);
       g_free (_query_text);
       _query_text = g_strdup ("FORCE UPDATE");
-      gtk_widget_queue_draw (GTK_WIDGET (entry));
     }
 
 }
