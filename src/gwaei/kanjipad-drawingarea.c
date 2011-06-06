@@ -290,7 +290,7 @@ static int drawingarea_button_release_event (GtkWidget *w, GdkEventButton *event
       cr = cairo_create(pad->surface);
 
       drawingarea_annotate_stroke (pad, pad->curstroke, cr, g_list_length (pad->strokes) + 1);
-      cairo_paint(cr);
+      //cairo_paint(cr);
       cairo_destroy(cr);
       gtk_widget_queue_draw (pad->drawing_widget);
     }

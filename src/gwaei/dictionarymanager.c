@@ -110,6 +110,8 @@ void gw_dictionarymanager_initialize ()
 
 void gw_dictionarymanager_free ()
 {
+  g_object_unref (_model);
+  gtk_widget_destroy (GTK_WIDGET (_view));
 }
 
 
