@@ -1,5 +1,0 @@
-gwaei (1.2.1-1) unstable; urgency=low
-
-  * Initial packaging for Debian (Closes: #530398)
-
- -- Norbert Preining <preining@debian.org>  Sun, 15 Nov 2009 15:21:20 +0900
