@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gwaei 1.4.0\n"
+"Project-Id-Version: gwaei 3.0.0\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2011-06-05 23:54-0400\n"
-"PO-Revision-Date: 2010-06-22 18:08+0100\n"
+"POT-Creation-Date: 2011-06-07 01:31-0400\n"
+"PO-Revision-Date: 2011-06-06 21:36+0100\n"
 "Last-Translator: Carsten Pfuhl <taltos02@gmail.com>\n"
 "Language-Team: none\\n <LL@li.org>\n"
 "Language: de\n"
@@ -68,37 +68,37 @@ msgstr "Beispiele"
 #: ../src/libwaei/dictinst.c:759
 #, c-format
 msgid "Downloading %s..."
-msgstr "Lade %s herunter..."
+msgstr "Herunterladen von %s..."
 
 #: ../src/libwaei/dictinst.c:761
 #, c-format
 msgid "Downloading..."
-msgstr "Lade herunter..."
+msgstr "Herunterladen..."
 
 #: ../src/libwaei/dictinst.c:765
-#, fuzzy, c-format
+#, c-format
 msgid "Converting the encoding of %s from %s to UTF-8..."
-msgstr "Konvertiere Enkodierung..."
+msgstr "Konvertieren der Kodierung von %s von %s nach UTF-8..."
 
 #: ../src/libwaei/dictinst.c:767
-#, fuzzy, c-format
+#, c-format
 msgid "Converting the encoding to UTF-8..."
-msgstr "Konvertiere Enkodierung..."
+msgstr "Konvertieren der Kodierung nach UTF-8..."
 
 #: ../src/libwaei/dictinst.c:771
 #, c-format
 msgid "Decompressing %s from %s file..."
-msgstr ""
+msgstr "Entpacken von %s der Datei %s..."
 
 #: ../src/libwaei/dictinst.c:773
-#, fuzzy, c-format
+#, c-format
 msgid "Decompressing..."
-msgstr "Nachbearbeitung..."
+msgstr "Entpacken..."
 
 #: ../src/libwaei/dictinst.c:777
-#, fuzzy, c-format
+#, c-format
 msgid "Doing postprocessing on %s..."
-msgstr "Nachbearbeitung..."
+msgstr "Nachbearbeitung von %s..."
 
 #: ../src/libwaei/dictinst.c:779
 #, c-format
@@ -106,93 +106,100 @@ msgid "Postprocessing..."
 msgstr "Nachbearbeitung..."
 
 #: ../src/libwaei/dictinst.c:782
-#, fuzzy, c-format
+#, c-format
 msgid "Finalizing installation of %s..."
-msgstr "Versuche %s...zu installieren\n"
+msgstr "Beenden der Installation von %s..."
 
 #: ../src/libwaei/dictinst.c:785
-#, fuzzy, c-format
+#, c-format
 msgid "Installed."
-msgstr "Installiert"
+msgstr "Installiert."
 
 #: ../src/libwaei/dictinstlist.c:62
-#, fuzzy
 msgid "The venerable Japanese-English Dictionary developed by Jim Breen."
-msgstr "gWaei Japanisch-Englisches/ Japanisch-Deutsches Wörterbuch"
+msgstr ""
+"Das ehrwürdige Japanisch-Englisch Wörterbuch, entwickelt von Jim Breen."
 
 #: ../src/libwaei/dictinstlist.c:78
 msgid ""
 "A Kanji dictionary based off of kanjidic with radical information combined."
 msgstr ""
+"Ein Kanji Wörterbuch, das auf Kanjidic mit hinzugefügten Informationen über "
+"Radikale basiert."
 
 #: ../src/libwaei/dictinstlist.c:92
 msgid "Names and Places"
-msgstr ""
+msgstr "Namen und Orte"
 
 #: ../src/libwaei/dictinstlist.c:93
-#, fuzzy
 msgid "Names and Places Dictionary"
-msgstr "Orte Wörterbuch"
+msgstr "Namen und Orte Wörterbuch"
 
 #: ../src/libwaei/dictinstlist.c:94
 msgid ""
 "Based off of Enamdic, but with the names split from the places for 2 "
 "separate dictionaries."
 msgstr ""
+"Basiert auf Enamdic, aber die Namen und die Orte wurden für 2 seperate "
+"Wörterbücher voneinander getrennt."
 
 #: ../src/libwaei/dictinstlist.c:110
 msgid ""
 "A collection of Japanese/English sentences initially compiled by Professor "
 "Yasuhito Tanaka at Hyogo University and his students."
 msgstr ""
+"Eine Sammlung von Japanisch/Englischen Sätzen, die anfangs von Professor "
+"Yasuhito Tanaka an der Hyogo Universität und seinen Studenten "
+"zusammengestellt worden ist."
 
 #: ../src/libwaei/dictinstlist.c:125
 msgid "Other"
-msgstr ""
+msgstr "Andere"
 
 #: ../src/libwaei/dictinstlist.c:126
-#, fuzzy
 msgid "Other Dictionary"
-msgstr "Andere Wörterbücher"
+msgstr "Anderes Wörterbuch"
 
 #: ../src/libwaei/dictinstlist.c:127
-#, fuzzy
 msgid "Install a custom dictionary."
-msgstr "Wörterbuch installieren"
+msgstr "Installation eines eigenen Wörterbuches"
 
 #: ../src/libwaei/io.c:707
 msgid "Unable to read data from the input file."
-msgstr ""
+msgstr "Lesen von Daten aus der Eingabedatei ist nicht möglich."
 
 #: ../src/libwaei/io.c:713
 msgid "Unable to write to the external program's input stream."
 msgstr ""
+"Schreiben in den Eingabestrom des externen Programms ist nicht möglich."
 
 #: ../src/libwaei/io.c:755
 msgid "Unable to read data from the external program's pipe."
 msgstr ""
+"Lesen von Daten aus dem Kanal (Pipe) des externen Programms ist nicht "
+"möglich."
 
 #: ../src/libwaei/io.c:761
 msgid "Unable to write the stream's output to a file."
-msgstr ""
+msgstr "Schreiben der Datenstromausgabe in eine Datei ist nicht möglich."
 
 #: ../src/waei/console.c:47 ../src/waei/console.c:49 ../src/waei/ncurses.c:115
 msgid "Other Results"
-msgstr "Weitere Ergebnisse"
+msgstr "Andere Ergebnisse"
 
 #: ../src/waei/console.c:58 ../src/waei/ncurses.c:71
 msgid "No results found!"
 msgstr "Keine Ergebnisse gefunden"
 
 #: ../src/waei/console.c:77
-#, fuzzy, c-format
+#, c-format
 msgid "Uninstalling %s...\n"
-msgstr "Installiere..."
+msgstr "Deinstallation von %s...\n"
 
 #: ../src/waei/console.c:105
-#, fuzzy, c-format
+#, c-format
 msgid "Installing %s...\n"
-msgstr "Installiere..."
+msgstr "Installation von %s...\n"
 
 #. TRANSLATORS: 'Searching for "${query}" in ${dictionary long name}'
 #: ../src/waei/console.c:147
@@ -222,7 +229,7 @@ msgstr "Radikale:"
 #: ../src/waei/console.c:288 ../src/waei/ncurses.c:571
 #: ../src/gwaei/output-callbacks.c:509 ../src/gwaei/output-callbacks.c:604
 msgid "Stroke:"
-msgstr "Striche:"
+msgstr "Strichzahl:"
 
 #: ../src/waei/console.c:296 ../src/waei/ncurses.c:579
 #: ../src/gwaei/output-callbacks.c:516 ../src/gwaei/output-callbacks.c:613
@@ -253,7 +260,7 @@ msgstr "Name:"
 #: ../src/waei/console.c:323 ../src/waei/ncurses.c:606
 #: ../src/gwaei/output-callbacks.c:494
 msgid "Radical Name:"
-msgstr "Name des Radikals:"
+msgstr "Radikalname:"
 
 #: ../src/waei/console.c:326 ../src/waei/ncurses.c:609
 #: ../src/gwaei/output-callbacks.c:538 ../src/gwaei/output-callbacks.c:649
@@ -323,9 +330,8 @@ msgstr "Wörterbuch..."
 
 #: ../src/waei/ncurses.c:226 ../src/waei/ncurses.c:300
 #: ../src/waei/ncurses.c:410
-#, fuzzy
 msgid "Search: "
-msgstr "Suche:"
+msgstr "Suchen:"
 
 #: ../src/waei/ncurses.c:227 ../src/waei/ncurses.c:331
 #: ../src/waei/ncurses.c:396
@@ -344,7 +350,7 @@ msgstr "Weniger Informationen anzeigen"
 
 #: ../src/waei/ncurses.c:448 ../src/waei/waei.c:97
 msgid "Search using a chosen dictionary"
-msgstr "Mit einem ausgewählten Wörterbuch suchen"
+msgstr "In einem ausgewählten Wörterbuch suchen"
 
 #. TRANSLATORS: The "%s" stands for the error message
 #: ../src/waei/ncurses.c:455
@@ -399,27 +405,24 @@ msgstr ""
 "  waei -d Places %s       Schlagen Sie einen Ort im Ortswörterbuch nach"
 
 #: ../src/waei/waei.c:92
-#, fuzzy
 msgid "Open up the multisearch window"
-msgstr "Mehr-Such Fenster öffnen (Beta)"
+msgstr "Mehrfache Such Fenster öffnen"
 
 #: ../src/waei/waei.c:94
 msgid "Do not display less relevant results"
 msgstr "Weniger relevante Ergebnisse ausblenden"
 
 #: ../src/waei/waei.c:96
-#, fuzzy
 msgid "Display results with color"
-msgstr "Weniger Informationen anzeigen"
+msgstr "Ergebnisse in Farbe anzeigen"
 
 #: ../src/waei/waei.c:98
 msgid "Show available dictionaries for searches"
-msgstr "Für die Suche verfügbare Wörterbücher anzeigen"
+msgstr "Wörterbücher anzeigen, die für die Suche verfügbar sind"
 
 #: ../src/waei/waei.c:99
-#, fuzzy
 msgid "Install dictionary"
-msgstr "Wörterbuch deinstallieren"
+msgstr "Wörterbuch Installation"
 
 #: ../src/waei/waei.c:100
 msgid "Uninstall dictionary"
@@ -430,30 +433,28 @@ msgid "Check the waei version information"
 msgstr "Waei Versionsinformationen überprüfen"
 
 #: ../src/gwaei/ui/dictionaryinstall.ui.h:1
-#, fuzzy
 msgid "Select Dictionaries..."
-msgstr "Hauptwörterbücher"
+msgstr "Auswahl der Wörterbücher..."
 
 #: ../src/gwaei/ui/dictionaryinstall.ui.h:2
 msgid "Show Dictionary Install Details"
-msgstr ""
+msgstr "Wörterbuch Installations Details anzeigen"
 
 #: ../src/gwaei/ui/dictionaryinstall.ui.h:3
 msgid "Where can I get other dictionaries?"
 msgstr "Wo kann ich andere Wörterbücher erhalten?"
 
 #: ../src/gwaei/ui/installprogress.ui.h:1
-#, fuzzy
 msgid "Installing Dictionaries..."
-msgstr "Hauptwörterbücher"
+msgstr "Installation der Wörterbücher..."
 
 #: ../src/gwaei/ui/installprogress.ui.h:2
 msgid "Installing..."
-msgstr "Installiere..."
+msgstr "Installation..."
 
 #: ../src/gwaei/ui/installprogress.ui.h:3
 msgid "description"
-msgstr ""
+msgstr "Beschreibung"
 
 #: ../src/gwaei/ui/main.ui.h:1 ../src/gwaei/main.c:2157
 msgid "A_ppend"
@@ -469,7 +470,7 @@ msgstr "Gebunden"
 
 #: ../src/gwaei/ui/main.ui.h:4
 msgid "Click to start search"
-msgstr "Drücken Sie, um die Suche zu beginnen"
+msgstr "Drücken, um die Suche zu beginnen"
 
 #: ../src/gwaei/ui/main.ui.h:5
 msgid "Dictionary _Terminology Glossary"
@@ -492,9 +493,8 @@ msgid "Get Help on I_RC"
 msgstr "Holen Sie sich _Hilfe im IRC"
 
 #: ../src/gwaei/ui/main.ui.h:10
-#, fuzzy
 msgid "Go to _Homepage"
-msgstr "Zur _Projekt Homepage gehen"
+msgstr "Zur _Homepage gehen"
 
 #: ../src/gwaei/ui/main.ui.h:11
 msgid "Go to the _Project Homepage"
@@ -505,37 +505,32 @@ msgid "Hi_story"
 msgstr "_Verlauf"
 
 #: ../src/gwaei/ui/main.ui.h:13
-#, fuzzy
 msgid "Logical _And Character"
-msgstr "Und _Zeichen"
+msgstr "Logischer Und _Zeichen"
 
 #: ../src/gwaei/ui/main.ui.h:14
-#, fuzzy
 msgid "Logical _Or Character"
-msgstr "_Oder Zeichen"
+msgstr "Logisches _Oder Zeichen"
 
 #: ../src/gwaei/ui/main.ui.h:15
 msgid "Ne_xt Tab"
 msgstr "N_ächster Reiter"
 
 #: ../src/gwaei/ui/main.ui.h:16
-#, fuzzy
 msgid "New _Tab"
-msgstr "_Neuer Reiter"
+msgstr "Neuer Rei_ter"
 
 #: ../src/gwaei/ui/main.ui.h:17
 msgid "Not Bound"
 msgstr "Ungebunden"
 
 #: ../src/gwaei/ui/main.ui.h:18
-#, fuzzy
 msgid "Sear_ch:"
-msgstr "Suche:"
+msgstr "Su_che:"
 
 #: ../src/gwaei/ui/main.ui.h:19
-#, fuzzy
 msgid "Search"
-msgstr "Suche:"
+msgstr "Suche"
 
 #: ../src/gwaei/ui/main.ui.h:20
 msgid "Select the dictionary you want to use"
@@ -559,7 +554,7 @@ msgstr "_Kanjipad benutzen"
 
 #: ../src/gwaei/ui/main.ui.h:25
 msgid "Using _Radical Search Tool"
-msgstr "_Radikal-Suchwerkzeug benutzen"
+msgstr "_Radikal Suchwerkzeug benutzen"
 
 #: ../src/gwaei/ui/main.ui.h:26
 msgid "_Contents"
@@ -599,7 +594,7 @@ msgstr "_Normale Größe"
 
 #: ../src/gwaei/ui/main.ui.h:35
 msgid "_Not-word-edge Mark"
-msgstr "_Nicht-Wortende Markierung"
+msgstr "Markierung _Nicht-Wortende"
 
 #: ../src/gwaei/ui/main.ui.h:36
 msgid "_Previous Search"
@@ -619,11 +614,11 @@ msgstr "_Unbekanntes Zeichen"
 
 #: ../src/gwaei/ui/main.ui.h:40
 msgid "_View"
-msgstr "_Ansicht"
+msgstr "_Anzeigen"
 
 #: ../src/gwaei/ui/main.ui.h:41
 msgid "_Word-edge Mark"
-msgstr "_Wortende Markierung"
+msgstr "Markierung _Wortende"
 
 #: ../src/gwaei/ui/main.ui.h:42 ../src/gwaei/main.c:188
 #: ../src/desktop/gwaei.desktop.in.h:2
@@ -648,11 +643,11 @@ msgstr "Auf folgende Kanji beg_renzen"
 
 #: ../src/gwaei/ui/radicals.ui.h:4
 msgid "gWaei Radical Search Tool"
-msgstr "gWaei "
+msgstr "gWaei Radikal Suchwerkzeug"
 
 #: ../src/gwaei/ui/settings.ui.h:1
 msgid "<b>Manual Dictionary Management</b>"
-msgstr "<b>Manuelle Wörterbuch Organisation</b>"
+msgstr "<b>Manuelle Wörterbuch Verwaltung</b>"
 
 #: ../src/gwaei/ui/settings.ui.h:2
 msgid "<b>Result Window Colors</b>"
@@ -660,7 +655,7 @@ msgstr "<b>Ergebnisfenster Farben</b>"
 
 #: ../src/gwaei/ui/settings.ui.h:3
 msgid "<b>Result Window Fonts</b>"
-msgstr "<b>Schrift für das Ergebnisfenster</b>"
+msgstr "<b>Ergebnisfenster Schrift</b>"
 
 #: ../src/gwaei/ui/settings.ui.h:4
 msgid "<b>Search Entry Settings</b>"
@@ -672,7 +667,7 @@ msgstr "Fortgeschritten"
 
 #: ../src/gwaei/ui/settings.ui.h:6
 msgid "Appearance"
-msgstr "Erscheinung"
+msgstr "Aussehen"
 
 #: ../src/gwaei/ui/settings.ui.h:7
 msgid "Comment"
@@ -695,9 +690,8 @@ msgid "Custom Font: "
 msgstr "Eigene Schrift:"
 
 #: ../src/gwaei/ui/settings.ui.h:12
-#, fuzzy
 msgid "Dictionaries"
-msgstr "_Wörterbücher"
+msgstr "Wörterbücher"
 
 #: ../src/gwaei/ui/settings.ui.h:13
 msgid "Enable Spell _Checking"
@@ -717,15 +711,15 @@ msgstr "Nie"
 
 #: ../src/gwaei/ui/settings.ui.h:17
 msgid "Only for Non-Japanese Locals"
-msgstr "Nur für Nicht- Japanische Umgebungen"
+msgstr "Nur für nicht japanische Umgebungen"
 
 #: ../src/gwaei/ui/settings.ui.h:18
 msgid "Plugins"
-msgstr ""
+msgstr "Erweiterungen"
 
 #: ../src/gwaei/ui/settings.ui.h:19
 msgid "When Possible"
-msgstr "Falls möglich"
+msgstr "Wenn möglich"
 
 #: ../src/gwaei/ui/settings.ui.h:20
 msgid "_Open the gWaei dictionary folder"
@@ -749,7 +743,7 @@ msgstr "gWaei Einstellungen"
 
 #: ../src/gwaei/ui/settings.ui.h:25
 msgid "gWaei requires at least one dictionary to be installed."
-msgstr "gWaei benötigt mindestens ein installiertes Wörterbuch."
+msgstr "gWaei benötigt zumindest ein installiertes Wörterbuch."
 
 #: ../src/gwaei/ui/kanjipad.ui.h:2
 msgid "_Annotate Strokes"
@@ -760,67 +754,62 @@ msgid "gWaei Kanjipad"
 msgstr "gWaei Kanjipad"
 
 #: ../src/gwaei/installprogress.c:184
-#, fuzzy, c-format
+#, c-format
 msgid "Installing %s..."
-msgstr "Installiere..."
+msgstr "Installation von %s..."
 
 #: ../src/gwaei/installprogress.c:185
-#, fuzzy, c-format
+#, c-format
 msgid "Installing dictionary %d of %d..."
-msgstr "Hauptwörterbücher"
+msgstr "Installation von Wörterbuch %d von %d..."
 
 #: ../src/gwaei/dictionaryinstall.c:68
 #, c-format
 msgid "<b>%s Install Details</b>"
-msgstr ""
+msgstr "<b>%s Installations Details</b>"
 
 #. Third row
 #: ../src/gwaei/dictionaryinstall.c:90
 msgid "Filename: "
-msgstr ""
+msgstr "Dateiname:"
 
 #. Forth row
 #: ../src/gwaei/dictionaryinstall.c:102
 msgid "Engine: "
-msgstr ""
+msgstr "Motor:"
 
 #. Fifth row
 #: ../src/gwaei/dictionaryinstall.c:120
-#, fuzzy
 msgid "Source: "
-msgstr "Quelle:"
+msgstr "Ursprung:"
 
 #. Sixth row
 #: ../src/gwaei/dictionaryinstall.c:144
 msgid "Encoding: "
-msgstr ""
+msgstr "Kodierung:"
 
 #. Seventh row
 #: ../src/gwaei/dictionaryinstall.c:161
-#, fuzzy
 msgid "Compression: "
-msgstr "Dekomprimiere..."
+msgstr "Komprimierung..."
 
 #. Eighth row
 #: ../src/gwaei/dictionaryinstall.c:178
-#, fuzzy
 msgid "Split Places from Names Dictionary"
-msgstr "Orte Wörterbuch"
+msgstr "Orte vom Namen Wörterbuch trennen"
 
 #. Ninth row
 #: ../src/gwaei/dictionaryinstall.c:188
-#, fuzzy
 msgid "Merge Radicals into Kanji Dictionary"
-msgstr "Radikale Wörterbuch"
+msgstr "Radikale zum Kanji Wörterbuch zusammenfügen"
 
 #: ../src/gwaei/dictionarymanager.c:85
-#, fuzzy
 msgid "Name"
-msgstr "Namen"
+msgstr "Name"
 
 #: ../src/gwaei/dictionarymanager.c:91
 msgid "Engine"
-msgstr ""
+msgstr "Motor"
 
 #: ../src/gwaei/dictionarymanager.c:96
 msgid "Shortcut"
@@ -835,22 +824,20 @@ msgid "Cycle _Down"
 msgstr "B_ild runter"
 
 #: ../src/gwaei/gwaei.c:59
-#, fuzzy
 msgid "Choose the dictionary to use"
-msgstr "Wählen Sie das Wörterbuch aus, dass Sie benutzen möchten"
+msgstr "Wörterbuch für Gebrauch auswählen"
 
 #: ../src/gwaei/gwaei.c:61
 msgid "Open a new instance of gWaei"
-msgstr ""
+msgstr "Eine neue Instanz von gWaei öffnen"
 
 #: ../src/gwaei/gwaei.c:63
-#, fuzzy
 msgid "Check the gWaei version information"
-msgstr "Waei Versionsinformationen überprüfen"
+msgstr "Waei Versionsinformation anzeigen"
 
 #: ../src/gwaei/main.c:518
 msgid "Searching..."
-msgstr "Suche..."
+msgstr "Suchen..."
 
 #: ../src/gwaei/main.c:521
 #, c-format
@@ -867,11 +854,11 @@ msgstr "Es wurde in %s nichts gefunden!"
 
 #: ../src/gwaei/main.c:1676
 msgid "Search Other Dictionary: "
-msgstr "In anderen Wörterbüchern suchen"
+msgstr "Andere Wörterbücher durchsuchen"
 
 #: ../src/gwaei/main.c:1715
 msgid "Search Online: "
-msgstr "Online suchen:"
+msgstr "Online Suche:"
 
 #: ../src/gwaei/main.c:1768
 #, c-format
@@ -889,13 +876,12 @@ msgid ""
 "the innards of Kanjipad works, drawing with the correct number of strokes "
 "and drawing the strokes in the correct direction is very important."
 msgstr ""
-"Benutzen Sie das Unbekannte Zeichen aus dem Einfügen Menü oder der "
-"Werkzeugleiste anstelle von unbekannten Kanji. %s wird Ergebnisse wie %s "
-"ausgeben.\n"
+"Benutzen Sie das Unbekannte Zeichen aus dem Menü Einfügen oder der "
+"Werkzeugleiste für unbekannte Kanji. %s wird Ergebnisse wie %s ausgeben.\n"
 "\n"
-"Eine andere Möglichkeit, Kanji Zeichen einzugeben. Aufgrund den inneren "
-"Abläufen von Kanjipad ist es sehr wichtig, die Strichfolge als auch die "
-"Strichzahl einzuhalten."
+"Eine andere Möglichkeit, Kanji Zeichen einzugeben ist Kanjipad. Aufgrund der "
+"inneren Abläufe von Kanjipad ist es sehr wichtig, sowohl die Strichfolge als "
+"auch die Strichzahl korrekt einzugeben."
 
 #: ../src/gwaei/main.c:1788
 msgid "Inputting Unknown Kanji"
@@ -1063,17 +1049,17 @@ msgid "vocabulary.txt"
 msgstr "Vokabeln.txt"
 
 #: ../src/gwaei/main-callbacks.c:1112
-#, fuzzy
 msgid ""
 "Program for Japanese translation and reference. The\n"
 "dictionaries are supplied by Jim Breen's WWWJDIC.\n"
 "Special thanks to the maker of GJITEN who served as an inspiration.\n"
 " Dedicated to Chuus"
 msgstr ""
-"Programm für die Übersetzung für japanisch sprachige Texte und als "
+"Programm für die Übersetzung für Japanisch sprachige Texte und als "
 "Referenzwerk. Die\n"
 "Wörterbücher werden von Jim Breens WWWJDIC bereitgestellt.\n"
-"Speziellen Dank an den Macher von GJITEN, welcher als Inspiration diente."
+"Speziellen Dank an den Macher von GJITEN, welcher als Inspiration diente.\n"
+"Gewidmet an Chuus"
 
 #. TRANSLATORS: You can add your own name to the translation of this field, it will be displayed in the "about" box when gwaei is run in your language
 #: ../src/gwaei/main-callbacks.c:1116
@@ -1138,16 +1124,15 @@ msgid "Pop"
 msgstr "Pop"
 
 #: ../src/gwaei/output-callbacks.c:594
-#, fuzzy
 msgid "Radical Name"
-msgstr "Name des Radikals:"
+msgstr "Radikalname"
 
 #: ../src/gwaei/output-callbacks.c:788
 #, c-format
 msgid "Other Result %d"
 msgid_plural "Other Results %d"
-msgstr[0] "Weiteres Ergebnis %d"
-msgstr[1] "Weitere Ergebnisse %d"
+msgstr[0] "Anderes Ergebnis %d"
+msgstr[1] "Andere Ergebnisse %d"
 
 #: ../src/gwaei/output-callbacks.c:803
 #, c-format
@@ -1159,6 +1144,8 @@ msgstr[1] "Hauptergebnisse %d"
 #: ../src/desktop/gwaei.desktop.in.h:1
 msgid "Enter a Japanese or English word to easily get translations."
 msgstr ""
+"Geben Sie ein Japanisches, Englisches oder Deutsches Wort ein, um einfach "
+"Übersetzungen zu erhalten."
 
 #~ msgid "Radicals"
 #~ msgstr "Radikale"
