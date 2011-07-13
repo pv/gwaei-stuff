@@ -725,6 +725,9 @@
         </child>
         <child>
           <object class="GtkToolbar" id="toolbar">
+            <style>
+              <class name="primary-toolbar"/>
+            </style>
             <property name="can_focus">False</property>
             <property name="no_show_all">True</property>
             <child>
