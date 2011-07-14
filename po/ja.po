@@ -720,7 +720,7 @@ msgstr "%sがインストール中..."
 #: ../src/gwaei/installprogress.c:185
 #, c-format
 msgid "Installing dictionary %d of %d..."
-msgstr "辞書の%d／%d札目がインストール中..."
+msgstr "辞書の%d／%d冊目がインストール中..."
 
 #: ../src/gwaei/dictionaryinstall.c:68
 #, c-format
