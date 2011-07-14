@@ -430,38 +430,41 @@ int w_console_uninstall_progress_cb (double fraction, gpointer data)
 
 
 
-
+static gboolean _group_index_changed = FALSE;
+static int _previous_percent = -1;
 int w_console_install_progress_cb (double fraction, gpointer data)
 {
   //Declarations
   LwDictInst *di;
   char *status;
+  double current_fraction;
   int current_percent;
-  int previous_percent;
 
   //Initializations
   di = data;
-  current_percent = (int) (100.0 * fraction); 
-  previous_percent = (int) (100.0 * di->progress); 
-  if (fraction == 0.0) di->progress = 0.0;
-  if (di->progress <= 1.0) di->progress = fraction;
+  di->progress = fraction;
+  current_fraction = lw_dictinst_get_process_progress (di);
+  current_percent = (int) (100.0 * current_fraction); 
+  //printf("di->progress %lf, fraction %lf, current_fraction %lf\n", di->progress, fraction, current_fraction);
 
   //Update the dictinst progress state only when the delta is large enough
-  if (current_percent - previous_percent >= 1 && di->progress < 1.0)
+  if (current_percent < 100 && _group_index_changed)
   {
-    status = lw_dictinst_get_status_string (di, TRUE);
-    printf("\r [%d%] %s", (int) (di->progress * 100.0), status);
-    g_free (status);
+    _group_index_changed = FALSE;
+    printf("\n");
+  }
+  else if (current_percent == 100)
+  {
+    _group_index_changed = TRUE;
   }
 
-  //Display the final progress 
-  else if (di->progress == 1.0)
-  {
+//  if (_previous_percent != current_percent)
+//  {
     status = lw_dictinst_get_status_string (di, TRUE);
-    printf("\r [%d%] %s\n", (int) (di->progress * 100.0), status);
+    printf("\r [%d%] %s", current_percent, status);
+    _previous_percent = current_percent;
     g_free (status);
-    di->progress = 1.1;
-  }
+//  }
 
   return FALSE;
 }

@@ -601,6 +601,7 @@ gboolean lw_dictinst_postprocess (LwDictInst *di, LwIoProgressCallback cb, GErro
     data = di;
     group_index = GW_DICTINST_NEEDS_POSTPROCESSING;
 
+
     //Rebuild the mix dictionary
     if (di->merge)
     {
@@ -608,7 +609,9 @@ gboolean lw_dictinst_postprocess (LwDictInst *di, LwIoProgressCallback cb, GErro
           (source2 = lw_dictinst_get_source_uri (di, group_index, 1)) != NULL &&
           (target = lw_dictinst_get_target_uri (di, group_index, 0)) != NULL
          )
+      {
       lw_io_create_mix_dictionary (target, source, source2, cb, data, error);
+      }
     }
 
     //Rebuild the names dictionary
@@ -683,7 +686,6 @@ gboolean lw_dictinst_finalize (LwDictInst *di, LwIoProgressCallback cb, GError *
 //!
 void lw_dictinst_clean (LwDictInst *di, LwIoProgressCallback cb)
 {
-  /*
     //Declarations
     LwDictInstUri group_index;
     int i;
@@ -712,7 +714,6 @@ void lw_dictinst_clean (LwDictInst *di, LwIoProgressCallback cb)
     di->current_target_uris = NULL;
     di->uri_group_index = -1;
     di->uri_atom_index = -1;
-    */
 }
 
 
@@ -793,7 +794,37 @@ gchar* lw_dictinst_get_status_string (LwDictInst *di, gboolean long_form)
 }
 
 
-double lw_dictinst_get_progress (LwDictInst *di)
+double lw_dictinst_get_process_progress (LwDictInst *di)
+{
+    //Declarations
+    double current;
+    double final;
+    double fraction;
+    char *ptr;
+    
+    //Initializations
+    current = 0.0;
+    final = 0.0;
+    fraction = 0.0;
+
+    //Get the current progress
+    current = di->progress + ((double) di->uri_atom_index);
+
+    //Calculate the amount needed for the whole process to finish
+    for (ptr = di->uri[di->uri_group_index]; ptr != NULL; ptr = strchr(ptr, ';'))
+    {
+      final += 1.0;
+      ptr++;
+    }
+
+    if (final > 0.0)
+      fraction = current / final;
+
+    return fraction;
+}
+
+
+double lw_dictinst_get_total_progress (LwDictInst *di)
 {
     //Declarations
     double fraction, current, final;
@@ -804,36 +835,41 @@ double lw_dictinst_get_progress (LwDictInst *di)
     fraction = 0.0;
     current = 0.0;
     final = 0.0;
+    const double DOWNLOAD_WEIGHT = 3.0;
 
+    //Calculate the already completed activities
     for (i = 0; i < di->uri_group_index && i < GW_DICTINST_NEEDS_NOTHING; i++)
     {
       for (ptr = di->uri[i]; ptr != NULL; ptr = strchr(ptr, ';'))
       {
         if (i == GW_DICTINST_NEEDS_DOWNLOADING)
-          current += 1.0 * 3.0;
+          current += 1.0 * DOWNLOAD_WEIGHT;
         else
           current += 1.0;
         ptr++;
       }
     }
+    //Add the current in progress activity
     if (i == GW_DICTINST_NEEDS_DOWNLOADING)
-      current += (di->progress + (double) di->uri_atom_index) * 3.0;
+      current += (di->progress + (double) di->uri_atom_index) * DOWNLOAD_WEIGHT;
     else
       current += di->progress + (double) di->uri_atom_index;
 
+    //Calculate the amount needed for the whole process to finish
     for (i = 0; i < GW_DICTINST_NEEDS_NOTHING; i++)
     {
       for (ptr = di->uri[i]; ptr != NULL; ptr = strchr(ptr, ';'))
       {
         if (i == GW_DICTINST_NEEDS_DOWNLOADING)
-          final += 1.0 * 3.0;
+          final += 1.0 * DOWNLOAD_WEIGHT;
         else
           final += 1.0;
         ptr++;
       }
     }
 
-    fraction = current / final;
+    if (final > 0.0)
+      fraction = current / final;
 
     return fraction;
 }
@@ -862,7 +898,7 @@ char* lw_dictinst_get_source_uri (LwDictInst *di, const LwDictInstUri GROUP_INDE
     }
 
     //Get the information we came here for
-    if (ATOM_INDEX >= 0 && ATOM_INDEX < g_strv_length (di->current_target_uris))
+    if (ATOM_INDEX >= 0 && ATOM_INDEX < g_strv_length (di->current_source_uris))
     {
       di->uri_group_index = GROUP_INDEX;
       di->progress = 0.0;

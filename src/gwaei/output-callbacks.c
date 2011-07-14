@@ -840,6 +840,13 @@ void gw_output_after_search_cleanup_cb (LwSearchItem *item)
     {
       gw_main_display_no_results_found_page (item);
     }
+    else {
+      //Because the progres update is in a timer, we have to call the things
+      //once at the end to make sure the final progress shown is correct
+      gw_main_set_search_progressbar_by_searchitem (item);
+      gw_main_set_total_results_label_by_searchitem (item);
+      gw_main_set_main_window_title_by_searchitem (item);
+    }
 }
 
 

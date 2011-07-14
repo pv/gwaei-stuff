@@ -189,7 +189,7 @@ gboolean _installprogress_update_ui_timeout (gpointer data)
 
     gtk_label_set_markup (GTK_LABEL (label), text_left_markup);
     gtk_label_set_markup (GTK_LABEL (sublabel), text_installing_markup);
-    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (progressbar), lw_dictinst_get_progress (di));
+    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (progressbar), lw_dictinst_get_total_progress (di));
     gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progressbar), text_progressbar);
 
     g_mutex_unlock (di->mutex);

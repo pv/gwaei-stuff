@@ -237,12 +237,11 @@ static int _libcurl_update_progress (void  *custom,
     cbwdata = (LwIoProgressCallbackWithData*) custom;
     cb = cbwdata->cb;
     data = cbwdata->data;
-    if (dltotal == 0.0)
-      fraction = 0.0;
-    else
+    fraction = 0;
+
+    if (dltotal > 0.0)
       fraction = dlnow / dltotal;
 
-//printf("update interface %d\n", _cancel);
     //Update the interface
     if (_cancel) return 1;
     else return cb (fraction, data);

@@ -245,21 +245,6 @@ static void _stream_results_thread (gpointer data)
       }
     }
 
-//    if (line_pointer == NULL) {
-//      if (item->dictionary->total_lines != item->current_line) {
-//        item->dictionary->total_lines = item->current_line;
-//        char *key = NULL;
-//        key = g_strdup_printf ("%s%s", item->dictionary->name, "-total-lines");
-
-//        if (key != NULL) {
-//          *key = g_ascii_tolower (*key);
-//          lw_pref_set_int(GW_SCHEMA_DICTIONARY, key, item->current_line);
-//          g_free (key);
-//        }
-//      }
-//    } 
-
-
     //Make sure the more relevant header banner is visible
     if (item->status != GW_SEARCH_CANCELING)
     {
