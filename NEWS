@@ -1,10 +1,2 @@
-2010-01-10: gWaei 3.0.0
-  New version of gwaei made to compile against gtk+-3.0 and match other Gnome 3 apps.  Most of the code has been rewritten and the advantages won't all appear until futuer versions of the program.
-
-  -Spellcheck is now don't directly with enchant instead of relying on libsexy
-  -The backend is now separated into a libtool library for cleaner code.
-  -The dictionary folder is now in ~/.config/gwaei instead of ~/.waei.
-  -Manual installation of dictionaries is now easier and more straight forward.
-  -Translations are now handled by intltool instead of gettext
-  -Much of the code now uses GError for proper error handling and message passing
-  -The code now uses GRegex instead of the C regex library included with the OS, making the program more cross platform friendly
+2010-07-14: gWaei 3.0.1
+This is a big fix release.  The big bug this version fixes is installation issues people had with the Kanji dictionary.

@@ -1,18 +1,5 @@
-2011-05-05  gettextize  <bug-gnu-gettext@gnu.org>
-
-	* configure.ac (AC_CONFIG_FILES): Add po/Makefile.in.
-
-2011-01-10   Lowered Libcurl required version <pizzach@gmail.com>
-    * Lowered the required libcurl version
-		* Updated the language files using make distcheck.
-
-2011-01-04 Various fixes to usage issues <pizzach@gmail.com>
-    * Edits to thread locking during less relevant result display to make the interface
-      more responsive.
-    * Readded exact matching for the console version of gWaei because of how
-		  useful it is there from how consoles autoscroll passed the useful
-			results.
-    * Fixed the & symbol so that the letters after it don't get deleted when
-      a search is started.
-    * Added a max number of relevant/exact results because the program
-      basically dies when trying to output passed 300 or so of them.
+2011-07-14  Zachary Dovel <pizzach@gmail.com>
+	* Fixed installation of the Kanji dictionary
+	* Added class style for the main window toolbar
+	* Did some tweaks on how dictionary installs are shown in the console
+	* Added some code to ensure the search progress bar clears after a search

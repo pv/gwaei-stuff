@@ -16,7 +16,7 @@ TABLE OF CONTENTS
 
 1.0 PREREQUISITES:
 
-  To run gWaei 1.5.x, an environment with at least gtk+-3.0.0/glib-2.25.0,
+  To run gWaei 3.0.x, an environment with at least gtk+-3.0.0/glib-2.25.0,
   curl 7.19.6, gnome-doc-utils-0.14.0, libncurses5-5.7, and libunique-3.0
   are required.  Additionally, you will want to have gunzip, unzip, and
   enchant, and ttf-kanjistrokeorders available.
