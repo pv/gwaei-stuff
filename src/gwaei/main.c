@@ -670,7 +670,7 @@ void gw_main_set_search_progressbar_by_searchitem (LwSearchItem *item)
     if (current == 0) fraction = 0.0;
     else fraction = (double)current / (double)total;
 
-    if (item == NULL || item->dictionary == NULL || total == 0 || fraction > 1.0 || item->status == GW_SEARCH_IDLE || item->status == GW_SEARCH_FINISHING)
+    if (item == NULL || item->dictionary == NULL || total == 0 || fraction > 1.0 || item->status == GW_SEARCH_IDLE || item->status == GW_SEARCH_FINISHING || item->status == GW_SEARCH_CANCELING)
     {
       gtk_entry_set_progress_fraction (GTK_ENTRY (entry), 0.0);
     }
@@ -2231,10 +2231,13 @@ gboolean gw_main_cancel_search_by_searchitem (LwSearchItem *item)
       //Do the cancel operation
       item->status = GW_SEARCH_CANCELING;
 
+
     g_mutex_unlock (item->mutex);
 
     g_thread_join(item->thread);
     item->thread = NULL;
+
+    gw_main_set_search_progressbar_by_searchitem (NULL);
 
     return FALSE;
 }
