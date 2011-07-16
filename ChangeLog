@@ -3,3 +3,4 @@
 	* Added class style for the main window toolbar
 	* Did some tweaks on how dictionary installs are shown in the console
 	* Added some code to ensure the search progress bar clears after a search
+	* Fixed the print preview by cleaning up the printing code

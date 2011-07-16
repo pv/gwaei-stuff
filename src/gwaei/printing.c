@@ -45,191 +45,241 @@
 //!
 //! @brief Storage of the current print settings
 //!
-static GtkPrintSettings *settings = NULL;
+static GtkPrintSettings *_settings = NULL;
 
 //!
 //! @brief Primitive for storing information on printing
 //!
 typedef struct GwPageInfo {
-    GList *pages;              //!< pages GList of all the created pages
-    GtkTextIter page_end_line; //!< Mark in the buffer where we have paginated to
-    gint total_pages;          //!< The total pages that need pagination
+    GtkTextIter start; //!< pages GList of all the created pages
+    GtkTextIter end;   //!< Mark in the buffer where we have paginated to
 } GwPageInfo;
 
 
 //!
 //! @brief Allocates a new GwPageInfo object
 //!
-GwPageInfo* gw_pageinfo_new()
+GwPageInfo* gw_pageinfo_new (GtkTextIter start, GtkTextIter end)
 {
     GwPageInfo *temp;
-    if ((temp = (GwPageInfo*)malloc(sizeof(GwPageInfo))) == NULL)
+
+    if ((temp = (GwPageInfo*) malloc (sizeof(GwPageInfo))) == NULL)
       return NULL;
 
-    LwHistoryList *hl = lw_historylist_get_list (GW_HISTORYLIST_RESULTS);
-    GObject *tb = gw_common_get_gobject_by_target (GW_TARGET_RESULTS);
-
-    //Start from the start of the highlighted text
-    if (gtk_text_buffer_get_has_selection (GTK_TEXT_BUFFER (tb)))
-    {
-      GtkTextIter unused;
-      gtk_text_buffer_get_selection_bounds( GTK_TEXT_BUFFER (tb),
-                                            &(temp->page_end_line),
-                                            &unused                                 );
-    }
-    //If no text is highlight, start the print job from the beginnig
-    else
-    {
-      gtk_text_buffer_get_start_iter( GTK_TEXT_BUFFER (tb),
-                                      &(temp->page_end_line)                  );
-    }
-
-    temp->pages = NULL;
-    temp->total_pages = 0;
+    temp->start = start;
+    temp->end = end;
 
     //Finish
     return temp;
 }
 
+
 //!
 //! @brief Frees a GwPageInfo object
-//!
 //! @param pi a GwPageInfo object to free
 //!
-void gw_pageinfo_free(GwPageInfo *pi) {
-    if (pi == NULL)
-      return;
-
-    if (pi->pages != NULL) {
-      GList *item = pi->pages;
-      while (item != NULL) {
-        free(item->data);
-        item = item->next;
-      }
-      g_list_free(pi->pages);
-      item = NULL;
-    }
-
-    //Finalize
+void gw_pageinfo_free (GwPageInfo *pi) {
+    if (pi == NULL) return;
     free(pi);
 }
 
 
 //!
 //! @brief function for signal fired upon start of printing.
+//! @sa _done() _begin_print() draw() _paginate()
 //!
-//! THIS IS A PRIVATE FUNCTION.  This function currently does nothing.
-//!
-//! @sa done() begin_print() draw() paginate()
-//!
-static void begin_print() {
+static void _begin_print (GtkPrintOperation *operation,
+                          GtkPrintContext   *context,
+                          GList             **pages     ) {
   printf("begin_print!\n");
+}
+
+
+static void _draw_page_title (GtkPrintContext *context, GwPageInfo *pi) {
+    //Declarations
+    PangoLayout *layout;
+    char *text;
+    PangoFontDescription *desc;
+    int width;
+    int height;
+    cairo_t *cr;
+    LwSearchItem *item;
+
+    //Initializations
+    item = lw_historylist_get_current (GW_HISTORYLIST_RESULTS);
+    text = gw_main_get_window_title_by_searchitem (item);
+    layout = gtk_print_context_create_pango_layout (context);
+    desc = pango_font_description_from_string ("sans 8");
+    cr = gtk_print_context_get_cairo_context (context);
+
+    //Draw
+    if (text != NULL && layout != NULL && desc != NULL)
+    {
+      cairo_move_to (cr, 0, 0);
+      pango_font_description_set_weight (desc, PANGO_WEIGHT_BOLD);
+      pango_layout_set_font_description (layout, desc);
+      pango_layout_set_markup (layout, text, -1);
+      pango_layout_get_size (layout, &width, &height);
+      pango_cairo_show_layout (cr, layout);
+    }
+
+    //Cleanup
+    if (text != NULL) g_free (text);
+    if (layout != NULL) g_object_unref (layout);
+    if (desc != NULL) pango_font_description_free (desc);
+}
+
+
+static void _draw_page_number (GtkPrintContext *context, gint page_nr, gint page_tl, GwPageInfo *pi)
+{
+    //Declarations
+    PangoLayout *layout;
+    char *text;
+    PangoFontDescription *desc;
+    int width;
+    int height;
+    cairo_t *cr;
+    gdouble drawable_width;
+    gdouble drawable_height;
+
+    //Initializations
+    text = g_strdup_printf (gettext("Page %d/%d"), page_nr + 1, page_tl);
+    layout = gtk_print_context_create_pango_layout (context);
+    desc = pango_font_description_from_string ("sans 8");
+    cr = gtk_print_context_get_cairo_context (context);
+    drawable_width = gtk_print_context_get_width (context);
+    drawable_height = gtk_print_context_get_height (context);
+
+    //Draw
+    if (text != NULL && layout != NULL && desc != NULL)
+    {
+      pango_font_description_set_weight (desc, PANGO_WEIGHT_BOLD);
+      pango_layout_set_alignment (layout, PANGO_ALIGN_RIGHT);
+      pango_layout_set_font_description (layout, desc);
+      pango_layout_set_markup (layout, text, -1);
+      pango_layout_get_size (layout, &width, &height);
+      cairo_move_to (cr, (int) drawable_width - PANGO_PIXELS (width), 0);
+      pango_cairo_show_layout (cr, layout);
+    }
+
+    //Cleanup
+    if (text != NULL) g_free (text);
+    if (layout != NULL) g_object_unref (layout);
+    if (desc != NULL) pango_font_description_free (desc);
+}
+
+ 
+static void _draw_page_results (GtkPrintContext *context, GwPageInfo *page)
+{
+    //Declarations
+    GObject *tb;
+    PangoLayout *layout;
+    char *text;
+    PangoFontDescription *desc;
+    int width;
+    int height;
+    gdouble drawable_width, drawable_height;
+    cairo_t *cr;
+    gint line_start;
+    gint line_end;
+
+    //Initializations
+    tb = gw_common_get_gobject_by_target (GW_TARGET_RESULTS);
+    text = gtk_text_buffer_get_text (GTK_TEXT_BUFFER (tb), &(page->start), &(page->end), FALSE);
+    layout = gtk_print_context_create_pango_layout (context);
+    desc = pango_font_description_from_string ("sans 10");
+    drawable_width = gtk_print_context_get_width (context);
+    drawable_height = gtk_print_context_get_height (context);
+    cr = gtk_print_context_get_cairo_context (context);
+    line_start = 0;
+    line_end = 0;
+
+    //Draw
+    if (text != NULL)
+    {
+      cairo_move_to (cr, 5, 10);
+      pango_layout_set_font_description (layout, desc);
+      pango_layout_set_markup (layout, text, -1);
+      pango_layout_set_width (layout, drawable_width * PANGO_SCALE);
+      pango_layout_set_alignment (layout, PANGO_ALIGN_LEFT);
+      pango_layout_set_height (layout, drawable_height * PANGO_SCALE);
+      pango_layout_get_size (layout, &width, &height);
+      pango_cairo_show_layout (cr, layout);
+      
+      //Adjust the end GtkTextIter to the cutoff in the visible cairo context
+      line_start = gtk_text_iter_get_line (&page->start);
+      line_end = line_start + pango_layout_get_line_count (layout) - 1;
+      gtk_text_buffer_get_iter_at_line (GTK_TEXT_BUFFER (tb), &(page->end), line_end);
+    }
+
+    //Cleanup
+    if (text != NULL) g_free (text);
+    if (layout != NULL) g_object_unref (layout);
+    if (desc != NULL) pango_font_description_free (desc);
 }
 
 
 //!
 //! @brief Pagination algorithm to calculate how many pages are needed
-//!
-//! THIS IS A PRIVATE FUNCTION.  The function loops through and draws all the
-//! pages to figure out exactly what will need to be drawn.
-//!
 //! @param operation Unused GtkPrintOperation
 //! @param context Pointer co a GtkPrintContext to draw on
 //! @param page_nr Integer of the current page number being draw
 //! @param data Painter to a PageInfo struct to use for information
 //! @return Return true when pagination finishes
-//! @sa done() begin_print() draw() begin_print()
+//! @sa _done() _begin_print() draw() _begin_print()
 //!
-static gboolean paginate(GtkPrintOperation *operation,
-                         GtkPrintContext   *context,
-                         gpointer           user_data )
+static gboolean _paginate (GtkPrintOperation *operation,
+                           GtkPrintContext   *context,
+                           GList             **pages     )
 {
     printf("paginate!\n");
 
-    LwHistoryList *hl = lw_historylist_get_list (GW_HISTORYLIST_RESULTS);
-    GObject *tb = gw_common_get_gobject_by_target (GW_TARGET_RESULTS);
+    //Declarations
+    GwPageInfo *page;
+    GwPageInfo *prev_page;
+    GList *iter;
+    GtkTextIter end_bound;
+    GtkTextIter start_bound;
+    GObject *tb;
 
-    GwPageInfo *pi  = user_data;
+    //Initializations
+    tb = gw_common_get_gobject_by_target (GW_TARGET_RESULTS);
 
-    //Set the page_start_iter to the page_end_iter's positon
-    GtkTextIter *page_start_line = malloc(sizeof(GtkTextIter));
-    gint line = gtk_text_iter_get_line( &pi->page_end_line );
-    gtk_text_buffer_get_iter_at_line ( GTK_TEXT_BUFFER (tb),
-                                       page_start_line,
-                                       line                                   );
-
-    //Set the page_end_line to the end of the document/selection (this gets corrected later)
+    //Get the draw bounds
     if (gtk_text_buffer_get_has_selection (GTK_TEXT_BUFFER (tb)))
     {
-      GtkTextIter unused;
-      gtk_text_buffer_get_selection_bounds( GTK_TEXT_BUFFER (tb),
-                                            &unused,
-                                            &(pi->page_end_line)                   );
+      gtk_text_buffer_get_selection_bounds (GTK_TEXT_BUFFER (tb), &start_bound, &end_bound);
     }
     else
     {
-      gtk_text_buffer_get_end_iter ( GTK_TEXT_BUFFER (tb),
-                                     &pi->page_end_line                         );
+      gtk_text_buffer_get_start_iter (GTK_TEXT_BUFFER (tb), &start_bound);
+      gtk_text_buffer_get_end_iter (GTK_TEXT_BUFFER (tb), &end_bound);
     }
 
-    //We finished paginating if the page_start_line is at the end of the document
-    if (line >= gtk_text_iter_get_line( &pi->page_end_line ) && pi-> total_pages != 0) {
-      //Reset the iters to the beginning of the document
-      gtk_text_buffer_get_start_iter ( GTK_TEXT_BUFFER (tb),
-                                       &pi->page_end_line                       );
-      gtk_print_operation_set_n_pages (operation, pi->total_pages);
+    //Create the first page
+    if (*pages == NULL)
+    {
+      page = gw_pageinfo_new (start_bound, end_bound);
+      _draw_page_results (context, page);
+      *pages = g_list_append (*pages, page);
+      return FALSE;
+    }
+
+    iter = g_list_last (*pages);
+    prev_page = iter->data;
+
+    //Finish paginating
+    if (gtk_text_iter_get_line (&(prev_page->end)) == gtk_text_iter_get_line (&end_bound))
+    {
+      gtk_print_operation_set_n_pages (operation, g_list_length (*pages));
       return TRUE;
     }
 
-    //Prepare the cairo/pango context
-    cairo_t *cr;
-    PangoLayout *layout;
-    gdouble width, height, text_height;
-    gint layout_height;
-    PangoFontDescription *desc;
-    
-    cr = gtk_print_context_get_cairo_context (context);
-    width = gtk_print_context_get_width      (context);
-    height = gtk_print_context_get_height    (context);
-    
-    layout = gtk_print_context_create_pango_layout (context);
-    
-    desc = pango_font_description_from_string ("sans 10");
-    pango_layout_set_font_description (layout, desc);
-    pango_font_description_free (desc);
+    //Add another page
+    page = gw_pageinfo_new (prev_page->end, end_bound);
+    _draw_page_results (context, page);
+    *pages = g_list_append (*pages, page);
 
-    //Get the text from the text_buffer
-    char* text;
-    text = gtk_text_buffer_get_text( GTK_TEXT_BUFFER (tb),
-                                     page_start_line, &pi->page_end_line,
-                                     FALSE                                );
-    
-    //Set the text to the pango context from the string
-    pango_layout_set_text (layout, text, -1);
-    pango_layout_set_width (layout, width * PANGO_SCALE);
-    pango_layout_set_alignment (layout, PANGO_ALIGN_LEFT);
-    pango_layout_set_height(layout, height * PANGO_SCALE);
-                
-    pango_layout_get_size (layout, NULL, &layout_height);
-    text_height = (gdouble)layout_height / PANGO_SCALE;
-    
-    //Set the page_end_line to to where the text actually got cutoff in the pango layout.
-    //We remove two lines for the header.
-    line =  line + pango_layout_get_line_count (layout) - 1; 
-    gtk_text_buffer_get_iter_at_line( GTK_TEXT_BUFFER (tb),
-                                      &pi->page_end_line,
-                                      line                                   );
-
-    //Finish
-    pango_cairo_show_layout (cr, layout);
-    
-    //Cleanup
-    g_free(text);
-    g_object_unref (layout);
-
-    //Increment pages
-    pi->pages = g_list_append(pi->pages, page_start_line); 
-    pi->total_pages++;
     return FALSE;
 }
 
@@ -244,108 +294,29 @@ static gboolean paginate(GtkPrintOperation *operation,
 //! @param context Pointer co a GtkPrintContext to draw on
 //! @param page_nr Integer of the current page number being draw
 //! @param data Painter to a PageInfo struct to use for information
-//! @sa done() begin_print() paginate() begin_print()
+//! @sa _done() _begin_print() _paginate() _begin_print()
 //!
-static void draw_page (GtkPrintOperation *operation,
-                       GtkPrintContext   *context,
-                       gint               page_nr,
-                       gpointer           data      )
+static void _draw_page (GtkPrintOperation *operation,
+                        GtkPrintContext   *context,
+                        gint               page_nr,
+                        GList             **pages     )
 {
-    GwPageInfo *pi  = data;
-    LwHistoryList *hl = lw_historylist_get_list (GW_HISTORYLIST_RESULTS);
-    GObject *tb = gw_common_get_gobject_by_target (GW_TARGET_RESULTS);
+    printf("draw!\n");
 
-    GList *page = pi->pages;
-    int i = 0;
-    while (page != NULL && i != page_nr) {
-      i++;
-      page = page->next;
-    }
+    //Declarations
+    GwPageInfo *page;
+    GList *iter;
 
-    //Set the page_end_line to the end of the document/selection (this gets corrected later)
-    if (gtk_text_buffer_get_has_selection (GTK_TEXT_BUFFER (tb)))
+    //Initializations
+    iter = g_list_nth (*pages, page_nr);
+    if (iter != NULL)
     {
-      GtkTextIter unused;
-      gtk_text_buffer_get_selection_bounds(GTK_TEXT_BUFFER (tb),
-                                           &unused,
-                                           &(pi->page_end_line) );
-    }
-    else
-    {
-      gtk_text_buffer_get_end_iter (GTK_TEXT_BUFFER (tb),
-                                    &pi->page_end_line   );
-    }
+      page = iter->data;
 
-    //Prepare the cairo/pango context
-    cairo_t *cr;
-    PangoLayout *layout;
-    gdouble width, height, text_height;
-    gint layout_height;
-    PangoFontDescription *desc;
-    
-    cr = gtk_print_context_get_cairo_context (context);
-    width = gtk_print_context_get_width      (context);
-    height = gtk_print_context_get_height    (context);
-    
-    layout = gtk_print_context_create_pango_layout (context);
-    
-    desc = pango_font_description_from_string ("sans 10");
-    pango_layout_set_font_description (layout, desc);
-    pango_font_description_free (desc);
- 
-    //Get the text from the text_buffer
-    char *input_text = NULL;
-    input_text = gtk_text_buffer_get_text (GTK_TEXT_BUFFER (tb),
-                                           page->data, &pi->page_end_line,
-                                           FALSE                          );
-    char *page_number = NULL;
-    page_number = g_strdup_printf (gettext("Page %d"), page_nr + 1);
-    char *output_text = NULL;
-    output_text = malloc (strlen(input_text) + strlen(page_number) + 100);
-
-    if (input_text == NULL || page_number == NULL || output_text == NULL)
-    {
-      if (input_text != NULL) g_free (input_text);
-      if (page_number != NULL) g_free (page_number);
-      if (output_text != NULL) free (output_text);
-      return;
+      _draw_page_title (context, page);
+      _draw_page_number (context, page_nr, g_list_length (*pages), page);
+      _draw_page_results (context, page);
     }
-
-    strcpy (output_text, "");
-    strcat (output_text, page_number);
-    strcat (output_text, "\n\n");
-    strcat (output_text, input_text);
-    
-    //Add the text to the  pango context
-    pango_layout_set_text (layout, output_text, -1);
-    pango_layout_set_width (layout, width * PANGO_SCALE);
-    pango_layout_set_alignment (layout, PANGO_ALIGN_LEFT);
-    pango_layout_set_height (layout, height * PANGO_SCALE);
-                
-    pango_layout_get_size (layout, NULL, &layout_height);
-    text_height = (gdouble)layout_height / PANGO_SCALE;
-    
-
-    //Finish
-    pango_cairo_show_layout (cr, layout);
-    
-    //Cleanup
-    if (input_text != NULL)
-    {
-      g_free(input_text);
-      input_text = NULL;
-    }
-    if (output_text != NULL)
-    {
-      free(output_text);
-      output_text = NULL;
-    }
-    if (page_number != NULL)
-    {
-      g_free (page_number);
-      page_number = NULL;
-    }
-    g_object_unref (layout);
 }
 
 
@@ -359,16 +330,12 @@ static void draw_page (GtkPrintOperation *operation,
 //! @param operation Unused
 //! @param result Unused
 //! @param data Pointer to a PageInfo struct to free when pagination finishes
-//! @sa draw_page() begin_print() pageinate() begin_print()
+//! @sa _draw_page() _begin_print() pageinate() _begin_print()
 //!
-static void done (GtkPrintOperation      *operation,
-                  GtkPrintOperationResult result,
-                  gpointer                data      ) 
+static void _done (GtkPrintOperation      *operation,
+                   GtkPrintOperationResult result,
+                   GList                  **pages    ) 
 {
-    //Cleanup
-    GwPageInfo *pi  = data;
-    gw_pageinfo_free(pi);
-    pi = NULL;
     printf("done\n");
 }
 
@@ -382,42 +349,45 @@ static void done (GtkPrintOperation      *operation,
 //!
 void gw_print()
 {
-    GwPageInfo *pi = gw_pageinfo_new();
-
-
-    //Start setting up the print operation
+    //Declarations
+    GList *pages;
+    GwPageInfo *page;
+    GList *iter;
     GtkPrintOperation *operation;
     GtkPrintOperationResult res;
-    GtkPageSetup *setup;
     
+    //Initializations
+    pages = NULL;
     operation = gtk_print_operation_new ();
 
     //Force at least some minimal margins on the pages that print
-    setup = gtk_page_setup_new();
-    gtk_page_setup_set_left_margin   ( setup, 20.0, GTK_UNIT_MM);
-    gtk_page_setup_set_right_margin  ( setup, 20.0, GTK_UNIT_MM);
-    gtk_page_setup_set_top_margin    ( setup, 20.0, GTK_UNIT_MM);
-    gtk_page_setup_set_bottom_margin ( setup, 20.0, GTK_UNIT_MM);
-    gtk_print_operation_set_default_page_setup ( operation, setup );
+    gtk_print_operation_set_default_page_setup (operation, NULL);
+    gtk_print_operation_set_use_full_page (operation, FALSE);
+    gtk_print_operation_set_unit (operation, GTK_UNIT_MM);
 
-    if (settings != NULL)
-      gtk_print_operation_set_print_settings(operation, settings);
+    if (_settings != NULL)
+      gtk_print_operation_set_print_settings (operation, _settings);
 
+    g_signal_connect (operation, "begin_print", G_CALLBACK (_begin_print), &pages);
+    g_signal_connect (operation, "draw_page", G_CALLBACK (_draw_page), &pages);
+    g_signal_connect (operation, "paginate", G_CALLBACK (_paginate), &pages);
+    g_signal_connect (operation, "done", G_CALLBACK (_done), &pages);
 
-    g_signal_connect (operation, "begin_print", G_CALLBACK (begin_print), pi);
-    g_signal_connect (operation, "draw_page", G_CALLBACK (draw_page), pi);
-    g_signal_connect (operation, "paginate", G_CALLBACK (paginate), pi);
-    g_signal_connect (operation, "done", G_CALLBACK (done), pi);
-
-    res = gtk_print_operation_run (operation, GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,
-                                   NULL, NULL);
+    res = gtk_print_operation_run (operation, GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG, NULL, NULL);
 
     if (res == GTK_PRINT_OPERATION_RESULT_APPLY)
-      {
-        if (settings != NULL)
-        g_object_unref (settings);
-        settings = g_object_ref(gtk_print_operation_get_print_settings (operation));
-      }
+    {
+        if (_settings != NULL) g_object_unref (_settings);
+        _settings = g_object_ref (gtk_print_operation_get_print_settings (operation));
+    }
+
+    //Cleanup
+    for (iter = pages; iter != NULL; iter = iter->next)
+    {
+      page = iter->data;
+      gw_pageinfo_free (page);
+    }
+    g_list_free (pages);
     g_object_unref (operation);
 }
 

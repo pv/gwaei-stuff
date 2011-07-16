@@ -442,10 +442,8 @@ int w_console_install_progress_cb (double fraction, gpointer data)
 
   //Initializations
   di = data;
-  di->progress = fraction;
-  current_fraction = lw_dictinst_get_process_progress (di);
+  current_fraction = lw_dictinst_get_process_progress (di, fraction);
   current_percent = (int) (100.0 * current_fraction); 
-  //printf("di->progress %lf, fraction %lf, current_fraction %lf\n", di->progress, fraction, current_fraction);
 
   //Update the dictinst progress state only when the delta is large enough
   if (current_percent < 100 && _group_index_changed)
@@ -458,13 +456,10 @@ int w_console_install_progress_cb (double fraction, gpointer data)
     _group_index_changed = TRUE;
   }
 
-//  if (_previous_percent != current_percent)
-//  {
-    status = lw_dictinst_get_status_string (di, TRUE);
-    printf("\r [%d%] %s", current_percent, status);
-    _previous_percent = current_percent;
-    g_free (status);
-//  }
+  status = lw_dictinst_get_status_string (di, TRUE);
+  printf("\r [%d%] %s", current_percent, status);
+  _previous_percent = current_percent;
+  g_free (status);
 
   return FALSE;
 }

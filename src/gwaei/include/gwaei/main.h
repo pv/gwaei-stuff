@@ -76,5 +76,8 @@ void gw_main_set_color_to_swatch (const char*, const char*);
 gboolean gw_update_icons_for_selection (gpointer);
 gboolean gw_main_keep_searching_timeout (gpointer);
 
+const char* gw_main_get_program_name (void);
+char* gw_main_get_window_title_by_searchitem (LwSearchItem*);
+
 
 #endif

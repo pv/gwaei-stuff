@@ -1,2 +1,3 @@
 2010-07-14: gWaei 3.0.1
-This is a big fix release.  The big bug this version fixes is installation issues people had with the Kanji dictionary.
+This is a bug fix release.  The big bug this version fixes is
+installation issues people had with the Kanji dictionary.  Fixed the print preview

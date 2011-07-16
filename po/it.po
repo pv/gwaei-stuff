@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2011-06-07 01:31-0400\n"
+"POT-Creation-Date: 2011-07-16 00:09-0400\n"
 "PO-Revision-Date: 2010-04-08 18:40+0100\n"
 "Last-Translator: Fabrizio Sabatini <jecnua@gmail.com>\n"
 "Language-Team: Not Applicable\n"
@@ -62,52 +62,52 @@ msgstr "Dizionario di Esempi"
 msgid "Examples"
 msgstr "Esempi"
 
-#: ../src/libwaei/dictinst.c:759
+#: ../src/libwaei/dictinst.c:760
 #, c-format
 msgid "Downloading %s..."
 msgstr "Sto Scaricando %s..."
 
-#: ../src/libwaei/dictinst.c:761
+#: ../src/libwaei/dictinst.c:762
 #, c-format
 msgid "Downloading..."
 msgstr "Sto Scaricando..."
 
-#: ../src/libwaei/dictinst.c:765
+#: ../src/libwaei/dictinst.c:766
 #, fuzzy, c-format
 msgid "Converting the encoding of %s from %s to UTF-8..."
 msgstr "Convertendo l'encoding..."
 
-#: ../src/libwaei/dictinst.c:767
+#: ../src/libwaei/dictinst.c:768
 #, fuzzy, c-format
 msgid "Converting the encoding to UTF-8..."
 msgstr "Convertendo l'encoding..."
 
-#: ../src/libwaei/dictinst.c:771
+#: ../src/libwaei/dictinst.c:772
 #, c-format
 msgid "Decompressing %s from %s file..."
 msgstr ""
 
-#: ../src/libwaei/dictinst.c:773
+#: ../src/libwaei/dictinst.c:774
 #, fuzzy, c-format
 msgid "Decompressing..."
 msgstr "Postprocessando..."
 
-#: ../src/libwaei/dictinst.c:777
+#: ../src/libwaei/dictinst.c:778
 #, fuzzy, c-format
 msgid "Doing postprocessing on %s..."
 msgstr "Postprocessando..."
 
-#: ../src/libwaei/dictinst.c:779
+#: ../src/libwaei/dictinst.c:780
 #, c-format
 msgid "Postprocessing..."
 msgstr "Postprocessando..."
 
-#: ../src/libwaei/dictinst.c:782
+#: ../src/libwaei/dictinst.c:783
 #, fuzzy, c-format
 msgid "Finalizing installation of %s..."
 msgstr "Completando %s cambiamenti..."
 
-#: ../src/libwaei/dictinst.c:785
+#: ../src/libwaei/dictinst.c:786
 #, fuzzy, c-format
 msgid "Installed."
 msgstr "Installato"
@@ -158,19 +158,19 @@ msgstr "Altri Dizionari"
 msgid "Install a custom dictionary."
 msgstr "Installa il dizionario"
 
-#: ../src/libwaei/io.c:707
+#: ../src/libwaei/io.c:706
 msgid "Unable to read data from the input file."
 msgstr ""
 
-#: ../src/libwaei/io.c:713
+#: ../src/libwaei/io.c:712
 msgid "Unable to write to the external program's input stream."
 msgstr ""
 
-#: ../src/libwaei/io.c:755
+#: ../src/libwaei/io.c:754
 msgid "Unable to read data from the external program's pipe."
 msgstr ""
 
-#: ../src/libwaei/io.c:761
+#: ../src/libwaei/io.c:760
 msgid "Unable to write the stream's output to a file."
 msgstr ""
 
@@ -280,12 +280,12 @@ msgid ""
 "D:\t"
 msgstr ""
 
-#: ../src/waei/console.c:510
+#: ../src/waei/console.c:508
 #, c-format
 msgid "Requested dictionary not found!\n"
 msgstr "Dizionario richiesto non trovato!\n"
 
-#: ../src/waei/console.c:533 ../src/waei/ncurses.c:392 ../src/gwaei/main.c:520
+#: ../src/waei/console.c:531 ../src/waei/ncurses.c:392 ../src/gwaei/main.c:546
 #, c-format
 msgid "Found %d result"
 msgid_plural "Found %d results"
@@ -293,7 +293,7 @@ msgstr[0] "Trovato %d risultato"
 msgstr[1] "Trovati %d risultati"
 
 #. TRANSLATORS: relevant what ? It's the number of "relevant" result(s) displayed while or after searching.
-#: ../src/waei/console.c:534 ../src/waei/ncurses.c:393 ../src/gwaei/main.c:524
+#: ../src/waei/console.c:532 ../src/waei/ncurses.c:393 ../src/gwaei/main.c:550
 #, c-format
 msgid "(%d Relevant)"
 msgid_plural "(%d Relevant)"
@@ -443,7 +443,7 @@ msgstr "Installazione in corso..."
 msgid "description"
 msgstr ""
 
-#: ../src/gwaei/ui/main.ui.h:1 ../src/gwaei/main.c:2157
+#: ../src/gwaei/ui/main.ui.h:1 ../src/gwaei/main.c:2183
 msgid "A_ppend"
 msgstr "_Aggiungi"
 
@@ -613,7 +613,7 @@ msgstr "_Visualizza"
 msgid "_Word-edge Mark"
 msgstr "_Carattere limite della parola"
 
-#: ../src/gwaei/ui/main.ui.h:42 ../src/gwaei/main.c:188
+#: ../src/gwaei/ui/main.ui.h:42 ../src/gwaei/main.c:183
 #: ../src/desktop/gwaei.desktop.in.h:2
 msgid "gWaei Japanese-English Dictionary"
 msgstr "gWaei Dizionario Giapponese-Inglese"
@@ -747,12 +747,12 @@ msgstr "Tratti _Annotati"
 msgid "gWaei Kanjipad"
 msgstr "gWaei Kanjipad"
 
-#: ../src/gwaei/installprogress.c:184
+#: ../src/gwaei/installprogress.c:185
 #, fuzzy, c-format
 msgid "Installing %s..."
 msgstr "Installazione in corso..."
 
-#: ../src/gwaei/installprogress.c:185
+#: ../src/gwaei/installprogress.c:186
 #, fuzzy, c-format
 msgid "Installing dictionary %d of %d..."
 msgstr "Dizionari Principali"
@@ -836,11 +836,11 @@ msgstr ""
 msgid "Check the gWaei version information"
 msgstr "Mostra informazioni sulla versione di waei"
 
-#: ../src/gwaei/main.c:518
+#: ../src/gwaei/main.c:544
 msgid "Searching..."
 msgstr "Sto cercando..."
 
-#: ../src/gwaei/main.c:521
+#: ../src/gwaei/main.c:547
 #, c-format
 msgid "Searching... %d result"
 msgid_plural "Searching... %d results"
@@ -848,28 +848,28 @@ msgstr[0] "Sto cercando... %d risultato"
 msgstr[1] "Sto cercando... %d risultati"
 
 #. TRANSLATORS: The argument is the dictionary long name
-#: ../src/gwaei/main.c:1645
+#: ../src/gwaei/main.c:1671
 #, c-format
 msgid "Nothing found in the %s!"
 msgstr ""
 
-#: ../src/gwaei/main.c:1676
+#: ../src/gwaei/main.c:1702
 #, fuzzy
 msgid "Search Other Dictionary: "
 msgstr "Altri Dizionari"
 
-#: ../src/gwaei/main.c:1715
+#: ../src/gwaei/main.c:1741
 #, fuzzy
 msgid "Search Online: "
 msgstr "Cerca: "
 
-#: ../src/gwaei/main.c:1768
+#: ../src/gwaei/main.c:1794
 #, c-format
 msgid "gWaei Usage Tip #%d: "
 msgstr "gWaei Consigli per l'utilizzo #%d:"
 
 #. Tip 1
-#: ../src/gwaei/main.c:1781
+#: ../src/gwaei/main.c:1807
 #, c-format
 msgid ""
 "Use the Unknown Character from the Insert menu or toolbar in place of "
@@ -886,15 +886,15 @@ msgstr ""
 "funziona internamente, è molto importante disegnare il numero di tratti "
 "corretto e nella giusta direzione."
 
-#: ../src/gwaei/main.c:1788
+#: ../src/gwaei/main.c:1814
 msgid "Inputting Unknown Kanji"
 msgstr "Inserire Kanji Sconosciuti"
 
-#: ../src/gwaei/main.c:1805
+#: ../src/gwaei/main.c:1831
 msgid "Getting More Exact Matches"
 msgstr "Sto Cercando Risultati Più Attinenti"
 
-#: ../src/gwaei/main.c:1811
+#: ../src/gwaei/main.c:1837
 msgid ""
 "Use the Word-edge Mark and the Not-word-edge Mark from the insert menu to "
 "get more relevant results.  fish\\b will return results like fish and "
@@ -905,7 +905,7 @@ msgstr ""
 "risultati come fish e selfish, ma non fisherman"
 
 #. Tip 3
-#: ../src/gwaei/main.c:1819
+#: ../src/gwaei/main.c:1845
 #, c-format
 msgid ""
 "Use the And Character or Or Character to search for results that contain a "
@@ -917,15 +917,15 @@ msgstr ""
 "potrebbero non essere una vicino all'altra. cats&dogs ritornerà solo i "
 "risultati che conterranno le parole cats e dogs come %s."
 
-#: ../src/gwaei/main.c:1825
+#: ../src/gwaei/main.c:1851
 msgid "Searching for Multiple Words"
 msgstr "Sto Cercando Parole Multiple"
 
-#: ../src/gwaei/main.c:1842
+#: ../src/gwaei/main.c:1868
 msgid "Make a Vocabulary List"
 msgstr "Fai una Lista dei Vocabolari"
 
-#: ../src/gwaei/main.c:1848
+#: ../src/gwaei/main.c:1874
 msgid ""
 "Specific sections of results can be printed or saved by dragging the mouse "
 "to highlight them.  Using this in combination with the Append command from "
@@ -937,11 +937,11 @@ msgstr ""
 "comando Aggiungi dal menù File, è possibile creare facilmente e velocemente "
 "una lista di vocaboli."
 
-#: ../src/gwaei/main.c:1858
+#: ../src/gwaei/main.c:1884
 msgid "Why Use the Mouse?"
 msgstr "Perché usare il Mouse?"
 
-#: ../src/gwaei/main.c:1864
+#: ../src/gwaei/main.c:1890
 msgid ""
 "Typing something will move the focus to the search input box.  Hitting the "
 "Up or Down arrow key will move the focus to the results pane so you can "
@@ -953,11 +953,11 @@ msgstr ""
 "per permettere di scorrerli. Premere Alt-Up o Alt-Down ciclerà tra i "
 "dizionari installati."
 
-#: ../src/gwaei/main.c:1874
+#: ../src/gwaei/main.c:1900
 msgid "Get Ready for the JLPT"
 msgstr "Preparati per il JLPT"
 
-#: ../src/gwaei/main.c:1880
+#: ../src/gwaei/main.c:1906
 msgid ""
 "The Kanji dictionary has some hidden features.  One such one is the ability "
 "to filter out Kanji that don't meet a certain criteria.  If you are planning "
@@ -978,11 +978,11 @@ msgstr ""
 "Inoltre, la frase G# filtrerà i Kanji per quel livello rispetto ad una "
 "persona giapponese che frequenta quella classe a scuola."
 
-#: ../src/gwaei/main.c:1894
+#: ../src/gwaei/main.c:1920
 msgid "Just drag words in!"
 msgstr "Basta trascinarci le parola sopra!"
 
-#: ../src/gwaei/main.c:1900
+#: ../src/gwaei/main.c:1926
 #, fuzzy
 msgid ""
 "If you drag and drop a highlighted word into gWaei's search result box, "
@@ -993,11 +993,11 @@ msgstr ""
 "questo comincerà automaticamente la ricerca di quel testo. Questo può essere "
 "un modo carino per trovare velocemente termini mentre si navigano pagine web."
 
-#: ../src/gwaei/main.c:1911
+#: ../src/gwaei/main.c:1937
 msgid "What does (adj-i) mean?"
 msgstr "Che cosa vuol dire (adj-i)?"
 
-#: ../src/gwaei/main.c:1917
+#: ../src/gwaei/main.c:1943
 msgid ""
 "It is part of the terminalogy used by the EDICT group of dictionaries to "
 "categorize words.  Some are obvious, but there are a number that there is no "
@@ -1014,11 +1014,11 @@ msgstr ""
 "Clicca sulla opzione Dictionary Terminology Glossary nel menù HELP per "
 "accedervi."
 
-#: ../src/gwaei/main.c:1929
+#: ../src/gwaei/main.c:1955
 msgid "Books are Heavy"
 msgstr "I libri sono pesanti"
 
-#: ../src/gwaei/main.c:1935
+#: ../src/gwaei/main.c:1961
 msgid ""
 "Aways wear a construction helmet when working with books.  They are "
 "dangerous heavy objects that can at any point fall on and injure you.  "
@@ -1030,15 +1030,15 @@ msgstr ""
 "ferirti. Per favore, avvertite della cosa anche tutti i vostri amici. Dopo "
 "vi ringrazieranno. Davvero."
 
-#: ../src/gwaei/main.c:2146
+#: ../src/gwaei/main.c:2172
 msgid "A_ppend Selected"
 msgstr "_Aggiungi Selezione"
 
-#: ../src/gwaei/main.c:2148
+#: ../src/gwaei/main.c:2174
 msgid "Save Selected _As"
 msgstr "S_alva selezione come"
 
-#: ../src/gwaei/main.c:2150
+#: ../src/gwaei/main.c:2176
 msgid "_Print Selected"
 msgstr "Stampa Selezione"
 
@@ -1098,9 +1098,10 @@ msgstr "_Chiudi"
 msgid "(Empty)"
 msgstr "(Vuoto)"
 
-#: ../src/gwaei/printing.c:302
-#, c-format
-msgid "Page %d"
+#. Initializations
+#: ../src/gwaei/printing.c:146
+#, fuzzy, c-format
+msgid "Page %d/%d"
 msgstr "Pagina %d"
 
 #: ../src/gwaei/radsearchtool.c:375

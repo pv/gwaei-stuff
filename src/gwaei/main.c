@@ -175,40 +175,66 @@ void gw_main_set_entry_text_by_searchitem (LwSearchItem *item)
 
 
 //!
+//! @brief Returns the program name.  It should not be freed or modified
+//! @returns A constanst string representing the program name
+//!
+const char* gw_main_get_program_name () 
+{
+  return gettext("gWaei Japanese-English Dictionary");
+}
+
+//!
+//! @brief Allocates a string containing the text for the main window title
+//! @param item A search item to create a title with
+//! @returns Returns an allocated string that must be freed with g_free
+//!
+char* gw_main_get_window_title_by_searchitem (LwSearchItem *item) 
+{
+    //Sanity check
+    if (item == NULL || item->queryline == NULL) return NULL;
+
+    //Declarations
+    char *title;
+    const char *program_name;
+    int num_relevant, num_total;
+    char *query;
+
+    //Initializations
+    program_name = gw_main_get_program_name();
+    query = item->queryline->string;
+    num_relevant = item->total_relevant_results;
+    num_total = item->total_results;
+    title = g_strdup_printf ("%s [%d/%d] - %s", query, num_relevant, num_total, program_name);
+
+    return title;
+}
+
+
+//!
 //! @brief Sets the main window title text of the program using the informtion from the searchitem
 //!
 //! @param item a LwSearchItem argument.
 //!
 void gw_main_set_main_window_title_by_searchitem (LwSearchItem *item)
 {
-    GtkBuilder *builder = gw_common_get_builder ();
-
     //Declarations
-    char *full_title = NULL;
-    char *base_title = gettext("gWaei Japanese-English Dictionary");
-    gboolean required_objects_exist = (item != NULL && item->queryline != NULL);
-    GtkWidget *window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
-    int relevant;
-    int total;
+    GtkBuilder *builder;
+    GtkWidget *window;
+    char *title;
 
     //Initializations
-    if (required_objects_exist)
-    {
-      char *query = item->queryline->string;
-      int relevant = item->total_relevant_results;
-      int total = item->total_results;
-      full_title = g_strdup_printf ("%s [%d/%d] - %s", query, relevant, total, base_title);
-    }
+    builder = gw_common_get_builder ();
+    window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
+    title = gw_main_get_window_title_by_searchitem (item);
 
-    //Work
-    if (required_objects_exist && full_title != NULL)
+    if (title != NULL)
     {
-      gtk_window_set_title (GTK_WINDOW (window), full_title);
-      g_free (full_title);
+      gtk_window_set_title (GTK_WINDOW (window), title);
+      g_free (title);
     }
     else
     {
-      gtk_window_set_title (GTK_WINDOW (window), base_title);
+      gtk_window_set_title (GTK_WINDOW (window), gw_main_get_program_name ());
     }
 }
 

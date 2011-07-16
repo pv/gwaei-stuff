@@ -86,8 +86,8 @@ gboolean lw_dictinst_install (LwDictInst*, LwIoProgressCallback, GError**);
 char* lw_dictinst_get_target_uri (LwDictInst*, const LwDictInstUri, const int);
 char* lw_dictinst_get_source_uri (LwDictInst*, const LwDictInstUri, const int);
 
-double lw_dictinst_get_total_progress (LwDictInst*);
-double lw_dictinst_get_process_progress (LwDictInst *di);
+double lw_dictinst_get_total_progress (LwDictInst*, double);
+double lw_dictinst_get_process_progress (LwDictInst*, double);
 
 void lw_dictinst_set_cancel_operations (LwDictInst*, gboolean);
 

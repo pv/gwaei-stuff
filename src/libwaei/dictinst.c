@@ -794,21 +794,22 @@ gchar* lw_dictinst_get_status_string (LwDictInst *di, gboolean long_form)
 }
 
 
-double lw_dictinst_get_process_progress (LwDictInst *di)
+double lw_dictinst_get_process_progress (LwDictInst *di, double fraction)
 {
     //Declarations
     double current;
     double final;
-    double fraction;
+    double output_fraction;
     char *ptr;
     
     //Initializations
     current = 0.0;
     final = 0.0;
-    fraction = 0.0;
+    output_fraction = 0.0;
+    di->progress = fraction;
 
     //Get the current progress
-    current = di->progress + ((double) di->uri_atom_index);
+    current = fraction + ((double) di->uri_atom_index);
 
     //Calculate the amount needed for the whole process to finish
     for (ptr = di->uri[di->uri_group_index]; ptr != NULL; ptr = strchr(ptr, ';'))
@@ -818,23 +819,24 @@ double lw_dictinst_get_process_progress (LwDictInst *di)
     }
 
     if (final > 0.0)
-      fraction = current / final;
+      output_fraction = current / final;
 
-    return fraction;
+    return output_fraction;
 }
 
 
-double lw_dictinst_get_total_progress (LwDictInst *di)
+double lw_dictinst_get_total_progress (LwDictInst *di, double fraction)
 {
     //Declarations
-    double fraction, current, final;
+    double output_fraction, current, final;
     int i;
     char *ptr;
 
     //Definitions
-    fraction = 0.0;
+    output_fraction = 0.0;
     current = 0.0;
     final = 0.0;
+    di->progress = fraction;
     const double DOWNLOAD_WEIGHT = 3.0;
 
     //Calculate the already completed activities
@@ -851,9 +853,9 @@ double lw_dictinst_get_total_progress (LwDictInst *di)
     }
     //Add the current in progress activity
     if (i == GW_DICTINST_NEEDS_DOWNLOADING)
-      current += (di->progress + (double) di->uri_atom_index) * DOWNLOAD_WEIGHT;
+      current += (fraction + (double) di->uri_atom_index) * DOWNLOAD_WEIGHT;
     else
-      current += di->progress + (double) di->uri_atom_index;
+      current += fraction + (double) di->uri_atom_index;
 
     //Calculate the amount needed for the whole process to finish
     for (i = 0; i < GW_DICTINST_NEEDS_NOTHING; i++)
@@ -869,9 +871,9 @@ double lw_dictinst_get_total_progress (LwDictInst *di)
     }
 
     if (final > 0.0)
-      fraction = current / final;
+      output_fraction = current / final;
 
-    return fraction;
+    return output_fraction;
 }
 
 

@@ -14,6 +14,7 @@ static int _installprogress_update_dictinst_cb (double, gpointer);
 static gboolean _installprogress_update_ui_timeout (gpointer);
 static GThread *_thread = NULL;
 static gint _timeoutid = 0;
+static double _install_fraction = 0.0;
 
 
 //!
@@ -67,7 +68,7 @@ G_MODULE_EXPORT void gw_installprogress_start_cb (GtkWidget *widget, gpointer da
 }
 
 
-gpointer _installprogress_install_thread (gpointer data)
+static gpointer _installprogress_install_thread (gpointer data)
 {
     //Declarations
     GList *list;
@@ -110,7 +111,7 @@ gpointer _installprogress_install_thread (gpointer data)
 }
 
 
-int _installprogress_update_dictinst_cb (double fraction, gpointer data)
+static int _installprogress_update_dictinst_cb (double fraction, gpointer data)
 {
     //Declarations
     LwDictInst *di;
@@ -119,7 +120,7 @@ int _installprogress_update_dictinst_cb (double fraction, gpointer data)
     di = data;
 
     g_mutex_lock (di->mutex); 
-    di->progress = fraction;
+    _install_fraction = lw_dictinst_get_total_progress (di, fraction);
     g_mutex_unlock (di->mutex);
 }
 
@@ -127,7 +128,7 @@ int _installprogress_update_dictinst_cb (double fraction, gpointer data)
 //!
 //! @brief Callback to update the install dialog progress.  Should be run in a separate thread
 //!
-gboolean _installprogress_update_ui_timeout (gpointer data)
+static gboolean _installprogress_update_ui_timeout (gpointer data)
 {
     //Declarations
     GtkBuilder *builder;
@@ -189,7 +190,7 @@ gboolean _installprogress_update_ui_timeout (gpointer data)
 
     gtk_label_set_markup (GTK_LABEL (label), text_left_markup);
     gtk_label_set_markup (GTK_LABEL (sublabel), text_installing_markup);
-    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (progressbar), lw_dictinst_get_total_progress (di));
+    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (progressbar), _install_fraction);
     gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progressbar), text_progressbar);
 
     g_mutex_unlock (di->mutex);
