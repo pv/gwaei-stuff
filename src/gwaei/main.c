@@ -100,7 +100,7 @@ gboolean gw_main_update_progress_feedback_timeout (gpointer data)
     if (item != NULL) 
     {
       g_mutex_lock (item->mutex);
-        if (item != _progress_feedback_item || item->current_line != item->progress_feedback_line)
+        if (item != _progress_feedback_item || item->current_line != item->progress_feedback_line && item->target != GW_TARGET_KANJI)
         {
           _progress_feedback_item = item;
           item->progress_feedback_line = item->current_line;
@@ -2236,8 +2236,6 @@ gboolean gw_main_cancel_search_by_searchitem (LwSearchItem *item)
 
     g_thread_join(item->thread);
     item->thread = NULL;
-
-    gw_main_set_search_progressbar_by_searchitem (NULL);
 
     return FALSE;
 }
