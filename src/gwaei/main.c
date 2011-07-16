@@ -100,6 +100,7 @@ gboolean gw_main_update_progress_feedback_timeout (gpointer data)
     if (item != NULL) 
     {
       g_mutex_lock (item->mutex);
+      gdk_threads_enter ();
         if (item != _progress_feedback_item || item->current_line != item->progress_feedback_line && item->target != GW_TARGET_KANJI)
         {
           _progress_feedback_item = item;
@@ -108,9 +109,9 @@ gboolean gw_main_update_progress_feedback_timeout (gpointer data)
           gw_main_set_total_results_label_by_searchitem (item);
           gw_main_set_main_window_title_by_searchitem (item);
         }
+      gdk_threads_leave ();
       g_mutex_unlock (item->mutex);
     }
-
    return TRUE;
 }
 

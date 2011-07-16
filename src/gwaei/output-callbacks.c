@@ -657,7 +657,6 @@ void gw_output_append_kanjidict_results_cb (LwSearchItem *item)
       char *markup2;
       markup2 = g_markup_printf_escaped ("<span font=\"KanjiStrokeOrders 100\">%s</span>", resultline->kanji);
 
-
       GtkWidget *window = GTK_WIDGET (gtk_widget_get_tooltip_window (tv));
       if (window != NULL) {
         GtkWidget *hbox = GTK_WIDGET (gtk_hbox_new (FALSE, 3));
@@ -839,14 +838,6 @@ void gw_output_after_search_cleanup_cb (LwSearchItem *item)
         item->target != GW_TARGET_KANJI && item->status != GW_SEARCH_CANCELING)
     {
       gw_main_display_no_results_found_page (item);
-    }
-    else if (item->target != GW_TARGET_KANJI)
-    {
-      //Because the progres update is in a timer, we have to call the things
-      //once at the end to make sure the final progress shown is correct
-      gw_main_set_search_progressbar_by_searchitem (item);
-      gw_main_set_total_results_label_by_searchitem (item);
-      gw_main_set_main_window_title_by_searchitem (item);
     }
 }
 
