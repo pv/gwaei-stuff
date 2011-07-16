@@ -656,9 +656,13 @@ void gw_output_append_kanjidict_results_cb (LwSearchItem *item)
 
       char *markup2;
       markup2 = g_markup_printf_escaped ("<span font=\"KanjiStrokeOrders 100\">%s</span>", resultline->kanji);
+      GtkWidget *child;
 
       GtkWidget *window = GTK_WIDGET (gtk_widget_get_tooltip_window (tv));
       if (window != NULL) {
+        child = gtk_bin_get_child (window);
+        if (child != NULL) gtk_widget_destroy (GTK_WIDGET (child));
+
         GtkWidget *hbox = GTK_WIDGET (gtk_hbox_new (FALSE, 3));
         gtk_container_set_border_width (GTK_CONTAINER (hbox), 10);
         gtk_container_add (GTK_CONTAINER (window), GTK_WIDGET (hbox));
