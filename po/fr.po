@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gwaei 1.5.1\n"
+"Project-Id-Version: gwaei 3.0.0\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2011-07-16 00:09-0400\n"
-"PO-Revision-Date: 2011-01-01 23:44+0100\n"
+"POT-Creation-Date: 2011-07-16 00:27-0400\n"
+"PO-Revision-Date: 2011-07-09 16:23+0200\n"
 "Last-Translator: Nicolas Laurent\n"
 "Language-Team: none\n"
 "Language: fr\n"
@@ -51,11 +51,11 @@ msgstr "Lieux"
 
 #: ../src/libwaei/dictinfo.c:149 ../src/libwaei/dictinstlist.c:77
 msgid "Kanji Dictionary"
-msgstr "Dictionnaire de kanjis"
+msgstr "Dictionnaire des Kanji"
 
 #: ../src/libwaei/dictinfo.c:150 ../src/libwaei/dictinstlist.c:76
 msgid "Kanji"
-msgstr "Kanjis"
+msgstr "Kanji"
 
 #: ../src/libwaei/dictinfo.c:158 ../src/libwaei/dictinstlist.c:109
 msgid "Examples Dictionary"
@@ -76,29 +76,29 @@ msgid "Downloading..."
 msgstr "Téléchargement ..."
 
 #: ../src/libwaei/dictinst.c:766
-#, fuzzy, c-format
+#, c-format
 msgid "Converting the encoding of %s from %s to UTF-8..."
-msgstr "Conversion de l'encodage ..."
+msgstr "Conversion de l'encodage de %s, de %s à l'UTF-8 ..."
 
 #: ../src/libwaei/dictinst.c:768
-#, fuzzy, c-format
+#, c-format
 msgid "Converting the encoding to UTF-8..."
-msgstr "Conversion de l'encodage ..."
+msgstr "Conversion de l'encodage en UTF-8 ..."
 
 #: ../src/libwaei/dictinst.c:772
 #, c-format
 msgid "Decompressing %s from %s file..."
-msgstr ""
+msgstr "Décompression de %s depuis le fichier %s ..."
 
 #: ../src/libwaei/dictinst.c:774
-#, fuzzy, c-format
+#, c-format
 msgid "Decompressing..."
-msgstr "Traitements ..."
+msgstr "Décompression ..."
 
 #: ../src/libwaei/dictinst.c:778
-#, fuzzy, c-format
+#, c-format
 msgid "Doing postprocessing on %s..."
-msgstr "Traitements ..."
+msgstr "Traitements en cours sur %s ..."
 
 #: ../src/libwaei/dictinst.c:780
 #, c-format
@@ -106,76 +106,77 @@ msgid "Postprocessing..."
 msgstr "Traitements ..."
 
 #: ../src/libwaei/dictinst.c:783
-#, fuzzy, c-format
+#, c-format
 msgid "Finalizing installation of %s..."
-msgstr "Finalisation des changements dans le %s ..."
+msgstr "Finalisation de l'installation de %s ..."
 
 #: ../src/libwaei/dictinst.c:786
-#, fuzzy, c-format
+#, c-format
 msgid "Installed."
-msgstr "Installé"
+msgstr "Installé."
 
 #: ../src/libwaei/dictinstlist.c:62
-#, fuzzy
 msgid "The venerable Japanese-English Dictionary developed by Jim Breen."
-msgstr "Dictionnaire Japonais-Anglais gWaei"
+msgstr "Le vénérable dictionnaire Japonais-Anglais développé par Jim Breen."
 
 #: ../src/libwaei/dictinstlist.c:78
 msgid ""
 "A Kanji dictionary based off of kanjidic with radical information combined."
 msgstr ""
+"Un dictionnaire de Kanji, combinaison de kanjidic et d'informations sur les "
+"radicaux."
 
 #: ../src/libwaei/dictinstlist.c:92
-#, fuzzy
 msgid "Names and Places"
-msgstr "  waei -d Places "
+msgstr "Noms et lieux"
 
 #: ../src/libwaei/dictinstlist.c:93
-#, fuzzy
 msgid "Names and Places Dictionary"
-msgstr "Dictionnaire des lieux"
+msgstr "Dictionnaire des noms et lieux"
 
 #: ../src/libwaei/dictinstlist.c:94
 msgid ""
 "Based off of Enamdic, but with the names split from the places for 2 "
 "separate dictionaries."
 msgstr ""
+"Basé sur Enamdic, mais en séparant les noms propres et noms de lieux en deux "
+"dictionnaires distincts."
 
 #: ../src/libwaei/dictinstlist.c:110
 msgid ""
 "A collection of Japanese/English sentences initially compiled by Professor "
 "Yasuhito Tanaka at Hyogo University and his students."
 msgstr ""
+"Une compilation de phrases en Anglais et Japonais, réalisée par le "
+"professeur Yasuhito Tanaka et ses étudiants de l'univerisité de Hyogo."
 
 #: ../src/libwaei/dictinstlist.c:125
 msgid "Other"
-msgstr ""
+msgstr "Autre"
 
 #: ../src/libwaei/dictinstlist.c:126
-#, fuzzy
 msgid "Other Dictionary"
-msgstr "Autres dictionnaires"
+msgstr "Autre dictionnaire"
 
 #: ../src/libwaei/dictinstlist.c:127
-#, fuzzy
 msgid "Install a custom dictionary."
-msgstr "Installer un dictionnaire"
+msgstr "Installation personnalisée d'un dictionnaire."
 
 #: ../src/libwaei/io.c:706
 msgid "Unable to read data from the input file."
-msgstr ""
+msgstr "Impossible de lire les données depuis le fichier."
 
 #: ../src/libwaei/io.c:712
 msgid "Unable to write to the external program's input stream."
-msgstr ""
+msgstr "Impossible d'envoyer les données au programme externe."
 
 #: ../src/libwaei/io.c:754
 msgid "Unable to read data from the external program's pipe."
-msgstr ""
+msgstr "Impossible de recevoir les données du programme externe."
 
 #: ../src/libwaei/io.c:760
 msgid "Unable to write the stream's output to a file."
-msgstr ""
+msgstr "Impossible d'écrire les données du flux dans un fichier."
 
 #: ../src/waei/console.c:47 ../src/waei/console.c:49 ../src/waei/ncurses.c:115
 msgid "Other Results"
@@ -186,14 +187,14 @@ msgid "No results found!"
 msgstr "Aucun résultat trouvé."
 
 #: ../src/waei/console.c:77
-#, fuzzy, c-format
+#, c-format
 msgid "Uninstalling %s...\n"
-msgstr "Installation en cours ..."
+msgstr "Désinstallation de %s ...\n"
 
 #: ../src/waei/console.c:105
-#, fuzzy, c-format
+#, c-format
 msgid "Installing %s...\n"
-msgstr "Installation en cours ..."
+msgstr "Installation de %s ...\n"
 
 #. TRANSLATORS: 'Searching for "${query}" in ${dictionary long name}'
 #: ../src/waei/console.c:147
@@ -327,9 +328,8 @@ msgstr " ..."
 
 #: ../src/waei/ncurses.c:226 ../src/waei/ncurses.c:300
 #: ../src/waei/ncurses.c:410
-#, fuzzy
 msgid "Search: "
-msgstr "Rechercher : "
+msgstr "Recherche : "
 
 #: ../src/waei/ncurses.c:227 ../src/waei/ncurses.c:331
 #: ../src/waei/ncurses.c:396
@@ -369,7 +369,7 @@ msgstr ""
 "faire de multiples recherches, veuillez utilisez le paramètre « -n »."
 
 #: ../src/waei/waei.c:76
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Examples:\n"
 "  waei English               Search for the english word English\n"
@@ -385,43 +385,42 @@ msgid ""
 msgstr ""
 "Exemples :\n"
 "  waei English             Rechercher le mot anglais \"English\"\n"
-"  waei \"cats&dogs\"         Rechercher les résultats contenant à la fois "
-"les mots \"cats\" et \"dogs\"\n"
-"  waei \"cats|dogs\"         Rechercher les résultats contenant le mot \"cats"
-"\" mais aussi le mot \"dogs\"\n"
+"  waei \"cats&dogs\"         Rechercher les résultats contenant "
+"simultanément les mots \"cats\" et \"dogs\"\n"
+"  waei \"cats|dogs\"         Rechercher les résultats contenant soit le mot "
+"\"cats\" soit le mot \"dogs\"\n"
 "  waei cats dogs           Rechercher les résultats contenant le terme "
 "\"cats dogs\"\n"
-"  waei %s                  Rechercher le mot japonais %s\n"
-"  waei %s                  Rechercher un mot dont vous ignorer un kanji\n"
-"  waei -d Kanji %s         Trouver un kanji dans la base de données des "
-"kanjis\n"
+"  waei %s                  Rechercher le mot japonais %s et approchants\n"
+"  waei -e %s              Rechercher le mot \"%s\" en ignorant les résultats "
+"approchants\n"
+"  waei %s                  Rechercher un mot dont vous ignorer un Kanji\n"
+"  waei -d Kanji %s         Trouver un Kanji dans la base de données des "
+"Kanji\n"
 "  waei -d Names %s         Rechercher un nom dans la base de données des "
 "noms\n"
 "  waei -d Places %s        Rechercher un nom de lieu dans la base de données "
 "des lieux"
 
 #: ../src/waei/waei.c:92
-#, fuzzy
 msgid "Open up the multisearch window"
-msgstr "Ouvrir une fenêtre de recherches multiples (bêta)"
+msgstr "Ouvrir la fenêtre de recherches multiples"
 
 #: ../src/waei/waei.c:94
 msgid "Do not display less relevant results"
 msgstr "N'afficher que les correspondances exactes"
 
 #: ../src/waei/waei.c:96
-#, fuzzy
 msgid "Display results with color"
-msgstr "Afficher moins d'informations"
+msgstr "Afficher les résultats en couleur"
 
 #: ../src/waei/waei.c:98
 msgid "Show available dictionaries for searches"
 msgstr "Lister les dictionnaires disponibles pour les recherches"
 
 #: ../src/waei/waei.c:99
-#, fuzzy
 msgid "Install dictionary"
-msgstr "Désintaller un dictionnaire"
+msgstr "Intaller un dictionnaire"
 
 #: ../src/waei/waei.c:100
 msgid "Uninstall dictionary"
@@ -432,22 +431,20 @@ msgid "Check the waei version information"
 msgstr "Afficher les informations sur la version de waei"
 
 #: ../src/gwaei/ui/dictionaryinstall.ui.h:1
-#, fuzzy
 msgid "Select Dictionaries..."
-msgstr "Dictionnaires principaux"
+msgstr "Sélection des dictionnaires ..."
 
 #: ../src/gwaei/ui/dictionaryinstall.ui.h:2
 msgid "Show Dictionary Install Details"
-msgstr ""
+msgstr "Afficher les détails d'installation du dictionnaire"
 
 #: ../src/gwaei/ui/dictionaryinstall.ui.h:3
 msgid "Where can I get other dictionaries?"
 msgstr "Où obtenir d'autres dictionnaires ?"
 
 #: ../src/gwaei/ui/installprogress.ui.h:1
-#, fuzzy
 msgid "Installing Dictionaries..."
-msgstr "Dictionnaires principaux"
+msgstr "Installation des dictionnaires ..."
 
 #: ../src/gwaei/ui/installprogress.ui.h:2
 msgid "Installing..."
@@ -455,7 +452,7 @@ msgstr "Installation en cours ..."
 
 #: ../src/gwaei/ui/installprogress.ui.h:3
 msgid "description"
-msgstr ""
+msgstr "Description"
 
 #: ../src/gwaei/ui/main.ui.h:1 ../src/gwaei/main.c:2183
 msgid "A_ppend"
@@ -494,9 +491,8 @@ msgid "Get Help on I_RC"
 msgstr "Obtenir de l'aide sur I_RC"
 
 #: ../src/gwaei/ui/main.ui.h:10
-#, fuzzy
 msgid "Go to _Homepage"
-msgstr "Consulter sur le site _web du projet"
+msgstr "Consulter le site _web du projet"
 
 #: ../src/gwaei/ui/main.ui.h:11
 msgid "Go to the _Project Homepage"
@@ -507,12 +503,10 @@ msgid "Hi_story"
 msgstr "_Historique"
 
 #: ../src/gwaei/ui/main.ui.h:13
-#, fuzzy
 msgid "Logical _And Character"
 msgstr "Marqueur _Et logique"
 
 #: ../src/gwaei/ui/main.ui.h:14
-#, fuzzy
 msgid "Logical _Or Character"
 msgstr "Marqueur _Ou logique"
 
@@ -521,7 +515,6 @@ msgid "Ne_xt Tab"
 msgstr "Onglet _suivant"
 
 #: ../src/gwaei/ui/main.ui.h:16
-#, fuzzy
 msgid "New _Tab"
 msgstr "_Nouvel onglet"
 
@@ -530,14 +523,12 @@ msgid "Not Bound"
 msgstr "Non lié"
 
 #: ../src/gwaei/ui/main.ui.h:18
-#, fuzzy
 msgid "Sear_ch:"
-msgstr "Rechercher : "
+msgstr "_Rechercher :"
 
 #: ../src/gwaei/ui/main.ui.h:19
-#, fuzzy
 msgid "Search"
-msgstr "Rechercher : "
+msgstr "Rechercher"
 
 #: ../src/gwaei/ui/main.ui.h:20
 msgid "Select the dictionary you want to use"
@@ -646,7 +637,7 @@ msgstr "E_ffacer"
 
 #: ../src/gwaei/ui/radicals.ui.h:3
 msgid "_Restrict to Kanji of"
-msgstr "_Restreindre aux kanjis de "
+msgstr "_Restreindre aux Kanji de "
 
 #: ../src/gwaei/ui/radicals.ui.h:4
 msgid "gWaei Radical Search Tool"
@@ -697,9 +688,8 @@ msgid "Custom Font: "
 msgstr "Police personnalisée:"
 
 #: ../src/gwaei/ui/settings.ui.h:12
-#, fuzzy
 msgid "Dictionaries"
-msgstr "_Dictionnaires"
+msgstr "Dictionnaires"
 
 #: ../src/gwaei/ui/settings.ui.h:13
 msgid "Enable Spell _Checking"
@@ -723,7 +713,7 @@ msgstr "Si l'interface n'est pas en japonais"
 
 #: ../src/gwaei/ui/settings.ui.h:18
 msgid "Plugins"
-msgstr ""
+msgstr "Modules externes"
 
 #: ../src/gwaei/ui/settings.ui.h:19
 msgid "When Possible"
@@ -762,67 +752,62 @@ msgid "gWaei Kanjipad"
 msgstr "gWaei Kanjipad"
 
 #: ../src/gwaei/installprogress.c:185
-#, fuzzy, c-format
+#, c-format
 msgid "Installing %s..."
-msgstr "Installation en cours ..."
+msgstr "Installation de %s ..."
 
 #: ../src/gwaei/installprogress.c:186
-#, fuzzy, c-format
+#, c-format
 msgid "Installing dictionary %d of %d..."
-msgstr "Dictionnaires principaux"
+msgstr "Installation du dictionnaire %d de %d ..."
 
 #: ../src/gwaei/dictionaryinstall.c:68
 #, c-format
 msgid "<b>%s Install Details</b>"
-msgstr ""
+msgstr "<b>Détails d'installation de %s</b>"
 
 #. Third row
 #: ../src/gwaei/dictionaryinstall.c:90
 msgid "Filename: "
-msgstr ""
+msgstr "Fichier :"
 
 #. Forth row
 #: ../src/gwaei/dictionaryinstall.c:102
 msgid "Engine: "
-msgstr ""
+msgstr "Moteur :"
 
 #. Fifth row
 #: ../src/gwaei/dictionaryinstall.c:120
-#, fuzzy
 msgid "Source: "
 msgstr "Source : "
 
 #. Sixth row
 #: ../src/gwaei/dictionaryinstall.c:144
 msgid "Encoding: "
-msgstr ""
+msgstr "Encodage :"
 
 #. Seventh row
 #: ../src/gwaei/dictionaryinstall.c:161
-#, fuzzy
 msgid "Compression: "
-msgstr "Décompression ..."
+msgstr "Compression :"
 
 #. Eighth row
 #: ../src/gwaei/dictionaryinstall.c:178
-#, fuzzy
 msgid "Split Places from Names Dictionary"
-msgstr "Dictionnaire des lieux"
+msgstr "Séparer les lieux dans le dictionnaire des noms propres."
 
 #. Ninth row
 #: ../src/gwaei/dictionaryinstall.c:188
-#, fuzzy
 msgid "Merge Radicals into Kanji Dictionary"
-msgstr "Dictionnaire des radicaux"
+msgstr "Incorporer les radicaux au sein du dictionnaire des Kanji"
 
 #: ../src/gwaei/dictionarymanager.c:85
-#, fuzzy
 msgid "Name"
-msgstr "Noms"
+msgstr "Nom"
 
 #: ../src/gwaei/dictionarymanager.c:91
 msgid "Engine"
-msgstr ""
+msgstr "Moteur"
 
 #: ../src/gwaei/dictionarymanager.c:96
 msgid "Shortcut"
@@ -837,18 +822,16 @@ msgid "Cycle _Down"
 msgstr "Passer au _suivant"
 
 #: ../src/gwaei/gwaei.c:59
-#, fuzzy
 msgid "Choose the dictionary to use"
-msgstr "Sélectionner le dictionnaire que vous voulez utiliser"
+msgstr "Sélectionner le dictionnaire à utiliser"
 
 #: ../src/gwaei/gwaei.c:61
 msgid "Open a new instance of gWaei"
-msgstr ""
+msgstr "Ouvrir une nouvelle instance de gWaei"
 
 #: ../src/gwaei/gwaei.c:63
-#, fuzzy
 msgid "Check the gWaei version information"
-msgstr "Afficher les informations sur la version de waei"
+msgstr "Informations sur la version de gWaei"
 
 #: ../src/gwaei/main.c:544
 msgid "Searching..."
@@ -891,17 +874,17 @@ msgid ""
 "the innards of Kanjipad works, drawing with the correct number of strokes "
 "and drawing the strokes in the correct direction is very important."
 msgstr ""
-"En lieu et place d'un kanji inconnu, utilisez le marqueur pour « Caractère "
+"En lieu et place d'un Kanji inconnu, utilisez le marqueur pour « Caractère "
 "inconnu » → \".\", disponible depuis le menu « Insérer » ou depuis la barre "
 "d'outils. « %s » retournera des résultats tels que « %s ».\n"
 "\n"
-"Kanjipad est une autre option pour saisir des kanjis. En raison de la façon "
-"dont Kanjipad fonctionne, il est très important de dessiner les kanjis avec "
+"Kanjipad est une autre option pour saisir des Kanji. En raison de la façon "
+"dont Kanjipad fonctionne, il est très important de dessiner les Kanji avec "
 "le nombre correct de traits et de les tracer dans le bon sens."
 
 #: ../src/gwaei/main.c:1814
 msgid "Inputting Unknown Kanji"
-msgstr "Entrer un kanji inconnu"
+msgstr "Entrer un Kanji inconnu"
 
 #: ../src/gwaei/main.c:1831
 msgid "Getting More Exact Matches"
@@ -986,15 +969,15 @@ msgid ""
 "Also of interest, the phrase G# will filter out Kanji for the grade level a "
 "Japanese person would study it at in school."
 msgstr ""
-"Le dictionnaire de kanjis a quelques fonctions cachées. L'une d'elle est la "
-"possibilité de filtrer les kanjis qui ne remplissent pas un critère donné. "
-"Si vous prévoyez de passer le « Japanese Language Proficiency Test » (JLPT), "
-"en utilisant le code J# (où # est l'indice du niveau) vous pourrez exclure "
-"les kanjis qui ne sont pas de ce niveau. Par exemple, J4 n'affichera que les "
-"kanjis qui apparaissent au quatrième niveau du test.\n"
+"Le dictionnaire des Kanji a quelques fonctions cachées. L'une d'elle est la "
+"possibilité de filtrer les Kanji qui ne remplissent pas un critère donné. Si "
+"vous prévoyez de passer le « Japanese Language Proficiency Test » (JLPT), en "
+"utilisant le code J# (où # est l'indice du niveau) vous pourrez exclure les "
+"Kanji qui ne sont pas de ce niveau. Par exemple, J4 n'affichera que les "
+"Kanji qui apparaissent au quatrième niveau du test.\n"
 "\n"
-"Une autre de ces fonctions cachées, est la possible de filtrer les kanjis "
-"par niveau d'étude au Japon, à l'aide du code G# (où # est l'année d'étude)."
+"Une autre de ces fonctions cachées, est la possible de filtrer les Kanji par "
+"niveau d'étude au Japon, à l'aide du code G# (où # est l'année d'étude)."
 
 #: ../src/gwaei/main.c:1920
 msgid "Just drag words in!"
@@ -1145,9 +1128,8 @@ msgid "Pop"
 msgstr "Pop."
 
 #: ../src/gwaei/output-callbacks.c:594
-#, fuzzy
 msgid "Radical Name"
-msgstr "Radicaux :"
+msgstr "Nom du radical"
 
 #: ../src/gwaei/output-callbacks.c:788
 #, c-format
@@ -1358,7 +1340,7 @@ msgstr ""
 #~ msgstr "Erreur de décompression unzip"
 
 #~ msgid "Kanji Lookup:"
-#~ msgstr "Recherche par kanji :"
+#~ msgstr "Recherche par Kanji :"
 
 #~ msgid "Install"
 #~ msgstr "Installer"
@@ -1445,14 +1427,14 @@ msgstr ""
 #~ "searches.\n"
 #~ "The dictionaries include: English, Places, Names, Radicals and Kanji. "
 #~ "Periods\n"
-#~ "can be used in place of unknown kanji."
+#~ "can be used in place of unknown Kanji."
 #~ msgstr ""
 #~ "Ce logiciel est un dictionnaire Japonais-Anglais qui permet la recherche "
 #~ "à l'aide d'expressions régulières (regex).\n"
 #~ "Les différents dictionnaires couvrent : l'anglais, les noms de lieux, les "
-#~ "noms, les radicaux et les kanjis.\n"
+#~ "noms, les radicaux et les Kanji.\n"
 #~ "Le caractère point (\".\") peut-être utilisé dans les recherches à la "
-#~ "place de kanjis inconnus."
+#~ "place de Kanji inconnus."
 
 #~ msgid "Press any key to exit.\n"
 #~ msgstr "Appuyez sur une touche pour quitter.\n"
@@ -1655,7 +1637,7 @@ msgstr ""
 #~ msgstr "  waei -d Kanji "
 
 #~ msgid "           Find a kanji character in the kanji database"
-#~ msgstr "           Trouver un kanji dans la base de données des kanjis"
+#~ msgstr "           Trouver un Kanji dans la base de données des Kanji"
 
 #~ msgid "  waei -d Names "
 #~ msgstr "  waei -d Names "
@@ -1671,7 +1653,7 @@ msgstr ""
 #~ "unknown Kanji."
 #~ msgstr ""
 #~ " depuis le menu \"insérer\" ou depuis la barre d'outils, à la place d'un "
-#~ "kanji inconnu."
+#~ "Kanji inconnu."
 
 #~ msgid " will return results like "
 #~ msgstr " retournera des résultats comme"
@@ -1769,7 +1751,7 @@ msgstr ""
 #~ msgid ""
 #~ " will filter out Kanji not of that level for easy study.  For example, "
 #~ msgstr ""
-#~ " vous pourrez filtrer les kanjis par niveau de difficulté du JLPT. Par "
+#~ " vous pourrez filtrer les Kanji par niveau de difficulté du JLPT. Par "
 #~ "exemple, "
 
 #~ msgid "J4"
@@ -1780,7 +1762,7 @@ msgstr ""
 #~ "\n"
 #~ "Also of interest, the phrase "
 #~ msgstr ""
-#~ " affichera les kanjis qui apparaissent au quatrième niveau du test.\n"
+#~ " affichera les Kanji qui apparaissent au quatrième niveau du test.\n"
 #~ "\n"
 #~ "Notez aussi le code :"
 
@@ -1791,7 +1773,7 @@ msgstr ""
 #~ " will filter out Kanji for the grade level a Japanese person would study "
 #~ "it at in school."
 #~ msgstr ""
-#~ " qui permet de filtrer, par niveau d'étude, les kanjis qu'un élève "
+#~ " qui permet de filtrer, par niveau d'étude, les Kanji qu'un élève "
 #~ "japonais étudie dans sa scolarité. "
 
 #~ msgid "If you drag and drop a highlighted word into "
@@ -1846,9 +1828,8 @@ msgstr ""
 #~ "Allows searching for Kanji and radical characters from the same "
 #~ "dictionary.  To enable, install both the  Radicals and Kanji dictionaries."
 #~ msgstr ""
-#~ "Permettre la recherche des kanjis et radicaux depuis le même "
-#~ "dictionnaire. Pour l'activer, installez le dictionnaire de radicaux et "
-#~ "celui des kanjis."
+#~ "Permettre la recherche des Kanji et radicaux depuis le même dictionnaire. "
+#~ "Pour l'activer, installez le dictionnaire de radicaux et celui des Kanji."
 
 #~ msgid "Enabled"
 #~ msgstr "Activé"
@@ -1857,9 +1838,9 @@ msgstr ""
 #~ "Allows quick Kanji lookups in the side bar by clicking Kanji characters "
 #~ "in the results pane.  To enable, install the Kanji dictionary."
 #~ msgstr ""
-#~ "Outil de consultation rapide des kanjis dans un panneau latéral, en "
-#~ "cliquant sur les kanjis dans la fenêtre de résultats. Pour activer, "
-#~ "installer le dictionnaire de kanjis."
+#~ "Outil de consultation rapide des Kanji dans un panneau latéral, en "
+#~ "cliquant sur les Kanji dans la fenêtre de résultats. Pour activer, "
+#~ "installer le dictionnaire de Kanji."
 
 #~ msgid "Combined Dictionary:"
 #~ msgstr "Dictionnaire combiné :"
@@ -1871,13 +1852,13 @@ msgstr ""
 #~ msgstr "Recherche générale : "
 
 #~ msgid "Kanji Lookup Tool:"
-#~ msgstr "Outil de recherche des kanjis :"
+#~ msgstr "Outil de recherche des Kanji :"
 
 #~ msgid ""
 #~ "Allows a Kanji search tool with clickable radical characters.  To enable, "
 #~ "install the Radicals dictionary."
 #~ msgstr ""
-#~ "Outil de recherche de kanjis avec caractères de radicaux cliquables. Pour "
+#~ "Outil de recherche de Kanji avec caractères de radicaux cliquables. Pour "
 #~ "activer, installer le dictionnaire de radicaux."
 
 #~ msgid "Status"
@@ -1902,7 +1883,7 @@ msgstr ""
 #~ msgstr "Anglais :"
 
 #~ msgid "Kanji:"
-#~ msgstr "Kanjis :"
+#~ msgstr "Kanji :"
 
 #~ msgid "Examples:"
 #~ msgstr "Examples : "
