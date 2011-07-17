@@ -1,3 +1,4 @@
-2010-07-14: gWaei 3.0.1
-This is a bug fix release.  The big bug this version fixes is
-installation issues people had with the Kanji dictionary.  Fixed the print preview
+2010-07-16: gWaei 3.0.2
+  Fixed warning coming from a tooltip window not being empting when adding an
+  hbox to it. Tweaks to the mutexes that were causing the program to freeze and
+  choppy query input.
