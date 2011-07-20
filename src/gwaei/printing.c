@@ -34,7 +34,6 @@
 #include <unistd.h>
 #include <locale.h>
 #include <libintl.h>
-#include <regex.h>
 
 #include <gtk/gtk.h>
 

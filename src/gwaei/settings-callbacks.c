@@ -30,7 +30,6 @@
 
 
 #include <string.h>
-#include <regex.h>
 #include <stdlib.h>
 #include <locale.h>
 #include <libintl.h>

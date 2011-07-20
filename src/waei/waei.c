@@ -202,6 +202,7 @@ int w_start_console (int argc, char* argv[])
 //!
 int w_start_ncurses (int argc, char* argv[])
 {
+#ifdef WITH_NCURSES
   printf("ncurses\n");
 
     lw_engine_initialize (
@@ -216,7 +217,7 @@ int w_start_ncurses (int argc, char* argv[])
                         );
 
     w_ncurses_start (argc, argv);
-
+#endif
     return TRUE;
 }
 

@@ -28,7 +28,6 @@
 //!
 
 
-#include <regex.h>
 #include <string.h>
 
 #include <gdk/gdkkeysyms.h>

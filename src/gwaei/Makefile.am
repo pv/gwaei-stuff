@@ -16,10 +16,9 @@ gwaei_CPPFLAGS = $(DEFINITIONS) $(GNOME_CFLAGS) $(GNOME_DEFS) -I$(top_srcdir)/sr
 
 if ENABLE_WIN32
 gwaei_LDFLAGS = -Wl,-subsystem,windows 
-WIN_PREFIX = /mingw/usr
 WIN32_DEFS = -DENABLE_WIN32 -DLC_MESSAGES=\"C\" -DCURL_STATICLIB 
 gwaei_LDADD += $(WIN32_LIBS) 
-gwaei_CPPFLAGS += $(WIN32_CFLAGS) $(WIN32_DEFS) -I$(WIN_PREFIX)/include
+gwaei_CPPFLAGS += $(WIN32_CFLAGS) $(WIN32_DEFS)
 endif
 
 if WITH_LIBUNIQUE
