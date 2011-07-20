@@ -549,7 +549,7 @@ static gboolean _update_spellcheck_timeout (gpointer data)
       g_error_free (error);
     }
 
-    gtk_widget_queue_draw (GTK_WIDGET (data));
+    //gtk_widget_queue_draw (GTK_WIDGET (data));
   
     return TRUE;
 }

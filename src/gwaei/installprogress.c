@@ -99,7 +99,10 @@ static gpointer _installprogress_install_thread (gpointer data)
     }
 
     //Cleanup
+#ifndef ENABLE_WIN32
+  //This line causes gWaei on windows to freeze
   gdk_threads_enter ();
+#endif
     lw_dictinstlist_set_cancel_operations (FALSE);
     gtk_widget_hide (dialog);
     gw_common_handle_error (&error, GTK_WINDOW (window_settings), TRUE);
@@ -107,7 +110,9 @@ static gpointer _installprogress_install_thread (gpointer data)
 
     lw_dictinfolist_initialize ();
     gw_dictionarymanager_update_items ();
-  gdk_threads_leave ();
+#ifndef ENABLE_WIN32
+  gdk_threads_leave (); 
+#endif
 }
 
 

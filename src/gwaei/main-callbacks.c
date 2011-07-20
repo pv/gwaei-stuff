@@ -1665,9 +1665,11 @@ G_MODULE_EXPORT void gw_main_update_button_states_based_on_entry_text_cb (GtkWid
     else
       gtk_entry_set_icon_from_stock (GTK_ENTRY (entry), GTK_ENTRY_ICON_SECONDARY, NULL);
 
+/*
     //Return widget colors back to normal
     gtk_widget_override_background_color (GTK_WIDGET (entry), GTK_STATE_NORMAL, NULL);
     gtk_widget_override_color (GTK_WIDGET (entry), GTK_STATE_NORMAL, NULL);
+*/
 }
 
 

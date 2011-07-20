@@ -209,7 +209,7 @@ GwKanjipad *kanjipad_create (GtkWidget *drawing_widget, GtkWidget *candidate_wid
 }
 
 
-void gw_kanjipad_show_cb (GtkWidget* widget, gpointer data)
+G_MODULE_EXPORT void gw_kanjipad_show_cb (GtkWidget* widget, gpointer data)
 {
     g_assert (data != NULL);
 
