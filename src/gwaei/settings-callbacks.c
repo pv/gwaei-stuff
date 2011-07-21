@@ -207,7 +207,7 @@ G_MODULE_EXPORT void gw_settings_show_cb (GtkWidget *widget, gpointer data)
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
-    gw_main_tab_cancel_all_searches ();
+    gw_tabs_cancel_all_searches ();
     gw_main_cancel_search_by_target (GW_TARGET_KANJI);
 
     //Setup please install dictionary message and notebook page

@@ -104,7 +104,7 @@ void gw_tabs_set_searchitem (LwSearchItem *item)
 //!
 //! @param item pointer to a LwSearchItem to use to update the interface.
 //!
-void gw_tabs_update_appearance_with_searchitem (LwSearchItem *item)
+void gw_tabs_update_appearance_by_searchitem (LwSearchItem *item)
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
@@ -150,7 +150,7 @@ void gw_tabs_update_appearance ()
     current_page = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
     item = g_list_nth_data (_tab_searchitems, current_page);
 
-    gw_tabs_update_appearance_with_searchitem (item);
+    gw_tabs_update_appearance_by_searchitem (item);
 
     gw_main_set_font (NULL, NULL);
 }
@@ -398,7 +398,7 @@ G_MODULE_EXPORT void gw_tabs_remove_cb (GtkWidget *widget, gpointer data)
     //Sanity check
     if (pages < 2) gtk_main_quit ();
 
-    gw_main_cancel_search_by_tab_number (page_num);
+    gw_tabs_cancel_search_by_tab_number (page_num);
     gtk_notebook_remove_page (GTK_NOTEBOOK (notebook), page_num);
 
     iter = g_list_nth (_tab_searchitems, page_num);
@@ -451,7 +451,7 @@ G_MODULE_EXPORT void gw_tabs_remove_current_cb (GtkWidget *widget, gpointer data
 
     if (pages < 2) gtk_main_quit ();
 
-    gw_main_cancel_search_by_tab_number (page_num);
+    gw_tabs_cancel_search_by_tab_number (page_num);
 
     if (iter != NULL)
     {
@@ -494,7 +494,7 @@ G_MODULE_EXPORT void gw_tabs_switch_cb (GtkNotebook *notebook, GtkWidget *page, 
     //Initializations
     item = g_list_nth_data (_tab_searchitems, page_num);
 
-    gw_tabs_update_appearance_with_searchitem (item);
+    gw_tabs_update_appearance_by_searchitem (item);
     gw_tabs_update_on_deck_historylist_by_searchitem (item);
 }
 
@@ -607,4 +607,103 @@ G_MODULE_EXPORT void gw_tabs_destroy_tab_menuitem_searchitem_data_cb (GObject *o
       item = NULL;
     }
 }
+
+
+//!
+//! @brief Cancels all searches in all currently open tabs
+//!
+void gw_tabs_cancel_all_searches ()
+{
+    //Declarations
+    GList *iter;
+    LwSearchItem *item;
+
+    for (iter = gw_tabs_get_searchitem_list (); iter != NULL; iter = iter->next)
+    {
+      item = (LwSearchItem*) iter->data;
+      gw_main_cancel_search_by_searchitem (item);
+    }
+}
+
+
+//!
+//! @brief Cancels the search of the tab number
+//! @param page_num The page number of the tab to cancel the search of
+//!
+gboolean gw_tabs_cancel_search_by_tab_number (const int page_num)
+{
+    //Declarations
+    GtkBuilder *builder;
+    GtkWidget *notebook;
+    GtkWidget *content;
+    gboolean result;
+
+    //Initializations
+    builder = gw_common_get_builder ();
+    notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    content = gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), page_num);
+
+    //Sanity check
+    if (content == NULL) return TRUE;
+
+    result = gw_tabs_cancel_search_by_content (content);
+
+    return result;
+}
+
+
+//!
+//! @brief Cancels the search of the currently visibile tab
+//!
+gboolean gw_tabs_cancel_search_for_current_tab ()
+{
+    //Declarations
+    GtkBuilder *builder;
+    GtkWidget *notebook;
+    int page_num;
+    gboolean result;
+
+    //Initializations
+    builder = gw_common_get_builder ();
+    notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+    result = gw_tabs_cancel_search_by_tab_number (page_num);
+
+    return result;
+}
+
+
+//!
+//! @brief Cancels a search by identifying matching gpointer
+//! @param container A pointer to the top-most widget in the desired tab to cancel the search of.
+//!
+gboolean gw_tabs_cancel_search_by_content (gpointer container)
+{
+    //Declarations
+    GtkBuilder *builder;
+    GtkWidget *notebook;
+    int position;
+    GList *list;
+    LwSearchItem *item;
+    gboolean result;
+
+    //Initializations
+    builder = gw_common_get_builder ();
+    notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    position = gtk_notebook_page_num (GTK_NOTEBOOK (notebook), container);
+
+    //Sanity check
+    if (position == -1) return FALSE;
+
+    list = gw_tabs_get_searchitem_list ();
+    item = g_list_nth_data (list, position);
+
+    //Sanity check
+    if (item == NULL) return TRUE;
+
+    result = gw_main_cancel_search_by_searchitem (item);
+
+    return result;
+}
+
 

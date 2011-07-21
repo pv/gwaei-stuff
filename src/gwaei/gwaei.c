@@ -34,6 +34,8 @@
 #include <locale.h>
 #include <libintl.h>
 
+#include <gio/gio.h>
+
 #include <gtk/gtk.h>
 
 #include <gwaei/gwaei.h>
@@ -53,6 +55,11 @@ void gw_initialize (int* argc, char* argv[])
 
     gdk_threads_init();
     gtk_init (argc, &argv);
+
+#ifdef ENABLE_WIN32
+    g_object_set (gtk_settings_get_default(), "gtk-theme-name", "MS-Windows", 
+                                              "gtk-icon-theme-name", "hicolor", NULL);
+#endif
 
     GOptionEntry entries[] =
     {

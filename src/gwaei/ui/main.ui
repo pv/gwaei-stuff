@@ -46,7 +46,11 @@
     <property name="tooltip">Print the current results</property>
     <property name="stock_id">gtk-print</property>
     <property name="sensitive">False</property>
-    <signal name="activate" handler="gw_main_print_cb" swapped="no"/>
+    <signal name="activate" handler="gw_print_cb" swapped="no"/>
+  </object>
+  <object class="GtkAction" id="file_print_preview_action">
+    <property name="stock_id">gtk-print-preview</property>
+    <signal name="activate" handler="gw_print_preview_cb" swapped="no"/>
   </object>
   <object class="GtkAction" id="file_quit_action">
     <property name="stock_id">gtk-quit</property>
@@ -298,6 +302,14 @@
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="p" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="print_preview_menuitem">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="related_action">file_print_preview_action</property>
+                        <property name="use_stock">True</property>
                       </object>
                     </child>
                     <child>
@@ -725,9 +737,6 @@
         </child>
         <child>
           <object class="GtkToolbar" id="toolbar">
-            <style>
-              <class name="primary-toolbar"/>
-            </style>
             <property name="can_focus">False</property>
             <property name="no_show_all">True</property>
             <child>

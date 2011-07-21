@@ -660,7 +660,7 @@ void gw_output_append_kanjidict_results_cb (LwSearchItem *item)
 
       GtkWidget *window = GTK_WIDGET (gtk_widget_get_tooltip_window (tv));
       if (window != NULL) {
-        child = gtk_bin_get_child (window);
+        child = gtk_bin_get_child (GTK_BIN (window));
         if (child != NULL) gtk_widget_destroy (GTK_WIDGET (child));
 
         GtkWidget *hbox = GTK_WIDGET (gtk_hbox_new (FALSE, 3));

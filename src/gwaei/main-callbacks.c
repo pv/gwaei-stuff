@@ -260,7 +260,7 @@ G_MODULE_EXPORT void gw_main_close_cb (GtkWidget *widget, gpointer data)
     if (strcmp (id, "main_window") == 0)
     {
       gw_common_hide_window (id);
-      gw_main_tab_cancel_all_searches ();
+      gw_tabs_cancel_all_searches ();
       gtk_main_quit ();
     }
     else if (strcmp (id, "radicals_window") == 0 || strcmp (id, "kanjipad_window") == 0)
@@ -276,7 +276,7 @@ G_MODULE_EXPORT void gw_main_close_cb (GtkWidget *widget, gpointer data)
       }
       else
       {
-        gw_main_tab_cancel_all_searches ();
+        gw_tabs_cancel_all_searches ();
         gtk_main_quit ();
       }
     }
@@ -355,7 +355,7 @@ G_MODULE_EXPORT gboolean gw_main_close_on_escape_cb (GtkWidget *widget,
 //!
 G_MODULE_EXPORT void gw_main_quit_cb (GtkWidget *widget, gpointer data)
 {
-    gw_main_tab_cancel_all_searches ();
+    gw_tabs_cancel_all_searches ();
     gw_main_close_cb (widget, data);
     gtk_main_quit ();
 }
@@ -390,7 +390,7 @@ G_MODULE_EXPORT void gw_main_search_from_history_cb (GtkWidget *widget, gpointer
     item->target_tv = (gpointer) gw_common_get_widget_by_target (item->target);
 
     //Checks to make sure everything is sane
-    if (gw_main_cancel_search_for_current_tab () == FALSE)
+    if (gw_tabs_cancel_search_for_current_tab () == FALSE)
     {
       printf("CANCEL SEARCH FOR CURRENT TAB RETURNED FALSE\n");
       return;
@@ -910,23 +910,6 @@ G_MODULE_EXPORT gboolean gw_main_update_clipboard_on_focus_change_cb (GtkWidget 
       gtk_action_set_sensitive (GTK_ACTION (paste_action), TRUE);
 
     return FALSE;
-}
-
-
-//!
-//! @brief Prints the current results
-//! 
-//! When this function is called, the current results on screen are printed.
-//! If a section of the results is selected, only that is printed.
-//!
-//! @see gw_print ()
-//! @param widget Unused GtkWidget pointer
-//! @param data Unused gpointer
-//!
-G_MODULE_EXPORT void gw_main_print_cb (GtkWidget *widget, gpointer data)
-{
-    gw_main_tab_cancel_all_searches ();
-    gw_print ();
 }
 
 

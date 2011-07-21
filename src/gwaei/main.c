@@ -467,6 +467,12 @@ void gw_main_update_toolbar_buttons ()
     enable = (tab_search_item != NULL);
     gtk_action_set_sensitive(action, enable);
 
+    //Update Print preview sensitivity state
+    id = "file_print_preview_action";
+    action = GTK_ACTION (gtk_builder_get_object(builder, id));
+    enable = (tab_search_item != NULL);
+    gtk_action_set_sensitive(action, enable);
+
     //Update radicals search tool menuitem
     id = "insert_radicals_action";
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
@@ -2175,6 +2181,8 @@ gboolean gw_update_icons_for_selection (gpointer data)
       gtk_action_set_label (action, gettext("Save Selected _As"));
       action = GTK_ACTION (gtk_builder_get_object (builder, "file_print_action"));
       gtk_action_set_label (action, gettext("_Print Selected"));
+      action = GTK_ACTION (gtk_builder_get_object (builder, "file_print_preview_action"));
+      gtk_action_set_label (action, gettext("_Print Preview Selected"));
     }
     //Reset the buttons to their normal states
     else if (_prev_selection_icon_state == TRUE && !has_selection)
@@ -2186,14 +2194,14 @@ gboolean gw_update_icons_for_selection (gpointer data)
       gtk_action_set_label (action, NULL);
       action = GTK_ACTION (gtk_builder_get_object (builder, "file_print_action"));
       gtk_action_set_label (action, NULL);
+      action = GTK_ACTION (gtk_builder_get_object (builder, "file_print_preview_action"));
+      gtk_action_set_label (action, NULL);
     }
 
     gw_main_update_toolbar_buttons();
 
     return TRUE; 
 }
-
-
 
 
 //!
@@ -2239,106 +2247,6 @@ gboolean gw_main_cancel_search_by_searchitem (LwSearchItem *item)
     item->thread = NULL;
 
     return FALSE;
-}
-
-
-//!
-//! @brief Cancels a search by identifying matching gpointer
-//!
-//! @param container A pointer to the top-most widget in the desired tab to cancel the search of.
-//!
-gboolean gw_main_cancel_search_by_tab_content (gpointer container)
-{
-    //Declarations
-    GtkBuilder *builder;
-    GtkWidget *notebook;
-    int position;
-    GList *list;
-    LwSearchItem *item;
-    gboolean result;
-
-    //Initializations
-    builder = gw_common_get_builder ();
-    notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
-    position = gtk_notebook_page_num (GTK_NOTEBOOK (notebook), container);
-
-    //Sanity check
-    if (position == -1) return FALSE;
-
-    list = gw_tabs_get_searchitem_list ();
-    item = g_list_nth_data (list, position);
-
-    //Sanity check
-    if (item == NULL) return TRUE;
-
-    result = gw_main_cancel_search_by_searchitem (item);
-
-    return result;
-}
-
-
-//!
-//! @brief Cancels all searches in all currently open tabs
-//!
-void gw_main_tab_cancel_all_searches ()
-{
-    //Declarations
-    GList *iter;
-    LwSearchItem *item;
-
-    for (iter = gw_tabs_get_searchitem_list (); iter != NULL; iter = iter->next)
-    {
-      item = (LwSearchItem*) iter->data;
-      gw_main_cancel_search_by_searchitem (item);
-    }
-}
-
-
-//!
-//! @brief Cancels the search of the tab number
-//!
-//! @param page_num The page number of the tab to cancel the search of
-//!
-gboolean gw_main_cancel_search_by_tab_number (const int page_num)
-{
-    //Declarations
-    GtkBuilder *builder;
-    GtkWidget *notebook;
-    GtkWidget *content;
-    gboolean result;
-
-    //Initializations
-    builder = gw_common_get_builder ();
-    notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
-    content = gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), page_num);
-
-    //Sanity check
-    if (content == NULL) return TRUE;
-
-    result = gw_main_cancel_search_by_tab_content (content);
-
-    return result;
-}
-
-
-//!
-//! @brief Cancels the search of the currently visibile tab
-//!
-gboolean gw_main_cancel_search_for_current_tab ()
-{
-    //Declarations
-    GtkBuilder *builder;
-    GtkWidget *notebook;
-    int page_num;
-    gboolean result;
-
-    //Initializations
-    builder = gw_common_get_builder ();
-    notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
-    page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
-    result = gw_main_cancel_search_by_tab_number (page_num);
-
-    return result;
 }
 
 

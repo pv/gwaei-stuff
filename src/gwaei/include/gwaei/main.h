@@ -16,10 +16,7 @@ char* gw_main_buffer_get_text_by_target (LwTargetOutput);
 
 gboolean gw_main_cancel_search (gpointer);
 gboolean gw_main_cancel_search_by_searchitem (LwSearchItem*);
-gboolean gw_main_cancel_search_by_tab_number (const int);
 gboolean gw_main_cancel_search_by_target (LwTargetOutput);
-gboolean gw_main_cancel_search_for_current_tab (void);
-void gw_main_tab_cancel_all_searches (void);
 
 void gw_main_display_no_results_found_page (LwSearchItem*);
 void gw_main_initialize_buffer_by_searchitem (LwSearchItem*);

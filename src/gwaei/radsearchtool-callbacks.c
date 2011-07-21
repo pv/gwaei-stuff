@@ -72,7 +72,7 @@ G_MODULE_EXPORT void gw_radsearchtool_clear_cb (GtkWidget *widget, gpointer data
   gw_radsearchtool_set_strokes_checkbox_state (FALSE);
 
   //Checks to make sure everything is sane
-  if (gw_main_cancel_search_for_current_tab () == FALSE)
+  if (gw_tabs_cancel_search_for_current_tab () == FALSE)
     return;
 }
 
@@ -139,7 +139,7 @@ G_MODULE_EXPORT void gw_radsearchtool_search_cb (GtkWidget *widget, gpointer dat
 
     //Sanity checks
     if (query_text == NULL || strlen(query_text) == 0) return;
-    if (gw_main_cancel_search_for_current_tab () == FALSE) return;
+    if (gw_tabs_cancel_search_for_current_tab () == FALSE) return;
 
     //Prep the search
     gw_main_clear_search_entry ();

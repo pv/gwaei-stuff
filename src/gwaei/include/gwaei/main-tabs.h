@@ -22,5 +22,11 @@ void gw_tabs_set_searchitem (LwSearchItem *item);
 LwSearchItem* gw_tabs_get_searchitem (void);
 void gw_tabs_update_on_deck_historylist_by_searchitem (LwSearchItem*);
 
+gboolean gw_tabs_cancel_search_by_tab_number (const int);
+gboolean gw_tabs_cancel_search_for_current_tab (void);
+void gw_tabs_cancel_all_searches (void);
+gboolean gw_tabs_cancel_search_by_content (gpointer);
+
+
 
 #endif

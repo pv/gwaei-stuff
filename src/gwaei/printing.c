@@ -346,7 +346,7 @@ static void _done (GtkPrintOperation      *operation,
 //! to set up a print operation.  If a section of the search results are highlighted
 //! only those results are printed.
 //!
-void gw_print()
+void gw_print (const GtkPrintOperationAction ACTION)
 {
     //Declarations
     GList *pages;
@@ -372,7 +372,7 @@ void gw_print()
     g_signal_connect (operation, "paginate", G_CALLBACK (_paginate), &pages);
     g_signal_connect (operation, "done", G_CALLBACK (_done), &pages);
 
-    res = gtk_print_operation_run (operation, GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG, NULL, NULL);
+    res = gtk_print_operation_run (operation, ACTION, NULL, NULL);
 
     if (res == GTK_PRINT_OPERATION_RESULT_APPLY)
     {
@@ -388,5 +388,27 @@ void gw_print()
     }
     g_list_free (pages);
     g_object_unref (operation);
+}
+//!
+//! @brief Sets up a print operation for the current results
+//!
+//! The function checks the results of the results text buffer, and then attempts
+//! to set up a print operation.  If a section of the search results are highlighted
+//! only those results are printed.
+//!
+G_MODULE_EXPORT void gw_print_cb (GtkWidget *widget, gpointer data)
+{
+    gw_tabs_cancel_all_searches ();
+    gw_print (GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG);
+}
+
+
+//!
+//! @brief Sets up a print preview for the results
+//!
+G_MODULE_EXPORT void gw_print_preview_cb (GtkWidget *widget, gpointer data)
+{
+    gw_tabs_cancel_all_searches ();
+    gw_print (GTK_PRINT_OPERATION_ACTION_PREVIEW);
 }
 
