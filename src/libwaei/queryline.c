@@ -229,17 +229,23 @@ gboolean lw_queryline_parse_edict_string (LwQueryLine *ql, const char* string, G
        if (lw_util_is_yojijukugo_str (atom))  //Check for yojijukugo
        {
           //First half of the yojijukugo
-          half = g_strndup (atom, g_utf8_next_char(g_utf8_next_char(atom))- atom);
-          temp = g_strdup_printf ("%s|(%s)", expression, half);
-          g_free (expression);
-          expression = temp;
+          half = g_strndup (atom, g_utf8_next_char(g_utf8_next_char(atom)) - atom);
+          if (strcmp(half, "..") != 0)
+          {
+            temp = g_strdup_printf ("%s|(%s)", expression, half);
+            g_free (expression);
+            expression = temp;
+          }
           g_free (half);
 
           //Second half of the yojijukugo
           half = g_strdup (g_utf8_next_char(g_utf8_next_char(atom)));
-          temp = g_strdup_printf ("%s|(%s)", expression, half);
-          g_free (expression);
-          expression = temp;
+          if (strcmp(half, "..") != 0)
+          {
+            temp = g_strdup_printf ("%s|(%s)", expression, half);
+            g_free (expression);
+            expression = temp;
+          }
           g_free (half);
        }
 
