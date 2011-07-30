@@ -29,7 +29,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 0.15.1\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2011-07-29 20:03-0400\n"
+"POT-Creation-Date: 2011-07-30 16:35-0400\n"
 "PO-Revision-Date: 2010-04-27 23:02-0500\n"
 "Last-Translator: 3dxtrip <3dx@live.com>\n"
 "Language-Team: none\n"
@@ -282,13 +282,13 @@ msgstr "Significados:"
 
 #. TRANSLATORS: The "E" stands for "English"
 #: ../src/waei/console.c:344 ../src/waei/console.c:346
-#: ../src/gwaei/output-callbacks.c:722
+#: ../src/gwaei/output-callbacks.c:724
 msgid "E:\t"
 msgstr ""
 
 #. TRANSLATORS: The "J" stands for "Japanese"
 #: ../src/waei/console.c:353 ../src/waei/console.c:355
-#: ../src/gwaei/output-callbacks.c:733
+#: ../src/gwaei/output-callbacks.c:735
 msgid ""
 "\n"
 "J:\t"
@@ -296,7 +296,7 @@ msgstr ""
 
 #. TRANSLATORS: The "D" stands for "Detail"
 #: ../src/waei/console.c:362 ../src/waei/console.c:364
-#: ../src/gwaei/output-callbacks.c:744
+#: ../src/gwaei/output-callbacks.c:746
 msgid ""
 "\n"
 "D:\t"
@@ -368,7 +368,7 @@ msgstr "Buscar usando un diccionario específico"
 msgid "Option parsing failed: %s\n"
 msgstr "Opción de división fallida: %s\n"
 
-#: ../src/waei/waei.c:70 ../src/gwaei/gwaei.c:76
+#: ../src/waei/waei.c:70 ../src/gwaei/gwaei.c:77
 msgid "- A dictionary program for Japanese-English translation."
 msgstr ""
 "- Un programa diseñado como diccionario para la traducción del Japonés-Inglés"
@@ -471,7 +471,7 @@ msgstr "Instalando..."
 msgid "description"
 msgstr ""
 
-#: ../src/gwaei/ui/main.ui.h:1 ../src/gwaei/main.c:2244
+#: ../src/gwaei/ui/main.ui.h:1 ../src/gwaei/main.c:2246
 msgid "A_ppend"
 msgstr "A_nexar"
 
@@ -745,30 +745,34 @@ msgid "Plugins"
 msgstr ""
 
 #: ../src/gwaei/ui/settings.ui.h:19
+msgid "Search as you Type"
+msgstr ""
+
+#: ../src/gwaei/ui/settings.ui.h:20
 msgid "When Possible"
 msgstr "Si es posible"
 
-#: ../src/gwaei/ui/settings.ui.h:20
+#: ../src/gwaei/ui/settings.ui.h:21
 msgid "_Open the gWaei dictionary folder"
 msgstr "_Abrir la carpeta de los diccionarios gWaei"
 
-#: ../src/gwaei/ui/settings.ui.h:21
+#: ../src/gwaei/ui/settings.ui.h:22
 msgid "_Reset"
 msgstr "_Reiniciar"
 
-#: ../src/gwaei/ui/settings.ui.h:22
+#: ../src/gwaei/ui/settings.ui.h:23
 msgid "_Update dictionaries using Rsync"
 msgstr "_Actualizar diccionarios usando Rsync"
 
-#: ../src/gwaei/ui/settings.ui.h:23
+#: ../src/gwaei/ui/settings.ui.h:24
 msgid "_Use the system document font (Sans 10)"
 msgstr "_Usar el tipo de letra del documento del sistema (Sans 10)"
 
-#: ../src/gwaei/ui/settings.ui.h:24
+#: ../src/gwaei/ui/settings.ui.h:25
 msgid "gWaei Settings"
 msgstr "Opciones de gWaei"
 
-#: ../src/gwaei/ui/settings.ui.h:25
+#: ../src/gwaei/ui/settings.ui.h:26
 msgid "gWaei requires at least one dictionary to be installed."
 msgstr "gWaei requiere que al menos un diccionario sea instalado"
 
@@ -855,16 +859,16 @@ msgstr "_Comenzado"
 msgid "Cycle _Down"
 msgstr "Finaliza_do"
 
-#: ../src/gwaei/gwaei.c:66
+#: ../src/gwaei/gwaei.c:67
 #, fuzzy
 msgid "Choose the dictionary to use"
 msgstr "Seleccione el diccionario a usar"
 
-#: ../src/gwaei/gwaei.c:68
+#: ../src/gwaei/gwaei.c:69
 msgid "Open a new instance of gWaei"
 msgstr ""
 
-#: ../src/gwaei/gwaei.c:70
+#: ../src/gwaei/gwaei.c:71
 #, fuzzy
 msgid "Check the gWaei version information"
 msgstr "Revisar la información de versión de waei"
@@ -1063,32 +1067,32 @@ msgstr ""
 "que pueden herirlo en cualquier momento.  Por favor, advierta a todos sus "
 "amigos.  Se lo agradecerán después. No es broma."
 
-#: ../src/gwaei/main.c:2231
+#: ../src/gwaei/main.c:2233
 msgid "A_ppend Selected"
 msgstr "A_nexar seleccionado"
 
-#: ../src/gwaei/main.c:2233
+#: ../src/gwaei/main.c:2235
 msgid "Save Selected _As"
 msgstr "Guardar selección _Como"
 
-#: ../src/gwaei/main.c:2235
+#: ../src/gwaei/main.c:2237
 msgid "_Print Selected"
 msgstr "_Imprimir selección"
 
-#: ../src/gwaei/main.c:2237
+#: ../src/gwaei/main.c:2239
 #, fuzzy
 msgid "_Print Preview Selected"
 msgstr "_Imprimir selección"
 
-#: ../src/gwaei/main-callbacks.c:504
+#: ../src/gwaei/main-callbacks.c:505
 msgid "Save As"
 msgstr "Guardar como"
 
-#: ../src/gwaei/main-callbacks.c:517
+#: ../src/gwaei/main-callbacks.c:518
 msgid "vocabulary.txt"
 msgstr "vocabulario.txt"
 
-#: ../src/gwaei/main-callbacks.c:1118
+#: ../src/gwaei/main-callbacks.c:1119
 #, fuzzy
 msgid ""
 "Program for Japanese translation and reference. The\n"
@@ -1101,24 +1105,24 @@ msgstr ""
 "Agradecimiento especial al creador de GJITEN quien sirvió como inspiración."
 
 #. TRANSLATORS: You can add your own name to the translation of this field, it will be displayed in the "about" box when gwaei is run in your language
-#: ../src/gwaei/main-callbacks.c:1122
+#: ../src/gwaei/main-callbacks.c:1123
 msgid "translator-credits"
 msgstr "4packed (Dean)"
 
 #. TRANSLATORS: The first variable is the expression to look for, the second is the dictionary full name
-#: ../src/gwaei/main-callbacks.c:1720
+#: ../src/gwaei/main-callbacks.c:1721
 #, c-format
 msgid "Search for \"%s\" in the %s"
 msgstr "Buscar por \"%s\" en %s"
 
 #. TRANSLATORS: The variable is the expression to look for
-#: ../src/gwaei/main-callbacks.c:1722
+#: ../src/gwaei/main-callbacks.c:1723
 #, c-format
 msgid "Search for \"%s\" in a Different Dictionary"
 msgstr "Buscar por \"%s\" en un diccionario diferente"
 
 #. TRANSLATORS: The variable is the expression to look for
-#: ../src/gwaei/main-callbacks.c:1724
+#: ../src/gwaei/main-callbacks.c:1725
 #, c-format
 msgid "Cross-reference \"%s\" Online"
 msgstr "Referencia-cruzada \"%s\" En línea"
@@ -1168,14 +1172,14 @@ msgstr ""
 msgid "Radical Name"
 msgstr "Radicale Nombre:"
 
-#: ../src/gwaei/output-callbacks.c:799
+#: ../src/gwaei/output-callbacks.c:801
 #, c-format
 msgid "Other Result %d"
 msgid_plural "Other Results %d"
 msgstr[0] "Otro resultado %d"
 msgstr[1] "Otros resultados %d"
 
-#: ../src/gwaei/output-callbacks.c:814
+#: ../src/gwaei/output-callbacks.c:816
 #, c-format
 msgid "Main Result %d"
 msgid_plural "Main Results %d"

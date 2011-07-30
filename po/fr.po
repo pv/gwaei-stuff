@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 3.0.0\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2011-07-29 20:03-0400\n"
+"POT-Creation-Date: 2011-07-30 16:35-0400\n"
 "PO-Revision-Date: 2011-07-09 16:23+0200\n"
 "Last-Translator: Nicolas Laurent\n"
 "Language-Team: none\n"
@@ -265,14 +265,14 @@ msgstr "Signification : "
 # E: English
 #. TRANSLATORS: The "E" stands for "English"
 #: ../src/waei/console.c:344 ../src/waei/console.c:346
-#: ../src/gwaei/output-callbacks.c:722
+#: ../src/gwaei/output-callbacks.c:724
 msgid "E:\t"
 msgstr "E:\t"
 
 # J: Japanese
 #. TRANSLATORS: The "J" stands for "Japanese"
 #: ../src/waei/console.c:353 ../src/waei/console.c:355
-#: ../src/gwaei/output-callbacks.c:733
+#: ../src/gwaei/output-callbacks.c:735
 msgid ""
 "\n"
 "J:\t"
@@ -283,7 +283,7 @@ msgstr ""
 # D: Detail
 #. TRANSLATORS: The "D" stands for "Detail"
 #: ../src/waei/console.c:362 ../src/waei/console.c:364
-#: ../src/gwaei/output-callbacks.c:744
+#: ../src/gwaei/output-callbacks.c:746
 msgid ""
 "\n"
 "D:\t"
@@ -356,7 +356,7 @@ msgstr "Rechercher dans un dictionnaire précis"
 msgid "Option parsing failed: %s\n"
 msgstr "Échec de l'analyse de l'option : « %s »\n"
 
-#: ../src/waei/waei.c:70 ../src/gwaei/gwaei.c:76
+#: ../src/waei/waei.c:70 ../src/gwaei/gwaei.c:77
 msgid "- A dictionary program for Japanese-English translation."
 msgstr "- Un dictionnaire logiciel pour la traduction Japonais-Anglais"
 
@@ -454,7 +454,7 @@ msgstr "Installation en cours ..."
 msgid "description"
 msgstr "Description"
 
-#: ../src/gwaei/ui/main.ui.h:1 ../src/gwaei/main.c:2244
+#: ../src/gwaei/ui/main.ui.h:1 ../src/gwaei/main.c:2246
 msgid "A_ppend"
 msgstr "A_jouter"
 
@@ -721,30 +721,34 @@ msgid "Plugins"
 msgstr "Modules externes"
 
 #: ../src/gwaei/ui/settings.ui.h:19
+msgid "Search as you Type"
+msgstr ""
+
+#: ../src/gwaei/ui/settings.ui.h:20
 msgid "When Possible"
 msgstr "Quand cela est possible"
 
-#: ../src/gwaei/ui/settings.ui.h:20
+#: ../src/gwaei/ui/settings.ui.h:21
 msgid "_Open the gWaei dictionary folder"
 msgstr "_Ouvrir le dossier des dictionnaires de gWaei"
 
-#: ../src/gwaei/ui/settings.ui.h:21
+#: ../src/gwaei/ui/settings.ui.h:22
 msgid "_Reset"
 msgstr "_Réinitialiser"
 
-#: ../src/gwaei/ui/settings.ui.h:22
+#: ../src/gwaei/ui/settings.ui.h:23
 msgid "_Update dictionaries using Rsync"
 msgstr "_Mettre à jour les dictionnaires installés avec Rsync"
 
-#: ../src/gwaei/ui/settings.ui.h:23
+#: ../src/gwaei/ui/settings.ui.h:24
 msgid "_Use the system document font (Sans 10)"
 msgstr "_Utiliser la police de documents du système (Sans 10)"
 
-#: ../src/gwaei/ui/settings.ui.h:24
+#: ../src/gwaei/ui/settings.ui.h:25
 msgid "gWaei Settings"
 msgstr "Options de gWaei"
 
-#: ../src/gwaei/ui/settings.ui.h:25
+#: ../src/gwaei/ui/settings.ui.h:26
 msgid "gWaei requires at least one dictionary to be installed."
 msgstr "gWaei nécessite d'installer au moins un dictionnaire."
 
@@ -826,15 +830,15 @@ msgstr "Revenir au _précédent"
 msgid "Cycle _Down"
 msgstr "Passer au _suivant"
 
-#: ../src/gwaei/gwaei.c:66
+#: ../src/gwaei/gwaei.c:67
 msgid "Choose the dictionary to use"
 msgstr "Sélectionner le dictionnaire à utiliser"
 
-#: ../src/gwaei/gwaei.c:68
+#: ../src/gwaei/gwaei.c:69
 msgid "Open a new instance of gWaei"
 msgstr "Ouvrir une nouvelle instance de gWaei"
 
-#: ../src/gwaei/gwaei.c:70
+#: ../src/gwaei/gwaei.c:71
 msgid "Check the gWaei version information"
 msgstr "Informations sur la version de gWaei"
 
@@ -1036,32 +1040,32 @@ msgstr ""
 "Avertissez tous vos amis. Ils vous en remercieront plus tard. Si si, "
 "Vraiment."
 
-#: ../src/gwaei/main.c:2231
+#: ../src/gwaei/main.c:2233
 msgid "A_ppend Selected"
 msgstr "A_jouter la sélection dans"
 
-#: ../src/gwaei/main.c:2233
+#: ../src/gwaei/main.c:2235
 msgid "Save Selected _As"
 msgstr "Enregister la sélection _sous"
 
-#: ../src/gwaei/main.c:2235
+#: ../src/gwaei/main.c:2237
 msgid "_Print Selected"
 msgstr "_Imprimer la sélection"
 
-#: ../src/gwaei/main.c:2237
+#: ../src/gwaei/main.c:2239
 #, fuzzy
 msgid "_Print Preview Selected"
 msgstr "_Imprimer la sélection"
 
-#: ../src/gwaei/main-callbacks.c:504
+#: ../src/gwaei/main-callbacks.c:505
 msgid "Save As"
 msgstr "Enregistrer sous"
 
-#: ../src/gwaei/main-callbacks.c:517
+#: ../src/gwaei/main-callbacks.c:518
 msgid "vocabulary.txt"
 msgstr "vocabulaire.txt"
 
-#: ../src/gwaei/main-callbacks.c:1118
+#: ../src/gwaei/main-callbacks.c:1119
 msgid ""
 "Program for Japanese translation and reference. The\n"
 "dictionaries are supplied by Jim Breen's WWWJDIC.\n"
@@ -1075,24 +1079,24 @@ msgstr ""
 "Dédié à Chuus."
 
 #. TRANSLATORS: You can add your own name to the translation of this field, it will be displayed in the "about" box when gwaei is run in your language
-#: ../src/gwaei/main-callbacks.c:1122
+#: ../src/gwaei/main-callbacks.c:1123
 msgid "translator-credits"
 msgstr "Nicolas Laurent (2009-2011)"
 
 #. TRANSLATORS: The first variable is the expression to look for, the second is the dictionary full name
-#: ../src/gwaei/main-callbacks.c:1720
+#: ../src/gwaei/main-callbacks.c:1721
 #, c-format
 msgid "Search for \"%s\" in the %s"
 msgstr "Recherche de \"%s\" dans le %s"
 
 #. TRANSLATORS: The variable is the expression to look for
-#: ../src/gwaei/main-callbacks.c:1722
+#: ../src/gwaei/main-callbacks.c:1723
 #, c-format
 msgid "Search for \"%s\" in a Different Dictionary"
 msgstr "Rechercher \"%s\" dans un autre dictionnaire"
 
 #. TRANSLATORS: The variable is the expression to look for
-#: ../src/gwaei/main-callbacks.c:1724
+#: ../src/gwaei/main-callbacks.c:1725
 #, c-format
 msgid "Cross-reference \"%s\" Online"
 msgstr "Rechercher \"%s\" sur Internet"
@@ -1141,14 +1145,14 @@ msgstr "Pop."
 msgid "Radical Name"
 msgstr "Nom du radical"
 
-#: ../src/gwaei/output-callbacks.c:799
+#: ../src/gwaei/output-callbacks.c:801
 #, c-format
 msgid "Other Result %d"
 msgid_plural "Other Results %d"
 msgstr[0] "%d résultat similaire"
 msgstr[1] "%d résultats similaires"
 
-#: ../src/gwaei/output-callbacks.c:814
+#: ../src/gwaei/output-callbacks.c:816
 #, c-format
 msgid "Main Result %d"
 msgid_plural "Main Results %d"
