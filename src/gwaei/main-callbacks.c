@@ -173,6 +173,7 @@ G_MODULE_EXPORT gboolean gw_main_get_iter_for_button_release_cb (GtkWidget      
     di = lw_dictinfolist_get_dictinfo (GW_ENGINE_KANJI, "Kanji");
     error = NULL;
 
+
     //Sanity cehck
     if (di == NULL) return FALSE;
 
@@ -234,7 +235,7 @@ G_MODULE_EXPORT gboolean gw_main_get_iter_for_button_release_cb (GtkWidget      
 
       if (error != NULL)
       {
-        printf("%s\n", error->message);
+        fprintf(stderr, "%s\n", error->message);
         g_error_free (error);
       }
     }
@@ -1362,7 +1363,7 @@ G_MODULE_EXPORT void gw_main_search_cb (GtkWidget *widget, gpointer data)
 
       if (error != NULL)
       {
-        printf("%s\n", error->message);
+        fprintf(stderr, "%s\n", error->message);
         g_error_free (error);
       }
 

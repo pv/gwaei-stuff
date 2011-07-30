@@ -675,12 +675,14 @@ void gw_output_append_kanjidict_results_cb (LwSearchItem *item)
         label = GTK_WIDGET (gtk_label_new (NULL));
         gtk_label_set_markup (GTK_LABEL (label), markup2);
         gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (label), FALSE, TRUE, 0);
+        gtk_label_set_selectable (GTK_LABEL (label), TRUE);
+        gtk_widget_set_can_focus (GTK_WIDGET (label), FALSE);
 
         label = GTK_WIDGET (gtk_label_new (NULL));
         gtk_label_set_markup (GTK_LABEL (label), markup);
-//        gtk_label_set_selectable (GTK_LABEL (label), TRUE);
         gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (label), FALSE, TRUE, 0);
-//        gtk_label_select_region (GTK_LABEL (label), 0, 0);
+        gtk_label_set_selectable (GTK_LABEL (label), TRUE);
+        gtk_widget_set_can_focus (GTK_WIDGET (label), FALSE);
 
         gtk_widget_show_all (hbox);
 
