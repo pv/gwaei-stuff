@@ -177,3 +177,42 @@ void gw_settings_update_custom_font_button (const char *font_description_string)
     gtk_font_button_set_font_name (GTK_FONT_BUTTON (button), font_description_string);
 }
 
+
+//!
+//! @brief Sets the checkbox to show or hide the toolbar
+//!
+//! @param request How to set the toolbar
+//!
+void gw_settings_set_search_as_you_type (gboolean request)
+{
+    //Declarations
+    GtkBuilder *builder;
+    GtkWidget *checkbox;
+
+    //Initializations
+    builder = gw_common_get_builder ();
+    checkbox = GTK_WIDGET (gtk_builder_get_object(builder, "search_as_you_type_checkbox"));
+
+    g_signal_handlers_block_by_func (checkbox, gw_settings_search_as_you_type_toggled_cb, NULL);
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), request);
+    g_signal_handlers_unblock_by_func (checkbox, gw_settings_search_as_you_type_toggled_cb, NULL);
+}
+
+//!
+//! @brief Sets the checkbox to show or hide the toolbar
+//!
+//! @param request How to set the toolbar
+//!
+gboolean gw_settings_get_search_as_you_type ()
+{
+    //Declarations
+    GtkBuilder *builder;
+    GtkWidget *checkbox;
+
+    //Initializations
+    builder = gw_common_get_builder ();
+    checkbox = GTK_WIDGET (gtk_builder_get_object(builder, "search_as_you_type_checkbox"));
+
+    return gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (checkbox));
+}
+

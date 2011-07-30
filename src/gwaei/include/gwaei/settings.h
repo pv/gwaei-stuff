@@ -19,5 +19,7 @@ void gw_settings_update_dictionary_order_list (void);
 void gw_settings_increment_order_list_processes (void);
 void gw_settings_decrement_order_list_processes (void);
 void gw_settings_set_use_global_document_font_checkbox (gboolean);
+void gw_settings_set_search_as_you_type (gboolean);
+gboolean gw_settings_get_search_as_you_type (void);
 
 #endif

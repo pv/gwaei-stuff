@@ -82,6 +82,21 @@ G_MODULE_EXPORT void gw_settings_spellcheck_toggled_cb (GtkWidget *widget, gpoin
 
 
 //!
+//! @brief Callback to toggle search as you type in the search entry
+//!
+//! @param widget Unused pointer to a GtkWidget
+//! @param data Unused gpointer
+//!
+G_MODULE_EXPORT void gw_settings_search_as_you_type_toggled_cb (GtkWidget *widget, gpointer data)
+{
+    gboolean state;
+    state = lw_pref_get_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_SEARCH_AS_YOU_TYPE);
+    lw_pref_set_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_SEARCH_AS_YOU_TYPE, !state);
+}
+
+
+
+//!
 //! @brief Callback to toggle romaji-kana conversion
 //!
 //! @param widget Unused pointer to a GtkWidget

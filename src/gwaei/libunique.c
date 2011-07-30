@@ -118,6 +118,7 @@ static UniqueResponse _message_received_cb (UniqueApp         *app,
             entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
             gtk_entry_set_text (GTK_ENTRY (entry), data);
             gtk_editable_set_position (GTK_EDITABLE (entry), -1);
+            gw_main_search_cb (NULL, NULL);
           }
           res = UNIQUE_RESPONSE_OK;
           break;
@@ -128,6 +129,7 @@ static UniqueResponse _message_received_cb (UniqueApp         *app,
             if ((di = lw_dictinfolist_get_dictinfo_fuzzy (data)) != NULL)
             {
               gw_main_set_dictionary (di->load_position);
+              gw_main_search_cb (NULL, NULL);
             }
           }
           res = UNIQUE_RESPONSE_OK;

@@ -18,6 +18,7 @@
 #define GW_KEY_KATA_HIRA           "query-katakana-to-hiragana"
 #define GW_KEY_ROMAN_KANA          "query-romanji-to-kana"
 #define GW_KEY_SPELLCHECK          "query-spellcheck"
+#define GW_KEY_SEARCH_AS_YOU_TYPE  "search-as-you-type"
 #define GW_KEY_WINDOW_POSITIONS    "window-positions"
 
 //////////////////////////

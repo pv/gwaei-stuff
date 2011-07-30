@@ -4,6 +4,7 @@
 
 void gw_settings_show_cb (GtkWidget *widget, gpointer data);
 void gw_settings_spellcheck_toggled_cb (GtkWidget*, gpointer);
+void gw_settings_search_as_you_type_toggled_cb (GtkWidget*, gpointer);
 void gw_settings_hira_kata_conv_toggled_cb (GtkWidget*, gpointer);
 void gw_settings_kata_hira_conv_toggled_cb (GtkWidget*, gpointer);
 void gw_settings_romaji_kana_conv_changed_cb (GtkWidget*, gpointer);

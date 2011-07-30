@@ -317,6 +317,7 @@ void do_color_value_changed_action (GSettings *settings,
     g_signal_handlers_unblock_by_func (settings, do_color_value_changed_action, NULL);
 }
 
+
 //!
 //! @param client The preference client
 //! @param cnxn_id Unknown
@@ -331,6 +332,23 @@ void do_spellcheck_pref_changed_action (GSettings *settings,
     gboolean value = g_settings_get_boolean (settings, key);
     gw_spellcheck_set_enabled (value);
     g_signal_handlers_unblock_by_func (settings, do_spellcheck_pref_changed_action, NULL);
+}
+
+
+//!
+//! @param client The preference client
+//! @param cnxn_id Unknown
+//! @param entry The preference entry object
+//! @param data Usere data passed to the function
+//!
+void do_search_as_you_type_pref_changed_action (GSettings *settings,
+                                                gchar *key,
+                                                gpointer data       )
+{
+    g_signal_handlers_block_by_func (settings, do_search_as_you_type_pref_changed_action, NULL);
+    gboolean value = g_settings_get_boolean (settings, key);
+    gw_settings_set_search_as_you_type (value);
+    g_signal_handlers_unblock_by_func (settings, do_search_as_you_type_pref_changed_action, NULL);
 }
 
 
@@ -366,6 +384,8 @@ void gw_settings_listeners_initialize ()
                                   do_color_value_changed_action, NULL);
     lw_pref_add_change_listener_by_schema (GW_SCHEMA_BASE, GW_KEY_SPELLCHECK,
                                   do_spellcheck_pref_changed_action, NULL);
+    lw_pref_add_change_listener_by_schema (GW_SCHEMA_BASE, GW_KEY_SEARCH_AS_YOU_TYPE,
+                                  do_search_as_you_type_pref_changed_action, NULL);
 
     lw_pref_add_change_listener_by_schema (GW_SCHEMA_GNOME_INTERFACE, GW_KEY_DOCUMENT_FONT_NAME,
                                   do_global_document_font_pref_changed_action, NULL);

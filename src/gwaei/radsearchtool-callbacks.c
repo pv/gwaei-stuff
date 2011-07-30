@@ -169,7 +169,7 @@ G_MODULE_EXPORT void gw_radsearchtool_search_cb (GtkWidget *widget, gpointer dat
 
     if (error != NULL)
     {
-      printf("%s\n", error->message);
+      fprintf(stderr, "%s\n", error->message);
       g_error_free (error);
     }
 

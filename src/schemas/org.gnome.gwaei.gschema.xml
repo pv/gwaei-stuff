@@ -42,6 +42,12 @@
       <description>Checks the spelling of search queries as the user types them in.</description>
     </key>
 
+    <key name="search-as-you-type" type="b">
+      <default>true</default>
+      <summary>The search updates as you type</summary>
+      <description>Searches dynamically update as you type.</description>
+    </key>
+
     <key name="window-positions" type="s">
       <default>''</default>
       <summary>For saving window coordinates</summary>

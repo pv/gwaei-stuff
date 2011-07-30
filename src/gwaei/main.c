@@ -2194,7 +2194,7 @@ gboolean gw_main_keep_searching_timeout (gpointer data)
     builder = gw_common_get_builder ();
     window = GTK_WIDGET (gtk_builder_get_object (builder, "settings_window"));
     
-    if (gtk_widget_get_visible (window) == FALSE)
+    if (gtk_widget_get_visible (window) == FALSE && gw_settings_get_search_as_you_type ())
       gw_main_search_cb (NULL, NULL);
 
     return TRUE;
