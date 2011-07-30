@@ -45,13 +45,11 @@ static UniqueResponse response;
 static gboolean _initialized = FALSE;
 
 static void _add_window_watcher (GtkWidget*);
-static gboolean _is_unique (gboolean);
+static gboolean _is_unique (gboolean, char*, char*);
 
 
-
-void gw_libunique_initialize (gboolean new_instance)
+void gw_libunique_initialize (gboolean new_instance, char *dictionary, char *query)
 {
-
     //Declarations
     GtkBuilder *builder;
     GtkWidget *window;
@@ -65,8 +63,11 @@ void gw_libunique_initialize (gboolean new_instance)
     _app = unique_app_new ("org.dictionary.gWaei", NULL);
     _initialized = TRUE;
 
+    unique_app_add_command (_app, "set-dictionary", GW_MESSAGE_SET_DICTIONARY);
+    unique_app_add_command (_app, "set-query", GW_MESSAGE_SET_QUERY);
+
     //Sanity check
-    if (!_is_unique (new_instance)) exit(0);
+    if (!_is_unique (new_instance, dictionary, query)) exit(0);
 
     _add_window_watcher (window);
 }
@@ -93,15 +94,44 @@ static UniqueResponse _message_received_cb (UniqueApp         *app,
                                             guint              time_,
                                             gpointer           user_data)
 {
+    //Declarations
     UniqueResponse res;
-    GtkBuilder *builder = gw_common_get_builder ();
     GtkWidget *main_window, *settings_window, *radicals_window, *kanjipad_window;
+    GtkBuilder *builder;
+    gssize length;
+    const guchar* data;
+    LwDictInfo *di;
+    GtkWidget *entry;
+
+    builder = gw_common_get_builder ();
     main_window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
     kanjipad_window = GTK_WIDGET (gtk_builder_get_object (builder, "kanjipad_window"));
     radicals_window = GTK_WIDGET (gtk_builder_get_object (builder, "radicals_window"));
     settings_window = GTK_WIDGET (gtk_builder_get_object (builder, "settings_window"));
+
     switch (command)
     {
+        case GW_MESSAGE_SET_QUERY:
+          if (message != NULL)
+          {
+            data = unique_message_data_get (message, &length); 
+            entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
+            gtk_entry_set_text (GTK_ENTRY (entry), data);
+            gtk_editable_set_position (GTK_EDITABLE (entry), -1);
+          }
+          res = UNIQUE_RESPONSE_OK;
+          break;
+        case GW_MESSAGE_SET_DICTIONARY:
+          if (message != NULL)
+          {
+            data = unique_message_data_get (message, &length); 
+            if ((di = lw_dictinfolist_get_dictinfo_fuzzy (data)) != NULL)
+            {
+              gw_main_set_dictionary (di->load_position);
+            }
+          }
+          res = UNIQUE_RESPONSE_OK;
+          break;
         case UNIQUE_ACTIVATE:
           if (gtk_widget_get_visible (main_window))
           {
@@ -129,6 +159,9 @@ static UniqueResponse _message_received_cb (UniqueApp         *app,
           }
           res = UNIQUE_RESPONSE_OK;
           break;
+        case UNIQUE_NEW:
+          res = UNIQUE_RESPONSE_OK;
+          break;
         default:
           res = UNIQUE_RESPONSE_OK;
           break;
@@ -137,18 +170,41 @@ static UniqueResponse _message_received_cb (UniqueApp         *app,
 }
 
 
-static gboolean _is_unique (gboolean arg_create_new_instance)
+static gboolean _is_unique (gboolean arg_create_new_instance, char *dictionary, char* query)
 {
-    //Initializaitons
-    gboolean status;
-
     //Declarations
+    gboolean status;
+    UniqueMessageData *messagedata;
+
+    //Initializaitons
     status = TRUE;
 
+    //Instance is already running and we don't want a knew one
     if (arg_create_new_instance == FALSE && unique_app_is_running (_app))
     {
+      if (dictionary != NULL)
+      {
+        messagedata = unique_message_data_new ();
+        unique_message_data_set (messagedata, (guchar*) dictionary, strlen(dictionary) + 1);
+        response = unique_app_send_message (_app, GW_MESSAGE_SET_DICTIONARY, messagedata);
+        unique_message_data_free (messagedata);
+      }
+      if (query != NULL)
+      {
+        messagedata = unique_message_data_new ();
+        unique_message_data_set (messagedata, (guchar*) query, strlen(query) + 1);
+        response = unique_app_send_message (_app, GW_MESSAGE_SET_QUERY, messagedata);
+        unique_message_data_free (messagedata);
+      }
+
       response = unique_app_send_message (_app, UNIQUE_ACTIVATE, NULL);
       status = FALSE;
+    }
+
+    //Creating a new instance
+    else {
+      response = unique_app_send_message (_app, UNIQUE_NEW, NULL);
+      status = TRUE;
     }
 
     return status;

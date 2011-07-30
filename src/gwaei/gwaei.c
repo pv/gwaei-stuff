@@ -42,6 +42,7 @@
 
 
 static gchar   *_arg_dictionary = NULL;
+static gchar   *_arg_query = NULL;
 static gboolean _arg_exact = FALSE;
 static gboolean _arg_new_instance = FALSE;
 static GOptionContext *_context = NULL;
@@ -78,6 +79,9 @@ void gw_initialize (int* argc, char* argv[])
     g_option_context_add_group (_context, gtk_get_option_group (TRUE));
     g_option_context_parse (_context, argc, &argv, &error);
 
+    //Get the query after the flags have been parsed out
+    _arg_query = lw_util_get_query_from_args (*argc, argv);
+
     lw_engine_initialize (
                          gw_output_append_edict_results_cb,
                          gw_output_append_kanjidict_results_cb,
@@ -95,7 +99,7 @@ void gw_initialize (int* argc, char* argv[])
     gw_settings_initialize();
 
     #ifdef WITH_LIBUNIQUE
-    gw_libunique_initialize (_arg_new_instance);
+    gw_libunique_initialize (_arg_new_instance, _arg_dictionary, _arg_query);
     #endif
 
     gw_radsearchtool_initialize ();
@@ -136,7 +140,6 @@ static void _print_about ()
 void gw_start_gtk (int argc, char* argv[])
 {
     //Declarations
-    char *query;
     GtkWidget* entry;
     LwDictInfo *di;
 
@@ -159,11 +162,10 @@ void gw_start_gtk (int argc, char* argv[])
     }
 
     //Set the initial query text if it was passed as an argument to the program
-    if ((query = lw_util_get_query_from_args (argc, argv)) != NULL)
+    if (_arg_query != NULL)
     {
       entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
-      gtk_entry_set_text (GTK_ENTRY (entry), query);
-      g_free(query);
+      gtk_entry_set_text (GTK_ENTRY (entry), _arg_query);
     }
 
     //Enter the main loop
@@ -193,6 +195,7 @@ void gw_free ()
     lw_engine_free ();
     gw_common_free ();
     g_option_context_free (_context);
+    g_free(_arg_query);
 }
 
 
