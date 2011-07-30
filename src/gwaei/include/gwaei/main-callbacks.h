@@ -10,6 +10,7 @@ void gw_main_zoom_in_cb (GtkWidget *widget, gpointer data);
 void gw_main_zoom_out_cb (GtkWidget *widget, gpointer data);
 void gw_main_zoom_100_cb (GtkWidget *widget, gpointer data);
 void gw_main_toolbar_toggle_cb (GtkWidget *widget, gpointer data);
+void gw_main_statusbar_toggle_cb (GtkWidget *widget, gpointer data);
 void gw_main_less_relevant_results_toggle_cb(GtkWidget *widget, gpointer data);
 void gw_main_select_all_cb (GtkWidget *widget, gpointer data);
 void gw_main_paste_cb (GtkWidget *widget, gpointer data);

@@ -78,7 +78,6 @@ struct _LwSearchItem {
     char *scratch_buffer;                   //!< Scratch space
     LwTargetOutput target;                  //!< What gui element should be outputted to
     long current_line;                      //!< Current line in the dictionary file
-    long progress_feedback_line;            //!< Recorderd previous line for determining when to update the progresse
     int history_relevance_idle_timer;       //!< Helps determine if something is added to the history or not
     gboolean show_only_exact_matches;
 

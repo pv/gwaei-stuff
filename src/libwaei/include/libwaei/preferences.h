@@ -4,14 +4,15 @@
 #include <gio/gio.h>
 
 //GSettings
-#define GW_SCHEMA_GNOME_INTERFACE   "org.gnome.interface"
+#define GW_SCHEMA_GNOME_INTERFACE   "org.gnome.desktop.interface"
 #define GW_KEY_TOOLBAR_STYLE        "toolbar-style"
-#define GW_KEY_DOCUMENT_FONT_NAME   "document-font-name"
+#define GW_KEY_DOCUMENT_FONT_NAME   "font-name"
 #define GW_KEY_PROGRAM_VERSION      "version"
 
 /////////////////////////
 #define GW_SCHEMA_BASE             "org.gnome.gwaei"
 #define GW_KEY_TOOLBAR_SHOW        "toolbar-show"
+#define GW_KEY_STATUSBAR_SHOW      "statusbar-show"
 #define GW_KEY_LESS_RELEVANT_SHOW  "less-relevant-results-show"
 #define GW_KEY_HIRA_KATA           "query-hiragana-to-katakana"
 #define GW_KEY_KATA_HIRA           "query-katakana-to-hiragana"

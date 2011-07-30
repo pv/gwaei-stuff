@@ -171,7 +171,7 @@ void gw_start_gtk (int argc, char* argv[])
 
       //Add timers
       g_timeout_add_full (G_PRIORITY_LOW, 200, (GSourceFunc) gw_main_keep_searching_timeout, NULL, NULL);
-      g_timeout_add_full (G_PRIORITY_LOW, 200, (GSourceFunc) gw_main_update_progress_feedback_timeout, NULL, NULL);
+      g_timeout_add_full (G_PRIORITY_DEFAULT_IDLE, 50, (GSourceFunc) gw_main_update_progress_feedback_timeout, NULL, NULL);
       g_timeout_add_full (G_PRIORITY_LOW, 500, (GSourceFunc) gw_update_icons_for_selection, NULL, NULL);
 
       gtk_main ();

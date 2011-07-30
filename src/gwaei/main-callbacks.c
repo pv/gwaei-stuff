@@ -681,8 +681,31 @@ G_MODULE_EXPORT void gw_main_less_relevant_results_toggle_cb (GtkWidget *widget,
 G_MODULE_EXPORT void gw_main_toolbar_toggle_cb (GtkWidget *widget, gpointer data)
 {
     gboolean state;
+
     state = lw_pref_get_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_TOOLBAR_SHOW);
+
     lw_pref_set_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_TOOLBAR_SHOW, !state);
+}
+
+
+//!
+//! @brief Sets the show toolbar boolean to match the widget
+//! 
+//! Makes the gconf pref match the current state of the triggering widget.
+//! The gconf value changed callback then updates the state of the toolbar
+//! to match the pref.
+//!
+//! @see gw_main_set_toolbar_show ()
+//! @param widget Unused GtkWidget pointer.
+//! @param data Unused gpointer
+//!
+G_MODULE_EXPORT void gw_main_statusbar_toggle_cb (GtkWidget *widget, gpointer data)
+{
+    gboolean state;
+
+    state = lw_pref_get_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_STATUSBAR_SHOW);
+
+    lw_pref_set_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_STATUSBAR_SHOW, !state);
 }
 
 
@@ -1321,6 +1344,13 @@ G_MODULE_EXPORT void gw_main_search_cb (GtkWidget *widget, gpointer data)
 
     item = gw_tabs_get_searchitem ();
     di = lw_dictinfolist_get_selected_dictinfo ();
+
+    //Cancel all searches if the search bar is empty
+    if (strlen(query) == 0) 
+    {
+      gw_main_cancel_search_by_searchitem (item);
+      return;
+    }
 
     new_item = lw_searchitem_new (query, di, GW_TARGET_RESULTS, &error);
 

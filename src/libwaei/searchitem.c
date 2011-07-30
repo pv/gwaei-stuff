@@ -180,7 +180,6 @@ gboolean lw_searchitem_do_pre_search_prep (LwSearchItem* item)
 
     //Reset internal variables
     item->current_line = 0;
-    item->progress_feedback_line = 0;
     item->total_relevant_results = 0;
     item->total_irrelevant_results = 0;
     item->total_results = 0;

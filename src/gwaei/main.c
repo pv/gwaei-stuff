@@ -44,6 +44,8 @@
 static LwSearchItem *_progress_feedback_item = NULL;
 static gboolean _prev_selection_icon_state = FALSE;
 static int _previous_tip = 0;
+static long _progress_feedback_line = 0;
+static LwSearchState _progress_feedback_status = GW_SEARCH_IDLE;
 
 
 //!
@@ -97,21 +99,24 @@ gboolean gw_main_update_progress_feedback_timeout (gpointer data)
     page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
     item = g_list_nth_data (gw_tabs_get_searchitem_list (), page_num);
 
-    if (item != NULL) 
+    if (item != NULL && item->target != GW_TARGET_KANJI) 
     {
       g_mutex_lock (item->mutex);
       gdk_threads_enter ();
-        if (item != _progress_feedback_item || item->current_line != item->progress_feedback_line && item->target != GW_TARGET_KANJI)
+        if (item != _progress_feedback_item || item->current_line != _progress_feedback_line || item->status != _progress_feedback_status)
         {
-          _progress_feedback_item = item;
-          item->progress_feedback_line = item->current_line;
           gw_main_set_search_progressbar_by_searchitem (item);
           gw_main_set_total_results_label_by_searchitem (item);
           gw_main_set_main_window_title_by_searchitem (item);
+
+          _progress_feedback_item = item;
+          _progress_feedback_line = item->current_line;
+          _progress_feedback_status = item->status;
         }
       gdk_threads_leave ();
       g_mutex_unlock (item->mutex);
     }
+
    return TRUE;
 }
 
@@ -658,13 +663,19 @@ void gw_main_set_dictionary_by_searchitem (LwSearchItem *item)
 void gw_main_set_search_progressbar_by_searchitem (LwSearchItem *item)
 {
     //Declarations
+    GtkBuilder *builder;
     GtkWidget *entry;
+    GtkWidget *progressbar;
+    GtkWidget *statusbar;
     long current;
     long total;
     double fraction;
 
     //Initializations
+    builder = gw_common_get_builder ();
     entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
+    progressbar = GTK_WIDGET (gtk_builder_get_object (builder, "search_progressbar"));
+    statusbar = GTK_WIDGET (gtk_builder_get_object (builder, "statusbar"));
     current = 0;
     total = 0;
 
@@ -677,8 +688,20 @@ void gw_main_set_search_progressbar_by_searchitem (LwSearchItem *item)
     if (current == 0) fraction = 0.0;
     else fraction = (double)current / (double)total;
 
-    if (item == NULL || item->dictionary == NULL || total == 0 || fraction > 1.0 || item->status == GW_SEARCH_IDLE || item->status == GW_SEARCH_FINISHING || item->status == GW_SEARCH_CANCELING)
+    if (item == NULL ||
+        item->dictionary == NULL ||
+        total == 0 ||
+        fraction >= (1.0 - 0.00001) ||
+        item->status == GW_SEARCH_IDLE ||
+        item->status == GW_SEARCH_FINISHING ||
+        item->status == GW_SEARCH_CANCELING   )
     {
+      gtk_entry_set_progress_fraction (GTK_ENTRY (entry), 0.0);
+      gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (progressbar), 0.0);
+    }
+    else if (gtk_widget_get_visible (statusbar))
+    {
+      gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (progressbar), fraction);
       gtk_entry_set_progress_fraction (GTK_ENTRY (entry), 0.0);
     }
     else
@@ -883,8 +906,7 @@ void gw_main_set_font (char *font_description_string, int *font_magnification)
     if (font_description_string == NULL)
     {
       if (use_global_font_setting)
-        strcpy(font_family, "Sans 10");
-//        lw_pref_get_string_by_schema (font_family, GW_SCHEMA_GNOME_INTERFACE, GW_KEY_DOCUMENT_FONT_NAME, GW_DEFAULT_FONT, 100);
+        lw_pref_get_string_by_schema (font_family, GW_SCHEMA_GNOME_INTERFACE, GW_KEY_DOCUMENT_FONT_NAME, 100);
       else
         lw_pref_get_string_by_schema (font_family, GW_SCHEMA_FONT, GW_KEY_FONT_CUSTOM_FONT, 100);
     }
@@ -981,22 +1003,52 @@ void gw_main_set_toolbar_style (const char *request)
 //!
 void gw_main_set_toolbar_show (gboolean request)
 {
-    GtkBuilder *builder = gw_common_get_builder ();
-
+    //Declarations
+    GtkBuilder *builder;
     GtkWidget *toolbar;
+    GtkAction *action;
+
+    //Initializations
+    builder = gw_common_get_builder ();
     toolbar = GTK_WIDGET (gtk_builder_get_object(builder, "toolbar"));
+    action = GTK_ACTION (gtk_builder_get_object (builder, "view_toggle_toolbar_action"));
 
     if (request == TRUE)
       gtk_widget_show(toolbar);
     else
       gtk_widget_hide(toolbar);
 
-    GtkAction *action;
-    action = GTK_ACTION (gtk_builder_get_object (builder, "view_toggle_toolbar_action"));
-
     g_signal_handlers_block_by_func (action, gw_main_toolbar_toggle_cb, NULL);
     gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), request);
     g_signal_handlers_unblock_by_func (action, gw_main_toolbar_toggle_cb, NULL);
+}
+
+
+//!
+//! @brief Sets the checkbox to show or hide the toolbar
+//!
+//! @param request How to set the toolbar
+//!
+void gw_main_set_statusbar_show (gboolean request)
+{
+    //Declarations
+    GtkBuilder *builder;
+    GtkWidget *statusbar;
+    GtkAction *action;
+
+    //Initializations
+    builder = gw_common_get_builder ();
+    statusbar = GTK_WIDGET (gtk_builder_get_object(builder, "statusbar"));
+    action = GTK_ACTION (gtk_builder_get_object (builder, "view_toggle_statusbar_action"));
+
+    if (request == TRUE)
+      gtk_widget_show (statusbar);
+    else
+      gtk_widget_hide (statusbar);
+
+    g_signal_handlers_block_by_func (action, gw_main_statusbar_toggle_cb, NULL);
+    gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), request);
+    g_signal_handlers_unblock_by_func (action, gw_main_statusbar_toggle_cb, NULL);
 }
 
 
