@@ -176,6 +176,14 @@ void gw_start_gtk (int argc, char* argv[])
       g_timeout_add_full (G_PRIORITY_LOW, 50, (GSourceFunc) gw_main_update_progress_feedback_timeout, NULL, NULL);
       g_timeout_add_full (G_PRIORITY_LOW, 500, (GSourceFunc) gw_update_icons_for_selection, NULL, NULL);
 
+#ifdef ENABLE_WIN32
+      GtkSettings *settings;
+      settings = gtk_settings_get_default ();
+      g_object_set (settings, "gtk-theme-name", "MS-Windows", NULL);
+      g_object_set (settings, "gtk-menu-images", FALSE, NULL);
+      g_object_set (settings, "gtk-button-images", FALSE, NULL);
+#endif
+
       gtk_main ();
 
     gdk_threads_leave();
