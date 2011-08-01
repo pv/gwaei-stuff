@@ -51,7 +51,7 @@ static gboolean _paths_initialized = FALSE;
 //!
 const char* lw_util_get_directory (const LwFolderPath PATH) 
 {
-    g_assert (PATH >= 0 & PATH < GW_PATH_TOTAL);
+    g_assert (PATH >= 0 && PATH < GW_PATH_TOTAL);
 
     LwEngine i;
 
@@ -454,9 +454,9 @@ void lw_util_str_shift_kata_to_hira (char input[])
 //! @param input The string to jump around
 //! @return where the next hiragana equivalent character would start
 //!
-char* lw_util_next_hira_char_from_roma (char *input)
+const char* lw_util_next_hira_char_from_roma (const char *input)
 {
-    char *input_ptr;
+    const char *input_ptr;
     input_ptr = input;
 
     int total_n = 0;
@@ -530,10 +530,10 @@ char* lw_util_next_hira_char_from_roma (char *input)
 //! @param input The string to write the hiragana equivalent to
 //! @return Returns null on error/end
 //!
-char* lw_util_roma_char_to_hira (char *input, char *output)
+char* lw_util_roma_char_to_hira (const char *input, char *output)
 {
     //Set up the input pointer
-    char *input_ptr;
+    const char *input_ptr;
     input_ptr = input;
 
     //Make sure the output pointer is initialized
@@ -918,10 +918,10 @@ char* lw_util_roma_char_to_hira (char *input, char *output)
 //! @see lw_util_shift_all_chars_in_str_by ()
 //! @see lw_util_str_shift_hira_to_kata ()
 //!
-gboolean lw_util_str_roma_to_hira (char* input, char* output, int max)
+gboolean lw_util_str_roma_to_hira (const char* input, char* output, int max)
 {
     //Declarations
-    char *input_ptr;
+    const char *input_ptr;
     char *kana_ptr;
     int leftover;
 
@@ -973,7 +973,7 @@ gchar* lw_util_prepare_query (const char* input, gboolean strip)
 
     if(lw_util_contains_halfwidth_japanese (output) == TRUE)
     {
-      buffer == output;
+      buffer = output;
       output = lw_util_enlarge_halfwidth_japanese (buffer);
       g_free (buffer);
     }
@@ -1130,20 +1130,6 @@ gboolean lw_util_is_japanese_locale ()
            );
 }
 
-static gboolean _is_script_type (const char* type, GUnicodeScript script)
-{
-    if (strcmp(type, "kanji") == 0)
-      return (script == G_UNICODE_SCRIPT_HAN);
-    else if (strcmp(type, "kanjiish") == 0)
-      return (script == G_UNICODE_SCRIPT_HAN || script == G_UNICODE_SCRIPT_HIRAGANA);
-    else if (strcmp(type, "furigana") == 0)
-      return (script == G_UNICODE_SCRIPT_KATAKANA || script == G_UNICODE_SCRIPT_HIRAGANA);
-    else if (strcmp(type, "romaji") == 0)
-      return (script == G_UNICODE_SCRIPT_LATIN);
-
-    g_assert_not_reached ();
-}
-
 
 //!
 //! @brief Returns the furigana atoms in a string as an array of atoms
@@ -1159,7 +1145,6 @@ char** lw_util_get_romaji_atoms_from_string (const char *string)
     const char *string_ptr;
     char *buffer_ptr;
     const char* delimitor;
-    char *buffer_delimitor_ptr;
     char **string_array;
     gboolean new_atom_start;
     int offset;
@@ -1230,7 +1215,6 @@ char** lw_util_get_furigana_atoms_from_string (const char *string)
     const char *string_ptr;
     char *buffer_ptr;
     const char* delimitor;
-    char *buffer_delimitor_ptr;
     char **string_array;
     int offset;
     gboolean new_atom_start;

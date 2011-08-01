@@ -55,19 +55,6 @@ void gw_main_initialize ()
 {
     gw_common_load_ui_xml ("main.ui");
 
-    //Declarations
-    GtkWidget *toolbar;
-    GtkBuilder *builder;
-
-    //Initializations
-    builder = gw_common_get_builder ();
-    toolbar = GTK_WIDGET (gtk_builder_get_object (builder, "toolbar"));
-    gtk_style_context_add_class (gtk_widget_get_style_context (toolbar), GTK_STYLE_CLASS_PRIMARY_TOOLBAR);
-#ifdef G_OS_WIN32
-    gtk_toolbar_set_style (GTK_TOOLBAR (toolbar), GTK_TOOLBAR_ICONS);
-#else
-    gtk_toolbar_unset_style (GTK_TOOLBAR (toolbar));
-#endif
     gw_spellcheck_attach_to_entry (GTK_ENTRY (gw_common_get_widget_by_target (GW_TARGET_ENTRY)));
 
     gw_tabs_initialize ();
@@ -425,7 +412,6 @@ void gw_main_update_toolbar_buttons ()
     gboolean enable;
     char *id;
 
-    LwSearchItem* history_search_item = lw_historylist_get_current (GW_TARGET_RESULTS);
     GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
     int page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
     int pages = gtk_notebook_get_n_pages (GTK_NOTEBOOK (notebook));
@@ -549,7 +535,6 @@ void gw_main_set_total_results_label_by_searchitem (LwSearchItem* item)
     {
       //Declarations
       int relevant = item->total_relevant_results;
-      int irrelevant = item->total_irrelevant_results;
       int total = item->total_results;
 
       char *idle_message_none = "";
@@ -591,6 +576,8 @@ void gw_main_set_total_results_label_by_searchitem (LwSearchItem* item)
               if (base_message != NULL)
                 final_message = g_strdup_printf (base_message, total, relevant);
             }
+            break;
+        case GW_SEARCH_CANCELING:
             break;
       }
 
@@ -742,8 +729,6 @@ void gw_main_update_history_menu_popup ()
     children = NULL;
 
     //Declarations
-    GtkWidget *label;
-    const char *text;
     LwSearchItem *item;
     GtkWidget *menuitem;
 
@@ -824,8 +809,6 @@ static void _rebuild_history_button_popup (char* id, GList* list)
     gtk_widget_show(menuitem);
 
     //Declarations
-    GtkWidget *label;
-    const char *text;
     LwSearchItem *item;
 
     children = list;
@@ -1075,10 +1058,15 @@ void gw_main_set_romaji_kana_conv (int request)
 //!
 void gw_main_set_hiragana_katakana_conv (gboolean request)
 {
-    GtkBuilder *builder = gw_common_get_builder ();
-
+    //Declarations
+    GtkBuilder *builder;
     GtkWidget *widget;
-    if (widget = GTK_WIDGET (gtk_builder_get_object(builder, "query_hiragana_to_katakana")))
+
+    //Initializations
+    builder = gw_common_get_builder ();
+    widget = GTK_WIDGET (gtk_builder_get_object(builder, "query_hiragana_to_katakana"));
+
+    if (widget != NULL)
     {
       g_signal_handlers_block_by_func (widget, gw_settings_hira_kata_conv_toggled_cb, NULL);
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (widget), request);
@@ -1094,13 +1082,17 @@ void gw_main_set_hiragana_katakana_conv (gboolean request)
 //!
 void gw_main_set_katakana_hiragana_conv (gboolean request)
 {
-    GtkBuilder *builder = gw_common_get_builder ();
-
+    //Declarations
+    GtkBuilder *builder;
     GtkWidget *widget;
-    if (widget = GTK_WIDGET (gtk_builder_get_object(builder, "query_katakana_to_hiragana")))
+
+    //Initializations
+    builder = gw_common_get_builder ();
+    widget = GTK_WIDGET (gtk_builder_get_object(builder, "query_katakana_to_hiragana"));
+
+    if (widget != NULL)
     {
       g_signal_handlers_block_by_func (widget, gw_settings_kata_hira_conv_toggled_cb, NULL);
-      
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (widget), request);
       g_signal_handlers_unblock_by_func (widget, gw_settings_kata_hira_conv_toggled_cb, NULL);
     }
@@ -1292,7 +1284,6 @@ void gw_main_strncpy_text_from_widget_by_target (char* output, LwTargetOutput TA
     //GtkEntry
     if (TARGET == GW_TARGET_ENTRY)
     {
-      GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
       strncpy(output, gtk_entry_get_text (GTK_ENTRY (search_entry)), MAX);
     }
   /*
@@ -1423,6 +1414,9 @@ void gw_main_copy_text (LwTargetOutput TARGET)
         clipbd = gtk_clipboard_get (GDK_SELECTION_CLIPBOARD);
         gtk_text_buffer_copy_clipboard (GTK_TEXT_BUFFER (results_tb), clipbd);
         break;
+      case GW_TARGET_KANJI:
+      case GW_TARGET_CONSOLE:
+        break;
     }
 }
 
@@ -1441,6 +1435,10 @@ void gw_main_cut_text (LwTargetOutput TARGET)
       case GW_TARGET_ENTRY:
         gtk_editable_cut_clipboard (GTK_EDITABLE (search_entry));
         break;
+      case GW_TARGET_RESULTS:
+      case GW_TARGET_KANJI:
+      case GW_TARGET_CONSOLE:
+        break;
     }
 }
 
@@ -1458,6 +1456,10 @@ void gw_main_paste_text (LwTargetOutput TARGET)
     {
       case GW_TARGET_ENTRY:
         gtk_editable_paste_clipboard (GTK_EDITABLE (search_entry));
+        break;
+      case GW_TARGET_RESULTS:
+      case GW_TARGET_KANJI:
+      case GW_TARGET_CONSOLE:
         break;
     }
 }
@@ -1498,7 +1500,6 @@ gboolean _set_color_to_tagtable (char    *id,     LwTargetOutput TARGET,
       char *key = NULL;
       char fg_color[100];
       char bg_color[100];
-      char fallback_color[100];
 
       GdkRGBA color;
 

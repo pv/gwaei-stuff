@@ -40,7 +40,9 @@ static gboolean _quiet_switch = FALSE;
 static gboolean _exact_switch = FALSE;
 static gboolean _list_switch = FALSE;
 static gboolean _version_switch = FALSE;
+#ifdef WITH_NCURSES
 static gboolean _ncurses_switch = FALSE;
+#endif
 static gboolean _color_switch = FALSE;
 
 static char* _dictionary_switch_data = NULL;

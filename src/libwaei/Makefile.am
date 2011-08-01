@@ -14,7 +14,7 @@ libwaei_la_CPPFLAGS = $(BASE_CFLAGS) -I$(top_srcdir)/src/libwaei/include $(DEFIN
 
 if ENABLE_WIN32
 gwaei_LDFLAGS = -Wl,-subsystem,windows 
-WIN32_DEFS = -DENABLE_WIN32 -DLC_MESSAGES=\"C\" -DCURL_STATICLIB 
+WIN32_DEFS = -DENABLE_WIN32 -DLC_MESSAGES=LC_ALL -DCURL_STATICLIB 
 libwaei_la_LDFLAGS += $(WIN32_LIBS) 
 libwaei_la_CPPFLAGS += $(WIN32_CFLAGS) $(WIN32_DEFS)
 endif

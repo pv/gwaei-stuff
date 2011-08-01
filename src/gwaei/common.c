@@ -403,7 +403,6 @@ GtkWidget* gw_common_get_widget_by_target (const LwTargetOutput TARGET)
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
-    GtkWidget *container;
     GtkWidget *notebook;
     GtkWidget *page;
     int page_number;

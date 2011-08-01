@@ -39,7 +39,6 @@
 
 //Private function declarations
 static GRegex*** _allocate_regex_pointers (int);
-static void _free_regex_pointers (GRegex***);
 static void _free_queryline_pointers (LwQueryLine*);
 static char** _initialize_queryline_pointers (LwQueryLine*, const char*);
 
@@ -199,7 +198,6 @@ gboolean lw_queryline_parse_edict_string (LwQueryLine *ql, const char* string, G
    gboolean want_rk_conv;
    gboolean want_hk_conv;
    gboolean want_kh_conv;
-   gboolean want_conv;
    gboolean all_regex_built;
    int length;
    GRegex ***re;
@@ -376,7 +374,6 @@ static GRegex*** _compile_and_allocate_number_search_regex (const char* subject,
     gboolean all_regex_built;
     char *match_text;
     char *expression;
-    char *ptr;
     int i;
 
     //Initializations
@@ -541,7 +538,6 @@ gboolean lw_queryline_parse_kanjidict_string (LwQueryLine *ql, const char* strin
     for (iter = atoms; *iter != NULL; iter++)
     {
       atom = *iter;
-      GMatchInfo *match_info;
       int match_start_byte_offset;
       int match_end_byte_offset;
 

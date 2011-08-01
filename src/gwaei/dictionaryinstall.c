@@ -382,7 +382,6 @@ G_MODULE_EXPORT void gw_dictionaryinstall_source_entry_changed_cb (GtkWidget *wi
 G_MODULE_EXPORT void gw_dictionaryinstall_reset_default_uri_cb (GtkWidget *widget, gpointer data)
 {
     LwDictInst* di = (LwDictInst*) data;
-    char value[200];
 
     if (di->schema == NULL || di->key == NULL) return;
 

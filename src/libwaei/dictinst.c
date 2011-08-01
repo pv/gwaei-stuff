@@ -660,7 +660,6 @@ gboolean lw_dictinst_finalize (LwDictInst *di, LwIoProgressCallback cb, GError *
     char *target;
     gpointer data;
     LwDictInstUri group_index;
-    int atom_index;
     int i;
 
     //Initializations

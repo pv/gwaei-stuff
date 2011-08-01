@@ -83,7 +83,6 @@ static void drawingarea_annotate_stroke (GwKanjipad *pad, GList *stroke, cairo_t
       if (stroke)
       {
         char buffer[16];
-        PangoLayout *layout;
         int swidth, sheight;
         gint16 x, y;
         double r;
@@ -92,6 +91,9 @@ static void drawingarea_annotate_stroke (GwKanjipad *pad, GList *stroke, cairo_t
         double dl = sqrt(dx*dx+dy*dy);
         int sign = (dy <= dx) ? 1 : -1;
         GdkRectangle update_area;
+
+        swidth = 0;
+        sheight = 0;
 
         sprintf (buffer, "%d", index);
 
@@ -131,7 +133,6 @@ static void _drawingarea_init (GwKanjipad *pad)
     int index = 1;
     guint16 width;
     guint16 height;
-    cairo_surface_t *cst;
     cairo_t *cr;
     double half_width;
     double half_height;

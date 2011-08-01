@@ -357,7 +357,7 @@ void gw_output_append_edict_results_cb (LwSearchItem *item)
     else
     {
       GtkTextMark *temp_mark;
-      if (temp_mark = gtk_text_buffer_get_mark (tb, "note_mark"))
+      if ((temp_mark = gtk_text_buffer_get_mark (tb, "note_mark")) != NULL)
          gtk_text_buffer_delete_mark (tb, temp_mark);
     }
 

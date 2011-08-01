@@ -158,7 +158,6 @@ G_MODULE_EXPORT void gw_settings_swatch_color_set_cb (GtkWidget *widget, gpointe
 G_MODULE_EXPORT void gw_settings_swatch_color_reset_cb (GtkWidget *widget, gpointer data)
 {
     //Initializations
-    char fallback[100];
     int i = 0;
     char *pref_key[] = {
       GW_KEY_MATCH_FG,

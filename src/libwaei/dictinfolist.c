@@ -44,8 +44,6 @@
 //Private member and method declarations
 static LwDictList *_dictionaries;
 
-static gboolean _create_mix_dictionary ();
-static gboolean _split_places_from_names_dictionary (GError**);
 static gint     _load_order_compare_function (gconstpointer, gconstpointer);
 static void     _sort_and_normalize_dictlist_load_order ();
 

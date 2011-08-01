@@ -239,16 +239,20 @@ void w_console_append_edict_results_to_buffer (LwSearchItem *item)
       printf(" [%s]", resultline->furigana_start);
     //Other info
     if (resultline->classification_start)
+    {
       if (w_get_color_switch ())
         printf("[0m %s", resultline->classification_start);
       else
         printf("%s", resultline->classification_start);
+    }
     //Important Flag
     if (resultline->important)
+    {
       if (w_get_color_switch ())
         printf("[0m %s", "P");
       else
         printf("%s", "P");
+    }
 
     printf("\n");
     while (cont < resultline->def_total)

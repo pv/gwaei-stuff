@@ -50,9 +50,9 @@ const char* lw_util_get_compression_name (const LwCompression);
 const char* lw_util_get_encoding_name (const LwEncoding);
 
 
-char* lw_util_next_hira_char_from_roma (char*);
-char* lw_util_roma_to_hira (char*, char*);
-gboolean lw_util_str_roma_to_hira (char*, char*, int);
+const char* lw_util_next_hira_char_from_roma (const char*);
+char* lw_util_roma_to_hira (const char*, char*);
+gboolean lw_util_str_roma_to_hira (const char*, char*, int);
 
 gboolean lw_util_is_hiragana_str (const char*);
 gboolean lw_util_is_util_kanji_str (const char*);

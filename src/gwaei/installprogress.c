@@ -113,6 +113,8 @@ static gpointer _installprogress_install_thread (gpointer data)
 #ifndef ENABLE_WIN32
   gdk_threads_leave (); 
 #endif
+
+    return NULL;
 }
 
 
@@ -127,6 +129,8 @@ static int _installprogress_update_dictinst_cb (double fraction, gpointer data)
     g_mutex_lock (di->mutex); 
     _install_fraction = lw_dictinst_get_total_progress (di, fraction);
     g_mutex_unlock (di->mutex);
+
+    return 0;
 }
 
 

@@ -33,7 +33,7 @@
 
 #include <libwaei/libwaei.h>
 
-
+static char *FIRST_DEFINITION_PREFIX_STR = "(1)";
 
 LwResultLine* lw_resultline_new ()
 {
@@ -235,7 +235,6 @@ void lw_resultline_parse_kanjidict_result_string (LwResultLine *rl)
     int start[GW_RE_TOTAL];
     int end[GW_RE_TOTAL];
     GUnicodeScript script;
-    gunichar character;
     char *ptr = rl->string;
 
     //Reinitialize Variables to help prevent craziness
@@ -303,7 +302,7 @@ void lw_resultline_parse_kanjidict_result_string (LwResultLine *rl)
     ptr = g_utf8_strchr (ptr, -1, g_utf8_get_char (" "));
     if (ptr == NULL)
     {
-      printf("This dictionary is incorrectly formatted\n");
+      fprintf(stderr, "This dictionary is incorrectly formatted\n");
       exit (1);
     }
     *ptr = '\0';
@@ -317,7 +316,7 @@ void lw_resultline_parse_kanjidict_result_string (LwResultLine *rl)
       rl->radicals = ptr;
       ptr = g_utf8_next_char (ptr);
       script = g_unichar_get_script (g_utf8_get_char (ptr));
-      while (*ptr == ' ' || script != G_UNICODE_SCRIPT_LATIN && script != G_UNICODE_SCRIPT_COMMON)
+      while (*ptr == ' ' || (script != G_UNICODE_SCRIPT_LATIN && script != G_UNICODE_SCRIPT_COMMON))
       {
         ptr = g_utf8_next_char(ptr);
         script = g_unichar_get_script (g_utf8_get_char (ptr));
@@ -364,7 +363,7 @@ void lw_resultline_parse_kanjidict_result_string (LwResultLine *rl)
 
     rl->meanings = ptr;
 
-    if (ptr = g_utf8_strrchr (ptr, -1, g_utf8_get_char ("\n")))
+    if ((ptr = g_utf8_strrchr (ptr, -1, g_utf8_get_char ("\n"))) != NULL)
       *ptr = '\0';
 
     if (rl->strokes)   *(rl->string + end[GW_RE_STROKES]) = '\0';
@@ -406,8 +405,6 @@ void lw_resultline_parse_examplesdict_result_string (LwResultLine *rl)
     rl->kanji = rl->string;
 
     char *temp = NULL;
-    char *eraser = NULL;
-    int i = 0;
 
     //Normal Japanese:    B:日本語[tab]English:B:読み解説
     temp = rl->string;

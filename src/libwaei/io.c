@@ -276,6 +276,7 @@ gboolean lw_io_download (char *source_path, char *target_path, LwIoProgressCallb
     outfile = fopen(target_path, "wb");
     cbwdata.cb = cb;
     cbwdata.data = data;
+    res = 0;
 
     if (curl != NULL || outfile != NULL)
     {
@@ -612,7 +613,6 @@ char** lw_io_get_dictionary_file_list ()
     const int MAX = GW_DICTLIST_MAX_DICTIONARIES;
     char** atoms = (char**) malloc((MAX + 1) * sizeof(int));
     int i = 0;
-    GError *error = NULL;
 
     //Go through each engine folder looking for dictionaries
     for (engine = 0; engine < GW_ENGINE_TOTAL && i < MAX; engine++)

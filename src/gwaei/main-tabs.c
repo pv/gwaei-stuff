@@ -562,9 +562,9 @@ G_MODULE_EXPORT void gw_tabs_new_with_search_cb (GtkWidget *widget, gpointer dat
     //Initializations
     builder = gw_common_get_builder ();
     item = (LwSearchItem*) data;
-    current_item = g_list_nth_data (gw_tabs_get_searchitem_list (), page_num);
     notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
     page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+    current_item = g_list_nth_data (gw_tabs_get_searchitem_list (), page_num);
 
     if (item != NULL)
     {

@@ -35,9 +35,6 @@
 //! @brief Primitive for storing lists of dictionaries
 //!
 
-
-static char *FIRST_DEFINITION_PREFIX_STR = "(1)";
-
 struct _LwResultLine {
     char string[GW_IO_MAX_FGETS_LINE];     //!< Character array holding the result line for the pointers to reference
 

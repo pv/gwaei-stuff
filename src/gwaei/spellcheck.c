@@ -18,105 +18,144 @@ static gboolean _draw_underline_cb (GtkWidget*, cairo_t*, gpointer);
 static void _queue_spellcheck_cb (GtkEditable*, gpointer);
 static gboolean _update_spellcheck_timeout (gpointer);
 static void _update_button_sensitivities (void);
-static int _timer = 0;
+static gboolean _running_check = FALSE;
+static int _timeout = 0;
 
 
 struct _SpellingReplacementData {
-  GtkEntry *entry;
-  int start_offset;
-  int end_offset;
-  char* replacement_text;
+    GtkEntry *entry;
+    int start_offset;
+    int end_offset;
+    char* replacement_text;
 };
 typedef struct _SpellingReplacementData _SpellingReplacementData;
 
 
-struct _StreamWithData {
-  int stream;
-  gpointer data;
+struct _GwStreamWithData {
+    int stream;
+    gpointer data;
+    int length;
+    GPid pid;
 };
-typedef struct _StreamWithData _StreamWithData;
+typedef struct _GwStreamWithData _GwStreamWithData;
+
+_GwStreamWithData* _gw_streamwithdata_new (int stream, const char* data, int length, GPid pid)
+{
+    _GwStreamWithData *temp;
+
+    if ((temp = malloc(sizeof(_GwStreamWithData))) != NULL)
+    {
+      temp->stream = stream;
+      temp->data = malloc(length);
+      if (temp->data != NULL) strncpy(temp->data, data, length);
+      temp->length = length;
+      temp->pid = pid;
+    }
+
+    return temp;
+}
+
+void _gw_streamwithdata_free (_GwStreamWithData *swd)
+{
+    free(swd->data);
+    free(swd);
+}
+
+
 
 
 
 static void _free_menuitem_data (GtkWidget *widget, gpointer data)
 {
-  //Declarations
-  _SpellingReplacementData *srd;
+    //Declarations
+    _SpellingReplacementData *srd;
 
-  //Initializations
-  srd = data;
+    //Initializations
+    srd = data;
 
-  //Cleanup
-  g_free (srd->replacement_text);
-  free (srd);
+    //Cleanup
+    g_free (srd->replacement_text);
+    free (srd);
 }
 
 static gpointer _infunc (gpointer data)
 {
-  //Declarations
-  _StreamWithData *swd;
-  FILE *file;
-  size_t chunk;
-  int stream;
-  char *text;
+    //Declarations
+    _GwStreamWithData *swd;
+    FILE *file;
+    size_t chunk;
+    int stream;
+    char *text;
 
-  //Initializations
-  swd = data;
-  stream = swd->stream;
-  text = swd->data;
-  file = fdopen(stream, "w");
+    //Initializations
+    swd = data;
+    stream = swd->stream;
+    text = swd->data;
+    file = fdopen(stream, "w");
 
-  if (file != NULL)
-  {
-    if (ferror(file) == 0 && feof(file) == 0)
+    if (file != NULL)
     {
-      chunk = fwrite(text, sizeof(char), strlen(text), file);
+      if (ferror(file) == 0 && feof(file) == 0)
+      {
+        chunk = fwrite(text, sizeof(char), strlen(text), file);
+      }
+
+      fclose(file);
     }
 
-    fclose(file);
-  }
+    _gw_streamwithdata_free (swd);
 
-  return NULL;
+    return NULL;
 }
 
 static gpointer _outfunc (gpointer data)
 {
-  //Declarations
-  const int MAX = 500;
-  _StreamWithData *swd;
-  FILE *file;
-  int stream;
-  char buffer[MAX];
+    //Declarations
+    const int MAX = 500;
+    _GwStreamWithData *swd;
+    FILE *file;
+    int stream;
+    char buffer[MAX];
 
-  //Initializations
-  swd = data;
-  stream = swd->stream;
-  file = fdopen (swd->stream, "r");
+    //Initializations
+    swd = data;
+    stream = swd->stream;
+    file = fdopen (swd->stream, "r");
 
-  if (file != NULL)
-  {
+    if (file != NULL)
+    {
+
+      //Clear out the old links
+      while (_corrections != NULL)
+      {
+        g_mutex_lock (_mutex);
+        g_free (_corrections->data);
+        _corrections = g_list_delete_link (_corrections, _corrections);
+        g_mutex_unlock (_mutex);
+      }
+
+      //Add the new links
+      while (file != NULL && ferror(file) == 0 && feof(file) == 0 && fgets(buffer, MAX, file) != NULL)
+      {
+        g_mutex_lock (_mutex);
+        if (buffer[0] != '@' && buffer[0] != '*' && buffer[0] != '#' && strlen(buffer) > 1)
+          _corrections = g_list_append (_corrections, g_strdup (buffer));
+        g_mutex_unlock (_mutex);
+      }
+
+      //Cleanup
+      fclose (file);
+    }
+
+    g_spawn_close_pid (swd->pid);
+
+    _gw_streamwithdata_free (swd);
+
     g_mutex_lock (_mutex);
-
-    //Clear out the old links
-    while (_corrections != NULL)
-    {
-      g_free (_corrections->data);
-      _corrections = g_list_delete_link (_corrections, _corrections);
-    }
-
-    //Add the new links
-    while (file != NULL && ferror(file) == 0 && feof(file) == 0 && fgets(buffer, MAX, file) != NULL)
-    {
-      if (buffer[0] != '@' && buffer[0] != '*' && buffer[0] != '#' && strlen(buffer) > 1)
-        _corrections = g_list_append (_corrections, g_strdup (buffer));
-    }
+    _running_check = FALSE;
     g_mutex_unlock (_mutex);
 
-    //Cleanup
-    fclose (file);
-  }
-
-  return NULL;
+    return NULL;
 }
 
 //!
@@ -125,16 +164,16 @@ static gpointer _outfunc (gpointer data)
 //!
 void gw_spellcheck_attach_to_entry (GtkEntry *entry)
 {
-  //Sanity check
-  g_assert (_mutex == NULL);
+    //Sanity check
+    g_assert (_mutex == NULL);
 
-  //Initializations
-  _mutex = g_mutex_new ();
+    //Initializations
+    _mutex = g_mutex_new ();
 
-  g_signal_connect_after (G_OBJECT (entry), "draw", G_CALLBACK (_draw_underline_cb), NULL);
-  g_signal_connect (G_OBJECT (entry), "changed", G_CALLBACK (_queue_spellcheck_cb), NULL);
-  g_signal_connect (G_OBJECT (entry), "populate-popup", G_CALLBACK (_populate_popup_cb), NULL);
-  g_timeout_add (300, (GSourceFunc) _update_spellcheck_timeout, (gpointer) entry);
+    g_signal_connect_after (G_OBJECT (entry), "draw", G_CALLBACK (_draw_underline_cb), NULL);
+    g_signal_connect (G_OBJECT (entry), "changed", G_CALLBACK (_queue_spellcheck_cb), NULL);
+    g_signal_connect (G_OBJECT (entry), "populate-popup", G_CALLBACK (_populate_popup_cb), NULL);
+    g_timeout_add (100, (GSourceFunc) _update_spellcheck_timeout, (gpointer) entry);
 }
 
 
@@ -145,36 +184,36 @@ void gw_spellcheck_attach_to_entry (GtkEntry *entry)
 
 static void _menuitem_activated_cb (GtkWidget *widget, gpointer data)
 {
-  //Declarations
-  _SpellingReplacementData *srd;
-  char *text;
-  char *buffer;
-  char *replacement;
-  int start_offset;
-  int end_offset;
-  int index;
+    //Declarations
+    _SpellingReplacementData *srd;
+    char *text;
+    char *buffer;
+    char *replacement;
+    int start_offset;
+    int end_offset;
+    int index;
 
-  //Initializations
-  srd = data;
-  replacement = srd->replacement_text;
-  start_offset = srd->start_offset;
-  end_offset = srd->end_offset;
-  text = g_strdup (gtk_entry_get_text (GTK_ENTRY (srd->entry)));
-  buffer = (char*) malloc (sizeof(char) * (strlen(replacement) + strlen(text)));
+    //Initializations
+    srd = data;
+    replacement = srd->replacement_text;
+    start_offset = srd->start_offset;
+    end_offset = srd->end_offset;
+    text = g_strdup (gtk_entry_get_text (GTK_ENTRY (srd->entry)));
+    buffer = (char*) malloc (sizeof(char) * (strlen(replacement) + strlen(text)));
 
-  strcpy(buffer, text);
-  strcpy (buffer + start_offset, replacement);
-  strcat (buffer, text + end_offset);
+    strcpy(buffer, text);
+    strcpy (buffer + start_offset, replacement);
+    strcat (buffer, text + end_offset);
 
-  index = gtk_editable_get_position (GTK_EDITABLE (srd->entry));
-  if (index > end_offset || index > start_offset + strlen(replacement))
-    index = index - (end_offset - start_offset) + strlen(replacement);
-  gtk_entry_set_text (GTK_ENTRY (srd->entry), buffer);
-  gtk_editable_set_position (GTK_EDITABLE (srd->entry), index);
+    index = gtk_editable_get_position (GTK_EDITABLE (srd->entry));
+    if (index > end_offset || index > start_offset + strlen(replacement))
+      index = index - (end_offset - start_offset) + strlen(replacement);
+    gtk_entry_set_text (GTK_ENTRY (srd->entry), buffer);
+    gtk_editable_set_position (GTK_EDITABLE (srd->entry), index);
 
-  //Cleanup
-  free (buffer);
-  g_free (text);
+    //Cleanup
+    free (buffer);
+    g_free (text);
 }
 
 
@@ -425,8 +464,6 @@ void _queue_spellcheck_cb (GtkEditable *editable, gpointer data)
 
     _update_button_sensitivities ();
 
-    _timer = 0;
-
     if (_query_text == NULL)
       _query_text = g_strdup (gtk_entry_get_text (GTK_ENTRY (editable)));
 
@@ -449,24 +486,37 @@ void _queue_spellcheck_cb (GtkEditable *editable, gpointer data)
       _query_text = g_strdup (gtk_entry_get_text (GTK_ENTRY (editable)));
 
       _needs_spellcheck = TRUE;
+      _timeout = 0;
     }
     g_mutex_unlock (_mutex);
 }
 
 static gboolean _update_spellcheck_timeout (gpointer data)
 {
-    if (_timer < 3)
+    g_mutex_lock (_mutex);
+    if (_running_check == TRUE)
     {
-      _timer++;
+      g_mutex_unlock (_mutex);
       return TRUE;
+    }
+    else if (_timeout < 5) {
+      _timeout++;
+      g_mutex_unlock (_mutex);
+      return TRUE;
+    }
+    else 
+    {
+      _running_check = TRUE;
+      _timeout = 0;
+      g_mutex_unlock (_mutex);
     }
 
     //Declarations
     gboolean spellcheck_pref;
     int rk_conv_pref;
     gboolean want_conv;
-    GtkEditable *editable;
-    char *query;
+    GtkEntry *entry;
+    const char *query;
     gboolean is_convertable_to_hiragana;
     const int MAX = 300;
     char kana[MAX];
@@ -478,15 +528,15 @@ static gboolean _update_spellcheck_timeout (gpointer data)
     int stdin_stream;
     int stdout_stream;
     gboolean success;
+    _GwStreamWithData *indata;
+    _GwStreamWithData *outdata;
     GThread *outthread;
-    _StreamWithData indata;
-    _StreamWithData outdata;
     
     //Initializations
     rk_conv_pref = lw_pref_get_int_by_schema (GW_SCHEMA_BASE, GW_KEY_ROMAN_KANA);
     want_conv = (rk_conv_pref == 0 || (rk_conv_pref == 2 && !lw_util_is_japanese_locale()));
-    editable = GTK_EDITABLE (data);
-    query = gtk_editable_get_chars (editable, 0, -1);
+    entry = GTK_ENTRY (data);
+    query = gtk_entry_get_text (entry);
     is_convertable_to_hiragana = (want_conv && lw_util_str_roma_to_hira (query, kana, MAX));
     spellcheck_pref = lw_pref_get_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_SPELLCHECK);
     exists = g_file_test (ENCHANT, G_FILE_TEST_IS_REGULAR);
@@ -503,11 +553,12 @@ static gboolean _update_spellcheck_timeout (gpointer data)
       is_convertable_to_hiragana
     )
     {
-      g_free (query);
+      _running_check = FALSE;
       return TRUE;
     }
 
     _needs_spellcheck = FALSE;
+    outthread = NULL;
 
     success = g_spawn_async_with_pipes (
       NULL, 
@@ -525,24 +576,21 @@ static gboolean _update_spellcheck_timeout (gpointer data)
 
     if (success)
     {
-      indata.stream = stdin_stream;
-      indata.data = query;
-      outdata.stream = stdout_stream;
-      outdata.data = query;
+      indata = _gw_streamwithdata_new (stdin_stream, query, strlen(query) + 1, pid);
+      outdata = _gw_streamwithdata_new (stdout_stream, query, strlen(query) + 1, pid);
 
-      _infunc ((gpointer) &indata);
-      outthread = g_thread_create (_outfunc, (gpointer) &outdata, TRUE, &error);
+      if (indata != NULL && outdata != NULL)
+      {
+        _infunc ((gpointer) indata);
+        outthread = g_thread_create (_outfunc, (gpointer) outdata, TRUE, &error);
+      }
 
-      g_thread_join (outthread);
-
-      g_spawn_close_pid (pid);
+      if (outthread == NULL)
+      {
+        _running_check = FALSE;
+      }
     }
-
-    //Cleanup
-    if (query != NULL)
-    {
-      g_free (query);
-    }
+    
     if (error !=NULL) 
     {
       fprintf(stderr, "ERROR: %s\n", error->message);

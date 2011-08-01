@@ -43,8 +43,9 @@
 
 static gchar   *_arg_dictionary = NULL;
 static gchar   *_arg_query = NULL;
-static gboolean _arg_exact = FALSE;
+#ifdef WITH_LIBUNIQUE
 static gboolean _arg_new_instance = FALSE;
+#endif
 static GOptionContext *_context = NULL;
 static gboolean _version_switch = FALSE;
 
@@ -179,7 +180,8 @@ void gw_start_gtk (int argc, char* argv[])
 #ifdef ENABLE_WIN32
       GtkSettings *settings;
       settings = gtk_settings_get_default ();
-      g_object_set (settings, "gtk-theme-name", "MS-Windows", NULL);
+//      g_object_set (settings, "gtk-theme-name", "MS-Windows", NULL);
+//      g_object_set (settings, "gtk-theme-name", "Adwaita", NULL);
       g_object_set (settings, "gtk-menu-images", FALSE, NULL);
       g_object_set (settings, "gtk-button-images", FALSE, NULL);
 #endif

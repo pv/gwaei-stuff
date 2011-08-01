@@ -189,7 +189,6 @@ G_MODULE_EXPORT gboolean gw_main_get_iter_for_button_release_cb (GtkWidget      
 
         GtkWidget *tv = GTK_WIDGET (gw_common_get_widget_by_target (GW_TARGET_RESULTS));
         GtkWidget *window = GTK_WIDGET (gtk_widget_get_tooltip_window (tv));
-        GtkWindow* parent = GTK_WINDOW (gtk_builder_get_object (builder, "main_window"));
         if (window == NULL) {
           button_character = unic;
           window = gtk_window_new (GTK_WINDOW_POPUP);
@@ -1704,7 +1703,6 @@ void gw_main_populate_popup_with_search_options_cb (GtkTextView *entry, GtkMenu 
     char *menu_text = NULL;
     GtkWidget *menuitem = NULL;
     GtkWidget *menuimage = NULL;
-    gchar *selected_text = NULL;
     char *query_text = NULL;
     char *search_for_menuitem_text;
     char *websearch_for_menuitem_text;

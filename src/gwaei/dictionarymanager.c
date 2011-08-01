@@ -141,7 +141,6 @@ void gw_dictionarymanager_update_items ()
     //Start filling in the new items
     LwDictInfo *di = NULL;
     GtkTreeIter treeiter;
-    char *longname = NULL;
     char *iconname = NULL;
     char *shortcutname = NULL;
     char *order_number = NULL;
@@ -230,7 +229,6 @@ G_MODULE_EXPORT void gw_dictionarymanager_remove_cb (GtkWidget *widget, gpointer
     //Declarations
     GtkBuilder *builder;
     GtkWidget *button;
-    GtkTreeViewColumn *focus_column;
     GtkTreePath *path;
     GtkTreeIter iter;
     GList *list;
