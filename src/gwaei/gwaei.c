@@ -168,8 +168,8 @@ void gw_start_gtk (int argc, char* argv[])
     gdk_threads_enter();
 
       //Add timers
-      g_timeout_add_full (G_PRIORITY_DEFAULT_IDLE, 200, (GSourceFunc) gw_main_keep_searching_timeout, NULL, NULL);
-      g_timeout_add_full (G_PRIORITY_LOW, 100, (GSourceFunc) gw_main_update_progress_feedback_timeout, NULL, NULL);
+      g_timeout_add_full (G_PRIORITY_DEFAULT_IDLE, 100, (GSourceFunc) gw_main_keep_searching_timeout, NULL, NULL);
+      g_timeout_add_full (G_PRIORITY_LOW, 50, (GSourceFunc) gw_main_update_progress_feedback_timeout, NULL, NULL);
       g_timeout_add_full (G_PRIORITY_LOW, 500, (GSourceFunc) gw_update_icons_for_selection, NULL, NULL);
 
 #ifdef ENABLE_WIN32

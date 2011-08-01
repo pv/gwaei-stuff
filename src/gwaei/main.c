@@ -46,6 +46,9 @@ static gboolean _prev_selection_icon_state = FALSE;
 static int _previous_tip = 0;
 static long _progress_feedback_line = 0;
 static LwSearchState _progress_feedback_status = GW_SEARCH_IDLE;
+static int _timeout = 0;
+static const int MAX_TIMEOUT = 3;
+static char *_prev_query = NULL;
 
 
 //!
@@ -2190,16 +2193,39 @@ gboolean gw_main_keep_searching_timeout (gpointer data)
     //Declarations
     GtkBuilder *builder;
     GtkWidget *window;
+    GtkWidget *entry;
+    const char *query;
 
     //Initializations
     builder = gw_common_get_builder ();
     window = GTK_WIDGET (gtk_builder_get_object (builder, "settings_window"));
-    
+    entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
+    query = gtk_entry_get_text (GTK_ENTRY (entry));
+    if (_prev_query == NULL) _prev_query = g_strdup ("");
+
     if (gtk_widget_get_visible (window) == FALSE && gw_settings_get_search_as_you_type ())
     {
-      gw_main_search_cb (NULL, NULL);
+      if (_timeout >= MAX_TIMEOUT || strlen(query) == 0)
+      {
+        _timeout = 0;
+        gw_main_search_cb (NULL, NULL);
+      }
+      else
+      {
+        if (strcmp(_prev_query, query) == 0)
+        {
+          _timeout++;
+        }
+        else
+        {
+          if (_prev_query != NULL)
+            g_free (_prev_query);
+          _prev_query = g_strdup (query);
+          _timeout = 0;
+        }
+      }
     }
-
+    
     return TRUE;
 }
 
