@@ -267,7 +267,6 @@ static gboolean _edict_existance_comparison (LwQueryLine *ql, LwResultLine *rl, 
     GRegex ***iter;
 
     //Compare kanji atoms
-    iter = NULL;
     if (rl->kanji_start != NULL)
     {
       for (iter = ql->re_kanji; *iter != NULL && **iter != NULL; iter++)
@@ -275,11 +274,10 @@ static gboolean _edict_existance_comparison (LwQueryLine *ql, LwResultLine *rl, 
         re = (*iter)[RELEVANCE];
         if (g_regex_match (re, rl->kanji_start, 0, NULL) == FALSE) break;
       }
+      if (ql->re_kanji[0][RELEVANCE] != NULL && *iter == NULL) return TRUE;
     }
-    if (ql->re_kanji[0][RELEVANCE] != NULL && *iter == NULL) return TRUE;
 
     //Compare furigana atoms
-    iter = NULL;
     if (rl->furigana_start != NULL)
     {
       for (iter = ql->re_furi; *iter != NULL && **iter != NULL; iter++)
@@ -287,10 +285,9 @@ static gboolean _edict_existance_comparison (LwQueryLine *ql, LwResultLine *rl, 
         re = (*iter)[RELEVANCE];
         if (g_regex_match (re, rl->furigana_start, 0, NULL) == FALSE) break;
       }
+      if (ql->re_furi[0][RELEVANCE] != NULL && *iter == NULL) return TRUE;
     }
-    if (ql->re_furi[0][RELEVANCE] != NULL && *iter == NULL) return TRUE;
 
-    iter = NULL;
     if (rl->kanji_start != NULL)
     {
       for (iter = ql->re_furi; *iter != NULL && **iter != NULL; iter++)
@@ -298,12 +295,11 @@ static gboolean _edict_existance_comparison (LwQueryLine *ql, LwResultLine *rl, 
         re = (*iter)[RELEVANCE];
         if (g_regex_match (re, rl->kanji_start, 0, NULL) == FALSE) break;
       }
+      if (ql->re_furi[0][RELEVANCE] != NULL && *iter == NULL) return TRUE;
     }
-    if (ql->re_furi[0][RELEVANCE] != NULL && *iter == NULL) return TRUE;
 
 
     //Compare romaji atoms
-    iter = NULL;
     for (j = 0; rl->def_start[j] != NULL; j++)
     {
       for (iter = ql->re_roma; *iter != NULL && **iter != NULL; iter++)
@@ -315,7 +311,6 @@ static gboolean _edict_existance_comparison (LwQueryLine *ql, LwResultLine *rl, 
     }
 
     //Compare mix atoms
-    iter = NULL;
     if (rl->string != NULL)
     {
       for (iter = ql->re_mix; *iter != NULL && **iter != NULL; iter++)

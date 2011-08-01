@@ -1117,7 +1117,7 @@ gchar* lw_util_enlarge_halfwidth_japanese (const gchar* text)
 //!
 gboolean lw_util_is_japanese_locale ()
 {
-    return ( setlocale(LC_MESSAGES, NULL) != NULL &&
+    return (setlocale(LC_MESSAGES, NULL) != NULL &&
              (
                strcmp(setlocale(LC_MESSAGES, NULL), "ja_JP.UTF8")  == 0 ||
                strcmp(setlocale(LC_MESSAGES, NULL), "ja_JP.UTF-8") == 0 ||

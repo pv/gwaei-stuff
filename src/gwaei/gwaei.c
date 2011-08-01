@@ -58,11 +58,6 @@ void gw_initialize (int* argc, char* argv[])
     gdk_threads_init();
     gtk_init (argc, &argv);
 
-#ifdef ENABLE_WIN32
-    g_object_set (gtk_settings_get_default(), "gtk-theme-name", "MS-Windows", 
-                                              "gtk-icon-theme-name", "hicolor", NULL);
-#endif
-
     GOptionEntry entries[] =
     {
       { "dictionary", 'd', 0, G_OPTION_ARG_STRING, &_arg_dictionary, gettext("Choose the dictionary to use"), "English" },
@@ -174,16 +169,17 @@ void gw_start_gtk (int argc, char* argv[])
 
       //Add timers
       g_timeout_add_full (G_PRIORITY_DEFAULT_IDLE, 200, (GSourceFunc) gw_main_keep_searching_timeout, NULL, NULL);
-      g_timeout_add_full (G_PRIORITY_LOW, 50, (GSourceFunc) gw_main_update_progress_feedback_timeout, NULL, NULL);
+      g_timeout_add_full (G_PRIORITY_LOW, 100, (GSourceFunc) gw_main_update_progress_feedback_timeout, NULL, NULL);
       g_timeout_add_full (G_PRIORITY_LOW, 500, (GSourceFunc) gw_update_icons_for_selection, NULL, NULL);
 
 #ifdef ENABLE_WIN32
       GtkSettings *settings;
       settings = gtk_settings_get_default ();
 //      g_object_set (settings, "gtk-theme-name", "MS-Windows", NULL);
-//      g_object_set (settings, "gtk-theme-name", "Adwaita", NULL);
+      g_object_set (settings, "gtk-theme-name", "Adwaita", NULL);
       g_object_set (settings, "gtk-menu-images", FALSE, NULL);
       g_object_set (settings, "gtk-button-images", FALSE, NULL);
+      g_object_set (settings, "gtk-cursor-blink", FALSE, NULL);
 #endif
 
       gtk_main ();
