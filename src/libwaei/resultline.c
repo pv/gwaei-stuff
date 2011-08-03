@@ -232,8 +232,8 @@ void lw_resultline_parse_edict_result_string (LwResultLine *rl)
 void lw_resultline_parse_kanjidict_result_string (LwResultLine *rl)
 {
     GMatchInfo* match_info;
-    int start[GW_RE_TOTAL];
-    int end[GW_RE_TOTAL];
+    int start[LW_RE_TOTAL];
+    int end[LW_RE_TOTAL];
     GUnicodeScript script;
     char *ptr = rl->string;
 
@@ -255,44 +255,44 @@ void lw_resultline_parse_kanjidict_result_string (LwResultLine *rl)
 
     //Get strokes
     rl->strokes = NULL;
-    g_regex_match (lw_re[GW_RE_STROKES], ptr, 0, &match_info);
+    g_regex_match (lw_re[LW_RE_STROKES], ptr, 0, &match_info);
     if (g_match_info_matches (match_info))
     {
-      g_match_info_fetch_pos (match_info, 0, &start[GW_RE_STROKES], &end[GW_RE_STROKES]);
-      rl->strokes = ptr + start[GW_RE_STROKES] + 1;
+      g_match_info_fetch_pos (match_info, 0, &start[LW_RE_STROKES], &end[LW_RE_STROKES]);
+      rl->strokes = ptr + start[LW_RE_STROKES] + 1;
     }
     g_match_info_free (match_info);
 
 
     //Get frequency
     rl->frequency = NULL;
-    g_regex_match (lw_re[GW_RE_FREQUENCY], ptr, 0, &match_info);
+    g_regex_match (lw_re[LW_RE_FREQUENCY], ptr, 0, &match_info);
     if (g_match_info_matches (match_info))
     {
-      g_match_info_fetch_pos (match_info, 0, &start[GW_RE_FREQUENCY], &end[GW_RE_FREQUENCY]);
-      rl->frequency = ptr + start[GW_RE_FREQUENCY] + 1;
+      g_match_info_fetch_pos (match_info, 0, &start[LW_RE_FREQUENCY], &end[LW_RE_FREQUENCY]);
+      rl->frequency = ptr + start[LW_RE_FREQUENCY] + 1;
     }
     g_match_info_free (match_info);
 
 
     //Get grade level
     rl->grade = NULL;
-    g_regex_match (lw_re[GW_RE_GRADE], ptr, 0, &match_info);
+    g_regex_match (lw_re[LW_RE_GRADE], ptr, 0, &match_info);
     if (g_match_info_matches (match_info))
     {
-      g_match_info_fetch_pos (match_info, 0, &start[GW_RE_GRADE], &end[GW_RE_GRADE]);
-      rl->grade = ptr + start[GW_RE_GRADE] + 1;
+      g_match_info_fetch_pos (match_info, 0, &start[LW_RE_GRADE], &end[LW_RE_GRADE]);
+      rl->grade = ptr + start[LW_RE_GRADE] + 1;
     }
     g_match_info_free (match_info);
 
 
     //Get JLPT level
     rl->jlpt = NULL;
-    g_regex_match (lw_re[GW_RE_JLPT], ptr, 0, &match_info);
+    g_regex_match (lw_re[LW_RE_JLPT], ptr, 0, &match_info);
     if (g_match_info_matches (match_info))
     {
-      g_match_info_fetch_pos (match_info, 0, &start[GW_RE_JLPT], &end[GW_RE_JLPT]);
-      rl->jlpt = ptr + start[GW_RE_JLPT] + 1;
+      g_match_info_fetch_pos (match_info, 0, &start[LW_RE_JLPT], &end[LW_RE_JLPT]);
+      rl->jlpt = ptr + start[LW_RE_JLPT] + 1;
     }
     g_match_info_free (match_info);
 
@@ -366,10 +366,10 @@ void lw_resultline_parse_kanjidict_result_string (LwResultLine *rl)
     if ((ptr = g_utf8_strrchr (ptr, -1, g_utf8_get_char ("\n"))) != NULL)
       *ptr = '\0';
 
-    if (rl->strokes)   *(rl->string + end[GW_RE_STROKES]) = '\0';
-    if (rl->frequency) *(rl->string + end[GW_RE_FREQUENCY]) = '\0';
-    if (rl->grade)     *(rl->string + end[GW_RE_GRADE]) = '\0';
-    if (rl->jlpt)      *(rl->string + end[GW_RE_JLPT]) = '\0';
+    if (rl->strokes)   *(rl->string + end[LW_RE_STROKES]) = '\0';
+    if (rl->frequency) *(rl->string + end[LW_RE_FREQUENCY]) = '\0';
+    if (rl->grade)     *(rl->string + end[LW_RE_GRADE]) = '\0';
+    if (rl->jlpt)      *(rl->string + end[LW_RE_JLPT]) = '\0';
 }
 
 

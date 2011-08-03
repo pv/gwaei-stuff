@@ -99,8 +99,8 @@ G_MODULE_EXPORT void gw_radsearchtool_search_cb (GtkWidget *widget, gpointer dat
 
     //Initializations
     builder = gw_common_get_builder ();
-    di = lw_dictinfolist_get_dictinfo (GW_ENGINE_KANJI, "Kanji");
-    hl = lw_historylist_get_list(GW_HISTORYLIST_RESULTS);   
+    di = lw_dictinfolist_get_dictinfo (LW_ENGINE_KANJI, "Kanji");
+    hl = lw_historylist_get_list(LW_HISTORYLIST_RESULTS);   
     query_text = NULL;
     radicals_text = gw_radsearchtool_strdup_all_selected_radicals ();
     strokes_text = gw_radsearchtool_strdup_prefered_stroke_count ();
@@ -144,18 +144,18 @@ G_MODULE_EXPORT void gw_radsearchtool_search_cb (GtkWidget *widget, gpointer dat
     //Prep the search
     gw_main_clear_search_entry ();
     gw_main_search_entry_insert (query_text);
-    gw_main_text_select_all_by_target (GW_TARGET_ENTRY);
+    gw_main_text_select_all_by_target (LW_TARGET_ENTRY);
 
     LwSearchItem* item;
     item = gw_tabs_get_searchitem ();
 
     //Move the previous searchitem to the history or destroy it
     if (lw_searchitem_has_history_relevance (item))
-      lw_historylist_add_searchitem_to_history (GW_HISTORYLIST_RESULTS, item);
+      lw_historylist_add_searchitem_to_history (LW_HISTORYLIST_RESULTS, item);
     else
       lw_searchitem_free (item);
     
-    item = lw_searchitem_new (query_text, di, GW_TARGET_RESULTS, &error);
+    item = lw_searchitem_new (query_text, di, LW_TARGET_RESULTS, &error);
     
     if (item != NULL) 
     {

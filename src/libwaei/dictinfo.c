@@ -50,14 +50,14 @@ static gboolean _overlay_default_builtin_dictionary_settings (LwDictInfo*);
 //! Memory for a new LwDictInfo object will be allocated, and the name passed
 //! to the function as a param will be searched for in the .waei folder.  If 
 //! it is a known name, the long name of the object will betranslated and if
-//! it is installed, the status variable set to GW_DICT_STATUS_INSTALLED.
+//! it is installed, the status variable set to LW_DICT_STATUS_INSTALLED.
 //!
 //! @param name Name of the object to create
 //! @return An allocated LwDictInfo that will be needed to be freed by lw_dictinfo_free ()
 //!
 LwDictInfo* lw_dictinfo_new (LwEngine ENGINE, const char *FILENAME)
 {
-    g_assert (ENGINE >= 0 && ENGINE <= GW_ENGINE_TOTAL && FILENAME != NULL);
+    g_assert (ENGINE >= 0 && ENGINE <= LW_ENGINE_TOTAL && FILENAME != NULL);
 
     LwDictInfo *temp;
     char *uri;
@@ -121,7 +121,7 @@ static gboolean _overlay_default_builtin_dictionary_settings (LwDictInfo *di)
 {
     g_assert (di != NULL);
 
-    if (di->engine == GW_ENGINE_EDICT)
+    if (di->engine == LW_ENGINE_EDICT)
     {
       if (strcmp(di->filename, "English") == 0)
       {
@@ -142,7 +142,7 @@ static gboolean _overlay_default_builtin_dictionary_settings (LwDictInfo *di)
         di->load_position = 4;
       }
     }
-    else if (di->engine == GW_ENGINE_KANJI)
+    else if (di->engine == LW_ENGINE_KANJI)
     {
       if (strcmp(di->filename, "Kanji") == 0)
       {
@@ -151,7 +151,7 @@ static gboolean _overlay_default_builtin_dictionary_settings (LwDictInfo *di)
         di->load_position = 2;
       }
     }
-    else if (di->engine == GW_ENGINE_EXAMPLES)
+    else if (di->engine == LW_ENGINE_EXAMPLES)
     {
       if (strcmp(di->filename, "Examples") == 0)
       {

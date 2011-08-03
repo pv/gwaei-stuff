@@ -207,12 +207,12 @@ void do_font_magnification_pref_changed_action (GSettings *settings,
     if (magnification < GW_MIN_FONT_MAGNIFICATION)
     {
       magnification = GW_MIN_FONT_MAGNIFICATION;
-      lw_pref_set_int_by_schema (GW_SCHEMA_FONT, key, magnification);
+      lw_pref_set_int_by_schema (LW_SCHEMA_FONT, key, magnification);
     }
     else if (magnification > GW_MAX_FONT_MAGNIFICATION)
     {
       magnification = GW_MAX_FONT_MAGNIFICATION;
-      lw_pref_set_int_by_schema (GW_SCHEMA_FONT, key, magnification);
+      lw_pref_set_int_by_schema (LW_SCHEMA_FONT, key, magnification);
     }
     //Set the new font
     else
@@ -299,12 +299,12 @@ void do_color_value_changed_action (GSettings *settings,
 {
     g_signal_handlers_block_by_func (settings, do_color_value_changed_action, NULL);
     char hex_color[20];
-    lw_pref_get_string_by_schema (hex_color, GW_SCHEMA_HIGHLIGHT, key, 20);
+    lw_pref_get_string_by_schema (hex_color, LW_SCHEMA_HIGHLIGHT, key, 20);
 
     GdkColor color;
     if (gdk_color_parse (hex_color, &color) == FALSE)
     {
-      lw_pref_reset_value_by_schema (GW_SCHEMA_HIGHLIGHT, key);
+      lw_pref_reset_value_by_schema (LW_SCHEMA_HIGHLIGHT, key);
       return;
     }
 
@@ -355,41 +355,41 @@ void do_search_as_you_type_pref_changed_action (GSettings *settings,
 
 void gw_settings_listeners_initialize ()
 {
-    lw_pref_add_change_listener_by_schema (GW_SCHEMA_FONT, GW_KEY_FONT_USE_GLOBAL_FONT,
+    lw_pref_add_change_listener_by_schema (LW_SCHEMA_FONT, LW_KEY_FONT_USE_GLOBAL_FONT,
                                   do_use_global_document_font_pref_changed_action, NULL);
-    lw_pref_add_change_listener_by_schema (GW_SCHEMA_FONT, GW_KEY_FONT_CUSTOM_FONT,
+    lw_pref_add_change_listener_by_schema (LW_SCHEMA_FONT, LW_KEY_FONT_CUSTOM_FONT,
                                   do_custom_document_font_pref_changed_action, NULL);
-    lw_pref_add_change_listener_by_schema (GW_SCHEMA_FONT, GW_KEY_FONT_MAGNIFICATION,
+    lw_pref_add_change_listener_by_schema (LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION,
                                   do_font_magnification_pref_changed_action, NULL);
 
-    lw_pref_add_change_listener_by_schema (GW_SCHEMA_BASE, GW_KEY_TOOLBAR_SHOW,
+    lw_pref_add_change_listener_by_schema (LW_SCHEMA_BASE, LW_KEY_TOOLBAR_SHOW,
                                   do_toolbar_show_pref_changed_action, NULL);
-    lw_pref_add_change_listener_by_schema (GW_SCHEMA_BASE, GW_KEY_STATUSBAR_SHOW,
+    lw_pref_add_change_listener_by_schema (LW_SCHEMA_BASE, LW_KEY_STATUSBAR_SHOW,
                                   do_statusbar_show_pref_changed_action, NULL);
-    lw_pref_add_change_listener_by_schema (GW_SCHEMA_BASE, GW_KEY_ROMAN_KANA,
+    lw_pref_add_change_listener_by_schema (LW_SCHEMA_BASE, LW_KEY_ROMAN_KANA,
                                   do_roman_kana_conv_pref_changed_action, NULL);
-    lw_pref_add_change_listener_by_schema (GW_SCHEMA_BASE, GW_KEY_HIRA_KATA,
+    lw_pref_add_change_listener_by_schema (LW_SCHEMA_BASE, LW_KEY_HIRA_KATA,
                                   do_hira_kata_conv_pref_changed_action, NULL);
-    lw_pref_add_change_listener_by_schema (GW_SCHEMA_BASE, GW_KEY_KATA_HIRA,
+    lw_pref_add_change_listener_by_schema (LW_SCHEMA_BASE, LW_KEY_KATA_HIRA,
                                   do_kata_hira_conv_pref_changed_action, NULL);
-    lw_pref_add_change_listener_by_schema (GW_SCHEMA_HIGHLIGHT, GW_KEY_MATCH_FG,
+    lw_pref_add_change_listener_by_schema (LW_SCHEMA_HIGHLIGHT, LW_KEY_MATCH_FG,
                                   do_color_value_changed_action, NULL);
-    lw_pref_add_change_listener_by_schema (GW_SCHEMA_HIGHLIGHT, GW_KEY_MATCH_BG,
+    lw_pref_add_change_listener_by_schema (LW_SCHEMA_HIGHLIGHT, LW_KEY_MATCH_BG,
                                   do_color_value_changed_action, NULL);
-    lw_pref_add_change_listener_by_schema (GW_SCHEMA_HIGHLIGHT, GW_KEY_HEADER_FG, 
+    lw_pref_add_change_listener_by_schema (LW_SCHEMA_HIGHLIGHT, LW_KEY_HEADER_FG, 
                                   do_color_value_changed_action, NULL);
-    lw_pref_add_change_listener_by_schema (GW_SCHEMA_HIGHLIGHT, GW_KEY_HEADER_BG,
+    lw_pref_add_change_listener_by_schema (LW_SCHEMA_HIGHLIGHT, LW_KEY_HEADER_BG,
                                   do_color_value_changed_action, NULL);
-    lw_pref_add_change_listener_by_schema (GW_SCHEMA_HIGHLIGHT, GW_KEY_COMMENT_FG, 
+    lw_pref_add_change_listener_by_schema (LW_SCHEMA_HIGHLIGHT, LW_KEY_COMMENT_FG, 
                                   do_color_value_changed_action, NULL);
-    lw_pref_add_change_listener_by_schema (GW_SCHEMA_BASE, GW_KEY_SPELLCHECK,
+    lw_pref_add_change_listener_by_schema (LW_SCHEMA_BASE, LW_KEY_SPELLCHECK,
                                   do_spellcheck_pref_changed_action, NULL);
-    lw_pref_add_change_listener_by_schema (GW_SCHEMA_BASE, GW_KEY_SEARCH_AS_YOU_TYPE,
+    lw_pref_add_change_listener_by_schema (LW_SCHEMA_BASE, LW_KEY_SEARCH_AS_YOU_TYPE,
                                   do_search_as_you_type_pref_changed_action, NULL);
 
-    lw_pref_add_change_listener_by_schema (GW_SCHEMA_GNOME_INTERFACE, GW_KEY_DOCUMENT_FONT_NAME,
+    lw_pref_add_change_listener_by_schema (LW_SCHEMA_GNOME_INTERFACE, LW_KEY_DOCUMENT_FONT_NAME,
                                   do_global_document_font_pref_changed_action, NULL);
-    lw_pref_add_change_listener_by_schema (GW_SCHEMA_GNOME_INTERFACE, GW_KEY_TOOLBAR_STYLE,
+    lw_pref_add_change_listener_by_schema (LW_SCHEMA_GNOME_INTERFACE, LW_KEY_TOOLBAR_STYLE,
                                   do_toolbar_style_pref_changed_action, NULL);
 
 }

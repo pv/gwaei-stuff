@@ -1,7 +1,7 @@
-#ifndef GW_QUERYLINE_OBJECT_INCLUDED
-#define GW_QUERYLINE_OBJECT_INCLUDED
+#ifndef LW_QUERYLINE_OBJECT_INCLUDED
+#define LW_QUERYLINE_OBJECT_INCLUDED
 
-#define GW_QUERYLINE_MAX_ATOMS 20
+#define LW_QUERYLINE_MAX_ATOMS 20
 
 struct _LwQueryLine {
     //Storage for the original query string

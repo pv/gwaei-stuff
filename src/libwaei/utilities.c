@@ -39,7 +39,7 @@
 #include <libwaei/libwaei.h>
 
 
-static char *_paths[GW_PATH_TOTAL];
+static char *_paths[LW_PATH_TOTAL];
 static gboolean _paths_initialized = FALSE;
 
 
@@ -51,26 +51,26 @@ static gboolean _paths_initialized = FALSE;
 //!
 const char* lw_util_get_directory (const LwFolderPath PATH) 
 {
-    g_assert (PATH >= 0 && PATH < GW_PATH_TOTAL);
+    g_assert (PATH >= 0 && PATH < LW_PATH_TOTAL);
 
     LwEngine i;
 
     if (!_paths_initialized)
     {
-      _paths[GW_PATH_BASE] = g_build_filename (g_get_user_config_dir (), PACKAGE, NULL);
-      _paths[GW_PATH_DICTIONARY] = g_build_filename (_paths[GW_PATH_BASE], "dictionaries", NULL);
-      _paths[GW_PATH_PLUGIN] = g_build_filename (_paths[GW_PATH_BASE], "plugins", NULL);
-      _paths[GW_PATH_CACHE] = g_build_filename (_paths[GW_PATH_BASE], "cache", NULL);
+      _paths[LW_PATH_BASE] = g_build_filename (g_get_user_config_dir (), PACKAGE, NULL);
+      _paths[LW_PATH_DICTIONARY] = g_build_filename (_paths[LW_PATH_BASE], "dictionaries", NULL);
+      _paths[LW_PATH_PLUGIN] = g_build_filename (_paths[LW_PATH_BASE], "plugins", NULL);
+      _paths[LW_PATH_CACHE] = g_build_filename (_paths[LW_PATH_BASE], "cache", NULL);
 
-      for (i = 0; i < GW_ENGINE_TOTAL; i++)
+      for (i = 0; i < LW_ENGINE_TOTAL; i++)
       {
-        if (_paths[GW_PATH_DICTIONARY_EDICT + i] != NULL)
+        if (_paths[LW_PATH_DICTIONARY_EDICT + i] != NULL)
         {
           printf("The LwEngine and LwPath variables are not syncing.  Make sure "
                  "you sync the engines between them when adding or removing engines.\n");
           g_assert(FALSE);
         }
-        _paths[GW_PATH_DICTIONARY_EDICT + i] = g_build_filename (_paths[GW_PATH_DICTIONARY],
+        _paths[LW_PATH_DICTIONARY_EDICT + i] = g_build_filename (_paths[LW_PATH_DICTIONARY],
                                                                  lw_util_get_engine_name(i), NULL);
       }
 
@@ -85,13 +85,13 @@ const char* lw_util_get_engine_name (const LwEngine ENGINE)
 {
     switch (ENGINE)
     {
-      case GW_ENGINE_EDICT:
+      case LW_ENGINE_EDICT:
         return "edict";
-      case GW_ENGINE_KANJI:
+      case LW_ENGINE_KANJI:
         return "kanji";
-      case GW_ENGINE_EXAMPLES:
+      case LW_ENGINE_EXAMPLES:
         return "examples";
-      case GW_ENGINE_UNKNOWN:
+      case LW_ENGINE_UNKNOWN:
         return "unknown";
       default:
         return NULL;
@@ -104,13 +104,13 @@ LwEngine lw_util_get_engine_from_enginename (const char *enginename)
   LwEngine engine = -1;
 
   if (strcmp(lower, "edict") == 0)
-    engine = GW_ENGINE_EDICT;
+    engine = LW_ENGINE_EDICT;
   else if (strcmp(lower, "kanji") == 0)
-    engine = GW_ENGINE_KANJI;
+    engine = LW_ENGINE_KANJI;
   else if (strcmp(lower, "examples") == 0)
-    engine = GW_ENGINE_EXAMPLES;
+    engine = LW_ENGINE_EXAMPLES;
   else if (strcmp(lower, "unknown") == 0)
-    engine = GW_ENGINE_UNKNOWN;
+    engine = LW_ENGINE_UNKNOWN;
 
   g_free (lower);
   lower = NULL;
@@ -130,14 +130,14 @@ const char* lw_util_get_directory_for_engine (const LwEngine ENGINE)
 {
     switch (ENGINE)
     {
-      case GW_ENGINE_EDICT:
-        return lw_util_get_directory (GW_PATH_DICTIONARY_EDICT);
-      case GW_ENGINE_KANJI:
-        return lw_util_get_directory (GW_PATH_DICTIONARY_KANJI);
-      case GW_ENGINE_EXAMPLES:
-        return lw_util_get_directory (GW_PATH_DICTIONARY_EXAMPLES);
-      case GW_ENGINE_UNKNOWN:
-        return lw_util_get_directory (GW_PATH_DICTIONARY_UNKNOWN);
+      case LW_ENGINE_EDICT:
+        return lw_util_get_directory (LW_PATH_DICTIONARY_EDICT);
+      case LW_ENGINE_KANJI:
+        return lw_util_get_directory (LW_PATH_DICTIONARY_KANJI);
+      case LW_ENGINE_EXAMPLES:
+        return lw_util_get_directory (LW_PATH_DICTIONARY_EXAMPLES);
+      case LW_ENGINE_UNKNOWN:
+        return lw_util_get_directory (LW_PATH_DICTIONARY_UNKNOWN);
       default:
         printf("Engine doesn't exist. in lw_util_get_directory_for_engine\n");
         g_assert_not_reached();
@@ -151,11 +151,11 @@ const char* lw_util_get_compression_name (const LwCompression COMPRESSION)
     switch (COMPRESSION)
     {
 /*
-      case GW_COMPRESSION_ZIP:
+      case LW_COMPRESSION_ZIP:
         g_error ("currently unsupported compression type\n");
         return "zip";
 */
-      case GW_COMPRESSION_GZIP:
+      case LW_COMPRESSION_GZIP:
         return "gz";
       default:
         return "uncompressed";
@@ -166,11 +166,11 @@ const char* lw_util_get_encoding_name (const LwEncoding ENCODING)
 {
     switch (ENCODING)
     {
-      case GW_ENCODING_EUC_JP:
+      case LW_ENCODING_EUC_JP:
         return "EUC-JP";
-      case GW_ENCODING_SHIFT_JS:
+      case LW_ENCODING_SHIFT_JS:
         return "Shift-JS";
-      case GW_ENCODING_UTF8:
+      case LW_ENCODING_UTF8:
         return "UTF-8";
       default:
         g_error ("Unsupported encoding\n");
@@ -1191,7 +1191,7 @@ char** lw_util_get_romaji_atoms_from_string (const char *string)
     *buffer_ptr = '\0';
 
     //Convert the string into an array of strings
-    string_array = g_strsplit (buffer, delimitor, GW_QUERYLINE_MAX_ATOMS);
+    string_array = g_strsplit (buffer, delimitor, LW_QUERYLINE_MAX_ATOMS);
     
     //Cleanup
     free(buffer);
@@ -1253,7 +1253,7 @@ char** lw_util_get_furigana_atoms_from_string (const char *string)
     *buffer_ptr = '\0';
 
     //Convert the string into an array of strings
-    string_array = g_strsplit (buffer, delimitor, GW_QUERYLINE_MAX_ATOMS);
+    string_array = g_strsplit (buffer, delimitor, LW_QUERYLINE_MAX_ATOMS);
     
     //Cleanup
     free(buffer);

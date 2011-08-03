@@ -115,7 +115,7 @@ static void _append_stored_result_to_output (LwSearchItem *item, GList **results
     *results = g_list_delete_link(*results, *results);
       
     //Append to the buffer 
-    if (item->status != GW_SEARCH_CANCELING)
+    if (item->status != LW_SEARCH_CANCELING)
     {
       (*item->lw_searchitem_ui_append_results_to_output)(item);
     }
@@ -134,12 +134,12 @@ static void _append_stored_result_to_output (LwSearchItem *item, GList **results
 //! @return Returns one of the integers: LOW_RELEVANCE, MEDIUM_RELEVANCE, or HIGH_RELEVANCE.
 //!
 static int _get_relevance (LwSearchItem *item) {
-    if (lw_searchitem_run_comparison (item, GW_RELEVANCE_HIGH))
-      return GW_RELEVANCE_HIGH;
-    else if (lw_searchitem_run_comparison (item, GW_RELEVANCE_MEDIUM))
-      return GW_RELEVANCE_MEDIUM;
+    if (lw_searchitem_run_comparison (item, LW_RELEVANCE_HIGH))
+      return LW_RELEVANCE_HIGH;
+    else if (lw_searchitem_run_comparison (item, LW_RELEVANCE_MEDIUM))
+      return LW_RELEVANCE_MEDIUM;
     else
-      return GW_RELEVANCE_LOW;
+      return LW_RELEVANCE_LOW;
 }
 
 
@@ -164,8 +164,8 @@ static void _stream_results_thread (gpointer data)
 
     //We loop, processing lines of the file until the max chunk size has been
     //reached or we reach the end of the file or a cancel request is recieved.
-    while ((line_pointer = fgets(item->resultline->string, GW_IO_MAX_FGETS_LINE, item->fd)) != NULL &&
-           item->status != GW_SEARCH_CANCELING)
+    while ((line_pointer = fgets(item->resultline->string, LW_IO_MAX_FGETS_LINE, item->fd)) != NULL &&
+           item->status != LW_SEARCH_CANCELING)
     {
       //Give a chance for something else to run
       g_mutex_unlock (item->mutex);
@@ -179,7 +179,7 @@ static void _stream_results_thread (gpointer data)
         continue;
       }
       else if (item->resultline->string[0] == 'A' && item->resultline->string[1] == ':' &&
-               fgets(item->scratch_buffer, GW_IO_MAX_FGETS_LINE, item->fd) != NULL             )
+               fgets(item->scratch_buffer, LW_IO_MAX_FGETS_LINE, item->fd) != NULL             )
       {
         char *eraser = NULL;
         if ((eraser = g_utf8_strchr (item->resultline->string, -1, L'\n')) != NULL) { *eraser = '\0'; }
@@ -196,17 +196,17 @@ static void _stream_results_thread (gpointer data)
 //        lw_ui_verb_check_with_suggestion (item);
 
       //Results match, add to the text buffer
-      if (lw_searchitem_run_comparison (item, GW_RELEVANCE_LOW))
+      if (lw_searchitem_run_comparison (item, LW_RELEVANCE_LOW))
       {
         int relevance = _get_relevance (item);
         switch(relevance)
         {
-          case GW_RELEVANCE_HIGH:
-              if (item->total_relevant_results < MAX_HIGH_RELIVENT_RESULTS)
+          case LW_RELEVANCE_HIGH:
+              if (item->total_relevant_results < LW_MAX_HIGH_RELIVENT_RESULTS)
               {
                 item->total_results++;
                 item->total_relevant_results++;
-                if (item->target != GW_TARGET_KANJI)
+                if (item->target != LW_TARGET_KANJI)
                   (*item->lw_searchitem_ui_append_more_relevant_header_to_output)(item);
                 (*item->lw_searchitem_ui_append_results_to_output)(item);
 
@@ -217,10 +217,10 @@ static void _stream_results_thread (gpointer data)
                 item->swap_resultline = NULL;
               }
               break;
-          case GW_RELEVANCE_MEDIUM:
-              if (item->total_irrelevant_results < MAX_MEDIUM_IRRELIVENT_RESULTS &&
+          case LW_RELEVANCE_MEDIUM:
+              if (item->total_irrelevant_results < LW_MAX_MEDIUM_IRRELIVENT_RESULTS &&
                   !item->show_only_exact_matches && 
-                   (item->swap_resultline = lw_resultline_new ()) != NULL && item->target != GW_TARGET_KANJI)
+                   (item->swap_resultline = lw_resultline_new ()) != NULL && item->target != LW_TARGET_KANJI)
               {
                 //Store the result line and create an empty one in its place
                 item->total_irrelevant_results++;
@@ -230,9 +230,9 @@ static void _stream_results_thread (gpointer data)
               }
               break;
           default:
-              if (item->total_irrelevant_results < MAX_LOW_IRRELIVENT_RESULTS &&
+              if (item->total_irrelevant_results < LW_MAX_LOW_IRRELIVENT_RESULTS &&
                     !item->show_only_exact_matches && 
-                   (item->swap_resultline = lw_resultline_new ()) != NULL && item->target != GW_TARGET_KANJI)
+                   (item->swap_resultline = lw_resultline_new ()) != NULL && item->target != LW_TARGET_KANJI)
               {
                 //Store the result line and create an empty one in its place
                 item->total_irrelevant_results++;
@@ -246,9 +246,9 @@ static void _stream_results_thread (gpointer data)
     }
 
     //Make sure the more relevant header banner is visible
-    if (item->status != GW_SEARCH_CANCELING)
+    if (item->status != LW_SEARCH_CANCELING)
     {
-      if (item->target != GW_TARGET_KANJI && item->total_results > 0)
+      if (item->target != LW_TARGET_KANJI && item->total_results > 0)
         (*item->lw_searchitem_ui_append_more_relevant_header_to_output)(item);
 
       if (item->results_medium != NULL || item->results_low != NULL)

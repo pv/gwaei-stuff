@@ -406,8 +406,8 @@ void w_console_after_search_cleanup (LwSearchItem *item)
 {
     //Finish up
     if (item->total_results == 0 &&
-        item->target != GW_TARGET_KANJI &&
-        item->status == GW_SEARCH_SEARCHING)
+        item->target != LW_TARGET_KANJI &&
+        item->status == LW_SEARCH_SEARCHING)
     {
       w_console_no_result(item);
     }
@@ -513,7 +513,7 @@ gboolean w_console_search (char* query, char* fuzzy, gboolean quiet, gboolean ex
       return FALSE;
     }
 
-    item = lw_searchitem_new (query, di, GW_TARGET_CONSOLE, error);
+    item = lw_searchitem_new (query, di, LW_TARGET_CONSOLE, error);
     if (item == NULL)
     {
       printf("%s\n", (*error)->message);

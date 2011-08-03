@@ -82,7 +82,7 @@ static void _free_regex_pointer (GRegex ***re)
 
     //Free pointers intelligently
     for (i = 0; re[i] != NULL; i++)
-      for (j = 0; j < GW_RELEVANCE_TOTAL; j++)
+      for (j = 0; j < LW_RELEVANCE_TOTAL; j++)
         if (re[i][j] != NULL) g_regex_unref(re[i][j]);
 
     for (i = 0; re[i] != NULL; i++)
@@ -125,7 +125,7 @@ static char** _initialize_queryline_pointers (LwQueryLine *ql, const char *strin
 
     //Initializations
     ql->string = lw_util_prepare_query (string, FALSE);
-    atoms = g_strsplit (ql->string, "&", GW_QUERYLINE_MAX_ATOMS);
+    atoms = g_strsplit (ql->string, "&", LW_QUERYLINE_MAX_ATOMS);
 
     length = g_strv_length (atoms);
 
@@ -156,8 +156,8 @@ static GRegex*** _allocate_regex_pointers (int length)
     //Initialize it to NULL
     for (i = 0; i < length; i++)
     {
-      re[i] = (GRegex**) malloc(GW_RELEVANCE_TOTAL * sizeof (GRegex*));
-      for (j = 0; j < GW_RELEVANCE_TOTAL; j++)
+      re[i] = (GRegex**) malloc(LW_RELEVANCE_TOTAL * sizeof (GRegex*));
+      for (j = 0; j < LW_RELEVANCE_TOTAL; j++)
         re[i][j] = NULL;
     }
     re[i] = NULL;
@@ -206,10 +206,10 @@ gboolean lw_queryline_parse_edict_string (LwQueryLine *ql, const char* string, G
    //Memory initializations
    all_regex_built = TRUE;
 
-   rk_conv_pref = lw_pref_get_int_by_schema (GW_SCHEMA_BASE, GW_KEY_ROMAN_KANA);
+   rk_conv_pref = lw_pref_get_int_by_schema (LW_SCHEMA_BASE, LW_KEY_ROMAN_KANA);
    want_rk_conv = (rk_conv_pref == 0 || (rk_conv_pref == 2 && !lw_util_is_japanese_locale()));
-   want_hk_conv = lw_pref_get_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_HIRA_KATA);
-   want_kh_conv = lw_pref_get_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_KATA_HIRA);
+   want_hk_conv = lw_pref_get_boolean_by_schema (LW_SCHEMA_BASE, LW_KEY_HIRA_KATA);
+   want_kh_conv = lw_pref_get_boolean_by_schema (LW_SCHEMA_BASE, LW_KEY_KATA_HIRA);
 
    atoms = _initialize_queryline_pointers (ql, string);
    length = g_strv_length (atoms);
@@ -248,8 +248,8 @@ gboolean lw_queryline_parse_edict_string (LwQueryLine *ql, const char* string, G
        }
 
        //Compile the regexes
-       for (i = 0; i < GW_RELEVANCE_TOTAL; i++)
-         if (((*re)[i] = lw_regex_kanji_new (expression, GW_ENGINE_EDICT, i, error)) == NULL) all_regex_built = FALSE;
+       for (i = 0; i < LW_RELEVANCE_TOTAL; i++)
+         if (((*re)[i] = lw_regex_kanji_new (expression, LW_ENGINE_EDICT, i, error)) == NULL) all_regex_built = FALSE;
 
        g_free (expression);
        re++;
@@ -284,8 +284,8 @@ gboolean lw_queryline_parse_edict_string (LwQueryLine *ql, const char* string, G
        }
 
        //Compile the regexes
-       for (i = 0; i < GW_RELEVANCE_TOTAL; i++)
-         if (((*re)[i] = lw_regex_furi_new (expression, GW_ENGINE_EDICT, i, error)) == NULL) all_regex_built = FALSE;
+       for (i = 0; i < LW_RELEVANCE_TOTAL; i++)
+         if (((*re)[i] = lw_regex_furi_new (expression, LW_ENGINE_EDICT, i, error)) == NULL) all_regex_built = FALSE;
 
        g_free (expression);
        re++;
@@ -304,8 +304,8 @@ gboolean lw_queryline_parse_edict_string (LwQueryLine *ql, const char* string, G
        }
 
        //Compile the regexes
-       for (i = 0; i < GW_RELEVANCE_TOTAL; i++)
-         if (((*re)[i] = lw_regex_furi_new (expression, GW_ENGINE_EDICT, i, error)) == NULL) all_regex_built = FALSE;
+       for (i = 0; i < LW_RELEVANCE_TOTAL; i++)
+         if (((*re)[i] = lw_regex_furi_new (expression, LW_ENGINE_EDICT, i, error)) == NULL) all_regex_built = FALSE;
 
        g_free (expression);
        re++;
@@ -319,13 +319,13 @@ gboolean lw_queryline_parse_edict_string (LwQueryLine *ql, const char* string, G
    {
      atom = *iter;
      g_strstrip(atom);
-     if (strlen(atom) > 0 && lw_util_is_romaji_str (atom) && g_regex_match (lw_re[GW_RE_NUMBER], atom, 0, NULL) == FALSE)
+     if (strlen(atom) > 0 && lw_util_is_romaji_str (atom) && g_regex_match (lw_re[LW_RE_NUMBER], atom, 0, NULL) == FALSE)
      {
        expression = g_strdup (atom);
 
        //Compile the regexes
-       for (i = 0; i < GW_RELEVANCE_TOTAL; i++)
-         if (((*re)[i] = lw_regex_romaji_new (expression, GW_ENGINE_EDICT, i, error)) == NULL) all_regex_built = FALSE;
+       for (i = 0; i < LW_RELEVANCE_TOTAL; i++)
+         if (((*re)[i] = lw_regex_romaji_new (expression, LW_ENGINE_EDICT, i, error)) == NULL) all_regex_built = FALSE;
 
        g_free (expression);
        re++;
@@ -346,8 +346,8 @@ gboolean lw_queryline_parse_edict_string (LwQueryLine *ql, const char* string, G
        expression = g_strdup (atom);
 
        //Compile the regexes
-       for (i = 0; i < GW_RELEVANCE_TOTAL; i++)
-         if (((*re)[i] = lw_regex_mix_new (expression, GW_ENGINE_EDICT, i, error)) == NULL) all_regex_built = FALSE;
+       for (i = 0; i < LW_RELEVANCE_TOTAL; i++)
+         if (((*re)[i] = lw_regex_mix_new (expression, LW_ENGINE_EDICT, i, error)) == NULL) all_regex_built = FALSE;
 
        g_free (expression);
        re++;
@@ -386,13 +386,13 @@ static GRegex*** _compile_and_allocate_number_search_regex (const char* subject,
     re = _allocate_regex_pointers (g_match_info_get_match_count (match_info));
 
     //Investigate the matches and compile the new regexes
-    for (iter = re; all_regex_built && iter - re < GW_QUERYLINE_MAX_ATOMS && g_match_info_matches (match_info); iter++)
+    for (iter = re; all_regex_built && iter - re < LW_QUERYLINE_MAX_ATOMS && g_match_info_matches (match_info); iter++)
     {
       match_text = g_match_info_fetch (match_info, 0);
       expression = g_strdup_printf("\\b%s\\b", match_text + 1);
 
-      for (i = 0; all_regex_built && i < GW_RELEVANCE_TOTAL; i++)
-        if (((*iter)[i] = lw_regex_new (expression, GW_ENGINE_KANJI, i, error)) == NULL) all_regex_built = FALSE;
+      for (i = 0; all_regex_built && i < LW_RELEVANCE_TOTAL; i++)
+        if (((*iter)[i] = lw_regex_new (expression, LW_ENGINE_KANJI, i, error)) == NULL) all_regex_built = FALSE;
 
       g_free (expression);
       g_free (match_text);
@@ -403,11 +403,11 @@ static GRegex*** _compile_and_allocate_number_search_regex (const char* subject,
     (*iter) = NULL;
 
     //Cleanup if there was an error
-    for (iter = re; !all_regex_built && iter - re < GW_QUERYLINE_MAX_ATOMS; iter++)
+    for (iter = re; !all_regex_built && iter - re < LW_QUERYLINE_MAX_ATOMS; iter++)
     {
       printf("error\n");
       exit(0);
-      for (i = 0; i < GW_RELEVANCE_TOTAL; i++)
+      for (i = 0; i < LW_RELEVANCE_TOTAL; i++)
       {
         if ((*iter)[i] != NULL) g_regex_unref ((*re)[i]);
         (*iter)[i] = NULL;
@@ -460,26 +460,26 @@ gboolean lw_queryline_parse_kanjidict_string (LwQueryLine *ql, const char* strin
     GUnicodeScript script;
 
     //Initializations
-    rk_conv_pref = lw_pref_get_int_by_schema (GW_SCHEMA_BASE, GW_KEY_ROMAN_KANA);
+    rk_conv_pref = lw_pref_get_int_by_schema (LW_SCHEMA_BASE, LW_KEY_ROMAN_KANA);
     want_rk_conv = (rk_conv_pref == 0 || (rk_conv_pref == 2 && !lw_util_is_japanese_locale()));
     all_regex_built = TRUE;
     if (ql->string != NULL) g_free (ql->string);
     ql->string = lw_util_prepare_query (string, FALSE);
 
     //Get stroke
-    if ((ql->re_strokes = _compile_and_allocate_number_search_regex (string, GW_RE_STROKES, error)) == NULL)
+    if ((ql->re_strokes = _compile_and_allocate_number_search_regex (string, LW_RE_STROKES, error)) == NULL)
       all_regex_built = FALSE;
 
     //Get frequency
-    if ((ql->re_frequency = _compile_and_allocate_number_search_regex (string, GW_RE_FREQUENCY, error)) == NULL)
+    if ((ql->re_frequency = _compile_and_allocate_number_search_regex (string, LW_RE_FREQUENCY, error)) == NULL)
       all_regex_built = FALSE;
 
     //Get grade level
-    if ((ql->re_grade = _compile_and_allocate_number_search_regex (string, GW_RE_GRADE, error)) == NULL)
+    if ((ql->re_grade = _compile_and_allocate_number_search_regex (string, LW_RE_GRADE, error)) == NULL)
       all_regex_built = FALSE;
 
     //Get JLPT level
-    if ((ql->re_jlpt = _compile_and_allocate_number_search_regex (string, GW_RE_JLPT, error)) == NULL)
+    if ((ql->re_jlpt = _compile_and_allocate_number_search_regex (string, LW_RE_JLPT, error)) == NULL)
       all_regex_built = FALSE;
 
     //Get Kanji
@@ -502,8 +502,8 @@ gboolean lw_queryline_parse_kanjidict_string (LwQueryLine *ql, const char* strin
         start = ptr;
         end = g_utf8_next_char (ptr);
         atom = g_strndup (start, end - start);
-        for (i = 0; all_regex_built && i < GW_RELEVANCE_TOTAL; i++)
-          (*re)[i] = lw_regex_kanji_new (atom, GW_ENGINE_KANJI, i, error);
+        for (i = 0; all_regex_built && i < LW_RELEVANCE_TOTAL; i++)
+          (*re)[i] = lw_regex_kanji_new (atom, LW_ENGINE_KANJI, i, error);
         g_free (atom);
         re++;
       }
@@ -520,8 +520,8 @@ gboolean lw_queryline_parse_kanjidict_string (LwQueryLine *ql, const char* strin
     {
       atom = *iter;
 
-      for (i = 0; all_regex_built && i < GW_RELEVANCE_TOTAL; i++)
-        if (((*re)[i] = lw_regex_furi_new (atom, GW_ENGINE_KANJI, i, error)) == NULL) all_regex_built = FALSE;
+      for (i = 0; all_regex_built && i < LW_RELEVANCE_TOTAL; i++)
+        if (((*re)[i] = lw_regex_furi_new (atom, LW_ENGINE_KANJI, i, error)) == NULL) all_regex_built = FALSE;
 
       re++;
     }
@@ -542,7 +542,7 @@ gboolean lw_queryline_parse_kanjidict_string (LwQueryLine *ql, const char* strin
       int match_end_byte_offset;
 
       //This was a special regex that shouldn't be placed in the romaji area
-      if (g_regex_match (lw_re[GW_RE_NUMBER], atom, 0, &match_info) == TRUE)
+      if (g_regex_match (lw_re[LW_RE_NUMBER], atom, 0, &match_info) == TRUE)
       {
         //Attepm to remove it
         g_match_info_fetch_pos (match_info, 0, &match_start_byte_offset, &match_end_byte_offset);
@@ -550,15 +550,15 @@ gboolean lw_queryline_parse_kanjidict_string (LwQueryLine *ql, const char* strin
           atom[i] = ' ';
         g_strstrip (atom);
 
-        for (i = 0; strlen(atom) > 0 && all_regex_built && i < GW_RELEVANCE_TOTAL; i++)
+        for (i = 0; strlen(atom) > 0 && all_regex_built && i < LW_RELEVANCE_TOTAL; i++)
           (*re)[i] = NULL;;
 
       }
       //Do the normal regex building
       else
       {
-        for (i = 0; all_regex_built && i < GW_RELEVANCE_TOTAL; i++)
-          if (((*re)[i] = lw_regex_romaji_new (atom, GW_ENGINE_KANJI, i, error)) == NULL) all_regex_built = FALSE;
+        for (i = 0; all_regex_built && i < LW_RELEVANCE_TOTAL; i++)
+          if (((*re)[i] = lw_regex_romaji_new (atom, LW_ENGINE_KANJI, i, error)) == NULL) all_regex_built = FALSE;
       }
 
       g_match_info_free (match_info);
@@ -607,10 +607,10 @@ gboolean lw_queryline_parse_exampledict_string (LwQueryLine *ql, const char* str
     char *expression;
 
     //Initializations
-    rk_conv_pref = lw_pref_get_int_by_schema (GW_SCHEMA_BASE, GW_KEY_ROMAN_KANA);
+    rk_conv_pref = lw_pref_get_int_by_schema (LW_SCHEMA_BASE, LW_KEY_ROMAN_KANA);
     want_rk_conv = (rk_conv_pref == 0 || (rk_conv_pref == 2 && !lw_util_is_japanese_locale()));
-    want_hk_conv = lw_pref_get_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_HIRA_KATA);
-    want_kh_conv = lw_pref_get_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_KATA_HIRA);
+    want_hk_conv = lw_pref_get_boolean_by_schema (LW_SCHEMA_BASE, LW_KEY_HIRA_KATA);
+    want_kh_conv = lw_pref_get_boolean_by_schema (LW_SCHEMA_BASE, LW_KEY_KATA_HIRA);
     all_regex_built = TRUE;
  
     atoms = _initialize_queryline_pointers (ql, string);
@@ -622,8 +622,8 @@ gboolean lw_queryline_parse_exampledict_string (LwQueryLine *ql, const char* str
       atom = *iter;
       if (lw_util_is_kanji_ish_str (atom) || lw_util_is_kanji_str (atom))
       {
-        for (i = 0; all_regex_built && i < GW_RELEVANCE_TOTAL; i++)
-          (*re)[i] = lw_regex_kanji_new (atom, GW_ENGINE_EXAMPLES, i, error);
+        for (i = 0; all_regex_built && i < LW_RELEVANCE_TOTAL; i++)
+          (*re)[i] = lw_regex_kanji_new (atom, LW_ENGINE_EXAMPLES, i, error);
         re++;
       }
     }
@@ -655,8 +655,8 @@ gboolean lw_queryline_parse_exampledict_string (LwQueryLine *ql, const char* str
         }
 
         //Compile the regexes
-        for (i = 0; i < GW_RELEVANCE_TOTAL; i++)
-          if (((*re)[i] = lw_regex_furi_new (expression, GW_ENGINE_EDICT, i, error)) == NULL) all_regex_built = FALSE;
+        for (i = 0; i < LW_RELEVANCE_TOTAL; i++)
+          if (((*re)[i] = lw_regex_furi_new (expression, LW_ENGINE_EDICT, i, error)) == NULL) all_regex_built = FALSE;
 
         g_free (expression);
         re++;
@@ -675,8 +675,8 @@ gboolean lw_queryline_parse_exampledict_string (LwQueryLine *ql, const char* str
         }
 
         //Compile the regexes
-        for (i = 0; i < GW_RELEVANCE_TOTAL; i++)
-          if (((*re)[i] = lw_regex_furi_new (expression, GW_ENGINE_EDICT, i, error)) == NULL) all_regex_built = FALSE;
+        for (i = 0; i < LW_RELEVANCE_TOTAL; i++)
+          if (((*re)[i] = lw_regex_furi_new (expression, LW_ENGINE_EDICT, i, error)) == NULL) all_regex_built = FALSE;
 
         g_free (expression);
         re++;
@@ -689,13 +689,13 @@ gboolean lw_queryline_parse_exampledict_string (LwQueryLine *ql, const char* str
     {
       atom = *iter;
       g_strstrip(atom);
-      if (strlen(atom) > 0 && lw_util_is_romaji_str (atom) && g_regex_match (lw_re[GW_RE_NUMBER], atom, 0, NULL) == FALSE)
+      if (strlen(atom) > 0 && lw_util_is_romaji_str (atom) && g_regex_match (lw_re[LW_RE_NUMBER], atom, 0, NULL) == FALSE)
       {
         expression = g_strdup (atom);
  
        //Compile the regexes
-        for (i = 0; i < GW_RELEVANCE_TOTAL; i++)
-          if (((*re)[i] = lw_regex_romaji_new (expression, GW_ENGINE_EDICT, i, error)) == NULL) all_regex_built = FALSE;
+        for (i = 0; i < LW_RELEVANCE_TOTAL; i++)
+          if (((*re)[i] = lw_regex_romaji_new (expression, LW_ENGINE_EDICT, i, error)) == NULL) all_regex_built = FALSE;
  
         g_free (expression);
         re++;

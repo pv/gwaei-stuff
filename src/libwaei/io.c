@@ -130,7 +130,7 @@ gboolean lw_io_copy_with_encoding (const char *source_path, const char *target_p
     //Declarations
     FILE* readfd = NULL;
     FILE* writefd = NULL;
-    const int MAX = GW_IO_MAX_FGETS_LINE;
+    const int MAX = LW_IO_MAX_FGETS_LINE;
     char buffer[MAX];
     char output[MAX];
     gsize inbytes_left, outbytes_left;
@@ -304,8 +304,8 @@ gboolean lw_io_download (char *source_path, char *target_path, LwIoProgressCallb
 
       if (error != NULL) {
         message = gettext(curl_easy_strerror(res));
-        quark = g_quark_from_string (GW_IO_ERROR);
-        *error = g_error_new_literal (quark, GW_IO_DOWNLOAD_ERROR, message);
+        quark = g_quark_from_string (LW_IO_ERROR);
+        *error = g_error_new_literal (quark, LW_IO_DOWNLOAD_ERROR, message);
       }
     }
 
@@ -380,9 +380,9 @@ gboolean lw_io_create_mix_dictionary (const char *output_path,
 
     //Declarations
     FILE *output_file, *kanji_file, *radicals_file;
-    char radicals_input[GW_IO_MAX_FGETS_LINE];
-    char kanji_input[GW_IO_MAX_FGETS_LINE];
-    char output[GW_IO_MAX_FGETS_LINE * 2];
+    char radicals_input[LW_IO_MAX_FGETS_LINE];
+    char kanji_input[LW_IO_MAX_FGETS_LINE];
+    char output[LW_IO_MAX_FGETS_LINE * 2];
     char *radicals_ptr, *kanji_ptr, *output_ptr, *temp_ptr;
 
     size_t curpos;
@@ -402,7 +402,7 @@ gboolean lw_io_create_mix_dictionary (const char *output_path,
     fraction = 0.0;
 
     //Loop through the kanji file
-    while (fgets(kanji_input, GW_IO_MAX_FGETS_LINE, kanji_file) != NULL && !_cancel)
+    while (fgets(kanji_input, LW_IO_MAX_FGETS_LINE, kanji_file) != NULL && !_cancel)
     {
       fraction = ((double) curpos)/((double) end);
       if (cb != NULL) cb (fraction, data);
@@ -424,7 +424,7 @@ gboolean lw_io_create_mix_dictionary (const char *output_path,
 
       //2. Find the relevent radical line and insert it if available
       rewind (radicals_file);
-      while (fgets(radicals_input, GW_IO_MAX_FGETS_LINE, radicals_file) != NULL)
+      while (fgets(radicals_input, LW_IO_MAX_FGETS_LINE, radicals_file) != NULL)
       {
         //Check for a match
         temp_ptr = kanji_input;
@@ -504,7 +504,7 @@ gboolean lw_io_split_places_from_names_dictionary (const char *output_names_path
     */
 
     //Declarations
-    char buffer[GW_IO_MAX_FGETS_LINE];
+    char buffer[LW_IO_MAX_FGETS_LINE];
     FILE *inputf;
     size_t curpos;
     size_t end;
@@ -526,17 +526,17 @@ gboolean lw_io_split_places_from_names_dictionary (const char *output_names_path
     end = lw_io_get_filesize (input_names_places_path);
     fraction = 0.0;
 
-    re_place = g_regex_new (place_pattern,  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, error);
+    re_place = g_regex_new (place_pattern,  LW_RE_COMPILE_FLAGS, LW_RE_LOCATE_FLAGS, error);
     placesf = fopen(output_places_path, "w");
     place_write_error = 0;
 
-    re_name = g_regex_new (name_pattern,  GW_RE_COMPILE_FLAGS, GW_RE_LOCATE_FLAGS, error);
+    re_name = g_regex_new (name_pattern,  LW_RE_COMPILE_FLAGS, LW_RE_LOCATE_FLAGS, error);
     namesf = fopen(output_names_path, "w");
     name_write_error  = 0;
 
 
     //Start writing the child files
-    while (fgets(buffer, GW_IO_MAX_FGETS_LINE, inputf) != NULL &&
+    while (fgets(buffer, LW_IO_MAX_FGETS_LINE, inputf) != NULL &&
            place_write_error != EOF &&
            name_write_error  != EOF &&
            *error == NULL &&
@@ -610,12 +610,12 @@ char** lw_io_get_dictionary_file_list ()
     const char* enginename;
     const char* filename;
     const char *directory;
-    const int MAX = GW_DICTLIST_MAX_DICTIONARIES;
+    const int MAX = LW_DICTLIST_MAX_DICTIONARIES;
     char** atoms = (char**) malloc((MAX + 1) * sizeof(int));
     int i = 0;
 
     //Go through each engine folder looking for dictionaries
-    for (engine = 0; engine < GW_ENGINE_TOTAL && i < MAX; engine++)
+    for (engine = 0; engine < LW_ENGINE_TOTAL && i < MAX; engine++)
     {
       enginename = lw_util_get_engine_name (engine);
       if ((directory = lw_util_get_directory_for_engine (engine)) != NULL)
@@ -702,15 +702,15 @@ gpointer _stdin_func (gpointer data)
 
     if (ferror(file) != 0)
     {
-      domain = g_quark_from_string (GW_IO_ERROR);
+      domain = g_quark_from_string (LW_IO_ERROR);
       message = gettext("Unable to read data from the input file.");
-      in->error = g_error_new (domain, GW_IO_READ_ERROR, message);
+      in->error = g_error_new (domain, LW_IO_READ_ERROR, message);
     }
     else if(ferror(stream) != 0)
     {
-      domain = g_quark_from_string (GW_IO_ERROR);
+      domain = g_quark_from_string (LW_IO_ERROR);
       message = gettext("Unable to write to the external program's input stream.");
-      in->error = g_error_new (domain, GW_IO_WRITE_ERROR, message);
+      in->error = g_error_new (domain, LW_IO_WRITE_ERROR, message);
     }
 
     //Cleanup
@@ -750,15 +750,15 @@ gpointer _stdout_func (gpointer data)
 
     if (ferror(stream) != 0)
     {
-      domain = g_quark_from_string (GW_IO_ERROR);
+      domain = g_quark_from_string (LW_IO_ERROR);
       message = gettext("Unable to read data from the external program's pipe.");
-      out->error = g_error_new (domain, GW_IO_READ_ERROR, message);
+      out->error = g_error_new (domain, LW_IO_READ_ERROR, message);
     }
     else if(ferror(stream) != 0)
     {
-      domain = g_quark_from_string (GW_IO_ERROR);
+      domain = g_quark_from_string (LW_IO_ERROR);
       message = gettext("Unable to write the stream's output to a file.");
-      out->error = g_error_new (domain, GW_IO_WRITE_ERROR, message);
+      out->error = g_error_new (domain, LW_IO_WRITE_ERROR, message);
     }
 
     //Cleanup

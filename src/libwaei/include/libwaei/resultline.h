@@ -1,5 +1,5 @@
-#ifndef GW_RESULTLINE_OBJECT_INCLUDED
-#define GW_RESULTLINE_OBJECT_INCLUDED
+#ifndef LW_RESULTLINE_OBJECT_INCLUDED
+#define LW_RESULTLINE_OBJECT_INCLUDED
 /******************************************************************************
     AUTHOR:
     File written and Copyrighted by Zachary Dovel. All Rights Reserved.
@@ -36,7 +36,7 @@
 //!
 
 struct _LwResultLine {
-    char string[GW_IO_MAX_FGETS_LINE];     //!< Character array holding the result line for the pointers to reference
+    char string[LW_IO_MAX_FGETS_LINE];     //!< Character array holding the result line for the pointers to reference
 
     //General result things
     char *def_start[50];        //!< Pointer to the definitions

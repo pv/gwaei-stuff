@@ -1,5 +1,5 @@
-#ifndef GW_HISTORYLIST_HEADER_INCLUDED
-#define GW_HISTORYLIST_HEADER_INCLUDED 
+#ifndef LW_HISTORYLIST_HEADER_INCLUDED
+#define LW_HISTORYLIST_HEADER_INCLUDED 
 /******************************************************************************
     AUTHOR:
     File written and Copyrighted by Zachary Dovel. All Rights Reserved.
@@ -36,8 +36,8 @@
 #include <libwaei/searchitem.h>
 
 typedef enum {
-  GW_HISTORYLIST_RESULTS,
-  GW_HISTORYLIST_KANJI
+  LW_HISTORYLIST_RESULTS,
+  LW_HISTORYLIST_KANJI
 } LwHistoryListTarget;
 
 

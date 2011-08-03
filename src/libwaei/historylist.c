@@ -44,16 +44,16 @@ static LwHistoryList *kanji_history;
 //!
 //! @brief Returns the private historylist of the history.c file
 //!
-//! The two options here are GW_HISTORYLIST_RESULTS to get the results
-//! history list and GW_HISTORYLIST_KANJI to get the kanji history list.
+//! The two options here are LW_HISTORYLIST_RESULTS to get the results
+//! history list and LW_HISTORYLIST_KANJI to get the kanji history list.
 //!
 //! @param TARGET The target who's history list we want.
 //!
 LwHistoryList* lw_historylist_get_list (const int TARGET)
 {
-    if (TARGET == GW_HISTORYLIST_RESULTS)
+    if (TARGET == LW_HISTORYLIST_RESULTS)
       return results_history;
-    else if (TARGET == GW_HISTORYLIST_KANJI)
+    else if (TARGET == LW_HISTORYLIST_KANJI)
       return kanji_history;
     else
       return NULL;
@@ -300,16 +300,16 @@ void lw_historylist_initialize ()
 void lw_historylist_free ()
 {
     //Free the results history list
-    lw_historylist_clear_forward_history (GW_HISTORYLIST_RESULTS);
-    lw_historylist_clear_back_history (GW_HISTORYLIST_RESULTS);
+    lw_historylist_clear_forward_history (LW_HISTORYLIST_RESULTS);
+    lw_historylist_clear_back_history (LW_HISTORYLIST_RESULTS);
     lw_searchitem_free (results_history->current);
     results_history->current = NULL;
     free (results_history);
     results_history = NULL;
 
     //Free the kanji history list
-    lw_historylist_clear_forward_history (GW_HISTORYLIST_KANJI);
-    lw_historylist_clear_back_history (GW_HISTORYLIST_KANJI);
+    lw_historylist_clear_forward_history (LW_HISTORYLIST_KANJI);
+    lw_historylist_clear_back_history (LW_HISTORYLIST_KANJI);
     lw_searchitem_free (kanji_history->current);
     kanji_history->current = NULL;
     free (kanji_history);

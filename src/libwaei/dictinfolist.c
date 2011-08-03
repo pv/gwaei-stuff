@@ -374,7 +374,7 @@ LwDictInfo* lw_dictinfolist_get_dictinfo_by_idstring (const char* ENGINE_AND_FIL
 //!
 //! This as a convenience function to see if a dictionary is installed,
 //! negating the need to see if it was added to the dictionary list and if
-//! it has the GW_DICT_STATUS_INSTALLED status set.
+//! it has the LW_DICT_STATUS_INSTALLED status set.
 //!
 //! @param NAME request a const string to search for in the dictionary names
 //! @return returns true if the dictionary is installed
@@ -407,7 +407,7 @@ gboolean lw_dictinfolist_check_if_loaded (const LwEngine ENGINE, const char* FIL
 //! This is not the number of dictionaries that are active.  It shows
 //! how many dictionary names are recorded in the dictionary list.
 //! By default, the default dictionaries appended to the list with
-//! an UNGW_DICT_STATUS_INSTALLED status if they are unavailable. If the GW_DICT_MIX dictionary
+//! an UNLW_DICT_STATUS_INSTALLED status if they are unavailable. If the LW_DICT_MIX dictionary
 //! is installed, Kanji and Radicals disappear from the GUI, but are still
 //! in this list.
 //!
@@ -540,11 +540,11 @@ void lw_dictinfolist_save_dictionary_order_pref ()
     int i;
 
     //Initializations;
-    atom = (char**) malloc((GW_DICTLIST_MAX_DICTIONARIES + 1) * sizeof(char*));
+    atom = (char**) malloc((LW_DICTLIST_MAX_DICTIONARIES + 1) * sizeof(char*));
     i = 0;
 
     //Create the string to write to the prefs with the last one NULL terminated
-    for (iter = lw_dictinfolist_get_list (); iter != NULL && i < GW_DICTLIST_MAX_DICTIONARIES; iter = iter->next)
+    for (iter = lw_dictinfolist_get_list (); iter != NULL && i < LW_DICTLIST_MAX_DICTIONARIES; iter = iter->next)
     {
       di = (LwDictInfo*) iter->data;
       atom[i] = g_strdup_printf ("%s/%s", lw_util_get_engine_name (di->engine), di->filename);
@@ -554,7 +554,7 @@ void lw_dictinfolist_save_dictionary_order_pref ()
     atom[i] = NULL;
 
     load_order = g_strjoinv (";", atom);
-    lw_pref_set_string_by_schema (GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, load_order);
+    lw_pref_set_string_by_schema (LW_SCHEMA_DICTIONARY, LW_KEY_LOAD_ORDER, load_order);
 
     //Free the used memory
     g_strfreev (atom);
@@ -578,15 +578,15 @@ void lw_dictinfolist_load_dictionary_order_from_pref ()
     LwDictInfo *di = NULL;
     int load_position = 0;
     
-    lw_pref_get_string_by_schema (load_order, GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER, 1000);
-    load_order_array = g_strsplit_set (load_order, ";", GW_DICTLIST_MAX_DICTIONARIES);
+    lw_pref_get_string_by_schema (load_order, LW_SCHEMA_DICTIONARY, LW_KEY_LOAD_ORDER, 1000);
+    load_order_array = g_strsplit_set (load_order, ";", LW_DICTLIST_MAX_DICTIONARIES);
     
     for (iter = load_order_array; *iter != NULL; iter++)
     {
       //Sanity checking
       if (*iter == NULL || **iter == '\0') { 
         printf("failed sanity check 1\n");
-        lw_pref_reset_value_by_schema (GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER);
+        lw_pref_reset_value_by_schema (LW_SCHEMA_DICTIONARY, LW_KEY_LOAD_ORDER);
         lw_dictinfolist_load_dictionary_order_from_pref ();
         return;
       }
@@ -597,7 +597,7 @@ void lw_dictinfolist_load_dictionary_order_from_pref ()
       if (engine_name_array[0] == NULL || engine_name_array[1] == NULL)
       {
         printf("failed sanity check 2\n");
-        lw_pref_reset_value_by_schema (GW_SCHEMA_DICTIONARY, GW_KEY_LOAD_ORDER);
+        lw_pref_reset_value_by_schema (LW_SCHEMA_DICTIONARY, LW_KEY_LOAD_ORDER);
         lw_dictinfolist_load_dictionary_order_from_pref ();
         return;
       }

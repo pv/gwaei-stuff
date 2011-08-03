@@ -47,15 +47,15 @@ static GList *_list = NULL;
 void lw_pref_initialize ()
 {
   char version[50];
-  lw_pref_get_string_by_schema (version, GW_SCHEMA_BASE, GW_KEY_PROGRAM_VERSION, 50);
+  lw_pref_get_string_by_schema (version, LW_SCHEMA_BASE, LW_KEY_PROGRAM_VERSION, 50);
 
   if (strcmp(version, VERSION) != 0)
   {
-    lw_pref_set_string_by_schema (GW_SCHEMA_BASE, GW_KEY_PROGRAM_VERSION, VERSION);
-    lw_pref_reset_value_by_schema (GW_SCHEMA_DICTIONARY, GW_KEY_ENGLISH_SOURCE);
-    lw_pref_reset_value_by_schema (GW_SCHEMA_DICTIONARY, GW_KEY_KANJI_SOURCE);
-    lw_pref_reset_value_by_schema (GW_SCHEMA_DICTIONARY, GW_KEY_NAMES_PLACES_SOURCE);
-    lw_pref_reset_value_by_schema (GW_SCHEMA_DICTIONARY, GW_KEY_EXAMPLES_SOURCE);
+    lw_pref_set_string_by_schema (LW_SCHEMA_BASE, LW_KEY_PROGRAM_VERSION, VERSION);
+    lw_pref_reset_value_by_schema (LW_SCHEMA_DICTIONARY, LW_KEY_ENGLISH_SOURCE);
+    lw_pref_reset_value_by_schema (LW_SCHEMA_DICTIONARY, LW_KEY_KANJI_SOURCE);
+    lw_pref_reset_value_by_schema (LW_SCHEMA_DICTIONARY, LW_KEY_NAMES_PLACES_SOURCE);
+    lw_pref_reset_value_by_schema (LW_SCHEMA_DICTIONARY, LW_KEY_EXAMPLES_SOURCE);
   }
 }
 

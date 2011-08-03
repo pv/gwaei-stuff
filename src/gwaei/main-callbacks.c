@@ -89,7 +89,7 @@ G_MODULE_EXPORT gboolean gw_main_get_iter_for_motion_cb (GtkWidget      *widget,
     hovered_word = gtk_text_iter_get_visible_slice (&start, &end);
 
     LwDictInfo *di;
-    di = lw_dictinfolist_get_dictinfo (GW_ENGINE_KANJI, "Kanji");
+    di = lw_dictinfolist_get_dictinfo (LW_ENGINE_KANJI, "Kanji");
     if (di == NULL) return FALSE;
   
     // Characters above 0xFF00 represent inserted images
@@ -98,7 +98,7 @@ G_MODULE_EXPORT gboolean gw_main_get_iter_for_motion_cb (GtkWidget      *widget,
     else
       gw_main_set_cursor (GDK_XTERM);
 
-    GtkWidget *tv = GTK_WIDGET (gw_common_get_widget_by_target (GW_TARGET_RESULTS));
+    GtkWidget *tv = GTK_WIDGET (gw_common_get_widget_by_target (LW_TARGET_RESULTS));
     GtkWidget *window = GTK_WIDGET (gtk_widget_get_tooltip_window (tv));
     if (window != NULL && button_character != unic) 
     {
@@ -170,7 +170,7 @@ G_MODULE_EXPORT gboolean gw_main_get_iter_for_button_release_cb (GtkWidget      
     y = event->y;
     trailing = 0;
     unic = gw_main_get_hovered_character (&x, &y, &iter);
-    di = lw_dictinfolist_get_dictinfo (GW_ENGINE_KANJI, "Kanji");
+    di = lw_dictinfolist_get_dictinfo (LW_ENGINE_KANJI, "Kanji");
     error = NULL;
 
 
@@ -187,7 +187,7 @@ G_MODULE_EXPORT gboolean gw_main_get_iter_for_button_release_cb (GtkWidget      
         gint length = g_unichar_to_utf8 (unic, query);
         query[length] = '\0'; 
 
-        GtkWidget *tv = GTK_WIDGET (gw_common_get_widget_by_target (GW_TARGET_RESULTS));
+        GtkWidget *tv = GTK_WIDGET (gw_common_get_widget_by_target (LW_TARGET_RESULTS));
         GtkWidget *window = GTK_WIDGET (gtk_widget_get_tooltip_window (tv));
         if (window == NULL) {
           button_character = unic;
@@ -210,7 +210,7 @@ G_MODULE_EXPORT gboolean gw_main_get_iter_for_button_release_cb (GtkWidget      
             tooltip_item = NULL;
           }
 
-          tooltip_item = lw_searchitem_new (query, di, GW_TARGET_KANJI, &error);
+          tooltip_item = lw_searchitem_new (query, di, LW_TARGET_KANJI, &error);
           lw_engine_get_results (tooltip_item, TRUE, FALSE);
 
           g_thread_join (tooltip_item->thread); 
@@ -222,7 +222,7 @@ G_MODULE_EXPORT gboolean gw_main_get_iter_for_button_release_cb (GtkWidget      
         }
       }
       else {
-        GtkWidget *tv = GTK_WIDGET (gw_common_get_widget_by_target (GW_TARGET_RESULTS));
+        GtkWidget *tv = GTK_WIDGET (gw_common_get_widget_by_target (LW_TARGET_RESULTS));
         GtkWidget *window = GTK_WIDGET (gtk_widget_get_tooltip_window (tv));
         if (window != NULL && button_character != unic) 
         {
@@ -382,7 +382,7 @@ G_MODULE_EXPORT void gw_main_search_from_history_cb (GtkWidget *widget, gpointer
     LwHistoryList *hl;
     LwSearchItem *item;
 
-    hl = lw_historylist_get_list (GW_HISTORYLIST_RESULTS);
+    hl = lw_historylist_get_list (LW_HISTORYLIST_RESULTS);
     item = (LwSearchItem*) data;
 
     //Make sure searches done from the history are pointing at a valid target
@@ -400,12 +400,12 @@ G_MODULE_EXPORT void gw_main_search_from_history_cb (GtkWidget *widget, gpointer
     if (hl->back != NULL && g_list_find (hl->back, item))
     {
       while (hl->back != NULL && hl->current != item)
-        lw_historylist_go_back_by_target (GW_HISTORYLIST_RESULTS);
+        lw_historylist_go_back_by_target (LW_HISTORYLIST_RESULTS);
     }
     else if (hl->forward != NULL && g_list_find (hl->forward, item))
     {
       while (hl->forward != NULL && hl->current != item)
-        lw_historylist_go_forward_by_target (GW_HISTORYLIST_RESULTS);
+        lw_historylist_go_forward_by_target (LW_HISTORYLIST_RESULTS);
     }
 
     //Set tab text
@@ -420,8 +420,8 @@ G_MODULE_EXPORT void gw_main_search_from_history_cb (GtkWidget *widget, gpointer
     //Set the search string in the GtkEntry
     gw_main_clear_search_entry ();
     gw_main_search_entry_insert (item->queryline->string);
-    gw_main_text_select_all_by_target (GW_TARGET_ENTRY);
-    gw_main_grab_focus_by_target (GW_TARGET_ENTRY);
+    gw_main_text_select_all_by_target (LW_TARGET_ENTRY);
+    gw_main_grab_focus_by_target (LW_TARGET_ENTRY);
 
     //Set the correct dictionary in the gui
     GtkWidget *combobox;
@@ -444,7 +444,7 @@ G_MODULE_EXPORT void gw_main_search_from_history_cb (GtkWidget *widget, gpointer
 G_MODULE_EXPORT void gw_main_back_cb (GtkWidget *widget, gpointer data)
 {
     LwHistoryList *hl;
-    hl = lw_historylist_get_list (GW_HISTORYLIST_RESULTS);
+    hl = lw_historylist_get_list (LW_HISTORYLIST_RESULTS);
     if (hl->back != NULL)
     {
       gw_main_search_from_history_cb (NULL, hl->back->data);
@@ -466,7 +466,7 @@ G_MODULE_EXPORT void gw_main_back_cb (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void gw_main_forward_cb (GtkWidget *widget, gpointer data)
 {
     LwHistoryList *hl;
-    hl = lw_historylist_get_list (GW_HISTORYLIST_RESULTS);
+    hl = lw_historylist_get_list (LW_HISTORYLIST_RESULTS);
     if (hl->forward != NULL)
     {
       gw_main_search_from_history_cb (NULL, hl->forward->data);
@@ -499,7 +499,7 @@ G_MODULE_EXPORT void gw_main_save_as_cb (GtkWidget *widget, gpointer data)
     //Initializations
     path = lw_io_get_savepath ();
     temp = NULL;
-    text = gw_main_buffer_get_text_by_target (GW_TARGET_RESULTS);
+    text = gw_main_buffer_get_text_by_target (LW_TARGET_RESULTS);
     window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
     dialog = gtk_file_chooser_dialog_new (gettext ("Save As"),
                 GTK_WINDOW (window),
@@ -581,7 +581,7 @@ G_MODULE_EXPORT void gw_main_save_cb (GtkWidget *widget, gpointer data)
     }
 
     //Carry out the save
-    text = gw_main_buffer_get_text_by_target (GW_TARGET_RESULTS);
+    text = gw_main_buffer_get_text_by_target (LW_TARGET_RESULTS);
     lw_io_write_file (path, "a", text, NULL, NULL, &error);
     g_free (text);
     text = NULL;
@@ -604,9 +604,9 @@ G_MODULE_EXPORT void gw_main_save_cb (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void gw_main_zoom_in_cb (GtkWidget *widget, gpointer data)
 {
     int size;
-    size = lw_pref_get_int_by_schema (GW_SCHEMA_FONT, GW_KEY_FONT_MAGNIFICATION) + GW_FONT_ZOOM_STEP;
+    size = lw_pref_get_int_by_schema (LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION) + GW_FONT_ZOOM_STEP;
     if (size <= GW_MAX_FONT_MAGNIFICATION)
-      lw_pref_set_int_by_schema (GW_SCHEMA_FONT, GW_KEY_FONT_MAGNIFICATION, size);
+      lw_pref_set_int_by_schema (LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION, size);
 }
 
 
@@ -624,9 +624,9 @@ G_MODULE_EXPORT void gw_main_zoom_in_cb (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void gw_main_zoom_out_cb (GtkWidget *widget, gpointer data)
 {
     int size;
-    size = lw_pref_get_int_by_schema (GW_SCHEMA_FONT, GW_KEY_FONT_MAGNIFICATION) - GW_FONT_ZOOM_STEP;
+    size = lw_pref_get_int_by_schema (LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION) - GW_FONT_ZOOM_STEP;
     if (size >= GW_MIN_FONT_MAGNIFICATION)
-      lw_pref_set_int_by_schema (GW_SCHEMA_FONT, GW_KEY_FONT_MAGNIFICATION, size);
+      lw_pref_set_int_by_schema (LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION, size);
 }
 
 
@@ -643,7 +643,7 @@ G_MODULE_EXPORT void gw_main_zoom_out_cb (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void gw_main_zoom_100_cb (GtkWidget *widget, gpointer data)
 {
-    lw_pref_reset_value_by_schema (GW_SCHEMA_FONT, GW_KEY_FONT_MAGNIFICATION);
+    lw_pref_reset_value_by_schema (LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION);
 }
 
 
@@ -662,8 +662,8 @@ G_MODULE_EXPORT void gw_main_zoom_100_cb (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void gw_main_less_relevant_results_toggle_cb (GtkWidget *widget, gpointer data)
 {
     gboolean state;
-    state = lw_pref_get_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_LESS_RELEVANT_SHOW);
-    lw_pref_set_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_LESS_RELEVANT_SHOW, !state);
+    state = lw_pref_get_boolean_by_schema (LW_SCHEMA_BASE, LW_KEY_LESS_RELEVANT_SHOW);
+    lw_pref_set_boolean_by_schema (LW_SCHEMA_BASE, LW_KEY_LESS_RELEVANT_SHOW, !state);
 }
 
 
@@ -682,9 +682,9 @@ G_MODULE_EXPORT void gw_main_toolbar_toggle_cb (GtkWidget *widget, gpointer data
 {
     gboolean state;
 
-    state = lw_pref_get_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_TOOLBAR_SHOW);
+    state = lw_pref_get_boolean_by_schema (LW_SCHEMA_BASE, LW_KEY_TOOLBAR_SHOW);
 
-    lw_pref_set_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_TOOLBAR_SHOW, !state);
+    lw_pref_set_boolean_by_schema (LW_SCHEMA_BASE, LW_KEY_TOOLBAR_SHOW, !state);
 }
 
 
@@ -703,9 +703,9 @@ G_MODULE_EXPORT void gw_main_statusbar_toggle_cb (GtkWidget *widget, gpointer da
 {
     gboolean state;
 
-    state = lw_pref_get_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_STATUSBAR_SHOW);
+    state = lw_pref_get_boolean_by_schema (LW_SCHEMA_BASE, LW_KEY_STATUSBAR_SHOW);
 
-    lw_pref_set_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_STATUSBAR_SHOW, !state);
+    lw_pref_set_boolean_by_schema (LW_SCHEMA_BASE, LW_KEY_STATUSBAR_SHOW, !state);
 }
 
 
@@ -753,7 +753,7 @@ G_MODULE_EXPORT void gw_main_dictionary_changed_action_cb (GtkWidget *widget, gp
     //Finish up
     gw_main_set_dictionary (active);
 
-    gw_main_grab_focus_by_target (GW_TARGET_ENTRY);
+    gw_main_grab_focus_by_target (LW_TARGET_ENTRY);
 }
 
 
@@ -926,8 +926,8 @@ G_MODULE_EXPORT gboolean gw_main_update_clipboard_on_focus_change_cb (GtkWidget 
 
 
     //Correct the sensitive state to paste
-    if (gw_common_widget_equals_target (data, GW_TARGET_RESULTS) ||
-        gw_common_widget_equals_target (data, GW_TARGET_KANJI)     )
+    if (gw_common_widget_equals_target (data, LW_TARGET_RESULTS) ||
+        gw_common_widget_equals_target (data, LW_TARGET_KANJI)     )
       gtk_action_set_sensitive (GTK_ACTION (paste_action), FALSE);
     else
       gtk_action_set_sensitive (GTK_ACTION (paste_action), TRUE);
@@ -1175,7 +1175,7 @@ G_MODULE_EXPORT gboolean gw_main_key_press_modify_status_update_cb (GtkWidget *w
                                                                     GdkEvent  *event,
                                                                     gpointer  *data  )
 {
-    GtkWidget *tv = GTK_WIDGET (gw_common_get_widget_by_target (GW_TARGET_RESULTS));
+    GtkWidget *tv = GTK_WIDGET (gw_common_get_widget_by_target (LW_TARGET_RESULTS));
     GtkWidget *window = GTK_WIDGET (gtk_widget_get_tooltip_window (tv));
     if (window != NULL) 
     {
@@ -1184,7 +1184,7 @@ G_MODULE_EXPORT gboolean gw_main_key_press_modify_status_update_cb (GtkWidget *w
     }
 
     guint keyval = ((GdkEventKey*)event)->keyval;
-    GtkWidget* search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
+    GtkWidget* search_entry = gw_common_get_widget_by_target (LW_TARGET_ENTRY);
 
     if ((keyval == GDK_KEY_ISO_Enter || keyval == GDK_KEY_Return) && gtk_widget_is_focus (search_entry))
     {
@@ -1290,12 +1290,12 @@ G_MODULE_EXPORT gboolean gw_main_focus_change_on_key_press_cb (GtkWidget *widget
              keyval == GDK_KEY_Page_Down   
            ) &&
            (
-             !gw_common_widget_equals_target (widget, GW_TARGET_RESULTS)
+             !gw_common_widget_equals_target (widget, LW_TARGET_RESULTS)
            )
          )
       {
-        gw_main_text_select_none_by_target (GW_TARGET_ENTRY);
-        gw_main_grab_focus_by_target (GW_TARGET_RESULTS);
+        gw_main_text_select_none_by_target (LW_TARGET_ENTRY);
+        gw_main_grab_focus_by_target (LW_TARGET_RESULTS);
         return TRUE;
       }
 
@@ -1305,11 +1305,11 @@ G_MODULE_EXPORT gboolean gw_main_focus_change_on_key_press_cb (GtkWidget *widget
                 keyval != GDK_KEY_Down      &&
                 keyval != GDK_KEY_Page_Up   &&
                 keyval != GDK_KEY_Page_Down &&
-                !gw_common_widget_equals_target (widget, GW_TARGET_ENTRY)
+                !gw_common_widget_equals_target (widget, LW_TARGET_ENTRY)
               )
       {
-        gw_main_text_select_all_by_target (GW_TARGET_ENTRY);
-        gw_main_grab_focus_by_target (GW_TARGET_ENTRY);
+        gw_main_text_select_all_by_target (LW_TARGET_ENTRY);
+        gw_main_grab_focus_by_target (LW_TARGET_ENTRY);
         return TRUE;
       }
     }
@@ -1340,7 +1340,7 @@ G_MODULE_EXPORT void gw_main_search_cb (GtkWidget *widget, gpointer data)
 
     //Initializations
     error = NULL;
-    gw_main_strncpy_text_from_widget_by_target (query, GW_TARGET_ENTRY, 100);
+    gw_main_strncpy_text_from_widget_by_target (query, LW_TARGET_ENTRY, 100);
 
     item = gw_tabs_get_searchitem ();
     di = lw_dictinfolist_get_selected_dictinfo ();
@@ -1352,7 +1352,7 @@ G_MODULE_EXPORT void gw_main_search_cb (GtkWidget *widget, gpointer data)
       return;
     }
 
-    new_item = lw_searchitem_new (query, di, GW_TARGET_RESULTS, &error);
+    new_item = lw_searchitem_new (query, di, LW_TARGET_RESULTS, &error);
 
     //Check for problems, and quit if there are
     if (error != NULL || new_item == NULL || lw_searchitem_is_equal (item, new_item) || !gw_main_cancel_search_by_searchitem (item))
@@ -1371,7 +1371,7 @@ G_MODULE_EXPORT void gw_main_search_cb (GtkWidget *widget, gpointer data)
 
     //Move the previous searchitem to the history or destroy it
     if (lw_searchitem_has_history_relevance (item))
-      lw_historylist_add_searchitem_to_history (GW_HISTORYLIST_RESULTS, item);
+      lw_historylist_add_searchitem_to_history (LW_HISTORYLIST_RESULTS, item);
     else
       lw_searchitem_free (item);
 
@@ -1495,7 +1495,7 @@ G_MODULE_EXPORT void gw_main_insert_or_cb (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void gw_main_clear_search_cb (GtkWidget *widget, gpointer data)
 {
     gw_main_clear_search_entry ();
-    gw_main_grab_focus_by_target (GW_TARGET_ENTRY);
+    gw_main_grab_focus_by_target (LW_TARGET_ENTRY);
 }
 
 
@@ -1517,7 +1517,7 @@ G_MODULE_EXPORT void gw_main_open_dictionary_folder_cb (GtkWidget *widget, gpoin
     GtkWidget *window;
 
     //Initializations
-    directory = lw_util_get_directory (GW_PATH_DICTIONARY);
+    directory = lw_util_get_directory (LW_PATH_DICTIONARY);
     uri = g_build_filename ("file://", directory, NULL);
     builder = gw_common_get_builder ();
     window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
@@ -1629,7 +1629,7 @@ G_MODULE_EXPORT void gw_main_search_drag_data_recieved_cb (GtkWidget        *wid
     char* text;
 
     //Initializations
-    entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
+    entry = gw_common_get_widget_by_target (LW_TARGET_ENTRY);
     text = (char*) gtk_selection_data_get_text (data);   
 
     if (text != NULL && strlen(text) > 0)
@@ -1669,7 +1669,7 @@ G_MODULE_EXPORT void gw_main_update_button_states_based_on_entry_text_cb (GtkWid
     int length;
 
     //Initializations
-    entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
+    entry = gw_common_get_widget_by_target (LW_TARGET_ENTRY);
     length = gtk_entry_get_text_length (GTK_ENTRY (entry));
 
     //Show the clear icon when approprate
@@ -1714,7 +1714,7 @@ void gw_main_populate_popup_with_search_options_cb (GtkTextView *entry, GtkMenu 
     int i = 0;
 
     //Initializations
-    tb = gw_common_get_gobject_by_target (GW_TARGET_RESULTS);
+    tb = gw_common_get_gobject_by_target (LW_TARGET_RESULTS);
     // TRANSLATORS: The first variable is the expression to look for, the second is the dictionary full name
     search_for_menuitem_text = gettext("Search for \"%s\" in the %s");
     // TRANSLATORS: The variable is the expression to look for
@@ -1772,7 +1772,7 @@ void gw_main_populate_popup_with_search_options_cb (GtkTextView *entry, GtkMenu 
     i = 0;
     while (website_url_menuitems[i] != NULL)
     {
-      if (di != NULL && (item = lw_searchitem_new (query_text, di, GW_TARGET_RESULTS, NULL)) != NULL)
+      if (di != NULL && (item = lw_searchitem_new (query_text, di, LW_TARGET_RESULTS, NULL)) != NULL)
       {
         //Create handy variables
         char *name = website_url_menuitems[i];
@@ -1838,7 +1838,7 @@ void gw_main_populate_popup_with_search_options_cb (GtkTextView *entry, GtkMenu 
     {
       list = lw_dictinfolist_get_dict_by_load_position (i);
       di = list->data;
-      if (di != NULL && (item = lw_searchitem_new (query_text, di, GW_TARGET_RESULTS, NULL)) != NULL)
+      if (di != NULL && (item = lw_searchitem_new (query_text, di, LW_TARGET_RESULTS, NULL)) != NULL)
       {
         if (di == di_selected)
         {

@@ -1,5 +1,5 @@
-#ifndef GW_BASE_INCLUDED
-#define GW_BASE_INCLUDED
+#ifndef LW_BASE_INCLUDED
+#define LW_BASE_INCLUDED
 
 #include <libwaei/regex.h>
 #include <libwaei/utilities.h>

@@ -66,7 +66,7 @@ static int cursesSupportColorFlag = TRUE;	//TODO: use this
 //!
 //! @brief Print the "no result" message where necessary.
 //!
-void w_ncurses_no_result (LwSearchItem *item)
+void nw_no_result (LwSearchItem *item)
 {
     wprintw(results,"%s\n\n", gettext("No results found!"));
 }
@@ -81,19 +81,19 @@ void w_ncurses_no_result (LwSearchItem *item)
 //! @param query The query string we are searching
 //! @param dictionary The name (string) of the dictionary used
 //!
-static void w_ncurses_start_banner (char *query, char *dictionary)
+static void nw_start_banner (char *query, char *dictionary)
 {
     wprintw(screen, " ");
     // TRANSLATORS: First part of the sentence : 'Searching for "${query}" in the ${dictionary} dictionary'
     wprintw(screen, gettext("Searching for \""));
-    wattron(screen, COLOR_PAIR(GW_NCCOLORS_REDONBLACK));
+    wattron(screen, COLOR_PAIR(NW_NCCOLORS_REDONBLACK));
     wprintw(screen,"%s", query);
-    wattroff(screen, COLOR_PAIR(GW_NCCOLORS_REDONBLACK));
+    wattroff(screen, COLOR_PAIR(NW_NCCOLORS_REDONBLACK));
     // TRANSLATORS: Second part of the sentence : 'Searching for "${query}" in the ${dictionary} dictionary'
     wprintw(screen, gettext("\" in the "));
-    wattron(screen, COLOR_PAIR(GW_NCCOLORS_REDONBLACK));
+    wattron(screen, COLOR_PAIR(NW_NCCOLORS_REDONBLACK));
     wprintw(screen," %s", dictionary);
-    wattroff(screen, COLOR_PAIR(GW_NCCOLORS_REDONBLACK));
+    wattroff(screen, COLOR_PAIR(NW_NCCOLORS_REDONBLACK));
     // TRANSLATORS: Third and last part of the sentence : 'Searching for "${query}" in the ${dictionary} dictionary'
     wprintw(screen, gettext(" dictionary..."));
 
@@ -107,15 +107,15 @@ static void w_ncurses_start_banner (char *query, char *dictionary)
 //!
 //! @param item A LwSearchItem to gleam information from
 //!
-void w_ncurses_append_less_relevant_header_to_output (LwSearchItem *item)
+void nw_append_less_relevant_header_to_output (LwSearchItem *item)
 {
-    wattron(results, COLOR_PAIR(GW_NCCOLORS_REDONBLACK));
+    wattron(results, COLOR_PAIR(NW_NCCOLORS_REDONBLACK));
     wprintw(results,"\n*** ");
-    wattroff(results, COLOR_PAIR(GW_NCCOLORS_REDONBLACK));
+    wattroff(results, COLOR_PAIR(NW_NCCOLORS_REDONBLACK));
     wprintw(results,"%s ", gettext("Other Results"));
-    wattron(results, COLOR_PAIR(GW_NCCOLORS_REDONBLACK));
+    wattron(results, COLOR_PAIR(NW_NCCOLORS_REDONBLACK));
     wprintw(results,"***************************\n\n\n");
-    wattroff(results, COLOR_PAIR(GW_NCCOLORS_REDONBLACK));
+    wattroff(results, COLOR_PAIR(NW_NCCOLORS_REDONBLACK));
 }
 
 //!
@@ -127,7 +127,7 @@ void w_ncurses_append_less_relevant_header_to_output (LwSearchItem *item)
 //!
 //! @param item A LwSearchItem to gleam information from
 //!
-void w_ncurses_append_more_relevant_header_to_output (LwSearchItem *item)
+void nw_append_more_relevant_header_to_output (LwSearchItem *item)
 {
 }
 
@@ -150,9 +150,9 @@ static void ncurses_color_init (bool hasColors)
 			cursesSupportColorFlag = FALSE;
 			return;
 		}
-		init_pair(GW_NCCOLORS_GREENONBLACK, COLOR_GREEN, COLOR_BLACK);
-		init_pair(GW_NCCOLORS_BLUEONBLACK, COLOR_BLUE, COLOR_BLACK);
-		init_pair(GW_NCCOLORS_REDONBLACK, COLOR_RED, COLOR_BLACK);
+		init_pair(NW_NCCOLORS_GREENONBLACK, COLOR_GREEN, COLOR_BLACK);
+		init_pair(NW_NCCOLORS_BLUEONBLACK, COLOR_BLUE, COLOR_BLACK);
+		init_pair(NW_NCCOLORS_REDONBLACK, COLOR_RED, COLOR_BLACK);
 	}
 	else
 		cursesSupportColorFlag = FALSE;
@@ -350,14 +350,14 @@ static gboolean main_loop_function (gpointer data)
       }
 
       if (quiet_switch == FALSE)
-        w_ncurses_start_banner (query_text, di->filename);
+        nw_start_banner (query_text, di->filename);
 
       if (query_text[0] == '\0')
         return TRUE;
 
       LwSearchItem *item = NULL;
       GError *error = NULL;
-      item = lw_searchitem_new (query_text, di, GW_TARGET_CONSOLE, &error);
+      item = lw_searchitem_new (query_text, di, LW_TARGET_CONSOLE, &error);
       if (item == NULL)
       {
         wprintw(screen, "There was an error creating your search.");
@@ -436,7 +436,7 @@ static gboolean main_loop_function (gpointer data)
 //! @param argc The number of arguments
 //! @param argv An array of strings
 //!
-void w_ncurses_start (int argc, char *argv[])
+void nw_start_ncurses (int argc, char *argv[])
 {
     di = NULL;
     GError *error = NULL;
@@ -508,7 +508,7 @@ void w_ncurses_start (int argc, char *argv[])
 //!
 //! @brief Not yet written
 //!
-void w_ncurses_append_edict_results_to_buffer (LwSearchItem *item)
+void nw_append_edict_results_to_buffer (LwSearchItem *item)
 {
 		//Definitions
 		int cont = 0;
@@ -552,15 +552,15 @@ void w_ncurses_append_edict_results_to_buffer (LwSearchItem *item)
 //!
 //! @brief Not yet written
 //!
-void w_ncurses_append_kanjidict_results_to_buffer (LwSearchItem *item)
+void nw_append_kanjidict_results_to_buffer (LwSearchItem *item)
 {
 		char line_started = FALSE;
 	    LwResultLine *resultline = item->resultline;
 
 		//Kanji
-		wattron(results, COLOR_PAIR(GW_NCCOLORS_GREENONBLACK));
+		wattron(results, COLOR_PAIR(NW_NCCOLORS_GREENONBLACK));
 		wprintw(results,"%s\n", resultline->kanji);
-		wattroff(results, COLOR_PAIR(GW_NCCOLORS_REDONBLACK));
+		wattroff(results, COLOR_PAIR(NW_NCCOLORS_REDONBLACK));
 
 		if (resultline->radicals)
 			wprintw(results,"%s%s\n", gettext("Radicals:"), resultline->radicals);
@@ -614,7 +614,7 @@ void w_ncurses_append_kanjidict_results_to_buffer (LwSearchItem *item)
 //!
 //! @brief Not yet written
 //!
-void w_ncurses_append_examplesdict_results_to_buffer (LwSearchItem *item)
+void nw_append_examplesdict_results_to_buffer (LwSearchItem *item)
 {
 		LwResultLine *resultline = item->resultline;
 		int i = 0;
@@ -622,9 +622,9 @@ void w_ncurses_append_examplesdict_results_to_buffer (LwSearchItem *item)
 		{
 		  if (resultline->number[i][0] == 'A' || resultline->number[i][0] == 'B')
 		  {
-			  wattron(results, COLOR_PAIR(GW_NCCOLORS_BLUEONBLACK));
+			  wattron(results, COLOR_PAIR(NW_NCCOLORS_BLUEONBLACK));
 			  wprintw(results,"%s:\t", resultline->number[i]);
-			  wattroff(results, COLOR_PAIR(GW_NCCOLORS_BLUEONBLACK));
+			  wattroff(results, COLOR_PAIR(NW_NCCOLORS_BLUEONBLACK));
 			  wprintw(results,"%s\n", resultline->def_start[i]);
 		  }
 		  else
@@ -637,7 +637,7 @@ void w_ncurses_append_examplesdict_results_to_buffer (LwSearchItem *item)
 //!
 //! @brief Not yet written
 //!
-void w_ncurses_append_unknowndict_results_to_buffer (LwSearchItem *item)
+void nw_append_unknowndict_results_to_buffer (LwSearchItem *item)
 {
   	wprintw(results,"%s\n", item->resultline->string);
 }
@@ -648,7 +648,7 @@ void w_ncurses_append_unknowndict_results_to_buffer (LwSearchItem *item)
 //!
 //! @param item A LwSearchItem pointer to get information from
 //!
-void w_ncurses_pre_search_prep (LwSearchItem *item)
+void nw_pre_search_prep (LwSearchItem *item)
 {
 }
 
@@ -659,18 +659,18 @@ void w_ncurses_pre_search_prep (LwSearchItem *item)
 //! This is the function that takes care of things such as hiding progressbars,
 //! changing action verbs to past verbs (Searching... vs Found) and for displaying
 //! "no results found" pages.  Before this function is called, the searchitem search
-//! status changes from GW_SEARCH_SEARCHING to GW_SEARCH_FINISHING.
+//! status changes from LW_SEARCH_SEARCHING to LW_SEARCH_FINISHING.
 //!
 //! @param item A LwSearchItem pointer to get information from
 //!
-void w_ncurses_after_search_cleanup (LwSearchItem *item)
+void nw_after_search_cleanup (LwSearchItem *item)
 {
     //Finish up
     if (item->total_results == 0 &&
-        item->target != GW_TARGET_KANJI &&
-        item->status == GW_SEARCH_SEARCHING)
+        item->target != LW_TARGET_KANJI &&
+        item->status == LW_SEARCH_SEARCHING)
     {
-      w_ncurses_no_result (item);
+      nw_no_result (item);
     }
 }
 

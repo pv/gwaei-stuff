@@ -51,8 +51,8 @@ static void _update_dictinst_source_uri_cb (GSettings *settings, char* key, gpoi
     char source_uri[200];
 
     lw_pref_get_string_by_schema (source_uri, di->schema, di->key, 200);
-    g_free (di->uri[GW_DICTINST_NEEDS_DOWNLOADING]);
-    di->uri[GW_DICTINST_NEEDS_DOWNLOADING] = g_strdup (source_uri);
+    g_free (di->uri[LW_DICTINST_NEEDS_DOWNLOADING]);
+    di->uri[LW_DICTINST_NEEDS_DOWNLOADING] = g_strdup (source_uri);
 }
 
 
@@ -124,7 +124,7 @@ LwDictInst* lw_dictinst_new (const char* filename,
     temp->longname = NULL;
     temp->description = NULL;
     int i = 0;
-    for (i = 0; i < GW_DICTINST_TOTAL_URIS; i++)
+    for (i = 0; i < LW_DICTINST_TOTAL_URIS; i++)
       temp->uri[i] = NULL;
     temp->schema = NULL;
     temp->key = NULL;
@@ -174,7 +174,7 @@ void lw_dictinst_free (LwDictInst* di)
     g_strfreev (di->current_target_uris);
 
     int i = 0;
-    while (i < GW_DICTINST_TOTAL_URIS)
+    while (i < LW_DICTINST_TOTAL_URIS)
     {
       g_free(di->uri[i]);
       i++;
@@ -252,8 +252,8 @@ void lw_dictinst_set_compression (LwDictInst *di, const LwCompression COMPRESSIO
 //!
 void lw_dictinst_set_download_source (LwDictInst *di, const char *SOURCE)
 {
-    g_free (di->uri[GW_DICTINST_NEEDS_DOWNLOADING]);
-    di->uri[GW_DICTINST_NEEDS_DOWNLOADING] = g_strdup (SOURCE);
+    g_free (di->uri[LW_DICTINST_NEEDS_DOWNLOADING]);
+    di->uri[LW_DICTINST_NEEDS_DOWNLOADING] = g_strdup (SOURCE);
 }
 
 
@@ -293,71 +293,71 @@ void lw_dictinst_regenerate_save_target_uris (LwDictInst *di)
     char *engine_filename;
     const char *compression_ext;
     const char *encoding_ext;
-    char *temp[2][GW_DICTINST_TOTAL_URIS];
+    char *temp[2][LW_DICTINST_TOTAL_URIS];
     char *radicals_cache_filename;
     int i, j;
 
     //Remove the previous contents
-    g_free (di->uri[GW_DICTINST_NEEDS_DECOMPRESSION]);
-    g_free (di->uri[GW_DICTINST_NEEDS_TEXT_ENCODING]);
-    g_free (di->uri[GW_DICTINST_NEEDS_POSTPROCESSING]);
-    g_free (di->uri[GW_DICTINST_NEEDS_FINALIZATION]);
-    g_free (di->uri[GW_DICTINST_NEEDS_NOTHING]);
+    g_free (di->uri[LW_DICTINST_NEEDS_DECOMPRESSION]);
+    g_free (di->uri[LW_DICTINST_NEEDS_TEXT_ENCODING]);
+    g_free (di->uri[LW_DICTINST_NEEDS_POSTPROCESSING]);
+    g_free (di->uri[LW_DICTINST_NEEDS_FINALIZATION]);
+    g_free (di->uri[LW_DICTINST_NEEDS_NOTHING]);
 
     //Initialize the array
     for (i = 0; i < 2; i++)
-      for (j = 1; j < GW_DICTINST_TOTAL_URIS; j++)
+      for (j = 1; j < LW_DICTINST_TOTAL_URIS; j++)
         temp[i][j] = NULL;
 
     //Initializations
-    cache_filename = g_build_filename (lw_util_get_directory (GW_PATH_CACHE), di->filename, NULL);
+    cache_filename = g_build_filename (lw_util_get_directory (LW_PATH_CACHE), di->filename, NULL);
     engine_filename = g_build_filename (lw_util_get_directory_for_engine (di->engine), di->filename, NULL);
     compression_ext = lw_util_get_compression_name (di->compression);
     encoding_ext = lw_util_get_encoding_name (di->encoding);
 
-    temp[0][GW_DICTINST_NEEDS_DECOMPRESSION] =  g_strjoin (".", cache_filename, compression_ext, NULL);
-    temp[0][GW_DICTINST_NEEDS_TEXT_ENCODING] =   g_strjoin (".", cache_filename, encoding_ext, NULL);
-    temp[0][GW_DICTINST_NEEDS_POSTPROCESSING] =   g_strjoin (".", cache_filename, "UTF8", NULL);
-    temp[0][GW_DICTINST_NEEDS_FINALIZATION] =  g_strdup (cache_filename);
-    temp[0][GW_DICTINST_NEEDS_NOTHING] =  g_strdup (engine_filename);
+    temp[0][LW_DICTINST_NEEDS_DECOMPRESSION] =  g_strjoin (".", cache_filename, compression_ext, NULL);
+    temp[0][LW_DICTINST_NEEDS_TEXT_ENCODING] =   g_strjoin (".", cache_filename, encoding_ext, NULL);
+    temp[0][LW_DICTINST_NEEDS_POSTPROCESSING] =   g_strjoin (".", cache_filename, "UTF8", NULL);
+    temp[0][LW_DICTINST_NEEDS_FINALIZATION] =  g_strdup (cache_filename);
+    temp[0][LW_DICTINST_NEEDS_NOTHING] =  g_strdup (engine_filename);
 
     //Adjust the uris for the split dictionary exception case
     if (di->split)
     {
-      g_free (temp[0][GW_DICTINST_NEEDS_FINALIZATION]);
-      temp[0][GW_DICTINST_NEEDS_FINALIZATION] = g_build_filename (lw_util_get_directory (GW_PATH_CACHE), "Names", NULL);
-      temp[1][GW_DICTINST_NEEDS_FINALIZATION] = g_build_filename (lw_util_get_directory (GW_PATH_CACHE), "Places", NULL);
+      g_free (temp[0][LW_DICTINST_NEEDS_FINALIZATION]);
+      temp[0][LW_DICTINST_NEEDS_FINALIZATION] = g_build_filename (lw_util_get_directory (LW_PATH_CACHE), "Names", NULL);
+      temp[1][LW_DICTINST_NEEDS_FINALIZATION] = g_build_filename (lw_util_get_directory (LW_PATH_CACHE), "Places", NULL);
 
-      g_free (temp[0][GW_DICTINST_NEEDS_NOTHING]);
-      temp[0][GW_DICTINST_NEEDS_NOTHING] = g_build_filename (lw_util_get_directory_for_engine (di->engine), "Names", NULL);
-      temp[1][GW_DICTINST_NEEDS_NOTHING] = g_build_filename (lw_util_get_directory_for_engine (di->engine), "Places", NULL);
+      g_free (temp[0][LW_DICTINST_NEEDS_NOTHING]);
+      temp[0][LW_DICTINST_NEEDS_NOTHING] = g_build_filename (lw_util_get_directory_for_engine (di->engine), "Names", NULL);
+      temp[1][LW_DICTINST_NEEDS_NOTHING] = g_build_filename (lw_util_get_directory_for_engine (di->engine), "Places", NULL);
     }
     //Adjust the uris for the merge dictionary exception case
     else if (di->merge)
     {
-      radicals_cache_filename = g_build_filename (lw_util_get_directory (GW_PATH_CACHE), "Radicals", NULL);
-      temp[1][GW_DICTINST_NEEDS_DECOMPRESSION] =  g_strjoin (".", radicals_cache_filename, "gz", NULL);
-      temp[1][GW_DICTINST_NEEDS_TEXT_ENCODING] =   g_strjoin (".", radicals_cache_filename, "EUC-JP", NULL);
-      temp[1][GW_DICTINST_NEEDS_POSTPROCESSING] =   g_strjoin (".", radicals_cache_filename, "UTF8", NULL);
+      radicals_cache_filename = g_build_filename (lw_util_get_directory (LW_PATH_CACHE), "Radicals", NULL);
+      temp[1][LW_DICTINST_NEEDS_DECOMPRESSION] =  g_strjoin (".", radicals_cache_filename, "gz", NULL);
+      temp[1][LW_DICTINST_NEEDS_TEXT_ENCODING] =   g_strjoin (".", radicals_cache_filename, "EUC-JP", NULL);
+      temp[1][LW_DICTINST_NEEDS_POSTPROCESSING] =   g_strjoin (".", radicals_cache_filename, "UTF8", NULL);
       g_free (radicals_cache_filename);
     }
 
     //Join the strings if appropriate
-    for (i = 1; i < GW_DICTINST_TOTAL_URIS; i++)
+    for (i = 1; i < LW_DICTINST_TOTAL_URIS; i++)
     {
       di->uri[i] = g_strjoin (";", temp[0][i], temp[1][i], NULL);
     }
 
     //Cleanup
     for (i = 0; i < 2; i++)
-      for (j = 1; j < GW_DICTINST_TOTAL_URIS; j++)
+      for (j = 1; j < LW_DICTINST_TOTAL_URIS; j++)
         if (temp[i][j] != NULL) g_free (temp[i][j]);
 
     g_free (cache_filename);
     g_free (engine_filename);
 
 /*
-    for (i = 1; i < GW_DICTINST_TOTAL_URIS; i++)
+    for (i = 1; i < LW_DICTINST_TOTAL_URIS; i++)
       printf("%s\n", di->uri[i]);
       printf("\n");
 */
@@ -377,7 +377,7 @@ gboolean lw_dictinst_data_is_valid (LwDictInst *di)
     ptr = di->filename;
     if (ptr == NULL || strlen (ptr) == 0) return FALSE;
 
-    ptr = di->uri[GW_DICTINST_NEEDS_DOWNLOADING];
+    ptr = di->uri[LW_DICTINST_NEEDS_DOWNLOADING];
     if (ptr == NULL || strlen (ptr) == 0) return FALSE;
 
     //Make sure the correct number of download arguments are available
@@ -388,24 +388,24 @@ gboolean lw_dictinst_data_is_valid (LwDictInst *di)
     if (di->merge && total_download_arguments != 2) return FALSE;
     if (!di->merge && total_download_arguments != 1) return FALSE;
 
-    ptr = di->uri[GW_DICTINST_NEEDS_DECOMPRESSION];
+    ptr = di->uri[LW_DICTINST_NEEDS_DECOMPRESSION];
     if (ptr == NULL || strlen (ptr) == 0) return FALSE;
 
-    ptr = di->uri[GW_DICTINST_NEEDS_TEXT_ENCODING];
+    ptr = di->uri[LW_DICTINST_NEEDS_TEXT_ENCODING];
     if (ptr == NULL || strlen (ptr) == 0) return FALSE;
 
-    ptr = di->uri[GW_DICTINST_NEEDS_POSTPROCESSING];
+    ptr = di->uri[LW_DICTINST_NEEDS_POSTPROCESSING];
     if (ptr == NULL || strlen (ptr) == 0) return FALSE;
 
-    ptr = di->uri[GW_DICTINST_NEEDS_FINALIZATION];
+    ptr = di->uri[LW_DICTINST_NEEDS_FINALIZATION];
     if (ptr == NULL || strlen (ptr) == 0) return FALSE;
 
-    ptr = di->uri[GW_DICTINST_NEEDS_NOTHING];
+    ptr = di->uri[LW_DICTINST_NEEDS_NOTHING];
     if (ptr == NULL || strlen (ptr) == 0) return FALSE;
 
-    if (di->engine < 0 || di->engine >= GW_ENGINE_TOTAL) return FALSE;
-    if (di->compression < 0 || di->compression >= GW_COMPRESSION_TOTAL) return FALSE;
-    if (di->encoding < 0 || di->encoding >= GW_ENCODING_TOTAL) return FALSE;
+    if (di->engine < 0 || di->engine >= LW_ENGINE_TOTAL) return FALSE;
+    if (di->compression < 0 || di->compression >= LW_COMPRESSION_TOTAL) return FALSE;
+    if (di->encoding < 0 || di->encoding >= LW_ENCODING_TOTAL) return FALSE;
 
     return TRUE;
 }
@@ -436,7 +436,7 @@ gboolean lw_dictinst_download (LwDictInst *di, LwIoProgressCallback cb, GError *
     LwDictInstUri group_index;
 
     //Initializations
-    group_index = GW_DICTINST_NEEDS_DOWNLOADING;
+    group_index = LW_DICTINST_NEEDS_DOWNLOADING;
     i = 0;
     data = di;
 
@@ -485,7 +485,7 @@ gboolean lw_dictinst_decompress (LwDictInst *di, LwIoProgressCallback cb, GError
     //Initializations
     data = di;
     i = 0;
-    group_index = GW_DICTINST_NEEDS_DECOMPRESSION;
+    group_index = LW_DICTINST_NEEDS_DECOMPRESSION;
 
     if ((source = lw_dictinst_get_source_uri (di, group_index, 0)) != NULL &&
         (target = lw_dictinst_get_target_uri (di, group_index, 0)) != NULL
@@ -497,10 +497,10 @@ gboolean lw_dictinst_decompress (LwDictInst *di, LwIoProgressCallback cb, GError
       //Preform the correct decompression
       switch (di->compression)
       {
-        case GW_COMPRESSION_GZIP:
+        case LW_COMPRESSION_GZIP:
           status = lw_io_gunzip_file (source, target, cb, data, error);
           break;
-        case GW_COMPRESSION_NONE:
+        case LW_COMPRESSION_NONE:
           status =  lw_io_copy (source, target, cb, data, error);
           break;
         default:
@@ -548,7 +548,7 @@ gboolean lw_dictinst_convert_encoding (LwDictInst *di, LwIoProgressCallback cb, 
     LwDictInstUri group_index;
 
     //Initializations
-    group_index = GW_DICTINST_NEEDS_TEXT_ENCODING;
+    group_index = LW_DICTINST_NEEDS_TEXT_ENCODING;
     encoding_name = lw_util_get_encoding_name (di->encoding);
     data = di;
 
@@ -556,7 +556,7 @@ gboolean lw_dictinst_convert_encoding (LwDictInst *di, LwIoProgressCallback cb, 
         (target = lw_dictinst_get_target_uri (di, group_index, 0)) != NULL
        )
     {
-      if (di->encoding == GW_ENCODING_UTF8)
+      if (di->encoding == LW_ENCODING_UTF8)
         lw_io_copy (source, target, cb, data, error);
       else
         lw_io_copy_with_encoding (source, target, encoding_name, "UTF-8", cb, data, error);
@@ -599,7 +599,7 @@ gboolean lw_dictinst_postprocess (LwDictInst *di, LwIoProgressCallback cb, GErro
 
     //Initializations
     data = di;
-    group_index = GW_DICTINST_NEEDS_POSTPROCESSING;
+    group_index = LW_DICTINST_NEEDS_POSTPROCESSING;
 
 
     //Rebuild the mix dictionary
@@ -664,7 +664,7 @@ gboolean lw_dictinst_finalize (LwDictInst *di, LwIoProgressCallback cb, GError *
 
     //Initializations
     data = di;
-    group_index = GW_DICTINST_NEEDS_FINALIZATION;
+    group_index = LW_DICTINST_NEEDS_FINALIZATION;
     i = 0;
 
     while ((source = lw_dictinst_get_source_uri (di, group_index, i)) != NULL &&
@@ -696,7 +696,7 @@ void lw_dictinst_clean (LwDictInst *di, LwIoProgressCallback cb)
     uri = NULL;
 
     //Loop through all of the uris except the final destination
-    while (group_index < GW_DICTINST_NEEDS_NOTHING)
+    while (group_index < LW_DICTINST_NEEDS_NOTHING)
     {
       i = 0;
       while ((source = lw_dictinst_get_source_uri (di, group_index, i)) != NULL)
@@ -754,34 +754,34 @@ gchar* lw_dictinst_get_status_string (LwDictInst *di, gboolean long_form)
     gchar *string;
 
     switch (di->uri_group_index) {
-      case GW_DICTINST_NEEDS_DOWNLOADING:
+      case LW_DICTINST_NEEDS_DOWNLOADING:
         if (long_form)
           string = g_strdup_printf (gettext("Downloading %s..."), di->longname);
         else
           string = g_strdup_printf (gettext("Downloading..."));
         break;
-      case GW_DICTINST_NEEDS_TEXT_ENCODING:
+      case LW_DICTINST_NEEDS_TEXT_ENCODING:
         if (long_form)
           string = g_strdup_printf (gettext("Converting the encoding of %s from %s to UTF-8..."), di->longname, lw_util_get_encoding_name (di->encoding));
         else
           string = g_strdup_printf (gettext("Converting the encoding to UTF-8..."));
         break;
-      case GW_DICTINST_NEEDS_DECOMPRESSION:
+      case LW_DICTINST_NEEDS_DECOMPRESSION:
         if (long_form)
           string = g_strdup_printf (gettext("Decompressing %s from %s file..."), di->longname, lw_util_get_compression_name (di->compression));
         else
           string = g_strdup_printf (gettext("Decompressing..."));
         break;
-      case GW_DICTINST_NEEDS_POSTPROCESSING:
+      case LW_DICTINST_NEEDS_POSTPROCESSING:
         if (long_form)
           string = g_strdup_printf (gettext("Doing postprocessing on %s..."), di->longname);
         else
           string = g_strdup_printf (gettext("Postprocessing..."));
         break;
-      case GW_DICTINST_NEEDS_FINALIZATION:
+      case LW_DICTINST_NEEDS_FINALIZATION:
         string = g_strdup_printf (gettext("Finalizing installation of %s..."), di->longname);
         break;
-      case GW_DICTINST_NEEDS_NOTHING:
+      case LW_DICTINST_NEEDS_NOTHING:
         string = g_strdup_printf (gettext("Installed."));
         break;
       default:
@@ -839,11 +839,11 @@ double lw_dictinst_get_total_progress (LwDictInst *di, double fraction)
     const double DOWNLOAD_WEIGHT = 3.0;
 
     //Calculate the already completed activities
-    for (i = 0; i < di->uri_group_index && i < GW_DICTINST_NEEDS_NOTHING; i++)
+    for (i = 0; i < di->uri_group_index && i < LW_DICTINST_NEEDS_NOTHING; i++)
     {
       for (ptr = di->uri[i]; ptr != NULL; ptr = strchr(ptr, ';'))
       {
-        if (i == GW_DICTINST_NEEDS_DOWNLOADING)
+        if (i == LW_DICTINST_NEEDS_DOWNLOADING)
           current += 1.0 * DOWNLOAD_WEIGHT;
         else
           current += 1.0;
@@ -851,17 +851,17 @@ double lw_dictinst_get_total_progress (LwDictInst *di, double fraction)
       }
     }
     //Add the current in progress activity
-    if (i == GW_DICTINST_NEEDS_DOWNLOADING)
+    if (i == LW_DICTINST_NEEDS_DOWNLOADING)
       current += (fraction + (double) di->uri_atom_index) * DOWNLOAD_WEIGHT;
     else
       current += fraction + (double) di->uri_atom_index;
 
     //Calculate the amount needed for the whole process to finish
-    for (i = 0; i < GW_DICTINST_NEEDS_NOTHING; i++)
+    for (i = 0; i < LW_DICTINST_NEEDS_NOTHING; i++)
     {
       for (ptr = di->uri[i]; ptr != NULL; ptr = strchr(ptr, ';'))
       {
-        if (i == GW_DICTINST_NEEDS_DOWNLOADING)
+        if (i == LW_DICTINST_NEEDS_DOWNLOADING)
           final += 1.0 * DOWNLOAD_WEIGHT;
         else
           final += 1.0;
@@ -884,7 +884,7 @@ double lw_dictinst_get_total_progress (LwDictInst *di, double fraction)
 char* lw_dictinst_get_source_uri (LwDictInst *di, const LwDictInstUri GROUP_INDEX, const int ATOM_INDEX)
 {
     //Sanity check
-    g_assert (GROUP_INDEX >= 0 && GROUP_INDEX < GW_DICTINST_NEEDS_NOTHING);
+    g_assert (GROUP_INDEX >= 0 && GROUP_INDEX < LW_DICTINST_NEEDS_NOTHING);
 
     //Declarations
     char *uri;
@@ -923,7 +923,7 @@ char* lw_dictinst_get_source_uri (LwDictInst *di, const LwDictInstUri GROUP_INDE
 char* lw_dictinst_get_target_uri (LwDictInst *di, const LwDictInstUri GROUP_INDEX, const int ATOM_INDEX)
 {
     //Sanity check
-    g_assert (GROUP_INDEX >= 0 && GROUP_INDEX < GW_DICTINST_NEEDS_NOTHING);
+    g_assert (GROUP_INDEX >= 0 && GROUP_INDEX < LW_DICTINST_NEEDS_NOTHING);
 
     //Declarations
     char *uri;

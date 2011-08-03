@@ -1,5 +1,5 @@
-#ifndef GW_DICTLIST_OBJECT_INCLUDED
-#define GW_DICTLIST_OBJECT_INCLUDED
+#ifndef LW_DICTLIST_OBJECT_INCLUDED
+#define LW_DICTLIST_OBJECT_INCLUDED
 /******************************************************************************
     AUTHOR:
     File written and Copyrighted by Zachary Dovel. All Rights Reserved.
@@ -31,7 +31,7 @@
 
 #include <libwaei/dictinfo.h>
 
-#define GW_DICTLIST_MAX_DICTIONARIES 20
+#define LW_DICTLIST_MAX_DICTIONARIES 20
 
 //!
 //! @brief Primitive for storing lists of dictionaries

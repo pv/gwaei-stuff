@@ -48,8 +48,8 @@
 G_MODULE_EXPORT void gw_settings_hira_kata_conv_toggled_cb (GtkWidget *widget, gpointer data)
 {
     gboolean state;
-    state = lw_pref_get_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_HIRA_KATA);
-    lw_pref_set_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_HIRA_KATA, !state);
+    state = lw_pref_get_boolean_by_schema (LW_SCHEMA_BASE, LW_KEY_HIRA_KATA);
+    lw_pref_set_boolean_by_schema (LW_SCHEMA_BASE, LW_KEY_HIRA_KATA, !state);
 }
 
 
@@ -62,8 +62,8 @@ G_MODULE_EXPORT void gw_settings_hira_kata_conv_toggled_cb (GtkWidget *widget, g
 G_MODULE_EXPORT void gw_settings_kata_hira_conv_toggled_cb (GtkWidget *widget, gpointer data)
 {
     gboolean state;
-    state = lw_pref_get_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_KATA_HIRA);
-    lw_pref_set_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_KATA_HIRA, !state);
+    state = lw_pref_get_boolean_by_schema (LW_SCHEMA_BASE, LW_KEY_KATA_HIRA);
+    lw_pref_set_boolean_by_schema (LW_SCHEMA_BASE, LW_KEY_KATA_HIRA, !state);
 }
 
 
@@ -76,8 +76,8 @@ G_MODULE_EXPORT void gw_settings_kata_hira_conv_toggled_cb (GtkWidget *widget, g
 G_MODULE_EXPORT void gw_settings_spellcheck_toggled_cb (GtkWidget *widget, gpointer data)
 {
     gboolean state;
-    state = lw_pref_get_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_SPELLCHECK);
-    lw_pref_set_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_SPELLCHECK, !state);
+    state = lw_pref_get_boolean_by_schema (LW_SCHEMA_BASE, LW_KEY_SPELLCHECK);
+    lw_pref_set_boolean_by_schema (LW_SCHEMA_BASE, LW_KEY_SPELLCHECK, !state);
 }
 
 
@@ -90,8 +90,8 @@ G_MODULE_EXPORT void gw_settings_spellcheck_toggled_cb (GtkWidget *widget, gpoin
 G_MODULE_EXPORT void gw_settings_search_as_you_type_toggled_cb (GtkWidget *widget, gpointer data)
 {
     gboolean state;
-    state = lw_pref_get_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_SEARCH_AS_YOU_TYPE);
-    lw_pref_set_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_SEARCH_AS_YOU_TYPE, !state);
+    state = lw_pref_get_boolean_by_schema (LW_SCHEMA_BASE, LW_KEY_SEARCH_AS_YOU_TYPE);
+    lw_pref_set_boolean_by_schema (LW_SCHEMA_BASE, LW_KEY_SEARCH_AS_YOU_TYPE, !state);
 }
 
 
@@ -106,7 +106,7 @@ G_MODULE_EXPORT void gw_settings_romaji_kana_conv_changed_cb (GtkWidget *widget,
 {
     int active;
     active = gtk_combo_box_get_active(GTK_COMBO_BOX (widget));
-    lw_pref_set_int_by_schema (GW_SCHEMA_BASE, GW_KEY_ROMAN_KANA, active);
+    lw_pref_set_int_by_schema (LW_SCHEMA_BASE, LW_KEY_ROMAN_KANA, active);
 }
 
 
@@ -132,7 +132,7 @@ G_MODULE_EXPORT void gw_settings_swatch_color_set_cb (GtkWidget *widget, gpointe
     //Set the color inthe prefs
     if (pref_key != NULL && hex_color_string != NULL)
     {
-      lw_pref_set_string_by_schema (GW_SCHEMA_HIGHLIGHT, pref_key, hex_color_string);
+      lw_pref_set_string_by_schema (LW_SCHEMA_HIGHLIGHT, pref_key, hex_color_string);
     }
 
     //Cleanup
@@ -160,18 +160,18 @@ G_MODULE_EXPORT void gw_settings_swatch_color_reset_cb (GtkWidget *widget, gpoin
     //Initializations
     int i = 0;
     char *pref_key[] = {
-      GW_KEY_MATCH_FG,
-      GW_KEY_MATCH_BG,
-      GW_KEY_HEADER_FG,
-      GW_KEY_HEADER_BG,
-      GW_KEY_COMMENT_FG,
+      LW_KEY_MATCH_FG,
+      LW_KEY_MATCH_BG,
+      LW_KEY_HEADER_FG,
+      LW_KEY_HEADER_BG,
+      LW_KEY_COMMENT_FG,
       NULL
     };
 
     //Start setting the default values
     for (i = 0; pref_key[i] != NULL; i++)
     {
-      lw_pref_reset_value_by_schema (GW_SCHEMA_HIGHLIGHT, pref_key[i]);
+      lw_pref_reset_value_by_schema (LW_SCHEMA_HIGHLIGHT, pref_key[i]);
     }
 
     //gw_ui_buffer_reload_tagtable_tags();
@@ -187,8 +187,8 @@ G_MODULE_EXPORT void gw_settings_swatch_color_reset_cb (GtkWidget *widget, gpoin
 G_MODULE_EXPORT void gw_settings_use_global_document_font_toggled_cb (GtkWidget *widget, gpointer data)
 {
     gboolean state;
-    state = lw_pref_get_boolean_by_schema (GW_SCHEMA_FONT, GW_KEY_FONT_USE_GLOBAL_FONT);
-    lw_pref_set_boolean_by_schema (GW_SCHEMA_FONT, GW_KEY_FONT_USE_GLOBAL_FONT, !state);
+    state = lw_pref_get_boolean_by_schema (LW_SCHEMA_FONT, LW_KEY_FONT_USE_GLOBAL_FONT);
+    lw_pref_set_boolean_by_schema (LW_SCHEMA_FONT, LW_KEY_FONT_USE_GLOBAL_FONT, !state);
 }
 
 
@@ -204,7 +204,7 @@ G_MODULE_EXPORT void gw_settings_custom_document_font_set_cb (GtkWidget *widget,
 
     GtkWidget *button = GTK_WIDGET (gtk_builder_get_object (builder, "custom_font_fontbutton"));
     const char *font_description_string = gtk_font_button_get_font_name (GTK_FONT_BUTTON (button));
-    lw_pref_set_string_by_schema (GW_SCHEMA_FONT, GW_KEY_FONT_CUSTOM_FONT, font_description_string);
+    lw_pref_set_string_by_schema (LW_SCHEMA_FONT, LW_KEY_FONT_CUSTOM_FONT, font_description_string);
 }
 
 
@@ -222,7 +222,7 @@ G_MODULE_EXPORT void gw_settings_show_cb (GtkWidget *widget, gpointer data)
     GtkBuilder *builder = gw_common_get_builder ();
 
     gw_tabs_cancel_all_searches ();
-    gw_main_cancel_search_by_target (GW_TARGET_KANJI);
+    gw_main_cancel_search_by_target (LW_TARGET_KANJI);
 
     //Setup please install dictionary message and notebook page
     GtkWidget *notebook;

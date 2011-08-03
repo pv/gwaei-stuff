@@ -124,7 +124,7 @@ static void _fill_details_box (LwDictInst *di)
 
     hbox = GTK_WIDGET (gtk_hbox_new (FALSE, 0));
     entry = gtk_entry_new ();
-    gtk_entry_set_text (GTK_ENTRY (entry), di->uri[GW_DICTINST_NEEDS_DOWNLOADING]);
+    gtk_entry_set_text (GTK_ENTRY (entry), di->uri[LW_DICTINST_NEEDS_DOWNLOADING]);
     g_signal_connect (G_OBJECT (entry), "changed", G_CALLBACK (gw_dictionaryinstall_source_entry_changed_cb), di);
     gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (entry), TRUE, TRUE, 0);
     button = gtk_button_new();
@@ -232,7 +232,7 @@ void gw_dictionaryinstall_initialize ()
 
     //Set up the Engine liststore
     _engine_store = gtk_list_store_new (ENGINE_STORE_TOTAL_FIELDS, G_TYPE_INT, G_TYPE_STRING);
-    for (i = 0; i < GW_ENGINE_TOTAL; i++)
+    for (i = 0; i < LW_ENGINE_TOTAL; i++)
     {
       gtk_list_store_append (GTK_LIST_STORE (_engine_store), &treeiter);
       gtk_list_store_set (
@@ -245,7 +245,7 @@ void gw_dictionaryinstall_initialize ()
 
     //Set up the Compression liststore
     _compression_store = gtk_list_store_new (COMPRESSION_STORE_TOTAL_FIELDS, G_TYPE_INT, G_TYPE_STRING);
-    for (i = 0; i < GW_COMPRESSION_TOTAL; i++)
+    for (i = 0; i < LW_COMPRESSION_TOTAL; i++)
     {
       gtk_list_store_append (GTK_LIST_STORE (_compression_store), &treeiter);
       gtk_list_store_set (
@@ -258,7 +258,7 @@ void gw_dictionaryinstall_initialize ()
 
     //Set up the Encoding liststore
     _encoding_store = gtk_list_store_new (ENCODING_STORE_TOTAL_FIELDS, G_TYPE_INT, G_TYPE_STRING);
-    for (i = 0; i < GW_ENCODING_TOTAL; i++)
+    for (i = 0; i < LW_ENCODING_TOTAL; i++)
     {
       gtk_list_store_append (GTK_LIST_STORE (_encoding_store), &treeiter);
       gtk_list_store_set (

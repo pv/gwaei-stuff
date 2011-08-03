@@ -1,29 +1,29 @@
-#ifndef GW_NCURSES_INCLUDED
-#define GW_NCURSES_INCLUDED
+#ifndef NW_NCURSES_INCLUDED
+#define NW_NCURSES_INCLUDED
 
 
 typedef enum {
-  GW_NCCOLORS_GREENONBLACK,
-  GW_NCCOLORS_BLUEONBLACK,
-  GW_NCCOLORS_REDONBLACK,
-  GW_NCCOLORS_TOTAL
-} GwNcursesColorPair;
+  NW_NCCOLORS_GREENONBLACK,
+  NW_NCCOLORS_BLUEONBLACK,
+  NW_NCCOLORS_REDONBLACK,
+  NW_NCCOLORS_TOTAL
+} NWcursesColorPair;
 
 
 void initialize_ncurses_interface (int, char**);
-void w_ncurses_initialize_interface_output_generics (void);
-void w_ncurses_append_edict_results_to_buffer (LwSearchItem*);
-void w_ncurses_append_kanjidict_results_to_buffer (LwSearchItem*);
-void w_ncurses_append_examplesdict_results_to_buffer (LwSearchItem*);
-void w_ncurses_append_unknowndict_results_to_buffer (LwSearchItem*);
+void nw_initialize_interface_output_generics (void);
+void nw_append_edict_results_to_buffer (LwSearchItem*);
+void nw_append_kanjidict_results_to_buffer (LwSearchItem*);
+void nw_append_examplesdict_results_to_buffer (LwSearchItem*);
+void nw_append_unknowndict_results_to_buffer (LwSearchItem*);
 
-void w_ncurses_update_progress_feedback (LwSearchItem*);
-void w_ncurses_no_result(LwSearchItem*);
-void w_ncurses_append_less_relevant_header_to_output (LwSearchItem*);
-void w_ncurses_append_more_relevant_header_to_output (LwSearchItem*);
-void w_ncurses_pre_search_prep (LwSearchItem*);
-void w_ncurses_after_search_cleanup (LwSearchItem*);
+void nw_update_progress_feedback (LwSearchItem*);
+void nw_no_result(LwSearchItem*);
+void nw_append_less_relevant_header_to_output (LwSearchItem*);
+void nw_append_more_relevant_header_to_output (LwSearchItem*);
+void nw_pre_search_prep (LwSearchItem*);
+void nw_after_search_cleanup (LwSearchItem*);
 
-void w_ncurses_start ();
+void nw_start_ncurses ();
 
 #endif

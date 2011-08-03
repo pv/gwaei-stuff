@@ -105,7 +105,7 @@ static void _draw_page_title (GtkPrintContext *context, GwPageInfo *pi) {
     LwSearchItem *item;
 
     //Initializations
-    item = lw_historylist_get_current (GW_HISTORYLIST_RESULTS);
+    item = lw_historylist_get_current (LW_HISTORYLIST_RESULTS);
     text = gw_main_get_window_title_by_searchitem (item);
     layout = gtk_print_context_create_pango_layout (context);
     desc = pango_font_description_from_string ("sans 8");
@@ -183,7 +183,7 @@ static void _draw_page_results (GtkPrintContext *context, GwPageInfo *page)
     gint line_end;
 
     //Initializations
-    tb = gw_common_get_gobject_by_target (GW_TARGET_RESULTS);
+    tb = gw_common_get_gobject_by_target (LW_TARGET_RESULTS);
     text = gtk_text_buffer_get_text (GTK_TEXT_BUFFER (tb), &(page->start), &(page->end), FALSE);
     layout = gtk_print_context_create_pango_layout (context);
     desc = pango_font_description_from_string ("sans 10");
@@ -242,7 +242,7 @@ static gboolean _paginate (GtkPrintOperation *operation,
     GObject *tb;
 
     //Initializations
-    tb = gw_common_get_gobject_by_target (GW_TARGET_RESULTS);
+    tb = gw_common_get_gobject_by_target (LW_TARGET_RESULTS);
 
     //Get the draw bounds
     if (gtk_text_buffer_get_has_selection (GTK_TEXT_BUFFER (tb)))

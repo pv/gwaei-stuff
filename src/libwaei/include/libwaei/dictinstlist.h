@@ -1,5 +1,5 @@
-#ifndef GW_DICTINSTLIST_HEADER_INCLUDED
-#define GW_DICTINSTLIST_HEADER_INCLUDED
+#ifndef LW_DICTINSTLIST_HEADER_INCLUDED
+#define LW_DICTINSTLIST_HEADER_INCLUDED
 
 void lw_dictinstlist_initialize (void);
 void lw_dictinstlist_free (void);

@@ -1,11 +1,11 @@
-#ifndef GW_IO_INCLUDED
-#define GW_IO_INCLUDED
+#ifndef LW_IO_INCLUDED
+#define LW_IO_INCLUDED
 
 #include <glib.h>
 
 
-#define GW_IO_MAX_FGETS_LINE 5000
-#define GW_IO_ERROR "libwaei generic error"
+#define LW_IO_MAX_FGETS_LINE 5000
+#define LW_IO_ERROR "libwaei generic error"
 
 typedef int (*LwIoProgressCallback) (double percent, gpointer data);
 
@@ -16,12 +16,12 @@ struct _LwIoProgressCallbackWithData {
 typedef struct _LwIoProgressCallbackWithData LwIoProgressCallbackWithData;
 
 typedef enum  {
-  GW_IO_READ_ERROR,
-  GW_IO_WRITE_ERROR,
-  GW_IO_DECOMPRESSION_ERROR,
-  GW_IO_COPY_ERROR,
-  GW_IO_DOWNLOAD_ERROR,
-  GW_IO_ENCODING_CONVERSION_ERROR
+  LW_IO_READ_ERROR,
+  LW_IO_WRITE_ERROR,
+  LW_IO_DECOMPRESSION_ERROR,
+  LW_IO_COPY_ERROR,
+  LW_IO_DOWNLOAD_ERROR,
+  LW_IO_ENCODING_CONVERSION_ERROR
 } LwIoErrorTypes;
 
 void lw_io_write_file (const char*, const char*, gchar*, LwIoProgressCallback, gpointer, GError**);

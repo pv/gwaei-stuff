@@ -45,7 +45,7 @@ static LwSearchItem *_progress_feedback_item = NULL;
 static gboolean _prev_selection_icon_state = FALSE;
 static int _previous_tip = 0;
 static long _progress_feedback_line = 0;
-static LwSearchState _progress_feedback_status = GW_SEARCH_IDLE;
+static LwSearchState _progress_feedback_status = LW_SEARCH_IDLE;
 static int _timeout = 0;
 static const int MAX_TIMEOUT = 3;
 static char *_prev_query = NULL;
@@ -58,7 +58,7 @@ void gw_main_initialize ()
 {
     gw_common_load_ui_xml ("main.ui");
 
-    gw_spellcheck_attach_to_entry (GTK_ENTRY (gw_common_get_widget_by_target (GW_TARGET_ENTRY)));
+    gw_spellcheck_attach_to_entry (GTK_ENTRY (gw_common_get_widget_by_target (LW_TARGET_ENTRY)));
 
     gw_tabs_initialize ();
 }
@@ -89,7 +89,7 @@ gboolean gw_main_update_progress_feedback_timeout (gpointer data)
     page_num = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
     item = g_list_nth_data (gw_tabs_get_searchitem_list (), page_num);
 
-    if (item != NULL && item->target != GW_TARGET_KANJI) 
+    if (item != NULL && item->target != LW_TARGET_KANJI) 
     {
       g_mutex_lock (item->mutex);
       gdk_threads_enter ();
@@ -124,7 +124,7 @@ void gw_main_set_entry_text_by_searchitem (LwSearchItem *item)
     GtkWidget *entry;
 
     //Initializations
-    entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
+    entry = gw_common_get_widget_by_target (LW_TARGET_ENTRY);
 
     //If there is no search, set the default colors
     if (item == NULL)
@@ -150,19 +150,19 @@ void gw_main_set_entry_text_by_searchitem (LwSearchItem *item)
       }
 
       //Set the foreground color
-      lw_pref_get_string_by_schema (hex_color_string, GW_SCHEMA_HIGHLIGHT, GW_KEY_MATCH_FG, 100);
+      lw_pref_get_string_by_schema (hex_color_string, LW_SCHEMA_HIGHLIGHT, LW_KEY_MATCH_FG, 100);
       if (gdk_rgba_parse (&color, hex_color_string) == FALSE)
       {
-        lw_pref_reset_value_by_schema (GW_SCHEMA_HIGHLIGHT, GW_KEY_MATCH_FG);
+        lw_pref_reset_value_by_schema (LW_SCHEMA_HIGHLIGHT, LW_KEY_MATCH_FG);
         return;
       }
       //gtk_widget_override_color (GTK_WIDGET (entry), GTK_STATE_NORMAL, &color);
 
       //Set the background color
-      lw_pref_get_string_by_schema (hex_color_string, GW_SCHEMA_HIGHLIGHT, GW_KEY_MATCH_BG, 100);
+      lw_pref_get_string_by_schema (hex_color_string, LW_SCHEMA_HIGHLIGHT, LW_KEY_MATCH_BG, 100);
       if (gdk_rgba_parse (&color, hex_color_string) == FALSE)
       {
-        lw_pref_reset_value_by_schema (GW_SCHEMA_HIGHLIGHT, GW_KEY_MATCH_BG);
+        lw_pref_reset_value_by_schema (LW_SCHEMA_HIGHLIGHT, LW_KEY_MATCH_BG);
         return;
       }
       //gtk_widget_override_background_color (GTK_WIDGET (entry), GTK_STATE_NORMAL, &color);
@@ -290,7 +290,7 @@ void gw_main_set_information_box_label (const char* string, const char* query, i
 void gw_main_verb_check_with_suggestion (LwSearchItem *item)
 {
 /*
-    if (item == NULL || item->queryline == NULL || item->resultline == NULL || item->target != GW_TARGET_RESULTS) return;
+    if (item == NULL || item->queryline == NULL || item->resultline == NULL || item->target != LW_TARGET_RESULTS) return;
 
     GtkBuilder *builder = gw_common_get_builder ();
 
@@ -407,7 +407,7 @@ void gw_main_verb_check_with_suggestion (LwSearchItem *item)
 void gw_main_update_toolbar_buttons ()
 {
     GtkBuilder *builder = gw_common_get_builder ();
-    GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
+    GtkWidget *search_entry = gw_common_get_widget_by_target (LW_TARGET_ENTRY);
 
     //Delarations
     GtkAction *action;
@@ -421,9 +421,9 @@ void gw_main_update_toolbar_buttons ()
     LwSearchItem *tab_search_item = g_list_nth_data (gw_tabs_get_searchitem_list (), page_num);
 
     int current_font_magnification;
-    current_font_magnification = lw_pref_get_int_by_schema (GW_SCHEMA_FONT, GW_KEY_FONT_MAGNIFICATION);
+    current_font_magnification = lw_pref_get_int_by_schema (LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION);
 
-    GtkWidget *results_tv = gw_common_get_widget_by_target(GW_TARGET_RESULTS);
+    GtkWidget *results_tv = gw_common_get_widget_by_target(LW_TARGET_RESULTS);
 
     //Update Zoom in sensitivity state
     id = "view_zoom_in_action";
@@ -470,18 +470,18 @@ void gw_main_update_toolbar_buttons ()
     //Update radicals search tool menuitem
     id = "insert_radicals_action";
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
-    enable = (lw_dictinfolist_get_dictinfo (GW_ENGINE_KANJI, "Kanji") != NULL);
+    enable = (lw_dictinfolist_get_dictinfo (LW_ENGINE_KANJI, "Kanji") != NULL);
     gtk_action_set_sensitive(action, enable);
 
     //Update back button
     id = "history_back_action";
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
-      gtk_action_set_sensitive (action, (lw_historylist_get_back_history (GW_TARGET_RESULTS) != NULL));
+      gtk_action_set_sensitive (action, (lw_historylist_get_back_history (LW_TARGET_RESULTS) != NULL));
 
     //Update forward button
     id = "history_forward_action";
     action = GTK_ACTION (gtk_builder_get_object (builder, id));
-      gtk_action_set_sensitive (action, (lw_historylist_get_forward_history (GW_TARGET_RESULTS) != NULL));
+      gtk_action_set_sensitive (action, (lw_historylist_get_forward_history (LW_TARGET_RESULTS) != NULL));
 
     //Update cut/copy buttons
     gboolean sensitive;
@@ -497,7 +497,7 @@ void gw_main_update_toolbar_buttons ()
     }
     else if (results_tv != NULL && gtk_widget_has_focus (results_tv))
     {
-      sensitive = (gw_main_has_selection_by_target (GW_TARGET_RESULTS));
+      sensitive = (gw_main_has_selection_by_target (LW_TARGET_RESULTS));
       id = "edit_copy_action";
       action = GTK_ACTION (gtk_builder_get_object (builder, id));
       gtk_action_set_sensitive (action, sensitive);
@@ -530,7 +530,7 @@ void gw_main_set_total_results_label_by_searchitem (LwSearchItem* item)
     {
       gtk_label_set_text(GTK_LABEL (label), "");
     }
-    else if (item->target != GW_TARGET_RESULTS)
+    else if (item->target != LW_TARGET_RESULTS)
     {
       return;
     }
@@ -555,8 +555,8 @@ void gw_main_set_total_results_label_by_searchitem (LwSearchItem* item)
       //Initializations
       switch (item->status)
       {
-        case GW_SEARCH_IDLE:
-        case GW_SEARCH_FINISHING:
+        case LW_SEARCH_IDLE:
+        case LW_SEARCH_FINISHING:
             if (item->current_line == 0)
               gtk_label_set_text (GTK_LABEL (label), idle_message_none);
             else if (relevant == total)
@@ -568,7 +568,7 @@ void gw_main_set_total_results_label_by_searchitem (LwSearchItem* item)
                 final_message = g_strdup_printf (base_message, total, relevant);
             }
             break;
-        case GW_SEARCH_SEARCHING:
+        case LW_SEARCH_SEARCHING:
             if (item->total_results == 0)
               gtk_label_set_text(GTK_LABEL (label), searching_message_none);
             else if (relevant == total)
@@ -580,7 +580,7 @@ void gw_main_set_total_results_label_by_searchitem (LwSearchItem* item)
                 final_message = g_strdup_printf (base_message, total, relevant);
             }
             break;
-        case GW_SEARCH_CANCELING:
+        case LW_SEARCH_CANCELING:
             break;
       }
 
@@ -663,7 +663,7 @@ void gw_main_set_search_progressbar_by_searchitem (LwSearchItem *item)
 
     //Initializations
     builder = gw_common_get_builder ();
-    entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
+    entry = gw_common_get_widget_by_target (LW_TARGET_ENTRY);
     progressbar = GTK_WIDGET (gtk_builder_get_object (builder, "search_progressbar"));
     statusbar = GTK_WIDGET (gtk_builder_get_object (builder, "statusbar"));
     current = 0;
@@ -682,9 +682,9 @@ void gw_main_set_search_progressbar_by_searchitem (LwSearchItem *item)
         item->dictionary == NULL ||
         total == 0 ||
         fraction >= (1.0 - 0.00001) ||
-        item->status == GW_SEARCH_IDLE ||
-        item->status == GW_SEARCH_FINISHING ||
-        item->status == GW_SEARCH_CANCELING   )
+        item->status == LW_SEARCH_IDLE ||
+        item->status == LW_SEARCH_FINISHING ||
+        item->status == LW_SEARCH_CANCELING   )
     {
       gtk_entry_set_progress_fraction (GTK_ENTRY (entry), 0.0);
       gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (progressbar), 0.0);
@@ -735,7 +735,7 @@ void gw_main_update_history_menu_popup ()
     LwSearchItem *item;
     GtkWidget *menuitem;
 
-    children = lw_historylist_get_combined_history_list (GW_HISTORYLIST_RESULTS);
+    children = lw_historylist_get_combined_history_list (LW_HISTORYLIST_RESULTS);
 
     //Add a separator if there are some items in history
     if (children != NULL)
@@ -853,9 +853,9 @@ void gw_main_update_history_popups ()
     GList* list = NULL;
 
     gw_main_update_history_menu_popup();
-    list = lw_historylist_get_forward_history (GW_HISTORYLIST_RESULTS);
+    list = lw_historylist_get_forward_history (LW_HISTORYLIST_RESULTS);
     _rebuild_history_button_popup("forward_popup", list);
-    list = lw_historylist_get_back_history (GW_HISTORYLIST_RESULTS);
+    list = lw_historylist_get_back_history (LW_HISTORYLIST_RESULTS);
     _rebuild_history_button_popup("back_popup", list);
 }
 
@@ -886,15 +886,15 @@ void gw_main_set_font (char *font_description_string, int *font_magnification)
     notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
     textview = NULL;
     scrolledwindow = NULL;
-    use_global_font_setting = lw_pref_get_boolean_by_schema (GW_SCHEMA_FONT, GW_KEY_FONT_USE_GLOBAL_FONT);
+    use_global_font_setting = lw_pref_get_boolean_by_schema (LW_SCHEMA_FONT, LW_KEY_FONT_USE_GLOBAL_FONT);
 
     //Get the font family
     if (font_description_string == NULL)
     {
       if (use_global_font_setting)
-        lw_pref_get_string_by_schema (font_family, GW_SCHEMA_GNOME_INTERFACE, GW_KEY_DOCUMENT_FONT_NAME, 100);
+        lw_pref_get_string_by_schema (font_family, LW_SCHEMA_GNOME_INTERFACE, LW_KEY_DOCUMENT_FONT_NAME, 100);
       else
-        lw_pref_get_string_by_schema (font_family, GW_SCHEMA_FONT, GW_KEY_FONT_CUSTOM_FONT, 100);
+        lw_pref_get_string_by_schema (font_family, LW_SCHEMA_FONT, LW_KEY_FONT_CUSTOM_FONT, 100);
     }
     else
     {
@@ -916,7 +916,7 @@ void gw_main_set_font (char *font_description_string, int *font_magnification)
 
     //Add the magnification in to the font size
     if (font_magnification == NULL)
-      font_size += lw_pref_get_int_by_schema (GW_SCHEMA_FONT, GW_KEY_FONT_MAGNIFICATION);
+      font_size += lw_pref_get_int_by_schema (LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION);
     else
       font_size += *font_magnification;
 
@@ -1185,7 +1185,7 @@ void gw_main_initialize_buffer_by_searchitem (LwSearchItem *item)
 
     gtk_text_buffer_set_text (GTK_TEXT_BUFFER (item->target_tb), "", -1);
 
-    if (item->target == GW_TARGET_RESULTS)
+    if (item->target == LW_TARGET_RESULTS)
     {
 
       //Assertain the target text buffer
@@ -1232,7 +1232,7 @@ void gw_main_initialize_buffer_by_searchitem (LwSearchItem *item)
 //!
 void gw_main_search_entry_insert (char* text)
 {
-    GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
+    GtkWidget *search_entry = gw_common_get_widget_by_target (LW_TARGET_ENTRY);
 
     glong length;
     length = strlen (text);
@@ -1264,7 +1264,7 @@ void gw_main_grab_focus_by_target (LwTargetOutput TARGET)
 //!
 void gw_main_clear_search_entry ()
 {
-    GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
+    GtkWidget *search_entry = gw_common_get_widget_by_target (LW_TARGET_ENTRY);
 
     gint start, end;
     gtk_editable_select_region (GTK_EDITABLE (search_entry), 0, -1);
@@ -1282,21 +1282,21 @@ void gw_main_clear_search_entry ()
 //!
 void gw_main_strncpy_text_from_widget_by_target (char* output, LwTargetOutput TARGET, int MAX)
 {
-    GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
+    GtkWidget *search_entry = gw_common_get_widget_by_target (LW_TARGET_ENTRY);
 
     //GtkEntry
-    if (TARGET == GW_TARGET_ENTRY)
+    if (TARGET == LW_TARGET_ENTRY)
     {
       strncpy(output, gtk_entry_get_text (GTK_ENTRY (search_entry)), MAX);
     }
   /*
     //GtkTextView
-    else if (TARGET = GW_TARGET_RESULTS | TARGET = GW_TARGET_KANJI)
+    else if (TARGET = LW_TARGET_RESULTS | TARGET = LW_TARGET_KANJI)
     {
       GObject *tb;
       switch (TARGET)
       {
-        case GW_TARGET_RESULTS:
+        case LW_TARGET_RESULTS:
           tb = results_tb;
           break;
       }
@@ -1317,17 +1317,17 @@ void gw_main_strncpy_text_from_widget_by_target (char* output, LwTargetOutput TA
 //!
 void gw_main_text_select_all_by_target (LwTargetOutput TARGET)
 {
-    GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
+    GtkWidget *search_entry = gw_common_get_widget_by_target (LW_TARGET_ENTRY);
 
     //GtkEntry
-    if (TARGET == GW_TARGET_ENTRY)
+    if (TARGET == LW_TARGET_ENTRY)
     {
       gtk_editable_select_region (GTK_EDITABLE (search_entry), 0,-1);
     }
 
     //GtkTextView
-    else if (TARGET == GW_TARGET_RESULTS ||
-             TARGET == GW_TARGET_KANJI     )
+    else if (TARGET == LW_TARGET_RESULTS ||
+             TARGET == LW_TARGET_KANJI     )
     {
       //Assertain the target text buffer
       GObject *tb;
@@ -1349,17 +1349,17 @@ void gw_main_text_select_all_by_target (LwTargetOutput TARGET)
 //!
 void gw_main_text_select_none_by_target (LwTargetOutput TARGET)
 {
-    GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
+    GtkWidget *search_entry = gw_common_get_widget_by_target (LW_TARGET_ENTRY);
 
     //GtkEntry
-    if (TARGET == GW_TARGET_ENTRY)
+    if (TARGET == LW_TARGET_ENTRY)
     {
       gtk_editable_select_region (GTK_EDITABLE (search_entry), -1,-1);
     }
 
     //GtkTextView
-    else if (TARGET == GW_TARGET_RESULTS ||
-             TARGET == GW_TARGET_KANJI     )
+    else if (TARGET == LW_TARGET_RESULTS ||
+             TARGET == LW_TARGET_KANJI     )
     {
       //Assertain the target text buffer
       GObject *tb;
@@ -1385,13 +1385,13 @@ guint gw_main_get_current_target_focus (char *window_id)
 
     GtkWidget *window = GTK_WIDGET (gtk_builder_get_object (builder, window_id));
     GtkWidget *widget = GTK_WIDGET (gtk_window_get_focus (GTK_WINDOW (window))); 
-    GtkWidget* results_tv = gw_common_get_widget_by_target(GW_TARGET_RESULTS);
-    GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
+    GtkWidget* results_tv = gw_common_get_widget_by_target(LW_TARGET_RESULTS);
+    GtkWidget *search_entry = gw_common_get_widget_by_target (LW_TARGET_ENTRY);
 
     if (widget == results_tv)
-      return GW_TARGET_RESULTS;
+      return LW_TARGET_RESULTS;
     if (widget == search_entry)
-      return GW_TARGET_ENTRY;
+      return LW_TARGET_ENTRY;
     else
       return -1;
 }
@@ -1405,20 +1405,20 @@ guint gw_main_get_current_target_focus (char *window_id)
 void gw_main_copy_text (LwTargetOutput TARGET)
 {
     GtkClipboard *clipbd;
-    GObject *results_tb = gw_common_get_gobject_by_target (GW_TARGET_RESULTS);
-    GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
+    GObject *results_tb = gw_common_get_gobject_by_target (LW_TARGET_RESULTS);
+    GtkWidget *search_entry = gw_common_get_widget_by_target (LW_TARGET_ENTRY);
 
     switch (TARGET)
     {
-      case GW_TARGET_ENTRY:
+      case LW_TARGET_ENTRY:
         gtk_editable_copy_clipboard (GTK_EDITABLE (search_entry));
         break;
-      case GW_TARGET_RESULTS:
+      case LW_TARGET_RESULTS:
         clipbd = gtk_clipboard_get (GDK_SELECTION_CLIPBOARD);
         gtk_text_buffer_copy_clipboard (GTK_TEXT_BUFFER (results_tb), clipbd);
         break;
-      case GW_TARGET_KANJI:
-      case GW_TARGET_CONSOLE:
+      case LW_TARGET_KANJI:
+      case LW_TARGET_CONSOLE:
         break;
     }
 }
@@ -1431,16 +1431,16 @@ void gw_main_copy_text (LwTargetOutput TARGET)
 //!
 void gw_main_cut_text (LwTargetOutput TARGET)
 {
-    GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
+    GtkWidget *search_entry = gw_common_get_widget_by_target (LW_TARGET_ENTRY);
 
     switch (TARGET)
     {
-      case GW_TARGET_ENTRY:
+      case LW_TARGET_ENTRY:
         gtk_editable_cut_clipboard (GTK_EDITABLE (search_entry));
         break;
-      case GW_TARGET_RESULTS:
-      case GW_TARGET_KANJI:
-      case GW_TARGET_CONSOLE:
+      case LW_TARGET_RESULTS:
+      case LW_TARGET_KANJI:
+      case LW_TARGET_CONSOLE:
         break;
     }
 }
@@ -1453,16 +1453,16 @@ void gw_main_cut_text (LwTargetOutput TARGET)
 //!
 void gw_main_paste_text (LwTargetOutput TARGET)
 {
-    GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
+    GtkWidget *search_entry = gw_common_get_widget_by_target (LW_TARGET_ENTRY);
 
     switch (TARGET)
     {
-      case GW_TARGET_ENTRY:
+      case LW_TARGET_ENTRY:
         gtk_editable_paste_clipboard (GTK_EDITABLE (search_entry));
         break;
-      case GW_TARGET_RESULTS:
-      case GW_TARGET_KANJI:
-      case GW_TARGET_CONSOLE:
+      case LW_TARGET_RESULTS:
+      case LW_TARGET_KANJI:
+      case LW_TARGET_CONSOLE:
         break;
     }
 }
@@ -1512,11 +1512,11 @@ gboolean _set_color_to_tagtable (char    *id,     LwTargetOutput TARGET,
         key = g_strdup_printf ("%s-foreground", id);
         if (key != NULL)
         {
-          lw_pref_get_string_by_schema (fg_color, GW_SCHEMA_HIGHLIGHT, key, 100);
+          lw_pref_get_string_by_schema (fg_color, LW_SCHEMA_HIGHLIGHT, key, 100);
           if (gdk_rgba_parse (&color, fg_color) == FALSE)
           {
             printf("color failed %s\n", fg_color);
-            lw_pref_reset_value_by_schema (GW_SCHEMA_HIGHLIGHT, key);
+            lw_pref_reset_value_by_schema (LW_SCHEMA_HIGHLIGHT, key);
             g_free (key);
             key = NULL;
             return FALSE;
@@ -1532,11 +1532,11 @@ gboolean _set_color_to_tagtable (char    *id,     LwTargetOutput TARGET,
         key = g_strdup_printf ("%s-background", id);
         if (key != NULL)
         {
-          lw_pref_get_string_by_schema (bg_color, GW_SCHEMA_HIGHLIGHT, key, 100);
+          lw_pref_get_string_by_schema (bg_color, LW_SCHEMA_HIGHLIGHT, key, 100);
           if (gdk_rgba_parse (&color, bg_color) == FALSE)
           {
             printf("color failed %s\n", bg_color);
-            lw_pref_reset_value_by_schema (GW_SCHEMA_HIGHLIGHT, key);
+            lw_pref_reset_value_by_schema (LW_SCHEMA_HIGHLIGHT, key);
             g_free (key);
             key = NULL;
             return FALSE;
@@ -1646,7 +1646,7 @@ gunichar gw_main_get_hovered_character (int *x, int *y, GtkTextIter *start)
 
     //Initializations
     trailing = 0;
-    results_tv = gw_common_get_widget_by_target (GW_TARGET_RESULTS);
+    results_tv = gw_common_get_widget_by_target (LW_TARGET_RESULTS);
 
     gtk_text_view_window_to_buffer_coords (GTK_TEXT_VIEW(results_tv), GTK_TEXT_WINDOW_TEXT, *x, *y, x, y);
     gtk_text_view_get_iter_at_position (GTK_TEXT_VIEW (results_tv), start, &trailing, *x, *y);
@@ -1668,7 +1668,7 @@ void gw_main_set_cursor (GdkCursorType CURSOR)
     GdkCursor* cursor;
 
     //Initializations
-    results_tv = gw_common_get_widget_by_target (GW_TARGET_RESULTS);
+    results_tv = gw_common_get_widget_by_target (LW_TARGET_RESULTS);
     gdk_window = gtk_text_view_get_window (GTK_TEXT_VIEW (results_tv), GTK_TEXT_WINDOW_TEXT);
     cursor = gdk_cursor_new (CURSOR);
 
@@ -1684,7 +1684,7 @@ void gw_main_set_cursor (GdkCursorType CURSOR)
 //!
 void gw_main_display_no_results_found_page (LwSearchItem *item)
 {
-    if (item->status == GW_SEARCH_CANCELING) return; 
+    if (item->status == LW_SEARCH_CANCELING) return; 
 
   gdk_threads_enter ();
     gtk_text_buffer_set_text (GTK_TEXT_BUFFER (item->target_tb), "", -1);
@@ -1703,7 +1703,7 @@ void gw_main_display_no_results_found_page (LwSearchItem *item)
     GtkWidget *label = NULL;
     GtkWidget *hbox = NULL;
     char *body = NULL;
-    GtkWidget *search_entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
+    GtkWidget *search_entry = gw_common_get_widget_by_target (LW_TARGET_ENTRY);
     const char *query_text = gtk_entry_get_text (GTK_ENTRY (search_entry));
     GList *list = NULL;
     int i = 0;
@@ -2118,16 +2118,16 @@ void gw_main_buffer_reload_tagtable_tags ()
     GtkWidget *entry;
 
     //Initializations
-    entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
+    entry = gw_common_get_widget_by_target (LW_TARGET_ENTRY);
 
-    _set_color_to_tagtable ("comment", GW_TARGET_RESULTS, TRUE, FALSE);
-    _set_color_to_tagtable ("comment", GW_TARGET_KANJI,   TRUE, FALSE);
+    _set_color_to_tagtable ("comment", LW_TARGET_RESULTS, TRUE, FALSE);
+    _set_color_to_tagtable ("comment", LW_TARGET_KANJI,   TRUE, FALSE);
 
-    _set_color_to_tagtable ("match",   GW_TARGET_RESULTS, TRUE, TRUE );
-    _set_color_to_tagtable ("match",   GW_TARGET_KANJI,   FALSE,FALSE);
+    _set_color_to_tagtable ("match",   LW_TARGET_RESULTS, TRUE, TRUE );
+    _set_color_to_tagtable ("match",   LW_TARGET_KANJI,   FALSE,FALSE);
 
-    _set_color_to_tagtable ("header",  GW_TARGET_RESULTS, TRUE, FALSE);
-    _set_color_to_tagtable ("header",  GW_TARGET_KANJI,   TRUE, FALSE);
+    _set_color_to_tagtable ("header",  LW_TARGET_RESULTS, TRUE, FALSE);
+    _set_color_to_tagtable ("header",  LW_TARGET_KANJI,   TRUE, FALSE);
 
     gtk_widget_override_background_color (GTK_WIDGET (entry), GTK_STATE_NORMAL, NULL);
     gtk_widget_override_color (GTK_WIDGET (entry), GTK_STATE_NORMAL, NULL);
@@ -2139,26 +2139,26 @@ void gw_main_buffer_reload_tagtable_tags ()
 //!
 void gw_main_buffer_initialize_tags ()
 {
-    gw_main_set_tag_to_tagtable ("italic", GW_TARGET_RESULTS,
+    gw_main_set_tag_to_tagtable ("italic", LW_TARGET_RESULTS,
                                   "style", GINT_TO_POINTER(PANGO_STYLE_ITALIC));
-    gw_main_set_tag_to_tagtable ("gray", GW_TARGET_RESULTS,
+    gw_main_set_tag_to_tagtable ("gray", LW_TARGET_RESULTS,
                                   "foreground",    "#888888");
-    gw_main_set_tag_to_tagtable ("smaller", GW_TARGET_RESULTS,
+    gw_main_set_tag_to_tagtable ("smaller", LW_TARGET_RESULTS,
                                   "size",    "smaller");
     //Important tag (usually bold)
-    gw_main_set_tag_to_tagtable ("important", GW_TARGET_RESULTS,
+    gw_main_set_tag_to_tagtable ("important", LW_TARGET_RESULTS,
                                   "weight",    GINT_TO_POINTER(PANGO_WEIGHT_BOLD));
 
     //Larger tag
-    gw_main_set_tag_to_tagtable ("larger", GW_TARGET_RESULTS, "font", "sans 20");
+    gw_main_set_tag_to_tagtable ("larger", LW_TARGET_RESULTS, "font", "sans 20");
 
     //Large tag
-    gw_main_set_tag_to_tagtable ("large", GW_TARGET_RESULTS, "font", "serif 40");
+    gw_main_set_tag_to_tagtable ("large", LW_TARGET_RESULTS, "font", "serif 40");
 
-    gw_main_set_tag_to_tagtable ("center", GW_TARGET_RESULTS, "justification", GINT_TO_POINTER(GTK_JUSTIFY_LEFT));
+    gw_main_set_tag_to_tagtable ("center", LW_TARGET_RESULTS, "justification", GINT_TO_POINTER(GTK_JUSTIFY_LEFT));
 
     //Small tag
-    gw_main_set_tag_to_tagtable ("small", GW_TARGET_RESULTS,  "font", "serif 6");
+    gw_main_set_tag_to_tagtable ("small", LW_TARGET_RESULTS,  "font", "serif 6");
 
     gw_main_buffer_reload_tagtable_tags();
 }
@@ -2199,7 +2199,7 @@ gboolean gw_main_keep_searching_timeout (gpointer data)
     //Initializations
     builder = gw_common_get_builder ();
     window = GTK_WIDGET (gtk_builder_get_object (builder, "settings_window"));
-    entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
+    entry = gw_common_get_widget_by_target (LW_TARGET_ENTRY);
     query = gtk_entry_get_text (GTK_ENTRY (entry));
     if (_prev_query == NULL) _prev_query = g_strdup ("");
 
@@ -2250,7 +2250,7 @@ gboolean gw_update_icons_for_selection (gpointer data)
     //Initializations;
     builder = gw_common_get_builder ();
     action = NULL;
-    has_selection = gw_main_has_selection_by_target (GW_TARGET_RESULTS);
+    has_selection = gw_main_has_selection_by_target (LW_TARGET_RESULTS);
 
     //Set the special buttons
     if (!_prev_selection_icon_state && has_selection)
@@ -2297,14 +2297,14 @@ gboolean gw_main_cancel_search_by_searchitem (LwSearchItem *item)
     g_mutex_lock (item->mutex);
 
       //Sanity check 1
-      if (item->status == GW_SEARCH_IDLE) 
+      if (item->status == LW_SEARCH_IDLE) 
       {
         g_mutex_unlock (item->mutex);
         return TRUE;
       }
 
       //Sanity check 2
-      if(item != NULL && item->status == GW_SEARCH_CANCELING) 
+      if(item != NULL && item->status == LW_SEARCH_CANCELING) 
       {
         g_mutex_unlock (item->mutex);
         return FALSE;
@@ -2313,13 +2313,13 @@ gboolean gw_main_cancel_search_by_searchitem (LwSearchItem *item)
       //Sanity check 3
       if (item->thread == NULL)
       {
-        item->status = GW_SEARCH_IDLE;
+        item->status = LW_SEARCH_IDLE;
         g_mutex_unlock (item->mutex);
         return FALSE;
       }
 
       //Do the cancel operation
-      item->status = GW_SEARCH_CANCELING;
+      item->status = LW_SEARCH_CANCELING;
 
 
     g_mutex_unlock (item->mutex);
@@ -2340,9 +2340,9 @@ gboolean gw_main_cancel_search_by_target (LwTargetOutput TARGET)
     LwHistoryList* hl;
     LwSearchItem *item;
 
-    if (TARGET == GW_TARGET_KANJI)
+    if (TARGET == LW_TARGET_KANJI)
     {
-      hl = lw_historylist_get_list(GW_HISTORYLIST_RESULTS);
+      hl = lw_historylist_get_list(LW_HISTORYLIST_RESULTS);
       item = hl->current;
       return  gw_main_cancel_search_by_searchitem (item);
     }

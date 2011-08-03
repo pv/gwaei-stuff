@@ -183,7 +183,7 @@ static void _initialize_window_attributes (char* id)
 static GList* _load_window_prefs ()
 {
     char* pref = (char*) malloc(300 * sizeof(char));
-    lw_pref_get_string_by_schema (pref, GW_SCHEMA_BASE, GW_KEY_WINDOW_POSITIONS, 300);
+    lw_pref_get_string_by_schema (pref, LW_SCHEMA_BASE, LW_KEY_WINDOW_POSITIONS, 300);
     char **pref_array = NULL;;
     pref_array = g_strsplit (pref, ";", -1);
     char **ptr = NULL;
@@ -270,7 +270,7 @@ static void _save_window_prefs_for_id (const char *id)
     g_list_free (list);
 
     pref = g_strjoinv (";", atoms);
-    lw_pref_set_string_by_schema (GW_SCHEMA_BASE, GW_KEY_WINDOW_POSITIONS, pref);
+    lw_pref_set_string_by_schema (LW_SCHEMA_BASE, LW_KEY_WINDOW_POSITIONS, pref);
     g_free (pref);
     pref = NULL;
 
@@ -409,14 +409,14 @@ GtkWidget* gw_common_get_widget_by_target (const LwTargetOutput TARGET)
 
     switch (TARGET)
     {
-      case GW_TARGET_RESULTS:
+      case LW_TARGET_RESULTS:
         notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
         page_number =  gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
         if (page_number == -1) return NULL;
         page = gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), page_number);
         if (page == NULL) return NULL;
         return gtk_bin_get_child (GTK_BIN (page));
-      case GW_TARGET_ENTRY:
+      case LW_TARGET_ENTRY:
         return GTK_WIDGET (gtk_builder_get_object (builder, "search_entry"));
       default:
         return NULL;
@@ -454,7 +454,7 @@ gpointer gw_common_get_gobject_by_target (const LwTargetOutput TARGET)
 
     switch (TARGET)
     {
-      case GW_TARGET_RESULTS:
+      case LW_TARGET_RESULTS:
           notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
           page_number = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
           if (page_number == -1) return NULL;

@@ -533,12 +533,12 @@ static gboolean _update_spellcheck_timeout (gpointer data)
     GThread *outthread;
     
     //Initializations
-    rk_conv_pref = lw_pref_get_int_by_schema (GW_SCHEMA_BASE, GW_KEY_ROMAN_KANA);
+    rk_conv_pref = lw_pref_get_int_by_schema (LW_SCHEMA_BASE, LW_KEY_ROMAN_KANA);
     want_conv = (rk_conv_pref == 0 || (rk_conv_pref == 2 && !lw_util_is_japanese_locale()));
     entry = GTK_ENTRY (data);
     query = gtk_entry_get_text (entry);
     is_convertable_to_hiragana = (want_conv && lw_util_str_roma_to_hira (query, kana, MAX));
-    spellcheck_pref = lw_pref_get_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_SPELLCHECK);
+    spellcheck_pref = lw_pref_get_boolean_by_schema (LW_SCHEMA_BASE, LW_KEY_SPELLCHECK);
     exists = g_file_test (ENCHANT, G_FILE_TEST_IS_REGULAR);
     error = NULL;
 
@@ -614,9 +614,9 @@ G_MODULE_EXPORT void gw_spellcheck_toggle_cb (GtkWidget *widget, gpointer data)
     gboolean state;
 
     //Initializations
-    state = lw_pref_get_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_SPELLCHECK);
+    state = lw_pref_get_boolean_by_schema (LW_SCHEMA_BASE, LW_KEY_SPELLCHECK);
 
-    lw_pref_set_boolean_by_schema (GW_SCHEMA_BASE, GW_KEY_SPELLCHECK, !state);
+    lw_pref_set_boolean_by_schema (LW_SCHEMA_BASE, LW_KEY_SPELLCHECK, !state);
 
     if (_query_text != NULL) g_free (_query_text);
     _query_text = g_strdup ("FORCE UPDATE");
@@ -644,7 +644,7 @@ void gw_spellcheck_set_enabled (gboolean request)
     builder = gw_common_get_builder ();
     checkbox = GTK_WIDGET (gtk_builder_get_object (builder, "query_spellcheck"));
     toolbutton = GTK_WIDGET (gtk_builder_get_object (builder, "spellcheck_toolbutton"));
-    entry = GTK_WIDGET (gw_common_get_widget_by_target (GW_TARGET_ENTRY));
+    entry = GTK_WIDGET (gw_common_get_widget_by_target (LW_TARGET_ENTRY));
 
     g_signal_handlers_block_by_func (checkbox, gw_spellcheck_toggle_cb, NULL);
     g_signal_handlers_block_by_func (toolbutton, gw_spellcheck_toggle_cb, NULL);
@@ -668,7 +668,7 @@ static void _update_button_sensitivities ()
 
     //Initializations
     builder = gw_common_get_builder ();
-    entry = GTK_WIDGET (gw_common_get_widget_by_target (GW_TARGET_ENTRY));
+    entry = GTK_WIDGET (gw_common_get_widget_by_target (LW_TARGET_ENTRY));
     checkbox = GTK_WIDGET (gtk_builder_get_object (builder, "query_spellcheck"));
     toolbutton = GTK_WIDGET (gtk_builder_get_object (builder, "spellcheck_toolbutton"));
     exists = g_file_test (ENCHANT, G_FILE_TEST_IS_REGULAR);

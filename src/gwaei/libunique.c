@@ -115,7 +115,7 @@ static UniqueResponse _message_received_cb (UniqueApp         *app,
           if (message != NULL)
           {
             data = unique_message_data_get (message, &length); 
-            entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
+            entry = gw_common_get_widget_by_target (LW_TARGET_ENTRY);
             gtk_entry_set_text (GTK_ENTRY (entry), data);
             gtk_editable_set_position (GTK_EDITABLE (entry), -1);
             gw_main_search_cb (NULL, NULL);

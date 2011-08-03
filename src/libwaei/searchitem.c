@@ -87,14 +87,14 @@ LwSearchItem* lw_searchitem_new (char* query, LwDictInfo* dictionary, const int 
     temp->thread = NULL;
     temp->mutex = g_mutex_new ();
     
-    if (TARGET != GW_TARGET_RESULTS &&
-        TARGET != GW_TARGET_KANJI   &&
-        TARGET != GW_TARGET_CONSOLE       )
+    if (TARGET != LW_TARGET_RESULTS &&
+        TARGET != LW_TARGET_KANJI   &&
+        TARGET != LW_TARGET_CONSOLE       )
       return NULL;
 
     //Set the internal pointers to the correct global variables
     temp->fd     = NULL;
-    temp->status = GW_SEARCH_IDLE;
+    temp->status = LW_SEARCH_IDLE;
     temp->scratch_buffer = NULL;
     temp->dictionary = dictionary;
     temp->target = TARGET;
@@ -114,17 +114,17 @@ LwSearchItem* lw_searchitem_new (char* query, LwDictInfo* dictionary, const int 
     //Set function pointers
     switch (temp->dictionary->engine)
     {
-        case GW_ENGINE_EDICT:
+        case LW_ENGINE_EDICT:
           if (!lw_queryline_parse_edict_string (temp->queryline, query, error)) return NULL;
           temp->lw_searchitem_parse_result_string = &lw_resultline_parse_edict_result_string;
           temp->lw_searchitem_ui_append_results_to_output = lw_engine_get_append_edict_results_func ();
           break;
-        case GW_ENGINE_KANJI:
+        case LW_ENGINE_KANJI:
           if (!lw_queryline_parse_kanjidict_string (temp->queryline, query, error)) return NULL;
           temp->lw_searchitem_parse_result_string = &lw_resultline_parse_kanjidict_result_string;
           temp->lw_searchitem_ui_append_results_to_output = lw_engine_get_append_kanjidict_results_func ();
           break;
-        case GW_ENGINE_EXAMPLES:
+        case LW_ENGINE_EXAMPLES:
           if (!lw_queryline_parse_exampledict_string (temp->queryline, query, error)) return NULL;
           temp->lw_searchitem_parse_result_string = &lw_resultline_parse_examplesdict_result_string;
           temp->lw_searchitem_ui_append_results_to_output = lw_engine_get_append_examplesdict_results_func ();
@@ -157,7 +157,7 @@ LwSearchItem* lw_searchitem_new (char* query, LwDictInfo* dictionary, const int 
 //!
 gboolean lw_searchitem_do_pre_search_prep (LwSearchItem* item)
 {
-    if (item->scratch_buffer != NULL || (item->scratch_buffer = malloc (GW_IO_MAX_FGETS_LINE)) == NULL)
+    if (item->scratch_buffer != NULL || (item->scratch_buffer = malloc (LW_IO_MAX_FGETS_LINE)) == NULL)
     {
       return FALSE;
     }
@@ -190,7 +190,7 @@ gboolean lw_searchitem_do_pre_search_prep (LwSearchItem* item)
       g_free (path);
       path = NULL;
     }
-    item->status = GW_SEARCH_SEARCHING;
+    item->status = LW_SEARCH_SEARCHING;
     return TRUE;
 }
 
@@ -228,7 +228,7 @@ void lw_searchitem_do_post_search_clean (LwSearchItem* item)
     }
 
     //item->thread = NULL;  This code creates multithreading problems
-    item->status = GW_SEARCH_IDLE;
+    item->status = LW_SEARCH_IDLE;
 }
 
 
@@ -246,7 +246,7 @@ void lw_searchitem_free (LwSearchItem* item)
 
   if (item->thread != NULL) 
   {
-    item->status = GW_SEARCH_CANCELING;
+    item->status = LW_SEARCH_CANCELING;
     g_thread_join(item->thread);
     item->thread = NULL;
     g_mutex_free (item->mutex);
@@ -519,11 +519,11 @@ gboolean lw_searchitem_run_comparison (LwSearchItem *item, const LwRelevance REL
     //Kanji radical dictionary search
     switch (item->dictionary->engine)
     {
-      case GW_ENGINE_EDICT:
+      case LW_ENGINE_EDICT:
         return _edict_existance_comparison (ql, rl, RELEVANCE);
-      case GW_ENGINE_KANJI:
+      case LW_ENGINE_KANJI:
         return _kanji_existance_comparison (ql, rl, RELEVANCE);
-      case GW_ENGINE_EXAMPLES:
+      case LW_ENGINE_EXAMPLES:
         return _edict_existance_comparison (ql, rl, RELEVANCE);
       default:
         return _edict_existance_comparison (ql, rl, RELEVANCE);
@@ -563,7 +563,7 @@ gboolean lw_searchitem_is_equal (LwSearchItem *item1, LwSearchItem *item2)
 //!
 void lw_searchitem_increment_history_relevance_timer (LwSearchItem *item)
 {
-  if (item != NULL && item->history_relevance_idle_timer < GW_HISTORY_TIME_TO_RELEVANCE)
+  if (item != NULL && item->history_relevance_idle_timer < LW_HISTORY_TIME_TO_RELEVANCE)
     item->history_relevance_idle_timer++;
 }
 
@@ -573,5 +573,5 @@ void lw_searchitem_increment_history_relevance_timer (LwSearchItem *item)
 //!
 gboolean lw_searchitem_has_history_relevance (LwSearchItem *item)
 {
-  return (item != NULL && item->total_results && item->history_relevance_idle_timer >= GW_HISTORY_TIME_TO_RELEVANCE);
+  return (item != NULL && item->total_results && item->history_relevance_idle_timer >= LW_HISTORY_TIME_TO_RELEVANCE);
 }

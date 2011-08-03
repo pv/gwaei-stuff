@@ -148,7 +148,7 @@ void gw_start_gtk (int argc, char* argv[])
     }
 
     //Set the initial focus to the search bar
-    gw_main_grab_focus_by_target (GW_TARGET_ENTRY);
+    gw_main_grab_focus_by_target (LW_TARGET_ENTRY);
 
     //Set the initial dictionary
     if (_arg_dictionary != NULL) printf("%s\n", _arg_dictionary);
@@ -160,7 +160,7 @@ void gw_start_gtk (int argc, char* argv[])
     //Set the initial query text if it was passed as an argument to the program
     if (_arg_query != NULL)
     {
-      entry = gw_common_get_widget_by_target (GW_TARGET_ENTRY);
+      entry = gw_common_get_widget_by_target (LW_TARGET_ENTRY);
       gtk_entry_set_text (GTK_ENTRY (entry), _arg_query);
     }
 

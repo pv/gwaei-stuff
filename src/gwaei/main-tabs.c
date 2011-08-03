@@ -165,7 +165,7 @@ void gw_tabs_update_on_deck_historylist_by_searchitem (LwSearchItem *item)
     LwHistoryList *hl;
 
     //Initializations
-    hl = lw_historylist_get_list (GW_TARGET_RESULTS);
+    hl = lw_historylist_get_list (LW_TARGET_RESULTS);
 
     hl->current = item;
 }
@@ -256,19 +256,26 @@ void gw_tabs_set_current_tab_text (const char* TEXT)
 //!
 int gw_tabs_new ()
 {
-    GtkBuilder *builder = gw_common_get_builder ();
+    //Declarations
+    GtkBuilder *builder;
+    GtkWidget *scrolledwindow;
+    GtkWidget *notebook;
+    GtkWidget *textview;
+    GObject *textbuffer;
 
-    //Create contents
-    GtkWidget *scrolledwindow = GTK_WIDGET (gtk_scrolled_window_new (NULL, NULL));
-    GtkWidget *notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
-    GtkWidget *textview = GTK_WIDGET (gtk_text_view_new ());
-    GObject *textbuffer = G_OBJECT (gtk_text_view_get_buffer (GTK_TEXT_VIEW (textview)));
+    //Initializations
+    builder = gw_common_get_builder ();
+    scrolledwindow = GTK_WIDGET (gtk_scrolled_window_new (NULL, NULL));
+    notebook = GTK_WIDGET (gtk_builder_get_object (builder, "notebook"));
+    textview = GTK_WIDGET (gtk_text_view_new ());
+    textbuffer = G_OBJECT (gtk_text_view_get_buffer (GTK_TEXT_VIEW (textview)));
+
+    //Set up the text view
     gtk_text_view_set_right_margin (GTK_TEXT_VIEW (textview), 10);
     gtk_text_view_set_left_margin (GTK_TEXT_VIEW (textview), 10);
     gtk_text_view_set_cursor_visible (GTK_TEXT_VIEW (textview), FALSE);
     gtk_text_view_set_editable (GTK_TEXT_VIEW (textview), FALSE);
     gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
-    //gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow), GTK_SHADOW_IN);
     gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (textview), GTK_WRAP_WORD);
 
     g_signal_connect( G_OBJECT (textview), "drag_motion", G_CALLBACK (gw_main_drag_motion_1_cb), NULL);
@@ -286,24 +293,21 @@ int gw_tabs_new ()
     gtk_container_add (GTK_CONTAINER (scrolledwindow), textview);
     gtk_widget_show_all (GTK_WIDGET (scrolledwindow));
 
-    //Create create tab label
+    //Create the tab label
     GtkWidget *vbox;
-    GtkWidget *hbox = GTK_WIDGET (gtk_hbox_new(FALSE, 3));
-    GtkWidget *label = GTK_WIDGET (gtk_label_new(gettext("(Empty)")));
-    GtkWidget *close_button = GTK_WIDGET (gtk_button_new ());
-    gtk_button_set_relief (GTK_BUTTON (close_button), GTK_RELIEF_NONE);
-    GtkWidget *button_image = GTK_WIDGET (gtk_image_new_from_stock (GTK_STOCK_CLOSE, GTK_ICON_SIZE_MENU));
-    gtk_button_set_focus_on_click (GTK_BUTTON (close_button), FALSE);
-    gtk_container_set_border_width (GTK_CONTAINER (close_button), 0);
-    gtk_misc_set_padding (GTK_MISC (button_image), 0, 0);
-    gtk_widget_set_size_request (GTK_WIDGET (button_image), 14, 14);
-
-    //Declarations
+    GtkWidget *hbox;
+    GtkWidget *label;
+    GtkWidget *close_button;
+    GtkWidget *button_image;
     GtkCssProvider *provider;
     char *style_data;
     GtkStyleContext *context;
 
     //Initializations
+    hbox = GTK_WIDGET (gtk_hbox_new(FALSE, 3));
+    label = GTK_WIDGET (gtk_label_new(gettext("(Empty)")));
+    close_button = GTK_WIDGET (gtk_button_new ());
+    button_image = GTK_WIDGET (gtk_image_new_from_stock (GTK_STOCK_CLOSE, GTK_ICON_SIZE_MENU));
     style_data = "* {\n"
                  "-GtkButton-default-border : 0;\n"
                  "-GtkButton-default-outside-border : 0;\n"
@@ -315,6 +319,12 @@ int gw_tabs_new ()
     provider = gtk_css_provider_new ();
     context = gtk_widget_get_style_context (close_button);
 
+    //Set up the button
+    gtk_button_set_relief (GTK_BUTTON (close_button), GTK_RELIEF_NONE);
+    gtk_button_set_focus_on_click (GTK_BUTTON (close_button), FALSE);
+    gtk_container_set_border_width (GTK_CONTAINER (close_button), 0);
+    gtk_misc_set_padding (GTK_MISC (button_image), 0, 0);
+    gtk_widget_set_size_request (GTK_WIDGET (button_image), 14, 14);
     gtk_css_provider_load_from_data (provider,  style_data, strlen(style_data), NULL); 
     gtk_style_context_add_provider (context, GTK_STYLE_PROVIDER (provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 
@@ -329,15 +339,21 @@ int gw_tabs_new ()
     gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, TRUE, 0);
     gtk_widget_show_all (GTK_WIDGET (hbox));
 
-    //Finish
-    int current = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
-    int position = gtk_notebook_append_page (GTK_NOTEBOOK (notebook), scrolledwindow, hbox);
+    //Initializations
+    int current;
+    int position;
+
+    //Initializations
+    current = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+    position = gtk_notebook_append_page (GTK_NOTEBOOK (notebook), scrolledwindow, hbox);
+    _tab_searchitems = g_list_append (_tab_searchitems, NULL);
+
+    //Put everything together
     gtk_notebook_set_tab_reorderable (GTK_NOTEBOOK (notebook), scrolledwindow, TRUE);
     gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), position);
     gw_main_buffer_initialize_tags();
     gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), current);
     gw_main_buffer_initialize_marks (textbuffer);
-    _tab_searchitems = g_list_append (_tab_searchitems, NULL);
     gw_tabs_update_appearance ();
     gw_main_update_toolbar_buttons ();
 
@@ -365,7 +381,7 @@ G_MODULE_EXPORT void gw_tabs_new_cb (GtkWidget *widget, gpointer data)
 
     gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), position);
     gw_main_set_entry_text_by_searchitem (NULL);
-    gw_main_grab_focus_by_target (GW_TARGET_ENTRY);
+    gw_main_grab_focus_by_target (LW_TARGET_ENTRY);
     gw_main_set_dictionary(0);
     gw_tabs_update_on_deck_historylist_item_by_current_tab ();
 
@@ -407,14 +423,14 @@ G_MODULE_EXPORT void gw_tabs_remove_cb (GtkWidget *widget, gpointer data)
       item = iter->data;
       if (iter->data != NULL && item->total_results > 0)
       {
-        lw_historylist_add_searchitem_to_history (GW_HISTORYLIST_RESULTS, item);
+        lw_historylist_add_searchitem_to_history (LW_HISTORYLIST_RESULTS, item);
         gw_main_update_history_popups ();
       }
       else if (item != NULL)
       {
         lw_searchitem_free (item);
         iter->data = NULL;
-        gw_main_grab_focus_by_target (GW_TARGET_ENTRY);
+        gw_main_grab_focus_by_target (LW_TARGET_ENTRY);
       }
     }
     _tab_searchitems = g_list_delete_link (_tab_searchitems, iter);
@@ -422,7 +438,7 @@ G_MODULE_EXPORT void gw_tabs_remove_cb (GtkWidget *widget, gpointer data)
     gw_tabs_update_on_deck_historylist_item_by_current_tab ();
     gw_tabs_update_appearance ();
 
-    if (pages == 1) gw_main_grab_focus_by_target (GW_TARGET_ENTRY);
+    if (pages == 1) gw_main_grab_focus_by_target (LW_TARGET_ENTRY);
 }
 
 
@@ -458,7 +474,7 @@ G_MODULE_EXPORT void gw_tabs_remove_current_cb (GtkWidget *widget, gpointer data
       item = iter->data;
       if (item != NULL && item->total_results > 0)
       {
-        lw_historylist_add_searchitem_to_history (GW_HISTORYLIST_RESULTS, item);
+        lw_historylist_add_searchitem_to_history (LW_HISTORYLIST_RESULTS, item);
         gw_main_update_history_popups ();
       }
       else if (item != NULL)
@@ -473,7 +489,7 @@ G_MODULE_EXPORT void gw_tabs_remove_current_cb (GtkWidget *widget, gpointer data
     gw_tabs_update_on_deck_historylist_item_by_current_tab ();
     gw_tabs_update_appearance ();
 
-    if (pages == 1) gw_main_grab_focus_by_target (GW_TARGET_ENTRY);
+    if (pages == 1) gw_main_grab_focus_by_target (LW_TARGET_ENTRY);
 }
 
 

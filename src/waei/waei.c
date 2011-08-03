@@ -208,17 +208,17 @@ int w_start_ncurses (int argc, char* argv[])
   printf("ncurses\n");
 
     lw_engine_initialize (
-                         w_ncurses_append_edict_results_to_buffer,
-                         w_ncurses_append_kanjidict_results_to_buffer,
-                         w_ncurses_append_examplesdict_results_to_buffer,
-                         w_ncurses_append_unknowndict_results_to_buffer,
-                         w_ncurses_append_less_relevant_header_to_output,
-                         w_ncurses_append_more_relevant_header_to_output,
-                         w_ncurses_pre_search_prep,
-                         w_ncurses_after_search_cleanup
+                         nw_append_edict_results_to_buffer,
+                         nw_append_kanjidict_results_to_buffer,
+                         nw_append_examplesdict_results_to_buffer,
+                         nw_append_unknowndict_results_to_buffer,
+                         nw_append_less_relevant_header_to_output,
+                         nw_append_more_relevant_header_to_output,
+                         nw_pre_search_prep,
+                         nw_after_search_cleanup
                         );
 
-    w_ncurses_start (argc, argv);
+    nw_start_ncurses (argc, argv);
 #endif
     return TRUE;
 }

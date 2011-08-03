@@ -1,5 +1,5 @@
-#ifndef GW_DICTINFO_HEADER_INCLUDED
-#define GW_DICTINFO_HEADER_INCLUDED
+#ifndef LW_DICTINFO_HEADER_INCLUDED
+#define LW_DICTINFO_HEADER_INCLUDED
 
 /******************************************************************************
     AUTHOR:

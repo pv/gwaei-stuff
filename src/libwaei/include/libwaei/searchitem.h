@@ -1,5 +1,5 @@
-#ifndef GW_SEARCHITEM_OBJECT_INCLUDED
-#define GW_SEARCHITEM_OBJECT_INCLUDED
+#ifndef LW_SEARCHITEM_OBJECT_INCLUDED
+#define LW_SEARCHITEM_OBJECT_INCLUDED
 /******************************************************************************
     AUTHOR:
     File written and Copyrighted by Zachary Dovel. All Rights Reserved.
@@ -40,25 +40,25 @@
 #include <libwaei/dictinfo.h>
 
 
-#define GW_HISTORY_TIME_TO_RELEVANCE 20
+#define LW_HISTORY_TIME_TO_RELEVANCE 20
 
 //!
 //! Search status types
 //!
 typedef enum
 {
-  GW_SEARCH_IDLE,
-  GW_SEARCH_SEARCHING,
-  GW_SEARCH_FINISHING,
-  GW_SEARCH_CANCELING
+  LW_SEARCH_IDLE,
+  LW_SEARCH_SEARCHING,
+  LW_SEARCH_FINISHING,
+  LW_SEARCH_CANCELING
 } LwSearchState;
 
 typedef enum
 {
-  GW_TARGET_RESULTS,
-  GW_TARGET_KANJI,
-  GW_TARGET_ENTRY,
-  GW_TARGET_CONSOLE
+  LW_TARGET_RESULTS,
+  LW_TARGET_KANJI,
+  LW_TARGET_ENTRY,
+  LW_TARGET_CONSOLE
 } LwTargetOutput;
 
 
