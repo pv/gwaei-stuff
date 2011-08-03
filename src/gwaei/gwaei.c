@@ -175,11 +175,12 @@ void gw_start_gtk (int argc, char* argv[])
 #ifdef ENABLE_WIN32
       GtkSettings *settings;
       settings = gtk_settings_get_default ();
-//      g_object_set (settings, "gtk-theme-name", "MS-Windows", NULL);
-      g_object_set (settings, "gtk-theme-name", "Adwaita", NULL);
+      g_object_set (settings, "gtk-theme-name", "MS-Windows", NULL);
       g_object_set (settings, "gtk-menu-images", FALSE, NULL);
       g_object_set (settings, "gtk-button-images", FALSE, NULL);
       g_object_set (settings, "gtk-cursor-blink", FALSE, NULL);
+      g_object_set (settings, "gtk-alternative-button-order", TRUE, NULL);
+      g_object_unref (settings);
 #endif
 
       gtk_main ();
