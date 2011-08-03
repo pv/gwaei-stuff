@@ -500,7 +500,7 @@ void gw_common_handle_error (GError **error, GtkWindow *parent, gboolean show_di
     }
     else
     {
-      printf("ERROR: %s\n", (*error)->message);
+      fprintf(stderr, "ERROR: %s\n", (*error)->message);
     }
 
     //Cleanup

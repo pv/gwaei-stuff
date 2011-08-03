@@ -428,6 +428,7 @@ G_MODULE_EXPORT void gw_dictionaryinstall_encoding_combobox_changed_cb (GtkWidge
     lw_dictinst_set_encoding (di, value);
 }
 
+
 G_MODULE_EXPORT void gw_dictionaryinstall_compression_combobox_changed_cb (GtkWidget *widget, gpointer data)
 {
     g_assert (data != NULL);
@@ -437,6 +438,7 @@ G_MODULE_EXPORT void gw_dictionaryinstall_compression_combobox_changed_cb (GtkWi
 
     lw_dictinst_set_compression (di, value);
 }
+
 
 G_MODULE_EXPORT void gw_dictionaryinstall_split_checkbox_changed_cb (GtkWidget *widget, gpointer data)
 {
@@ -448,6 +450,7 @@ G_MODULE_EXPORT void gw_dictionaryinstall_split_checkbox_changed_cb (GtkWidget *
     lw_dictinst_set_split (di, value);
 }
 
+
 G_MODULE_EXPORT void gw_dictionaryinstall_merge_checkbox_changed_cb (GtkWidget *widget, gpointer data)
 {
     g_assert (data != NULL);
@@ -457,9 +460,6 @@ G_MODULE_EXPORT void gw_dictionaryinstall_merge_checkbox_changed_cb (GtkWidget *
 
     lw_dictinst_set_merge (di, value);
 }
-
-
-
 
 
 G_MODULE_EXPORT void gw_dictionaryinstall_cursor_changed_cb (GtkTreeView *view, gpointer data)

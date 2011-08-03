@@ -12,8 +12,6 @@
 static gpointer _installprogress_install_thread (gpointer);
 static int _installprogress_update_dictinst_cb (double, gpointer);
 static gboolean _installprogress_update_ui_timeout (gpointer);
-static GThread *_thread = NULL;
-static gint _timeoutid = 0;
 static double _install_fraction = 0.0;
 
 
@@ -61,8 +59,7 @@ G_MODULE_EXPORT void gw_installprogress_start_cb (GtkWidget *widget, gpointer da
     gtk_window_set_position (GTK_WINDOW (window_settings), GTK_WIN_POS_CENTER_ON_PARENT);
     gtk_widget_show (GTK_WIDGET (dialog_installprogress));
 
-    if (_thread == NULL)
-      _thread = g_thread_create (_installprogress_install_thread, NULL, TRUE, &error);
+    g_thread_create (_installprogress_install_thread, NULL, FALSE, &error);
 
     gw_common_handle_error (&error, GTK_WINDOW (window_settings), TRUE);
 }
@@ -76,13 +73,12 @@ static gpointer _installprogress_install_thread (gpointer data)
     LwDictInst *di;
     GError *error;
     GtkBuilder *builder;
-    GtkWidget *dialog;
     GtkWidget *window_settings;
+    gint timeoutid;
 
     //Initializations
     builder = gw_common_get_builder ();
     list = lw_dictinstlist_get_list ();
-    dialog = GTK_WIDGET (gtk_builder_get_object (builder, "install_progress_dialog"));
     window_settings = GTK_WIDGET (gtk_builder_get_object (builder, "settings_window"));
     error = NULL;
 
@@ -92,27 +88,20 @@ static gpointer _installprogress_install_thread (gpointer data)
       di = (LwDictInst*) iter->data;
       if (di->selected)
       {
-        _timeoutid = g_timeout_add (100, _installprogress_update_ui_timeout, di);
+        timeoutid = g_timeout_add (100, _installprogress_update_ui_timeout, di);
         lw_dictinst_install (di, _installprogress_update_dictinst_cb, &error);
-        g_source_remove (_timeoutid);
+        g_source_remove (timeoutid);
       }
     }
+    g_timeout_add (100, _installprogress_update_ui_timeout, NULL);
 
     //Cleanup
-#ifndef ENABLE_WIN32
-  //This line causes gWaei on windows to freeze
-  gdk_threads_enter ();
-#endif
-    lw_dictinstlist_set_cancel_operations (FALSE);
-    gtk_widget_hide (dialog);
-    gw_common_handle_error (&error, GTK_WINDOW (window_settings), TRUE);
-    _thread = NULL;
-
+gdk_threads_enter ();
+    gw_common_handle_error (&error, GTK_WINDOW (window_settings), FALSE);
     lw_dictinfolist_initialize ();
     gw_dictionarymanager_update_items ();
-#ifndef ENABLE_WIN32
-  gdk_threads_leave (); 
-#endif
+    lw_dictinstlist_set_cancel_operations (FALSE);
+gdk_threads_leave ();
 
     return NULL;
 }
@@ -135,7 +124,8 @@ static int _installprogress_update_dictinst_cb (double fraction, gpointer data)
 
 
 //!
-//! @brief Callback to update the install dialog progress.  Should be run in a separate thread
+//! @brief Callback to update the install dialog progress.  The data passed to it should be
+//!        in the form of a LwDictInst.  If it is NULL, the progress window will be closed.
 //!
 static gboolean _installprogress_update_ui_timeout (gpointer data)
 {
@@ -144,6 +134,7 @@ static gboolean _installprogress_update_ui_timeout (gpointer data)
     GtkWidget *progressbar;
     GtkWidget *label;
     GtkWidget *sublabel;
+    GtkWidget *dialog;
     GList *list;
     GList *iter;
     int current_to_install;
@@ -154,6 +145,14 @@ static gboolean _installprogress_update_ui_timeout (gpointer data)
     char *text_left;
     char *text_left_markup;
     char *text_progressbar;
+
+    //Sanity check
+    if (data == NULL) {
+      builder = gw_common_get_builder ();
+      dialog = GTK_WIDGET (gtk_builder_get_object (builder, "install_progress_dialog"));
+      gtk_widget_hide (dialog);
+      return FALSE;
+    }
 
     //Initializations
     di = data;
@@ -166,7 +165,6 @@ static gboolean _installprogress_update_ui_timeout (gpointer data)
     list = lw_dictinstlist_get_list ();
     current_to_install = 0;
     total_to_install = 0;
-
 
     //Calculate the number of dictionaries left to install
     for (iter = list; iter != NULL; iter = iter->next)

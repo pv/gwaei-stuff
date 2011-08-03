@@ -85,7 +85,7 @@ msgstr "エンコーディングをUTF-8に切り替え中..."
 #: ../src/libwaei/dictinst.c:771
 #, c-format
 msgid "Decompressing %s from %s file..."
-msgstr "%sがi%sから凍結中..."
+msgstr "%sが%sから凍結中..."
 
 #: ../src/libwaei/dictinst.c:773
 #, c-format
