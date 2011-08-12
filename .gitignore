@@ -30,7 +30,7 @@ mandir/Makefile
 stamp-h1
 autom4te.cache
 Makefile
-config.status
+config.*
 .config/
 config.log
 intltool-extract.in

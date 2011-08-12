@@ -1,3 +1,7 @@
+2011-08-12  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* Makefile.am (EXTRA_DIST): Add config.rpath.
+
 2011-07-16  Zachary Dovel <pizzach@gmail.com>
 	* Fixed warning coming from a tooltip window not being empting when adding
 	  an hbox to it.
