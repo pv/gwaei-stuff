@@ -39,20 +39,6 @@
 
 #include <gwaei/gwaei.h>
 
-
-static LwSearchItem *tooltip_item = NULL;
-
-static gint button_press_x = 0;
-static gint button_press_y = 0;
-static gunichar button_character = 0;
-static gulong copy_handler_id = 0;
-static gulong cut_handler_id = 0;
-static gulong paste_handler_id = 0;
-static gulong select_all_handler_id = 0;
-static gboolean start_search_in_new_window = FALSE; 
-static char* hovered_word = NULL; 
-
-
 //!
 //! @brief Sets the cursor type depending on the character hovered
 //!
@@ -71,13 +57,21 @@ G_MODULE_EXPORT gboolean gw_main_get_iter_for_motion_cb (GtkWidget      *widget,
                                                          GdkEventButton *event,
                                                          gpointer        data   )
 {
+    //Declarations
     gunichar unic;
     GtkTextIter iter, start, end;
-    gint x = event->x;
-    gint y = event->y;
+    GwSearchWindow *window;
+    gint x;
+    gint y;
+    GtkTextView *view;
+    GtkWidget *tooltip_window;
+    LwDictInfo *di;
 
-    //get unichar
-    unic = gw_main_get_hovered_character (&x, &y, &iter);
+    //Initializations
+    x = event->x;
+    y = event->y;
+    window = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
+    unic = gw_searchwindow_get_hovered_character (window, &x, &y, &iter);
 
     //get word
     if (gtk_text_iter_starts_word (&iter) == FALSE)
@@ -86,24 +80,24 @@ G_MODULE_EXPORT gboolean gw_main_get_iter_for_motion_cb (GtkWidget      *widget,
     if (gtk_text_iter_ends_word (&iter) == FALSE)
       gtk_text_iter_forward_word_end (&iter);
     end = iter;
-    hovered_word = gtk_text_iter_get_visible_slice (&start, &end);
+    window->mousedata.hovered_word = gtk_text_iter_get_visible_slice (&start, &end);
 
-    LwDictInfo *di;
-    di = lw_dictinfolist_get_dictinfo (LW_ENGINE_KANJI, "Kanji");
+    di = lw_dictinfolist_get_dictinfo ((LwDictInfoList*) app->dictionarymanager, LW_ENGINE_KANJI, "Kanji");
     if (di == NULL) return FALSE;
   
     // Characters above 0xFF00 represent inserted images
     if (unic > L'ー' && unic < 0xFF00)
-      gw_main_set_cursor (GDK_HAND2);
+      gw_searchwindow_set_cursor (window, GDK_HAND2);
     else
-      gw_main_set_cursor (GDK_XTERM);
+      gw_searchwindow_set_cursor (window, GDK_XTERM);
 
-    GtkWidget *tv = GTK_WIDGET (gw_common_get_widget_by_target (LW_TARGET_RESULTS));
-    GtkWidget *window = GTK_WIDGET (gtk_widget_get_tooltip_window (tv));
-    if (window != NULL && button_character != unic) 
+    view = gw_searchwindow_get_current_textview (window);
+    tooltip_window = GTK_WIDGET (gtk_widget_get_tooltip_window (GTK_WIDGET (view)));
+
+    if (tooltip_window != NULL && window->mousedata.button_character != unic) 
     {
-      gtk_widget_destroy (window);
-      gtk_widget_set_tooltip_window (tv, NULL);
+      gtk_widget_destroy (tooltip_window);
+      gtk_widget_set_tooltip_window (GTK_WIDGET (view), NULL);
     }
 
     return FALSE;
@@ -126,12 +120,20 @@ G_MODULE_EXPORT gboolean gw_main_get_position_for_button_press_cb (GtkWidget    
                                                                    GdkEventButton *event,
                                                                    gpointer        data    )
 {
+    //Declarations
     GtkTextIter iter;
-    //Window coordinates
-    button_press_x = event->x;
-    button_press_y = event->y;
+    GwSearchWindow *window;
+    int x;
+    int y;
 
-    gw_main_get_hovered_character (&button_press_x, &button_press_y, &iter);
+    //Window coordinates
+    window = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
+    window->mousedata.button_press_x = event->x;
+    window->mousedata.button_press_y = event->y;
+    x = event->x;
+    y = event->y;
+
+    gw_searchwindow_get_hovered_character (window, &x, &y, &iter);
 
     return FALSE;
 }
@@ -155,7 +157,7 @@ G_MODULE_EXPORT gboolean gw_main_get_iter_for_button_release_cb (GtkWidget      
                                                                  gpointer        data    )
 {
     //Declarations
-    GtkBuilder *builder;
+    GwSearchWindow *window;
     gint x;
     gint y;
     gint trailing;
@@ -163,21 +165,23 @@ G_MODULE_EXPORT gboolean gw_main_get_iter_for_button_release_cb (GtkWidget      
     gunichar unic;
     LwDictInfo *di;
     GError *error;
+    GtkTextView *view;
+    GtkWidget *tooltip_window;
 
     //Initializations
-    builder = gw_common_get_builder ();
     x = event->x;
     y = event->y;
     trailing = 0;
-    unic = gw_main_get_hovered_character (&x, &y, &iter);
-    di = lw_dictinfolist_get_dictinfo (LW_ENGINE_KANJI, "Kanji");
+    window = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
+    unic = gw_searchwindow_get_hovered_character (window, &x, &y, &iter);
+    di = lw_dictinfolist_get_dictinfo ((LwDictInfoList*) app->dictionarymanager, LW_ENGINE_KANJI, "Kanji");
     error = NULL;
 
 
     //Sanity cehck
     if (di == NULL) return FALSE;
 
-    if (abs (button_press_x - x) < 3 && abs (button_press_y - y) < 3)
+    if (abs (window->mousedata.button_press_x - x) < 3 && abs (window->mousedata.button_press_y - y) < 3)
     {
       // Characters above 0xFF00 represent inserted images
       if (unic > L'ー' && unic < 0xFF00 )
@@ -187,48 +191,49 @@ G_MODULE_EXPORT gboolean gw_main_get_iter_for_button_release_cb (GtkWidget      
         gint length = g_unichar_to_utf8 (unic, query);
         query[length] = '\0'; 
 
-        GtkWidget *tv = GTK_WIDGET (gw_common_get_widget_by_target (LW_TARGET_RESULTS));
-        GtkWidget *window = GTK_WIDGET (gtk_widget_get_tooltip_window (tv));
-        if (window == NULL) {
-          button_character = unic;
-          window = gtk_window_new (GTK_WINDOW_POPUP);
-          gtk_window_set_skip_taskbar_hint (GTK_WINDOW (window), TRUE);
-          gtk_window_set_skip_pager_hint (GTK_WINDOW (window), TRUE);
-          gtk_window_set_accept_focus (GTK_WINDOW (window), FALSE);
-          gtk_widget_set_tooltip_window (tv, GTK_WINDOW (window));
-          gtk_window_set_transient_for (GTK_WINDOW (window), NULL);
-          gtk_window_set_type_hint (GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_TOOLTIP);
-          gtk_widget_set_name (GTK_WIDGET (window), "gtk-tooltip");
+
+        view = gw_searchwindow_get_current_textview (window);
+        tooltip_window = GTK_WIDGET (gtk_widget_get_tooltip_window (GTK_WIDGET (view)));
+
+        if (tooltip_window == NULL) {
+          window->mousedata.button_character = unic;
+          tooltip_window = gtk_window_new (GTK_WINDOW_POPUP);
+          gtk_window_set_skip_taskbar_hint (GTK_WINDOW (tooltip_window), TRUE);
+          gtk_window_set_skip_pager_hint (GTK_WINDOW (tooltip_window), TRUE);
+          gtk_window_set_accept_focus (GTK_WINDOW (tooltip_window), FALSE);
+          gtk_widget_set_tooltip_window (GTK_WIDGET (view), GTK_WINDOW (tooltip_window));
+          gtk_window_set_transient_for (GTK_WINDOW (tooltip_window), NULL);
+          gtk_window_set_type_hint (GTK_WINDOW (tooltip_window), GDK_WINDOW_TYPE_HINT_TOOLTIP);
+          gtk_widget_set_name (GTK_WIDGET (tooltip_window), "gtk-tooltip");
         }
-        if (window != NULL) {
-          button_character = unic;
+        if (tooltip_window != NULL) {
+          window->mousedata.button_character = unic;
 
           //Start the search
-          if (tooltip_item != NULL)
+          if (window->mousedata.item != NULL)
           {
-            gw_main_cancel_search_by_searchitem (tooltip_item);
-            tooltip_item = NULL;
+            gw_searchwindow_cancel_search_by_searchitem (window, window->mousedata.item);
+            window->mousedata.item = NULL;
           }
 
-          tooltip_item = lw_searchitem_new (query, di, LW_TARGET_KANJI, &error);
-          lw_engine_get_results (tooltip_item, TRUE, FALSE);
+          window->mousedata.item = lw_searchitem_new (query, di, LW_OUTPUT_TARGET_KANJI, app->prefmanager, &error);
+          lw_engine_get_results (window->mousedata.item, TRUE, FALSE);
 
-          g_thread_join (tooltip_item->thread); 
+          g_thread_join (window->mousedata.item->thread); 
 
           int winx, winy;
-          gtk_window_get_position (GTK_WINDOW (window), &winx, &winy);
-          gtk_window_move (GTK_WINDOW (window), event->x_root + winx - 3, event->y_root + winy - 3);
-          gtk_widget_show_now (GTK_WIDGET (window));
+          gtk_window_get_position (GTK_WINDOW (tooltip_window), &winx, &winy);
+          gtk_window_move (GTK_WINDOW (tooltip_window), event->x_root + winx - 3, event->y_root + winy - 3);
+          gtk_widget_show_now (GTK_WIDGET (tooltip_window));
         }
       }
       else {
-        GtkWidget *tv = GTK_WIDGET (gw_common_get_widget_by_target (LW_TARGET_RESULTS));
-        GtkWidget *window = GTK_WIDGET (gtk_widget_get_tooltip_window (tv));
-        if (window != NULL && button_character != unic) 
+        view = gw_searchwindow_get_current_textview (window);
+        tooltip_window = GTK_WIDGET (gtk_widget_get_tooltip_window (GTK_WIDGET (view)));
+        if (tooltip_window != NULL && window->mousedata.button_character != unic) 
         {
-          gtk_widget_set_tooltip_window (tv, NULL);
-          gtk_widget_destroy (window);
-          window = NULL;
+          gtk_widget_set_tooltip_window (GTK_WIDGET (view), NULL);
+          gtk_widget_destroy (tooltip_window);
         }
       }
 
@@ -255,35 +260,7 @@ G_MODULE_EXPORT gboolean gw_main_get_iter_for_button_release_cb (GtkWidget      
 //!
 G_MODULE_EXPORT void gw_main_close_cb (GtkWidget *widget, gpointer data)
 {
-    const char *id = gtk_buildable_get_name (GTK_BUILDABLE (widget));
-
-    if (strcmp (id, "main_window") == 0)
-    {
-      gw_common_hide_window (id);
-      gw_tabs_cancel_all_searches ();
-      gtk_main_quit ();
-    }
-    else if (strcmp (id, "radicals_window") == 0 || strcmp (id, "kanjipad_window") == 0)
-    {
-      gw_common_hide_window (id);
-    }
-    else if (strcmp (id, "settings_window") == 0)
-    {
-      if (lw_dictinfolist_get_total () > 0)
-      {
-        gw_main_update_toolbar_buttons ();
-        gw_common_hide_window (id);
-      }
-      else
-      {
-        gw_tabs_cancel_all_searches ();
-        gtk_main_quit ();
-      }
-    }
-    else
-    {
-      gw_common_hide_window (id);
-    }
+    gw_app_destroy_window (app, GW_WINDOW_SEARCH, widget);
 }
 
 
@@ -344,20 +321,14 @@ G_MODULE_EXPORT gboolean gw_main_close_on_escape_cb (GtkWidget *widget,
 
 //!
 //! @brief Quits out of the application
-//!
-//! This function quits gWaei out.  But before it does, it calls the gw_main_close_cb
-//! function an the calling window to make sure it's current coordinates are
-//! recorded for the next time the application is started.
 //! 
-//! @see gw_main_close_cb ()
+//! @see gw_app_quit ()
 //! @param widget GtkWidget pointer to the window to close
 //! @param data Currently unused gpointer
 //!
-G_MODULE_EXPORT void gw_main_quit_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_searchwindow_quit_cb (GtkWidget *widget, gpointer data)
 {
-    gw_tabs_cancel_all_searches ();
-    gw_main_close_cb (widget, data);
-    gtk_main_quit ();
+    gw_app_quit (app);
 }
 
 
@@ -375,58 +346,57 @@ G_MODULE_EXPORT void gw_main_quit_cb (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void gw_main_search_from_history_cb (GtkWidget *widget, gpointer data)
 {
-    GtkBuilder *builder = gw_common_get_builder ();
-
-    gw_tabs_guarantee_first ();
-
-    LwHistoryList *hl;
     LwSearchItem *item;
+    GwSearchWindow *window;
+    GwSearchData *sdata;
+    LwHistoryList *history;
 
-    hl = lw_historylist_get_list (LW_HISTORYLIST_RESULTS);
+    history = app->history;
     item = (LwSearchItem*) data;
+    window = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
 
-    //Make sure searches done from the history are pointing at a valid target
-    item->target_tb = (gpointer) gw_common_get_gobject_by_target (item->target);
-    item->target_tv = (gpointer) gw_common_get_widget_by_target (item->target);
+    gw_searchwindow_guarantee_first_tab (window);
 
+    //Update the textview pointed to in case the user switched tabs
+    sdata = lw_searchitem_get_data (item);
+    sdata->view = gw_searchwindow_get_current_textview (window);
+    
     //Checks to make sure everything is sane
-    if (gw_tabs_cancel_search_for_current_tab () == FALSE)
+    if (gw_searchwindow_cancel_search_for_current_tab (window) == FALSE)
     {
-      printf("CANCEL SEARCH FOR CURRENT TAB RETURNED FALSE\n");
+      fprintf(stderr, "CANCEL SEARCH FOR CURRENT TAB RETURNED FALSE\n");
       return;
     }
 
     //Start setting things up;
-    if (hl->back != NULL && g_list_find (hl->back, item))
+    if (history->back != NULL && g_list_find (history->back, item))
     {
-      while (hl->back != NULL && hl->current != item)
-        lw_historylist_go_back_by_target (LW_HISTORYLIST_RESULTS);
+      while (history->back != NULL && history->current != item)
+        lw_historylist_go_back (history);
     }
-    else if (hl->forward != NULL && g_list_find (hl->forward, item))
+    else if (history->forward != NULL && g_list_find (history->forward, item))
     {
-      while (hl->forward != NULL && hl->current != item)
-        lw_historylist_go_forward_by_target (LW_HISTORYLIST_RESULTS);
+      while (history->forward != NULL && history->current != item)
+        lw_historylist_go_forward (history);
     }
 
     //Set tab text
-    gw_tabs_set_current_tab_text (item->queryline->string);
+    gw_searchwindow_set_current_tab_text (window, item->queryline->string);
 
     //Add tab reference to searchitem
-    gw_tabs_set_searchitem (item);
+    gw_searchwindow_set_current_searchitem (window, item);
     lw_engine_get_results (item, TRUE, FALSE);
-    gw_main_update_history_popups ();
-    gw_main_update_toolbar_buttons ();
+    gw_searchwindow_update_history_popups (window);
+    gw_searchwindow_update_toolbar_buttons (window);
 
     //Set the search string in the GtkEntry
-    gw_main_clear_search_entry ();
-    gw_main_search_entry_insert (item->queryline->string);
-    gw_main_text_select_all_by_target (LW_TARGET_ENTRY);
-    gw_main_grab_focus_by_target (LW_TARGET_ENTRY);
+    gw_searchwindow_clear_search_entry (window);
+    gw_searchwindow_search_entry_insert (window, item->queryline->string);
+    gw_searchwindow_select_all_by_target (window, LW_OUTPUT_TARGET_ENTRY);
+    gtk_widget_grab_focus (GTK_WIDGET (window->entry));
 
     //Set the correct dictionary in the gui
-    GtkWidget *combobox;
-    combobox = GTK_WIDGET (gtk_builder_get_object (builder, "dictionary_combobox"));
-    gtk_combo_box_set_active (GTK_COMBO_BOX (combobox), item->dictionary->load_position);
+    gtk_combo_box_set_active (window->combobox, item->dictionary->load_position);
 }
 
 
@@ -443,11 +413,9 @@ G_MODULE_EXPORT void gw_main_search_from_history_cb (GtkWidget *widget, gpointer
 //!
 G_MODULE_EXPORT void gw_main_back_cb (GtkWidget *widget, gpointer data)
 {
-    LwHistoryList *hl;
-    hl = lw_historylist_get_list (LW_HISTORYLIST_RESULTS);
-    if (hl->back != NULL)
+    if (lw_historylist_has_back (app->history))
     {
-      gw_main_search_from_history_cb (NULL, hl->back->data);
+      gw_main_search_from_history_cb (NULL, app->history->back->data);
     }
 }
 
@@ -465,11 +433,9 @@ G_MODULE_EXPORT void gw_main_back_cb (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void gw_main_forward_cb (GtkWidget *widget, gpointer data)
 {
-    LwHistoryList *hl;
-    hl = lw_historylist_get_list (LW_HISTORYLIST_RESULTS);
-    if (hl->forward != NULL)
+    if (lw_historylist_has_forward (app->history))
     {
-      gw_main_search_from_history_cb (NULL, hl->forward->data);
+      gw_main_search_from_history_cb (NULL, app->history->forward->data);
     }
 }
 
@@ -488,19 +454,20 @@ G_MODULE_EXPORT void gw_main_forward_cb (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void gw_main_save_as_cb (GtkWidget *widget, gpointer data)
 {
     //Declarations
-    GtkBuilder *builder = gw_common_get_builder ();
     const gchar *path;
     GtkWidget *dialog, *window;
     GtkAction *edit;
     gchar *text;
     gchar *temp;
     GError *error;
+    GwSearchWindow *search;
 
     //Initializations
     path = lw_io_get_savepath ();
     temp = NULL;
-    text = gw_main_buffer_get_text_by_target (LW_TARGET_RESULTS);
-    window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
+    search = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
+    text = gw_searchwindow_get_text_by_target (search, LW_OUTPUT_TARGET_RESULTS);
+    window = GTK_WIDGET (gtk_builder_get_object (search->builder, "main_window"));
     dialog = gtk_file_chooser_dialog_new (gettext ("Save As"),
                 GTK_WINDOW (window),
                 GTK_FILE_CHOOSER_ACTION_SAVE,
@@ -534,7 +501,7 @@ G_MODULE_EXPORT void gw_main_save_as_cb (GtkWidget *widget, gpointer data)
 
         lw_io_write_file (path, "w", text, NULL, NULL, &error);
 
-        edit = GTK_ACTION (gtk_builder_get_object (builder, "file_edit_action"));
+        edit = GTK_ACTION (gtk_builder_get_object (search->builder, "file_edit_action"));
         gtk_action_set_sensitive (edit, TRUE);
     }
 
@@ -564,29 +531,27 @@ G_MODULE_EXPORT void gw_main_save_cb (GtkWidget *widget, gpointer data)
     gchar *text;
     const gchar *path;
     GError *error;
-    GtkBuilder *builder;
-    GtkWidget *window;
+    GwSearchWindow* search;
 
     //Initializations
-    builder = gw_common_get_builder ();
     path = lw_io_get_savepath ();
-    window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
+    search = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
     error = NULL;
 
     //Sanity check for an empty save path
     if (path == NULL || *path == '\0')
     {
-      gw_main_save_as_cb (NULL, NULL);
+      gw_main_save_as_cb (widget, data);
       return;
     }
 
     //Carry out the save
-    text = gw_main_buffer_get_text_by_target (LW_TARGET_RESULTS);
+    text = gw_searchwindow_get_text_by_target (search, LW_OUTPUT_TARGET_RESULTS);
     lw_io_write_file (path, "a", text, NULL, NULL, &error);
     g_free (text);
     text = NULL;
 
-    gw_common_handle_error (&error, GTK_WINDOW (window), TRUE);
+    gw_common_handle_error (&error, GTK_WINDOW (search->toplevel), TRUE);
 }
 
 
@@ -604,9 +569,9 @@ G_MODULE_EXPORT void gw_main_save_cb (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void gw_main_zoom_in_cb (GtkWidget *widget, gpointer data)
 {
     int size;
-    size = lw_pref_get_int_by_schema (LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION) + GW_FONT_ZOOM_STEP;
+    size = lw_prefmanager_get_int_by_schema (app->prefmanager, LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION) + GW_FONT_ZOOM_STEP;
     if (size <= GW_MAX_FONT_MAGNIFICATION)
-      lw_pref_set_int_by_schema (LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION, size);
+      lw_prefmanager_set_int_by_schema (app->prefmanager, LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION, size);
 }
 
 
@@ -624,9 +589,9 @@ G_MODULE_EXPORT void gw_main_zoom_in_cb (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void gw_main_zoom_out_cb (GtkWidget *widget, gpointer data)
 {
     int size;
-    size = lw_pref_get_int_by_schema (LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION) - GW_FONT_ZOOM_STEP;
+    size = lw_prefmanager_get_int_by_schema (app->prefmanager, LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION) - GW_FONT_ZOOM_STEP;
     if (size >= GW_MIN_FONT_MAGNIFICATION)
-      lw_pref_set_int_by_schema (LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION, size);
+      lw_prefmanager_set_int_by_schema (app->prefmanager, LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION, size);
 }
 
 
@@ -643,7 +608,7 @@ G_MODULE_EXPORT void gw_main_zoom_out_cb (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void gw_main_zoom_100_cb (GtkWidget *widget, gpointer data)
 {
-    lw_pref_reset_value_by_schema (LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION);
+    lw_prefmanager_reset_value_by_schema (app->prefmanager, LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION);
 }
 
 
@@ -662,8 +627,8 @@ G_MODULE_EXPORT void gw_main_zoom_100_cb (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void gw_main_less_relevant_results_toggle_cb (GtkWidget *widget, gpointer data)
 {
     gboolean state;
-    state = lw_pref_get_boolean_by_schema (LW_SCHEMA_BASE, LW_KEY_LESS_RELEVANT_SHOW);
-    lw_pref_set_boolean_by_schema (LW_SCHEMA_BASE, LW_KEY_LESS_RELEVANT_SHOW, !state);
+    state = lw_prefmanager_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_LESS_RELEVANT_SHOW);
+    lw_prefmanager_set_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_LESS_RELEVANT_SHOW, !state);
 }
 
 
@@ -682,9 +647,9 @@ G_MODULE_EXPORT void gw_main_toolbar_toggle_cb (GtkWidget *widget, gpointer data
 {
     gboolean state;
 
-    state = lw_pref_get_boolean_by_schema (LW_SCHEMA_BASE, LW_KEY_TOOLBAR_SHOW);
+    state = lw_prefmanager_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_TOOLBAR_SHOW);
 
-    lw_pref_set_boolean_by_schema (LW_SCHEMA_BASE, LW_KEY_TOOLBAR_SHOW, !state);
+    lw_prefmanager_set_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_TOOLBAR_SHOW, !state);
 }
 
 
@@ -703,9 +668,9 @@ G_MODULE_EXPORT void gw_main_statusbar_toggle_cb (GtkWidget *widget, gpointer da
 {
     gboolean state;
 
-    state = lw_pref_get_boolean_by_schema (LW_SCHEMA_BASE, LW_KEY_STATUSBAR_SHOW);
+    state = lw_prefmanager_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_STATUSBAR_SHOW);
 
-    lw_pref_set_boolean_by_schema (LW_SCHEMA_BASE, LW_KEY_STATUSBAR_SHOW, !state);
+    lw_prefmanager_set_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_STATUSBAR_SHOW, !state);
 }
 
 
@@ -721,15 +686,15 @@ G_MODULE_EXPORT void gw_main_statusbar_toggle_cb (GtkWidget *widget, gpointer da
 //!
 G_MODULE_EXPORT void gw_main_dictionary_changed_action_cb (GtkWidget *widget, gpointer data)
 {
-    GtkBuilder *builder = gw_common_get_builder ();
-
     //Declarations
+    GwSearchWindow *window;
     const char id_length = 50;
     char id[id_length];
     GList *list = NULL;
     GtkMenuShell *shell = NULL;
     strncpy (id, "dictionary_popup", id_length);
-    shell = GTK_MENU_SHELL (gtk_builder_get_object (builder, id));
+    window = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
+    shell = GTK_MENU_SHELL (gtk_builder_get_object (window->builder, id));
 
     //Action depending on the source
     int active = 0;
@@ -751,9 +716,9 @@ G_MODULE_EXPORT void gw_main_dictionary_changed_action_cb (GtkWidget *widget, gp
     }
 
     //Finish up
-    gw_main_set_dictionary (active);
+    gw_searchwindow_set_dictionary (window, active);
 
-    gw_main_grab_focus_by_target (LW_TARGET_ENTRY);
+    gtk_widget_grab_focus (GTK_WIDGET (window->entry));
 }
 
 
@@ -774,9 +739,12 @@ G_MODULE_EXPORT void gw_main_dictionary_changed_action_cb (GtkWidget *widget, gp
 G_MODULE_EXPORT void gw_main_select_all_cb (GtkWidget *widget, gpointer data)
 {
     guint TARGET;
-    TARGET = gw_main_get_current_target_focus ("main_window");
+    GwSearchWindow *search;
 
-    gw_main_text_select_all_by_target (TARGET);
+    search = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
+    TARGET = gw_searchwindow_get_current_target_focus (search);
+
+    gw_searchwindow_select_all_by_target (search, TARGET);
 }
 
 
@@ -796,9 +764,13 @@ G_MODULE_EXPORT void gw_main_select_all_cb (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void gw_main_paste_cb (GtkWidget *widget, gpointer data)
 {
+    GwSearchWindow *search;
     guint TARGET;
-    TARGET = gw_main_get_current_target_focus ("main_window");
-    gw_main_paste_text (TARGET);
+
+    search = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
+    TARGET = gw_searchwindow_get_current_target_focus (search);
+
+    gw_searchwindow_paste_text (search, TARGET);
 }
 
 
@@ -818,9 +790,13 @@ G_MODULE_EXPORT void gw_main_paste_cb (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void gw_main_cut_cb (GtkWidget *widget, gpointer data)
 {
+    GwSearchWindow *search;
     guint TARGET;
-    TARGET = gw_main_get_current_target_focus ("main_window");
-    gw_main_cut_text (TARGET);
+
+    search = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
+    TARGET = gw_searchwindow_get_current_target_focus (search);
+
+    gw_searchwindow_cut_text (search, TARGET);
 }
 
 
@@ -840,9 +816,13 @@ G_MODULE_EXPORT void gw_main_cut_cb (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void gw_main_copy_cb (GtkWidget *widget, gpointer data)
 {
+    GwSearchWindow *search;
     guint TARGET;
-    TARGET = gw_main_get_current_target_focus ("main_window");
-    gw_main_copy_text (TARGET);
+
+    search = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
+    TARGET = gw_searchwindow_get_current_target_focus (search);
+
+    gw_searchwindow_copy_text (search, TARGET);
 }
 
 
@@ -865,69 +845,72 @@ G_MODULE_EXPORT gboolean gw_main_update_clipboard_on_focus_change_cb (GtkWidget 
                                                                       GtkDirectionType  arg1,
                                                                       gpointer          data   ) 
 {
-    GtkBuilder *builder = gw_common_get_builder ();
-
-    gw_main_close_suggestion_box ();
-    guint TARGET;
-    TARGET = gw_main_get_current_target_focus ("main_window");
-
-    //Set up the references to the actions
+    GwSearchWindow *window;
     GtkAction *copy_action, *cut_action, *paste_action, *select_all_action;
+    GtkTextView *view;
+    char *id;
 
-    char id[50];
-    strncpy (id, "edit_copy_action", 50);
-    copy_action       = GTK_ACTION (gtk_builder_get_object (builder, id));
-    strncpy (id, "edit_cut_action", 50);
-    cut_action        = GTK_ACTION (gtk_builder_get_object (builder, id));
-    strncpy (id, "edit_paste_action", 50);
-    paste_action      = GTK_ACTION (gtk_builder_get_object (builder, id));
-    strncpy (id, "edit_select_all_action", 50);
-    select_all_action = GTK_ACTION (gtk_builder_get_object (builder, id));
+    view = gw_searchwindow_get_current_textview (window);
+    id = "edit_copy_action";
+    copy_action = GTK_ACTION (gtk_builder_get_object (window->builder, id));
+    id = "edit_cut_action";
+    cut_action = GTK_ACTION (gtk_builder_get_object (window->builder, id));
+    id = "edit_paste_action";
+    paste_action = GTK_ACTION (gtk_builder_get_object (window->builder, id));
+    id = "edit_select_all_action";
+    select_all_action = GTK_ACTION (gtk_builder_get_object (window->builder, id));
 
     //Disconnected old handlers
-    if (copy_handler_id != 0)
+    if (window->signalids[GW_SEARCHWINDOW_SIGNALID_COPY] != 0)
     {
-      g_signal_handler_disconnect (copy_action, copy_handler_id);
-      copy_handler_id = 0;
+      g_signal_handler_disconnect (copy_action, window->signalids[GW_SEARCHWINDOW_SIGNALID_COPY]);
+      window->signalids[GW_SEARCHWINDOW_SIGNALID_COPY] = 0;
     }
-    if (cut_handler_id != 0)
+    if (window->signalids[GW_SEARCHWINDOW_SIGNALID_CUT] != 0)
     {
-      g_signal_handler_disconnect (cut_action, cut_handler_id);
-      cut_handler_id = 0;
+      g_signal_handler_disconnect (cut_action, window->signalids[GW_SEARCHWINDOW_SIGNALID_CUT]);
+      window->signalids[GW_SEARCHWINDOW_SIGNALID_CUT] = 0;
     }
-    if (paste_handler_id != 0)
+    if (window->signalids[GW_SEARCHWINDOW_SIGNALID_PASTE] != 0)
     {
-      g_signal_handler_disconnect (paste_action, paste_handler_id);
-      paste_handler_id = 0;
+      g_signal_handler_disconnect (paste_action, window->signalids[GW_SEARCHWINDOW_SIGNALID_PASTE]);
+      window->signalids[GW_SEARCHWINDOW_SIGNALID_PASTE] = 0;
     }
-    if (select_all_handler_id != 0)
+    if (window->signalids[GW_SEARCHWINDOW_SIGNALID_SELECT_ALL] != 0)
     {
-      g_signal_handler_disconnect (select_all_action, select_all_handler_id);
-      select_all_handler_id = 0;
+      g_signal_handler_disconnect (select_all_action, window->signalids[GW_SEARCHWINDOW_SIGNALID_SELECT_ALL]);
+      window->signalids[GW_SEARCHWINDOW_SIGNALID_SELECT_ALL] = 0;
     }
                                           
     //Create new ones pointed at the correct widget
-    copy_handler_id = g_signal_connect       ( copy_action,
-                                               "activate",
-                                               G_CALLBACK (gw_main_copy_cb),
-                                               widget                      );
-    cut_handler_id = g_signal_connect        ( cut_action,
-                                               "activate",
-                                               G_CALLBACK (gw_main_cut_cb),
-                                               widget                      );
-    paste_handler_id = g_signal_connect      ( paste_action,
-                                               "activate",
-                                               G_CALLBACK (gw_main_paste_cb),
-                                               widget                      );
-    select_all_handler_id = g_signal_connect ( select_all_action,
-                                               "activate",
-                                               G_CALLBACK (gw_main_select_all_cb),
-                                               widget                      );
+    window->signalids[GW_SEARCHWINDOW_SIGNALID_COPY] = g_signal_connect (
+          copy_action,
+          "activate",
+          G_CALLBACK (gw_main_copy_cb),
+          widget
+    );
+    window->signalids[GW_SEARCHWINDOW_SIGNALID_CUT] = g_signal_connect (
+          cut_action,
+          "activate",
+          G_CALLBACK (gw_main_cut_cb),
+          widget
+    );
+    window->signalids[GW_SEARCHWINDOW_SIGNALID_PASTE] = g_signal_connect (
+          paste_action,
+          "activate",
+          G_CALLBACK (gw_main_paste_cb),
+          widget
+    );
+    window->signalids[GW_SEARCHWINDOW_SIGNALID_SELECT_ALL] = g_signal_connect (
+          select_all_action,
+          "activate",
+          G_CALLBACK (gw_main_select_all_cb),
+          widget
+    );
 
 
     //Correct the sensitive state to paste
-    if (gw_common_widget_equals_target (data, LW_TARGET_RESULTS) ||
-        gw_common_widget_equals_target (data, LW_TARGET_KANJI)     )
+    if (GTK_WIDGET (data) == GTK_WIDGET (view))
       gtk_action_set_sensitive (GTK_ACTION (paste_action), FALSE);
     else
       gtk_action_set_sensitive (GTK_ACTION (paste_action), TRUE);
@@ -952,19 +935,17 @@ G_MODULE_EXPORT void gw_main_edit_cb (GtkWidget *widget, gpointer data)
     char *uri;
     GError *error;
     const char *savepath;
-    GtkWidget *window;
-    GtkBuilder *builder;
+    GwSearchWindow *search;
 
     //Initializations
     savepath = lw_io_get_savepath ();
+    search = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
     uri = g_build_filename ("file://", savepath, NULL);
-    builder = gw_common_get_builder ();
-    window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
     error = NULL;
 
     gtk_show_uri (NULL, uri, gtk_get_current_event_time (), &error);
 
-    gw_common_handle_error (&error, GTK_WINDOW (window), TRUE);
+    gw_common_handle_error (&error, GTK_WINDOW (search->toplevel), TRUE);
 
     //Cleanup
     g_free (uri);
@@ -984,12 +965,12 @@ G_MODULE_EXPORT void gw_main_irc_channel_cb (GtkWidget *widget, gpointer data)
     //Initializations
     GError *error;
     GtkWidget *window;
-    GtkBuilder *builder;
+    GwSearchWindow *search;
 
     //Declarations
     error = NULL;
-    builder = gw_common_get_builder ();
-    window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
+    search = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
+    window = GTK_WIDGET (gtk_builder_get_object (search->builder, "main_window"));
 
     gtk_show_uri (NULL, "irc://irc.freenode.net/gWaei", gtk_get_current_event_time (), &error);
 
@@ -1011,12 +992,12 @@ G_MODULE_EXPORT void gw_main_homepage_cb (GtkWidget *widget, gpointer data)
     //Declarations
     GError *error;
     GtkWidget *window;
-    GtkBuilder *builder;
+    GwSearchWindow *search;
 
     //Initializations
     error = NULL;
-    builder = gw_common_get_builder ();
-    window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
+    search = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
+    window = GTK_WIDGET (gtk_builder_get_object (search->builder, "main_window"));
 
     gtk_show_uri (NULL, "http://gwaei.sourceforge.net/", gtk_get_current_event_time (), &error);
 
@@ -1038,12 +1019,12 @@ G_MODULE_EXPORT void gw_main_help_cb (GtkWidget *widget, gpointer data)
     //Declarations
     GError *error;
     GtkWidget *window;
-    GtkBuilder *builder;
+    GwSearchWindow *search;
 
     //Initializations
     error = NULL;
-    builder = gw_common_get_builder ();
-    window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
+    search = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
+    window = GTK_WIDGET (gtk_builder_get_object (search->builder, "main_window"));
 
     gtk_show_uri (NULL, "ghelp:gwaei", gtk_get_current_event_time (), &error);
 
@@ -1066,19 +1047,17 @@ G_MODULE_EXPORT void gw_main_glossary_cb (GtkWidget *widget, gpointer data)
     //Declarations
     char *uri;
     GError *error;
-    GtkBuilder *builder;
-    GtkWidget *window;
+    GwSearchWindow *search;
 
     //Initializations
+    search = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
     uri = g_build_filename ("ghelp://", DATADIR2, "gnome", "help", "gwaei", "C", "glossary.xml", NULL);
-    builder = gw_common_get_builder ();
-    window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
     error = NULL;
 
     gtk_show_uri (NULL, uri, gtk_get_current_event_time (), &error);
 
     //Cleanup
-    gw_common_handle_error (&error, GTK_WINDOW (window), TRUE);
+    gw_common_handle_error (&error, GTK_WINDOW (search->toplevel), TRUE);
     g_free (uri);
 }
 
@@ -1141,7 +1120,9 @@ G_MODULE_EXPORT void gw_main_about_cb (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void gw_main_cycle_dictionaries_forward_cb (GtkWidget *widget, gpointer data)
 {
-    gw_main_cycle_dictionaries (TRUE);
+    GwSearchWindow *search;
+    search = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
+    gw_searchwindow_cycle_dictionaries (search, TRUE);
 }
 
 
@@ -1157,7 +1138,9 @@ G_MODULE_EXPORT void gw_main_cycle_dictionaries_forward_cb (GtkWidget *widget, g
 //!
 G_MODULE_EXPORT void gw_main_cycle_dictionaries_backward_cb (GtkWidget *widget, gpointer data)
 {
-    gw_main_cycle_dictionaries (FALSE);
+    GwSearchWindow *search;
+    search = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
+    gw_searchwindow_cycle_dictionaries (search, FALSE);
 }
 
 
@@ -1175,26 +1158,33 @@ G_MODULE_EXPORT gboolean gw_main_key_press_modify_status_update_cb (GtkWidget *w
                                                                     GdkEvent  *event,
                                                                     gpointer  *data  )
 {
-    GtkWidget *tv = GTK_WIDGET (gw_common_get_widget_by_target (LW_TARGET_RESULTS));
-    GtkWidget *window = GTK_WIDGET (gtk_widget_get_tooltip_window (tv));
+    //Declarations
+    GwSearchWindow *window;
+    GtkTextView *view;
+    GtkWidget *tooltip_window;
+
+    //Initializations
+    window = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
+    view = gw_searchwindow_get_current_textview (window);
+    tooltip_window = GTK_WIDGET (gtk_widget_get_tooltip_window (GTK_WIDGET (view)));
+
     if (window != NULL) 
     {
-      gtk_widget_destroy (window);
-      gtk_widget_set_tooltip_window (tv, NULL);
+      gtk_widget_destroy (tooltip_window);
+      gtk_widget_set_tooltip_window (GTK_WIDGET (view), NULL);
     }
 
     guint keyval = ((GdkEventKey*)event)->keyval;
-    GtkWidget* search_entry = gw_common_get_widget_by_target (LW_TARGET_ENTRY);
 
-    if ((keyval == GDK_KEY_ISO_Enter || keyval == GDK_KEY_Return) && gtk_widget_is_focus (search_entry))
+    if ((keyval == GDK_KEY_ISO_Enter || keyval == GDK_KEY_Return) && gtk_widget_is_focus (GTK_WIDGET (window->entry)))
     {
-      gtk_widget_activate (search_entry);
+      gtk_widget_activate (GTK_WIDGET (window->entry));
       return FALSE;
     }
 
     if (keyval == GDK_KEY_Shift_L || keyval == GDK_KEY_Shift_R || keyval == GDK_KEY_ISO_Next_Group || keyval == GDK_KEY_ISO_Prev_Group)
     {
-      start_search_in_new_window = TRUE;
+      window->new_tab = TRUE;
     }
 
     return FALSE;
@@ -1215,10 +1205,17 @@ G_MODULE_EXPORT gboolean gw_main_key_release_modify_status_update_cb (GtkWidget 
                                                                       GdkEvent  *event,
                                                                       gpointer  *data  )
 {
-    guint keyval = ((GdkEventKey*)event)->keyval;
+    //Declarations
+    GwSearchWindow *window;
+    guint keyval;
+
+    //Initializations
+    window = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
+    keyval = ((GdkEventKey*)event)->keyval;
+
     if (keyval == GDK_KEY_Shift_L || keyval == GDK_KEY_Shift_R || keyval == GDK_KEY_ISO_Next_Group || keyval == GDK_KEY_ISO_Prev_Group)
     {
-      start_search_in_new_window = FALSE;
+      window->new_tab = FALSE;
     }
 
     return FALSE;
@@ -1241,20 +1238,27 @@ G_MODULE_EXPORT gboolean gw_main_focus_change_on_key_press_cb (GtkWidget *widget
                                                        GdkEvent  *event,
                                                        gpointer  *focus  )
 {
-    gw_main_close_suggestion_box ();
-    guint state = ((GdkEventKey*)event)->state;
-    guint keyval = ((GdkEventKey*)event)->keyval;
-    guint modifiers = ( 
-                        GDK_MOD1_MASK    |
-                        GDK_CONTROL_MASK |
-                        GDK_SUPER_MASK   |
-                        GDK_HYPER_MASK   |
-                        GDK_META_MASK    |
-                        GDK_KEY_Meta_L       |
-                        GDK_KEY_Meta_R       |
-                        GDK_KEY_Alt_L        |
-                        GDK_KEY_Alt_R
-                      );
+    GwSearchWindow *window;
+    guint state;
+    guint keyval;
+    guint modifiers;
+    GtkTextView *view;
+
+    window = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
+    state = ((GdkEventKey*)event)->state;
+    keyval = ((GdkEventKey*)event)->keyval;
+    modifiers = ( 
+       GDK_MOD1_MASK    |
+       GDK_CONTROL_MASK |
+       GDK_SUPER_MASK   |
+       GDK_HYPER_MASK   |
+       GDK_META_MASK    |
+       GDK_KEY_Meta_L   |
+       GDK_KEY_Meta_R   |
+       GDK_KEY_Alt_L    |
+       GDK_KEY_Alt_R
+    );
+    view = gw_searchwindow_get_current_textview (window);
 
     //Make sure no modifier keys are pressed
     if (
@@ -1290,12 +1294,12 @@ G_MODULE_EXPORT gboolean gw_main_focus_change_on_key_press_cb (GtkWidget *widget
              keyval == GDK_KEY_Page_Down   
            ) &&
            (
-             !gw_common_widget_equals_target (widget, LW_TARGET_RESULTS)
+             widget != GTK_WIDGET (view)
            )
          )
       {
-        gw_main_text_select_none_by_target (LW_TARGET_ENTRY);
-        gw_main_grab_focus_by_target (LW_TARGET_RESULTS);
+        gw_searchwindow_select_none_by_target (window, LW_OUTPUT_TARGET_ENTRY);
+        gtk_widget_grab_focus (GTK_WIDGET (view));
         return TRUE;
       }
 
@@ -1305,11 +1309,11 @@ G_MODULE_EXPORT gboolean gw_main_focus_change_on_key_press_cb (GtkWidget *widget
                 keyval != GDK_KEY_Down      &&
                 keyval != GDK_KEY_Page_Up   &&
                 keyval != GDK_KEY_Page_Down &&
-                !gw_common_widget_equals_target (widget, LW_TARGET_ENTRY)
+                widget != GTK_WIDGET (window->entry)
               )
       {
-        gw_main_text_select_all_by_target (LW_TARGET_ENTRY);
-        gw_main_grab_focus_by_target (LW_TARGET_ENTRY);
+        gw_searchwindow_select_all_by_target (window, LW_OUTPUT_TARGET_ENTRY);
+        gtk_widget_grab_focus (GTK_WIDGET (window->entry));
         return TRUE;
       }
     }
@@ -1333,29 +1337,31 @@ G_MODULE_EXPORT gboolean gw_main_focus_change_on_key_press_cb (GtkWidget *widget
 G_MODULE_EXPORT void gw_main_search_cb (GtkWidget *widget, gpointer data)
 {
     //Declarations
+    GwSearchWindow *window;
     gchar query[100];
-    LwSearchItem *item, *new_item;
+    LwSearchItem *item;
+    LwSearchItem *new_item;
     LwDictInfo *di;
     GError *error;
 
     //Initializations
     error = NULL;
-    gw_main_strncpy_text_from_widget_by_target (query, LW_TARGET_ENTRY, 100);
-
-    item = gw_tabs_get_searchitem ();
-    di = lw_dictinfolist_get_selected_dictinfo ();
+    window = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
+    gw_searchwindow_strncpy_text_from_widget_by_target (window, query, LW_OUTPUT_TARGET_ENTRY, 100);
+    item = window->history->current;
+    di = gw_dictionarymanager_get_selected_dictinfo (app->dictionarymanager);
 
     //Cancel all searches if the search bar is empty
     if (strlen(query) == 0) 
     {
-      gw_main_cancel_search_by_searchitem (item);
+      gw_searchwindow_cancel_search_by_searchitem (window, item);
       return;
     }
 
-    new_item = lw_searchitem_new (query, di, LW_TARGET_RESULTS, &error);
+    new_item = lw_searchitem_new (query, di, LW_OUTPUT_TARGET_RESULTS, app->prefmanager, &error);
 
     //Check for problems, and quit if there are
-    if (error != NULL || new_item == NULL || lw_searchitem_is_equal (item, new_item) || !gw_main_cancel_search_by_searchitem (item))
+    if (error != NULL || new_item == NULL || lw_searchitem_is_equal (item, new_item) || !gw_searchwindow_cancel_search_by_searchitem (window, item))
     {
       lw_searchitem_increment_history_relevance_timer (item);
       lw_searchitem_free (new_item);
@@ -1369,21 +1375,13 @@ G_MODULE_EXPORT void gw_main_search_cb (GtkWidget *widget, gpointer data)
       return;
     }
 
-    //Move the previous searchitem to the history or destroy it
+    //Push the previous searchitem or replace it with the new one
     if (lw_searchitem_has_history_relevance (item))
-      lw_historylist_add_searchitem_to_history (LW_HISTORYLIST_RESULTS, item);
+      lw_historylist_add_searchitem (window->history, new_item);
     else
-      lw_searchitem_free (item);
+      lw_historylist_set_current_searchitem (window->history, new_item);
 
-    //Add the needed references for the new search item
-    gw_tabs_set_searchitem (new_item);
-
-    //Start the search
-    lw_engine_get_results (new_item, TRUE, FALSE);
-
-    //Update the interface
-    gw_main_update_toolbar_buttons ();
-    gw_main_update_history_popups ();
+    gw_searchwindow_start_search (window, item);
 }
 
 
@@ -1402,7 +1400,9 @@ G_MODULE_EXPORT void gw_main_search_cb (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void gw_main_insert_unknown_character_cb (GtkWidget *widget, gpointer data)
 {
-    gw_main_search_entry_insert (".");
+    GwSearchWindow *search;
+    search = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
+    gw_searchwindow_search_entry_insert (search, ".");
 }
 
 
@@ -1421,7 +1421,9 @@ G_MODULE_EXPORT void gw_main_insert_unknown_character_cb (GtkWidget *widget, gpo
 //!
 G_MODULE_EXPORT void gw_main_insert_word_edge_cb (GtkWidget *widget, gpointer data)
 {
-    gw_main_search_entry_insert ("\\b");
+    GwSearchWindow *search;
+    search = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
+    gw_searchwindow_search_entry_insert (search, "\\b");
 }
 
 
@@ -1440,7 +1442,9 @@ G_MODULE_EXPORT void gw_main_insert_word_edge_cb (GtkWidget *widget, gpointer da
 //!
 G_MODULE_EXPORT void gw_main_insert_not_word_edge_cb (GtkWidget *widget, gpointer data)
 {
-    gw_main_search_entry_insert ("\\B");
+    GwSearchWindow *search;
+    search = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
+    gw_searchwindow_search_entry_insert (search, "\\B");
 }
 
 
@@ -1459,7 +1463,9 @@ G_MODULE_EXPORT void gw_main_insert_not_word_edge_cb (GtkWidget *widget, gpointe
 //!
 G_MODULE_EXPORT void gw_main_insert_and_cb (GtkWidget *widget, gpointer data)
 {
-    gw_main_search_entry_insert ("&");
+    GwSearchWindow *search;
+    search = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
+    gw_searchwindow_search_entry_insert (search, "&");
 }
 
 
@@ -1478,7 +1484,9 @@ G_MODULE_EXPORT void gw_main_insert_and_cb (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void gw_main_insert_or_cb (GtkWidget *widget, gpointer data)
 {
-    gw_main_search_entry_insert ("|");
+    GwSearchWindow *search;
+    search = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
+    gw_searchwindow_search_entry_insert (search, "|");
 }
 
 
@@ -1494,8 +1502,10 @@ G_MODULE_EXPORT void gw_main_insert_or_cb (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void gw_main_clear_search_cb (GtkWidget *widget, gpointer data)
 {
-    gw_main_clear_search_entry ();
-    gw_main_grab_focus_by_target (LW_TARGET_ENTRY);
+    GwSearchWindow *window;
+    window = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
+    gw_searchwindow_clear_search_entry (window);
+    gtk_widget_grab_focus (GTK_WIDGET (window->entry));
 }
 
 
@@ -1510,17 +1520,17 @@ G_MODULE_EXPORT void gw_main_clear_search_cb (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void gw_main_open_dictionary_folder_cb (GtkWidget *widget, gpointer data) 
 {
     //Declarations
+    GwSearchWindow *search;
     const char *directory;
     char *uri;
     GError *error;
-    GtkBuilder *builder;
     GtkWidget *window;
 
     //Initializations
-    directory = lw_util_get_directory (LW_PATH_DICTIONARY);
+    search = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
+    directory = lw_util_build_filename (LW_PATH_DICTIONARY, NULL);
     uri = g_build_filename ("file://", directory, NULL);
-    builder = gw_common_get_builder ();
-    window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
+    window = GTK_WIDGET (gtk_builder_get_object (search->builder, "main_window"));
     error = NULL;
 
     gtk_show_uri (NULL, uri, gtk_get_current_event_time (), &error);
@@ -1625,17 +1635,17 @@ G_MODULE_EXPORT void gw_main_search_drag_data_recieved_cb (GtkWidget        *wid
       return;
 
     //Declarations
-    GtkWidget* entry;
+    GwSearchWindow *window;
     char* text;
 
     //Initializations
-    entry = gw_common_get_widget_by_target (LW_TARGET_ENTRY);
+    window = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
     text = (char*) gtk_selection_data_get_text (data);   
 
     if (text != NULL && strlen(text) > 0)
     {
-      gw_main_clear_search_cb (entry, NULL);
-      gtk_entry_set_text (GTK_ENTRY (entry), text);
+      gw_main_clear_search_cb (widget, data);
+      gtk_entry_set_text (window->entry, text);
       gw_main_search_cb (NULL, NULL);
 
       gdk_drag_status (drag_context, GDK_ACTION_COPY, time);
@@ -1665,23 +1675,23 @@ G_MODULE_EXPORT void gw_main_update_button_states_based_on_entry_text_cb (GtkWid
                                                                           gpointer   data   )
 {
     //Declarations
-    GtkWidget *entry;
+    GwSearchWindow *search;
     int length;
 
     //Initializations
-    entry = gw_common_get_widget_by_target (LW_TARGET_ENTRY);
-    length = gtk_entry_get_text_length (GTK_ENTRY (entry));
+    search = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
+    length = gtk_entry_get_text_length (GTK_ENTRY (search->entry));
 
     //Show the clear icon when approprate
     if (length > 0)
-      gtk_entry_set_icon_from_stock (GTK_ENTRY (entry), GTK_ENTRY_ICON_SECONDARY, GTK_STOCK_CLEAR);
+      gtk_entry_set_icon_from_stock (GTK_ENTRY (search->entry), GTK_ENTRY_ICON_SECONDARY, GTK_STOCK_CLEAR);
     else
-      gtk_entry_set_icon_from_stock (GTK_ENTRY (entry), GTK_ENTRY_ICON_SECONDARY, NULL);
+      gtk_entry_set_icon_from_stock (GTK_ENTRY (search->entry), GTK_ENTRY_ICON_SECONDARY, NULL);
 
 /*
     //Return widget colors back to normal
-    gtk_widget_override_background_color (GTK_WIDGET (entry), GTK_STATE_NORMAL, NULL);
-    gtk_widget_override_color (GTK_WIDGET (entry), GTK_STATE_NORMAL, NULL);
+    gtk_widget_override_background_color (GTK_WIDGET (search->entry), GTK_STATE_NORMAL, NULL);
+    gtk_widget_override_color (GTK_WIDGET (search->entry), GTK_STATE_NORMAL, NULL);
 */
 }
 
@@ -1689,15 +1699,14 @@ G_MODULE_EXPORT void gw_main_update_button_states_based_on_entry_text_cb (GtkWid
 //!
 //! @brief Populates the main contextual menu with search options
 //!
-//! @param entry The GtkTexView that was right clicked
+//! @param view The GtkTexView that was right clicked
 //! @param menu The Popup menu to populate
 //! @param data  Currently unused gpointer containing user data
 //!
-void gw_main_populate_popup_with_search_options_cb (GtkTextView *entry, GtkMenu *menu, gpointer data)
+void gw_main_populate_popup_with_search_options_cb (GtkTextView *view, GtkMenu *menu, gpointer data)
 {
-    if (hovered_word == NULL) return;
-
     //Declarations
+    GwSearchWindow *window;
     LwSearchItem *item = NULL;
     LwDictInfo *di = NULL;
     char *menu_text = NULL;
@@ -1707,14 +1716,16 @@ void gw_main_populate_popup_with_search_options_cb (GtkTextView *entry, GtkMenu 
     char *search_for_menuitem_text;
     char *websearch_for_menuitem_text;
     char *othersearch_for_menuitem_text;
-    GObject* tb = NULL;
+    GtkTextBuffer *buffer;
     GtkTextIter start_iter, end_iter;
-    GList *list_selected = NULL;
     LwDictInfo *di_selected = NULL;
+    window = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, GTK_WIDGET (view));
     int i = 0;
 
+    if (window->mousedata.hovered_word == NULL) return;
+
     //Initializations
-    tb = gw_common_get_gobject_by_target (LW_TARGET_RESULTS);
+    buffer = gtk_text_view_get_buffer (view);
     // TRANSLATORS: The first variable is the expression to look for, the second is the dictionary full name
     search_for_menuitem_text = gettext("Search for \"%s\" in the %s");
     // TRANSLATORS: The variable is the expression to look for
@@ -1725,23 +1736,21 @@ void gw_main_populate_popup_with_search_options_cb (GtkTextView *entry, GtkMenu 
     menuitem = gtk_separator_menu_item_new ();
     gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), GTK_WIDGET (menuitem));
     gtk_widget_show (GTK_WIDGET (menuitem));
-    if (gtk_text_buffer_get_has_selection (GTK_TEXT_BUFFER (tb)))
+    if (gtk_text_buffer_get_has_selection (buffer))
     {
-      gtk_text_buffer_get_selection_bounds (GTK_TEXT_BUFFER (tb), &start_iter, &end_iter);
-      query_text = gtk_text_buffer_get_text (GTK_TEXT_BUFFER (tb), &start_iter, &end_iter, FALSE);
+      gtk_text_buffer_get_selection_bounds (buffer, &start_iter, &end_iter);
+      query_text = gtk_text_buffer_get_text (buffer, &start_iter, &end_iter, FALSE);
       if (g_utf8_strchr(query_text, -1, L'\n') != NULL) query_text = NULL;
     }
     if (query_text == NULL)
     {
-      query_text = hovered_word;
+      query_text = window->mousedata.hovered_word;
     }
-    list_selected = lw_dictinfolist_get_selected();
-    di_selected = list_selected->data;
+    di_selected = gw_dictionarymanager_get_selected_dictinfo (app->dictionarymanager);
 
 
     //Add webpage links
-    GList* list =  lw_dictinfolist_get_dict_by_load_position (0);
-    di = list->data;
+    di =  lw_dictinfolist_get_dictinfo_by_load_position ((LwDictInfoList*) app->dictionarymanager, 0);
     char *website_url_menuitems[] = {
       "Wikipedia", "http://www.wikipedia.org/wiki/%s", "wikipedia.png",
       "Goo.ne.jp", "http://dictionary.goo.ne.jp/srch/all/%s/m0u/", "goo.png",
@@ -1772,7 +1781,7 @@ void gw_main_populate_popup_with_search_options_cb (GtkTextView *entry, GtkMenu 
     i = 0;
     while (website_url_menuitems[i] != NULL)
     {
-      if (di != NULL && (item = lw_searchitem_new (query_text, di, LW_TARGET_RESULTS, NULL)) != NULL)
+      if (di != NULL && (item = lw_searchitem_new (query_text, di, LW_OUTPUT_TARGET_RESULTS, app->prefmanager, NULL)) != NULL)
       {
         //Create handy variables
         char *name = website_url_menuitems[i];
@@ -1799,8 +1808,8 @@ void gw_main_populate_popup_with_search_options_cb (GtkTextView *entry, GtkMenu 
             g_free (path);
             path = NULL;
           }
-          g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (gw_main_search_for_searchitem_online_cb), item);
-          g_signal_connect (G_OBJECT (menuitem), "destroy",  G_CALLBACK (gw_tabs_destroy_tab_menuitem_searchitem_data_cb), item);
+          g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (gw_searchwindow_search_for_searchitem_online_cb), item);
+          g_signal_connect (G_OBJECT (menuitem), "destroy",  G_CALLBACK (gw_searchwindow_destroy_tab_menuitem_searchitem_data_cb), item);
           gtk_menu_shell_append (GTK_MENU_SHELL (web_menu), GTK_WIDGET (menuitem));
           gtk_widget_show (GTK_WIDGET (menuitem));
           gtk_widget_show (GTK_WIDGET (menuimage));
@@ -1834,11 +1843,9 @@ void gw_main_populate_popup_with_search_options_cb (GtkTextView *entry, GtkMenu 
 
     //Add internal dictionary links
     i = 0;
-    while ((list = lw_dictinfolist_get_dict_by_load_position (i)) != NULL)
+    while ((di = lw_dictinfolist_get_dictinfo_by_load_position ((LwDictInfoList*) app->dictionarymanager, i)) != NULL)
     {
-      list = lw_dictinfolist_get_dict_by_load_position (i);
-      di = list->data;
-      if (di != NULL && (item = lw_searchitem_new (query_text, di, LW_TARGET_RESULTS, NULL)) != NULL)
+      if (di != NULL && (item = lw_searchitem_new (query_text, di, LW_OUTPUT_TARGET_RESULTS, app->prefmanager, NULL)) != NULL)
       {
         if (di == di_selected)
         {
@@ -1848,7 +1855,7 @@ void gw_main_populate_popup_with_search_options_cb (GtkTextView *entry, GtkMenu 
             menuitem = GTK_WIDGET (gtk_image_menu_item_new_with_label (menu_text));
             menuimage = gtk_image_new_from_icon_name ("stock_new-tab", GTK_ICON_SIZE_MENU);
             gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menuitem), GTK_WIDGET (menuimage));
-            g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (gw_tabs_new_with_search_cb), item);
+            g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (gw_searchwindow_new_tab_with_search_cb), item);
             gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), GTK_WIDGET (menuitem));
             gtk_widget_show (GTK_WIDGET (menuitem));
             gtk_widget_show (GTK_WIDGET (menuimage));
@@ -1860,8 +1867,8 @@ void gw_main_populate_popup_with_search_options_cb (GtkTextView *entry, GtkMenu 
         if (menu_text != NULL)
         {
           menuitem = GTK_WIDGET (gtk_image_menu_item_new_with_label (menu_text));
-          g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (gw_tabs_new_with_search_cb), item);
-          g_signal_connect (G_OBJECT (menuitem), "destroy",  G_CALLBACK (gw_tabs_destroy_tab_menuitem_searchitem_data_cb), item);
+          g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (gw_searchwindow_new_tab_with_search_cb), item);
+          g_signal_connect (G_OBJECT (menuitem), "destroy",  G_CALLBACK (gw_searchwindow_destroy_tab_menuitem_searchitem_data_cb), item);
           gtk_menu_shell_append (GTK_MENU_SHELL (dictionaries_menu), GTK_WIDGET (menuitem));
           gtk_widget_show (GTK_WIDGET (menuitem));
           gtk_widget_show (GTK_WIDGET (menuimage));
@@ -1880,19 +1887,20 @@ void gw_main_populate_popup_with_search_options_cb (GtkTextView *entry, GtkMenu 
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void gw_main_search_for_searchitem_online_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_searchwindow_search_for_searchitem_online_cb (GtkWidget *widget, gpointer data)
 {
     LwSearchItem *item = (LwSearchItem*) data;
-    GtkBuilder *builder;
     GtkWidget *window;
     GError *error;
+    GwSearchWindow *search;
+
+    search = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
 
     if (item != NULL)
     {
       error = NULL;
       gtk_show_uri (NULL, item->queryline->string, gtk_get_current_event_time (), &error);
-      builder = gw_common_get_builder ();
-      window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
+      window = GTK_WIDGET (gtk_builder_get_object (search->builder, "main_window"));
 
       gw_common_handle_error (&error, GTK_WINDOW (window), TRUE);
     }
@@ -1926,6 +1934,260 @@ G_MODULE_EXPORT gboolean gw_main_scroll_or_zoom_cb (GtkWidget *widget, GdkEventS
 
     // return false and propagate event for regular scroll
     return FALSE;
+}
+
+
+//!
+//! @brief Append a tag to the end of the tags
+//! @param widget Currently unused widget pointer
+//! @param data Currently unused gpointer
+//!
+G_MODULE_EXPORT void gw_tabs_new_cb (GtkWidget *widget, gpointer data)
+{
+    //Declarations
+    GwSearchWindow *window;
+    int position;
+
+    //Initializations
+    window = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
+    position = gw_searchwindow_new_tab (window);
+
+    gtk_notebook_set_current_page (window->notebook, position);
+    gw_searchwindow_set_entry_text_by_searchitem (window, NULL);
+    gtk_widget_grab_focus (GTK_WIDGET (window->entry));
+    gw_searchwindow_set_dictionary(window, 0);
+    gw_searchwindow_set_current_searchitem (window, NULL);
+
+    gw_searchwindow_update_tab_appearance (window);
+}
+
+
+//!
+//! @brief Remove the tab where the close button is clicked
+//!
+//! @param widget Currently unused widget pointer
+//! @param data Currently unused gpointer
+//!
+G_MODULE_EXPORT void gw_searchwindow_remove_tab_cb (GtkWidget *widget, gpointer data)
+{
+    //Declarations
+    GwSearchWindow *window;
+    int pages;
+    int page_num;
+    GList *iter;
+    LwSearchItem *item;
+
+    //Initializations
+    window = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
+    pages = gtk_notebook_get_n_pages (window->notebook);
+    page_num = gtk_notebook_page_num (window->notebook, GTK_WIDGET (data));
+
+    //Sanity check
+    if (pages < 2) gtk_main_quit ();
+
+    gw_searchwindow_cancel_search_by_tab_number (window, page_num);
+    gtk_notebook_remove_page (window->notebook, page_num);
+
+    iter = g_list_nth (window->tablist, page_num);
+    if (iter != NULL)
+    {
+      item = iter->data;
+      if (iter->data != NULL && item->total_results > 0)
+      {
+        lw_historylist_add_searchitem (window->history, item);
+        gw_searchwindow_update_history_popups (window);
+      }
+      else if (item != NULL)
+      {
+        lw_searchitem_free (item);
+        iter->data = NULL;
+        gtk_widget_grab_focus (GTK_WIDGET (window->entry));
+      }
+    }
+    window->tablist = g_list_delete_link (window->tablist, iter);
+
+    lw_historylist_set_current_searchitem (window->history, item);
+    gw_searchwindow_update_tab_appearance (window);
+
+    if (pages == 1) gtk_widget_grab_focus (GTK_WIDGET (window->entry)); 
+}
+
+
+//!
+//! @brief Remove the tab where the close button is clicked
+//!
+//! @param widget Currently unused widget pointer
+//! @param data Currently unused gpointer
+//!
+G_MODULE_EXPORT void gw_tabs_remove_current_cb (GtkWidget *widget, gpointer data)
+{
+    //Declarations
+    GwSearchWindow *window;
+    int pages;
+    int page_num;
+    GList *iter;
+    LwSearchItem *item;
+
+    //Initializations
+    window = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
+    pages = gtk_notebook_get_n_pages (window->notebook);
+    page_num = gtk_notebook_get_current_page (window->notebook);
+    iter = g_list_nth (window->tablist, page_num);
+
+    if (pages < 2) gtk_main_quit ();
+
+    gw_searchwindow_cancel_search_by_tab_number (window, page_num);
+
+    if (iter != NULL)
+    {
+      item = iter->data;
+      if (item != NULL && item->total_results > 0)
+      {
+        lw_historylist_add_searchitem (window->history, item);
+        gw_searchwindow_update_history_popups (window);
+      }
+      else if (item != NULL)
+      {
+        lw_searchitem_free (item);
+        item = NULL;
+      }
+    }
+    window->tablist = g_list_delete_link (window->tablist, iter);
+
+    gtk_notebook_remove_page (window->notebook, page_num);
+    lw_historylist_set_current_searchitem (window->history, item);
+    gw_searchwindow_update_tab_appearance (window);
+
+    if (pages == 1) gtk_widget_grab_focus (GTK_WIDGET (window->entry));
+}
+
+
+//!
+//! @brief Do the side actions required when a tab switch takes place
+//!
+//! Various side elements should be updated when at tab switch occurs
+//! such as the progress bar, querybar, dictionry selection etc.
+//!
+//! @param widget Currently unused widget pointer
+//! @param data Currently unused gpointer
+//!
+G_MODULE_EXPORT void gw_tabs_switch_cb (GtkNotebook *notebook, GtkWidget *page, int page_num, gpointer data)
+{
+    //Declarations
+    GwSearchWindow *window;
+    LwSearchItem *item;
+
+    //Initializations
+    window = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, GTK_WIDGET (notebook));
+    item = (LwSearchItem*) g_list_nth_data (window->tablist, page_num);
+
+    gw_searchwindow_update_tab_appearance_by_searchitem (window, item);
+    lw_historylist_set_current_searchitem (window->history, item);
+}
+
+
+//!
+//! @brief Cycles to the next tab 
+//!
+//! @param widget Currently unused widget pointer
+//! @param data Currently unused gpointer
+//!
+G_MODULE_EXPORT void gw_tabs_next_cb (GtkWidget *widget, gpointer data)
+{
+    GwSearchWindow *window;
+    int page_num;
+    LwSearchItem *item;
+
+    window = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
+    page_num = gtk_notebook_get_current_page (window->notebook);
+    item = (LwSearchItem*) g_list_nth_data (window->tablist, page_num);
+
+    gtk_notebook_next_page (window->notebook);
+    gw_searchwindow_update_tab_appearance (window);
+    lw_historylist_set_current_searchitem (window->history, item);
+}
+
+
+//!
+//! @brief Cycles to the previous tab 
+//!
+//! @param widget Currently unused widget pointer
+//! @param data Currently unused gpointer
+//!
+G_MODULE_EXPORT void gw_tabs_previous_cb (GtkWidget *widget, gpointer data)
+{
+    GwSearchWindow *window;
+    int page_num;
+    LwSearchItem *item;
+
+    window = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
+    page_num = gtk_notebook_get_current_page (window->notebook);
+    item = (LwSearchItem*) g_list_nth_data (window->tablist, page_num);
+
+    gtk_notebook_prev_page (window->notebook);
+    gw_searchwindow_update_tab_appearance (window);
+    lw_historylist_set_current_searchitem (window->history, item);
+}
+
+
+//!
+//! @brief Sets up an initites a new search in a new tab
+//!
+//! @param widget Currently unused widget pointer
+//! @param data A gpointer to a LwSearchItem that hold the search information
+//!
+G_MODULE_EXPORT void gw_searchwindow_new_tab_with_search_cb (GtkWidget *widget, gpointer data)
+{
+    //Declarations
+    GwSearchWindow *window;
+    LwSearchItem *item;
+
+    //Initializations
+    window = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
+    item = (LwSearchItem*) data;
+
+    if (item != NULL)
+    {
+      gw_tabs_new_cb (widget, data);
+      gw_searchwindow_set_dictionary_by_searchitem (window, item);
+      gw_searchwindow_set_entry_text_by_searchitem (window, item);
+      gw_main_search_cb (widget, data);
+    }
+}
+
+
+G_MODULE_EXPORT void gw_searchwindow_no_results_search_for_dictionary_cb (GtkWidget *widget, gpointer data)
+{
+    //Declarations
+    GwSearchWindow *window;
+    LwDictInfo* di;
+
+    //Initializations
+    window = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, widget);
+    di = (LwDictInfo*) data;
+
+    gw_searchwindow_set_dictionary (window, di->load_position);
+}
+
+//!
+//! @brief Frees the LwSearchItem memory that is attached to the activate tab callback
+//!
+//! @param widget Currently unused widget pointe
+//! @param data gpointer to a LwSearchItem to be freed
+//!
+G_MODULE_EXPORT void gw_searchwindow_destroy_tab_menuitem_searchitem_data_cb (GObject *object, gpointer data)
+{
+    //Declarations
+    LwSearchItem *item;
+
+    //Initializations
+    item = (LwSearchItem*) data;
+
+    if (item != NULL)
+    {
+      lw_searchitem_free (item);
+      item = NULL;
+    }
 }
 
 

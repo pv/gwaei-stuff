@@ -55,9 +55,9 @@ static gboolean _overlay_default_builtin_dictionary_settings (LwDictInfo*);
 //! @param name Name of the object to create
 //! @return An allocated LwDictInfo that will be needed to be freed by lw_dictinfo_free ()
 //!
-LwDictInfo* lw_dictinfo_new (LwEngine ENGINE, const char *FILENAME)
+LwDictInfo* lw_dictinfo_new (LwDictType DICTTYPE, const char *FILENAME)
 {
-    g_assert (ENGINE >= 0 && ENGINE <= LW_ENGINE_TOTAL && FILENAME != NULL);
+    g_assert (DICTTYPE >= 0 && DICTTYPE <= TOTAL_LW_DICTTYPES && FILENAME != NULL);
 
     LwDictInfo *temp;
     char *uri;
@@ -71,7 +71,7 @@ LwDictInfo* lw_dictinfo_new (LwEngine ENGINE, const char *FILENAME)
     temp->filename = NULL;
     temp->shortname = NULL;
     temp->longname = NULL;
-    temp->engine = ENGINE;
+    temp->type = DICTTYPE;
     temp->filename = g_strdup_printf ("%s", FILENAME);
 
     uri = lw_dictinfo_get_uri (temp);
@@ -121,7 +121,7 @@ static gboolean _overlay_default_builtin_dictionary_settings (LwDictInfo *di)
 {
     g_assert (di != NULL);
 
-    if (di->engine == LW_ENGINE_EDICT)
+    if (di->type == LW_DICTTYPE_EDICT)
     {
       if (strcmp(di->filename, "English") == 0)
       {
@@ -142,7 +142,7 @@ static gboolean _overlay_default_builtin_dictionary_settings (LwDictInfo *di)
         di->load_position = 4;
       }
     }
-    else if (di->engine == LW_ENGINE_KANJI)
+    else if (di->type == LW_DICTTYPE_KANJI)
     {
       if (strcmp(di->filename, "Kanji") == 0)
       {
@@ -151,7 +151,7 @@ static gboolean _overlay_default_builtin_dictionary_settings (LwDictInfo *di)
         di->load_position = 2;
       }
     }
-    else if (di->engine == LW_ENGINE_EXAMPLES)
+    else if (di->type == LW_DICTTYPE_EXAMPLES)
     {
       if (strcmp(di->filename, "Examples") == 0)
       {
@@ -181,14 +181,12 @@ gboolean lw_dictinfo_uninstall (LwDictInfo *di, LwIoProgressCallback cb, GError 
     char *uri;
 
     //Initializations
-    uri =  g_build_filename (lw_util_get_directory_for_engine (di->engine), di->filename, NULL);
+    uri =  lw_util_build_filename (di->type, di->filename);
 
     lw_io_remove (uri, error);
     if (cb != NULL) cb (1.0, di);
 
     g_free (uri);
-
-    lw_dictinfolist_initialize ();
 
     return (*error == NULL);
 }
@@ -197,14 +195,10 @@ gboolean lw_dictinfo_uninstall (LwDictInfo *di, LwIoProgressCallback cb, GError 
 char* lw_dictinfo_get_uri (LwDictInfo *di)
 {
     //Declarations
-    const char *directory;
-    const char *filename;
     char *path;
 
     //Initializations
-    directory = lw_util_get_directory_for_engine (di->engine);
-    filename = di->filename;
-    path = g_build_filename (directory, filename, NULL);
+    path = lw_util_build_filename (di->type, di->filename);
 
     return path;
 }

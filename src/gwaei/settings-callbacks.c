@@ -200,9 +200,8 @@ G_MODULE_EXPORT void gw_settings_use_global_document_font_toggled_cb (GtkWidget 
 //!
 G_MODULE_EXPORT void gw_settings_custom_document_font_set_cb (GtkWidget *widget, gpointer data)
 {
-    GtkBuilder *builder = gw_common_get_builder ();
 
-    GtkWidget *button = GTK_WIDGET (gtk_builder_get_object (builder, "custom_font_fontbutton"));
+    GtkWidget *button = GTK_WIDGET (gtk_builder_get_object (app->settings->builder, "custom_font_fontbutton"));
     const char *font_description_string = gtk_font_button_get_font_name (GTK_FONT_BUTTON (button));
     lw_pref_set_string_by_schema (LW_SCHEMA_FONT, LW_KEY_FONT_CUSTOM_FONT, font_description_string);
 }
@@ -210,35 +209,11 @@ G_MODULE_EXPORT void gw_settings_custom_document_font_set_cb (GtkWidget *widget,
 
 //!
 //! @brief Brings up the preferences dialog to change settings
-//!
-//! This function sets up the dialog window, makes sure no searches are
-//! currently running, then makes the window appear.
-//!
 //! @param widget Currently unused widget pointer
 //! @param data Currently unused gpointer
 //!
 G_MODULE_EXPORT void gw_settings_show_cb (GtkWidget *widget, gpointer data)
 {
-    GtkBuilder *builder = gw_common_get_builder ();
-
-    gw_tabs_cancel_all_searches ();
-    gw_main_cancel_search_by_target (LW_TARGET_KANJI);
-
-    //Setup please install dictionary message and notebook page
-    GtkWidget *notebook;
-    notebook = GTK_WIDGET (gtk_builder_get_object (builder, "settings_notebook"));
-    if (data != NULL)
-    {
-      gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), GPOINTER_TO_INT (data));
-    }
-    else
-    {
-      gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), 0);
-    }
-
-    //get some needed window references
-    gw_settings_update_interface ();
-    gw_common_show_window ("settings_window");
 }
 
 

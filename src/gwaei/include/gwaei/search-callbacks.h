@@ -56,5 +56,10 @@ void gw_main_search_for_searchitem_online_cb (GtkWidget*, gpointer);
 
 gboolean gw_main_scroll_or_zoom_cb (GtkWidget*, GdkEventScroll*, gpointer);
 
+void gw_searchwindow_search_for_searchitem_online_cb (GtkWidget*, gpointer);
+void gw_searchwindow_destroy_tab_menuitem_searchitem_data_cb (GObject*, gpointer);
+void gw_searchwindow_new_tab_with_search_cb (GtkWidget*, gpointer);
+void gw_searchwindow_remove_tab_cb (GtkWidget*, gpointer);
+
 #endif
 

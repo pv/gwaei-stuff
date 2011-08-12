@@ -597,28 +597,28 @@ gboolean lw_io_unzip_file (char *path, LwIoProgressCallback cb, gpointer data, G
 
 //!
 //! @brief Gets a list of the currently installed dictionaries as an array of strings.
-//! The format will be ENGINE/FILENAME and the array is null terminated.  Both the array
+//! The format will be DICTTYPE/FILENAME and the array is null terminated.  Both the array
 //! and string themselves must be freed after.
 //!
 //! @returns An array of strings that must be freed.  We recommend g_strfreev() from glib
 //!
-char** lw_io_get_dictionary_file_list ()
+char** lw_io_get_dictionary_file_list (const int MAX)
 {
     //Declarations and initializations
     int engine;
     GDir *dir;
     const char* enginename;
     const char* filename;
-    const char *directory;
-    const int MAX = LW_DICTLIST_MAX_DICTIONARIES;
+    char *directory;
     char** atoms = (char**) malloc((MAX + 1) * sizeof(int));
     int i = 0;
 
     //Go through each engine folder looking for dictionaries
-    for (engine = 0; engine < LW_ENGINE_TOTAL && i < MAX; engine++)
+    for (engine = 0; engine < TOTAL_LW_DICTTYPES && i < MAX; engine++)
     {
       enginename = lw_util_get_engine_name (engine);
-      if ((directory = lw_util_get_directory_for_engine (engine)) != NULL)
+      directory = lw_util_build_filename (engine, NULL);
+      if (directory != NULL)
       {
         dir = g_dir_open (directory, 0, NULL);
 
@@ -629,6 +629,7 @@ char** lw_io_get_dictionary_file_list ()
           i++;
         }
         g_dir_close(dir);
+        g_free (directory);
       }
     }
     atoms[i] = NULL;

@@ -6,6 +6,7 @@
 #define LW_RE_EXIST_FLAGS   (0)
 
 #include <glib.h>
+#include <libwaei/dict.h>
 #include <libwaei/utilities.h>
 
 typedef enum
@@ -21,11 +22,11 @@ typedef enum
 void lw_regex_initialize (void);
 void lw_regex_free (void);
 
-GRegex* lw_regex_kanji_new (const char*, LwEngine, LwRelevance, GError**);
-GRegex* lw_regex_furi_new (const char*, LwEngine, LwRelevance, GError**);
-GRegex* lw_regex_romaji_new (const char*, LwEngine, LwRelevance, GError**);
-GRegex* lw_regex_mix_new (const char*, LwEngine, LwRelevance, GError**);
-GRegex* lw_regex_new (const char*, LwEngine, LwRelevance, GError**);
+GRegex* lw_regex_kanji_new (const char*, LwDictType, LwRelevance, GError**);
+GRegex* lw_regex_furi_new (const char*, LwDictType, LwRelevance, GError**);
+GRegex* lw_regex_romaji_new (const char*, LwDictType, LwRelevance, GError**);
+GRegex* lw_regex_mix_new (const char*, LwDictType, LwRelevance, GError**);
+GRegex* lw_regex_new (const char*, LwDictType, LwRelevance, GError**);
 
 
 typedef enum {

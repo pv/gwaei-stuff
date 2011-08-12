@@ -38,7 +38,7 @@
 #include <libwaei/libwaei.h>
 
 
-static gboolean _regex_expressions_initialized = FALSE;
+static int _regex_expressions_reference_count = 0;
 GRegex *lw_re[LW_RE_TOTAL + 1];
 
 /*
@@ -82,7 +82,8 @@ GRegex *lw_re[LW_RE_TOTAL + 1];
 //!
 void lw_regex_initialize ()
 {
-    if (_regex_expressions_initialized) return;
+    _regex_expressions_reference_count++;
+    if (_regex_expressions_reference_count > 0) return;
 
     //Declarations
     GError *error;
@@ -122,8 +123,6 @@ void lw_regex_initialize ()
        fprintf (stderr, "Unable to read file: %s\n", error->message);
        g_error_free (error);
     }
-
-    _regex_expressions_initialized = TRUE;
 }
 
 
@@ -132,7 +131,7 @@ void lw_regex_initialize ()
 //!
 void lw_regex_free ()
 {
-    if (_regex_expressions_initialized == FALSE) return;
+    if (_regex_expressions_reference_count == 0) return;
 
     //Declarations
     int i;
@@ -144,7 +143,7 @@ void lw_regex_free ()
       lw_re[i] = NULL;
     }
 
-    _regex_expressions_initialized = FALSE;
+    _regex_expressions_reference_count--;
 }
 
 
@@ -156,7 +155,7 @@ void lw_regex_free ()
 //! @param flags GRegexMatchFlags to apply to the regex compilation.  
 //! @returns A newly allocated GRegex that needs to be freed with g_regex_unref ()
 //! 
-GRegex* lw_regex_kanji_new (const char *subject, const LwEngine ENGINE, const LwRelevance RELEVANCE, GError **error)
+GRegex* lw_regex_kanji_new (const char *subject, const LwDictType DICTTYPE, const LwRelevance RELEVANCE, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return NULL;
@@ -169,9 +168,9 @@ GRegex* lw_regex_kanji_new (const char *subject, const LwEngine ENGINE, const Lw
     switch (RELEVANCE)
     {
       case LW_RELEVANCE_HIGH:
-        if (ENGINE == LW_ENGINE_EXAMPLES)
+        if (DICTTYPE == LW_DICTTYPE_EXAMPLES)
           format = "%s";
-        else if (ENGINE == LW_ENGINE_KANJI)
+        else if (DICTTYPE == LW_DICTTYPE_KANJI)
           format = "^(%s)$";
         else
           format = "^(無|不|非|お|御|)(%s)$";
@@ -180,7 +179,7 @@ GRegex* lw_regex_kanji_new (const char *subject, const LwEngine ENGINE, const Lw
         g_free (expression);
         break;
       case LW_RELEVANCE_MEDIUM:
-        if (ENGINE == LW_ENGINE_KANJI)
+        if (DICTTYPE == LW_DICTTYPE_KANJI)
           format = "%s";
         else
           format = "^(お|を|に|で|は|と|)(%s)(で|が|の|を|に|で|は|と|$)";
@@ -209,7 +208,7 @@ GRegex* lw_regex_kanji_new (const char *subject, const LwEngine ENGINE, const Lw
 //! @param relevance How relevant a result to search for
 //! @returns A newly allocated GRegex that needs to be freed with g_regex_unref ()
 //! 
-GRegex* lw_regex_furi_new (const char *subject, const LwEngine ENGINE, const LwRelevance RELEVANCE, GError **error)
+GRegex* lw_regex_furi_new (const char *subject, const LwDictType DICTTYPE, const LwRelevance RELEVANCE, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return NULL;
@@ -222,9 +221,9 @@ GRegex* lw_regex_furi_new (const char *subject, const LwEngine ENGINE, const LwR
     switch (RELEVANCE)
     {
       case LW_RELEVANCE_HIGH:
-        if (ENGINE == LW_ENGINE_EXAMPLES)
+        if (DICTTYPE == LW_DICTTYPE_EXAMPLES)
           format = "%s";
-        else if (ENGINE == LW_ENGINE_KANJI)
+        else if (DICTTYPE == LW_DICTTYPE_KANJI)
           format = "(^|\\s)%s(\\s|$)";
         else
           format = "^(お|)(%s)$";
@@ -233,7 +232,7 @@ GRegex* lw_regex_furi_new (const char *subject, const LwEngine ENGINE, const LwR
         g_free (expression);
         break;
       case LW_RELEVANCE_MEDIUM:
-        if (ENGINE == LW_ENGINE_KANJI)
+        if (DICTTYPE == LW_DICTTYPE_KANJI)
           format = "(^|\\s)(%s)(\\s|$)";
         else
           format = "(^お|を|に|で|は|と)(%s)(で|が|の|を|に|で|は|と|$)";
@@ -262,7 +261,7 @@ GRegex* lw_regex_furi_new (const char *subject, const LwEngine ENGINE, const LwR
 //! @param relevance How relevant a result to search for
 //! @returns A newly allocated GRegex that needs to be freed with g_regex_unref ()
 //! 
-GRegex* lw_regex_romaji_new (const char *subject, const LwEngine ENGINE, const LwRelevance RELEVANCE, GError **error)
+GRegex* lw_regex_romaji_new (const char *subject, const LwDictType DICTTYPE, const LwRelevance RELEVANCE, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return NULL;
@@ -275,9 +274,9 @@ GRegex* lw_regex_romaji_new (const char *subject, const LwEngine ENGINE, const L
     switch (RELEVANCE)
     {
       case LW_RELEVANCE_HIGH:
-        if (ENGINE == LW_ENGINE_EXAMPLES)
+        if (DICTTYPE == LW_DICTTYPE_EXAMPLES)
           format = "%s";
-        else if (ENGINE == LW_ENGINE_KANJI)
+        else if (DICTTYPE == LW_DICTTYPE_KANJI)
           format = "\\{(%s)\\}";
         else
           format = "(^|\\)|/|^to |\\) )(%s)(\\(|/|$|!| \\()";
@@ -286,7 +285,7 @@ GRegex* lw_regex_romaji_new (const char *subject, const LwEngine ENGINE, const L
         g_free (expression);
         break;
       case LW_RELEVANCE_MEDIUM:
-        if (ENGINE == LW_ENGINE_KANJI)
+        if (DICTTYPE == LW_DICTTYPE_KANJI)
           format = "\\b(%s)\\b";
         else
           format = "(\\) |/)((\\bto )|(\\bto be )|(\\b))(%s)(( \\([^/]+\\)/)|(/))";
@@ -315,7 +314,7 @@ GRegex* lw_regex_romaji_new (const char *subject, const LwEngine ENGINE, const L
 //! @param relevance How relevant a result to search for
 //! @returns A newly allocated GRegex that needs to be freed with g_regex_unref ()
 //! 
-GRegex* lw_regex_mix_new (const char *subject, const LwEngine ENGINE, const LwRelevance RELEVANCE, GError **error)
+GRegex* lw_regex_mix_new (const char *subject, const LwDictType DICTTYPE, const LwRelevance RELEVANCE, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return NULL;
@@ -334,7 +333,7 @@ GRegex* lw_regex_mix_new (const char *subject, const LwEngine ENGINE, const LwRe
         g_free (expression);
         break;
       case LW_RELEVANCE_MEDIUM:
-        if (ENGINE == LW_ENGINE_KANJI)
+        if (DICTTYPE == LW_DICTTYPE_KANJI)
           format = "\\{(%s)\\}";
         else
           format = "(\\) |/)((\\bto )|(\\bto be )|(\\b))(%s)(( \\([^/]+\\)/)|(/))";
@@ -363,7 +362,7 @@ GRegex* lw_regex_mix_new (const char *subject, const LwEngine ENGINE, const LwRe
 //! @param relevance How relevant a result to search for
 //! @returns A newly allocated GRegex that needs to be freed with g_regex_unref ()
 //! 
-GRegex* lw_regex_new (const char *subject, const LwEngine ENGINE, const LwRelevance RELEVANCE, GError **error)
+GRegex* lw_regex_new (const char *subject, const LwDictType DICTTYPE, const LwRelevance RELEVANCE, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return NULL;

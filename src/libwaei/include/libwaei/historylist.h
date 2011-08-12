@@ -1,5 +1,5 @@
-#ifndef LW_HISTORYLIST_HEADER_INCLUDED
-#define LW_HISTORYLIST_HEADER_INCLUDED 
+#ifndef LW_HISTORYLIST_INCLUDED
+#define LW_HISTORYLIST_INCLUDED 
 /******************************************************************************
     AUTHOR:
     File written and Copyrighted by Zachary Dovel. All Rights Reserved.
@@ -33,12 +33,8 @@
 //! Historylist targets
 //!
 
+#define LW_HISTORYLIST(object) (LwHistoryList*) object
 #include <libwaei/searchitem.h>
-
-typedef enum {
-  LW_HISTORYLIST_RESULTS,
-  LW_HISTORYLIST_KANJI
-} LwHistoryListTarget;
 
 
 //!
@@ -47,22 +43,31 @@ typedef enum {
 struct _LwHistoryList {
     GList *back;           //!< A GList of past search items
     GList *forward;        //!< A GList where past search items get stacked when the user goes back.
+    int max;
     LwSearchItem *current; //!< The current search before it gets pushed only into a history list.
 };
 typedef struct _LwHistoryList LwHistoryList;
 
-void lw_historylist_initialize (void);
-void lw_historylist_free (void);
+LwHistoryList* lw_historylist_new (const int);
+void lw_historylist_free (LwHistoryList*);
 
 //Methods
-LwHistoryList* lw_historylist_get_list(const int);
-LwSearchItem* lw_historylist_get_current (const int);
-GList* lw_historylist_get_back_history (const int);
-GList* lw_historylist_get_forward_history (const int);
-GList* lw_historylist_get_combined_history_list (const int);
-void lw_historylist_add_searchitem_to_history (const int, LwSearchItem*);
-void lw_historylist_go_back_by_target (const int);
-void lw_historylist_go_forward_by_target (const int);
+GList* lw_historylist_get_back_list (LwHistoryList*);
+GList* lw_historylist_get_forward_list (LwHistoryList*);
+GList* lw_historylist_get_combined_list (LwHistoryList*);
+void lw_historylist_clear_forward_list (LwHistoryList*);
+void lw_historylist_clear_back_list (LwHistoryList*);
+
+LwSearchItem* lw_historylist_get_current_searchitem (LwHistoryList*);
+void lw_historylist_set_current_searchitem (LwHistoryList*, LwSearchItem*);
+
+void lw_historylist_add_searchitem (LwHistoryList*, LwSearchItem*);
+void lw_historylist_set_searchitem (LwHistoryList*, LwSearchItem*);
+
+gboolean lw_historylist_has_back (LwHistoryList*);
+gboolean lw_historylist_has_forward (LwHistoryList*);
+gboolean lw_historylist_go_back (LwHistoryList*);
+gboolean lw_historylist_go_forward (LwHistoryList*);
 
 
 #endif

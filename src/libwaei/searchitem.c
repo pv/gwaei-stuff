@@ -73,72 +73,69 @@ static gboolean _query_is_sane (const char* query)
 //! @param TARGET The widget to output the results to
 //! @return Returns an allocated LwSearchItem object
 //!
-LwSearchItem* lw_searchitem_new (char* query, LwDictInfo* dictionary, const int TARGET, GError **error)
+LwSearchItem* lw_searchitem_new (char* query, LwDictInfo* dictionary, const LwOutputTarget TARGET, LwPrefManager *pm, GError **error)
 {
     if (!_query_is_sane (query)) return NULL;
 
+    gboolean success;
     LwSearchItem *temp;
 
-    //Allocate some memory
-    if ((temp = malloc(sizeof(LwSearchItem))) == NULL) return NULL;
+    success = TRUE;
+    temp = (LwSearchItem*) malloc(sizeof(LwSearchItem));
 
-    temp->results_medium = NULL;
-    temp->results_low = NULL;
-    temp->thread = NULL;
-    temp->mutex = g_mutex_new ();
-    
-    if (TARGET != LW_TARGET_RESULTS &&
-        TARGET != LW_TARGET_KANJI   &&
-        TARGET != LW_TARGET_CONSOLE       )
-      return NULL;
-
-    //Set the internal pointers to the correct global variables
-    temp->fd     = NULL;
-    temp->status = LW_SEARCH_IDLE;
-    temp->scratch_buffer = NULL;
-    temp->dictionary = dictionary;
-    temp->target = TARGET;
-    temp->target_tb = NULL;
-    temp->target_tv = NULL;
-    temp->total_relevant_results = 0;
-    temp->total_irrelevant_results = 0;
-    temp->total_results = 0;
-    temp->current_line = 0;
-    temp->resultline = NULL;
-    temp->backup_resultline = NULL;
-    temp->swap_resultline = NULL;
-    temp->queryline = lw_queryline_new ();
-    temp->history_relevance_idle_timer = 0;
-    temp->show_only_exact_matches = FALSE;
-
-    //Set function pointers
-    switch (temp->dictionary->engine)
+    if (temp != NULL)
     {
-        case LW_ENGINE_EDICT:
-          if (!lw_queryline_parse_edict_string (temp->queryline, query, error)) return NULL;
-          temp->lw_searchitem_parse_result_string = &lw_resultline_parse_edict_result_string;
-          temp->lw_searchitem_ui_append_results_to_output = lw_engine_get_append_edict_results_func ();
+      temp->results_medium = NULL;
+      temp->results_low = NULL;
+      temp->thread = NULL;
+      temp->mutex = g_mutex_new ();
+      
+      if (TARGET != LW_OUTPUTTARGET_RESULTS &&
+          TARGET != LW_OUTPUTTARGET_KANJI     )
+        return NULL;
+
+      //Set the internal pointers to the correct global variables
+      temp->fd     = NULL;
+      temp->status = LW_SEARCHSTATUS_IDLE;
+      temp->scratch_buffer = NULL;
+      temp->dictionary = dictionary;
+      temp->target = TARGET;
+      temp->data = NULL;
+      temp->free_data_func = NULL;
+      temp->total_relevant_results = 0;
+      temp->total_irrelevant_results = 0;
+      temp->total_results = 0;
+      temp->current_line = 0;
+      temp->resultline = NULL;
+      temp->backup_resultline = NULL;
+      temp->swap_resultline = NULL;
+      temp->queryline = lw_queryline_new ();
+      temp->history_relevance_idle_timer = 0;
+      temp->show_only_exact_matches = FALSE;
+
+      //Set function pointers
+      switch (temp->dictionary->type)
+      {
+          case LW_DICTTYPE_EDICT:
+            success = lw_queryline_parse_edict_string (temp->queryline, pm, query, error);
+            break;
+          case LW_DICTTYPE_KANJI:
+            success =lw_queryline_parse_kanjidict_string (temp->queryline, pm, query, error);
+            break;
+          case LW_DICTTYPE_EXAMPLES:
+            success = lw_queryline_parse_exampledict_string (temp->queryline, pm, query, error);
           break;
-        case LW_ENGINE_KANJI:
-          if (!lw_queryline_parse_kanjidict_string (temp->queryline, query, error)) return NULL;
-          temp->lw_searchitem_parse_result_string = &lw_resultline_parse_kanjidict_result_string;
-          temp->lw_searchitem_ui_append_results_to_output = lw_engine_get_append_kanjidict_results_func ();
-          break;
-        case LW_ENGINE_EXAMPLES:
-          if (!lw_queryline_parse_exampledict_string (temp->queryline, query, error)) return NULL;
-          temp->lw_searchitem_parse_result_string = &lw_resultline_parse_examplesdict_result_string;
-          temp->lw_searchitem_ui_append_results_to_output = lw_engine_get_append_examplesdict_results_func ();
-        break;
-        default:
-          if (!lw_queryline_parse_edict_string (temp->queryline, query, error)) return NULL;
-          temp->lw_searchitem_parse_result_string = &lw_resultline_parse_unknowndict_result_string;
-          temp->lw_searchitem_ui_append_results_to_output = lw_engine_get_append_unknowndict_results_func ();
-          break;
+          default:
+            success = lw_queryline_parse_edict_string (temp->queryline, pm, query, error);
+            break;
+      }
     }
-    temp->lw_searchitem_ui_append_less_relevant_header_to_output = lw_engine_get_append_less_relevant_header_func ();
-    temp->lw_searchitem_ui_append_more_relevant_header_to_output = lw_engine_get_append_more_relevant_header_func ();
-    temp->lw_searchitem_ui_pre_search_prep = lw_engine_get_pre_search_prep_func ();
-    temp->lw_searchitem_ui_after_search_cleanup = lw_engine_get_after_search_cleanup_func ();
+
+    if (*error != NULL || !success)
+    {
+      lw_searchitem_free (temp);
+      temp = NULL;
+    }
 
     return temp;
 }
@@ -155,7 +152,7 @@ LwSearchItem* lw_searchitem_new (char* query, LwDictInfo* dictionary, const int 
 //! @param item The LwSearchItem to its variables prepared
 //! @return Returns false on seachitem prep failure.
 //!
-gboolean lw_searchitem_do_pre_search_prep (LwSearchItem* item)
+gboolean lw_searchitem_prepare_search (LwSearchItem* item)
 {
     if (item->scratch_buffer != NULL || (item->scratch_buffer = malloc (LW_IO_MAX_FGETS_LINE)) == NULL)
     {
@@ -190,7 +187,7 @@ gboolean lw_searchitem_do_pre_search_prep (LwSearchItem* item)
       g_free (path);
       path = NULL;
     }
-    item->status = LW_SEARCH_SEARCHING;
+    item->status = LW_SEARCHSTATUS_SEARCHING;
     return TRUE;
 }
 
@@ -203,7 +200,7 @@ gboolean lw_searchitem_do_pre_search_prep (LwSearchItem* item)
 //!
 //! @param item The LwSearchItem to its state reset.
 //!
-void lw_searchitem_do_post_search_clean (LwSearchItem* item)
+void lw_searchitem_cleanup_search (LwSearchItem* item)
 {
     if (item->fd != NULL)
     {
@@ -228,7 +225,7 @@ void lw_searchitem_do_post_search_clean (LwSearchItem* item)
     }
 
     //item->thread = NULL;  This code creates multithreading problems
-    item->status = LW_SEARCH_IDLE;
+    item->status = LW_SEARCHSTATUS_IDLE;
 }
 
 
@@ -246,14 +243,15 @@ void lw_searchitem_free (LwSearchItem* item)
 
   if (item->thread != NULL) 
   {
-    item->status = LW_SEARCH_CANCELING;
+    item->status = LW_SEARCHSTATUS_CANCELING;
     g_thread_join(item->thread);
     item->thread = NULL;
     g_mutex_free (item->mutex);
     item->mutex = NULL;
   }
-  lw_searchitem_do_post_search_clean (item);
+  lw_searchitem_cleanup_search (item);
   lw_queryline_free (item->queryline);
+  lw_searchitem_free_data (item);
   free (item);
   item = NULL;
 }
@@ -517,13 +515,13 @@ gboolean lw_searchitem_run_comparison (LwSearchItem *item, const LwRelevance REL
     ql = item->queryline;
 
     //Kanji radical dictionary search
-    switch (item->dictionary->engine)
+    switch (item->dictionary->type)
     {
-      case LW_ENGINE_EDICT:
+      case LW_DICTTYPE_EDICT:
         return _edict_existance_comparison (ql, rl, RELEVANCE);
-      case LW_ENGINE_KANJI:
+      case LW_DICTTYPE_KANJI:
         return _kanji_existance_comparison (ql, rl, RELEVANCE);
-      case LW_ENGINE_EXAMPLES:
+      case LW_DICTTYPE_EXAMPLES:
         return _edict_existance_comparison (ql, rl, RELEVANCE);
       default:
         return _edict_existance_comparison (ql, rl, RELEVANCE);
@@ -574,4 +572,57 @@ void lw_searchitem_increment_history_relevance_timer (LwSearchItem *item)
 gboolean lw_searchitem_has_history_relevance (LwSearchItem *item)
 {
   return (item != NULL && item->total_results && item->history_relevance_idle_timer >= LW_HISTORY_TIME_TO_RELEVANCE);
+}
+
+
+//!
+//! @brief Used to set custom search data (Such as Window or TextView pointers)
+//!
+void lw_searchitem_set_data (LwSearchItem *item, gpointer data, LwSearchItemDataFreeFunc free_data_func)
+{
+    item->data = data;
+    item->free_data_func = free_data_func;
+}
+
+
+//!
+//! @brief to retieve custom search data (Such as Window or TextView pointers)
+//!
+gpointer lw_searchitem_get_data (LwSearchItem *item)
+{
+    return item->data;
+}
+
+void lw_searchitem_free_data (LwSearchItem *item)
+{
+    if (item->free_data_func != NULL)
+      (item->free_data_func) ();
+}
+
+gboolean lw_searchitem_has_data (LwSearchItem *item)
+{
+    return (item->data != NULL);
+}
+
+
+void lw_searchitem_parse_result_string (LwSearchItem *item)
+{
+    switch (item->dictionary->type)
+    {
+        case LW_DICTTYPE_EDICT:
+          lw_resultline_parse_edict_result_string (item->resultline);
+          break;
+        case LW_DICTTYPE_KANJI:
+          lw_resultline_parse_kanjidict_result_string (item->resultline);
+          break;
+        case LW_DICTTYPE_EXAMPLES:
+          lw_resultline_parse_examplesdict_result_string (item->resultline);
+          break;
+        case LW_DICTTYPE_UNKNOWN:
+          lw_resultline_parse_unknowndict_result_string (item->resultline);
+          break;
+        default:
+          g_assert_not_reached ();
+          break;
+    }
 }

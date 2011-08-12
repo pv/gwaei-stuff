@@ -1,5 +1,5 @@
-#ifndef LW_SEARCHITEM_OBJECT_INCLUDED
-#define LW_SEARCHITEM_OBJECT_INCLUDED
+#ifndef LW_SEARCHITEM_INCLUDED
+#define LW_SEARCHITEM_INCLUDED
 /******************************************************************************
     AUTHOR:
     File written and Copyrighted by Zachary Dovel. All Rights Reserved.
@@ -22,15 +22,11 @@
 *******************************************************************************/
 
 //!
-//! @file src/include/libwaei/searchitem.h
+//! @file searchitem.h
 //!
 //! @brief To be written.
 //!
 //! To be written.
-//!
-
-//!
-//! Historylist targets
 //!
 
 #include <stdio.h>
@@ -40,27 +36,32 @@
 #include <libwaei/dictinfo.h>
 
 
+#define LW_SEARCHITEM(object) (LwSearchItem*) object
 #define LW_HISTORY_TIME_TO_RELEVANCE 20
 
 //!
-//! Search status types
+//! @brief Search status types
 //!
 typedef enum
 {
-  LW_SEARCH_IDLE,
-  LW_SEARCH_SEARCHING,
-  LW_SEARCH_FINISHING,
-  LW_SEARCH_CANCELING
-} LwSearchState;
+  LW_SEARCHSTATUS_IDLE,
+  LW_SEARCHSTATUS_SEARCHING,
+  LW_SEARCHSTATUS_FINISHING,
+  LW_SEARCHSTATUS_CANCELING
+} LwSearchStatus;
 
+//!
+//! @brief Used as a hint for output formatting
+//!
 typedef enum
 {
-  LW_TARGET_RESULTS,
-  LW_TARGET_KANJI,
-  LW_TARGET_ENTRY,
-  LW_TARGET_CONSOLE
-} LwTargetOutput;
+  LW_OUTPUTTARGET_RESULTS,
+  LW_OUTPUTTARGET_KANJI,
+  LW_OUTPUTTARGET_ENTRY,
+  LW_OUTPUTTARGET_VOCABULARY
+} LwOutputTarget;
 
+typedef void(*LwSearchItemDataFreeFunc)(void);
 
 //!
 //! @brief Primitive for storing search item information
@@ -74,9 +75,9 @@ struct _LwSearchItem {
     GThread *thread;                        //!< Thread the search is processed in
     GMutex *mutex;                          //!< Mutext to help ensure threadsafe operation
 
-    LwSearchState status;                   //!< Used to test if a search is in progress.
+    LwSearchStatus status;                   //!< Used to test if a search is in progress.
     char *scratch_buffer;                   //!< Scratch space
-    LwTargetOutput target;                  //!< What gui element should be outputted to
+    LwOutputTarget target;                  //!< What gui element should be outputted to
     long current_line;                      //!< Current line in the dictionary file
     int history_relevance_idle_timer;       //!< Helps determine if something is added to the history or not
     gboolean show_only_exact_matches;
@@ -92,31 +93,30 @@ struct _LwSearchItem {
     LwResultLine* backup_resultline;        //!< Result line kept for comparison purposes from previosu result line
     LwResultLine* swap_resultline;          //!< Swap space for swapping result line and backup_resultline
 
-    void (*lw_searchitem_parse_result_string)(LwResultLine*);                              //!< function pointer
-    void (*lw_searchitem_ui_append_results_to_output)(struct _LwSearchItem*);              //!< function pointer
-    void (*lw_searchitem_ui_append_less_relevant_header_to_output)(struct _LwSearchItem*); //!< function pointer
-    void (*lw_searchitem_ui_append_more_relevant_header_to_output)(struct _LwSearchItem*); //!< function pointer
-    void (*lw_searchitem_ui_pre_search_prep)(struct _LwSearchItem*);                       //!< function pointer
-    void (*lw_searchitem_ui_after_search_cleanup)(struct _LwSearchItem*);                  //!< function pointer
-
-    gpointer* target_tb;                 //!< Pointer to a buffer that stays constant unlike when the target attribute is used
-    gpointer* target_tv;                 //!< Pointer to a buffer that stays constant unlike when the target attribute is used
+    gpointer data;                 //!< Pointer to a buffer that stays constant unlike when the target attribute is used
+    LwSearchItemDataFreeFunc free_data_func;
 };
 typedef struct _LwSearchItem LwSearchItem;
 
 //Methods
-LwSearchItem* lw_searchitem_new (char*, LwDictInfo*, const int, GError **error);
+LwSearchItem* lw_searchitem_new (char*, LwDictInfo*, const LwOutputTarget, LwPrefManager*, GError**);
+void lw_searchitem_free (LwSearchItem*);
 
-void lw_searchitem_do_post_search_clean (LwSearchItem*);
-gboolean lw_searchitem_do_pre_search_prep (LwSearchItem*);
+void lw_searchitem_cleanup_search (LwSearchItem*);
+gboolean lw_searchitem_prepare_search (LwSearchItem*);
 
 gboolean lw_searchitem_run_comparison (LwSearchItem*, const LwRelevance);
 gboolean lw_searchitem_is_equal (LwSearchItem*, LwSearchItem*);
 gboolean lw_searchitem_has_history_relevance (LwSearchItem*);
 void lw_searchitem_increment_history_relevance_timer (LwSearchItem*);
 
+void lw_searchitem_set_data (LwSearchItem*, gpointer, LwSearchItemDataFreeFunc);
+gpointer lw_searchitem_get_data (LwSearchItem*);
+void lw_searchitem_free_data (LwSearchItem*);
+gboolean lw_searchitem_has_data (LwSearchItem*);
 
-void lw_searchitem_free (LwSearchItem*);
+void lw_searchitem_parse_result_string (LwSearchItem*);
+
 
 
 #endif

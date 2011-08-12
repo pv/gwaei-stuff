@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file src/engine.c
+//! @file engine.c
 //!
 //! @brief search logic
 //!
@@ -43,50 +43,61 @@
 
 #include <libwaei/libwaei.h>
 
-
-//Function pointers that should be set on program startup
-static void (*_output_append_edict_results)(LwSearchItem*) = NULL;
-static void (*_output_append_kanjidict_results)(LwSearchItem*) = NULL;
-static void (*_output_append_examplesdict_results)(LwSearchItem*) = NULL;
-static void (*_output_append_unknowndict_results)(LwSearchItem*) = NULL;
-
-static void (*_output_append_less_relevant_header)(LwSearchItem*) = NULL;
-static void (*_output_append_more_relevant_header)(LwSearchItem*) = NULL;
-static void (*_output_pre_search_prep)(LwSearchItem*) = NULL;
-static void (*_output_after_search_cleanup)(LwSearchItem*) = NULL;
+#include <libwaei/engine-data.h>
 
 
-LwOutputFunc lw_engine_get_append_edict_results_func ()
+void lw_engine_append_result (LwEngine* engine, LwSearchItem* item)
 {
-  return _output_append_edict_results;
+    switch (item->dictionary->type)
+    {
+      case LW_DICTTYPE_EDICT:
+        (engine->append_edict_result_cb) (item);
+        break;
+      case LW_DICTTYPE_KANJI:
+        (engine->append_kanjidict_result_cb) (item);
+        break;
+      case LW_DICTTYPE_EXAMPLES:
+        (engine->append_examplesdict_result_cb) (item);
+        break;
+      case LW_DICTTYPE_UNKNOWN:
+        (engine->append_unknowndict_result_cb) (item);
+        break;
+      default:
+        g_assert_not_reached ();
+        break;
+    }
 }
-LwOutputFunc lw_engine_get_append_kanjidict_results_func ()
+
+
+void lw_engine_append_less_relevant_header (LwEngine *engine, LwSearchItem *item)
 {
-  return _output_append_kanjidict_results;
+  (engine->append_less_relevant_header_cb) (item);
 }
-LwOutputFunc lw_engine_get_append_examplesdict_results_func ()
+
+
+void lw_engine_append_more_relevant_header (LwEngine *engine, LwSearchItem *item)
 {
-  return _output_append_examplesdict_results;
+  (engine->append_more_relevant_header_cb) (item);
 }
-LwOutputFunc lw_engine_get_append_unknowndict_results_func ()
+
+
+gboolean lw_engine_prepare_search (LwEngine *engine, LwSearchItem *item)
 {
-  return _output_append_unknowndict_results;
+    if (lw_searchitem_prepare_search (item) == FALSE)
+      return FALSE;
+
+    (engine->prepare_search_cb) (item);
+
+    item->show_only_exact_matches = TRUE;
+
+    return TRUE;
 }
-LwOutputFunc lw_engine_get_append_less_relevant_header_func ()
+
+
+void lw_engine_cleanup_search (LwEngine *engine, LwSearchItem *item)
 {
-  return _output_append_less_relevant_header;
-}
-LwOutputFunc lw_engine_get_append_more_relevant_header_func ()
-{
-  return _output_append_more_relevant_header;
-}
-LwOutputFunc lw_engine_get_pre_search_prep_func ()
-{
-  return _output_pre_search_prep;
-}
-LwOutputFunc lw_engine_get_after_search_cleanup_func ()
-{
-  return _output_after_search_cleanup;
+  (engine->cleanup_search_cb) (item);
+  lw_searchitem_cleanup_search (item);
 }
 
 
@@ -100,7 +111,7 @@ LwOutputFunc lw_engine_get_after_search_cleanup_func ()
 //! @param item a LwSearchItem
 //! @param results the result stored in a GList to free
 //!
-static void _append_stored_result_to_output (LwSearchItem *item, GList **results)
+static void _append_stored_result_to_output (LwEngine *engine, LwSearchItem *item, GList **results)
 {
     //Swap the lines
     item->swap_resultline = item->backup_resultline;
@@ -115,9 +126,9 @@ static void _append_stored_result_to_output (LwSearchItem *item, GList **results
     *results = g_list_delete_link(*results, *results);
       
     //Append to the buffer 
-    if (item->status != LW_SEARCH_CANCELING)
+    if (item->status != LW_SEARCHSTATUS_CANCELING)
     {
-      (*item->lw_searchitem_ui_append_results_to_output)(item);
+      lw_engine_append_result (engine, item);
     }
 }
 
@@ -156,7 +167,14 @@ static int _get_relevance (LwSearchItem *item) {
 //!
 static void _stream_results_thread (gpointer data)
 {
-    LwSearchItem *item = (LwSearchItem*) data;
+    LwEngineData *enginedata;
+    LwSearchItem *item;
+    LwEngine *engine;
+
+    enginedata = LW_ENGINEDATA (data);
+    engine = enginedata->engine;
+    item = enginedata->item;
+
     if (item == NULL || item->fd == NULL) return;
     char *line_pointer = NULL;
 
@@ -165,7 +183,7 @@ static void _stream_results_thread (gpointer data)
     //We loop, processing lines of the file until the max chunk size has been
     //reached or we reach the end of the file or a cancel request is recieved.
     while ((line_pointer = fgets(item->resultline->string, LW_IO_MAX_FGETS_LINE, item->fd)) != NULL &&
-           item->status != LW_SEARCH_CANCELING)
+           item->status != LW_SEARCHSTATUS_CANCELING)
     {
       //Give a chance for something else to run
       g_mutex_unlock (item->mutex);
@@ -188,12 +206,8 @@ static void _stream_results_thread (gpointer data)
         strcat(item->resultline->string, ":");
         strcat(item->resultline->string, item->scratch_buffer);
       }
-      (*item->lw_searchitem_parse_result_string)(item->resultline);
+      lw_searchitem_parse_result_string (item);
 
-      //Update the progress feeback
-
-//      if (item->target_tb == (gpointer*) get_gobject_from_target(item->target))
-//        lw_ui_verb_check_with_suggestion (item);
 
       //Results match, add to the text buffer
       if (lw_searchitem_run_comparison (item, LW_RELEVANCE_LOW))
@@ -206,9 +220,9 @@ static void _stream_results_thread (gpointer data)
               {
                 item->total_results++;
                 item->total_relevant_results++;
-                if (item->target != LW_TARGET_KANJI)
-                  (*item->lw_searchitem_ui_append_more_relevant_header_to_output)(item);
-                (*item->lw_searchitem_ui_append_results_to_output)(item);
+                if (item->target != LW_OUTPUTTARGET_KANJI)
+                  lw_engine_append_more_relevant_header (engine, item);
+                lw_engine_append_result (engine, item);
 
                 //Swap the result lines
                 item->swap_resultline = item->backup_resultline;
@@ -220,7 +234,7 @@ static void _stream_results_thread (gpointer data)
           case LW_RELEVANCE_MEDIUM:
               if (item->total_irrelevant_results < LW_MAX_MEDIUM_IRRELIVENT_RESULTS &&
                   !item->show_only_exact_matches && 
-                   (item->swap_resultline = lw_resultline_new ()) != NULL && item->target != LW_TARGET_KANJI)
+                   (item->swap_resultline = lw_resultline_new ()) != NULL && item->target != LW_OUTPUTTARGET_KANJI)
               {
                 //Store the result line and create an empty one in its place
                 item->total_irrelevant_results++;
@@ -232,7 +246,7 @@ static void _stream_results_thread (gpointer data)
           default:
               if (item->total_irrelevant_results < LW_MAX_LOW_IRRELIVENT_RESULTS &&
                     !item->show_only_exact_matches && 
-                   (item->swap_resultline = lw_resultline_new ()) != NULL && item->target != LW_TARGET_KANJI)
+                   (item->swap_resultline = lw_resultline_new ()) != NULL && item->target != LW_OUTPUTTARGET_KANJI)
               {
                 //Store the result line and create an empty one in its place
                 item->total_irrelevant_results++;
@@ -246,20 +260,20 @@ static void _stream_results_thread (gpointer data)
     }
 
     //Make sure the more relevant header banner is visible
-    if (item->status != LW_SEARCH_CANCELING)
+    if (item->status != LW_SEARCHSTATUS_CANCELING)
     {
-      if (item->target != LW_TARGET_KANJI && item->total_results > 0)
-        (*item->lw_searchitem_ui_append_more_relevant_header_to_output)(item);
+      if (item->target != LW_OUTPUTTARGET_KANJI && item->total_results > 0)
+        lw_engine_append_more_relevant_header (engine, item);
 
       if (item->results_medium != NULL || item->results_low != NULL)
-        (*item->lw_searchitem_ui_append_less_relevant_header_to_output)(item);
+        lw_engine_append_less_relevant_header (engine, item);
     }
 
     //Append the medium relevent results
     while (item->results_medium != NULL)
     {
       item->total_results++;
-      _append_stored_result_to_output(item, &(item->results_medium));
+      _append_stored_result_to_output (engine, item, &(item->results_medium));
       //Update the progress feeback
 
       //Give a chance for something else to run
@@ -271,7 +285,7 @@ static void _stream_results_thread (gpointer data)
     while (item->results_low != NULL)
     {
       item->total_results++;
-      _append_stored_result_to_output(item, &(item->results_low));
+      _append_stored_result_to_output (engine, item, &(item->results_low));
       //Update the progress feeback
 
       //Give a chance for something else to run
@@ -280,8 +294,7 @@ static void _stream_results_thread (gpointer data)
     }
 
     //Cleanup
-    (*item->lw_searchitem_ui_after_search_cleanup)(item);
-    lw_searchitem_do_post_search_clean (item);
+    lw_engine_cleanup_search (engine, item);
 
     g_mutex_unlock (item->mutex);
 }
@@ -296,17 +309,9 @@ static void _stream_results_thread (gpointer data)
 //!
 //! @param item a LwSearchItem argument.
 //!
-void lw_engine_get_results (LwSearchItem *item, gboolean create_thread, gboolean only_exact_matches)
+void lw_engine_get_results (LwEngine *engine, LwSearchItem *item, gboolean create_thread)
 {
-    if (lw_searchitem_do_pre_search_prep (item) == FALSE)
-    {
-      lw_searchitem_free(item);
-      return;
-    }
-
-    (*item->lw_searchitem_ui_pre_search_prep) (item);
-
-    if (only_exact_matches) item->show_only_exact_matches = TRUE;
+    if (!lw_engine_prepare_search (engine, item)) return;
 
     //Start the search
     if (create_thread)
@@ -325,39 +330,43 @@ void lw_engine_get_results (LwSearchItem *item, gboolean create_thread, gboolean
 }
 
 
-void lw_engine_initialize (
-                                     void (*append_edict_results)(LwSearchItem*),
-                                     void (*append_kanjidict_results)(LwSearchItem*),
-                                     void (*append_examplesdict_results)(LwSearchItem*),
-                                     void (*append_unknowndict_results)(LwSearchItem*),
-                                     void (*append_less_relevant_header)(LwSearchItem*),
-                                     void (*append_more_relevant_header)(LwSearchItem*),
-                                     void (*pre_search_prep)(LwSearchItem*),
-                                     void (*after_search_cleanup)(LwSearchItem*)
-                                    )
+LwEngine* lw_engine_new (
+    void (*append_edict_result_cb)(LwSearchItem*),
+    void (*append_kanjidict_result_cb)(LwSearchItem*),
+    void (*append_examplesdict_result_cb)(LwSearchItem*),
+    void (*append_unknowndict_result_cb)(LwSearchItem*),
+    void (*append_less_relevant_header_cb)(LwSearchItem*),
+    void (*append_more_relevant_header_cb)(LwSearchItem*),
+    void (*prepare_search_cb)(LwSearchItem*),
+    void (*cleanup_search_cb)(LwSearchItem*)
+)
 {
-    _output_append_edict_results = append_edict_results;
-    _output_append_kanjidict_results = append_kanjidict_results;
-    _output_append_examplesdict_results =  append_examplesdict_results;
-    _output_append_unknowndict_results = append_unknowndict_results;
+    lw_regex_initialize ();
 
-    _output_append_less_relevant_header = append_less_relevant_header;
-    _output_append_more_relevant_header = append_more_relevant_header;
-    _output_pre_search_prep = pre_search_prep;
-    _output_after_search_cleanup = after_search_cleanup;
+    LwEngine *temp;
+
+    temp = (LwEngine*) malloc(sizeof(LwEngine));
+
+    if (temp != NULL)
+    {
+      temp->append_edict_result_cb = append_edict_result_cb;
+      temp->append_kanjidict_result_cb = append_kanjidict_result_cb;
+      temp->append_examplesdict_result_cb =  append_examplesdict_result_cb;
+      temp->append_unknowndict_result_cb = append_unknowndict_result_cb;
+
+      temp->append_less_relevant_header_cb = append_less_relevant_header_cb;
+      temp->append_more_relevant_header_cb = append_more_relevant_header_cb;
+      temp->prepare_search_cb = prepare_search_cb;
+      temp->cleanup_search_cb = cleanup_search_cb;
+    }
+
+    return temp;
 }
 
-void lw_engine_free ()
+void lw_engine_free (LwEngine *engine)
 {
-    _output_append_edict_results = NULL;
-    _output_append_kanjidict_results = NULL;
-    _output_append_examplesdict_results = NULL;
-    _output_append_unknowndict_results = NULL;
-
-    _output_append_less_relevant_header = NULL;
-    _output_append_more_relevant_header = NULL;
-    _output_pre_search_prep = NULL;
-    _output_after_search_cleanup = NULL;
+    free (engine);
+    lw_regex_free ();
 }
 
 

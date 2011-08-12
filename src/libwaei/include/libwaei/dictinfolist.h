@@ -1,5 +1,5 @@
-#ifndef LW_DICTLIST_OBJECT_INCLUDED
-#define LW_DICTLIST_OBJECT_INCLUDED
+#ifndef LW_DICTINFOLIST_INCLUDED
+#define LW_DICTINFOLIST_INCLUDED
 /******************************************************************************
     AUTHOR:
     File written and Copyrighted by Zachary Dovel. All Rights Reserved.
@@ -31,41 +31,40 @@
 
 #include <libwaei/dictinfo.h>
 
-#define LW_DICTLIST_MAX_DICTIONARIES 20
+#define LW_DICTINFOLIST(object) (LwDictInfoList*) object
+
+#define LW_EXTENDS_DICTINFOLIST \
+  GList *list; \
+  GMutex *mutex; \
+  int max;
 
 //!
 //! @brief Primitive for storing lists of dictionaries
 //!
-struct _LwDictList
+struct _LwDictInfoList
 {
-    GList *list;      //!< GList of the installed dictionaries
-    GList *selected;  //!< Pointer to the currently selected dictionary in the GList
-    GMutex *mutex;
+  LW_EXTENDS_DICTINFOLIST
 };
-typedef struct _LwDictList LwDictList;
+typedef struct _LwDictInfoList LwDictInfoList;
 
 
-GList* lw_dictinfolist_get_list (void);
-GList* lw_dictinfolist_get_selected (void);
-LwDictInfo* lw_dictinfolist_get_selected_dictinfo (void);
+LwDictInfoList* lw_dictinfolist_new (const int, LwPrefManager*);
+void lw_dictinfolist_free (LwDictInfoList*);
 
+void lw_dictinfolist_add_dictionary (LwDictInfoList*, const LwDictType, const char*);
 
-void lw_dictinfolist_initialize (void);
-void lw_dictinfolist_free ();
+LwDictInfo* lw_dictinfolist_get_dictinfo (LwDictInfoList*, const LwDictType, const char*);
+LwDictInfo* lw_dictinfolist_get_dictinfo_by_filename (LwDictInfoList*, const char*);
+LwDictInfo* lw_dictinfolist_get_dictinfo_by_idstring (LwDictInfoList*, const char*);
+LwDictInfo* lw_dictinfolist_get_dictinfo_fuzzy (LwDictInfoList*, const char*);
+LwDictInfo* lw_dictinfolist_get_dictinfo_by_load_position (LwDictInfoList*, int);
+gboolean lw_dictinfolist_check_if_loaded (LwDictInfoList*, const LwDictType, const char*);
+void lw_dictinfolist_update_load_orders (LwDictInfoList*);
+int lw_dictinfolist_get_total (LwDictInfoList*);
 
-LwDictInfo* lw_dictinfolist_get_dictinfo (const LwEngine, const char*);
-LwDictInfo* lw_dictinfolist_get_dictinfo_by_filename (const char*);
-LwDictInfo* lw_dictinfolist_get_dictinfo_by_idstring (const char*);
-LwDictInfo* lw_dictinfolist_get_dictinfo_fuzzy (const char*);
-GList* lw_dictinfolist_get_dict_by_load_position (int);
-GList* lw_dictinfolist_set_selected_by_load_position (int);
-gboolean lw_dictinfolist_check_if_loaded (const LwEngine, const char*);
-void lw_dictinfolist_update_load_orders (void);
-int lw_dictinfolist_get_total (void);
-
-void lw_dictinfolist_preform_postprocessing_by_name (char*, GError**);
-void lw_dictinfolist_load_dictionary_order_from_pref (void);
-void lw_dictinfolist_save_dictionary_order_pref (void);
+void lw_dictinfolist_preform_postprocessing_by_name (LwDictInfoList*, char*, GError**);
+void lw_dictinfolist_load_dictionary_order_from_pref (LwDictInfoList*, LwPrefManager*);
+void lw_dictinfolist_save_dictionary_order_pref (LwDictInfoList*, LwPrefManager*);
 
 
 

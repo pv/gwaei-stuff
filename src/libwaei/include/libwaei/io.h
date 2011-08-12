@@ -3,7 +3,6 @@
 
 #include <glib.h>
 
-
 #define LW_IO_MAX_FGETS_LINE 5000
 #define LW_IO_ERROR "libwaei generic error"
 
@@ -25,7 +24,7 @@ typedef enum  {
 } LwIoErrorTypes;
 
 void lw_io_write_file (const char*, const char*, gchar*, LwIoProgressCallback, gpointer, GError**);
-char** lw_io_get_dictionary_file_list (void);
+char** lw_io_get_dictionary_file_list (const int);
 size_t lw_io_get_filesize (const char*);
 
 gboolean lw_io_create_mix_dictionary (const char*, const char*, const char*, LwIoProgressCallback, gpointer, GError**);

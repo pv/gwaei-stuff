@@ -32,42 +32,7 @@
 #include <locale.h>
 #include <libintl.h>
 
-#include <curl/curl.h>
 #include <glib.h>
 #include <glib-object.h>
 
 #include <libwaei/libwaei.h>
-
-
-void lw_initialize (int *argc, char* argv[])
-{
-    //Setup for localized messages
-    setlocale(LC_MESSAGES, "");
-    setlocale(LC_CTYPE, "");
-    setlocale(LC_COLLATE, "");
-
-    bindtextdomain(PACKAGE, GWAEI_LOCALEDIR);
-    bind_textdomain_codeset (PACKAGE, "UTF-8");
-    textdomain(PACKAGE);
-
-    g_thread_init (NULL);
-
-    g_type_init ();
-    curl_global_init (CURL_GLOBAL_ALL);
-
-    lw_regex_initialize ();
-    lw_pref_initialize ();
-    lw_dictinfolist_initialize ();
-    lw_dictinstlist_initialize ();
-    lw_historylist_initialize ();
-}
-
-
-void lw_free ()
-{
-    lw_historylist_free ();
-    lw_dictinstlist_free ();
-    lw_dictinfolist_free ();
-    lw_pref_free ();
-    lw_regex_free ();
-}

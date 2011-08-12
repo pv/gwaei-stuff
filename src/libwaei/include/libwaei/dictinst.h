@@ -1,5 +1,9 @@
-#ifndef LW_DICTINST_HEADER_INCLUDED
-#define LW_DICTINST_HEADER_INCLUDED
+#ifndef LW_DICTINST_INCLUDED
+#define LW_DICTINST_INCLUDED
+
+#include <libwaei/dict.h>
+
+#define LW_DICTINST(object) (LwDictInst*) object
 
 #define LW_DICTINST_ERROR "gWaei Dictionary Installer Error"
 
@@ -21,13 +25,12 @@ typedef enum {
 
 
 struct _LwDictInst {
-  char *filename;
-  char *shortname;
-  char *longname;
+  EXTENDS_LW_DICT
   char *description;
   char *uri[LW_DICTINST_TOTAL_URIS];
   double progress;
   gboolean selected;
+  LwPrefManager *pm;
   char *schema;
   char *key;
   gboolean builtin;
@@ -35,7 +38,6 @@ struct _LwDictInst {
   gboolean listenerid_is_set;   //!< Allows disconnecting the signal on destruction of the LwDictInst
   LwCompression compression;    //!< Path to the gziped dictionary file
   LwEncoding encoding;          //!< Path to the raw unziped dictionary file
-  LwEngine engine;
   LwDictInstUri uri_group_index;
   int uri_atom_index;
   char **current_source_uris;
@@ -50,9 +52,10 @@ LwDictInst* lw_dictinst_new_using_pref_uri (const char*,
                                             const char*,
                                             const char*,
                                             const char*,
+                                            LwPrefManager*,
                                             const char*,
                                             const char*,
-                                            const LwEngine,
+                                            const LwDictType,
                                             const LwCompression,
                                             const LwEncoding,
                                             gboolean, gboolean, gboolean);
@@ -62,7 +65,7 @@ LwDictInst* lw_dictinst_new (const char*,
                              const char*,
                              const char*,
                              const char*,
-                             const LwEngine,
+                             const LwDictType,
                              const LwCompression,
                              const LwEncoding,
                              gboolean, gboolean, gboolean);
@@ -70,7 +73,7 @@ LwDictInst* lw_dictinst_new (const char*,
 void lw_dictinst_free (LwDictInst*);
 
 void lw_dictinst_set_filename (LwDictInst*, const char*);
-void lw_dictinst_set_engine (LwDictInst*, const LwEngine);
+void lw_dictinst_set_type (LwDictInst*, const LwDictType);
 void lw_dictinst_set_encoding (LwDictInst*, const LwEncoding);
 void lw_dictinst_set_compression (LwDictInst*, const LwCompression);
 void lw_dictinst_set_download_source (LwDictInst*, const char*);

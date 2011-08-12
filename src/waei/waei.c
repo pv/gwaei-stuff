@@ -36,32 +36,71 @@
 
 #include <waei/waei.h>
 
-static gboolean _quiet_switch = FALSE;
-static gboolean _exact_switch = FALSE;
-static gboolean _list_switch = FALSE;
-static gboolean _version_switch = FALSE;
+
+WApplication *app;
+
+
+WApplication* w_app_new (int *argc, char** argv[])
+{
+    WApplication *temp;
+
+    temp = (WApplication*) malloc (sizeof(WApplication));
+
+    if (temp != NULL)
+    {
+      setlocale(LC_MESSAGES, "");
+      setlocale(LC_CTYPE, "");
+      setlocale(LC_COLLATE, "");
+
+      bindtextdomain(PACKAGE, LOCALEDIR);
+      bind_textdomain_codeset (PACKAGE, "UTF-8");
+      textdomain(PACKAGE);
+
+      g_thread_init (NULL);
+      g_type_init ();
+
+
+      temp->quiet_switch = FALSE;
+      temp->exact_switch = FALSE;
+      temp->list_switch = FALSE;
+      temp->version_switch = FALSE;
 #ifdef WITH_NCURSES
-static gboolean _ncurses_switch = FALSE;
+      temp->ncurses_switch = FALSE;
 #endif
-static gboolean _color_switch = FALSE;
+      temp->color_switch = FALSE;
 
-static char* _dictionary_switch_data = NULL;
-static char* _install_switch_data = NULL;
-static char* _uninstall_switch_data = NULL;
-static char* _query_text_data = NULL;
-static GOptionContext *_context = NULL;
+      temp->dictionary_switch_data = NULL;
+      temp->install_switch_data = NULL;
+      temp->uninstall_switch_data = NULL;
+      temp->query_text_data = NULL;
+      temp->context = NULL;
 
+      w_app_parse_args (temp, argc, argv);
 
+      temp->engine = lw_engine_new (
+          w_console_append_edict_result_cb,
+          w_console_append_kanjidict_result_cb,
+          w_console_append_examplesdict_result_cb,
+          w_console_append_unknowndict_result_cb,
+          w_console_append_less_relevant_header_cb,
+          w_console_append_more_relevant_header_cb,
+          w_console_prepare_search_cb,
+          w_console_cleanup_search_cb
+      );
+
+      temp->prefmanager = lw_prefmanager_new ();
+      temp->dictinstlist = lw_dictinstlist_new (temp->prefmanager);
+      temp->dictinfolist = lw_dictinfolist_new (20, temp->prefmanager);
+    }
+
+    return temp;
+}
 
 //!
 //! @brief Initializes the memory associated with waei.c
 //!
-void w_initialize (int* argc, char* argv[])
+void w_app_parse_args (WApplication* app, int* argc, char** argv[])
 {
-    bindtextdomain(PACKAGE, LOCALEDIR);
-    bind_textdomain_codeset(PACKAGE, "UTF-8");
-    textdomain(PACKAGE);
-
     //Declarations
     GError *error;
     char *summary_text;
@@ -69,7 +108,7 @@ void w_initialize (int* argc, char* argv[])
 
     //Initializations
     error = NULL;
-    _context = g_option_context_new (gettext("- A dictionary program for Japanese-English translation."));
+    app->context = g_option_context_new (gettext("- A dictionary program for Japanese-English translation."));
     summary_text = gettext("waei generally outputs directly to the console.  "
                            "If you want to do multiple\nsearches, please start"
                            " gWaei with the -n switch for the multisearch mode.");
@@ -91,36 +130,27 @@ void w_initialize (int* argc, char* argv[])
     );
     GOptionEntry entries[] = {
 #ifdef WITH_NCURSES
-      { "ncurses", 'n', 0, G_OPTION_ARG_NONE, &_ncurses_switch, gettext("Open up the multisearch window"), NULL },
+      { "ncurses", 'n', 0, G_OPTION_ARG_NONE, &(app->ncurses_switch), gettext("Open up the multisearch window"), NULL },
 #endif
-      { "exact", 'e', 0, G_OPTION_ARG_NONE, &_exact_switch, gettext("Do not display less relevant results"), NULL },
-      { "quiet", 'q', 0, G_OPTION_ARG_NONE, &_quiet_switch, gettext("Display less information"), NULL },
-      { "color", 'c', 0, G_OPTION_ARG_NONE, &_color_switch, gettext("Display results with color"), NULL },
-      { "dictionary", 'd', 0, G_OPTION_ARG_STRING, &_dictionary_switch_data, gettext("Search using a chosen dictionary"), NULL },
-      { "list", 'l', 0, G_OPTION_ARG_NONE, &_list_switch, gettext("Show available dictionaries for searches"), NULL },
-      { "install", 'i', 0, G_OPTION_ARG_STRING, &_install_switch_data, gettext("Install dictionary"), NULL },
-      { "uninstall", 'u', 0, G_OPTION_ARG_STRING, &_uninstall_switch_data, gettext("Uninstall dictionary"), NULL },
-      { "version", 'v', 0, G_OPTION_ARG_NONE, &_version_switch, gettext("Check the waei version information"), NULL },
+      { "exact", 'e', 0, G_OPTION_ARG_NONE, &(app->exact_switch), gettext("Do not display less relevant results"), NULL },
+      { "quiet", 'q', 0, G_OPTION_ARG_NONE, &(app->quiet_switch), gettext("Display less information"), NULL },
+      { "color", 'c', 0, G_OPTION_ARG_NONE, &(app->color_switch), gettext("Display results with color"), NULL },
+      { "dictionary", 'd', 0, G_OPTION_ARG_STRING, &(app->dictionary_switch_data), gettext("Search using a chosen dictionary"), NULL },
+      { "list", 'l', 0, G_OPTION_ARG_NONE, &(app->list_switch), gettext("Show available dictionaries for searches"), NULL },
+      { "install", 'i', 0, G_OPTION_ARG_STRING, &(app->install_switch_data), gettext("Install dictionary"), NULL },
+      { "uninstall", 'u', 0, G_OPTION_ARG_STRING, &(app->uninstall_switch_data), gettext("Uninstall dictionary"), NULL },
+      { "version", 'v', 0, G_OPTION_ARG_NONE, &(app->version_switch), gettext("Check the waei version information"), NULL },
       { NULL }
     };
 
-    g_option_context_set_description (_context, description_text);
-    g_option_context_set_summary (_context, summary_text);
-    g_option_context_add_main_entries (_context, entries, PACKAGE);
-    g_option_context_parse (_context, argc, &argv, &error);
+    g_option_context_set_description (app->context, description_text);
+    g_option_context_set_summary (app->context, summary_text);
+    g_option_context_add_main_entries (app->context, entries, PACKAGE);
+    g_option_context_parse (app->context, argc, argv, &error);
 
-    _query_text_data = lw_util_get_query_from_args (*argc, argv);
-
-    lw_engine_initialize (
-                         w_console_append_edict_results_to_buffer,
-                         w_console_append_kanjidict_results_to_buffer,
-                         w_console_append_examplesdict_results_to_buffer,
-                         w_console_append_unknowndict_results_to_buffer,
-                         w_console_append_less_relevant_header_to_output,
-                         w_console_append_more_relevant_header_to_output,
-                         w_console_pre_search_prep,
-                         w_console_after_search_cleanup
-                        );
+    if (app->query_text_data != NULL)
+      g_free (app->query_text_data);
+    app->query_text_data = lw_util_get_query_from_args (*argc, *argv);
 
     //Cleanup
     g_free (description_text);
@@ -128,7 +158,7 @@ void w_initialize (int* argc, char* argv[])
     //Error handling
     if (error != NULL)
     {
-      printf("%s\n", error->message);
+      fprintf(stderr, "%s\n", error->message);
       g_error_free (error);
       error = NULL;
       exit (EXIT_FAILURE);
@@ -140,11 +170,15 @@ void w_initialize (int* argc, char* argv[])
 //!
 //! @brief Frees the memory associated with waei.c
 //!
-void w_free ()
+void w_app_free (WApplication *app)
 {
-    lw_engine_free ();
-    free (_query_text_data);
-    g_option_context_free (_context);
+    lw_dictinfolist_free (app->dictinfolist);
+    lw_dictinstlist_free (app->dictinstlist);
+    lw_prefmanager_free (app->prefmanager);
+    lw_engine_free (app->engine);
+    free (app->query_text_data);
+    g_option_context_free (app->context);
+    free (app);
 }
 
 
@@ -153,7 +187,7 @@ void w_free ()
 //! @param argc Your argc from your main function
 //! @param argv Your array of strings from main
 //!
-int w_start_console (int argc, char* argv[])
+int w_app_start_console (WApplication *app)
 {
     //Declarations
     GError *error;
@@ -164,33 +198,33 @@ int w_start_console (int argc, char* argv[])
     resolution = 0;
 
     //User wants to see what dictionaries are available
-    if (_list_switch)
-      w_console_list ();
+    if (app->list_switch)
+      w_console_list (app);
 
     //User wants to see the version of waei
-    else if (_version_switch)
-      w_console_about ();
+    else if (app->version_switch)
+      w_console_about (app);
 
     //User wants to install a dictionary
-    else if (_install_switch_data != NULL)
-      resolution = w_console_install_dictinst (_install_switch_data, &error);
+    else if (app->install_switch_data != NULL)
+      resolution = w_console_install_dictinst (app, &error);
 
     //User wants to uninstall a dictionary
-    else if (_uninstall_switch_data != NULL)
-      resolution = w_console_uninstall_dictinfo (_uninstall_switch_data, &error);
+    else if (app->uninstall_switch_data != NULL)
+      resolution = w_console_uninstall_dictinfo (app, &error);
 
     //User wants to do a search
-    else if (_query_text_data != NULL)
-      resolution = w_console_search (_query_text_data, _dictionary_switch_data, _quiet_switch, _exact_switch, &error);
+    else if (app->query_text_data != NULL)
+      resolution = w_console_search (app, &error);
 
     //User didn't specify enough information for an action
     else 
-      printf("%s\n", g_option_context_get_help (_context, TRUE, NULL));
+      printf("%s\n", g_option_context_get_help (app->context, TRUE, NULL));
 
     //Cleanup
     if (error != NULL)
-      w_console_handle_error (&error);
-    else if (_quiet_switch == FALSE)
+      w_console_handle_error (app, &error);
+    else if (app->quiet_switch == FALSE)
       printf("\nDone\n\n");
 
     return resolution;
@@ -228,30 +262,20 @@ int main (int argc, char *argv[])
 {    
     //Declarations
     int resolution;
-
-    //Initializations
-    lw_initialize (&argc, argv);
-    w_initialize (&argc, argv);
+    app = w_app_new (&argc, &argv);
 
 #ifdef WITH_NCURSES
     //Start the program
-    if (_ncurses_switch)
-      resolution = w_start_ncurses (argc, argv);
+    if (app->ncurses_switch)
+      resolution = w_app_start_ncurses (app);
     else
 #endif
-      resolution = w_start_console (argc, argv);
+      resolution = w_app_start_console (app);
 
-    //Cleanup
-    w_free ();
-    lw_free();
-
+    w_app_free (app);
     return resolution;
 }
 
 
-gboolean w_get_color_switch ()
-{
-  return _color_switch;
-}
 
 

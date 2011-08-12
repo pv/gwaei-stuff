@@ -1,1 +1,1 @@
-noinst_HEADERS = waei.h console.h ncurses.h
+noinst_HEADERS = waei.h console.h console-callbacks.h ncurses.h

@@ -32,6 +32,7 @@
 #include <string.h>
 #include <locale.h>
 #include <libintl.h>
+#include <stdlib.h>
 
 #include <gtk/gtk.h>
 
@@ -39,18 +40,61 @@
 
 
 //!
+//! @brief Sets the initial status of the dictionaries in the settings dialog
+//!
+GwSettingsWindow* gw_settingswindow_new (int page) 
+{
+    GwSettingsWindow *temp;
+    GtkWidget *notebook;
+
+    temp = (GwSettingsWindow*) malloc(sizeof(GwSettingsWindow));
+
+    if (temp != NULL)
+    {
+      temp->builder = gtk_builder_new ();
+      gw_common_load_ui_xml (temp->builder, "settings.ui");
+      temp->window = GTK_WINDOW (gtk_builder_get_object (temp->builder, "settings_window"));
+
+      gw_settings_listeners_initialize ();
+
+      notebook = GTK_WIDGET (gtk_builder_get_object (temp->builder, "settings_notebook"));
+      gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), page);
+
+      gw_settingswindow_update_interface (temp);
+      gtk_widget_show (GTK_WIDGET (temp->window));
+
+      gw_app_cancel_all_searches (app);
+    }
+
+    return temp;
+}
+
+
+//!
+//! @brief Frees the memory used by the settings
+//!
+void gw_settingswindow_destroy (GwSettingsWindow *settings)
+{
+    gw_settings_listeners_free ();
+
+    gtk_widget_destroy (GTK_WIDGET (settings->window));
+    g_object_unref (settings->builder);
+    free(settings);
+}
+
+
+
+//!
 //! @brief Disables portions of the interface depending on the currently queued jobs.
 //!
-G_MODULE_EXPORT void gw_settings_update_interface ()
+G_MODULE_EXPORT void gw_settingswindow_update_interface (GwSettingsWindow *settings)
 {
     //Declarations
-    GtkBuilder *builder;
     GtkWidget *message;
     GList *list;
 
     //Initializations
-    builder = gw_common_get_builder ();
-    message = GTK_WIDGET (gtk_builder_get_object (builder, "please_install_dictionary_hbox"));
+    message = GTK_WIDGET (gtk_builder_get_object (settings->builder, "please_install_dictionary_hbox"));
     list = lw_dictinfolist_get_list ();
 
     //Set the show state of the dictionaries required message
@@ -77,51 +121,19 @@ void gw_settings_set_dictionary_source (GtkWidget *widget, const char* value)
 
 
 //!
-//! @brief Sets the initial status of the dictionaries in the settings dialog
-//!
-void gw_settings_initialize () 
-{
-    gw_common_load_ui_xml ("settings.ui");
-    gw_settings_listeners_initialize ();
-    gw_settings_update_interface ();
-}
-
-
-//!
-//! @brief Frees the memory used by the settings
-//!
-void gw_settings_free ()
-{
-    //Declarations
-    GtkBuilder *builder;
-    GtkWidget *window;
-
-    //Initializations
-    builder = gw_common_get_builder ();
-    window = GTK_WIDGET (gtk_builder_get_object (builder, "settings_window"));
-
-    //Free things
-    gw_settings_listeners_free ();
-    gtk_widget_destroy (window);
-}
-
-
-//!
 //! @brief Sets the state of the use global document font checkbox without triggering the signal handler
 //!
 //! @param setting The new checked state for the use global document font checkbox 
 //!
-void gw_settings_set_use_global_document_font_checkbox (gboolean setting)
+void gw_settingswindow_set_use_global_document_font_checkbox (GwSettingsWindow *settings, gboolean setting)
 {
     //Declarations
-    GtkBuilder *builder;
     GtkWidget *checkbox;
     GtkWidget *hbox;
 
     //Initializations
-    builder = gw_common_get_builder ();
-    checkbox = GTK_WIDGET (gtk_builder_get_object (builder, "system_font_checkbox"));
-    hbox = GTK_WIDGET (gtk_builder_get_object (builder, "system_document_font_hbox"));
+    checkbox = GTK_WIDGET (gtk_builder_get_object (settings->builder, "system_font_checkbox"));
+    hbox = GTK_WIDGET (gtk_builder_get_object (settings->builder, "system_document_font_hbox"));
 
     //Updates
     g_signal_handlers_block_by_func (checkbox, gw_settings_use_global_document_font_toggled_cb, NULL);
@@ -138,16 +150,14 @@ void gw_settings_set_use_global_document_font_checkbox (gboolean setting)
 //!
 //! @param font_description_string The font description in the form "Sans 10"
 //!
-void gw_settings_update_global_font_label (const char *font_description_string)
+void gw_settingswindow_update_global_font_label (GwSettingsWindow *settings, const char *font_description_string)
 {
     //Declarations
-    GtkBuilder *builder;
     GtkWidget *checkbox;
     char *text;
 
     //Initializations
-    builder = gw_common_get_builder ();
-    checkbox = GTK_WIDGET (gtk_builder_get_object (builder, "system_font_checkbox"));
+    checkbox = GTK_WIDGET (gtk_builder_get_object (settings->builder, "system_font_checkbox"));
     text = g_strdup_printf (gettext("_Use the System Document Font (%s)"), font_description_string);
 
     //Body
@@ -163,15 +173,13 @@ void gw_settings_update_global_font_label (const char *font_description_string)
 //!
 //! @param font_description_string The font description in the form "Sans 10"
 //!
-void gw_settings_update_custom_font_button (const char *font_description_string)
+void gw_settingswindow_update_custom_font_button (GwSettingsWindow *settings, const char *font_description_string)
 {
     //Declarations
-    GtkBuilder *builder;
     GtkWidget *button;
 
     //Initializations
-    builder = gw_common_get_builder ();
-    button = GTK_WIDGET (gtk_builder_get_object (builder, "custom_font_fontbutton"));
+    button = GTK_WIDGET (gtk_builder_get_object (settings->builder, "custom_font_fontbutton"));
 
     //Body
     gtk_font_button_set_font_name (GTK_FONT_BUTTON (button), font_description_string);
@@ -183,15 +191,13 @@ void gw_settings_update_custom_font_button (const char *font_description_string)
 //!
 //! @param request How to set the toolbar
 //!
-void gw_settings_set_search_as_you_type (gboolean request)
+void gw_settingswindow_set_search_as_you_type (GwSettingsWindow *settings, gboolean request)
 {
     //Declarations
-    GtkBuilder *builder;
     GtkWidget *checkbox;
 
     //Initializations
-    builder = gw_common_get_builder ();
-    checkbox = GTK_WIDGET (gtk_builder_get_object(builder, "search_as_you_type_checkbox"));
+    checkbox = GTK_WIDGET (gtk_builder_get_object(settings->builder, "search_as_you_type_checkbox"));
 
     g_signal_handlers_block_by_func (checkbox, gw_settings_search_as_you_type_toggled_cb, NULL);
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), request);
@@ -203,15 +209,13 @@ void gw_settings_set_search_as_you_type (gboolean request)
 //!
 //! @param request How to set the toolbar
 //!
-gboolean gw_settings_get_search_as_you_type ()
+gboolean gw_settingswindow_get_search_as_you_type (GwSettingsWindow *settings)
 {
     //Declarations
-    GtkBuilder *builder;
     GtkWidget *checkbox;
 
     //Initializations
-    builder = gw_common_get_builder ();
-    checkbox = GTK_WIDGET (gtk_builder_get_object(builder, "search_as_you_type_checkbox"));
+    checkbox = GTK_WIDGET (gtk_builder_get_object(settings->builder, "search_as_you_type_checkbox"));
 
     return gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (checkbox));
 }

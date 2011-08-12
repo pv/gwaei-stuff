@@ -50,7 +50,7 @@ static void _update_dictinst_source_uri_cb (GSettings *settings, char* key, gpoi
     LwDictInst *di = (LwDictInst*) data;
     char source_uri[200];
 
-    lw_pref_get_string_by_schema (source_uri, di->schema, di->key, 200);
+    lw_prefmanager_get_string (source_uri, settings, key, 200);
     g_free (di->uri[LW_DICTINST_NEEDS_DOWNLOADING]);
     di->uri[LW_DICTINST_NEEDS_DOWNLOADING] = g_strdup (source_uri);
 }
@@ -63,15 +63,16 @@ LwDictInst* lw_dictinst_new_using_pref_uri (const char* filename,
                                             const char* shortname,
                                             const char* longname,
                                             const char* description,
+                                            LwPrefManager* pm,
                                             const char* schema,
                                             const char* key,
-                                            const LwEngine ENGINE,
+                                            const LwDictType DICTTYPE,
                                             const LwCompression COMPRESSION,
                                             const LwEncoding ENCODING,
                                             gboolean split, gboolean merge, gboolean builtin)
 {
     char source_uri[200];
-    lw_pref_get_string_by_schema (source_uri, schema, key, 200);
+    lw_prefmanager_get_string_by_schema (pm, source_uri, schema, key, 200);
     LwDictInst *di = NULL;
 
     di = lw_dictinst_new (
@@ -80,7 +81,7 @@ LwDictInst* lw_dictinst_new_using_pref_uri (const char* filename,
       longname, 
       description, 
       source_uri, 
-      ENGINE, 
+      DICTTYPE, 
       COMPRESSION, 
       ENCODING, 
       split, 
@@ -91,8 +92,9 @@ LwDictInst* lw_dictinst_new_using_pref_uri (const char* filename,
     di->schema = g_strdup (schema);
     di->key = g_strdup (key);
     if (di->listenerid_is_set == TRUE)
-      lw_pref_remove_change_listener_by_schema (schema, di->listenerid);
-    di->listenerid = lw_pref_add_change_listener_by_schema (schema, key, _update_dictinst_source_uri_cb, di);
+      lw_prefmanager_remove_change_listener_by_schema (pm, schema, di->listenerid);
+    di->listenerid = lw_prefmanager_add_change_listener_by_schema (pm, schema, key, _update_dictinst_source_uri_cb, di);
+    di->pm = pm;
 
     return di;
 }
@@ -108,7 +110,7 @@ LwDictInst* lw_dictinst_new (const char* filename,
                              const char* longname,
                              const char* description,
                              const char* source_uri,
-                             const LwEngine ENGINE,
+                             const LwDictType DICTTYPE,
                              const LwCompression COMPRESSION,
                              const LwEncoding ENCODING,
                              gboolean split, gboolean merge, gboolean builtin)
@@ -134,7 +136,7 @@ LwDictInst* lw_dictinst_new (const char* filename,
     temp->listenerid_is_set = FALSE;
     temp->compression = COMPRESSION;    //!< Path to the gziped dictionary file
     temp->encoding = ENCODING;          //!< Path to the raw unziped dictionary file
-    temp->engine = ENGINE;
+    temp->type = DICTTYPE;
     temp->uri_group_index = -1;
     temp->uri_atom_index = -1;
     temp->builtin = builtin;
@@ -149,6 +151,8 @@ LwDictInst* lw_dictinst_new (const char* filename,
     temp->shortname = g_strdup (shortname);
     temp->longname = g_strdup (longname);
     temp->description = g_strdup (description);
+
+    temp->pm = NULL;
     
     lw_dictinst_set_filename (temp, filename);
     lw_dictinst_set_download_source (temp, source_uri);
@@ -163,8 +167,8 @@ LwDictInst* lw_dictinst_new (const char* filename,
 //! 
 void lw_dictinst_free (LwDictInst* di)
 {
-    if (di->listenerid_is_set == TRUE)
-      lw_pref_remove_change_listener_by_schema (di->schema, di->listenerid);
+    if (di->pm != NULL && di->listenerid_is_set == TRUE)
+      lw_prefmanager_remove_change_listener_by_schema (di->pm, di->schema, di->listenerid);
 
     g_free(di->filename);
     g_free(di->shortname);
@@ -184,7 +188,7 @@ void lw_dictinst_free (LwDictInst* di)
     g_free (di->key);
     di->compression = 0;    //!< Path to the gziped dictionary file
     di->encoding = 0;          //!< Path to the raw unziped dictionary file
-    di->engine = 0;
+    di->type = 0;
     di->split = FALSE;
     di->merge = FALSE;
     g_mutex_free (di->mutex);
@@ -208,12 +212,12 @@ void lw_dictinst_set_filename (LwDictInst *di, const char *filename)
 
 //!
 //! @brief Updates the engine of the LwDictInst
-//! @param The LwDictInst object to set the ENGINE to
-//! @param ENGINE the engine that you want to set
+//! @param The LwDictInst object to set the DICTTYPE to
+//! @param DICTTYPE the engine that you want to set
 //!
-void lw_dictinst_set_engine (LwDictInst *di, const LwEngine ENGINE)
+void lw_dictinst_set_engine (LwDictInst *di, const LwDictType DICTTYPE)
 {
-    di->engine = ENGINE;
+    di->type = DICTTYPE;
 
     lw_dictinst_regenerate_save_target_uris (di);
 }
@@ -310,8 +314,8 @@ void lw_dictinst_regenerate_save_target_uris (LwDictInst *di)
         temp[i][j] = NULL;
 
     //Initializations
-    cache_filename = g_build_filename (lw_util_get_directory (LW_PATH_CACHE), di->filename, NULL);
-    engine_filename = g_build_filename (lw_util_get_directory_for_engine (di->engine), di->filename, NULL);
+    cache_filename = lw_util_build_filename (LW_PATH_CACHE, di->filename);
+    engine_filename = lw_util_build_filename (di->type, di->filename);
     compression_ext = lw_util_get_compression_name (di->compression);
     encoding_ext = lw_util_get_encoding_name (di->encoding);
 
@@ -325,17 +329,17 @@ void lw_dictinst_regenerate_save_target_uris (LwDictInst *di)
     if (di->split)
     {
       g_free (temp[0][LW_DICTINST_NEEDS_FINALIZATION]);
-      temp[0][LW_DICTINST_NEEDS_FINALIZATION] = g_build_filename (lw_util_get_directory (LW_PATH_CACHE), "Names", NULL);
-      temp[1][LW_DICTINST_NEEDS_FINALIZATION] = g_build_filename (lw_util_get_directory (LW_PATH_CACHE), "Places", NULL);
+      temp[0][LW_DICTINST_NEEDS_FINALIZATION] = lw_util_build_filename (LW_PATH_CACHE, "Names");
+      temp[1][LW_DICTINST_NEEDS_FINALIZATION] = lw_util_build_filename (LW_PATH_CACHE, "Places");
 
       g_free (temp[0][LW_DICTINST_NEEDS_NOTHING]);
-      temp[0][LW_DICTINST_NEEDS_NOTHING] = g_build_filename (lw_util_get_directory_for_engine (di->engine), "Names", NULL);
-      temp[1][LW_DICTINST_NEEDS_NOTHING] = g_build_filename (lw_util_get_directory_for_engine (di->engine), "Places", NULL);
+      temp[0][LW_DICTINST_NEEDS_NOTHING] = lw_util_build_filename (di->type, "Names");
+      temp[1][LW_DICTINST_NEEDS_NOTHING] = lw_util_build_filename (di->type, "Places");
     }
     //Adjust the uris for the merge dictionary exception case
     else if (di->merge)
     {
-      radicals_cache_filename = g_build_filename (lw_util_get_directory (LW_PATH_CACHE), "Radicals", NULL);
+      radicals_cache_filename = lw_util_build_filename (LW_PATH_CACHE, "Radicals");
       temp[1][LW_DICTINST_NEEDS_DECOMPRESSION] =  g_strjoin (".", radicals_cache_filename, "gz", NULL);
       temp[1][LW_DICTINST_NEEDS_TEXT_ENCODING] =   g_strjoin (".", radicals_cache_filename, "EUC-JP", NULL);
       temp[1][LW_DICTINST_NEEDS_POSTPROCESSING] =   g_strjoin (".", radicals_cache_filename, "UTF8", NULL);
@@ -403,7 +407,7 @@ gboolean lw_dictinst_data_is_valid (LwDictInst *di)
     ptr = di->uri[LW_DICTINST_NEEDS_NOTHING];
     if (ptr == NULL || strlen (ptr) == 0) return FALSE;
 
-    if (di->engine < 0 || di->engine >= LW_ENGINE_TOTAL) return FALSE;
+    if (di->type < 0 || di->type >= TOTAL_LW_DICTTYPES) return FALSE;
     if (di->compression < 0 || di->compression >= LW_COMPRESSION_TOTAL) return FALSE;
     if (di->encoding < 0 || di->encoding >= LW_ENCODING_TOTAL) return FALSE;
 

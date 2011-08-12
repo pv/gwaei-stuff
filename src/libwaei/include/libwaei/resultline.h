@@ -1,5 +1,6 @@
-#ifndef LW_RESULTLINE_OBJECT_INCLUDED
-#define LW_RESULTLINE_OBJECT_INCLUDED
+#ifndef LW_RESULTLINE_INCLUDED
+#define LW_RESULTLINE_INCLUDED
+
 /******************************************************************************
     AUTHOR:
     File written and Copyrighted by Zachary Dovel. All Rights Reserved.
@@ -30,6 +31,8 @@
 //!
 
 #include <libwaei/io.h>
+
+#define LW_RESULTLINE(object) (LwResultLine*) object
 
 //!
 //! @brief Primitive for storing lists of dictionaries

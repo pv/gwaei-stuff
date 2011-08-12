@@ -1,6 +1,7 @@
-#ifndef LW_QUERYLINE_OBJECT_INCLUDED
-#define LW_QUERYLINE_OBJECT_INCLUDED
+#ifndef LW_QUERYLINE_INCLUDED
+#define LW_QUERYLINE_INCLUDED
 
+#define LW_QUERYLINE(object) (LwQueryLine*) object
 #define LW_QUERYLINE_MAX_ATOMS 20
 
 struct _LwQueryLine {
@@ -25,9 +26,9 @@ typedef struct _LwQueryLine LwQueryLine;
 LwQueryLine* lw_queryline_new (void );
 void lw_queryline_free (LwQueryLine*);
 
-int lw_queryline_parse_edict_string (LwQueryLine*l, const char*, GError**);
-int lw_queryline_parse_kanjidict_string (LwQueryLine*, const char*, GError**);
-int lw_queryline_parse_exampledict_string (LwQueryLine*, const char*, GError**);
-int lw_queryline_parse_edict_string (LwQueryLine*, const char*, GError**);
+int lw_queryline_parse_edict_string (LwQueryLine*l, LwPrefManager*, const char*, GError**);
+int lw_queryline_parse_kanjidict_string (LwQueryLine*, LwPrefManager*, const char*, GError**);
+int lw_queryline_parse_exampledict_string (LwQueryLine*, LwPrefManager*, const char*, GError**);
+int lw_queryline_parse_edict_string (LwQueryLine*, LwPrefManager*, const char*, GError**);
 
 #endif

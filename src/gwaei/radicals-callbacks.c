@@ -44,19 +44,6 @@
 //!
 G_MODULE_EXPORT void gw_radsearchtool_show_cb (GtkWidget *widget, gpointer data)
 {
-    GtkBuilder *builder = gw_common_get_builder ();
-
-    GtkWidget *hbox;
-    hbox = GTK_WIDGET (gtk_builder_get_object (builder, "strokes_hbox"));
-
-    GtkWidget *spinbutton;
-    spinbutton = GTK_WIDGET (gtk_builder_get_object (builder, "strokes_spinbutton"));
-    gtk_spin_button_set_value (GTK_SPIN_BUTTON (spinbutton), 1.0);
-
-    gw_radsearchtool_clear_cb (NULL, NULL);
-
-    //Show the window
-    gw_common_show_window ("radicals_window");
 }
 
 
@@ -68,8 +55,8 @@ G_MODULE_EXPORT void gw_radsearchtool_show_cb (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void gw_radsearchtool_clear_cb (GtkWidget *widget, gpointer data)
 {
-  gw_radsearchtool_deselect_all_radicals ();
-  gw_radsearchtool_set_strokes_checkbox_state (FALSE);
+  gw_radicalswindow_deselect_all_radicals (app->radicals);
+  gw_radicalswindow_set_strokes_checkbox_state (app->radicals, FALSE);
 
   //Checks to make sure everything is sane
   if (gw_tabs_cancel_search_for_current_tab () == FALSE)
@@ -89,7 +76,6 @@ G_MODULE_EXPORT void gw_radsearchtool_clear_cb (GtkWidget *widget, gpointer data
 G_MODULE_EXPORT void gw_radsearchtool_search_cb (GtkWidget *widget, gpointer data)
 {
     //Declarations
-    GtkBuilder *builder;
     LwDictInfo *di;
     LwHistoryList* hl;
     char *query_text;
@@ -98,12 +84,11 @@ G_MODULE_EXPORT void gw_radsearchtool_search_cb (GtkWidget *widget, gpointer dat
     GError *error;
 
     //Initializations
-    builder = gw_common_get_builder ();
     di = lw_dictinfolist_get_dictinfo (LW_ENGINE_KANJI, "Kanji");
     hl = lw_historylist_get_list(LW_HISTORYLIST_RESULTS);   
     query_text = NULL;
-    radicals_text = gw_radsearchtool_strdup_all_selected_radicals ();
-    strokes_text = gw_radsearchtool_strdup_prefered_stroke_count ();
+    radicals_text = gw_radicalswindow_strdup_all_selected (app->radicals);
+    strokes_text = gw_radicalswindow_strdup_prefered_stroke_count (app->radicals);
     error = NULL;
 
     //Sanity check
@@ -142,9 +127,9 @@ G_MODULE_EXPORT void gw_radsearchtool_search_cb (GtkWidget *widget, gpointer dat
     if (gw_tabs_cancel_search_for_current_tab () == FALSE) return;
 
     //Prep the search
-    gw_main_clear_search_entry ();
-    gw_main_search_entry_insert (query_text);
-    gw_main_text_select_all_by_target (LW_TARGET_ENTRY);
+    gw_searchwindow_clear_search_entry (app->search);
+    gw_searchwindow_search_entry_insert (app->search, query_text);
+    gw_searchwindow_select_all_by_target (app->search, LW_TARGET_ENTRY);
 
     LwSearchItem* item;
     item = gw_tabs_get_searchitem ();
@@ -159,12 +144,12 @@ G_MODULE_EXPORT void gw_radsearchtool_search_cb (GtkWidget *widget, gpointer dat
     
     if (item != NULL) 
     {
-      gw_main_set_dictionary_by_searchitem (item);
+      gw_searchwindow_set_dictionary_by_searchitem (app->search, item);
       gw_tabs_set_searchitem (item);
 
       //Start the search
       lw_engine_get_results (hl->current, TRUE, FALSE);
-      gw_main_update_history_popups ();
+      gw_searchwindow_update_history_popups (app->search);
     }
 
     if (error != NULL)
@@ -186,7 +171,7 @@ G_MODULE_EXPORT void gw_radsearchtool_search_cb (GtkWidget *widget, gpointer dat
 //!
 G_MODULE_EXPORT void gw_radsearchtool_radical_kanji_stroke_checkbox_update_cb (GtkWidget *widget, gpointer data)
 {
-    gw_radsearchtool_update_strokes_checkbox_state ();
+    gw_radicalswindow_update_strokes_checkbox_state (app->radicals);
 
     //Start the search
     gw_radsearchtool_search_cb (NULL, NULL);

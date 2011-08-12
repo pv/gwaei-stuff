@@ -36,81 +36,123 @@
 #include <glib.h>
 #include <glib/gstdio.h>
 
+#include <libwaei/dict.h>
 #include <libwaei/libwaei.h>
 
 
-static char *_paths[LW_PATH_TOTAL];
-static gboolean _paths_initialized = FALSE;
-
-
 //!
-//! @brief Gets the location of the gwaei dictionary folder and various subfolders
-//!
+//! @brief Creates an allocated path to a file.  If the FILENAME is NULL,
+//!        then it is just a path to a directory.  It must be freed with
+//!        g_free
 //! @param PATH Used to determine which folder path to return
-//! @return Returns a constant string that should not be freed
+//! @returns Returns a constant that should be freed with g_free
 //!
-const char* lw_util_get_directory (const LwFolderPath PATH) 
+gchar* lw_util_build_filename (const LwFolderPath PATH, const char *FILENAME) 
 {
     g_assert (PATH >= 0 && PATH < LW_PATH_TOTAL);
 
-    LwEngine i;
-
-    if (!_paths_initialized)
+    //Declarations
+    LwDictType i;
+    char *base;
+    char *path;
+    
+    base = g_build_filename (g_get_user_config_dir (), PACKAGE, NULL);
+    switch (PATH)
     {
-      _paths[LW_PATH_BASE] = g_build_filename (g_get_user_config_dir (), PACKAGE, NULL);
-      _paths[LW_PATH_DICTIONARY] = g_build_filename (_paths[LW_PATH_BASE], "dictionaries", NULL);
-      _paths[LW_PATH_PLUGIN] = g_build_filename (_paths[LW_PATH_BASE], "plugins", NULL);
-      _paths[LW_PATH_CACHE] = g_build_filename (_paths[LW_PATH_BASE], "cache", NULL);
-
-      for (i = 0; i < LW_ENGINE_TOTAL; i++)
-      {
-        if (_paths[LW_PATH_DICTIONARY_EDICT + i] != NULL)
-        {
-          printf("The LwEngine and LwPath variables are not syncing.  Make sure "
-                 "you sync the engines between them when adding or removing engines.\n");
-          g_assert(FALSE);
-        }
-        _paths[LW_PATH_DICTIONARY_EDICT + i] = g_build_filename (_paths[LW_PATH_DICTIONARY],
-                                                                 lw_util_get_engine_name(i), NULL);
-      }
-
-      _paths_initialized = TRUE;
-    }
-
-    g_mkdir_with_parents (_paths[PATH], 0755);
-    return _paths[PATH];
-}
-
-const char* lw_util_get_engine_name (const LwEngine ENGINE)
-{
-    switch (ENGINE)
-    {
-      case LW_ENGINE_EDICT:
-        return "edict";
-      case LW_ENGINE_KANJI:
-        return "kanji";
-      case LW_ENGINE_EXAMPLES:
-        return "examples";
-      case LW_ENGINE_UNKNOWN:
-        return "unknown";
+      case LW_PATH_BASE:
+        path = strdup (path);
+        break;
+      case LW_PATH_DICTIONARY:
+        path = g_build_filename (base, "dictionaries", FILENAME, NULL);
+        break;
+      case LW_PATH_DICTIONARY_EDICT:
+        path = g_build_filename (base, "dictionaries", lw_util_get_engine_name (LW_DICTTYPE_EDICT), FILENAME, NULL);
+        break;
+      case LW_PATH_DICTIONARY_KANJI:
+        path = g_build_filename (base, "dictionaries", lw_util_get_engine_name (LW_DICTTYPE_KANJI), FILENAME, NULL);
+        break;
+      case LW_PATH_DICTIONARY_EXAMPLES:
+        path = g_build_filename (base, "dictionaries", lw_util_get_engine_name (LW_DICTTYPE_EXAMPLES), FILENAME, NULL);
+        break;
+      case LW_PATH_DICTIONARY_UNKNOWN:
+        path = g_build_filename (base, "dictionaries", lw_util_get_engine_name (LW_DICTTYPE_UNKNOWN), FILENAME, NULL);
+        break;
+      case LW_PATH_PLUGIN:
+        path = g_build_filename (base, "plugins", FILENAME, NULL);
+        break;
+      case LW_PATH_CACHE:
+        path = g_build_filename (base, "cache", FILENAME, NULL);
+        break;
       default:
-        return NULL;
+        g_assert_not_reached ();
+        path = NULL;
+        break;
     }
+    g_free (base);
+
+    g_mkdir_with_parents (path, 0755);
+
+    return path;
 }
 
-LwEngine lw_util_get_engine_from_enginename (const char *enginename)
+const char* lw_util_get_engine_name (const LwDictType DICTTYPE)
 {
-  char *lower = g_utf8_strdown (enginename, -1);
-  LwEngine engine = -1;
+    char *name;
+
+    switch (DICTTYPE)
+    {
+      case LW_DICTTYPE_EDICT:
+        name = "edict";
+        break;
+      case LW_DICTTYPE_KANJI:
+        name = "kanji";
+        break;
+      case LW_DICTTYPE_EXAMPLES:
+        name = "examples";
+        break;
+      case LW_DICTTYPE_UNKNOWN:
+        name = "unknown";
+        break;
+      default:
+        g_assert_not_reached ();
+        name = NULL;
+        break;
+    }
+
+    return name;
+}
+
+LwDictType lw_util_get_engine_from_enginename (const char *ENGINENAME)
+{
+  //Declarations
+  char *lower;
+  LwDictType engine;
+
+  //Initializations
+  lower = g_utf8_strdown (ENGINENAME, -1);
+  engine = -1;
 
   if (strcmp(lower, "edict") == 0)
-    engine = LW_ENGINE_EDICT;
+  {
+    engine = LW_DICTTYPE_EDICT;
+  }
   else if (strcmp(lower, "kanji") == 0)
-    engine = LW_ENGINE_KANJI;
+  {
+    engine = LW_DICTTYPE_KANJI;
+  }
   else if (strcmp(lower, "examples") == 0)
-    engine = LW_ENGINE_EXAMPLES;
+  {
+    engine = LW_DICTTYPE_EXAMPLES;
+  }
   else if (strcmp(lower, "unknown") == 0)
-    engine = LW_ENGINE_UNKNOWN;
+  {
+    engine = LW_DICTTYPE_UNKNOWN;
+  }
+  else
+  {
+    g_assert_not_reached ();
+    engine = -1;
+  }
 
   g_free (lower);
   lower = NULL;
@@ -123,31 +165,41 @@ LwEngine lw_util_get_engine_from_enginename (const char *enginename)
 //!
 //! @brief Gets a dictionary folder path for the given engine
 //!
-//! @param ENGINE A LwEngine to get the dictinary folder for
-//! @return Returns a constant string that should not be freed
+//! @param ENGINE A LwDictType to get the dictinary folder for
+//! @return Returns a constant string that should be freed with g_free
 //!
-const char* lw_util_get_directory_for_engine (const LwEngine ENGINE)
+gchar* lw_util_build_filename_by_dicttype (const LwDictType DICTTYPE, const char* FILENAME)
 {
-    switch (ENGINE)
+    gchar *path;
+
+    switch (DICTTYPE)
     {
-      case LW_ENGINE_EDICT:
-        return lw_util_get_directory (LW_PATH_DICTIONARY_EDICT);
-      case LW_ENGINE_KANJI:
-        return lw_util_get_directory (LW_PATH_DICTIONARY_KANJI);
-      case LW_ENGINE_EXAMPLES:
-        return lw_util_get_directory (LW_PATH_DICTIONARY_EXAMPLES);
-      case LW_ENGINE_UNKNOWN:
-        return lw_util_get_directory (LW_PATH_DICTIONARY_UNKNOWN);
+      case LW_DICTTYPE_EDICT:
+        path = lw_util_build_filename (LW_PATH_DICTIONARY_EDICT, FILENAME);
+        break;
+      case LW_DICTTYPE_KANJI:
+        path = lw_util_build_filename (LW_PATH_DICTIONARY_KANJI, FILENAME);
+        break;
+      case LW_DICTTYPE_EXAMPLES:
+        path = lw_util_build_filename (LW_PATH_DICTIONARY_EXAMPLES, FILENAME);
+        break;
+      case LW_DICTTYPE_UNKNOWN:
+        path = lw_util_build_filename (LW_PATH_DICTIONARY_UNKNOWN, FILENAME);
+        break;
       default:
-        printf("Engine doesn't exist. in lw_util_get_directory_for_engine\n");
-        g_assert_not_reached();
-        return NULL;
+        g_assert_not_reached ();
+        path = NULL;
+        break;
     }
+
+    return path;
 }
 
 
 const char* lw_util_get_compression_name (const LwCompression COMPRESSION)
 {
+    char *type;
+
     switch (COMPRESSION)
     {
 /*
@@ -156,25 +208,42 @@ const char* lw_util_get_compression_name (const LwCompression COMPRESSION)
         return "zip";
 */
       case LW_COMPRESSION_GZIP:
-        return "gz";
+        type = "gz";
+        break;
+      case LW_COMPRESSION_NONE:
+        type = "uncompressed";
+        break;
       default:
-        return "uncompressed";
+        g_assert_not_reached ();
+        type = NULL;
+        break;
     }
+
+    return type;
 }
 
 const char* lw_util_get_encoding_name (const LwEncoding ENCODING)
 {
+    char *type;
+
     switch (ENCODING)
     {
       case LW_ENCODING_EUC_JP:
-        return "EUC-JP";
+        type = "EUC-JP";
+        break;
       case LW_ENCODING_SHIFT_JS:
-        return "Shift-JS";
+        type = "Shift-JS";
+        break;
       case LW_ENCODING_UTF8:
-        return "UTF-8";
+        type = "UTF-8";
+        break;
       default:
-        g_error ("Unsupported encoding\n");
+        g_assert_not_reached ();
+        type = NULL;
+        break;
     }
+
+    return type;
 }
 
 

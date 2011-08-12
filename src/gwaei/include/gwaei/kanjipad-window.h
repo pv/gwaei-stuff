@@ -4,6 +4,7 @@
 //Defines
 #define MAX_GUESSES 10
 
+
 //Class
 struct _GwKanjipad {
   GtkWidget *drawing_widget;
@@ -28,6 +29,16 @@ struct _GwKanjipad {
   char *data_file;
 };
 typedef struct _GwKanjipad GwKanjipad;
+
+
+struct _GwKanjipadWindow {
+  EXTENDS_GW_WINDOW
+
+  GwKanjipad *kanjipad;
+};
+typedef struct _GwKanjipadWindow GwKanjipadWindow;
+
+
 
 //Object
 GwKanjipad *pa;

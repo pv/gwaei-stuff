@@ -39,18 +39,6 @@
 
 
 //!
-//! @brief Print the "less relevant" header where necessary.
-//!
-void w_console_append_less_relevant_header_to_output(LwSearchItem *item)
-{
-    if (w_get_color_switch ())
-      printf("\n[0;31m***[0m[1m%s[0;31m***************************[0m\n\n\n", gettext("Other Results"));
-    else
-      printf("\n***%s***************************\n\n\n", gettext("Other Results"));
-}
-
-
-//!
 //! @brief Print the "no result" message where necessary.
 //!
 void w_console_no_result (LwSearchItem *item)
@@ -64,13 +52,13 @@ void w_console_no_result (LwSearchItem *item)
 //!
 //! @param name A string of the name of the dictionary to uninstall.
 //!
-gboolean w_console_uninstall_dictinfo (const char *FUZZY, GError **error)
+gboolean w_console_uninstall_dictinfo (WApplication* app, GError **error)
 {
     //Declarations
     LwDictInfo *di;
 
     //Initializations
-    di = lw_dictinfolist_get_dictinfo_fuzzy (FUZZY);
+    di = lw_dictinfolist_get_dictinfo_fuzzy (app->dictinfolist, app->uninstall_switch_data);
 
     if (di != NULL)
     {
@@ -79,8 +67,8 @@ gboolean w_console_uninstall_dictinfo (const char *FUZZY, GError **error)
     }
     else
     {
-      printf("\n%s was not found!\n\n", FUZZY);
-      w_console_print_available_dictionaries ();
+      printf("\n%s was not found!\n\n", app->uninstall_switch_data);
+      w_console_print_available_dictionaries (app);
     }
 
     return (*error == NULL);
@@ -92,13 +80,13 @@ gboolean w_console_uninstall_dictinfo (const char *FUZZY, GError **error)
 //!
 //! @param name A string of the name of the dictionary to install.
 //!
-gboolean w_console_install_dictinst (const char *FUZZY, GError **error)
+gboolean w_console_install_dictinst (WApplication *app, GError **error)
 {
     //Declarations
     LwDictInst *di;
 
     //Initializations
-    di = lw_dictinstlist_get_dictinst_fuzzy (FUZZY);
+    di = lw_dictinstlist_get_dictinst_fuzzy (app->dictinstlist, app->install_switch_data);
 
     if (di != NULL)
     {
@@ -107,8 +95,8 @@ gboolean w_console_install_dictinst (const char *FUZZY, GError **error)
     }
     else
     {
-      printf("\n%s was not found!\n\n", FUZZY);
-      w_console_print_installable_dictionaries ();
+      printf("\n%s was not found!\n\n", app->install_switch_data);
+      w_console_print_installable_dictionaries (app);
     }
 
     return (*error == NULL);
@@ -118,7 +106,7 @@ gboolean w_console_install_dictinst (const char *FUZZY, GError **error)
 //!
 //! @brief Prints to the terminal the about message for the program.
 //!
-void w_console_about ()
+void w_console_about (WApplication* app)
 {
     printf ("waei version %s", VERSION);
 
@@ -133,26 +121,9 @@ void w_console_about ()
 
 
 //!
-//! @brief This function prints the start banner
-//!
-//! This function prints the start banner in both
-//! simple and ncurses interface.
-//!
-//! @param query The query string we are searching
-//! @param dictionary The name (string) of the dictionary used
-//!
-void w_console_start_banner (char *query, char *dictionary)
-{
-    // TRANSLATORS: 'Searching for "${query}" in ${dictionary long name}'
-    printf(gettext("Searching for \"%s\" in %s...\n"), query, dictionary);
-    printf("\n");
-}
-
-
-//!
 //! @brief Prints out the yet uninstalled available dictionaries.
 //!
-void w_console_print_installable_dictionaries ()
+void w_console_print_installable_dictionaries (WApplication *app)
 {
     printf(gettext("Installable dictionaries are:\n"));
 
@@ -164,7 +135,7 @@ void w_console_print_installable_dictionaries ()
 
     //Initializations
     i = 0; 
-    iter = lw_dictinstlist_get_list ();
+    iter = app->dictinstlist->list;
 
     while (iter != NULL)
     {
@@ -189,7 +160,7 @@ void w_console_print_installable_dictionaries ()
 //!
 //! @brief Not yet written
 //!
-void w_console_print_available_dictionaries ()
+void w_console_print_available_dictionaries (WApplication *app)
 {
     //Declarations
     int i;
@@ -200,7 +171,7 @@ void w_console_print_available_dictionaries ()
     //Initializations
     i = 0;
     j = 0;
-	  iter = lw_dictinfolist_get_list();
+	  iter = app->dictinstlist->list;
 
     printf(gettext("Available dictionaries are:\n"));
 
@@ -221,261 +192,12 @@ void w_console_print_available_dictionaries ()
 
 
 //!
-//! @brief Not yet written
-//!
-void w_console_append_edict_results_to_buffer (LwSearchItem *item)
-{
-    //Definitions
-    int cont = 0;
-    LwResultLine *resultline = item->resultline;
-
-    //Kanji
-    if (w_get_color_switch ())
-      printf("[32m%s", resultline->kanji_start);
-    else
-      printf("%s", resultline->kanji_start);
-    //Furigana
-    if (resultline->furigana_start)
-      printf(" [%s]", resultline->furigana_start);
-    //Other info
-    if (resultline->classification_start)
-    {
-      if (w_get_color_switch ())
-        printf("[0m %s", resultline->classification_start);
-      else
-        printf("%s", resultline->classification_start);
-    }
-    //Important Flag
-    if (resultline->important)
-    {
-      if (w_get_color_switch ())
-        printf("[0m %s", "P");
-      else
-        printf("%s", "P");
-    }
-
-    printf("\n");
-    while (cont < resultline->def_total)
-    {
-      if (w_get_color_switch ())
-        printf("[0m      [35m%s [0m%s\n", resultline->number[cont], resultline->def_start[cont]);
-      else
-        printf("      %s %s\n", resultline->number[cont], resultline->def_start[cont]);
-      cont++;
-    }
-    printf("\n");
-}
-
-
-//!
-//! @brief Not yet written
-//!
-void w_console_append_kanjidict_results_to_buffer (LwSearchItem *item)
-{
-    if (item == NULL) return;
-
-    char line_started = FALSE;
-      LwResultLine *resultline = item->resultline;
-
-    //Kanji
-    if (w_get_color_switch ())
-      printf("[32;1m%s[0m\n", resultline->kanji);
-    else
-      printf("%s\n", resultline->kanji);
-
-    if (resultline->radicals)
-      printf("%s%s\n", gettext("Radicals:"), resultline->radicals);
-
-    if (resultline->strokes)
-    {
-      line_started = TRUE;
-      printf("%s%s", gettext("Stroke:"), resultline->strokes);
-    }
-
-    if (resultline->frequency)
-    {
-      if (line_started)
-        printf(" ");
-      line_started = TRUE;
-      printf("%s%s", gettext("Freq:"), resultline->frequency);
-    }
-
-    if (resultline->grade)
-    {
-      if (line_started)
-        printf(" ");
-      line_started = TRUE;
-      printf("%s%s", gettext("Grade:"), resultline->grade);
-    }
-
-    if (resultline->jlpt)
-    {
-      if (line_started)
-        printf(" ");
-      line_started = TRUE;
-      printf("%s%s", gettext("JLPT:"), resultline->jlpt);
-    }
-
-    if (line_started)
-      printf("\n");
-
-    if (resultline->readings[0])
-      printf("%s%s\n", gettext("Readings:"), resultline->readings[0]);
-    if (resultline->readings[1])
-      printf("%s%s\n", gettext("Name:"), resultline->readings[1]);
-    if (resultline->readings[2])
-      printf("%s%s\n", gettext("Radical Name:"), resultline->readings[2]);
-
-    if (resultline->meanings)
-      printf("%s%s\n", gettext("Meanings:"), resultline->meanings);
-    printf("\n");
-}
-
-
-//!
-//! @brief Not yet written
-//!
-void w_console_append_examplesdict_results_to_buffer (LwSearchItem *item)
-{
-    if (item == NULL) return;
-
-    LwResultLine *resultline = item->resultline;
-
-
-    if (resultline->def_start[0] != NULL)
-    {
-      if (w_get_color_switch ())
-        printf ("[32;1m%s[0m", gettext("E:\t"));
-      else
-        printf ("%s", gettext("E:\t"));
-      printf ("%s", resultline->def_start[0]);
-    }
-
-    if (resultline->kanji_start != NULL)
-    {
-      if (w_get_color_switch ())
-        printf ("[32;1m%s[0m", gettext("\nJ:\t"));
-      else
-        printf ("%s", gettext("\nJ:\t"));
-      printf ("%s", resultline->kanji_start);
-    }
-
-    if (resultline->furigana_start != NULL)
-    {
-      if (w_get_color_switch ())
-        printf("[32;1m%s[0m", gettext("\nD:\t"));
-      else
-        printf("%s", gettext("\nD:\t"));
-      printf("%s", resultline->furigana_start);
-    }
-
-    printf("\n\n");
-}
-
-
-//!
-//! @brief Not yet written
-//!
-void w_console_append_unknowndict_results_to_buffer (LwSearchItem *item)
-{
-    if (item == NULL) return;
-
-    printf("%s\n", item->resultline->string);
-}
-
-
-//!
-//! @brief Not yet written
-//!
-void w_console_append_more_relevant_header_to_output (LwSearchItem *item)
-{
-}
-
-
-//!
-//! @brief Not yet written
-//!
-void w_console_pre_search_prep (LwSearchItem *item)
-{
-}
-
-//!
-//! @brief Not yet written
-//!
-void w_console_after_search_cleanup (LwSearchItem *item)
-{
-    //Finish up
-    if (item->total_results == 0 &&
-        item->target != LW_TARGET_KANJI &&
-        item->status == LW_SEARCH_SEARCHING)
-    {
-      w_console_no_result(item);
-    }
-}
-
-
-int w_console_uninstall_progress_cb (double fraction, gpointer data)
-{
-  //Declarations
-  LwDictInfo *di;
-  char *uri;
-
-  //Initializations
-  di = data;
-  uri = g_build_filename (lw_util_get_directory_for_engine (di->engine), di->filename, NULL);
-
-  printf("Removing %s...\n", uri);
-
-  g_free (uri);
-
-  return FALSE;
-}
-
-
-
-
-static gboolean _group_index_changed = FALSE;
-static int _previous_percent = -1;
-int w_console_install_progress_cb (double fraction, gpointer data)
-{
-  //Declarations
-  LwDictInst *di;
-  char *status;
-  double current_fraction;
-  int current_percent;
-
-  //Initializations
-  di = data;
-  current_fraction = lw_dictinst_get_process_progress (di, fraction);
-  current_percent = (int) (100.0 * current_fraction); 
-
-  //Update the dictinst progress state only when the delta is large enough
-  if (current_percent < 100 && _group_index_changed)
-  {
-    _group_index_changed = FALSE;
-    printf("\n");
-  }
-  else if (current_percent == 100)
-  {
-    _group_index_changed = TRUE;
-  }
-
-  status = lw_dictinst_get_status_string (di, TRUE);
-  printf("\r [%d%] %s", current_percent, status);
-  _previous_percent = current_percent;
-  g_free (status);
-
-  return FALSE;
-}
-
-
-//!
 //! @brief Lists the available and installable dictionaries
 //!
-void w_console_list ()
+void w_console_list (WApplication *app)
 {
-    w_console_print_available_dictionaries ();
-    w_console_print_installable_dictionaries ();
+    w_console_print_available_dictionaries (app);
+    w_console_print_installable_dictionaries (app);
 }
 
 
@@ -483,7 +205,7 @@ void w_console_list ()
 //! @brief If the GError is set, it prints it and frees the memory
 //! @param error A pointer to a gerror pointer
 //!
-void w_console_handle_error (GError **error)
+void w_console_handle_error (WApplication* app, GError **error)
 {
     if (*error != NULL)
     {
@@ -494,7 +216,7 @@ void w_console_handle_error (GError **error)
 }
 
 
-gboolean w_console_search (char* query, char* fuzzy, gboolean quiet, gboolean exact, GError **error)
+gboolean w_console_search (WApplication *app, GError **error)
 {
     //Sanity check
     if (*error != NULL) return FALSE;
@@ -506,14 +228,14 @@ gboolean w_console_search (char* query, char* fuzzy, gboolean quiet, gboolean ex
     LwDictInfo *di;
 
     //Initializations
-    di = lw_dictinfolist_get_dictinfo_fuzzy (fuzzy);
+    di = lw_dictinfolist_get_dictinfo_fuzzy (app->dictinfolist, app->dictionary_switch_data);
     if (di == NULL)
     {
       printf (gettext("Requested dictionary not found!\n"));
       return FALSE;
     }
 
-    item = lw_searchitem_new (query, di, LW_TARGET_CONSOLE, error);
+    item = lw_searchitem_new (app->query_text_data, di, LW_OUTPUTTARGET_RESULTS, app->prefmanager, error);
     if (item == NULL)
     {
       printf("%s\n", (*error)->message);
@@ -521,16 +243,18 @@ gboolean w_console_search (char* query, char* fuzzy, gboolean quiet, gboolean ex
     }
 
     //Print the search intro
-    if (!quiet)
+    if (!app->quiet_switch)
     {
-      w_console_start_banner (query, di->longname);
+      // TRANSLATORS: 'Searching for "${query}" in ${dictionary long name}'
+      printf(gettext("Searching for \"%s\" in %s...\n"), app->query_text_data, di->longname);
+      printf("\n");
     }
 
     //Print the results
-    lw_engine_get_results (item, FALSE, exact);
+    lw_engine_get_results (app->engine, item, FALSE);
 
     //Print final header
-    if (quiet == FALSE)
+    if (app->quiet_switch == FALSE)
     {
       message_total = ngettext("Found %d result", "Found %d results", item->total_results);
       message_relevant = ngettext("(%d Relevant)", "(%d Relevant)", item->total_relevant_results);

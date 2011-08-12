@@ -1,8 +1,5 @@
-#ifndef GW_DICTIONARY_INSTALL_INCLUDED
-#define GW_DICTIONARY_INSTALL_INCLUDED
-
-void gw_dictionaryinstall_initialize (void);
-void gw_dictionaryinstall_free (void);
+#ifndef GW_DICTIONARY_INSTALL_CALLBACKS_INCLUDED
+#define GW_DICTIONARY_INSTALL_CALLBACKS_INCLUDED
 
 void gw_dictionaryinstall_source_changed_cb (GSettings*, char*, gpointer);
 void gw_dictionaryinstall_cursor_changed_cb (GtkTreeView*, gpointer);

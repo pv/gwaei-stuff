@@ -1,34 +1,3 @@
-#include <string.h>
-#include <stdlib.h>
-#include <locale.h>
-#include <libintl.h>
-
-#include <gtk/gtk.h>
-
-#include <gwaei/gwaei.h>
-
-
-//Static declarations
-static gpointer _installprogress_install_thread (gpointer);
-static int _installprogress_update_dictinst_cb (double, gpointer);
-static gboolean _installprogress_update_ui_timeout (gpointer);
-static double _install_fraction = 0.0;
-
-
-//!
-//! @brief Setup the installprogress.c source code
-//!
-void gw_installprogress_initialize ()
-{
-}
-
-
-//!
-//! @brief Free the memory used by the installprogress.c source code
-//!
-void gw_installprogress_free ()
-{
-}
 
 //!
 //! @brief Starts the install when the add button on the dictionary chooser is selected

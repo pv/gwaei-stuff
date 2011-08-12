@@ -6,10 +6,10 @@
 #include <libwaei/libwaei.h>
 
 #include <gwaei/common.h>
+#include <gwaei/window.h>
 
-#include <gwaei/main.h>
-#include <gwaei/main-callbacks.h>
-#include <gwaei/main-tabs.h>
+#include <gwaei/search-window.h>
+#include <gwaei/search-callbacks.h>
 
 #ifdef WITH_LIBUNIQUE
 #include <gwaei/libunique.h>
@@ -17,28 +17,69 @@
 
 #include <gwaei/printing.h>
 
-#include <gwaei/radsearchtool.h>
-#include <gwaei/radsearchtool-callbacks.h>
+#include <gwaei/radicals-window.h>
+#include <gwaei/radicals-callbacks.h>
 
-#include <gwaei/settings.h>
+#include <gwaei/settings-window.h>
 #include <gwaei/settings-callbacks.h>
 
 #include <gwaei/dictionarymanager.h>
-#include <gwaei/dictionaryinstall.h>
-#include <gwaei/installprogress.h>
+#include <gwaei/dictionarymanager-callbacks.h>
+
+#include <gwaei/dictionaryinstall-window.h>
+#include <gwaei/dictionaryinstall-callbacks.h>
+
+#include <gwaei/installprogress-window.h>
+#include <gwaei/installprogress-callbacks.h>
 
 #include <gwaei/spellcheck.h>
 
-#include <gwaei/kanjipad.h>
+#include <gwaei/kanjipad-window.h>
 #include <gwaei/kanjipad-callbacks.h>
 #include <gwaei/kanjipad-candidatearea.h>
 #include <gwaei/kanjipad-drawingarea.h>
 
-
 #include <gwaei/output-callbacks.h>
 
-void gw_frontend_initialize (int*, char**);
-void gw_frontend_free (void);
-void gw_frontend_start_gtk (int, char**);
+
+struct _GwApplication {
+  int* argc;
+  char*** argv;
+
+  GList *windowlist;
+
+  LwDictInstList *dictinstlist;
+  LwPrefManager *prefmanager;
+  LwHistoryList *history;
+  GwDictionaryManager *dictionarymanager;
+
+  gchar   *arg_dictionary;
+  gchar   *arg_query;
+#ifdef WITH_LIBUNIQUE
+  gboolean arg_new_instance;
+#endif
+  gboolean arg_version_switch;
+  GOptionContext *context;
+};
+typedef struct _GwApplication GwApplication;
+
+
+GwApplication *gw_app_new (int*, char***);
+void gw_app_free (GwApplication *app);
+
+void gw_app_run (GwApplication*);
+void gw_app_parse_args (GwApplication*, int*, char***);
+void gw_app_quit (GwApplication*);
+
+GwWindow* gw_app_show_window (GwApplication*, const GwWindowType, gboolean);
+void gw_app_destroy_window (GwApplication*, const GwWindowType, GtkWidget*);
+GwWindow* gw_app_get_window (GwApplication*, const GwWindowType, GtkWidget*);
+
+const char* gw_app_get_program_name (GwApplication*);
+void gw_app_cancel_all_searches (GwApplication*);
+
+extern GwApplication *app;
+
+
 
 #endif
