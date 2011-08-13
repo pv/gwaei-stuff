@@ -36,7 +36,7 @@
 #include <libwaei/engine-data.h>
 
 
-LwEngineData* lw_enginedata_new (LwEngine *engine, LwSearchItem *item)
+LwEngineData* lw_enginedata_new (LwEngine *engine, LwSearchItem *item, gboolean exact)
 {
     LwEngineData *temp;
 
@@ -46,6 +46,7 @@ LwEngineData* lw_enginedata_new (LwEngine *engine, LwSearchItem *item)
     {
       temp->engine = engine;
       temp->item = item;
+      temp->exact = exact;
     }
 
     return temp;

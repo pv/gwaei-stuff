@@ -315,7 +315,7 @@ void lw_dictinst_regenerate_save_target_uris (LwDictInst *di)
 
     //Initializations
     cache_filename = lw_util_build_filename (LW_PATH_CACHE, di->filename);
-    engine_filename = lw_util_build_filename (di->type, di->filename);
+    engine_filename = lw_util_build_filename_by_dicttype (di->type, di->filename);
     compression_ext = lw_util_get_compression_name (di->compression);
     encoding_ext = lw_util_get_encoding_name (di->encoding);
 
@@ -333,8 +333,8 @@ void lw_dictinst_regenerate_save_target_uris (LwDictInst *di)
       temp[1][LW_DICTINST_NEEDS_FINALIZATION] = lw_util_build_filename (LW_PATH_CACHE, "Places");
 
       g_free (temp[0][LW_DICTINST_NEEDS_NOTHING]);
-      temp[0][LW_DICTINST_NEEDS_NOTHING] = lw_util_build_filename (di->type, "Names");
-      temp[1][LW_DICTINST_NEEDS_NOTHING] = lw_util_build_filename (di->type, "Places");
+      temp[0][LW_DICTINST_NEEDS_NOTHING] = lw_util_build_filename_by_dicttype (di->type, "Names");
+      temp[1][LW_DICTINST_NEEDS_NOTHING] = lw_util_build_filename_by_dicttype (di->type, "Places");
     }
     //Adjust the uris for the merge dictionary exception case
     else if (di->merge)
@@ -363,7 +363,7 @@ void lw_dictinst_regenerate_save_target_uris (LwDictInst *di)
 /*
     for (i = 1; i < LW_DICTINST_TOTAL_URIS; i++)
       printf("%s\n", di->uri[i]);
-      printf("\n");
+    printf("\n");
 */
 }
 

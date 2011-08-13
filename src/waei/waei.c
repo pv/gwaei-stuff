@@ -176,8 +176,14 @@ void w_app_free (WApplication *app)
     lw_dictinstlist_free (app->dictinstlist);
     lw_prefmanager_free (app->prefmanager);
     lw_engine_free (app->engine);
-    free (app->query_text_data);
+
+    g_free (app->query_text_data);
+    g_free (app->dictionary_switch_data);
+    g_free (app->uninstall_switch_data);
+    g_free (app->install_switch_data);
+
     g_option_context_free (app->context);
+
     free (app);
 }
 
@@ -242,15 +248,15 @@ int w_start_ncurses (int argc, char* argv[])
   printf("ncurses\n");
 
     lw_engine_initialize (
-                         nw_append_edict_results_to_buffer,
-                         nw_append_kanjidict_results_to_buffer,
-                         nw_append_examplesdict_results_to_buffer,
-                         nw_append_unknowndict_results_to_buffer,
-                         nw_append_less_relevant_header_to_output,
-                         nw_append_more_relevant_header_to_output,
-                         nw_pre_search_prep,
-                         nw_after_search_cleanup
-                        );
+        nw_append_edict_result_cb,
+        nw_append_kanjidict_result_cb,
+        nw_append_examplesdict_result_cb,
+        nw_append_unknowndict_result_cb,
+        nw_append_less_relevant_header_cb,
+        nw_append_more_relevant_header_cb,
+        nw_prepare_search_cb,
+        nw_cleanup_search_cb
+    );
 
     nw_start_ncurses (argc, argv);
 #endif

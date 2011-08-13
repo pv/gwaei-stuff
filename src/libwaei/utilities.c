@@ -49,53 +49,65 @@
 //!
 gchar* lw_util_build_filename (const LwFolderPath PATH, const char *FILENAME) 
 {
-    g_assert (PATH >= 0 && PATH < LW_PATH_TOTAL);
+    g_assert (PATH >= 0 && PATH < TOTAL_LW_PATHS);
 
     //Declarations
     LwDictType i;
     char *base;
+    char *folder;
     char *path;
     
     base = g_build_filename (g_get_user_config_dir (), PACKAGE, NULL);
     switch (PATH)
     {
       case LW_PATH_BASE:
-        path = strdup (path);
+        folder = g_strdup (base);
+        path = g_strdup (base);
         break;
       case LW_PATH_DICTIONARY:
+        folder = g_build_filename (base, "dictionaries", NULL);
         path = g_build_filename (base, "dictionaries", FILENAME, NULL);
         break;
       case LW_PATH_DICTIONARY_EDICT:
-        path = g_build_filename (base, "dictionaries", lw_util_get_engine_name (LW_DICTTYPE_EDICT), FILENAME, NULL);
+        folder = g_build_filename (base, "dictionaries", lw_util_dicttype_to_string (LW_DICTTYPE_EDICT), NULL);
+        path = g_build_filename (base, "dictionaries", lw_util_dicttype_to_string (LW_DICTTYPE_EDICT), FILENAME, NULL);
         break;
       case LW_PATH_DICTIONARY_KANJI:
-        path = g_build_filename (base, "dictionaries", lw_util_get_engine_name (LW_DICTTYPE_KANJI), FILENAME, NULL);
+        folder = g_build_filename (base, "dictionaries", lw_util_dicttype_to_string (LW_DICTTYPE_KANJI), NULL);
+        path = g_build_filename (base, "dictionaries", lw_util_dicttype_to_string (LW_DICTTYPE_KANJI), FILENAME, NULL);
         break;
       case LW_PATH_DICTIONARY_EXAMPLES:
-        path = g_build_filename (base, "dictionaries", lw_util_get_engine_name (LW_DICTTYPE_EXAMPLES), FILENAME, NULL);
+        folder = g_build_filename (base, "dictionaries", lw_util_dicttype_to_string (LW_DICTTYPE_EXAMPLES), NULL);
+        path = g_build_filename (base, "dictionaries", lw_util_dicttype_to_string (LW_DICTTYPE_EXAMPLES), FILENAME, NULL);
         break;
       case LW_PATH_DICTIONARY_UNKNOWN:
-        path = g_build_filename (base, "dictionaries", lw_util_get_engine_name (LW_DICTTYPE_UNKNOWN), FILENAME, NULL);
+        folder = g_build_filename (base, "dictionaries", lw_util_dicttype_to_string (LW_DICTTYPE_UNKNOWN), NULL);
+        path = g_build_filename (base, "dictionaries", lw_util_dicttype_to_string (LW_DICTTYPE_UNKNOWN), FILENAME, NULL);
         break;
       case LW_PATH_PLUGIN:
+        folder = g_build_filename (base, "plugins", NULL);
         path = g_build_filename (base, "plugins", FILENAME, NULL);
         break;
       case LW_PATH_CACHE:
+        folder = g_build_filename (base, "cache", NULL);
         path = g_build_filename (base, "cache", FILENAME, NULL);
         break;
       default:
         g_assert_not_reached ();
+        folder = NULL;
         path = NULL;
         break;
     }
     g_free (base);
 
-    g_mkdir_with_parents (path, 0755);
+    g_mkdir_with_parents (folder, 0755);
+
+    g_free (folder);
 
     return path;
 }
 
-const char* lw_util_get_engine_name (const LwDictType DICTTYPE)
+const char* lw_util_dicttype_to_string (const LwDictType DICTTYPE)
 {
     char *name;
 
@@ -122,7 +134,7 @@ const char* lw_util_get_engine_name (const LwDictType DICTTYPE)
     return name;
 }
 
-LwDictType lw_util_get_engine_from_enginename (const char *ENGINENAME)
+LwDictType lw_util_get_dicttype_from_string (const char *ENGINENAME)
 {
   //Declarations
   char *lower;
@@ -170,6 +182,8 @@ LwDictType lw_util_get_engine_from_enginename (const char *ENGINENAME)
 //!
 gchar* lw_util_build_filename_by_dicttype (const LwDictType DICTTYPE, const char* FILENAME)
 {
+    g_assert (DICTTYPE >= 0 && DICTTYPE < TOTAL_LW_DICTTYPES);
+
     gchar *path;
 
     switch (DICTTYPE)

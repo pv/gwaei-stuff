@@ -1,7 +1,7 @@
 
 SUBDIRS = include/libwaei
 
-LIBRARY_VERSION = 1:0:0
+LIBRARY_VERSION = 2:0:0
 ACLOCAL_AMFLAGS = -I m4
 datadir = @datadir@
 localedir = $(datadir)/locale

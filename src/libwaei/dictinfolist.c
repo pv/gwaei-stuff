@@ -75,7 +75,7 @@ LwDictInfoList* lw_dictinfolist_new (const int MAX, LwPrefManager *pm)
         pair = g_strsplit_set (dictionarylist[i], "/", 2);
         if (pair != NULL && pair[0] != NULL && pair[1] != NULL) 
         {
-          engine = lw_util_get_engine_from_enginename (pair[0]);
+          engine = lw_util_get_dicttype_from_string (pair[0]);
           dictionary = pair[1];
           lw_dictinfolist_add_dictionary (temp, engine, dictionary);
         }
@@ -293,7 +293,7 @@ LwDictInfo* lw_dictinfolist_get_dictinfo_by_idstring (LwDictInfoList *dil, const
 
     if (g_strv_length (tokens) == 2)
     {
-      engine = lw_util_get_engine_from_enginename (tokens[0]);
+      engine = lw_util_get_dicttype_from_string (tokens[0]);
       filename = tokens[1];
 
       for (iter = dil->list; iter != NULL; iter = iter->next)
@@ -380,7 +380,7 @@ void lw_dictinfolist_save_dictionary_order_pref (LwDictInfoList *dil, LwPrefMana
     for (iter = dil->list; iter != NULL && i < dil->max; iter = iter->next)
     {
       di = (LwDictInfo*) iter->data;
-      atom[i] = g_strdup_printf ("%s/%s", lw_util_get_engine_name (di->type), di->filename);
+      atom[i] = g_strdup_printf ("%s/%s", lw_util_dicttype_to_string (di->type), di->filename);
       if (atom == NULL) { fprintf(stderr, "Out of memory\n"); exit(1); }
       i++;
     }
@@ -437,7 +437,7 @@ void lw_dictinfolist_load_dictionary_order_from_pref (LwDictInfoList *dil, LwPre
         return;
       }
 
-      engine = lw_util_get_engine_from_enginename (engine_name_array[0]);
+      engine = lw_util_get_dicttype_from_string (engine_name_array[0]);
       name = engine_name_array[1];
 
       //Sanity Checking

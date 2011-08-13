@@ -111,7 +111,6 @@ LwSearchItem* lw_searchitem_new (char* query, LwDictInfo* dictionary, const LwOu
       temp->swap_resultline = NULL;
       temp->queryline = lw_queryline_new ();
       temp->history_relevance_idle_timer = 0;
-      temp->show_only_exact_matches = FALSE;
 
       //Set function pointers
       switch (temp->dictionary->type)
@@ -133,6 +132,7 @@ LwSearchItem* lw_searchitem_new (char* query, LwDictInfo* dictionary, const LwOu
 
     if (*error != NULL || !success)
     {
+      fprintf(stderr, "errored!\n");
       lw_searchitem_free (temp);
       temp = NULL;
     }

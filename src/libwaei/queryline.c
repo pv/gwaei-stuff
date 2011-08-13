@@ -416,8 +416,6 @@ static GRegex*** _compile_and_allocate_number_search_regex (const char* subject,
     //Cleanup if there was an error
     for (iter = re; !all_regex_built && iter - re < LW_QUERYLINE_MAX_ATOMS; iter++)
     {
-      printf("error\n");
-      exit(0);
       for (i = 0; i < LW_RELEVANCE_TOTAL; i++)
       {
         if ((*iter)[i] != NULL) g_regex_unref ((*re)[i]);

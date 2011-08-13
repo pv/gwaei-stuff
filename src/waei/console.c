@@ -238,7 +238,7 @@ gboolean w_console_search (WApplication *app, GError **error)
     item = lw_searchitem_new (app->query_text_data, di, LW_OUTPUTTARGET_RESULTS, app->prefmanager, error);
     if (item == NULL)
     {
-      printf("%s\n", (*error)->message);
+      fprintf(stderr, "%s\n", (*error)->message);
       return FALSE;
     }
 
@@ -251,7 +251,7 @@ gboolean w_console_search (WApplication *app, GError **error)
     }
 
     //Print the results
-    lw_engine_get_results (app->engine, item, FALSE);
+    lw_engine_get_results (app->engine, item, FALSE, app->exact_switch);
 
     //Print final header
     if (app->quiet_switch == FALSE)

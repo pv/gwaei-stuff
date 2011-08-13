@@ -605,19 +605,19 @@ gboolean lw_io_unzip_file (char *path, LwIoProgressCallback cb, gpointer data, G
 char** lw_io_get_dictionary_file_list (const int MAX)
 {
     //Declarations and initializations
-    int engine;
+    LwDictType type;
     GDir *dir;
-    const char* enginename;
+    const char* typename;
     const char* filename;
     char *directory;
     char** atoms = (char**) malloc((MAX + 1) * sizeof(int));
     int i = 0;
 
     //Go through each engine folder looking for dictionaries
-    for (engine = 0; engine < TOTAL_LW_DICTTYPES && i < MAX; engine++)
+    for (type = 0; type < TOTAL_LW_DICTTYPES && i < MAX; type++)
     {
-      enginename = lw_util_get_engine_name (engine);
-      directory = lw_util_build_filename (engine, NULL);
+      typename = lw_util_dicttype_to_string (type);
+      directory = lw_util_build_filename_by_dicttype (type, NULL);
       if (directory != NULL)
       {
         dir = g_dir_open (directory, 0, NULL);
@@ -625,7 +625,7 @@ char** lw_io_get_dictionary_file_list (const int MAX)
         //Look for files in the directory and stop if we reached the max for the program
         while (dir != NULL && (filename =  g_dir_read_name (dir)) != NULL && i < MAX)
         {
-          atoms[i] = g_strdup_printf("%s/%s", enginename, filename);
+          atoms[i] = g_strdup_printf("%s/%s", typename, filename);
           i++;
         }
         g_dir_close(dir);

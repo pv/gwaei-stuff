@@ -83,7 +83,7 @@ GRegex *lw_re[LW_RE_TOTAL + 1];
 void lw_regex_initialize ()
 {
     _regex_expressions_reference_count++;
-    if (_regex_expressions_reference_count > 0) return;
+    if (_regex_expressions_reference_count > 1) return;
 
     //Declarations
     GError *error;
@@ -131,7 +131,8 @@ void lw_regex_initialize ()
 //!
 void lw_regex_free ()
 {
-    if (_regex_expressions_reference_count == 0) return;
+    _regex_expressions_reference_count--;
+    if (_regex_expressions_reference_count <= 1) return;
 
     //Declarations
     int i;
@@ -142,8 +143,6 @@ void lw_regex_free ()
       g_regex_unref (lw_re[i]);
       lw_re[i] = NULL;
     }
-
-    _regex_expressions_reference_count--;
 }
 
 

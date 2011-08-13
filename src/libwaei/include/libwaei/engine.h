@@ -4,9 +4,9 @@
 //Starts a search.  Make sure to set target_text_buffer and target_text view
 
 #define LW_ENGINE(object) (LwEngine*) object
-#define LW_MAX_HIGH_RELIVENT_RESULTS 200
-#define LW_MAX_MEDIUM_IRRELIVENT_RESULTS 100
-#define LW_MAX_LOW_IRRELIVENT_RESULTS    50
+#define LW_MAX_HIGH_RELEVENT_RESULTS 200
+#define LW_MAX_MEDIUM_IRRELEVENT_RESULTS 100
+#define LW_MAX_LOW_IRRELEVENT_RESULTS    50
 
 
 struct _LwEngine {
@@ -38,13 +38,13 @@ LwEngine* lw_engine_new (
                           );
 void lw_engine_free (LwEngine*);
 
-void lw_engine_get_results (LwEngine*, LwSearchItem*, gboolean);
+void lw_engine_get_results (LwEngine*, LwSearchItem*, gboolean, gboolean);
 
 void lw_engine_append_result (LwEngine*, LwSearchItem*);
 void lw_engine_append_less_relevant_header (LwEngine*, LwSearchItem*);
 void lw_engine_append_more_relevant_header (LwEngine*, LwSearchItem*);
-gboolean lw_engine_prepare_search (LwEngine*, LwSearchItem*);
-void lw_engine_cleanup_search (LwEngine*, LwSearchItem*);
+gpointer lw_engine_prepare_search (LwEngine*, LwSearchItem*, gboolean);
+void lw_engine_cleanup_search (gpointer);
 
 
 #endif

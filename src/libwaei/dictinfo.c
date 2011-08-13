@@ -181,7 +181,7 @@ gboolean lw_dictinfo_uninstall (LwDictInfo *di, LwIoProgressCallback cb, GError 
     char *uri;
 
     //Initializations
-    uri =  lw_util_build_filename (di->type, di->filename);
+    uri =  lw_util_build_filename_by_dicttype (di->type, di->filename);
 
     lw_io_remove (uri, error);
     if (cb != NULL) cb (1.0, di);
@@ -198,7 +198,7 @@ char* lw_dictinfo_get_uri (LwDictInfo *di)
     char *path;
 
     //Initializations
-    path = lw_util_build_filename (di->type, di->filename);
+    path = lw_util_build_filename_by_dicttype (di->type, di->filename);
 
     return path;
 }

@@ -80,7 +80,6 @@ struct _LwSearchItem {
     LwOutputTarget target;                  //!< What gui element should be outputted to
     long current_line;                      //!< Current line in the dictionary file
     int history_relevance_idle_timer;       //!< Helps determine if something is added to the history or not
-    gboolean show_only_exact_matches;
 
     int total_relevant_results;             //!< Total results guessed to be highly relevant to the query
     int total_irrelevant_results;           //!< Total results guessed to be vaguely relevant to the query

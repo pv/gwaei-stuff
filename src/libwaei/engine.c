@@ -81,23 +81,35 @@ void lw_engine_append_more_relevant_header (LwEngine *engine, LwSearchItem *item
 }
 
 
-gboolean lw_engine_prepare_search (LwEngine *engine, LwSearchItem *item)
+gpointer lw_engine_prepare_search (LwEngine *engine, LwSearchItem *item, gboolean exact)
 {
+    LwEngineData *data;
+
     if (lw_searchitem_prepare_search (item) == FALSE)
-      return FALSE;
+      return NULL;
 
     (engine->prepare_search_cb) (item);
 
-    item->show_only_exact_matches = TRUE;
+    data = lw_enginedata_new (engine, item, exact);
 
-    return TRUE;
+    return data;
 }
 
 
-void lw_engine_cleanup_search (LwEngine *engine, LwSearchItem *item)
+void lw_engine_cleanup_search (gpointer data)
 {
+  LwEngineData *enginedata;
+  LwEngine *engine;
+  LwSearchItem *item;
+
+  enginedata = LW_ENGINEDATA (data);
+  engine = enginedata->engine;
+  item = enginedata->item;
+
   (engine->cleanup_search_cb) (item);
   lw_searchitem_cleanup_search (item);
+
+  lw_enginedata_free (data);
 }
 
 
@@ -216,7 +228,7 @@ static void _stream_results_thread (gpointer data)
         switch(relevance)
         {
           case LW_RELEVANCE_HIGH:
-              if (item->total_relevant_results < LW_MAX_HIGH_RELIVENT_RESULTS)
+              if (item->total_relevant_results < LW_MAX_HIGH_RELEVENT_RESULTS)
               {
                 item->total_results++;
                 item->total_relevant_results++;
@@ -232,8 +244,8 @@ static void _stream_results_thread (gpointer data)
               }
               break;
           case LW_RELEVANCE_MEDIUM:
-              if (item->total_irrelevant_results < LW_MAX_MEDIUM_IRRELIVENT_RESULTS &&
-                  !item->show_only_exact_matches && 
+              if (item->total_irrelevant_results < LW_MAX_MEDIUM_IRRELEVENT_RESULTS &&
+//                  !item->show_only_exact_matches && 
                    (item->swap_resultline = lw_resultline_new ()) != NULL && item->target != LW_OUTPUTTARGET_KANJI)
               {
                 //Store the result line and create an empty one in its place
@@ -244,8 +256,8 @@ static void _stream_results_thread (gpointer data)
               }
               break;
           default:
-              if (item->total_irrelevant_results < LW_MAX_LOW_IRRELIVENT_RESULTS &&
-                    !item->show_only_exact_matches && 
+              if (item->total_irrelevant_results < LW_MAX_LOW_IRRELEVENT_RESULTS &&
+//                    !item->show_only_exact_matches && 
                    (item->swap_resultline = lw_resultline_new ()) != NULL && item->target != LW_OUTPUTTARGET_KANJI)
               {
                 //Store the result line and create an empty one in its place
@@ -294,7 +306,7 @@ static void _stream_results_thread (gpointer data)
     }
 
     //Cleanup
-    lw_engine_cleanup_search (engine, item);
+    lw_engine_cleanup_search (data);
 
     g_mutex_unlock (item->mutex);
 }
@@ -309,23 +321,26 @@ static void _stream_results_thread (gpointer data)
 //!
 //! @param item a LwSearchItem argument.
 //!
-void lw_engine_get_results (LwEngine *engine, LwSearchItem *item, gboolean create_thread)
+void lw_engine_get_results (LwEngine *engine, LwSearchItem *item, gboolean create_thread, gboolean exact)
 {
-    if (!lw_engine_prepare_search (engine, item)) return;
+    gpointer data;
 
-    //Start the search
-    if (create_thread)
+    data = lw_engine_prepare_search (engine, item, exact);
+
+    if (data != NULL)
     {
-      item->thread = g_thread_create ((GThreadFunc)_stream_results_thread, (gpointer) item, TRUE, NULL);
-      if (item->thread == NULL)
+      if (create_thread)
       {
-        g_warning("Couldn't create the thread");
-        _stream_results_thread ((gpointer) item);
+        item->thread = g_thread_create ((GThreadFunc) _stream_results_thread, (gpointer) data, TRUE, NULL);
+        if (item->thread == NULL)
+        {
+          fprintf(stderr, "Couldn't create the thread");
+        }
       }
-    }
-    else
-    {
-      _stream_results_thread ((gpointer) item);
+      else
+      {
+        _stream_results_thread ((gpointer) data);
+      }
     }
 }
 

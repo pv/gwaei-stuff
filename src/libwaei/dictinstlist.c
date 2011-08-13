@@ -273,7 +273,7 @@ LwDictInst* lw_dictinstlist_get_dictinst_by_idstring (LwDictInstList *dil, const
 
     if (g_strv_length (tokens) == 2)
     {
-      engine = lw_util_get_engine_from_enginename (tokens[0]);
+      engine = lw_util_get_dicttype_from_string (tokens[0]);
       filename = tokens[1];
 
       for (iter = dil->list; iter != NULL; iter = iter->next)

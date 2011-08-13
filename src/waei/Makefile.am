@@ -25,7 +25,7 @@ endif
 ##LINUX/UNIX/BSD SETUP
 if WITH_NCURSES
 NCURSES_DEFS =-DWITH_NCURSES
-waei_SOURCES += ncurses.c
+waei_SOURCES += ncurses.c ncurses-callbacks.c
 waei_LDADD += $(NCURSES_LIBS)
 waei_CPPFLAGS +=$(NCURSES_DEFS)
 endif

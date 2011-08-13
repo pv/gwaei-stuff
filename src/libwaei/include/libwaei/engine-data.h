@@ -6,10 +6,11 @@
 struct _LwEngineData {
     LwEngine *engine;
     LwSearchItem *item;
+    gboolean exact;
 };
 typedef struct _LwEngineData LwEngineData;
 
-LwEngineData* lw_enginedata_new (LwEngine*, LwSearchItem*);
+LwEngineData* lw_enginedata_new (LwEngine*, LwSearchItem*, gboolean);
 void lw_enginedata_free (LwEngineData*);
 
 #endif
