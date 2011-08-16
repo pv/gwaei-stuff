@@ -84,7 +84,7 @@ G_MODULE_EXPORT void gw_radsearchtool_search_cb (GtkWidget *widget, gpointer dat
     GError *error;
 
     //Initializations
-    di = lw_dictinfolist_get_dictinfo (LW_ENGINE_KANJI, "Kanji");
+    di = lw_dictinfolist_get_dictinfo (LW_DICTTYPE_KANJI, "Kanji");
     hl = lw_historylist_get_list(LW_HISTORYLIST_RESULTS);   
     query_text = NULL;
     radicals_text = gw_radicalswindow_strdup_all_selected (app->radicals);

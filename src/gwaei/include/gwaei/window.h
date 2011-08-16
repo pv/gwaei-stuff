@@ -3,6 +3,7 @@
 
 #include <gtk/gtk.h>
 
+#define GW_WINDOW(object) (GwWindow*) object
 //Include this line in the beginning of any struct that extends a GwWindow
 #define EXTENDS_GW_WINDOW GtkBuilder *builder; GtkWindow *toplevel; GwWindowType type;
 

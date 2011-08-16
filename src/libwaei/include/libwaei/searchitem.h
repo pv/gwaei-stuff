@@ -37,6 +37,7 @@
 
 
 #define LW_SEARCHITEM(object) (LwSearchItem*) object
+#define LW_SEARCHITEM_DATA_FREE_FUNC(object) (LwSearchItemDataFreeFunc)object
 #define LW_HISTORY_TIME_TO_RELEVANCE 20
 
 //!
@@ -61,7 +62,7 @@ typedef enum
   LW_OUTPUTTARGET_VOCABULARY
 } LwOutputTarget;
 
-typedef void(*LwSearchItemDataFreeFunc)(void);
+typedef void(*LwSearchItemDataFreeFunc)(gpointer);
 
 //!
 //! @brief Primitive for storing search item information
@@ -98,7 +99,7 @@ struct _LwSearchItem {
 typedef struct _LwSearchItem LwSearchItem;
 
 //Methods
-LwSearchItem* lw_searchitem_new (char*, LwDictInfo*, const LwOutputTarget, LwPrefManager*, GError**);
+LwSearchItem* lw_searchitem_new (const char*, LwDictInfo*, const LwOutputTarget, LwPrefManager*, GError**);
 void lw_searchitem_free (LwSearchItem*);
 
 void lw_searchitem_cleanup_search (LwSearchItem*);

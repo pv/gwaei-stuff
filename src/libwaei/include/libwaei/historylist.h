@@ -44,7 +44,6 @@ struct _LwHistoryList {
     GList *back;           //!< A GList of past search items
     GList *forward;        //!< A GList where past search items get stacked when the user goes back.
     int max;
-    LwSearchItem *current; //!< The current search before it gets pushed only into a history list.
 };
 typedef struct _LwHistoryList LwHistoryList;
 
@@ -58,16 +57,12 @@ GList* lw_historylist_get_combined_list (LwHistoryList*);
 void lw_historylist_clear_forward_list (LwHistoryList*);
 void lw_historylist_clear_back_list (LwHistoryList*);
 
-LwSearchItem* lw_historylist_get_current_searchitem (LwHistoryList*);
-void lw_historylist_set_current_searchitem (LwHistoryList*, LwSearchItem*);
-
 void lw_historylist_add_searchitem (LwHistoryList*, LwSearchItem*);
-void lw_historylist_set_searchitem (LwHistoryList*, LwSearchItem*);
 
 gboolean lw_historylist_has_back (LwHistoryList*);
 gboolean lw_historylist_has_forward (LwHistoryList*);
-gboolean lw_historylist_go_back (LwHistoryList*);
-gboolean lw_historylist_go_forward (LwHistoryList*);
+LwSearchItem* lw_historylist_go_back (LwHistoryList*, LwSearchItem*);
+LwSearchItem* lw_historylist_go_forward (LwHistoryList*, LwSearchItem*);
 
 
 #endif

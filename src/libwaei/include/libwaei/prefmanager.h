@@ -2,7 +2,6 @@
 #define LW_PREFMANAGER_INCLUDED
 
 #include <gio/gio.h>
-#include <libwaei/prefmanager-callbacks.h>
 
 //GSettings
 #define LW_SCHEMA_GNOME_INTERFACE   "org.gnome.desktop.interface"
@@ -52,23 +51,6 @@
 
 #define LW_PREFMANAGER(object) (LwPrefManager*) object
 
-//! PrefCallback form for being stored in a list
-typedef void (*LwPrefCallback)(gpointer, gpointer, gboolean);
-
-//! The data for uniquely identifying a callback
-struct _LwPrefCallbackData {
-  const char *schema;
-  const char *key;
-  LwPrefCallback func;
-  gpointer data;
-};
-typedef struct _LwPrefCallbackData LwPrefCallbackData;
-
-LwPrefCallbackData* lw_prefcallbackdata_new (const char*, const char*, LwPrefCallback, gpointer);
-void lw_prefcallbackdata_free (LwPrefCallbackData*);
-
-
-
 struct _LwPrefManager {
   GList *settingslist;
   GList *callbacklist;
@@ -102,11 +84,11 @@ struct _LwPrefManager {
 };
 typedef struct _LwPrefManager LwPrefManager;
 
+
 LwPrefManager* lw_prefmanager_new (void);
 void lw_prefmanager_free (LwPrefManager*);
 
-void lw_prefmanager_add_callback (LwPrefManager*, const char*, const char*, LwPrefCallback, gpointer);
-void lw_prefmanager_destroy_callbacks_for_matching_data (LwPrefManager*, gpointer);
+void lw_prefmanager_free_settings (LwPrefManager*);
 
 GSettings* lw_prefmanager_get_settings_object (LwPrefManager*, const char*);
 

@@ -5,6 +5,8 @@
 
 #include <libwaei/searchitem.h>
 
+
+#define GW_SEARCHWINDOW(object) (GwSearchWindow*) object
 #define GW_SEARCHWINDOW_KEEP_SEARCHING_MAX_DELAY 3
 
 typedef enum {
@@ -20,6 +22,11 @@ typedef enum {
   GW_SEARCHWINDOW_SIGNALID_CUT,
   GW_SEARCHWINDOW_SIGNALID_PASTE,
   GW_SEARCHWINDOW_SIGNALID_SELECT_ALL,
+  GW_SEARCHWINDOW_TOOLBAR_SHOW,
+  GW_SEARCHWINDOW_STATUSBAR_SHOW,
+  GW_SEARCHWINDOW_USE_GLOBAL_FONT,
+  GW_SEARCHWINDOW_CUSTOM_FONT,
+  GW_SEARCHWINDOW_FONT_MAGNIFICATION,
   TOTAL_GW_SEARCHWINDOW_SIGNALIDS
 } GwSearchWindowSignalId;
 
@@ -61,6 +68,8 @@ struct _GwSearchWindow {
   GtkToolbar *toolbar;
   GtkWidget *statusbar;
   GtkComboBox *combobox;
+  LwDictInfo *dictinfo;
+  GtkTextTagTable *tagtable;
 
   //Tabs
   GList *tablist; //!< Stores the current search item set to each tab
@@ -115,13 +124,16 @@ void gw_searchwindow_set_search_progressbar_by_searchitem (GwSearchWindow*, LwSe
 char* gw_searchwindow_get_title_by_searchitem (GwSearchWindow*, LwSearchItem*);
 void gw_searchwindow_set_title_by_searchitem (GwSearchWindow*, LwSearchItem*);
 
+LwDictInfo* gw_searchwindow_get_dictionary (GwSearchWindow*);
+void gw_searchwindow_set_dictionary_by_searchitem (GwSearchWindow *window, LwSearchItem*);
 void gw_searchwindow_set_dictionary (GwSearchWindow*, int);
+
 void gw_searchwindow_buffer_initialize_tags (GwSearchWindow*);
-void gw_searchwindow_set_font (GwSearchWindow*, char*, int*);
+void gw_searchwindow_set_font (GwSearchWindow*);
 void gw_searchwindow_buffer_initialize_marks (GtkTextBuffer*);
 
 
-void gw_searchwindow_search_entry_insert (GwSearchWindow*, char*);
+void gw_searchwindow_entry_insert (GwSearchWindow*, char*);
 void gw_searchwindow_clear_search_entry (GwSearchWindow*);
 void gw_searchwindow_select_all_by_target (GwSearchWindow*, LwOutputTarget);
 
@@ -138,7 +150,6 @@ void gw_searchwindow_copy_text (GwSearchWindow*, LwOutputTarget);
 void gw_searchwindow_cycle_dictionaries (GwSearchWindow*, gboolean);
 
 void gw_searchwindow_select_none_by_target (GwSearchWindow*, LwOutputTarget);
-void gw_searchwindow_strncpy_text_from_widget_by_target (GwSearchWindow*, char*, LwOutputTarget, int);
 
 gboolean gw_searchwindow_has_selection_by_target (GwSearchWindow*, LwOutputTarget);
 
@@ -152,23 +163,13 @@ void gw_searchwindow_set_hiragana_katakana_conv (GwSearchWindow*, gboolean);
 void gw_searchwindow_set_romaji_kana_conv (GwSearchWindow*, int);
 void gw_searchwindow_set_less_relevant_show (GwSearchWindow*, gboolean);
 void gw_searchwindow_set_use_global_document_font_checkbox (GwSearchWindow*, gboolean);
-void gw_searchwindow_set_toolbar_show (gpointer, gpointer, gboolean);
+void gw_searchwindow_set_toolbar_show (GwSearchWindow*, gboolean*);
 void gw_searchwindow_set_toolbar_style (GwSearchWindow*, const char*);
 void gw_searchwindow_set_statusbar_show (GwSearchWindow*, gboolean);
 void gw_searchwindow_set_color_to_swatch (GwSearchWindow*, const char*, const char*);
 
 void gw_searchwindow_guarantee_first_tab (GwSearchWindow*);
 void gw_searchwindow_set_current_tab_text (GwSearchWindow*, const char*);
-
-struct _GwSearchData {
-  GtkTextView *view;
-  GwSearchWindow *window;
-};
-typedef struct _GwSearchData GwSearchData;
-
-
-GwSearchData* gw_searchdata_new (GtkTextView*, GwSearchWindow*);
-void gw_searchdata_free (GwSearchData*);
 
 GtkTextView* gw_searchwindow_get_current_textview (GwSearchWindow*);
 
@@ -182,5 +183,7 @@ int gw_searchwindow_new_tab (GwSearchWindow*);
 
 void gw_searchwindow_start_search (GwSearchWindow*, LwSearchItem*);
 
+#include <gwaei/search-callbacks.h>
+#include <gwaei/search-data.h>
 
 #endif

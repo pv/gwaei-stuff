@@ -54,12 +54,6 @@ static void     _dictinfolist_sort_and_normalize_order (LwDictInfoList*);
 LwDictInfoList* lw_dictinfolist_new (const int MAX, LwPrefManager *pm)
 {
     LwDictInfoList *temp;
-    gchar** dictionarylist;
-    gchar** pair;
-    LwDictType engine;
-    char *dictionary;
-    int i;
-
     temp = (LwDictInfoList*) malloc(sizeof(LwDictInfoList));
 
     if (temp != NULL)
@@ -68,26 +62,61 @@ LwDictInfoList* lw_dictinfolist_new (const int MAX, LwPrefManager *pm)
       temp->mutex = g_mutex_new();
       temp->max = MAX;
 
-      dictionarylist = lw_io_get_dictionary_file_list (temp->max);
-
-      for (i = 0; dictionarylist != NULL && dictionarylist[i] != NULL; i++)
-      {
-        pair = g_strsplit_set (dictionarylist[i], "/", 2);
-        if (pair != NULL && pair[0] != NULL && pair[1] != NULL) 
-        {
-          engine = lw_util_get_dicttype_from_string (pair[0]);
-          dictionary = pair[1];
-          lw_dictinfolist_add_dictionary (temp, engine, dictionary);
-        }
-        g_strfreev (pair);
-      }
-      g_strfreev(dictionarylist);
-
+      lw_dictinfolist_reload (temp);
       lw_dictinfolist_load_dictionary_order_from_pref (temp, pm);
     }
 
     return temp;
 }
+
+
+void lw_dictinfolist_clear (LwDictInfoList *dil)
+{
+    LwDictInfo *di;
+    GList *iter;
+
+    if (dil->list != NULL)
+    {
+      for (iter = dil->list; iter != NULL; iter = iter->next)
+      {
+        di = LW_DICTINFO (iter->data);
+        if (di != NULL)
+        {
+          lw_dictinfo_free (di);
+        }
+      }
+      g_list_free (dil->list);
+      dil->list = NULL;
+    }
+}
+
+void lw_dictinfolist_reload (LwDictInfoList *dil)
+{
+    //Declarations
+    gchar** dictionarylist;
+    gchar** pair;
+    LwDictType engine;
+    char *dictionary;
+    int i;
+
+    lw_dictinfolist_clear (dil);
+
+    //Create a new list
+    dictionarylist = lw_io_get_dictionary_file_list (dil->max);
+    for (i = 0; dictionarylist != NULL && dictionarylist[i] != NULL; i++)
+    {
+      pair = g_strsplit_set (dictionarylist[i], "/", 2);
+      if (pair != NULL && pair[0] != NULL && pair[1] != NULL) 
+      {
+        engine = lw_util_get_dicttype_from_string (pair[0]);
+        dictionary = pair[1];
+        lw_dictinfolist_add_dictionary (dil, engine, dictionary);
+      }
+      g_strfreev (pair);
+    }
+    g_strfreev(dictionarylist);
+}
+
 
 
 //!
@@ -144,21 +173,8 @@ void lw_dictinfolist_add_dictionary (LwDictInfoList *dil, const LwDictType DICTT
 //!
 void lw_dictinfolist_free (LwDictInfoList *dil)
 {
-    GList *iter;
-    LwDictInfo *di;
-
-    for (iter = dil->list; iter != NULL; iter = iter->next)
-    {
-      di = (LwDictInfo*) iter->data;
-      if (di != NULL)
-        lw_dictinfo_free (di);
-      iter->data = NULL;
-    }
-    g_list_free (dil->list);
-
+    lw_dictinfolist_clear (dil);
     g_mutex_free (dil->mutex);
-    dil->mutex = NULL;
-
     free(dil);
 }
 
@@ -187,8 +203,8 @@ LwDictInfo* lw_dictinfolist_get_dictinfo (LwDictInfoList *dil, const LwDictType 
 
     for (iter = dil->list; iter != NULL; iter = iter->next)
     {
-      di = (LwDictInfo*) iter->data;
-      if (di->type == DICTTYPE && strcmp (di->filename, FILENAME) == 0)
+      di = LW_DICTINFO (iter->data);
+      if (di != NULL && di->type == DICTTYPE && strcmp (di->filename, FILENAME) == 0)
       {
         break;
       }

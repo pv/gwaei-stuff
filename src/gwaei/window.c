@@ -80,7 +80,7 @@ void gw_window_destroy (GwWindow *window)
     switch (window->type)
     {
       case GW_WINDOW_SEARCH:
-        gw_searchwindow_destroy ((GwSearchWindow*) window);
+        gw_searchwindow_destroy (GW_SEARCHWINDOW (window));
         break;
 /*
       case GW_WINDOW_SETTINGS:

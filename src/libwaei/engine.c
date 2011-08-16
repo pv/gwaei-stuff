@@ -286,7 +286,6 @@ static void _stream_results_thread (gpointer data)
     {
       item->total_results++;
       _append_stored_result_to_output (engine, item, &(item->results_medium));
-      //Update the progress feeback
 
       //Give a chance for something else to run
       g_mutex_unlock (item->mutex);
@@ -298,7 +297,6 @@ static void _stream_results_thread (gpointer data)
     {
       item->total_results++;
       _append_stored_result_to_output (engine, item, &(item->results_low));
-      //Update the progress feeback
 
       //Give a chance for something else to run
       g_mutex_unlock (item->mutex);

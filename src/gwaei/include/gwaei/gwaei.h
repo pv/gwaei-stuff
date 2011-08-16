@@ -9,7 +9,6 @@
 #include <gwaei/window.h>
 
 #include <gwaei/search-window.h>
-#include <gwaei/search-callbacks.h>
 
 #ifdef WITH_LIBUNIQUE
 #include <gwaei/libunique.h>
@@ -17,15 +16,17 @@
 
 #include <gwaei/printing.h>
 
+/*
 #include <gwaei/radicals-window.h>
 #include <gwaei/radicals-callbacks.h>
 
 #include <gwaei/settings-window.h>
 #include <gwaei/settings-callbacks.h>
+*/
 
-#include <gwaei/dictionarymanager.h>
-#include <gwaei/dictionarymanager-callbacks.h>
+#include <gwaei/dictinfolist.h>
 
+/*
 #include <gwaei/dictionaryinstall-window.h>
 #include <gwaei/dictionaryinstall-callbacks.h>
 
@@ -38,9 +39,16 @@
 #include <gwaei/kanjipad-callbacks.h>
 #include <gwaei/kanjipad-candidatearea.h>
 #include <gwaei/kanjipad-drawingarea.h>
+*/
 
 #include <gwaei/output-callbacks.h>
 
+typedef enum {
+  GW_APP_RESOLUTION_NO_ERRORS,
+  GW_APP_RESOLUTION_OUT_OF_MEMORY
+} GwApplicationResolution;
+
+#define GW_APPLICATION(object) (GwApplication*)object
 
 struct _GwApplication {
   int* argc;
@@ -50,8 +58,9 @@ struct _GwApplication {
 
   LwDictInstList *dictinstlist;
   LwPrefManager *prefmanager;
-  LwHistoryList *history;
-  GwDictionaryManager *dictionarymanager;
+  GwDictInfoList *dictinfolist;
+  LwEngine *engine;
+  GtkTextTagTable *tagtable;
 
   gchar   *arg_dictionary;
   gchar   *arg_query;
@@ -67,7 +76,7 @@ typedef struct _GwApplication GwApplication;
 GwApplication *gw_app_new (int*, char***);
 void gw_app_free (GwApplication *app);
 
-void gw_app_run (GwApplication*);
+GwApplicationResolution gw_app_run (GwApplication*);
 void gw_app_parse_args (GwApplication*, int*, char***);
 void gw_app_quit (GwApplication*);
 
@@ -80,6 +89,8 @@ void gw_app_cancel_all_searches (GwApplication*);
 
 extern GwApplication *app;
 
+void gw_app_sync_tag_cb (GSettings*, gchar*, gpointer);
+GtkTextTagTable* gw_texttagtable_new ();
 
 
 #endif

@@ -235,7 +235,7 @@ GwDictInstWindow* gw_dictinstwindow_new ()
 
       //Set up the Engine liststore
       window->engine_store = gtk_list_store_new (ENGINE_STORE_TOTAL_FIELDS, G_TYPE_INT, G_TYPE_STRING);
-      for (i = 0; i < LW_ENGINE_TOTAL; i++)
+      for (i = 0; i < LW_DICTTYPE_TOTAL; i++)
       {
         gtk_list_store_append (GTK_LIST_STORE (window->engine_store), &treeiter);
         gtk_list_store_set (

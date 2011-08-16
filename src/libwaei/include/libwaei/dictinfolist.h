@@ -33,7 +33,7 @@
 
 #define LW_DICTINFOLIST(object) (LwDictInfoList*) object
 
-#define LW_EXTENDS_DICTINFOLIST \
+#define EXTENDS_LW_DICTINFOLIST \
   GList *list; \
   GMutex *mutex; \
   int max;
@@ -43,7 +43,7 @@
 //!
 struct _LwDictInfoList
 {
-  LW_EXTENDS_DICTINFOLIST
+  EXTENDS_LW_DICTINFOLIST
 };
 typedef struct _LwDictInfoList LwDictInfoList;
 
@@ -65,6 +65,8 @@ int lw_dictinfolist_get_total (LwDictInfoList*);
 void lw_dictinfolist_preform_postprocessing_by_name (LwDictInfoList*, char*, GError**);
 void lw_dictinfolist_load_dictionary_order_from_pref (LwDictInfoList*, LwPrefManager*);
 void lw_dictinfolist_save_dictionary_order_pref (LwDictInfoList*, LwPrefManager*);
+
+void lw_dictinfolist_reload (LwDictInfoList*);
 
 
 

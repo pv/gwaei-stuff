@@ -40,140 +40,6 @@
 
 
 //!
-//! @brief Create a new LwPrefCallbackData object
-//!
-LwPrefCallbackData* lw_prefcallbackdata_new (const char *SCHEMA, const char *KEY, LwPrefCallback func, gpointer data)
-{
-    LwPrefCallbackData* temp;
-    
-    temp = (LwPrefCallbackData*) malloc(sizeof(LwPrefCallbackData));
-
-    if (temp != NULL)
-    {
-      temp->schema = SCHEMA;
-      temp->key = KEY;
-      temp->func = func;
-      temp->data = data;
-    }
-
-    return temp;
-}
-
-
-//!
-//! @brief Free a new LwPrefCallbackData object
-//!
-void lw_prefcallbackdata_free (LwPrefCallbackData* pcd)
-{
-    free (pcd);
-}
-
-
-//!
-//! @brief Checks if a LwPrefCallbackData already exists in the prefmanager list
-//!
-gboolean lw_prefmanager_callback_exists (LwPrefManager *pm, const char *SCHEMA, const char *KEY, LwPrefCallback func)
-{
-    LwPrefCallbackData *pcd;
-    GList *iter;
-
-    for (iter = pm->callbacklist; iter != NULL; iter = iter->next)
-    {
-      pcd = (LwPrefCallbackData*) iter->data;
-      if (pcd != NULL && pcd->schema == SCHEMA && pcd->key == KEY && pcd->func == func)
-        return TRUE;
-      pcd = NULL;
-    }
-
-    return FALSE;
-}
-
-
-//!
-//!  @brief Used for removing all callbacks with a specific data.  The data
-//!         generally represents information for a window.
-//!
-void lw_prefmanager_destroy_callbacks_for_matching_data (LwPrefManager *pm, gpointer data)
-{
-    GList *iter;
-    GList *link;
-    LwPrefCallbackData *pcd;
-
-    iter = pm->callbacklist;
-
-    while (iter != NULL)
-    {
-      pcd = (LwPrefCallbackData*) iter->data;
-      if (pcd != NULL && pcd->data == data)
-      {
-        lw_prefcallbackdata_free (pcd);
-        link = iter;
-        iter = iter->next;
-        pm->callbacklist = g_list_delete_link (pm->callbacklist, link);
-      }
-      else
-      {
-        iter = iter->next;
-      }
-    }
-}
-
-
-//!
-//! @brief Adds a LwPrefCallbackData objcet to the list of callbacks in the prefmanager.  This is meant to be used for outside of the
-//!        preferences for everything that relies on a preference separately.
-//!
-void lw_prefmanager_add_callback (LwPrefManager *pm, const char *SCHEMA, const char *KEY, LwPrefCallback func, gpointer data)
-{
-    LwPrefCallbackData *pcd;
-
-    if (lw_prefmanager_callback_exists (pm, SCHEMA, KEY, func) == FALSE)
-    {
-      pcd = lw_prefcallbackdata_new (SCHEMA, KEY, func, data);
-      if (pcd != NULL)
-      {
-        pm->callbacklist = g_list_append (pm->callbacklist, pcd);
-      }
-    }
-}
-
-
-void lw_prefmanager_free_callbacks (LwPrefManager *pm)
-{
-    GList *iter;
-    LwPrefCallbackData *pcd;
-
-    for (iter = pm->callbacklist; iter != NULL; iter = iter->next)
-    {
-      pcd = (LwPrefCallbackData*) iter->data;
-      if (pcd != NULL)
-        lw_prefcallbackdata_free (pcd);
-      iter->data = NULL;
-    }
-
-    g_list_free (pm->callbacklist);
-    pm->callbacklist = NULL;
-}
-
-
-void lw_prefmanager_free_settings (LwPrefManager *pm)
-{
-    GList *iter;
-    GSettings *settings;
-
-    for (iter = pm->settingslist; iter != NULL; iter = iter->next)
-    {
-      settings = (GSettings*) iter->data;
-      g_object_unref (settings);
-      iter->data = NULL;
-    }
-
-    g_list_free (pm->settingslist);
-    pm->settingslist = NULL;
-}
-
-
-//!
 //! @brief sets up preferences and makes sure they are in a sane state
 //!
 LwPrefManager* lw_prefmanager_new ()
@@ -189,11 +55,9 @@ LwPrefManager* lw_prefmanager_new ()
     temp->callbacklist = NULL;
     temp->mutex = g_mutex_new ();
 
-    guint id;
     GSettings *settings;
 
     settings = lw_prefmanager_get_settings_object (temp, LW_SCHEMA_BASE);
-    id = lw_prefmanager_add_change_listener (settings, LW_KEY_TOOLBAR_SHOW, lw_prefmanager_boolean_changed_cb, temp);
 /*
 
 number = g_signal_connect (widget, "clicked", callback, data);
@@ -252,12 +116,29 @@ g_signal_handler_block (widget, number);
 //!
 void lw_prefmanager_free (LwPrefManager *pm)
 {
-
     lw_prefmanager_free_settings (pm);
-    lw_prefmanager_free_callbacks (pm);
 
     free (pm);
 }
+
+
+void lw_prefmanager_free_settings (LwPrefManager *pm)
+{
+    GList *iter;
+    GSettings *settings;
+
+    for (iter = pm->settingslist; iter != NULL; iter = iter->next)
+    {
+      settings = (GSettings*) iter->data;
+      g_object_unref (settings);
+      iter->data = NULL;
+    }
+
+    g_list_free (pm->settingslist);
+    pm->settingslist = NULL;
+}
+
+
 
 
 //!

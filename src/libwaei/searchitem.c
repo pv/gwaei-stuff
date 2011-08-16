@@ -73,7 +73,7 @@ static gboolean _query_is_sane (const char* query)
 //! @param TARGET The widget to output the results to
 //! @return Returns an allocated LwSearchItem object
 //!
-LwSearchItem* lw_searchitem_new (char* query, LwDictInfo* dictionary, const LwOutputTarget TARGET, LwPrefManager *pm, GError **error)
+LwSearchItem* lw_searchitem_new (const char* query, LwDictInfo* dictionary, const LwOutputTarget TARGET, LwPrefManager *pm, GError **error)
 {
     if (!_query_is_sane (query)) return NULL;
 
@@ -119,11 +119,11 @@ LwSearchItem* lw_searchitem_new (char* query, LwDictInfo* dictionary, const LwOu
             success = lw_queryline_parse_edict_string (temp->queryline, pm, query, error);
             break;
           case LW_DICTTYPE_KANJI:
-            success =lw_queryline_parse_kanjidict_string (temp->queryline, pm, query, error);
+            success = lw_queryline_parse_kanjidict_string (temp->queryline, pm, query, error);
             break;
           case LW_DICTTYPE_EXAMPLES:
             success = lw_queryline_parse_exampledict_string (temp->queryline, pm, query, error);
-          break;
+            break;
           default:
             success = lw_queryline_parse_edict_string (temp->queryline, pm, query, error);
             break;
@@ -239,7 +239,7 @@ void lw_searchitem_cleanup_search (LwSearchItem* item)
 //!
 void lw_searchitem_free (LwSearchItem* item)
 {
-  if (item == NULL) return;
+  g_assert (item != NULL);
 
   if (item->thread != NULL) 
   {
@@ -580,6 +580,12 @@ gboolean lw_searchitem_has_history_relevance (LwSearchItem *item)
 //!
 void lw_searchitem_set_data (LwSearchItem *item, gpointer data, LwSearchItemDataFreeFunc free_data_func)
 {
+    //Sanity check
+    g_assert (item != NULL);
+
+    if (lw_searchitem_has_data (item))
+      lw_searchitem_free_data (item);
+
     item->data = data;
     item->free_data_func = free_data_func;
 }
@@ -590,18 +596,33 @@ void lw_searchitem_set_data (LwSearchItem *item, gpointer data, LwSearchItemData
 //!
 gpointer lw_searchitem_get_data (LwSearchItem *item)
 {
+    //Sanity check
+    g_assert (item != NULL);
+
     return item->data;
 }
 
+
 void lw_searchitem_free_data (LwSearchItem *item)
 {
-    if (item->free_data_func != NULL)
-      (item->free_data_func) ();
+    //Sanity check
+    g_assert (item != NULL);
+
+    if (item->free_data_func != NULL && item->data != NULL)
+    {
+      (item->free_data_func) (item->data);
+    }
+
+    item->data = NULL;
+    item->free_data_func = NULL;
 }
+
 
 gboolean lw_searchitem_has_data (LwSearchItem *item)
 {
-    return (item->data != NULL);
+    g_assert (item != NULL);
+
+    return (item->data != NULL && item->free_data_func != NULL);
 }
 
 

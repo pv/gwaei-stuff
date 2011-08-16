@@ -54,7 +54,7 @@ static void _set_header (LwSearchItem *item, char* text, char* mark_name)
 
   gdk_threads_enter();
     //Declarations
-    GwSearchData *data;
+    GwSearchData *sdata;
     GtkTextView *view;
     GtkTextBuffer *buffer;
     GtkTextIter iter;
@@ -63,8 +63,8 @@ static void _set_header (LwSearchItem *item, char* text, char* mark_name)
     char *new_text;
 
     //Initializations
-    data = lw_searchitem_get_data (item);
-    view = GTK_TEXT_VIEW (data->view);
+    sdata = GW_SEARCHDATA (lw_searchitem_get_data (item));
+    view = GTK_TEXT_VIEW (sdata->view);
     buffer = gtk_text_view_get_buffer (view);
     mark = gtk_text_buffer_get_mark (buffer, mark_name);
     gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark);
@@ -110,7 +110,7 @@ static void _add_match_highlights (gint line, gint start_offset, gint end_offset
     g_assert (lw_searchitem_has_data (item));
 
     //Declarations
-    GwSearchData *data;
+    GwSearchData *sdata;
     GtkTextView *view;
     GtkTextBuffer *buffer;
     LwQueryLine *ql;
@@ -125,8 +125,8 @@ static void _add_match_highlights (gint line, gint start_offset, gint end_offset
     GMatchInfo *match_info;
 
     //Initializations
-    data = lw_searchitem_get_data (item);
-    view = GTK_TEXT_VIEW (data->view);
+    sdata = GW_SEARCHDATA (lw_searchitem_get_data (item));
+    view = GTK_TEXT_VIEW (sdata->view);
     buffer = gtk_text_view_get_buffer (view);
     ql = item->queryline;
     gtk_text_buffer_get_iter_at_line_offset (buffer, &start_iter, line, start_offset);
@@ -210,15 +210,15 @@ static void _shift_stay_mark (LwSearchItem *item, char *name)
     g_assert (lw_searchitem_has_data (item));
 
     //Declarations
-    GwSearchData *data;
+    GwSearchData *sdata;
     GtkTextView *view;
     GtkTextBuffer *buffer;
     GtkTextMark *mark;
     GtkTextIter iter;
 
     //Initializations
-    data = lw_searchitem_get_data (item);
-    view = GTK_TEXT_VIEW (data->view);
+    sdata = GW_SEARCHDATA (lw_searchitem_get_data (item));
+    view = GTK_TEXT_VIEW (sdata->view);
     buffer = gtk_text_view_get_buffer (view);
     mark = gtk_text_buffer_get_mark (buffer, "content_insertion_mark");
     gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark);
@@ -243,15 +243,15 @@ static void _shift_append_mark (LwSearchItem *item, char *stay_name, char *appen
     g_assert (lw_searchitem_has_data (item));
 
     //Declarations
-    GwSearchData *data;
+    GwSearchData *sdata;
     GtkTextView *view;
     GtkTextBuffer *buffer;
     GtkTextIter iter;
     GtkTextMark *stay_mark, *append_mark;
 
     //Initializations
-    data = lw_searchitem_get_data (item);
-    view = GTK_TEXT_VIEW (data->view);
+    sdata = GW_SEARCHDATA (lw_searchitem_get_data (item));
+    view = GTK_TEXT_VIEW (sdata->view);
     buffer = gtk_text_view_get_buffer (view);
     stay_mark = gtk_text_buffer_get_mark (buffer, stay_name);
     gtk_text_buffer_get_iter_at_mark (buffer, &iter, stay_mark);
@@ -268,7 +268,7 @@ static void _shift_append_mark (LwSearchItem *item, char *stay_name, char *appen
 //!
 //! This function is made to help readability of edict results since there is a lot of repeating.
 //!
-//! @param item A LwSearchItem pointer to use for data.
+//! @param item A LwSearchItem pointer to use for sdata.
 //!
 static void _append_def_same_to_buffer (LwSearchItem* item)
 {
@@ -276,15 +276,15 @@ static void _append_def_same_to_buffer (LwSearchItem* item)
     g_assert (lw_searchitem_has_data (item));
 
     //Declarations
-    GwSearchData *data;
+    GwSearchData *sdata;
     GtkTextView *view;
     GtkTextBuffer *buffer;
     LwResultLine* resultline;
     GtkTextMark *mark;
 
     //Initializations
-    data = lw_searchitem_get_data (item);
-    view = GTK_TEXT_VIEW (data->view);
+    sdata = GW_SEARCHDATA (lw_searchitem_get_data (item));
+    view = GTK_TEXT_VIEW (sdata->view);
     buffer = gtk_text_view_get_buffer (view);
     resultline = item->resultline;
 
@@ -342,7 +342,7 @@ void gw_output_append_edict_results_cb (LwSearchItem *item)
     g_assert (lw_searchitem_has_data (item));
 
     //Declarations
-    GwSearchData *data;
+    GwSearchData *sdata;
     GtkTextView *view;
     GtkTextBuffer *buffer;
     GtkTextMark *mark;
@@ -356,8 +356,8 @@ void gw_output_append_edict_results_cb (LwSearchItem *item)
   gdk_threads_enter();
 
     //Initializations
-    data = lw_searchitem_get_data (item);
-    view = GTK_TEXT_VIEW (data->view);
+    sdata = GW_SEARCHDATA (lw_searchitem_get_data (item));
+    view = GTK_TEXT_VIEW (sdata->view);
     buffer = gtk_text_view_get_buffer (view);
     kanji_exists = (item->resultline->kanji_start != NULL && item->backup_resultline->kanji_start != NULL);
     furigana_exists = (item->resultline->furigana_start != NULL && item->backup_resultline->furigana_start != NULL);
@@ -371,7 +371,7 @@ void gw_output_append_edict_results_cb (LwSearchItem *item)
     {
       same_def_totals = (item->resultline->def_total == item->backup_resultline->def_total);
       same_first_def = (strcmp(item->resultline->def_start[0], item->backup_resultline->def_start[0]) == 0);
-      same_furigana = (!furigana_exists ||strcmp(item->resultline->furigana_start, item->backup_resultline->furigana_start) == 0);
+      same_furigana = (!furigana_exists || strcmp(item->resultline->furigana_start, item->backup_resultline->furigana_start) == 0);
       same_kanji = (!kanji_exists || strcmp(item->resultline->kanji_start, item->backup_resultline->kanji_start) == 0);
       skip = FALSE;
     }
@@ -379,7 +379,7 @@ void gw_output_append_edict_results_cb (LwSearchItem *item)
     //Begin comparison if possible
     if (!skip && ((same_def_totals) || (same_kanji && same_furigana)) && same_first_def)
     {
-      _append_def_same_to_buffer (item);
+      //_append_def_same_to_buffer (item);
       gdk_threads_leave ();
       return;
     }
@@ -475,7 +475,7 @@ void gw_output_append_kanjidict_results_cb (LwSearchItem *item)
     g_assert (lw_searchitem_has_data (item));
 
     //Declarations
-    GwSearchData *data;
+    GwSearchData *sdata;
     GtkTextView *view;
     GtkTextBuffer *buffer;
     GtkTextIter iter;
@@ -485,11 +485,11 @@ void gw_output_append_kanjidict_results_cb (LwSearchItem *item)
 
     //Initializations
     resultline = item->resultline;
-    data = lw_searchitem_get_data (item);
-    view = GTK_TEXT_VIEW (data->view);
+    sdata = GW_SEARCHDATA (lw_searchitem_get_data (item));
+    view = GTK_TEXT_VIEW (sdata->view);
     buffer = gtk_text_view_get_buffer (view);
 
-    if (item->target == LW_OUTPUT_TARGET_RESULTS)
+    if (item->target == LW_OUTPUTTARGET_RESULTS)
     {
   gdk_threads_enter();
       mark = gtk_text_buffer_get_mark (buffer, "content_insertion_mark");
@@ -498,10 +498,10 @@ void gw_output_append_kanjidict_results_cb (LwSearchItem *item)
       //Kanji
       gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); start_offset = gtk_text_iter_get_line_offset (&iter);
       gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, resultline->kanji, -1, "large", "center", NULL);
-      if (item->target == LW_OUTPUT_TARGET_RESULTS) gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, " ", -1, "large", "center", NULL);
+      if (item->target == LW_OUTPUTTARGET_RESULTS) gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, " ", -1, "large", "center", NULL);
       gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
       gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); line = gtk_text_iter_get_line (&iter);
-      if (item->target == LW_OUTPUT_TARGET_RESULTS)
+      if (item->target == LW_OUTPUTTARGET_RESULTS)
         _add_match_highlights (line, start_offset, end_offset, item);
 
       gtk_text_buffer_insert (buffer, &iter, "\n", -1);
@@ -515,7 +515,7 @@ void gw_output_append_kanjidict_results_cb (LwSearchItem *item)
         gtk_text_buffer_insert (buffer, &iter, resultline->radicals, -1);
         gtk_text_buffer_insert (buffer, &iter, " ", -1);
         gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
-        if (item->target == LW_OUTPUT_TARGET_RESULTS)
+        if (item->target == LW_OUTPUTTARGET_RESULTS)
           _add_match_highlights (line, start_offset, end_offset, item);
 
         gtk_text_buffer_insert (buffer, &iter, "\n", -1);
@@ -535,7 +535,7 @@ void gw_output_append_kanjidict_results_cb (LwSearchItem *item)
         gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); start_offset = gtk_text_iter_get_line_offset (&iter);
         gtk_text_buffer_insert (buffer, &iter, resultline->readings[0], -1);
         gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
-        if (item->target == LW_OUTPUT_TARGET_RESULTS)
+        if (item->target == LW_OUTPUTTARGET_RESULTS)
           _add_match_highlights (line, start_offset, end_offset, item);
         gtk_text_buffer_insert (buffer, &iter, "\n", -1);
         gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); line = gtk_text_iter_get_line (&iter);
@@ -546,7 +546,7 @@ void gw_output_append_kanjidict_results_cb (LwSearchItem *item)
         gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); start_offset = gtk_text_iter_get_line_offset (&iter);
         gtk_text_buffer_insert (buffer, &iter, resultline->readings[1], -1);
         gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
-        if (item->target == LW_OUTPUT_TARGET_RESULTS)
+        if (item->target == LW_OUTPUTTARGET_RESULTS)
           _add_match_highlights (line, start_offset, end_offset, item);
         gtk_text_buffer_insert (buffer, &iter, "\n", -1);
         gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); line = gtk_text_iter_get_line (&iter);
@@ -557,7 +557,7 @@ void gw_output_append_kanjidict_results_cb (LwSearchItem *item)
         gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); start_offset = gtk_text_iter_get_line_offset (&iter);
         gtk_text_buffer_insert (buffer, &iter, resultline->readings[2], -1);
         gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
-        if (item->target == LW_OUTPUT_TARGET_RESULTS)
+        if (item->target == LW_OUTPUTTARGET_RESULTS)
           _add_match_highlights (line, start_offset, end_offset, item);
         gtk_text_buffer_insert (buffer, &iter, "\n", -1);
         gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); line = gtk_text_iter_get_line (&iter);
@@ -600,14 +600,14 @@ void gw_output_append_kanjidict_results_cb (LwSearchItem *item)
       gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, gettext("Meanings:"), -1, "important", NULL);
       gtk_text_buffer_insert (buffer, &iter, resultline->meanings, -1);
       gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
-      if (item->target == LW_OUTPUT_TARGET_RESULTS)
+      if (item->target == LW_OUTPUTTARGET_RESULTS)
         _add_match_highlights (line, start_offset, end_offset, item);
 
       gtk_text_buffer_insert (buffer, &iter, "\n\n", -1);
   gdk_threads_leave ();
     }
     
-    if (item->target == LW_OUTPUT_TARGET_KANJI)
+    if (item->target == LW_OUTPUTTARGET_KANJI)
     {
       char *markup;
       char *new;
@@ -770,7 +770,7 @@ void gw_output_append_examplesdict_results_cb (LwSearchItem *item)
     g_assert (lw_searchitem_has_data (item));
 
     //Declarations
-    GwSearchData *data;
+    GwSearchData *sdata;
     GtkTextView *view;
     GtkTextBuffer *buffer;
     LwResultLine* resultline;
@@ -781,8 +781,8 @@ void gw_output_append_examplesdict_results_cb (LwSearchItem *item)
   gdk_threads_enter();
 
     //Initializations
-    data = lw_searchitem_get_data (item);
-    view = GTK_TEXT_VIEW (data->view);
+    sdata = GW_SEARCHDATA (lw_searchitem_get_data (item));
+    view = GTK_TEXT_VIEW (sdata->view);
     buffer = gtk_text_view_get_buffer (view);
     resultline = item->resultline;
     mark = gtk_text_buffer_get_mark (buffer, "content_insertion_mark");
@@ -841,7 +841,7 @@ void gw_output_append_unknowndict_results_cb (LwSearchItem *item)
     g_assert (lw_searchitem_has_data (item));
 
     //Definitions
-    GwSearchData *data;
+    GwSearchData *sdata;
     GtkTextView *view;
     GtkTextBuffer *buffer;
     LwResultLine *resultline;
@@ -857,7 +857,7 @@ void gw_output_append_unknowndict_results_cb (LwSearchItem *item)
 
     gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); start_offset = gtk_text_iter_get_line_offset (&iter);
     gtk_text_buffer_insert (buffer, &iter, resultline->string, -1);
-    if (item->target == LW_OUTPUT_TARGET_RESULTS) gtk_text_buffer_insert (buffer, &iter, " ", -1);
+    if (item->target == LW_OUTPUTTARGET_RESULTS) gtk_text_buffer_insert (buffer, &iter, " ", -1);
     gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
     gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); line = gtk_text_iter_get_line (&iter);
     _add_match_highlights (line, start_offset, end_offset, item);
@@ -867,8 +867,6 @@ void gw_output_append_unknowndict_results_cb (LwSearchItem *item)
     gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); line = gtk_text_iter_get_line (&iter);
   gdk_threads_leave();
 }
-
-
 
 
 //!
@@ -924,21 +922,13 @@ void gw_output_pre_search_prep_cb (LwSearchItem *item)
     g_assert (lw_searchitem_has_data (item));
 
     //Declarations
-    GwSearchData *data;
-    GtkTextView *view;
-    GtkTextBuffer *buffer;
-    GwSearchWindow *window;
+    GwSearchData *sdata;
 
     //Initializations
-    data = lw_searchitem_get_data (item);
-    view = GTK_TEXT_VIEW (data->view);
-    buffer = gtk_text_view_get_buffer (view);
-    window = data->window;
-    
-    g_assert (window != NULL);
+    sdata = GW_SEARCHDATA (lw_searchitem_get_data (item));
+    sdata->view = gw_searchwindow_get_current_textview (sdata->window);
 
-    data->view = gw_searchwindow_get_current_textview (window);
-    gw_searchwindow_initialize_buffer_by_searchitem (window, item);
+    gw_searchwindow_initialize_buffer_by_searchitem (sdata->window, item);
 }
 
 
@@ -948,7 +938,7 @@ void gw_output_pre_search_prep_cb (LwSearchItem *item)
 //! This is the function that takes care of things such as hiding progressbars,
 //! changing action verbs to past verbs (Searching... vs Found) and for displaying
 //! "no results found" pages.  Before this function is called, the searchitem search
-//! status changes from LW_SEARCH_STATUS_SEARCHING to LW_SEARCH_STATUS_FINISHING.
+//! status changes from LW_SEARCHSTATUS_SEARCHING to LW_SEARCHSTATUS_FINISHING.
 //!
 //! @param item A LwSearchItem pointer to get information from
 //!
@@ -958,24 +948,16 @@ void gw_output_after_search_cleanup_cb (LwSearchItem *item)
     g_assert (lw_searchitem_has_data (item));
 
     //Declarations
-    GwSearchData *data;
-    GtkTextView *view;
-    GtkTextBuffer *buffer;
-    GwSearchWindow *window;
+    GwSearchData *sdata;
 
     //Initializations
-    data = lw_searchitem_get_data (item);
-    view = GTK_TEXT_VIEW (data->view);
-    buffer = gtk_text_view_get_buffer (view);
-    window = data->window;
-    
-    g_assert (window != NULL);
+    sdata = GW_SEARCHDATA (lw_searchitem_get_data (item));
 
     //Finish up
     if (item->total_results == 0 &&
-        item->target != LW_OUTPUT_TARGET_KANJI && item->status != LW_SEARCH_STATUS_CANCELING)
+        item->target != LW_OUTPUTTARGET_KANJI && item->status != LW_SEARCHSTATUS_CANCELING)
     {
-      gw_searchwindow_display_no_results_found_page (window, item);
+      gw_searchwindow_display_no_results_found_page (sdata->window, item);
     }
 }
 

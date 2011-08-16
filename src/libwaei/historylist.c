@@ -55,19 +55,18 @@ LwHistoryList* lw_historylist_new (const int MAX)
     {
       temp->back = NULL;
       temp->forward = NULL;
-      temp->current = NULL;
       temp->max = MAX;
     }
 
     return temp;
 }
 
+
 void lw_historylist_free (LwHistoryList *list)
 {
-    //Free the results history list
     lw_historylist_clear_forward_list (list);
     lw_historylist_clear_back_list (list);
-    lw_historylist_set_current_searchitem (list, NULL);
+    free (list);
 }
 
 
@@ -119,13 +118,8 @@ void lw_historylist_clear_back_list (LwHistoryList *list)
 }
 
 
-
-
 //!
 //! @brief Gets the back history of the target history list
-//!
-//! @see lw_historylist_get_forward_history ()
-//! @see lw_historylist_get_current ()
 //! @return Returns a GList containing the LwSearchItem back history
 //!
 GList* lw_historylist_get_back_list (LwHistoryList *list)
@@ -136,38 +130,11 @@ GList* lw_historylist_get_back_list (LwHistoryList *list)
 
 //!
 //! @brief Gets the forward history of the target history list
-//!
-//! @see lw_historylist_get_back_history ()
-//! @see lw_historylist_get_current ()
 //! @return Returns a GList containing the LwSearchItem forward history
 //!
 GList* lw_historylist_get_forward_list (LwHistoryList *list)
 {
     return list->forward;
-}
-
-
-//!
-//! @brief Gets the current search item of the user
-//! @see lw_historylist_get_back_list ()
-//! @see lw_historylist_get_forward_list ()
-//! @return Returns a GList containing the LwSearchItem forward history
-//!
-LwSearchItem* lw_historylist_get_current_searchitem (LwHistoryList *list)
-{
-    return list->current;
-}
-
-
-//!
-//! @brief Sets the current searchitem replacing the current one if it is there
-//!
-void lw_historylist_set_current_searchitem (LwHistoryList *list, LwSearchItem *item)
-{
-    if (list->current != NULL)
-      lw_searchitem_free (list->current);
-      
-    list->current = item;
 }
 
 
@@ -199,9 +166,6 @@ GList* lw_historylist_get_combined_list (LwHistoryList *list)
 //!
 //! @brief Moves an item to the back history
 //!
-//! The current variable has its LwSearchItem moved into the backhistory list.  The
-//! forward history is also cleared at this time.
-//!
 void lw_historylist_add_searchitem (LwHistoryList *list, LwSearchItem *item)
 { 
     //Declarations
@@ -210,24 +174,15 @@ void lw_historylist_add_searchitem (LwHistoryList *list, LwSearchItem *item)
     //Clear the forward history
     lw_historylist_clear_forward_list (list);
 
-    //Shift current to the back history
-    if (list->current != NULL)
-    {
-      list->back = g_list_prepend (list->back, list->current);
-      list->current = NULL;
-    }
+    list->back = g_list_prepend (list->back, item);
 
     //Make sure the list hasn't gotten too long
     if (g_list_length(list->back) >= list->max)
     {
       link = g_list_last (list->back); 
-      lw_searchitem_free (link->data);
-      link->data = NULL;
+      lw_searchitem_free (LW_SEARCHITEM (link->data));
       list->back = g_list_delete_link (list->back, link);
     }
-
-    //Add the new current
-    list->current = item;
 }
 
 
@@ -252,57 +207,49 @@ gboolean lw_historylist_has_back (LwHistoryList *list)
 //!
 //! @brief Go back 1 in history
 //!
-//! @param TARGET the target that should have it's history list adjusted
-//!
-gboolean lw_historylist_go_back (LwHistoryList *list)
+LwSearchItem* lw_historylist_go_back (LwHistoryList *list, LwSearchItem *pushed)
 { 
     //Sanity check
-    if (!lw_historylist_has_back (list)) return FALSE;
+    if (!lw_historylist_has_back (list)) return pushed;
 
     //Declarations
     GList *link;
+    LwSearchItem *popped;
 
-    //Move current onto the forward stack 
-    if (list->current != NULL)
+    if (pushed != NULL)
     {
-      list->forward = g_list_append (list->forward, list->current);
-      list->current = NULL;
+      list->forward = g_list_append (list->forward, pushed);
     }
 
-    //Make back to the current
     link = g_list_last (list->back); 
-    list->current = link->data;
+    popped = LW_SEARCHITEM (link->data);
     list->back = g_list_delete_link (list->back, link);
 
-    return TRUE;
+    return popped;
 }
 
 
 //!
-//! @brief Go formward 1 in history
+//! @brief Go forward 1 in history
 //!
-//! @param TARGET the target that should have it's history list adjusted
-//!
-gboolean lw_historylist_go_forward (LwHistoryList *list)
+LwSearchItem* lw_historylist_go_forward (LwHistoryList *list, LwSearchItem *pushed)
 { 
     //Sanity check
-    if (!lw_historylist_has_forward (list)) return FALSE;
+    if (!lw_historylist_has_forward (list)) return pushed;
 
     //Declarations
     GList *link;
+    LwSearchItem *popped;
 
-    //Move current onto the back stack 
-    if (list->current != NULL)
+    if (pushed != NULL)
     {
-      list->back = g_list_append (list->back, list->current);
-      list->current = NULL;
+      list->back = g_list_append (list->back, pushed);
     }
 
-    //Make forward to the current
     link = g_list_last (list->forward); 
-    list->current = link->data;
+    popped = LW_SEARCHITEM (link->data);
     list->forward = g_list_delete_link (list->forward, link);
 
-    return TRUE;
+    return popped;
 }
 

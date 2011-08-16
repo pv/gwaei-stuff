@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file dictionarymanager.c
+//! @file dictinfo.c
 //!
 //! @brief Unwritten
 //!
@@ -39,18 +39,19 @@
 //!
 //! @brief Sets up the dictionary manager.  This is the backbone of every portion of the GUI that allows editing dictionaries
 //!
-GwDictionaryManager* gw_dictionarymanager_new ()
+GwDictInfoList* gw_dictinfolist_new (const int MAX, LwPrefManager *pm)
 {
-    GwDictionaryManager *temp;
+    GwDictInfoList *temp;
+    int i;
 
-    temp = (GwDictionaryManager*) malloc(sizeof(GwDictionaryManager));
+    temp = (GwDictInfoList*) malloc(sizeof(GwDictInfoList));
 
     if (temp != NULL)
     {
 
       //Setup the model and view
       temp->model = gtk_list_store_new (
-          TOTAL_GW_DICTIONARYMANAGER_COLUMNS, 
+          TOTAL_GW_DICTINFOLIST_COLUMNS, 
           G_TYPE_STRING, 
           G_TYPE_STRING, 
           G_TYPE_STRING, 
@@ -58,6 +59,17 @@ GwDictionaryManager* gw_dictionarymanager_new ()
           G_TYPE_STRING, 
           G_TYPE_STRING, 
           G_TYPE_POINTER);
+
+      temp->list = NULL;
+      temp->mutex = g_mutex_new();
+      temp->max = MAX;
+      for (i = 0; i < TOTAL_GW_DICTINFOLIST_SIGNALIDS; i++)
+      {
+        temp->signalids[i] = 0;
+      }
+
+
+      gw_dictinfolist_reload (temp, pm);
 
 /*
       GtkCellRenderer *renderer;
@@ -102,11 +114,10 @@ GwDictionaryManager* gw_dictionarymanager_new ()
       gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (combobox), renderer, "text", LONG_NAME);
 
 */
-      gw_dictionarymanager_reload (temp);
-      temp->signalids[GW_DICTIONARYMANAGER_SIGNALID_ROW_CHANGED] = g_signal_connect (
+      temp->signalids[GW_DICTINFOLIST_SIGNALID_ROW_CHANGED] = g_signal_connect (
             G_OBJECT (temp->model),
             "row-deleted", 
-            G_CALLBACK (gw_dictionarymanager_list_store_row_changed_action_cb),
+            G_CALLBACK (gw_dictinfolist_list_store_row_changed_action_cb),
             NULL
       );
     }
@@ -114,120 +125,82 @@ GwDictionaryManager* gw_dictionarymanager_new ()
 }
 
 
-void gw_dictionarymanager_free (GwDictionaryManager *dm)
+void gw_dictinfolist_free (GwDictInfoList *dm)
 {
     g_object_unref (dm->model);
     free (dm);
 }
 
 
-//!
-//! Sets updates the list of dictionaries against the list in the global dictlist
-//!
-void gw_dictionarymanager_reload (GwDictionaryManager *dm)
+void gw_dictinfolist_rebuild_liststore (GwDictInfoList *dil)
 {
     //Declarations
     LwDictInfo *di;
-    GtkTreeIter treeiter;
+    GtkTreeIter tree_iter;
     char *iconname;
-    char *shortcutname;
-    char *ordernumber;
+    char shortcutname[10];
+    char ordernumber[10];
     char *favoriteicon;
-    GList *iter;
+    GList *list_iter;
 
-    if (dm->signalids[GW_DICTIONARYMANAGER_SIGNALID_ROW_CHANGED] > 0)
-      g_signal_handler_block (dm->model, dm->signalids[GW_DICTIONARYMANAGER_SIGNALID_ROW_CHANGED]);
+    favoriteicon = "emblem-favorite";
 
-    gtk_list_store_clear (GTK_LIST_STORE (dm->model));
+    gtk_list_store_clear (GTK_LIST_STORE (dil->model));
 
-/*
-    GtkMenuShell *shell = GTK_MENU_SHELL (gtk_builder_get_object (builder, "dictionary_popup"));
-    if (shell != NULL)
+    for (list_iter = dil->list; list_iter != NULL; list_iter = list_iter->next)
     {
-      GList     *children = NULL;
-      children = gtk_container_get_children (GTK_CONTAINER (shell));
-      while (children != NULL )
-      {
-        gtk_widget_destroy(children->data);
-        children = g_list_delete_link (children, children);
-      }
-    }
-*/
+      di = LW_DICTINFO (list_iter->data);
+      if (di == NULL) continue;
 
-    for (iter = dm->list; iter != NULL; iter = iter->next)
-    {
-      di = (LwDictInfo*) iter->data;
-      favoriteicon = "emblem-favorite";
       if (di->load_position == 0)
          iconname = favoriteicon;
       else
         iconname = NULL;
-      if (di->load_position < 9)
-        shortcutname = g_strdup_printf ("Alt-%d", (di->load_position + 1));
+      if (di->load_position + 1 < 10)
+        sprintf (shortcutname, "Alt-%d", (di->load_position + 1));
       else
-        shortcutname = NULL;
-      ordernumber = g_strdup_printf ("%d", (di->load_position + 1));
+        strcpy(shortcutname, "");
+      if ((di->load_position + 1) < 1000)
+        sprintf (ordernumber, "%d", (di->load_position + 1));
+      else
+        strcpy(ordernumber, "");
 
-      gtk_list_store_append (GTK_LIST_STORE (dm->model), &treeiter);
+      gtk_list_store_append (GTK_LIST_STORE (dil->model), &tree_iter);
       gtk_list_store_set (
-            dm->model, &treeiter,
-            GW_DICTIONARYMANAGER_COLUMN_IMAGE, iconname,
-            GW_DICTIONARYMANAGER_COLUMN_POSITION, ordernumber,
-            GW_DICTIONARYMANAGER_COLUMN_NAME, di->shortname,
-            GW_DICTIONARYMANAGER_COLUMN_LONG_NAME, di->longname,
-            GW_DICTIONARYMANAGER_COLUMN_ENGINE, lw_util_get_engine_name (di->engine),
-            GW_DICTIONARYMANAGER_COLUMN_SHORTCUT, shortcutname,
-            GW_DICTIONARYMANAGER_COLUMN_DICT_POINTER, di,
-      -1);
-      //Cleanup
-      if (ordernumber != NULL) g_free (ordernumber);
-      if (shortcutname != NULL) g_free (shortcutname);
+          dil->model, &tree_iter,
+          GW_DICTINFOLIST_COLUMN_IMAGE,        iconname,
+          GW_DICTINFOLIST_COLUMN_POSITION,     ordernumber,
+          GW_DICTINFOLIST_COLUMN_NAME,         di->shortname,
+          GW_DICTINFOLIST_COLUMN_LONG_NAME,    di->longname,
+          GW_DICTINFOLIST_COLUMN_ENGINE,       lw_util_dicttype_to_string (di->type),
+          GW_DICTINFOLIST_COLUMN_SHORTCUT,     shortcutname,
+          GW_DICTINFOLIST_COLUMN_DICT_POINTER, di,
+          -1
+      );
     }
+}
 
-/*
-    GtkAccelGroup* accel_group = GTK_ACCEL_GROUP (gtk_builder_get_object (builder, "main_accelgroup"));
-    GSList* group = NULL;
 
-    for (iter = dm->list; iter != NULL; iter = iter->next)
-    {
-      //Refill the menu
-      item = GTK_WIDGET (gtk_radio_menu_item_new_with_label (group, di->longname));
-      group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
-      gtk_menu_shell_append (GTK_MENU_SHELL (shell),  GTK_WIDGET (item));
-      if (di->load_position == 0) gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), TRUE);
-      g_signal_connect(G_OBJECT (item), "toggled", G_CALLBACK (gw_main_dictionary_changed_action_cb), NULL);
-      if (di->load_position < 9) gtk_widget_add_accelerator (GTK_WIDGET (item), "activate", accel_group, (GDK_KEY_0 + di->load_position + 1), GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
-      gtk_widget_show (item);
-    }
+//!
+//! Sets updates the list of dictionaries against the list in the global dictlist
+//!
+void gw_dictinfolist_reload (GwDictInfoList *dil, LwPrefManager *pm)
+{
+    lw_dictinfolist_reload (LW_DICTINFOLIST (dil));
+    lw_dictinfolist_load_dictionary_order_from_pref (LW_DICTINFOLIST (dil), pm);
 
-    //Fill in the other menu items
-    item = GTK_WIDGET (gtk_separator_menu_item_new());
-    gtk_menu_shell_append (GTK_MENU_SHELL (shell), GTK_WIDGET (item));
-    gtk_widget_show (GTK_WIDGET (item));
+    if (dil->signalids[GW_DICTINFOLIST_SIGNALID_ROW_CHANGED] > 0)
+      g_signal_handler_block (dil->model, dil->signalids[GW_DICTINFOLIST_SIGNALID_ROW_CHANGED]);
 
-    item = GTK_WIDGET (gtk_menu_item_new_with_mnemonic(gettext("_Cycle Up")));
-    gtk_menu_shell_append (GTK_MENU_SHELL (shell), GTK_WIDGET (item));
-    g_signal_connect (G_OBJECT (item), "activate", G_CALLBACK (gw_main_cycle_dictionaries_backward_cb), NULL);
-    gtk_widget_add_accelerator (GTK_WIDGET (item), "activate", accel_group, GDK_KEY_Up, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
-    gtk_widget_show (GTK_WIDGET (item));
+    gw_dictinfolist_rebuild_liststore (dil);
 
-    item = GTK_WIDGET (gtk_menu_item_new_with_mnemonic(gettext("Cycle _Down")));
-    gtk_menu_shell_append (GTK_MENU_SHELL (shell), GTK_WIDGET (item));
-    g_signal_connect (G_OBJECT (item), "activate", G_CALLBACK (gw_main_cycle_dictionaries_forward_cb), NULL);
-    gtk_widget_add_accelerator (GTK_WIDGET (item), "activate", accel_group, GDK_KEY_Down, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
-    gtk_widget_show (GTK_WIDGET (item));
-
-    GtkWidget *combobox = GTK_WIDGET (gtk_builder_get_object (builder, "dictionary_combobox"));
-    gtk_combo_box_set_active (GTK_COMBO_BOX (combobox), 0);
-*/
-
-    if (dm->signalids[GW_DICTIONARYMANAGER_SIGNALID_ROW_CHANGED] > 0)
-      g_signal_handler_unblock (dm->model, dm->signalids[GW_DICTIONARYMANAGER_SIGNALID_ROW_CHANGED]);
+    if (dil->signalids[GW_DICTINFOLIST_SIGNALID_ROW_CHANGED] > 0)
+      g_signal_handler_unblock (dil->model, dil->signalids[GW_DICTINFOLIST_SIGNALID_ROW_CHANGED]);
 }
 
 
 /*
-G_MODULE_EXPORT void gw_dictionarymanager_cursor_changed_cb (GtkTreeView *treeview, gpointer data)
+G_MODULE_EXPORT void gw_dictinfolist_cursor_changed_cb (GtkTreeView *treeview, gpointer data)
 {
     GtkBuilder *builder = gw_common_get_builder ();
 
@@ -241,7 +214,7 @@ G_MODULE_EXPORT void gw_dictionarymanager_cursor_changed_cb (GtkTreeView *treevi
 }
 
 
-G_MODULE_EXPORT void gw_dictionarymanager_remove_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_dictinfolist_remove_cb (GtkWidget *widget, gpointer data)
 {
     //Declarations
     GtkBuilder *builder;
@@ -275,7 +248,7 @@ G_MODULE_EXPORT void gw_dictionarymanager_remove_cb (GtkWidget *widget, gpointer
     {
       di = list->data;
       lw_dictinfo_uninstall (di, NULL, &error);
-      gw_dictionarymanager_update_items ();
+      gw_dictinfolist_update_items ();
     }
 
     //Cleanup
@@ -285,26 +258,4 @@ G_MODULE_EXPORT void gw_dictionarymanager_remove_cb (GtkWidget *widget, gpointer
 }
 */
 
-LwDictInfo* gw_dictionarymanager_get_selected_dictinfo (GwDictionaryManager *dm)
-{
-    return dm->selected;
-}
-
-
-//!
-//! @brief Sets a dictionary in the dictionary manager
-//!
-LwDictInfo* gw_dictionarymanager_set_selected_by_load_position (GwDictionaryManager *dm, int index)
-{
-    LwDictInfo *di;
-
-    di = g_list_nth_data (dm->list, index);
-
-    if (di != NULL)
-    {
-      dm->selected = di;
-    }
-
-    return di;
-}
 

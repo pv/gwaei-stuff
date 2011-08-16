@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file src/gtk/dictionarymanager-callbacks.c
+//! @file dictinfolist-callbacks.c
 //!
 //! @brief Unwritten
 //!
@@ -36,12 +36,11 @@
 #include <gwaei/gwaei.h>
 
 
-G_MODULE_EXPORT void gw_dictionarymanager_list_store_row_changed_action_cb (GtkTreeModel *model,
+G_MODULE_EXPORT void gw_dictinfolist_list_store_row_changed_action_cb (GtkTreeModel *model,
                                                                             GtkTreePath *path,
                                                                             gpointer data)
 {
     //Declarations
-    GwDictionaryManager *dm;
     int position;
     LwDictInfo *di;
     gpointer ptr;
@@ -49,14 +48,13 @@ G_MODULE_EXPORT void gw_dictionarymanager_list_store_row_changed_action_cb (GtkT
 
     //Initializations
     position = 0;
-    dm = app->dictionarymanager;
 
-    g_signal_handler_block (model, dm->signalids[GW_DICTIONARYMANAGER_SIGNALID_ROW_CHANGED]);
+    g_signal_handler_block (model, app->dictinfolist->signalids[GW_DICTINFOLIST_SIGNALID_ROW_CHANGED]);
 
     if (gtk_tree_model_get_iter_first (GTK_TREE_MODEL (model), &iter))
     {
       do {
-        gtk_tree_model_get (GTK_TREE_MODEL (model), &iter, GW_DICTIONARYMANAGER_COLUMN_DICT_POINTER, &ptr, -1);
+        gtk_tree_model_get (GTK_TREE_MODEL (model), &iter, GW_DICTINFOLIST_COLUMN_DICT_POINTER, &ptr, -1);
         if (ptr != NULL)
         {
           di = (LwDictInfo*) ptr;
@@ -70,10 +68,10 @@ G_MODULE_EXPORT void gw_dictionarymanager_list_store_row_changed_action_cb (GtkT
       while (gtk_tree_model_iter_next (GTK_TREE_MODEL (model), &iter));
     }
 
-    lw_dictinfolist_save_dictionary_order_pref ((LwDictInfoList*) dm, app->prefmanager);
-    gw_dictionarymanager_reload (dm);
+    lw_dictinfolist_save_dictionary_order_pref (LW_DICTINFOLIST (app->dictinfolist), app->prefmanager);
+    gw_dictinfolist_reload (app->dictinfolist, app->prefmanager);
 
-    g_signal_handler_unblock (model, dm->signalids[GW_DICTIONARYMANAGER_SIGNALID_ROW_CHANGED]);
+    g_signal_handler_unblock (model, app->dictinfolist->signalids[GW_DICTINFOLIST_SIGNALID_ROW_CHANGED]);
 }
 
 

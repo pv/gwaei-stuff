@@ -5,7 +5,7 @@ VERSION = @VERSION@
 datadir = @datadir@
 
 
-pkgdata_DATA = main.ui radicals.ui settings.ui dictionaryinstall.ui installprogress.ui kanjipad.ui
+pkgdata_DATA = search.ui radicals.ui settings.ui dictionaryinstall.ui installprogress.ui kanjipad.ui
 
-EXTRA_DIST =  main.ui radicals.ui settings.ui dictionaryinstall.ui installprogress.ui kanjipad.ui
+EXTRA_DIST =  search.ui radicals.ui settings.ui dictionaryinstall.ui installprogress.ui kanjipad.ui
 

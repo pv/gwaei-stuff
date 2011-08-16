@@ -53,11 +53,17 @@ GwApplication* gw_app_new (int* argc, char** argv[])
 
     if (temp != NULL)
     {
-      bindtextdomain(PACKAGE, GWAEI_LOCALEDIR);
-      bind_textdomain_codeset(PACKAGE, "UTF-8");
+      setlocale(LC_MESSAGES, "");
+      setlocale(LC_CTYPE, "");
+      setlocale(LC_COLLATE, "");
+
+      bindtextdomain(PACKAGE, LOCALEDIR);
+      bind_textdomain_codeset (PACKAGE, "UTF-8");
       textdomain(PACKAGE);
 
-      gdk_threads_init();
+      g_thread_init (NULL);
+      g_type_init ();
+      gdk_threads_init ();
       gtk_init (argc, argv);
 
       temp->arg_dictionary = NULL;
@@ -69,7 +75,7 @@ GwApplication* gw_app_new (int* argc, char** argv[])
 
       gw_app_parse_args (temp, argc, argv);
 
-      lw_engine_initialize (
+      temp->engine = lw_engine_new (
                            gw_output_append_edict_results_cb,
                            gw_output_append_kanjidict_results_cb,
                            gw_output_append_examplesdict_results_cb,
@@ -83,17 +89,21 @@ GwApplication* gw_app_new (int* argc, char** argv[])
 
       temp->prefmanager = lw_prefmanager_new ();
       temp->dictinstlist = lw_dictinstlist_new (temp->prefmanager);
-      temp->history = lw_historylist_new (20);
+      temp->dictinfolist = gw_dictinfolist_new (20, temp->prefmanager);
+
+      temp->tagtable = gw_texttagtable_new ();
+      lw_prefmanager_add_change_listener_by_schema (temp->prefmanager, LW_SCHEMA_HIGHLIGHT, LW_KEY_MATCH_FG, gw_app_sync_tag_cb, temp);
+      lw_prefmanager_add_change_listener_by_schema (temp->prefmanager, LW_SCHEMA_HIGHLIGHT, LW_KEY_MATCH_BG, gw_app_sync_tag_cb, temp);
+      lw_prefmanager_add_change_listener_by_schema (temp->prefmanager, LW_SCHEMA_HIGHLIGHT, LW_KEY_HEADER_FG, gw_app_sync_tag_cb, temp);
+      lw_prefmanager_add_change_listener_by_schema (temp->prefmanager, LW_SCHEMA_HIGHLIGHT, LW_KEY_HEADER_BG, gw_app_sync_tag_cb, temp);
+      lw_prefmanager_add_change_listener_by_schema (temp->prefmanager, LW_SCHEMA_HIGHLIGHT, LW_KEY_COMMENT_FG, gw_app_sync_tag_cb, temp);
+
+
 
 /*
       #ifdef WITH_LIBUNIQUE
       gw_libunique_initialize (temp->arg_new_instance, temp->arg_dictionary, temp->arg_query);
       #endif
-
-      gw_dictionarymanager_initialize ();
-      gw_dictionaryinstall_initialize ();
-      gw_installprogress_initialize ();
-      gw_kanjipad_initialize ();
 */
 
 #ifdef ENABLE_WIN32
@@ -114,6 +124,7 @@ GwApplication* gw_app_new (int* argc, char** argv[])
 
 void gw_app_free (GwApplication *app)
 {
+  /*
     //Declarations
     GList *iter;
     GwWindow *window;
@@ -130,17 +141,16 @@ void gw_app_free (GwApplication *app)
     }
     g_list_free (app->windowlist);
 
-    gw_dictionarymanager_free (app->dictionarymanager);
+    */
+    gw_dictinfolist_free (app->dictinfolist);
 /*
     #ifdef WITH_LIBUNIQUE
     gw_libunique_free ();
     #endif
-
-    //ADD CLOSE TO CLOSE/DETSROY WINDOWS ON CLOSE
-    lw_engine_free ();
 */
     g_option_context_free (app->context);
     g_free(app->arg_query);
+    lw_engine_free (app->engine);
 
     free (app);
 }
@@ -210,23 +220,24 @@ void gw_app_print_about (GwApplication *app)
 //! @param argc Your argc from your main function
 //! @param argv Your array of strings from main
 //!
-void gw_app_run (GwApplication *app)
+GwApplicationResolution gw_app_run (GwApplication *app)
 {
     //Declarations
     LwDictInfo *di;
     GwSearchWindow *window;
 
-    window = (GwSearchWindow*) gw_app_show_window (app, GW_WINDOW_SEARCH, FALSE);
+    window = GW_SEARCHWINDOW (gw_app_show_window (app, GW_WINDOW_SEARCH, FALSE));
 
+/*
     gw_searchwindow_update_history_popups (window);
 
     //Show the settings dialog if no dictionaries are installed
-    if (lw_dictinfolist_get_total ((LwDictInfoList*) app->dictionarymanager) == 0) {
+    if (lw_dictinfolist_get_total (app->dictinfolist->dictinfolist) == 0) {
       gw_app_show_window (app, GW_WINDOW_SETTINGS, FALSE);
     }
 
     //Set the initial dictionary
-    if ((di = lw_dictinfolist_get_dictinfo_fuzzy ((LwDictInfoList*) app->dictionarymanager, app->arg_dictionary)) != NULL)
+    if ((di = lw_dictinfolist_get_dictinfo_fuzzy (app->dictinfolist->dictinfolist, app->arg_dictionary)) != NULL)
     {
       gw_searchwindow_set_dictionary (window, di->load_position);
     }
@@ -237,10 +248,13 @@ void gw_app_run (GwApplication *app)
       gtk_entry_set_text (window->entry, app->arg_query);
     }
 
+    */
     //Enter the main loop
     gdk_threads_enter();
       gtk_main ();
     gdk_threads_leave();
+
+    return GW_APP_RESOLUTION_NO_ERRORS;
 }
 
 
@@ -266,19 +280,23 @@ void gw_app_destroy_window (GwApplication *app, const GwWindowType TYPE, GtkWidg
     window = gw_app_get_window (app, TYPE, widget);
     iter = app->windowlist;
 
-    while (iter != NULL)
+    for (iter = app->windowlist; iter != NULL; iter = iter->next)
     {
-      if (iter->data == window)
+      if (GW_WINDOW (iter->data) == window)
       {
         app->windowlist = g_list_delete_link (app->windowlist, iter);
         break;
       }
-      iter = iter->next;
     }
 
     if (window != NULL)
     {
       gw_window_destroy (window);
+    }
+
+    if (gw_app_get_window (app, GW_WINDOW_SEARCH, NULL) == NULL)
+    {
+      gw_app_quit (app);
     }
 }
 
@@ -308,7 +326,7 @@ GwWindow* gw_app_show_window (GwApplication *app, const GwWindowType TYPE, gbool
     }
     else
     {
-//      gw_window_update_parent (window);
+//      gw_window_set_parent (window);
       gtk_window_present (GTK_WINDOW (window->toplevel));
     }
 
@@ -353,21 +371,56 @@ GwWindow* gw_app_get_window (GwApplication *app, const GwWindowType TYPE, GtkWid
     //Declarations
     GList *iter;
     GwWindow *window;
+    GwWindow *active;
+    GwWindow *fuzzy;
     GtkWidget *toplevel;
 
     //Initializations
     iter = app->windowlist;
     window = NULL;
+    fuzzy = NULL;
     toplevel = NULL;
+    active = NULL;
 
-    while (iter != NULL && window == NULL)
+    if (widget == NULL)
     {
-      window = iter->data;
-      if (widget != NULL)
+      for (iter = app->windowlist; iter != NULL; iter = iter->next)
+      {
+        fuzzy = GW_WINDOW (iter->data);
+        active = GW_WINDOW (iter->data);
+
+        if (fuzzy == NULL)
+        {
+          continue;
+        }
+        if (active->type == TYPE && gtk_window_is_active (GTK_WINDOW (active->toplevel)))
+        {
+          window = active;
+          break;
+        }
+        if (fuzzy->type == TYPE)
+        {
+          window = fuzzy;
+        }
+      }
+    }
+    else
+    {
+      for (iter = app->windowlist; iter != NULL; iter = iter->next)
+      {
+        fuzzy = GW_WINDOW (iter->data);
         toplevel = gtk_widget_get_toplevel (widget);
-      if (window->type != TYPE || (widget != NULL && window->toplevel != GTK_WINDOW (toplevel)))
-        window = NULL;
-      iter = iter->next;
+
+        if (fuzzy == NULL)
+        {
+          continue;
+        }
+        else if (fuzzy->type == TYPE && fuzzy->toplevel == GTK_WINDOW (toplevel))
+        {
+          window = fuzzy;
+          break;
+        }
+      }
     }
 
     return window;
@@ -376,18 +429,108 @@ GwWindow* gw_app_get_window (GwApplication *app, const GwWindowType TYPE, GtkWid
 
 int main (int argc, char *argv[])
 {    
-    lw_initialize (&argc, argv);
+    int resolution;
     app = gw_app_new (&argc, &argv);
 
     if (app->arg_version_switch)
       gw_app_print_about (app);
     else
-      gw_app_run (app);
+      resolution = gw_app_run (app);
 
     gw_app_free (app);
-    lw_free();
-    gw_app_free (app);
 
-    return EXIT_SUCCESS;
+    return resolution;
+}
+
+
+//!
+//! @brief Adds the tags to stylize the buffer text
+//!
+GtkTextTagTable* gw_texttagtable_new ()
+{
+    GtkTextTagTable *temp;
+    GtkTextTag *tag;
+
+    temp = gtk_text_tag_table_new ();
+
+    if (temp != NULL)
+    {
+      tag = gtk_text_tag_new ("italic");
+      g_object_set (tag, "style", PANGO_STYLE_ITALIC, NULL);
+      gtk_text_tag_table_add (temp, tag);
+
+      tag = gtk_text_tag_new ("gray");
+      g_object_set (tag, "foreground", "#888888", NULL);
+      gtk_text_tag_table_add (temp, tag);
+
+      tag = gtk_text_tag_new ("smaller");
+      g_object_set (tag, "size", "smaller", NULL);
+      gtk_text_tag_table_add (temp, tag);
+
+      tag = gtk_text_tag_new ("small");
+      g_object_set (tag, "font", "Serif 6", NULL);
+      gtk_text_tag_table_add (temp, tag);
+
+      tag = gtk_text_tag_new ("important");
+      g_object_set (tag, "weight", PANGO_WEIGHT_BOLD, NULL);
+      gtk_text_tag_table_add (temp, tag);
+
+      tag = gtk_text_tag_new ("larger");
+      g_object_set (tag, "font", "Sans 20", NULL);
+      gtk_text_tag_table_add (temp, tag);
+
+      tag = gtk_text_tag_new ("large");
+      g_object_set (tag, "font", "Serif 40", NULL);
+      gtk_text_tag_table_add (temp, tag);
+
+      tag = gtk_text_tag_new ("center");
+      g_object_set (tag, "justification", GTK_JUSTIFY_LEFT, NULL);
+      gtk_text_tag_table_add (temp, tag);
+
+      tag = gtk_text_tag_new ("comment");
+      gtk_text_tag_table_add (temp, tag);
+
+      tag = gtk_text_tag_new ("match");
+      gtk_text_tag_table_add (temp, tag);
+
+      tag = gtk_text_tag_new ("header");
+      gtk_text_tag_table_add (temp, tag);
+    }
+
+    return temp;
+}
+
+
+//!
+//! @brief Resets the color tags according to the preferences
+//!
+void gw_app_sync_tag_cb (GSettings *settings, gchar *key, gpointer data)
+{
+    //Declarations
+    char hex[10];
+    GdkRGBA color;
+    gchar **pair;
+    GtkTextTag *tag;
+    GwApplication *app;
+
+    app = GW_APPLICATION (data);
+
+    //Parse the color
+    lw_prefmanager_get_string (hex, settings, key, 10);
+    if (gdk_rgba_parse (&color, hex) == FALSE)
+    {
+      fprintf(stderr, "color failed %s\n", hex);
+      lw_prefmanager_reset_value_by_schema (app->prefmanager, LW_SCHEMA_HIGHLIGHT, key);
+      return;
+    }
+
+    //Update the tag 
+    pair = g_strsplit (key, "-", 2);
+    if (pair != NULL && pair[0] != NULL && pair[1] != NULL)
+    {
+      tag = gtk_text_tag_table_lookup (app->tagtable, pair[0]);
+      g_object_set (G_OBJECT (tag), pair[1], hex, NULL);
+      g_strfreev (pair);
+    }
 }
 
