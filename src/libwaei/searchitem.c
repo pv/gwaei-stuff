@@ -130,7 +130,7 @@ LwSearchItem* lw_searchitem_new (const char* query, LwDictInfo* dictionary, cons
       }
     }
 
-    if (*error != NULL || !success)
+    if ((error != NULL && *error != NULL) || !success)
     {
       fprintf(stderr, "errored!\n");
       lw_searchitem_free (temp);

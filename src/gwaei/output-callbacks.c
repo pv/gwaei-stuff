@@ -928,7 +928,8 @@ void gw_output_pre_search_prep_cb (LwSearchItem *item)
     sdata = GW_SEARCHDATA (lw_searchitem_get_data (item));
     sdata->view = gw_searchwindow_get_current_textview (sdata->window);
 
-    gw_searchwindow_initialize_buffer_by_searchitem (sdata->window, item);
+    if (item->target == LW_OUTPUTTARGET_RESULTS)
+      gw_searchwindow_initialize_buffer_by_searchitem (sdata->window, item);
 }
 
 
@@ -955,7 +956,8 @@ void gw_output_after_search_cleanup_cb (LwSearchItem *item)
 
     //Finish up
     if (item->total_results == 0 &&
-        item->target != LW_OUTPUTTARGET_KANJI && item->status != LW_SEARCHSTATUS_CANCELING)
+        item->target != LW_OUTPUTTARGET_KANJI &&
+        item->status != LW_SEARCHSTATUS_CANCELING)
     {
       gw_searchwindow_display_no_results_found_page (sdata->window, item);
     }

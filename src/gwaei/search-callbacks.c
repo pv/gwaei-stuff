@@ -57,7 +57,6 @@ G_MODULE_EXPORT gboolean gw_searchwindow_get_iter_for_motion_cb (GtkWidget      
                                                                  GdkEventButton *event,
                                                                  gpointer        data   )
 {
-/*
     //Declarations
     gunichar unic;
     GtkTextIter iter, start, end;
@@ -101,7 +100,7 @@ G_MODULE_EXPORT gboolean gw_searchwindow_get_iter_for_motion_cb (GtkWidget      
       gtk_widget_destroy (tooltip_window);
       gtk_widget_set_tooltip_window (GTK_WIDGET (view), NULL);
     }
-*/
+
     return FALSE;
 }
 
@@ -159,7 +158,6 @@ G_MODULE_EXPORT gboolean gw_searchwindow_get_iter_for_button_release_cb (GtkWidg
                                                                          GdkEventButton *event,
                                                                          gpointer        data    )
 {
-/*
     //Declarations
     GwSearchWindow *window;
     gint x;
@@ -222,6 +220,7 @@ G_MODULE_EXPORT gboolean gw_searchwindow_get_iter_for_button_release_cb (GtkWidg
           }
 
           window->mousedata.item = lw_searchitem_new (query, di, LW_OUTPUTTARGET_KANJI, app->prefmanager, &error);
+          lw_searchitem_set_data (window->mousedata.item, gw_searchdata_new (NULL, window), LW_SEARCHITEM_DATA_FREE_FUNC (gw_searchdata_free));
           lw_engine_get_results (app->engine, window->mousedata.item, TRUE, FALSE);
 
           g_thread_join (window->mousedata.item->thread); 
@@ -248,7 +247,7 @@ G_MODULE_EXPORT gboolean gw_searchwindow_get_iter_for_button_release_cb (GtkWidg
         g_error_free (error);
       }
     }
-*/
+
     return FALSE; 
 }
 
@@ -322,6 +321,8 @@ G_MODULE_EXPORT void gw_searchwindow_quit_cb (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void gw_searchwindow_search_from_history_cb (GtkWidget *widget, gpointer data)
 {
+    if (!gw_app_can_start_search (app)) return;
+
     //Declarations
     LwSearchItem *item;
     GwSearchWindow *window;
@@ -335,7 +336,10 @@ G_MODULE_EXPORT void gw_searchwindow_search_from_history_cb (GtkWidget *widget, 
     item = LW_SEARCHITEM (data);
     is_in_back_index = (g_list_index (window->history->back, item) != -1);
     is_in_forward_index = (g_list_index (window->history->forward, item) != -1);
-    if (!is_in_back_index && !is_in_forward_index) return;
+    if (!is_in_back_index && !is_in_forward_index) 
+    {
+      return;
+    }
     current = gw_searchwindow_get_current_searchitem (window);
     sdata = lw_searchitem_get_data (item);
     sdata->view = gw_searchwindow_get_current_textview (window);
@@ -373,6 +377,7 @@ G_MODULE_EXPORT void gw_searchwindow_search_from_history_cb (GtkWidget *widget, 
     //Set the search string in the GtkEntry
     gtk_widget_grab_focus (GTK_WIDGET (window->entry));
     gw_searchwindow_select_all_by_target (window, LW_OUTPUTTARGET_ENTRY);
+
 }
 
 
@@ -1302,6 +1307,8 @@ G_MODULE_EXPORT gboolean gw_searchwindow_focus_change_on_key_press_cb (GtkWidget
 //!
 G_MODULE_EXPORT void gw_searchwindow_search_cb (GtkWidget *widget, gpointer data)
 {
+    if (!gw_app_can_start_search (app)) return;
+
     //Declarations
     GwSearchWindow *window;
     char query[50];
@@ -1531,11 +1538,11 @@ G_MODULE_EXPORT void gw_searchwindow_open_dictionary_folder_cb (GtkWidget *widge
 //! @return Always returns true
 //!
 G_MODULE_EXPORT gboolean gw_searchwindow_drag_motion_1_cb (GtkWidget      *widget,
-                                                   GdkDragContext *drag_context,
-                                                   gint            x,
-                                                   gint            y,
-                                                   guint           time,
-                                                   gpointer        user_data)
+                                                           GdkDragContext *drag_context,
+                                                           gint            x,
+                                                           gint            y,
+                                                           guint           time,
+                                                           gpointer        user_data)
 {
     gdk_drag_status (drag_context, GDK_ACTION_COPY, time);
     gtk_drag_highlight (widget);
@@ -1554,9 +1561,9 @@ G_MODULE_EXPORT gboolean gw_searchwindow_drag_motion_1_cb (GtkWidget      *widge
 //! @see gw_searchwindow_drag_motion_1_cb ()
 //!
 G_MODULE_EXPORT void gw_searchwindow_drag_leave_1_cb (GtkWidget      *widget,
-                                      GdkDragContext *drag_context,
-                                      guint           time,
-                                      gpointer        user_data) 
+                                                      GdkDragContext *drag_context,
+                                                      guint           time,
+                                                      gpointer        user_data) 
 {
     gtk_drag_unhighlight (widget);
 }
@@ -1685,7 +1692,6 @@ G_MODULE_EXPORT void gw_searchwindow_update_button_states_based_on_entry_text_cb
 //!
 void gw_searchwindow_populate_popup_with_search_options_cb (GtkTextView *view, GtkMenu *menu, gpointer data)
 {
-/*
     //Declarations
     GwSearchWindow *window;
     LwSearchItem *item = NULL;
@@ -1700,7 +1706,7 @@ void gw_searchwindow_populate_popup_with_search_options_cb (GtkTextView *view, G
     GtkTextBuffer *buffer;
     GtkTextIter start_iter, end_iter;
     LwDictInfo *di_selected = NULL;
-    window = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, GTK_WIDGET (view));
+    window = GW_SEARCHWINDOW (gw_app_get_window (app, GW_WINDOW_SEARCH, NULL));
     if (window == NULL) return;
     int i = 0;
 
@@ -1728,7 +1734,7 @@ void gw_searchwindow_populate_popup_with_search_options_cb (GtkTextView *view, G
     {
       query_text = window->mousedata.hovered_word;
     }
-    di_selected = gw_dictinfolist_get_selected_dictinfo (app->dictinfolist);
+    di_selected = gw_searchwindow_get_dictionary (window);
 
 
     //Add webpage links
@@ -1860,7 +1866,6 @@ void gw_searchwindow_populate_popup_with_search_options_cb (GtkTextView *view, G
       }
       i++;
     }
-    */
 }
 
 
@@ -2061,6 +2066,8 @@ G_MODULE_EXPORT void gw_searchwindow_previous_tab_cb (GtkWidget *widget, gpointe
 //!
 G_MODULE_EXPORT void gw_searchwindow_new_tab_with_search_cb (GtkWidget *widget, gpointer data)
 {
+    if (!gw_app_can_start_search (app)) return;
+
     //Declarations
     GwSearchWindow *window;
     LwSearchItem *item;

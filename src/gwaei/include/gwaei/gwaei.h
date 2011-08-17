@@ -69,6 +69,8 @@ struct _GwApplication {
 #endif
   gboolean arg_version_switch;
   GOptionContext *context;
+
+  int block_new_searches;
 };
 typedef struct _GwApplication GwApplication;
 
@@ -92,5 +94,8 @@ extern GwApplication *app;
 void gw_app_sync_tag_cb (GSettings*, gchar*, gpointer);
 GtkTextTagTable* gw_texttagtable_new ();
 
+void gw_app_block_searches (GwApplication*);
+void gw_app_unblock_searches (GwApplication*);
+gboolean gw_app_can_start_search (GwApplication*);
 
 #endif

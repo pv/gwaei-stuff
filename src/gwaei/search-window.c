@@ -103,8 +103,6 @@ GwSearchWindow* gw_searchwindow_new ()
       temp->history = lw_historylist_new (20);
       temp->tagtable = gtk_text_tag_table_new ();
 
-//      gw_spellcheck_attach_to_entry (temp->entry);
-
       temp->signalids[GW_SEARCHWINDOW_SIGNALID_TOOLBAR_SHOW] = lw_prefmanager_add_change_listener_by_schema (
           app->prefmanager,
           LW_SCHEMA_BASE,
@@ -152,21 +150,6 @@ GwSearchWindow* gw_searchwindow_new ()
           temp
       );
 
-      /*
-      lw_prefmanager_add_callback (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_SPELLCHECK, gw_searchwindow_set_spellcheck, temp);
-      lw_prefmanager_add_callback (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_SEARCH_AS_YOU_TYPE, gw_searchwindow_set_search_as_you_type, temp);
-
-      lw_prefmanager_add_callback (app->prefmanager, LW_SCHEMA_FONT, LW_KEY_FONT_USE_GLOBAL_FONT, gw_searchwindow_set_font, temp);
-      lw_prefmanager_add_callback (app->prefmanager, LW_SCHEMA_FONT, LW_KEY_FONT_CUSTOM_FONT, gw_searchwindow_set_font, temp);
-      lw_prefmanager_add_callback (app->prefmanager, LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION, gw_searchwindow_set_font, temp);
-
-      lw_prefmanager_add_callback (app->prefmanager, LW_SCHEMA_HIGHLIGHT, LW_KEY_MATCH_FG, gw_searchwindow_set_highlights, temp);
-      lw_prefmanager_add_callback (app->prefmanager, LW_SCHEMA_HIGHLIGHT, LW_KEY_MATCH_BG, gw_searchwindow_set_highlights, temp);
-      lw_prefmanager_add_callback (app->prefmanager, LW_SCHEMA_HIGHLIGHT, LW_KEY_HEADER_FG, gw_searchwindow_set_highlights, temp);
-      lw_prefmanager_add_callback (app->prefmanager, LW_SCHEMA_HIGHLIGHT, LW_KEY_HEADER_BG, gw_searchwindow_set_highlights, temp);
-      lw_prefmanager_add_callback (app->prefmanager, LW_SCHEMA_HIGHLIGHT, LW_KEY_COMMENT_FG, gw_searchwindow_set_highlights, temp);
-      */
-
       temp->timeoutids[GW_SEARCHWINDOW_TIMEOUTID_KEEP_SEARCHING] = g_timeout_add_full (
             G_PRIORITY_DEFAULT_IDLE, 
             100, 
@@ -201,6 +184,7 @@ GwSearchWindow* gw_searchwindow_new ()
     return temp;
 }
 
+
 static void _searchwindow_initialize_combobox (GwSearchWindow *window)
 {
     //Declarations
@@ -214,6 +198,7 @@ static void _searchwindow_initialize_combobox (GwSearchWindow *window)
     gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (window->combobox), renderer, "text", GW_DICTINFOLIST_COLUMN_LONG_NAME, NULL);
     gtk_combo_box_set_active (window->combobox, 0);
 }
+
 
 static void _searchwindow_initialize_dictionary_menu (GwSearchWindow *window)
 {
@@ -311,7 +296,6 @@ void gw_searchwindow_destroy (GwSearchWindow *window)
       LW_SCHEMA_BASE,
       window->signalids[GW_SEARCHWINDOW_SIGNALID_STATUSBAR_SHOW]
   );
-
 
   gtk_widget_destroy (GTK_WIDGET (window->toplevel));
   g_object_unref (window->builder);
@@ -1819,23 +1803,6 @@ char* gw_searchwindow_get_text_by_target (GwSearchWindow *window, LwOutputTarget
 
 
 //!
-//! @brief Creates the initial marks needed for the text buffer
-//!
-static void _searchwindow_buffer_initialize_marks (GtkTextBuffer *buffer)
-{
-    GtkTextIter iter;
-
-    gtk_text_buffer_get_start_iter (buffer, &iter);
-    gtk_text_buffer_create_mark (buffer, "more_relevant_header_mark", &iter, TRUE);
-    gtk_text_buffer_create_mark (buffer, "less_relevant_header_mark", &iter, TRUE);
-    gtk_text_buffer_create_mark (buffer, "less_rel_content_insertion_mark", &iter, FALSE);
-    gtk_text_buffer_create_mark (buffer, "more_rel_content_insertion_mark", &iter, FALSE);
-    gtk_text_buffer_create_mark (buffer, "content_insertion_mark", &iter, FALSE);
-    gtk_text_buffer_create_mark (buffer, "footer_insertion_mark", &iter, FALSE);
-}
-
-
-//!
 //! @brief A simple window initiater function made to be looped by a timer
 //!
 //! @param data An unused gpointer.  It should always be NULL
@@ -1843,9 +1810,9 @@ static void _searchwindow_buffer_initialize_marks (GtkTextBuffer *buffer)
 gboolean gw_searchwindow_keep_searching_timeout (GwSearchWindow *window)
 {
     //Sanity check
+    if (!gw_app_can_start_search (app)) return TRUE;
     if (!window->keepsearchingdata.enabled) return TRUE;
     if (window->timeoutids[GW_SEARCHWINDOW_TIMEOUTID_KEEP_SEARCHING] == 0) return FALSE;
-    if (gtk_widget_get_visible (GTK_WIDGET (window->toplevel)) == FALSE) return TRUE;
 
     //Declarations
     const char *query;
@@ -2175,11 +2142,21 @@ int gw_searchwindow_new_tab (GwSearchWindow *window)
     GtkWidget *scrolledwindow;
     GtkTextView *view;
     GtkTextBuffer *buffer;
+    GtkTextIter iter;
 
     //Initializations
     scrolledwindow = GTK_WIDGET (gtk_scrolled_window_new (NULL, NULL));
     buffer = GTK_TEXT_BUFFER (gtk_text_buffer_new (app->tagtable));
     view = GTK_TEXT_VIEW (gtk_text_view_new_with_buffer (buffer));
+
+    //Set up the text buffer
+    gtk_text_buffer_get_start_iter (buffer, &iter);
+    gtk_text_buffer_create_mark (buffer, "more_relevant_header_mark", &iter, TRUE);
+    gtk_text_buffer_create_mark (buffer, "less_relevant_header_mark", &iter, TRUE);
+    gtk_text_buffer_create_mark (buffer, "less_rel_content_insertion_mark", &iter, FALSE);
+    gtk_text_buffer_create_mark (buffer, "more_rel_content_insertion_mark", &iter, FALSE);
+    gtk_text_buffer_create_mark (buffer, "content_insertion_mark", &iter, FALSE);
+    gtk_text_buffer_create_mark (buffer, "footer_insertion_mark", &iter, FALSE);
 
     //Set up the text view
     gtk_text_view_set_right_margin (view, 10);
@@ -2265,7 +2242,6 @@ int gw_searchwindow_new_tab (GwSearchWindow *window)
     gtk_notebook_set_current_page (window->notebook, position);
     gw_searchwindow_set_current_searchitem (window, NULL);
     gtk_notebook_set_current_page (window->notebook, current);
-    _searchwindow_buffer_initialize_marks (buffer);
     gw_searchwindow_set_font (window);
 
     return position;
@@ -2385,6 +2361,8 @@ void gw_searchwindow_start_search (GwSearchWindow *window, LwSearchItem* item)
 {
     //Sanity check
     g_assert (window != NULL && item != NULL);
+
+    if (!gw_app_can_start_search (app)) return;
 
     gw_searchwindow_guarantee_first_tab (window);
     gw_searchwindow_set_current_searchitem (window, item);

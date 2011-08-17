@@ -90,6 +90,7 @@ GwApplication* gw_app_new (int* argc, char** argv[])
       temp->prefmanager = lw_prefmanager_new ();
       temp->dictinstlist = lw_dictinstlist_new (temp->prefmanager);
       temp->dictinfolist = gw_dictinfolist_new (20, temp->prefmanager);
+      temp->block_new_searches = 0;
 
       temp->tagtable = gw_texttagtable_new ();
       lw_prefmanager_add_change_listener_by_schema (temp->prefmanager, LW_SCHEMA_HIGHLIGHT, LW_KEY_MATCH_FG, gw_app_sync_tag_cb, temp);
@@ -532,5 +533,24 @@ void gw_app_sync_tag_cb (GSettings *settings, gchar *key, gpointer data)
       g_object_set (G_OBJECT (tag), pair[1], hex, NULL);
       g_strfreev (pair);
     }
+}
+
+
+void gw_app_block_searches (GwApplication *app)
+{
+  app->block_new_searches++;
+  gw_app_cancel_all_searches (app);
+}
+
+
+void gw_app_unblock_searches (GwApplication *app)
+{
+  if (app->block_new_searches > 0)
+    app->block_new_searches++;
+}
+
+gboolean gw_app_can_start_search (GwApplication *app)
+{
+  return (app->block_new_searches == 0);
 }
 
