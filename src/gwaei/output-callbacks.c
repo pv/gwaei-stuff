@@ -355,7 +355,12 @@ void gw_output_append_edict_results_cb (LwSearchItem *item)
     gboolean remove_last_linebreak;
     int line, start_offset, end_offset;
     LwResultLine* resultline;
+
     char *popup_text;
+    GtkButton* button;
+    GtkLabel *label;
+    GtkTextChildAnchor *anchor;
+    GtkWidget *menu;
 
   gdk_threads_enter();
 
@@ -445,27 +450,24 @@ void gw_output_append_edict_results_cb (LwSearchItem *item)
     }
 
 
-GtkButton* button;
-GtkLabel *label;
-GtkTextChildAnchor *anchor;
-GtkWidget *menu;
+    //Insert popup button
+    if (popup_text != NULL)
+    {
+      menu = _searchwindow_results_popup_new (popup_text);
+      gtk_text_buffer_insert (buffer, &iter, "   ", -1);
+      button = GTK_BUTTON (gtk_button_new ());
+      g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (_searchwindow_show_popup_cb), menu);
+      g_signal_connect (G_OBJECT (button), "destroy", G_CALLBACK (_searchwindow_destroy_popup_cb), menu);
+      label = GTK_LABEL (gtk_label_new (NULL));
+      gtk_label_set_markup (label, "<small><small>▼</small></small>");
+      gtk_button_set_relief (button, GTK_RELIEF_NONE);
+      gtk_container_add (GTK_CONTAINER (button), GTK_WIDGET (label));
+      gtk_widget_show (GTK_WIDGET (button));
+      gtk_widget_show (GTK_WIDGET (label));
+      anchor = gtk_text_buffer_create_child_anchor (buffer, &iter);
+      gtk_text_view_add_child_at_anchor (view, GTK_WIDGET (button), anchor);
+    }
 
-if (popup_text != NULL)
-{
-  menu = _searchwindow_results_popup_new (popup_text);
-  gtk_text_buffer_insert (buffer, &iter, "   ", -1);
-  button = GTK_BUTTON (gtk_button_new ());
-  g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (_searchwindow_show_popup_cb), menu);
-  g_signal_connect (G_OBJECT (button), "destroy", G_CALLBACK (_searchwindow_destroy_popup_cb), menu);
-  label = GTK_LABEL (gtk_label_new (NULL));
-  gtk_label_set_markup (label, "<small><small>▼</small></small>");
-  gtk_button_set_relief (button, GTK_RELIEF_NONE);
-  gtk_container_add (GTK_CONTAINER (button), GTK_WIDGET (label));
-  gtk_widget_show (GTK_WIDGET (button));
-  gtk_widget_show (GTK_WIDGET (label));
-  anchor = gtk_text_buffer_create_child_anchor (buffer, &iter);
-  gtk_text_view_add_child_at_anchor (view, GTK_WIDGET (button), anchor);
-}
 
     _shift_stay_mark (item, "previous_result");
     start_offset = 0;
