@@ -41,6 +41,7 @@
 static GtkWidget* _searchwindow_results_popup_new (char*);
 static void _searchwindow_show_popup_cb (GtkWidget*, gpointer);
 static void _searchwindow_destroy_popup_cb (GtkWidget*, gpointer);
+static void _searchwindow_destroy_text_cb (GtkWidget*, gpointer);
 
 //!
 //! @brief PRIVATE FUNCTION. A Stes the text of the desired mark.
@@ -360,7 +361,6 @@ void gw_output_append_edict_results_cb (LwSearchItem *item)
     GtkButton* button;
     GtkLabel *label;
     GtkTextChildAnchor *anchor;
-    GtkWidget *menu;
 
   gdk_threads_enter();
 
@@ -426,13 +426,13 @@ void gw_output_append_edict_results_cb (LwSearchItem *item)
     //Kanji
     if (resultline->kanji_start != NULL)
     {
-      if (popup_text == NULL) popup_text = resultline->kanji_start;
+      if (popup_text == NULL) popup_text = g_strdup (resultline->kanji_start);
       gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, resultline->kanji_start, -1, "important", NULL);
     }
     //Furigana
     if (resultline->furigana_start != NULL)
     {
-      if (popup_text == NULL) popup_text = resultline->furigana_start;
+      if (popup_text == NULL) popup_text = g_strdup (resultline->furigana_start);
       gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, " [", -1, "important", NULL);
       gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, resultline->furigana_start, -1, "important", NULL);
       gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, "]", -1, "important", NULL);
@@ -453,11 +453,10 @@ void gw_output_append_edict_results_cb (LwSearchItem *item)
     //Insert popup button
     if (popup_text != NULL)
     {
-      menu = _searchwindow_results_popup_new (popup_text);
       gtk_text_buffer_insert (buffer, &iter, "   ", -1);
       button = GTK_BUTTON (gtk_button_new ());
-      g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (_searchwindow_show_popup_cb), menu);
-      g_signal_connect (G_OBJECT (button), "destroy", G_CALLBACK (_searchwindow_destroy_popup_cb), menu);
+      g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (_searchwindow_show_popup_cb), popup_text);
+      g_signal_connect (G_OBJECT (button), "destroy", G_CALLBACK (_searchwindow_destroy_text_cb), popup_text);
       label = GTK_LABEL (gtk_label_new (NULL));
       gtk_label_set_markup (label, "<small><small>▼</small></small>");
       gtk_button_set_relief (button, GTK_RELIEF_NONE);
@@ -1102,12 +1101,26 @@ static GtkWidget* _searchwindow_results_popup_new (char* query_text)
 
 static void _searchwindow_show_popup_cb (GtkWidget *widget, gpointer data)
 {
-    gtk_menu_popup (GTK_MENU (data), NULL, NULL, NULL, NULL, 0, gtk_get_current_event_time ());
+    GtkMenu *popup;
+    char *popup_text;
+
+    popup_text = (char*) data;
+    popup = GTK_MENU (_searchwindow_results_popup_new (popup_text));
+    g_signal_connect (G_OBJECT (popup), "hide", G_CALLBACK (_searchwindow_destroy_popup_cb), popup);
+
+    gtk_menu_popup (popup, NULL, NULL, NULL, NULL, 0, gtk_get_current_event_time ());
 }
+
 
 static void _searchwindow_destroy_popup_cb (GtkWidget *widget, gpointer data)
 {
-  gtk_widget_destroy (GTK_WIDGET (data));
+    gtk_widget_destroy (GTK_WIDGET (data));
+}
+
+
+static void _searchwindow_destroy_text_cb (GtkWidget *widget, gpointer data)
+{
+    g_free (data);
 }
 
 
