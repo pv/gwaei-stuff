@@ -38,6 +38,9 @@
 
 #include <gwaei/gwaei.h>
 
+static GtkWidget* _searchwindow_results_popup_new (char*);
+static void _searchwindow_show_popup_cb (GtkWidget*, gpointer);
+static void _searchwindow_destroy_popup_cb (GtkWidget*, gpointer);
 
 //!
 //! @brief PRIVATE FUNCTION. A Stes the text of the desired mark.
@@ -352,6 +355,7 @@ void gw_output_append_edict_results_cb (LwSearchItem *item)
     gboolean remove_last_linebreak;
     int line, start_offset, end_offset;
     LwResultLine* resultline;
+    char *popup_text;
 
   gdk_threads_enter();
 
@@ -362,6 +366,7 @@ void gw_output_append_edict_results_cb (LwSearchItem *item)
     kanji_exists = (item->resultline->kanji_start != NULL && item->backup_resultline->kanji_start != NULL);
     furigana_exists = (item->resultline->furigana_start != NULL && item->backup_resultline->furigana_start != NULL);
     resultline = item->resultline;
+    popup_text = NULL;
 
     if (item->resultline->kanji_start == NULL || item->backup_resultline->kanji_start == NULL)
     {
@@ -415,10 +420,14 @@ void gw_output_append_edict_results_cb (LwSearchItem *item)
 
     //Kanji
     if (resultline->kanji_start != NULL)
+    {
+      if (popup_text == NULL) popup_text = resultline->kanji_start;
       gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, resultline->kanji_start, -1, "important", NULL);
+    }
     //Furigana
     if (resultline->furigana_start != NULL)
     {
+      if (popup_text == NULL) popup_text = resultline->furigana_start;
       gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, " [", -1, "important", NULL);
       gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, resultline->furigana_start, -1, "important", NULL);
       gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, "]", -1, "important", NULL);
@@ -434,9 +443,34 @@ void gw_output_append_edict_results_cb (LwSearchItem *item)
       gtk_text_buffer_insert (buffer, &iter, " ", -1);
       gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, gettext("Pop"), -1, "small", NULL);
     }
+
+
+GtkButton* button;
+GtkLabel *label;
+GtkTextChildAnchor *anchor;
+GtkWidget *menu;
+
+if (popup_text != NULL)
+{
+  menu = _searchwindow_results_popup_new (popup_text);
+  gtk_text_buffer_insert (buffer, &iter, "   ", -1);
+  button = GTK_BUTTON (gtk_button_new ());
+  g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (_searchwindow_show_popup_cb), menu);
+  g_signal_connect (G_OBJECT (button), "destroy", G_CALLBACK (_searchwindow_destroy_popup_cb), menu);
+  label = GTK_LABEL (gtk_label_new (NULL));
+  gtk_label_set_markup (label, "<small><small>▼</small></small>");
+  gtk_button_set_relief (button, GTK_RELIEF_NONE);
+  gtk_container_add (GTK_CONTAINER (button), GTK_WIDGET (label));
+  gtk_widget_show (GTK_WIDGET (button));
+  gtk_widget_show (GTK_WIDGET (label));
+  anchor = gtk_text_buffer_create_child_anchor (buffer, &iter);
+  gtk_text_view_add_child_at_anchor (view, GTK_WIDGET (button), anchor);
+}
+
     _shift_stay_mark (item, "previous_result");
     start_offset = 0;
     end_offset = gtk_text_iter_get_line_offset (&iter);
+
     if (!remove_last_linebreak) gtk_text_buffer_insert (buffer, &iter, "\n", -1);
     _add_match_highlights (line, start_offset, end_offset, item);
 
@@ -913,7 +947,6 @@ void gw_output_append_more_relevant_header_cb (LwSearchItem *item)
 
 //!
 //! @brief Sets up the interface before each search begins
-//!
 //! @param item A LwSearchItem pointer to get information from
 //!
 void gw_output_pre_search_prep_cb (LwSearchItem *item)
@@ -935,12 +968,6 @@ void gw_output_pre_search_prep_cb (LwSearchItem *item)
 
 //!
 //! @brief The details to be taken care of after a search is finished
-//!
-//! This is the function that takes care of things such as hiding progressbars,
-//! changing action verbs to past verbs (Searching... vs Found) and for displaying
-//! "no results found" pages.  Before this function is called, the searchitem search
-//! status changes from LW_SEARCHSTATUS_SEARCHING to LW_SEARCHSTATUS_FINISHING.
-//!
 //! @param item A LwSearchItem pointer to get information from
 //!
 void gw_output_after_search_cleanup_cb (LwSearchItem *item)
@@ -961,6 +988,124 @@ void gw_output_after_search_cleanup_cb (LwSearchItem *item)
     {
       gw_searchwindow_display_no_results_found_page (sdata->window, item);
     }
+}
+
+
+//!
+//! @brief Populates the main contextual menu with search options
+//!
+//! @param view The GtkTexView that was right clicked
+//! @param menu The Popup menu to populate
+//! @param data  Currently unused gpointer containing user data
+//!
+static GtkWidget* _searchwindow_results_popup_new (char* query_text)
+{
+    if (query_text == NULL) return NULL;
+
+    //Declarations
+    GwSearchWindow *window;
+    GtkWidget *menu;
+    LwSearchItem *item = NULL;
+    LwDictInfo *di = NULL;
+    char *menu_text = NULL;
+    GtkWidget *menuitem = NULL;
+//    GtkWidget *menuimage = NULL;
+    GtkTextIter start_iter, end_iter;
+    window = GW_SEARCHWINDOW (gw_app_get_window (app, GW_WINDOW_SEARCH, NULL));
+    if (window == NULL) return NULL;
+    int i = 0;
+
+    //Initializations
+    menu = gtk_menu_new ();
+    char *website_url_menuitems[] = {
+      "Wikipedia", "http://www.wikipedia.org/wiki/%s", "wikipedia.png",
+      "Goo.ne.jp", "http://dictionary.goo.ne.jp/srch/all/%s/m0u/", "goo.png",
+      "Google.com", "http://www.google.com/search?q=%s", "google.png",
+      NULL, NULL, NULL
+    };
+
+    //Add internal dictionary links
+    i = 0;
+    while ((di = lw_dictinfolist_get_dictinfo_by_load_position (LW_DICTINFOLIST (app->dictinfolist), i)) != NULL)
+    {
+      if (di != NULL && (item = lw_searchitem_new (query_text, di, LW_OUTPUTTARGET_RESULTS, app->prefmanager, NULL)) != NULL)
+      {
+        menu_text = g_strdup_printf ("%s", di->longname);
+        if (menu_text != NULL)
+        {
+          menuitem = GTK_WIDGET (gtk_image_menu_item_new_with_label (menu_text));
+          g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (gw_searchwindow_new_tab_with_search_cb), item);
+          g_signal_connect (G_OBJECT (menuitem), "destroy",  G_CALLBACK (gw_searchwindow_destroy_tab_menuitem_searchitem_data_cb), item);
+          gtk_menu_shell_append (GTK_MENU_SHELL (menu), GTK_WIDGET (menuitem));
+          gtk_widget_show (GTK_WIDGET (menuitem));
+//          gtk_widget_show (GTK_WIDGET (menuimage));
+          g_free (menu_text);
+          menu_text = NULL;
+        }
+      }
+      i++;
+    }
+
+    //Separator
+    menuitem = gtk_separator_menu_item_new ();
+    gtk_menu_shell_append (GTK_MENU_SHELL (menu), GTK_WIDGET (menuitem));
+    gtk_widget_show (GTK_WIDGET (menuitem));
+
+    //Add weblinks
+    i = 0;
+    di =  lw_dictinfolist_get_dictinfo_by_load_position (LW_DICTINFOLIST (app->dictinfolist), 0);
+    while (website_url_menuitems[i] != NULL)
+    {
+      if (di != NULL && (item = lw_searchitem_new (query_text, di, LW_OUTPUTTARGET_RESULTS, app->prefmanager, NULL)) != NULL)
+      {
+        //Create handy variables
+        char *name = website_url_menuitems[i];
+        char *url = g_strdup_printf(website_url_menuitems[i + 1], query_text);
+        if (url != NULL)
+        {
+          g_free (item->queryline->string);
+          item->queryline->string = g_strdup (url);
+          g_free (url);
+          url = NULL;
+        }
+        char *icon_path = website_url_menuitems[i + 2];
+
+        //Start creating
+        menu_text = g_strdup_printf ("%s", name);
+        if (menu_text != NULL)
+        {
+          menuitem = GTK_WIDGET (gtk_image_menu_item_new_with_label (menu_text));
+          char *path = g_build_filename (DATADIR2, PACKAGE, icon_path, NULL);
+          if (path != NULL)
+          {
+//            menuimage = gtk_image_new_from_file (path);
+//            gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menuitem), GTK_WIDGET (menuimage));
+            g_free (path);
+            path = NULL;
+          }
+          g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (gw_searchwindow_search_for_searchitem_online_cb), item);
+          g_signal_connect (G_OBJECT (menuitem), "destroy",  G_CALLBACK (gw_searchwindow_destroy_tab_menuitem_searchitem_data_cb), item);
+          gtk_menu_shell_append (GTK_MENU_SHELL (menu), GTK_WIDGET (menuitem));
+          gtk_widget_show (GTK_WIDGET (menuitem));
+//          gtk_widget_show (GTK_WIDGET (menuimage));
+          g_free (menu_text);
+          menu_text = NULL;
+        }
+      }
+      i += 3;
+    }
+
+    return menu;
+}
+
+static void _searchwindow_show_popup_cb (GtkWidget *widget, gpointer data)
+{
+    gtk_menu_popup (GTK_MENU (data), NULL, NULL, NULL, NULL, 0, gtk_get_current_event_time ());
+}
+
+static void _searchwindow_destroy_popup_cb (GtkWidget *widget, gpointer data)
+{
+  gtk_widget_destroy (GTK_WIDGET (data));
 }
 
 

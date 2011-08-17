@@ -130,12 +130,13 @@ G_MODULE_EXPORT gboolean gw_searchwindow_get_position_for_button_press_cb (GtkWi
     //Window coordinates
     window = GW_SEARCHWINDOW (gw_app_get_window (app, GW_WINDOW_SEARCH, widget));
     if (window == NULL) return FALSE;
-    window->mousedata.button_press_x = event->x;
-    window->mousedata.button_press_y = event->y;
     x = event->x;
     y = event->y;
 
     gw_searchwindow_get_hovered_character (window, &x, &y, &iter);
+
+    window->mousedata.button_press_x = x;
+    window->mousedata.button_press_y = y;
 
     return FALSE;
 }
@@ -563,7 +564,6 @@ G_MODULE_EXPORT void gw_searchwindow_zoom_in_cb (GtkWidget *widget, gpointer dat
     if (size <= GW_MAX_FONT_MAGNIFICATION)
     {
       lw_prefmanager_set_int_by_schema (app->prefmanager, LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION, size);
-      printf("BREAK zoom in\n");
     }
 }
 
@@ -586,7 +586,6 @@ G_MODULE_EXPORT void gw_searchwindow_zoom_out_cb (GtkWidget *widget, gpointer da
     if (size >= GW_MIN_FONT_MAGNIFICATION)
     {
       lw_prefmanager_set_int_by_schema (app->prefmanager, LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION, size);
-      printf("BREAK zoom out\n");
     }
 }
 
@@ -1680,192 +1679,6 @@ G_MODULE_EXPORT void gw_searchwindow_update_button_states_based_on_entry_text_cb
     gtk_widget_override_background_color (GTK_WIDGET (window->entry), GTK_STATE_NORMAL, NULL);
     gtk_widget_override_color (GTK_WIDGET (window->entry), GTK_STATE_NORMAL, NULL);
 */
-}
-
-
-//!
-//! @brief Populates the main contextual menu with search options
-//!
-//! @param view The GtkTexView that was right clicked
-//! @param menu The Popup menu to populate
-//! @param data  Currently unused gpointer containing user data
-//!
-void gw_searchwindow_populate_popup_with_search_options_cb (GtkTextView *view, GtkMenu *menu, gpointer data)
-{
-    //Declarations
-    GwSearchWindow *window;
-    LwSearchItem *item = NULL;
-    LwDictInfo *di = NULL;
-    char *menu_text = NULL;
-    GtkWidget *menuitem = NULL;
-    GtkWidget *menuimage = NULL;
-    char *query_text = NULL;
-    char *search_for_menuitem_text;
-    char *websearch_for_menuitem_text;
-    char *othersearch_for_menuitem_text;
-    GtkTextBuffer *buffer;
-    GtkTextIter start_iter, end_iter;
-    LwDictInfo *di_selected = NULL;
-    window = GW_SEARCHWINDOW (gw_app_get_window (app, GW_WINDOW_SEARCH, NULL));
-    if (window == NULL) return;
-    int i = 0;
-
-    if (window->mousedata.hovered_word == NULL) return;
-
-    //Initializations
-    buffer = gtk_text_view_get_buffer (view);
-    // TRANSLATORS: The first variable is the expression to look for, the second is the dictionary full name
-    search_for_menuitem_text = gettext("Search for \"%s\" in the %s");
-    // TRANSLATORS: The variable is the expression to look for
-    othersearch_for_menuitem_text = gettext("Search for \"%s\" in a Different Dictionary");
-    // TRANSLATORS: The variable is the expression to look for
-    websearch_for_menuitem_text = gettext("Cross-reference \"%s\" Online");
-
-    menuitem = gtk_separator_menu_item_new ();
-    gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), GTK_WIDGET (menuitem));
-    gtk_widget_show (GTK_WIDGET (menuitem));
-    if (gtk_text_buffer_get_has_selection (buffer))
-    {
-      gtk_text_buffer_get_selection_bounds (buffer, &start_iter, &end_iter);
-      query_text = gtk_text_buffer_get_text (buffer, &start_iter, &end_iter, FALSE);
-      if (g_utf8_strchr(query_text, -1, L'\n') != NULL) query_text = NULL;
-    }
-    if (query_text == NULL)
-    {
-      query_text = window->mousedata.hovered_word;
-    }
-    di_selected = gw_searchwindow_get_dictionary (window);
-
-
-    //Add webpage links
-    di =  lw_dictinfolist_get_dictinfo_by_load_position (LW_DICTINFOLIST (app->dictinfolist), 0);
-    char *website_url_menuitems[] = {
-      "Wikipedia", "http://www.wikipedia.org/wiki/%s", "wikipedia.png",
-      "Goo.ne.jp", "http://dictionary.goo.ne.jp/srch/all/%s/m0u/", "goo.png",
-      "Google.com", "http://www.google.com/search?q=%s", "google.png",
-      NULL, NULL, NULL
-    };
-
-    //Setup the web submenu
-    GtkWidget *web_menu = NULL;
-    GtkWidget *web_menuitem = NULL;
-    menu_text = g_strdup_printf (websearch_for_menuitem_text, query_text);
-    if (menu_text != NULL)
-    {
-      web_menu = gtk_menu_new();
-      web_menuitem = gtk_menu_item_new_with_label (menu_text);
-      g_free (menu_text);
-      menu_text = NULL;
-    }
-    else
-    {
-      web_menuitem = gtk_menu_item_new_with_label ("crossreference on the web");
-    }
-    gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), GTK_WIDGET (web_menuitem));
-    gtk_menu_item_set_submenu (GTK_MENU_ITEM (web_menuitem), GTK_WIDGET (web_menu));
-    gtk_widget_show (web_menuitem);
-    gtk_widget_show (web_menu);
-
-    i = 0;
-    while (website_url_menuitems[i] != NULL)
-    {
-      if (di != NULL && (item = lw_searchitem_new (query_text, di, LW_OUTPUTTARGET_RESULTS, app->prefmanager, NULL)) != NULL)
-      {
-        //Create handy variables
-        char *name = website_url_menuitems[i];
-        char *url = g_strdup_printf(website_url_menuitems[i + 1], query_text);
-        if (url != NULL)
-        {
-          g_free (item->queryline->string);
-          item->queryline->string = g_strdup (url);
-          g_free (url);
-          url = NULL;
-        }
-        char *icon_path = website_url_menuitems[i + 2];
-
-        //Start creating
-        menu_text = g_strdup_printf ("%s", name);
-        if (menu_text != NULL)
-        {
-          menuitem = GTK_WIDGET (gtk_image_menu_item_new_with_label (menu_text));
-          char *path = g_build_filename (DATADIR2, PACKAGE, icon_path, NULL);
-          if (path != NULL)
-          {
-            menuimage = gtk_image_new_from_file (path);
-            gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menuitem), GTK_WIDGET (menuimage));
-            g_free (path);
-            path = NULL;
-          }
-          g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (gw_searchwindow_search_for_searchitem_online_cb), item);
-          g_signal_connect (G_OBJECT (menuitem), "destroy",  G_CALLBACK (gw_searchwindow_destroy_tab_menuitem_searchitem_data_cb), item);
-          gtk_menu_shell_append (GTK_MENU_SHELL (web_menu), GTK_WIDGET (menuitem));
-          gtk_widget_show (GTK_WIDGET (menuitem));
-          gtk_widget_show (GTK_WIDGET (menuimage));
-          g_free (menu_text);
-          menu_text = NULL;
-        }
-      }
-      i += 3;
-    }
-
-
-    //Setup the submenu
-    GtkWidget *dictionaries_menu = NULL;
-    GtkWidget *dictionaries_menuitem = NULL;
-    menu_text = g_strdup_printf (othersearch_for_menuitem_text, query_text);
-    if (menu_text != NULL)
-    {
-      dictionaries_menu = gtk_menu_new();
-      dictionaries_menuitem = gtk_menu_item_new_with_label (menu_text);
-      g_free (menu_text);
-      menu_text = NULL;
-    }
-    else
-    {
-      dictionaries_menuitem = gtk_menu_item_new_with_label ("Search for this in a different dictionary");
-    }
-    gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), GTK_WIDGET (dictionaries_menuitem));
-    gtk_menu_item_set_submenu (GTK_MENU_ITEM (dictionaries_menuitem), GTK_WIDGET (dictionaries_menu));
-    gtk_widget_show (dictionaries_menuitem);
-    gtk_widget_show (dictionaries_menu);
-
-    //Add internal dictionary links
-    i = 0;
-    while ((di = lw_dictinfolist_get_dictinfo_by_load_position (LW_DICTINFOLIST (app->dictinfolist), i)) != NULL)
-    {
-      if (di != NULL && (item = lw_searchitem_new (query_text, di, LW_OUTPUTTARGET_RESULTS, app->prefmanager, NULL)) != NULL)
-      {
-        if (di == di_selected)
-        {
-          menu_text = g_strdup_printf (search_for_menuitem_text, item->queryline->string, di->longname);
-          if (menu_text != NULL)
-          {
-            menuitem = GTK_WIDGET (gtk_image_menu_item_new_with_label (menu_text));
-            menuimage = gtk_image_new_from_icon_name ("stock_new-tab", GTK_ICON_SIZE_MENU);
-            gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menuitem), GTK_WIDGET (menuimage));
-            g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (gw_searchwindow_new_tab_with_search_cb), item);
-            gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), GTK_WIDGET (menuitem));
-            gtk_widget_show (GTK_WIDGET (menuitem));
-            gtk_widget_show (GTK_WIDGET (menuimage));
-            g_free (menu_text);
-            menu_text = NULL;
-          }
-        }
-        menu_text = g_strdup_printf ("%s", di->longname);
-        if (menu_text != NULL)
-        {
-          menuitem = GTK_WIDGET (gtk_image_menu_item_new_with_label (menu_text));
-          g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (gw_searchwindow_new_tab_with_search_cb), item);
-          g_signal_connect (G_OBJECT (menuitem), "destroy",  G_CALLBACK (gw_searchwindow_destroy_tab_menuitem_searchitem_data_cb), item);
-          gtk_menu_shell_append (GTK_MENU_SHELL (dictionaries_menu), GTK_WIDGET (menuitem));
-          gtk_widget_show (GTK_WIDGET (menuitem));
-          gtk_widget_show (GTK_WIDGET (menuimage));
-          g_free (menu_text);
-          menu_text = NULL;
-        }
-      }
-      i++;
-    }
 }
 
 

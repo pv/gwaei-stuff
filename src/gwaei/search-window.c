@@ -1374,7 +1374,6 @@ void gw_searchwindow_set_cursor (GwSearchWindow* window, GdkCursorType CURSOR)
 //!
 void gw_searchwindow_display_no_results_found_page (GwSearchWindow *window, LwSearchItem *item)
 {
-/*
     if (item->status == LW_SEARCHSTATUS_CANCELING) return; 
 
     gint32 temp = g_random_int_range (0,9);
@@ -1402,7 +1401,7 @@ void gw_searchwindow_display_no_results_found_page (GwSearchWindow *window, LwSe
     view = GTK_TEXT_VIEW (sdata->view);
     buffer = gtk_text_view_get_buffer (view);
     query_text = gtk_entry_get_text (GTK_ENTRY (window->entry));
-    di_selected = gw_dictinfolist_get_selected_dictinfo (app->dictinfolist);
+    di_selected = gw_searchwindow_get_dictionary (window);
 
   gdk_threads_enter ();
     gtk_text_buffer_set_text (buffer, "", -1);
@@ -1725,7 +1724,6 @@ void gw_searchwindow_display_no_results_found_page (GwSearchWindow *window, LwSe
                                "\n\n",
                                NULL, NULL, NULL, NULL         );
 gdk_threads_leave ();
-*/
 }
 
 
@@ -2175,7 +2173,6 @@ int gw_searchwindow_new_tab (GwSearchWindow *window)
     g_signal_connect( G_OBJECT (view), "drag_leave", G_CALLBACK (gw_searchwindow_drag_leave_1_cb), NULL);
     g_signal_connect( G_OBJECT (view), "drag_data_received", G_CALLBACK (gw_searchwindow_search_drag_data_recieved_cb), NULL);
     g_signal_connect( G_OBJECT (view), "key_press_event", G_CALLBACK (gw_searchwindow_focus_change_on_key_press_cb), NULL);
-    g_signal_connect( G_OBJECT (view), "populate_popup", G_CALLBACK (gw_searchwindow_populate_popup_with_search_options_cb), NULL);
     g_signal_connect( G_OBJECT (view), "scroll_event", G_CALLBACK (gw_searchwindow_scroll_or_zoom_cb), NULL);
 
 

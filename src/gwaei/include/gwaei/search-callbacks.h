@@ -51,7 +51,6 @@ void gw_searchwindow_search_drag_data_recieved_cb (GtkWidget*, GdkDragContext*, 
 gboolean gw_searchwindow_focus_change_on_key_press_cb (GtkWidget*, GdkEvent*, gpointer*);
 gboolean gw_searchwindow_update_icons_for_selection_cb (GtkWidget*, GdkEvent*, gpointer); 
 
-void gw_searchwindow_populate_popup_with_search_options_cb (GtkTextView*, GtkMenu*, gpointer);
 void gw_searchwindow_search_for_searchitem_online_cb (GtkWidget*, gpointer);
 
 gboolean gw_searchwindow_scroll_or_zoom_cb (GtkWidget*, GdkEventScroll*, gpointer);
