@@ -191,7 +191,7 @@ void lw_historylist_add_searchitem (LwHistoryList *list, LwSearchItem *item)
 //!
 gboolean lw_historylist_has_forward (LwHistoryList *list)
 {
-    return (g_list_length (list->forward) > 0);
+    return (list->forward != NULL);
 }
 
 
@@ -200,7 +200,7 @@ gboolean lw_historylist_has_forward (LwHistoryList *list)
 //!
 gboolean lw_historylist_has_back (LwHistoryList *list)
 {
-    return (g_list_length (list->back) > 0);
+    return (list->back != NULL);
 }
 
 

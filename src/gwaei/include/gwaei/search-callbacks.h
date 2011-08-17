@@ -70,6 +70,7 @@ void gw_searchwindow_statusbar_show_toggled_cb (GtkWidget *widget, gpointer data
 void gw_searchwindow_sync_toolbar_show_cb (GSettings*, gchar*, gpointer);
 void gw_searchwindow_sync_statusbar_show_cb (GSettings*, gchar*, gpointer);
 void gw_searchwindow_sync_font_cb (GSettings*, gchar*, gpointer);
+void gw_searchwindow_sync_keep_searching_cb (GSettings*, gchar*, gpointer);
 
 #endif
 

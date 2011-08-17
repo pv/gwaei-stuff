@@ -322,20 +322,21 @@ G_MODULE_EXPORT void gw_searchwindow_quit_cb (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void gw_searchwindow_search_from_history_cb (GtkWidget *widget, gpointer data)
 {
-/*
+    //Declarations
     LwSearchItem *item;
     GwSearchWindow *window;
     GwSearchData *sdata;
-    LwHistoryList *history;
+    gboolean is_in_back_index;
+    gboolean is_in_forward_index;
+    LwSearchItem *current;
 
-    history = app->history;
-    item = (LwSearchItem*) data;
     window = GW_SEARCHWINDOW (gw_app_get_window (app, GW_WINDOW_SEARCH, widget));
     if (window == NULL) return;
-
-    gw_searchwindow_guarantee_first_tab (window);
-
-    //Update the textview pointed to in case the user switched tabs
+    item = LW_SEARCHITEM (data);
+    is_in_back_index = (g_list_index (window->history->back, item) != -1);
+    is_in_forward_index = (g_list_index (window->history->forward, item) != -1);
+    if (!is_in_back_index && !is_in_forward_index) return;
+    current = gw_searchwindow_get_current_searchitem (window);
     sdata = lw_searchitem_get_data (item);
     sdata->view = gw_searchwindow_get_current_textview (window);
     
@@ -346,36 +347,32 @@ G_MODULE_EXPORT void gw_searchwindow_search_from_history_cb (GtkWidget *widget, 
       return;
     }
 
-    //Start setting things up;
-    if (history->back != NULL && g_list_find (history->back, item))
+    //Remove the current searchitem if it has no history relevance
+    if (current != NULL && !lw_searchitem_has_history_relevance (current))
     {
-      while (history->back != NULL && history->current != item)
-        lw_historylist_go_back (history);
-    }
-    else if (history->forward != NULL && g_list_find (history->forward, item))
-    {
-      while (history->forward != NULL && history->current != item)
-        lw_historylist_go_forward (history);
+      lw_searchitem_free (current);
+      current = NULL;
     }
 
-    //Set tab text
-    gw_searchwindow_set_current_tab_text (window, item->queryline->string);
+    //Cycle the history
+    if (is_in_back_index)
+      while (current != item)
+        current = lw_historylist_go_back (window->history, current);
+    else if (is_in_forward_index)
+      while (current != item)
+        current = lw_historylist_go_forward (window->history, current);
+    else
+    {
+      g_assert_not_reached ();
+      return;
+    }
 
     //Add tab reference to searchitem
-    gw_searchwindow_set_current_searchitem (window, item);
-    lw_engine_get_results (app->engine, item, TRUE, FALSE);
-    gw_searchwindow_update_history_popups (window);
-    gw_searchwindow_update_toolbar_buttons (window);
+    gw_searchwindow_start_search (window, item);
 
     //Set the search string in the GtkEntry
-    gw_searchwindow_clear_search_entry (window);
-    gw_searchwindow_entry_insert (window, item->queryline->string);
-    gw_searchwindow_select_all_by_target (window, LW_OUTPUTTARGET_ENTRY);
     gtk_widget_grab_focus (GTK_WIDGET (window->entry));
-
-    //Set the correct dictionary in the gui
-    gtk_combo_box_set_active (window->combobox, item->dictionary->load_position);
-*/
+    gw_searchwindow_select_all_by_target (window, LW_OUTPUTTARGET_ENTRY);
 }
 
 
@@ -398,7 +395,7 @@ G_MODULE_EXPORT void gw_searchwindow_back_cb (GtkWidget *widget, gpointer data)
 
     if (lw_historylist_has_back (window->history))
     {
-      gw_searchwindow_search_from_history_cb (NULL, window->history->back->data);
+      gw_searchwindow_search_from_history_cb (widget, window->history->back->data);
     }
 }
 
@@ -422,7 +419,7 @@ G_MODULE_EXPORT void gw_searchwindow_forward_cb (GtkWidget *widget, gpointer dat
 
     if (lw_historylist_has_forward (window->history))
     {
-      gw_searchwindow_search_from_history_cb (NULL, window->history->forward->data);
+      gw_searchwindow_search_from_history_cb (widget, window->history->forward->data);
     }
 }
 
@@ -1163,17 +1160,14 @@ G_MODULE_EXPORT gboolean gw_searchwindow_key_press_modify_status_update_cb (GtkW
 
 //!
 //! @brief Update the special key release status
-//!
-//! Currently used to determine if a search should be opened in a new tab.
-//!
 //! @param widget Unused GtkWidget pointer
 //! @param event the event data to get the specific key that had it's status modified
 //! @param data Currently unused gpointer
 //! @return Always returns FALSE
 //!
 G_MODULE_EXPORT gboolean gw_searchwindow_key_release_modify_status_update_cb (GtkWidget *widget,
-                                                                      GdkEvent  *event,
-                                                                      gpointer  *data  )
+                                                                              GdkEvent  *event,
+                                                                              gpointer  *data  )
 {
     //Declarations
     GwSearchWindow *window;
@@ -1481,11 +1475,6 @@ G_MODULE_EXPORT void gw_searchwindow_insert_or_cb (GtkWidget *widget, gpointer d
 
 //!
 //! @brief Clears the search entry and moves the focus to it
-//!
-//! This function acts as a quick way for the user to get back to the search
-//! entry and do another search whereever they are.
-//!
-//! @see gw_searchwindow_clear_search_entry ()
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
@@ -1494,7 +1483,7 @@ G_MODULE_EXPORT void gw_searchwindow_clear_search_cb (GtkWidget *widget, gpointe
     GwSearchWindow *window;
     window = GW_SEARCHWINDOW (gw_app_get_window (app, GW_WINDOW_SEARCH, NULL));
     if (window == NULL) return;
-    gw_searchwindow_clear_search_entry (window);
+    gtk_entry_set_text (window->entry, "");
     gtk_widget_grab_focus (GTK_WIDGET (window->entry));
 }
 
@@ -1949,10 +1938,7 @@ G_MODULE_EXPORT void gw_searchwindow_new_tab_cb (GtkWidget *widget, gpointer dat
     gtk_notebook_set_current_page (window->notebook, position);
     gw_searchwindow_set_entry_text_by_searchitem (window, NULL);
     gtk_widget_grab_focus (GTK_WIDGET (window->entry));
-    gw_searchwindow_set_dictionary(window, 0);
     gw_searchwindow_set_current_searchitem (window, NULL);
-
-    gw_searchwindow_update_tab_appearance (window);
 }
 
 
@@ -1966,45 +1952,15 @@ G_MODULE_EXPORT void gw_searchwindow_remove_tab_cb (GtkWidget *widget, gpointer 
 {
     //Declarations
     GwSearchWindow *window;
-    int pages;
     int page_num;
-    GList *iter;
-    LwSearchItem *item;
 
     //Initializations
     window = GW_SEARCHWINDOW (gw_app_get_window (app, GW_WINDOW_SEARCH, NULL));
     if (window == NULL) return;
-    pages = gtk_notebook_get_n_pages (window->notebook);
     page_num = gtk_notebook_page_num (window->notebook, GTK_WIDGET (data));
 
-    //Sanity check
-    if (pages <= 1) {
-      return;
-    }
-
-    gw_searchwindow_cancel_search_by_tab_number (window, page_num);
-    gtk_notebook_remove_page (window->notebook, page_num);
-
-    iter = g_list_nth (window->tablist, page_num);
-    if (iter != NULL)
-    {
-      item = LW_SEARCHITEM (iter->data);
-      if (item != NULL && lw_searchitem_has_history_relevance (item))
-      {
-        lw_historylist_add_searchitem (window->history, item);
-        gw_searchwindow_update_history_popups (window);
-      }
-      else if (item != NULL)
-      {
-        lw_searchitem_free (item);
-        gtk_widget_grab_focus (GTK_WIDGET (window->entry));
-      }
-    }
-    window->tablist = g_list_delete_link (window->tablist, iter);
-
-    gw_searchwindow_update_tab_appearance (window);
-
-    if (pages == 1) gtk_widget_grab_focus (GTK_WIDGET (window->entry)); 
+    if (page_num != -1)
+      gw_searchwindow_remove_tab (window, page_num);
 }
 
 
@@ -2018,48 +1974,15 @@ G_MODULE_EXPORT void gw_searchwindow_remove_current_tab_cb (GtkWidget *widget, g
 {
     //Declarations
     GwSearchWindow *window;
-    int pages;
     int page_num;
-    GList *link;
-    LwSearchItem *item;
 
     //Initializations
     window = GW_SEARCHWINDOW (gw_app_get_window (app, GW_WINDOW_SEARCH, NULL));
     if (window == NULL) return;
-    pages = gtk_notebook_get_n_pages (window->notebook);
     page_num = gtk_notebook_get_current_page (window->notebook);
-    link = g_list_nth (window->tablist, page_num);
 
-    if (pages <= 1)
-    {
-      return;
-    }
-
-    gw_searchwindow_cancel_search_by_tab_number (window, page_num);
-
-    if (link != NULL)
-    {
-      item = LW_SEARCHITEM (link->data);
-      if (item != NULL)
-      {
-        if (lw_searchitem_has_history_relevance (item))
-        {
-          lw_historylist_add_searchitem (window->history, item);
-          gw_searchwindow_update_history_popups (window);
-        }
-        else
-        {
-          lw_searchitem_free (item);
-          item = NULL;
-        }
-      }
-    }
-    window->tablist = g_list_delete_link (window->tablist, link);
-
-    gtk_notebook_remove_page (window->notebook, page_num);
-    gw_searchwindow_update_tab_appearance (window);
-
-    if (pages == 1) gtk_widget_grab_focus (GTK_WIDGET (window->entry));
+    if (page_num != -1)
+      gw_searchwindow_remove_tab (window, page_num);
 }
 
 
@@ -2082,8 +2005,7 @@ G_MODULE_EXPORT void gw_searchwindow_switch_tab_cb (GtkNotebook *notebook, GtkWi
     window = (GwSearchWindow*) gw_app_get_window (app, GW_WINDOW_SEARCH, GTK_WIDGET (notebook));
     if (window == NULL) return;
     item =  LW_SEARCHITEM (g_list_nth_data (window->tablist, page_num));
-
-    gw_searchwindow_update_tab_appearance_by_searchitem (window, item);
+    gw_searchwindow_sync_current_searchitem (window);
 }
 
 
@@ -2105,7 +2027,7 @@ G_MODULE_EXPORT void gw_searchwindow_next_tab_cb (GtkWidget *widget, gpointer da
     item = LW_SEARCHITEM (g_list_nth_data (window->tablist, page_num));
 
     gtk_notebook_next_page (window->notebook);
-    gw_searchwindow_update_tab_appearance (window);
+    gw_searchwindow_sync_current_searchitem (window);
 }
 
 
@@ -2127,7 +2049,7 @@ G_MODULE_EXPORT void gw_searchwindow_previous_tab_cb (GtkWidget *widget, gpointe
     item = LW_SEARCHITEM (g_list_nth_data (window->tablist, page_num));
 
     gtk_notebook_prev_page (window->notebook);
-    gw_searchwindow_update_tab_appearance (window);
+    gw_searchwindow_sync_current_searchitem (window);
 }
 
 
@@ -2146,14 +2068,12 @@ G_MODULE_EXPORT void gw_searchwindow_new_tab_with_search_cb (GtkWidget *widget, 
     //Initializations
     window = GW_SEARCHWINDOW (gw_app_get_window (app, GW_WINDOW_SEARCH, widget));
     if (window == NULL) return;
-    item = (LwSearchItem*) data;
+    item = LW_SEARCHITEM (data);
 
     if (item != NULL)
     {
-      gw_searchwindow_new_tab_cb (widget, data);
-      gw_searchwindow_set_dictionary_by_searchitem (window, item);
-      gw_searchwindow_set_entry_text_by_searchitem (window, item);
-      gw_searchwindow_search_cb (widget, data);
+      gw_searchwindow_new_tab (window);
+      gw_searchwindow_start_search (window, item);
     }
 }
 
@@ -2167,7 +2087,7 @@ G_MODULE_EXPORT void gw_searchwindow_no_results_search_for_dictionary_cb (GtkWid
     //Initializations
     window = GW_SEARCHWINDOW (gw_app_get_window (app, GW_WINDOW_SEARCH, widget));
     if (window == NULL) return;
-    di = (LwDictInfo*) data;
+    di = LW_DICTINFO (data);
 
     gw_searchwindow_set_dictionary (window, di->load_position);
 }
@@ -2335,7 +2255,7 @@ G_MODULE_EXPORT void gw_spellcheck_toggled_cb (GtkWidget *widget, gpointer data)
 //!
 //! @param request the requested state for spellchecking widgets
 //!
-void gw_searchwindow_sync_spellcheck (GSettings *settings, gchar *Key, gpointer data)
+void gw_searchwindow_sync_spellcheck (GSettings *settings, gchar *KEY, gpointer data)
 {
     //Declarations
     GwSearchWindow *window;
@@ -2355,3 +2275,15 @@ void gw_searchwindow_sync_spellcheck (GSettings *settings, gchar *Key, gpointer 
 }
 
 
+void gw_searchwindow_sync_keep_searching_cb (GSettings *settings, gchar *KEY, gpointer data)
+{
+    //Declarations
+    GwSearchWindow *window;
+    gboolean request;
+
+    //Initializations
+    window = GW_SEARCHWINDOW (data);
+
+    request = lw_prefmanager_get_boolean (settings, KEY);
+    window->keepsearchingdata.enabled = request;
+}

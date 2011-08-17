@@ -77,7 +77,7 @@ GwSearchWindow* gw_searchwindow_new ()
       temp->feedbackdata.line = 0;
       temp->feedbackdata.status = LW_SEARCHSTATUS_IDLE;
 
-      for (i = 0; i < TOTAL_GW_SEARCHWINDOW_TIMEOUTS; i++)
+      for (i = 0; i < TOTAL_GW_SEARCHWINDOW_TIMEOUTIDS; i++)
         temp->timeoutids[i] = 0;
       for (i = 0; i < TOTAL_GW_SEARCHWINDOW_SIGNALIDS; i++)
         temp->signalids[i] = 0;
@@ -86,6 +86,7 @@ GwSearchWindow* gw_searchwindow_new ()
 
       temp->keepsearchingdata.delay = 0;
       temp->keepsearchingdata.query = NULL;
+      temp->keepsearchingdata.enabled = TRUE;
 
       temp->mousedata.item = NULL;
       temp->mousedata.button_press_x = 0;
@@ -104,7 +105,7 @@ GwSearchWindow* gw_searchwindow_new ()
 
 //      gw_spellcheck_attach_to_entry (temp->entry);
 
-      temp->signalids[GW_SEARCHWINDOW_TOOLBAR_SHOW] = lw_prefmanager_add_change_listener_by_schema (
+      temp->signalids[GW_SEARCHWINDOW_SIGNALID_TOOLBAR_SHOW] = lw_prefmanager_add_change_listener_by_schema (
           app->prefmanager,
           LW_SCHEMA_BASE,
           LW_KEY_TOOLBAR_SHOW,
@@ -112,7 +113,7 @@ GwSearchWindow* gw_searchwindow_new ()
           temp
       );
 
-      temp->signalids[GW_SEARCHWINDOW_STATUSBAR_SHOW] = lw_prefmanager_add_change_listener_by_schema (
+      temp->signalids[GW_SEARCHWINDOW_SIGNALID_STATUSBAR_SHOW] = lw_prefmanager_add_change_listener_by_schema (
           app->prefmanager,
           LW_SCHEMA_BASE,
           LW_KEY_STATUSBAR_SHOW,
@@ -120,14 +121,14 @@ GwSearchWindow* gw_searchwindow_new ()
           temp
       );
 
-      temp->signalids[GW_SEARCHWINDOW_USE_GLOBAL_FONT] = lw_prefmanager_add_change_listener_by_schema (
+      temp->signalids[GW_SEARCHWINDOW_SIGNALID_USE_GLOBAL_FONT] = lw_prefmanager_add_change_listener_by_schema (
           app->prefmanager,
           LW_SCHEMA_FONT,
           LW_KEY_FONT_USE_GLOBAL_FONT,
           gw_searchwindow_sync_font_cb,
           temp
       );
-      temp->signalids[GW_SEARCHWINDOW_CUSTOM_FONT] = lw_prefmanager_add_change_listener_by_schema (
+      temp->signalids[GW_SEARCHWINDOW_SIGNALID_CUSTOM_FONT] = lw_prefmanager_add_change_listener_by_schema (
           app->prefmanager,
           LW_SCHEMA_FONT,
           LW_KEY_FONT_CUSTOM_FONT,
@@ -135,7 +136,7 @@ GwSearchWindow* gw_searchwindow_new ()
           temp
       );
 
-      temp->signalids[GW_SEARCHWINDOW_FONT_MAGNIFICATION] = lw_prefmanager_add_change_listener_by_schema (
+      temp->signalids[GW_SEARCHWINDOW_SIGNALID_FONT_MAGNIFICATION] = lw_prefmanager_add_change_listener_by_schema (
           app->prefmanager,
           LW_SCHEMA_FONT,
           LW_KEY_FONT_MAGNIFICATION,
@@ -143,6 +144,13 @@ GwSearchWindow* gw_searchwindow_new ()
           temp
       );
 
+      temp->signalids[GW_SEARCHWINDOW_SIGNALID_KEEP_SEARCHING] = lw_prefmanager_add_change_listener_by_schema (
+          app->prefmanager,
+          LW_SCHEMA_BASE,
+          LW_KEY_SEARCH_AS_YOU_TYPE,
+          gw_searchwindow_sync_keep_searching_cb,
+          temp
+      );
 
       /*
       lw_prefmanager_add_callback (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_SPELLCHECK, gw_searchwindow_set_spellcheck, temp);
@@ -159,7 +167,7 @@ GwSearchWindow* gw_searchwindow_new ()
       lw_prefmanager_add_callback (app->prefmanager, LW_SCHEMA_HIGHLIGHT, LW_KEY_COMMENT_FG, gw_searchwindow_set_highlights, temp);
       */
 
-      temp->timeoutids[GW_SEARCHWINDOW_TIMEOUT_KEEP_SEARCHING] = g_timeout_add_full (
+      temp->timeoutids[GW_SEARCHWINDOW_TIMEOUTID_KEEP_SEARCHING] = g_timeout_add_full (
             G_PRIORITY_DEFAULT_IDLE, 
             100, 
             (GSourceFunc) gw_searchwindow_keep_searching_timeout, 
@@ -167,7 +175,7 @@ GwSearchWindow* gw_searchwindow_new ()
             NULL
       );
 
-      temp->timeoutids[GW_SEARCHWINDOW_TIMEOUT_PROGRESS] = g_timeout_add_full (
+      temp->timeoutids[GW_SEARCHWINDOW_TIMEOUTID_PROGRESS] = g_timeout_add_full (
             G_PRIORITY_LOW, 
             50, 
             (GSourceFunc) gw_searchwindow_update_progress_feedback_timeout, 
@@ -175,7 +183,7 @@ GwSearchWindow* gw_searchwindow_new ()
             NULL
       );
 /*
-      temp->timeoutids[GW_SEARCHWINDOW_TIMEOUT_SELECTION_ICONS] = g_timeout_add_full (
+      temp->timeoutids[GW_SEARCHWINDOW_TIMEOUTID_SELECTION_ICONS] = g_timeout_add_full (
             G_PRIORITY_LOW, 
             500, 
             (GSourceFunc) gw_searchwindow_update_icons_for_selection_timeout, 
@@ -280,7 +288,7 @@ void gw_searchwindow_destroy (GwSearchWindow *window)
   GSource *source;
   int i;
 
-  for (i = 0; i < TOTAL_GW_SEARCHWINDOW_TIMEOUTS; i++)
+  for (i = 0; i < TOTAL_GW_SEARCHWINDOW_TIMEOUTIDS; i++)
   {
     if (!g_source_is_destroyed (g_main_current_source ()) && window->timeoutids[i] > 0)
     {
@@ -296,12 +304,12 @@ void gw_searchwindow_destroy (GwSearchWindow *window)
   lw_prefmanager_remove_change_listener_by_schema (
       app->prefmanager,
       LW_SCHEMA_BASE,
-      window->signalids[GW_SEARCHWINDOW_TOOLBAR_SHOW]
+      window->signalids[GW_SEARCHWINDOW_SIGNALID_TOOLBAR_SHOW]
   );
   lw_prefmanager_remove_change_listener_by_schema (
       app->prefmanager,
       LW_SCHEMA_BASE,
-      window->signalids[GW_SEARCHWINDOW_STATUSBAR_SHOW]
+      window->signalids[GW_SEARCHWINDOW_SIGNALID_STATUSBAR_SHOW]
   );
 
 
@@ -321,7 +329,7 @@ void gw_searchwindow_destroy (GwSearchWindow *window)
 gboolean gw_searchwindow_update_progress_feedback_timeout (GwSearchWindow *window)
 {
     //Sanity checks
-    if (window->timeoutids[GW_SEARCHWINDOW_TIMEOUT_PROGRESS] == 0) return FALSE;
+    if (window->timeoutids[GW_SEARCHWINDOW_TIMEOUTID_PROGRESS] == 0) return FALSE;
     if (gtk_widget_get_visible (GTK_WIDGET (window->toplevel)) == FALSE) return TRUE;
 
     //Declarations
@@ -699,7 +707,9 @@ void gw_searchwindow_set_dictionary (GwSearchWindow *window, int request)
 //!
 void gw_searchwindow_set_dictionary_by_searchitem (GwSearchWindow *window, LwSearchItem *item)
 {
-    if (item != NULL && item->dictionary != NULL)
+    if (item == NULL)
+      gw_searchwindow_set_dictionary (window, 0);
+    else if (item->dictionary != NULL)
       gw_searchwindow_set_dictionary (window, item->dictionary->load_position);
 }
 
@@ -1145,18 +1155,6 @@ void gw_searchwindow_entry_insert (GwSearchWindow *window, char* text)
 
     gtk_editable_insert_text(GTK_EDITABLE (window->entry), text, length, &start);
     gtk_editable_set_position (GTK_EDITABLE (window->entry), start);
-}
-
-
-//!
-//! @brief Clears the window entry
-//!
-void gw_searchwindow_clear_search_entry (GwSearchWindow *window)
-{
-    gint start, end;
-    gtk_editable_select_region (GTK_EDITABLE (window->entry), 0, -1);
-    gtk_editable_get_selection_bounds (GTK_EDITABLE (window->entry), &start, &end);
-    gtk_editable_delete_text (GTK_EDITABLE (window->entry), start, end);
 }
 
 
@@ -1845,7 +1843,8 @@ static void _searchwindow_buffer_initialize_marks (GtkTextBuffer *buffer)
 gboolean gw_searchwindow_keep_searching_timeout (GwSearchWindow *window)
 {
     //Sanity check
-    if (window->timeoutids[GW_SEARCHWINDOW_TIMEOUT_KEEP_SEARCHING] == 0) return FALSE;
+    if (!window->keepsearchingdata.enabled) return TRUE;
+    if (window->timeoutids[GW_SEARCHWINDOW_TIMEOUTID_KEEP_SEARCHING] == 0) return FALSE;
     if (gtk_widget_get_visible (GTK_WIDGET (window->toplevel)) == FALSE) return TRUE;
 
     //Declarations
@@ -1858,7 +1857,7 @@ gboolean gw_searchwindow_keep_searching_timeout (GwSearchWindow *window)
     if (window->keepsearchingdata.delay >= GW_SEARCHWINDOW_KEEP_SEARCHING_MAX_DELAY || strlen(query) == 0)
     {
       window->keepsearchingdata.delay = 0;
-      gw_searchwindow_search_cb (NULL, NULL);
+      gw_searchwindow_search_cb (GTK_WIDGET (window->toplevel), NULL);
     }
     else
     {
@@ -1892,7 +1891,7 @@ gboolean gw_searchwindow_keep_searching_timeout (GwSearchWindow *window)
 gboolean gw_searchwindow_update_icons_for_selection_timeout (GwSearchWindow *window) 
 {
     //Sanity check
-    if (window->timeoutids[GW_SEARCHWINDOW_TIMEOUT_SELECTION_ICONS] == 0) return FALSE;
+    if (window->timeoutids[GW_SEARCHWINDOW_TIMEOUTID_SELECTION_ICONS] == 0) return FALSE;
     if (gtk_widget_get_visible (GTK_WIDGET (window->toplevel)) == FALSE) return TRUE;
 
     //Declarations
@@ -2111,53 +2110,6 @@ GtkTextView* gw_searchwindow_get_current_textview (GwSearchWindow *window)
 
 
 //!
-//! @brief Updates the tab and surrounding interface to reflect the current tab
-//!
-//! @param item pointer to a LwSearchItem to use to update the interface.
-//!
-void gw_searchwindow_update_tab_appearance_by_searchitem (GwSearchWindow *window, LwSearchItem *item)
-{
-    //Declarations
-    int pages;
-    GtkWidget *close_menuitem;
-
-    //Initializations
-    pages = gtk_notebook_get_n_pages (window->notebook);
-    close_menuitem = GTK_WIDGET (gtk_builder_get_object (window->builder, "close_menuitem"));
-
-    gtk_notebook_set_show_tabs (window->notebook, (pages > 1));
-    //gtk_notebook_set_show_tabs (window->notebook, TRUE);
-    gtk_menu_item_set_label (GTK_MENU_ITEM (close_menuitem), gettext("_Close Tab"));
-    if (pages > 1) gtk_menu_item_set_label (GTK_MENU_ITEM (close_menuitem), gettext("_Close Tab"));
-    else gtk_menu_item_set_label (GTK_MENU_ITEM (close_menuitem), gettext("_Close"));
-
-    //Force correct querytext
-    gw_searchwindow_set_entry_text_by_searchitem (window, item);
-    gw_searchwindow_set_total_results_label_by_searchitem (window, item);
-    gw_searchwindow_set_search_progressbar_by_searchitem (window, item);
-    gw_searchwindow_set_title_by_searchitem (window, item);
-    gw_searchwindow_set_dictionary_by_searchitem (window, item);
-}
-
-
-//!
-//! @brief Updates the tab and surrounding interface to reflect the current tab
-//!
-void gw_searchwindow_update_tab_appearance (GwSearchWindow *window)
-{
-    //Declarations
-    int current_page;
-    LwSearchItem *item;
-
-    //Initializations
-    current_page = gtk_notebook_get_current_page (window->notebook);
-    item = LW_SEARCHITEM (g_list_nth_data (window->tablist, current_page));
-
-    gw_searchwindow_update_tab_appearance_by_searchitem (window, item);
-}
-
-
-//!
 //! @brief Makes sure that at least one tab is available to output search results.
 //!
 void gw_searchwindow_guarantee_first_tab (GwSearchWindow *window)
@@ -2171,7 +2123,7 @@ void gw_searchwindow_guarantee_first_tab (GwSearchWindow *window)
     if (pages == 0)
     {
       gw_searchwindow_new_tab (window);
-      gw_searchwindow_update_tab_appearance (window);
+      gw_searchwindow_sync_current_searchitem (window);
     }
 }
 
@@ -2180,7 +2132,7 @@ void gw_searchwindow_guarantee_first_tab (GwSearchWindow *window)
 //! @brief Sets the title text of the current tab.
 //! @param TEXT The text to set to the tab
 //!
-void gw_searchwindow_set_current_tab_text (GwSearchWindow *window, const char* TEXT)
+void gw_searchwindow_set_tab_text_by_searchitem (GwSearchWindow *window, LwSearchItem *item)
 {
     //Declarations
     int page_num;
@@ -2190,17 +2142,23 @@ void gw_searchwindow_set_current_tab_text (GwSearchWindow *window, const char* T
     GList *hchildren;
     GList *vchildren;
     GtkWidget *label;
+    const char *text;
 
     //Initializations
-    page_num = gtk_notebook_get_current_page (window->notebook);
+    page_num = g_list_index (window->tablist, item);
+    if (page_num == -1) return;
     container = gtk_notebook_get_nth_page (window->notebook, page_num);
     hbox = GTK_WIDGET (gtk_notebook_get_tab_label(window->notebook, GTK_WIDGET (container)));
     hchildren = gtk_container_get_children (GTK_CONTAINER (hbox));
     vbox = GTK_WIDGET (hchildren->data);
     vchildren = gtk_container_get_children (GTK_CONTAINER (vbox));
     label = GTK_WIDGET (vchildren->data);
+    if (item == NULL)
+      text = gettext("(Empty)");
+    else if (item->queryline != NULL)
+      text = item->queryline->string;
 
-    gtk_label_set_text (GTK_LABEL (label), TEXT);
+    gtk_label_set_text (GTK_LABEL (label), text);
 
     //Cleanup
     g_list_free (hchildren);
@@ -2259,7 +2217,7 @@ int gw_searchwindow_new_tab (GwSearchWindow *window)
 
     //Initializations
     hbox = GTK_WIDGET (gtk_hbox_new(FALSE, 3));
-    label = GTK_WIDGET (gtk_label_new(gettext("(Empty)")));
+    label = GTK_WIDGET (gtk_label_new (NULL));
     close_button = GTK_WIDGET (gtk_button_new ());
     button_image = GTK_WIDGET (gtk_image_new_from_stock (GTK_STOCK_CLOSE, GTK_ICON_SIZE_MENU));
     style_data = "* {\n"
@@ -2305,12 +2263,66 @@ int gw_searchwindow_new_tab (GwSearchWindow *window)
     //Put everything together
 //    gtk_notebook_set_tab_reorderable (window->notebook, scrolledwindow, TRUE);
     gtk_notebook_set_current_page (window->notebook, position);
+    gw_searchwindow_set_current_searchitem (window, NULL);
     gtk_notebook_set_current_page (window->notebook, current);
     _searchwindow_buffer_initialize_marks (buffer);
-    gw_searchwindow_update_tab_appearance (window);
     gw_searchwindow_set_font (window);
 
     return position;
+}
+
+
+void gw_searchwindow_remove_tab (GwSearchWindow *window, int index)
+{
+    //Sanity check
+    g_assert (window != NULL && index > -1);
+
+    //Declarations
+    int pages;
+    GList *iter;
+    LwSearchItem *item;
+
+    //Initializations
+    pages = gtk_notebook_get_n_pages (window->notebook);
+
+    //Sanity check
+    if (pages <= 1) {
+      return;
+    }
+
+    gw_searchwindow_cancel_search_by_tab_number (window, index);
+
+    iter = g_list_nth (window->tablist, index);
+    if (iter != NULL)
+    {
+      item = LW_SEARCHITEM (iter->data);
+      if (item != NULL && lw_searchitem_has_history_relevance (item))
+      {
+        lw_historylist_add_searchitem (window->history, item);
+        gw_searchwindow_update_history_popups (window);
+      }
+      else if (item != NULL)
+      {
+        lw_searchitem_free (item);
+      }
+    }
+    window->tablist = g_list_delete_link (window->tablist, iter);
+
+    gtk_notebook_remove_page (window->notebook, index);
+    gtk_widget_grab_focus (GTK_WIDGET (window->entry));
+    gw_searchwindow_sync_current_searchitem (window);
+}
+
+
+void gw_searchwindow_sync_current_searchitem (GwSearchWindow *window)
+{
+  //Declarations
+  LwSearchItem *item;
+  
+  //Initializations
+  item = gw_searchwindow_get_current_searchitem (window);
+
+  gw_searchwindow_set_current_searchitem (window, item);
 }
 
 
@@ -2320,13 +2332,34 @@ int gw_searchwindow_new_tab (GwSearchWindow *window)
 //!
 void gw_searchwindow_set_current_searchitem (GwSearchWindow *window, LwSearchItem *item)
 {
+    //Declarations
     GList *iter;
     int page_num;
+    int pages;
+    GtkMenuItem *menuitem;
+    const char *label_text;
 
+    //Initializations
     page_num = gtk_notebook_get_current_page (window->notebook);
+    pages = gtk_notebook_get_n_pages (window->notebook);
     iter = g_list_nth (window->tablist, page_num);
-
+    menuitem = GTK_MENU_ITEM (gtk_builder_get_object (window->builder, "close_menuitem"));
     iter->data = item;
+    if (pages > 1)
+      label_text = gettext("_Close Tab");
+    else
+      label_text = gettext("_Close");
+
+    //Update the window to match the searchitem data
+    gw_searchwindow_set_tab_text_by_searchitem (window, item);
+    gw_searchwindow_set_dictionary_by_searchitem (window, item);
+    gw_searchwindow_set_entry_text_by_searchitem (window, item);
+    gw_searchwindow_set_title_by_searchitem (window, item);
+    gw_searchwindow_set_total_results_label_by_searchitem (window, item);
+    gw_searchwindow_set_search_progressbar_by_searchitem (window, item);
+
+    gtk_notebook_set_show_tabs (window->notebook, (pages > 1));
+    gtk_menu_item_set_label (menuitem, label_text);
 }
 
 
@@ -2353,15 +2386,11 @@ void gw_searchwindow_start_search (GwSearchWindow *window, LwSearchItem* item)
     //Sanity check
     g_assert (window != NULL && item != NULL);
 
+    gw_searchwindow_guarantee_first_tab (window);
     gw_searchwindow_set_current_searchitem (window, item);
-    gw_searchwindow_set_current_tab_text (window, item->queryline->string);
-    gw_searchwindow_update_tab_appearance_by_searchitem (window, item);
-
-    //Start the search
     lw_engine_get_results (app->engine, item, TRUE, FALSE);
-
-    //Update the interface
     gw_searchwindow_update_history_popups (window);
+    gw_searchwindow_update_toolbar_buttons (window);
 }
 
 

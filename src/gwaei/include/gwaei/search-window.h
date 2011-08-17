@@ -10,10 +10,10 @@
 #define GW_SEARCHWINDOW_KEEP_SEARCHING_MAX_DELAY 3
 
 typedef enum {
-  GW_SEARCHWINDOW_TIMEOUT_PROGRESS,
-  GW_SEARCHWINDOW_TIMEOUT_SELECTION_ICONS,
-  GW_SEARCHWINDOW_TIMEOUT_KEEP_SEARCHING,
-  TOTAL_GW_SEARCHWINDOW_TIMEOUTS
+  GW_SEARCHWINDOW_TIMEOUTID_PROGRESS,
+  GW_SEARCHWINDOW_TIMEOUTID_SELECTION_ICONS,
+  GW_SEARCHWINDOW_TIMEOUTID_KEEP_SEARCHING,
+  TOTAL_GW_SEARCHWINDOW_TIMEOUTIDS
 } GwSearchWindowTimeoutId;
 
 
@@ -22,11 +22,12 @@ typedef enum {
   GW_SEARCHWINDOW_SIGNALID_CUT,
   GW_SEARCHWINDOW_SIGNALID_PASTE,
   GW_SEARCHWINDOW_SIGNALID_SELECT_ALL,
-  GW_SEARCHWINDOW_TOOLBAR_SHOW,
-  GW_SEARCHWINDOW_STATUSBAR_SHOW,
-  GW_SEARCHWINDOW_USE_GLOBAL_FONT,
-  GW_SEARCHWINDOW_CUSTOM_FONT,
-  GW_SEARCHWINDOW_FONT_MAGNIFICATION,
+  GW_SEARCHWINDOW_SIGNALID_KEEP_SEARCHING,
+  GW_SEARCHWINDOW_SIGNALID_TOOLBAR_SHOW,
+  GW_SEARCHWINDOW_SIGNALID_STATUSBAR_SHOW,
+  GW_SEARCHWINDOW_SIGNALID_USE_GLOBAL_FONT,
+  GW_SEARCHWINDOW_SIGNALID_CUSTOM_FONT,
+  GW_SEARCHWINDOW_SIGNALID_FONT_MAGNIFICATION,
   TOTAL_GW_SEARCHWINDOW_SIGNALIDS
 } GwSearchWindowSignalId;
 
@@ -50,6 +51,7 @@ typedef struct _GwSearchWindowMouseData GwSearchWindowMouseData;
 struct _GwSearchWindowKeepSearchingData {
   int delay;
   char *query;
+  gboolean enabled;
 };
 typedef struct _GwSearchWindowKeepSearchingData GwSearchWindowKeepSearchingData;
 
@@ -78,7 +80,7 @@ struct _GwSearchWindow {
   LwHistoryList *history;
 
   //Main variables
-  guint timeoutids[TOTAL_GW_SEARCHWINDOW_TIMEOUTS];
+  guint timeoutids[TOTAL_GW_SEARCHWINDOW_TIMEOUTIDS];
   guint signalids[TOTAL_GW_SEARCHWINDOW_SIGNALIDS];
 
   int previous_tip;
@@ -170,17 +172,17 @@ void gw_searchwindow_set_statusbar_show (GwSearchWindow*, gboolean);
 void gw_searchwindow_set_color_to_swatch (GwSearchWindow*, const char*, const char*);
 
 void gw_searchwindow_guarantee_first_tab (GwSearchWindow*);
-void gw_searchwindow_set_current_tab_text (GwSearchWindow*, const char*);
 
 GtkTextView* gw_searchwindow_get_current_textview (GwSearchWindow*);
 
+void gw_searchwindow_set_tab_text_by_searchitem (GwSearchWindow*, LwSearchItem*);
 void gw_searchwindow_set_current_searchitem (GwSearchWindow*, LwSearchItem*);
 LwSearchItem* gw_searchwindow_get_current_searchitem (GwSearchWindow*);
-void gw_searchwindow_update_tab_appearance (GwSearchWindow*);
-void gw_searchwindow_update_tab_appearance_by_searchitem (GwSearchWindow*, LwSearchItem *);
+void gw_searchwindow_sync_current_searchitem (GwSearchWindow*);
 void gw_searchwindow_no_results_search_for_dictionary_cb (GtkWidget*, gpointer);
 
 int gw_searchwindow_new_tab (GwSearchWindow*);
+void gw_searchwindow_remove_tab (GwSearchWindow*, int);
 
 void gw_searchwindow_start_search (GwSearchWindow*, LwSearchItem*);
 

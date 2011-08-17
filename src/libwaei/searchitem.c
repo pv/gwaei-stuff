@@ -251,7 +251,8 @@ void lw_searchitem_free (LwSearchItem* item)
   }
   lw_searchitem_cleanup_search (item);
   lw_queryline_free (item->queryline);
-  lw_searchitem_free_data (item);
+  if (lw_searchitem_has_data (item))
+    lw_searchitem_free_data (item);
   free (item);
   item = NULL;
 }
