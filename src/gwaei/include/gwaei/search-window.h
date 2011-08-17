@@ -89,6 +89,7 @@ struct _GwSearchWindow {
   GwSearchWindowProgressFeedbackData feedbackdata;
   GwSearchWindowMouseData mousedata;
   GwSearchWindowKeepSearchingData keepsearchingdata;
+  GwSpellcheck *spellcheck;
 };
 typedef struct _GwSearchWindow GwSearchWindow;
 

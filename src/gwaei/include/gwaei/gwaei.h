@@ -8,6 +8,7 @@
 #include <gwaei/common.h>
 #include <gwaei/window.h>
 
+#include <gwaei/spellcheck.h>
 #include <gwaei/search-window.h>
 
 #ifdef WITH_LIBUNIQUE
@@ -33,7 +34,6 @@
 #include <gwaei/installprogress-window.h>
 #include <gwaei/installprogress-callbacks.h>
 
-#include <gwaei/spellcheck.h>
 
 #include <gwaei/kanjipad-window.h>
 #include <gwaei/kanjipad-callbacks.h>

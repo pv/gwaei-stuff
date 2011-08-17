@@ -159,7 +159,6 @@ GwSearchWindow* gw_searchwindow_new ()
       lw_prefmanager_add_callback (app->prefmanager, LW_SCHEMA_HIGHLIGHT, LW_KEY_COMMENT_FG, gw_searchwindow_set_highlights, temp);
       */
 
-/*
       temp->timeoutids[GW_SEARCHWINDOW_TIMEOUT_KEEP_SEARCHING] = g_timeout_add_full (
             G_PRIORITY_DEFAULT_IDLE, 
             100, 
@@ -167,7 +166,7 @@ GwSearchWindow* gw_searchwindow_new ()
             temp, 
             NULL
       );
-*/
+
       temp->timeoutids[GW_SEARCHWINDOW_TIMEOUT_PROGRESS] = g_timeout_add_full (
             G_PRIORITY_LOW, 
             50, 
@@ -185,6 +184,7 @@ GwSearchWindow* gw_searchwindow_new ()
       );
 */
 
+      temp->spellcheck = gw_spellcheck_new (temp->entry);
       gtk_widget_grab_focus (GTK_WIDGET (temp->entry));
       gw_searchwindow_set_dictionary (temp, 0);
       gw_searchwindow_guarantee_first_tab (temp);
@@ -1855,26 +1855,23 @@ gboolean gw_searchwindow_keep_searching_timeout (GwSearchWindow *window)
     query = gtk_entry_get_text (GTK_ENTRY (window->entry));
     if (window->keepsearchingdata.query == NULL) window->keepsearchingdata.query = g_strdup ("");
 
-    if (gtk_widget_get_visible (GTK_WIDGET (window->toplevel)) == FALSE)
+    if (window->keepsearchingdata.delay >= GW_SEARCHWINDOW_KEEP_SEARCHING_MAX_DELAY || strlen(query) == 0)
     {
-      if (window->keepsearchingdata.delay >= GW_SEARCHWINDOW_KEEP_SEARCHING_MAX_DELAY || strlen(query) == 0)
+      window->keepsearchingdata.delay = 0;
+      gw_searchwindow_search_cb (NULL, NULL);
+    }
+    else
+    {
+      if (strcmp(window->keepsearchingdata.query, query) == 0)
       {
-        window->keepsearchingdata.delay = 0;
-        gw_searchwindow_search_cb (NULL, NULL);
+        window->keepsearchingdata.delay++;
       }
       else
       {
-        if (strcmp(window->keepsearchingdata.query, query) == 0)
-        {
-          window->keepsearchingdata.delay++;
-        }
-        else
-        {
-          if (window->keepsearchingdata.query != NULL)
-            g_free (window->keepsearchingdata.query);
-          window->keepsearchingdata.query = g_strdup (query);
-          window->keepsearchingdata.delay = 0;
-        }
+        if (window->keepsearchingdata.query != NULL)
+          g_free (window->keepsearchingdata.query);
+        window->keepsearchingdata.query = g_strdup (query);
+        window->keepsearchingdata.delay = 0;
       }
     }
     
@@ -2120,17 +2117,17 @@ GtkTextView* gw_searchwindow_get_current_textview (GwSearchWindow *window)
 //!
 void gw_searchwindow_update_tab_appearance_by_searchitem (GwSearchWindow *window, LwSearchItem *item)
 {
-    int pages = gtk_notebook_get_n_pages (window->notebook);
+    //Declarations
+    int pages;
+    GtkWidget *close_menuitem;
 
-    //Set display status of tabs
+    //Initializations
+    pages = gtk_notebook_get_n_pages (window->notebook);
+    close_menuitem = GTK_WIDGET (gtk_builder_get_object (window->builder, "close_menuitem"));
+
     gtk_notebook_set_show_tabs (window->notebook, (pages > 1));
-    //gtk_notebook_set_show_tabs (GTK_NOTEBOOK (notebook), TRUE);
-    
-    GtkWidget *close_menuitem = GTK_WIDGET (gtk_builder_get_object (window->builder, "close_menuitem"));
-
+    //gtk_notebook_set_show_tabs (window->notebook, TRUE);
     gtk_menu_item_set_label (GTK_MENU_ITEM (close_menuitem), gettext("_Close Tab"));
-    //if (pages > 0) gtk_menu_item_set_label (GTK_MENU_ITEM (close_menuitem), gettext("_Close Tab"));
-    //gtk_widget_set_sensitive (close_menuitem, (pages > 0));
     if (pages > 1) gtk_menu_item_set_label (GTK_MENU_ITEM (close_menuitem), gettext("_Close Tab"));
     else gtk_menu_item_set_label (GTK_MENU_ITEM (close_menuitem), gettext("_Close"));
 
@@ -2342,7 +2339,10 @@ LwSearchItem* gw_searchwindow_get_current_searchitem (GwSearchWindow *window)
     int page_num;
 
     page_num = gtk_notebook_get_current_page (window->notebook);
-    item = LW_SEARCHITEM (g_list_nth_data (window->tablist, page_num));
+    if (page_num == -1)
+      item = NULL;
+    else
+      item = LW_SEARCHITEM (g_list_nth_data (window->tablist, page_num));
 
     return item;
 }
@@ -2355,6 +2355,7 @@ void gw_searchwindow_start_search (GwSearchWindow *window, LwSearchItem* item)
 
     gw_searchwindow_set_current_searchitem (window, item);
     gw_searchwindow_set_current_tab_text (window, item->queryline->string);
+    gw_searchwindow_update_tab_appearance_by_searchitem (window, item);
 
     //Start the search
     lw_engine_get_results (app->engine, item, TRUE, FALSE);
