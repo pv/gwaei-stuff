@@ -860,7 +860,7 @@ static void _rebuild_history_button_popup (GwSearchWindow *window, char* id, GLi
     GtkWidget *menuitem;
     menuitem = gtk_separator_menu_item_new();
     gtk_menu_shell_append(GTK_MENU_SHELL (popup), menuitem);
-    gtk_widget_show(menuitem);
+    gtk_widget_show (menuitem);
 
     //Declarations
     LwSearchItem *item;

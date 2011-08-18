@@ -24,9 +24,6 @@
 //!
 //! @brief Abstraction layer for gtk callbacks
 //!
-//! Callbacks for activities initiated by the user. Most of the gtk code here
-//! should still be abstracted to the interface C file when possible.
-//!
 
 
 #include <string.h>
@@ -41,12 +38,6 @@
 
 //!
 //! @brief Sets the cursor type depending on the character hovered
-//!
-//! If the character hovered is a kanji character, the hand turns into a
-//! pointer in order to show that the selection is clickable. It will open
-//! the kanji sidebar using gw_searchwindow_get_position_for_button_press_cb () and
-//! gw_searchwindow_get_iter_for_button_release_cb ().
-//! 
 //! @see gw_searchwindow_get_position_for_button_press_cb ()
 //! @see gw_searchwindow_get_iter_for_button_release_cb ()
 //! @param widget Currently unused widget pointer
@@ -107,11 +98,6 @@ G_MODULE_EXPORT gboolean gw_searchwindow_get_iter_for_motion_cb (GtkWidget      
 
 //!
 //! @brief Gets the position of the cursor click and stores it
-//!
-//! The function stores the location of the button press, but takes no action
-//! by itself.  gw_searchwindow_get_iter_for_button_release_cb () uses the saved x and y
-//! coordinates and determines if an action should be taken then.
-//! 
 //! @see gw_searchwindow_get_iter_for_button_release_cb ()
 //! @param widget Currently unused widget pointer
 //! @param data Currently unused gpointer
@@ -144,12 +130,6 @@ G_MODULE_EXPORT gboolean gw_searchwindow_get_position_for_button_press_cb (GtkWi
 
 //!
 //! @brief Gets the position of the cursor click then opens the kanji sidebar
-//!
-//! Compares the x and y coordinates fetch by gw_searchwindow_get_position_for_button_press_cb
-//! for the cursor, and if the difference is below a certain threshhold,
-//! decides if the user wants to open the kanji character under cursor in the
-//! kanji sidebar or not.
-//! 
 //! @see gw_searchwindow_get_position_for_button_press_cb ()
 //! @param widget Currently unused widget pointer
 //! @param data Currently unused gpointer
@@ -255,11 +235,6 @@ G_MODULE_EXPORT gboolean gw_searchwindow_get_iter_for_button_release_cb (GtkWidg
 
 //!
 //! @brief Closes the window passed throught the widget pointer
-//!
-//! This function closes the window passed through the widget pointer.
-//! Depending if it is a specific window, it will save it's coordinates
-//! or take other special actions before closing.
-//! 
 //! @param widget GtkWidget pointer to the window to close
 //! @param data Currently unused gpointer
 //!
@@ -280,9 +255,6 @@ G_MODULE_EXPORT void gw_searchwindow_close_cb (GtkWidget *widget, gpointer data)
 
 //!
 //! @brief Preforms the action the window manager close event
-//!
-//! This function currently acts as a proxy for the gw_searchwindow_close_cb () function.
-//! 
 //! @see gw_searchwindow_close_cb ()
 //! @param widget GtkWidget pointer to the window to close
 //! @param data Currently unused gpointer
@@ -297,7 +269,6 @@ G_MODULE_EXPORT gboolean gw_searchwindow_delete_event_action_cb (GtkWidget *widg
 
 //!
 //! @brief Quits out of the application
-//! 
 //! @see gw_app_quit ()
 //! @param widget GtkWidget pointer to the window to close
 //! @param data Currently unused gpointer
@@ -310,12 +281,6 @@ G_MODULE_EXPORT void gw_searchwindow_quit_cb (GtkWidget *widget, gpointer data)
 
 //!
 //! @brief Preforms a search from the history.
-//!
-//! The function uses the gpointer data to fetch a LwSearchItem that was pased
-//! to the function for the search.  It will reflow the back and forward
-//! history lists so the LwSearchItem is in the current position of the
-//! Historylist.
-//! 
 //! @see gw_searchwindow_search_cb ()
 //! @param widget Unused GtkWidget pointer.
 //! @param data pointer to a specially attached LwSearchItem variable
@@ -388,10 +353,6 @@ G_MODULE_EXPORT void gw_searchwindow_search_from_history_cb (GtkWidget *widget, 
 
 //!
 //! @brief Goes back one step in the search history
-//! 
-//! This function checks the top of the back historylist and uses the
-//! LwSearchItem in it to invoke gw_searchwindow_search_from_history_cb () using it.
-//!
 //! @see gw_searchwindow_search_from_history_cb ()
 //! @see gw_searchwindow_forward_cb ()
 //! @param widget Unused GtkWidget pointer.
@@ -412,10 +373,6 @@ G_MODULE_EXPORT void gw_searchwindow_back_cb (GtkWidget *widget, gpointer data)
 
 //!
 //! @brief Goes forward one step in the search history
-//! 
-//! This function checks the top of the forward historylist and uses the
-//! LwSearchItem in it to invoke gw_searchwindow_search_from_history_cb () using it.
-//!
 //! @see gw_searchwindow_search_from_history_cb ()
 //! @see gw_searchwindow_back_cb ()
 //! @param widget Unused GtkWidget pointer.
@@ -436,11 +393,6 @@ G_MODULE_EXPORT void gw_searchwindow_forward_cb (GtkWidget *widget, gpointer dat
 
 //!
 //! @brief Saves the current search results to a file
-//! 
-//! The function gets the current contents of the results text view and saves
-//! it to a file, overwriting it if it already exists.  If part of the results
-//! are highlighted, only that gets saved.
-//!
 //! @see gw_searchwindow_save_cb ()
 //! @param widget Unused GtkWidget pointer.
 //! @param data Unused gpointer
@@ -509,12 +461,6 @@ G_MODULE_EXPORT void gw_searchwindow_save_as_cb (GtkWidget *widget, gpointer dat
 
 //!
 //! @brief Appends the current search results to a file
-//! 
-//! The function gets the current contents of the results text view and appends
-//! it to a file.  If the user has already saved once, it will automatically
-//! keep appending to the same file. If part of the results are highlighted,
-//! only that gets appended.
-//!
 //! @see gw_searchwindow_save_as_cb ()
 //! @param widget Unused GtkWidget pointer.
 //! @param data Unused gpointer
@@ -552,11 +498,6 @@ G_MODULE_EXPORT void gw_searchwindow_save_cb (GtkWidget *widget, gpointer data)
 
 //!
 //! @brief Makes the text in the text buffer enlarge
-//! 
-//! Determines if the text size is smaller than the max possible text size,
-//! and then sets the pref in gconf which will trigger the font size setting
-//! function.
-//!
 //! @see gw_searchwindow_set_font()
 //! @param widget Unused GtkWidget pointer.
 //! @param data Unused gpointer
@@ -574,11 +515,6 @@ G_MODULE_EXPORT void gw_searchwindow_zoom_in_cb (GtkWidget *widget, gpointer dat
 
 //!
 //! @brief Makes the text in the text buffer shrink
-//! 
-//! Determines if the text size is larger than the min possible text size,
-//! and then sets the pref in gconf which will trigger the font size setting
-//! function.
-//!
 //! @see gw_searchwindow_set_font()
 //! @param widget Unused GtkWidget pointer.
 //! @param data Unused gpointer
@@ -596,11 +532,6 @@ G_MODULE_EXPORT void gw_searchwindow_zoom_out_cb (GtkWidget *widget, gpointer da
 
 //!
 //! @brief Resets the text size to the default in the text buffers
-//! 
-//! The function acts gconf for the default font size from the schema, and then
-//! sets it, which makes gconf call the font size setting function since the
-//! stored value changed.
-//!
 //! @see gw_searchwindow_set_font()
 //! @param widget Unused GtkWidget pointer.
 //! @param data Unused gpointer
@@ -613,12 +544,6 @@ G_MODULE_EXPORT void gw_searchwindow_zoom_100_cb (GtkWidget *widget, gpointer da
 
 //!
 //! @brief Sets the less relevant results show boolean
-//! 
-//! Makes the gconf pref match the current state of the triggering widget.
-//! Each separate LwSearchItem stores this individually, so even if you flip
-//! this, you will need to do a new search if you want to change how things are
-//! displayed.
-//!
 //! @see gw_searchwindow_set_less_relevant_show ()
 //! @param widget Unused GtkWidget pointer.
 //! @param data Unused gpointer
@@ -649,11 +574,6 @@ G_MODULE_EXPORT void gw_searchwindow_dictionary_combobox_changed_cb (GtkWidget *
 
 //!
 //! @brief Changes the selected dictionary in the dictionarylist
-//! 
-//! This function makes the selected dictionary in the dictionarylist match
-//! the dictionary of the widget that was modified.  The selected dictionary
-//! in the dictionarylist acts as the central reference for the GUI.
-//!
 //! @param widget pointer to the GtkWidget that changed dictionaries
 //! @param data Unused gpointer
 //!
@@ -690,11 +610,6 @@ G_MODULE_EXPORT void gw_searchwindow_dictionary_radio_changed_cb (GtkWidget *wid
 
 //!
 //! @brief Selects all the text in the current widget
-//! 
-//! This function makes the selected dictionary in the dictionarylist match
-//! the dictionary of the widget that was modified.  The selected dictionary
-//! in the dictionarylist acts as the central reference for the GUI.
-//!
 //! @see gw_searchwindow_cut_cb ()
 //! @see gw_searchwindow_copy_cb ()
 //! @see gw_searchwindow_paste_cb ()
@@ -717,11 +632,6 @@ G_MODULE_EXPORT void gw_searchwindow_select_all_cb (GtkWidget *widget, gpointer 
 
 //!
 //! @brief Pastes text into the current widget
-//! 
-//! This function makes the selected dictionary in the dictionarylist match
-//! the dictionary of the widget that was modified.  The selected dictionary
-//! in the dictionarylist acts as the central reference for the GUI.
-//!
 //! @see gw_searchwindow_cut_cb ()
 //! @see gw_searchwindow_copy_cb ()
 //! @see gw_searchwindow_select_all_cb ()
@@ -744,11 +654,6 @@ G_MODULE_EXPORT void gw_searchwindow_paste_cb (GtkWidget *widget, gpointer data)
 
 //!
 //! @brief Cuts text from the current widget
-//! 
-//! This function makes the selected dictionary in the dictionarylist match
-//! the dictionary of the widget that was modified.  The selected dictionary
-//! in the dictionarylist acts as the central reference for the GUI.
-//!
 //! @see gw_searchwindow_paste_cb ()
 //! @see gw_searchwindow_copy_cb ()
 //! @see gw_searchwindow_select_all_cb ()
@@ -771,11 +676,6 @@ G_MODULE_EXPORT void gw_searchwindow_cut_cb (GtkWidget *widget, gpointer data)
 
 //!
 //! @brief Pastes text into the current widget
-//! 
-//! This function makes the selected dictionary in the dictionarylist match
-//! the dictionary of the widget that was modified.  The selected dictionary
-//! in the dictionarylist acts as the central reference for the GUI.
-//!
 //! @see gw_searchwindow_cut_cb ()
 //! @see gw_searchwindow_paste_cb ()
 //! @see gw_searchwindow_select_all_cb ()
@@ -798,11 +698,6 @@ G_MODULE_EXPORT void gw_searchwindow_copy_cb (GtkWidget *widget, gpointer data)
 
 //!
 //! @brief Manages the required changes for focus in different elements
-//! 
-//! Depending if the object's text is editable or not, the clipboard will
-//! update button states approprately and connect the signal handlers to the
-//! approprate widgets.
-//!
 //! @see gw_searchwindow_cut_cb ()
 //! @see gw_searchwindow_copy_cb ()
 //! @see gw_searchwindow_paste_cb ()
@@ -893,11 +788,6 @@ G_MODULE_EXPORT gboolean gw_searchwindow_update_clipboard_on_focus_change_cb (Gt
 
 //!
 //! @brief Opens the saved vocab list in your default editor
-//! 
-//! If the user saved a vocab list using the save as or append functions, this
-//! action becomes available where the file is opened in the user's default
-//! text editor.
-//!
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
@@ -927,9 +817,6 @@ G_MODULE_EXPORT void gw_searchwindow_edit_cb (GtkWidget *widget, gpointer data)
 
 //!
 //! @brief Sends the user to the gWaei irc channel for help
-//! 
-//! The IRC uri should open in the user's default IRC client.
-//!
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
@@ -953,9 +840,6 @@ G_MODULE_EXPORT void gw_searchwindow_irc_channel_cb (GtkWidget *widget, gpointer
 
 //!
 //! @brief Sends the user to the gWaei homepage for whatever they need
-//! 
-//! The homepage should open in their default browser.
-//!
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
@@ -979,9 +863,6 @@ G_MODULE_EXPORT void gw_searchwindow_homepage_cb (GtkWidget *widget, gpointer da
 
 //!
 //! @brief Opens the gWaei help documentation
-//!
-//! The gWaei help documentation is opened in the user's default help program.
-//!
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
@@ -1005,10 +886,6 @@ G_MODULE_EXPORT void gw_searchwindow_help_cb (GtkWidget *widget, gpointer data)
 
 //!
 //! @brief Opens the gWaei dictionary glossary help documentation
-//!
-//! The gWaei dictionary glossary help documentation is opened in the user's
-//! default help program.
-//!
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
@@ -1035,10 +912,6 @@ G_MODULE_EXPORT void gw_searchwindow_glossary_cb (GtkWidget *widget, gpointer da
 
 //!
 //! @brief Opens the gWaei about dialog
-//!
-//! The gWaei help dialog is displayed, showing the credits of everyone who has
-//! helped to make this program possible.
-//!
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
@@ -1081,10 +954,6 @@ G_MODULE_EXPORT void gw_searchwindow_about_cb (GtkWidget *widget, gpointer data)
 
 //!
 //! @brief Cycles the active dictionaries down the list
-//!
-//! This function cycles the dictionaries down the list.  If it reaches the
-//! end, it will loop back to the top.
-//!
 //! @see gw_searchwindow_cycle_dictionaries_backward_cb ()
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
@@ -1100,10 +969,6 @@ G_MODULE_EXPORT void gw_searchwindow_cycle_dictionaries_forward_cb (GtkWidget *w
 
 //!
 //! @brief Cycles the active dictionaries up the list
-//!
-//! This function cycles the dictionaries up the list.  If it reaches the
-//! end, it will loop back to the bottom.
-//!
 //! @see gw_searchwindow_cycle_dictionaries_forward_cb ()
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
@@ -1119,9 +984,6 @@ G_MODULE_EXPORT void gw_searchwindow_cycle_dictionaries_backward_cb (GtkWidget *
 
 //!
 //! @brief Update the special key press status
-//!
-//! Currently used to determine if a search should be opened in a new tab.
-//!
 //! @param widget Unused GtkWidget pointer
 //! @param event the event data to get the specific key that had it's status modified
 //! @param data Currently unused gpointer
@@ -1197,12 +1059,6 @@ G_MODULE_EXPORT gboolean gw_searchwindow_key_release_modify_status_update_cb (Gt
 
 //!
 //! @brief Function handles automatic focus changes on key presses
-//!
-//! When the user types a letter, the focus will move to the search entry and
-//! auto-highlight the results so you can start typing immediately.  If the
-//! user hits an arrow key or pageup/pagedown, the focus will move to the
-//! search results so they can scroll them.
-//!
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //! @return Always returns false
@@ -1298,11 +1154,6 @@ G_MODULE_EXPORT gboolean gw_searchwindow_focus_change_on_key_press_cb (GtkWidget
 
 //!
 //! @brief Initiates a search on the user's typed query
-//!
-//! This function does the needed work to check the query for basic
-//! correctness, shift the previously completed search to the history list,
-//! creates the searchitem, and then initiates the search.
-//!
 //! @see gw_searchwindow_search_from_history_cb ()
 //! @see lw_search_get_results ()
 //! @param widget Unused GtkWidget pointer
@@ -1375,10 +1226,6 @@ G_MODULE_EXPORT void gw_searchwindow_search_cb (GtkWidget *widget, gpointer data
 
 //!
 //! @brief Inserts an unknown regex character into the entry
-//!
-//! Used to help users discover regex searches.  It just insert a period
-//! wherever the cursor presently is in the search entry.
-//!
 //! @see gw_searchwindow_insert_word_edge_cb ()
 //! @see gw_searchwindow_insert_not_word_edge_cb ()
 //! @see gw_searchwindow_insert_and_cb ()
@@ -1397,10 +1244,6 @@ G_MODULE_EXPORT void gw_searchwindow_insert_unknown_character_cb (GtkWidget *wid
 
 //!
 //! @brief Inserts an a word-boundary regex character into the entry
-//!
-//! Used to help users discover regex searches.  It just insert \\b
-//! wherever the cursor presently is in the search entry.
-//!
 //! @see gw_searchwindow_insert_unknown_character_cb ()
 //! @see gw_searchwindow_insert_not_word_edge_cb ()
 //! @see gw_searchwindow_insert_and_cb ()
@@ -1419,10 +1262,6 @@ G_MODULE_EXPORT void gw_searchwindow_insert_word_edge_cb (GtkWidget *widget, gpo
 
 //!
 //! @brief Inserts an a not-word-boundary regex character into the entry
-//!
-//! Used to help users discover regex searches.  It just insert \\B
-//! wherever the cursor presently is in the search entry.
-//!
 //! @see gw_searchwindow_insert_unknown_character_cb ()
 //! @see gw_searchwindow_insert_word_edge_cb ()
 //! @see gw_searchwindow_insert_and_cb ()
@@ -1441,10 +1280,6 @@ G_MODULE_EXPORT void gw_searchwindow_insert_not_word_edge_cb (GtkWidget *widget,
 
 //!
 //! @brief Inserts an an and regex character into the entry
-//!
-//! Used to help users discover regex searches.  It just insert &
-//! wherever the cursor presently is in the search entry.
-//!
 //! @see gw_searchwindow_insert_unknown_character_cb ()
 //! @see gw_searchwindow_insert_word_edge_cb ()
 //! @see gw_searchwindow_insert_not_word_edge_cb ()
@@ -1463,10 +1298,6 @@ G_MODULE_EXPORT void gw_searchwindow_insert_and_cb (GtkWidget *widget, gpointer 
 
 //!
 //! @brief Inserts an an or regex character into the entry
-//!
-//! Used to help users discover regex searches.  It just insert |
-//! wherever the cursor presently is in the search entry.
-//!
 //! @see gw_searchwindow_insert_unknown_character_cb ()
 //! @see gw_searchwindow_insert_word_edge_cb ()
 //! @see gw_searchwindow_insert_not_word_edge_cb ()
@@ -1500,9 +1331,6 @@ G_MODULE_EXPORT void gw_searchwindow_clear_search_cb (GtkWidget *widget, gpointe
 
 //!
 //! @brief Opens the dictionary folder using the user's default file browser
-//!
-//! The dictionary folder that is opened is generally in "~/.waei".
-//!
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
@@ -1531,10 +1359,6 @@ G_MODULE_EXPORT void gw_searchwindow_open_dictionary_folder_cb (GtkWidget *widge
 
 //!
 //! @brief Sets the drag icon to the cursor if the widget is dragged over
-//!
-//! Part of a group of four functions to handle drag drops of text into
-//! the main text buffer which will initialize a search based on that text.
-//!
 //! @see gw_searchwindow_search_drag_data_recieved_cb ()
 //! @see gw_searchwindow_drag_leave_1_cb ()
 //! @see gw_searchwindow_drag_drop_1_cb ()
@@ -1555,10 +1379,6 @@ G_MODULE_EXPORT gboolean gw_searchwindow_drag_motion_1_cb (GtkWidget      *widge
 
 //!
 //! @brief Resets the gui when the drag leaves the widget area
-//!
-//! Part of a group of four functions to handle drag drops of text into
-//! the main text buffer which will initialize a search based on that text.
-//!
 //! @see gw_searchwindow_search_drag_data_recieved_cb ()
 //! @see gw_searchwindow_drag_drop_1_cb ()
 //! @see gw_searchwindow_drag_motion_1_cb ()
@@ -1574,10 +1394,6 @@ G_MODULE_EXPORT void gw_searchwindow_drag_leave_1_cb (GtkWidget      *widget,
 
 //!
 //! @brief Tells the widget to recieve the dragged data
-//!
-//! Part of a group of four functions to handle drag drops of text into
-//! the main text buffer which will initialize a search based on that text.
-//!
 //! @see gw_searchwindow_search_drag_data_recieved_cb ()
 //! @see gw_searchwindow_drag_leave_1_cb ()
 //! @see gw_searchwindow_drag_motion_1_cb ()
@@ -1599,10 +1415,6 @@ G_MODULE_EXPORT gboolean gw_searchwindow_drag_drop_1_cb (GtkWidget      *widget,
 
 //!
 //! @brief The widget recieves the data and starts a search based on it.
-//!
-//! Part of a group of four functions to handle drag drops of text into
-//! the main text buffer which will initialize a search based on that text.
-//!
 //! @see gw_searchwindow_drag_leave_1_cb ()
 //! @see gw_searchwindow_drag_drop_1_cb ()
 //! @see gw_searchwindow_drag_motion_1_cb ()
@@ -1652,11 +1464,6 @@ G_MODULE_EXPORT void gw_searchwindow_search_drag_data_recieved_cb (GtkWidget    
 
 //!
 //! @brief Hides/shows buttons depending on search entry text
-//!
-//! Currently this function just hides and shows the clear icon depending if
-//! there is any text in the entry.  Previously, this would also set the search
-//! button in it's insensitive state also.
-//!
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
@@ -1688,7 +1495,6 @@ G_MODULE_EXPORT void gw_searchwindow_update_button_states_based_on_entry_text_cb
 
 //!
 //! @brief Emulates web browsers font size control with (ctrl + wheel)
-//!
 //! @param widget Unused GtkWidget pointer.
 //! @param data Unused gpointer
 //!
@@ -1742,7 +1548,6 @@ G_MODULE_EXPORT void gw_searchwindow_new_tab_cb (GtkWidget *widget, gpointer dat
 
 //!
 //! @brief Remove the tab where the close button is clicked
-//!
 //! @param widget Currently unused widget pointer
 //! @param data Currently unused gpointer
 //!
@@ -1764,7 +1569,6 @@ G_MODULE_EXPORT void gw_searchwindow_remove_tab_cb (GtkWidget *widget, gpointer 
 
 //!
 //! @brief Remove the tab where the close button is clicked
-//!
 //! @param widget Currently unused widget pointer
 //! @param data Currently unused gpointer
 //!
@@ -1786,10 +1590,6 @@ G_MODULE_EXPORT void gw_searchwindow_remove_current_tab_cb (GtkWidget *widget, g
 
 //!
 //! @brief Do the side actions required when a tab switch takes place
-//!
-//! Various side elements should be updated when at tab switch occurs
-//! such as the progress bar, querybar, dictionry selection etc.
-//!
 //! @param widget Currently unused widget pointer
 //! @param data Currently unused gpointer
 //!
@@ -1809,7 +1609,6 @@ G_MODULE_EXPORT void gw_searchwindow_switch_tab_cb (GtkNotebook *notebook, GtkWi
 
 //!
 //! @brief Cycles to the next tab 
-//!
 //! @param widget Currently unused widget pointer
 //! @param data Currently unused gpointer
 //!
@@ -1831,7 +1630,6 @@ G_MODULE_EXPORT void gw_searchwindow_next_tab_cb (GtkWidget *widget, gpointer da
 
 //!
 //! @brief Cycles to the previous tab 
-//!
 //! @param widget Currently unused widget pointer
 //! @param data Currently unused gpointer
 //!
@@ -1868,11 +1666,6 @@ G_MODULE_EXPORT void gw_searchwindow_no_results_search_for_dictionary_cb (GtkWid
 
 //!
 //! @brief Sets the show toolbar boolean to match the widget
-//! 
-//! Makes the gconf pref match the current state of the triggering widget.
-//! The gconf value changed callback then updates the state of the toolbar
-//! to match the pref.
-//!
 //! @see gw_searchwindow_set_toolbar_show ()
 //! @param widget Unused GtkWidget pointer.
 //! @param data Unused gpointer
@@ -1935,7 +1728,6 @@ G_MODULE_EXPORT void gw_searchwindow_statusbar_show_toggled_cb (GtkWidget *widge
 
 //!
 //! @brief Sets the checkbox to show or hide the statusbar
-//!
 //! @param request How to set the statusbar
 //!
 G_MODULE_EXPORT void gw_searchwindow_sync_statusbar_show_cb (GSettings *settings, gchar *key, gpointer data)
@@ -1978,11 +1770,10 @@ G_MODULE_EXPORT void gw_searchwindow_sync_font_cb (GSettings *settings, gchar *K
 
 //!
 //! @brief Callback to toggle spellcheck in the search entry
-//!
 //! @param widget Unused pointer to a GtkWidget
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void gw_spellcheck_toggled_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_searchwindow_spellcheck_toggled_cb (GtkWidget *widget, gpointer data)
 {
     //Declarations
     gboolean state;
@@ -2001,13 +1792,9 @@ G_MODULE_EXPORT void gw_spellcheck_toggled_cb (GtkWidget *widget, gpointer data)
 
 //!
 //! @brief Sets the gui widgets consistently to the requested state
-//!
-//! The function makes sure that both of the widgets in the gui are the same
-//! when the user clicks a one of them to change the settings.
-//!
 //! @param request the requested state for spellchecking widgets
 //!
-void gw_searchwindow_sync_spellcheck (GSettings *settings, gchar *KEY, gpointer data)
+G_MODULE_EXPORT void gw_searchwindow_sync_spellcheck_cb (GSettings *settings, gchar *KEY, gpointer data)
 {
     //Declarations
     GwSearchWindow *window;
@@ -2019,15 +1806,13 @@ void gw_searchwindow_sync_spellcheck (GSettings *settings, gchar *KEY, gpointer 
     toolbutton = GTK_WIDGET (gtk_builder_get_object (window->builder, "spellcheck_toolbutton"));
     request = lw_prefmanager_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_SPELLCHECK);
 
-    g_signal_handlers_block_by_func (toolbutton, gw_spellcheck_toggled_cb, NULL);
-
+    g_signal_handlers_block_by_func (toolbutton, gw_searchwindow_spellcheck_toggled_cb, NULL);
     gtk_toggle_tool_button_set_active (GTK_TOGGLE_TOOL_BUTTON (toolbutton), request);
-
-    g_signal_handlers_unblock_by_func (toolbutton, gw_spellcheck_toggled_cb, NULL);
+    g_signal_handlers_unblock_by_func (toolbutton, gw_searchwindow_spellcheck_toggled_cb, NULL);
 }
 
 
-void gw_searchwindow_sync_keep_searching_cb (GSettings *settings, gchar *KEY, gpointer data)
+G_MODULE_EXPORT void gw_searchwindow_sync_keep_searching_cb (GSettings *settings, gchar *KEY, gpointer data)
 {
     //Declarations
     GwSearchWindow *window;
@@ -2035,7 +1820,14 @@ void gw_searchwindow_sync_keep_searching_cb (GSettings *settings, gchar *KEY, gp
 
     //Initializations
     window = GW_SEARCHWINDOW (data);
-
     request = lw_prefmanager_get_boolean (settings, KEY);
+
     window->keepsearchingdata.enabled = request;
 }
+
+
+G_MODULE_EXPORT void gw_searchwindow_open_settings_dialog (GtkWidget *widget, gpointer data)
+{
+    gw_app_show_window (app, GW_WINDOW_SETTINGS, FALSE);
+}
+

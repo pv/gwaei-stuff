@@ -5,7 +5,10 @@
 
 #define GW_WINDOW(object) (GwWindow*) object
 //Include this line in the beginning of any struct that extends a GwWindow
-#define EXTENDS_GW_WINDOW GtkBuilder *builder; GtkWindow *toplevel; GwWindowType type;
+#define EXTENDS_GW_WINDOW \
+  GtkBuilder *builder; \
+  GtkWindow *toplevel; \
+  GwWindowType type;
 
 typedef enum {
   GW_WINDOW_SEARCH,

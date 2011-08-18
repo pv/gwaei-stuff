@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file src/gtk-settings-interface.c
+//! @file settings-window.c
 //!
 //! @brief Abstraction layer for gtk objects
 //!
@@ -42,7 +42,7 @@
 //!
 //! @brief Sets the initial status of the dictionaries in the settings dialog
 //!
-GwSettingsWindow* gw_settingswindow_new (int page) 
+GwSettingsWindow* gw_settingswindow_new () 
 {
     GwSettingsWindow *temp;
     GtkWidget *notebook;
@@ -51,19 +51,15 @@ GwSettingsWindow* gw_settingswindow_new (int page)
 
     if (temp != NULL)
     {
+      gw_app_block_searches (app);
+
       temp->builder = gtk_builder_new ();
-      gw_common_load_ui_xml (temp->builder, "settings.ui");
-      temp->window = GTK_WINDOW (gtk_builder_get_object (temp->builder, "settings_window"));
+      gw_window_load_ui_xml (GW_WINDOW (temp), "settings.ui");
+      temp->toplevel = GTK_WINDOW (gtk_builder_get_object (temp->builder, "settings_window"));
+      temp->type = GW_WINDOW_SETTINGS;
 
-      gw_settings_listeners_initialize ();
-
-      notebook = GTK_WIDGET (gtk_builder_get_object (temp->builder, "settings_notebook"));
-      gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), page);
-
-      gw_settingswindow_update_interface (temp);
-      gtk_widget_show (GTK_WIDGET (temp->window));
-
-      gw_app_cancel_all_searches (app);
+      if (g_list_length (app->dictinfolist->list) == 0)
+        gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), 1);
     }
 
     return temp;
@@ -73,35 +69,12 @@ GwSettingsWindow* gw_settingswindow_new (int page)
 //!
 //! @brief Frees the memory used by the settings
 //!
-void gw_settingswindow_destroy (GwSettingsWindow *settings)
+void gw_settingswindow_destroy (GwSettingsWindow *window)
 {
-    gw_settings_listeners_free ();
-
-    gtk_widget_destroy (GTK_WIDGET (settings->window));
-    g_object_unref (settings->builder);
-    free(settings);
-}
-
-
-
-//!
-//! @brief Disables portions of the interface depending on the currently queued jobs.
-//!
-G_MODULE_EXPORT void gw_settingswindow_update_interface (GwSettingsWindow *settings)
-{
-    //Declarations
-    GtkWidget *message;
-    GList *list;
-
-    //Initializations
-    message = GTK_WIDGET (gtk_builder_get_object (settings->builder, "please_install_dictionary_hbox"));
-    list = lw_dictinfolist_get_list ();
-
-    //Set the show state of the dictionaries required message
-    if (g_list_length (list) > 0)
-      gtk_widget_hide (message);
-    else
-      gtk_widget_show (message);
+    gtk_widget_destroy (GTK_WIDGET (window->toplevel));
+    g_object_unref (window->builder);
+    free(window);
+    gw_app_block_searches (app);
 }
 
 
@@ -119,104 +92,4 @@ void gw_settings_set_dictionary_source (GtkWidget *widget, const char* value)
     }
 }
 
-
-//!
-//! @brief Sets the state of the use global document font checkbox without triggering the signal handler
-//!
-//! @param setting The new checked state for the use global document font checkbox 
-//!
-void gw_settingswindow_set_use_global_document_font_checkbox (GwSettingsWindow *settings, gboolean setting)
-{
-    //Declarations
-    GtkWidget *checkbox;
-    GtkWidget *hbox;
-
-    //Initializations
-    checkbox = GTK_WIDGET (gtk_builder_get_object (settings->builder, "system_font_checkbox"));
-    hbox = GTK_WIDGET (gtk_builder_get_object (settings->builder, "system_document_font_hbox"));
-
-    //Updates
-    g_signal_handlers_block_by_func (checkbox, gw_settings_use_global_document_font_toggled_cb, NULL);
-
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), setting);
-    gtk_widget_set_sensitive (hbox, !setting);
-
-    g_signal_handlers_unblock_by_func (checkbox, gw_settings_use_global_document_font_toggled_cb, NULL);
-}
-
-
-//!
-//! @brief Updates the default global font label to match that of the system.  The fallback is Sans
-//!
-//! @param font_description_string The font description in the form "Sans 10"
-//!
-void gw_settingswindow_update_global_font_label (GwSettingsWindow *settings, const char *font_description_string)
-{
-    //Declarations
-    GtkWidget *checkbox;
-    char *text;
-
-    //Initializations
-    checkbox = GTK_WIDGET (gtk_builder_get_object (settings->builder, "system_font_checkbox"));
-    text = g_strdup_printf (gettext("_Use the System Document Font (%s)"), font_description_string);
-
-    //Body
-    if (text != NULL) gtk_button_set_label (GTK_BUTTON (checkbox), text);
-
-    //Cleanup
-    g_free (text);
-}
-
-
-//!
-//! @brief Sets the text in the custom document font button
-//!
-//! @param font_description_string The font description in the form "Sans 10"
-//!
-void gw_settingswindow_update_custom_font_button (GwSettingsWindow *settings, const char *font_description_string)
-{
-    //Declarations
-    GtkWidget *button;
-
-    //Initializations
-    button = GTK_WIDGET (gtk_builder_get_object (settings->builder, "custom_font_fontbutton"));
-
-    //Body
-    gtk_font_button_set_font_name (GTK_FONT_BUTTON (button), font_description_string);
-}
-
-
-//!
-//! @brief Sets the checkbox to show or hide the toolbar
-//!
-//! @param request How to set the toolbar
-//!
-void gw_settingswindow_set_search_as_you_type (GwSettingsWindow *settings, gboolean request)
-{
-    //Declarations
-    GtkWidget *checkbox;
-
-    //Initializations
-    checkbox = GTK_WIDGET (gtk_builder_get_object(settings->builder, "search_as_you_type_checkbox"));
-
-    g_signal_handlers_block_by_func (checkbox, gw_settings_search_as_you_type_toggled_cb, NULL);
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), request);
-    g_signal_handlers_unblock_by_func (checkbox, gw_settings_search_as_you_type_toggled_cb, NULL);
-}
-
-//!
-//! @brief Sets the checkbox to show or hide the toolbar
-//!
-//! @param request How to set the toolbar
-//!
-gboolean gw_settingswindow_get_search_as_you_type (GwSettingsWindow *settings)
-{
-    //Declarations
-    GtkWidget *checkbox;
-
-    //Initializations
-    checkbox = GTK_WIDGET (gtk_builder_get_object(settings->builder, "search_as_you_type_checkbox"));
-
-    return gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (checkbox));
-}
 

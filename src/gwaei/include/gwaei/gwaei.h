@@ -21,9 +21,8 @@
 #include <gwaei/radicals-window.h>
 #include <gwaei/radicals-callbacks.h>
 
-#include <gwaei/settings-window.h>
-#include <gwaei/settings-callbacks.h>
 */
+#include <gwaei/settings-window.h>
 
 #include <gwaei/dictinfolist.h>
 

@@ -15,7 +15,7 @@
   </object>
   <object class="GtkAction" id="edit_settings_action">
     <property name="stock_id">gtk-preferences</property>
-    <signal name="activate" handler="gw_settings_show_cb" swapped="no"/>
+    <signal name="activate" handler="gw_searchwindow_open_settings_dialog" swapped="no"/>
   </object>
   <object class="GtkAction" id="file_append_action">
     <property name="label" translatable="yes">A_ppend</property>
@@ -896,7 +896,7 @@
                 <property name="tooltip_text" translatable="yes">Enable spellcheck for searches</property>
                 <property name="use_action_appearance">False</property>
                 <property name="stock_id">gtk-spell-check</property>
-                <signal name="toggled" handler="gw_spellcheck_toggle_cb" swapped="no"/>
+                <signal name="toggled" handler="gw_searchwindow_spellcheck_toggled_cb" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>

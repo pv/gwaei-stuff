@@ -42,28 +42,40 @@
 
 GwWindow* gw_window_new (const GwWindowType TYPE)
 {
+    //Declarations
     GwWindow *window;
+    GwWindow *parent;
+
+    //Initializations
+    window = NULL;
+    parent = NULL;
 
     switch (TYPE)
     {
       case GW_WINDOW_SEARCH:
-        window = (GwWindow*) gw_searchwindow_new ();
+        window = GW_WINDOW (gw_searchwindow_new ());
+        gtk_window_set_position (window->toplevel, GTK_WIN_POS_MOUSE);
+        break;
+      case GW_WINDOW_SETTINGS:
+        window = GW_WINDOW (gw_settingswindow_new ());
+        parent = gw_app_get_window (app, GW_WINDOW_SEARCH, NULL);
+        if (parent != NULL) gtk_window_set_transient_for (window->toplevel, parent->toplevel);
+        gtk_window_set_destroy_with_parent (window->toplevel, TRUE);
+        gtk_window_set_position (window->toplevel, GTK_WIN_POS_CENTER_ON_PARENT);
+        gtk_window_set_modal (window->toplevel, TRUE);
         break;
 /*
-      case GW_WINDOW_SETTINGS:
-        window = (GwWindow*) gw_settingswindow_new ();
-        break;
       case GW_WINDOW_RADICALS:
-        window = (GwWindow*) gw_radicalswindow_new ();
+        window = GW_WINDOW (gw_radicalswindow_new ());
         break;
       case GW_WINDOW_KANJIPAD:
-        window = (GwWindow*) gw_kanjipadwindow_new ();
+        window = GW_WINDOW (gw_kanjipadwindow_new ());
         break;
       case GW_WINDOW_DICTIONARYINSTALL:
-        window = (GwWindow*) gw_dictinstwindow_new ();
+        window = GW_WINDOW (gw_dictinstwindow_new ());
         break;
       case GW_WINDOW_INSTALLPROGRESS:
-        window = (GwWindow*) gw_installprogresswindow_new ();
+        window = GW_WINDOW (gw_installprogresswindow_new ());
         break;
 */
       default:
@@ -82,10 +94,10 @@ void gw_window_destroy (GwWindow *window)
       case GW_WINDOW_SEARCH:
         gw_searchwindow_destroy (GW_SEARCHWINDOW (window));
         break;
-/*
       case GW_WINDOW_SETTINGS:
         gw_settingswindow_destroy ((GwSettingsWindow*) window);
         break;
+/*
       case GW_WINDOW_RADICALS:
         gw_radicalswindow_destroy ((GwRadicalsWindow*) window);
         break;

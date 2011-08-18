@@ -23,7 +23,6 @@
 //! @file src/gtk-settings-callbacks.c
 //!
 //! @brief Abstraction layer for gtk callbacks
-//!
 //! Callbacks for activities initiated by the user. Most of the gtk code here
 //! should still be abstracted to the interface C file when possible.
 //!
@@ -41,124 +40,132 @@
 
 //!
 //! @brief Callback to toggle the hiragana-katakana conversion setting for the search entry
-//!
 //! @param widget Unused pointer to a GtkWidget
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void gw_settings_hira_kata_conv_toggled_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_settingswindow_hira_kata_conv_toggled_cb (GtkWidget *widget, gpointer data)
 {
+    //Declarations
     gboolean state;
-    state = lw_pref_get_boolean_by_schema (LW_SCHEMA_BASE, LW_KEY_HIRA_KATA);
-    lw_pref_set_boolean_by_schema (LW_SCHEMA_BASE, LW_KEY_HIRA_KATA, !state);
+
+    //Initializations
+    state = lw_prefmanager_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_HIRA_KATA);
+
+    lw_prefmanager_set_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_HIRA_KATA, !state);
 }
 
 
 //!
 //! @brief Callback to toggle the katakana-hiragana conversion setting for the search entry
-//!
 //! @param widget Unused pointer to a GtkWidget
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void gw_settings_kata_hira_conv_toggled_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_settingswindow_kata_hira_conv_toggled_cb (GtkWidget *widget, gpointer data)
 {
+    //Declarations
     gboolean state;
-    state = lw_pref_get_boolean_by_schema (LW_SCHEMA_BASE, LW_KEY_KATA_HIRA);
-    lw_pref_set_boolean_by_schema (LW_SCHEMA_BASE, LW_KEY_KATA_HIRA, !state);
+
+    //Initializations
+    state = lw_prefmanager_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_KATA_HIRA);
+
+    lw_prefmanager_set_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_KATA_HIRA, !state);
 }
 
 
 //!
 //! @brief Callback to toggle spellcheck in the search entry
-//!
 //! @param widget Unused pointer to a GtkWidget
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void gw_settings_spellcheck_toggled_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_settingswindow_spellcheck_toggled_cb (GtkWidget *widget, gpointer data)
 {
+    //Declarations
     gboolean state;
-    state = lw_pref_get_boolean_by_schema (LW_SCHEMA_BASE, LW_KEY_SPELLCHECK);
-    lw_pref_set_boolean_by_schema (LW_SCHEMA_BASE, LW_KEY_SPELLCHECK, !state);
+
+    //Initializations
+    state = lw_prefmanager_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_SPELLCHECK);
+
+    lw_prefmanager_set_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_SPELLCHECK, !state);
 }
 
 
 //!
 //! @brief Callback to toggle search as you type in the search entry
-//!
 //! @param widget Unused pointer to a GtkWidget
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void gw_settings_search_as_you_type_toggled_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_settingswindow_search_as_you_type_toggled_cb (GtkWidget *widget, gpointer data)
 {
+    //Declarations
     gboolean state;
-    state = lw_pref_get_boolean_by_schema (LW_SCHEMA_BASE, LW_KEY_SEARCH_AS_YOU_TYPE);
-    lw_pref_set_boolean_by_schema (LW_SCHEMA_BASE, LW_KEY_SEARCH_AS_YOU_TYPE, !state);
+
+    //Initializations
+    state = lw_prefmanager_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_SEARCH_AS_YOU_TYPE);
+
+    lw_prefmanager_set_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_SEARCH_AS_YOU_TYPE, !state);
 }
 
 
 
 //!
 //! @brief Callback to toggle romaji-kana conversion
-//!
 //! @param widget Unused pointer to a GtkWidget
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void gw_settings_romaji_kana_conv_changed_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_settingswindow_romaji_kana_conv_changed_cb (GtkWidget *widget, gpointer data)
 {
+    //Declarations
     int active;
+
+    //Initializations
     active = gtk_combo_box_get_active(GTK_COMBO_BOX (widget));
-    lw_pref_set_int_by_schema (LW_SCHEMA_BASE, LW_KEY_ROMAN_KANA, active);
+
+    lw_prefmanager_set_int_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_ROMAN_KANA, active);
 }
 
 
 //!
 //! @brief Callback to set the user selected color to the color swatch for text highlighting
-//!
 //! @param widget Unused pointer to a GtkWidget
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void gw_settings_swatch_color_set_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_settingswindow_swatch_color_changed_cb (GtkWidget *widget, gpointer data)
 {
-    //Initializations
+    //Declarations
     GdkColor color;
+    char *hex_color_string;
+    char *pref_key;
+    char *letter;
+
+    //Initializations
     gtk_color_button_get_color(GTK_COLOR_BUTTON (widget), &color);
-    char *hex_color_string = NULL;
     hex_color_string = gdk_color_to_string (&color);
-    char *pref_key = NULL;
     pref_key = g_strdup_printf ("%s", gtk_buildable_get_name (GTK_BUILDABLE (widget)));
-    char *letter = strchr(pref_key, '_');
+    letter = strchr(pref_key, '_');
     if (letter == NULL) return;
     *letter = '-';
 
-    //Set the color inthe prefs
+    //Set the color in the prefs
     if (pref_key != NULL && hex_color_string != NULL)
     {
-      lw_pref_set_string_by_schema (LW_SCHEMA_HIGHLIGHT, pref_key, hex_color_string);
+      lw_prefmanager_set_string_by_schema (app->prefmanager, LW_SCHEMA_HIGHLIGHT, pref_key, hex_color_string);
     }
 
     //Cleanup
-    if (pref_key != NULL)
-    {
-      g_free (pref_key);
-      pref_key = NULL;
-    }
-    if (hex_color_string != NULL)
-    {
-      g_free (hex_color_string);
-      hex_color_string = NULL;
-    }
+    if (pref_key != NULL) g_free (pref_key);
+    if (hex_color_string != NULL) g_free (hex_color_string);
 }
 
 
 //!
 //! @brief Callback to reset all the colors for all the swatches to the default in the preferences
-//!
 //! @param widget Unused pointer to a GtkWidget
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void gw_settings_swatch_color_reset_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_settingswindow_reset_all_swatches_activated_cb (GtkWidget *widget, gpointer data)
 {
     //Initializations
-    int i = 0;
+    int i;
     char *pref_key[] = {
       LW_KEY_MATCH_FG,
       LW_KEY_MATCH_BG,
@@ -171,50 +178,154 @@ G_MODULE_EXPORT void gw_settings_swatch_color_reset_cb (GtkWidget *widget, gpoin
     //Start setting the default values
     for (i = 0; pref_key[i] != NULL; i++)
     {
-      lw_pref_reset_value_by_schema (LW_SCHEMA_HIGHLIGHT, pref_key[i]);
+      lw_prefmanager_reset_value_by_schema (app->prefmanager, LW_SCHEMA_HIGHLIGHT, pref_key[i]);
     }
-
-    //gw_ui_buffer_reload_tagtable_tags();
 }
 
 
 //!
 //! @brief Sets the preference key for the global font usage
-//! 
 //! @param widget Unused GtkWidget pointer.
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void gw_settings_use_global_document_font_toggled_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_settingswindow_use_global_document_font_toggled_cb (GtkWidget *widget, gpointer data)
 {
-    gboolean state;
-    state = lw_pref_get_boolean_by_schema (LW_SCHEMA_FONT, LW_KEY_FONT_USE_GLOBAL_FONT);
-    lw_pref_set_boolean_by_schema (LW_SCHEMA_FONT, LW_KEY_FONT_USE_GLOBAL_FONT, !state);
+    gboolean request;
+
+    request = lw_prefmanager_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_FONT, LW_KEY_FONT_USE_GLOBAL_FONT);
+
+    lw_prefmanager_set_boolean_by_schema (app->prefmanager, LW_SCHEMA_FONT, LW_KEY_FONT_USE_GLOBAL_FONT, !request);
 }
 
 
 //!
 //! @brief Sets the preference key for the new custom document font
-//! 
 //! @param widget Unused GtkWidget pointer.
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void gw_settings_custom_document_font_set_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_settingswindow_custom_document_font_changed_cb (GtkWidget *widget, gpointer data)
 {
+    GwSettingsWindow *window;
+    GtkWidget *button;
+    const char *font;
 
-    GtkWidget *button = GTK_WIDGET (gtk_builder_get_object (app->settings->builder, "custom_font_fontbutton"));
-    const char *font_description_string = gtk_font_button_get_font_name (GTK_FONT_BUTTON (button));
-    lw_pref_set_string_by_schema (LW_SCHEMA_FONT, LW_KEY_FONT_CUSTOM_FONT, font_description_string);
+    window = GW_SEARCHWINDOW (gw_app_get_window (app, GW_WINDOW_SETTINGS, widget));
+    button = GTK_WIDGET (gtk_builder_get_object (window->builder, "custom_font_fontbutton"));
+    font = gtk_font_button_get_font_name (GTK_FONT_BUTTON (button));
+
+    lw_prefmanager_set_string_by_schema (app->prefmanager, LW_SCHEMA_FONT, LW_KEY_FONT_CUSTOM_FONT, font);
 }
 
 
 //!
-//! @brief Brings up the preferences dialog to change settings
-//! @param widget Currently unused widget pointer
-//! @param data Currently unused gpointer
+//! @brief Sets the state of the use global document font checkbox without triggering the signal handler
+//! @param setting The new checked state for the use global document font checkbox 
 //!
-G_MODULE_EXPORT void gw_settings_show_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_settingswindow_sync_use_global_document_font_cb (GSettings *settings, gchar *KEY, gpointer data)
 {
+    //Declarations
+    GwSettingsWindow *window;
+    GtkWidget *checkbox;
+    GtkWidget *hbox;
+    GtkWidget *checkbox;
+    gboolean request
+
+    //Initializations
+    window = GW_SETTINGSWINDOW (data);
+    if (window == NULL) return;
+    checkbox = GTK_WIDGET (gtk_builder_get_object (window->builder, "system_font_checkbox"));
+    hbox = GTK_WIDGET (gtk_builder_get_object (window->builder, "system_document_font_hbox"));
+    request = gw_prefmanager_get_boolean (settings, KEY);
+
+    //Updates
+    g_signal_handlers_block_by_func (checkbox, gw_settingswindow_use_global_document_font_toggled_cb, NULL);
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), request);
+    gtk_widget_set_sensitive (hbox, !request);
+    g_signal_handlers_unblock_by_func (checkbox, gw_settingswindow_use_global_document_font_toggled_cb, NULL);
 }
 
+
+G_MODULE_EXPORT void gw_settingswindow_sync_global_document_font_cb (GSettings *settings, gchar *KEY, gpointer data)
+{
+    //Declarations
+    GwSettingsWindow *window;
+    char *text;
+
+    //Initializations
+    window = GW_SETTINGSWINDOW (data);
+    if (window == NULL) return;
+    text = g_strdup_printf (gettext("_Use the System Document Font (%s)"), font_description_string);
+
+    if (text != NULL) 
+    {
+      gtk_button_set_label (GTK_BUTTON (checkbox), text);
+      g_free (text);
+    }
+}
+
+
+//!
+//! @brief Sets the text in the custom document font button
+//! @param font_description_string The font description in the form "Sans 10"
+//!
+G_MODULE_EXPORT void gw_settingswindow_sync_custom_font_cb (GSettings *settings, gchar *KEY, gpointer)
+{
+    //Declarations
+    GwSettingsWindow *window;
+    GtkWidget *button;
+
+    //Initializations
+    window = GW_SETTINGSWINDOW (data);
+    if (window == NULL) return;
+    button = GTK_WIDGET (gtk_builder_get_object (window->builder, "custom_font_fontbutton"));
+
+    //Body
+    g_signal_handlers_block_by_func (button, gw_settingswindow_custom_document_font_changed_cb, NULL);
+    gtk_font_button_set_font_name (GTK_FONT_BUTTON (button), font_description_string);
+    g_signal_handlers_unblock_by_func (button, gw_settingswindow_custom_document_font_changed_cb, NULL);
+}
+
+
+//!
+//! @brief Sets the checkbox to show or hide the toolbar
+//! @param request How to set the toolbar
+//!
+G_MODULE_EXPORT void gw_settingswindow_sync_search_as_you_type_cb (GSettings *settings, gchar *KEY, gpointer data)
+{
+    //Declarations
+    GwSettingsWindow *window;
+    GtkWidget *checkbox;
+
+    //Initializations
+    window = GW_SETTINGSWINDOW (data);
+    if (window == NULL) return;
+    checkbox = GTK_WIDGET (gtk_builder_get_object(window->builder, "search_as_you_type_checkbox"));
+
+    g_signal_handlers_block_by_func (checkbox, gw_settingswindow_search_as_you_type_toggled_cb, NULL);
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), request);
+    g_signal_handlers_unblock_by_func (checkbox, gw_settingswindow_search_as_you_type_toggled_cb, NULL);
+}
+
+
+//!
+//! @brief Disables portions of the interface depending on the currently queued jobs.
+//!
+G_MODULE_EXPORT void gw_settingswindow_dictionaries_changed_cb (GtkWidget* widget, gpointer data)
+{
+    //Declarations
+    GwSettingsWindow *window;
+    GtkWidget *message;
+    GList *list;
+
+    //Initializations
+    window = GW_SETTINGSWINDOW (data);
+    message = GTK_WIDGET (gtk_builder_get_object (window->builder, "please_install_dictionary_hbox"));
+
+    //Set the show state of the dictionaries required message
+    if (g_list_length (app->dictinfolist->list) > 0)
+      gtk_widget_hide (message);
+    else
+      gtk_widget_show (message);
+}
 
 

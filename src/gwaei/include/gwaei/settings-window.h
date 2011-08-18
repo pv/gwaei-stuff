@@ -2,14 +2,16 @@
 #define GW_GTK_SETTINGS_INTERFACE_INCLUDED
 
 #include <gwaei/settings-callbacks.h>
-#include <gwaei/settings-listeners.h>
 
 struct _GwSettingsWindow {
   EXTENDS_GW_WINDOW
+  GtkNotebook *notebook;
 };
 typedef struct _GwSettingsWindow GwSettingsWindow;
 
-GwSettingsWindow* gw_settingswindow_new (int);
+#define GW_SETTINGSWINDOW(object) (GwSettingsWindow*)object
+
+GwSettingsWindow* gw_settingswindow_new ();
 void gw_settingswindow_destroy (GwSettingsWindow*);
 
 void gw_settingswindow_update_interface (GwSettingsWindow*);
