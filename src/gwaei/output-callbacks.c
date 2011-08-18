@@ -42,6 +42,9 @@ static GtkWidget* _searchwindow_results_popup_new (char*);
 static void _searchwindow_show_popup_cb (GtkWidget*, gpointer);
 static void _searchwindow_destroy_popup_cb (GtkWidget*, gpointer);
 static void _searchwindow_destroy_text_cb (GtkWidget*, gpointer);
+static void _searchwindow_new_tab_with_search_cb (GtkMenuItem*, gpointer);
+static void _searchwindow_search_for_searchitem_online_cb (GtkMenuItem*, gpointer);
+static void _searchwindow_destroy_tab_menuitem_searchitem_data_cb (GObject*, gpointer);
 
 //!
 //! @brief PRIVATE FUNCTION. A Stes the text of the desired mark.
@@ -1035,8 +1038,8 @@ static GtkWidget* _searchwindow_results_popup_new (char* query_text)
         if (menu_text != NULL)
         {
           menuitem = GTK_WIDGET (gtk_image_menu_item_new_with_label (menu_text));
-          g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (gw_searchwindow_new_tab_with_search_cb), item);
-          g_signal_connect (G_OBJECT (menuitem), "destroy",  G_CALLBACK (gw_searchwindow_destroy_tab_menuitem_searchitem_data_cb), item);
+          g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (_searchwindow_new_tab_with_search_cb), item);
+          g_signal_connect (G_OBJECT (menuitem), "destroy",  G_CALLBACK (_searchwindow_destroy_tab_menuitem_searchitem_data_cb), item);
           gtk_menu_shell_append (GTK_MENU_SHELL (menu), GTK_WIDGET (menuitem));
           gtk_widget_show (GTK_WIDGET (menuitem));
 //          gtk_widget_show (GTK_WIDGET (menuimage));
@@ -1084,8 +1087,8 @@ static GtkWidget* _searchwindow_results_popup_new (char* query_text)
             g_free (path);
             path = NULL;
           }
-          g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (gw_searchwindow_search_for_searchitem_online_cb), item);
-          g_signal_connect (G_OBJECT (menuitem), "destroy",  G_CALLBACK (gw_searchwindow_destroy_tab_menuitem_searchitem_data_cb), item);
+          g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (_searchwindow_search_for_searchitem_online_cb), item);
+          g_signal_connect (G_OBJECT (menuitem), "destroy",  G_CALLBACK (_searchwindow_destroy_tab_menuitem_searchitem_data_cb), item);
           gtk_menu_shell_append (GTK_MENU_SHELL (menu), GTK_WIDGET (menuitem));
           gtk_widget_show (GTK_WIDGET (menuitem));
 //          gtk_widget_show (GTK_WIDGET (menuimage));
@@ -1106,9 +1109,11 @@ static void _searchwindow_show_popup_cb (GtkWidget *widget, gpointer data)
 
     popup_text = (char*) data;
     popup = GTK_MENU (_searchwindow_results_popup_new (popup_text));
-    g_signal_connect (G_OBJECT (popup), "hide", G_CALLBACK (_searchwindow_destroy_popup_cb), popup);
+    gtk_menu_attach_to_widget (GTK_MENU (popup), GTK_WIDGET (widget), NULL);
 
     gtk_menu_popup (popup, NULL, NULL, NULL, NULL, 0, gtk_get_current_event_time ());
+
+    g_signal_connect_after (G_OBJECT (widget), "destroy", G_CALLBACK (_searchwindow_destroy_popup_cb), popup);
 }
 
 
@@ -1121,6 +1126,92 @@ static void _searchwindow_destroy_popup_cb (GtkWidget *widget, gpointer data)
 static void _searchwindow_destroy_text_cb (GtkWidget *widget, gpointer data)
 {
     g_free (data);
+}
+
+
+//!
+//! @brief Frees the LwSearchItem memory that is attached to the activate tab callback
+//! @param widget Currently unused widget pointe
+//! @param data gpointer to a LwSearchItem to be freed
+//!
+static void _searchwindow_destroy_tab_menuitem_searchitem_data_cb (GObject *object, gpointer data)
+{
+    //Declarations
+    LwSearchItem *item;
+
+    //Initializations
+    item = LW_SEARCHITEM (data);
+
+    if (item != NULL)
+    {
+      lw_searchitem_free (item);
+      item = NULL;
+    }
+}
+
+
+//!
+//! @brief Searches for the word in a webbrower in an external dictionary
+//! @param widget Unused GtkWidget pointer
+//! @param data Unused gpointer
+//!
+static void _searchwindow_search_for_searchitem_online_cb (GtkMenuItem *widget, gpointer data)
+{
+    LwSearchItem *item;
+    GError *error;
+    GwSearchWindow *window;
+    GtkTextView *view;
+    GwSearchData *sdata;
+
+    window = GW_SEARCHWINDOW (gw_app_get_window (app, GW_WINDOW_SEARCH, NULL));
+    if (window == NULL) return;
+    item = LW_SEARCHITEM (data);
+    if (item != NULL)
+    {
+      view = gw_searchwindow_get_current_textview (window);
+      sdata = gw_searchdata_new (view, window);
+      lw_searchitem_set_data (item, sdata, LW_SEARCHITEM_DATA_FREE_FUNC (gw_searchdata_free));
+      error = NULL;
+
+      gtk_show_uri (NULL, item->queryline->string, gtk_get_current_event_time (), &error);
+      gw_common_handle_error (&error, GTK_WINDOW (window->toplevel), TRUE);
+    }
+}
+
+
+//!
+//! @brief Sets up an initites a new search in a new tab
+//!
+//! @param widget Currently unused widget pointer
+//! @param data A gpointer to a LwSearchItem that hold the search information
+//!
+static void _searchwindow_new_tab_with_search_cb (GtkMenuItem *widget, gpointer data)
+{
+    if (!gw_app_can_start_search (app)) return;
+
+    //Declarations
+    GwSearchWindow *window;
+    LwSearchItem *item;
+    LwSearchItem *item_new;
+    GtkTextView *view;
+    GwSearchData *sdata;
+    int index;
+
+    //Initializations
+    window = GW_SEARCHWINDOW (gw_app_get_window (app, GW_WINDOW_SEARCH, NULL));
+    if (window == NULL) return;
+    item = LW_SEARCHITEM (data);
+    item_new = lw_searchitem_new (item->queryline->string, item->dictionary, item->target, app->prefmanager, NULL);
+    if (item_new != NULL)
+    {
+      view = gw_searchwindow_get_current_textview (window);
+      sdata = gw_searchdata_new (view, window);
+      lw_searchitem_set_data (item_new, sdata, LW_SEARCHITEM_DATA_FREE_FUNC (gw_searchdata_free));
+
+      index = gw_searchwindow_new_tab (window);
+      gtk_notebook_set_current_page (window->notebook, index);
+      gw_searchwindow_start_search (window, item_new);
+    }
 }
 
 

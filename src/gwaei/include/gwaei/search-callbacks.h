@@ -51,13 +51,8 @@ void gw_searchwindow_search_drag_data_recieved_cb (GtkWidget*, GdkDragContext*, 
 gboolean gw_searchwindow_focus_change_on_key_press_cb (GtkWidget*, GdkEvent*, gpointer*);
 gboolean gw_searchwindow_update_icons_for_selection_cb (GtkWidget*, GdkEvent*, gpointer); 
 
-void gw_searchwindow_search_for_searchitem_online_cb (GtkWidget*, gpointer);
-
 gboolean gw_searchwindow_scroll_or_zoom_cb (GtkWidget*, GdkEventScroll*, gpointer);
 
-void gw_searchwindow_search_for_searchitem_online_cb (GtkWidget*, gpointer);
-void gw_searchwindow_destroy_tab_menuitem_searchitem_data_cb (GObject*, gpointer);
-void gw_searchwindow_new_tab_with_search_cb (GtkWidget*, gpointer);
 void gw_searchwindow_remove_tab_cb (GtkWidget*, gpointer);
 void gw_searchwindow_remove_current_tab_cb (GtkWidget*, gpointer);
 

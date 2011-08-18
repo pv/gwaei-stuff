@@ -361,11 +361,15 @@ G_MODULE_EXPORT void gw_searchwindow_search_from_history_cb (GtkWidget *widget, 
 
     //Cycle the history
     if (is_in_back_index)
+    {
       while (current != item)
         current = lw_historylist_go_back (window->history, current);
+    }
     else if (is_in_forward_index)
+    {
       while (current != item)
         current = lw_historylist_go_forward (window->history, current);
+    }
     else
     {
       g_assert_not_reached ();
@@ -1683,30 +1687,6 @@ G_MODULE_EXPORT void gw_searchwindow_update_button_states_based_on_entry_text_cb
 
 
 //!
-//! @brief Searches for the word in a webbrower in an external dictionary
-//! 
-//! @param widget Unused GtkWidget pointer
-//! @param data Unused gpointer
-//!
-G_MODULE_EXPORT void gw_searchwindow_search_for_searchitem_online_cb (GtkWidget *widget, gpointer data)
-{
-    LwSearchItem *item = (LwSearchItem*) data;
-    GError *error;
-    GwSearchWindow *window;
-
-    window = GW_SEARCHWINDOW (gw_app_get_window (app, GW_WINDOW_SEARCH, widget));
-    if (window == NULL) return;
-
-    if (item != NULL)
-    {
-      error = NULL;
-      gtk_show_uri (NULL, item->queryline->string, gtk_get_current_event_time (), &error);
-
-      gw_common_handle_error (&error, GTK_WINDOW (window->toplevel), TRUE);
-    }
-}
-
-//!
 //! @brief Emulates web browsers font size control with (ctrl + wheel)
 //!
 //! @param widget Unused GtkWidget pointer.
@@ -1871,33 +1851,6 @@ G_MODULE_EXPORT void gw_searchwindow_previous_tab_cb (GtkWidget *widget, gpointe
 }
 
 
-//!
-//! @brief Sets up an initites a new search in a new tab
-//!
-//! @param widget Currently unused widget pointer
-//! @param data A gpointer to a LwSearchItem that hold the search information
-//!
-G_MODULE_EXPORT void gw_searchwindow_new_tab_with_search_cb (GtkWidget *widget, gpointer data)
-{
-    if (!gw_app_can_start_search (app)) return;
-
-    //Declarations
-    GwSearchWindow *window;
-    LwSearchItem *item;
-
-    //Initializations
-    window = GW_SEARCHWINDOW (gw_app_get_window (app, GW_WINDOW_SEARCH, widget));
-    if (window == NULL) return;
-    item = LW_SEARCHITEM (data);
-
-    if (item != NULL)
-    {
-      gw_searchwindow_new_tab (window);
-      gw_searchwindow_start_search (window, item);
-    }
-}
-
-
 G_MODULE_EXPORT void gw_searchwindow_no_results_search_for_dictionary_cb (GtkWidget *widget, gpointer data)
 {
     //Declarations
@@ -1910,27 +1863,6 @@ G_MODULE_EXPORT void gw_searchwindow_no_results_search_for_dictionary_cb (GtkWid
     di = LW_DICTINFO (data);
 
     gw_searchwindow_set_dictionary (window, di->load_position);
-}
-
-//!
-//! @brief Frees the LwSearchItem memory that is attached to the activate tab callback
-//!
-//! @param widget Currently unused widget pointe
-//! @param data gpointer to a LwSearchItem to be freed
-//!
-G_MODULE_EXPORT void gw_searchwindow_destroy_tab_menuitem_searchitem_data_cb (GObject *object, gpointer data)
-{
-    //Declarations
-    LwSearchItem *item;
-
-    //Initializations
-    item = (LwSearchItem*) data;
-
-    if (item != NULL)
-    {
-      lw_searchitem_free (item);
-      item = NULL;
-    }
 }
 
 

@@ -2108,26 +2108,50 @@ void gw_searchwindow_set_tab_text_by_searchitem (GwSearchWindow *window, LwSearc
     GList *vchildren;
     GtkWidget *label;
     const char *text;
+    GList *iter;
+    int i;
 
-    //Initializations
-    page_num = g_list_index (window->tablist, item);
-    if (page_num == -1) return;
-    container = gtk_notebook_get_nth_page (window->notebook, page_num);
-    hbox = GTK_WIDGET (gtk_notebook_get_tab_label(window->notebook, GTK_WIDGET (container)));
-    hchildren = gtk_container_get_children (GTK_CONTAINER (hbox));
-    vbox = GTK_WIDGET (hchildren->data);
-    vchildren = gtk_container_get_children (GTK_CONTAINER (vbox));
-    label = GTK_WIDGET (vchildren->data);
     if (item == NULL)
+    {
+      page_num = 0;
       text = gettext("(Empty)");
-    else if (item->queryline != NULL)
+      for (iter = window->tablist; iter != NULL; iter = iter->next)
+      {
+        if (iter->data == NULL)
+        {
+          container = gtk_notebook_get_nth_page (window->notebook, page_num);
+          hbox = GTK_WIDGET (gtk_notebook_get_tab_label(window->notebook, GTK_WIDGET (container)));
+          hchildren = gtk_container_get_children (GTK_CONTAINER (hbox));
+          vbox = GTK_WIDGET (hchildren->data);
+          vchildren = gtk_container_get_children (GTK_CONTAINER (vbox));
+          label = GTK_WIDGET (vchildren->data);
+          gtk_label_set_text (GTK_LABEL (label), text);
+
+          g_list_free (hchildren);
+          g_list_free (vchildren);
+        }
+        page_num++;
+      }
+    }
+    else
+    {
+      page_num = g_list_index (window->tablist, item);
+      g_assert (page_num != -1);
+      container = gtk_notebook_get_nth_page (window->notebook, page_num);
+      hbox = GTK_WIDGET (gtk_notebook_get_tab_label (window->notebook, GTK_WIDGET (container)));
+      hchildren = gtk_container_get_children (GTK_CONTAINER (hbox));
+      vbox = GTK_WIDGET (hchildren->data);
+      vchildren = gtk_container_get_children (GTK_CONTAINER (vbox));
+      label = GTK_WIDGET (vchildren->data);
+      g_assert (item->queryline != NULL);
       text = item->queryline->string;
 
-    gtk_label_set_text (GTK_LABEL (label), text);
+      gtk_label_set_text (GTK_LABEL (label), text);
 
-    //Cleanup
-    g_list_free (hchildren);
-    g_list_free (vchildren);
+      //Cleanup
+      g_list_free (hchildren);
+      g_list_free (vchildren);
+    }
 }
 
 
@@ -2238,7 +2262,6 @@ int gw_searchwindow_new_tab (GwSearchWindow *window)
 //    gtk_notebook_set_tab_reorderable (window->notebook, scrolledwindow, TRUE);
     gtk_notebook_set_current_page (window->notebook, position);
     gw_searchwindow_set_current_searchitem (window, NULL);
-    gtk_notebook_set_current_page (window->notebook, current);
     gw_searchwindow_set_font (window);
 
     return position;
@@ -2269,7 +2292,7 @@ void gw_searchwindow_remove_tab (GwSearchWindow *window, int index)
     if (iter != NULL)
     {
       item = LW_SEARCHITEM (iter->data);
-      if (item != NULL && lw_searchitem_has_history_relevance (item))
+      if (lw_searchitem_has_history_relevance (item))
       {
         lw_historylist_add_searchitem (window->history, item);
         gw_searchwindow_update_history_popups (window);
@@ -2314,8 +2337,11 @@ void gw_searchwindow_set_current_searchitem (GwSearchWindow *window, LwSearchIte
 
     //Initializations
     page_num = gtk_notebook_get_current_page (window->notebook);
+    if (page_num == -1) return;
     pages = gtk_notebook_get_n_pages (window->notebook);
     iter = g_list_nth (window->tablist, page_num);
+    printf("%d %d\n", page_num, pages);
+    if (iter == NULL) return;
     menuitem = GTK_MENU_ITEM (gtk_builder_get_object (window->builder, "close_menuitem"));
     iter->data = item;
     if (pages > 1)
