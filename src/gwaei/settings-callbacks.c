@@ -46,12 +46,12 @@
 G_MODULE_EXPORT void gw_settingswindow_hira_kata_conv_toggled_cb (GtkWidget *widget, gpointer data)
 {
     //Declarations
-    gboolean state;
+    gboolean request;
 
     //Initializations
-    state = lw_prefmanager_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_HIRA_KATA);
+    request = lw_prefmanager_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_HIRA_KATA);
 
-    lw_prefmanager_set_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_HIRA_KATA, !state);
+    lw_prefmanager_set_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_HIRA_KATA, !request);
 }
 
 
@@ -63,12 +63,12 @@ G_MODULE_EXPORT void gw_settingswindow_hira_kata_conv_toggled_cb (GtkWidget *wid
 G_MODULE_EXPORT void gw_settingswindow_kata_hira_conv_toggled_cb (GtkWidget *widget, gpointer data)
 {
     //Declarations
-    gboolean state;
+    gboolean request;
 
     //Initializations
-    state = lw_prefmanager_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_KATA_HIRA);
+    request = lw_prefmanager_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_KATA_HIRA);
 
-    lw_prefmanager_set_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_KATA_HIRA, !state);
+    lw_prefmanager_set_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_KATA_HIRA, !request);
 }
 
 
@@ -80,12 +80,12 @@ G_MODULE_EXPORT void gw_settingswindow_kata_hira_conv_toggled_cb (GtkWidget *wid
 G_MODULE_EXPORT void gw_settingswindow_spellcheck_toggled_cb (GtkWidget *widget, gpointer data)
 {
     //Declarations
-    gboolean state;
+    gboolean request;
 
     //Initializations
-    state = lw_prefmanager_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_SPELLCHECK);
+    request = lw_prefmanager_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_SPELLCHECK);
 
-    lw_prefmanager_set_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_SPELLCHECK, !state);
+    lw_prefmanager_set_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_SPELLCHECK, !request);
 }
 
 
@@ -97,12 +97,12 @@ G_MODULE_EXPORT void gw_settingswindow_spellcheck_toggled_cb (GtkWidget *widget,
 G_MODULE_EXPORT void gw_settingswindow_search_as_you_type_toggled_cb (GtkWidget *widget, gpointer data)
 {
     //Declarations
-    gboolean state;
+    gboolean request;
 
     //Initializations
-    state = lw_prefmanager_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_SEARCH_AS_YOU_TYPE);
+    request = lw_prefmanager_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_SEARCH_AS_YOU_TYPE);
 
-    lw_prefmanager_set_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_SEARCH_AS_YOU_TYPE, !state);
+    lw_prefmanager_set_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_SEARCH_AS_YOU_TYPE, !request);
 }
 
 
@@ -209,7 +209,7 @@ G_MODULE_EXPORT void gw_settingswindow_custom_document_font_changed_cb (GtkWidge
     GtkWidget *button;
     const char *font;
 
-    window = GW_SEARCHWINDOW (gw_app_get_window (app, GW_WINDOW_SETTINGS, widget));
+    window = GW_SETTINGSWINDOW (gw_app_get_window (app, GW_WINDOW_SETTINGS, widget));
     button = GTK_WIDGET (gtk_builder_get_object (window->builder, "custom_font_fontbutton"));
     font = gtk_font_button_get_font_name (GTK_FONT_BUTTON (button));
 
@@ -227,15 +227,14 @@ G_MODULE_EXPORT void gw_settingswindow_sync_use_global_document_font_cb (GSettin
     GwSettingsWindow *window;
     GtkWidget *checkbox;
     GtkWidget *hbox;
-    GtkWidget *checkbox;
-    gboolean request
+    gboolean request;
 
     //Initializations
     window = GW_SETTINGSWINDOW (data);
     if (window == NULL) return;
     checkbox = GTK_WIDGET (gtk_builder_get_object (window->builder, "system_font_checkbox"));
     hbox = GTK_WIDGET (gtk_builder_get_object (window->builder, "system_document_font_hbox"));
-    request = gw_prefmanager_get_boolean (settings, KEY);
+    request = lw_prefmanager_get_boolean (settings, KEY);
 
     //Updates
     g_signal_handlers_block_by_func (checkbox, gw_settingswindow_use_global_document_font_toggled_cb, NULL);
@@ -249,16 +248,20 @@ G_MODULE_EXPORT void gw_settingswindow_sync_global_document_font_cb (GSettings *
 {
     //Declarations
     GwSettingsWindow *window;
+    GtkCheckButton *button;
+    char font[50];
     char *text;
 
     //Initializations
     window = GW_SETTINGSWINDOW (data);
     if (window == NULL) return;
-    text = g_strdup_printf (gettext("_Use the System Document Font (%s)"), font_description_string);
+    button = GTK_CHECK_BUTTON (gtk_builder_get_object (window->builder, "system_font_checkbox"));
+    lw_prefmanager_get_string_by_schema (app->prefmanager, font, LW_SCHEMA_GNOME_INTERFACE, LW_KEY_DOCUMENT_FONT_NAME, 50);
+    text = g_strdup_printf (gettext("_Use the System Document Font (%s)"), font);
 
     if (text != NULL) 
     {
-      gtk_button_set_label (GTK_BUTTON (checkbox), text);
+      gtk_button_set_label (GTK_BUTTON (button), text);
       g_free (text);
     }
 }
@@ -268,20 +271,22 @@ G_MODULE_EXPORT void gw_settingswindow_sync_global_document_font_cb (GSettings *
 //! @brief Sets the text in the custom document font button
 //! @param font_description_string The font description in the form "Sans 10"
 //!
-G_MODULE_EXPORT void gw_settingswindow_sync_custom_font_cb (GSettings *settings, gchar *KEY, gpointer)
+G_MODULE_EXPORT void gw_settingswindow_sync_custom_font_cb (GSettings *settings, gchar *KEY, gpointer data)
 {
     //Declarations
     GwSettingsWindow *window;
-    GtkWidget *button;
+    GtkFontButton *button;
+    char font[50];
 
     //Initializations
     window = GW_SETTINGSWINDOW (data);
     if (window == NULL) return;
-    button = GTK_WIDGET (gtk_builder_get_object (window->builder, "custom_font_fontbutton"));
+    button = GTK_FONT_BUTTON (gtk_builder_get_object (window->builder, "custom_font_fontbutton"));
+    lw_prefmanager_get_string_by_schema (app->prefmanager, font, LW_SCHEMA_FONT, LW_KEY_FONT_CUSTOM_FONT, 50);
 
     //Body
     g_signal_handlers_block_by_func (button, gw_settingswindow_custom_document_font_changed_cb, NULL);
-    gtk_font_button_set_font_name (GTK_FONT_BUTTON (button), font_description_string);
+    gtk_font_button_set_font_name (button, font);
     g_signal_handlers_unblock_by_func (button, gw_settingswindow_custom_document_font_changed_cb, NULL);
 }
 
@@ -295,11 +300,13 @@ G_MODULE_EXPORT void gw_settingswindow_sync_search_as_you_type_cb (GSettings *se
     //Declarations
     GwSettingsWindow *window;
     GtkWidget *checkbox;
+    gboolean request;
 
     //Initializations
     window = GW_SETTINGSWINDOW (data);
     if (window == NULL) return;
     checkbox = GTK_WIDGET (gtk_builder_get_object(window->builder, "search_as_you_type_checkbox"));
+    request = lw_prefmanager_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_SEARCH_AS_YOU_TYPE);
 
     g_signal_handlers_block_by_func (checkbox, gw_settingswindow_search_as_you_type_toggled_cb, NULL);
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), request);
@@ -326,6 +333,95 @@ G_MODULE_EXPORT void gw_settingswindow_dictionaries_changed_cb (GtkWidget* widge
       gtk_widget_hide (message);
     else
       gtk_widget_show (message);
+}
+
+
+//!
+//! @brief Closes the window passed throught the widget pointer
+//! @param widget GtkWidget pointer to the window to close
+//! @param data Currently unused gpointer
+//!
+G_MODULE_EXPORT void gw_settingswindow_close_cb (GtkWidget *widget, gpointer data)
+{
+    //Declarations
+    GwSettingsWindow *window;
+    
+    //Initializations
+    window = GW_SETTINGSWINDOW (gw_app_get_window (app, GW_WINDOW_SETTINGS, NULL));
+
+    gw_app_destroy_window (app, GW_WINDOW_SETTINGS, NULL);
+}
+
+
+G_MODULE_EXPORT void gw_settingswindow_sync_romaji_kana_conv_cb (GSettings *settings, gchar *KEY, gpointer data)
+{
+    //Declarations
+    GwSettingsWindow *window;
+    GtkComboBox *combobox;
+    int request;
+
+    window = GW_SETTINGSWINDOW (data);
+    combobox = GTK_COMBO_BOX (gtk_builder_get_object (window->builder, "query_romaji_to_kana"));
+    request = lw_prefmanager_get_int (settings, KEY);
+
+    gtk_combo_box_set_active(combobox, request);
+}
+
+
+G_MODULE_EXPORT void gw_settingswindow_sync_hira_kata_conv_cb (GSettings *settings, gchar *KEY, gpointer data)
+{
+    //Declarations
+    GwSettingsWindow *window;
+    GtkToggleButton *checkbox;
+    gboolean request;
+
+    //Initializations
+    window = GW_SETTINGSWINDOW (data);
+    checkbox = GTK_TOGGLE_BUTTON (gtk_builder_get_object (window->builder, "query_hiragana_to_katakana"));
+    request = lw_prefmanager_get_boolean (settings, KEY);
+
+    g_signal_handlers_block_by_func (checkbox, gw_settingswindow_hira_kata_conv_toggled_cb, NULL);
+    gtk_toggle_button_set_active(checkbox, request);
+    g_signal_handlers_unblock_by_func (checkbox, gw_settingswindow_hira_kata_conv_toggled_cb, NULL);
+}
+
+
+G_MODULE_EXPORT void gw_settingswindow_sync_kata_hira_conv_cb (GSettings *settings, gchar *KEY, gpointer data)
+{
+    //Declarations
+    GwSettingsWindow *window;
+    GtkToggleButton *checkbox;
+    gboolean request;
+
+    //Initializations
+    window = GW_SETTINGSWINDOW (data);
+    checkbox = GTK_TOGGLE_BUTTON (gtk_builder_get_object (window->builder, "query_katakana_to_hiragana"));
+    request = lw_prefmanager_get_boolean (settings, KEY);
+
+    g_signal_handlers_block_by_func (checkbox, gw_settingswindow_kata_hira_conv_toggled_cb, NULL);
+    gtk_toggle_button_set_active(checkbox, request);
+    g_signal_handlers_unblock_by_func (checkbox, gw_settingswindow_kata_hira_conv_toggled_cb, NULL);
+}
+
+
+G_MODULE_EXPORT void gw_settingswindow_sync_swatch_color_cb (GSettings *settings, gchar *KEY, gpointer data)
+{
+    //Declarations
+    GwSettingsWindow *window;
+    GtkColorButton *swatch;
+    GdkColor color;
+    char hex_color_string[20];
+
+    //Initializations
+    window = GW_SETTINGSWINDOW (data);
+    swatch = GTK_COLOR_BUTTON (data);
+    lw_prefmanager_get_string (hex_color_string, settings, KEY, 20);
+    g_assert (swatch != NULL);
+
+    if (gdk_color_parse (hex_color_string, &color) == TRUE)
+    {
+      gtk_color_button_set_color (swatch, &color);
+    }
 }
 
 

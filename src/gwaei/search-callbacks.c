@@ -866,7 +866,7 @@ G_MODULE_EXPORT void gw_searchwindow_homepage_cb (GtkWidget *widget, gpointer da
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void gw_searchwindow_help_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_searchwindow_show_help_cb (GtkWidget *widget, gpointer data)
 {
     //Declarations
     GError *error;
@@ -1812,7 +1812,7 @@ G_MODULE_EXPORT void gw_searchwindow_sync_spellcheck_cb (GSettings *settings, gc
 }
 
 
-G_MODULE_EXPORT void gw_searchwindow_sync_keep_searching_cb (GSettings *settings, gchar *KEY, gpointer data)
+G_MODULE_EXPORT void gw_searchwindow_sync_search_as_you_type_cb (GSettings *settings, gchar *KEY, gpointer data)
 {
     //Declarations
     GwSearchWindow *window;
@@ -1829,5 +1829,8 @@ G_MODULE_EXPORT void gw_searchwindow_sync_keep_searching_cb (GSettings *settings
 G_MODULE_EXPORT void gw_searchwindow_open_settings_dialog (GtkWidget *widget, gpointer data)
 {
     gw_app_show_window (app, GW_WINDOW_SETTINGS, FALSE);
+    gw_app_unblock_searches (app);
 }
+
+
 

@@ -39,6 +39,8 @@
 #include <gwaei/gwaei.h>
 
 
+void _settingswindow_initialize_dictionary_tree_view (GtkTreeView*);
+
 //!
 //! @brief Sets the initial status of the dictionaries in the settings dialog
 //!
@@ -57,6 +59,115 @@ GwSettingsWindow* gw_settingswindow_new ()
       gw_window_load_ui_xml (GW_WINDOW (temp), "settings.ui");
       temp->toplevel = GTK_WINDOW (gtk_builder_get_object (temp->builder, "settings_window"));
       temp->type = GW_WINDOW_SETTINGS;
+
+      GtkTreeView *view;
+      view = GTK_TREE_VIEW (gtk_builder_get_object (temp->builder, "manage_dictionaries_treeview"));
+      _settingswindow_initialize_dictionary_tree_view (view);
+
+      temp->signalids[GW_SETTINGSWINDOW_SIGNALID_ROMAJI_KANA] = lw_prefmanager_add_change_listener_by_schema (
+          app->prefmanager,
+          LW_SCHEMA_BASE,
+          LW_KEY_ROMAN_KANA,
+          gw_settingswindow_sync_romaji_kana_conv_cb,
+          temp
+      );
+
+      temp->signalids[GW_SETTINGSWINDOW_SIGNALID_HIRA_KATA] = lw_prefmanager_add_change_listener_by_schema (
+          app->prefmanager,
+          LW_SCHEMA_BASE,
+          LW_KEY_HIRA_KATA,
+          gw_settingswindow_sync_hira_kata_conv_cb,
+          temp
+      );
+
+      temp->signalids[GW_SETTINGSWINDOW_SIGNALID_KATA_HIRA] = lw_prefmanager_add_change_listener_by_schema (
+          app->prefmanager,
+          LW_SCHEMA_BASE,
+          LW_KEY_KATA_HIRA,
+          gw_settingswindow_sync_kata_hira_conv_cb,
+          temp
+      );
+
+      temp->signalids[GW_SETTINGSWINDOW_SIGNALID_USE_GLOBAL_DOCUMENT_FONT] = lw_prefmanager_add_change_listener_by_schema (
+          app->prefmanager,
+          LW_SCHEMA_FONT,
+          LW_KEY_FONT_USE_GLOBAL_FONT,
+          gw_settingswindow_sync_use_global_document_font_cb,
+          temp
+      );
+
+      temp->signalids[GW_SETTINGSWINDOW_SIGNALID_GLOBAL_DOCUMENT_FONT] = lw_prefmanager_add_change_listener_by_schema (
+          app->prefmanager,
+          LW_SCHEMA_GNOME_INTERFACE,
+          LW_KEY_DOCUMENT_FONT_NAME,
+          gw_settingswindow_sync_global_document_font_cb,
+          temp
+      );
+
+      temp->signalids[GW_SETTINGSWINDOW_SIGNALID_CUSTOM_FONT] = lw_prefmanager_add_change_listener_by_schema (
+          app->prefmanager,
+          LW_SCHEMA_FONT,
+          LW_KEY_FONT_CUSTOM_FONT,
+          gw_settingswindow_sync_custom_font_cb,
+          temp
+      );
+
+      temp->signalids[GW_SETTINGSWINDOW_SIGNALID_SEARCH_AS_YOU_TYPE] = lw_prefmanager_add_change_listener_by_schema (
+          app->prefmanager,
+          LW_SCHEMA_BASE,
+          LW_KEY_SEARCH_AS_YOU_TYPE,
+          gw_settingswindow_sync_search_as_you_type_cb,
+          temp
+      );
+
+      temp->signalids[GW_SETTINGSWINDOW_SIGNALID_MATCH_FG] = lw_prefmanager_add_change_listener_by_schema (
+          app->prefmanager,
+          LW_SCHEMA_HIGHLIGHT,
+          LW_KEY_MATCH_FG,
+          gw_settingswindow_sync_swatch_color_cb,
+          gtk_builder_get_object (temp->builder, "match_foreground")
+      );
+
+      temp->signalids[GW_SETTINGSWINDOW_SIGNALID_MATCH_BG] = lw_prefmanager_add_change_listener_by_schema (
+          app->prefmanager,
+          LW_SCHEMA_HIGHLIGHT,
+          LW_KEY_MATCH_BG,
+          gw_settingswindow_sync_swatch_color_cb,
+          gtk_builder_get_object (temp->builder, "match_background")
+      );
+
+      temp->signalids[GW_SETTINGSWINDOW_SIGNALID_COMMENT_FG] = lw_prefmanager_add_change_listener_by_schema (
+          app->prefmanager,
+          LW_SCHEMA_HIGHLIGHT,
+          LW_KEY_COMMENT_FG,
+          gw_settingswindow_sync_swatch_color_cb,
+          gtk_builder_get_object (temp->builder, "comment_foreground")
+      );
+
+      temp->signalids[GW_SETTINGSWINDOW_SIGNALID_HEADER_FG] = lw_prefmanager_add_change_listener_by_schema (
+          app->prefmanager,
+          LW_SCHEMA_HIGHLIGHT,
+          LW_KEY_HEADER_FG,
+          gw_settingswindow_sync_swatch_color_cb,
+          gtk_builder_get_object (temp->builder, "header_foreground")
+      );
+
+      temp->signalids[GW_SETTINGSWINDOW_SIGNALID_HEADER_BG] = lw_prefmanager_add_change_listener_by_schema (
+          app->prefmanager,
+          LW_SCHEMA_HIGHLIGHT,
+          LW_KEY_HEADER_BG,
+          gw_settingswindow_sync_swatch_color_cb,
+          gtk_builder_get_object (temp->builder, "header_background")
+      );
+
+      temp->signalids[GW_SETTINGSWINDOW_SIGNALID_DICTIONARIES_CHANGED] = g_signal_connect (
+          G_OBJECT (app->dictinfolist->model),
+          "changed",
+          G_CALLBACK (gw_settingswindow_dictionaries_changed_cb),
+          NULL
+      );
+
+
 
       if (g_list_length (app->dictinfolist->list) == 0)
         gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), 1);
@@ -90,6 +201,46 @@ void gw_settings_set_dictionary_source (GtkWidget *widget, const char* value)
     {
       gtk_entry_set_text (GTK_ENTRY (widget), value);
     }
+}
+
+
+void _settingswindow_initialize_dictionary_tree_view (GtkTreeView *view)
+{
+      //Declarations
+      GtkCellRenderer *renderer;
+      GtkTreeViewColumn *column;
+
+      gtk_tree_view_set_model (GTK_TREE_VIEW (view), GTK_TREE_MODEL (app->dictinfolist->model));
+
+      //Create the columns and renderer for each column
+      renderer = gtk_cell_renderer_pixbuf_new();
+      gtk_cell_renderer_set_padding (GTK_CELL_RENDERER (renderer), 6, 4);
+      column = gtk_tree_view_column_new ();
+      gtk_tree_view_column_set_title (column, " ");
+      gtk_tree_view_column_pack_start (column, renderer, TRUE);
+      gtk_tree_view_column_set_attributes (column, renderer, "icon-name", GW_DICTINFOLIST_COLUMN_IMAGE, NULL);
+      gtk_tree_view_append_column (view, column);
+
+      renderer = gtk_cell_renderer_text_new();
+      gtk_cell_renderer_set_padding (GTK_CELL_RENDERER (renderer), 6, 4);
+      column = gtk_tree_view_column_new_with_attributes ("#", renderer, "text", GW_DICTINFOLIST_COLUMN_POSITION, NULL);
+      gtk_tree_view_append_column (view, column);
+
+      renderer = gtk_cell_renderer_text_new();
+      gtk_cell_renderer_set_padding (GTK_CELL_RENDERER (renderer), 6, 4);
+      column = gtk_tree_view_column_new_with_attributes (gettext("Name"), renderer, "text", GW_DICTINFOLIST_COLUMN_LONG_NAME, NULL);
+      gtk_tree_view_column_set_min_width (column, 100);
+      gtk_tree_view_append_column (view, column);
+
+      renderer = gtk_cell_renderer_text_new();
+      gtk_cell_renderer_set_padding (GTK_CELL_RENDERER (renderer), 6, 4);
+      column = gtk_tree_view_column_new_with_attributes (gettext("Engine"), renderer, "text", GW_DICTINFOLIST_COLUMN_ENGINE, NULL);
+      gtk_tree_view_append_column (view, column);
+
+      renderer = gtk_cell_renderer_text_new();
+      gtk_cell_renderer_set_padding (GTK_CELL_RENDERER (renderer), 6, 4);
+      column = gtk_tree_view_column_new_with_attributes (gettext("Shortcut"), renderer, "text", GW_DICTINFOLIST_COLUMN_SHORTCUT, NULL);
+      gtk_tree_view_append_column (view, column);
 }
 
 

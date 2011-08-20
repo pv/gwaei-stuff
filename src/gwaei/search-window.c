@@ -146,7 +146,7 @@ GwSearchWindow* gw_searchwindow_new ()
           app->prefmanager,
           LW_SCHEMA_BASE,
           LW_KEY_SEARCH_AS_YOU_TYPE,
-          gw_searchwindow_sync_keep_searching_cb,
+          gw_settingswindow_sync_search_as_you_type_cb,
           temp
       );
 
@@ -932,87 +932,6 @@ void gw_searchwindow_set_toolbar_style (GwSearchWindow *window, const char *requ
       style = GTK_TOOLBAR_BOTH;
 
     gtk_toolbar_set_style (window->toolbar, style);
-}
-
-
-//!
-//! @brief Sets the checkbox state of the roma-kana conversion pref
-//!
-//! @param request How to set the preference
-//!
-void gw_searchwindow_set_romaji_kana_conv (GwSearchWindow* window, int request)
-{
-  GtkWidget *widget;
-  widget = GTK_WIDGET (gtk_builder_get_object(window->builder, "query_romaji_to_kana"));
-
-  gtk_combo_box_set_active(GTK_COMBO_BOX (widget), request);
-}
-
-
-//!
-//! @brief Sets the checkbox state of the hira-kata conversion pref
-//!
-//! @param request How to set the preference
-//!
-void gw_searchwindow_set_hiragana_katakana_conv (GwSearchWindow *window, gboolean request)
-{
-/*
-    //Declarations
-    GtkWidget *widget;
-
-    //Initializations
-    widget = GTK_WIDGET (gtk_builder_get_object(window->builder, "query_hiragana_to_katakana"));
-
-    if (widget != NULL)
-    {
-      g_signal_handlers_block_by_func (widget, gw_settings_hira_kata_conv_toggled_cb, NULL);
-      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (widget), request);
-      g_signal_handlers_unblock_by_func (widget, gw_settings_hira_kata_conv_toggled_cb, NULL);
-    }
-*/
-}
-
-
-//!
-//! @brief Sets the katakana-hiragana conversion checkbox being mindful to disable the event handlers
-//!
-//! @param request A boolean to use to set the checkbox state.
-//!
-void gw_searchwindow_set_katakana_hiragana_conv (GwSearchWindow *window, gboolean request)
-{
-/*
-    //Declarations
-    GtkWidget *widget;
-
-    //Initializations
-    widget = GTK_WIDGET (gtk_builder_get_object(window->builder, "query_katakana_to_hiragana"));
-
-    if (widget != NULL)
-    {
-      g_signal_handlers_block_by_func (widget, gw_settings_kata_hira_conv_toggled_cb, NULL);
-      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (widget), request);
-      g_signal_handlers_unblock_by_func (widget, gw_settings_kata_hira_conv_toggled_cb, NULL);
-    }
-*/
-}
-
-
-//!
-//! @brief Sets the color to a switch minding to disable the event handlers on it
-//!
-//! @param widget_id The id of the widget to get.
-//! @param hex_color_string The color to attempt to set.
-//!
-void gw_searchwindow_set_color_to_swatch (GwSearchWindow *window, const char *widget_id, const char *hex_color_string)
-{
-    GtkWidget *widget;
-    widget = GTK_WIDGET (gtk_builder_get_object (window->builder, widget_id));
-
-    GdkColor color;
-    if (gdk_color_parse (hex_color_string, &color) == TRUE)
-    {
-      gtk_color_button_set_color (GTK_COLOR_BUTTON (widget), &color);
-    }
 }
 
 

@@ -68,52 +68,8 @@ GwDictInfoList* gw_dictinfolist_new (const int MAX, LwPrefManager *pm)
         temp->signalids[i] = 0;
       }
 
-
       gw_dictinfolist_reload (temp, pm);
 
-/*
-      GtkCellRenderer *renderer;
-      GtkTreeViewColumn *column;
-      _view = GTK_TREE_VIEW (gtk_builder_get_object (builder, "manage_dictionaries_treeview"));
-      gtk_tree_view_set_model (GTK_TREE_VIEW (_view), GTK_TREE_MODEL (_model));
-
-      //Create the columns and renderer for each column
-      renderer = gtk_cell_renderer_pixbuf_new();
-      gtk_cell_renderer_set_padding (GTK_CELL_RENDERER (renderer), 6, 4);
-      column = gtk_tree_view_column_new ();
-      gtk_tree_view_column_set_title (column, " ");
-      gtk_tree_view_column_pack_start (column, renderer, TRUE);
-      gtk_tree_view_column_set_attributes (column, renderer, "icon-name", IMAGE, NULL);
-      gtk_tree_view_append_column (_view, column);
-
-      renderer = gtk_cell_renderer_text_new();
-      gtk_cell_renderer_set_padding (GTK_CELL_RENDERER (renderer), 6, 4);
-      column = gtk_tree_view_column_new_with_attributes ("#", renderer, "text", POSITION, NULL);
-      gtk_tree_view_append_column (_view, column);
-
-      renderer = gtk_cell_renderer_text_new();
-      gtk_cell_renderer_set_padding (GTK_CELL_RENDERER (renderer), 6, 4);
-      column = gtk_tree_view_column_new_with_attributes (gettext("Name"), renderer, "text", LONG_NAME, NULL);
-      gtk_tree_view_column_set_min_width (column, 100);
-      gtk_tree_view_append_column (_view, column);
-
-      renderer = gtk_cell_renderer_text_new();
-      gtk_cell_renderer_set_padding (GTK_CELL_RENDERER (renderer), 6, 4);
-      column = gtk_tree_view_column_new_with_attributes (gettext("Engine"), renderer, "text", ENGINE, NULL);
-      gtk_tree_view_append_column (_view, column);
-
-      renderer = gtk_cell_renderer_text_new();
-      gtk_cell_renderer_set_padding (GTK_CELL_RENDERER (renderer), 6, 4);
-      column = gtk_tree_view_column_new_with_attributes (gettext("Shortcut"), renderer, "text", SHORTCUT, NULL);
-      gtk_tree_view_append_column (_view, column);
-
-      GtkWidget *combobox = GTK_WIDGET (gtk_builder_get_object (builder, "dictionary_combobox"));
-      gtk_combo_box_set_model (GTK_COMBO_BOX (combobox), GTK_TREE_MODEL (_model));
-      renderer = gtk_cell_renderer_text_new();
-      gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (combobox), renderer, FALSE);
-      gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (combobox), renderer, "text", LONG_NAME);
-
-*/
       temp->signalids[GW_DICTINFOLIST_SIGNALID_ROW_CHANGED] = g_signal_connect (
             G_OBJECT (temp->model),
             "row-deleted", 
