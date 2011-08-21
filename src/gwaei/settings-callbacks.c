@@ -225,20 +225,20 @@ G_MODULE_EXPORT void gw_settingswindow_sync_use_global_document_font_cb (GSettin
 {
     //Declarations
     GwSettingsWindow *window;
-    GtkWidget *checkbox;
+    GtkToggleButton *checkbox;
     GtkWidget *hbox;
     gboolean request;
 
     //Initializations
     window = GW_SETTINGSWINDOW (data);
     if (window == NULL) return;
-    checkbox = GTK_WIDGET (gtk_builder_get_object (window->builder, "system_font_checkbox"));
+    checkbox = GTK_TOGGLE_BUTTON (gtk_builder_get_object (window->builder, "system_font_checkbox"));
     hbox = GTK_WIDGET (gtk_builder_get_object (window->builder, "system_document_font_hbox"));
     request = lw_prefmanager_get_boolean (settings, KEY);
 
     //Updates
     g_signal_handlers_block_by_func (checkbox, gw_settingswindow_use_global_document_font_toggled_cb, NULL);
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), request);
+    gtk_toggle_button_set_active (checkbox, request);
     gtk_widget_set_sensitive (hbox, !request);
     g_signal_handlers_unblock_by_func (checkbox, gw_settingswindow_use_global_document_font_toggled_cb, NULL);
 }
@@ -299,17 +299,17 @@ G_MODULE_EXPORT void gw_settingswindow_sync_search_as_you_type_cb (GSettings *se
 {
     //Declarations
     GwSettingsWindow *window;
-    GtkWidget *checkbox;
+    GtkToggleButton *checkbox;
     gboolean request;
 
     //Initializations
     window = GW_SETTINGSWINDOW (data);
     if (window == NULL) return;
-    checkbox = GTK_WIDGET (gtk_builder_get_object(window->builder, "search_as_you_type_checkbox"));
+    checkbox = GTK_TOGGLE_BUTTON (gtk_builder_get_object(window->builder, "search_as_you_type_checkbox"));
     request = lw_prefmanager_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_SEARCH_AS_YOU_TYPE);
 
     g_signal_handlers_block_by_func (checkbox, gw_settingswindow_search_as_you_type_toggled_cb, NULL);
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), request);
+    gtk_toggle_button_set_active (checkbox, request);
     g_signal_handlers_unblock_by_func (checkbox, gw_settingswindow_search_as_you_type_toggled_cb, NULL);
 }
 
@@ -399,7 +399,7 @@ G_MODULE_EXPORT void gw_settingswindow_sync_kata_hira_conv_cb (GSettings *settin
     request = lw_prefmanager_get_boolean (settings, KEY);
 
     g_signal_handlers_block_by_func (checkbox, gw_settingswindow_kata_hira_conv_toggled_cb, NULL);
-    gtk_toggle_button_set_active(checkbox, request);
+    gtk_toggle_button_set_active (checkbox, request);
     g_signal_handlers_unblock_by_func (checkbox, gw_settingswindow_kata_hira_conv_toggled_cb, NULL);
 }
 
@@ -422,6 +422,24 @@ G_MODULE_EXPORT void gw_settingswindow_sync_swatch_color_cb (GSettings *settings
     {
       gtk_color_button_set_color (swatch, &color);
     }
+}
+
+
+G_MODULE_EXPORT void gw_settingswindow_sync_spellcheck_cb (GSettings *settings, gchar *KEY, gpointer data)
+{
+    //Declarations
+    GwSettingsWindow *window;
+    GtkToggleButton *checkbox;
+    gboolean request;
+
+    //Initializations
+    window = GW_SETTINGSWINDOW (data);
+    checkbox = GTK_TOGGLE_BUTTON (gtk_builder_get_object (window->builder, "query_spellcheck"));
+    request = lw_prefmanager_get_boolean (settings, KEY);
+
+    g_signal_handlers_block_by_func (checkbox, gw_settingswindow_spellcheck_toggled_cb, NULL);
+    gtk_toggle_button_set_active (checkbox, request);
+    g_signal_handlers_unblock_by_func (checkbox, gw_settingswindow_spellcheck_toggled_cb, NULL);
 }
 
 

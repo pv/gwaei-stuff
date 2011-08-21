@@ -1798,16 +1798,16 @@ G_MODULE_EXPORT void gw_searchwindow_sync_spellcheck_cb (GSettings *settings, gc
 {
     //Declarations
     GwSearchWindow *window;
-    GtkWidget *toolbutton;
+    GtkToggleToolButton *toolbutton;
     gboolean request;
 
     //Initializations
     window = GW_SEARCHWINDOW (data);
-    toolbutton = GTK_WIDGET (gtk_builder_get_object (window->builder, "spellcheck_toolbutton"));
+    toolbutton = GTK_TOGGLE_TOOL_BUTTON (gtk_builder_get_object (window->builder, "spellcheck_toolbutton"));
     request = lw_prefmanager_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_SPELLCHECK);
 
     g_signal_handlers_block_by_func (toolbutton, gw_searchwindow_spellcheck_toggled_cb, NULL);
-    gtk_toggle_tool_button_set_active (GTK_TOGGLE_TOOL_BUTTON (toolbutton), request);
+    gtk_toggle_tool_button_set_active (toolbutton, request);
     g_signal_handlers_unblock_by_func (toolbutton, gw_searchwindow_spellcheck_toggled_cb, NULL);
 }
 

@@ -95,7 +95,7 @@ void gw_window_destroy (GwWindow *window)
         gw_searchwindow_destroy (GW_SEARCHWINDOW (window));
         break;
       case GW_WINDOW_SETTINGS:
-        gw_settingswindow_destroy ((GwSettingsWindow*) window);
+        gw_settingswindow_destroy (GW_SETTINGSWINDOW (window));
         break;
 /*
       case GW_WINDOW_RADICALS:

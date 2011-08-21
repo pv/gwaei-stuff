@@ -125,7 +125,6 @@ GwApplication* gw_app_new (int* argc, char** argv[])
 
 void gw_app_free (GwApplication *app)
 {
-  /*
     //Declarations
     GList *iter;
     GwWindow *window;
@@ -142,7 +141,6 @@ void gw_app_free (GwApplication *app)
     }
     g_list_free (app->windowlist);
 
-    */
     gw_dictinfolist_free (app->dictinfolist);
 /*
     #ifdef WITH_LIBUNIQUE
@@ -546,7 +544,7 @@ void gw_app_block_searches (GwApplication *app)
 void gw_app_unblock_searches (GwApplication *app)
 {
   if (app->block_new_searches > 0)
-    app->block_new_searches++;
+    app->block_new_searches--;
 }
 
 gboolean gw_app_can_start_search (GwApplication *app)

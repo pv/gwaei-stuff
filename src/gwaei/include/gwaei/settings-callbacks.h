@@ -21,6 +21,7 @@ void gw_settingswindow_sync_use_global_document_font_cb (GSettings*, gchar*, gpo
 void gw_settingswindow_sync_romaji_kana_conv_cb (GSettings*, gchar*, gpointer);
 void gw_settingswindow_sync_hira_kata_conv_cb (GSettings*, gchar*, gpointer);
 void gw_settingswindow_sync_kata_hira_conv_cb (GSettings*, gchar*, gpointer);
+void gw_settingswindow_sync_spellcheck_cb (GSettings*, gchar*, gpointer);
 void gw_settingswindow_sync_swatch_color_cb (GSettings*, gchar*, gpointer);
 
 

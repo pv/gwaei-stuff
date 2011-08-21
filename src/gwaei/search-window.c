@@ -43,6 +43,8 @@
 //Static declarations
 static void _searchwindow_initialize_combobox (GwSearchWindow*);
 static void _searchwindow_initialize_dictionary_menu (GwSearchWindow*);
+static void _searchwindow_attach_signals (GwSearchWindow*);
+static void _searchwindow_remove_signals (GwSearchWindow*);
 
 
 //!
@@ -79,8 +81,6 @@ GwSearchWindow* gw_searchwindow_new ()
 
       for (i = 0; i < TOTAL_GW_SEARCHWINDOW_TIMEOUTIDS; i++)
         temp->timeoutids[i] = 0;
-      for (i = 0; i < TOTAL_GW_SEARCHWINDOW_SIGNALIDS; i++)
-        temp->signalids[i] = 0;
 
       temp->previous_tip = 0;
 
@@ -102,69 +102,6 @@ GwSearchWindow* gw_searchwindow_new ()
 
       temp->history = lw_historylist_new (20);
       temp->tagtable = gtk_text_tag_table_new ();
-
-      temp->signalids[GW_SEARCHWINDOW_SIGNALID_TOOLBAR_SHOW] = lw_prefmanager_add_change_listener_by_schema (
-          app->prefmanager,
-          LW_SCHEMA_BASE,
-          LW_KEY_TOOLBAR_SHOW,
-          gw_searchwindow_sync_toolbar_show_cb,
-          temp
-      );
-
-      temp->signalids[GW_SEARCHWINDOW_SIGNALID_STATUSBAR_SHOW] = lw_prefmanager_add_change_listener_by_schema (
-          app->prefmanager,
-          LW_SCHEMA_BASE,
-          LW_KEY_STATUSBAR_SHOW,
-          gw_searchwindow_sync_statusbar_show_cb,
-          temp
-      );
-
-      temp->signalids[GW_SEARCHWINDOW_SIGNALID_USE_GLOBAL_FONT] = lw_prefmanager_add_change_listener_by_schema (
-          app->prefmanager,
-          LW_SCHEMA_FONT,
-          LW_KEY_FONT_USE_GLOBAL_FONT,
-          gw_searchwindow_sync_font_cb,
-          temp
-      );
-      temp->signalids[GW_SEARCHWINDOW_SIGNALID_CUSTOM_FONT] = lw_prefmanager_add_change_listener_by_schema (
-          app->prefmanager,
-          LW_SCHEMA_FONT,
-          LW_KEY_FONT_CUSTOM_FONT,
-          gw_searchwindow_sync_font_cb,
-          temp
-      );
-
-      temp->signalids[GW_SEARCHWINDOW_SIGNALID_FONT_MAGNIFICATION] = lw_prefmanager_add_change_listener_by_schema (
-          app->prefmanager,
-          LW_SCHEMA_FONT,
-          LW_KEY_FONT_MAGNIFICATION,
-          gw_searchwindow_sync_font_cb,
-          temp
-      );
-
-      temp->signalids[GW_SEARCHWINDOW_SIGNALID_KEEP_SEARCHING] = lw_prefmanager_add_change_listener_by_schema (
-          app->prefmanager,
-          LW_SCHEMA_BASE,
-          LW_KEY_SEARCH_AS_YOU_TYPE,
-          gw_settingswindow_sync_search_as_you_type_cb,
-          temp
-      );
-
-      temp->timeoutids[GW_SEARCHWINDOW_TIMEOUTID_KEEP_SEARCHING] = g_timeout_add_full (
-            G_PRIORITY_DEFAULT_IDLE, 
-            100, 
-            (GSourceFunc) gw_searchwindow_keep_searching_timeout, 
-            temp, 
-            NULL
-      );
-
-      temp->timeoutids[GW_SEARCHWINDOW_TIMEOUTID_PROGRESS] = g_timeout_add_full (
-            G_PRIORITY_LOW, 
-            50, 
-            (GSourceFunc) gw_searchwindow_update_progress_feedback_timeout, 
-            temp, 
-            NULL
-      );
 /*
       temp->timeoutids[GW_SEARCHWINDOW_TIMEOUTID_SELECTION_ICONS] = g_timeout_add_full (
             G_PRIORITY_LOW, 
@@ -176,12 +113,140 @@ GwSearchWindow* gw_searchwindow_new ()
 */
 
       temp->spellcheck = gw_spellcheck_new (temp->entry);
+
+      _searchwindow_attach_signals (temp);
+
       gtk_widget_grab_focus (GTK_WIDGET (temp->entry));
       gw_searchwindow_set_dictionary (temp, 0);
       gw_searchwindow_guarantee_first_tab (temp);
     }
 
     return temp;
+}
+
+
+void gw_searchwindow_destroy (GwSearchWindow *window)
+{
+  GSource *source;
+  int i;
+
+  for (i = 0; i < TOTAL_GW_SEARCHWINDOW_TIMEOUTIDS; i++)
+  {
+    if (g_main_current_source () != NULL &&
+        !g_source_is_destroyed (g_main_current_source ()) &&
+        window->timeoutids[i] > 0
+       )
+    {
+      source = g_main_context_find_source_by_id (NULL, window->timeoutids[i]);
+      if (source != NULL)
+      {
+        g_source_destroy (source);
+      }
+    }
+    window->timeoutids[i] = 0;
+  }
+
+  _searchwindow_remove_signals (window);
+
+  gtk_widget_destroy (GTK_WIDGET (window->toplevel));
+  g_object_unref (window->builder);
+  g_object_unref (window->tagtable);
+
+  free (window);
+}
+
+
+static void _searchwindow_attach_signals (GwSearchWindow *window)
+{
+    //Declarations
+    int i;
+
+    for (i = 0; i < TOTAL_GW_SEARCHWINDOW_SIGNALIDS; i++)
+      window->signalids[i] = 0;
+
+    window->signalids[GW_SEARCHWINDOW_SIGNALID_TOOLBAR_SHOW] = lw_prefmanager_add_change_listener_by_schema (
+        app->prefmanager,
+        LW_SCHEMA_BASE,
+        LW_KEY_TOOLBAR_SHOW,
+        gw_searchwindow_sync_toolbar_show_cb,
+        window
+    );
+
+    window->signalids[GW_SEARCHWINDOW_SIGNALID_STATUSBAR_SHOW] = lw_prefmanager_add_change_listener_by_schema (
+        app->prefmanager,
+        LW_SCHEMA_BASE,
+        LW_KEY_STATUSBAR_SHOW,
+        gw_searchwindow_sync_statusbar_show_cb,
+        window
+    );
+
+    window->signalids[GW_SEARCHWINDOW_SIGNALID_USE_GLOBAL_FONT] = lw_prefmanager_add_change_listener_by_schema (
+        app->prefmanager,
+        LW_SCHEMA_FONT,
+        LW_KEY_FONT_USE_GLOBAL_FONT,
+        gw_searchwindow_sync_font_cb,
+        window
+    );
+    window->signalids[GW_SEARCHWINDOW_SIGNALID_CUSTOM_FONT] = lw_prefmanager_add_change_listener_by_schema (
+        app->prefmanager,
+        LW_SCHEMA_FONT,
+        LW_KEY_FONT_CUSTOM_FONT,
+        gw_searchwindow_sync_font_cb,
+        window
+    );
+
+    window->signalids[GW_SEARCHWINDOW_SIGNALID_FONT_MAGNIFICATION] = lw_prefmanager_add_change_listener_by_schema (
+        app->prefmanager,
+        LW_SCHEMA_FONT,
+        LW_KEY_FONT_MAGNIFICATION,
+        gw_searchwindow_sync_font_cb,
+        window
+    );
+
+    window->signalids[GW_SEARCHWINDOW_SIGNALID_KEEP_SEARCHING] = lw_prefmanager_add_change_listener_by_schema (
+        app->prefmanager,
+        LW_SCHEMA_BASE,
+        LW_KEY_SEARCH_AS_YOU_TYPE,
+        gw_searchwindow_sync_search_as_you_type_cb,
+        window
+    );
+
+    window->timeoutids[GW_SEARCHWINDOW_TIMEOUTID_KEEP_SEARCHING] = g_timeout_add_full (
+          G_PRIORITY_DEFAULT_IDLE, 
+          100, 
+          (GSourceFunc) gw_searchwindow_keep_searching_timeout, 
+          window, 
+          NULL
+    );
+
+    window->timeoutids[GW_SEARCHWINDOW_TIMEOUTID_PROGRESS] = g_timeout_add_full (
+          G_PRIORITY_LOW, 
+          50, 
+          (GSourceFunc) gw_searchwindow_update_progress_feedback_timeout, 
+          window, 
+          NULL
+    );
+}
+
+
+static void _searchwindow_remove_signals (GwSearchWindow *window)
+{
+    //Declarations
+    int i;
+
+    lw_prefmanager_remove_change_listener_by_schema (
+        app->prefmanager,
+        LW_SCHEMA_BASE,
+        window->signalids[GW_SEARCHWINDOW_SIGNALID_TOOLBAR_SHOW]
+    );
+    lw_prefmanager_remove_change_listener_by_schema (
+        app->prefmanager,
+        LW_SCHEMA_BASE,
+        window->signalids[GW_SEARCHWINDOW_SIGNALID_STATUSBAR_SHOW]
+    );
+
+    for (i = 0; i < TOTAL_GW_SEARCHWINDOW_SIGNALIDS; i++)
+      window->signalids[i] = 0;
 }
 
 
@@ -221,8 +286,6 @@ static void _searchwindow_initialize_dictionary_menu (GwSearchWindow *window)
       }
       g_list_free (list);
     }
-
-
 
     GtkAccelGroup *accel_group;
     GSList *group;
@@ -265,43 +328,6 @@ static void _searchwindow_initialize_dictionary_menu (GwSearchWindow *window)
 //    g_signal_connect (G_OBJECT (widget), "activate", G_CALLBACK (gw_main_cycle_dictionaries_forward_cb), NULL);
     gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", accel_group, GDK_KEY_Down, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
     gtk_widget_show (GTK_WIDGET (widget));
-}
-
-
-void gw_searchwindow_destroy (GwSearchWindow *window)
-{
-  GSource *source;
-  int i;
-
-  for (i = 0; i < TOTAL_GW_SEARCHWINDOW_TIMEOUTIDS; i++)
-  {
-    if (!g_source_is_destroyed (g_main_current_source ()) && window->timeoutids[i] > 0)
-    {
-      source = g_main_context_find_source_by_id (NULL, window->timeoutids[i]);
-      if (source != NULL)
-      {
-        g_source_destroy (source);
-      }
-    }
-    window->timeoutids[i] = 0;
-  }
-
-  lw_prefmanager_remove_change_listener_by_schema (
-      app->prefmanager,
-      LW_SCHEMA_BASE,
-      window->signalids[GW_SEARCHWINDOW_SIGNALID_TOOLBAR_SHOW]
-  );
-  lw_prefmanager_remove_change_listener_by_schema (
-      app->prefmanager,
-      LW_SCHEMA_BASE,
-      window->signalids[GW_SEARCHWINDOW_SIGNALID_STATUSBAR_SHOW]
-  );
-
-  gtk_widget_destroy (GTK_WIDGET (window->toplevel));
-  g_object_unref (window->builder);
-  g_object_unref (window->tagtable);
-
-  free (window);
 }
 
 
