@@ -40,6 +40,8 @@ typedef struct _GwSettingsWindow GwSettingsWindow;
 
 GwSettingsWindow* gw_settingswindow_new ();
 void gw_settingswindow_destroy (GwSettingsWindow*);
+void gw_settingswindow_init (GwSettingsWindow*);
+void gw_settingswindow_deinit (GwSettingsWindow*);
 
 void gw_settingswindow_update_interface (GwSettingsWindow*);
 

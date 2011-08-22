@@ -49,8 +49,6 @@ void _settingswindow_remove_signals (GwSettingsWindow*);
 GwSettingsWindow* gw_settingswindow_new () 
 {
     GwSettingsWindow *temp;
-    GtkWidget *notebook;
-    int i;
 
     temp = (GwSettingsWindow*) malloc(sizeof(GwSettingsWindow));
 
@@ -58,19 +56,8 @@ GwSettingsWindow* gw_settingswindow_new ()
     {
       gw_app_block_searches (app);
 
-      temp->builder = gtk_builder_new ();
-      gw_window_load_ui_xml (GW_WINDOW (temp), "settings.ui");
-      temp->toplevel = GTK_WINDOW (gtk_builder_get_object (temp->builder, "settings_window"));
-      temp->type = GW_WINDOW_SETTINGS;
-
-      GtkTreeView *view;
-      view = GTK_TREE_VIEW (gtk_builder_get_object (temp->builder, "manage_dictionaries_treeview"));
-      _settingswindow_initialize_dictionary_tree_view (view);
-
-      _settingswindow_attach_signals (temp);
-
-      if (g_list_length (app->dictinfolist->list) == 0)
-        gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), 1);
+      gw_window_init (GW_WINDOW (temp), GW_WINDOW_SETTINGS, "settings.ui", "settings_window");
+      gw_settingswindow_init (temp);
     }
 
     return temp;
@@ -82,11 +69,37 @@ GwSettingsWindow* gw_settingswindow_new ()
 //!
 void gw_settingswindow_destroy (GwSettingsWindow *window)
 {
-    _settingswindow_remove_signals (window);
-    gtk_widget_destroy (GTK_WIDGET (window->toplevel));
-    g_object_unref (window->builder);
+
+    gw_settingswindow_deinit (window);
+    gw_window_deinit (GW_WINDOW (window));
+
     free(window);
+
     gw_app_unblock_searches (app);
+}
+
+
+void gw_settingswindow_init (GwSettingsWindow *window)
+{
+    //Declarations
+    GtkTreeView *view;
+    GtkWidget *notebook;
+    int i;
+
+    //Initializations
+    view = GTK_TREE_VIEW (gtk_builder_get_object (window->builder, "manage_dictionaries_treeview"));
+    _settingswindow_initialize_dictionary_tree_view (view);
+
+    _settingswindow_attach_signals (window);
+
+    if (g_list_length (app->dictinfolist->list) == 0)
+      gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), 1);
+}
+
+
+void gw_settingswindow_deinit (GwSettingsWindow *window)
+{
+    _settingswindow_remove_signals (window);
 }
 
 

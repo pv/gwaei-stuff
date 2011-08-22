@@ -22,11 +22,14 @@ typedef enum {
 struct _GwWindow {
   GtkBuilder *builder;
   GtkWindow *toplevel;
+  GtkWindow *transient_for;
   GwWindowType type;
 };
 typedef struct _GwWindow GwWindow;
 
 GwWindow* gw_window_new (const GwWindowType);
+void gw_window_init (GwWindow*, const GwWindowType, const char*, const char*);
+void gw_window_deinit (GwWindow*);
 void gw_window_destroy (GwWindow*);
 gboolean gw_window_load_ui_xml (GwWindow*, const char*);
 

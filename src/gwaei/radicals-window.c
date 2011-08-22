@@ -20,12 +20,9 @@
 *******************************************************************************/
 
 //!
-//! @file src/gwaei/radsearchtool.c
+//! @file radicals-window.c
 //!
 //! @brief Abstraction layer for gtk objects 
-//!
-//!  Used as a go between for functions interacting with GUI interface objects.
-//!  This is the gtk version.
 //!
 
 
@@ -39,6 +36,7 @@
 #include <gwaei/gwaei.h>
 
 
+static void _radicalswindow_fill_radicals (GwRadicalsWindow*);
 
 static char *_radical_array[][5] =
 {
@@ -323,95 +321,113 @@ GwRadicalsWindow* gw_radicalswindow_new ()
     temp = (GwRadicalsWindow*) malloc(sizeof(GwRadicalsWindow));
     if (temp != NULL)
     {
-      temp->builder = gtk_builder_new ();
-      gw_common_load_ui_xml (temp->builder, "radicals.ui");
-      temp->window = GTK_WINDOW (gtk_builder_get_object (temp->builder, "radicals_window"));
-      temp->table = GTK_TABLE (gtk_builder_get_object (temp->builder, "radical_selection_table"));
-
-      //Declarations
-      int total_columns;
-      int rows;
-      int i;
-      int cols;
-      const char *stroke;
-      GtkWidget *button;
-      GtkWidget *label;
-      int ncols;
-      int nrows;
-
-      //Initializations
-      total_columns = 14;
-      g_object_get (G_OBJECT (temp->table), "n-columns", &ncols, "n-rows", &nrows, NULL);
-      if (ncols < total_columns) gtk_table_resize (temp->table, nrows, total_columns);
-      rows = nrows - 1;
-
-      i = 0;
-      cols = 0;
-      stroke = NULL;
-      button = NULL;
-      label = NULL;
-
-
-      while (_radical_array[i][0] != NULL)
-      {
-        //Add a new stroke label
-        if (stroke == NULL || strcmp(stroke, _radical_array[i][GW_RADARRAY_STROKES]) != 0)
-        {
-          stroke = _radical_array[i][GW_RADARRAY_STROKES];
-          label = gtk_label_new (stroke);
-          char *markup = g_markup_printf_escaped ("<span color=\"red\"><b>%s</b></span>", _radical_array[i][GW_RADARRAY_STROKES]);
-          if (markup != NULL)
-          {
-            gtk_label_set_markup (GTK_LABEL (label), markup);
-            g_free (markup);
-          }
-          gtk_table_attach (temp->table, label, cols, cols + 1, rows, rows + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
-        }
-        //Add a radical button
-        else
-        {
-          g_object_get (G_OBJECT (temp->table), "n-columns", &ncols, NULL);
-          if (cols == total_columns && rows != 0) gtk_table_resize (temp->table, rows, ncols);
-          button = gtk_toggle_button_new_with_label (_radical_array[i][GW_RADARRAY_ACTUAL]);
-          gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_HALF);
-
-          char *tooltip = g_markup_printf_escaped (
-              gettext("<b>Substitution Radical:</b> %s\n<b>Actual Radical:</b> %s\n<b>Radical Name:</b> %s"),
-              _radical_array[i][GW_RADARRAY_REPRESENTATIVE], _radical_array[i][GW_RADARRAY_ACTUAL], _radical_array[i][GW_RADARRAY_NAME]
-          );
-          gtk_buildable_set_name (GTK_BUILDABLE (button), _radical_array[i][GW_RADARRAY_REPRESENTATIVE]);
-          if (tooltip != NULL)
-          {
-            gtk_widget_set_tooltip_markup (GTK_WIDGET (button), tooltip);
-            g_free (tooltip);
-            tooltip = NULL;
-          }
-          g_signal_connect(button, "toggled", G_CALLBACK (gw_radsearchtool_search_cb), NULL);
-          gtk_table_attach (temp->table, button, cols, cols + 1, rows, rows + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
-          i++;
-        }
-
-        cols++;
-        if (cols == total_columns + 1)
-        {
-          rows++;
-          cols = 0;
-        }
-      }
-
-      GtkWidget *spinbutton;
-      spinbutton = GTK_WIDGET (gtk_builder_get_object (temp->builder, "strokes_spinbutton"));
-      gtk_spin_button_set_value (GTK_SPIN_BUTTON (spinbutton), 1.0);
-
-      gtk_widget_show_all (GTK_WIDGET (temp->table));
+      gw_window_init (GW_WINDOW (temp), GW_WINDOW_RADICALS, "radicals.ui", "radicals_window");
+      gw_radicalswindow_init (temp);
     }
 }
 
 
-void gw_radicalswindow_destroy (GwRadicalsWindow* radicals)
+void gw_radicalswindow_destroy (GwRadicalsWindow* window)
 {
-    gtk_widget_destroy (GTK_WIDGET (radicals->window));
-    free(radicals);
+    gw_window_deinit (GW_WINDOW (window));
+    gw_radicalswindow_deinit (window);
+
+    free(window);
+}
+
+
+void gw_radicalswindow_init (GwRadicalsWindow *window)
+{
+    //Declarations
+    GtkWidget *spinbutton;
+
+    //Initializations
+    window->table = GTK_TABLE (gtk_builder_get_object (window->builder, "radical_selection_table"));
+    spinbutton = GTK_WIDGET (gtk_builder_get_object (window->builder, "strokes_spinbutton"));
+
+    gtk_spin_button_set_value (GTK_SPIN_BUTTON (spinbutton), 1.0);
+    _radicalswindow_fill_radicals (window);
+    gtk_widget_show_all (GTK_WIDGET (window->table));
+}
+
+
+void gw_radicalswindow_deinit (GwRadicalsWindow *window)
+{
+}
+
+
+static void _radicalswindow_fill_radicals (GwRadicalsWindow *window)
+{
+    //Declarations
+    int total_columns;
+    int rows;
+    int i;
+    int cols;
+    const char *stroke;
+    GtkWidget *button;
+    GtkWidget *label;
+    int ncols;
+    int nrows;
+
+    //Initializations
+    total_columns = 14;
+    g_object_get (G_OBJECT (window->table), "n-columns", &ncols, "n-rows", &nrows, NULL);
+    if (ncols < total_columns) gtk_table_resize (window->table, nrows, total_columns);
+    rows = nrows - 1;
+
+    i = 0;
+    cols = 0;
+    stroke = NULL;
+    button = NULL;
+    label = NULL;
+
+
+    while (_radical_array[i][0] != NULL)
+    {
+      //Add a new stroke label
+      if (stroke == NULL || strcmp(stroke, _radical_array[i][GW_RADARRAY_STROKES]) != 0)
+      {
+        stroke = _radical_array[i][GW_RADARRAY_STROKES];
+        label = gtk_label_new (stroke);
+        char *markup = g_markup_printf_escaped ("<span color=\"red\"><b>%s</b></span>", _radical_array[i][GW_RADARRAY_STROKES]);
+        if (markup != NULL)
+        {
+          gtk_label_set_markup (GTK_LABEL (label), markup);
+          g_free (markup);
+        }
+        gtk_table_attach (window->table, label, cols, cols + 1, rows, rows + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+      }
+      //Add a radical button
+      else
+      {
+        g_object_get (G_OBJECT (window->table), "n-columns", &ncols, NULL);
+        if (cols == total_columns && rows != 0) gtk_table_resize (window->table, rows, ncols);
+        button = gtk_toggle_button_new_with_label (_radical_array[i][GW_RADARRAY_ACTUAL]);
+        gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_HALF);
+
+        char *tooltip = g_markup_printf_escaped (
+            gettext("<b>Substitution Radical:</b> %s\n<b>Actual Radical:</b> %s\n<b>Radical Name:</b> %s"),
+            _radical_array[i][GW_RADARRAY_REPRESENTATIVE], _radical_array[i][GW_RADARRAY_ACTUAL], _radical_array[i][GW_RADARRAY_NAME]
+        );
+        gtk_buildable_set_name (GTK_BUILDABLE (button), _radical_array[i][GW_RADARRAY_REPRESENTATIVE]);
+        if (tooltip != NULL)
+        {
+          gtk_widget_set_tooltip_markup (GTK_WIDGET (button), tooltip);
+          g_free (tooltip);
+          tooltip = NULL;
+        }
+        g_signal_connect(button, "toggled", G_CALLBACK (gw_radsearchtool_search_cb), NULL);
+        gtk_table_attach (window->table, button, cols, cols + 1, rows, rows + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+        i++;
+      }
+
+      cols++;
+      if (cols == total_columns + 1)
+      {
+        rows++;
+        cols = 0;
+      }
+    }
 }
 
 

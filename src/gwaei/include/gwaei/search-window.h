@@ -98,6 +98,8 @@ typedef struct _GwSearchWindow GwSearchWindow;
 
 GwSearchWindow* gw_searchwindow_new (void);
 void gw_searchwindow_destroy (GwSearchWindow*);
+void gw_searchwindow_init (GwSearchWindow*);
+void gw_searchwindow_deinit (GwSearchWindow*);
 
 gboolean gw_searchwindow_update_progress_feedback_timeout (GwSearchWindow*);
 gboolean gw_searchwindow_update_icons_for_selection_timeout (GwSearchWindow*);

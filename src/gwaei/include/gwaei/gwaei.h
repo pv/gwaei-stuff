@@ -9,7 +9,10 @@
 #include <gwaei/window.h>
 
 #include <gwaei/spellcheck.h>
+
 #include <gwaei/search-window.h>
+#include <gwaei/radicals-window.h>
+#include <gwaei/settings-window.h>
 
 #ifdef WITH_LIBUNIQUE
 #include <gwaei/libunique.h>
@@ -17,12 +20,6 @@
 
 #include <gwaei/printing.h>
 
-/*
-#include <gwaei/radicals-window.h>
-#include <gwaei/radicals-callbacks.h>
-
-*/
-#include <gwaei/settings-window.h>
 
 #include <gwaei/dictinfolist.h>
 

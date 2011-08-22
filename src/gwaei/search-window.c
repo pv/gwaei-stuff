@@ -59,66 +59,8 @@ GwSearchWindow* gw_searchwindow_new ()
 
     if (temp != NULL)
     {
-      temp->builder = gtk_builder_new ();
-      gw_window_load_ui_xml (GW_WINDOW (temp), "search.ui");
-
-      temp->toplevel = GTK_WINDOW (gtk_builder_get_object (temp->builder, "main_window"));
-      temp->entry = GTK_ENTRY (gtk_builder_get_object (temp->builder, "search_entry"));
-      temp->notebook = GTK_NOTEBOOK (gtk_builder_get_object (temp->builder, "notebook"));
-      temp->toolbar = GTK_TOOLBAR (gtk_builder_get_object (temp->builder, "toolbar"));
-      temp->statusbar = GTK_WIDGET (gtk_builder_get_object (temp->builder, "statusbar"));
-      temp->combobox = GTK_COMBO_BOX (gtk_builder_get_object (temp->builder, "dictionary_combobox"));
-
-      _searchwindow_initialize_combobox (temp);
-      _searchwindow_initialize_dictionary_menu (temp);
-
-      temp->dictinfo = NULL;
-      temp->tablist = NULL;
-
-      temp->feedbackdata.item = NULL;
-      temp->feedbackdata.line = 0;
-      temp->feedbackdata.status = LW_SEARCHSTATUS_IDLE;
-
-      for (i = 0; i < TOTAL_GW_SEARCHWINDOW_TIMEOUTIDS; i++)
-        temp->timeoutids[i] = 0;
-
-      temp->previous_tip = 0;
-
-      temp->keepsearchingdata.delay = 0;
-      temp->keepsearchingdata.query = NULL;
-      temp->keepsearchingdata.enabled = TRUE;
-
-      temp->mousedata.item = NULL;
-      temp->mousedata.button_press_x = 0;
-      temp->mousedata.button_press_y = 0;
-      temp->mousedata.button_character = 0;
-      temp->mousedata.hovered_word = NULL; 
-
-      temp->selectionicondata.selected = FALSE;
-
-      temp->new_tab = FALSE; 
-
-      temp->type = GW_WINDOW_SEARCH;
-
-      temp->history = lw_historylist_new (20);
-      temp->tagtable = gtk_text_tag_table_new ();
-/*
-      temp->timeoutids[GW_SEARCHWINDOW_TIMEOUTID_SELECTION_ICONS] = g_timeout_add_full (
-            G_PRIORITY_LOW, 
-            500, 
-            (GSourceFunc) gw_searchwindow_update_icons_for_selection_timeout, 
-            temp, 
-            NULL
-      );
-*/
-
-      temp->spellcheck = gw_spellcheck_new (temp->entry);
-
-      _searchwindow_attach_signals (temp);
-
-      gtk_widget_grab_focus (GTK_WIDGET (temp->entry));
-      gw_searchwindow_set_dictionary (temp, 0);
-      gw_searchwindow_guarantee_first_tab (temp);
+      gw_window_init (GW_WINDOW (temp), GW_WINDOW_SEARCH, "search.ui", "main_window");
+      gw_searchwindow_init (temp);
     }
 
     return temp;
@@ -126,6 +68,78 @@ GwSearchWindow* gw_searchwindow_new ()
 
 
 void gw_searchwindow_destroy (GwSearchWindow *window)
+{
+  gw_searchwindow_deinit (window);
+  gw_window_deinit (GW_WINDOW (window));
+
+  free (window);
+}
+
+
+void gw_searchwindow_init (GwSearchWindow *window)
+{
+    //Declarations
+    int i;
+
+    //Initializations
+    window->entry = GTK_ENTRY (gtk_builder_get_object (window->builder, "search_entry"));
+    window->notebook = GTK_NOTEBOOK (gtk_builder_get_object (window->builder, "notebook"));
+    window->toolbar = GTK_TOOLBAR (gtk_builder_get_object (window->builder, "toolbar"));
+    window->statusbar = GTK_WIDGET (gtk_builder_get_object (window->builder, "statusbar"));
+    window->combobox = GTK_COMBO_BOX (gtk_builder_get_object (window->builder, "dictionary_combobox"));
+
+    _searchwindow_initialize_combobox (window);
+    _searchwindow_initialize_dictionary_menu (window);
+
+    window->dictinfo = NULL;
+    window->tablist = NULL;
+
+    window->feedbackdata.item = NULL;
+    window->feedbackdata.line = 0;
+    window->feedbackdata.status = LW_SEARCHSTATUS_IDLE;
+
+    for (i = 0; i < TOTAL_GW_SEARCHWINDOW_TIMEOUTIDS; i++)
+      window->timeoutids[i] = 0;
+
+    window->previous_tip = 0;
+
+    window->keepsearchingdata.delay = 0;
+    window->keepsearchingdata.query = NULL;
+    window->keepsearchingdata.enabled = TRUE;
+
+    window->mousedata.item = NULL;
+    window->mousedata.button_press_x = 0;
+    window->mousedata.button_press_y = 0;
+    window->mousedata.button_character = 0;
+    window->mousedata.hovered_word = NULL; 
+
+    window->selectionicondata.selected = FALSE;
+
+    window->new_tab = FALSE; 
+
+    window->history = lw_historylist_new (20);
+    window->tagtable = gtk_text_tag_table_new ();
+/*
+    window->timeoutids[gw_searchwindow_timeoutid_selection_icons] = g_timeout_add_full (
+          g_priority_low, 
+          500, 
+          (gsourcefunc) gw_searchwindow_update_icons_for_selection_timeout, 
+          window, 
+          NULL
+    );
+*/
+
+    window->spellcheck = gw_spellcheck_new (window->entry);
+
+    _searchwindow_attach_signals (window);
+
+    gtk_widget_grab_focus (GTK_WIDGET (window->entry));
+    gw_searchwindow_set_dictionary (window, 0);
+    gw_searchwindow_guarantee_first_tab (window);
+}
+
+
+void gw_searchwindow_deinit (GwSearchWindow *window)
 {
   GSource *source;
   int i;
@@ -148,12 +162,9 @@ void gw_searchwindow_destroy (GwSearchWindow *window)
 
   _searchwindow_remove_signals (window);
 
-  gtk_widget_destroy (GTK_WIDGET (window->toplevel));
-  g_object_unref (window->builder);
   g_object_unref (window->tagtable);
-
-  free (window);
 }
+
 
 
 static void _searchwindow_attach_signals (GwSearchWindow *window)

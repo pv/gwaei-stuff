@@ -39,7 +39,6 @@
 #include <gwaei/gwaei.h>
 
 
-
 GwWindow* gw_window_new (const GwWindowType TYPE)
 {
     //Declarations
@@ -64,10 +63,10 @@ GwWindow* gw_window_new (const GwWindowType TYPE)
         gtk_window_set_position (window->toplevel, GTK_WIN_POS_CENTER_ON_PARENT);
         gtk_window_set_modal (window->toplevel, TRUE);
         break;
-/*
       case GW_WINDOW_RADICALS:
         window = GW_WINDOW (gw_radicalswindow_new ());
         break;
+/*
       case GW_WINDOW_KANJIPAD:
         window = GW_WINDOW (gw_kanjipadwindow_new ());
         break;
@@ -87,6 +86,21 @@ GwWindow* gw_window_new (const GwWindowType TYPE)
 }
 
 
+void gw_window_init (GwWindow *window, const GwWindowType TYPE, const char* UI_XML_FILENAME, const char* WINDOW_ID)
+{
+    window->builder = gtk_builder_new ();
+    gw_window_load_ui_xml (window, UI_XML_FILENAME);
+    window->toplevel = GTK_WINDOW (gtk_builder_get_object (window->builder, WINDOW_ID));
+    window->type = TYPE;
+}
+
+void gw_window_deinit (GwWindow *window)
+{
+    gtk_widget_destroy (GTK_WIDGET (window->toplevel));
+    g_object_unref (window->builder);
+}
+
+
 void gw_window_destroy (GwWindow *window)
 {
     switch (window->type)
@@ -97,10 +111,10 @@ void gw_window_destroy (GwWindow *window)
       case GW_WINDOW_SETTINGS:
         gw_settingswindow_destroy (GW_SETTINGSWINDOW (window));
         break;
-/*
       case GW_WINDOW_RADICALS:
         gw_radicalswindow_destroy ((GwRadicalsWindow*) window);
         break;
+/*
       case GW_WINDOW_KANJIPAD:
         gw_kanjipadwindow_destroy ((GwKanjipadWindow*) window);
         break;
