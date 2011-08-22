@@ -287,6 +287,7 @@ static gboolean _paginate (GtkPrintOperation *operation,
 
     //Initializations
     view = gw_searchwindow_get_current_textview (data->window);
+    buffer = gtk_text_view_get_buffer (view);
 
     //Get the draw bounds
     if (gtk_text_buffer_get_has_selection (buffer))
@@ -437,7 +438,7 @@ G_MODULE_EXPORT void gw_print_cb (GtkWidget *widget, gpointer data)
 {
     GwSearchWindow *window;
 
-    window = GW_SEARCHWINDOW (gw_app_get_window (app, GW_WINDOW_SEARCH, widget));
+    window = GW_SEARCHWINDOW (gw_app_get_window (app, GW_WINDOW_SEARCH, NULL));
 
     gw_app_block_searches (app);
     gw_print (GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG, window);
@@ -452,7 +453,7 @@ G_MODULE_EXPORT void gw_print_preview_cb (GtkWidget *widget, gpointer data)
 {
     GwSearchWindow *window;
 
-    window = GW_SEARCHWINDOW (gw_app_get_window (app, GW_WINDOW_SEARCH, widget));
+    window = GW_SEARCHWINDOW (gw_app_get_window (app, GW_WINDOW_SEARCH, NULL));
 
     gw_app_block_searches (app);
     gw_print (GTK_PRINT_OPERATION_ACTION_PREVIEW, window);

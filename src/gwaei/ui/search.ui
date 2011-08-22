@@ -85,7 +85,7 @@
     <property name="short_label">Help</property>
     <property name="tooltip">Open the help dialog</property>
     <property name="stock_id">gtk-help</property>
-    <signal name="activate" handler="gw_searchwindow_help_cb" swapped="no"/>
+    <signal name="activate" handler="gw_searchwindow_show_help_cb" swapped="no"/>
   </object>
   <object class="GtkAction" id="history_back_action">
     <property name="label" translatable="yes">_Previous Search</property>
