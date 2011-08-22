@@ -168,50 +168,5 @@ G_MODULE_EXPORT void gw_dictinfolist_cursor_changed_cb (GtkTreeView *treeview, g
     gboolean has_selection = gtk_tree_selection_get_selected (selection, &tmodel, &iter);
     gtk_widget_set_sensitive (GTK_WIDGET (button), has_selection);
 }
-
-
-G_MODULE_EXPORT void gw_dictinfolist_remove_cb (GtkWidget *widget, gpointer data)
-{
-    //Declarations
-    GtkBuilder *builder;
-    GtkWidget *button;
-    GtkTreePath *path;
-    GtkTreeIter iter;
-    GList *list;
-    GError *error;
-    GtkTreeSelection *selection;
-    GtkTreeModel *tmodel;
-    gboolean has_selection;
-    gint* indices;
-    LwDictInfo *di;
-
-    //Initializations
-    builder = gw_common_get_builder ();
-    button = GTK_WIDGET (gtk_builder_get_object (builder, "remove_dictionary_button"));
-    selection = gtk_tree_view_get_selection (_view);
-    tmodel = GTK_TREE_MODEL (_model);
-    has_selection = gtk_tree_selection_get_selected (selection, &tmodel, &iter);
-    error = NULL;
-
-    //Sanity check
-    if (!has_selection) return;
-
-    path = gtk_tree_model_get_path (GTK_TREE_MODEL (_model), &iter);
-    indices = gtk_tree_path_get_indices (path);
-    list = lw_dictinfolist_get_dict_by_load_position (*indices);
-
-    if (list != NULL)
-    {
-      di = list->data;
-      lw_dictinfo_uninstall (di, NULL, &error);
-      gw_dictinfolist_update_items ();
-    }
-
-    //Cleanup
-    gtk_tree_path_free (path);
-
-    gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
-}
 */
-
 

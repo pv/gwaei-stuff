@@ -28,8 +28,7 @@
     <property name="icon_name">gwaei</property>
     <property name="type_hint">dialog</property>
     <property name="skip_taskbar_hint">True</property>
-    <signal name="key-press-event" handler="gw_main_close_on_escape_cb" object="settings_window" swapped="yes"/>
-    <signal name="delete-event" handler="gw_main_delete_event_action_cb" swapped="no"/>
+    <signal name="delete-event" handler="gw_settingswindow_delete_event_action_cb" swapped="no"/>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
@@ -472,8 +471,8 @@
                             <property name="receives_default">True</property>
                             <property name="use_action_appearance">False</property>
                             <property name="use_stock">True</property>
-                            <signal name="activate" handler="gw_dictionarymanager_remove_cb" swapped="no"/>
-                            <signal name="clicked" handler="gw_dictionarymanager_remove_cb" swapped="no"/>
+                            <signal name="activate" handler="gw_settingswindow_remove_dictinfo_cb" swapped="no"/>
+                            <signal name="clicked" handler="gw_settingswindow_remove_dictinfo_cb" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>

@@ -54,6 +54,7 @@ typedef struct GwPageInfo {
     GtkTextIter end;   //!< Mark in the buffer where we have paginated to
 } GwPageInfo;
 
+#define GW_PAGEINFO(object) (GwPageInfo*)object
 
 //!
 //! @brief Allocates a new GwPageInfo object
@@ -82,6 +83,46 @@ void gw_pageinfo_free (GwPageInfo *pi) {
     free(pi);
 }
 
+struct _GwPrintData {
+  GList *pages;
+  GwSearchWindow *window;
+};
+typedef struct _GwPrintData GwPrintData;
+
+
+GwPrintData* gw_printdata_new (GwSearchWindow *window)
+{
+    GwPrintData *temp;
+
+    temp = (GwPrintData*) malloc(sizeof(GwPrintData));
+
+    if (temp != NULL)
+    {
+      temp->pages = NULL;
+      temp->window = window;
+    }
+    
+    return temp;
+}
+
+void gw_printdata_free (GwPrintData *data)
+{
+    //Declarations
+    GList *iter;
+    GwPageInfo *pi;
+
+    for (iter = data->pages; iter != NULL; iter = iter->next)
+    {
+       pi = GW_PAGEINFO (iter->data);
+       if (pi != NULL)
+         gw_pageinfo_free (pi);
+
+    }
+    g_list_free (data->pages);
+    
+    free (data);
+}
+
 
 //!
 //! @brief function for signal fired upon start of printing.
@@ -89,12 +130,12 @@ void gw_pageinfo_free (GwPageInfo *pi) {
 //!
 static void _begin_print (GtkPrintOperation *operation,
                           GtkPrintContext   *context,
-                          GList             **pages     ) {
+                          GwPrintData       *data      ) {
   printf("begin_print!\n");
 }
 
 
-static void _draw_page_title (GtkPrintContext *context, GwPageInfo *pi) {
+static void _draw_page_title (GtkPrintContext *context, GwPageInfo *page, GwPrintData *data) {
     //Declarations
     PangoLayout *layout;
     char *text;
@@ -105,8 +146,8 @@ static void _draw_page_title (GtkPrintContext *context, GwPageInfo *pi) {
     LwSearchItem *item;
 
     //Initializations
-    item = lw_historylist_get_current (LW_HISTORYLIST_RESULTS);
-    text = gw_searchwindow_get_title_by_searchitem (app->search, item);
+    item = gw_searchwindow_get_current_searchitem (data->window);
+    text = gw_searchwindow_get_title_by_searchitem (data->window, item);
     layout = gtk_print_context_create_pango_layout (context);
     desc = pango_font_description_from_string ("sans 8");
     cr = gtk_print_context_get_cairo_context (context);
@@ -129,7 +170,7 @@ static void _draw_page_title (GtkPrintContext *context, GwPageInfo *pi) {
 }
 
 
-static void _draw_page_number (GtkPrintContext *context, gint page_nr, gint page_tl, GwPageInfo *pi)
+static void _draw_page_number (GtkPrintContext *context, gint page_nr, GwPageInfo *page, GwPrintData *data)
 {
     //Declarations
     PangoLayout *layout;
@@ -142,7 +183,7 @@ static void _draw_page_number (GtkPrintContext *context, gint page_nr, gint page
     gdouble drawable_height;
 
     //Initializations
-    text = g_strdup_printf (gettext("Page %d/%d"), page_nr + 1, page_tl);
+    text = g_strdup_printf (gettext("Page %d/%d"), page_nr + 1, g_list_length (data->pages));
     layout = gtk_print_context_create_pango_layout (context);
     desc = pango_font_description_from_string ("sans 8");
     cr = gtk_print_context_get_cairo_context (context);
@@ -168,10 +209,11 @@ static void _draw_page_number (GtkPrintContext *context, gint page_nr, gint page
 }
 
  
-static void _draw_page_results (GtkPrintContext *context, GwPageInfo *page)
+static void _draw_page_results (GtkPrintContext *context, GwPageInfo *page, GwPrintData *data)
 {
     //Declarations
-    GObject *tb;
+    GtkTextView *view;
+    GtkTextBuffer *buffer;
     PangoLayout *layout;
     char *text;
     PangoFontDescription *desc;
@@ -183,8 +225,9 @@ static void _draw_page_results (GtkPrintContext *context, GwPageInfo *page)
     gint line_end;
 
     //Initializations
-    tb = gw_common_get_gobject_by_target (app->search->builder, LW_TARGET_RESULTS);
-    text = gtk_text_buffer_get_text (GTK_TEXT_BUFFER (tb), &(page->start), &(page->end), FALSE);
+    view = gw_searchwindow_get_current_textview (data->window);
+    buffer = gtk_text_view_get_buffer (view);
+    text = gtk_text_buffer_get_text (buffer, &(page->start), &(page->end), FALSE);
     layout = gtk_print_context_create_pango_layout (context);
     desc = pango_font_description_from_string ("sans 10");
     drawable_width = gtk_print_context_get_width (context);
@@ -208,7 +251,7 @@ static void _draw_page_results (GtkPrintContext *context, GwPageInfo *page)
       //Adjust the end GtkTextIter to the cutoff in the visible cairo context
       line_start = gtk_text_iter_get_line (&page->start);
       line_end = line_start + pango_layout_get_line_count (layout) - 1;
-      gtk_text_buffer_get_iter_at_line (GTK_TEXT_BUFFER (tb), &(page->end), line_end);
+      gtk_text_buffer_get_iter_at_line (buffer, &(page->end), line_end);
     }
 
     //Cleanup
@@ -229,7 +272,7 @@ static void _draw_page_results (GtkPrintContext *context, GwPageInfo *page)
 //!
 static gboolean _paginate (GtkPrintOperation *operation,
                            GtkPrintContext   *context,
-                           GList             **pages     )
+                           GwPrintData       *data      )
 {
     printf("paginate!\n");
 
@@ -239,45 +282,46 @@ static gboolean _paginate (GtkPrintOperation *operation,
     GList *iter;
     GtkTextIter end_bound;
     GtkTextIter start_bound;
-    GObject *tb;
+    GtkTextView *view;
+    GtkTextBuffer *buffer;
 
     //Initializations
-    tb = gw_common_get_gobject_by_target (app->search->builder, LW_TARGET_RESULTS);
+    view = gw_searchwindow_get_current_textview (data->window);
 
     //Get the draw bounds
-    if (gtk_text_buffer_get_has_selection (GTK_TEXT_BUFFER (tb)))
+    if (gtk_text_buffer_get_has_selection (buffer))
     {
-      gtk_text_buffer_get_selection_bounds (GTK_TEXT_BUFFER (tb), &start_bound, &end_bound);
+      gtk_text_buffer_get_selection_bounds (buffer, &start_bound, &end_bound);
     }
     else
     {
-      gtk_text_buffer_get_start_iter (GTK_TEXT_BUFFER (tb), &start_bound);
-      gtk_text_buffer_get_end_iter (GTK_TEXT_BUFFER (tb), &end_bound);
+      gtk_text_buffer_get_start_iter (buffer, &start_bound);
+      gtk_text_buffer_get_end_iter (buffer, &end_bound);
     }
 
     //Create the first page
-    if (*pages == NULL)
+    if (data->pages == NULL)
     {
       page = gw_pageinfo_new (start_bound, end_bound);
-      _draw_page_results (context, page);
-      *pages = g_list_append (*pages, page);
+      _draw_page_results (context, page, data);
+      data->pages = g_list_append (data->pages, page);
       return FALSE;
     }
 
-    iter = g_list_last (*pages);
-    prev_page = iter->data;
+    iter = g_list_last (data->pages);
+    prev_page = GW_PAGEINFO (iter->data);
 
     //Finish paginating
     if (gtk_text_iter_get_line (&(prev_page->end)) == gtk_text_iter_get_line (&end_bound))
     {
-      gtk_print_operation_set_n_pages (operation, g_list_length (*pages));
+      gtk_print_operation_set_n_pages (operation, g_list_length (data->pages));
       return TRUE;
     }
 
     //Add another page
     page = gw_pageinfo_new (prev_page->end, end_bound);
-    _draw_page_results (context, page);
-    *pages = g_list_append (*pages, page);
+    _draw_page_results (context, page, data);
+    data->pages = g_list_append (data->pages, page);
 
     return FALSE;
 }
@@ -298,23 +342,21 @@ static gboolean _paginate (GtkPrintOperation *operation,
 static void _draw_page (GtkPrintOperation *operation,
                         GtkPrintContext   *context,
                         gint               page_nr,
-                        GList             **pages     )
+                        GwPrintData       *data     )
 {
     printf("draw!\n");
 
     //Declarations
     GwPageInfo *page;
-    GList *iter;
 
     //Initializations
-    iter = g_list_nth (*pages, page_nr);
-    if (iter != NULL)
-    {
-      page = iter->data;
+    page = GW_PAGEINFO (g_list_nth_data (data->pages, page_nr));
 
-      _draw_page_title (context, page);
-      _draw_page_number (context, page_nr, g_list_length (*pages), page);
-      _draw_page_results (context, page);
+    if (page != NULL)
+    {
+      _draw_page_title (context, page, data);
+      _draw_page_number (context, page_nr, page, data);
+      _draw_page_results (context, page, data);
     }
 }
 
@@ -331,9 +373,9 @@ static void _draw_page (GtkPrintOperation *operation,
 //! @param data Pointer to a PageInfo struct to free when pagination finishes
 //! @sa _draw_page() _begin_print() pageinate() _begin_print()
 //!
-static void _done (GtkPrintOperation      *operation,
-                   GtkPrintOperationResult result,
-                   GList                  **pages    ) 
+static void _done (GtkPrintOperation       *operation,
+                   GtkPrintOperationResult  result,
+                   GwPrintData             *data      ) 
 {
     printf("done\n");
 }
@@ -346,17 +388,17 @@ static void _done (GtkPrintOperation      *operation,
 //! to set up a print operation.  If a section of the search results are highlighted
 //! only those results are printed.
 //!
-void gw_print (const GtkPrintOperationAction ACTION)
+void gw_print (const GtkPrintOperationAction ACTION, GwSearchWindow *window)
 {
     //Declarations
-    GList *pages;
+    GwPrintData *data;
     GwPageInfo *page;
     GList *iter;
     GtkPrintOperation *operation;
     GtkPrintOperationResult res;
     
     //Initializations
-    pages = NULL;
+    data = gw_printdata_new (window);
     operation = gtk_print_operation_new ();
 
     //Force at least some minimal margins on the pages that print
@@ -367,10 +409,10 @@ void gw_print (const GtkPrintOperationAction ACTION)
     if (_settings != NULL)
       gtk_print_operation_set_print_settings (operation, _settings);
 
-    g_signal_connect (operation, "begin_print", G_CALLBACK (_begin_print), &pages);
-    g_signal_connect (operation, "draw_page", G_CALLBACK (_draw_page), &pages);
-    g_signal_connect (operation, "paginate", G_CALLBACK (_paginate), &pages);
-    g_signal_connect (operation, "done", G_CALLBACK (_done), &pages);
+    g_signal_connect (operation, "begin_print", G_CALLBACK (_begin_print), data);
+    g_signal_connect (operation, "draw_page", G_CALLBACK (_draw_page), data);
+    g_signal_connect (operation, "paginate", G_CALLBACK (_paginate), data);
+    g_signal_connect (operation, "done", G_CALLBACK (_done), data);
 
     res = gtk_print_operation_run (operation, ACTION, NULL, NULL);
 
@@ -381,12 +423,7 @@ void gw_print (const GtkPrintOperationAction ACTION)
     }
 
     //Cleanup
-    for (iter = pages; iter != NULL; iter = iter->next)
-    {
-      page = iter->data;
-      gw_pageinfo_free (page);
-    }
-    g_list_free (pages);
+    gw_printdata_free (data);
     g_object_unref (operation);
 }
 //!
@@ -398,8 +435,13 @@ void gw_print (const GtkPrintOperationAction ACTION)
 //!
 G_MODULE_EXPORT void gw_print_cb (GtkWidget *widget, gpointer data)
 {
-    gw_tabs_cancel_all_searches ();
-    gw_print (GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG);
+    GwSearchWindow *window;
+
+    window = GW_SEARCHWINDOW (gw_app_get_window (app, GW_WINDOW_SEARCH, widget));
+
+    gw_app_block_searches (app);
+    gw_print (GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG, window);
+    gw_app_unblock_searches (app);
 }
 
 
@@ -408,7 +450,12 @@ G_MODULE_EXPORT void gw_print_cb (GtkWidget *widget, gpointer data)
 //!
 G_MODULE_EXPORT void gw_print_preview_cb (GtkWidget *widget, gpointer data)
 {
-    gw_tabs_cancel_all_searches ();
-    gw_print (GTK_PRINT_OPERATION_ACTION_PREVIEW);
+    GwSearchWindow *window;
+
+    window = GW_SEARCHWINDOW (gw_app_get_window (app, GW_WINDOW_SEARCH, widget));
+
+    gw_app_block_searches (app);
+    gw_print (GTK_PRINT_OPERATION_ACTION_PREVIEW, window);
+    gw_app_unblock_searches (app);
 }
 

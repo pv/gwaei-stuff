@@ -443,3 +443,61 @@ G_MODULE_EXPORT void gw_settingswindow_sync_spellcheck_cb (GSettings *settings, 
 }
 
 
+//!
+//! @brief Preforms the action the window manager close event
+//! @see gw_searchwindow_close_cb ()
+//! @param widget GtkWidget pointer to the window to close
+//! @param data Currently unused gpointer
+//! @return Always returns true
+//!
+G_MODULE_EXPORT gboolean gw_settingswindow_delete_event_action_cb (GtkWidget *widget, gpointer data)
+{ 
+    gw_settingswindow_close_cb (widget, data);
+    return TRUE;
+}
+
+
+G_MODULE_EXPORT void gw_settingswindow_remove_dictinfo_cb (GtkWidget *widget, gpointer data)
+{
+    //Declarations
+    GtkWidget *button;
+    GtkTreePath *path;
+    GtkTreeIter iter;
+    LwDictInfo *di;
+    GError *error;
+    GtkTreeSelection *selection;
+    GtkTreeModel *tmodel;
+    gboolean has_selection;
+    gint* indices;
+    GwSettingsWindow *window;
+    GtkTreeView *view;
+
+    //Initializations
+    window = GW_SETTINGSWINDOW (gw_app_get_window (app, GW_WINDOW_SETTINGS, widget));
+    button = GTK_WIDGET (gtk_builder_get_object (window->builder, "remove_dictionary_button"));
+    view = GTK_TREE_VIEW (gtk_builder_get_object (window->builder, "manage_dictionaries_treeview"));
+    selection = gtk_tree_view_get_selection (view);
+    tmodel = GTK_TREE_MODEL (app->dictinfolist->model);
+    has_selection = gtk_tree_selection_get_selected (selection, &tmodel, &iter);
+    error = NULL;
+
+    //Sanity check
+    if (!has_selection) return;
+
+    path = gtk_tree_model_get_path (GTK_TREE_MODEL (app->dictinfolist->model), &iter);
+    indices = gtk_tree_path_get_indices (path);
+    di = lw_dictinfolist_get_dictinfo_by_load_position (LW_DICTINFOLIST (app->dictinfolist), *indices);
+
+    if (di != NULL)
+    {
+      lw_dictinfo_uninstall (di, NULL, &error);
+      gw_dictinfolist_reload (app->dictinfolist, app->prefmanager);
+    }
+
+    //Cleanup
+    gtk_tree_path_free (path);
+
+    gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
+}
+
+
