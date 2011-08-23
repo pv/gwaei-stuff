@@ -56,15 +56,18 @@ GwWindow* gw_window_new (const GwWindowType TYPE)
         gtk_window_set_position (window->toplevel, GTK_WIN_POS_MOUSE);
         break;
       case GW_WINDOW_SETTINGS:
-        window = GW_WINDOW (gw_settingswindow_new ());
         parent = gw_app_get_window (app, GW_WINDOW_SEARCH, NULL);
-        if (parent != NULL) gtk_window_set_transient_for (window->toplevel, parent->toplevel);
-        gtk_window_set_destroy_with_parent (window->toplevel, TRUE);
-        gtk_window_set_position (window->toplevel, GTK_WIN_POS_CENTER_ON_PARENT);
-        gtk_window_set_modal (window->toplevel, TRUE);
+        window = GW_WINDOW (gw_settingswindow_new (parent));
+        if (parent != NULL)
+        {
+          gtk_window_set_destroy_with_parent (window->toplevel, TRUE);
+          gtk_window_set_position (window->toplevel, GTK_WIN_POS_CENTER_ON_PARENT);
+          gtk_window_set_modal (window->toplevel, TRUE);
+        }
         break;
       case GW_WINDOW_RADICALS:
-        window = GW_WINDOW (gw_radicalswindow_new ());
+        parent = gw_app_get_window (app, GW_WINDOW_SEARCH, NULL);
+        window = GW_WINDOW (gw_radicalswindow_new (parent));
         break;
 /*
       case GW_WINDOW_KANJIPAD:
@@ -92,6 +95,7 @@ void gw_window_init (GwWindow *window, const GwWindowType TYPE, const char* UI_X
     gw_window_load_ui_xml (window, UI_XML_FILENAME);
     window->toplevel = GTK_WINDOW (gtk_builder_get_object (window->builder, WINDOW_ID));
     window->type = TYPE;
+    gw_window_set_transient_for (window, NULL);
 }
 
 void gw_window_deinit (GwWindow *window)
@@ -128,6 +132,16 @@ void gw_window_destroy (GwWindow *window)
       default:
         g_assert_not_reached ();
         break;
+    }
+}
+
+
+void gw_window_set_transient_for (GwWindow *window, GwWindow *transient_for)
+{
+    window->transient_for = transient_for;
+    if (transient_for != NULL)
+    {
+      gtk_window_set_transient_for (window->toplevel, transient_for->toplevel);
     }
 }
 

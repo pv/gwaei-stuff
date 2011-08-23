@@ -35,6 +35,7 @@
 
 #include <gwaei/gwaei.h>
 
+static void _dictinfolist_attach_signals (GwDictInfoList*);
 
 //!
 //! @brief Sets up the dictionary manager.  This is the backbone of every portion of the GUI that allows editing dictionaries
@@ -48,43 +49,60 @@ GwDictInfoList* gw_dictinfolist_new (const int MAX, LwPrefManager *pm)
 
     if (temp != NULL)
     {
-
-      //Setup the model and view
-      temp->model = gtk_list_store_new (
-          TOTAL_GW_DICTINFOLIST_COLUMNS, 
-          G_TYPE_STRING, 
-          G_TYPE_STRING, 
-          G_TYPE_STRING, 
-          G_TYPE_STRING, 
-          G_TYPE_STRING, 
-          G_TYPE_STRING, 
-          G_TYPE_POINTER);
-
-      temp->list = NULL;
-      temp->mutex = g_mutex_new();
-      temp->max = MAX;
-      for (i = 0; i < TOTAL_GW_DICTINFOLIST_SIGNALIDS; i++)
-      {
-        temp->signalids[i] = 0;
-      }
-
-      gw_dictinfolist_reload (temp, pm);
-
-      temp->signalids[GW_DICTINFOLIST_SIGNALID_ROW_CHANGED] = g_signal_connect (
-            G_OBJECT (temp->model),
-            "row-deleted", 
-            G_CALLBACK (gw_dictinfolist_list_store_row_changed_action_cb),
-            NULL
-      );
+      lw_dictinfolist_init (LW_DICTINFOLIST (temp), MAX, pm);
+      gw_dictinfolist_init (temp, pm);
     }
     return temp;
 }
 
 
-void gw_dictinfolist_free (GwDictInfoList *dm)
+void gw_dictinfolist_free (GwDictInfoList *dil)
 {
-    g_object_unref (dm->model);
-    free (dm);
+    gw_dictinfolist_deinit (dil);
+    lw_dictinfolist_deinit (LW_DICTINFOLIST (dil));
+    free (dil);
+}
+
+
+void gw_dictinfolist_init (GwDictInfoList *dil, LwPrefManager *pm)
+{
+    //Declarations
+    int i;
+
+    //Setup the model and view
+    dil->model = gtk_list_store_new (
+        TOTAL_GW_DICTINFOLIST_COLUMNS, 
+        G_TYPE_STRING, 
+        G_TYPE_STRING, 
+        G_TYPE_STRING, 
+        G_TYPE_STRING, 
+        G_TYPE_STRING, 
+        G_TYPE_STRING, 
+        G_TYPE_POINTER);
+
+    for (i = 0; i < TOTAL_GW_DICTINFOLIST_SIGNALIDS; i++)
+    {
+      dil->signalids[i] = 0;
+    }
+
+    gw_dictinfolist_reload (dil, pm);
+};
+
+
+void gw_dictinfolist_deinit (GwDictInfoList *dil)
+{
+    g_object_unref (dil->model);
+}
+
+
+static void _dictinfolist_attach_signals (GwDictInfoList *dil)
+{
+    dil->signalids[GW_DICTINFOLIST_SIGNALID_ROW_CHANGED] = g_signal_connect (
+          G_OBJECT (dil->model),
+          "row-deleted", 
+          G_CALLBACK (gw_dictinfolist_list_store_row_changed_action_cb),
+          NULL
+    );
 }
 
 

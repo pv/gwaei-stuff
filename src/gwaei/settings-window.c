@@ -46,7 +46,7 @@ void _settingswindow_remove_signals (GwSettingsWindow*);
 //!
 //! @brief Sets the initial status of the dictionaries in the settings dialog
 //!
-GwSettingsWindow* gw_settingswindow_new () 
+GwSettingsWindow* gw_settingswindow_new (GwWindow *transient_for) 
 {
     GwSettingsWindow *temp;
 
@@ -57,7 +57,7 @@ GwSettingsWindow* gw_settingswindow_new ()
       gw_app_block_searches (app);
 
       gw_window_init (GW_WINDOW (temp), GW_WINDOW_SETTINGS, "settings.ui", "settings_window");
-      gw_settingswindow_init (temp);
+      gw_settingswindow_init (temp, transient_for);
     }
 
     return temp;
@@ -79,7 +79,7 @@ void gw_settingswindow_destroy (GwSettingsWindow *window)
 }
 
 
-void gw_settingswindow_init (GwSettingsWindow *window)
+void gw_settingswindow_init (GwSettingsWindow *window, GwWindow *transient_for)
 {
     //Declarations
     GtkTreeView *view;
@@ -94,6 +94,8 @@ void gw_settingswindow_init (GwSettingsWindow *window)
 
     if (g_list_length (app->dictinfolist->list) == 0)
       gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), 1);
+
+    gw_window_set_transient_for (GW_WINDOW (window), transient_for);
 }
 
 

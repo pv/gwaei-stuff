@@ -58,15 +58,41 @@ LwDictInfoList* lw_dictinfolist_new (const int MAX, LwPrefManager *pm)
 
     if (temp != NULL)
     {
-      temp->list = NULL;
-      temp->mutex = g_mutex_new();
-      temp->max = MAX;
-
-      lw_dictinfolist_reload (temp);
-      lw_dictinfolist_load_dictionary_order_from_pref (temp, pm);
+      lw_dictinfolist_init (temp, MAX, pm);
     }
 
     return temp;
+}
+
+
+//!
+//! @brief Frees up the LwDictInfoList dictionary list
+//! The work of freeing each individual dictionary is automatically handled,
+//! removing the chance for mistakes.
+//!
+void lw_dictinfolist_free (LwDictInfoList *dil)
+{
+    lw_dictinfolist_deinit (dil);
+    free(dil);
+}
+
+
+
+void lw_dictinfolist_init (LwDictInfoList *dil, const int MAX, LwPrefManager* pm)
+{
+    dil->list = NULL;
+    dil->mutex = g_mutex_new();
+    dil->max = MAX;
+
+    lw_dictinfolist_reload (dil);
+    lw_dictinfolist_load_dictionary_order_from_pref (dil, pm);
+}
+
+
+void lw_dictinfolist_deinit (LwDictInfoList *dil)
+{
+    lw_dictinfolist_clear (dil);
+    g_mutex_free (dil->mutex);
 }
 
 
@@ -163,19 +189,6 @@ void lw_dictinfolist_add_dictionary (LwDictInfoList *dil, const LwDictType DICTT
 
     //Append to the dictionary list if was loadable
     if (di != NULL) dil->list = g_list_append (dil->list, di);
-}
-
-
-//!
-//! @brief Frees up the LwDictInfoList dictionary list
-//! The work of freeing each individual dictionary is automatically handled,
-//! removing the chance for mistakes.
-//!
-void lw_dictinfolist_free (LwDictInfoList *dil)
-{
-    lw_dictinfolist_clear (dil);
-    g_mutex_free (dil->mutex);
-    free(dil);
 }
 
 

@@ -42,7 +42,7 @@
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
-G_MODULE_EXPORT void gw_radsearchtool_show_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_radicalswindow_show_cb (GtkWidget *widget, gpointer data)
 {
 }
 
@@ -53,19 +53,21 @@ G_MODULE_EXPORT void gw_radsearchtool_show_cb (GtkWidget *widget, gpointer data)
 //! @param widget Currently unused GtkWidget pointer
 //! @param data Currently unused gpointer
 //!
-G_MODULE_EXPORT void gw_radsearchtool_clear_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_radicalswindow_clear_cb (GtkWidget *widget, gpointer data)
 {
     //Declaratins
     GwRadicalsWindow *window;
+    GtkWidget *checkbox;
 
     //Initializations
     window = GW_RADICALSWINDOW (gw_app_get_window (app, GW_WINDOW_RADICALS, widget));
+    checkbox = GTK_WIDGET (gtk_builder_get_object(window->builder, "strokes_checkbox"));
     if (window == NULL) return;
 
     gw_app_block_searches (app);
 
     gw_radicalswindow_deselect_all_radicals (window);
-    gw_radicalswindow_set_strokes_checkbox_state (window, FALSE);
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), FALSE);
 
     gw_app_unblock_searches (app);
 }
@@ -80,10 +82,11 @@ G_MODULE_EXPORT void gw_radsearchtool_clear_cb (GtkWidget *widget, gpointer data
 //! @param widget Currently unused GtkWidget pointer
 //! @param data Currently unused gpointer
 //!
-G_MODULE_EXPORT void gw_radsearchtool_search_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_radicalswindow_search_cb (GtkWidget *widget, gpointer data)
 {
     //Declarations
     GwRadicalsWindow *window;
+    GwSearchWindow *search_window;
     LwDictInfo *di;
     char *query_text;
     char *radicals_text;
@@ -93,6 +96,7 @@ G_MODULE_EXPORT void gw_radsearchtool_search_cb (GtkWidget *widget, gpointer dat
     //Initializations
     window = GW_RADICALSWINDOW (gw_app_get_window (app, GW_WINDOW_RADICALS, widget));
     if (window == NULL) return;
+    search_window = GW_SEARCHWINDOW (window->transient_for);
     di = lw_dictinfolist_get_dictinfo (LW_DICTINFOLIST (app->dictinfolist), LW_DICTTYPE_KANJI, "Kanji");
     query_text = NULL;
     radicals_text = gw_radicalswindow_strdup_all_selected (window);
@@ -132,14 +136,14 @@ G_MODULE_EXPORT void gw_radsearchtool_search_cb (GtkWidget *widget, gpointer dat
 
     //Sanity checks
     if (query_text == NULL || strlen(query_text) == 0) return;
-    if (gw_searchwindow_cancel_search_for_current_tab (window) == FALSE) return;
+    if (gw_searchwindow_cancel_search_for_current_tab (search_window) == FALSE) return;
 
     //Prep the search
-    gw_searchwindow_clear_search_entry (window);
-    gw_searchwindow_search_entry_insert (window, query_text);
-    gw_searchwindow_select_all_by_target (window, LW_TARGET_ENTRY);
+    gtk_entry_set_text (search_window->entry, "");
+    gw_searchwindow_entry_insert (search_window, query_text);
+    gw_searchwindow_select_all_by_target (search_window, LW_OUTPUTTARGET_ENTRY);
 
-    gw_searchwindow_search (window);
+    gw_radicalswindow_search_cb (GTK_WIDGET (window->toplevel), window);
 
     //Cleanup
     g_free (query_text);
@@ -152,12 +156,19 @@ G_MODULE_EXPORT void gw_radsearchtool_search_cb (GtkWidget *widget, gpointer dat
 //! @param widget Currently unused GtkWidget pointer
 //! @param data Currently unused gpointer
 //!
-G_MODULE_EXPORT void gw_radsearchtool_radical_kanji_stroke_checkbox_update_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_radicalswindow_radical_kanji_stroke_checkbox_update_cb (GtkWidget *widget, gpointer data)
 {
+    //Declarations
+    GwRadicalsWindow *window;
+
+    //Initializations
+    window = GW_RADICALSWINDOW (gw_app_get_window (app, GW_WINDOW_RADICALS, widget));
+    if (window == NULL) return;
+
     gw_radicalswindow_update_strokes_checkbox_state (window);
 
     //Start the search
-    gw_radsearchtool_search_cb (widget, data);
+    gw_radicalswindow_search_cb (widget, data);
 }
 
 

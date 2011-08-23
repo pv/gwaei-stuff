@@ -8,7 +8,8 @@
 #define EXTENDS_GW_WINDOW \
   GtkBuilder *builder; \
   GtkWindow *toplevel; \
-  GwWindowType type;
+  GwWindowType type; \
+  struct _GwWindow *transient_for;
 
 typedef enum {
   GW_WINDOW_SEARCH,
@@ -20,17 +21,16 @@ typedef enum {
 } GwWindowType;
 
 struct _GwWindow {
-  GtkBuilder *builder;
-  GtkWindow *toplevel;
-  GtkWindow *transient_for;
-  GwWindowType type;
+  EXTENDS_GW_WINDOW
 };
 typedef struct _GwWindow GwWindow;
 
 GwWindow* gw_window_new (const GwWindowType);
+void gw_window_destroy (GwWindow*);
 void gw_window_init (GwWindow*, const GwWindowType, const char*, const char*);
 void gw_window_deinit (GwWindow*);
-void gw_window_destroy (GwWindow*);
+
+void gw_window_set_transient_for (GwWindow*, GwWindow*);
 gboolean gw_window_load_ui_xml (GwWindow*, const char*);
 
 #endif

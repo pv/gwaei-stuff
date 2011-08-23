@@ -4,7 +4,10 @@
 struct _GwRadicalsWindow {
   EXTENDS_GW_WINDOW
 
-  GtkTable *table;
+  
+  GtkToggleButton *strokes_checkbutton;
+  GtkTable *radicals_table;
+  GtkSpinButton *strokes_spinbutton;
   char cache[300 * 4];
 };
 typedef struct _GwRadicalsWindow GwRadicalsWindow;
@@ -19,8 +22,8 @@ typedef enum {
   GW_RADARRAY_TOTAL
 } GwRadicalArrayField;
 
-GwRadicalsWindow* gw_radicalswindow_new (void);
-void gw_radicalswindow_init (GwRadicalsWindow*);
+GwRadicalsWindow* gw_radicalswindow_new (GwWindow*);
+void gw_radicalswindow_init (GwRadicalsWindow*, GwWindow*);
 void gw_radicalswindow_deinit (GwRadicalsWindow*);
 void gw_radicalswindow_destroy (GwRadicalsWindow*);
 
