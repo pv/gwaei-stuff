@@ -13,6 +13,7 @@
 #include <gwaei/search-window.h>
 #include <gwaei/radicals-window.h>
 #include <gwaei/settings-window.h>
+#include <gwaei/kanjipad-window.h>
 
 #ifdef WITH_LIBUNIQUE
 #include <gwaei/libunique.h>
@@ -29,12 +30,6 @@
 
 #include <gwaei/installprogress-window.h>
 #include <gwaei/installprogress-callbacks.h>
-
-
-#include <gwaei/kanjipad-window.h>
-#include <gwaei/kanjipad-callbacks.h>
-#include <gwaei/kanjipad-candidatearea.h>
-#include <gwaei/kanjipad-drawingarea.h>
 */
 
 #include <gwaei/output-callbacks.h>
@@ -78,7 +73,7 @@ GwApplicationResolution gw_app_run (GwApplication*);
 void gw_app_parse_args (GwApplication*, int*, char***);
 void gw_app_quit (GwApplication*);
 
-GwWindow* gw_app_show_window (GwApplication*, const GwWindowType, gboolean);
+GwWindow* gw_app_show_window (GwApplication*, const GwWindowType, GwWindow*, gboolean);
 void gw_app_destroy_window (GwApplication*, const GwWindowType, GtkWidget*);
 GwWindow* gw_app_get_window (GwApplication*, const GwWindowType, GtkWidget*);
 

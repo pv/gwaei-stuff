@@ -15,7 +15,7 @@
   </object>
   <object class="GtkAction" id="edit_settings_action">
     <property name="stock_id">gtk-preferences</property>
-    <signal name="activate" handler="gw_searchwindow_open_settings_dialog" swapped="no"/>
+    <signal name="activate" handler="gw_searchwindow_open_settingswindow_cb" swapped="no"/>
   </object>
   <object class="GtkAction" id="file_append_action">
     <property name="label" translatable="yes">A_ppend</property>
@@ -130,7 +130,7 @@
   <object class="GtkAction" id="insert_radicals_action">
     <property name="label" translatable="yes">Using _Radical Search Tool</property>
     <property name="stock_id">gtk-find</property>
-    <signal name="activate" handler="gw_radsearchtool_show_cb" swapped="no"/>
+    <signal name="activate" handler="gw_searchwindow_open_radicalswindow_cb" swapped="no"/>
   </object>
   <object class="GtkAction" id="insert_unknown_character_action">
     <property name="label" translatable="yes">_Unknown Character</property>

@@ -153,22 +153,37 @@ G_MODULE_EXPORT void gw_radicalswindow_search_cb (GtkWidget *widget, gpointer da
 //!
 //! @brief Forces a search when the checkbox sensitivity is changed
 //!
-//! @param widget Currently unused GtkWidget pointer
-//! @param data Currently unused gpointer
-//!
-G_MODULE_EXPORT void gw_radicalswindow_radical_kanji_stroke_checkbox_update_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_radicalswindow_strokes_checkbox_toggled_cb (GtkWidget *widget, gpointer data)
 {
     //Declarations
+    gboolean request;
     GwRadicalsWindow *window;
 
     //Initializations
     window = GW_RADICALSWINDOW (gw_app_get_window (app, GW_WINDOW_RADICALS, widget));
     if (window == NULL) return;
+    request = gtk_toggle_button_get_active (window->strokes_checkbutton);
 
-    gw_radicalswindow_update_strokes_checkbox_state (window);
+    gtk_widget_set_sensitive (GTK_WIDGET (window->strokes_spinbutton), request);
 
-    //Start the search
     gw_radicalswindow_search_cb (widget, data);
+}
+
+
+//!
+//! @brief Closes the window passed throught the widget pointer
+//! @param widget GtkWidget pointer to the window to close
+//! @param data Currently unused gpointer
+//!
+G_MODULE_EXPORT void gw_radicalswindow_close_cb (GtkWidget *widget, gpointer data)
+{
+    //Declarations
+    GwRadicalsWindow *window;
+    
+    //Initializations
+    window = GW_RADICALSWINDOW (gw_app_get_window (app, GW_WINDOW_RADICALS, NULL));
+
+    gw_app_destroy_window (app, GW_WINDOW_RADICALS, NULL);
 }
 
 

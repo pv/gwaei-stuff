@@ -622,7 +622,7 @@ G_MODULE_EXPORT void gw_searchwindow_select_all_cb (GtkWidget *widget, gpointer 
     guint TARGET;
     GwSearchWindow *window;
 
-    window = GW_SEARCHWINDOW (gw_app_get_window (app, GW_WINDOW_SEARCH, widget));
+    window = GW_SEARCHWINDOW (gw_app_get_window (app, GW_WINDOW_SEARCH, NULL));
     if (window == NULL) return;
     TARGET = gw_searchwindow_get_current_target_focus (window);
 
@@ -1826,11 +1826,26 @@ G_MODULE_EXPORT void gw_searchwindow_sync_search_as_you_type_cb (GSettings *sett
 }
 
 
-G_MODULE_EXPORT void gw_searchwindow_open_settings_dialog (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_searchwindow_open_settingswindow_cb (GtkWidget *widget, gpointer data)
 {
-    gw_app_show_window (app, GW_WINDOW_SETTINGS, FALSE);
-    gw_app_unblock_searches (app);
+    GwSearchWindow *window;
+
+    window = GW_SEARCHWINDOW (gw_app_get_window (app, GW_WINDOW_SEARCH, NULL));
+
+    gw_app_show_window (app, GW_WINDOW_SETTINGS, GW_WINDOW (window), FALSE);
 }
+
+
+G_MODULE_EXPORT void gw_searchwindow_open_radicalswindow_cb (GtkWidget *widget, gpointer data)
+{
+    GwSearchWindow *window;
+
+    window = GW_SEARCHWINDOW (gw_app_get_window (app, GW_WINDOW_SEARCH, NULL));
+
+    gw_app_show_window (app, GW_WINDOW_RADICALS, GW_WINDOW (window), FALSE);
+}
+
+
 
 
 

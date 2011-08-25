@@ -324,6 +324,8 @@ GwRadicalsWindow* gw_radicalswindow_new (GwWindow* transient_for)
       gw_window_init (GW_WINDOW (temp), GW_WINDOW_RADICALS, "radicals.ui", "radicals_window");
       gw_radicalswindow_init (temp, transient_for);
     }
+
+    return temp;
 }
 
 
@@ -579,21 +581,6 @@ char* gw_radicalswindow_strdup_prefered_stroke_count (GwRadicalsWindow *window)
     }
 
     return strokes;
-}
-
-
-//!
-//! @brief Matches the sensativity of the strokes spinbutton to the stokes checkbox
-//!
-void gw_radicalswindow_update_strokes_checkbox_state (GwRadicalsWindow *window)
-{
-    //Declarations
-    gboolean enable;
-
-    //Initializations
-    enable = gtk_toggle_button_get_active (window->strokes_checkbutton);
-
-    gtk_widget_set_sensitive (GTK_WIDGET (window->strokes_spinbutton), enable);
 }
 
 

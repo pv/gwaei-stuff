@@ -225,7 +225,7 @@ GwApplicationResolution gw_app_run (GwApplication *app)
     LwDictInfo *di;
     GwSearchWindow *window;
 
-    window = GW_SEARCHWINDOW (gw_app_show_window (app, GW_WINDOW_SEARCH, FALSE));
+    window = GW_SEARCHWINDOW (gw_app_show_window (app, GW_WINDOW_SEARCH, NULL, FALSE));
 
 /*
     gw_searchwindow_update_history_popups (window);
@@ -307,7 +307,7 @@ void gw_app_destroy_window (GwApplication *app, const GwWindowType TYPE, GtkWidg
 //! @param force_new Force a new instance even if a window of that type already exists
 //! @returns Returns a pointer to the GwWindow that was shown
 //!
-GwWindow* gw_app_show_window (GwApplication *app, const GwWindowType TYPE, gboolean force_new) {
+GwWindow* gw_app_show_window (GwApplication *app, const GwWindowType TYPE, GwWindow *transient_for, gboolean force_new) {
     //Declarations
     GwWindow *window;
 
@@ -316,7 +316,7 @@ GwWindow* gw_app_show_window (GwApplication *app, const GwWindowType TYPE, gbool
 
     if (window == NULL || force_new)
     {
-      window = gw_window_new (TYPE);
+      window = gw_window_new (TYPE, transient_for);
       if (window != NULL)
       {
         app->windowlist = g_list_append (app->windowlist, window);
@@ -325,7 +325,7 @@ GwWindow* gw_app_show_window (GwApplication *app, const GwWindowType TYPE, gbool
     }
     else
     {
-//      gw_window_set_parent (window);
+      gw_window_set_transient_for (window, transient_for);
       gtk_window_present (GTK_WINDOW (window->toplevel));
     }
 

@@ -41,18 +41,20 @@
 
 #include <gwaei/gwaei.h>
 
+static void _kanjipadwindow_initialize_drawingarea (GwKanjipadWindow*);
 
 
 //!
 //! @brief To be written
 //!
-static void drawingarea_free_stroke (GList *stroke)
+void gw_kanjipadwindow_free_drawingarea_stroke (GList *stroke)
 {
-    GList *tmp_list = stroke;
-    while (tmp_list)
+    //Declarations
+    GList *iter;
+
+    for (iter = stroke; iter != NULL; iter = iter->next)
     {
-      g_free (tmp_list->data);
-      tmp_list = tmp_list->next;
+      g_free (iter->data);
     }
     g_list_free (stroke);
 }
@@ -61,7 +63,7 @@ static void drawingarea_free_stroke (GList *stroke)
 //!
 //! @brief To be written
 //!
-static void drawingarea_annotate_stroke (GwKanjipad *pad, GList *stroke, cairo_t *cr, gint index)
+static void gw_kanjipadwindow_annotate_drawingarea_stroke (GwKanjipadWindow *window, GList *stroke, cairo_t *cr, gint index)
 {
     GdkPoint *cur, *old;
 
@@ -110,8 +112,8 @@ static void drawingarea_annotate_stroke (GwKanjipad *pad, GList *stroke, cairo_t
         update_area.width = swidth;
         update_area.height = sheight;
         
-        x = CLAMP (x, 0, gtk_widget_get_allocated_width (pad->drawing_widget) - swidth);
-        y = CLAMP (y, 0, gtk_widget_get_allocated_height (pad->drawing_widget) - sheight);
+        x = CLAMP (x, 0, gtk_widget_get_allocated_width (GTK_WIDGET (window->drawingarea)) - swidth);
+        y = CLAMP (y, 0, gtk_widget_get_allocated_height (GTK_WIDGET (window->drawingarea)) - sheight);
 
         cairo_select_font_face (cr, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
         cairo_set_source_rgb (cr, 1.0, 0.0, 0.0);
@@ -126,7 +128,7 @@ static void drawingarea_annotate_stroke (GwKanjipad *pad, GList *stroke, cairo_t
 //!
 //! @brief To be written
 //!
-static void _drawingarea_init (GwKanjipad *pad)
+static void _kanjipadwindow_initialize_drawingarea (GwKanjipadWindow *window)
 {
     //Declarations
     GList *tmp_list;
@@ -148,15 +150,15 @@ static void _drawingarea_init (GwKanjipad *pad)
 
     //Initializations
     index = 1;
-    cr = cairo_create (pad->surface);
-    width = gtk_widget_get_allocated_width (pad->drawing_widget);
-    height = gtk_widget_get_allocated_height (pad->drawing_widget);
+    cr = cairo_create (window->surface);
+    width = gtk_widget_get_allocated_width (GTK_WIDGET (window->drawingarea));
+    height = gtk_widget_get_allocated_height (GTK_WIDGET (window->drawingarea));
     half_width = ((double) width / 2.0);
     half_height = ((double) height / 2.0);
     ndash  = sizeof (dashes)/sizeof(dashes[0]);
     offset = 0.0;
 
-    context = gtk_widget_get_style_context (pad->drawing_widget);
+    context = gtk_widget_get_style_context (GTK_WIDGET (window->drawingarea));
     gtk_style_context_get_color (context, GTK_STATE_FLAG_NORMAL, &fgcolorn);
     gtk_style_context_get_background_color (context, GTK_STATE_FLAG_NORMAL, &bgcolorn);
     gtk_style_context_get_color (context, GTK_STATE_FLAG_SELECTED, &fgcolors);
@@ -192,7 +194,7 @@ static void _drawingarea_init (GwKanjipad *pad)
     cairo_set_line_width (cr, 2.0);
     cairo_set_source_rgba (cr, fgcolorn.red, fgcolorn.green, fgcolorn.blue, 1.0);
 
-    tmp_list = pad->strokes;
+    tmp_list = window->strokes;
     while (tmp_list)
     {
       GdkPoint *cur, *old;
@@ -200,8 +202,8 @@ static void _drawingarea_init (GwKanjipad *pad)
 
       old = NULL;
 
-      if (pad->annotate)
-        drawingarea_annotate_stroke (pad, stroke_list, cr, index);
+      if (window->annotate)
+        gw_kanjipadwindow_annotate_drawingarea_stroke (window, stroke_list, cr, index);
 
       while (stroke_list)
       {
@@ -224,21 +226,21 @@ static void _drawingarea_init (GwKanjipad *pad)
     // End drawing here 
     cairo_destroy(cr);
 
-    gtk_widget_queue_draw (pad->drawing_widget);
+    gtk_widget_queue_draw (GTK_WIDGET (window->drawingarea));
 }
 
 
 //!
 //! @brief To be written
 //!
-static int drawingarea_configure_event (GtkWidget *w, GdkEventConfigure *event, GwKanjipad *pad)
+G_MODULE_EXPORT int gw_kanjipadwindow_drawingarea_configure_event_cb (GtkWidget *w, GdkEventConfigure *event, GwKanjipadWindow *window)
 {
-    if (pad->surface != NULL)
-      cairo_surface_destroy (pad->surface);
+    if (window->surface != NULL)
+      cairo_surface_destroy (window->surface);
 
-    pad->surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, event->width, event->height);
+    window->surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, event->width, event->height);
 
-    _drawingarea_init (pad);
+    _kanjipadwindow_initialize_drawingarea (window);
 
     return TRUE;
 }
@@ -247,12 +249,12 @@ static int drawingarea_configure_event (GtkWidget *w, GdkEventConfigure *event, 
 //!
 //! @brief To be written
 //!
-static int drawingarea_draw_cb (GtkWidget *widget, cairo_t *cr, GwKanjipad *pad)
+G_MODULE_EXPORT int gw_kanjipadwindow_drawingarea_draw_cb (GtkWidget *widget, cairo_t *cr, GwKanjipadWindow *window)
 {
-    if (pad->surface == NULL)
+    if (window->surface == NULL)
       return FALSE;
 
-    cairo_set_source_surface (cr, pad->surface, 0, 0);
+    cairo_set_source_surface (cr, window->surface, 0, 0);
     cairo_paint (cr);
 
     return TRUE;
@@ -262,15 +264,15 @@ static int drawingarea_draw_cb (GtkWidget *widget, cairo_t *cr, GwKanjipad *pad)
 //!
 //! @brief To be written
 //!
-static int drawingarea_button_press_event (GtkWidget *w, GdkEventButton *event, GwKanjipad *pad)
+G_MODULE_EXPORT int gw_kanjipadwindow_drawingarea_button_press_event_cb (GtkWidget *w, GdkEventButton *event, GwKanjipadWindow *window)
 {
     if (event->button == 1)
     {
       GdkPoint *p = g_new (GdkPoint, 1);
       p->x = event->x;
       p->y = event->y;
-      pad->curstroke = g_list_append (pad->curstroke, p);
-      pad->instroke = TRUE;
+      window->curstroke = g_list_append (window->curstroke, p);
+      window->instroke = TRUE;
     }
 
     return TRUE;
@@ -280,25 +282,24 @@ static int drawingarea_button_press_event (GtkWidget *w, GdkEventButton *event, 
 //!
 //! @brief To be written
 //!
-static int drawingarea_button_release_event (GtkWidget *w, GdkEventButton *event, GwKanjipad *pad)
+G_MODULE_EXPORT int gw_kanjipadwindow_drawingarea_button_release_event_cb (GtkWidget *w, GdkEventButton *event, GwKanjipadWindow *window)
 {
-    if (pad->annotate)
+    if (window->annotate)
     {
       //Declarations
       cairo_t *cr;
 
       //Initializations
-      cr = cairo_create(pad->surface);
+      cr = cairo_create(window->surface);
 
-      drawingarea_annotate_stroke (pad, pad->curstroke, cr, g_list_length (pad->strokes) + 1);
-      //cairo_paint(cr);
+      gw_kanjipadwindow_annotate_drawingarea_stroke (window, window->curstroke, cr, g_list_length (window->strokes) + 1);
       cairo_destroy(cr);
-      gtk_widget_queue_draw (pad->drawing_widget);
+      gtk_widget_queue_draw (GTK_WIDGET (window->drawingarea));
     }
 
-    pad->strokes = g_list_append (pad->strokes, pad->curstroke);
-    pad->curstroke = NULL;
-    pad->instroke = FALSE;
+    window->strokes = g_list_append (window->strokes, window->curstroke);
+    window->curstroke = NULL;
+    window->instroke = FALSE;
 
     return FALSE;
 }
@@ -307,7 +308,7 @@ static int drawingarea_button_release_event (GtkWidget *w, GdkEventButton *event
 //!
 //! @brief To be written
 //!
-static int drawingarea_motion_event (GtkWidget *w, GdkEventMotion *event, GwKanjipad *pad)
+G_MODULE_EXPORT int gw_kanjipadwindow_drawingarea_motion_event_cb (GtkWidget *w, GdkEventMotion *event, GwKanjipadWindow *window)
 {
     //Declarations
     gint x,y;
@@ -330,14 +331,14 @@ static int drawingarea_motion_event (GtkWidget *w, GdkEventMotion *event, GwKanj
       state = event->state;
     }
 
-    if (pad->instroke && state & GDK_BUTTON1_MASK)
+    if (window->instroke && state & GDK_BUTTON1_MASK)
     {
-      old = (GdkPoint*) g_list_last (pad->curstroke)->data;
-      width = gtk_widget_get_allocated_width (pad->drawing_widget);
-      height = gtk_widget_get_allocated_height (pad->drawing_widget);
+      old = (GdkPoint*) g_list_last (window->curstroke)->data;
+      width = gtk_widget_get_allocated_width (GTK_WIDGET (window->drawingarea));
+      height = gtk_widget_get_allocated_height (GTK_WIDGET (window->drawingarea));
 
       //extend line
-      cairo_t *cr = cairo_create(pad->surface);
+      cairo_t *cr = cairo_create(window->surface);
       cairo_set_source_rgb (cr, 0.0, 0.0, 0.0);
       cairo_set_line_width (cr, 2.0 );
       cairo_move_to (cr, old->x,  old->y);
@@ -360,9 +361,9 @@ static int drawingarea_motion_event (GtkWidget *w, GdkEventMotion *event, GwKanj
       p = g_new (GdkPoint, 1);
       p->x = x;
       p->y = y;
-      pad->curstroke = g_list_append (pad->curstroke, p);
+      window->curstroke = g_list_append (window->curstroke, p);
 
-      gtk_widget_queue_draw (pad->drawing_widget);
+      gtk_widget_queue_draw (GTK_WIDGET (window->drawingarea));
     }
 
     return TRUE;
@@ -372,38 +373,35 @@ static int drawingarea_motion_event (GtkWidget *w, GdkEventMotion *event, GwKanj
 //!
 //! @brief To be written
 //!
-void drawingarea_clear (GwKanjipad *pad)
+void gw_kanjipadwindow_clear_drawingarea (GwKanjipadWindow *window)
 {
     //Declarations
-    GList *tmp_list;
+    GList *iter;
 
-    //Initializations
-    tmp_list = pad->strokes;
-
-    while (tmp_list)
+    for (iter = window->strokes; iter != NULL; iter = iter->next)
     {
-      drawingarea_free_stroke (tmp_list->data);
-      tmp_list = tmp_list->next;
+      gw_kanjipadwindow_free_drawingarea_stroke (iter->data);
     }
-    g_list_free (pad->strokes);
-    pad->strokes = NULL;
+    g_list_free (window->strokes);
 
-    g_list_free (pad->curstroke);
-    pad->curstroke = NULL;
+    g_list_free (window->curstroke);
 
-    _drawingarea_init (pad);
+    window->strokes = NULL;
+    window->curstroke = NULL;
+
+    _kanjipadwindow_initialize_drawingarea (window);
 }
 
 
 //!
 //! @brief To be written
 //!
-void drawingarea_set_annotate (GwKanjipad *pad, gboolean annotate)
+void gw_kanjipadwindow_set_drawingarea_annotate (GwKanjipadWindow *window, gboolean annotate)
 {
-    if (pad->annotate != annotate)
+    if (window->annotate != annotate)
     {
-      pad->annotate = annotate;
-      _drawingarea_init (pad);
+      window->annotate = annotate;
+      _kanjipadwindow_initialize_drawingarea (window);
     }
 }
 
@@ -411,26 +409,26 @@ void drawingarea_set_annotate (GwKanjipad *pad, gboolean annotate)
 //!
 //! @brief To be written
 //!
-void gw_kanjipad_drawingarea_initialize (GwKanjipad *pad)
+void gw_kanjipadwindow_initialize_drawingarea (GwKanjipadWindow *window)
 {
-    GtkWidget *widget = pad->drawing_widget;
+    gint mask;
 
-    gtk_widget_set_size_request (widget, 100, 100);
+    mask = (
+        GDK_EXPOSURE_MASK |
+        GDK_BUTTON_PRESS_MASK |
+        GDK_BUTTON_RELEASE_MASK |
+        GDK_POINTER_MOTION_MASK |
+        GDK_POINTER_MOTION_HINT_MASK
+    );
 
-    g_signal_connect (widget, "configure_event", G_CALLBACK (drawingarea_configure_event), pad);
-    g_signal_connect (widget, "draw", G_CALLBACK (drawingarea_draw_cb), pad);
-    g_signal_connect (widget, "button_press_event", G_CALLBACK (drawingarea_button_press_event), pad);
-    g_signal_connect (widget, "button_release_event", G_CALLBACK (drawingarea_button_release_event), pad);
-    g_signal_connect (widget, "motion_notify_event", G_CALLBACK (drawingarea_motion_event), pad);
-    gint mask = (
-                  GDK_EXPOSURE_MASK |
-                  GDK_BUTTON_PRESS_MASK |
-                  GDK_BUTTON_RELEASE_MASK |
-                  GDK_POINTER_MOTION_MASK |
-                  GDK_POINTER_MOTION_HINT_MASK
-                );
-    gtk_widget_add_events (widget, mask);
-    g_signal_connect (widget, "button_release_event", G_CALLBACK (do_kanjipad_look_up), (gpointer) pad);
+    gtk_widget_set_size_request (GTK_WIDGET (window->drawingarea), 100, 100);
+    g_signal_connect (window->drawingarea, "configure_event", G_CALLBACK (gw_kanjipadwindow_drawingarea_configure_event_cb), window);
+    g_signal_connect (window->drawingarea, "draw", G_CALLBACK (gw_kanjipadwindow_drawingarea_draw_cb), window);
+    g_signal_connect (window->drawingarea, "button_press_event", G_CALLBACK (gw_kanjipadwindow_drawingarea_button_press_event_cb), window);
+    g_signal_connect (window->drawingarea, "button_release_event", G_CALLBACK (gw_kanjipadwindow_drawingarea_button_release_event_cb), window);
+    g_signal_connect (window->drawingarea, "motion_notify_event", G_CALLBACK (gw_kanjipadwindow_drawingarea_motion_event_cb), window);
+    g_signal_connect (window->drawingarea, "button_release_event", G_CALLBACK (gw_kanjipadwindow_look_up_cb), window);
+    gtk_widget_add_events (GTK_WIDGET (window->drawingarea), mask);
 }
 
 

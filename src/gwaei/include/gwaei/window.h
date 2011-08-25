@@ -25,7 +25,7 @@ struct _GwWindow {
 };
 typedef struct _GwWindow GwWindow;
 
-GwWindow* gw_window_new (const GwWindowType);
+GwWindow* gw_window_new (const GwWindowType, GwWindow*);
 void gw_window_destroy (GwWindow*);
 void gw_window_init (GwWindow*, const GwWindowType, const char*, const char*);
 void gw_window_deinit (GwWindow*);

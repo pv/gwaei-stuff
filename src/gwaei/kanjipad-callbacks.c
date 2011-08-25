@@ -45,46 +45,47 @@
 //!
 //! @brief Does the needed calls to kpad to look up the kanji
 //! 
-G_MODULE_EXPORT gboolean do_kanjipad_look_up (GtkWidget *widget, GdkEventButton *event, gpointer data)
+G_MODULE_EXPORT gboolean gw_kanjipadwindow_look_up_cb (GtkWidget *widget, GdkEventButton *event, gpointer data)
 {
     //Declarations
-    GwKanjipad *pad = (GwKanjipad*) data;
+    GwKanjipadWindow *window;
+    GList *iter;
+    GList *inner_iter;
+    GString *message;
+    GError *error;
+    gint16 x;
+    gint16 y;
 
-    //Sanity check
-    if (pad->to_engine == NULL) return FALSE;
-
-    /*	     kill 'HUP',$engine_pid; */
-    GList *tmp_list;
-    GString *message = g_string_new (NULL);
-    GError *err = NULL;
+    //Initializations
+    window = GW_KANJIPADWINDOW (data);
+    if (window->to_engine == NULL) return FALSE;
+    message = g_string_new (NULL);
+    error = NULL;
       
-    tmp_list = pa->strokes;
-    while (tmp_list)
+    for (iter = window->strokes; iter != NULL; iter = iter->next)
     {
-      GList *stroke_list = tmp_list->data;
-      while (stroke_list)
+      for (inner_iter = iter->data; iter != NULL; iter = iter->next)
       {
-        gint16 x = ((GdkPoint *)stroke_list->data)->x;
-        gint16 y = ((GdkPoint *)stroke_list->data)->y;
+        x = ((GdkPoint*) inner_iter->data)->x;
+        y = ((GdkPoint*) inner_iter->data)->y;
         g_string_append_printf (message, "%d %d ", x, y);
-        stroke_list = stroke_list->next;
       }
       g_string_append (message, "\n");
-      tmp_list = tmp_list->next;
     }
     g_string_append (message, "\n");
-    if (g_io_channel_write_chars (pad->to_engine, message->str, message->len, NULL, &err) != G_IO_STATUS_NORMAL)
+
+    if (g_io_channel_write_chars (window->to_engine, message->str, message->len, NULL, &error) != G_IO_STATUS_NORMAL)
     {
-      g_printerr ("Cannot write message to engine: %s\n",
-      err->message);
+      fprintf (stderr, "Cannot write message to engine: %s\n", error->message);
       exit (EXIT_FAILURE);
     }
-    if (g_io_channel_flush (pad->to_engine, &err) != G_IO_STATUS_NORMAL)
+
+    if (g_io_channel_flush (window->to_engine, &error) != G_IO_STATUS_NORMAL)
     {
-      g_printerr ("Error flushing message to engine: %s\n",
-      err->message);
+      fprintf (stderr, "Error flushing message to engine: %s\n", error->message);
       exit (EXIT_FAILURE);
     }
+
     g_string_free (message, FALSE);
 
     return FALSE;
@@ -94,9 +95,13 @@ G_MODULE_EXPORT gboolean do_kanjipad_look_up (GtkWidget *widget, GdkEventButton 
 //!
 //! @brief Clears the pad drawing area for the next kanji
 //! 
-G_MODULE_EXPORT void do_kanjipad_clear (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_kanjipadwindow_clear_drawingarea_cb (GtkWidget *widget, gpointer data)
 {
-    drawingarea_clear (pa);
+    GwKanjipadWindow *window;
+
+    window = GW_KANJIPADWINDOW (data);
+
+    gw_kanjipadwindow_clear_drawingarea (window);
 }
 
 
@@ -105,7 +110,11 @@ G_MODULE_EXPORT void do_kanjipad_clear (GtkWidget *widget, gpointer data)
 //! 
 G_MODULE_EXPORT void do_kanjipad_annotate_toggle (GtkWidget *widget, gpointer data)
 {
-    drawingarea_set_annotate (pa, !pa->annotate);
+    GwKanjipadWindow *window;
+
+    window = GW_KANJIPADWINDOW (data);
+
+    gw_kanjipadwindow_set_drawingarea_annotate (window, !window->annotate);
 }
 
 
