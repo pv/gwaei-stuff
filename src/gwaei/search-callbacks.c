@@ -1546,6 +1546,19 @@ G_MODULE_EXPORT void gw_searchwindow_new_tab_cb (GtkWidget *widget, gpointer dat
 }
 
 
+G_MODULE_EXPORT void gw_searchwindow_new_window_cb (GtkWidget *widget, gpointer data)
+{
+    //Declarations
+    GwSearchWindow *window;
+
+    //Initializations
+    window = GW_SEARCHWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
+    if (window == NULL) return;
+
+    gw_app_show_window (app, GW_WINDOW_SEARCH, NULL, TRUE);
+}
+
+
 //!
 //! @brief Remove the tab where the close button is clicked
 //! @param widget Currently unused widget pointer
