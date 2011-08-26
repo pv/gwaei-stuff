@@ -8,7 +8,7 @@
 #include <gwaei/gwaei.h>
 
 
-GwDictInstWindow* gw_dictinstwindow_new ()
+GwDictInstWindow* gw_dictinstwindow_new (GwSettingsWindow *transient_for)
 {
     GwDictInstWindow *temp;
 
@@ -16,7 +16,7 @@ GwDictInstWindow* gw_dictinstwindow_new ()
     if (temp != NULL)
     {
       gw_window_init (GW_WINDOW (temp), GW_WINDOW_DICTIONARYINSTALL, "dictionaryinstall.ui", "dictionary_install_dialog");
-      gw_dictinstwindow_init (temp);
+      gw_dictinstwindow_init (temp, transient_for);
     }
 
     return temp;
@@ -30,7 +30,7 @@ void gw_dictinstwindow_destroy (GwDictInstWindow *window)
 }
 
 
-void gw_dictinstwindow_init (GwDictInstWindow *window)
+void gw_dictinstwindow_init (GwDictInstWindow *window, GwSettingsWindow *transient_for)
 {
     //Declarations
     GtkCellRenderer *renderer;
@@ -42,15 +42,19 @@ void gw_dictinstwindow_init (GwDictInstWindow *window)
 
     //Initializations
     window->di = NULL;
-    window->dictinstlist = lw_dictinstlist_new (app->prefmanager);
     window->dictionary_store = gtk_list_store_new (TOTAL_GW_DICTINSTWINDOW_DICTSTOREFIELDS, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_INT);
 
     window->view = GTK_TREE_VIEW (gtk_builder_get_object (window->builder, "dictionary_install_treeview"));
     window->add_button = GTK_BUTTON (gtk_builder_get_object (window->builder, "dictionary_install_add_button"));
     window->details_togglebutton = GTK_TOGGLE_BUTTON (gtk_builder_get_object (window->builder, "show_dictionary_detail_checkbutton"));
 
+    gw_window_set_transient_for (GW_WINDOW (window), GW_WINDOW (transient_for));
+    if (transient_for->dictinstlist != NULL)
+      lw_dictinstlist_free (transient_for->dictinstlist);
+    transient_for->dictinstlist = lw_dictinstlist_new (app->prefmanager);
+
     //Set up the dictionary liststore
-    for (iter = window->dictinstlist->list; iter != NULL; iter = iter->next)
+    for (iter = transient_for->dictinstlist->list; iter != NULL; iter = iter->next)
     {
       di = LW_DICTINST (iter->data);
       gtk_list_store_append (GTK_LIST_STORE (window->dictionary_store), &treeiter);
@@ -105,13 +109,13 @@ void gw_dictinstwindow_init (GwDictInstWindow *window)
 
     //Setup the dictionary list view
     gtk_tree_view_set_model (window->view, GTK_TREE_MODEL (window->dictionary_store));
-    g_signal_connect (G_OBJECT (window->view), "cursor-changed", G_CALLBACK (gw_dictionaryinstall_cursor_changed_cb), NULL);
+    g_signal_connect (G_OBJECT (window->view), "cursor-changed", G_CALLBACK (gw_dictionaryinstallwindow_cursor_changed_cb), NULL);
 
     renderer = gtk_cell_renderer_toggle_new ();
     gtk_cell_renderer_set_padding (GTK_CELL_RENDERER (renderer), 6, 5);
     column = gtk_tree_view_column_new_with_attributes (" ", renderer, "active", GW_DICTINSTWINDOW_DICTSTOREFIELD_CHECKBOX_STATE, NULL);
     gtk_tree_view_append_column (window->view, column);
-    g_signal_connect (G_OBJECT (renderer), "toggled", G_CALLBACK (gw_dictionaryinstall_listitem_toggled_cb), NULL);
+    g_signal_connect (G_OBJECT (renderer), "toggled", G_CALLBACK (gw_dictionaryinstallwindow_listitem_toggled_cb), NULL);
 
     renderer = gtk_cell_renderer_text_new ();
     gtk_cell_renderer_set_padding (GTK_CELL_RENDERER (renderer), 6, 0);

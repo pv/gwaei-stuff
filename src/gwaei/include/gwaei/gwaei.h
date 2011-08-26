@@ -17,20 +17,13 @@
 #include <gwaei/settings-window.h>
 #include <gwaei/kanjipad-window.h>
 #include <gwaei/dictionaryinstall-window.h>
+#include <gwaei/installprogress-window.h>
 
 #ifdef WITH_LIBUNIQUE
 #include <gwaei/libunique.h>
 #endif
 
 #include <gwaei/printing.h>
-
-
-
-/*
-
-#include <gwaei/installprogress-window.h>
-#include <gwaei/installprogress-callbacks.h>
-*/
 
 #include <gwaei/output-callbacks.h>
 

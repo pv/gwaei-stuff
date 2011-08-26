@@ -30,9 +30,13 @@ typedef enum {
 
 struct _GwSettingsWindow {
   EXTENDS_GW_WINDOW
+
   GtkNotebook *notebook;
+
   guint signalids[TOTAL_GW_SETTINGSWINDOW_SIGNALIDS];
 //  guint timeoutids[TOTAL_GW_SETTINGSWINDOW_TIMEOUTIDS];
+
+  LwDictInstList *dictinstlist;
 };
 typedef struct _GwSettingsWindow GwSettingsWindow;
 

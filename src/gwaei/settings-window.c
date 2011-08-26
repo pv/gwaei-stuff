@@ -88,6 +88,8 @@ void gw_settingswindow_init (GwSettingsWindow *window, GwWindow *transient_for)
 
     //Initializations
     view = GTK_TREE_VIEW (gtk_builder_get_object (window->builder, "manage_dictionaries_treeview"));
+    window->dictinstlist = NULL;
+
     _settingswindow_initialize_dictionary_tree_view (view);
 
     _settingswindow_attach_signals (window);
@@ -101,6 +103,12 @@ void gw_settingswindow_init (GwSettingsWindow *window, GwWindow *transient_for)
 
 void gw_settingswindow_deinit (GwSettingsWindow *window)
 {
+    if (window->dictinstlist != NULL)
+    {
+      lw_dictinstlist_free (window->dictinstlist);
+      window->dictinstlist = NULL;
+    }
+
     _settingswindow_remove_signals (window);
 }
 

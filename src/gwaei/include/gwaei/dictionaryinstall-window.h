@@ -32,8 +32,6 @@ typedef enum {
 struct _GwDictInstWindow {
   EXTENDS_GW_WINDOW
 
-  LwDictInstList *dictinstlist;
-
   GtkListStore *encoding_store;
   GtkListStore *compression_store;
   GtkListStore *engine_store;
@@ -59,9 +57,9 @@ typedef struct _GwDictInstWindow GwDictInstWindow;
 
 #define GW_DICTINSTWINDOW(object) (GwDictInstWindow*)object
 
-GwDictInstWindow* gw_dictinstwindow_new (void);
+GwDictInstWindow* gw_dictinstwindow_new (GwSettingsWindow*);
 void gw_dictinstwindow_destroy (GwDictInstWindow*);
-void gw_dictinstwindow_init (GwDictInstWindow*);
+void gw_dictinstwindow_init (GwDictInstWindow*, GwSettingsWindow*);
 void gw_dictinstwindow_deinit (GwDictInstWindow*);
 
 #include <gwaei/dictionaryinstall-callbacks.h>
