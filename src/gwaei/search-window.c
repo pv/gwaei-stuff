@@ -316,7 +316,7 @@ static void _searchwindow_initialize_dictionary_menu (GwSearchWindow *window)
         gtk_menu_shell_append (GTK_MENU_SHELL (shell),  GTK_WIDGET (widget));
         if (di->load_position == 0)
           gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (widget), TRUE);
-        g_signal_connect(G_OBJECT (widget), "toggled", G_CALLBACK (gw_searchwindow_dictionary_radio_changed_cb), NULL);
+        g_signal_connect(G_OBJECT (widget), "toggled", G_CALLBACK (gw_searchwindow_dictionary_radio_changed_cb), window->toplevel);
         if (di->load_position < 9)
           gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", accel_group, (GDK_KEY_0 + di->load_position + 1), GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
         gtk_widget_show (widget);
@@ -703,12 +703,12 @@ void gw_searchwindow_set_dictionary (GwSearchWindow *window, int request)
     {
       list = gtk_container_get_children (GTK_CONTAINER (shell));
       radioitem = g_list_nth_data (list, request);
-      g_signal_handlers_block_by_func (radioitem, gw_searchwindow_dictionary_radio_changed_cb, NULL);
+      g_signal_handlers_block_by_func (radioitem, gw_searchwindow_dictionary_radio_changed_cb, window->toplevel);
       if (g_list_length (list) > 3 && radioitem != NULL)
       {
         gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (radioitem), TRUE);
       }
-      g_signal_handlers_unblock_by_func (radioitem, gw_searchwindow_dictionary_radio_changed_cb, NULL);
+      g_signal_handlers_unblock_by_func (radioitem, gw_searchwindow_dictionary_radio_changed_cb, window->toplevel);
       g_list_free (list);
     }
 
@@ -1778,7 +1778,7 @@ gboolean gw_searchwindow_keep_searching_timeout (GwSearchWindow *window)
     if (window->keepsearchingdata.delay >= GW_SEARCHWINDOW_KEEP_SEARCHING_MAX_DELAY || strlen(query) == 0)
     {
       window->keepsearchingdata.delay = 0;
-      gw_searchwindow_search_cb (GTK_WIDGET (window->toplevel), NULL);
+      gw_searchwindow_search_cb (GTK_WIDGET (window->toplevel), GTK_WIDGET (window->toplevel));
     }
     else
     {
@@ -2144,16 +2144,16 @@ int gw_searchwindow_new_tab (GwSearchWindow *window)
     gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
     gtk_text_view_set_wrap_mode (view, GTK_WRAP_WORD);
 
-    g_signal_connect( G_OBJECT (view), "drag_motion", G_CALLBACK (gw_searchwindow_drag_motion_1_cb), NULL);
+    g_signal_connect( G_OBJECT (view), "drag_motion", G_CALLBACK (gw_searchwindow_drag_motion_1_cb), window->toplevel);
     g_signal_connect( G_OBJECT (view), "focus_in_event", G_CALLBACK (gw_searchwindow_update_clipboard_on_focus_change_cb), view);
-    g_signal_connect( G_OBJECT (view), "button_press_event", G_CALLBACK (gw_searchwindow_get_position_for_button_press_cb), NULL);
-    g_signal_connect( G_OBJECT (view), "motion_notify_event", G_CALLBACK (gw_searchwindow_get_iter_for_motion_cb), NULL);
-    g_signal_connect( G_OBJECT (view), "drag_drop", G_CALLBACK (gw_searchwindow_drag_drop_1_cb), NULL);
-    g_signal_connect( G_OBJECT (view), "button_release_event", G_CALLBACK (gw_searchwindow_get_iter_for_button_release_cb), NULL);
-    g_signal_connect( G_OBJECT (view), "drag_leave", G_CALLBACK (gw_searchwindow_drag_leave_1_cb), NULL);
-    g_signal_connect( G_OBJECT (view), "drag_data_received", G_CALLBACK (gw_searchwindow_search_drag_data_recieved_cb), NULL);
-    g_signal_connect( G_OBJECT (view), "key_press_event", G_CALLBACK (gw_searchwindow_focus_change_on_key_press_cb), NULL);
-    g_signal_connect( G_OBJECT (view), "scroll_event", G_CALLBACK (gw_searchwindow_scroll_or_zoom_cb), NULL);
+    g_signal_connect( G_OBJECT (view), "button_press_event", G_CALLBACK (gw_searchwindow_get_position_for_button_press_cb), window->toplevel);
+    g_signal_connect( G_OBJECT (view), "motion_notify_event", G_CALLBACK (gw_searchwindow_get_iter_for_motion_cb), window->toplevel);
+    g_signal_connect( G_OBJECT (view), "drag_drop", G_CALLBACK (gw_searchwindow_drag_drop_1_cb), window->toplevel);
+    g_signal_connect( G_OBJECT (view), "button_release_event", G_CALLBACK (gw_searchwindow_get_iter_for_button_release_cb), window->toplevel);
+    g_signal_connect( G_OBJECT (view), "drag_leave", G_CALLBACK (gw_searchwindow_drag_leave_1_cb), window->toplevel);
+    g_signal_connect( G_OBJECT (view), "drag_data_received", G_CALLBACK (gw_searchwindow_search_drag_data_recieved_cb), window->toplevel);
+    g_signal_connect( G_OBJECT (view), "key_press_event", G_CALLBACK (gw_searchwindow_focus_change_on_key_press_cb), window->toplevel);
+    g_signal_connect( G_OBJECT (view), "scroll_event", G_CALLBACK (gw_searchwindow_scroll_or_zoom_cb), window->toplevel);
 
 
     gtk_container_add (GTK_CONTAINER (scrolledwindow), GTK_WIDGET (view));

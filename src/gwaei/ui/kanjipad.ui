@@ -14,7 +14,7 @@
     <property name="icon_name">gwaei</property>
     <property name="type_hint">utility</property>
     <property name="has_resize_grip">False</property>
-    <signal name="delete-event" handler="gw_main_delete_event_action_cb" swapped="no"/>
+    <signal name="delete-event" handler="gw_main_delete_event_action_cb" object="kanjipad_window" swapped="no"/>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
@@ -92,7 +92,7 @@
                     <property name="use_action_appearance">False</property>
                     <property name="use_underline">True</property>
                     <property name="draw_indicator">True</property>
-                    <signal name="toggled" handler="do_kanjipad_annotate_toggle" swapped="no"/>
+                    <signal name="toggled" handler="do_kanjipad_annotate_toggle" object="kanjipad_window" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -115,8 +115,8 @@
                         <property name="use_action_appearance">False</property>
                         <property name="image">image1</property>
                         <property name="use_underline">True</property>
-                        <signal name="activate" handler="do_kanjipad_clear" swapped="no"/>
-                        <signal name="clicked" handler="do_kanjipad_clear" swapped="no"/>
+                        <signal name="activate" handler="do_kanjipad_clear" object="kanjipad_window" swapped="no"/>
+                        <signal name="clicked" handler="do_kanjipad_clear" object="kanjipad_window" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>

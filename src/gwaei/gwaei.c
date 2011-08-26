@@ -266,19 +266,17 @@ void gw_app_quit (GwApplication *app)
 //!
 //! @brief Destroys a window, removing it from the window list
 //! @param app The GwApplication instance
-//! @param TYPE the GwWindowType to remove
 //! @param widget A widget from the window so you can get a specific instance.  If NULL, you cet the first window to match the GwWindowType
 //!
-void gw_app_destroy_window (GwApplication *app, const GwWindowType TYPE, GtkWidget *widget)
+void gw_app_destroy_window (GwApplication *app, GwWindow *window)
 {
+    //Sanity check
+    g_assert (window != NULL);
+
     //Declarations
-    GwWindow* window;
     GList *iter;
     
-    //Initializations
-    window = gw_app_get_window (app, TYPE, widget);
-    iter = app->windowlist;
-
+    //Remove it from the window list
     for (iter = app->windowlist; iter != NULL; iter = iter->next)
     {
       if (GW_WINDOW (iter->data) == window)
@@ -288,12 +286,14 @@ void gw_app_destroy_window (GwApplication *app, const GwWindowType TYPE, GtkWidg
       }
     }
 
+    //Destroy the window itself
     if (window != NULL)
     {
       gw_window_destroy (window);
     }
 
-    if (gw_app_get_window (app, GW_WINDOW_SEARCH, NULL) == NULL)
+    //Quit the app if that was the last search window
+    if (gw_app_get_window_by_type (app, GW_WINDOW_SEARCH) == NULL)
     {
       gw_app_quit (app);
     }
@@ -307,12 +307,13 @@ void gw_app_destroy_window (GwApplication *app, const GwWindowType TYPE, GtkWidg
 //! @param force_new Force a new instance even if a window of that type already exists
 //! @returns Returns a pointer to the GwWindow that was shown
 //!
-GwWindow* gw_app_show_window (GwApplication *app, const GwWindowType TYPE, GwWindow *transient_for, gboolean force_new) {
+GwWindow* gw_app_show_window (GwApplication *app, const GwWindowType TYPE, GwWindow *transient_for, gboolean force_new)
+{
     //Declarations
     GwWindow *window;
 
     //Initializations
-    window = gw_app_get_window (app, TYPE, NULL);
+    window = gw_app_get_window_by_type (app, TYPE);
 
     if (window == NULL || force_new)
     {
@@ -360,19 +361,16 @@ void gw_app_cancel_all_searches (GwApplication *app)
 
 
 //!
-//! @brief Gets a GwWindow from the application's windowlist
-//! @param app A GwApplication instance to work on
-//! @param TYPE The window type to get
-//! @param widget A widget from the window so you can get a specific instance.  If NULL, you cet the first window to match the GwWindowType
+//!  @brief Will attempt to get the window of the specified type which is most at the front
 //!
-GwWindow* gw_app_get_window (GwApplication *app, const GwWindowType TYPE, GtkWidget *widget)
+GwWindow* gw_app_get_window_by_type (GwApplication *app, const GwWindowType TYPE)
 {
     //Declarations
     GList *iter;
     GwWindow *window;
     GwWindow *active;
     GwWindow *fuzzy;
-    GtkWidget *toplevel;
+    GtkWindow *toplevel;
 
     //Initializations
     iter = app->windowlist;
@@ -381,44 +379,65 @@ GwWindow* gw_app_get_window (GwApplication *app, const GwWindowType TYPE, GtkWid
     toplevel = NULL;
     active = NULL;
 
-    if (widget == NULL)
+    for (iter = app->windowlist; iter != NULL; iter = iter->next)
     {
-      for (iter = app->windowlist; iter != NULL; iter = iter->next)
-      {
-        fuzzy = GW_WINDOW (iter->data);
-        active = GW_WINDOW (iter->data);
+      fuzzy = GW_WINDOW (iter->data);
+      active = GW_WINDOW (iter->data);
 
-        if (fuzzy == NULL)
-        {
-          continue;
-        }
-        if (active->type == TYPE && gtk_window_is_active (GTK_WINDOW (active->toplevel)))
-        {
-          window = active;
-          break;
-        }
-        if (fuzzy->type == TYPE)
-        {
-          window = fuzzy;
-        }
+      if (fuzzy == NULL)
+      {
+        continue;
+      }
+      if (active->type == TYPE && gtk_window_is_active (active->toplevel))
+      {
+        window = active;
+        break;
+      }
+      if (fuzzy->type == TYPE)
+      {
+        window = fuzzy;
       }
     }
-    else
-    {
-      for (iter = app->windowlist; iter != NULL; iter = iter->next)
-      {
-        fuzzy = GW_WINDOW (iter->data);
-        toplevel = gtk_widget_get_toplevel (widget);
 
-        if (fuzzy == NULL)
-        {
-          continue;
-        }
-        else if (fuzzy->type == TYPE && fuzzy->toplevel == GTK_WINDOW (toplevel))
-        {
-          window = fuzzy;
-          break;
-        }
+    return window;
+}
+
+
+//!
+//! @brief Gets a GwWindow from the application's windowlist
+//! @param app A GwApplication instance to work on
+//! @param TYPE The window type to get
+//! @param widget A widget from the window so you can get a specific instance.  If NULL, you cet the first window to match the GwWindowType
+//!
+GwWindow* gw_app_get_window_by_widget (GwApplication *app, GtkWidget *widget)
+{
+    //Declarations
+    GList *iter;
+    GwWindow *window;
+    GwWindow *active;
+    GwWindow *fuzzy;
+    GtkWindow *toplevel;
+
+    //Initializations
+    iter = app->windowlist;
+    window = NULL;
+    fuzzy = NULL;
+    toplevel = NULL;
+    active = NULL;
+
+    for (iter = app->windowlist; iter != NULL; iter = iter->next)
+    {
+      fuzzy = GW_WINDOW (iter->data);
+      toplevel = GTK_WINDOW (gtk_widget_get_toplevel (widget));
+
+      if (fuzzy == NULL)
+      {
+        continue;
+      }
+      else if (fuzzy->toplevel == toplevel)
+      {
+        window = fuzzy;
+        break;
       }
     }
 

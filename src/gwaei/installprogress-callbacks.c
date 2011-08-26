@@ -13,7 +13,7 @@ G_MODULE_EXPORT void gw_installprogress_cancel_cb (GtkWidget *widget, gpointer d
     GwInstallProgressWindow *window;
     GwSettingsWindow *settingswindow;
 
-    window = GW_INSTALLPROGRESSWINDOW (gw_app_get_window (app, GW_WINDOW_INSTALLPROGRESS, NULL));
+    window = GW_INSTALLPROGRESSWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
     if (window == NULL) return;
     settingswindow = GW_SETTINGSWINDOW (window->transient_for);
 

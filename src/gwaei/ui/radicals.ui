@@ -78,7 +78,7 @@
                     <property name="use_action_appearance">False</property>
                     <property name="use_underline">True</property>
                     <property name="draw_indicator">True</property>
-                    <signal name="toggled" handler="gw_radicalswindow_strokes_checkbox_toggled_cb" object="strokes_spinbutton" swapped="yes"/>
+                    <signal name="toggled" handler="gw_radicalswindow_strokes_checkbox_toggled_cb" object="radicals_window" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -98,7 +98,7 @@
                     <property name="adjustment">stroke_count_adjustment</property>
                     <property name="numeric">True</property>
                     <property name="update_policy">if-valid</property>
-                    <signal name="value-changed" handler="gw_radicalswindow_search_cb" swapped="no"/>
+                    <signal name="value-changed" handler="gw_radicalswindow_search_cb" object="radicals_window" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -142,8 +142,8 @@
                     <property name="use_action_appearance">False</property>
                     <property name="image">image1</property>
                     <property name="use_underline">True</property>
-                    <signal name="activate" handler="gw_radicalswindow_clear_cb" object="radical_selection_table" swapped="yes"/>
-                    <signal name="clicked" handler="gw_radicalswindow_clear_cb" object="radical_selection_table" swapped="yes"/>
+                    <signal name="activate" handler="gw_radicalswindow_clear_cb" object="radicals_window" swapped="no"/>
+                    <signal name="clicked" handler="gw_radicalswindow_clear_cb" object="radicals_window" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -160,10 +160,10 @@
                     <property name="use_action_appearance">False</property>
                     <property name="use_stock">True</property>
                     <accelerator key="w" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                    <signal name="activate" handler="gw_radicalswindow_close_cb" object="radicals_window" swapped="yes"/>
-                    <signal name="activate" handler="gw_radicalswindow_clear_cb" object="radical_selection_table" swapped="yes"/>
-                    <signal name="clicked" handler="gw_radicalswindow_close_cb" object="radicals_window" swapped="yes"/>
-                    <signal name="clicked" handler="gw_radicalswindow_clear_cb" object="radical_selection_table" swapped="yes"/>
+                    <signal name="activate" handler="gw_radicalswindow_close_cb" object="radicals_window" swapped="no"/>
+                    <signal name="activate" handler="gw_radicalswindow_clear_cb" object="radicals_window" swapped="no"/>
+                    <signal name="clicked" handler="gw_radicalswindow_close_cb" object="radicals_window" swapped="no"/>
+                    <signal name="clicked" handler="gw_radicalswindow_clear_cb" object="radicals_window" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>

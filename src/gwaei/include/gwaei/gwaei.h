@@ -67,8 +67,9 @@ void gw_app_parse_args (GwApplication*, int*, char***);
 void gw_app_quit (GwApplication*);
 
 GwWindow* gw_app_show_window (GwApplication*, const GwWindowType, GwWindow*, gboolean);
-void gw_app_destroy_window (GwApplication*, const GwWindowType, GtkWidget*);
-GwWindow* gw_app_get_window (GwApplication*, const GwWindowType, GtkWidget*);
+void gw_app_destroy_window (GwApplication*, GwWindow*);
+GwWindow* gw_app_get_window_by_type (GwApplication*, const GwWindowType);
+GwWindow* gw_app_get_window_by_widget (GwApplication*, GtkWidget*);
 
 const char* gw_app_get_program_name (GwApplication*);
 void gw_app_cancel_all_searches (GwApplication*);

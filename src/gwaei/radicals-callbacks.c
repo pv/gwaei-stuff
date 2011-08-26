@@ -60,7 +60,7 @@ G_MODULE_EXPORT void gw_radicalswindow_clear_cb (GtkWidget *widget, gpointer dat
     GtkWidget *checkbox;
 
     //Initializations
-    window = GW_RADICALSWINDOW (gw_app_get_window (app, GW_WINDOW_RADICALS, widget));
+    window = GW_RADICALSWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
     checkbox = GTK_WIDGET (gtk_builder_get_object(window->builder, "strokes_checkbox"));
     if (window == NULL) return;
 
@@ -94,7 +94,7 @@ G_MODULE_EXPORT void gw_radicalswindow_search_cb (GtkWidget *widget, gpointer da
     GError *error;
 
     //Initializations
-    window = GW_RADICALSWINDOW (gw_app_get_window (app, GW_WINDOW_RADICALS, widget));
+    window = GW_RADICALSWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
     if (window == NULL) return;
     search_window = GW_SEARCHWINDOW (window->transient_for);
     di = lw_dictinfolist_get_dictinfo (LW_DICTINFOLIST (app->dictinfolist), LW_DICTTYPE_KANJI, "Kanji");
@@ -160,7 +160,7 @@ G_MODULE_EXPORT void gw_radicalswindow_strokes_checkbox_toggled_cb (GtkWidget *w
     GwRadicalsWindow *window;
 
     //Initializations
-    window = GW_RADICALSWINDOW (gw_app_get_window (app, GW_WINDOW_RADICALS, widget));
+    window = GW_RADICALSWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
     if (window == NULL) return;
     request = gtk_toggle_button_get_active (window->strokes_checkbutton);
 
@@ -181,9 +181,9 @@ G_MODULE_EXPORT void gw_radicalswindow_close_cb (GtkWidget *widget, gpointer dat
     GwRadicalsWindow *window;
     
     //Initializations
-    window = GW_RADICALSWINDOW (gw_app_get_window (app, GW_WINDOW_RADICALS, NULL));
+    window = GW_RADICALSWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
 
-    gw_app_destroy_window (app, GW_WINDOW_RADICALS, NULL);
+    gw_app_destroy_window (app, GW_WINDOW (window));
 }
 
 

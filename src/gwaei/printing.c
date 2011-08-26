@@ -63,11 +63,13 @@ GwPageInfo* gw_pageinfo_new (GtkTextIter start, GtkTextIter end)
 {
     GwPageInfo *temp;
 
-    if ((temp = (GwPageInfo*) malloc (sizeof(GwPageInfo))) == NULL)
-      return NULL;
+    temp = (GwPageInfo*) malloc (sizeof(GwPageInfo));
 
-    temp->start = start;
-    temp->end = end;
+    if (temp != NULL)
+    {
+      temp->start = start;
+      temp->end = end;
+    }
 
     //Finish
     return temp;
@@ -438,7 +440,7 @@ G_MODULE_EXPORT void gw_print_cb (GtkWidget *widget, gpointer data)
 {
     GwSearchWindow *window;
 
-    window = GW_SEARCHWINDOW (gw_app_get_window (app, GW_WINDOW_SEARCH, NULL));
+    window = GW_SEARCHWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
 
     gw_app_block_searches (app);
     gw_print (GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG, window);
@@ -453,7 +455,7 @@ G_MODULE_EXPORT void gw_print_preview_cb (GtkWidget *widget, gpointer data)
 {
     GwSearchWindow *window;
 
-    window = GW_SEARCHWINDOW (gw_app_get_window (app, GW_WINDOW_SEARCH, NULL));
+    window = GW_SEARCHWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
 
     gw_app_block_searches (app);
     gw_print (GTK_PRINT_OPERATION_ACTION_PREVIEW, window);

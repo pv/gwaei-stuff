@@ -541,7 +541,7 @@ void gw_dictionaryinstallwindow_cancel_cb (GtkWidget *widget, gpointer data)
     GwDictInstWindow *window;
     GwSettingsWindow *settingswindow;
 
-    window = GW_DICTINSTWINDOW (gw_app_get_window (app, GW_WINDOW_DICTIONARYINSTALL, NULL));
+    window = GW_DICTINSTWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
     settingswindow = GW_SETTINGSWINDOW (window->transient_for);
 
     if (settingswindow->dictinstlist != NULL)

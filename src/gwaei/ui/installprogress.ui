@@ -129,8 +129,8 @@
                 <property name="receives_default">True</property>
                 <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
-                <signal name="activate" handler="gw_installprogress_cancel_cb" swapped="no"/>
-                <signal name="clicked" handler="gw_installprogress_cancel_cb" swapped="no"/>
+                <signal name="activate" handler="gw_installprogress_cancel_cb" object="install_progress_dialog" swapped="no"/>
+                <signal name="clicked" handler="gw_installprogress_cancel_cb" object="install_progress_dialog" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">True</property>

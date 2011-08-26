@@ -209,7 +209,7 @@ G_MODULE_EXPORT void gw_settingswindow_custom_document_font_changed_cb (GtkWidge
     GtkWidget *button;
     const char *font;
 
-    window = GW_SETTINGSWINDOW (gw_app_get_window (app, GW_WINDOW_SETTINGS, widget));
+    window = GW_SETTINGSWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
     button = GTK_WIDGET (gtk_builder_get_object (window->builder, "custom_font_fontbutton"));
     font = gtk_font_button_get_font_name (GTK_FONT_BUTTON (button));
 
@@ -347,9 +347,9 @@ G_MODULE_EXPORT void gw_settingswindow_close_cb (GtkWidget *widget, gpointer dat
     GwSettingsWindow *window;
     
     //Initializations
-    window = GW_SETTINGSWINDOW (gw_app_get_window (app, GW_WINDOW_SETTINGS, NULL));
+    window = GW_SETTINGSWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
 
-    gw_app_destroy_window (app, GW_WINDOW_SETTINGS, NULL);
+    gw_app_destroy_window (app, GW_WINDOW (window));
 }
 
 
@@ -473,7 +473,7 @@ G_MODULE_EXPORT void gw_settingswindow_remove_dictinfo_cb (GtkWidget *widget, gp
     GtkTreeView *view;
 
     //Initializations
-    window = GW_SETTINGSWINDOW (gw_app_get_window (app, GW_WINDOW_SETTINGS, widget));
+    window = GW_SETTINGSWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
     button = GTK_WIDGET (gtk_builder_get_object (window->builder, "remove_dictionary_button"));
     view = GTK_TREE_VIEW (gtk_builder_get_object (window->builder, "manage_dictionaries_treeview"));
     selection = gtk_tree_view_get_selection (view);

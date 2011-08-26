@@ -1015,7 +1015,7 @@ static GtkWidget* _searchwindow_results_popup_new (char* query_text)
     GtkWidget *menuitem = NULL;
 //    GtkWidget *menuimage = NULL;
     GtkTextIter start_iter, end_iter;
-    window = GW_SEARCHWINDOW (gw_app_get_window (app, GW_WINDOW_SEARCH, NULL));
+    window = GW_SEARCHWINDOW (gw_app_get_window_by_type (app, GW_WINDOW_SEARCH));
     if (window == NULL) return NULL;
     int i = 0;
 
@@ -1163,7 +1163,7 @@ static void _searchwindow_search_for_searchitem_online_cb (GtkMenuItem *widget, 
     GtkTextView *view;
     GwSearchData *sdata;
 
-    window = GW_SEARCHWINDOW (gw_app_get_window (app, GW_WINDOW_SEARCH, NULL));
+    window = GW_SEARCHWINDOW (gw_app_get_window_by_type (app, GW_WINDOW_SEARCH));
     if (window == NULL) return;
     item = LW_SEARCHITEM (data);
     if (item != NULL)
@@ -1198,7 +1198,7 @@ static void _searchwindow_new_tab_with_search_cb (GtkMenuItem *widget, gpointer 
     int index;
 
     //Initializations
-    window = GW_SEARCHWINDOW (gw_app_get_window (app, GW_WINDOW_SEARCH, NULL));
+    window = GW_SEARCHWINDOW (gw_app_get_window_by_type (app, GW_WINDOW_SEARCH));
     if (window == NULL) return;
     item = LW_SEARCHITEM (data);
     item_new = lw_searchitem_new (item->queryline->string, item->dictionary, item->target, app->prefmanager, NULL);

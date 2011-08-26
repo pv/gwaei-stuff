@@ -28,7 +28,7 @@
     <property name="icon_name">gwaei</property>
     <property name="type_hint">dialog</property>
     <property name="skip_taskbar_hint">True</property>
-    <signal name="delete-event" handler="gw_settingswindow_delete_event_action_cb" swapped="no"/>
+    <signal name="delete-event" handler="gw_settingswindow_delete_event_action_cb" object="settings_window" swapped="no"/>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
@@ -71,7 +71,7 @@
                                 <property name="use_underline">True</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
-                                <signal name="toggled" handler="gw_settingswindow_use_global_document_font_toggled_cb" swapped="no"/>
+                                <signal name="toggled" handler="gw_settingswindow_use_global_document_font_toggled_cb" object="settings_window" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="expand">True</property>
@@ -102,7 +102,7 @@
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="use_action_appearance">False</property>
-                                    <signal name="font-set" handler="gw_settingswindow_custom_document_font_changed_cb" swapped="no"/>
+                                    <signal name="font-set" handler="gw_settingswindow_custom_document_font_changed_cb" object="settings_window" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="expand">True</property>
@@ -175,7 +175,7 @@
                                         <property name="receives_default">True</property>
                                         <property name="use_action_appearance">False</property>
                                         <property name="color">#000000000000</property>
-                                        <signal name="color-set" handler="gw_settingswindow_swatch_color_changed_cb" swapped="no"/>
+                                        <signal name="color-set" handler="gw_settingswindow_swatch_color_changed_cb" object="settings_window" swapped="no"/>
                                       </object>
                                       <packing>
                                         <property name="left_attach">2</property>
@@ -192,7 +192,7 @@
                                         <property name="receives_default">True</property>
                                         <property name="use_action_appearance">False</property>
                                         <property name="color">#000000000000</property>
-                                        <signal name="color-set" handler="gw_settingswindow_swatch_color_changed_cb" swapped="no"/>
+                                        <signal name="color-set" handler="gw_settingswindow_swatch_color_changed_cb" object="settings_window" swapped="no"/>
                                       </object>
                                       <packing>
                                         <property name="left_attach">2</property>
@@ -209,7 +209,7 @@
                                         <property name="receives_default">True</property>
                                         <property name="use_action_appearance">False</property>
                                         <property name="color">#000000000000</property>
-                                        <signal name="color-set" handler="gw_settingswindow_swatch_color_changed_cb" swapped="no"/>
+                                        <signal name="color-set" handler="gw_settingswindow_swatch_color_changed_cb" object="settings_window" swapped="no"/>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -227,7 +227,7 @@
                                         <property name="receives_default">True</property>
                                         <property name="use_action_appearance">False</property>
                                         <property name="color">#000000000000</property>
-                                        <signal name="color-set" handler="gw_settingswindow_swatch_color_changed_cb" swapped="no"/>
+                                        <signal name="color-set" handler="gw_settingswindow_swatch_color_changed_cb" object="settings_window" swapped="no"/>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -244,7 +244,7 @@
                                         <property name="receives_default">True</property>
                                         <property name="use_action_appearance">False</property>
                                         <property name="color">#000000000000</property>
-                                        <signal name="color-set" handler="gw_settingswindow_swatch_color_changed_cb" swapped="no"/>
+                                        <signal name="color-set" handler="gw_settingswindow_swatch_color_changed_cb" object="settings_window" swapped="no"/>
                                       </object>
                                       <packing>
                                         <property name="top_attach">1</property>
@@ -259,7 +259,7 @@
                                         <property name="receives_default">True</property>
                                         <property name="use_action_appearance">False</property>
                                         <property name="color">#000000000000</property>
-                                        <signal name="color-set" handler="gw_settingswindow_swatch_color_changed_cb" swapped="no"/>
+                                        <signal name="color-set" handler="gw_settingswindow_swatch_color_changed_cb" object="settings_window" swapped="no"/>
                                       </object>
                                       <packing>
                                         <property name="top_attach">2</property>
@@ -309,8 +309,8 @@
                                         <property name="receives_default">True</property>
                                         <property name="use_action_appearance">False</property>
                                         <property name="use_underline">True</property>
-                                        <signal name="activate" handler="gw_settingswindow_reset_all_swatches_activated_cb" swapped="no"/>
-                                        <signal name="clicked" handler="gw_settingswindow_reset_all_swatches_activated_cb" swapped="no"/>
+                                        <signal name="activate" handler="gw_settingswindow_reset_all_swatches_activated_cb" object="settings_window" swapped="no"/>
+                                        <signal name="clicked" handler="gw_settingswindow_reset_all_swatches_activated_cb" object="settings_window" swapped="no"/>
                                       </object>
                                       <packing>
                                         <property name="left_attach">3</property>
@@ -453,8 +453,8 @@
                             <property name="receives_default">True</property>
                             <property name="use_action_appearance">False</property>
                             <property name="use_stock">True</property>
-                            <signal name="activate" handler="gw_dictionaryinstall_show_cb" swapped="no"/>
-                            <signal name="clicked" handler="gw_dictionaryinstall_show_cb" swapped="no"/>
+                            <signal name="activate" handler="gw_dictionaryinstall_show_cb" object="settings_window" swapped="no"/>
+                            <signal name="clicked" handler="gw_dictionaryinstall_show_cb" object="settings_window" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -471,8 +471,8 @@
                             <property name="receives_default">True</property>
                             <property name="use_action_appearance">False</property>
                             <property name="use_stock">True</property>
-                            <signal name="activate" handler="gw_settingswindow_remove_dictinfo_cb" swapped="no"/>
-                            <signal name="clicked" handler="gw_settingswindow_remove_dictinfo_cb" swapped="no"/>
+                            <signal name="activate" handler="gw_settingswindow_remove_dictinfo_cb" object="settings_window" swapped="no"/>
+                            <signal name="clicked" handler="gw_settingswindow_remove_dictinfo_cb" object="settings_window" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -667,7 +667,7 @@
                                     <property name="can_focus">False</property>
                                     <property name="model">query_romaji_to_kana_list_store</property>
                                     <property name="active">0</property>
-                                    <signal name="changed" handler="gw_settingswindow_romaji_kana_conv_changed_cb" swapped="no"/>
+                                    <signal name="changed" handler="gw_settingswindow_romaji_kana_conv_changed_cb" object="settings_window" swapped="no"/>
                                     <child>
                                       <object class="GtkCellRendererText" id="query_romaji_to_kana_cell_renderer"/>
                                       <attributes>
@@ -697,7 +697,7 @@
                                 <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="draw_indicator">True</property>
-                                <signal name="toggled" handler="gw_settingswindow_hira_kata_conv_toggled_cb" swapped="no"/>
+                                <signal name="toggled" handler="gw_settingswindow_hira_kata_conv_toggled_cb" object="settings_window" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -714,7 +714,7 @@
                                 <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="draw_indicator">True</property>
-                                <signal name="toggled" handler="gw_settingswindow_kata_hira_conv_toggled_cb" swapped="no"/>
+                                <signal name="toggled" handler="gw_settingswindow_kata_hira_conv_toggled_cb" object="settings_window" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -731,7 +731,7 @@
                                 <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="draw_indicator">True</property>
-                                <signal name="toggled" handler="gw_settingswindow_spellcheck_toggled_cb" swapped="no"/>
+                                <signal name="toggled" handler="gw_settingswindow_spellcheck_toggled_cb" object="settings_window" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -747,7 +747,7 @@
                                 <property name="receives_default">False</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="draw_indicator">True</property>
-                                <signal name="toggled" handler="gw_settingswindow_search_as_you_type_toggled_cb" swapped="no"/>
+                                <signal name="toggled" handler="gw_settingswindow_search_as_you_type_toggled_cb" object="settings_window" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -801,8 +801,8 @@
                                 <property name="receives_default">True</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
-                                <signal name="activate" handler="gw_searchwindow_open_dictionary_folder_cb" swapped="no"/>
-                                <signal name="clicked" handler="gw_searchwindow_open_dictionary_folder_cb" swapped="no"/>
+                                <signal name="activate" handler="gw_searchwindow_open_dictionary_folder_cb" object="settings_window" swapped="no"/>
+                                <signal name="clicked" handler="gw_searchwindow_open_dictionary_folder_cb" object="settings_window" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="expand">True</property>
@@ -881,8 +881,8 @@
                 <property name="receives_default">True</property>
                 <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
-                <signal name="activate" handler="gw_searchwindow_show_help_cb" swapped="no"/>
-                <signal name="clicked" handler="gw_searchwindow_show_help_cb" swapped="no"/>
+                <signal name="activate" handler="gw_searchwindow_show_help_cb" object="settings_window" swapped="no"/>
+                <signal name="clicked" handler="gw_searchwindow_show_help_cb" object="settings_window" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>

@@ -95,7 +95,7 @@ static gpointer _installprogresswindow_install_thread (gpointer data)
     GError *error;
 
     //Initializations
-    window = GW_INSTALLPROGRESSWINDOW (gw_app_get_window (app, GW_WINDOW_INSTALLPROGRESS, NULL));
+    window = GW_INSTALLPROGRESSWINDOW (data);
     if (window == NULL) return NULL;
     settingswindow = GW_SETTINGSWINDOW (window->transient_for);
     error = NULL;
