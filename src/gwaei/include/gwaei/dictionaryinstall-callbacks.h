@@ -11,7 +11,7 @@ void gw_dictionaryinstall_source_entry_changed_cb (GtkWidget*, gpointer);
 void gw_dictionaryinstall_engine_combobox_changed_cb (GtkWidget*, gpointer);
 void gw_dictionaryinstall_encoding_combobox_changed_cb (GtkWidget*, gpointer);
 void gw_dictionaryinstall_compression_combobox_changed_cb (GtkWidget*, gpointer);
-void gw_dictionaryinstall_split_checkbox_changed_cb (GtkWidget*, gpointer);
-void gw_dictionaryinstall_merge_checkbox_changed_cb (GtkWidget*, gpointer);
+void gw_dictionaryinstall_split_checkbox_toggled_cb (GtkWidget*, gpointer);
+void gw_dictionaryinstall_merge_checkbox_toggled_cb (GtkWidget*, gpointer);
 
 #endif
