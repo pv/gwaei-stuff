@@ -99,7 +99,7 @@ void gw_searchwindow_init (GwSearchWindow *window)
     window->feedbackdata.status = LW_SEARCHSTATUS_IDLE;
 
     for (i = 0; i < TOTAL_GW_SEARCHWINDOW_TIMEOUTIDS; i++)
-      window->timeoutids[i] = 0;
+      window->timeoutid[i] = 0;
 
     window->previous_tip = 0;
 
@@ -119,17 +119,7 @@ void gw_searchwindow_init (GwSearchWindow *window)
 
     window->history = lw_historylist_new (20);
     window->tagtable = gtk_text_tag_table_new ();
-/*
-    window->timeoutids[gw_searchwindow_timeoutid_selection_icons] = g_timeout_add_full (
-          g_priority_low, 
-          500, 
-          (gsourcefunc) gw_searchwindow_update_icons_for_selection_timeout, 
-          window, 
-          NULL
-    );
-*/
-
-    window->spellcheck = gw_spellcheck_new (window->entry);
+    window->spellcheck = NULL;
 
     _searchwindow_attach_signals (window);
 
@@ -148,17 +138,19 @@ void gw_searchwindow_deinit (GwSearchWindow *window)
   {
     if (g_main_current_source () != NULL &&
         !g_source_is_destroyed (g_main_current_source ()) &&
-        window->timeoutids[i] > 0
+        window->timeoutid[i] > 0
        )
     {
-      source = g_main_context_find_source_by_id (NULL, window->timeoutids[i]);
+      source = g_main_context_find_source_by_id (NULL, window->timeoutid[i]);
       if (source != NULL)
       {
         g_source_destroy (source);
       }
     }
-    window->timeoutids[i] = 0;
+    window->timeoutid[i] = 0;
   }
+
+  gw_spellcheck_free (window->spellcheck);
 
   _searchwindow_remove_signals (window);
 
@@ -173,9 +165,9 @@ static void _searchwindow_attach_signals (GwSearchWindow *window)
     int i;
 
     for (i = 0; i < TOTAL_GW_SEARCHWINDOW_SIGNALIDS; i++)
-      window->signalids[i] = 0;
+      window->signalid[i] = 0;
 
-    window->signalids[GW_SEARCHWINDOW_SIGNALID_TOOLBAR_SHOW] = lw_prefmanager_add_change_listener_by_schema (
+    window->signalid[GW_SEARCHWINDOW_SIGNALID_TOOLBAR_SHOW] = lw_prefmanager_add_change_listener_by_schema (
         app->prefmanager,
         LW_SCHEMA_BASE,
         LW_KEY_TOOLBAR_SHOW,
@@ -183,7 +175,7 @@ static void _searchwindow_attach_signals (GwSearchWindow *window)
         window
     );
 
-    window->signalids[GW_SEARCHWINDOW_SIGNALID_STATUSBAR_SHOW] = lw_prefmanager_add_change_listener_by_schema (
+    window->signalid[GW_SEARCHWINDOW_SIGNALID_STATUSBAR_SHOW] = lw_prefmanager_add_change_listener_by_schema (
         app->prefmanager,
         LW_SCHEMA_BASE,
         LW_KEY_STATUSBAR_SHOW,
@@ -191,14 +183,14 @@ static void _searchwindow_attach_signals (GwSearchWindow *window)
         window
     );
 
-    window->signalids[GW_SEARCHWINDOW_SIGNALID_USE_GLOBAL_FONT] = lw_prefmanager_add_change_listener_by_schema (
+    window->signalid[GW_SEARCHWINDOW_SIGNALID_USE_GLOBAL_FONT] = lw_prefmanager_add_change_listener_by_schema (
         app->prefmanager,
         LW_SCHEMA_FONT,
         LW_KEY_FONT_USE_GLOBAL_FONT,
         gw_searchwindow_sync_font_cb,
         window
     );
-    window->signalids[GW_SEARCHWINDOW_SIGNALID_CUSTOM_FONT] = lw_prefmanager_add_change_listener_by_schema (
+    window->signalid[GW_SEARCHWINDOW_SIGNALID_CUSTOM_FONT] = lw_prefmanager_add_change_listener_by_schema (
         app->prefmanager,
         LW_SCHEMA_FONT,
         LW_KEY_FONT_CUSTOM_FONT,
@@ -206,7 +198,7 @@ static void _searchwindow_attach_signals (GwSearchWindow *window)
         window
     );
 
-    window->signalids[GW_SEARCHWINDOW_SIGNALID_FONT_MAGNIFICATION] = lw_prefmanager_add_change_listener_by_schema (
+    window->signalid[GW_SEARCHWINDOW_SIGNALID_FONT_MAGNIFICATION] = lw_prefmanager_add_change_listener_by_schema (
         app->prefmanager,
         LW_SCHEMA_FONT,
         LW_KEY_FONT_MAGNIFICATION,
@@ -214,7 +206,7 @@ static void _searchwindow_attach_signals (GwSearchWindow *window)
         window
     );
 
-    window->signalids[GW_SEARCHWINDOW_SIGNALID_KEEP_SEARCHING] = lw_prefmanager_add_change_listener_by_schema (
+    window->signalid[GW_SEARCHWINDOW_SIGNALID_KEEP_SEARCHING] = lw_prefmanager_add_change_listener_by_schema (
         app->prefmanager,
         LW_SCHEMA_BASE,
         LW_KEY_SEARCH_AS_YOU_TYPE,
@@ -222,7 +214,15 @@ static void _searchwindow_attach_signals (GwSearchWindow *window)
         window
     );
 
-    window->timeoutids[GW_SEARCHWINDOW_TIMEOUTID_KEEP_SEARCHING] = g_timeout_add_full (
+    window->signalid[GW_SEARCHWINDOW_SIGNALID_SPELLCHECK] = lw_prefmanager_add_change_listener_by_schema (
+        app->prefmanager,
+        LW_SCHEMA_BASE,
+        LW_KEY_SPELLCHECK,
+        gw_searchwindow_sync_spellcheck_cb,
+        window
+    );
+
+    window->timeoutid[GW_SEARCHWINDOW_TIMEOUTID_KEEP_SEARCHING] = g_timeout_add_full (
           G_PRIORITY_DEFAULT_IDLE, 
           100, 
           (GSourceFunc) gw_searchwindow_keep_searching_timeout, 
@@ -230,7 +230,7 @@ static void _searchwindow_attach_signals (GwSearchWindow *window)
           NULL
     );
 
-    window->timeoutids[GW_SEARCHWINDOW_TIMEOUTID_PROGRESS] = g_timeout_add_full (
+    window->timeoutid[GW_SEARCHWINDOW_TIMEOUTID_PROGRESS] = g_timeout_add_full (
           G_PRIORITY_LOW, 
           50, 
           (GSourceFunc) gw_searchwindow_update_progress_feedback_timeout, 
@@ -248,16 +248,41 @@ static void _searchwindow_remove_signals (GwSearchWindow *window)
     lw_prefmanager_remove_change_listener_by_schema (
         app->prefmanager,
         LW_SCHEMA_BASE,
-        window->signalids[GW_SEARCHWINDOW_SIGNALID_TOOLBAR_SHOW]
+        window->signalid[GW_SEARCHWINDOW_SIGNALID_TOOLBAR_SHOW]
     );
     lw_prefmanager_remove_change_listener_by_schema (
         app->prefmanager,
         LW_SCHEMA_BASE,
-        window->signalids[GW_SEARCHWINDOW_SIGNALID_STATUSBAR_SHOW]
+        window->signalid[GW_SEARCHWINDOW_SIGNALID_STATUSBAR_SHOW]
+    );
+    lw_prefmanager_remove_change_listener_by_schema (
+        app->prefmanager,
+        LW_SCHEMA_FONT,
+        window->signalid[GW_SEARCHWINDOW_SIGNALID_USE_GLOBAL_FONT]
+    );
+    lw_prefmanager_remove_change_listener_by_schema (
+        app->prefmanager,
+        LW_SCHEMA_FONT,
+        window->signalid[GW_SEARCHWINDOW_SIGNALID_CUSTOM_FONT]
+    );
+    lw_prefmanager_remove_change_listener_by_schema (
+        app->prefmanager,
+        LW_SCHEMA_FONT,
+        window->signalid[GW_SEARCHWINDOW_SIGNALID_FONT_MAGNIFICATION]
+    );
+    lw_prefmanager_remove_change_listener_by_schema (
+        app->prefmanager,
+        LW_SCHEMA_BASE,
+        window->signalid[GW_SEARCHWINDOW_SIGNALID_KEEP_SEARCHING]
+    );
+    lw_prefmanager_remove_change_listener_by_schema (
+        app->prefmanager,
+        LW_SCHEMA_BASE,
+        window->signalid[GW_SEARCHWINDOW_SIGNALID_SPELLCHECK]
     );
 
     for (i = 0; i < TOTAL_GW_SEARCHWINDOW_SIGNALIDS; i++)
-      window->signalids[i] = 0;
+      window->signalid[i] = 0;
 }
 
 
@@ -350,7 +375,7 @@ static void _searchwindow_initialize_dictionary_menu (GwSearchWindow *window)
 gboolean gw_searchwindow_update_progress_feedback_timeout (GwSearchWindow *window)
 {
     //Sanity checks
-    if (window->timeoutids[GW_SEARCHWINDOW_TIMEOUTID_PROGRESS] == 0) return FALSE;
+    if (window->timeoutid[GW_SEARCHWINDOW_TIMEOUTID_PROGRESS] == 0) return FALSE;
     if (gtk_widget_get_visible (GTK_WIDGET (window->toplevel)) == FALSE) return TRUE;
 
     //Declarations
@@ -1766,7 +1791,7 @@ gboolean gw_searchwindow_keep_searching_timeout (GwSearchWindow *window)
     //Sanity check
     if (!gw_app_can_start_search (app)) return TRUE;
     if (!window->keepsearchingdata.enabled) return TRUE;
-    if (window->timeoutids[GW_SEARCHWINDOW_TIMEOUTID_KEEP_SEARCHING] == 0) return FALSE;
+    if (window->timeoutid[GW_SEARCHWINDOW_TIMEOUTID_KEEP_SEARCHING] == 0) return FALSE;
 
     //Declarations
     const char *query;
@@ -1812,7 +1837,7 @@ gboolean gw_searchwindow_keep_searching_timeout (GwSearchWindow *window)
 gboolean gw_searchwindow_update_icons_for_selection_timeout (GwSearchWindow *window) 
 {
     //Sanity check
-    if (window->timeoutids[GW_SEARCHWINDOW_TIMEOUTID_SELECTION_ICONS] == 0) return FALSE;
+    if (window->timeoutid[GW_SEARCHWINDOW_TIMEOUTID_SELECTION_ICONS] == 0) return FALSE;
     if (gtk_widget_get_visible (GTK_WIDGET (window->toplevel)) == FALSE) return TRUE;
 
     //Declarations

@@ -47,9 +47,10 @@ static gboolean _cancel = FALSE;
 //!
 static void _update_dictinst_source_uri_cb (GSettings *settings, char* key, gpointer data)
 {
-    LwDictInst *di = (LwDictInst*) data;
+    LwDictInst *di;
     char source_uri[200];
 
+    di = LW_DICTINST (data);
     lw_prefmanager_get_string (source_uri, settings, key, 200);
     g_free (di->uri[LW_DICTINST_NEEDS_DOWNLOADING]);
     di->uri[LW_DICTINST_NEEDS_DOWNLOADING] = g_strdup (source_uri);
@@ -91,9 +92,8 @@ LwDictInst* lw_dictinst_new_using_pref_uri (const char* filename,
 
     di->schema = g_strdup (schema);
     di->key = g_strdup (key);
-    if (di->listenerid_is_set == TRUE)
-      lw_prefmanager_remove_change_listener_by_schema (pm, schema, di->listenerid);
     di->listenerid = lw_prefmanager_add_change_listener_by_schema (pm, schema, key, _update_dictinst_source_uri_cb, di);
+    di->listenerid_is_set = TRUE;
     di->pm = pm;
 
     return di;
@@ -115,48 +115,25 @@ LwDictInst* lw_dictinst_new (const char* filename,
                              const LwEncoding ENCODING,
                              gboolean split, gboolean merge, gboolean builtin)
 {
-    //Create the temp object to fill
-    LwDictInst *temp = NULL;
+    LwDictInst *temp;
+
     temp = (LwDictInst*) malloc (sizeof(LwDictInst));
-    if (temp == NULL) g_error ("Out of memory. Could not create LwDictInst\n");
 
-    //Initialize the variables for safety
-    temp->filename = NULL;
-    temp->shortname = NULL;
-    temp->longname = NULL;
-    temp->description = NULL;
-    int i = 0;
-    for (i = 0; i < LW_DICTINST_TOTAL_URIS; i++)
-      temp->uri[i] = NULL;
-    temp->schema = NULL;
-    temp->key = NULL;
-    temp->progress = 0;
-    temp->selected = FALSE;
-    temp->listenerid = 0;
-    temp->listenerid_is_set = FALSE;
-    temp->compression = COMPRESSION;    //!< Path to the gziped dictionary file
-    temp->encoding = ENCODING;          //!< Path to the raw unziped dictionary file
-    temp->type = DICTTYPE;
-    temp->uri_group_index = -1;
-    temp->uri_atom_index = -1;
-    temp->builtin = builtin;
-    temp->split = split;
-    temp->merge = merge;
-    temp->mutex = g_mutex_new ();
-    temp->current_source_uris = NULL;
-    temp->current_target_uris = NULL;
-
-    //Set the values
-    temp->filename = NULL;
-    temp->shortname = g_strdup (shortname);
-    temp->longname = g_strdup (longname);
-    temp->description = g_strdup (description);
-
-    temp->pm = NULL;
-    
-    lw_dictinst_set_filename (temp, filename);
-    lw_dictinst_set_download_source (temp, source_uri);
-
+    if (temp != NULL) 
+    {
+      lw_dictinst_init (temp,
+                        filename,
+                        shortname,
+                        longname,
+                        description,
+                        source_uri,
+                        DICTTYPE,
+                        COMPRESSION,
+                        ENCODING,
+                        split,
+                        merge,
+                        builtin);
+    }
 
     return temp;
 }
@@ -167,32 +144,87 @@ LwDictInst* lw_dictinst_new (const char* filename,
 //! 
 void lw_dictinst_free (LwDictInst* di)
 {
-    if (di->pm != NULL && di->listenerid_is_set == TRUE)
-      lw_prefmanager_remove_change_listener_by_schema (di->pm, di->schema, di->listenerid);
+    lw_dictinst_deinit (di);
+    free (di);
+}
 
-    g_free(di->filename);
-    g_free(di->shortname);
-    g_free(di->longname);
-    g_free(di->description);
+
+void lw_dictinst_init (LwDictInst *di,
+                       const char* filename,
+                       const char* shortname,
+                       const char* longname,
+                       const char* description,
+                       const char* source_uri,
+                       const LwDictType DICTTYPE,
+                       const LwCompression COMPRESSION,
+                       const LwEncoding ENCODING,
+                       gboolean split, gboolean merge, gboolean builtin)
+{
+    //Declarations
+    int i;
+
+    //Initializations
+    di->shortname = g_strdup (shortname);
+    di->longname = g_strdup (longname);
+    di->description = g_strdup (description);
+    di->type = DICTTYPE;
+    di->compression = COMPRESSION; 
+    di->encoding = ENCODING;    
+    di->split = split;
+    di->merge = merge;
+    di->builtin = builtin;
+
+    di->filename = NULL;
+    di->schema = NULL;
+    di->key = NULL;
+    di->progress = 0;
+    di->selected = FALSE;
+    di->listenerid = 0;
+    di->listenerid_is_set = FALSE;
+    di->uri_group_index = -1;
+    di->uri_atom_index = -1;
+    di->mutex = g_mutex_new ();
+    di->current_source_uris = NULL;
+    di->current_target_uris = NULL;
+    di->pm = NULL;
+
+    for (i = 0; i < LW_DICTINST_TOTAL_URIS; i++)
+      di->uri[i] = NULL;
+    
+    lw_dictinst_set_filename (di, filename);
+    lw_dictinst_set_download_source (di, source_uri);
+}
+
+
+void lw_dictinst_deinit (LwDictInst *di)
+{
+    //Declarations
+    int i;
+
+    if (di->pm != NULL && di->listenerid_is_set == TRUE)
+    {
+      lw_prefmanager_remove_change_listener_by_schema (di->pm, di->schema, di->listenerid);
+    }
+
+    g_free (di->filename);
+    g_free (di->shortname);
+    g_free (di->longname);
+    g_free (di->description);
+
     g_strfreev (di->current_source_uris);
     g_strfreev (di->current_target_uris);
 
-    int i = 0;
-    while (i < LW_DICTINST_TOTAL_URIS)
+    for (i = 0; i < LW_DICTINST_TOTAL_URIS; i++)
     {
       g_free(di->uri[i]);
-      i++;
     }
-    di->progress = 0;
-    g_free (di->schema);
-    g_free (di->key);
-    di->compression = 0;    //!< Path to the gziped dictionary file
-    di->encoding = 0;          //!< Path to the raw unziped dictionary file
-    di->type = 0;
-    di->split = FALSE;
-    di->merge = FALSE;
+
+    if (di->schema != NULL) g_free (di->schema);
+    if (di->key != NULL) g_free (di->key);
+
     g_mutex_free (di->mutex);
-    free (di);
+
+
 }
 
 

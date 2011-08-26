@@ -390,8 +390,14 @@ static gpointer _outfunc (gpointer data)
 
 gboolean gw_spellcheck_update_timeout (gpointer data)
 {
+    //Declarations
     GwSpellcheck *spellcheck;
+
+    //Initializaitons
     spellcheck = GW_SPELLCHECK (data);
+
+    //Sanity check
+    if (spellcheck->timeoutid[GW_SPELLCHECK_TIMEOUTID_UPDATE] == 0) return TRUE;
 
     g_mutex_lock (spellcheck->mutex);
     if (spellcheck->running_check == TRUE)
@@ -440,7 +446,6 @@ gboolean gw_spellcheck_update_timeout (gpointer data)
     spellcheck_pref = lw_prefmanager_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_SPELLCHECK);
     exists = g_file_test (ENCHANT, G_FILE_TEST_IS_REGULAR);
     error = NULL;
-
 
     //Sanity checks
     if (

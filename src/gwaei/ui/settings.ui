@@ -453,8 +453,8 @@
                             <property name="receives_default">True</property>
                             <property name="use_action_appearance">False</property>
                             <property name="use_stock">True</property>
-                            <signal name="activate" handler="gw_dictionaryinstall_show_cb" object="settings_window" swapped="no"/>
-                            <signal name="clicked" handler="gw_dictionaryinstall_show_cb" object="settings_window" swapped="no"/>
+                            <signal name="activate" handler="gw_settingswindow_open_dictionaryinstallwindow_cb" object="settings_window" swapped="no"/>
+                            <signal name="clicked" handler="gw_settingswindow_open_dictionaryinstallwindow_cb" object="settings_window" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>

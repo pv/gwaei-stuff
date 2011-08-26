@@ -151,10 +151,13 @@ void lw_dictinstlist_free (LwDictInstList* dil)
 
     for (iter = dil->list; iter != NULL; iter = iter->next)
     {
-      di = (LwDictInst*) iter->data;
+      di = LW_DICTINST (iter->data);
+
       if (di != NULL)
+      {
         lw_dictinst_free (di);
-      iter->data = NULL;
+        iter->data = NULL;
+      }
     }
     g_list_free (dil->list);
 

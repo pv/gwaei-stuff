@@ -728,47 +728,47 @@ G_MODULE_EXPORT gboolean gw_searchwindow_update_clipboard_on_focus_change_cb (Gt
     select_all_action = GTK_ACTION (gtk_builder_get_object (window->builder, id));
 
     //Disconnected old handlers
-    if (window->signalids[GW_SEARCHWINDOW_SIGNALID_COPY] != 0)
+    if (window->signalid[GW_SEARCHWINDOW_SIGNALID_COPY] != 0)
     {
-      g_signal_handler_disconnect (copy_action, window->signalids[GW_SEARCHWINDOW_SIGNALID_COPY]);
-      window->signalids[GW_SEARCHWINDOW_SIGNALID_COPY] = 0;
+      g_signal_handler_disconnect (copy_action, window->signalid[GW_SEARCHWINDOW_SIGNALID_COPY]);
+      window->signalid[GW_SEARCHWINDOW_SIGNALID_COPY] = 0;
     }
-    if (window->signalids[GW_SEARCHWINDOW_SIGNALID_CUT] != 0)
+    if (window->signalid[GW_SEARCHWINDOW_SIGNALID_CUT] != 0)
     {
-      g_signal_handler_disconnect (cut_action, window->signalids[GW_SEARCHWINDOW_SIGNALID_CUT]);
-      window->signalids[GW_SEARCHWINDOW_SIGNALID_CUT] = 0;
+      g_signal_handler_disconnect (cut_action, window->signalid[GW_SEARCHWINDOW_SIGNALID_CUT]);
+      window->signalid[GW_SEARCHWINDOW_SIGNALID_CUT] = 0;
     }
-    if (window->signalids[GW_SEARCHWINDOW_SIGNALID_PASTE] != 0)
+    if (window->signalid[GW_SEARCHWINDOW_SIGNALID_PASTE] != 0)
     {
-      g_signal_handler_disconnect (paste_action, window->signalids[GW_SEARCHWINDOW_SIGNALID_PASTE]);
-      window->signalids[GW_SEARCHWINDOW_SIGNALID_PASTE] = 0;
+      g_signal_handler_disconnect (paste_action, window->signalid[GW_SEARCHWINDOW_SIGNALID_PASTE]);
+      window->signalid[GW_SEARCHWINDOW_SIGNALID_PASTE] = 0;
     }
-    if (window->signalids[GW_SEARCHWINDOW_SIGNALID_SELECT_ALL] != 0)
+    if (window->signalid[GW_SEARCHWINDOW_SIGNALID_SELECT_ALL] != 0)
     {
-      g_signal_handler_disconnect (select_all_action, window->signalids[GW_SEARCHWINDOW_SIGNALID_SELECT_ALL]);
-      window->signalids[GW_SEARCHWINDOW_SIGNALID_SELECT_ALL] = 0;
+      g_signal_handler_disconnect (select_all_action, window->signalid[GW_SEARCHWINDOW_SIGNALID_SELECT_ALL]);
+      window->signalid[GW_SEARCHWINDOW_SIGNALID_SELECT_ALL] = 0;
     }
                                           
     //Create new ones pointed at the correct widget
-    window->signalids[GW_SEARCHWINDOW_SIGNALID_COPY] = g_signal_connect (
+    window->signalid[GW_SEARCHWINDOW_SIGNALID_COPY] = g_signal_connect (
           copy_action,
           "activate",
           G_CALLBACK (gw_searchwindow_copy_cb),
           widget
     );
-    window->signalids[GW_SEARCHWINDOW_SIGNALID_CUT] = g_signal_connect (
+    window->signalid[GW_SEARCHWINDOW_SIGNALID_CUT] = g_signal_connect (
           cut_action,
           "activate",
           G_CALLBACK (gw_searchwindow_cut_cb),
           widget
     );
-    window->signalids[GW_SEARCHWINDOW_SIGNALID_PASTE] = g_signal_connect (
+    window->signalid[GW_SEARCHWINDOW_SIGNALID_PASTE] = g_signal_connect (
           paste_action,
           "activate",
           G_CALLBACK (gw_searchwindow_paste_cb),
           widget
     );
-    window->signalids[GW_SEARCHWINDOW_SIGNALID_SELECT_ALL] = g_signal_connect (
+    window->signalid[GW_SEARCHWINDOW_SIGNALID_SELECT_ALL] = g_signal_connect (
           select_all_action,
           "activate",
           G_CALLBACK (gw_searchwindow_select_all_cb),
@@ -1715,9 +1715,9 @@ G_MODULE_EXPORT void gw_searchwindow_sync_toolbar_show_cb (GSettings *settings, 
     else
       gtk_widget_hide (GTK_WIDGET (window->toolbar));
 
-    g_signal_handlers_block_by_func (action, gw_searchwindow_toolbar_show_toggled_cb, NULL);
+    g_signal_handlers_block_by_func (action, gw_searchwindow_toolbar_show_toggled_cb, window->toplevel);
     gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), request);
-    g_signal_handlers_unblock_by_func (action, gw_searchwindow_toolbar_show_toggled_cb, NULL);
+    g_signal_handlers_unblock_by_func (action, gw_searchwindow_toolbar_show_toggled_cb, window->toplevel);
 }
 
 
@@ -1760,9 +1760,9 @@ G_MODULE_EXPORT void gw_searchwindow_sync_statusbar_show_cb (GSettings *settings
     else
       gtk_widget_hide (window->statusbar);
 
-    g_signal_handlers_block_by_func (action, gw_searchwindow_statusbar_show_toggled_cb, NULL);
+    g_signal_handlers_block_by_func (action, gw_searchwindow_statusbar_show_toggled_cb, window->toplevel);
     gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), request);
-    g_signal_handlers_unblock_by_func (action, gw_searchwindow_statusbar_show_toggled_cb, NULL);
+    g_signal_handlers_unblock_by_func (action, gw_searchwindow_statusbar_show_toggled_cb, window->toplevel);
 }
 
 
@@ -1798,8 +1798,11 @@ G_MODULE_EXPORT void gw_searchwindow_spellcheck_toggled_cb (GtkWidget *widget, g
 
     lw_prefmanager_set_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_SPELLCHECK, !state);
 
-    if (window->spellcheck->query_text != NULL) g_free (window->spellcheck->query_text);
-    window->spellcheck->query_text = g_strdup ("FORCE UPDATE");
+    if (window->spellcheck != NULL)
+    {
+      if (window->spellcheck->query_text != NULL) g_free (window->spellcheck->query_text);
+      window->spellcheck->query_text = g_strdup ("FORCE UPDATE");
+    }
 }
 
 
@@ -1819,9 +1822,19 @@ G_MODULE_EXPORT void gw_searchwindow_sync_spellcheck_cb (GSettings *settings, gc
     toolbutton = GTK_TOGGLE_TOOL_BUTTON (gtk_builder_get_object (window->builder, "spellcheck_toolbutton"));
     request = lw_prefmanager_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_SPELLCHECK);
 
-    g_signal_handlers_block_by_func (toolbutton, gw_searchwindow_spellcheck_toggled_cb, NULL);
+    g_signal_handlers_block_by_func (toolbutton, gw_searchwindow_spellcheck_toggled_cb, window->toplevel);
     gtk_toggle_tool_button_set_active (toolbutton, request);
-    g_signal_handlers_unblock_by_func (toolbutton, gw_searchwindow_spellcheck_toggled_cb, NULL);
+    g_signal_handlers_unblock_by_func (toolbutton, gw_searchwindow_spellcheck_toggled_cb, window->toplevel);
+
+    if (request == TRUE && window->spellcheck == NULL)
+    {
+      window->spellcheck =  gw_spellcheck_new (window->entry);
+    }
+    else if (request == FALSE && window->spellcheck != NULL)
+    {
+      gw_spellcheck_free (window->spellcheck);
+      window->spellcheck = NULL;
+    }
 }
 
 

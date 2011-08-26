@@ -68,10 +68,12 @@ GwWindow* gw_window_new (const GwWindowType TYPE, GwWindow *transient_for)
 /*
       case GW_WINDOW_KANJIPAD:
         window = GW_WINDOW (gw_kanjipadwindow_new ());
-        break;
+      break;
+*/
       case GW_WINDOW_DICTIONARYINSTALL:
-        window = GW_WINDOW (gw_dictinstwindow_new ());
+        window = GW_WINDOW (gw_dictinstwindow_new (GW_SETTINGSWINDOW (transient_for)));
         break;
+/*
       case GW_WINDOW_INSTALLPROGRESS:
         window = GW_WINDOW (gw_installprogresswindow_new ());
         break;
@@ -118,9 +120,11 @@ void gw_window_destroy (GwWindow *window)
       case GW_WINDOW_KANJIPAD:
         gw_kanjipadwindow_destroy ((GwKanjipadWindow*) window);
         break;
+*/
       case GW_WINDOW_DICTIONARYINSTALL:
         gw_dictinstwindow_destroy ((GwDictInstWindow*) window);
         break;
+/*
       case GW_WINDOW_INSTALLPROGRESS:
         gw_installprogreswindow_destroy ((GwInstallProgressWindow*) window);
         break;

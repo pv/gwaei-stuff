@@ -27,6 +27,7 @@ void gw_dictinstwindow_destroy (GwDictInstWindow *window)
 {
   gw_dictinstwindow_deinit (window);
   gw_window_deinit (GW_WINDOW (window));
+  free (window);
 }
 
 
@@ -49,8 +50,11 @@ void gw_dictinstwindow_init (GwDictInstWindow *window, GwSettingsWindow *transie
     window->details_togglebutton = GTK_TOGGLE_BUTTON (gtk_builder_get_object (window->builder, "show_dictionary_detail_checkbutton"));
 
     gw_window_set_transient_for (GW_WINDOW (window), GW_WINDOW (transient_for));
+
     if (transient_for->dictinstlist != NULL)
+    {
       lw_dictinstlist_free (transient_for->dictinstlist);
+    }
     transient_for->dictinstlist = lw_dictinstlist_new (app->prefmanager);
 
     //Set up the dictionary liststore
@@ -109,7 +113,6 @@ void gw_dictinstwindow_init (GwDictInstWindow *window, GwSettingsWindow *transie
 
     //Setup the dictionary list view
     gtk_tree_view_set_model (window->view, GTK_TREE_MODEL (window->dictionary_store));
-    g_signal_connect (G_OBJECT (window->view), "cursor-changed", G_CALLBACK (gw_dictionaryinstallwindow_cursor_changed_cb), NULL);
 
     renderer = gtk_cell_renderer_toggle_new ();
     gtk_cell_renderer_set_padding (GTK_CELL_RENDERER (renderer), 6, 5);

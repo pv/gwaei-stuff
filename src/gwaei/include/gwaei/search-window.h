@@ -18,6 +18,7 @@ typedef enum {
 
 
 typedef enum {
+  GW_SEARCHWINDOW_SIGNALID_SPELLCHECK,
   GW_SEARCHWINDOW_SIGNALID_COPY,
   GW_SEARCHWINDOW_SIGNALID_CUT,
   GW_SEARCHWINDOW_SIGNALID_PASTE,
@@ -80,8 +81,8 @@ struct _GwSearchWindow {
   LwHistoryList *history;
 
   //Main variables
-  guint timeoutids[TOTAL_GW_SEARCHWINDOW_TIMEOUTIDS];
-  guint signalids[TOTAL_GW_SEARCHWINDOW_SIGNALIDS];
+  guint timeoutid[TOTAL_GW_SEARCHWINDOW_TIMEOUTIDS];
+  guint signalid[TOTAL_GW_SEARCHWINDOW_SIGNALIDS];
 
   int previous_tip;
 

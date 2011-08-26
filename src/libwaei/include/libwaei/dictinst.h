@@ -26,6 +26,7 @@ typedef enum {
 
 struct _LwDictInst {
   EXTENDS_LW_DICT
+
   char *description;
   char *uri[LW_DICTINST_TOTAL_URIS];
   double progress;
@@ -69,8 +70,19 @@ LwDictInst* lw_dictinst_new (const char*,
                              const LwCompression,
                              const LwEncoding,
                              gboolean, gboolean, gboolean);
-
 void lw_dictinst_free (LwDictInst*);
+void lw_dictinst_init (LwDictInst*,
+                       const char*,
+                       const char*,
+                       const char*,
+                       const char*,
+                       const char*,
+                       const LwDictType,
+                       const LwCompression,
+                       const LwEncoding,
+                       gboolean, gboolean, gboolean);
+void lw_dictinst_deinit (LwDictInst*);
+
 
 void lw_dictinst_set_filename (LwDictInst*, const char*);
 void lw_dictinst_set_type (LwDictInst*, const LwDictType);

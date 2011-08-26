@@ -39,7 +39,7 @@ G_MODULE_EXPORT void gw_dictionaryinstallwindow_filename_entry_changed_cb (GtkWi
     const char *value;
 
     //Initializations
-    window = GW_DICTINSTWINDOW (data);
+    window = GW_DICTINSTWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
     value = gtk_entry_get_text (GTK_ENTRY (widget));
 
     lw_dictinst_set_filename (window->di, value);
@@ -58,7 +58,7 @@ G_MODULE_EXPORT void gw_dictionaryinstallwindow_engine_combobox_changed_cb (GtkW
     int value;
 
     //Initializations
-    window = GW_DICTINSTWINDOW (data);
+    window = GW_DICTINSTWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
     value = gtk_combo_box_get_active (GTK_COMBO_BOX (widget));
 
     window->di->type = value;
@@ -74,7 +74,7 @@ G_MODULE_EXPORT void gw_dictionaryinstallwindow_source_entry_changed_cb (GtkWidg
     const char *value = gtk_entry_get_text (GTK_ENTRY (widget));
 
     //Initializations
-    window = GW_DICTINSTWINDOW (data);
+    window = GW_DICTINSTWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
     value = gtk_entry_get_text (GTK_ENTRY (widget));
 
     //Set the LwDictInst value
@@ -99,7 +99,7 @@ G_MODULE_EXPORT void gw_dictionaryinstallwindow_reset_default_uri_cb (GtkWidget 
     GwDictInstWindow *window;
 
     //Initializations
-    window = GW_DICTINSTWINDOW (data);
+    window = GW_DICTINSTWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
 
     if (window->di->schema == NULL || window->di->key == NULL) return;
 
@@ -151,7 +151,7 @@ G_MODULE_EXPORT void gw_dictionaryinstallwindow_encoding_combobox_changed_cb (Gt
     int value;
 
     //Initializations
-    window = GW_DICTINSTWINDOW (data);
+    window = GW_DICTINSTWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
     value = gtk_combo_box_get_active (GTK_COMBO_BOX (widget));
 
     lw_dictinst_set_encoding (window->di, value);
@@ -185,7 +185,7 @@ G_MODULE_EXPORT void gw_dictionaryinstallwindow_split_checkbox_toggled_cb (GtkWi
     gboolean value;
 
     //Initializations
-    window = GW_DICTINSTWINDOW (data);
+    window = GW_DICTINSTWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
     value = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
 
     lw_dictinst_set_split (window->di, value);
@@ -202,7 +202,7 @@ G_MODULE_EXPORT void gw_dictionaryinstallwindow_merge_checkbox_toggled_cb (GtkWi
     gboolean value;
 
     //Initializations
-    window = GW_DICTINSTWINDOW (data);
+    window = GW_DICTINSTWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
     value = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
 
     lw_dictinst_set_merge (window->di, value);
@@ -229,7 +229,7 @@ G_MODULE_EXPORT void gw_dictionaryinstallwindow_cursor_changed_cb (GtkTreeView *
     int width;
 
     //Initializations
-    window = GW_DICTINSTWINDOW (data);
+    window = GW_DICTINSTWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
     hbox = GTK_WIDGET (gtk_builder_get_object (window->builder, "dictionary_install_details_hbox"));
     dialog = GTK_WIDGET (gtk_builder_get_object (window->builder, "dictionary_install_dialog"));
 
@@ -274,7 +274,7 @@ G_MODULE_EXPORT void gw_dictionaryinstallwindow_listitem_toggled_cb (GtkCellRend
     LwDictInst *di;
 
     //Initializations
-    window = GW_DICTINSTWINDOW (data);
+    window = GW_DICTINSTWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
     gtk_tree_model_get_iter_from_string (GTK_TREE_MODEL (window->dictionary_store), &iter, path);
     gtk_tree_model_get (GTK_TREE_MODEL (window->dictionary_store), &iter, GW_DICTINSTWINDOW_DICTSTOREFIELD_CHECKBOX_STATE, &state, GW_DICTINSTWINDOW_DICTSTOREFIELD_DICTINST_PTR, &di, -1);
     gtk_list_store_set (GTK_LIST_STORE (window->dictionary_store), &iter, GW_DICTINSTWINDOW_DICTSTOREFIELD_CHECKBOX_STATE, !state, -1);
@@ -295,7 +295,7 @@ G_MODULE_EXPORT void gw_dictionaryinstallwindow_detail_checkbox_toggled_cb (GtkW
     GtkTreeViewColumn *column;
 
     //Declarations
-    window = GW_DICTINSTWINDOW (data);
+    window = GW_DICTINSTWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
 
     //Trigger the list item selection callback
     gtk_tree_view_get_cursor (window->view, &path, &column);
@@ -413,7 +413,7 @@ static void _dictinstwindow_fill_details_box (GwDictInstWindow *window, LwDictIn
 
     entry = gtk_entry_new ();
     gtk_entry_set_text (GTK_ENTRY (entry), di->filename);
-    g_signal_connect (G_OBJECT (entry), "changed", G_CALLBACK (gw_dictionaryinstallwindow_filename_entry_changed_cb), window);
+    g_signal_connect (G_OBJECT (entry), "changed", G_CALLBACK (gw_dictionaryinstallwindow_filename_entry_changed_cb), window->toplevel);
     gtk_table_attach_defaults (GTK_TABLE (table), entry, 1, 2, 0, 1);
     gtk_widget_set_sensitive (GTK_WIDGET (entry), editable);
     gtk_widget_set_sensitive (GTK_WIDGET (label), editable);
@@ -433,7 +433,7 @@ static void _dictinstwindow_fill_details_box (GwDictInstWindow *window, LwDictIn
 
     gtk_table_attach_defaults (GTK_TABLE (table), combobox, 1, 2, 1, 2);
     gtk_combo_box_set_active (GTK_COMBO_BOX (combobox), di->type);
-    g_signal_connect (G_OBJECT (combobox), "changed", G_CALLBACK (gw_dictionaryinstallwindow_engine_combobox_changed_cb), window);
+    g_signal_connect (G_OBJECT (combobox), "changed", G_CALLBACK (gw_dictionaryinstallwindow_engine_combobox_changed_cb), window->toplevel);
     gtk_widget_set_sensitive (GTK_WIDGET (combobox), editable);
     gtk_widget_set_sensitive (GTK_WIDGET (label), editable);
     window->engine_combobox = GTK_COMBO_BOX (combobox);
@@ -449,7 +449,7 @@ static void _dictinstwindow_fill_details_box (GwDictInstWindow *window, LwDictIn
 
     entry = gtk_entry_new ();
     gtk_entry_set_text (GTK_ENTRY (entry), di->uri[LW_DICTINST_NEEDS_DOWNLOADING]);
-    g_signal_connect (G_OBJECT (entry), "changed", G_CALLBACK (gw_dictionaryinstallwindow_source_entry_changed_cb), window);
+    g_signal_connect (G_OBJECT (entry), "changed", G_CALLBACK (gw_dictionaryinstallwindow_source_entry_changed_cb), window->toplevel);
     gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (entry), TRUE, TRUE, 0);
     window->source_entry = GTK_ENTRY (entry);
 
@@ -457,7 +457,7 @@ static void _dictinstwindow_fill_details_box (GwDictInstWindow *window, LwDictIn
     image = gtk_image_new_from_stock (GTK_STOCK_OPEN, GTK_ICON_SIZE_MENU);
     gtk_container_add (GTK_CONTAINER (button), image);
     gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (button), FALSE, FALSE, 0);
-    g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (gw_dictionaryinstallwindow_select_file_cb), window);
+    g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (gw_dictionaryinstallwindow_select_file_cb), window->toplevel);
     window->source_choose_button = GTK_BUTTON (button);
 
     button = gtk_button_new();
@@ -466,7 +466,7 @@ static void _dictinstwindow_fill_details_box (GwDictInstWindow *window, LwDictIn
     gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (button), FALSE, FALSE, 0);
     gtk_widget_set_sensitive (GTK_WIDGET (button), !editable);
     gtk_table_attach_defaults (GTK_TABLE (table), hbox, 1, 2, 2, 3);
-    g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (gw_dictionaryinstallwindow_reset_default_uri_cb), window);
+    g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (gw_dictionaryinstallwindow_reset_default_uri_cb), window->toplevel);
     window->source_reset_button = GTK_BUTTON (button);
 
     //Sixth row
@@ -481,7 +481,7 @@ static void _dictinstwindow_fill_details_box (GwDictInstWindow *window, LwDictIn
     gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (combobox), renderer, "text", GW_DICTINSTWINDOW_ENCODINGSTOREFIELD_NAME);
     gtk_combo_box_set_model (GTK_COMBO_BOX (combobox), GTK_TREE_MODEL (window->encoding_store));
     gtk_combo_box_set_active (GTK_COMBO_BOX (combobox), di->encoding);
-    g_signal_connect (G_OBJECT (combobox), "changed", G_CALLBACK (gw_dictionaryinstallwindow_encoding_combobox_changed_cb), window);
+    g_signal_connect (G_OBJECT (combobox), "changed", G_CALLBACK (gw_dictionaryinstallwindow_encoding_combobox_changed_cb), window->toplevel);
     window->encoding_combobox = GTK_COMBO_BOX (combobox);
 
     gtk_table_attach_defaults (GTK_TABLE (table), combobox, 1, 2, 3, 4);
@@ -500,7 +500,7 @@ static void _dictinstwindow_fill_details_box (GwDictInstWindow *window, LwDictIn
     gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (combobox), renderer, "text", GW_DICTINSTWINDOW_COMPRESSIONSTOREFIELD_NAME);
     gtk_combo_box_set_model (GTK_COMBO_BOX (combobox), GTK_TREE_MODEL (window->compression_store));
     gtk_combo_box_set_active (GTK_COMBO_BOX (combobox), di->compression);
-    g_signal_connect (G_OBJECT (combobox), "changed", G_CALLBACK (gw_dictionaryinstallwindow_compression_combobox_changed_cb), window);
+    g_signal_connect (G_OBJECT (combobox), "changed", G_CALLBACK (gw_dictionaryinstallwindow_compression_combobox_changed_cb), window->toplevel);
     window->compression_combobox = GTK_COMBO_BOX (combobox);
 
     gtk_table_attach_defaults (GTK_TABLE (table), combobox, 1, 2, 4, 5);
@@ -510,7 +510,7 @@ static void _dictinstwindow_fill_details_box (GwDictInstWindow *window, LwDictIn
     //Eighth row
     checkbox = gtk_check_button_new_with_label (gettext("Split Places from Names Dictionary"));
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), di->split);
-    g_signal_connect (G_OBJECT (checkbox), "toggled", G_CALLBACK (gw_dictionaryinstallwindow_split_checkbox_toggled_cb), window);
+    g_signal_connect (G_OBJECT (checkbox), "toggled", G_CALLBACK (gw_dictionaryinstallwindow_split_checkbox_toggled_cb), window->toplevel);
     window->split_checkbutton;
 
     hbox = GTK_WIDGET (gtk_hbox_new (FALSE, 0));
@@ -522,7 +522,7 @@ static void _dictinstwindow_fill_details_box (GwDictInstWindow *window, LwDictIn
     //Ninth row
     checkbox = gtk_check_button_new_with_label (gettext("Merge Radicals into Kanji Dictionary"));
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), di->merge);
-    g_signal_connect (G_OBJECT (checkbox), "toggled", G_CALLBACK (gw_dictionaryinstallwindow_merge_checkbox_toggled_cb), window);
+    g_signal_connect (G_OBJECT (checkbox), "toggled", G_CALLBACK (gw_dictionaryinstallwindow_merge_checkbox_toggled_cb), window->toplevel);
     window->merge_checkbutton;
 
     hbox = GTK_WIDGET (gtk_hbox_new (FALSE, 0));
@@ -550,4 +550,22 @@ void gw_dictionaryinstallwindow_cancel_cb (GtkWidget *widget, gpointer data)
       settingswindow->dictinstlist = NULL;
     }
 }
+
+
+//!
+//! @brief Closes the window passed throught the widget pointer
+//! @param widget GtkWidget pointer to the window to close
+//! @param data Currently unused gpointer
+//!
+G_MODULE_EXPORT void gw_dictionaryinstallwindow_close_cb (GtkWidget *widget, gpointer data)
+{
+    //Declarations
+    GwDictInstWindow *window;
+    
+    //Initializations
+    window = GW_DICTINSTWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
+
+    gw_app_destroy_window (app, GW_WINDOW (window));
+}
+
 

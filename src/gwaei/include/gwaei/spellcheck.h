@@ -6,9 +6,15 @@ typedef enum {
   GW_SPELLCHECK_SIGNALID_DRAW,
   GW_SPELLCHECK_SIGNALID_CHANGED,
   GW_SPELLCHECK_SIGNALID_POPULATE_POPUP,
-  GW_SPELLCHECK_SIGNALID_UPDATE_TIMEOUT,
   TOTAL_GW_SPELLCHECK_SIGNALIDS
 } GwSpellcheckSignalId;
+
+
+typedef enum {
+  GW_SPELLCHECK_TIMEOUTID_UPDATE,
+  TOTAL_GW_SPELLCHECK_TIMEOUTIDS
+} GwSpellcheckTimeoutid;
+
 
 struct _GwSpellcheck {
   GtkEntry *entry;
@@ -20,6 +26,7 @@ struct _GwSpellcheck {
   gboolean running_check;
   int timeout;
   guint signalid[TOTAL_GW_SPELLCHECK_SIGNALIDS];
+  guint timeoutid[TOTAL_GW_SPELLCHECK_TIMEOUTIDS];
 };
 typedef struct _GwSpellcheck GwSpellcheck;
 
@@ -27,6 +34,8 @@ typedef struct _GwSpellcheck GwSpellcheck;
 
 GwSpellcheck* gw_spellcheck_new (GtkEntry*);
 void gw_spellcheck_free (GwSpellcheck*);
+void gw_spellcheck_init (GwSpellcheck*, GtkEntry*);
+void gw_spellcheck_deinit (GwSpellcheck*);
 
 int gw_spellcheck_get_x_offset (GwSpellcheck *spellcheck);
 int gw_spellcheck_get_y_offset (GwSpellcheck *spellcheck);
