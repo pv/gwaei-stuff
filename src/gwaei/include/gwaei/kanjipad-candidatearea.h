@@ -4,9 +4,9 @@
 void gw_kanjipadwindow_initialize_candidates (GwKanjipadWindow*);
 void gw_kanjipadwindow_draw_candidates (GwKanjipadWindow*);
 
-gboolean gw_kanjipadwindow_candidatearea_configure_event_cb (GtkWidget*, GdkEventConfigure*, GwKanjipadWindow*);
-gboolean gw_kanjipadwindow_candidatearea_draw_cb (GtkWidget*, cairo_t*, GwKanjipadWindow*);
-gboolean gw_kanjipadwindow_candidatearea_button_press_event_cb (GtkWidget*, GdkEventButton*, GwKanjipadWindow*);
+gboolean gw_kanjipadwindow_candidatearea_configure_event_cb (GtkWidget*, GdkEventConfigure*, gpointer);
+gboolean gw_kanjipadwindow_candidatearea_draw_cb (GtkWidget*, cairo_t*, gpointer);
+gboolean gw_kanjipadwindow_candidatearea_button_press_event_cb (GtkWidget*, GdkEventButton*, gpointer);
 
 #endif
 

@@ -57,14 +57,17 @@ G_MODULE_EXPORT gboolean gw_kanjipadwindow_look_up_cb (GtkWidget *widget, GdkEve
     gint16 y;
 
     //Initializations
-    window = GW_KANJIPADWINDOW (data);
-    if (window->to_engine == NULL) return FALSE;
+    window = GW_KANJIPADWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
+    if (window == NULL) return FALSE;
+
+    if (window->to_engine == NULL)
+      return FALSE;
     message = g_string_new (NULL);
     error = NULL;
       
     for (iter = window->strokes; iter != NULL; iter = iter->next)
     {
-      for (inner_iter = iter->data; iter != NULL; iter = iter->next)
+      for (inner_iter = iter->data; inner_iter != NULL; inner_iter = inner_iter->next)
       {
         x = ((GdkPoint*) inner_iter->data)->x;
         y = ((GdkPoint*) inner_iter->data)->y;
@@ -99,7 +102,8 @@ G_MODULE_EXPORT void gw_kanjipadwindow_clear_drawingarea_cb (GtkWidget *widget, 
 {
     GwKanjipadWindow *window;
 
-    window = GW_KANJIPADWINDOW (data);
+    window = GW_KANJIPADWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
+    if (window == NULL) return;
 
     gw_kanjipadwindow_clear_drawingarea (window);
 }
@@ -108,13 +112,27 @@ G_MODULE_EXPORT void gw_kanjipadwindow_clear_drawingarea_cb (GtkWidget *widget, 
 //!
 //! @brief Adds the strokecounts to every line drawn in the padarea
 //! 
-G_MODULE_EXPORT void do_kanjipad_annotate_toggle (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void do_kanjipad_annotate_toggled (GtkWidget *widget, gpointer data)
+{
+    GwKanjipadWindow *window;
+    gboolean request;
+
+    window = GW_KANJIPADWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
+    if (window == NULL) return;
+    request = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
+
+    gw_kanjipadwindow_set_drawingarea_annotate (window, request);
+}
+
+
+G_MODULE_EXPORT void gw_kanjipadwindow_close_cb (GtkWidget *widget, gpointer data)
 {
     GwKanjipadWindow *window;
 
-    window = GW_KANJIPADWINDOW (data);
-
-    gw_kanjipadwindow_set_drawingarea_annotate (window, !window->annotate);
+    window = GW_KANJIPADWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
+    if (window == NULL) return;
+   
+    gw_app_destroy_window (app, GW_WINDOW (window));
 }
 
 

@@ -49,6 +49,8 @@ void gw_spellcheck_deinit (GwSpellcheck *spellcheck)
 {
     g_mutex_lock (spellcheck->mutex);
 
+    g_free (spellcheck->query_text);
+
     _spellcheck_remove_signals (spellcheck);
 
     g_mutex_unlock (spellcheck->mutex);

@@ -64,14 +64,20 @@ GwWindow* gw_window_new (const GwWindowType TYPE, GwWindow *transient_for)
         g_assert (transient_for != NULL);
         window = GW_WINDOW (gw_radicalswindow_new (transient_for));
         gtk_window_set_destroy_with_parent (window->toplevel, TRUE);
+        gtk_window_set_position (window->toplevel, GTK_WIN_POS_MOUSE);
+        gtk_window_set_modal (window->toplevel, FALSE);
         break;
-/*
       case GW_WINDOW_KANJIPAD:
-        window = GW_WINDOW (gw_kanjipadwindow_new ());
+        window = GW_WINDOW (gw_kanjipadwindow_new (GW_SEARCHWINDOW (transient_for)));
+        gtk_window_set_destroy_with_parent (window->toplevel, TRUE);
+        gtk_window_set_position (window->toplevel, GTK_WIN_POS_MOUSE);
+        gtk_window_set_modal (window->toplevel, FALSE);
       break;
-*/
       case GW_WINDOW_DICTIONARYINSTALL:
         window = GW_WINDOW (gw_dictinstwindow_new (GW_SETTINGSWINDOW (transient_for)));
+        gtk_window_set_destroy_with_parent (window->toplevel, TRUE);
+        gtk_window_set_position (window->toplevel, GTK_WIN_POS_CENTER_ON_PARENT);
+        gtk_window_set_modal (window->toplevel, TRUE);
         break;
 /*
       case GW_WINDOW_INSTALLPROGRESS:
@@ -114,19 +120,17 @@ void gw_window_destroy (GwWindow *window)
         gw_settingswindow_destroy (GW_SETTINGSWINDOW (window));
         break;
       case GW_WINDOW_RADICALS:
-        gw_radicalswindow_destroy ((GwRadicalsWindow*) window);
+        gw_radicalswindow_destroy (GW_RADICALSWINDOW (window));
         break;
-/*
       case GW_WINDOW_KANJIPAD:
-        gw_kanjipadwindow_destroy ((GwKanjipadWindow*) window);
+        gw_kanjipadwindow_destroy (GW_KANJIPADWINDOW (window));
         break;
-*/
       case GW_WINDOW_DICTIONARYINSTALL:
-        gw_dictinstwindow_destroy ((GwDictInstWindow*) window);
+        gw_dictinstwindow_destroy (GW_DICTINSTWINDOW (window));
         break;
 /*
       case GW_WINDOW_INSTALLPROGRESS:
-        gw_installprogreswindow_destroy ((GwInstallProgressWindow*) window);
+        gw_installprogreswindow_destroy (GW_INSTALLPROGRESSWINDOW (window));
         break;
 */
       default:

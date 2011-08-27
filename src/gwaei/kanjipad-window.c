@@ -52,7 +52,7 @@ static gboolean _kanjipadwindow_engine_input_handler (GIOChannel*, GIOCondition,
 //!
 //! @brief Sets up kanjipad, aquiring any needed resources
 //!
-GwKanjipadWindow* gw_kanjipadwindow_new ()
+GwKanjipadWindow* gw_kanjipadwindow_new (GwSearchWindow* transient_for)
 {
     GwKanjipadWindow *temp;
 
@@ -61,7 +61,7 @@ GwKanjipadWindow* gw_kanjipadwindow_new ()
     if (temp != NULL)
     {
       gw_window_init (GW_WINDOW (temp), GW_WINDOW_KANJIPAD, "kanjipad.ui", "kanjipad_window");
-      gw_kanjipadwindow_init (temp);
+      gw_kanjipadwindow_init (temp, transient_for);
     }
 
     return temp;
@@ -75,26 +75,57 @@ void gw_kanjipadwindow_destroy (GwKanjipadWindow *window)
 {
     gw_kanjipadwindow_deinit (window);
     gw_window_deinit (GW_WINDOW (window));
+
+    free (window);
 }
 
 
-void gw_kanjipadwindow_init (GwKanjipadWindow *window)
+void gw_kanjipadwindow_init (GwKanjipadWindow *window, GwSearchWindow* transient_for)
 {
       window->drawingarea = GTK_DRAWING_AREA (gtk_builder_get_object (window->builder, "kdrawing_area"));
       window->candidates = GTK_DRAWING_AREA (gtk_builder_get_object (window->builder, "kguesses"));
+
+      window->total_candidates = 0;
+      window->strokes = NULL;
+      window->curstroke = NULL;
+      window->surface = NULL;
+      window->ksurface = NULL;
+      window->from_engine = NULL;
+      window->to_engine = NULL;
+      window->kselected[0] = 0;
+      window->kselected[1] = 0;
+      window->instroke = FALSE;
 
       gw_kanjipadwindow_initialize_drawingarea (window);
       gw_kanjipadwindow_initialize_candidates (window);
 
       _kanjipadwindow_initialize_engine (window);
+
+      gw_window_set_transient_for (GW_WINDOW (window), GW_WINDOW (transient_for));
 }
 
 
 void gw_kanjipadwindow_deinit (GwKanjipadWindow *window)
 {
+    //Declarations
+    GSource *source;
     GError *error;
 
+    //Initializations
     error = NULL;
+
+    if (g_main_current_source () != NULL &&
+        !g_source_is_destroyed (g_main_current_source ()) &&
+        window->iowatchid > 0
+       )
+    {
+      source = g_main_context_find_source_by_id (NULL, window->iowatchid);
+      if (source != NULL)
+      {
+        g_source_destroy (source);
+      }
+    }
+    window->iowatchid = 0;
 
     if (error == NULL) 
     {
@@ -110,7 +141,7 @@ void gw_kanjipadwindow_deinit (GwKanjipadWindow *window)
       window->to_engine = NULL;
     }
 
-    g_free (window);
+    g_spawn_close_pid (window->engine_pid);
 
     if (error != NULL)
     {
@@ -167,7 +198,7 @@ static void _kanjipadwindow_initialize_engine (GwKanjipadWindow *window)
     if (!(window->from_engine = g_io_channel_unix_new (stdout_fd)))
       g_error ("Couldn't create pipe from child process: %s", g_strerror(errno));
 
-    g_io_add_watch (window->from_engine, G_IO_IN, _kanjipadwindow_engine_input_handler, window);
+    window->iowatchid = g_io_add_watch (window->from_engine, G_IO_IN, _kanjipadwindow_engine_input_handler, window);
 
     //Cleanup
     g_free(path);
@@ -211,8 +242,8 @@ static gboolean _kanjipadwindow_engine_input_handler (GIOChannel *source, GIOCon
     if (line[0] == 'K')
     {
       unsigned int t1, t2;
-      p = line+1;
-      for (i=0; i < MAX_GUESSES; i++)
+      p = line + 1;
+      for (i = 0; i < GW_KANJIPADWINDOW_MAX_GUESSES; i++)
       {
         while (*p && isspace(*p)) p++;
         if (!*p || sscanf(p, "%2x%2x", &t1, &t2) != 2)
@@ -224,7 +255,7 @@ static gboolean _kanjipadwindow_engine_input_handler (GIOChannel *source, GIOCon
         window->kanji_candidates[i][1] = t2;
         while (*p && !isspace(*p)) p++;
       }
-      window->total_candidates = i+1;
+      window->total_candidates = i + 1;
 
       gw_kanjipadwindow_draw_candidates (window);
     }

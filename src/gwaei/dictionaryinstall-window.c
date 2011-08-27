@@ -118,7 +118,7 @@ void gw_dictinstwindow_init (GwDictInstWindow *window, GwSettingsWindow *transie
     gtk_cell_renderer_set_padding (GTK_CELL_RENDERER (renderer), 6, 5);
     column = gtk_tree_view_column_new_with_attributes (" ", renderer, "active", GW_DICTINSTWINDOW_DICTSTOREFIELD_CHECKBOX_STATE, NULL);
     gtk_tree_view_append_column (window->view, column);
-    g_signal_connect (G_OBJECT (renderer), "toggled", G_CALLBACK (gw_dictionaryinstallwindow_listitem_toggled_cb), NULL);
+    g_signal_connect (G_OBJECT (renderer), "toggled", G_CALLBACK (gw_dictionaryinstallwindow_listitem_toggled_cb), window->toplevel);
 
     renderer = gtk_cell_renderer_text_new ();
     gtk_cell_renderer_set_padding (GTK_CELL_RENDERER (renderer), 6, 0);

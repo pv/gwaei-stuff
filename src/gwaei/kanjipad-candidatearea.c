@@ -56,9 +56,9 @@ void gw_kanjipadwindow_initialize_candidates (GwKanjipadWindow *window)
     mask = (GDK_EXPOSURE_MASK  | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK);
     desc = pango_font_description_from_string ("Sans 18");
 
-    g_signal_connect (window->candidates, "configure_event", G_CALLBACK (gw_kanjipadwindow_candidatearea_configure_event_cb), window);
-    g_signal_connect (window->candidates, "draw", G_CALLBACK (gw_kanjipadwindow_candidatearea_draw_cb), window);
-    g_signal_connect (window->candidates, "button_press_event", G_CALLBACK (gw_kanjipadwindow_candidatearea_button_press_event_cb), window);
+    g_signal_connect (window->candidates, "configure_event", G_CALLBACK (gw_kanjipadwindow_candidatearea_configure_event_cb), window->toplevel);
+    g_signal_connect (window->candidates, "draw", G_CALLBACK (gw_kanjipadwindow_candidatearea_draw_cb), window->toplevel);
+    g_signal_connect (window->candidates, "button_press_event", G_CALLBACK (gw_kanjipadwindow_candidatearea_button_press_event_cb), window->toplevel);
     gtk_widget_add_events (GTK_WIDGET (window->candidates), mask);
 
     if (desc != NULL)
@@ -96,19 +96,22 @@ static void _kanjipadwindow_get_candidate_character_size (GwKanjipadWindow *wind
 //!
 static gchar *_kanjipadwindow_utf8_for_char (char wide_character[])
 {
+    //Declarations
     gchar *string_utf;
-    GError *err = NULL;
+    GError *error;
     gchar str[3];
 
+    //Initializaitons
+    error = NULL;
     str[0] = wide_character[0] + 0x80;
     str[1] = wide_character[1] + 0x80;
     str[2] = '\0';
+    string_utf = g_convert (str, -1, "UTF-8", "EUC-JP", NULL, NULL, &error);
 
-    string_utf = g_convert (str, -1, "UTF-8", "EUC-JP", NULL, NULL, &err);
-    if (!string_utf)
+    if (error != NULL)
     {
       g_printerr ("Cannot convert string from EUC-JP to UTF-8: %s\n",
-      err->message);
+      error->message);
       exit (EXIT_FAILURE);
     }
 
@@ -165,9 +168,11 @@ static void _kanjipadwindow_draw_candidate_character (GwKanjipadWindow *window, 
     }
 
     x = (allocated_width - char_width) / 2;
-    y = (char_height + 6) * index + 3;;
+    y = (char_height + 6) * index + 3;
     cairo_translate(cr, x, y);
     string_utf = _kanjipadwindow_utf8_for_char (window->kanji_candidates[index]);
+    
+
     layout = gtk_widget_create_pango_layout (GTK_WIDGET (window->candidates), string_utf);
     g_free (string_utf);
     
@@ -222,14 +227,19 @@ void gw_kanjipadwindow_draw_candidates (GwKanjipadWindow *window)
 //!
 //! @brief To be written
 //!
-G_MODULE_EXPORT gboolean gw_kanjipadwindow_candidatearea_configure_event_cb (GtkWidget *widget, GdkEventConfigure *event, GwKanjipadWindow *window)
+G_MODULE_EXPORT gboolean gw_kanjipadwindow_candidatearea_configure_event_cb (GtkWidget *widget, GdkEventConfigure *event, gpointer data)
 {
+    GwKanjipadWindow *window;
+
+    window = GW_KANJIPADWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
+    if (window == NULL) return FALSE;
+
     if (window->ksurface)
       cairo_surface_destroy (window->ksurface);
 
     window->ksurface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, event->width, event->height);
 
-//    _kanjipadwindow_draw_candidate_character (widget, window); BREAK
+    gw_kanjipadwindow_draw_candidates (window);
 
     return TRUE;
 }
@@ -238,8 +248,13 @@ G_MODULE_EXPORT gboolean gw_kanjipadwindow_candidatearea_configure_event_cb (Gtk
 //!
 //! @brief To be written
 //!
-G_MODULE_EXPORT gboolean gw_kanjipadwindow_candidatearea_draw_cb (GtkWidget *widget, cairo_t *cr, GwKanjipadWindow *window)
+G_MODULE_EXPORT gboolean gw_kanjipadwindow_candidatearea_draw_cb (GtkWidget *widget, cairo_t *cr, gpointer data)
 {
+    GwKanjipadWindow *window;
+
+    window = GW_KANJIPADWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
+    if (window == NULL) return FALSE;
+
     //Sanity check
     if (window->ksurface == NULL) return FALSE;
 
@@ -258,8 +273,9 @@ static int _kanjipadwindow_erase_candidate_selection (GwKanjipadWindow *window)
     int i;
     if (window->kselected[0] || window->kselected[1])
     {
-      for (i=0; i < window->total_candidates; i++)
+      for (i = 0; i < window->total_candidates; i++)
       {
+printf("%d %d\n", i, window->total_candidates);
         if (strncmp (window->kselected, window->kanji_candidates[i], 2))
         {
           _kanjipadwindow_draw_candidate_character (window, i, 0);
@@ -281,7 +297,8 @@ static void _kanjipadwindow_primary_candidates_clear (GtkClipboard *clipboard, g
 
     _kanjipadwindow_erase_candidate_selection (window);
 
-    window->kselected[0] = window->kselected[1] = 0;
+    window->kselected[0] = 0;
+    window->kselected[1] = 0;
 
     gtk_widget_queue_draw (GTK_WIDGET (window->candidates));
 }
@@ -309,16 +326,20 @@ static void _kanjipadwindow_primary_candidates_get (GtkClipboard *clipboard, Gtk
 //!
 //! @brief To be written
 //!
-G_MODULE_EXPORT gboolean gw_kanjipadwindow_candidatearea_button_press_event_cb (GtkWidget *widget, GdkEventButton *event, GwKanjipadWindow *window)
+G_MODULE_EXPORT gboolean gw_kanjipadwindow_candidatearea_button_press_event_cb (GtkWidget *widget, GdkEventButton *event, gpointer data)
 {
     //Declarations
+    GwKanjipadWindow *window;
     GwSearchWindow *searchwindow;
     gint start, end;
     int j;
     gint char_height;
     GtkClipboard *clipboard;
+    char *string_utf;
 
     //Initializations
+    window = GW_KANJIPADWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
+    if (window == NULL) return FALSE;
     searchwindow = GW_SEARCHWINDOW (window->transient_for);
     g_assert (searchwindow != NULL);
     clipboard = gtk_clipboard_get (GDK_SELECTION_PRIMARY);
@@ -339,7 +360,7 @@ G_MODULE_EXPORT gboolean gw_kanjipadwindow_candidatearea_button_press_event_cb (
     j = event->y / (char_height + 6);
     if (j < window->total_candidates)
     {
-      //_kanjipadwindow_draw_candidate_character (widget, pad); WEIRD CODE BREAK
+      gw_kanjipadwindow_draw_candidates (window); 
       strncpy(window->kselected, window->kanji_candidates[j], 2);
       _kanjipadwindow_draw_candidate_character (window, j, 1);
       
@@ -360,15 +381,14 @@ G_MODULE_EXPORT gboolean gw_kanjipadwindow_candidatearea_button_press_event_cb (
     //Copy to clipboard if output_widget is NULL
     if ((window->kselected[0] || window->kselected[1]) && searchwindow->entry == NULL)
     {
-      char *string_utf = _kanjipadwindow_utf8_for_char (window->kselected);
-        gtk_clipboard_set_text (gtk_clipboard_get (GDK_SELECTION_CLIPBOARD), string_utf, -1);
+      string_utf = _kanjipadwindow_utf8_for_char (window->kselected);
+      gtk_clipboard_set_text (gtk_clipboard_get (GDK_SELECTION_CLIPBOARD), string_utf, -1);
       g_free (string_utf);
     }
     //Insert the text into the editable widget
     else if (window->kselected[0] || window->kselected[1])
     {
       //Append the text at the cursor position
-      char *string_utf;
       string_utf = _kanjipadwindow_utf8_for_char (window->kselected);
       gtk_editable_insert_text (GTK_EDITABLE(searchwindow->entry), string_utf, -1, &start);
       gtk_editable_set_position (GTK_EDITABLE(searchwindow->entry), start);

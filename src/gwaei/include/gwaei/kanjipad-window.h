@@ -1,7 +1,7 @@
 #ifndef GW_KANJIPAD_WINDOW_INCLUDED
 #define GW_KANJIPAD_WINDOW_INCLUDED
 
-#define MAX_GUESSES 10
+#define GW_KANJIPADWINDOW_MAX_GUESSES 10
 
 
 struct _GwKanjipadWindow {
@@ -15,36 +15,26 @@ struct _GwKanjipadWindow {
   cairo_surface_t *surface;
   cairo_surface_t *ksurface;
   GList *curstroke;
-  int instroke;
+  gboolean instroke;
   char kselected[2];
-  char kanji_candidates[MAX_GUESSES][2];
+  char kanji_candidates[GW_KANJIPADWINDOW_MAX_GUESSES][2];
   int total_candidates;
   int engine_pid;
   GIOChannel *from_engine;
   GIOChannel *to_engine;
-  char *data_file;
+  guint iowatchid;
 };
 typedef struct _GwKanjipadWindow GwKanjipadWindow;
 
 #define GW_KANJIPADWINDOW(object) (GwKanjipadWindow*)object
 
 
-//Methods
-/*
-GwKanjipad* padarea_create (GtkWidget*);
-void padarea_clear (GwKanjipad*);
-void padarea_set_annotate (GwKanjipad*, gint);
-void padarea_changed_callback (GwKanjipad*);
-void padarea_init_engine (GwKanjipad*);
-*/
-
-GwKanjipadWindow* gw_kanjipadwindow_new (void);
-void gw_kanjipad_destroy (GwKanjipadWindow*);
-void gw_kanjipadwindow_init (GwKanjipadWindow*);
+GwKanjipadWindow* gw_kanjipadwindow_new (GwSearchWindow*);
+void gw_kanjipadwindow_destroy (GwKanjipadWindow*);
+void gw_kanjipadwindow_init (GwKanjipadWindow*, GwSearchWindow*);
 void gw_kanjipadwindow_deinit (GwKanjipadWindow*);
 
 
-#include <gwaei/kanjipad-window.h>
 #include <gwaei/kanjipad-callbacks.h>
 #include <gwaei/kanjipad-candidatearea.h>
 #include <gwaei/kanjipad-drawingarea.h>

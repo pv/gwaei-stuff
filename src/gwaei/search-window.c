@@ -45,6 +45,10 @@ static void _searchwindow_initialize_combobox (GwSearchWindow*);
 static void _searchwindow_initialize_dictionary_menu (GwSearchWindow*);
 static void _searchwindow_attach_signals (GwSearchWindow*);
 static void _searchwindow_remove_signals (GwSearchWindow*);
+void _searchwindow_mousedata_init (GwSearchWindowMouseData*);
+void _searchwindow_mousedata_deinit (GwSearchWindowMouseData*);
+void _searchwindow_keepsearchingdata_init (GwSearchWindowKeepSearchingData*);
+void _searchwindow_keepsearchingdata_deinit (GwSearchWindowKeepSearchingData*);
 
 
 //!
@@ -103,15 +107,8 @@ void gw_searchwindow_init (GwSearchWindow *window)
 
     window->previous_tip = 0;
 
-    window->keepsearchingdata.delay = 0;
-    window->keepsearchingdata.query = NULL;
-    window->keepsearchingdata.enabled = TRUE;
-
-    window->mousedata.item = NULL;
-    window->mousedata.button_press_x = 0;
-    window->mousedata.button_press_y = 0;
-    window->mousedata.button_character = 0;
-    window->mousedata.hovered_word = NULL; 
+    _searchwindow_mousedata_init (&(window->mousedata));
+    _searchwindow_keepsearchingdata_init (&(window->keepsearchingdata));
 
     window->selectionicondata.selected = FALSE;
 
@@ -131,6 +128,7 @@ void gw_searchwindow_init (GwSearchWindow *window)
 
 void gw_searchwindow_deinit (GwSearchWindow *window)
 {
+  //Declarations
   GSource *source;
   int i;
 
@@ -150,9 +148,12 @@ void gw_searchwindow_deinit (GwSearchWindow *window)
     window->timeoutid[i] = 0;
   }
 
-  gw_spellcheck_free (window->spellcheck);
+  if (window->spellcheck != NULL) gw_spellcheck_free (window->spellcheck);
+  if (window->history != NULL) lw_historylist_free (window->history);
 
   _searchwindow_remove_signals (window);
+  _searchwindow_mousedata_deinit (&(window->mousedata));
+  _searchwindow_keepsearchingdata_deinit (&(window->keepsearchingdata));
 
   g_object_unref (window->tagtable);
 }
@@ -283,6 +284,42 @@ static void _searchwindow_remove_signals (GwSearchWindow *window)
 
     for (i = 0; i < TOTAL_GW_SEARCHWINDOW_SIGNALIDS; i++)
       window->signalid[i] = 0;
+}
+
+
+void _searchwindow_mousedata_init (GwSearchWindowMouseData *data)
+{
+    data->item = NULL;
+    data->button_press_x = 0;
+    data->button_press_y = 0;
+    data->button_character = 0;
+    data->hovered_word = NULL; 
+}
+
+void _searchwindow_mousedata_deinit (GwSearchWindowMouseData *data)
+{
+  if (data->hovered_word != NULL)
+  {
+    g_free (data->hovered_word);
+    data->hovered_word = NULL;
+  }
+}
+
+void _searchwindow_keepsearchingdata_init (GwSearchWindowKeepSearchingData *data)
+{
+    data->delay = 0;
+    data->query = NULL;
+    data->enabled = FALSE;
+}
+
+
+void _searchwindow_keepsearchingdata_deinit (GwSearchWindowKeepSearchingData *data)
+{
+    if (data->query != NULL)
+    {
+      g_free (data->query);
+      data->query = NULL;
+    } 
 }
 
 
@@ -2321,7 +2358,6 @@ void gw_searchwindow_set_current_searchitem (GwSearchWindow *window, LwSearchIte
     if (page_num == -1) return;
     pages = gtk_notebook_get_n_pages (window->notebook);
     iter = g_list_nth (window->tablist, page_num);
-    printf("%d %d\n", page_num, pages);
     if (iter == NULL) return;
     menuitem = GTK_MENU_ITEM (gtk_builder_get_object (window->builder, "close_menuitem"));
     iter->data = item;

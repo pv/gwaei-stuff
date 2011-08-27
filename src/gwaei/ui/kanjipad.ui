@@ -92,7 +92,7 @@
                     <property name="use_action_appearance">False</property>
                     <property name="use_underline">True</property>
                     <property name="draw_indicator">True</property>
-                    <signal name="toggled" handler="do_kanjipad_annotate_toggle" object="kanjipad_window" swapped="no"/>
+                    <signal name="toggled" handler="do_kanjipad_annotate_toggled" object="kanjipad_window" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -115,8 +115,8 @@
                         <property name="use_action_appearance">False</property>
                         <property name="image">image1</property>
                         <property name="use_underline">True</property>
-                        <signal name="activate" handler="do_kanjipad_clear" object="kanjipad_window" swapped="no"/>
-                        <signal name="clicked" handler="do_kanjipad_clear" object="kanjipad_window" swapped="no"/>
+                        <signal name="activate" handler="gw_kanjipadwindow_clear_drawingarea_cb" object="kanjipad_window" swapped="no"/>
+                        <signal name="clicked" handler="gw_kanjipadwindow_clear_drawingarea_cb" object="kanjipad_window" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -134,8 +134,8 @@
                         <property name="use_stock">True</property>
                         <accelerator key="Escape" signal="activate"/>
                         <accelerator key="w" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                        <signal name="activate" handler="gw_main_close_cb" object="kanjipad_window" swapped="yes"/>
-                        <signal name="clicked" handler="gw_main_close_cb" object="kanjipad_window" swapped="yes"/>
+                        <signal name="activate" handler="gw_kanjipadwindow_close_cb" object="kanjipad_window" swapped="no"/>
+                        <signal name="clicked" handler="gw_kanjipadwindow_close_cb" object="kanjipad_window" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>

@@ -72,6 +72,12 @@ G_MODULE_EXPORT gboolean gw_searchwindow_get_iter_for_motion_cb (GtkWidget      
     if (gtk_text_iter_ends_word (&iter) == FALSE)
       gtk_text_iter_forward_word_end (&iter);
     end = iter;
+
+    if (window->mousedata.hovered_word != NULL)
+    {
+      g_free (window->mousedata.hovered_word);
+      window->mousedata.hovered_word = NULL;
+    }
     window->mousedata.hovered_word = gtk_text_iter_get_visible_slice (&start, &end);
 
     di = lw_dictinfolist_get_dictinfo (LW_DICTINFOLIST (app->dictinfolist), LW_DICTTYPE_KANJI, "Kanji");
@@ -1858,7 +1864,7 @@ G_MODULE_EXPORT void gw_searchwindow_open_kanjipadwindow_cb (GtkWidget *widget, 
 
     window = GW_SEARCHWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
 
-    gw_app_show_window (app, GW_WINDOW_SETTINGS, GW_WINDOW (window), FALSE);
+    gw_app_show_window (app, GW_WINDOW_KANJIPAD, GW_WINDOW (window), FALSE);
 }
 
 
