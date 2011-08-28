@@ -57,17 +57,15 @@ G_MODULE_EXPORT void gw_radicalswindow_clear_cb (GtkWidget *widget, gpointer dat
 {
     //Declaratins
     GwRadicalsWindow *window;
-    GtkWidget *checkbox;
 
     //Initializations
     window = GW_RADICALSWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
-    checkbox = GTK_WIDGET (gtk_builder_get_object(window->builder, "strokes_checkbox"));
     if (window == NULL) return;
 
     gw_app_block_searches (app);
 
     gw_radicalswindow_deselect_all_radicals (window);
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), FALSE);
+    gtk_toggle_button_set_active (window->strokes_checkbutton, FALSE);
 
     gw_app_unblock_searches (app);
 }
@@ -86,7 +84,7 @@ G_MODULE_EXPORT void gw_radicalswindow_search_cb (GtkWidget *widget, gpointer da
 {
     //Declarations
     GwRadicalsWindow *window;
-    GwSearchWindow *search_window;
+    GwSearchWindow *searchwindow;
     LwDictInfo *di;
     char *query_text;
     char *radicals_text;
@@ -96,7 +94,8 @@ G_MODULE_EXPORT void gw_radicalswindow_search_cb (GtkWidget *widget, gpointer da
     //Initializations
     window = GW_RADICALSWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
     if (window == NULL) return;
-    search_window = GW_SEARCHWINDOW (window->transient_for);
+    searchwindow = GW_SEARCHWINDOW (window->transient_for);
+
     di = lw_dictinfolist_get_dictinfo (LW_DICTINFOLIST (app->dictinfolist), LW_DICTTYPE_KANJI, "Kanji");
     query_text = NULL;
     radicals_text = gw_radicalswindow_strdup_all_selected (window);
@@ -136,14 +135,16 @@ G_MODULE_EXPORT void gw_radicalswindow_search_cb (GtkWidget *widget, gpointer da
 
     //Sanity checks
     if (query_text == NULL || strlen(query_text) == 0) return;
-    if (gw_searchwindow_cancel_search_for_current_tab (search_window) == FALSE) return;
+    if (gw_searchwindow_cancel_search_for_current_tab (searchwindow) == FALSE) return;
 
     //Prep the search
-    gtk_entry_set_text (search_window->entry, "");
-    gw_searchwindow_entry_insert (search_window, query_text);
-    gw_searchwindow_select_all_by_target (search_window, LW_OUTPUTTARGET_ENTRY);
+    gtk_entry_set_text (searchwindow->entry, "");
+    gw_searchwindow_entry_insert (searchwindow, query_text);
+    gw_searchwindow_select_all_by_target (searchwindow, LW_OUTPUTTARGET_ENTRY);
+    gw_searchwindow_set_dictionary (searchwindow, di->load_position);
 
-    gw_radicalswindow_search_cb (GTK_WIDGET (window->toplevel), window);
+
+    gw_searchwindow_search_cb (GTK_WIDGET (searchwindow->toplevel), searchwindow->toplevel);
 
     //Cleanup
     g_free (query_text);

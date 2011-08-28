@@ -421,7 +421,7 @@ static void _radicalswindow_fill_radicals (GwRadicalsWindow *window)
           g_free (tooltip);
           tooltip = NULL;
         }
-        g_signal_connect(button, "toggled", G_CALLBACK (gw_radicalswindow_search_cb), NULL);
+        g_signal_connect(button, "toggled", G_CALLBACK (gw_radicalswindow_search_cb), window->toplevel);
         gtk_table_attach (window->radicals_table, button, cols, cols + 1, rows, rows + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
         i++;
       }
@@ -599,15 +599,13 @@ void gw_radicalswindow_deselect_all_radicals (GwRadicalsWindow *window)
     type = g_type_from_name ("GtkToggleButton");
 
     //Reset all of the toggle buttons
-    while (iter != NULL)
+    for (iter = list; iter != NULL; iter = iter->next)
     {
-      g_signal_handlers_block_by_func (iter->data, gw_radicalswindow_search_cb, NULL);
+      g_signal_handlers_block_by_func (iter->data, gw_radicalswindow_search_cb, window->toplevel);
       if (G_OBJECT_TYPE (iter->data) == type)
          gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(iter->data), FALSE);
-      g_signal_handlers_unblock_by_func (iter->data, gw_radicalswindow_search_cb, NULL);
+      g_signal_handlers_unblock_by_func (iter->data, gw_radicalswindow_search_cb, window->toplevel);
       gtk_widget_set_sensitive (GTK_WIDGET (iter->data), TRUE);
-
-      iter = iter->next;
     }
 
     g_list_free (list);

@@ -347,15 +347,13 @@ const char* gw_app_get_program_name (GwApplication *app)
 void gw_app_cancel_all_searches (GwApplication *app)
 {
     GList *iter;
-    GwSearchWindow *window;
+    GwWindow *window;
 
-    iter = app->windowlist;
-
-    while (iter != NULL)
+    for (iter = app->windowlist; iter != NULL; iter = iter->next)
     {
-      window = (GwSearchWindow*) iter->data;
-      gw_searchwindow_cancel_all_searches (window);
-      iter = iter->next;
+      window = GW_WINDOW (iter->data);
+      if (window != NULL && window->type == GW_WINDOW_SEARCH)
+        gw_searchwindow_cancel_all_searches (GW_SEARCHWINDOW (window));
     }
 }
 
