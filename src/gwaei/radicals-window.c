@@ -490,6 +490,9 @@ char* gw_radicalswindow_strdup_all_selected (GwRadicalsWindow *window)
     if (!a_button_was_in_pressed_state)
       gw_radicalswindow_deselect_all_radicals (window);
 
+    if (final_string == NULL)
+      final_string = g_strdup ("");
+
     g_list_free (list);
 
     return final_string;
@@ -571,14 +574,11 @@ char* gw_radicalswindow_strdup_prefered_stroke_count (GwRadicalsWindow *window)
     //Declarations
     char *strokes;
 
-    //Initializations
-    strokes = NULL;
-
     //If the checkbox is checked, get the stroke count from the spinner
     if (gtk_toggle_button_get_active(window->strokes_checkbutton))
-    {
       strokes = g_strdup_printf ("s%d", (int) gtk_spin_button_get_value (window->strokes_spinbutton));
-    }
+    else
+      strokes = g_strdup ("");
 
     return strokes;
 }
