@@ -452,6 +452,7 @@ void gw_output_append_edict_results_cb (LwSearchItem *item)
       gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, gettext("Pop"), -1, "small", NULL);
     }
 
+    char *markup;
 
     //Insert popup button
     if (popup_text != NULL)
@@ -461,7 +462,12 @@ void gw_output_append_edict_results_cb (LwSearchItem *item)
       g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (_searchwindow_show_popup_cb), popup_text);
       g_signal_connect (G_OBJECT (button), "destroy", G_CALLBACK (_searchwindow_destroy_text_cb), popup_text);
       label = GTK_LABEL (gtk_label_new (NULL));
-      gtk_label_set_markup (label, "<small><small>▼</small></small>");
+      markup = g_markup_printf_escaped ("<span size=\"%d\">▼</span>", sdata->window->font_size * PANGO_SCALE * 3 / 4);
+      if (markup != NULL)
+      {
+        gtk_label_set_markup (label, markup);
+        g_free (markup);
+      }
       gtk_button_set_relief (button, GTK_RELIEF_NONE);
       gtk_container_add (GTK_CONTAINER (button), GTK_WIDGET (label));
       gtk_widget_show (GTK_WIDGET (button));

@@ -107,7 +107,7 @@ gboolean lw_searchitem_prepare_search (LwSearchItem*);
 
 gboolean lw_searchitem_run_comparison (LwSearchItem*, const LwRelevance);
 gboolean lw_searchitem_is_equal (LwSearchItem*, LwSearchItem*);
-gboolean lw_searchitem_has_history_relevance (LwSearchItem*);
+gboolean lw_searchitem_has_history_relevance (LwSearchItem*, gboolean);
 void lw_searchitem_increment_history_relevance_timer (LwSearchItem*);
 
 void lw_searchitem_set_data (LwSearchItem*, gpointer, LwSearchItemDataFreeFunc);

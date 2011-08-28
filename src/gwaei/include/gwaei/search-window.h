@@ -85,6 +85,7 @@ struct _GwSearchWindow {
   guint signalid[TOTAL_GW_SEARCHWINDOW_SIGNALIDS];
 
   int previous_tip;
+  int font_size;
 
   gboolean new_tab; 
 

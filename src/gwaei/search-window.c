@@ -97,6 +97,7 @@ void gw_searchwindow_init (GwSearchWindow *window)
 
     window->dictinfo = NULL;
     window->tablist = NULL;
+    window->font_size = 0;
 
     window->feedbackdata.item = NULL;
     window->feedbackdata.line = 0;
@@ -2310,7 +2311,7 @@ void gw_searchwindow_remove_tab (GwSearchWindow *window, int index)
     if (iter != NULL)
     {
       item = LW_SEARCHITEM (iter->data);
-      if (lw_searchitem_has_history_relevance (item))
+      if (lw_searchitem_has_history_relevance (item, window->keepsearchingdata.enabled))
       {
         lw_historylist_add_searchitem (window->history, item);
         gw_searchwindow_update_history_popups (window);
@@ -2450,6 +2451,8 @@ void gw_searchwindow_set_font (GwSearchWindow *window)
         size = GW_MIN_FONT_SIZE;
       else if (size > GW_MAX_FONT_SIZE)
         size = GW_MAX_FONT_SIZE;
+
+      window->font_size = size;
 
       pango_font_description_set_size (desc, size * PANGO_SCALE);
 

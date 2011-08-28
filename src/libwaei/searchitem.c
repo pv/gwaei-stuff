@@ -570,9 +570,11 @@ void lw_searchitem_increment_history_relevance_timer (LwSearchItem *item)
 //!
 //! @brief Checks if the relevant timer has passed a threshold
 //!
-gboolean lw_searchitem_has_history_relevance (LwSearchItem *item)
+gboolean lw_searchitem_has_history_relevance (LwSearchItem *item, gboolean use_idle_timer)
 {
-  return (item != NULL && item->total_results && item->history_relevance_idle_timer >= LW_HISTORY_TIME_TO_RELEVANCE);
+  return (item != NULL && 
+          item->total_results > 0 && 
+          (!use_idle_timer || item->history_relevance_idle_timer >= LW_HISTORY_TIME_TO_RELEVANCE));
 }
 
 

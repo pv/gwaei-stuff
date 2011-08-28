@@ -324,7 +324,7 @@ G_MODULE_EXPORT void gw_searchwindow_search_from_history_cb (GtkWidget *widget, 
     }
 
     //Remove the current searchitem if it has no history relevance
-    if (current != NULL && !lw_searchitem_has_history_relevance (current))
+    if (current != NULL && !lw_searchitem_has_history_relevance (current, window->keepsearchingdata.enabled))
     {
       lw_searchitem_free (current);
       current = NULL;
@@ -1221,10 +1221,14 @@ G_MODULE_EXPORT void gw_searchwindow_search_cb (GtkWidget *widget, gpointer data
     }
 
     //Push the previous searchitem or replace it with the new one
-    if (item != NULL && lw_searchitem_has_history_relevance (item))
+    if (item != NULL && lw_searchitem_has_history_relevance (item, window->keepsearchingdata.enabled))
+    {
       lw_historylist_add_searchitem (window->history, item);
+    }
     else if (item != NULL)
+    {
       lw_searchitem_free (item);
+    }
 
     gw_searchwindow_start_search (window, new_item);
 }
