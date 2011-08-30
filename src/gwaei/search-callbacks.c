@@ -246,10 +246,13 @@ G_MODULE_EXPORT gboolean gw_searchwindow_get_iter_for_button_release_cb (GtkWidg
 //!
 G_MODULE_EXPORT void gw_searchwindow_close_cb (GtkWidget *widget, gpointer data)
 {
+    //Declarations
     GwSearchWindow *window;
     int pages;
     
+    //Initializations
     window = GW_SEARCHWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
+    if (window == NULL) return;
     pages = gtk_notebook_get_n_pages (window->notebook);
 
     if (pages > 1)
@@ -266,9 +269,17 @@ G_MODULE_EXPORT void gw_searchwindow_close_cb (GtkWidget *widget, gpointer data)
 //! @param data Currently unused gpointer
 //! @return Always returns true
 //!
-G_MODULE_EXPORT gboolean gw_searchwindow_delete_event_action_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT gboolean gw_searchwindow_delete_event_action_cb (GtkWidget *widget, GdkEvent *event, gpointer data)
 { 
-    gw_searchwindow_close_cb (widget, data);
+    //Declarations
+    GwSearchWindow *window;
+    
+    //Initializations
+    window = GW_SEARCHWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
+    if (window == NULL) return TRUE;
+
+    gw_app_destroy_window (app, GW_WINDOW (window));
+
     return TRUE;
 }
 

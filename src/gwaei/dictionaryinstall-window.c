@@ -129,6 +129,8 @@ void gw_dictinstwindow_init (GwDictInstWindow *window, GwSettingsWindow *transie
 
 void gw_dictinstwindow_deinit (GwDictInstWindow *window)
 {
+    gtk_widget_hide (GTK_WIDGET (window->toplevel));
+
     g_object_unref (window->encoding_store);
     g_object_unref (window->compression_store);
     g_object_unref (window->engine_store);

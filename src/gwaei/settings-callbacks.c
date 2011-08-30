@@ -450,7 +450,7 @@ G_MODULE_EXPORT void gw_settingswindow_sync_spellcheck_cb (GSettings *settings, 
 //! @param data Currently unused gpointer
 //! @return Always returns true
 //!
-G_MODULE_EXPORT gboolean gw_settingswindow_delete_event_action_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT gboolean gw_settingswindow_delete_event_action_cb (GtkWidget *widget, GdkEvent *event, gpointer data)
 { 
     gw_settingswindow_close_cb (widget, data);
     return TRUE;

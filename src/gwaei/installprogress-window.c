@@ -58,6 +58,7 @@ void gw_installprogresswindow_init (GwInstallProgressWindow *window, GwSettingsW
 
 void gw_installprogresswindow_deinit (GwInstallProgressWindow *window)
 {
+    gtk_widget_hide (GTK_WIDGET (window->toplevel));
 }
 
 

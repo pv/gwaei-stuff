@@ -129,34 +129,37 @@ void gw_searchwindow_init (GwSearchWindow *window)
 
 void gw_searchwindow_deinit (GwSearchWindow *window)
 {
-  //Declarations
-  GSource *source;
-  int i;
+    gtk_widget_hide (GTK_WIDGET (window->toplevel));
 
-  for (i = 0; i < TOTAL_GW_SEARCHWINDOW_TIMEOUTIDS; i++)
-  {
-    if (g_main_current_source () != NULL &&
-        !g_source_is_destroyed (g_main_current_source ()) &&
-        window->timeoutid[i] > 0
-       )
+    //Declarations
+    GSource *source;
+    int i;
+
+    for (i = 0; i < TOTAL_GW_SEARCHWINDOW_TIMEOUTIDS; i++)
     {
-      source = g_main_context_find_source_by_id (NULL, window->timeoutid[i]);
-      if (source != NULL)
+      if (g_main_current_source () != NULL &&
+          !g_source_is_destroyed (g_main_current_source ()) &&
+          window->timeoutid[i] > 0
+         )
       {
-        g_source_destroy (source);
+        source = g_main_context_find_source_by_id (NULL, window->timeoutid[i]);
+        if (source != NULL)
+        {
+          g_source_destroy (source);
+        }
       }
+      window->timeoutid[i] = 0;
     }
-    window->timeoutid[i] = 0;
-  }
 
-  if (window->spellcheck != NULL) gw_spellcheck_free (window->spellcheck);
-  if (window->history != NULL) lw_historylist_free (window->history);
+    if (window->spellcheck != NULL) gw_spellcheck_free (window->spellcheck);
+    if (window->history != NULL) lw_historylist_free (window->history);
+    if (window->tablist != NULL) g_list_free (window->tablist);
 
-  _searchwindow_remove_signals (window);
-  _searchwindow_mousedata_deinit (&(window->mousedata));
-  _searchwindow_keepsearchingdata_deinit (&(window->keepsearchingdata));
+    _searchwindow_remove_signals (window);
+    _searchwindow_mousedata_deinit (&(window->mousedata));
+    _searchwindow_keepsearchingdata_deinit (&(window->keepsearchingdata));
 
-  g_object_unref (window->tagtable);
+    g_object_unref (window->tagtable);
 }
 
 
@@ -2256,6 +2259,7 @@ int gw_searchwindow_new_tab (GwSearchWindow *window)
     gtk_widget_set_size_request (GTK_WIDGET (button_image), 14, 14);
     gtk_css_provider_load_from_data (provider,  style_data, strlen(style_data), NULL); 
     gtk_style_context_add_provider (context, GTK_STYLE_PROVIDER (provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    g_object_unref (provider);
 
     //Put all the elements together
     gtk_container_add (GTK_CONTAINER (close_button), button_image);

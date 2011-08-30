@@ -103,6 +103,8 @@ void gw_settingswindow_init (GwSettingsWindow *window, GwWindow *transient_for)
 
 void gw_settingswindow_deinit (GwSettingsWindow *window)
 {
+    gtk_widget_hide (GTK_WIDGET (window->toplevel));
+
     if (window->dictinstlist != NULL)
     {
       lw_dictinstlist_free (window->dictinstlist);

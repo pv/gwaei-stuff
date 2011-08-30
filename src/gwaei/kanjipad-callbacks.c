@@ -136,3 +136,16 @@ G_MODULE_EXPORT void gw_kanjipadwindow_close_cb (GtkWidget *widget, gpointer dat
 }
 
 
+//!
+//! @brief Preforms the action the window manager close event
+//! @see gw_searchwindow_close_cb ()
+//! @param widget GtkWidget pointer to the window to close
+//! @param data Currently unused gpointer
+//! @return Always returns true
+//!
+G_MODULE_EXPORT gboolean gw_kanjipadwindow_delete_event_action_cb (GtkWidget *widget, GdkEvent *event, gpointer data)
+{ 
+    gw_settingswindow_close_cb (widget, data);
+    return TRUE;
+}
+

@@ -107,6 +107,8 @@ void gw_kanjipadwindow_init (GwKanjipadWindow *window, GwSearchWindow* transient
 
 void gw_kanjipadwindow_deinit (GwKanjipadWindow *window)
 {
+    gtk_widget_hide (GTK_WIDGET (window->toplevel));
+
     //Declarations
     GSource *source;
     GError *error;

@@ -72,6 +72,7 @@ GwApplication* gw_app_new (int* argc, char** argv[])
       temp->arg_new_instance = FALSE;
 #endif
       temp->arg_version_switch = FALSE;
+      temp->windowlist = NULL;
 
       gw_app_parse_args (temp, argc, argv);
 
@@ -88,7 +89,6 @@ GwApplication* gw_app_new (int* argc, char** argv[])
 
 
       temp->prefmanager = lw_prefmanager_new ();
-      temp->dictinstlist = lw_dictinstlist_new (temp->prefmanager);
       temp->dictinfolist = gw_dictinfolist_new (20, temp->prefmanager);
       temp->block_new_searches = 0;
 
@@ -132,7 +132,7 @@ void gw_app_free (GwApplication *app)
     //Close all the open windows
     for (iter = app->windowlist; iter != NULL; iter = iter->next)
     {
-      window = (GwWindow*) iter->data;
+      window = GW_WINDOW (iter->data);
       if (window != NULL)
       {
         gw_window_destroy (window);
@@ -150,6 +150,7 @@ void gw_app_free (GwApplication *app)
     g_option_context_free (app->context);
     g_free(app->arg_query);
     lw_engine_free (app->engine);
+    lw_prefmanager_free (app->prefmanager);
 
     free (app);
 }
@@ -417,7 +418,6 @@ GwWindow* gw_app_get_window_by_widget (GwApplication *app, GtkWidget *widget)
     GtkWindow *toplevel;
 
     //Initializations
-    iter = app->windowlist;
     window = NULL;
     fuzzy = NULL;
     toplevel = NULL;

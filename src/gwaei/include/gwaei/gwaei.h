@@ -40,7 +40,6 @@ struct _GwApplication {
 
   GList *windowlist;
 
-  LwDictInstList *dictinstlist;
   LwPrefManager *prefmanager;
   GwDictInfoList *dictinfolist;
   LwEngine *engine;

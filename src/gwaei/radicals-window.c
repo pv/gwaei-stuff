@@ -358,6 +358,7 @@ void gw_radicalswindow_init (GwRadicalsWindow *window, GwWindow *transient_for)
 
 void gw_radicalswindow_deinit (GwRadicalsWindow *window)
 {
+    gtk_widget_hide (GTK_WIDGET (window->toplevel));
 }
 
 

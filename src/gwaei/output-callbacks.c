@@ -565,11 +565,9 @@ void gw_output_append_kanjidict_results_cb (LwSearchItem *item)
         gtk_text_buffer_insert (buffer, &iter, "\n", -1);
         gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); line = gtk_text_iter_get_line (&iter);
 
-/*
-        GwRadicalsWindow *radicals;
-        radicals = 
-        gw_radiccalswindow_set_button_sensitive_when_label_is (resultline->radicals);
-*/
+        GwRadicalsWindow *radicalswindow;
+        radicalswindow =  GW_RADICALSWINDOW (gw_app_get_window_by_type (app, GW_WINDOW_RADICALS));
+        gw_radicalswindow_set_button_sensitive_when_label_is (radicalswindow, resultline->radicals);
       }
 
       //Readings
