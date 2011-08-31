@@ -97,7 +97,7 @@ gchar* lw_dictinst_get_status_string (LwDictInst*, gboolean);
 void lw_dictinst_regenerate_save_target_uris (LwDictInst*);
 gboolean lw_dictinst_data_is_valid (LwDictInst*);
 
-gboolean lw_dictinst_install (LwDictInst*, LwIoProgressCallback, GError**);
+gboolean lw_dictinst_install (LwDictInst*, LwIoProgressCallback, gpointer, GError**);
 char* lw_dictinst_get_target_uri (LwDictInst*, const LwDictInstUri, const int);
 char* lw_dictinst_get_source_uri (LwDictInst*, const LwDictInstUri, const int);
 

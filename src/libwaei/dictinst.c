@@ -457,7 +457,7 @@ gboolean lw_dictinst_data_is_valid (LwDictInst *di)
 //! @see lw_dictinst_postprocess
 //! @see lw_dictinst_install
 //!
-gboolean lw_dictinst_download (LwDictInst *di, LwIoProgressCallback cb, GError **error)
+gboolean lw_dictinst_download (LwDictInst *di, LwIoProgressCallback cb, gpointer data, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return FALSE;
@@ -467,14 +467,12 @@ gboolean lw_dictinst_download (LwDictInst *di, LwIoProgressCallback cb, GError *
     //Declarations
     char *source;
     char *target;
-    gpointer data;
     int i;
     LwDictInstUri group_index;
 
     //Initializations
     group_index = LW_DICTINST_NEEDS_DOWNLOADING;
     i = 0;
-    data = di;
 
     while ((source = lw_dictinst_get_source_uri (di, group_index, i)) != NULL &&
            (target = lw_dictinst_get_target_uri (di, group_index, i)) != NULL
@@ -503,7 +501,7 @@ gboolean lw_dictinst_download (LwDictInst *di, LwIoProgressCallback cb, GError *
 //! @see lw_dictinst_postprocess
 //! @see lw_dictinst_install
 //!
-gboolean lw_dictinst_decompress (LwDictInst *di, LwIoProgressCallback cb, GError **error)
+gboolean lw_dictinst_decompress (LwDictInst *di, LwIoProgressCallback cb, gpointer data, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return FALSE;
@@ -512,14 +510,12 @@ gboolean lw_dictinst_decompress (LwDictInst *di, LwIoProgressCallback cb, GError
 
     //Declarations
     gint status;
-    gpointer data;
     char *source;
     char *target;
     int i;
     LwDictInstUri group_index;
 
     //Initializations
-    data = di;
     i = 0;
     group_index = LW_DICTINST_NEEDS_DECOMPRESSION;
 
@@ -569,7 +565,7 @@ gboolean lw_dictinst_decompress (LwDictInst *di, LwIoProgressCallback cb, GError
 //! @see lw_dictinst_postprocess
 //! @see lw_dictinst_install
 //!
-gboolean lw_dictinst_convert_encoding (LwDictInst *di, LwIoProgressCallback cb, GError **error)
+gboolean lw_dictinst_convert_encoding (LwDictInst *di, LwIoProgressCallback cb, gpointer data, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return FALSE;
@@ -580,13 +576,11 @@ gboolean lw_dictinst_convert_encoding (LwDictInst *di, LwIoProgressCallback cb, 
     char *source;
     char *target;
     const char *encoding_name;
-    gpointer data;
     LwDictInstUri group_index;
 
     //Initializations
     group_index = LW_DICTINST_NEEDS_TEXT_ENCODING;
     encoding_name = lw_util_get_encoding_name (di->encoding);
-    data = di;
 
     if ((source = lw_dictinst_get_source_uri (di, group_index, 0)) != NULL &&
         (target = lw_dictinst_get_target_uri (di, group_index, 0)) != NULL
@@ -618,7 +612,7 @@ gboolean lw_dictinst_convert_encoding (LwDictInst *di, LwIoProgressCallback cb, 
 //! @see lw_dictinst_postprocess
 //! @see lw_dictinst_install
 //!
-gboolean lw_dictinst_postprocess (LwDictInst *di, LwIoProgressCallback cb, GError **error)
+gboolean lw_dictinst_postprocess (LwDictInst *di, LwIoProgressCallback cb, gpointer data, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return FALSE;
@@ -626,7 +620,6 @@ gboolean lw_dictinst_postprocess (LwDictInst *di, LwIoProgressCallback cb, GErro
     g_assert (di != NULL);
 
     //Declarations
-    gpointer data;
     gchar *source;
     gchar *source2;
     gchar *target;
@@ -634,9 +627,7 @@ gboolean lw_dictinst_postprocess (LwDictInst *di, LwIoProgressCallback cb, GErro
     LwDictInstUri group_index;
 
     //Initializations
-    data = di;
     group_index = LW_DICTINST_NEEDS_POSTPROCESSING;
-
 
     //Rebuild the mix dictionary
     if (di->merge)
@@ -684,7 +675,7 @@ gboolean lw_dictinst_postprocess (LwDictInst *di, LwIoProgressCallback cb, GErro
 //! @see lw_dictinst_postprocess
 //! @see lw_dictinst_install
 //!
-gboolean lw_dictinst_finalize (LwDictInst *di, LwIoProgressCallback cb, GError **error)
+gboolean lw_dictinst_finalize (LwDictInst *di, LwIoProgressCallback cb, gpointer data, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return FALSE;
@@ -694,12 +685,10 @@ gboolean lw_dictinst_finalize (LwDictInst *di, LwIoProgressCallback cb, GError *
     //Declarations
     char *source;
     char *target;
-    gpointer data;
     LwDictInstUri group_index;
     int i;
 
     //Initializations
-    data = di;
     group_index = LW_DICTINST_NEEDS_FINALIZATION;
     i = 0;
 
@@ -719,7 +708,7 @@ gboolean lw_dictinst_finalize (LwDictInst *di, LwIoProgressCallback cb, GError *
 //!
 //! @brief removes temporary files created by installation in the dictionary cache folder
 //!
-void lw_dictinst_clean (LwDictInst *di, LwIoProgressCallback cb)
+void lw_dictinst_clean (LwDictInst *di, LwIoProgressCallback cb, gpointer data)
 {
     //Declarations
     LwDictInstUri group_index;
@@ -762,16 +751,16 @@ void lw_dictinst_clean (LwDictInst *di, LwIoProgressCallback cb)
 //! @see lw_dictinst_postprocess
 //! @see lw_dictinst_install
 //!
-gboolean lw_dictinst_install (LwDictInst *di, LwIoProgressCallback cb, GError **error)
+gboolean lw_dictinst_install (LwDictInst *di, LwIoProgressCallback cb, gpointer data, GError **error)
 {
     g_assert (*error == NULL && di != NULL);
 
-    lw_dictinst_download (di, cb, error);
-    lw_dictinst_decompress (di, cb, error);
-    lw_dictinst_convert_encoding (di, cb, error);
-    lw_dictinst_postprocess (di, cb, error);
-    lw_dictinst_finalize (di, cb, error);
-    lw_dictinst_clean (di, cb);
+    lw_dictinst_download (di, cb, data, error);
+    lw_dictinst_decompress (di, cb, data, error);
+    lw_dictinst_convert_encoding (di, cb, data, error);
+    lw_dictinst_postprocess (di, cb, data, error);
+    lw_dictinst_finalize (di, cb, data, error);
+    lw_dictinst_clean (di, cb, data);
 
     return (*error == NULL);
 }

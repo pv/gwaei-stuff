@@ -12,22 +12,6 @@ static void _dictinstwindow_fill_details_box (GwDictInstWindow*, LwDictInst*);
 static void _dictinstwindow_update_add_button_sensitivity (GwDictInstWindow*);
 
 
-/*
-
-G_MODULE_EXPORT void do_toggle_other_dictionary_show (GtkWidget *widget, gpointer data)
-{
-    GtkWidget *checkbox = GTK_WIDGET (data);
-    GtkWidget *table = GTK_WIDGET (widget);
-    GtkWidget *dialog = GTK_WIDGET (gtk_builder_get_object (builder, "dictionary_install_dialog"));
-
-    gboolean active = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (checkbox));
-    if (active) gtk_widget_show (table);
-    else gtk_widget_hide (table);
-}
-*/
-
-
-//CALLBACKS//////////////////////////////////////
 
 G_MODULE_EXPORT void gw_dictionaryinstallwindow_filename_entry_changed_cb (GtkWidget *widget, gpointer data)
 {
@@ -63,6 +47,7 @@ G_MODULE_EXPORT void gw_dictionaryinstallwindow_engine_combobox_changed_cb (GtkW
 
     window->di->type = value;
 }
+
 
 G_MODULE_EXPORT void gw_dictionaryinstallwindow_source_entry_changed_cb (GtkWidget *widget, gpointer data)
 {
@@ -218,7 +203,6 @@ G_MODULE_EXPORT void gw_dictionaryinstallwindow_cursor_changed_cb (GtkTreeView *
     GwDictInstWindow *window;
     GtkTreeSelection *selection;
     GtkWidget *hbox;
-    GtkWidget *dialog;
     LwDictInst *di;
     GtkTreeIter iter;
     gboolean show_details;
@@ -231,7 +215,6 @@ G_MODULE_EXPORT void gw_dictionaryinstallwindow_cursor_changed_cb (GtkTreeView *
     //Initializations
     window = GW_DICTINSTWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
     hbox = GTK_WIDGET (gtk_builder_get_object (window->builder, "dictionary_install_details_hbox"));
-    dialog = GTK_WIDGET (gtk_builder_get_object (window->builder, "dictionary_install_dialog"));
 
     selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (view));
     model = GTK_TREE_MODEL (window->dictionary_store);
@@ -255,8 +238,8 @@ G_MODULE_EXPORT void gw_dictionaryinstallwindow_cursor_changed_cb (GtkTreeView *
       gtk_widget_hide (hbox);
 
     //Make the window shrink if the detail pane disappeared
-    gtk_window_get_size (GTK_WINDOW (dialog), &width, &height);
-    gtk_window_resize (GTK_WINDOW (dialog), 1, height);
+    gtk_window_get_size (window->toplevel, &width, &height);
+    gtk_window_resize (window->toplevel, 1, height);
 }
 
 
@@ -536,22 +519,6 @@ static void _dictinstwindow_fill_details_box (GwDictInstWindow *window, LwDictIn
 }
 
 
-void gw_dictionaryinstallwindow_cancel_cb (GtkWidget *widget, gpointer data)
-{
-    GwDictInstWindow *window;
-    GwSettingsWindow *settingswindow;
-
-    window = GW_DICTINSTWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
-    settingswindow = GW_SETTINGSWINDOW (window->transient_for);
-
-    if (settingswindow->dictinstlist != NULL)
-    {
-      lw_dictinstlist_free (settingswindow->dictinstlist);
-      settingswindow->dictinstlist = NULL;
-    }
-}
-
-
 //!
 //! @brief Closes the window passed throught the widget pointer
 //! @param widget GtkWidget pointer to the window to close
@@ -561,11 +528,37 @@ G_MODULE_EXPORT void gw_dictionaryinstallwindow_close_cb (GtkWidget *widget, gpo
 {
     //Declarations
     GwDictInstWindow *window;
+    GwSettingsWindow *settingswindow;
     
     //Initializations
     window = GW_DICTINSTWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
+    settingswindow = GW_SETTINGSWINDOW (window->transient_for);
 
     gw_app_destroy_window (app, GW_WINDOW (window));
+
+    if (settingswindow->dictinstlist != NULL)
+    {
+      lw_dictinstlist_free (settingswindow->dictinstlist);
+      settingswindow->dictinstlist = NULL;
+    }
+
 }
 
+
+G_MODULE_EXPORT void gw_dictionaryinstallwindow_add_cb (GtkWidget *widget, gpointer data)
+{
+    //Declarations
+    GwDictInstWindow *window;
+    GwSettingsWindow *settingswindow;
+    GwInstallProgressWindow *installprogresswindow;
+    
+    //Initializations
+    window = GW_DICTINSTWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
+    settingswindow = GW_SETTINGSWINDOW (window->transient_for);
+
+    gw_app_destroy_window (app, GW_WINDOW (window));
+
+    installprogresswindow = GW_INSTALLPROGRESSWINDOW (gw_app_show_window (app, GW_WINDOW_INSTALLPROGRESS, GW_WINDOW (settingswindow), FALSE));
+    gw_installprogresswindow_start (GW_INSTALLPROGRESSWINDOW (installprogresswindow));
+}
 

@@ -79,11 +79,12 @@ GwWindow* gw_window_new (const GwWindowType TYPE, GwWindow *transient_for)
         gtk_window_set_position (window->toplevel, GTK_WIN_POS_CENTER_ON_PARENT);
         gtk_window_set_modal (window->toplevel, TRUE);
         break;
-/*
       case GW_WINDOW_INSTALLPROGRESS:
-        window = GW_WINDOW (gw_installprogresswindow_new ());
+        window = GW_WINDOW (gw_installprogresswindow_new (GW_SETTINGSWINDOW (transient_for)));
+        gtk_window_set_destroy_with_parent (window->toplevel, TRUE);
+        gtk_window_set_position (window->toplevel, GTK_WIN_POS_CENTER_ON_PARENT);
+        gtk_window_set_modal (window->toplevel, TRUE);
         break;
-*/
       default:
         g_assert_not_reached ();
         window = NULL;
@@ -128,11 +129,9 @@ void gw_window_destroy (GwWindow *window)
       case GW_WINDOW_DICTIONARYINSTALL:
         gw_dictinstwindow_destroy (GW_DICTINSTWINDOW (window));
         break;
-/*
       case GW_WINDOW_INSTALLPROGRESS:
-        gw_installprogreswindow_destroy (GW_INSTALLPROGRESSWINDOW (window));
+        gw_installprogresswindow_destroy (GW_INSTALLPROGRESSWINDOW (window));
         break;
-*/
       default:
         g_assert_not_reached ();
         break;

@@ -9,8 +9,6 @@
 
 
 static gpointer _installprogresswindow_install_thread (gpointer);
-static int _installprogresswindow_update_dictinst_cb (double, gpointer);
-static gboolean _installprogresswindow_update_ui_timeout (gpointer);
 
 
 //!
@@ -18,17 +16,17 @@ static gboolean _installprogresswindow_update_ui_timeout (gpointer);
 //!
 GwInstallProgressWindow* gw_installprogresswindow_new (GwSettingsWindow *transient_for)
 {
-  GwInstallProgressWindow *temp;
+    GwInstallProgressWindow *temp;
 
-  temp = (GwInstallProgressWindow*) malloc(sizeof(GwInstallProgressWindow));
+    temp = (GwInstallProgressWindow*) malloc(sizeof(GwInstallProgressWindow));
 
-  if (temp != NULL)
-  {
-    gw_window_init (GW_WINDOW (temp), GW_WINDOW_SEARCH, "installprogress.ui", "installprogress_dialog");
-    gw_installprogresswindow_init (temp, transient_for);
-  }
+    if (temp != NULL)
+    {
+      gw_window_init (GW_WINDOW (temp), GW_WINDOW_INSTALLPROGRESS, "installprogress.ui", "install_progress_dialog");
+      gw_installprogresswindow_init (temp, transient_for);
+    }
 
-  return temp;
+    return temp;
 }
 
 
@@ -37,16 +35,17 @@ GwInstallProgressWindow* gw_installprogresswindow_new (GwSettingsWindow *transie
 //!
 void gw_installprogresswindow_destroy (GwInstallProgressWindow *window)
 {
-  gw_window_deinit (GW_WINDOW (window));
-  gw_installprogresswindow_deinit (window);
+    gw_window_deinit (GW_WINDOW (window));
+    gw_installprogresswindow_deinit (window);
 
-  free (window);
+    free (window);
 }
 
 
 void gw_installprogresswindow_init (GwInstallProgressWindow *window, GwSettingsWindow *transient_for)
 {
     window->install_fraction = 0.0;
+    window->mutex = g_mutex_new ();
 
     window->label = GTK_LABEL (gtk_builder_get_object (window->builder, "install_progress_label"));
     window->sublabel = GTK_LABEL (gtk_builder_get_object (window->builder, "sub_install_progress_label"));
@@ -58,6 +57,7 @@ void gw_installprogresswindow_init (GwInstallProgressWindow *window, GwSettingsW
 
 void gw_installprogresswindow_deinit (GwInstallProgressWindow *window)
 {
+    g_mutex_free (window->mutex);
     gtk_widget_hide (GTK_WIDGET (window->toplevel));
 }
 
@@ -102,17 +102,23 @@ static gpointer _installprogresswindow_install_thread (gpointer data)
     error = NULL;
 
     //Do the installation
+    timeoutid = g_timeout_add (100, gw_installprogresswindow_update_ui_timeout, window);
     for (iter = settingswindow->dictinstlist->list; iter != NULL && error == NULL; iter = iter->next)
     {
       di = LW_DICTINST (iter->data);
       if (di->selected)
       {
-        timeoutid = g_timeout_add (100, _installprogresswindow_update_ui_timeout, di);
-        lw_dictinst_install (di, _installprogresswindow_update_dictinst_cb, &error);
-        g_source_remove (timeoutid);
+        g_mutex_lock (window->mutex);
+        window->di = di;
+        g_mutex_unlock (window->mutex);
+        lw_dictinst_install (di, gw_installprogresswindow_update_dictinst_cb, window, &error);
       }
     }
-    g_timeout_add (100, _installprogresswindow_update_ui_timeout, NULL);
+
+    g_mutex_lock (window->mutex);
+    //This will clue the progress window to close itself
+    window->di = NULL;
+    g_mutex_unlock (window->mutex);
 
     //Cleanup
 gdk_threads_enter ();
@@ -127,99 +133,6 @@ gdk_threads_enter ();
 gdk_threads_leave ();
 
     return NULL;
-}
-
-
-static int _installprogresswindow_update_dictinst_cb (double fraction, gpointer data)
-{
-    //Declarations
-    GwInstallProgressWindow *window;
-
-    //Initializations
-    window = GW_INSTALLPROGRESSWINDOW (data);
-
-    g_mutex_lock (window->di->mutex); 
-    window->install_fraction = lw_dictinst_get_total_progress (window->di, fraction);
-    g_mutex_unlock (window->di->mutex);
-
-    return 0;
-}
-
-
-//!
-//! @brief Callback to update the install dialog progress.  The data passed to it should be
-//!        in the form of a LwDictInst.  If it is NULL, the progress window will be closed.
-//!
-static gboolean _installprogresswindow_update_ui_timeout (gpointer data)
-{
-    //Sanity check
-    g_assert (data != NULL);
-
-    //Declarations
-    GwInstallProgressWindow *window;
-    GwSettingsWindow *settingswindow;
-    LwDictInst *di;
-    GList *iter;
-    int current_to_install;
-    int total_to_install;
-    char *text_installing;
-    char *text_installing_markup;
-    char *text_left;
-    char *text_left_markup;
-    char *text_progressbar;
-
-    //Initializations
-    window = GW_INSTALLPROGRESSWINDOW (data);
-    settingswindow = GW_SETTINGSWINDOW (window->transient_for);
-    current_to_install = 0;
-    total_to_install = 0;
-
-    g_mutex_lock (window->di->mutex);
-
-    //Calculate the number of dictionaries left to install
-    for (iter = settingswindow->dictinstlist->list; iter != NULL; iter = iter->next)
-    {
-      di = LW_DICTINST (iter->data);
-      if (di != NULL && di->selected)
-      {
-        current_to_install++;
-      }
-      if (iter->data == window->di) break;
-    }
-
-    //Calculate the number of dictionaries left to install
-    for (iter = settingswindow->dictinstlist->list; iter != NULL; iter = iter->next)
-    {
-      di = LW_DICTINST (iter->data);
-      if (di->selected)
-      {
-        total_to_install++;
-      }
-    }
-    
-    di = window->di;
-
-    text_progressbar =  g_markup_printf_escaped (gettext("Installing %s..."), di->filename);
-    text_left = g_strdup_printf (gettext("Installing dictionary %d of %d..."), current_to_install, total_to_install);
-    text_left_markup = g_markup_printf_escaped ("<big><b>%s</b></big>", text_left);
-    text_installing = lw_dictinst_get_status_string (di, TRUE);
-    text_installing_markup = g_markup_printf_escaped ("<small>%s</small>", text_installing);
-
-    gtk_label_set_markup (window->label, text_left_markup);
-    gtk_label_set_markup (window->sublabel, text_installing_markup);
-    gtk_progress_bar_set_fraction (window->progressbar, window->install_fraction);
-    gtk_progress_bar_set_text (window->progressbar, text_progressbar);
-
-    g_mutex_unlock (window->di->mutex);
-
-    //Cleanup
-    g_free (text_progressbar);
-    g_free (text_left);
-    g_free (text_left_markup);
-    g_free (text_installing);
-    g_free (text_installing_markup);
-
-    return TRUE;
 }
 
 

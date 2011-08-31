@@ -91,7 +91,7 @@ gboolean w_console_install_dictinst (WApplication *app, GError **error)
     if (di != NULL)
     {
       printf(gettext("Installing %s...\n"), di->longname);
-      lw_dictinst_install (di, w_console_install_progress_cb, error);
+      lw_dictinst_install (di, w_console_install_progress_cb, NULL, error);
     }
     else
     {

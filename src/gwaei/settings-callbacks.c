@@ -317,7 +317,7 @@ G_MODULE_EXPORT void gw_settingswindow_sync_search_as_you_type_cb (GSettings *se
 //!
 //! @brief Disables portions of the interface depending on the currently queued jobs.
 //!
-G_MODULE_EXPORT void gw_settingswindow_dictionaries_changed_cb (GtkWidget* widget, gpointer data)
+G_MODULE_EXPORT void gw_settingswindow_dictionaries_changed_cb (GtkTreeModel* model, GtkTreePath *path, GtkTreeIter *iter, gpointer data)
 {
     //Declarations
     GwSettingsWindow *window;

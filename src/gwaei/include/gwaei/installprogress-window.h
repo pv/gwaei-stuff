@@ -1,5 +1,5 @@
-#ifndef GW_INSTALL_PROGRESS_INCLUDED
-#define GW_INSTALL_PROGRESS_INCLUDED
+#ifndef GW_INSTALL_PROGRESS_WINDOW_INCLUDED
+#define GW_INSTALL_PROGRESS_WINDOW_INCLUDED
 
 struct _GwInstallProgressWindow {
   EXTENDS_GW_WINDOW
@@ -11,6 +11,7 @@ struct _GwInstallProgressWindow {
   GtkProgressBar* progressbar;
 
   double install_fraction;
+  GMutex *mutex;
 };
 typedef struct _GwInstallProgressWindow GwInstallProgressWindow;
 
@@ -21,6 +22,8 @@ void gw_installprogresswindow_destroy (GwInstallProgressWindow*);
 void gw_installprogresswindow_start_cb (GtkWidget*, gpointer);
 void gw_installprogresswindow_init (GwInstallProgressWindow*, GwSettingsWindow*);
 void gw_installprogresswindow_deinit (GwInstallProgressWindow*);
+
+void gw_installprogresswindow_start (GwInstallProgressWindow*);
 
 #include <gwaei/installprogress-callbacks.h>
 
