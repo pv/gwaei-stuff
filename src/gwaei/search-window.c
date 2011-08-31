@@ -227,6 +227,13 @@ static void _searchwindow_attach_signals (GwSearchWindow *window)
         window
     );
 
+    window->timeoutid[GW_SEARCHWINDOW_SIGNALID_DICTIONARIES_CHANGED] = g_signal_connect (
+        G_OBJECT (app->dictinfolist->model),
+        "row-changed",
+        G_CALLBACK (gw_searchwindow_dictionaries_changed_cb),
+        window->toplevel 
+    );
+
     window->timeoutid[GW_SEARCHWINDOW_TIMEOUTID_KEEP_SEARCHING] = g_timeout_add_full (
           G_PRIORITY_DEFAULT_IDLE, 
           100, 
@@ -284,6 +291,11 @@ static void _searchwindow_remove_signals (GwSearchWindow *window)
         app->prefmanager,
         LW_SCHEMA_BASE,
         window->signalid[GW_SEARCHWINDOW_SIGNALID_SPELLCHECK]
+    );
+
+    g_signal_handler_disconnect (
+        G_OBJECT (app->dictinfolist->model),
+        window->timeoutid[GW_SEARCHWINDOW_SIGNALID_DICTIONARIES_CHANGED]
     );
 
     for (i = 0; i < TOTAL_GW_SEARCHWINDOW_SIGNALIDS; i++)

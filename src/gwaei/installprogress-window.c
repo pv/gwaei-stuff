@@ -58,7 +58,6 @@ void gw_installprogresswindow_init (GwInstallProgressWindow *window, GwSettingsW
 void gw_installprogresswindow_deinit (GwInstallProgressWindow *window)
 {
     g_mutex_free (window->mutex);
-    gtk_widget_hide (GTK_WIDGET (window->toplevel));
 }
 
 

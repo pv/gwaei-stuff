@@ -1904,6 +1904,20 @@ G_MODULE_EXPORT void gw_searchwindow_open_radicalswindow_cb (GtkWidget *widget, 
 }
 
 
+//!
+//! @brief Disables portions of the interface depending on the currently queued jobs.
+//!
+G_MODULE_EXPORT void gw_searchwindow_dictionaries_changed_cb (GtkTreeModel* model, GtkTreePath *path, GtkTreeIter *iter, gpointer data)
+{
+    //Declarations
+    GwSearchWindow *window;
 
+    //Initializations
+    window = GW_SEARCHWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
+
+    //Set the show state of the dictionaries required message
+    if (g_list_length (app->dictinfolist->list) > 0)
+      gw_searchwindow_set_dictionary (window, 0);
+}
 
 
