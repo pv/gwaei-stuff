@@ -156,8 +156,8 @@ static void _add_match_highlights (gint line, gint start_offset, gint end_offset
           gtk_text_buffer_apply_tag_by_name (buffer, "match", &start_iter, &end_iter);
           g_match_info_next (match_info, NULL);
         }
-        g_match_info_free (match_info);
       }
+      g_match_info_free (match_info);
     }
 
     //Look for furigana atoms
@@ -176,8 +176,8 @@ static void _add_match_highlights (gint line, gint start_offset, gint end_offset
           gtk_text_buffer_apply_tag_by_name (buffer, "match", &start_iter, &end_iter);
           g_match_info_next (match_info, NULL);
         }
-        g_match_info_free (match_info);
       }
+      g_match_info_free (match_info);
     }
 
     //Look for romaji atoms
@@ -196,8 +196,8 @@ static void _add_match_highlights (gint line, gint start_offset, gint end_offset
           gtk_text_buffer_apply_tag_by_name (buffer, "match", &start_iter, &end_iter);
           g_match_info_next (match_info, NULL);
         }
-        g_match_info_free (match_info);
       }
+      g_match_info_free (match_info);
     }
 
     //Cleanup
@@ -567,7 +567,10 @@ void gw_output_append_kanjidict_results_cb (LwSearchItem *item)
 
         GwRadicalsWindow *radicalswindow;
         radicalswindow =  GW_RADICALSWINDOW (gw_app_get_window_by_type (app, GW_WINDOW_RADICALS));
-        gw_radicalswindow_set_button_sensitive_when_label_is (radicalswindow, resultline->radicals);
+        if (radicalswindow != NULL)
+        {
+          gw_radicalswindow_set_button_sensitive_when_label_is (radicalswindow, resultline->radicals);
+        }
       }
 
       //Readings

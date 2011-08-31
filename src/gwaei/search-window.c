@@ -408,13 +408,13 @@ static void _searchwindow_initialize_dictionary_menu (GwSearchWindow *window)
 
     widget = GTK_WIDGET (gtk_menu_item_new_with_mnemonic(gettext("_Cycle Up")));
     gtk_menu_shell_append (GTK_MENU_SHELL (shell), GTK_WIDGET (widget));
-//    g_signal_connect (G_OBJECT (widget), "activate", G_CALLBACK (gw_main_cycle_dictionaries_backward_cb), NULL);
+    g_signal_connect (G_OBJECT (widget), "activate", G_CALLBACK (gw_searchwindow_cycle_dictionaries_backward_cb), window->toplevel);
     gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", accel_group, GDK_KEY_Up, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
     gtk_widget_show (GTK_WIDGET (widget));
 
     widget = GTK_WIDGET (gtk_menu_item_new_with_mnemonic(gettext("Cycle _Down")));
     gtk_menu_shell_append (GTK_MENU_SHELL (shell), GTK_WIDGET (widget));
-//    g_signal_connect (G_OBJECT (widget), "activate", G_CALLBACK (gw_main_cycle_dictionaries_forward_cb), NULL);
+    g_signal_connect (G_OBJECT (widget), "activate", G_CALLBACK (gw_searchwindow_cycle_dictionaries_forward_cb), window->toplevel);
     gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", accel_group, GDK_KEY_Down, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
     gtk_widget_show (GTK_WIDGET (widget));
 }
@@ -876,37 +876,38 @@ void gw_searchwindow_set_search_progressbar_by_searchitem (GwSearchWindow *windo
 //!
 void gw_searchwindow_update_history_menu_popup (GwSearchWindow *window)
 {
-    char *id;
-
-    GtkMenuShell *shell;
-    id = "history_popup";
-    shell = GTK_MENU_SHELL (gtk_builder_get_object(window->builder, id));
-
-    GList *children = NULL;
-    children = gtk_container_get_children (GTK_CONTAINER (shell));
-    GList *iter = children;
-
-    //Skip over the back/forward buttons
-    if (iter != NULL) iter = g_list_next(iter);
-    if (iter != NULL) iter = g_list_next(iter);
-
-    //Remove all widgets after the back and forward menuitem buttons
-    while (iter != NULL )
-    {
-      gtk_widget_destroy (iter->data);
-      iter = g_list_delete_link (iter, iter);
-    }
-    g_list_free (children);
-    children = NULL;
-
     //Declarations
+    char *id;
+    GtkMenuShell *shell;
+    GList *children;
+    GList *list;
+    GList *iter;
     LwSearchItem *item;
     GtkWidget *menuitem;
 
-    children = lw_historylist_get_combined_list (window->history);
+    //Initializations
+    id = "history_popup";
+    shell = GTK_MENU_SHELL (gtk_builder_get_object(window->builder, id));
+    children = gtk_container_get_children (GTK_CONTAINER (shell));
+    iter = children;
+
+    //Skip over the back/forward buttons
+    if (iter != NULL) iter = g_list_next (iter);
+    if (iter != NULL) iter = g_list_next (iter);
+
+    //Remove all widgets after the back and forward menuitem buttons
+    while (iter != NULL)
+    {
+      gtk_widget_destroy (GTK_WIDGET (iter->data));
+      iter = iter->next;
+    }
+    g_list_free (children);
+
+
+    list = lw_historylist_get_combined_list (window->history);
 
     //Add a separator if there are some items in history
-    if (children != NULL)
+    if (list != NULL)
     {
       //Add a seperator to the end of the history popup
       menuitem = GTK_WIDGET (gtk_separator_menu_item_new());
@@ -915,9 +916,9 @@ void gw_searchwindow_update_history_menu_popup (GwSearchWindow *window)
     }
 
     //Fill the history items
-    while (children != NULL)
+    for (iter = list; iter != NULL; iter = iter->next)
     {
-      item = children->data;
+      item = LW_SEARCHITEM (iter->data);
 
       GtkWidget *menu_item, *accel_label, *label;
 
@@ -943,9 +944,8 @@ void gw_searchwindow_update_history_menu_popup (GwSearchWindow *window)
       gtk_widget_show(accel_label);
       gtk_widget_show(hbox);
       gtk_widget_show(menu_item);
-      children = children->next;
     }
-    g_list_free (children);
+    g_list_free (list);
 }
 
 
