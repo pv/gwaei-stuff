@@ -165,6 +165,13 @@ GSettings* lw_prefmanager_get_settings_object (LwPrefManager *pm, const char *SC
         g_free (schema);
       settings = NULL;
     }
+    if (settings != NULL) 
+    {
+      g_free (schema);
+    }
+    else
+    {
+    }
 
     //If not found, create our own and add it to the list
     if (settings == NULL)
@@ -478,6 +485,7 @@ gulong lw_prefmanager_add_change_listener_by_schema (LwPrefManager *pm, const ch
     settings = lw_prefmanager_get_settings_object (pm, schema);
     id = lw_prefmanager_add_change_listener (settings, key, callback_function, data);
 
+
     return id;
 }
 
@@ -491,7 +499,12 @@ gulong lw_prefmanager_add_change_listener_by_schema (LwPrefManager *pm, const ch
 void lw_prefmanager_remove_change_listener (GSettings *settings, gulong id)
 {
     if (g_signal_handler_is_connected (G_OBJECT (settings), id))
+    {
       g_signal_handler_disconnect (G_OBJECT (settings), id);
+    }
+    else
+    {
+    }
 }
 
 
@@ -510,6 +523,9 @@ void lw_prefmanager_remove_change_listener_by_schema (LwPrefManager *pm, const c
     if (settings != NULL)
     {
       lw_prefmanager_remove_change_listener (settings, id);
+    }
+    else
+    {
     }
 }
 

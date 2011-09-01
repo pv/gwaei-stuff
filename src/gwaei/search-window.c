@@ -151,11 +151,12 @@ void gw_searchwindow_deinit (GwSearchWindow *window)
       window->timeoutid[i] = 0;
     }
 
+    _searchwindow_remove_signals (window);
+
     if (window->spellcheck != NULL) gw_spellcheck_free (window->spellcheck);
     if (window->history != NULL) lw_historylist_free (window->history);
     if (window->tablist != NULL) g_list_free (window->tablist);
 
-    _searchwindow_remove_signals (window);
     _searchwindow_mousedata_deinit (&(window->mousedata));
     _searchwindow_keepsearchingdata_deinit (&(window->keepsearchingdata));
 
@@ -226,8 +227,7 @@ static void _searchwindow_attach_signals (GwSearchWindow *window)
         gw_searchwindow_sync_spellcheck_cb,
         window
     );
-
-    window->timeoutid[GW_SEARCHWINDOW_SIGNALID_DICTIONARIES_CHANGED] = g_signal_connect (
+    window->signalid[GW_SEARCHWINDOW_SIGNALID_DICTIONARIES_CHANGED] = g_signal_connect (
         G_OBJECT (app->dictinfolist->model),
         "row-changed",
         G_CALLBACK (gw_searchwindow_dictionaries_changed_cb),
@@ -295,7 +295,7 @@ static void _searchwindow_remove_signals (GwSearchWindow *window)
 
     g_signal_handler_disconnect (
         G_OBJECT (app->dictinfolist->model),
-        window->timeoutid[GW_SEARCHWINDOW_SIGNALID_DICTIONARIES_CHANGED]
+        window->signalid[GW_SEARCHWINDOW_SIGNALID_DICTIONARIES_CHANGED]
     );
 
     for (i = 0; i < TOTAL_GW_SEARCHWINDOW_SIGNALIDS; i++)
