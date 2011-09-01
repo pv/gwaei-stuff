@@ -46,7 +46,7 @@ void _settingswindow_remove_signals (GwSettingsWindow*);
 //!
 //! @brief Sets the initial status of the dictionaries in the settings dialog
 //!
-GwSettingsWindow* gw_settingswindow_new (GwWindow *transient_for) 
+GwSettingsWindow* gw_settingswindow_new (GwSearchWindow *transient_for, GList *link) 
 {
     GwSettingsWindow *temp;
 
@@ -56,8 +56,8 @@ GwSettingsWindow* gw_settingswindow_new (GwWindow *transient_for)
     {
       gw_app_block_searches (app);
 
-      gw_window_init (GW_WINDOW (temp), GW_WINDOW_SETTINGS, "settings.ui", "settings_window");
-      gw_settingswindow_init (temp, transient_for);
+      gw_window_init (GW_WINDOW (temp), GW_WINDOW_SETTINGS, "settings.ui", "settings_window", link);
+      gw_settingswindow_init (temp, GW_WINDOW (transient_for));
     }
 
     return temp;

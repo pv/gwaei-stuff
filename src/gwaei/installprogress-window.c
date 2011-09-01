@@ -14,7 +14,7 @@ static gpointer _installprogresswindow_install_thread (gpointer);
 //!
 //! @brief Setup the installprogress.c source code
 //!
-GwInstallProgressWindow* gw_installprogresswindow_new (GwSettingsWindow *transient_for)
+GwInstallProgressWindow* gw_installprogresswindow_new (GwSettingsWindow *transient_for, GList *link)
 {
     GwInstallProgressWindow *temp;
 
@@ -22,7 +22,7 @@ GwInstallProgressWindow* gw_installprogresswindow_new (GwSettingsWindow *transie
 
     if (temp != NULL)
     {
-      gw_window_init (GW_WINDOW (temp), GW_WINDOW_INSTALLPROGRESS, "installprogress.ui", "install_progress_dialog");
+      gw_window_init (GW_WINDOW (temp), GW_WINDOW_INSTALLPROGRESS, "installprogress.ui", "install_progress_dialog", link);
       gw_installprogresswindow_init (temp, transient_for);
     }
 

@@ -54,7 +54,7 @@ void _searchwindow_keepsearchingdata_deinit (GwSearchWindowKeepSearchingData*);
 //!
 //! @brief Sets up the variables in main-interface.c and main-callbacks.c for use
 //!
-GwSearchWindow* gw_searchwindow_new ()
+GwSearchWindow* gw_searchwindow_new (GList *link)
 {
     GwSearchWindow *temp;
     int i;
@@ -63,7 +63,7 @@ GwSearchWindow* gw_searchwindow_new ()
 
     if (temp != NULL)
     {
-      gw_window_init (GW_WINDOW (temp), GW_WINDOW_SEARCH, "search.ui", "main_window");
+      gw_window_init (GW_WINDOW (temp), GW_WINDOW_SEARCH, "search.ui", "main_window", link);
       gw_searchwindow_init (temp);
     }
 
@@ -577,13 +577,11 @@ void gw_searchwindow_update_toolbar_buttons (GwSearchWindow *window)
     GtkWidget *menuitem;
     gboolean enable;
     char *id;
-    int pages;
     LwSearchItem *item;
     GtkTextView *view;
     int current_font_magnification;
 
     //Initializations
-    pages = gtk_notebook_get_n_pages (window->notebook);
     item = gw_searchwindow_get_current_searchitem (window);
     current_font_magnification = lw_prefmanager_get_int_by_schema (app->prefmanager, LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION);
     view = gw_searchwindow_get_current_textview (window);
@@ -592,49 +590,49 @@ void gw_searchwindow_update_toolbar_buttons (GwSearchWindow *window)
     id = "view_zoom_in_action";
     action = GTK_ACTION (gtk_builder_get_object (window->builder, id));
     enable = (item != NULL && current_font_magnification < GW_MAX_FONT_MAGNIFICATION);
-    gtk_action_set_sensitive(action, enable);
+    gtk_action_set_sensitive (action, enable);
 
     //Update Zoom out sensitivity state
     id = "view_zoom_out_action";
     action = GTK_ACTION (gtk_builder_get_object (window->builder, id));
     enable = (item != NULL && current_font_magnification > GW_MIN_FONT_MAGNIFICATION);
-    gtk_action_set_sensitive(action, enable);
+    gtk_action_set_sensitive (action, enable);
 
     //Update Zoom 100 sensitivity state
     id = "view_zoom_100_action";
     action = GTK_ACTION (gtk_builder_get_object(window->builder, id));
     enable = (item != NULL && current_font_magnification != GW_DEFAULT_FONT_MAGNIFICATION);
-    gtk_action_set_sensitive(action, enable);
+    gtk_action_set_sensitive (action, enable);
 
     //Update Save sensitivity state
     id = "file_append_action";
     action = GTK_ACTION (gtk_builder_get_object(window->builder, id));
     enable = (item != NULL);
-    gtk_action_set_sensitive(action, enable);
+    gtk_action_set_sensitive (action, enable);
 
     //Update Save as sensitivity state
     id = "file_save_as_action";
     action = GTK_ACTION (gtk_builder_get_object(window->builder, id));
     enable = (item != NULL);
-    gtk_action_set_sensitive(action, enable);
+    gtk_action_set_sensitive (action, enable);
 
     //Update Print sensitivity state
     id = "file_print_action";
     action = GTK_ACTION (gtk_builder_get_object(window->builder, id));
     enable = (item != NULL);
-    gtk_action_set_sensitive(action, enable);
+    gtk_action_set_sensitive (action, enable);
 
     //Update Print preview sensitivity state
     id = "file_print_preview_action";
     action = GTK_ACTION (gtk_builder_get_object(window->builder, id));
     enable = (item != NULL);
-    gtk_action_set_sensitive(action, enable);
+    gtk_action_set_sensitive (action, enable);
 
     //Update radicals window tool menuitem
     id = "insert_radicals_action";
     action = GTK_ACTION (gtk_builder_get_object (window->builder, id));
     enable = (lw_dictinfolist_get_dictinfo (LW_DICTINFOLIST (app->dictinfolist), LW_DICTTYPE_KANJI, "Kanji") != NULL);
-    gtk_action_set_sensitive(action, enable);
+    gtk_action_set_sensitive (action, enable);
 
     //Update back button
     id = "history_back_action";
@@ -668,14 +666,6 @@ void gw_searchwindow_update_toolbar_buttons (GwSearchWindow *window)
       action = GTK_ACTION (gtk_builder_get_object (window->builder, id));
       gtk_action_set_sensitive (action, FALSE);
     }
-
-    id = "previous_tab_menuitem";
-    menuitem = GTK_WIDGET (gtk_builder_get_object (window->builder, id));
-    gtk_widget_set_sensitive (menuitem, (pages > 1));
-
-    id = "next_tab_menuitem";
-    menuitem = GTK_WIDGET (gtk_builder_get_object (window->builder, id));
-    gtk_widget_set_sensitive (menuitem, (pages > 1));
 }
 
 
@@ -2364,24 +2354,15 @@ void gw_searchwindow_sync_current_searchitem (GwSearchWindow *window)
 void gw_searchwindow_set_current_searchitem (GwSearchWindow *window, LwSearchItem *item)
 {
     //Declarations
-    GList *iter;
+    GList *link;
     int page_num;
-    int pages;
-    GtkMenuItem *menuitem;
-    const char *label_text;
 
     //Initializations
     page_num = gtk_notebook_get_current_page (window->notebook);
     if (page_num == -1) return;
-    pages = gtk_notebook_get_n_pages (window->notebook);
-    iter = g_list_nth (window->tablist, page_num);
-    if (iter == NULL) return;
-    menuitem = GTK_MENU_ITEM (gtk_builder_get_object (window->builder, "close_menuitem"));
-    iter->data = item;
-    if (pages > 1)
-      label_text = gettext("_Close Tab");
-    else
-      label_text = gettext("_Close");
+    link = g_list_nth (window->tablist, page_num);
+    if (link == NULL) return;
+    link->data = item;
 
     //Update the window to match the searchitem data
     gw_searchwindow_set_tab_text_by_searchitem (window, item);
@@ -2390,9 +2371,6 @@ void gw_searchwindow_set_current_searchitem (GwSearchWindow *window, LwSearchIte
     gw_searchwindow_set_title_by_searchitem (window, item);
     gw_searchwindow_set_total_results_label_by_searchitem (window, item);
     gw_searchwindow_set_search_progressbar_by_searchitem (window, item);
-
-    gtk_notebook_set_show_tabs (window->notebook, (pages > 1));
-    gtk_menu_item_set_label (menuitem, label_text);
 }
 
 

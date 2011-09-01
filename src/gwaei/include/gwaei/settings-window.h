@@ -42,7 +42,7 @@ typedef struct _GwSettingsWindow GwSettingsWindow;
 
 #define GW_SETTINGSWINDOW(object) (GwSettingsWindow*)object
 
-GwSettingsWindow* gw_settingswindow_new ();
+GwSettingsWindow* gw_settingswindow_new (GwSearchWindow*, GList*);
 void gw_settingswindow_destroy (GwSettingsWindow*);
 void gw_settingswindow_init (GwSettingsWindow*, GwWindow*);
 void gw_settingswindow_deinit (GwSettingsWindow*);

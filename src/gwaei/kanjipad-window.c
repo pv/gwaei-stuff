@@ -52,7 +52,7 @@ static gboolean _kanjipadwindow_engine_input_handler (GIOChannel*, GIOCondition,
 //!
 //! @brief Sets up kanjipad, aquiring any needed resources
 //!
-GwKanjipadWindow* gw_kanjipadwindow_new (GwSearchWindow* transient_for)
+GwKanjipadWindow* gw_kanjipadwindow_new (GwSearchWindow* transient_for, GList *link)
 {
     GwKanjipadWindow *temp;
 
@@ -60,7 +60,7 @@ GwKanjipadWindow* gw_kanjipadwindow_new (GwSearchWindow* transient_for)
 
     if (temp != NULL)
     {
-      gw_window_init (GW_WINDOW (temp), GW_WINDOW_KANJIPAD, "kanjipad.ui", "kanjipad_window");
+      gw_window_init (GW_WINDOW (temp), GW_WINDOW_KANJIPAD, "kanjipad.ui", "kanjipad_window", link);
       gw_kanjipadwindow_init (temp, transient_for);
     }
 

@@ -17,7 +17,7 @@ typedef struct _GwInstallProgressWindow GwInstallProgressWindow;
 
 #define GW_INSTALLPROGRESSWINDOW(object) (GwInstallProgressWindow*)object
 
-GwInstallProgressWindow* gw_installprogresswindow_new (GwSettingsWindow*);
+GwInstallProgressWindow* gw_installprogresswindow_new (GwSettingsWindow*, GList*);
 void gw_installprogresswindow_destroy (GwInstallProgressWindow*);
 void gw_installprogresswindow_start_cb (GtkWidget*, gpointer);
 void gw_installprogresswindow_init (GwInstallProgressWindow*, GwSettingsWindow*);

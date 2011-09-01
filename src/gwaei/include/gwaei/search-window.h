@@ -99,7 +99,7 @@ struct _GwSearchWindow {
 typedef struct _GwSearchWindow GwSearchWindow;
 
 
-GwSearchWindow* gw_searchwindow_new (void);
+GwSearchWindow* gw_searchwindow_new (GList*);
 void gw_searchwindow_destroy (GwSearchWindow*);
 void gw_searchwindow_init (GwSearchWindow*);
 void gw_searchwindow_deinit (GwSearchWindow*);

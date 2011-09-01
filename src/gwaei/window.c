@@ -39,7 +39,7 @@
 #include <gwaei/gwaei.h>
 
 
-GwWindow* gw_window_new (const GwWindowType TYPE, GwWindow *transient_for)
+GwWindow* gw_window_new (const GwWindowType TYPE, GwWindow *transient_for, GList *link)
 {
     //Declarations
     GwWindow *window;
@@ -50,37 +50,37 @@ GwWindow* gw_window_new (const GwWindowType TYPE, GwWindow *transient_for)
     switch (TYPE)
     {
       case GW_WINDOW_SEARCH:
-        window = GW_WINDOW (gw_searchwindow_new ());
+        window = GW_WINDOW (gw_searchwindow_new (link));
         gtk_window_set_position (window->toplevel, GTK_WIN_POS_MOUSE);
         break;
       case GW_WINDOW_SETTINGS:
         g_assert (transient_for != NULL);
-        window = GW_WINDOW (gw_settingswindow_new (transient_for));
+        window = GW_WINDOW (gw_settingswindow_new (GW_SEARCHWINDOW (transient_for), link));
         gtk_window_set_destroy_with_parent (window->toplevel, TRUE);
         gtk_window_set_position (window->toplevel, GTK_WIN_POS_CENTER_ON_PARENT);
         gtk_window_set_modal (window->toplevel, TRUE);
         break;
       case GW_WINDOW_RADICALS:
         g_assert (transient_for != NULL);
-        window = GW_WINDOW (gw_radicalswindow_new (transient_for));
+        window = GW_WINDOW (gw_radicalswindow_new (transient_for, link));
         gtk_window_set_destroy_with_parent (window->toplevel, TRUE);
         gtk_window_set_position (window->toplevel, GTK_WIN_POS_MOUSE);
         gtk_window_set_modal (window->toplevel, FALSE);
         break;
       case GW_WINDOW_KANJIPAD:
-        window = GW_WINDOW (gw_kanjipadwindow_new (GW_SEARCHWINDOW (transient_for)));
+        window = GW_WINDOW (gw_kanjipadwindow_new (GW_SEARCHWINDOW (transient_for), link));
         gtk_window_set_destroy_with_parent (window->toplevel, TRUE);
         gtk_window_set_position (window->toplevel, GTK_WIN_POS_MOUSE);
         gtk_window_set_modal (window->toplevel, FALSE);
       break;
       case GW_WINDOW_DICTIONARYINSTALL:
-        window = GW_WINDOW (gw_dictinstwindow_new (GW_SETTINGSWINDOW (transient_for)));
+        window = GW_WINDOW (gw_dictinstwindow_new (GW_SETTINGSWINDOW (transient_for), link));
         gtk_window_set_destroy_with_parent (window->toplevel, TRUE);
         gtk_window_set_position (window->toplevel, GTK_WIN_POS_CENTER_ON_PARENT);
         gtk_window_set_modal (window->toplevel, TRUE);
         break;
       case GW_WINDOW_INSTALLPROGRESS:
-        window = GW_WINDOW (gw_installprogresswindow_new (GW_SETTINGSWINDOW (transient_for)));
+        window = GW_WINDOW (gw_installprogresswindow_new (GW_SETTINGSWINDOW (transient_for), link));
         gtk_window_set_destroy_with_parent (window->toplevel, TRUE);
         gtk_window_set_position (window->toplevel, GTK_WIN_POS_CENTER_ON_PARENT);
         gtk_window_set_modal (window->toplevel, TRUE);
@@ -94,8 +94,11 @@ GwWindow* gw_window_new (const GwWindowType TYPE, GwWindow *transient_for)
 }
 
 
-void gw_window_init (GwWindow *window, const GwWindowType TYPE, const char* UI_XML_FILENAME, const char* WINDOW_ID)
+void gw_window_init (GwWindow *window, const GwWindowType TYPE, const char* UI_XML_FILENAME, const char* WINDOW_ID, GList *link)
 {
+    if (link != NULL)
+      link->data = window;
+
     window->builder = gtk_builder_new ();
     gw_window_load_ui_xml (window, UI_XML_FILENAME);
     window->toplevel = GTK_WINDOW (gtk_builder_get_object (window->builder, WINDOW_ID));

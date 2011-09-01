@@ -29,7 +29,7 @@ typedef struct _GwKanjipadWindow GwKanjipadWindow;
 #define GW_KANJIPADWINDOW(object) (GwKanjipadWindow*)object
 
 
-GwKanjipadWindow* gw_kanjipadwindow_new (GwSearchWindow*);
+GwKanjipadWindow* gw_kanjipadwindow_new (GwSearchWindow*, GList*);
 void gw_kanjipadwindow_destroy (GwKanjipadWindow*);
 void gw_kanjipadwindow_init (GwKanjipadWindow*, GwSearchWindow*);
 void gw_kanjipadwindow_deinit (GwKanjipadWindow*);

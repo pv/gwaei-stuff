@@ -314,14 +314,14 @@ static char *_radical_array[][5] =
 };
 
 
-GwRadicalsWindow* gw_radicalswindow_new (GwWindow* transient_for)
+GwRadicalsWindow* gw_radicalswindow_new (GwWindow* transient_for, GList *link)
 {
     GwRadicalsWindow *temp;
 
     temp = (GwRadicalsWindow*) malloc(sizeof(GwRadicalsWindow));
     if (temp != NULL)
     {
-      gw_window_init (GW_WINDOW (temp), GW_WINDOW_RADICALS, "radicals.ui", "radicals_window");
+      gw_window_init (GW_WINDOW (temp), GW_WINDOW_RADICALS, "radicals.ui", "radicals_window", link);
       gw_radicalswindow_init (temp, transient_for);
     }
 

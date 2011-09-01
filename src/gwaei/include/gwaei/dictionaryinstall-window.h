@@ -57,7 +57,7 @@ typedef struct _GwDictInstWindow GwDictInstWindow;
 
 #define GW_DICTINSTWINDOW(object) (GwDictInstWindow*)object
 
-GwDictInstWindow* gw_dictinstwindow_new (GwSettingsWindow*);
+GwDictInstWindow* gw_dictinstwindow_new (GwSettingsWindow*, GList*);
 void gw_dictinstwindow_destroy (GwDictInstWindow*);
 void gw_dictinstwindow_init (GwDictInstWindow*, GwSettingsWindow*);
 void gw_dictinstwindow_deinit (GwDictInstWindow*);

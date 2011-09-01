@@ -22,7 +22,7 @@ typedef enum {
   GW_RADARRAY_TOTAL
 } GwRadicalArrayField;
 
-GwRadicalsWindow* gw_radicalswindow_new (GwWindow*);
+GwRadicalsWindow* gw_radicalswindow_new (GwWindow*, GList*);
 void gw_radicalswindow_init (GwRadicalsWindow*, GwWindow*);
 void gw_radicalswindow_deinit (GwRadicalsWindow*);
 void gw_radicalswindow_destroy (GwRadicalsWindow*);

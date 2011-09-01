@@ -1208,6 +1208,11 @@ G_MODULE_EXPORT void gw_searchwindow_search_cb (GtkWidget *widget, gpointer data
 
     view = gw_searchwindow_get_current_textview (window);
     new_item = lw_searchitem_new (query, di, LW_OUTPUTTARGET_RESULTS, app->prefmanager, &error);
+    if (new_item == NULL)
+    {
+      gw_common_handle_error (&error, GTK_WINDOW (window->toplevel), TRUE);
+      return;
+    }
     sdata = gw_searchdata_new (view, window);
     lw_searchitem_set_data (new_item, sdata, LW_SEARCHITEM_DATA_FREE_FUNC (gw_searchdata_free));
 
@@ -1929,10 +1934,45 @@ G_MODULE_EXPORT void gw_searchwindow_dictionaries_changed_cb (GtkTreeModel* mode
 
     //Initializations
     window = GW_SEARCHWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
+    if (window == NULL) return;
 
     //Set the show state of the dictionaries required message
     if (g_list_length (app->dictinfolist->list) > 0)
       gw_searchwindow_set_dictionary (window, 0);
+}
+
+
+G_MODULE_EXPORT void gw_searchwindow_total_tab_pages_changed_cb (GtkNotebook *notebook, GtkWidget *child, guint page_num, gpointer data)
+{
+    //Declarations
+    GwSearchWindow *window;
+    int pages;
+    const char *id;
+    GtkWidget *menuitem;
+    const char *label_text;
+
+    //Initializations
+    window = GW_SEARCHWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
+    if (window == NULL) return;
+    pages = gtk_notebook_get_n_pages (window->notebook);
+
+    id = "previous_tab_menuitem";
+    menuitem = GTK_WIDGET (gtk_builder_get_object (window->builder, id));
+    gtk_widget_set_sensitive (menuitem, (pages > 1));
+
+    id = "next_tab_menuitem";
+    menuitem = GTK_WIDGET (gtk_builder_get_object (window->builder, id));
+    gtk_widget_set_sensitive (menuitem, (pages > 1));
+
+    id = "close_menuitem";
+    menuitem = GTK_WIDGET (gtk_builder_get_object (window->builder, id));
+    if (pages > 1)
+      label_text = gettext("_Close Tab");
+    else
+      label_text = gettext("_Close");
+    gtk_menu_item_set_label (GTK_MENU_ITEM (menuitem), label_text);
+
+    gtk_notebook_set_show_tabs (window->notebook, (pages > 1));
 }
 
 

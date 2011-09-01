@@ -312,18 +312,20 @@ GwWindow* gw_app_show_window (GwApplication *app, const GwWindowType TYPE, GwWin
 {
     //Declarations
     GwWindow *window;
+    GList *link;
 
     //Initializations
     window = gw_app_get_window_by_type (app, TYPE);
 
     if (window == NULL || force_new)
     {
-      window = gw_window_new (TYPE, transient_for);
+      app->windowlist = g_list_append (app->windowlist, NULL);
+      link = g_list_find (app->windowlist, NULL);
+      window = gw_window_new (TYPE, transient_for, link);
       if (window != NULL)
-      {
-        app->windowlist = g_list_append (app->windowlist, window);
         gtk_widget_show (GTK_WIDGET (window->toplevel));
-      }
+      else
+        app->windowlist = g_list_delete_link (app->windowlist, link);
     }
     else
     {

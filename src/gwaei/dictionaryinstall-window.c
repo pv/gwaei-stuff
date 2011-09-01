@@ -8,14 +8,14 @@
 #include <gwaei/gwaei.h>
 
 
-GwDictInstWindow* gw_dictinstwindow_new (GwSettingsWindow *transient_for)
+GwDictInstWindow* gw_dictinstwindow_new (GwSettingsWindow *transient_for, GList *link)
 {
     GwDictInstWindow *temp;
 
     temp = (GwDictInstWindow*) malloc(sizeof(GwDictInstWindow));
     if (temp != NULL)
     {
-      gw_window_init (GW_WINDOW (temp), GW_WINDOW_DICTIONARYINSTALL, "dictionaryinstall.ui", "dictionary_install_dialog");
+      gw_window_init (GW_WINDOW (temp), GW_WINDOW_DICTIONARYINSTALL, "dictionaryinstall.ui", "dictionary_install_dialog", link);
       gw_dictinstwindow_init (temp, transient_for);
     }
 

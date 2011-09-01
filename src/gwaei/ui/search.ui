@@ -478,8 +478,8 @@
                         <property name="related_action">view_zoom_in_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="KP_Add" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                         <accelerator key="plus" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                        <accelerator key="KP_Add" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -489,8 +489,8 @@
                         <property name="related_action">view_zoom_out_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="KP_Subtract" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                         <accelerator key="minus" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                        <accelerator key="KP_Subtract" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -500,8 +500,8 @@
                         <property name="related_action">view_zoom_100_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="KP_0" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                         <accelerator key="0" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                        <accelerator key="KP_0" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -1063,7 +1063,9 @@
                     <property name="can_focus">True</property>
                     <property name="show_border">False</property>
                     <property name="scrollable">True</property>
+                    <signal name="page-added" handler="gw_searchwindow_total_tab_pages_changed_cb" object="main_window" swapped="no"/>
                     <signal name="switch-page" handler="gw_searchwindow_switch_tab_cb" object="main_window" swapped="no"/>
+                    <signal name="page-removed" handler="gw_searchwindow_total_tab_pages_changed_cb" object="main_window" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">True</property>

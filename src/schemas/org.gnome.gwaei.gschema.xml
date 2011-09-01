@@ -48,12 +48,6 @@
       <description>Searches dynamically update as you type.</description>
     </key>
 
-    <key name="window-positions" type="s">
-      <default>''</default>
-      <summary>For saving window coordinates</summary>
-      <description>Used for saving the position of closed windows for when they are next opened.</description>
-    </key>
-
     <child schema="org.gnome.gwaei.dictionary" name="dictionary"/>
     <child schema="org.gnome.gwaei.fonts" name="fonts"/>
     <child schema="org.gnome.gwaei.highlighting" name="highlighting"/>

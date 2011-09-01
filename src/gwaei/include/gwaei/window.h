@@ -26,9 +26,9 @@ struct _GwWindow {
 };
 typedef struct _GwWindow GwWindow;
 
-GwWindow* gw_window_new (const GwWindowType, GwWindow*);
+GwWindow* gw_window_new (const GwWindowType, GwWindow*, GList*);
 void gw_window_destroy (GwWindow*);
-void gw_window_init (GwWindow*, const GwWindowType, const char*, const char*);
+void gw_window_init (GwWindow*, const GwWindowType, const char*, const char*, GList*);
 void gw_window_deinit (GwWindow*);
 
 void gw_window_set_transient_for (GwWindow*, GwWindow*);
