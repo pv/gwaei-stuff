@@ -992,7 +992,7 @@
                     <signal name="changed" handler="gw_searchwindow_update_button_states_based_on_entry_text_cb" object="main_window" swapped="no"/>
                     <signal name="activate" handler="gw_searchwindow_search_cb" object="main_window" swapped="no"/>
                     <signal name="focus-in-event" handler="gw_searchwindow_update_clipboard_on_focus_change_cb" object="main_window" swapped="no"/>
-                    <signal name="icon-release" handler="gw_searchwindow_clear_search_cb" object="main_window" swapped="no"/>
+                    <signal name="icon-release" handler="gw_searchwindow_clear_entry_button_pressed_cb" object="main_window" swapped="no"/>
                   </object>
                 </child>
               </object>

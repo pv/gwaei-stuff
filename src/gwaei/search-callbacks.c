@@ -1351,6 +1351,21 @@ G_MODULE_EXPORT void gw_searchwindow_clear_search_cb (GtkWidget *widget, gpointe
 
 
 //!
+//! @brief Clears the search entry and moves the focus to it
+//! @param widget Unused GtkWidget pointer
+//! @param data Unused gpointer
+//!
+G_MODULE_EXPORT void gw_searchwindow_clear_entry_button_pressed_cb (GtkEntry *entry, GtkEntryIconPosition icon_pos, GdkEvent *event, gpointer data)
+{
+    GwSearchWindow *window;
+    window = GW_SEARCHWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
+    if (window == NULL) return;
+    gtk_entry_set_text (window->entry, "");
+    gtk_widget_grab_focus (GTK_WIDGET (window->entry));
+}
+
+
+//!
 //! @brief Opens the dictionary folder using the user's default file browser
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
