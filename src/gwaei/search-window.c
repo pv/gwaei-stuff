@@ -586,24 +586,6 @@ void gw_searchwindow_update_toolbar_buttons (GwSearchWindow *window)
     current_font_magnification = lw_prefmanager_get_int_by_schema (app->prefmanager, LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION);
     view = gw_searchwindow_get_current_textview (window);
 
-    //Update Zoom in sensitivity state
-    id = "view_zoom_in_action";
-    action = GTK_ACTION (gtk_builder_get_object (window->builder, id));
-    enable = (item != NULL && current_font_magnification < GW_MAX_FONT_MAGNIFICATION);
-    gtk_action_set_sensitive (action, enable);
-
-    //Update Zoom out sensitivity state
-    id = "view_zoom_out_action";
-    action = GTK_ACTION (gtk_builder_get_object (window->builder, id));
-    enable = (item != NULL && current_font_magnification > GW_MIN_FONT_MAGNIFICATION);
-    gtk_action_set_sensitive (action, enable);
-
-    //Update Zoom 100 sensitivity state
-    id = "view_zoom_100_action";
-    action = GTK_ACTION (gtk_builder_get_object(window->builder, id));
-    enable = (item != NULL && current_font_magnification != GW_DEFAULT_FONT_MAGNIFICATION);
-    gtk_action_set_sensitive (action, enable);
-
     //Update Save sensitivity state
     id = "file_append_action";
     action = GTK_ACTION (gtk_builder_get_object(window->builder, id));
@@ -2421,6 +2403,9 @@ void gw_searchwindow_set_font (GwSearchWindow *window)
     PangoFontDescription *desc;
     int i;
     GtkContainer *container;
+    const char *id;
+    GtkAction *action;
+    gboolean enable;
 
     //Initializations
     use_global_font_setting = lw_prefmanager_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_FONT, LW_KEY_FONT_USE_GLOBAL_FONT);
@@ -2462,6 +2447,24 @@ void gw_searchwindow_set_font (GwSearchWindow *window)
 
       //Cleanup
       pango_font_description_free (desc);
+
+      //Update Zoom in sensitivity state
+      id = "view_zoom_in_action";
+      action = GTK_ACTION (gtk_builder_get_object (window->builder, id));
+      enable = (magnification < GW_MAX_FONT_MAGNIFICATION);
+      gtk_action_set_sensitive (action, enable);
+
+      //Update Zoom out sensitivity state
+      id = "view_zoom_out_action";
+      action = GTK_ACTION (gtk_builder_get_object (window->builder, id));
+      enable = (magnification > GW_MIN_FONT_MAGNIFICATION);
+      gtk_action_set_sensitive (action, enable);
+
+      //Update Zoom 100 sensitivity state
+      id = "view_zoom_100_action";
+      action = GTK_ACTION (gtk_builder_get_object(window->builder, id));
+      enable = (magnification != GW_DEFAULT_FONT_MAGNIFICATION);
+      gtk_action_set_sensitive (action, enable);
     }
 }
 
