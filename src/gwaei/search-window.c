@@ -616,16 +616,6 @@ void gw_searchwindow_update_toolbar_buttons (GwSearchWindow *window)
     enable = (lw_dictinfolist_get_dictinfo (LW_DICTINFOLIST (app->dictinfolist), LW_DICTTYPE_KANJI, "Kanji") != NULL);
     gtk_action_set_sensitive (action, enable);
 
-    //Update back button
-    id = "history_back_action";
-    action = GTK_ACTION (gtk_builder_get_object (window->builder, id));
-    gtk_action_set_sensitive (action, lw_historylist_has_back(window->history));
-
-    //Update forward button
-    id = "history_forward_action";
-    action = GTK_ACTION (gtk_builder_get_object (window->builder, id));
-    gtk_action_set_sensitive (action, lw_historylist_has_forward(window->history));
-
     //Update cut/copy buttons
     gboolean sensitive;
     if (gtk_widget_has_focus (GTK_WIDGET (window->entry)))
@@ -905,7 +895,7 @@ void gw_searchwindow_update_history_menu_popup (GwSearchWindow *window)
       g_signal_connect (GTK_WIDGET (menu_item), 
                         "activate",
                         G_CALLBACK (gw_searchwindow_search_from_history_cb), 
-                        item                               );
+                        window->toplevel                                    );
 
       gtk_menu_shell_append(GTK_MENU_SHELL (shell), GTK_WIDGET (menu_item));
       gtk_container_add (GTK_CONTAINER (menu_item), hbox);
@@ -976,7 +966,7 @@ static void _rebuild_history_button_popup (GwSearchWindow *window, char* id, GLi
       g_signal_connect (GTK_WIDGET (menuitem), 
                         "activate",
                         G_CALLBACK (gw_searchwindow_search_from_history_cb), 
-                        item                               );
+                        window->toplevel                                    );
    
       children = children->next;
     }
@@ -989,6 +979,8 @@ static void _rebuild_history_button_popup (GwSearchWindow *window, char* id, GLi
 void gw_searchwindow_update_history_popups (GwSearchWindow* window)
 {
     GList* list;
+    const char *id;
+    GtkAction *action;
 
     gw_searchwindow_update_history_menu_popup (window);
 
@@ -997,6 +989,16 @@ void gw_searchwindow_update_history_popups (GwSearchWindow* window)
 
     list = lw_historylist_get_back_list (window->history);
     _rebuild_history_button_popup(window, "back_popup", list);
+
+    //Update back button
+    id = "history_back_action";
+    action = GTK_ACTION (gtk_builder_get_object (window->builder, id));
+    gtk_action_set_sensitive (action, lw_historylist_has_back (window->history));
+
+    //Update forward button
+    id = "history_forward_action";
+    action = GTK_ACTION (gtk_builder_get_object (window->builder, id));
+    gtk_action_set_sensitive (action, lw_historylist_has_forward (window->history));
 }
 
 
@@ -2423,7 +2425,6 @@ void gw_searchwindow_set_font (GwSearchWindow *window)
         size = pango_font_description_get_size (desc) + magnification;
       else
         size = PANGO_PIXELS (pango_font_description_get_size (desc)) + magnification;
-
 
       //Make sure the font size is sane
       if (size < GW_MIN_FONT_SIZE)

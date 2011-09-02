@@ -299,30 +299,49 @@ G_MODULE_EXPORT void gw_searchwindow_quit_cb (GtkWidget *widget, gpointer data)
 //!
 //! @brief Preforms a search from the history.
 //! @see gw_searchwindow_search_cb ()
-//! @param widget Unused GtkWidget pointer.
-//! @param data pointer to a specially attached LwSearchItem variable
+//! @param widget Should be a pointer to the GtkMenuItem to go back to
+//! @param data A pointer to the GwSearchWindow object
 //!
 G_MODULE_EXPORT void gw_searchwindow_search_from_history_cb (GtkWidget *widget, gpointer data)
 {
     if (!gw_app_can_start_search (app)) return;
 
     //Declarations
-    LwSearchItem *item;
     GwSearchWindow *window;
     GwSearchData *sdata;
     gboolean is_in_back_index;
     gboolean is_in_forward_index;
     LwSearchItem *current;
+    GtkMenuShell *shell;
+    GList *children;
+    GList *list;
+    int pre_menu_items;
+    int i;
+    LwSearchItem *item;
 
+    //Initializations
     window = GW_SEARCHWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
     if (window == NULL) return;
-    item = LW_SEARCHITEM (data);
+    shell = GTK_MENU_SHELL (gtk_builder_get_object (window->builder, "history_popup"));
+    pre_menu_items = 3;
+
+    children = gtk_container_get_children (GTK_CONTAINER (shell));
+    i = g_list_index (children, widget) - pre_menu_items;
+    g_list_free (children);
+    children = NULL;
+
+    list = lw_historylist_get_combined_list (window->history);
+    item = LW_SEARCHITEM (g_list_nth_data (list, i));
+    g_list_free (list);
+    list = NULL;
+
+    if (item == NULL) return;
+
     is_in_back_index = (g_list_index (window->history->back, item) != -1);
     is_in_forward_index = (g_list_index (window->history->forward, item) != -1);
-    if (!is_in_back_index && !is_in_forward_index) 
-    {
-      return;
-    }
+
+    if (!is_in_back_index && !is_in_forward_index) return;
+
     current = gw_searchwindow_get_current_searchitem (window);
     sdata = lw_searchitem_get_data (item);
     sdata->view = gw_searchwindow_get_current_textview (window);
@@ -364,7 +383,6 @@ G_MODULE_EXPORT void gw_searchwindow_search_from_history_cb (GtkWidget *widget, 
     //Set the search string in the GtkEntry
     gtk_widget_grab_focus (GTK_WIDGET (window->entry));
     gw_searchwindow_select_all_by_target (window, LW_OUTPUTTARGET_ENTRY);
-
 }
 
 
@@ -378,12 +396,37 @@ G_MODULE_EXPORT void gw_searchwindow_search_from_history_cb (GtkWidget *widget, 
 G_MODULE_EXPORT void gw_searchwindow_back_cb (GtkWidget *widget, gpointer data)
 {
     GwSearchWindow *window;
+    GtkWidget *menuitem;
+    GtkMenuShell *shell;
+    GList *link;
+    GList *list;
+    GList *children;
+    LwSearchItem *item;
+    int pre_menu_items;
+    int i;
     
     window = GW_SEARCHWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
+    if (window == NULL) return;
+    
+    pre_menu_items = 3;
+    shell = GTK_MENU_SHELL (gtk_builder_get_object (window->builder, "history_popup"));
+    link = g_list_last (window->history->back);
+    item = LW_SEARCHITEM (link->data);
+
+    list = lw_historylist_get_combined_list (window->history);
+    i = g_list_index (list, item) + pre_menu_items;;
+    g_list_free (list);
+    list = NULL;
+
+    children = gtk_container_get_children (GTK_CONTAINER (shell));
+    menuitem = GTK_WIDGET (g_list_nth_data (children, i));
+    g_list_free (children);
+    children = NULL;
 
     if (lw_historylist_has_back (window->history))
     {
-      gw_searchwindow_search_from_history_cb (widget, window->history->back->data);
+      printf("BREAK going back\n");
+      gw_searchwindow_search_from_history_cb (menuitem, window->toplevel);
     }
 }
 
@@ -398,12 +441,37 @@ G_MODULE_EXPORT void gw_searchwindow_back_cb (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void gw_searchwindow_forward_cb (GtkWidget *widget, gpointer data)
 {
     GwSearchWindow *window;
-    
+    GtkWidget *menuitem;
+    GtkMenuShell *shell;
+    GList *link;
+    GList *list;
+    GList *children;
+    LwSearchItem *item;
+    int pre_menu_items;
+    int i;
+     
     window = GW_SEARCHWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
+    if (window == NULL) return;
+
+    pre_menu_items = 3;
+    shell = GTK_MENU_SHELL (gtk_builder_get_object (window->builder, "history_popup"));
+    link = g_list_last (window->history->forward);
+    item = LW_SEARCHITEM (link->data);
+
+    list = lw_historylist_get_combined_list (window->history);
+    i = g_list_index (list, item) + pre_menu_items;;
+    g_list_free (list);
+    list = NULL;
+
+    children = gtk_container_get_children (GTK_CONTAINER (shell));
+    menuitem = GTK_WIDGET (g_list_nth_data (children, i));
+    g_list_free (children);
+    children = NULL;
 
     if (lw_historylist_has_forward (window->history))
     {
-      gw_searchwindow_search_from_history_cb (widget, window->history->forward->data);
+      printf("BREAK going forward\n");
+      gw_searchwindow_search_from_history_cb (menuitem, window->toplevel);
     }
 }
 
