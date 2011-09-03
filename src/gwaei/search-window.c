@@ -568,53 +568,6 @@ void gw_searchwindow_set_title_by_searchitem (GwSearchWindow* window, LwSearchIt
 
 
 //!
-//! @brief Updates the states of the toolbar buttons etc in the main interface
-//!
-void gw_searchwindow_update_toolbar_buttons (GwSearchWindow *window)
-{
-    //Delarations
-    GtkAction *action;
-    GtkWidget *menuitem;
-    gboolean enable;
-    char *id;
-    LwSearchItem *item;
-
-    //Initializations
-    item = gw_searchwindow_get_current_searchitem (window);
-
-    //Update Save sensitivity state
-    id = "file_append_action";
-    action = GTK_ACTION (gtk_builder_get_object(window->builder, id));
-    enable = (item != NULL);
-    gtk_action_set_sensitive (action, enable);
-
-    //Update Save as sensitivity state
-    id = "file_save_as_action";
-    action = GTK_ACTION (gtk_builder_get_object(window->builder, id));
-    enable = (item != NULL);
-    gtk_action_set_sensitive (action, enable);
-
-    //Update Print sensitivity state
-    id = "file_print_action";
-    action = GTK_ACTION (gtk_builder_get_object(window->builder, id));
-    enable = (item != NULL);
-    gtk_action_set_sensitive (action, enable);
-
-    //Update Print preview sensitivity state
-    id = "file_print_preview_action";
-    action = GTK_ACTION (gtk_builder_get_object(window->builder, id));
-    enable = (item != NULL);
-    gtk_action_set_sensitive (action, enable);
-
-    //Update radicals window tool menuitem
-    id = "insert_radicals_action";
-    action = GTK_ACTION (gtk_builder_get_object (window->builder, id));
-    enable = (lw_dictinfolist_get_dictinfo (LW_DICTINFOLIST (app->dictinfolist), LW_DICTTYPE_KANJI, "Kanji") != NULL);
-    gtk_action_set_sensitive (action, enable);
-}
-
-
-//!
 //! @brief Set's the progress label of the program using the inforamtion from the searchitem
 //!
 //! @param item A LwSearchItem pointer to gleam information from
@@ -2324,6 +2277,11 @@ void gw_searchwindow_sync_current_searchitem (GwSearchWindow *window)
 void gw_searchwindow_set_current_searchitem (GwSearchWindow *window, LwSearchItem *item)
 {
     //Declarations
+    GtkAction *action;
+    GtkWidget *menuitem;
+    gboolean enable;
+    char *id;
+
     GList *link;
     int page_num;
 
@@ -2341,6 +2299,30 @@ void gw_searchwindow_set_current_searchitem (GwSearchWindow *window, LwSearchIte
     gw_searchwindow_set_title_by_searchitem (window, item);
     gw_searchwindow_set_total_results_label_by_searchitem (window, item);
     gw_searchwindow_set_search_progressbar_by_searchitem (window, item);
+
+    //Update Save sensitivity state
+    id = "file_append_action";
+    action = GTK_ACTION (gtk_builder_get_object(window->builder, id));
+    enable = (item != NULL);
+    gtk_action_set_sensitive (action, enable);
+
+    //Update Save as sensitivity state
+    id = "file_save_as_action";
+    action = GTK_ACTION (gtk_builder_get_object(window->builder, id));
+    enable = (item != NULL);
+    gtk_action_set_sensitive (action, enable);
+
+    //Update Print sensitivity state
+    id = "file_print_action";
+    action = GTK_ACTION (gtk_builder_get_object(window->builder, id));
+    enable = (item != NULL);
+    gtk_action_set_sensitive (action, enable);
+
+    //Update Print preview sensitivity state
+    id = "file_print_preview_action";
+    action = GTK_ACTION (gtk_builder_get_object(window->builder, id));
+    enable = (item != NULL);
+    gtk_action_set_sensitive (action, enable);
 }
 
 
@@ -2373,7 +2355,6 @@ void gw_searchwindow_start_search (GwSearchWindow *window, LwSearchItem* item)
     gw_searchwindow_set_current_searchitem (window, item);
     lw_engine_get_results (app->engine, item, TRUE, FALSE);
     gw_searchwindow_update_history_popups (window);
-    gw_searchwindow_update_toolbar_buttons (window);
 }
 
 

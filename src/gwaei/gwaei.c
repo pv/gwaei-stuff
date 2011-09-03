@@ -260,7 +260,9 @@ GwApplicationResolution gw_app_run (GwApplication *app)
 
 void gw_app_quit (GwApplication *app)
 {
+    gw_app_block_searches (app);
     gtk_main_quit ();
+    gw_app_unblock_searches (app);
 }
 
 

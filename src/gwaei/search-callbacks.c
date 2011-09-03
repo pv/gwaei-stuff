@@ -1954,6 +1954,9 @@ G_MODULE_EXPORT void gw_searchwindow_dictionaries_changed_cb (GtkTreeModel* mode
 {
     //Declarations
     GwSearchWindow *window;
+    const char *id;
+    GtkAction *action;
+    gboolean enable;
 
     //Initializations
     window = GW_SEARCHWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
@@ -1962,6 +1965,12 @@ G_MODULE_EXPORT void gw_searchwindow_dictionaries_changed_cb (GtkTreeModel* mode
     //Set the show state of the dictionaries required message
     if (g_list_length (app->dictinfolist->list) > 0)
       gw_searchwindow_set_dictionary (window, 0);
+
+    //Update radicals window tool menuitem
+    id = "insert_radicals_action";
+    action = GTK_ACTION (gtk_builder_get_object (window->builder, id));
+    enable = (lw_dictinfolist_get_dictinfo (LW_DICTINFOLIST (app->dictinfolist), LW_DICTTYPE_KANJI, "Kanji") != NULL);
+    gtk_action_set_sensitive (action, enable);
 }
 
 
@@ -1997,5 +2006,6 @@ G_MODULE_EXPORT void gw_searchwindow_total_tab_pages_changed_cb (GtkNotebook *no
 
     gtk_notebook_set_show_tabs (window->notebook, (pages > 1));
 }
+
 
 
