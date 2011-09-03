@@ -184,7 +184,7 @@ void gw_app_parse_args (GwApplication *app, int *argc, char** argv[])
 
     if (error != NULL)
     {
-      gw_common_handle_error (&error, NULL, FALSE);
+      gw_app_handle_error (app, NULL, FALSE, &error);
       exit(1);
     }
 
@@ -572,4 +572,46 @@ gboolean gw_app_can_start_search (GwApplication *app)
 {
   return (app->block_new_searches == 0);
 }
+
+
+void gw_app_handle_error (GwApplication *app, GwWindow *transient_for, gboolean show_dialog, GError **error)
+{
+    //Sanity checks
+    if (error != NULL && *error != NULL) return;
+
+    //Declarations
+    GtkWidget *dialog;
+    GtkWindow *parent;
+    gint response;
+
+    if (transient_for == NULL)
+      parent = NULL;
+    else
+      parent = transient_for->toplevel;
+
+    //Handle the error
+    if (show_dialog)
+    {
+      dialog = gtk_message_dialog_new_with_markup (parent,
+                                                   GTK_DIALOG_MODAL,
+                                                   GTK_MESSAGE_ERROR,
+                                                   GTK_BUTTONS_CLOSE,
+                                                   "<b>%s</b>\n\n%s",
+                                                   "An Error Occured",
+                                                   (*error)->message
+                                                  );
+      g_signal_connect_swapped (dialog, "response", G_CALLBACK (gtk_widget_destroy), dialog);
+      gtk_widget_show_all (GTK_WIDGET (dialog));
+      response = gtk_dialog_run (GTK_DIALOG (dialog));
+    }
+    else
+    {
+      fprintf(stderr, "ERROR: %s\n", (*error)->message);
+    }
+
+    //Cleanup
+    g_error_free (*error);
+    *error = NULL;
+}
+
 

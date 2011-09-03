@@ -1184,7 +1184,7 @@ static void _searchwindow_search_for_searchitem_online_cb (GtkMenuItem *widget, 
       error = NULL;
 
       gtk_show_uri (NULL, item->queryline->string, gtk_get_current_event_time (), &error);
-      gw_common_handle_error (&error, GTK_WINDOW (window->toplevel), TRUE);
+      gw_app_handle_error (app, GW_WINDOW (window), TRUE, &error);
     }
 }
 

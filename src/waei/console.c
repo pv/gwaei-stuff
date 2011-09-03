@@ -54,6 +54,9 @@ void w_console_no_result (LwSearchItem *item)
 //!
 WAppResolution w_console_uninstall_dictinfo (WApplication* app, GError **error)
 {
+    //Sanity check
+    if (error != NULL && *error != NULL) return W_APP_RESOLUTION_DICTIONARY_UNINSTALL_ERROR;
+
     //Declarations
     LwDictInfo *di;
     WAppResolution resolution;
@@ -89,6 +92,9 @@ WAppResolution w_console_uninstall_dictinfo (WApplication* app, GError **error)
 //!
 WAppResolution w_console_install_dictinst (WApplication *app, GError **error)
 {
+    //Sanity check
+    if (error != NULL && *error != NULL) return W_APP_RESOLUTION_DICTIONARY_INSTALL_ERROR;
+
     //Declarations
     LwDictInst *di;
     WAppResolution resolution;
@@ -221,7 +227,7 @@ void w_console_list (WApplication *app)
 //!
 void w_console_handle_error (WApplication* app, GError **error)
 {
-    if (*error != NULL)
+    if (error != NULL && *error != NULL)
     {
       fprintf(stderr, "Error: %s\n", (*error)->message);
       g_error_free (*error);

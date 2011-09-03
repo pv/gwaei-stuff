@@ -79,7 +79,7 @@ void gw_installprogresswindow_start (GwInstallProgressWindow *window)
     //Set the new window
     g_thread_create (_installprogresswindow_install_thread, window, FALSE, &error);
 
-    gw_common_handle_error (&error, window->transient_for->toplevel, TRUE);
+    gw_app_handle_error (app, GW_WINDOW (window->transient_for), TRUE, &error);
 }
 
 
@@ -121,7 +121,7 @@ static gpointer _installprogresswindow_install_thread (gpointer data)
 
     //Cleanup
 gdk_threads_enter ();
-    gw_common_handle_error (&error, settingswindow->toplevel, FALSE);
+    gw_app_handle_error (app, GW_WINDOW (settingswindow), FALSE, &error);
     gw_dictinfolist_reload (app->dictinfolist, app->prefmanager);
     lw_dictinstlist_set_cancel_operations (settingswindow->dictinstlist, FALSE);
     if (settingswindow->dictinstlist != NULL)

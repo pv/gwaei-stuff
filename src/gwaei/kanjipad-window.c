@@ -191,7 +191,7 @@ static void _kanjipadwindow_initialize_engine (GwKanjipadWindow *window)
            &stdin_fd, &stdout_fd, NULL,
            &error))
     {
-      gw_common_handle_error (&error, NULL, FALSE);
+      gw_app_handle_error (app, NULL, FALSE, &error);
       exit (EXIT_FAILURE);
     }
 

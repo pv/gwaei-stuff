@@ -5,7 +5,6 @@
 
 #include <libwaei/libwaei.h>
 
-#include <gwaei/common.h>
 #include <gwaei/window.h>
 
 #include <gwaei/spellcheck.h>
@@ -26,6 +25,16 @@
 #include <gwaei/printing.h>
 
 #include <gwaei/output-callbacks.h>
+
+
+#define GW_MAX_FONT_MAGNIFICATION  6
+#define GW_MIN_FONT_MAGNIFICATION -6
+#define GW_DEFAULT_FONT_MAGNIFICATION 0
+#define GW_FONT_ZOOM_STEP 2
+#define GW_MAX_FONT_SIZE 100
+#define GW_MIN_FONT_SIZE 6
+#define GW_DEFAULT_FONT_SIZE 12
+#define GW_DEFAULT_FONT "Sans 12"
 
 typedef enum {
   GW_APP_RESOLUTION_NO_ERRORS,
@@ -81,5 +90,7 @@ GtkTextTagTable* gw_texttagtable_new ();
 void gw_app_block_searches (GwApplication*);
 void gw_app_unblock_searches (GwApplication*);
 gboolean gw_app_can_start_search (GwApplication*);
+
+void gw_app_handle_error (GwApplication*, GwWindow*, gboolean, GError**);
 
 #endif
