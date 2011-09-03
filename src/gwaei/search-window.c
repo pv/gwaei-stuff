@@ -578,13 +578,9 @@ void gw_searchwindow_update_toolbar_buttons (GwSearchWindow *window)
     gboolean enable;
     char *id;
     LwSearchItem *item;
-    GtkTextView *view;
-    int current_font_magnification;
 
     //Initializations
     item = gw_searchwindow_get_current_searchitem (window);
-    current_font_magnification = lw_prefmanager_get_int_by_schema (app->prefmanager, LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION);
-    view = gw_searchwindow_get_current_textview (window);
 
     //Update Save sensitivity state
     id = "file_append_action";
@@ -615,29 +611,6 @@ void gw_searchwindow_update_toolbar_buttons (GwSearchWindow *window)
     action = GTK_ACTION (gtk_builder_get_object (window->builder, id));
     enable = (lw_dictinfolist_get_dictinfo (LW_DICTINFOLIST (app->dictinfolist), LW_DICTTYPE_KANJI, "Kanji") != NULL);
     gtk_action_set_sensitive (action, enable);
-
-    //Update cut/copy buttons
-    gboolean sensitive;
-    if (gtk_widget_has_focus (GTK_WIDGET (window->entry)))
-    {
-      sensitive = (gtk_editable_get_selection_bounds (GTK_EDITABLE (window->entry), NULL, NULL));
-      id = "edit_copy_action";
-      action = GTK_ACTION (gtk_builder_get_object (window->builder, id));
-      gtk_action_set_sensitive (action, sensitive);
-      id = "edit_cut_action";
-      action = GTK_ACTION (gtk_builder_get_object (window->builder, id));
-      gtk_action_set_sensitive (action, sensitive);
-    }
-    else if (view != NULL && gtk_widget_has_focus (GTK_WIDGET (view)))
-    {
-      sensitive = (gw_searchwindow_has_selection_by_target (window, LW_OUTPUTTARGET_RESULTS));
-      id = "edit_copy_action";
-      action = GTK_ACTION (gtk_builder_get_object (window->builder, id));
-      gtk_action_set_sensitive (action, sensitive);
-      id = "edit_cut_action";
-      action = GTK_ACTION (gtk_builder_get_object (window->builder, id));
-      gtk_action_set_sensitive (action, FALSE);
-    }
 }
 
 
@@ -648,6 +621,7 @@ void gw_searchwindow_update_toolbar_buttons (GwSearchWindow *window)
 //!
 void gw_searchwindow_set_total_results_label_by_searchitem (GwSearchWindow *window, LwSearchItem* item)
 {
+    int current_font_magnification;
     GtkWidget *label = GTK_WIDGET (gtk_builder_get_object(window->builder, "progress_label"));
 
     if (item == NULL)
@@ -1219,19 +1193,29 @@ void gw_searchwindow_select_none_by_target (GwSearchWindow *window, LwOutputTarg
 //!
 //! @param window_id The window to check the widgets against 
 //!
-guint gw_searchwindow_get_current_target_focus (GwSearchWindow* window)
+LwOutputTarget gw_searchwindow_get_current_target_focus (GwSearchWindow* window)
 {
-    GtkWidget *toplevel = GTK_WIDGET (window->toplevel);
-    GtkWidget *widget = GTK_WIDGET (gtk_window_get_focus (GTK_WINDOW (toplevel))); 
-    GtkTextView *view = gw_searchwindow_get_current_textview (window);
-    GtkWidget *entry = GTK_WIDGET (window->entry);
+    //Declarations
+    GtkWidget *toplevel;
+    GtkWidget *widget;
+    GtkTextView *view;
+    GtkWidget *entry;
+    LwOutputTarget target;
+
+    //Initializations
+    toplevel = GTK_WIDGET (window->toplevel);
+    widget = GTK_WIDGET (gtk_window_get_focus (GTK_WINDOW (toplevel))); 
+    view = gw_searchwindow_get_current_textview (window);
+    entry = GTK_WIDGET (window->entry);
 
     if (widget == GTK_WIDGET (view))
-      return LW_OUTPUTTARGET_RESULTS;
+      target = LW_OUTPUTTARGET_RESULTS;
     if (widget == GTK_WIDGET (entry))
-      return LW_OUTPUTTARGET_ENTRY;
+      target = LW_OUTPUTTARGET_ENTRY;
     else
-      return -1;
+      target = LW_OUTPUTTARGET_INVALID;
+
+    return target;
 }
 
 
@@ -1259,6 +1243,7 @@ void gw_searchwindow_copy_text (GwSearchWindow* window, LwOutputTarget TARGET)
         gtk_text_buffer_copy_clipboard (buffer, clipbd);
         break;
       case LW_OUTPUTTARGET_KANJI:
+      case LW_OUTPUTTARGET_INVALID:
         break;
     }
 }
@@ -1278,6 +1263,7 @@ void gw_searchwindow_cut_text (GwSearchWindow *window, LwOutputTarget TARGET)
         break;
       case LW_OUTPUTTARGET_RESULTS:
       case LW_OUTPUTTARGET_KANJI:
+      case LW_OUTPUTTARGET_INVALID:
         break;
     }
 }
@@ -1297,6 +1283,7 @@ void gw_searchwindow_paste_text (GwSearchWindow* window, LwOutputTarget TARGET)
         break;
       case LW_OUTPUTTARGET_RESULTS:
       case LW_OUTPUTTARGET_KANJI:
+      case LW_OUTPUTTARGET_INVALID:
         break;
     }
 }
@@ -2196,16 +2183,15 @@ int gw_searchwindow_new_tab (GwSearchWindow *window)
     gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
     gtk_text_view_set_wrap_mode (view, GTK_WRAP_WORD);
 
-    g_signal_connect( G_OBJECT (view), "drag_motion", G_CALLBACK (gw_searchwindow_drag_motion_1_cb), window->toplevel);
-    g_signal_connect( G_OBJECT (view), "focus_in_event", G_CALLBACK (gw_searchwindow_update_clipboard_on_focus_change_cb), view);
-    g_signal_connect( G_OBJECT (view), "button_press_event", G_CALLBACK (gw_searchwindow_get_position_for_button_press_cb), window->toplevel);
-    g_signal_connect( G_OBJECT (view), "motion_notify_event", G_CALLBACK (gw_searchwindow_get_iter_for_motion_cb), window->toplevel);
-    g_signal_connect( G_OBJECT (view), "drag_drop", G_CALLBACK (gw_searchwindow_drag_drop_1_cb), window->toplevel);
-    g_signal_connect( G_OBJECT (view), "button_release_event", G_CALLBACK (gw_searchwindow_get_iter_for_button_release_cb), window->toplevel);
-    g_signal_connect( G_OBJECT (view), "drag_leave", G_CALLBACK (gw_searchwindow_drag_leave_1_cb), window->toplevel);
-    g_signal_connect( G_OBJECT (view), "drag_data_received", G_CALLBACK (gw_searchwindow_search_drag_data_recieved_cb), window->toplevel);
-    g_signal_connect( G_OBJECT (view), "key_press_event", G_CALLBACK (gw_searchwindow_focus_change_on_key_press_cb), window->toplevel);
-    g_signal_connect( G_OBJECT (view), "scroll_event", G_CALLBACK (gw_searchwindow_scroll_or_zoom_cb), window->toplevel);
+    g_signal_connect (G_OBJECT (view), "drag_motion", G_CALLBACK (gw_searchwindow_drag_motion_1_cb), window->toplevel);
+    g_signal_connect (G_OBJECT (view), "button_press_event", G_CALLBACK (gw_searchwindow_get_position_for_button_press_cb), window->toplevel);
+    g_signal_connect (G_OBJECT (view), "motion_notify_event", G_CALLBACK (gw_searchwindow_get_iter_for_motion_cb), window->toplevel);
+    g_signal_connect (G_OBJECT (view), "drag_drop", G_CALLBACK (gw_searchwindow_drag_drop_1_cb), window->toplevel);
+    g_signal_connect (G_OBJECT (view), "button_release_event", G_CALLBACK (gw_searchwindow_get_iter_for_button_release_cb), window->toplevel);
+    g_signal_connect (G_OBJECT (view), "drag_leave", G_CALLBACK (gw_searchwindow_drag_leave_1_cb), window->toplevel);
+    g_signal_connect (G_OBJECT (view), "drag_data_received", G_CALLBACK (gw_searchwindow_search_drag_data_recieved_cb), window->toplevel);
+    g_signal_connect (G_OBJECT (view), "key_press_event", G_CALLBACK (gw_searchwindow_focus_change_on_key_press_cb), window->toplevel);
+    g_signal_connect (G_OBJECT (view), "scroll_event", G_CALLBACK (gw_searchwindow_scroll_or_zoom_cb), window->toplevel);
 
 
     gtk_container_add (GTK_CONTAINER (scrolledwindow), GTK_WIDGET (view));

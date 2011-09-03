@@ -3,15 +3,19 @@
   <!-- interface-requires gtk+ 3.0 -->
   <object class="GtkAction" id="edit_copy_action">
     <property name="stock_id">gtk-copy</property>
+    <signal name="activate" handler="gw_searchwindow_copy_cb" object="main_window" swapped="no"/>
   </object>
   <object class="GtkAction" id="edit_cut_action">
     <property name="stock_id">gtk-cut</property>
+    <signal name="activate" handler="gw_searchwindow_cut_cb" object="main_window" swapped="no"/>
   </object>
   <object class="GtkAction" id="edit_paste_action">
     <property name="stock_id">gtk-paste</property>
+    <signal name="activate" handler="gw_searchwindow_paste_cb" object="main_window" swapped="no"/>
   </object>
   <object class="GtkAction" id="edit_select_all_action">
     <property name="stock_id">gtk-select-all</property>
+    <signal name="activate" handler="gw_searchwindow_select_all_cb" object="main_window" swapped="no"/>
   </object>
   <object class="GtkAction" id="edit_settings_action">
     <property name="stock_id">gtk-preferences</property>
@@ -374,6 +378,8 @@
                   <object class="GtkMenu" id="edit_popup">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <signal name="show" handler="gw_searchwindow_edit_popup_show_cb" object="main_window" swapped="no"/>
+                    <signal name="realize" handler="gw_searchwindow_edit_popup_show_cb" object="main_window" swapped="no"/>
                     <child>
                       <object class="GtkImageMenuItem" id="cut_menuitem">
                         <property name="visible">True</property>
@@ -991,7 +997,6 @@
                     <property name="text" translatable="yes">Search</property>
                     <signal name="changed" handler="gw_searchwindow_update_button_states_based_on_entry_text_cb" object="main_window" swapped="no"/>
                     <signal name="activate" handler="gw_searchwindow_search_cb" object="main_window" swapped="no"/>
-                    <signal name="focus-in-event" handler="gw_searchwindow_update_clipboard_on_focus_change_cb" object="main_window" swapped="no"/>
                     <signal name="icon-release" handler="gw_searchwindow_clear_entry_button_pressed_cb" object="main_window" swapped="no"/>
                   </object>
                 </child>

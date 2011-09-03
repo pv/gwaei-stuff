@@ -19,10 +19,6 @@ typedef enum {
 
 typedef enum {
   GW_SEARCHWINDOW_SIGNALID_SPELLCHECK,
-  GW_SEARCHWINDOW_SIGNALID_COPY,
-  GW_SEARCHWINDOW_SIGNALID_CUT,
-  GW_SEARCHWINDOW_SIGNALID_PASTE,
-  GW_SEARCHWINDOW_SIGNALID_SELECT_ALL,
   GW_SEARCHWINDOW_SIGNALID_KEEP_SEARCHING,
   GW_SEARCHWINDOW_SIGNALID_TOOLBAR_SHOW,
   GW_SEARCHWINDOW_SIGNALID_STATUSBAR_SHOW,
@@ -149,7 +145,7 @@ void gw_searchwindow_select_all_by_target (GwSearchWindow*, LwOutputTarget);
 gunichar gw_searchwindow_get_hovered_character (GwSearchWindow*, int*, int*, GtkTextIter*);
 void gw_searchwindow_show_window (GwSearchWindow*, char*);
 void gw_searchwindow_set_cursor (GwSearchWindow*, GdkCursorType);
-guint gw_searchwindow_get_current_target_focus (GwSearchWindow*);
+LwOutputTarget gw_searchwindow_get_current_target_focus (GwSearchWindow*);
 
 void gw_searchwindow_paste_text (GwSearchWindow*, LwOutputTarget);
 void gw_searchwindow_cut_text (GwSearchWindow*, LwOutputTarget);

@@ -425,7 +425,6 @@ G_MODULE_EXPORT void gw_searchwindow_back_cb (GtkWidget *widget, gpointer data)
 
     if (lw_historylist_has_back (window->history))
     {
-      printf("BREAK going back\n");
       gw_searchwindow_search_from_history_cb (menuitem, window->toplevel);
     }
 }
@@ -470,7 +469,6 @@ G_MODULE_EXPORT void gw_searchwindow_forward_cb (GtkWidget *widget, gpointer dat
 
     if (lw_historylist_has_forward (window->history))
     {
-      printf("BREAK going forward\n");
       gw_searchwindow_search_from_history_cb (menuitem, window->toplevel);
     }
 }
@@ -698,20 +696,19 @@ G_MODULE_EXPORT void gw_searchwindow_dictionary_radio_changed_cb (GtkWidget *wid
 //! @see gw_searchwindow_cut_cb ()
 //! @see gw_searchwindow_copy_cb ()
 //! @see gw_searchwindow_paste_cb ()
-//! @see gw_searchwindow_update_clipboard_on_focus_change_cb ()
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
 G_MODULE_EXPORT void gw_searchwindow_select_all_cb (GtkWidget *widget, gpointer data)
 {
-    guint TARGET;
     GwSearchWindow *window;
+    LwOutputTarget target;
 
     window = GW_SEARCHWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
     if (window == NULL) return;
-    TARGET = gw_searchwindow_get_current_target_focus (window);
+    target = gw_searchwindow_get_current_target_focus (window);
 
-    gw_searchwindow_select_all_by_target (window, TARGET);
+    gw_searchwindow_select_all_by_target (window, target);
 }
 
 
@@ -720,20 +717,19 @@ G_MODULE_EXPORT void gw_searchwindow_select_all_cb (GtkWidget *widget, gpointer 
 //! @see gw_searchwindow_cut_cb ()
 //! @see gw_searchwindow_copy_cb ()
 //! @see gw_searchwindow_select_all_cb ()
-//! @see gw_searchwindow_update_clipboard_on_focus_change_cb ()
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
 G_MODULE_EXPORT void gw_searchwindow_paste_cb (GtkWidget *widget, gpointer data)
 {
     GwSearchWindow *window;
-    guint TARGET;
+    LwOutputTarget target;
 
     window = GW_SEARCHWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
     if (window == NULL) return;
-    TARGET = gw_searchwindow_get_current_target_focus (window);
+    target = gw_searchwindow_get_current_target_focus (window);
 
-    gw_searchwindow_paste_text (window, TARGET);
+    gw_searchwindow_paste_text (window, target);
 }
 
 
@@ -742,20 +738,19 @@ G_MODULE_EXPORT void gw_searchwindow_paste_cb (GtkWidget *widget, gpointer data)
 //! @see gw_searchwindow_paste_cb ()
 //! @see gw_searchwindow_copy_cb ()
 //! @see gw_searchwindow_select_all_cb ()
-//! @see gw_searchwindow_update_clipboard_on_focus_change_cb ()
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
 G_MODULE_EXPORT void gw_searchwindow_cut_cb (GtkWidget *widget, gpointer data)
 {
     GwSearchWindow *window;
-    guint TARGET;
+    LwOutputTarget target;
 
     window = GW_SEARCHWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
     if (window == NULL) return;
-    TARGET = gw_searchwindow_get_current_target_focus (window);
+    target = gw_searchwindow_get_current_target_focus (window);
 
-    gw_searchwindow_cut_text (window, TARGET);
+    gw_searchwindow_cut_text (window, target);
 }
 
 
@@ -764,110 +759,70 @@ G_MODULE_EXPORT void gw_searchwindow_cut_cb (GtkWidget *widget, gpointer data)
 //! @see gw_searchwindow_cut_cb ()
 //! @see gw_searchwindow_paste_cb ()
 //! @see gw_searchwindow_select_all_cb ()
-//! @see gw_searchwindow_update_clipboard_on_focus_change_cb ()
 //! @param widget Unused GtkWidget pointer
 //! @param data Unused gpointer
 //!
 G_MODULE_EXPORT void gw_searchwindow_copy_cb (GtkWidget *widget, gpointer data)
 {
     GwSearchWindow *window;
-    guint TARGET;
+    LwOutputTarget target;
 
     window = GW_SEARCHWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
     if (window == NULL) return;
-    TARGET = gw_searchwindow_get_current_target_focus (window);
+    target = gw_searchwindow_get_current_target_focus (window);
 
-    gw_searchwindow_copy_text (window, TARGET);
+    gw_searchwindow_copy_text (window, target);
 }
 
 
-//!
-//! @brief Manages the required changes for focus in different elements
-//! @see gw_searchwindow_cut_cb ()
-//! @see gw_searchwindow_copy_cb ()
-//! @see gw_searchwindow_paste_cb ()
-//! @see gw_searchwindow_select_all_cb ()
-//! @param widget Unused GtkWidget pointer
-//! @param data Unused gpointer
-//! @return Always returns false
-//!
-G_MODULE_EXPORT gboolean gw_searchwindow_update_clipboard_on_focus_change_cb (GtkWidget        *widget, 
-                                                                              GtkDirectionType  arg1,
-                                                                              gpointer          data   ) 
-{
-    GwSearchWindow *window;
-    GtkAction *copy_action, *cut_action, *paste_action, *select_all_action;
-    GtkTextView *view;
-    char *id;
 
+G_MODULE_EXPORT gboolean gw_searchwindow_edit_popup_show_cb (GtkWidget *widget, gpointer data) 
+{
+    //Declarations
+    GwSearchWindow *window;
+    GtkAction *action_cut, *action_paste, *action_copy, *action_select_all;
+    GtkTextView *view;
+    const char *id;
+    gboolean sensitive;
+  
+    //Initializations
     window = GW_SEARCHWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
     if (window == NULL) return FALSE;
     view = gw_searchwindow_get_current_textview (window);
-    id = "edit_copy_action";
-    copy_action = GTK_ACTION (gtk_builder_get_object (window->builder, id));
+
     id = "edit_cut_action";
-    cut_action = GTK_ACTION (gtk_builder_get_object (window->builder, id));
+    action_cut = GTK_ACTION (gtk_builder_get_object (window->builder, id));
+    id = "edit_copy_action";
+    action_copy = GTK_ACTION (gtk_builder_get_object (window->builder, id));
     id = "edit_paste_action";
-    paste_action = GTK_ACTION (gtk_builder_get_object (window->builder, id));
+    action_paste = GTK_ACTION (gtk_builder_get_object (window->builder, id));
     id = "edit_select_all_action";
-    select_all_action = GTK_ACTION (gtk_builder_get_object (window->builder, id));
+    action_select_all = GTK_ACTION (gtk_builder_get_object (window->builder, id));
 
-    //Disconnected old handlers
-    if (window->signalid[GW_SEARCHWINDOW_SIGNALID_COPY] != 0)
+    //Set the sensitivity states
+    if (gtk_widget_has_focus (GTK_WIDGET (window->entry)))
     {
-      g_signal_handler_disconnect (copy_action, window->signalid[GW_SEARCHWINDOW_SIGNALID_COPY]);
-      window->signalid[GW_SEARCHWINDOW_SIGNALID_COPY] = 0;
+      sensitive = (gtk_editable_get_selection_bounds (GTK_EDITABLE (window->entry), NULL, NULL));
+      gtk_action_set_sensitive (action_cut, sensitive);
+      gtk_action_set_sensitive (action_copy, sensitive);
+      gtk_action_set_sensitive (action_paste, sensitive);
+      gtk_action_set_sensitive (action_select_all, TRUE);
     }
-    if (window->signalid[GW_SEARCHWINDOW_SIGNALID_CUT] != 0)
+    else if (view != NULL && gtk_widget_has_focus (GTK_WIDGET (view)))
     {
-      g_signal_handler_disconnect (cut_action, window->signalid[GW_SEARCHWINDOW_SIGNALID_CUT]);
-      window->signalid[GW_SEARCHWINDOW_SIGNALID_CUT] = 0;
+      sensitive = (gw_searchwindow_has_selection_by_target (window, LW_OUTPUTTARGET_RESULTS));
+      gtk_action_set_sensitive (action_cut, sensitive);
+      gtk_action_set_sensitive (action_copy, sensitive);
+      gtk_action_set_sensitive (action_paste, FALSE);
+      gtk_action_set_sensitive (action_select_all, TRUE);
     }
-    if (window->signalid[GW_SEARCHWINDOW_SIGNALID_PASTE] != 0)
-    {
-      g_signal_handler_disconnect (paste_action, window->signalid[GW_SEARCHWINDOW_SIGNALID_PASTE]);
-      window->signalid[GW_SEARCHWINDOW_SIGNALID_PASTE] = 0;
-    }
-    if (window->signalid[GW_SEARCHWINDOW_SIGNALID_SELECT_ALL] != 0)
-    {
-      g_signal_handler_disconnect (select_all_action, window->signalid[GW_SEARCHWINDOW_SIGNALID_SELECT_ALL]);
-      window->signalid[GW_SEARCHWINDOW_SIGNALID_SELECT_ALL] = 0;
-    }
-                                          
-    //Create new ones pointed at the correct widget
-    window->signalid[GW_SEARCHWINDOW_SIGNALID_COPY] = g_signal_connect (
-          copy_action,
-          "activate",
-          G_CALLBACK (gw_searchwindow_copy_cb),
-          widget
-    );
-    window->signalid[GW_SEARCHWINDOW_SIGNALID_CUT] = g_signal_connect (
-          cut_action,
-          "activate",
-          G_CALLBACK (gw_searchwindow_cut_cb),
-          widget
-    );
-    window->signalid[GW_SEARCHWINDOW_SIGNALID_PASTE] = g_signal_connect (
-          paste_action,
-          "activate",
-          G_CALLBACK (gw_searchwindow_paste_cb),
-          widget
-    );
-    window->signalid[GW_SEARCHWINDOW_SIGNALID_SELECT_ALL] = g_signal_connect (
-          select_all_action,
-          "activate",
-          G_CALLBACK (gw_searchwindow_select_all_cb),
-          widget
-    );
-
-
-    //Correct the sensitive state to paste
-    if (GTK_WIDGET (data) == GTK_WIDGET (view))
-      gtk_action_set_sensitive (GTK_ACTION (paste_action), FALSE);
     else
-      gtk_action_set_sensitive (GTK_ACTION (paste_action), TRUE);
-
-    return FALSE;
+    {
+      gtk_action_set_sensitive (action_cut, FALSE);
+      gtk_action_set_sensitive (action_copy, FALSE);
+      gtk_action_set_sensitive (action_paste, FALSE);
+      gtk_action_set_sensitive (action_select_all, FALSE);
+    }
 }
 
 
