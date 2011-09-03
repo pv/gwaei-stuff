@@ -59,7 +59,6 @@ WApplication* w_app_new (int *argc, char** argv[])
       g_thread_init (NULL);
       g_type_init ();
 
-
       temp->quiet_switch = FALSE;
       temp->exact_switch = FALSE;
       temp->list_switch = FALSE;
@@ -77,17 +76,7 @@ WApplication* w_app_new (int *argc, char** argv[])
 
       w_app_parse_args (temp, argc, argv);
 
-      temp->engine = lw_engine_new (
-          w_console_append_edict_result_cb,
-          w_console_append_kanjidict_result_cb,
-          w_console_append_examplesdict_result_cb,
-          w_console_append_unknowndict_result_cb,
-          w_console_append_less_relevant_header_cb,
-          w_console_append_more_relevant_header_cb,
-          w_console_prepare_search_cb,
-          w_console_cleanup_search_cb
-      );
-
+      temp->engine = NULL;
       temp->prefmanager = lw_prefmanager_new ();
       temp->dictinstlist = lw_dictinstlist_new (temp->prefmanager);
       temp->dictinfolist = lw_dictinfolist_new (20, temp->prefmanager);
@@ -221,7 +210,19 @@ int w_app_start_console (WApplication *app)
 
     //User wants to do a search
     else if (app->query_text_data != NULL)
+    {
+      app->engine = lw_engine_new (
+          w_console_append_edict_result_cb,
+          w_console_append_kanjidict_result_cb,
+          w_console_append_examplesdict_result_cb,
+          w_console_append_unknowndict_result_cb,
+          w_console_append_less_relevant_header_cb,
+          w_console_append_more_relevant_header_cb,
+          w_console_prepare_search_cb,
+          w_console_cleanup_search_cb
+      );
       resolution = w_console_search (app, &error);
+    }
 
     //User didn't specify enough information for an action
     else 
@@ -242,23 +243,22 @@ int w_app_start_console (WApplication *app)
 //! @param argc Your argc from your main function
 //! @param argv Your array of strings from main
 //!
-int w_start_ncurses (int argc, char* argv[])
+int w_app_start_ncurses (WApplication *app)
 {
 #ifdef WITH_NCURSES
-  printf("ncurses\n");
+    app->engine = lw_engine_new (
+                         nw_output_append_edict_result_cb,
+                         nw_output_append_kanjidict_result_cb,
+                         nw_output_append_examplesdict_result_cb,
+                         nw_output_append_unknowndict_result_cb,
+                         nw_output_append_less_relevant_header_cb,
+                         nw_output_append_more_relevant_header_cb,
+                         nw_output_prepare_search_cb,
+                         nw_output_cleanup_search_cb
+                        );
 
-    lw_engine_initialize (
-        nw_append_edict_result_cb,
-        nw_append_kanjidict_result_cb,
-        nw_append_examplesdict_result_cb,
-        nw_append_unknowndict_result_cb,
-        nw_append_less_relevant_header_cb,
-        nw_append_more_relevant_header_cb,
-        nw_prepare_search_cb,
-        nw_cleanup_search_cb
-    );
 
-    nw_start_ncurses (argc, argv);
+    nw_start_ncurses (app);
 #endif
     return TRUE;
 }

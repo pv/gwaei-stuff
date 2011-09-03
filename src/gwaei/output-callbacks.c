@@ -960,7 +960,7 @@ void gw_output_append_more_relevant_header_cb (LwSearchItem *item)
 //! @brief Sets up the interface before each search begins
 //! @param item A LwSearchItem pointer to get information from
 //!
-void gw_output_pre_search_prep_cb (LwSearchItem *item)
+void gw_output_prepare_search_cb (LwSearchItem *item)
 {
     //Sanity check
     g_assert (lw_searchitem_has_data (item));
@@ -981,7 +981,7 @@ void gw_output_pre_search_prep_cb (LwSearchItem *item)
 //! @brief The details to be taken care of after a search is finished
 //! @param item A LwSearchItem pointer to get information from
 //!
-void gw_output_after_search_cleanup_cb (LwSearchItem *item)
+void gw_output_cleanup_search_cb (LwSearchItem *item)
 {
     //Sanity check
     g_assert (lw_searchitem_has_data (item));

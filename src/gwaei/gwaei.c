@@ -83,8 +83,8 @@ GwApplication* gw_app_new (int* argc, char** argv[])
                            gw_output_append_unknowndict_results_cb,
                            gw_output_append_less_relevant_header_cb,
                            gw_output_append_more_relevant_header_cb,
-                           gw_output_pre_search_prep_cb,
-                           gw_output_after_search_cleanup_cb
+                           gw_output_prepare_search_cb,
+                           gw_output_cleanup_search_cb
                           );
 
 

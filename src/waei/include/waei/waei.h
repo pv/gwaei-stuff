@@ -4,6 +4,9 @@
 #include <libwaei/libwaei.h>
 
 struct _WApplication {
+    int* argc;
+    char*** argv;
+
     LwDictInfoList *dictinfolist;
     LwDictInstList *dictinstlist;
     LwPrefManager *prefmanager;

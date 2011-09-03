@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 3.1.0\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2011-08-03 01:37-0400\n"
+"POT-Creation-Date: 2011-09-03 03:41-0400\n"
 "PO-Revision-Date: 2011-08-03 01:28+0700\n"
 "Last-Translator: Ngô Chin <ndtrung4419@gmail.com>\n"
 "Language-Team: none\n"
@@ -23,11 +23,11 @@ msgstr ""
 msgid "%s Dictionary"
 msgstr "%s Từ điển"
 
-#: ../src/libwaei/dictinfo.c:128 ../src/libwaei/dictinstlist.c:61
+#: ../src/libwaei/dictinfo.c:128 ../src/libwaei/dictinstlist.c:60
 msgid "English Dictionary"
 msgstr "Từ điển Tiếng Anh"
 
-#: ../src/libwaei/dictinfo.c:129 ../src/libwaei/dictinstlist.c:60
+#: ../src/libwaei/dictinfo.c:129 ../src/libwaei/dictinstlist.c:59
 msgid "English"
 msgstr "Tiếng Anh"
 
@@ -55,65 +55,65 @@ msgstr "Từ điển Kanji"
 msgid "Kanji"
 msgstr "Kanji"
 
-#: ../src/libwaei/dictinfo.c:158 ../src/libwaei/dictinstlist.c:109
+#: ../src/libwaei/dictinfo.c:158 ../src/libwaei/dictinstlist.c:111
 msgid "Examples Dictionary"
 msgstr "Từ điển Ví dụ"
 
-#: ../src/libwaei/dictinfo.c:159 ../src/libwaei/dictinstlist.c:108
+#: ../src/libwaei/dictinfo.c:159 ../src/libwaei/dictinstlist.c:110
 msgid "Examples"
 msgstr "Ví dụ"
 
-#: ../src/libwaei/dictinst.c:759
+#: ../src/libwaei/dictinst.c:784
 #, c-format
 msgid "Downloading %s..."
 msgstr "Đang tải về %s..."
 
-#: ../src/libwaei/dictinst.c:761
+#: ../src/libwaei/dictinst.c:786
 #, c-format
 msgid "Downloading..."
 msgstr "Đang tải về..."
 
-#: ../src/libwaei/dictinst.c:765
+#: ../src/libwaei/dictinst.c:790
 #, c-format
 msgid "Converting the encoding of %s from %s to UTF-8..."
 msgstr "Đang chuyển đổi mã kí tự của %s từ %s sang UTF-8..."
 
-#: ../src/libwaei/dictinst.c:767
+#: ../src/libwaei/dictinst.c:792
 #, c-format
 msgid "Converting the encoding to UTF-8..."
 msgstr "Đang chuyển đổi mã kí tự sang UTF-8..."
 
-#: ../src/libwaei/dictinst.c:771
+#: ../src/libwaei/dictinst.c:796
 #, c-format
 msgid "Decompressing %s from %s file..."
 msgstr "Đang giải nén %s từ tập tin %s..."
 
-#: ../src/libwaei/dictinst.c:773
+#: ../src/libwaei/dictinst.c:798
 #, c-format
 msgid "Decompressing..."
 msgstr "Đang giải nén..."
 
-#: ../src/libwaei/dictinst.c:777
+#: ../src/libwaei/dictinst.c:802
 #, c-format
 msgid "Doing postprocessing on %s..."
 msgstr "Đang thực hiện tiền xử lý %s..."
 
-#: ../src/libwaei/dictinst.c:779
+#: ../src/libwaei/dictinst.c:804
 #, c-format
 msgid "Postprocessing..."
 msgstr "Đang thực hiện tiền xử lý..."
 
-#: ../src/libwaei/dictinst.c:782
+#: ../src/libwaei/dictinst.c:807
 #, c-format
 msgid "Finalizing installation of %s..."
 msgstr "Đang kết thúc quá trình cài đặt %s..."
 
-#: ../src/libwaei/dictinst.c:785
+#: ../src/libwaei/dictinst.c:810
 #, c-format
 msgid "Installed."
 msgstr "Đã cài đặt xong."
 
-#: ../src/libwaei/dictinstlist.c:62
+#: ../src/libwaei/dictinstlist.c:61
 msgid "The venerable Japanese-English Dictionary developed by Jim Breen."
 msgstr "Một bộ từ điển Nhật-Anh đáng nể biên soạn bởi Jim Breen"
 
@@ -124,15 +124,15 @@ msgstr ""
 "Một bộ từ điển kanji dựa trên kanjidic được bổ sung thêm thông tin các bộ "
 "thủ."
 
-#: ../src/libwaei/dictinstlist.c:92
+#: ../src/libwaei/dictinstlist.c:93
 msgid "Names and Places"
 msgstr "Tên riêng và Địa danh"
 
-#: ../src/libwaei/dictinstlist.c:93
+#: ../src/libwaei/dictinstlist.c:94
 msgid "Names and Places Dictionary"
 msgstr "Từ điển Tên riêng và Địa danh"
 
-#: ../src/libwaei/dictinstlist.c:94
+#: ../src/libwaei/dictinstlist.c:95
 msgid ""
 "Based off of Enamdic, but with the names split from the places for 2 "
 "separate dictionaries."
@@ -140,7 +140,7 @@ msgstr ""
 "Dựa trên Enamdic nhưng với phần địa danh và tên riêng được tách thành 2 từ "
 "điển riêng biệt."
 
-#: ../src/libwaei/dictinstlist.c:110
+#: ../src/libwaei/dictinstlist.c:112
 msgid ""
 "A collection of Japanese/English sentences initially compiled by Professor "
 "Yasuhito Tanaka at Hyogo University and his students."
@@ -148,157 +148,83 @@ msgstr ""
 "Một bộ sưu tập các câu dịch Nhật-Anh được biên soạn lần đầu bởi Giáo sư "
 "Yasuhito Tanaka ở Đại học Hyogo và các học trò của ông."
 
-#: ../src/libwaei/dictinstlist.c:125
+#: ../src/libwaei/dictinstlist.c:128
 msgid "Other"
 msgstr "Khác"
 
-#: ../src/libwaei/dictinstlist.c:126
+#: ../src/libwaei/dictinstlist.c:129
 msgid "Other Dictionary"
 msgstr "Từ điển khác"
 
-#: ../src/libwaei/dictinstlist.c:127
+#: ../src/libwaei/dictinstlist.c:130
 msgid "Install a custom dictionary."
 msgstr "Cài đặt từ điển tự chọn."
 
-#: ../src/libwaei/io.c:706
+#: ../src/libwaei/io.c:707
 msgid "Unable to read data from the input file."
 msgstr "Không thể đọc dữ liệu từ tập tin đầu vào."
 
-#: ../src/libwaei/io.c:712
+#: ../src/libwaei/io.c:713
 msgid "Unable to write to the external program's input stream."
 msgstr "Không thể ghi vào dòng nhập của chương trình ngoài."
 
-#: ../src/libwaei/io.c:754
+#: ../src/libwaei/io.c:755
 msgid "Unable to read data from the external program's pipe."
 msgstr "Không thể đọc dữ liệu từ ống dẫn của chương trình ngoài."
 
-#: ../src/libwaei/io.c:760
+#: ../src/libwaei/io.c:761
 msgid "Unable to write the stream's output to a file."
 msgstr "Không thể ghi đầu ra của dòng vào một tập tin."
 
-#: ../src/waei/console.c:47 ../src/waei/console.c:49 ../src/waei/ncurses.c:115
-msgid "Other Results"
-msgstr "Kết quả khác"
-
-#: ../src/waei/console.c:58 ../src/waei/ncurses.c:71
+#: ../src/waei/console.c:46 ../src/waei/ncurses.c:71
 msgid "No results found!"
 msgstr "Không tìm thấy kết quả nào!"
 
-#: ../src/waei/console.c:77
+#: ../src/waei/console.c:65
 #, c-format
 msgid "Uninstalling %s...\n"
 msgstr "Đang gỡ cài đặt %s...\n"
 
-#: ../src/waei/console.c:105
+#: ../src/waei/console.c:93
 #, c-format
 msgid "Installing %s...\n"
 msgstr "Đang cài đặt %s...\n"
 
-#. TRANSLATORS: 'Searching for "${query}" in ${dictionary long name}'
-#: ../src/waei/console.c:147
-#, c-format
-msgid "Searching for \"%s\" in %s...\n"
-msgstr "Đang tìm kiếm \"%s\" trong %s...\n"
-
-#: ../src/waei/console.c:157
+#: ../src/waei/console.c:128
 #, c-format
 msgid "Installable dictionaries are:\n"
 msgstr "Các từ điển có thể cài đặt:\n"
 
-#: ../src/waei/console.c:184 ../src/waei/console.c:218
+#: ../src/waei/console.c:155 ../src/waei/console.c:189
 msgid "none"
 msgstr "không có"
 
-#: ../src/waei/console.c:205
+#: ../src/waei/console.c:176
 #, c-format
 msgid "Available dictionaries are:\n"
 msgstr "Các từ điển sẵn có:\n"
 
-#: ../src/waei/console.c:287 ../src/waei/ncurses.c:566
-#: ../src/gwaei/output-callbacks.c:455 ../src/gwaei/output-callbacks.c:564
-msgid "Radicals:"
-msgstr "Bộ thủ: "
-
-#: ../src/waei/console.c:292 ../src/waei/ncurses.c:571
-#: ../src/gwaei/output-callbacks.c:509 ../src/gwaei/output-callbacks.c:604
-msgid "Stroke:"
-msgstr "Số nét: "
-
-#: ../src/waei/console.c:300 ../src/waei/ncurses.c:579
-#: ../src/gwaei/output-callbacks.c:516 ../src/gwaei/output-callbacks.c:613
-msgid "Freq:"
-msgstr "Tần số: "
-
-#: ../src/waei/console.c:308 ../src/waei/ncurses.c:587
-#: ../src/gwaei/output-callbacks.c:523 ../src/gwaei/output-callbacks.c:622
-msgid "Grade:"
-msgstr "Được học ở lớp: "
-
-#: ../src/waei/console.c:316 ../src/waei/ncurses.c:595
-#: ../src/gwaei/output-callbacks.c:529 ../src/gwaei/output-callbacks.c:631
-msgid "JLPT:"
-msgstr "JLPT: "
-
-#: ../src/waei/console.c:323 ../src/waei/ncurses.c:602
-#: ../src/gwaei/output-callbacks.c:472 ../src/gwaei/output-callbacks.c:574
-#: ../src/gwaei/output-callbacks.c:584
-msgid "Readings:"
-msgstr "Cách đọc: "
-
-#: ../src/waei/console.c:325 ../src/waei/ncurses.c:604
-#: ../src/gwaei/output-callbacks.c:483
-msgid "Name:"
-msgstr "Tên: "
-
-#: ../src/waei/console.c:327 ../src/waei/ncurses.c:606
-#: ../src/gwaei/output-callbacks.c:494
-msgid "Radical Name:"
-msgstr "Tên bộ thủ: "
-
-#: ../src/waei/console.c:330 ../src/waei/ncurses.c:609
-#: ../src/gwaei/output-callbacks.c:538 ../src/gwaei/output-callbacks.c:649
-msgid "Meanings:"
-msgstr "Ý nghĩa: "
-
-#. TRANSLATORS: The "E" stands for "English"
-#: ../src/waei/console.c:348 ../src/waei/console.c:350
-#: ../src/gwaei/output-callbacks.c:724
-msgid "E:\t"
-msgstr "Anh:\t"
-
-#. TRANSLATORS: The "J" stands for "Japanese"
-#: ../src/waei/console.c:357 ../src/waei/console.c:359
-#: ../src/gwaei/output-callbacks.c:735
-msgid ""
-"\n"
-"J:\t"
-msgstr ""
-"\n"
-"Nhật:\t"
-
-#. TRANSLATORS: The "D" stands for "Detail"
-#: ../src/waei/console.c:366 ../src/waei/console.c:368
-#: ../src/gwaei/output-callbacks.c:746
-msgid ""
-"\n"
-"D:\t"
-msgstr ""
-"\n"
-"C:\t"
-
-#: ../src/waei/console.c:512
+#: ../src/waei/console.c:234
 #, c-format
 msgid "Requested dictionary not found!\n"
 msgstr "Không tìm thấy từ điển yêu cầu!\n"
 
-#: ../src/waei/console.c:535 ../src/waei/ncurses.c:392 ../src/gwaei/main.c:546
+#. TRANSLATORS: 'Searching for "${query}" in ${dictionary long name}'
+#: ../src/waei/console.c:249
+#, c-format
+msgid "Searching for \"%s\" in %s...\n"
+msgstr "Đang tìm kiếm \"%s\" trong %s...\n"
+
+#: ../src/waei/console.c:259 ../src/waei/ncurses.c:362
+#: ../src/gwaei/search-window.c:597
 #, c-format
 msgid "Found %d result"
 msgid_plural "Found %d results"
 msgstr[0] "Tìm thấy %d kết quả"
 
 #. TRANSLATORS: relevant what ? It's the number of "relevant" result(s) displayed while or after searching.
-#: ../src/waei/console.c:536 ../src/waei/ncurses.c:393 ../src/gwaei/main.c:550
+#: ../src/waei/console.c:260 ../src/waei/ncurses.c:363
+#: ../src/gwaei/search-window.c:601
 #, c-format
 msgid "(%d Relevant)"
 msgid_plural "(%d Relevant)"
@@ -319,39 +245,39 @@ msgstr "\" trong"
 msgid " dictionary..."
 msgstr "từ điển..."
 
-#: ../src/waei/ncurses.c:226 ../src/waei/ncurses.c:300
-#: ../src/waei/ncurses.c:410
+#: ../src/waei/ncurses.c:196 ../src/waei/ncurses.c:270
+#: ../src/waei/ncurses.c:380
 msgid "Search: "
 msgstr "Tìm kiếm: "
 
-#: ../src/waei/ncurses.c:227 ../src/waei/ncurses.c:331
-#: ../src/waei/ncurses.c:396
+#: ../src/waei/ncurses.c:197 ../src/waei/ncurses.c:301
+#: ../src/waei/ncurses.c:366
 msgid "Results: "
 msgstr "Kết quả: "
 
-#: ../src/waei/ncurses.c:444
+#: ../src/waei/ncurses.c:414
 msgid "- Japanese-English dictionary program that allows regex searches"
 msgstr "- Phần mềm từ điển Nhật-Anh cho phép tìm kiếm bằng biểu thức chính quy"
 
-#: ../src/waei/ncurses.c:447 ../src/waei/waei.c:97
+#: ../src/waei/ncurses.c:417 ../src/waei/waei.c:136
 msgid "Display less information"
 msgstr "Hiển thị ít thông tin hơn"
 
-#: ../src/waei/ncurses.c:448 ../src/waei/waei.c:99
+#: ../src/waei/ncurses.c:418 ../src/waei/waei.c:138
 msgid "Search using a chosen dictionary"
 msgstr "Tìm kiếm sử dụng một từ điển đã chọn"
 
 #. TRANSLATORS: The "%s" stands for the error message
-#: ../src/waei/ncurses.c:455
+#: ../src/waei/ncurses.c:425
 #, c-format
 msgid "Option parsing failed: %s\n"
 msgstr "Gặp lỗi khi phân tách tùy chọn: %s\n"
 
-#: ../src/waei/waei.c:72 ../src/gwaei/gwaei.c:73
+#: ../src/waei/waei.c:111 ../src/gwaei/gwaei.c:180
 msgid "- A dictionary program for Japanese-English translation."
 msgstr "- Một phần mềm từ điển Nhật-Anh."
 
-#: ../src/waei/waei.c:73
+#: ../src/waei/waei.c:112
 msgid ""
 "waei generally outputs directly to the console.  If you want to do multiple\n"
 "searches, please start gWaei with the -n switch for the multisearch mode."
@@ -359,7 +285,7 @@ msgstr ""
 "thường thì waei xuất thẳng ra bàn giao tiếp. Nếu bạn muốn thực hiện\n"
 "nhiều tìm kiếm một lúc, hãy chạy gWaei với tùy chọn -n."
 
-#: ../src/waei/waei.c:78
+#: ../src/waei/waei.c:117
 #, c-format
 msgid ""
 "Examples:\n"
@@ -386,31 +312,31 @@ msgstr ""
 "  waei -d Names %s       Tìm một tên riêng trong từ điển Tên riêng\n"
 "  waei -d Places %s       Tìm một địa danh trong từ điển Địa danh"
 
-#: ../src/waei/waei.c:94
+#: ../src/waei/waei.c:133
 msgid "Open up the multisearch window"
 msgstr "Mở cửa sổ tìm kiếm  nhiều từ một lúc"
 
-#: ../src/waei/waei.c:96
+#: ../src/waei/waei.c:135
 msgid "Do not display less relevant results"
 msgstr "Không hiển thị những kết quả ít liên quan"
 
-#: ../src/waei/waei.c:98
+#: ../src/waei/waei.c:137
 msgid "Display results with color"
 msgstr "Hiện kết quả có màu"
 
-#: ../src/waei/waei.c:100
+#: ../src/waei/waei.c:139
 msgid "Show available dictionaries for searches"
 msgstr "Hiện những từ điển sẵn có cho mục tìm kiếm"
 
-#: ../src/waei/waei.c:101
+#: ../src/waei/waei.c:140
 msgid "Install dictionary"
 msgstr "Cài đặt từ điển"
 
-#: ../src/waei/waei.c:102
+#: ../src/waei/waei.c:141
 msgid "Uninstall dictionary"
 msgstr "Gỡ cài đặt từ điển"
 
-#: ../src/waei/waei.c:103
+#: ../src/waei/waei.c:142
 msgid "Check the waei version information"
 msgstr "kiểm tra phiên bản waei"
 
@@ -438,180 +364,184 @@ msgstr "Đang cài đặt..."
 msgid "description"
 msgstr "mô tả"
 
-#: ../src/gwaei/ui/main.ui.h:1 ../src/gwaei/main.c:2273
+#: ../src/gwaei/ui/search.ui.h:1
 msgid "A_ppend"
 msgstr "_Lưu thêm vào..."
 
-#: ../src/gwaei/ui/main.ui.h:2
+#: ../src/gwaei/ui/search.ui.h:2
 msgid "Append"
 msgstr "Lưu thêm vào..."
 
-#: ../src/gwaei/ui/main.ui.h:3
+#: ../src/gwaei/ui/search.ui.h:3
 msgid "Bound"
 msgstr ""
 
-#: ../src/gwaei/ui/main.ui.h:4
+#: ../src/gwaei/ui/search.ui.h:4
 msgid "Click to start search"
 msgstr "Nhấn để tìm kiếm"
 
-#: ../src/gwaei/ui/main.ui.h:5
+#: ../src/gwaei/ui/search.ui.h:5
 msgid "Dictionary _Terminology Glossary"
 msgstr "Chú _giải thuật ngữ từ điển"
 
-#: ../src/gwaei/ui/main.ui.h:6
+#: ../src/gwaei/ui/search.ui.h:6
 msgid "Did you mean?"
 msgstr "Ý bạn là?"
 
-#: ../src/gwaei/ui/main.ui.h:7
+#: ../src/gwaei/ui/search.ui.h:7
 msgid "Enable spellcheck for searches"
 msgstr "Bật chế độ kiểm lỗi chính tả cho từ tìm kiếm"
 
-#: ../src/gwaei/ui/main.ui.h:8
+#: ../src/gwaei/ui/search.ui.h:8
 msgid "Enlarge"
 msgstr "Phóng to"
 
-#: ../src/gwaei/ui/main.ui.h:9
+#: ../src/gwaei/ui/search.ui.h:9
 msgid "Get Help on I_RC"
 msgstr "Tìm kiếm trợ giúp trên I_RC"
 
-#: ../src/gwaei/ui/main.ui.h:10
+#: ../src/gwaei/ui/search.ui.h:10
 msgid "Go to _Homepage"
 msgstr "Đi đến tra_ng chủ"
 
-#: ../src/gwaei/ui/main.ui.h:11
+#: ../src/gwaei/ui/search.ui.h:11
 msgid "Go to the _Project Homepage"
 msgstr "Đi đến tra_ng chủ của dự án"
 
-#: ../src/gwaei/ui/main.ui.h:12
+#: ../src/gwaei/ui/search.ui.h:12
 msgid "Hi_story"
 msgstr "_Nhật ký"
 
-#: ../src/gwaei/ui/main.ui.h:13
+#: ../src/gwaei/ui/search.ui.h:13
 msgid "Logical _And Character"
 msgstr "Ký tự _Và Logic"
 
-#: ../src/gwaei/ui/main.ui.h:14
+#: ../src/gwaei/ui/search.ui.h:14
 msgid "Logical _Or Character"
 msgstr "Ký tự _Hoặc Logic"
 
-#: ../src/gwaei/ui/main.ui.h:15
+#: ../src/gwaei/ui/search.ui.h:15
 msgid "Ne_xt Tab"
 msgstr "Thẻ tiếp"
 
-#: ../src/gwaei/ui/main.ui.h:16
+#: ../src/gwaei/ui/search.ui.h:16
 msgid "New _Tab"
 msgstr "Thẻ mới"
 
-#: ../src/gwaei/ui/main.ui.h:17
+#: ../src/gwaei/ui/search.ui.h:17
+msgid "New _Window"
+msgstr ""
+
+#: ../src/gwaei/ui/search.ui.h:18
 msgid "Not Bound"
 msgstr ""
 
-#: ../src/gwaei/ui/main.ui.h:18
+#: ../src/gwaei/ui/search.ui.h:19
 msgid "Sear_ch:"
 msgstr "Tìm _kiếm:"
 
-#: ../src/gwaei/ui/main.ui.h:19
+#: ../src/gwaei/ui/search.ui.h:20
 msgid "Search"
 msgstr "Tìm kiếm"
 
-#: ../src/gwaei/ui/main.ui.h:20
+#: ../src/gwaei/ui/search.ui.h:21
 msgid "Select the dictionary you want to use"
 msgstr "Chọn từ điển bạn muốn dùng"
 
-#: ../src/gwaei/ui/main.ui.h:21
+#: ../src/gwaei/ui/search.ui.h:22
 msgid "Show _Statusbar"
 msgstr "Hiện thanh trạng thái cửa sổ."
 
-#: ../src/gwaei/ui/main.ui.h:22
+#: ../src/gwaei/ui/search.ui.h:23
 msgid "Show _Toolbar"
 msgstr "Hiện thanh _công cụ"
 
-#: ../src/gwaei/ui/main.ui.h:23
+#: ../src/gwaei/ui/search.ui.h:24
 msgid "Shrink"
 msgstr "Thu nhỏ"
 
-#: ../src/gwaei/ui/main.ui.h:24
+#: ../src/gwaei/ui/search.ui.h:25
 msgid "Unknown"
 msgstr "Không biết"
 
-#: ../src/gwaei/ui/main.ui.h:25
+#: ../src/gwaei/ui/search.ui.h:26
 msgid "Using _Kanjipad"
 msgstr "Sử dụng Kanji_pad"
 
-#: ../src/gwaei/ui/main.ui.h:26
+#: ../src/gwaei/ui/search.ui.h:27
 msgid "Using _Radical Search Tool"
 msgstr "Sử dụng công cụ tìm kiếm theo bộ _thủ"
 
-#: ../src/gwaei/ui/main.ui.h:27
+#: ../src/gwaei/ui/search.ui.h:28
 msgid "_Contents"
 msgstr "_Cách sử dụng"
 
-#: ../src/gwaei/ui/main.ui.h:28
+#: ../src/gwaei/ui/search.ui.h:29
 msgid "_Dictionaries"
 msgstr "Từ điển"
 
-#: ../src/gwaei/ui/main.ui.h:29
+#: ../src/gwaei/ui/search.ui.h:30
 msgid "_Edit"
 msgstr "Chỉnh _Sửa"
 
-#: ../src/gwaei/ui/main.ui.h:30
+#: ../src/gwaei/ui/search.ui.h:31
 msgid "_Enlarge Text"
 msgstr "_Tăng cỡ chữ"
 
-#: ../src/gwaei/ui/main.ui.h:31
+#: ../src/gwaei/ui/search.ui.h:32
 msgid "_File"
 msgstr "_Tập tin"
 
-#: ../src/gwaei/ui/main.ui.h:32
+#: ../src/gwaei/ui/search.ui.h:33
 msgid "_Help"
 msgstr "Trợ g_iúp"
 
-#: ../src/gwaei/ui/main.ui.h:33
+#: ../src/gwaei/ui/search.ui.h:34
 msgid "_Insert"
 msgstr "_Chèn"
 
-#: ../src/gwaei/ui/main.ui.h:34
+#: ../src/gwaei/ui/search.ui.h:35
 msgid "_Next Search"
 msgstr "Lần tìm kiếm _sau"
 
-#: ../src/gwaei/ui/main.ui.h:35
+#: ../src/gwaei/ui/search.ui.h:36
 msgid "_Normal Size"
 msgstr "Cỡ c_huẩn"
 
-#: ../src/gwaei/ui/main.ui.h:36
+#: ../src/gwaei/ui/search.ui.h:37
 msgid "_Not-word-edge Mark"
 msgstr "Ký tự _Không phải biên của từ"
 
-#: ../src/gwaei/ui/main.ui.h:37
+#: ../src/gwaei/ui/search.ui.h:38
 msgid "_Previous Search"
 msgstr "Lần tìm kiếm trước"
 
-#: ../src/gwaei/ui/main.ui.h:38
+#: ../src/gwaei/ui/search.ui.h:39
 msgid "_Previous Tab"
 msgstr "Thẻ t_rước"
 
-#: ../src/gwaei/ui/main.ui.h:39
+#: ../src/gwaei/ui/search.ui.h:40
 msgid "_Shrink Text"
 msgstr "Thu _nhỏ cỡ chữ"
 
-#: ../src/gwaei/ui/main.ui.h:40
+#: ../src/gwaei/ui/search.ui.h:41
 msgid "_Unknown Character"
 msgstr "Ký tự Khô_ng rõ"
 
-#: ../src/gwaei/ui/main.ui.h:41
+#: ../src/gwaei/ui/search.ui.h:42
 msgid "_View"
 msgstr "_Hiển thị"
 
-#: ../src/gwaei/ui/main.ui.h:42
+#: ../src/gwaei/ui/search.ui.h:43
 msgid "_Word-edge Mark"
 msgstr "Ký tự _Biên của từ"
 
-#: ../src/gwaei/ui/main.ui.h:43 ../src/gwaei/main.c:179
+#: ../src/gwaei/ui/search.ui.h:44 ../src/gwaei/gwaei.c:348
 #: ../src/desktop/gwaei.desktop.in.h:2
 msgid "gWaei Japanese-English Dictionary"
 msgstr "Từ điển Nhật-Anh gWaei"
 
-#: ../src/gwaei/ui/main.ui.h:44
+#: ../src/gwaei/ui/search.ui.h:45
 msgid "menuitem2"
 msgstr "menuitem2"
 
@@ -743,119 +673,238 @@ msgstr "Đánh thứ tự các _nét"
 msgid "gWaei Kanjipad"
 msgstr "gWaei Kanjipad"
 
-#: ../src/gwaei/installprogress.c:194
-#, c-format
-msgid "Installing %s..."
-msgstr "Đang cài đặt %s"
-
-#: ../src/gwaei/installprogress.c:195
-#, c-format
-msgid "Installing dictionary %d of %d..."
-msgstr "Đang cài đặt từ điển thứ %d trên %d"
-
-#: ../src/gwaei/dictionaryinstall.c:68
+#: ../src/gwaei/dictionaryinstall-callbacks.c:370
 #, c-format
 msgid "<b>%s Install Details</b>"
 msgstr "<b>%s Chi tiết cài đặt</b>"
 
 #. Third row
-#: ../src/gwaei/dictionaryinstall.c:90
+#: ../src/gwaei/dictionaryinstall-callbacks.c:392
 msgid "Filename: "
 msgstr "Tên tập tin: "
 
 #. Forth row
-#: ../src/gwaei/dictionaryinstall.c:102
+#: ../src/gwaei/dictionaryinstall-callbacks.c:406
 msgid "Engine: "
 msgstr "Engine: "
 
 #. Fifth row
-#: ../src/gwaei/dictionaryinstall.c:120
+#: ../src/gwaei/dictionaryinstall-callbacks.c:426
 msgid "Source: "
 msgstr "Mã nguồn: "
 
 #. Sixth row
-#: ../src/gwaei/dictionaryinstall.c:144
+#: ../src/gwaei/dictionaryinstall-callbacks.c:456
 msgid "Encoding: "
 msgstr "Mã hóa: "
 
 #. Seventh row
-#: ../src/gwaei/dictionaryinstall.c:161
+#: ../src/gwaei/dictionaryinstall-callbacks.c:475
 msgid "Compression: "
 msgstr "Nén: "
 
 #. Eighth row
-#: ../src/gwaei/dictionaryinstall.c:178
+#: ../src/gwaei/dictionaryinstall-callbacks.c:494
 msgid "Split Places from Names Dictionary"
 msgstr "Tách từ điển Tên riêng khỏi từ điển Địa danh"
 
 #. Ninth row
-#: ../src/gwaei/dictionaryinstall.c:188
+#: ../src/gwaei/dictionaryinstall-callbacks.c:506
 msgid "Merge Radicals into Kanji Dictionary"
 msgstr "Ghép chung từ điển Bộ thủ vào từ điển Kanji"
 
-#: ../src/gwaei/dictionarymanager.c:85
-msgid "Name"
-msgstr "Tên"
-
-#: ../src/gwaei/dictionarymanager.c:91
-msgid "Engine"
-msgstr "Engine"
-
-#: ../src/gwaei/dictionarymanager.c:96
-msgid "Shortcut"
-msgstr "Phím tắt"
-
-#: ../src/gwaei/dictionarymanager.c:194
-msgid "_Cycle Up"
-msgstr "Từ điển _trước"
-
-#: ../src/gwaei/dictionarymanager.c:200
-msgid "Cycle _Down"
-msgstr "Từ điển _sau"
-
-#: ../src/gwaei/gwaei.c:63
+#: ../src/gwaei/gwaei.c:170
 msgid "Choose the dictionary to use"
 msgstr "Chọn từ điển cần dùng"
 
-#: ../src/gwaei/gwaei.c:65
+#: ../src/gwaei/gwaei.c:172
 msgid "Open a new instance of gWaei"
 msgstr "Mở một cửa sổ gWaei mới"
 
-#: ../src/gwaei/gwaei.c:67
+#: ../src/gwaei/gwaei.c:174
 msgid "Check the gWaei version information"
 msgstr "Kiểm tra phiên bản gWaei"
 
-#: ../src/gwaei/main.c:544
+#: ../src/gwaei/installprogress-callbacks.c:100
+#, c-format
+msgid "Installing %s..."
+msgstr "Đang cài đặt %s"
+
+#: ../src/gwaei/installprogress-callbacks.c:101
+#, c-format
+msgid "Installing dictionary %d of %d..."
+msgstr "Đang cài đặt từ điển thứ %d trên %d"
+
+#: ../src/gwaei/output-callbacks.c:330 ../src/gwaei/output-callbacks.c:452
+msgid "Pop"
+msgstr "Pop"
+
+#: ../src/gwaei/output-callbacks.c:557 ../src/gwaei/output-callbacks.c:671
+msgid "Radicals:"
+msgstr "Bộ thủ: "
+
+#: ../src/gwaei/output-callbacks.c:579 ../src/gwaei/output-callbacks.c:681
+#: ../src/gwaei/output-callbacks.c:691
+msgid "Readings:"
+msgstr "Cách đọc: "
+
+#: ../src/gwaei/output-callbacks.c:590
+msgid "Name:"
+msgstr "Tên: "
+
+#: ../src/gwaei/output-callbacks.c:601
+msgid "Radical Name:"
+msgstr "Tên bộ thủ: "
+
+#: ../src/gwaei/output-callbacks.c:616 ../src/gwaei/output-callbacks.c:711
+msgid "Stroke:"
+msgstr "Số nét: "
+
+#: ../src/gwaei/output-callbacks.c:623 ../src/gwaei/output-callbacks.c:720
+msgid "Freq:"
+msgstr "Tần số: "
+
+#: ../src/gwaei/output-callbacks.c:630 ../src/gwaei/output-callbacks.c:729
+msgid "Grade:"
+msgstr "Được học ở lớp: "
+
+#: ../src/gwaei/output-callbacks.c:636 ../src/gwaei/output-callbacks.c:738
+msgid "JLPT:"
+msgstr "JLPT: "
+
+#: ../src/gwaei/output-callbacks.c:645 ../src/gwaei/output-callbacks.c:756
+msgid "Meanings:"
+msgstr "Ý nghĩa: "
+
+#: ../src/gwaei/output-callbacks.c:701
+msgid "Radical Name"
+msgstr "Tên bộ thủ"
+
+#. TRANSLATORS: The "E" stands for "English"
+#: ../src/gwaei/output-callbacks.c:839
+msgid "E:\t"
+msgstr "Anh:\t"
+
+#. TRANSLATORS: The "J" stands for "Japanese"
+#: ../src/gwaei/output-callbacks.c:850
+msgid ""
+"\n"
+"J:\t"
+msgstr ""
+"\n"
+"Nhật:\t"
+
+#. TRANSLATORS: The "D" stands for "Detail"
+#: ../src/gwaei/output-callbacks.c:861
+msgid ""
+"\n"
+"D:\t"
+msgstr ""
+"\n"
+"C:\t"
+
+#: ../src/gwaei/output-callbacks.c:928
+#, c-format
+msgid "Other Result %d"
+msgid_plural "Other Results %d"
+msgstr[0] "Kết quả khác %d"
+
+#: ../src/gwaei/output-callbacks.c:949
+#, c-format
+msgid "Main Result %d"
+msgid_plural "Main Results %d"
+msgstr[0] "Kết quả chính %d"
+
+#. Initializations
+#: ../src/gwaei/printing.c:188
+#, c-format
+msgid "Page %d/%d"
+msgstr "Trang %d/%d"
+
+#: ../src/gwaei/radicals-window.c:415
+#, c-format
+msgid ""
+"<b>Substitution Radical:</b> %s\n"
+"<b>Actual Radical:</b> %s\n"
+"<b>Radical Name:</b> %s"
+msgstr ""
+"<b>Bộ thủ thay thế:</b> %s\n"
+"<b>Bộ thủ thực tế:</b> %s\n"
+"<b>Tên bộ thủ:</b> %s"
+
+#: ../src/gwaei/search-callbacks.c:500
+msgid "Save As"
+msgstr "Lưu ra"
+
+#: ../src/gwaei/search-callbacks.c:513
+msgid "vocabulary.txt"
+msgstr "vocabulary.txt"
+
+#: ../src/gwaei/search-callbacks.c:981
+msgid ""
+"Program for Japanese translation and reference. The\n"
+"dictionaries are supplied by Jim Breen's WWWJDIC.\n"
+"Special thanks to the maker of GJITEN who served as an inspiration.\n"
+" Dedicated to Chuus"
+msgstr ""
+"Phần mềm tra cứu và dịch thuật tiếng Nhật. Các bộ từ điển\n"
+"được cung cấp bởi dự án WWWJDIC của Jim Breen.\n"
+"Cảm ơn đặc biệt những người phát triển từ điển GJITEN\n"
+"đã mang lại nguồn cảm hứng để tôi viết từ điển này.\n"
+"Dành tặng riêng cho Chuus"
+
+#. TRANSLATORS: You can add your own name to the translation of this field, it will be displayed in the "about" box when gwaei is run in your language
+#: ../src/gwaei/search-callbacks.c:985
+msgid "translator-credits"
+msgstr "Ngô Chin <ndtrung4419@gmail.com>"
+
+#: ../src/gwaei/search-callbacks.c:2002
+msgid "_Close Tab"
+msgstr "Đón_g thẻ"
+
+#: ../src/gwaei/search-callbacks.c:2004
+msgid "_Close"
+msgstr "Đón_g"
+
+#: ../src/gwaei/search-window.c:409
+msgid "_Cycle Up"
+msgstr "Từ điển _trước"
+
+#: ../src/gwaei/search-window.c:415
+msgid "Cycle _Down"
+msgstr "Từ điển _sau"
+
+#: ../src/gwaei/search-window.c:595
 msgid "Searching..."
 msgstr "Đang tìm kiếm..."
 
-#: ../src/gwaei/main.c:547
+#: ../src/gwaei/search-window.c:598
 #, c-format
 msgid "Searching... %d result"
 msgid_plural "Searching... %d results"
 msgstr[0] "Đang tìm kiếm... %d kết quả"
 
 #. TRANSLATORS: The argument is the dictionary long name
-#: ../src/gwaei/main.c:1734
+#: ../src/gwaei/search-window.c:1373
 #, c-format
 msgid "Nothing found in the %s!"
 msgstr "Không tìm thấy trong %s!"
 
-#: ../src/gwaei/main.c:1765
+#: ../src/gwaei/search-window.c:1404
 msgid "Search Other Dictionary: "
 msgstr "Tìm kiếm trong từ điển khác: "
 
-#: ../src/gwaei/main.c:1804
+#: ../src/gwaei/search-window.c:1441
 msgid "Search Online: "
 msgstr "Tìm kiếm trực tuyến: "
 
-#: ../src/gwaei/main.c:1857
+#: ../src/gwaei/search-window.c:1494
 #, c-format
 msgid "gWaei Usage Tip #%d: "
 msgstr "Mẹo gWaei số %d: "
 
 #. Tip 1
-#: ../src/gwaei/main.c:1870
+#: ../src/gwaei/search-window.c:1507
 #, c-format
 msgid ""
 "Use the Unknown Character from the Insert menu or toolbar in place of "
@@ -871,15 +920,15 @@ msgstr ""
 "Kanjipad là một lựa chọn khác cho việc nhập kanji. Do cách làm việc nội bộ "
 "của Kanjipad, việc vẽ đúng số nét và đúng chiều là rất quan trọng."
 
-#: ../src/gwaei/main.c:1877
+#: ../src/gwaei/search-window.c:1514
 msgid "Inputting Unknown Kanji"
 msgstr "Nhập vào kí tự Kanji chưa biết"
 
-#: ../src/gwaei/main.c:1894
+#: ../src/gwaei/search-window.c:1531
 msgid "Getting More Exact Matches"
 msgstr "Tìm kiếm chính xác hơn"
 
-#: ../src/gwaei/main.c:1900
+#: ../src/gwaei/search-window.c:1537
 msgid ""
 "Use the Word-edge Mark and the Not-word-edge Mark from the insert menu to "
 "get more relevant results.  fish\\b will return results like fish and "
@@ -890,10 +939,10 @@ msgstr ""
 "nhưng không phải fisherman"
 
 #. Tip 3
-#: ../src/gwaei/main.c:1908
-#, c-format
+#: ../src/gwaei/search-window.c:1545
+#, fuzzy, c-format
 msgid ""
-"Use the And Character or Or Character to search for results that contain a "
+"Use the And Character or Or Character to window for results that contain a "
 "combination of words that might not be right next to each other.  cats&dogs "
 "will return only results that contain both the words cats and dogs like %s "
 "does."
@@ -902,15 +951,15 @@ msgstr ""
 "tổ hợp những từ không nhất thiết phải đứng liền kề nhau. cats&dogs sẽ đưa ra "
 "kết quả chứa cả hai từ cats và dogs như %s."
 
-#: ../src/gwaei/main.c:1914
+#: ../src/gwaei/search-window.c:1551
 msgid "Searching for Multiple Words"
 msgstr "Tìm kiếm nhiều từ một lúc"
 
-#: ../src/gwaei/main.c:1931
+#: ../src/gwaei/search-window.c:1568
 msgid "Make a Vocabulary List"
 msgstr "Tạo một danh sách từ vựng"
 
-#: ../src/gwaei/main.c:1937
+#: ../src/gwaei/search-window.c:1574
 msgid ""
 "Specific sections of results can be printed or saved by dragging the mouse "
 "to highlight them.  Using this in combination with the Append command from "
@@ -922,13 +971,14 @@ msgstr ""
 "\". Nếu lần sau bạn làm lại điều này nhưng chọn \"Lưu thêm vào\" tập tin đã "
 "lưu trước đó thì bạn đã có ngay một danh sách từ vựng thuận tiện và đơn giản."
 
-#: ../src/gwaei/main.c:1947
+#: ../src/gwaei/search-window.c:1584
 msgid "Why Use the Mouse?"
 msgstr "Cần gì dùng chuột?"
 
-#: ../src/gwaei/main.c:1953
+#: ../src/gwaei/search-window.c:1590
+#, fuzzy
 msgid ""
-"Typing something will move the focus to the search input box.  Hitting the "
+"Typing something will move the focus to the window input box.  Hitting the "
 "Up or Down arrow key will move the focus to the results pane so you can "
 "scroll the results.  Hitting Alt-Up or Alt-Down will cycle the currently "
 "installed dictionaries."
@@ -938,11 +988,11 @@ msgstr ""
 "quả theo ý muốn. Ấn nút Alt-Lên hoặc Alt-Xuống sẽ xoay vòng quanh những từ "
 "điển đã cài đặt."
 
-#: ../src/gwaei/main.c:1963
+#: ../src/gwaei/search-window.c:1600
 msgid "Get Ready for the JLPT"
 msgstr "Sẵn sàng cho kì thi JLPT"
 
-#: ../src/gwaei/main.c:1969
+#: ../src/gwaei/search-window.c:1606
 msgid ""
 "The Kanji dictionary has some hidden features.  One such one is the ability "
 "to filter out Kanji that don't meet a certain criteria.  If you are planning "
@@ -963,25 +1013,26 @@ msgstr ""
 "bình thường sẽ được học ở lớp tương ứng. VD: G3 sẽ hiện những chữ kanji được "
 "dạy ở lớp 3 (tiểu học)."
 
-#: ../src/gwaei/main.c:1983
+#: ../src/gwaei/search-window.c:1620
 msgid "Just drag words in!"
 msgstr "Kéo và thả"
 
-#: ../src/gwaei/main.c:1989
+#: ../src/gwaei/search-window.c:1626
+#, fuzzy
 msgid ""
-"If you drag and drop a highlighted word into gWaei's search result box, "
-"gWaei will automatically start a search using that text.  This can be a nice "
+"If you drag and drop a highlighted word into gWaei's window result box, "
+"gWaei will automatically start a window using that text.  This can be a nice "
 "way to quickly look up words while browsing webpages. "
 msgstr ""
 "Nếu bạn kéo thả một từ được bôi đen vào ô tìm kiếm của gWaei thì phần mềm sẽ "
 "tự động tìm kiếm từ đó. Đây có thể là cách để tra từ nhanh chóng khi đang "
 "duyệt web."
 
-#: ../src/gwaei/main.c:2000
+#: ../src/gwaei/search-window.c:1637
 msgid "What does (adj-i) mean?"
 msgstr "(adj-i) nghĩa là gì?"
 
-#: ../src/gwaei/main.c:2006
+#: ../src/gwaei/search-window.c:1643
 msgid ""
 "It is part of the terminalogy used by the EDICT group of dictionaries to "
 "categorize words.  Some are obvious, but there are a number that there is no "
@@ -996,11 +1047,11 @@ msgstr ""
 "gWaei đi kèm một số tài liệu của EDICT trong phần Trợ giúp. Chọn mục \"Chú "
 "giải thuật ngữ từ điển\" trong menu \"Trợ giúp\" để đọc được tài liệu này."
 
-#: ../src/gwaei/main.c:2018
+#: ../src/gwaei/search-window.c:1655
 msgid "Books are Heavy"
 msgstr "Sách rất nặng"
 
-#: ../src/gwaei/main.c:2024
+#: ../src/gwaei/search-window.c:1661
 msgid ""
 "Aways wear a construction helmet when working with books.  They are "
 "dangerous heavy objects that can at any point fall on and injure you.  "
@@ -1012,122 +1063,51 @@ msgstr ""
 "bảo tất cả bạn bè của bạn làm như thế luôn. Sau này họ sẽ phải cảm ơn bạn. "
 "Thật đấy."
 
-#: ../src/gwaei/main.c:2260
-msgid "A_ppend Selected"
-msgstr "Thêm đoạn bôi đen vào..."
-
-#: ../src/gwaei/main.c:2262
-msgid "Save Selected _As"
-msgstr "Lưu đoạn bôi đen..."
-
-#: ../src/gwaei/main.c:2264
-msgid "_Print Selected"
-msgstr "In đoạn bôi đen"
-
-#: ../src/gwaei/main.c:2266
-msgid "_Print Preview Selected"
-msgstr "Xem thử bản in đoạn bôi đen"
-
-#: ../src/gwaei/main-callbacks.c:504
-msgid "Save As"
-msgstr "Lưu ra"
-
-#: ../src/gwaei/main-callbacks.c:517
-msgid "vocabulary.txt"
-msgstr "vocabulary.txt"
-
-#: ../src/gwaei/main-callbacks.c:1118
-msgid ""
-"Program for Japanese translation and reference. The\n"
-"dictionaries are supplied by Jim Breen's WWWJDIC.\n"
-"Special thanks to the maker of GJITEN who served as an inspiration.\n"
-" Dedicated to Chuus"
-msgstr ""
-"Phần mềm tra cứu và dịch thuật tiếng Nhật. Các bộ từ điển\n"
-"được cung cấp bởi dự án WWWJDIC của Jim Breen.\n"
-"Cảm ơn đặc biệt những người phát triển từ điển GJITEN\n"
-"đã mang lại nguồn cảm hứng để tôi viết từ điển này.\n"
-"Dành tặng riêng cho Chuus"
-
-#. TRANSLATORS: You can add your own name to the translation of this field, it will be displayed in the "about" box when gwaei is run in your language
-#: ../src/gwaei/main-callbacks.c:1122
-msgid "translator-credits"
-msgstr "Ngô Chin <ndtrung4419@gmail.com>"
-
-#. TRANSLATORS: The first variable is the expression to look for, the second is the dictionary full name
-#: ../src/gwaei/main-callbacks.c:1719
-#, c-format
-msgid "Search for \"%s\" in the %s"
-msgstr "Tìm \"%s\" trong một %s"
-
-#. TRANSLATORS: The variable is the expression to look for
-#: ../src/gwaei/main-callbacks.c:1721
-#, c-format
-msgid "Search for \"%s\" in a Different Dictionary"
-msgstr "Tìm \"%s\" trong một từ điển khác"
-
-#. TRANSLATORS: The variable is the expression to look for
-#: ../src/gwaei/main-callbacks.c:1723
-#, c-format
-msgid "Cross-reference \"%s\" Online"
-msgstr "Tham chiếu chéo \"%s\" trên mạng"
-
-#. if (pages > 0) gtk_menu_item_set_label (GTK_MENU_ITEM (close_menuitem), gettext("_Close Tab"));
-#. gtk_widget_set_sensitive (close_menuitem, (pages > 0));
-#: ../src/gwaei/main-tabs.c:120 ../src/gwaei/main-tabs.c:123
-msgid "_Close Tab"
-msgstr "Đón_g thẻ"
-
-#: ../src/gwaei/main-tabs.c:124
-msgid "_Close"
-msgstr "Đón_g"
-
-#: ../src/gwaei/main-tabs.c:292
+#: ../src/gwaei/search-window.c:2006
 msgid "(Empty)"
 msgstr "(Rỗng)"
 
-#. Initializations
-#: ../src/gwaei/printing.c:145
-#, c-format
-msgid "Page %d/%d"
-msgstr "Trang %d/%d"
-
-#: ../src/gwaei/radsearchtool.c:374
-#, c-format
-msgid ""
-"<b>Substitution Radical:</b> %s\n"
-"<b>Actual Radical:</b> %s\n"
-"<b>Radical Name:</b> %s"
-msgstr ""
-"<b>Bộ thủ thay thế:</b> %s\n"
-"<b>Bộ thủ thực tế:</b> %s\n"
-"<b>Tên bộ thủ:</b> %s"
-
-#: ../src/gwaei/settings.c:151
+#: ../src/gwaei/settings-callbacks.c:260
 #, c-format
 msgid "_Use the System Document Font (%s)"
 msgstr "_Sử dụng phông tài liệu hệ thống (%s)"
 
-#: ../src/gwaei/output-callbacks.c:288 ../src/gwaei/output-callbacks.c:387
-msgid "Pop"
-msgstr "Pop"
+#: ../src/gwaei/settings-window.c:371
+msgid "Name"
+msgstr "Tên"
 
-#: ../src/gwaei/output-callbacks.c:594
-msgid "Radical Name"
-msgstr "Tên bộ thủ"
+#: ../src/gwaei/settings-window.c:377
+msgid "Engine"
+msgstr "Engine"
 
-#: ../src/gwaei/output-callbacks.c:801
-#, c-format
-msgid "Other Result %d"
-msgid_plural "Other Results %d"
-msgstr[0] "Kết quả khác %d"
-
-#: ../src/gwaei/output-callbacks.c:816
-#, c-format
-msgid "Main Result %d"
-msgid_plural "Main Results %d"
-msgstr[0] "Kết quả chính %d"
+#: ../src/gwaei/settings-window.c:382
+msgid "Shortcut"
+msgstr "Phím tắt"
 
 #: ../src/desktop/gwaei.desktop.in.h:1
 msgid "Enter a Japanese or English word to easily get translations."
 msgstr "Nhập một từ tiếng Nhật hoặc tiếng Anh để xem bản dịch."
+
+#~ msgid "Other Results"
+#~ msgstr "Kết quả khác"
+
+#~ msgid "A_ppend Selected"
+#~ msgstr "Thêm đoạn bôi đen vào..."
+
+#~ msgid "Save Selected _As"
+#~ msgstr "Lưu đoạn bôi đen..."
+
+#~ msgid "_Print Selected"
+#~ msgstr "In đoạn bôi đen"
+
+#~ msgid "_Print Preview Selected"
+#~ msgstr "Xem thử bản in đoạn bôi đen"
+
+#~ msgid "Search for \"%s\" in the %s"
+#~ msgstr "Tìm \"%s\" trong một %s"
+
+#~ msgid "Search for \"%s\" in a Different Dictionary"
+#~ msgstr "Tìm \"%s\" trong một từ điển khác"
+
+#~ msgid "Cross-reference \"%s\" Online"
+#~ msgstr "Tham chiếu chéo \"%s\" trên mạng"
