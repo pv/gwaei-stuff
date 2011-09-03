@@ -51,12 +51,10 @@ static gboolean _is_unique (gboolean, char*, char*);
 void gw_libunique_initialize (gboolean new_instance, char *dictionary, char *query)
 {
     //Declarations
-    GtkBuilder *builder;
-    GtkWidget *window;
+    GwSearchWindow *window;
 
     //Initializations
-    builder = gw_common_get_builder ();
-    window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
+    window = GW_SEARCHWINDOW (gw_app_get_window_by_type (app, GW_WINDOW_SEARCH));
 
     if (_initialized == TRUE) gw_libunique_free();
 
@@ -69,7 +67,7 @@ void gw_libunique_initialize (gboolean new_instance, char *dictionary, char *que
     //Sanity check
     if (!_is_unique (new_instance, dictionary, query)) exit(0);
 
-    _add_window_watcher (window);
+    _add_window_watcher (GTK_WIDGET (window->toplevel));
 }
 
 
@@ -88,26 +86,21 @@ void gw_libunique_free ()
 //!
 //! @brief To be written
 //!
-static UniqueResponse _message_received_cb (UniqueApp         *app,
+static UniqueResponse _message_received_cb (UniqueApp         *uapp,
                                             UniqueCommand      command,
                                             UniqueMessageData *message,
                                             guint              time_,
                                             gpointer           user_data)
 {
     //Declarations
+    GwSearchWindow *window;
     UniqueResponse res;
-    GtkWidget *main_window, *settings_window, *radicals_window, *kanjipad_window;
-    GtkBuilder *builder;
     gssize length;
     const guchar* data;
     LwDictInfo *di;
-    GtkWidget *entry;
 
-    builder = gw_common_get_builder ();
-    main_window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
-    kanjipad_window = GTK_WIDGET (gtk_builder_get_object (builder, "kanjipad_window"));
-    radicals_window = GTK_WIDGET (gtk_builder_get_object (builder, "radicals_window"));
-    settings_window = GTK_WIDGET (gtk_builder_get_object (builder, "settings_window"));
+    window = GW_SEARCHWINDOW (gw_app_get_window_by_type (app, GW_WINDOW_SEARCH));
+    if (window == NULL) return UNIQUE_RESPONSE_OK;
 
     switch (command)
     {
@@ -115,10 +108,9 @@ static UniqueResponse _message_received_cb (UniqueApp         *app,
           if (message != NULL)
           {
             data = unique_message_data_get (message, &length); 
-            entry = gw_common_get_widget_by_target (LW_TARGET_ENTRY);
-            gtk_entry_set_text (GTK_ENTRY (entry), data);
-            gtk_editable_set_position (GTK_EDITABLE (entry), -1);
-            gw_main_search_cb (NULL, NULL);
+            gtk_entry_set_text (window->entry, data);
+            gtk_editable_set_position (GTK_EDITABLE (window->entry), -1);
+            gw_searchwindow_search_cb (GTK_WIDGET (window->entry), window->toplevel);
           }
           res = UNIQUE_RESPONSE_OK;
           break;
@@ -126,42 +118,25 @@ static UniqueResponse _message_received_cb (UniqueApp         *app,
           if (message != NULL)
           {
             data = unique_message_data_get (message, &length); 
-            if ((di = lw_dictinfolist_get_dictinfo_fuzzy (data)) != NULL)
+            if ((di = lw_dictinfolist_get_dictinfo_fuzzy (LW_DICTINFOLIST (app->dictinfolist), data)) != NULL)
             {
-              gw_main_set_dictionary (di->load_position);
-              gw_main_search_cb (NULL, NULL);
+              gw_searchwindow_set_dictionary (window, di->load_position);
+              gw_searchwindow_search_cb (GTK_WIDGET (window->entry), window->toplevel);
             }
           }
           res = UNIQUE_RESPONSE_OK;
           break;
         case UNIQUE_ACTIVATE:
-          if (gtk_widget_get_visible (main_window))
+          if (gtk_widget_get_visible (GTK_WIDGET (window->toplevel)))
           {
-          gdk_x11_window_move_to_current_desktop (gtk_widget_get_window (main_window));
-          gtk_window_set_screen (GTK_WINDOW (main_window), unique_message_data_get_screen (message));
-          gtk_window_present_with_time (GTK_WINDOW (main_window), time_);
-          }
-          if (gtk_widget_get_visible (kanjipad_window))
-          {
-            gdk_x11_window_move_to_current_desktop (gtk_widget_get_window (main_window));
-            gtk_window_set_screen (GTK_WINDOW (kanjipad_window), unique_message_data_get_screen (message));
-            gtk_window_present_with_time (GTK_WINDOW (kanjipad_window), time_);
-          }
-          if (gtk_widget_get_visible (radicals_window))
-          {
-            gdk_x11_window_move_to_current_desktop (gtk_widget_get_window (radicals_window));
-            gtk_window_set_screen (GTK_WINDOW (radicals_window), unique_message_data_get_screen (message));
-            gtk_window_present_with_time (GTK_WINDOW (radicals_window), time_);
-          }
-          if (gtk_widget_get_visible (settings_window))
-          {
-            gdk_x11_window_move_to_current_desktop (gtk_widget_get_window (settings_window));
-            gtk_window_set_screen (GTK_WINDOW (settings_window), unique_message_data_get_screen (message));
-            gtk_window_present_with_time (GTK_WINDOW (settings_window), time_);
+            gdk_x11_window_move_to_current_desktop (gtk_widget_get_window (GTK_WIDGET (window->toplevel)));
+            gtk_window_set_screen (window->toplevel, unique_message_data_get_screen (message));
+            gtk_window_present_with_time (window->toplevel, time_);
           }
           res = UNIQUE_RESPONSE_OK;
           break;
         case UNIQUE_NEW:
+          gw_searchwindow_new_window_cb (GTK_WIDGET (window->entry), window->toplevel);
           res = UNIQUE_RESPONSE_OK;
           break;
         default:

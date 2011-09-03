@@ -58,6 +58,8 @@ gboolean gw_searchwindow_scroll_or_zoom_cb (GtkWidget*, GdkEventScroll*, gpointe
 void gw_searchwindow_remove_tab_cb (GtkWidget*, gpointer);
 void gw_searchwindow_remove_current_tab_cb (GtkWidget*, gpointer);
 
+void gw_searchwindow_new_window_cb (GtkWidget*, gpointer);
+
 //Update preference callbacks
 void gw_searchwindow_toolbar_show_toggled_cb (GtkWidget *widget, gpointer data);
 void gw_searchwindow_statusbar_show_toggled_cb (GtkWidget *widget, gpointer data);
