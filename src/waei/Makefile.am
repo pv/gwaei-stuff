@@ -22,11 +22,4 @@ waei_LDADD += $(WIN32_LIBS)
 waei_CPPFLAGS += $(WIN32_CFLAGS) $(WIN32_DEFS)
 endif
 
-##LINUX/UNIX/BSD SETUP
-if WITH_NCURSES
-NCURSES_DEFS =-DWITH_NCURSES
-waei_SOURCES += ncurses.c ncurses-callbacks.c
-waei_LDADD += $(NCURSES_LIBS)
-waei_CPPFLAGS +=$(NCURSES_DEFS)
-endif
 

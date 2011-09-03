@@ -11,10 +11,10 @@ void w_console_start_banner (WApplication*);
 void w_console_print_available_dictionaries (WApplication*);
 void w_console_print_installable_dictionaries (WApplication*);
 
-gboolean w_console_install_dictinst (WApplication*, GError**);
-gboolean w_console_uninstall_dictinfo (WApplication*, GError**);
+WAppResolution w_console_install_dictinst (WApplication*, GError**);
+WAppResolution w_console_uninstall_dictinfo (WApplication*, GError**);
+WAppResolution w_console_search (WApplication*, GError**);
 
 void w_console_handle_error (WApplication*, GError**);
-gboolean w_console_search (WApplication*, GError**);
 
 #endif

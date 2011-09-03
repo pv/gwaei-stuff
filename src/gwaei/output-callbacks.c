@@ -184,20 +184,23 @@ static void _add_match_highlights (gint line, gint start_offset, gint end_offset
     for (iter = ql->re_roma; *iter != NULL; iter++)
     {
       re = (*iter)[LW_RELEVANCE_LOCATE];
-      if (re != NULL && g_regex_match (re, text, 0, &match_info))
+      if (re != NULL)
       { 
-        while (g_match_info_matches (match_info))
+        if (g_regex_match (re, text, 0, &match_info))
         {
-          g_match_info_fetch_pos (match_info, 0, &match_start_byte_offset, &match_end_byte_offset);
-          match_character_offset = g_utf8_pointer_to_offset (text, text + match_start_byte_offset);
-          gtk_text_buffer_get_iter_at_line_offset (buffer, &start_iter, line, match_character_offset + start_offset);
-          match_character_offset = g_utf8_pointer_to_offset (text, text + match_end_byte_offset);
-          gtk_text_buffer_get_iter_at_line_offset (buffer, &end_iter, line, match_character_offset + start_offset);
-          gtk_text_buffer_apply_tag_by_name (buffer, "match", &start_iter, &end_iter);
-          g_match_info_next (match_info, NULL);
+          while (g_match_info_matches (match_info))
+          {
+            g_match_info_fetch_pos (match_info, 0, &match_start_byte_offset, &match_end_byte_offset);
+            match_character_offset = g_utf8_pointer_to_offset (text, text + match_start_byte_offset);
+            gtk_text_buffer_get_iter_at_line_offset (buffer, &start_iter, line, match_character_offset + start_offset);
+            match_character_offset = g_utf8_pointer_to_offset (text, text + match_end_byte_offset);
+            gtk_text_buffer_get_iter_at_line_offset (buffer, &end_iter, line, match_character_offset + start_offset);
+            gtk_text_buffer_apply_tag_by_name (buffer, "match", &start_iter, &end_iter);
+            g_match_info_next (match_info, NULL);
+          }
         }
+        g_match_info_free (match_info);
       }
-      g_match_info_free (match_info);
     }
 
     //Cleanup
