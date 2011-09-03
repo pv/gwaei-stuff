@@ -1149,21 +1149,19 @@ void gw_searchwindow_select_none_by_target (GwSearchWindow *window, LwOutputTarg
 LwOutputTarget gw_searchwindow_get_current_target_focus (GwSearchWindow* window)
 {
     //Declarations
-    GtkWidget *toplevel;
     GtkWidget *widget;
     GtkTextView *view;
-    GtkWidget *entry;
+    GtkEntry *entry;
     LwOutputTarget target;
 
     //Initializations
-    toplevel = GTK_WIDGET (window->toplevel);
-    widget = GTK_WIDGET (gtk_window_get_focus (GTK_WINDOW (toplevel))); 
+    widget = GTK_WIDGET (gtk_window_get_focus (window->toplevel)); 
     view = gw_searchwindow_get_current_textview (window);
-    entry = GTK_WIDGET (window->entry);
+    entry = window->entry;
 
     if (widget == GTK_WIDGET (view))
       target = LW_OUTPUTTARGET_RESULTS;
-    if (widget == GTK_WIDGET (entry))
+    else if (widget == GTK_WIDGET (entry))
       target = LW_OUTPUTTARGET_ENTRY;
     else
       target = LW_OUTPUTTARGET_INVALID;
@@ -1788,63 +1786,6 @@ gboolean gw_searchwindow_keep_searching_timeout (GwSearchWindow *window)
     }
     
     return TRUE;
-}
-
-
-//!
-//! @brief Finds out if some text is selected and updates the buttons accordingly
-//!
-//! When text is found selected, some buttons become sensitive and some have the
-//! label change.  This tells the user they can save/print sections of the
-//! results.
-//!
-//! @param widget Unused GtkWidget pointer
-//! @param data Unused gpointer
-//!
-gboolean gw_searchwindow_update_icons_for_selection_timeout (GwSearchWindow *window) 
-{
-    //Sanity check
-    if (window->timeoutid[GW_SEARCHWINDOW_TIMEOUTID_SELECTION_ICONS] == 0) return FALSE;
-    if (gtk_widget_get_visible (GTK_WIDGET (window->toplevel)) == FALSE) return TRUE;
-
-    //Declarations
-    GtkAction *action;
-    gboolean has_selection;
-    GtkBuilder *builder;
-
-    //Initializations;
-    builder = window->builder;
-    action = NULL;
-    has_selection = (gw_searchwindow_has_selection_by_target (window, LW_OUTPUTTARGET_RESULTS));
-
-    //Set the special buttons
-    if (!window->selectionicondata.selected && has_selection)
-    {
-      window->selectionicondata.selected = TRUE;
-      action = GTK_ACTION (gtk_builder_get_object (builder, "file_append_action"));
-      gtk_action_set_label (action, gettext("A_ppend Selected"));
-      action = GTK_ACTION (gtk_builder_get_object (builder, "file_save_as_action"));
-      gtk_action_set_label (action, gettext("Save Selected _As"));
-      action = GTK_ACTION (gtk_builder_get_object (builder, "file_print_action"));
-      gtk_action_set_label (action, gettext("_Print Selected"));
-      action = GTK_ACTION (gtk_builder_get_object (builder, "file_print_preview_action"));
-      gtk_action_set_label (action, gettext("_Print Preview Selected"));
-    }
-    //Reset the buttons to their normal states
-    else if (window->selectionicondata.selected == TRUE && !has_selection)
-    {
-      window->selectionicondata.selected = FALSE;
-      action = GTK_ACTION (gtk_builder_get_object (builder, "file_append_action"));
-      gtk_action_set_label (action, gettext("A_ppend"));
-      action = GTK_ACTION (gtk_builder_get_object (builder, "file_save_as_action"));
-      gtk_action_set_label (action, NULL);
-      action = GTK_ACTION (gtk_builder_get_object (builder, "file_print_action"));
-      gtk_action_set_label (action, NULL);
-      action = GTK_ACTION (gtk_builder_get_object (builder, "file_print_preview_action"));
-      gtk_action_set_label (action, NULL);
-    }
-
-    return TRUE; 
 }
 
 

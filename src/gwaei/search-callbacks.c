@@ -805,13 +805,13 @@ G_MODULE_EXPORT gboolean gw_searchwindow_edit_popup_show_cb (GtkWidget *widget, 
       sensitive = (gtk_editable_get_selection_bounds (GTK_EDITABLE (window->entry), NULL, NULL));
       gtk_action_set_sensitive (action_cut, sensitive);
       gtk_action_set_sensitive (action_copy, sensitive);
-      gtk_action_set_sensitive (action_paste, sensitive);
+      gtk_action_set_sensitive (action_paste, TRUE);
       gtk_action_set_sensitive (action_select_all, TRUE);
     }
     else if (view != NULL && gtk_widget_has_focus (GTK_WIDGET (view)))
     {
       sensitive = (gw_searchwindow_has_selection_by_target (window, LW_OUTPUTTARGET_RESULTS));
-      gtk_action_set_sensitive (action_cut, sensitive);
+      gtk_action_set_sensitive (action_cut, FALSE);
       gtk_action_set_sensitive (action_copy, sensitive);
       gtk_action_set_sensitive (action_paste, FALSE);
       gtk_action_set_sensitive (action_select_all, TRUE);
