@@ -73,6 +73,7 @@ GwApplication* gw_app_new (int* argc, char** argv[])
 #endif
       temp->arg_version_switch = FALSE;
       temp->windowlist = NULL;
+      temp->last_focused = NULL;
 
       gw_app_parse_args (temp, argc, argv);
 
@@ -189,7 +190,6 @@ void gw_app_parse_args (GwApplication *app, int *argc, char** argv[])
 }
 
 
-
 //!
 //! @brief Prints to the terminal the about message for the program.
 //!
@@ -224,16 +224,15 @@ GwApplicationResolution gw_app_run (GwApplication *app)
 
     window = GW_SEARCHWINDOW (gw_app_show_window (app, GW_WINDOW_SEARCH, NULL, FALSE));
 
-/*
     gw_searchwindow_update_history_popups (window);
 
     //Show the settings dialog if no dictionaries are installed
-    if (lw_dictinfolist_get_total (app->dictinfolist->dictinfolist) == 0) {
-      gw_app_show_window (app, GW_WINDOW_SETTINGS, FALSE);
+    if (lw_dictinfolist_get_total (LW_DICTINFOLIST (app->dictinfolist)) == 0) {
+      gw_app_show_window (app, GW_WINDOW_SETTINGS, GW_WINDOW (window), FALSE);
     }
 
     //Set the initial dictionary
-    if ((di = lw_dictinfolist_get_dictinfo_fuzzy (app->dictinfolist->dictinfolist, app->arg_dictionary)) != NULL)
+    if ((di = lw_dictinfolist_get_dictinfo_fuzzy (LW_DICTINFOLIST (app->dictinfolist), app->arg_dictionary)) != NULL)
     {
       gw_searchwindow_set_dictionary (window, di->load_position);
     }
@@ -242,9 +241,9 @@ GwApplicationResolution gw_app_run (GwApplication *app)
     if (app->arg_query != NULL)
     {
       gtk_entry_set_text (window->entry, app->arg_query);
+      gw_searchwindow_search_cb (GTK_WIDGET (window->entry), window->toplevel);
     }
 
-    */
     //Enter the main loop
     gdk_threads_enter();
       gtk_main ();
@@ -608,6 +607,25 @@ void gw_app_handle_error (GwApplication *app, GwWindow *transient_for, gboolean 
     //Cleanup
     g_error_free (*error);
     *error = NULL;
+}
+
+
+void gw_app_set_last_focused_searchwindow (GwApplication *app, GwSearchWindow *window)
+{
+   app->last_focused = window; 
+}
+
+
+GwSearchWindow* gw_app_get_last_focused_searchwindow (GwApplication *app)
+{
+   GwSearchWindow *window;
+
+   if (app->last_focused != NULL)
+     window = app->last_focused;
+   else
+     window = GW_SEARCHWINDOW (gw_app_get_window_by_type (app, GW_WINDOW_SEARCH));
+
+   return window;
 }
 
 

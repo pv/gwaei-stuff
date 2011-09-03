@@ -106,7 +106,7 @@ static UniqueResponse _message_received_cb (UniqueApp         *uapp,
     const guchar* data;
     LwDictInfo *di;
 
-    window = GW_SEARCHWINDOW (gw_app_get_window_by_type (app, GW_WINDOW_SEARCH));
+    window = gw_app_get_last_focused_searchwindow (app);
     if (window == NULL) return UNIQUE_RESPONSE_OK;
 
     switch (command)

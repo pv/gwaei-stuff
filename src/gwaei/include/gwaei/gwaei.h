@@ -53,6 +53,7 @@ struct _GwApplication {
   GwDictInfoList *dictinfolist;
   LwEngine *engine;
   GtkTextTagTable *tagtable;
+  GwSearchWindow *last_focused;
 
   gchar   *arg_dictionary;
   gchar   *arg_query;
@@ -92,5 +93,8 @@ void gw_app_unblock_searches (GwApplication*);
 gboolean gw_app_can_start_search (GwApplication*);
 
 void gw_app_handle_error (GwApplication*, GwWindow*, gboolean, GError**);
+
+void gw_app_set_last_focused_searchwindow (GwApplication*, GwSearchWindow*);
+GwSearchWindow* gw_app_get_last_focused_searchwindow (GwApplication*);
 
 #endif

@@ -76,6 +76,8 @@ void gw_searchwindow_destroy (GwSearchWindow *window)
   gw_searchwindow_deinit (window);
   gw_window_deinit (GW_WINDOW (window));
 
+  if (app->last_focused == window) app->last_focused = NULL;
+
   free (window);
 }
 

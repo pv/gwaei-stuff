@@ -2008,4 +2008,12 @@ G_MODULE_EXPORT void gw_searchwindow_total_tab_pages_changed_cb (GtkNotebook *no
 }
 
 
+G_MODULE_EXPORT void gw_searchwindow_focus_in_event_cb (GtkWidget *widget, GdkEvent *event, gpointer data)
+{
+    GwSearchWindow *window;
+
+    window = GW_SEARCHWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (widget)));
+
+    gw_app_set_last_focused_searchwindow (app, window);
+}
 
