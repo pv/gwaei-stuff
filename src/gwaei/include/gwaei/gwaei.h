@@ -57,7 +57,7 @@ struct _GwApplication {
   gchar   *arg_dictionary;
   gchar   *arg_query;
 #ifdef WITH_LIBUNIQUE
-  gboolean arg_new_instance;
+  gboolean arg_new_window;
 #endif
   gboolean arg_version_switch;
   GOptionContext *context;

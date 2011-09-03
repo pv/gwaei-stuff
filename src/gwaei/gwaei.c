@@ -69,7 +69,7 @@ GwApplication* gw_app_new (int* argc, char** argv[])
       temp->arg_dictionary = NULL;
       temp->arg_query = NULL;
 #ifdef WITH_LIBUNIQUE
-      temp->arg_new_instance = FALSE;
+      temp->arg_new_window = FALSE;
 #endif
       temp->arg_version_switch = FALSE;
       temp->windowlist = NULL;
@@ -99,13 +99,9 @@ GwApplication* gw_app_new (int* argc, char** argv[])
       lw_prefmanager_add_change_listener_by_schema (temp->prefmanager, LW_SCHEMA_HIGHLIGHT, LW_KEY_HEADER_BG, gw_app_sync_tag_cb, temp);
       lw_prefmanager_add_change_listener_by_schema (temp->prefmanager, LW_SCHEMA_HIGHLIGHT, LW_KEY_COMMENT_FG, gw_app_sync_tag_cb, temp);
 
-
-
-/*
       #ifdef WITH_LIBUNIQUE
-      gw_libunique_initialize (temp->arg_new_instance, temp->arg_dictionary, temp->arg_query);
+      gw_libunique_initialize (temp->arg_new_window, temp->arg_dictionary, temp->arg_query);
       #endif
-*/
 
 #ifdef ENABLE_WIN32
       GtkSettings *settings;
@@ -142,11 +138,11 @@ void gw_app_free (GwApplication *app)
     g_list_free (app->windowlist);
 
     gw_dictinfolist_free (app->dictinfolist);
-/*
+
     #ifdef WITH_LIBUNIQUE
     gw_libunique_free ();
     #endif
-*/
+
     g_option_context_free (app->context);
     g_free(app->arg_query);
     lw_engine_free (app->engine);
@@ -169,7 +165,7 @@ void gw_app_parse_args (GwApplication *app, int *argc, char** argv[])
     {
       { "dictionary", 'd', 0, G_OPTION_ARG_STRING, &(app->arg_dictionary), gettext("Choose the dictionary to use"), "English" },
 #ifdef WITH_LIBUNIQUE
-      { "new-instance", 'n', 0, G_OPTION_ARG_NONE, &(app->arg_new_instance), gettext("Open a new instance of gWaei"), NULL },
+      { "new-window", 'n', 0, G_OPTION_ARG_NONE, &(app->arg_new_window), gettext("Open a new search window"), NULL },
 #endif
       { "version", 'v', 0, G_OPTION_ARG_NONE, &(app->arg_version_switch), gettext("Check the gWaei version information"), NULL },
       { NULL }

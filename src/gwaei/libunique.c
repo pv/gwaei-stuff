@@ -44,19 +44,24 @@ static UniqueApp *_app;
 static UniqueResponse response;
 static gboolean _initialized = FALSE;
 
+/*
 static void _add_window_watcher (GtkWidget*);
+*/
 static gboolean _is_unique (gboolean, char*, char*);
+static UniqueResponse _message_received_cb (UniqueApp*, UniqueCommand, UniqueMessageData*, guint, gpointer);
 
 
 void gw_libunique_initialize (gboolean new_instance, char *dictionary, char *query)
 {
+  /*
     //Declarations
     GwSearchWindow *window;
 
     //Initializations
     window = GW_SEARCHWINDOW (gw_app_get_window_by_type (app, GW_WINDOW_SEARCH));
+    */
 
-    if (_initialized == TRUE) gw_libunique_free();
+    if (_initialized == TRUE) return;
 
     _app = unique_app_new ("org.dictionary.gWaei", NULL);
     _initialized = TRUE;
@@ -67,7 +72,8 @@ void gw_libunique_initialize (gboolean new_instance, char *dictionary, char *que
     //Sanity check
     if (!_is_unique (new_instance, dictionary, query)) exit(0);
 
-    _add_window_watcher (GTK_WIDGET (window->toplevel));
+//    _add_window_watcher (GTK_WIDGET (window->toplevel));
+      g_signal_connect (_app, "message-received", G_CALLBACK (_message_received_cb), NULL);
 }
 
 
@@ -76,6 +82,7 @@ void gw_libunique_free ()
     //Sanity check;
     if (!_initialized) return; 
 
+    _initialized = FALSE;
     g_object_unref (G_OBJECT (_app));
     _app = NULL;
 }
@@ -136,7 +143,7 @@ static UniqueResponse _message_received_cb (UniqueApp         *uapp,
           res = UNIQUE_RESPONSE_OK;
           break;
         case UNIQUE_NEW:
-          gw_searchwindow_new_window_cb (GTK_WIDGET (window->entry), window->toplevel);
+          gw_app_show_window (app, GW_WINDOW_SEARCH, NULL, TRUE);
           res = UNIQUE_RESPONSE_OK;
           break;
         default:
@@ -147,7 +154,7 @@ static UniqueResponse _message_received_cb (UniqueApp         *uapp,
 }
 
 
-static gboolean _is_unique (gboolean arg_create_new_instance, char *dictionary, char* query)
+static gboolean _is_unique (gboolean arg_create_new_window, char *dictionary, char* query)
 {
     //Declarations
     gboolean status;
@@ -157,7 +164,7 @@ static gboolean _is_unique (gboolean arg_create_new_instance, char *dictionary, 
     status = TRUE;
 
     //Instance is already running and we don't want a knew one
-    if (arg_create_new_instance == FALSE && unique_app_is_running (_app))
+    if (arg_create_new_window == FALSE && unique_app_is_running (_app))
     {
       if (dictionary != NULL)
       {
@@ -178,6 +185,28 @@ static gboolean _is_unique (gboolean arg_create_new_instance, char *dictionary, 
       status = FALSE;
     }
 
+    //Creating a new window
+    else if (arg_create_new_window && unique_app_is_running (_app))
+    {
+      response = unique_app_send_message (_app, UNIQUE_NEW, NULL);
+
+      if (dictionary != NULL)
+      {
+        messagedata = unique_message_data_new ();
+        unique_message_data_set (messagedata, (guchar*) dictionary, strlen(dictionary) + 1);
+        response = unique_app_send_message (_app, GW_MESSAGE_SET_DICTIONARY, messagedata);
+        unique_message_data_free (messagedata);
+      }
+      if (query != NULL)
+      {
+        messagedata = unique_message_data_new ();
+        unique_message_data_set (messagedata, (guchar*) query, strlen(query) + 1);
+        response = unique_app_send_message (_app, GW_MESSAGE_SET_QUERY, messagedata);
+        unique_message_data_free (messagedata);
+      }
+      status = FALSE;
+    }
+
     //Creating a new instance
     else {
       response = unique_app_send_message (_app, UNIQUE_NEW, NULL);
@@ -187,8 +216,10 @@ static gboolean _is_unique (gboolean arg_create_new_instance, char *dictionary, 
     return status;
 }
 
+/*
 static void _add_window_watcher (GtkWidget *main_window)
 {
       unique_app_watch_window (_app, GTK_WINDOW (main_window));
       g_signal_connect (_app, "message-received", G_CALLBACK (_message_received_cb), NULL);
 }
+*/
