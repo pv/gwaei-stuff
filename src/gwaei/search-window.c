@@ -2116,9 +2116,11 @@ int gw_searchwindow_new_tab (GwSearchWindow *window)
 
     //Put everything together
 //    gtk_notebook_set_tab_reorderable (window->notebook, scrolledwindow, TRUE);
-    gtk_notebook_set_current_page (window->notebook, position);
-    gw_searchwindow_set_current_searchitem (window, NULL);
     gw_searchwindow_set_font (window);
+    gtk_notebook_set_current_page (window->notebook, position);
+    gw_searchwindow_set_entry_text_by_searchitem (window, NULL);
+    gtk_widget_grab_focus (GTK_WIDGET (window->entry));
+    gw_searchwindow_set_current_searchitem (window, NULL);
 
     return position;
 }

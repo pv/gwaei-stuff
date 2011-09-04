@@ -541,10 +541,22 @@ gboolean lw_searchitem_is_equal (LwSearchItem *item1, LwSearchItem *item2)
   gboolean queries_are_equal;
   gboolean dictionaries_are_equal;
   //Sanity checks
-  if (item1 == item2) return TRUE;
-  if (item1 == NULL) return FALSE;
-  if (item2 == NULL) return FALSE;
+  if (item1 == NULL)
+  {
+    printf("BREAK item1 is NULL\n");
+    return FALSE;
+  }
+  if (item2 == NULL)
+  {
+    printf("BREAK item2 is NULL\n");
+    return FALSE;
+  }
 
+  if (item1 == item2)
+  {
+    printf("BREAK item1 equals item2\n");
+    return TRUE;
+  }
   g_mutex_lock (item1->mutex);
   g_mutex_lock (item2->mutex);
 
@@ -552,8 +564,8 @@ gboolean lw_searchitem_is_equal (LwSearchItem *item1, LwSearchItem *item2)
   queries_are_equal = (strcmp(item1->queryline->string, item2->queryline->string) == 0);
   dictionaries_are_equal = (item1->dictionary == item2->dictionary);
 
-  g_mutex_unlock (item1->mutex);
   g_mutex_unlock (item2->mutex);
+  g_mutex_unlock (item1->mutex);
 
   return (queries_are_equal && dictionaries_are_equal);
 }

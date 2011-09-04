@@ -1007,6 +1007,7 @@
                             <property name="invisible_char_set">True</property>
                             <signal name="changed" handler="gw_searchwindow_update_button_states_based_on_entry_text_cb" object="main_window" swapped="no"/>
                             <signal name="activate" handler="gw_searchwindow_search_cb" object="main_window" swapped="no"/>
+                            <signal name="key_press_event" handler="gw_searchwindow_focus_change_on_key_press_cb" object="main_window" swapped="no"/>
                             <signal name="icon-release" handler="gw_searchwindow_clear_entry_button_pressed_cb" object="main_window" swapped="no"/>
                           </object>
                         </child>
@@ -1026,6 +1027,7 @@
                         <property name="tooltip_text" translatable="yes">Select the dictionary you want to use</property>
                         <property name="focus_on_click">False</property>
                         <signal name="changed" handler="gw_searchwindow_dictionary_combobox_changed_cb" object="main_window" swapped="no"/>
+                        <signal name="key_press_event" handler="gw_searchwindow_focus_change_on_key_press_cb" object="main_window" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1052,6 +1054,7 @@
                 <property name="use_underline">True</property>
                 <property name="stock_id">gtk-find</property>
                 <signal name="clicked" handler="gw_searchwindow_search_cb" object="main_window" swapped="no"/>
+                <signal name="key_press_event" handler="gw_searchwindow_focus_change_on_key_press_cb" object="main_window" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>

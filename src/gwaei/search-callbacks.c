@@ -1033,7 +1033,6 @@ G_MODULE_EXPORT gboolean gw_searchwindow_key_press_modify_status_update_cb (GtkW
                                                                             GdkEvent  *event,
                                                                             gpointer  *data  )
 {
-/*
     //Declarations
     GwSearchWindow *window;
     GtkTextView *view;
@@ -1063,7 +1062,7 @@ G_MODULE_EXPORT gboolean gw_searchwindow_key_press_modify_status_update_cb (GtkW
     {
       window->new_tab = TRUE;
     }
-*/
+
     return FALSE;
 }
 
@@ -1246,19 +1245,24 @@ G_MODULE_EXPORT void gw_searchwindow_search_cb (GtkWidget *widget, gpointer data
        )
     {
       lw_searchitem_increment_history_relevance_timer (item);
+
       if (new_item != NULL)
         lw_searchitem_free (new_item);
 
-      if (error != NULL)
-      {
-        fprintf(stderr, "%s\n", error->message);
-        g_error_free (error);
-      }
+      gw_app_handle_error (app, NULL, FALSE, &error);
 
       return;
     }
 
-    lw_searchitem_cancel_search (item);
+    if (window->new_tab)
+    {
+      gw_searchwindow_new_tab (window);
+      item = NULL;
+    }
+    else
+    {
+      lw_searchitem_cancel_search (item);
+    }
 
     //Push the previous searchitem or replace it with the new one
     if (item != NULL && lw_searchitem_has_history_relevance (item, window->keepsearchingdata.enabled))
@@ -1603,11 +1607,6 @@ G_MODULE_EXPORT void gw_searchwindow_new_tab_cb (GtkWidget *widget, gpointer dat
     window = GW_SEARCHWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
     if (window == NULL) return;
     position = gw_searchwindow_new_tab (window);
-
-    gtk_notebook_set_current_page (window->notebook, position);
-    gw_searchwindow_set_entry_text_by_searchitem (window, NULL);
-    gtk_widget_grab_focus (GTK_WIDGET (window->entry));
-    gw_searchwindow_set_current_searchitem (window, NULL);
 }
 
 
