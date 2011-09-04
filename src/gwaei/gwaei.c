@@ -572,7 +572,7 @@ gboolean gw_app_can_start_search (GwApplication *app)
 void gw_app_handle_error (GwApplication *app, GwWindow *transient_for, gboolean show_dialog, GError **error)
 {
     //Sanity checks
-    if (error != NULL && *error != NULL) return;
+    if (error == NULL || *error == NULL) return;
 
     //Declarations
     GtkWidget *dialog;

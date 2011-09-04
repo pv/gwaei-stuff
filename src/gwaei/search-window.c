@@ -478,8 +478,10 @@ void gw_searchwindow_set_entry_text_by_searchitem (GwSearchWindow* window, LwSea
     if (item == NULL)
     {
       gtk_entry_set_text (window->entry, "");
+/*
       gtk_widget_override_background_color (GTK_WIDGET (window->entry), GTK_STATE_NORMAL, NULL);
       gtk_widget_override_color (GTK_WIDGET (window->entry), GTK_STATE_NORMAL, NULL);
+*/
     }
     //There was previously a window, set the match colors from the prefs
     else

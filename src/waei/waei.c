@@ -76,6 +76,9 @@ void w_app_free (WApplication *app)
 
 void w_app_init (WApplication* app, int *argc, char** argv[], GError **error)
 {
+    //Sanity check
+    if (error != NULL && *error != NULL) return;
+
     setlocale(LC_MESSAGES, "");
     setlocale(LC_CTYPE, "");
     setlocale(LC_COLLATE, "");
@@ -141,6 +144,9 @@ void w_app_deinit (WApplication *app)
 //!
 void w_app_parse_args (WApplication* app, int* argc, char** argv[], GError **error)
 {
+    //Sanity check
+    if (error != NULL && *error != NULL) return;
+
     //Declarations
     char *summary_text;
     char *description_text;

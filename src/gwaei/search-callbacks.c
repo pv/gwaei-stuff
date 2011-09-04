@@ -478,6 +478,8 @@ G_MODULE_EXPORT void gw_searchwindow_forward_cb (GtkWidget *widget, gpointer dat
 //!
 G_MODULE_EXPORT void gw_searchwindow_save_as_cb (GtkWidget *widget, gpointer data)
 {
+    gw_app_block_searches (app);
+
     //Declarations
     GwSearchWindow *window;
     const gchar *path;
@@ -535,6 +537,8 @@ G_MODULE_EXPORT void gw_searchwindow_save_as_cb (GtkWidget *widget, gpointer dat
     g_free (text);
     text = NULL;
     gw_app_handle_error (app, GW_WINDOW (window), TRUE, &error);
+
+    gw_app_unblock_searches (app);
 }
 
 
@@ -546,6 +550,8 @@ G_MODULE_EXPORT void gw_searchwindow_save_as_cb (GtkWidget *widget, gpointer dat
 //0
 G_MODULE_EXPORT void gw_searchwindow_save_cb (GtkWidget *widget, gpointer data)
 {
+    gw_app_block_searches (app);
+
     //Declarations
     gchar *text;
     const gchar *path;
@@ -562,6 +568,7 @@ G_MODULE_EXPORT void gw_searchwindow_save_cb (GtkWidget *widget, gpointer data)
     if (path == NULL || *path == '\0')
     {
       gw_searchwindow_save_as_cb (widget, data);
+      gw_app_unblock_searches (app);
       return;
     }
 
@@ -571,7 +578,9 @@ G_MODULE_EXPORT void gw_searchwindow_save_cb (GtkWidget *widget, gpointer data)
     g_free (text);
     text = NULL;
 
-    gw_app_handle_error (app, GW_WINDOW (window), TRUE, &error);
+    gw_app_handle_error (app, GW_WINDOW (window), FALSE, &error);
+
+    gw_app_unblock_searches (app);
 }
 
 
@@ -1241,7 +1250,6 @@ G_MODULE_EXPORT void gw_searchwindow_search_cb (GtkWidget *widget, gpointer data
         lw_searchitem_is_equal (item, new_item)
        )
     {
-      printf("BREAK canceled search\n");
       lw_searchitem_increment_history_relevance_timer (item);
       if (new_item != NULL)
         lw_searchitem_free (new_item);
