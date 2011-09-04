@@ -455,6 +455,12 @@ void gw_output_append_edict_results_cb (LwSearchItem *item)
       gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, gettext("Pop"), -1, "small", NULL);
     }
 
+
+    _shift_stay_mark (item, "previous_result");
+    start_offset = 0;
+    end_offset = gtk_text_iter_get_line_offset (&iter);
+
+
     char *markup;
 
     //Insert popup button
@@ -478,11 +484,6 @@ void gw_output_append_edict_results_cb (LwSearchItem *item)
       anchor = gtk_text_buffer_create_child_anchor (buffer, &iter);
       gtk_text_view_add_child_at_anchor (view, GTK_WIDGET (button), anchor);
     }
-
-
-    _shift_stay_mark (item, "previous_result");
-    start_offset = 0;
-    end_offset = gtk_text_iter_get_line_offset (&iter);
 
     if (!remove_last_linebreak) gtk_text_buffer_insert (buffer, &iter, "\n", -1);
     _add_match_highlights (line, start_offset, end_offset, item);
