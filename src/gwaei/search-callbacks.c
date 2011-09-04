@@ -1799,7 +1799,8 @@ G_MODULE_EXPORT void gw_searchwindow_sync_toolbar_show_cb (GSettings *settings, 
       gtk_widget_hide (GTK_WIDGET (window->toolbar));
     }
 
-    gtk_style_context_reset_widgets (gdk_screen_get_default ());
+    gtk_widget_reset_style (GTK_WIDGET (search_toolbar));
+    gtk_widget_reset_style (GTK_WIDGET (window->toolbar));
 
     g_signal_handlers_block_by_func (action, gw_searchwindow_toolbar_show_toggled_cb, window->toplevel);
     gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), request);
