@@ -11,7 +11,6 @@ src/libwaei/searchitem.c
 src/libwaei/utilities.c
 
 src/waei/console.c
-src/waei/ncurses.c
 src/waei/waei.c
 
 [type: gettext/glade] src/gwaei/ui/dictionaryinstall.ui
@@ -21,7 +20,6 @@ src/waei/waei.c
 [type: gettext/glade] src/gwaei/ui/settings.ui
 [type: gettext/glade] src/gwaei/ui/kanjipad.ui
 
-src/gwaei/common.c
 src/gwaei/dictinfolist-callbacks.c
 src/gwaei/dictinfolist.c
 src/gwaei/dictionaryinstall-callbacks.c

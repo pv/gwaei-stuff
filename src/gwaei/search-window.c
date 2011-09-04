@@ -2184,6 +2184,7 @@ void gw_searchwindow_set_current_searchitem (GwSearchWindow *window, LwSearchIte
 {
     //Declarations
     GtkAction *action;
+    GtkLabel *label;
     gboolean enable;
     const char *id;
     GList *link;
@@ -2206,27 +2207,32 @@ void gw_searchwindow_set_current_searchitem (GwSearchWindow *window, LwSearchIte
 
     //Update Save sensitivity state
     id = "file_append_action";
-    action = GTK_ACTION (gtk_builder_get_object(window->builder, id));
+    action = GTK_ACTION (gtk_builder_get_object (window->builder, id));
     enable = (item != NULL);
     gtk_action_set_sensitive (action, enable);
 
     //Update Save as sensitivity state
     id = "file_save_as_action";
-    action = GTK_ACTION (gtk_builder_get_object(window->builder, id));
+    action = GTK_ACTION (gtk_builder_get_object (window->builder, id));
     enable = (item != NULL);
     gtk_action_set_sensitive (action, enable);
 
     //Update Print sensitivity state
     id = "file_print_action";
-    action = GTK_ACTION (gtk_builder_get_object(window->builder, id));
+    action = GTK_ACTION (gtk_builder_get_object (window->builder, id));
     enable = (item != NULL);
     gtk_action_set_sensitive (action, enable);
 
     //Update Print preview sensitivity state
     id = "file_print_preview_action";
-    action = GTK_ACTION (gtk_builder_get_object(window->builder, id));
+    action = GTK_ACTION (gtk_builder_get_object (window->builder, id));
     enable = (item != NULL);
     gtk_action_set_sensitive (action, enable);
+
+    //Set the label's mnemonic widget since glade doesn't seem to want to
+    id = "search_entry_label";
+    label = GTK_LABEL (gtk_builder_get_object (window->builder, id));
+    gtk_label_set_mnemonic_widget (label, GTK_WIDGET (window->entry));
 }
 
 

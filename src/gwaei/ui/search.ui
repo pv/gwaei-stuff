@@ -157,6 +157,7 @@
     <property name="icon_name">word-boundary</property>
     <signal name="activate" handler="gw_searchwindow_insert_word_edge_cb" object="main_window" swapped="no"/>
   </object>
+  <object class="GtkActionGroup" id="main_actiongroup"/>
   <object class="GtkToggleAction" id="view_toggle_statusbar_action">
     <property name="label" translatable="yes">Show _Statusbar</property>
     <signal name="toggled" handler="gw_searchwindow_statusbar_show_toggled_cb" object="main_window" swapped="no"/>
@@ -194,7 +195,6 @@
     <property name="can_focus">False</property>
   </object>
   <object class="GtkAccelGroup" id="main_accelgroup"/>
-  <object class="GtkActionGroup" id="main_actiongroup"/>
   <object class="GtkWindow" id="main_window">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">gWaei Japanese-English Dictionary</property>
@@ -485,8 +485,8 @@
                         <property name="related_action">view_zoom_in_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="KP_Add" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                         <accelerator key="plus" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                        <accelerator key="KP_Add" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -496,8 +496,8 @@
                         <property name="related_action">view_zoom_out_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="KP_Subtract" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                         <accelerator key="minus" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                        <accelerator key="KP_Subtract" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -507,8 +507,8 @@
                         <property name="related_action">view_zoom_100_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="KP_0" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                         <accelerator key="0" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                        <accelerator key="KP_0" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -772,9 +772,6 @@
         </child>
         <child>
           <object class="GtkToolbar" id="toolbar">
-            <style>
-              <class name="primary-toolbar"/>
-            </style>
             <property name="can_focus">False</property>
             <property name="no_show_all">True</property>
             <child>
@@ -968,92 +965,103 @@
           </packing>
         </child>
         <child>
-          <object class="GtkHBox" id="search_hbox">
+          <object class="GtkToolbar" id="search_toolbar">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="border_width">7</property>
-            <property name="spacing">4</property>
+            <property name="toolbar_style">icons</property>
+            <property name="icon_size">1</property>
             <child>
-              <object class="GtkLabel" id="label1">
+              <object class="GtkToolItem" id="entry_toolbutton">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Sear_ch:</property>
-                <property name="use_underline">True</property>
-                <property name="single_line_mode">True</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkAlignment" id="search_entry_container">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="use_action_appearance">False</property>
                 <child>
-                  <object class="GtkEntry" id="search_entry">
+                  <object class="GtkHBox" id="search_hbox">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="max_length">20</property>
-                    <property name="invisible_char">●</property>
-                    <property name="activates_default">True</property>
-                    <property name="text" translatable="yes">Search</property>
-                    <signal name="changed" handler="gw_searchwindow_update_button_states_based_on_entry_text_cb" object="main_window" swapped="no"/>
-                    <signal name="activate" handler="gw_searchwindow_search_cb" object="main_window" swapped="no"/>
-                    <signal name="icon-release" handler="gw_searchwindow_clear_entry_button_pressed_cb" object="main_window" swapped="no"/>
+                    <property name="can_focus">False</property>
+                    <property name="spacing">4</property>
+                    <child>
+                      <object class="GtkLabel" id="search_entry_label">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Sear_ch:</property>
+                        <property name="use_underline">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkAlignment" id="search_entry_container">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <child>
+                          <object class="GtkEntry" id="search_entry">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="max_length">20</property>
+                            <property name="invisible_char">●</property>
+                            <property name="activates_default">True</property>
+                            <property name="invisible_char_set">True</property>
+                            <signal name="changed" handler="gw_searchwindow_update_button_states_based_on_entry_text_cb" object="main_window" swapped="no"/>
+                            <signal name="activate" handler="gw_searchwindow_search_cb" object="main_window" swapped="no"/>
+                            <signal name="icon-release" handler="gw_searchwindow_clear_entry_button_pressed_cb" object="main_window" swapped="no"/>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkComboBox" id="dictionary_combobox">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="has_tooltip">True</property>
+                        <property name="tooltip_markup" translatable="yes">Select the dictionary you want to use</property>
+                        <property name="tooltip_text" translatable="yes">Select the dictionary you want to use</property>
+                        <property name="focus_on_click">False</property>
+                        <signal name="changed" handler="gw_searchwindow_dictionary_combobox_changed_cb" object="main_window" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
                   </object>
                 </child>
               </object>
               <packing>
                 <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
+                <property name="homogeneous">True</property>
               </packing>
             </child>
             <child>
-              <object class="GtkComboBox" id="dictionary_combobox">
+              <object class="GtkToolButton" id="search_entry_submit_toolbutton">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="tooltip_text" translatable="yes">Select the dictionary you want to use</property>
-                <property name="focus_on_click">False</property>
-                <signal name="changed" handler="gw_searchwindow_dictionary_combobox_changed_cb" object="main_window" swapped="no"/>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="search_entry_submit_button">
-                <property name="can_focus">False</property>
-                <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">Click to start search</property>
+                <property name="margin_left">4</property>
                 <property name="use_action_appearance">False</property>
-                <property name="relief">none</property>
-                <property name="image_position">right</property>
-                <signal name="activate" handler="gw_searchwindow_search_cb" object="main_window" swapped="no"/>
+                <property name="is_important">True</property>
+                <property name="label" translatable="yes">Search</property>
+                <property name="use_underline">True</property>
+                <property name="stock_id">gtk-find</property>
                 <signal name="clicked" handler="gw_searchwindow_search_cb" object="main_window" swapped="no"/>
-                <child>
-                  <object class="GtkImage" id="image1">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="stock">gtk-find</property>
-                    <property name="icon-size">1</property>
-                  </object>
-                </child>
               </object>
               <packing>
                 <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">3</property>
+                <property name="homogeneous">True</property>
               </packing>
             </child>
           </object>
           <packing>
             <property name="expand">False</property>
-            <property name="fill">False</property>
+            <property name="fill">True</property>
             <property name="position">2</property>
           </packing>
         </child>
@@ -1220,7 +1228,6 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="padding">12</property>
                 <property name="pack_type">end</property>
                 <property name="position">1</property>
               </packing>

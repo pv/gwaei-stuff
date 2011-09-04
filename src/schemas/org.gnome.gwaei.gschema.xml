@@ -43,7 +43,7 @@
     </key>
 
     <key name="search-as-you-type" type="b">
-      <default>true</default>
+      <default>false</default>
       <summary>The search updates as you type</summary>
       <description>Searches dynamically update as you type.</description>
     </key>
