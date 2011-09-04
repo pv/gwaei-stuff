@@ -122,43 +122,6 @@ void gw_spellcheck_free_menuitem_data_cb (GtkWidget *widget, gpointer data)
 }
 
 
-/*
-static void _update_button_sensitivities ()
-{
-    //Declarations
-    GtkBuilder *builder;
-    GtkWidget *checkbox;
-    GtkWidget *toolbutton;
-    GtkWidget *entry;
-    gboolean exists;
-
-    //Initializations
-    builder = gw_common_get_builder ();
-    entry = GTK_WIDGET (gw_common_get_widget_by_target (LW_TARGET_ENTRY));
-    checkbox = GTK_WIDGET (gtk_builder_get_object (builder, "query_spellcheck"));
-    toolbutton = GTK_WIDGET (gtk_builder_get_object (builder, "spellcheck_toolbutton"));
-    exists = g_file_test (ENCHANT, G_FILE_TEST_IS_REGULAR);
-
-    if (exists && !_sensitive)
-    {
-      _sensitive = exists;
-      gtk_widget_set_sensitive (GTK_WIDGET (checkbox), TRUE);
-      gtk_widget_set_sensitive (GTK_WIDGET (toolbutton), TRUE);
-      g_free (_query_text);
-      _query_text = g_strdup ("FORCE UPDATE");
-    }
-    else if (!exists && _sensitive)
-    {
-      _sensitive = exists;
-      gtk_widget_set_sensitive (GTK_WIDGET (checkbox), FALSE);
-      gtk_widget_set_sensitive (GTK_WIDGET (toolbutton), FALSE);
-      g_free (_query_text);
-      _query_text = g_strdup ("FORCE UPDATE");
-    }
-}
-*/
-
-
 int gw_spellcheck_get_y_offset (GwSpellcheck *spellcheck)
 {
     //Declarations

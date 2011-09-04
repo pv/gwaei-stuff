@@ -102,6 +102,15 @@ void gw_settingswindow_init (GwSettingsWindow *window, GwWindow *transient_for)
     gw_window_set_transient_for (GW_WINDOW (window), transient_for);
 
     gw_settingswindow_check_for_dictionaries (window);
+
+    //We are going to lazily update the sensitivity of the spellcheck buttons only when the window is created
+    GtkToggleButton *checkbox;
+    gboolean enchant_exists;
+
+    checkbox = GTK_TOGGLE_BUTTON (gtk_builder_get_object (window->builder, "query_spellcheck")); 
+    enchant_exists = g_file_test (ENCHANT, G_FILE_TEST_IS_REGULAR);
+
+    gtk_widget_set_sensitive (GTK_WIDGET (checkbox), enchant_exists);
 }
 
 
