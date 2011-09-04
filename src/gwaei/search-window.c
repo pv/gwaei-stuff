@@ -1792,51 +1792,6 @@ gboolean gw_searchwindow_keep_searching_timeout (GwSearchWindow *window)
 
 
 //!
-//! @brief Uses a searchitem to cancel a window
-//!
-//! @param item A LwSearchItem to gleam information from
-//!
-gboolean gw_searchwindow_cancel_search_by_searchitem (GwSearchWindow *window, LwSearchItem *item)
-{
-    if (item == NULL) return TRUE;
-    
-    g_mutex_lock (item->mutex);
-
-      //Sanity check 1
-      if (item->status == LW_SEARCHSTATUS_IDLE) 
-      {
-        g_mutex_unlock (item->mutex);
-        return TRUE;
-      }
-
-      //Sanity check 2
-      if(item != NULL && item->status == LW_SEARCHSTATUS_CANCELING) 
-      {
-        g_mutex_unlock (item->mutex);
-        return FALSE;
-      }
-
-      //Sanity check 3
-      if (item->thread == NULL)
-      {
-        item->status = LW_SEARCHSTATUS_IDLE;
-        g_mutex_unlock (item->mutex);
-        return FALSE;
-      }
-
-      //Do the cancel operation
-      item->status = LW_SEARCHSTATUS_CANCELING;
-
-    g_mutex_unlock (item->mutex);
-
-    g_thread_join(item->thread);
-    item->thread = NULL;
-
-    return FALSE;
-}
-
-
-//!
 //! @brief Abstraction function to find out if some text is selected
 //!
 //! It gets the requested text buffer and then returns if it has text selected
@@ -1869,11 +1824,11 @@ void gw_searchwindow_cancel_all_searches (GwSearchWindow *window)
 
     for (iter = window->tablist; iter != NULL; iter = iter->next)
     {
-      item = (LwSearchItem*) iter->data;
-      gw_searchwindow_cancel_search_by_searchitem (window, item);
+      item = LW_SEARCHITEM (iter->data);
+      lw_searchitem_cancel_search (item);
     }
 
-    gw_searchwindow_cancel_search_by_searchitem (window, window->mousedata.item);
+    lw_searchitem_cancel_search (window->mousedata.item);
 }
 
 
@@ -1881,28 +1836,26 @@ void gw_searchwindow_cancel_all_searches (GwSearchWindow *window)
 //! @brief Cancels the search of the tab number
 //! @param page_num The page number of the tab to cancel the search of
 //!
-gboolean gw_searchwindow_cancel_search_by_tab_number (GwSearchWindow *window, const int page_num)
+void gw_searchwindow_cancel_search_by_tab_number (GwSearchWindow *window, const int page_num)
 {
     //Declarations
     gboolean result;
     LwSearchItem *item;
 
     //Initializations
-    item = (LwSearchItem*) g_list_nth_data (window->tablist, page_num);
+    item = LW_SEARCHITEM (g_list_nth_data (window->tablist, page_num));
 
     //Sanity check
-    if (item == NULL) return TRUE;
+    if (item == NULL) return;
 
-    result = gw_searchwindow_cancel_search_by_searchitem (window, item);
-
-    return result;
+    lw_searchitem_cancel_search (item);
 }
 
 
 //!
 //! @brief Cancels the search of the currently visibile tab
 //!
-gboolean gw_searchwindow_cancel_search_for_current_tab (GwSearchWindow *window)
+void gw_searchwindow_cancel_search_for_current_tab (GwSearchWindow *window)
 {
     //Declarations
     int page_num;
@@ -1910,9 +1863,7 @@ gboolean gw_searchwindow_cancel_search_for_current_tab (GwSearchWindow *window)
 
     //Initializations
     page_num = gtk_notebook_get_current_page (window->notebook);
-    result = gw_searchwindow_cancel_search_by_tab_number (window, page_num);
-
-    return result;
+    gw_searchwindow_cancel_search_by_tab_number (window, page_num);
 }
 
 
@@ -1920,7 +1871,7 @@ gboolean gw_searchwindow_cancel_search_for_current_tab (GwSearchWindow *window)
 //! @brief Cancels a search by identifying matching gpointer
 //! @param container A pointer to the top-most widget in the desired tab to cancel the search of.
 //!
-gboolean gw_searchwindow_cancel_search_by_content (GwSearchWindow *window, gpointer container)
+void gw_searchwindow_cancel_search_by_content (GwSearchWindow *window, gpointer container)
 {
     //Declarations
     int position;
@@ -1931,16 +1882,14 @@ gboolean gw_searchwindow_cancel_search_by_content (GwSearchWindow *window, gpoin
     position = gtk_notebook_page_num (window->notebook, container);
 
     //Sanity check
-    if (position == -1) return FALSE;
+    if (position == -1) return;
 
-    item = g_list_nth_data (window->tablist, position);
+    item = LW_SEARCHITEM (g_list_nth_data (window->tablist, position));
 
     //Sanity check
-    if (item == NULL) return TRUE;
+    if (item == NULL) return;
 
-    result = gw_searchwindow_cancel_search_by_searchitem (window, item);
-
-    return result;
+    lw_searchitem_cancel_search (item);
 }
 
 

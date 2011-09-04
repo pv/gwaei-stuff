@@ -244,7 +244,7 @@ void lw_searchitem_free (LwSearchItem* item)
   if (item->thread != NULL) 
   {
     item->status = LW_SEARCHSTATUS_CANCELING;
-    g_thread_join(item->thread);
+    g_thread_join (item->thread);
     item->thread = NULL;
     g_mutex_free (item->mutex);
     item->mutex = NULL;
@@ -650,3 +650,32 @@ void lw_searchitem_parse_result_string (LwSearchItem *item)
           break;
     }
 }
+
+//!
+//! @brief Uses a searchitem to cancel a window
+//!
+//! @param item A LwSearchItem to gleam information from
+//!
+void lw_searchitem_cancel_search (LwSearchItem *item)
+{
+    if (item == NULL) return;
+    
+    g_mutex_lock (item->mutex);
+
+    //Force the thread to stop running
+    if (item->thread != NULL && item->status != LW_SEARCHSTATUS_IDLE) 
+    {
+      item->status = LW_SEARCHSTATUS_CANCELING;
+      g_mutex_unlock (item->mutex);
+
+      g_thread_join (item->thread);
+      item->thread = NULL;
+
+      g_mutex_lock (item->mutex);
+    }
+
+    item->status == LW_SEARCHSTATUS_IDLE;
+    g_mutex_unlock (item->mutex);
+}
+
+

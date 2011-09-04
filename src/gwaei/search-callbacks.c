@@ -202,7 +202,7 @@ G_MODULE_EXPORT gboolean gw_searchwindow_get_iter_for_button_release_cb (GtkWidg
           //Start the search
           if (window->mousedata.item != NULL)
           {
-            gw_searchwindow_cancel_search_by_searchitem (window, window->mousedata.item);
+            lw_searchitem_cancel_search (window->mousedata.item);
             window->mousedata.item = NULL;
           }
 
@@ -347,11 +347,7 @@ G_MODULE_EXPORT void gw_searchwindow_search_from_history_cb (GtkWidget *widget, 
     sdata->view = gw_searchwindow_get_current_textview (window);
     
     //Checks to make sure everything is sane
-    if (gw_searchwindow_cancel_search_for_current_tab (window) == FALSE)
-    {
-      fprintf(stderr, "CANCEL SEARCH FOR CURRENT TAB RETURNED FALSE\n");
-      return;
-    }
+    gw_searchwindow_cancel_search_for_current_tab (window);
 
     //Remove the current searchitem if it has no history relevance
     if (current != NULL && !lw_searchitem_has_history_relevance (current, window->keepsearchingdata.enabled))
@@ -1225,7 +1221,7 @@ G_MODULE_EXPORT void gw_searchwindow_search_cb (GtkWidget *widget, gpointer data
     //Cancel all searches if the search bar is empty
     if (strlen(query) == 0 || di == NULL) 
     {
-      gw_searchwindow_cancel_search_by_searchitem (window, item);
+      lw_searchitem_cancel_search (item);
       return;
     }
 
@@ -1242,10 +1238,10 @@ G_MODULE_EXPORT void gw_searchwindow_search_cb (GtkWidget *widget, gpointer data
     //Check for problems, and quit if there are
     if (error != NULL ||
         new_item == NULL ||
-        lw_searchitem_is_equal (item, new_item) ||
-        !gw_searchwindow_cancel_search_by_searchitem (window, item)
+        lw_searchitem_is_equal (item, new_item)
        )
     {
+      printf("BREAK canceled search\n");
       lw_searchitem_increment_history_relevance_timer (item);
       if (new_item != NULL)
         lw_searchitem_free (new_item);
@@ -1258,6 +1254,8 @@ G_MODULE_EXPORT void gw_searchwindow_search_cb (GtkWidget *widget, gpointer data
 
       return;
     }
+
+    lw_searchitem_cancel_search (item);
 
     //Push the previous searchitem or replace it with the new one
     if (item != NULL && lw_searchitem_has_history_relevance (item, window->keepsearchingdata.enabled))

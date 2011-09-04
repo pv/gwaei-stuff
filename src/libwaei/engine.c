@@ -228,6 +228,7 @@ static void _stream_results_thread (gpointer data)
         switch(relevance)
         {
           case LW_RELEVANCE_HIGH:
+              
               if (item->total_relevant_results < LW_MAX_HIGH_RELEVENT_RESULTS)
               {
                 item->total_results++;
@@ -270,6 +271,7 @@ static void _stream_results_thread (gpointer data)
         }
       }
     }
+
 
     //Make sure the more relevant header banner is visible
     if (item->status != LW_SEARCHSTATUS_CANCELING)

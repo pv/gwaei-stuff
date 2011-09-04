@@ -117,6 +117,7 @@ void lw_searchitem_free_data (LwSearchItem*);
 gboolean lw_searchitem_has_data (LwSearchItem*);
 
 void lw_searchitem_parse_result_string (LwSearchItem*);
+void lw_searchitem_cancel_search (LwSearchItem*);
 
 
 
