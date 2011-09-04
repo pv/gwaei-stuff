@@ -382,6 +382,7 @@ static gpointer _outfunc (gpointer data)
 
     g_mutex_lock (spellcheck->mutex);
     spellcheck->running_check = FALSE;
+    spellcheck->thread = NULL;
     g_mutex_unlock (spellcheck->mutex);
 
     return NULL;
@@ -395,7 +396,16 @@ gboolean gw_spellcheck_update_timeout (gpointer data)
 
     //Initializaitons
     spellcheck = GW_SPELLCHECK (data);
-
+/*
+    //Make sure any previous spellchecks have finished
+    g_mutex_lock (spellcheck->mutex);
+    if (spellcheck->thread != NULL) 
+    {
+      g_mutex_unlock (spellcheck->mutex);
+      return TRUE;
+    }
+    g_mutex_unlock (spellcheck->mutex);
+*/
     //Sanity check
     if (spellcheck->timeoutid[GW_SPELLCHECK_TIMEOUTID_UPDATE] == 0) return TRUE;
 
@@ -435,7 +445,6 @@ gboolean gw_spellcheck_update_timeout (gpointer data)
     gboolean success;
     GwSpellcheckStreamWithData *indata;
     GwSpellcheckStreamWithData *outdata;
-    GThread *outthread;
     
     //Initializations
     rk_conv_pref = lw_prefmanager_get_int_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_ROMAN_KANA);
@@ -461,7 +470,6 @@ gboolean gw_spellcheck_update_timeout (gpointer data)
     }
 
     spellcheck->needs_spellcheck = FALSE;
-    outthread = NULL;
 
     success = g_spawn_async_with_pipes (
       NULL, 
@@ -485,20 +493,16 @@ gboolean gw_spellcheck_update_timeout (gpointer data)
       if (indata != NULL && outdata != NULL)
       {
         _infunc ((gpointer) indata);
-        outthread = g_thread_create (_outfunc, (gpointer) outdata, TRUE, &error);
+        spellcheck->thread = g_thread_create (_outfunc, (gpointer) outdata, TRUE, &error);
       }
 
-      if (outthread == NULL)
+      if (spellcheck->thread == NULL)
       {
         spellcheck->running_check = FALSE;
       }
     }
     
-    if (error !=NULL) 
-    {
-      fprintf(stderr, "ERROR: %s\n", error->message);
-      g_error_free (error);
-    }
+    gw_app_handle_error (app, NULL, FALSE, &error);
 
     //gtk_widget_queue_draw (GTK_WIDGET (data));
   

@@ -224,6 +224,8 @@ void lw_searchitem_cleanup_search (LwSearchItem* item)
       item->backup_resultline = NULL;
     }
 
+    item->thread = NULL;
+
     //item->thread = NULL;  This code creates multithreading problems
     item->status = LW_SEARCHSTATUS_IDLE;
 }
@@ -658,12 +660,14 @@ void lw_searchitem_parse_result_string (LwSearchItem *item)
 //!
 void lw_searchitem_cancel_search (LwSearchItem *item)
 {
-    if (item == NULL) return;
+    if (item == NULL || item->thread == NULL) {
+      return;
+    }
     
     g_mutex_lock (item->mutex);
 
     //Force the thread to stop running
-    if (item->thread != NULL && item->status != LW_SEARCHSTATUS_IDLE) 
+    if (item->status != LW_SEARCHSTATUS_IDLE) 
     {
       item->status = LW_SEARCHSTATUS_CANCELING;
       g_mutex_unlock (item->mutex);

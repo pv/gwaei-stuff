@@ -164,6 +164,8 @@ void gw_searchwindow_deinit (GwSearchWindow *window)
 
     _searchwindow_remove_signals (window);
 
+    gw_searchwindow_cancel_all_searches (window);
+
     if (window->spellcheck != NULL) gw_spellcheck_free (window->spellcheck);
     if (window->history != NULL) lw_historylist_free (window->history);
     if (window->tablist != NULL) g_list_free (window->tablist);

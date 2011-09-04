@@ -40,6 +40,7 @@ void gw_spellcheck_init (GwSpellcheck *spellcheck, GtkEntry *entry)
     spellcheck->sensitive = TRUE;
     spellcheck->running_check = FALSE;
     spellcheck->timeout = 0;
+    spellcheck->thread = NULL;
 
     _spellcheck_attach_signals (spellcheck);
 }
@@ -47,13 +48,12 @@ void gw_spellcheck_init (GwSpellcheck *spellcheck, GtkEntry *entry)
 
 void gw_spellcheck_deinit (GwSpellcheck *spellcheck)
 {
-    g_mutex_lock (spellcheck->mutex);
-
-    g_free (spellcheck->query_text);
-
     _spellcheck_remove_signals (spellcheck);
 
-    g_mutex_unlock (spellcheck->mutex);
+    if (spellcheck->thread != NULL) g_thread_join (spellcheck->thread);
+    spellcheck->thread = NULL;
+
+    g_free (spellcheck->query_text);
     g_mutex_free (spellcheck->mutex);
 }
 

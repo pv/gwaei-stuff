@@ -251,7 +251,7 @@ static void _stream_results_thread (gpointer data)
               {
                 //Store the result line and create an empty one in its place
                 item->total_irrelevant_results++;
-                item->results_medium =  g_list_append(item->results_medium, item->resultline);
+                item->results_medium =  g_list_append (item->results_medium, item->resultline);
                 item->resultline = item->swap_resultline;
                 item->swap_resultline = NULL;
               }
@@ -263,7 +263,7 @@ static void _stream_results_thread (gpointer data)
               {
                 //Store the result line and create an empty one in its place
                 item->total_irrelevant_results++;
-                item->results_low = g_list_append(item->results_low, item->resultline);
+                item->results_low = g_list_append (item->results_low, item->resultline);
                 item->resultline = item->swap_resultline;
                 item->swap_resultline = NULL;
               }

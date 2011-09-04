@@ -20,6 +20,7 @@ struct _GwSpellcheck {
   GtkEntry *entry;
   GList *corrections;
   GMutex *mutex;
+  GThread *thread;
   gboolean needs_spellcheck;
   char* query_text;
   gboolean sensitive;
