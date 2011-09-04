@@ -1238,7 +1238,7 @@ G_MODULE_EXPORT void gw_searchwindow_search_cb (GtkWidget *widget, gpointer data
     new_item = lw_searchitem_new (query, di, LW_OUTPUTTARGET_RESULTS, app->prefmanager, &error);
     if (new_item == NULL)
     {
-      gw_app_handle_error (app, GW_WINDOW (window), TRUE, &error);
+      gw_app_handle_error (app, GW_WINDOW (window), FALSE, &error);
       return;
     }
     sdata = gw_searchdata_new (view, window);
