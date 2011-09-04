@@ -18,7 +18,6 @@ typedef enum {
   GW_SETTINGSWINDOW_SIGNALID_COMMENT_BG,
   GW_SETTINGSWINDOW_SIGNALID_HEADER_FG,
   GW_SETTINGSWINDOW_SIGNALID_HEADER_BG,
-  GW_SETTINGSWINDOW_SIGNALID_DICTIONARIES_CHANGED,
   TOTAL_GW_SETTINGSWINDOW_SIGNALIDS
 } GwSettingsWindowSignalIds;
 
@@ -59,5 +58,6 @@ void gw_settingswindow_decrement_order_list_processes (GwSettingsWindow*);
 void gw_settingswindow_set_use_global_document_font_checkbox (GwSettingsWindow*, gboolean);
 void gw_settingswindow_set_search_as_you_type (GwSettingsWindow*, gboolean);
 gboolean gw_settingswindow_get_search_as_you_type (GwSettingsWindow*);
+void gw_settingswindow_check_for_dictionaries (GwSettingsWindow*);
 
 #endif

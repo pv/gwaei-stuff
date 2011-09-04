@@ -100,6 +100,8 @@ void gw_settingswindow_init (GwSettingsWindow *window, GwWindow *transient_for)
       gtk_notebook_set_current_page (window->notebook, 1);
 
     gw_window_set_transient_for (GW_WINDOW (window), transient_for);
+
+    gw_settingswindow_check_for_dictionaries (window);
 }
 
 
@@ -228,13 +230,6 @@ void _settingswindow_attach_signals (GwSettingsWindow *window)
         gw_settingswindow_sync_swatch_color_cb,
         gtk_builder_get_object (window->builder, "header_background")
     );
-
-    window->signalids[GW_SETTINGSWINDOW_SIGNALID_DICTIONARIES_CHANGED] = g_signal_connect (
-        G_OBJECT (app->dictinfolist->model),
-        "row-changed",
-        G_CALLBACK (gw_settingswindow_dictionaries_changed_cb),
-        window 
-    );
 }
 
 
@@ -321,11 +316,6 @@ void _settingswindow_remove_signals (GwSettingsWindow *window)
         window->signalids[GW_SETTINGSWINDOW_SIGNALID_HEADER_BG]
     );
 
-    g_signal_handler_disconnect (
-        G_OBJECT (app->dictinfolist->model),
-        window->signalids[GW_SETTINGSWINDOW_SIGNALID_DICTIONARIES_CHANGED] 
-    );
-
     for (i = 0; i < TOTAL_GW_SETTINGSWINDOW_SIGNALIDS; i++)
       window->signalids[i] = 0;
 }
@@ -385,4 +375,22 @@ void _settingswindow_initialize_dictionary_tree_view (GtkTreeView *view)
       gtk_tree_view_append_column (view, column);
 }
 
+
+//!
+//! @brief Disables portions of the interface depending on the currently queued jobs.
+//!
+void gw_settingswindow_check_for_dictionaries (GwSettingsWindow *window)
+{
+    //Declarations
+    GtkWidget *message;
+
+    //Initializations
+    message = GTK_WIDGET (gtk_builder_get_object (window->builder, "please_install_dictionary_hbox"));
+
+    //Set the show state of the dictionaries required message
+    if (lw_dictinfolist_get_total (LW_DICTINFOLIST (app->dictinfolist)) > 0)
+      gtk_widget_hide (message);
+    else
+      gtk_widget_show (message);
+}
 

@@ -10,7 +10,6 @@ void gw_settingswindow_swatch_color_changed_cb (GtkWidget*, gpointer);
 void gw_settingswindow_reset_all_swatches_activated_cb (GtkWidget*, gpointer);
 void gw_settingswindow_use_global_document_font_toggled_cb (GtkWidget*, gpointer);
 void gw_settingswindow_custom_document_font_changed_cb (GtkWidget*, gpointer);
-void gw_settingswindow_dictionaries_changed_cb (GtkTreeModel*, GtkTreePath*, GtkTreeIter*, gpointer);
 
 void gw_settingswindow_close_cb (GtkWidget*, gpointer);
 

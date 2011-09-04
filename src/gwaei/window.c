@@ -58,7 +58,7 @@ GwWindow* gw_window_new (const GwWindowType TYPE, GwWindow *transient_for, GList
         window = GW_WINDOW (gw_settingswindow_new (GW_SEARCHWINDOW (transient_for), link));
         gtk_window_set_destroy_with_parent (window->toplevel, TRUE);
         gtk_window_set_position (window->toplevel, GTK_WIN_POS_CENTER_ON_PARENT);
-        gtk_window_set_modal (window->toplevel, TRUE);
+        gtk_window_set_modal (window->toplevel, FALSE);
         break;
       case GW_WINDOW_RADICALS:
         g_assert (transient_for != NULL);

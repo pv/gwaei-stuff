@@ -315,27 +315,6 @@ G_MODULE_EXPORT void gw_settingswindow_sync_search_as_you_type_cb (GSettings *se
 
 
 //!
-//! @brief Disables portions of the interface depending on the currently queued jobs.
-//!
-G_MODULE_EXPORT void gw_settingswindow_dictionaries_changed_cb (GtkTreeModel* model, GtkTreePath *path, GtkTreeIter *iter, gpointer data)
-{
-    //Declarations
-    GwSettingsWindow *window;
-    GtkWidget *message;
-
-    //Initializations
-    window = GW_SETTINGSWINDOW (data);
-    message = GTK_WIDGET (gtk_builder_get_object (window->builder, "please_install_dictionary_hbox"));
-
-    //Set the show state of the dictionaries required message
-    if (g_list_length (app->dictinfolist->list) > 0)
-      gtk_widget_hide (message);
-    else
-      gtk_widget_show (message);
-}
-
-
-//!
 //! @brief Closes the window passed throught the widget pointer
 //! @param widget GtkWidget pointer to the window to close
 //! @param data Currently unused gpointer
@@ -497,6 +476,7 @@ G_MODULE_EXPORT void gw_settingswindow_remove_dictinfo_cb (GtkWidget *widget, gp
     gtk_tree_path_free (path);
 
     gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
+    gw_settingswindow_check_for_dictionaries (window);
 }
 
 

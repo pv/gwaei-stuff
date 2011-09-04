@@ -128,6 +128,7 @@ gdk_threads_enter ();
       lw_dictinstlist_free (settingswindow->dictinstlist);
       settingswindow->dictinstlist = NULL;
     }
+    gw_settingswindow_check_for_dictionaries (GW_SETTINGSWINDOW (window->transient_for));
 gdk_threads_leave ();
 
     return NULL;
