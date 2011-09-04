@@ -444,15 +444,22 @@ GwWindow* gw_app_get_window_by_widget (GwApplication *app, GtkWidget *widget)
 
 int main (int argc, char *argv[])
 {    
+    //Declarations
     int resolution;
+
+    //Initializations
     app = gw_app_new (&argc, &argv);
+    resolution = GW_APP_RESOLUTION_OUT_OF_MEMORY;
 
-    if (app->arg_version_switch)
-      gw_app_print_about (app);
-    else
-      resolution = gw_app_run (app);
+    if (app != NULL)
+    {
+      if (app->arg_version_switch)
+        gw_app_print_about (app);
+      else
+        resolution = gw_app_run (app);
 
-    gw_app_free (app);
+      gw_app_free (app);
+    }
 
     return resolution;
 }

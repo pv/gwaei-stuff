@@ -494,7 +494,7 @@ static void _dictinstwindow_fill_details_box (GwDictInstWindow *window, LwDictIn
     checkbox = gtk_check_button_new_with_label (gettext("Split Places from Names Dictionary"));
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), di->split);
     g_signal_connect (G_OBJECT (checkbox), "toggled", G_CALLBACK (gw_dictionaryinstallwindow_split_checkbox_toggled_cb), window->toplevel);
-    window->split_checkbutton;
+    window->split_checkbutton = GTK_CHECK_BUTTON (checkbox);
 
     hbox = GTK_WIDGET (gtk_hbox_new (FALSE, 0));
     gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (checkbox), FALSE, FALSE, 0);
@@ -506,7 +506,7 @@ static void _dictinstwindow_fill_details_box (GwDictInstWindow *window, LwDictIn
     checkbox = gtk_check_button_new_with_label (gettext("Merge Radicals into Kanji Dictionary"));
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), di->merge);
     g_signal_connect (G_OBJECT (checkbox), "toggled", G_CALLBACK (gw_dictionaryinstallwindow_merge_checkbox_toggled_cb), window->toplevel);
-    window->merge_checkbutton;
+    window->merge_checkbutton = GTK_CHECK_BUTTON (checkbox);
 
     hbox = GTK_WIDGET (gtk_hbox_new (FALSE, 0));
     gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (checkbox), FALSE, FALSE, 0);

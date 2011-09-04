@@ -322,7 +322,6 @@ G_MODULE_EXPORT void gw_settingswindow_dictionaries_changed_cb (GtkTreeModel* mo
     //Declarations
     GwSettingsWindow *window;
     GtkWidget *message;
-    GList *list;
 
     //Initializations
     window = GW_SETTINGSWINDOW (data);

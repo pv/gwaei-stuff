@@ -781,7 +781,7 @@ G_MODULE_EXPORT void gw_searchwindow_copy_cb (GtkWidget *widget, gpointer data)
 
 
 
-G_MODULE_EXPORT gboolean gw_searchwindow_edit_popup_show_cb (GtkWidget *widget, gpointer data) 
+G_MODULE_EXPORT void gw_searchwindow_edit_popup_show_cb (GtkWidget *widget, gpointer data) 
 {
     //Declarations
     GwSearchWindow *window;
@@ -792,7 +792,7 @@ G_MODULE_EXPORT gboolean gw_searchwindow_edit_popup_show_cb (GtkWidget *widget, 
   
     //Initializations
     window = GW_SEARCHWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
-    if (window == NULL) return FALSE;
+    if (window == NULL) return;
     view = gw_searchwindow_get_current_textview (window);
 
     id = "edit_cut_action";

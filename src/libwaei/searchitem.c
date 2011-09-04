@@ -674,7 +674,7 @@ void lw_searchitem_cancel_search (LwSearchItem *item)
       g_mutex_lock (item->mutex);
     }
 
-    item->status == LW_SEARCHSTATUS_IDLE;
+    item->status = LW_SEARCHSTATUS_IDLE;
     g_mutex_unlock (item->mutex);
 }
 

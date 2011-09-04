@@ -242,7 +242,7 @@ WAppResolution w_app_start_console (WApplication *app)
 }
 
 
-WAppResolution main (int argc, char *argv[])
+int main (int argc, char *argv[])
 {    
     //Declarations
     WAppResolution resolution;

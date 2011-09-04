@@ -45,66 +45,12 @@
 LwPrefManager* lw_prefmanager_new ()
 {
   LwPrefManager *temp;
-  char version[50];
 
   temp = (LwPrefManager*) malloc(sizeof(LwPrefManager));
 
   if (temp != NULL)
   {
-    temp->settingslist = NULL;
-    temp->callbacklist = NULL;
-    temp->mutex = g_mutex_new ();
-
-    GSettings *settings;
-
-    settings = lw_prefmanager_get_settings_object (temp, LW_SCHEMA_BASE);
-/*
-
-number = g_signal_connect (widget, "clicked", callback, data);
-g_signal_handler_block (widget, number);
-
-    gchar *dictionary_load_order;
-    gchar *dictionary_english_source;
-    gchar *dictionary_kanji_source;
-    lw_prefmanager_add_boolean_pref_changed_listener (temp, SCHEMA, KEY, &toolbar_show);
-    gchar *dictionary_names_places_source;
-    lw_prefmanager_add_boolean_pref_changed_listener (temp, SCHEMA, KEY, &toolbar_show);
-    gchar *dictionary_examples_source;
-    lw_prefmanager_add_boolean_pref_changed_listener (temp, SCHEMA, KEY, &toolbar_show);
-
-    gboolean use_global_document_font;
-    lw_prefmanager_add_boolean_pref_changed_listener (temp, SCHEMA, KEY, &toolbar_show);
-    gchar *custom_document_font;
-    lw_prefmanager_add_boolean_pref_changed_listener (temp, SCHEMA, KEY, &toolbar_show);
-    gint magnification;
-    lw_prefmanager_add_boolean_pref_changed_listener (temp, SCHEMA, KEY, &toolbar_show);
-    
-    gchar *comment_foreground;
-    lw_prefmanager_add_boolean_pref_changed_listener (temp, SCHEMA, KEY, &toolbar_show);
-    gchar *comment_background;
-    lw_prefmanager_add_boolean_pref_changed_listener (temp, SCHEMA, KEY, &toolbar_show);
-    gchar *match_foreground;
-    lw_prefmanager_add_boolean_pref_changed_listener (temp, SCHEMA, KEY, &toolbar_show);
-    gchar *match_background;
-    lw_prefmanager_add_boolean_pref_changed_listener (temp, SCHEMA, KEY, &toolbar_show);
-    gchar *header_foreground;
-    lw_prefmanager_add_boolean_pref_changed_listener (temp, SCHEMA, KEY, &toolbar_show);
-    gchar *header_background;
-    lw_prefmanager_add_boolean_pref_changed_listener (temp, SCHEMA, KEY, &toolbar_show);
-*/
-
-
-/*
-    lw_prefmanager_get_string_by_schema (temp, version, LW_SCHEMA_BASE, LW_KEY_PROGRAM_VERSION, 50);
-    if (strcmp(version, VERSION) != 0)
-    {
-      lw_prefmanager_set_string_by_schema (temp, LW_SCHEMA_BASE, LW_KEY_PROGRAM_VERSION, VERSION);
-      lw_prefmanager_reset_value_by_schema (temp, LW_SCHEMA_DICTIONARY, LW_KEY_ENGLISH_SOURCE);
-      lw_prefmanager_reset_value_by_schema (temp, LW_SCHEMA_DICTIONARY, LW_KEY_KANJI_SOURCE);
-      lw_prefmanager_reset_value_by_schema (temp, LW_SCHEMA_DICTIONARY, LW_KEY_NAMES_PLACES_SOURCE);
-      lw_prefmanager_reset_value_by_schema (temp, LW_SCHEMA_DICTIONARY, LW_KEY_EXAMPLES_SOURCE);
-    }
-    */
+    lw_prefmanager_init (temp);
   }
 
   return temp;
@@ -116,9 +62,22 @@ g_signal_handler_block (widget, number);
 //!
 void lw_prefmanager_free (LwPrefManager *pm)
 {
-    lw_prefmanager_free_settings (pm);
+    lw_prefmanager_deinit (pm);
 
     free (pm);
+}
+
+void lw_prefmanager_init (LwPrefManager *pm)
+{
+    pm->settingslist = NULL;
+    pm->callbacklist = NULL;
+    pm->mutex = g_mutex_new ();
+}
+
+
+void lw_prefmanager_deinit (LwPrefManager *pm)
+{
+    lw_prefmanager_free_settings (pm);
 }
 
 

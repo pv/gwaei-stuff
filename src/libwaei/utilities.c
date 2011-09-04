@@ -52,7 +52,6 @@ gchar* lw_util_build_filename (const LwFolderPath PATH, const char *FILENAME)
     g_assert (PATH >= 0 && PATH < TOTAL_LW_PATHS);
 
     //Declarations
-    LwDictType i;
     char *base;
     char *folder;
     char *path;

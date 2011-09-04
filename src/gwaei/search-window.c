@@ -57,7 +57,6 @@ void _searchwindow_keepsearchingdata_deinit (GwSearchWindowKeepSearchingData*);
 GwSearchWindow* gw_searchwindow_new (GList *link)
 {
     GwSearchWindow *temp;
-    int i;
 
     temp = (GwSearchWindow*) malloc (sizeof(GwSearchWindow));
 
@@ -578,8 +577,11 @@ void gw_searchwindow_set_title_by_searchitem (GwSearchWindow* window, LwSearchIt
 //!
 void gw_searchwindow_set_total_results_label_by_searchitem (GwSearchWindow *window, LwSearchItem* item)
 {
-    int current_font_magnification;
-    GtkWidget *label = GTK_WIDGET (gtk_builder_get_object(window->builder, "progress_label"));
+    //Declarations
+    GtkWidget *label;
+    
+    //Initializations
+    label = GTK_WIDGET (gtk_builder_get_object(window->builder, "progress_label"));
 
     if (item == NULL)
     {
@@ -660,7 +662,7 @@ void gw_searchwindow_set_dictionary (GwSearchWindow *window, int request)
 {
     LwDictInfo *di;
     GtkMenuShell *shell;
-    GList *list, *iter;
+    GList *list;
     GtkWidget *radioitem;
 
     di = lw_dictinfolist_get_dictinfo_by_load_position (LW_DICTINFOLIST (app->dictinfolist), request);
@@ -673,7 +675,7 @@ void gw_searchwindow_set_dictionary (GwSearchWindow *window, int request)
     if (shell != NULL)
     {
       list = gtk_container_get_children (GTK_CONTAINER (shell));
-      radioitem = g_list_nth_data (list, request);
+      radioitem = GTK_WIDGET (g_list_nth_data (list, request));
       g_signal_handlers_block_by_func (radioitem, gw_searchwindow_dictionary_radio_changed_cb, window->toplevel);
       if (g_list_length (list) > 3 && radioitem != NULL)
       {
@@ -1198,6 +1200,7 @@ void gw_searchwindow_copy_text (GwSearchWindow* window, LwOutputTarget TARGET)
         gtk_text_buffer_copy_clipboard (buffer, clipbd);
         break;
       case LW_OUTPUTTARGET_KANJI:
+      case LW_OUTPUTTARGET_VOCABULARY:
       case LW_OUTPUTTARGET_INVALID:
         break;
     }
@@ -1218,6 +1221,7 @@ void gw_searchwindow_cut_text (GwSearchWindow *window, LwOutputTarget TARGET)
         break;
       case LW_OUTPUTTARGET_RESULTS:
       case LW_OUTPUTTARGET_KANJI:
+      case LW_OUTPUTTARGET_VOCABULARY:
       case LW_OUTPUTTARGET_INVALID:
         break;
     }
@@ -1238,6 +1242,7 @@ void gw_searchwindow_paste_text (GwSearchWindow* window, LwOutputTarget TARGET)
         break;
       case LW_OUTPUTTARGET_RESULTS:
       case LW_OUTPUTTARGET_KANJI:
+      case LW_OUTPUTTARGET_VOCABULARY:
       case LW_OUTPUTTARGET_INVALID:
         break;
     }
@@ -1841,7 +1846,6 @@ void gw_searchwindow_cancel_all_searches (GwSearchWindow *window)
 void gw_searchwindow_cancel_search_by_tab_number (GwSearchWindow *window, const int page_num)
 {
     //Declarations
-    gboolean result;
     LwSearchItem *item;
 
     //Initializations
@@ -1861,10 +1865,10 @@ void gw_searchwindow_cancel_search_for_current_tab (GwSearchWindow *window)
 {
     //Declarations
     int page_num;
-    gboolean result;
 
     //Initializations
     page_num = gtk_notebook_get_current_page (window->notebook);
+
     gw_searchwindow_cancel_search_by_tab_number (window, page_num);
 }
 
@@ -1878,7 +1882,6 @@ void gw_searchwindow_cancel_search_by_content (GwSearchWindow *window, gpointer 
     //Declarations
     int position;
     LwSearchItem *item;
-    gboolean result;
 
     //Initializations
     position = gtk_notebook_page_num (window->notebook, container);
@@ -1951,7 +1954,6 @@ void gw_searchwindow_set_tab_text_by_searchitem (GwSearchWindow *window, LwSearc
     GtkWidget *label;
     const char *text;
     GList *iter;
-    int i;
 
     if (item == NULL)
     {
@@ -2172,10 +2174,8 @@ void gw_searchwindow_set_current_searchitem (GwSearchWindow *window, LwSearchIte
 {
     //Declarations
     GtkAction *action;
-    GtkWidget *menuitem;
     gboolean enable;
-    char *id;
-
+    const char *id;
     GList *link;
     int page_num;
 

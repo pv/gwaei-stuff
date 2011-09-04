@@ -122,9 +122,9 @@ void gw_spellcheck_free_menuitem_data_cb (GtkWidget *widget, gpointer data)
 }
 
 
+/*
 static void _update_button_sensitivities ()
 {
-/*
     //Declarations
     GtkBuilder *builder;
     GtkWidget *checkbox;
@@ -155,8 +155,8 @@ static void _update_button_sensitivities ()
       g_free (_query_text);
       _query_text = g_strdup ("FORCE UPDATE");
     }
-    */
 }
+*/
 
 
 int gw_spellcheck_get_y_offset (GwSpellcheck *spellcheck)

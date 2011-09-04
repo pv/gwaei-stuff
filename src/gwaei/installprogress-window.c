@@ -90,7 +90,6 @@ static gpointer _installprogresswindow_install_thread (gpointer data)
     GwSettingsWindow *settingswindow;
     GList *iter;
     LwDictInst *di;
-    GtkBuilder *builder;
     gint timeoutid;
     GError *error;
 

@@ -87,6 +87,8 @@ typedef struct _LwPrefManager LwPrefManager;
 
 LwPrefManager* lw_prefmanager_new (void);
 void lw_prefmanager_free (LwPrefManager*);
+void lw_prefmanager_init (LwPrefManager*);
+void lw_prefmanager_deinit (LwPrefManager*);
 
 void lw_prefmanager_free_settings (LwPrefManager*);
 

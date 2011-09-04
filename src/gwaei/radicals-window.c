@@ -340,9 +340,6 @@ void gw_radicalswindow_destroy (GwRadicalsWindow* window)
 
 void gw_radicalswindow_init (GwRadicalsWindow *window, GwWindow *transient_for)
 {
-    //Declarations
-    GtkWidget *spinbutton;
-
     //Initializations
     window->radicals_table = GTK_TABLE (gtk_builder_get_object (window->builder, "radical_selection_table"));
     window->strokes_checkbutton = GTK_TOGGLE_BUTTON (gtk_builder_get_object(window->builder, "strokes_checkbox"));
@@ -591,7 +588,6 @@ char* gw_radicalswindow_strdup_prefered_stroke_count (GwRadicalsWindow *window)
 void gw_radicalswindow_deselect_all_radicals (GwRadicalsWindow *window)
 {
     //Declarations
-    GtkWidget *table;
     GList* list, *iter;
     GType type;
 

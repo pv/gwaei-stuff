@@ -395,7 +395,7 @@ void gw_output_append_edict_results_cb (LwSearchItem *item)
     //Begin comparison if possible
     if (!skip && ((same_def_totals) || (same_kanji && same_furigana)) && same_first_def)
     {
-      //_append_def_same_to_buffer (item);
+      _append_def_same_to_buffer (item);
       gdk_threads_leave ();
       return;
     }
@@ -900,6 +900,9 @@ void gw_output_append_unknowndict_results_cb (LwSearchItem *item)
   gdk_threads_enter();
 
     //Initializations
+    sdata = GW_SEARCHDATA (lw_searchitem_get_data (item));
+    view = GTK_TEXT_VIEW (sdata->view);
+    buffer = gtk_text_view_get_buffer (view);
     resultline = item->resultline;
     mark = gtk_text_buffer_get_mark (buffer, "content_insertion_mark");
 
@@ -1024,10 +1027,9 @@ static GtkWidget* _searchwindow_results_popup_new (char* query_text)
     char *menu_text = NULL;
     GtkWidget *menuitem = NULL;
 //    GtkWidget *menuimage = NULL;
-    GtkTextIter start_iter, end_iter;
     window = GW_SEARCHWINDOW (gw_app_get_window_by_type (app, GW_WINDOW_SEARCH));
     if (window == NULL) return NULL;
-    int i = 0;
+    int i;
 
     //Initializations
     menu = gtk_menu_new ();

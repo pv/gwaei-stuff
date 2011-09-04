@@ -75,6 +75,9 @@ void gw_settingswindow_destroy (GwSettingsWindow *window)
 
     free(window);
 
+    if (lw_dictinfolist_get_total (LW_DICTINFOLIST (app->dictinfolist)) == 0)
+      gw_app_quit (app);
+
     gw_app_unblock_searches (app);
 }
 
@@ -83,19 +86,18 @@ void gw_settingswindow_init (GwSettingsWindow *window, GwWindow *transient_for)
 {
     //Declarations
     GtkTreeView *view;
-    GtkWidget *notebook;
-    int i;
 
     //Initializations
     view = GTK_TREE_VIEW (gtk_builder_get_object (window->builder, "manage_dictionaries_treeview"));
+    window->notebook = GTK_NOTEBOOK (gtk_builder_get_object (window->builder, "settings_notebook"));
     window->dictinstlist = NULL;
 
     _settingswindow_initialize_dictionary_tree_view (view);
 
     _settingswindow_attach_signals (window);
 
-    if (g_list_length (app->dictinfolist->list) == 0)
-      gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), 1);
+    if (lw_dictinfolist_get_total (LW_DICTINFOLIST (app->dictinfolist)) == 0)
+      gtk_notebook_set_current_page (window->notebook, 1);
 
     gw_window_set_transient_for (GW_WINDOW (window), transient_for);
 }

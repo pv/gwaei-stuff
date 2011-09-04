@@ -395,8 +395,6 @@ void gw_print (const GtkPrintOperationAction ACTION, GwSearchWindow *window)
 {
     //Declarations
     GwPrintData *data;
-    GwPageInfo *page;
-    GList *iter;
     GtkPrintOperation *operation;
     GtkPrintOperationResult res;
     

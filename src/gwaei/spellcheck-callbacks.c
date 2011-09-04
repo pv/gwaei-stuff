@@ -421,7 +421,6 @@ gboolean gw_spellcheck_update_timeout (gpointer data)
     gboolean spellcheck_pref;
     int rk_conv_pref;
     gboolean want_conv;
-    GtkEntry *entry;
     const char *query;
     gboolean is_convertable_to_hiragana;
     const int MAX = 300;

@@ -43,7 +43,6 @@ static void _dictinfolist_attach_signals (GwDictInfoList*);
 GwDictInfoList* gw_dictinfolist_new (const int MAX, LwPrefManager *pm)
 {
     GwDictInfoList *temp;
-    int i;
 
     temp = (GwDictInfoList*) malloc(sizeof(GwDictInfoList));
 
@@ -81,9 +80,9 @@ void gw_dictinfolist_init (GwDictInfoList *dil, LwPrefManager *pm)
         G_TYPE_POINTER);
 
     for (i = 0; i < TOTAL_GW_DICTINFOLIST_SIGNALIDS; i++)
-    {
       dil->signalids[i] = 0;
-    }
+
+    _dictinfolist_attach_signals (dil);
 
     gw_dictinfolist_reload (dil, pm);
 };

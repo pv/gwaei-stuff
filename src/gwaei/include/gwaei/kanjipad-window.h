@@ -19,7 +19,7 @@ struct _GwKanjipadWindow {
   char kselected[2];
   char kanji_candidates[GW_KANJIPADWINDOW_MAX_GUESSES][2];
   int total_candidates;
-  int engine_pid;
+  GPid engine_pid;
   GIOChannel *from_engine;
   GIOChannel *to_engine;
   guint iowatchid;
