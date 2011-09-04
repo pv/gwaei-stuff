@@ -772,7 +772,7 @@ void gw_output_append_kanjidict_results_cb (LwSearchItem *item)
       GtkWidget *hbox;
       char *markup2;
 
-      markup2 = g_markup_printf_escaped ("<span font=\"KanjiStrokeOrders 100\">%s</span>", resultline->kanji);
+      markup2 = g_markup_printf_escaped ("<span font=\"KanjiStrokeOrders 80\">%s</span>", resultline->kanji);
       window = GTK_WIDGET (gtk_widget_get_tooltip_window (GTK_WIDGET (view)));
 
       if (window != NULL) {
@@ -780,12 +780,12 @@ void gw_output_append_kanjidict_results_cb (LwSearchItem *item)
         if (child != NULL) gtk_widget_destroy (GTK_WIDGET (child));
 
         hbox = GTK_WIDGET (gtk_hbox_new (FALSE, 3));
-        gtk_container_set_border_width (GTK_CONTAINER (hbox), 10);
+        gtk_container_set_border_width (GTK_CONTAINER (hbox), 3);
         gtk_container_add (GTK_CONTAINER (window), GTK_WIDGET (hbox));
 
         label = GTK_WIDGET (gtk_label_new (NULL));
         gtk_label_set_markup (GTK_LABEL (label), markup2);
-        gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (label), FALSE, TRUE, 0);
+        gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (label), FALSE, TRUE, 3);
         gtk_label_set_selectable (GTK_LABEL (label), TRUE);
         gtk_widget_set_can_focus (GTK_WIDGET (label), FALSE);
 

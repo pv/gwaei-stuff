@@ -165,11 +165,8 @@ G_MODULE_EXPORT gboolean gw_searchwindow_get_iter_for_button_release_cb (GtkWidg
     if (window == NULL) return FALSE;
     unic = gw_searchwindow_get_hovered_character (window, &x, &y, &iter);
     di = lw_dictinfolist_get_dictinfo (LW_DICTINFOLIST (app->dictinfolist), LW_DICTTYPE_KANJI, "Kanji");
-    error = NULL;
-
-
-    //Sanity cehck
     if (di == NULL) return FALSE;
+    error = NULL;
 
     if (abs (window->mousedata.button_press_x - x) < 3 && abs (window->mousedata.button_press_y - y) < 3)
     {
@@ -180,7 +177,6 @@ G_MODULE_EXPORT gboolean gw_searchwindow_get_iter_for_button_release_cb (GtkWidg
         gchar query[7];
         gint length = g_unichar_to_utf8 (unic, query);
         query[length] = '\0'; 
-
 
         view = gw_searchwindow_get_current_textview (window);
         tooltip_window = GTK_WIDGET (gtk_widget_get_tooltip_window (GTK_WIDGET (view)));
@@ -230,8 +226,7 @@ G_MODULE_EXPORT gboolean gw_searchwindow_get_iter_for_button_release_cb (GtkWidg
 
       if (error != NULL)
       {
-        fprintf(stderr, "%s\n", error->message);
-        g_error_free (error);
+        gw_app_handle_error (app, NULL, FALSE, &error);
       }
     }
 
@@ -1238,7 +1233,7 @@ G_MODULE_EXPORT void gw_searchwindow_search_cb (GtkWidget *widget, gpointer data
     new_item = lw_searchitem_new (query, di, LW_OUTPUTTARGET_RESULTS, app->prefmanager, &error);
     if (new_item == NULL)
     {
-      gw_app_handle_error (app, GW_WINDOW (window), FALSE, &error);
+      gw_app_handle_error (app, NULL, FALSE, &error);
       return;
     }
     sdata = gw_searchdata_new (view, window);
