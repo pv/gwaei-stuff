@@ -166,7 +166,6 @@ static int _get_relevance (LwSearchItem *item) {
 }
 
 
-
 //!
 //! @brief Preforms the brute work of the search
 //!
@@ -177,20 +176,20 @@ static int _get_relevance (LwSearchItem *item) {
 //! @param data A LwSearchItem to search with
 //! @return Returns true when the search isn't finished yet.
 //!
-static void _stream_results_thread (gpointer data)
+static gpointer _stream_results_thread (gpointer data)
 {
     LwEngineData *enginedata;
     LwSearchItem *item;
     LwEngine *engine;
 
     enginedata = LW_ENGINEDATA (data);
-    engine = enginedata->engine;
-    item = enginedata->item;
+    engine = LW_ENGINE (enginedata->engine);
+    item = LW_SEARCHITEM (enginedata->item);
 
-    if (item == NULL || item->fd == NULL) return;
+    if (item == NULL || item->fd == NULL) return NULL;
     char *line_pointer = NULL;
 
-    g_mutex_lock (item->mutex);
+    lw_searchitem_lock_mutex (item);
 
     //We loop, processing lines of the file until the max chunk size has been
     //reached or we reach the end of the file or a cancel request is recieved.
@@ -198,8 +197,8 @@ static void _stream_results_thread (gpointer data)
            item->status != LW_SEARCHSTATUS_CANCELING)
     {
       //Give a chance for something else to run
-      g_mutex_unlock (item->mutex);
-      g_mutex_lock (item->mutex);
+      lw_searchitem_unlock_mutex (item);
+      lw_searchitem_lock_mutex (item);
 
       item->current_line++;
 
@@ -272,7 +271,6 @@ static void _stream_results_thread (gpointer data)
       }
     }
 
-
     //Make sure the more relevant header banner is visible
     if (item->status != LW_SEARCHSTATUS_CANCELING)
     {
@@ -290,8 +288,8 @@ static void _stream_results_thread (gpointer data)
       _append_stored_result_to_output (engine, item, &(item->results_medium));
 
       //Give a chance for something else to run
-      g_mutex_unlock (item->mutex);
-      g_mutex_lock (item->mutex);
+      lw_searchitem_unlock_mutex (item);
+      lw_searchitem_lock_mutex (item);
     }
 
     //Append the least relevent results
@@ -301,14 +299,16 @@ static void _stream_results_thread (gpointer data)
       _append_stored_result_to_output (engine, item, &(item->results_low));
 
       //Give a chance for something else to run
-      g_mutex_unlock (item->mutex);
-      g_mutex_lock (item->mutex);
+      lw_searchitem_unlock_mutex (item);
+      lw_searchitem_lock_mutex (item);
     }
 
     //Cleanup
     lw_engine_cleanup_search (data);
 
-    g_mutex_unlock (item->mutex);
+    lw_searchitem_unlock_mutex (item);
+
+    return NULL;
 }
 
 
@@ -339,6 +339,7 @@ void lw_engine_get_results (LwEngine *engine, LwSearchItem *item, gboolean creat
       }
       else
       {
+        item->thread = NULL;
         _stream_results_thread ((gpointer) data);
       }
     }

@@ -119,6 +119,9 @@ gboolean lw_searchitem_has_data (LwSearchItem*);
 void lw_searchitem_parse_result_string (LwSearchItem*);
 void lw_searchitem_cancel_search (LwSearchItem*);
 
+void lw_searchitem_lock_mutex (LwSearchItem*);
+void lw_searchitem_unlock_mutex (LwSearchItem*);
+
 
 
 #endif
