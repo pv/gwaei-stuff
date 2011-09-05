@@ -31,14 +31,6 @@ no)  win32=false ;;
 esac],[win32=false])
 AM_CONDITIONAL([ENABLE_WIN32], [test x$win32 = xtrue])
 
-AC_ARG_WITH([ncurses],
-[  --without-ncurses         disable ncurses],
-[case "${withval}" in
-yes) ncurses=true ;;
-no)  ncurses=false ;;
-*) AC_MSG_ERROR([bad value ${withval} for --without-ncurses]) ;;
-esac],[ncurses=true])
-AM_CONDITIONAL([WITH_NCURSES], [test x$ncurses = xtrue])
 
 AC_ARG_WITH([gnome],
 [  --without-gnome         turn off the gnome gui interface],
@@ -92,11 +84,6 @@ if test $gnome = true && test $libunique = true && test $win32 = false; then
   AC_SUBST(LIBUNIQUE_LIBS)
 fi
 
-if test $ncurses = true && test $win32 = false; then
-  NCURSES_LIBS=" -lncursesw "
-  AC_SUBST(NCURSES_LIBS)
-fi
-
 
 GLIB_GSETTINGS
 
@@ -148,11 +135,6 @@ if test $libunique = true && test $gnome = true && test $win32 = false; then
   echo -e "* Libunique is\tENABLED"
 else
   echo -e "* Libunique is\tDISABLED (Requires Gnome)"
-fi
-if test $ncurses = true && test $win32 = false; then
-  echo -e "* Ncurses is\tENABLED"
-else
-  echo -e "* Ncurses is\tDISABLED"
 fi
 
 echo ""

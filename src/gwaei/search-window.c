@@ -450,9 +450,8 @@ gboolean gw_searchwindow_update_progress_feedback_timeout (GwSearchWindow *windo
     //Initializations
     item = gw_searchwindow_get_current_searchitem (window);
 
-    if (item != NULL && item->target != LW_OUTPUTTARGET_KANJI && item->target != LW_SEARCHSTATUS_CANCELING) 
+    if (item != NULL && item->target != LW_OUTPUTTARGET_KANJI && item->status != LW_SEARCHSTATUS_CANCELING) 
     {
-//      g_mutex_lock (item->mutex);
       lw_searchitem_lock_mutex (item);
         if (item != window->feedbackdata.item ||
             item->current_line != window->feedbackdata.line ||
@@ -466,7 +465,6 @@ gboolean gw_searchwindow_update_progress_feedback_timeout (GwSearchWindow *windo
           window->feedbackdata.line = item->current_line;
           window->feedbackdata.status = item->status;
         }
-//      g_mutex_unlock (item->mutex);
       lw_searchitem_unlock_mutex (item);
     }
 
