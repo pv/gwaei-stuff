@@ -429,6 +429,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="headers_clickable">False</property>
+                            <property name="reorderable">True</property>
                             <property name="enable_search">False</property>
                             <signal name="cursor-changed" handler="gw_settingswindow_dictionary_cursor_changed_cb" object="settings_window" after="yes" swapped="no"/>
                             <child internal-child="selection">

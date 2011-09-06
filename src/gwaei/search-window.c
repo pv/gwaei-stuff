@@ -41,8 +41,6 @@
 
 
 //Static declarations
-static void _searchwindow_initialize_combobox (GwSearchWindow*);
-static void _searchwindow_initialize_dictionary_menu (GwSearchWindow*);
 static void _searchwindow_attach_signals (GwSearchWindow*);
 static void _searchwindow_remove_signals (GwSearchWindow*);
 void _searchwindow_mousedata_init (GwSearchWindowMouseData*);
@@ -93,8 +91,8 @@ void gw_searchwindow_init (GwSearchWindow *window)
     window->statusbar = GTK_WIDGET (gtk_builder_get_object (window->builder, "statusbar"));
     window->combobox = GTK_COMBO_BOX (gtk_builder_get_object (window->builder, "dictionary_combobox"));
 
-    _searchwindow_initialize_combobox (window);
-    _searchwindow_initialize_dictionary_menu (window);
+    gw_searchwindow_initialize_dictionary_combobox (window);
+    gw_searchwindow_initialize_dictionary_menu (window);
 
     window->dictinfo = NULL;
     window->tablist = NULL;
@@ -242,7 +240,7 @@ static void _searchwindow_attach_signals (GwSearchWindow *window)
     );
     window->signalid[GW_SEARCHWINDOW_SIGNALID_DICTIONARIES_CHANGED] = g_signal_connect (
         G_OBJECT (app->dictinfolist->model),
-        "row-changed",
+        "row-deleted",
         G_CALLBACK (gw_searchwindow_dictionaries_changed_cb),
         window->toplevel 
     );
@@ -352,13 +350,16 @@ void _searchwindow_keepsearchingdata_deinit (GwSearchWindowKeepSearchingData *da
 }
 
 
-static void _searchwindow_initialize_combobox (GwSearchWindow *window)
+void gw_searchwindow_initialize_dictionary_combobox (GwSearchWindow *window)
 {
     //Declarations
     GtkCellRenderer *renderer;
 
     //Initializations
     renderer = gtk_cell_renderer_text_new ();
+
+    gtk_combo_box_set_model (window->combobox, NULL);
+    gtk_cell_layout_clear (GTK_CELL_LAYOUT (window->combobox));
 
     gtk_combo_box_set_model (window->combobox, GTK_TREE_MODEL (app->dictinfolist->model));
     gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (window->combobox), renderer, TRUE);
@@ -367,7 +368,7 @@ static void _searchwindow_initialize_combobox (GwSearchWindow *window)
 }
 
 
-static void _searchwindow_initialize_dictionary_menu (GwSearchWindow *window)
+void gw_searchwindow_initialize_dictionary_menu (GwSearchWindow *window)
 {
     GtkMenuShell *shell;
     GList *list, *iter;

@@ -172,18 +172,4 @@ void gw_dictinfolist_reload (GwDictInfoList *dil, LwPrefManager *pm)
 }
 
 
-/*
-G_MODULE_EXPORT void gw_dictinfolist_cursor_changed_cb (GtkTreeView *treeview, gpointer data)
-{
-    GtkBuilder *builder = gw_common_get_builder ();
-
-    GtkWidget *button = GTK_WIDGET (gtk_builder_get_object (builder, "remove_dictionary_button"));
-    GtkTreeSelection *selection = gtk_tree_view_get_selection (_view);
-    GtkTreeIter iter;
-
-    GtkTreeModel *tmodel = GTK_TREE_MODEL (_model);
-    gboolean has_selection = gtk_tree_selection_get_selected (selection, &tmodel, &iter);
-    gtk_widget_set_sensitive (GTK_WIDGET (button), has_selection);
-}
-*/
 

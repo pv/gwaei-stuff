@@ -1972,7 +1972,8 @@ G_MODULE_EXPORT void gw_searchwindow_open_radicalswindow_cb (GtkWidget *widget, 
 //!
 //! @brief Disables portions of the interface depending on the currently queued jobs.
 //!
-G_MODULE_EXPORT void gw_searchwindow_dictionaries_changed_cb (GtkTreeModel* model, GtkTreePath *path, GtkTreeIter *iter, gpointer data)
+//G_MODULE_EXPORT void gw_searchwindow_dictionaries_changed_cb (GtkTreeModel* model, GtkTreePath *path, GtkTreeIter *iter, gpointer data)
+G_MODULE_EXPORT void gw_searchwindow_dictionaries_changed_cb (GtkTreeModel* model, GtkTreePath *path, gpointer data)
 {
     //Declarations
     GwSearchWindow *window;
@@ -1984,15 +1985,20 @@ G_MODULE_EXPORT void gw_searchwindow_dictionaries_changed_cb (GtkTreeModel* mode
     window = GW_SEARCHWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
     if (window == NULL) return;
 
-    //Set the show state of the dictionaries required message
-    if (g_list_length (app->dictinfolist->list) > 0)
-      gw_searchwindow_set_dictionary (window, 0);
-
     //Update radicals window tool menuitem
     id = "insert_radicals_action";
     action = GTK_ACTION (gtk_builder_get_object (window->builder, id));
     enable = (lw_dictinfolist_get_dictinfo (LW_DICTINFOLIST (app->dictinfolist), LW_DICTTYPE_KANJI, "Kanji") != NULL);
     gtk_action_set_sensitive (action, enable);
+
+    gw_searchwindow_initialize_dictionary_menu (window);
+    gw_searchwindow_initialize_dictionary_combobox (window);
+
+    //Set the show state of the dictionaries required message
+    if (g_list_length (app->dictinfolist->list) > 0)
+      gw_searchwindow_set_dictionary (window, 0);
+
+
 }
 
 
