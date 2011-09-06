@@ -382,7 +382,9 @@ gboolean lw_dictinfolist_check_if_loaded (LwDictInfoList *dil, const LwDictType 
 //!
 int lw_dictinfolist_get_total (LwDictInfoList *dil)
 {
-    return g_list_length(dil->list);
+    if (dil == NULL) return 0;
+
+    return g_list_length (dil->list);
 }
 
 
