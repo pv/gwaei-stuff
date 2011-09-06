@@ -329,6 +329,7 @@ void lw_prefmanager_get_string (char *output, GSettings *settings, const char *k
     value = g_settings_get_string (settings, key);
     g_assert (value != NULL);
     strncpy(output, value, n);
+    output[n - 1] = '\0';
 
     g_free (value);
     value = NULL;

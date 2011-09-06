@@ -82,6 +82,7 @@ G_MODULE_EXPORT void gw_dictionaryinstallwindow_reset_default_uri_cb (GtkWidget 
 
     //Declarations
     GwDictInstWindow *window;
+    char value[200];
 
     //Initializations
     window = GW_DICTINSTWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
@@ -89,6 +90,8 @@ G_MODULE_EXPORT void gw_dictionaryinstallwindow_reset_default_uri_cb (GtkWidget 
     if (window->di->schema == NULL || window->di->key == NULL) return;
 
     lw_prefmanager_reset_value_by_schema (app->prefmanager, window->di->schema, window->di->key);
+    lw_prefmanager_get_string_by_schema (app->prefmanager, value, window->di->schema, window->di->key, 200);
+    gtk_entry_set_text (window->source_entry, value);
 }
 
 
@@ -103,7 +106,7 @@ G_MODULE_EXPORT void gw_dictionaryinstallwindow_select_file_cb (GtkWidget *widge
     char *filename;
 
     //Initializations
-    window = GW_DICTINSTWINDOW (data);
+    window = GW_DICTINSTWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
     dialog = gtk_file_chooser_dialog_new (
       "Select File",
       GTK_WINDOW (window->toplevel),
@@ -282,6 +285,7 @@ G_MODULE_EXPORT void gw_dictionaryinstallwindow_detail_checkbox_toggled_cb (GtkW
 
     //Trigger the list item selection callback
     gtk_tree_view_get_cursor (window->view, &path, &column);
+    if (path == NULL) return;
     gtk_tree_view_set_cursor (window->view, path, column, FALSE);
 
     //Cleanup

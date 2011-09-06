@@ -22,6 +22,7 @@ gwaei.desktop
 src/gwaei/gwaei
 src/waei/waei
 vgdump
+mingw32-config.cache
 
 libtool
 

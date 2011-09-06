@@ -529,7 +529,7 @@ GtkTextTagTable* gw_texttagtable_new ()
 void gw_app_sync_tag_cb (GSettings *settings, gchar *key, gpointer data)
 {
     //Declarations
-    char hex[10];
+    char hex[20];
     GdkRGBA color;
     gchar **pair;
     GtkTextTag *tag;
@@ -538,10 +538,10 @@ void gw_app_sync_tag_cb (GSettings *settings, gchar *key, gpointer data)
     app = GW_APPLICATION (data);
 
     //Parse the color
-    lw_prefmanager_get_string (hex, settings, key, 10);
+    lw_prefmanager_get_string (hex, settings, key, 20);
     if (gdk_rgba_parse (&color, hex) == FALSE)
     {
-      fprintf(stderr, "color failed %s\n", hex);
+      fprintf(stderr, "Failed to set tag to the tag table: %s\n", hex);
       lw_prefmanager_reset_value_by_schema (app->prefmanager, LW_SCHEMA_HIGHLIGHT, key);
       return;
     }

@@ -138,7 +138,7 @@ G_MODULE_EXPORT void gw_settingswindow_swatch_color_changed_cb (GtkWidget *widge
     char *letter;
 
     //Initializations
-    gtk_color_button_get_color(GTK_COLOR_BUTTON (widget), &color);
+    gtk_color_button_get_color (GTK_COLOR_BUTTON (widget), &color);
     hex_color_string = gdk_color_to_string (&color);
     pref_key = g_strdup_printf ("%s", gtk_buildable_get_name (GTK_BUILDABLE (widget)));
     letter = strchr(pref_key, '_');
@@ -398,7 +398,9 @@ G_MODULE_EXPORT void gw_settingswindow_sync_swatch_color_cb (GSettings *settings
 
     if (gdk_color_parse (hex_color_string, &color) == TRUE)
     {
+      g_signal_handlers_block_by_func (swatch, gw_settingswindow_swatch_color_changed_cb, window->toplevel);
       gtk_color_button_set_color (swatch, &color);
+      g_signal_handlers_unblock_by_func (swatch, gw_settingswindow_swatch_color_changed_cb, window->toplevel);
     }
 }
 
@@ -490,6 +492,25 @@ G_MODULE_EXPORT void gw_settingswindow_open_dictionaryinstallwindow_cb (GtkWidge
 }
 
 
+G_MODULE_EXPORT void gw_settingswindow_dictionary_cursor_changed_cb (GtkTreeView *view, gpointer data)
+{
+    //Declarations
+    GwSettingsWindow *window;
+    GtkWidget *button;
+    GtkTreeSelection *selection;
+    GtkTreeIter iter;
+    GtkTreeModel *tmodel;
+    gboolean has_selection;
+
+    //Initializations
+    window = GW_SETTINGSWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
+    button = GTK_WIDGET (gtk_builder_get_object (window->builder, "remove_dictionary_button"));
+    selection = gtk_tree_view_get_selection (view);
+    tmodel = GTK_TREE_MODEL (app->dictinfolist->model);
+    has_selection = gtk_tree_selection_get_selected (selection, &tmodel, &iter);
+
+    gtk_widget_set_sensitive (GTK_WIDGET (button), has_selection);
+}
 
 
 

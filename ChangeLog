@@ -1,9 +1,5 @@
-2011-08-12  gettextize  <bug-gnu-gettext@gnu.org>
+2011-08-12  Zachary Dovel  <pizzach@gmail.com>
 
-	* Makefile.am (EXTRA_DIST): Add config.rpath.
-
-2011-07-16  Zachary Dovel <pizzach@gmail.com>
-	* Fixed warning coming from a tooltip window not being empting when adding
-	  an hbox to it.
-	* Tweaks to the mutexes that were causing the program to freeze and
-	  choppy query input.
+	* Made gWaei object orented.  All objects are created/freed using
+	  *_new/*_free commands.  The program now uses much less memory.
+  * Updated the interface a bit more to comply better with Gnome 3

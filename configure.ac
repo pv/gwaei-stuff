@@ -140,7 +140,7 @@ fi
 echo ""
 
 if test ${win32} = true; then
-  echo -e "* Win32 is\tENABLED (Only for developer use.  Not compatibile with Libunique/Libsexy/Ncurses)"
+  echo -e "* Win32 is\tENABLED (Not compatibile with Libunique)"
 else
   echo -e "* Win32 is\tDISABLED (Only for developer use)"
 fi
