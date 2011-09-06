@@ -11,6 +11,7 @@ src/libwaei/searchitem.c
 src/libwaei/utilities.c
 
 src/waei/console.c
+src/waei/console-callbacks.c
 src/waei/waei.c
 
 [type: gettext/glade] src/gwaei/ui/dictionaryinstall.ui
@@ -33,7 +34,6 @@ src/gwaei/kanjipad-drawingarea.c
 src/gwaei/kanjipad-window.c
 src/gwaei/libunique.c
 src/gwaei/output-callbacks.c
-src/gwaei/pluginmanager.c
 src/gwaei/printing.c
 src/gwaei/radicals-callbacks.c
 src/gwaei/radicals-window.c
