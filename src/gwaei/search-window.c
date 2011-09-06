@@ -450,12 +450,16 @@ gboolean gw_searchwindow_update_progress_feedback_timeout (GwSearchWindow *windo
     //Initializations
     item = gw_searchwindow_get_current_searchitem (window);
 
-    if (item != NULL && item->target != LW_OUTPUTTARGET_KANJI && item->status != LW_SEARCHSTATUS_CANCELING) 
+    if (item != NULL) 
     {
       lw_searchitem_lock_mutex (item);
-        if (item != window->feedbackdata.item ||
-            item->current_line != window->feedbackdata.line ||
-            item->status != window->feedbackdata.status       )
+        if (
+            item->target != LW_OUTPUTTARGET_KANJI &&
+            item->status != LW_SEARCHSTATUS_CANCELING &&
+            (item != window->feedbackdata.item ||
+             item->current_line != window->feedbackdata.line ||
+             item->status != window->feedbackdata.status       )
+            )
         {
           gw_searchwindow_set_search_progressbar_by_searchitem (window, item);
           gw_searchwindow_set_total_results_label_by_searchitem (window, item);
@@ -623,7 +627,6 @@ void gw_searchwindow_set_total_results_label_by_searchitem (GwSearchWindow *wind
       switch (item->status)
       {
         case LW_SEARCHSTATUS_IDLE:
-        case LW_SEARCHSTATUS_FINISHING:
             if (item->current_line == 0)
               gtk_label_set_text (GTK_LABEL (label), idle_message_none);
             else if (relevant == total)
@@ -758,7 +761,6 @@ void gw_searchwindow_set_search_progressbar_by_searchitem (GwSearchWindow *windo
         total == 0 ||
         fraction >= (1.0 - 0.00001) ||
         item->status == LW_SEARCHSTATUS_IDLE ||
-        item->status == LW_SEARCHSTATUS_FINISHING ||
         item->status == LW_SEARCHSTATUS_CANCELING   )
     {
       gtk_entry_set_progress_fraction (GTK_ENTRY (window->entry), 0.0);
@@ -1830,6 +1832,14 @@ gboolean gw_searchwindow_has_selection_by_target (GwSearchWindow *window, LwOutp
 }
 
 
+void gw_searchwindow_cancel_search_by_searchitem (GwSearchWindow *window, LwSearchItem *item)
+{
+    gdk_threads_leave ();
+    lw_searchitem_cancel_search (item);
+    gdk_threads_enter ();
+}
+
+
 //!
 //! @brief Cancels all searches in all currently open tabs
 //!
@@ -1842,10 +1852,10 @@ void gw_searchwindow_cancel_all_searches (GwSearchWindow *window)
     for (iter = window->tablist; iter != NULL; iter = iter->next)
     {
       item = LW_SEARCHITEM (iter->data);
-      lw_searchitem_cancel_search (item);
+      gw_searchwindow_cancel_search_by_searchitem (window, item);
     }
 
-    lw_searchitem_cancel_search (window->mousedata.item);
+    gw_searchwindow_cancel_search_by_searchitem (window, window->mousedata.item);
 }
 
 
@@ -1864,7 +1874,7 @@ void gw_searchwindow_cancel_search_by_tab_number (GwSearchWindow *window, const 
     //Sanity check
     if (item == NULL) return;
 
-    lw_searchitem_cancel_search (item);
+    gw_searchwindow_cancel_search_by_searchitem (window, item);
 }
 
 
@@ -1904,7 +1914,7 @@ void gw_searchwindow_cancel_search_by_content (GwSearchWindow *window, gpointer 
     //Sanity check
     if (item == NULL) return;
 
-    lw_searchitem_cancel_search (item);
+    gw_searchwindow_cancel_search_by_searchitem (window, item);
 }
 
 

@@ -110,6 +110,7 @@ void gw_searchwindow_update_total_results_label (GwSearchWindow*, LwSearchItem*)
 char* gw_searchwindow_get_text_slice_from_buffer (GwSearchWindow*, int, int, int);
 char* gw_searchwindow_get_text_by_target (GwSearchWindow*, LwOutputTarget);
 
+void gw_searchwindow_cancel_search_by_searchitem (GwSearchWindow*, LwSearchItem*);
 void gw_searchwindow_cancel_search_by_tab_number (GwSearchWindow*, const int);
 void gw_searchwindow_cancel_search_for_current_tab (GwSearchWindow*);
 void gw_searchwindow_cancel_search_by_content (GwSearchWindow*, gpointer);

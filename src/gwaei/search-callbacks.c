@@ -198,7 +198,7 @@ G_MODULE_EXPORT gboolean gw_searchwindow_get_iter_for_button_release_cb (GtkWidg
           //Start the search
           if (window->mousedata.item != NULL)
           {
-            lw_searchitem_cancel_search (window->mousedata.item);
+            gw_searchwindow_cancel_search_by_searchitem (window, window->mousedata.item);
             window->mousedata.item = NULL;
           }
 
@@ -1052,10 +1052,10 @@ G_MODULE_EXPORT gboolean gw_searchwindow_key_press_modify_status_update_cb (GtkW
 
     guint keyval = ((GdkEventKey*)event)->keyval;
 
-    if ((keyval == GDK_KEY_ISO_Enter || keyval == GDK_KEY_Return) && gtk_widget_is_focus (GTK_WIDGET (window->entry)))
+    if ((keyval == GDK_KEY_ISO_Enter || keyval == GDK_KEY_Return) && gtk_widget_is_focus (GTK_WIDGET (window->entry)) && window->new_tab == TRUE)
     {
       gtk_widget_activate (GTK_WIDGET (window->entry));
-      return FALSE;
+      return TRUE;
     }
 
     if (keyval == GDK_KEY_Shift_L || keyval == GDK_KEY_Shift_R || keyval == GDK_KEY_ISO_Next_Group || keyval == GDK_KEY_ISO_Prev_Group)
@@ -1224,7 +1224,7 @@ G_MODULE_EXPORT void gw_searchwindow_search_cb (GtkWidget *widget, gpointer data
     //Cancel all searches if the search bar is empty
     if (strlen(query) == 0 || di == NULL) 
     {
-      lw_searchitem_cancel_search (item);
+      gw_searchwindow_cancel_search_by_searchitem (window, item);
       return;
     }
 
@@ -1261,7 +1261,7 @@ G_MODULE_EXPORT void gw_searchwindow_search_cb (GtkWidget *widget, gpointer data
     }
     else
     {
-      lw_searchitem_cancel_search (item);
+      gw_searchwindow_cancel_search_by_searchitem (window, item);
     }
 
     //Push the previous searchitem or replace it with the new one

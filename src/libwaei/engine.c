@@ -136,9 +136,9 @@ static void _append_stored_result_to_output (LwEngine *engine, LwSearchItem *ite
       lw_resultline_free (item->resultline);
     item->resultline = (LwResultLine*)(*results)->data;
     *results = g_list_delete_link(*results, *results);
-      
+ 
     //Append to the buffer 
-    if (item->status != LW_SEARCHSTATUS_CANCELING)
+    if (item->status == LW_SEARCHSTATUS_SEARCHING)
     {
       lw_engine_append_result (engine, item);
     }

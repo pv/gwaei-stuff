@@ -241,20 +241,22 @@ void lw_searchitem_cleanup_search (LwSearchItem* item)
 //!
 void lw_searchitem_free (LwSearchItem* item)
 {
-  g_assert (item != NULL);
+  g_assert (item != NULL && item->status == LW_SEARCHSTATUS_IDLE);
 
   if (item->thread != NULL) 
   {
     item->status = LW_SEARCHSTATUS_CANCELING;
     g_thread_join (item->thread);
     item->thread = NULL;
-    g_mutex_free (item->mutex);
-    item->mutex = NULL;
   }
   lw_searchitem_cleanup_search (item);
   lw_queryline_free (item->queryline);
   if (lw_searchitem_has_data (item))
     lw_searchitem_free_data (item);
+
+  g_mutex_free (item->mutex);
+  item->mutex = NULL;
+
   free (item);
   item = NULL;
 }
@@ -668,27 +670,27 @@ void lw_searchitem_cancel_search (LwSearchItem *item)
     {
       return;
     }
-    else if (item->thread == NULL || item->status == LW_SEARCHSTATUS_SEARCHING) {
+    else if (item->thread == NULL)
+    {
       item->thread = NULL;
-      item->status = LW_SEARCHSTATUS_CANCELING;
+      item->status = LW_SEARCHSTATUS_IDLE;
       return;
     }
+    else
+    {
+      lw_searchitem_lock_mutex (item);
+      item->status = LW_SEARCHSTATUS_CANCELING;
+      lw_searchitem_unlock_mutex (item);
 
-    
-    lw_searchitem_lock_mutex (item);
-
-    //Force the thread to stop running
-    item->status = LW_SEARCHSTATUS_CANCELING;
-    lw_searchitem_unlock_mutex (item);
-
-    g_thread_join (item->thread);
-    item->thread = NULL;
+      g_thread_join (item->thread);
+      item->thread = NULL;
 
       lw_searchitem_lock_mutex (item);
-
-    item->status = LW_SEARCHSTATUS_IDLE;
-    lw_searchitem_unlock_mutex (item);
+      item->status = LW_SEARCHSTATUS_IDLE;
+      lw_searchitem_unlock_mutex (item);
+    }
 }
+
 
 static int _locks = 0;
 
