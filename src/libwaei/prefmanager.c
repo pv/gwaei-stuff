@@ -20,12 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file src/preferences.c
-//!
-//! @brief Abstraction layer for gsettings preferences
-//!
-//! Allows access to gsettings with the ability to specify backup preferences upon
-//! failure to get the preference value.
+//! @file prefmanager.c
 //!
 
 

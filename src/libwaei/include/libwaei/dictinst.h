@@ -36,7 +36,6 @@ struct _LwDictInst {
   char *key;
   gboolean builtin;
   gulong listenerid;            //!< An id to hold the g_signal_connect value when the source copy uri pref is set
-  gboolean listenerid_is_set;   //!< Allows disconnecting the signal on destruction of the LwDictInst
   LwCompression compression;    //!< Path to the gziped dictionary file
   LwEncoding encoding;          //!< Path to the raw unziped dictionary file
   LwDictInstUri uri_group_index;
@@ -105,5 +104,7 @@ double lw_dictinst_get_total_progress (LwDictInst*, double);
 double lw_dictinst_get_process_progress (LwDictInst*, double);
 
 void lw_dictinst_set_cancel_operations (LwDictInst*, gboolean);
+
+void gw_dictinst_update_source_uri_cb (GSettings*, char*, gpointer);
 
 #endif

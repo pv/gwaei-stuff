@@ -20,14 +20,11 @@
 *******************************************************************************/
 
 //!
-//!  @file src/dictinfo-object.c
-//!
-//!  @brief Management of dictionary objects
-//!
-//!  The functions her generally manage the creation, destruction, and searching
-//!  of dictionaries.  The LwDictInfo objects also are used as a convenient
-//!  container for variables pointing towards download locations, install locations
-//!  etc.
+//!  @file dictinfo.c
+//!  @brief LwDictInfo objects represent a loaded dictionary that the program
+//!         can use to carry out searches.  You can uninstall dictionaries
+//!         by using the object, but you cannot install them. LwDictInst
+//!         objects exist for that purpose.
 //!
 
 
@@ -46,47 +43,22 @@ static gboolean _overlay_default_builtin_dictionary_settings (LwDictInfo*);
 
 //!
 //! @brief Creates a new LwDictInfo object
-//!
-//! Memory for a new LwDictInfo object will be allocated, and the name passed
-//! to the function as a param will be searched for in the .waei folder.  If 
-//! it is a known name, the long name of the object will betranslated and if
-//! it is installed, the status variable set to LW_DICT_STATUS_INSTALLED.
-//!
-//! @param name Name of the object to create
-//! @return An allocated LwDictInfo that will be needed to be freed by lw_dictinfo_free ()
+//! @param DICTTYPE The type of LwDictInfo that will be created.  This effects the save location of the dictionary and the parsers used on the dictionary.
+//! @param FILENAME The filename of the dictionary.
+//! @return An allocated LwDictInfo that will be needed to be freed by lw_dictinfo_free.
 //!
 LwDictInfo* lw_dictinfo_new (LwDictType DICTTYPE, const char *FILENAME)
 {
+    //Sanity check
     g_assert (DICTTYPE >= 0 && DICTTYPE <= TOTAL_LW_DICTTYPES && FILENAME != NULL);
 
     LwDictInfo *temp;
-    char *uri;
+    temp = (LwDictInfo*) malloc(sizeof(LwDictInfo));
 
-    //Allocate some memory
-    if ((temp = malloc(sizeof(LwDictInfo))) == NULL) return NULL;
-
-    temp->load_position = -1;
-
-    //Initialize the members
-    temp->filename = NULL;
-    temp->shortname = NULL;
-    temp->longname = NULL;
-    temp->type = DICTTYPE;
-    temp->filename = g_strdup_printf ("%s", FILENAME);
-
-    uri = lw_dictinfo_get_uri (temp);
-    temp->total_lines = lw_io_get_total_lines_for_file (uri);
-    g_free (uri);
-
-    if (!_overlay_default_builtin_dictionary_settings (temp))
+    if (temp != NULL)
     {
-      temp->longname = g_strdup_printf (gettext("%s Dictionary"), FILENAME);
-      temp->shortname = g_strdup_printf ("%s", FILENAME);
-      temp->load_position = -1;
+      lw_dictinfo_init (temp, DICTTYPE, FILENAME);
     }
-
-    temp->cached_resultlines = NULL;
-    temp->current_resultline = NULL;
 
     //Done
     return temp;
@@ -95,28 +67,85 @@ LwDictInfo* lw_dictinfo_new (LwDictType DICTTYPE, const char *FILENAME)
 
 //!
 //! @brief Releases a LwDictInfo object from memory.
-//!
-//! Takes care of any of the work needed to release a LwDictInfo object from
-//! memory.
-//!
-//! @param di LwDictInfo object to free
+//! @param di A LwDictInfo object created by lw_dictinfo_new.
 //!
 void lw_dictinfo_free (LwDictInfo* di)
 {
-    g_free (di->filename);
-    di->filename = NULL;
-
-    g_free (di->shortname);
-    di->shortname = NULL;
-
-    g_free (di->longname);
-    di->longname = NULL;
+    lw_dictinfo_deinit (di);
 
     free (di);
-    di = NULL;
 }
 
 
+//!
+//! @brief Used to initialize the memory inside of a new LwDictInfo
+//!        object.  Usually lw_dictinfo_new calls this for you.  It is also 
+//!        used in class implimentations that extends LwDictInfo.
+//! @param DICTTYPE The dictionary type used for the save folder and parsing engine.
+//! @param FILENAME The filename of the dictionary.
+//!
+void lw_dictinfo_init (LwDictInfo *di, const LwDictType DICTTYPE, const char *FILENAME)
+{
+    //Declarations
+    char *uri;
+
+    //Initializations
+    di->load_position = -1;
+    di->filename = NULL;
+    di->shortname = NULL;
+    di->longname = NULL;
+    di->type = DICTTYPE;
+    di->filename = g_strdup_printf ("%s", FILENAME);
+
+    uri = lw_dictinfo_get_uri (di);
+    di->total_lines = lw_io_get_total_lines_for_file (uri);
+    g_free (uri);
+
+    if (!_overlay_default_builtin_dictionary_settings (di))
+    {
+      di->longname = g_strdup_printf (gettext("%s Dictionary"), FILENAME);
+      di->shortname = g_strdup_printf ("%s", FILENAME);
+      di->load_position = -1;
+    }
+
+    di->cached_resultlines = NULL;
+    di->current_resultline = NULL;
+}
+
+
+//!
+//! @brief Used to free the memory inside of a LwDictInfo object.
+//!         Usually lw_dictinfo_free calls this for you.  It is also used
+//!         in class implimentations that extends LwDictInfo.
+//! @param di The LwDictInfo object to have it's inner memory freed.
+//!
+void lw_dictinfo_deinit (LwDictInfo *di)
+{
+    if (di->filename != NULL)
+    {
+      g_free (di->filename);
+      di->filename = NULL;
+    }
+
+    if (di->shortname != NULL)
+    {
+      g_free (di->shortname);
+      di->shortname = NULL;
+    }
+
+    if (di->longname != NULL)
+    {
+      g_free (di->longname);
+      di->longname = NULL;
+    }
+}
+
+
+//!
+//! @brief Function to copy in default values for built-in dictionaries.
+//! @param di  The LwDictInfo object to copy the values into.
+//! @returns True if you are actually working with a recognized built-in LwDictInfo.
+//!
 static gboolean _overlay_default_builtin_dictionary_settings (LwDictInfo *di)
 {
     g_assert (di != NULL);
@@ -166,10 +195,12 @@ static gboolean _overlay_default_builtin_dictionary_settings (LwDictInfo *di)
 
 
 //!
-//! @brief Installs a LwDictInst object using the provided gui update callback
-//!        This function should normally only be used in the lw_dictinfo_uninstall function.
-//! @param path String representing the path of the file to gunzip.
-//! @param error Error handling
+//! @brief Deletes a LwDictInfo from the harddrive.  LwDictInst objects are used
+//!        for installing dictionaries that do not exist yet.  You still need to free
+//!        the object after.
+//! @param di An LwDictInfo object to get the paths for the dictionary file.
+//! @param cb A LwIoProgresSCallback to show dictionary uninstall progress or NULL.
+//! @param error A pointer to a GError object to pass errors to or NULL.
 //!
 gboolean lw_dictinfo_uninstall (LwDictInfo *di, LwIoProgressCallback cb, GError **error)
 {
@@ -192,6 +223,11 @@ gboolean lw_dictinfo_uninstall (LwDictInfo *di, LwIoProgressCallback cb, GError 
 }
  
 
+//!
+//! @brief Gets the install path of an installed LwDictInfo object.
+//! @param di A LwDictInfo object to get the current uri of.
+//! @returns An allocated string containing the uri that must be freed with gfree.
+//!
 char* lw_dictinfo_get_uri (LwDictInfo *di)
 {
     //Declarations

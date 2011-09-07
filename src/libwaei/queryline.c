@@ -22,12 +22,6 @@
 //!
 //! @file queryline.c
 //!
-//! @brief Currently unused preliminary query object
-//!
-//! The LwQueryLine object will be used for parsing
-//! the query into token so comparisons can be more
-//! intelligently handled.
-//!
 
 #include <stdio.h>
 #include <string.h>

@@ -20,11 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file src/searchitem-object.c
-//!
-//! @brief Search item and history management
-//!
-//! Functions and objects to create search items and manage them.
+//! @file searchitem.c
 //!
 
 

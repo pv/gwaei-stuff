@@ -20,9 +20,7 @@
 *******************************************************************************/
 
 //!
-//!  @file src/resultline-object.c
-//!
-//!  @brief Management of result lines
+//!  @file resultline.c
 //!
 
 #include <stdio.h>

@@ -20,9 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file src/main.c
-//!
-//! @brief Main entrance into the backend for initializing it and freeing it
+//! @file libwaei.c
 //!
 
 #include <stdlib.h>

@@ -20,14 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file src/dictlist-object.c
-//!
-//! @brief Management of dictionary objects
-//!
-//! The functions her generally manage the creation, destruction, and searching
-//! of dictionaries.  The LwDictInfo objects also are used as a convenient
-//! container for variables pointing towards download locations, install locations
-//! etc.
+//! @file dictinfolist.c
 //!
 
 

@@ -20,9 +20,7 @@
 *******************************************************************************/
 
 //!
-//!  @file src/dictinstlist.c
-//!
-//!  @brief Management of dictinst objects
+//!  @file dictinstlist.c
 //!
 
 

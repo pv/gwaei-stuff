@@ -20,12 +20,7 @@
 *******************************************************************************/
 
 //!
-//!  @file src/regex.c
-//!
-//!  @brief Compiled often used regex expressions
-//!
-//!  Functions that deal with regex operations. This is also where constant
-//!  regrexs are stored to improve search speed.
+//!  @file regex.c
 //!
 
 

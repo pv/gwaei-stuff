@@ -20,11 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file src/utilities.c
-//!
-//! @brief Generic utility functions
-//!
-//! Holds some basic functions that are extremely handy for gWaei.
+//! @file utilities.c
 //!
 
 

@@ -22,16 +22,6 @@
 //!
 //! @file engine.c
 //!
-//! @brief search logic
-//!
-//! This file controls the backend of searches (usually initiated by the
-//! do_search command.) get_results is the gatekeeper to stream_results.
-//! get_results sets everything up that needs to be correct and double checked.
-//! stream_results is called on a timer by gmainloop until it finished.  It then
-//! cleans up after after the things set up in get_results.  If another search is
-//! started before the previous is finished, get_results puts out a stop request
-//! to stream_results and then waits for it to finish.
-//!
 
 #include <stdlib.h>
 #include <stdio.h>

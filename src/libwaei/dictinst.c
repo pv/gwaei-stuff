@@ -20,9 +20,11 @@
 *******************************************************************************/
 
 //!
-//!  @file src/backend/dictinst.c
-//!
-//!  @brief Basic construct that hold data needed for installing a LwDictInst item
+//!  @file dictinst.c
+//!  @brief LwDictInst objects are used for installing dictionaries.
+//!         The let you track progress and easily fetch urls for this
+//!         purpose.  You cannot uninstall a dictionary with LwDictInst.
+//!         Use LwDictInfo for that purpose.
 //!
 
 
@@ -40,25 +42,22 @@ static gboolean _cancel = FALSE;
 
 
 //!
-//! @brief Updates the LwDictInst source uri when the pref changes
-//! @param settting A GSetting object
-//! @param key The key of the pref
-//! @param data User data passed to the preference listener
-//!
-static void _update_dictinst_source_uri_cb (GSettings *settings, char* key, gpointer data)
-{
-    LwDictInst *di;
-    char source_uri[200];
-
-    di = LW_DICTINST (data);
-    lw_prefmanager_get_string (source_uri, settings, key, 200);
-    g_free (di->uri[LW_DICTINST_NEEDS_DOWNLOADING]);
-    di->uri[LW_DICTINST_NEEDS_DOWNLOADING] = g_strdup (source_uri);
-}
-
-
-//!
-//! @brief Creates a new LwDictInst object.  It also connects a listener to the preference so it updates automatically.
+//! @brief Creates a new LwDictInst object.  It also connects a listener to
+//!        the preferences so it updates automatically and save the changes.
+//! @param filename  The desired filename of the dictionary file.
+//! @param shortname The desired shortname of the file.  It should be localized.
+//! @param longname The desired longname of the file.  It should be localized.
+//! @param description The desired description of the dictionary file.  It should be localized.
+//! @param pm A preference manager object.
+//! @param schema The preference schema (Usually LW_SCHEMA_DICTIONARY)
+//! @param key The key of the preference under the schema
+//! @param DICTTYPE The type of dictionary.  The effects the parser used and where the file is saved.
+//! @param COMPRESSION Determines if the file needs to be decompressed.
+//! @param ENCODING Used to figure out if the file needs to be converted to UTF8
+//! @param split  This should only be optionally set for Jim Breen Names dictionary.
+//! @param merge This should only be optionally set when you are installing both Kanjidic/Kraddic
+//! @param builtin Denotes if the dictionary is built in. The user can only adjust the uri when the dictionary is built in.
+//! @returns A newly allocated LwDictInst object that should be freed with lw_dictinst_free.
 //!
 LwDictInst* lw_dictinst_new_using_pref_uri (const char* filename,
                                             const char* shortname,
@@ -72,6 +71,7 @@ LwDictInst* lw_dictinst_new_using_pref_uri (const char* filename,
                                             const LwEncoding ENCODING,
                                             gboolean split, gboolean merge, gboolean builtin)
 {
+    //Declarations
     char source_uri[200];
     lw_prefmanager_get_string_by_schema (pm, source_uri, schema, key, 200);
     LwDictInst *di = NULL;
@@ -92,19 +92,31 @@ LwDictInst* lw_dictinst_new_using_pref_uri (const char* filename,
 
     di->schema = g_strdup (schema);
     di->key = g_strdup (key);
-    di->listenerid = lw_prefmanager_add_change_listener_by_schema (pm, schema, key, _update_dictinst_source_uri_cb, di);
-    di->listenerid_is_set = TRUE;
+    di->listenerid = lw_prefmanager_add_change_listener_by_schema (pm, schema, key, gw_dictinst_update_source_uri_cb, di);
     di->pm = pm;
 
     return di;
 }
 
 
-
 //!
-//! @brief Creates a LwDictInst Object
-//! 
-
+//! @brief Creates a new LwDictInst object.  Unlike the other creater
+//!        function, this doesn't save source uri changes.
+//! @param filename  The desired filename of the dictionary file.
+//! @param shortname The desired shortname of the file.  It should be localized.
+//! @param shortname The desired longname of the file.  It should be localized.
+//! @param description The desired description of the dictionary file.  It should be localized.
+//! @param pm A preference manager object.
+//! @param schema The preference schema (Usually LW_SCHEMA_DICTIONARY)
+//! @param key The key of the preference under the schema
+//! @param DICTTYPE The type of dictionary.  The effects the parser used and where the file is saved.
+//! @param COMPRESSION Determines if the file needs to be decompressed.
+//! @param ENCODING Used to figure out if the file needs to be converted to UTF8
+//! @param split  This should only be optionally set for Jim Breen Names dictionary.
+//! @param merge This should only be optionally set when you are installing both Kanjidic/Kraddic
+//! @param builtin Denotes if the dictionary is built in. The user can only adjust the uri when the dictionary is built in.
+//! @returns A newly allocated LwDictInst object that should be freed with lw_dictinst_free.
+//!
 LwDictInst* lw_dictinst_new (const char* filename,
                              const char* shortname,
                              const char* longname,
@@ -140,8 +152,9 @@ LwDictInst* lw_dictinst_new (const char* filename,
 
 
 //!
-//! @brief Frees a LwDictInst object
-//! 
+//! @brief Releases a LwDictInst object from memory.
+//! @param di A LwDictInst object created by lw_dictinst_new.
+//!
 void lw_dictinst_free (LwDictInst* di)
 {
     lw_dictinst_deinit (di);
@@ -149,6 +162,21 @@ void lw_dictinst_free (LwDictInst* di)
 }
 
 
+//!
+//! @brief Used to initialize the memory inside of a new LwDictInst
+//!        object.  Usually lw_dictinst_new calls this for you.  It is also 
+//!        used in class implimentations that extends LwDictInst.
+//! @param filename  The desired filename of the dictionary file.
+//! @param shortname The desired shortname of the file.  It should be localized.
+//! @param shortname The desired longname of the file.  It should be localized.
+//! @param description The desired description of the dictionary file.  It should be localized.
+//! @param DICTTYPE The type of dictionary.  The effects the parser used and where the file is saved.
+//! @param COMPRESSION Determines if the file needs to be decompressed.
+//! @param ENCODING Used to figure out if the file needs to be converted to UTF8
+//! @param split  This should only be optionally set for Jim Breen Names dictionary.
+//! @param merge This should only be optionally set when you are installing both Kanjidic/Kraddic
+//! @param builtin Denotes if the dictionary is built in. The user can only adjust the uri when the dictionary is built in.
+//!
 void lw_dictinst_init (LwDictInst *di,
                        const char* filename,
                        const char* shortname,
@@ -180,7 +208,6 @@ void lw_dictinst_init (LwDictInst *di,
     di->progress = 0;
     di->selected = FALSE;
     di->listenerid = 0;
-    di->listenerid_is_set = FALSE;
     di->uri_group_index = -1;
     di->uri_atom_index = -1;
     di->mutex = g_mutex_new ();
@@ -196,14 +223,19 @@ void lw_dictinst_init (LwDictInst *di,
 }
 
 
+//! @brief Used to free the memory inside of a LwDictInst object.
+//!         Usually lw_dictinst_free calls this for you.  It is also used
+//!         in class implimentations that extends LwDictInst.
+//! @param di The LwDictInst object to have it's inner memory freed.
 void lw_dictinst_deinit (LwDictInst *di)
 {
     //Declarations
     int i;
 
-    if (di->pm != NULL && di->listenerid_is_set == TRUE)
+    if (di->pm != NULL && di->listenerid != 0)
     {
       lw_prefmanager_remove_change_listener_by_schema (di->pm, di->schema, di->listenerid);
+      di->listenerid = 0;
     }
 
     g_free (di->filename);
@@ -229,14 +261,36 @@ void lw_dictinst_deinit (LwDictInst *di)
 
 
 //!
+//! @brief A callback that updates the LwDictInst source uri when the pref changes
+//! @param setting A GSetting object
+//! @param KEY The key of the pref
+//! @param data User data passed to the preference listener
+//!
+void gw_dictinst_update_source_uri_cb (GSettings *settings, char* key, gpointer data)
+{
+    //Declarations
+    LwDictInst *di;
+    char source_uri[200];
+
+    //Initialiations
+    di = LW_DICTINST (data);
+    lw_prefmanager_get_string (source_uri, settings, key, 200);
+
+    if (di->uri[LW_DICTINST_NEEDS_DOWNLOADING] != NULL)
+      g_free (di->uri[LW_DICTINST_NEEDS_DOWNLOADING]);
+    di->uri[LW_DICTINST_NEEDS_DOWNLOADING] = g_strdup (source_uri);
+}
+
+
+//!
 //! @brief Updates the filename save targets of the LwDictInst.
 //! @param di The LwDictInst object to set the filename to
-//! @param filename to copy to the LwDictInst object and use to generate uris
+//! @param FILENAME The filename to copy to the LwDictInst object and use to generate uris
 //!
-void lw_dictinst_set_filename (LwDictInst *di, const char *filename)
+void lw_dictinst_set_filename (LwDictInst *di, const char *FILENAME)
 {
     g_free (di->filename);
-    di->filename = g_strdup (filename);
+    di->filename = g_strdup (FILENAME);
 
     lw_dictinst_regenerate_save_target_uris (di);
 }
@@ -244,7 +298,7 @@ void lw_dictinst_set_filename (LwDictInst *di, const char *filename)
 
 //!
 //! @brief Updates the engine of the LwDictInst
-//! @param The LwDictInst object to set the DICTTYPE to
+//! @param di The LwDictInst object to set the DICTTYPE to
 //! @param DICTTYPE the engine that you want to set
 //!
 void lw_dictinst_set_engine (LwDictInst *di, const LwDictType DICTTYPE)
@@ -285,16 +339,21 @@ void lw_dictinst_set_compression (LwDictInst *di, const LwCompression COMPRESSIO
 
 //!
 //! @brief Updates the download source of the LwDictInst object
+//! @param di The LwDictInfo objcet to set the SOURCE variable on
+//! @param SOURCE The source string to copy to the LwDictInst object.
 //!
 void lw_dictinst_set_download_source (LwDictInst *di, const char *SOURCE)
 {
-    g_free (di->uri[LW_DICTINST_NEEDS_DOWNLOADING]);
+    if (di->uri[LW_DICTINST_NEEDS_DOWNLOADING] != NULL)
+      g_free (di->uri[LW_DICTINST_NEEDS_DOWNLOADING]);
     di->uri[LW_DICTINST_NEEDS_DOWNLOADING] = g_strdup (SOURCE);
 }
 
 
 //!
-//! @brief Updates the merge state of the LwDictInst
+//! @brief Updates the merge state of the LwDictInst.
+//! @param di The LwDictInfo objcet to set the MERGE variable on.
+//! @param MERGE The merge setting to copy to the LwDictInst.
 //!
 void lw_dictinst_set_merge (LwDictInst *di, const gboolean MERGE)
 {
@@ -306,6 +365,8 @@ void lw_dictinst_set_merge (LwDictInst *di, const gboolean MERGE)
 
 //!
 //! @brief Updates the split state of the LwDictInst
+//! @param di The LwDictInfo objcet to set the SPLIT variable on
+//! @param SPLIT The split setting to copy to the LwDictInst.
 //!
 void lw_dictinst_set_split (LwDictInst *di, const gboolean SPLIT)
 {
@@ -318,6 +379,7 @@ void lw_dictinst_set_split (LwDictInst *di, const gboolean SPLIT)
 //!
 //! @brief This method should be called after the filename, engine, compression,
 //!        or encoding members of the LwDictInst is changed to sync the new paths
+//! @di The LwDictInfo object to regenerate the save target uris of.
 //!
 void lw_dictinst_regenerate_save_target_uris (LwDictInst *di)
 {
@@ -401,7 +463,11 @@ void lw_dictinst_regenerate_save_target_uris (LwDictInst *di)
 
 
 //!
-//! @brief Tells the installer mechanism if it is going to fail if it tries installing because of missing info
+//! @brief Tells the installer mechanism if it is going to fail if it tries
+//!        installing because of missing info
+//! @param di The LwDictInst objcet to check the validity of the urls of.  This tells you
+//!        if the LWDictInst object can have the lw_dictinst_install method
+//!        called without crashing.
 //!
 gboolean lw_dictinst_data_is_valid (LwDictInst *di)
 {
@@ -449,9 +515,11 @@ gboolean lw_dictinst_data_is_valid (LwDictInst *di)
 
 //!
 //! @brief Downloads or copies the file to the dictionary directory to be worked on
-//!        This function should normally only be used in the lw_dictinst_install function.
-//! @param path String representing the path of the file to gunzip.
-//! @param error Error handling
+//!        This function should normally only be used in the lw_dictinst_install method.
+//! @param di The LwDictInst object to use to download the dictionary with.
+//! @param cb A LwIoProgressCallback used to giver user feedback on how far the download is.
+//! @param data A gpointer to data to pass to the LwIoProgressCallback.
+//! @param error A pointer to a GError object to pass errors to or NULL.
 //! @see lw_dictinst_download
 //! @see lw_dictinst_convert_encoding
 //! @see lw_dictinst_postprocess
@@ -494,8 +562,10 @@ gboolean lw_dictinst_download (LwDictInst *di, LwIoProgressCallback cb, gpointer
 //!
 //! @brief Detects the compression scheme of a file and decompresses it using the approprate function.
 //!        This function should normally only be used in the lw_dictinst_install function.
-//! @param path String representing the path of the file to gunzip.
-//! @param error Error handling
+//! @param di The LwDictInst object to use to decompress the dictionary with.
+//! @param cb A LwIoProgressCallback used to giver user feedback on how far the decompression is.
+//! @param data A gpointer to data to pass to the LwIoProgressCallback.
+//! @param error A pointer to a GError object to pass errors to or NULL.
 //! @see lw_dictinst_download
 //! @see lw_dictinst_convert_encoding
 //! @see lw_dictinst_postprocess
@@ -558,8 +628,10 @@ gboolean lw_dictinst_decompress (LwDictInst *di, LwIoProgressCallback cb, gpoint
 //!
 //! @brief Converts the encoding to UTF8 for the file
 //!        This function should normally only be used in the lw_dictinst_install function.
-//! @param path String representing the path of the file to gunzip.
-//! @param error Error handling
+//! @param di The LwDictInst object to use to convert the text encoding the dictionary with.
+//! @param cb A LwIoProgressCallback used to giver user feedback on how far the text encoding conversion is.
+//! @param data A gpointer to data to pass to the LwIoProgressCallback.
+//! @param error A pointer to a GError object to pass errors to or NULL.
 //! @see lw_dictinst_download
 //! @see lw_dictinst_convert_encoding
 //! @see lw_dictinst_postprocess
@@ -605,8 +677,10 @@ gboolean lw_dictinst_convert_encoding (LwDictInst *di, LwIoProgressCallback cb, 
 //!
 //! @brief does the required postprocessing on a dictionary
 //!        This function should normally only be used in the lw_dictinst_install function.
-//! @param path String representing the path of the file to gunzip.
-//! @param error Error handling
+//! @param di The LwDictInst object to use for postprocessing the dictionary with.
+//! @param cb A LwIoProgressCallback used to giver user feedback on how far the postprocessing is.
+//! @param data A gpointer to data to pass to the LwIoProgressCallback.
+//! @param error A pointer to a GError object to pass errors to or NULL.
 //! @see lw_dictinst_download
 //! @see lw_dictinst_convert_encoding
 //! @see lw_dictinst_postprocess
@@ -668,8 +742,10 @@ gboolean lw_dictinst_postprocess (LwDictInst *di, LwIoProgressCallback cb, gpoin
 //!
 //! @brief does the required postprocessing on a dictionary
 //!        This function should normally only be used in the lw_dictinst_install function.
-//! @param path String representing the path of the file to gunzip.
-//! @param error Error handling
+//! @param di The LwDictInst object to use for finalizing the dictionary with.
+//! @param cb A LwIoProgressCallback used to giver user feedback on how far the finalization is.
+//! @param data A gpointer to data to pass to the LwIoProgressCallback.
+//! @param error A pointer to a GError object to pass errors to or NULL.
 //! @see lw_dictinst_download
 //! @see lw_dictinst_convert_encoding
 //! @see lw_dictinst_postprocess
@@ -707,6 +783,9 @@ gboolean lw_dictinst_finalize (LwDictInst *di, LwIoProgressCallback cb, gpointer
 
 //!
 //! @brief removes temporary files created by installation in the dictionary cache folder
+//! @param di The LwDictInst object to use to clean the files.
+//! @param cb A LwIoProgressCallback used to giver user feedback on how far the finalization is.
+//! @param data A gpointer to data to pass to the LwIoProgressCallback.
 //!
 void lw_dictinst_clean (LwDictInst *di, LwIoProgressCallback cb, gpointer data)
 {
@@ -744,8 +823,10 @@ void lw_dictinst_clean (LwDictInst *di, LwIoProgressCallback cb, gpointer data)
 //!
 //! @brief Installs a LwDictInst object using the provided gui update callback
 //!        This function should normally only be used in the lw_dictinst_install function.
-//! @param path String representing the path of the file to gunzip.
-//! @param error Error handling
+//! @param di The LwDictInst object to use for installing the dictionary with.
+//! @param cb A LwIoProgressCallback used to giver user feedback on how far the installation is.
+//! @param data A gpointer to data to pass to the LwIoProgressCallback.
+//! @param error A pointer to a GError object to pass errors to or NULL.
 //! @see lw_dictinst_download
 //! @see lw_dictinst_convert_encoding
 //! @see lw_dictinst_postprocess
@@ -769,7 +850,7 @@ gboolean lw_dictinst_install (LwDictInst *di, LwIoProgressCallback cb, gpointer 
 //!
 //! @brief Returns a status string describing the current process being taken
 //!        on a LwDictInst object
-//! @param di A LwDictInst to get the status of
+//! @param di A LwDictInst object to get the status of.
 //! @param long_form Whether you want the long or short form of the status messages.
 //! @returns An allocated string that should be freed with gfree when finished
 //!
@@ -818,6 +899,12 @@ gchar* lw_dictinst_get_status_string (LwDictInst *di, gboolean long_form)
 }
 
 
+//!
+//! @brief Returns the percent progress as a double for only the current LwDictInst
+//! @param di The LwDictInst to get the progress of
+//! @param fraction The fraction percentage of the current process
+//! @param The fraction percentage of all the LwDictInst processes together.
+//!
 double lw_dictinst_get_process_progress (LwDictInst *di, double fraction)
 {
     //Declarations
@@ -849,6 +936,12 @@ double lw_dictinst_get_process_progress (LwDictInst *di, double fraction)
 }
 
 
+//!
+//! @brief Gets the total possible progress for the LwDictInst.  It should be
+//!        divided by the current progress to get the appropriate fraction
+//! @param di The LwDictInfo object to get the total progress of
+//! @param fraction The fraction progress of the current process.
+//!
 double lw_dictinst_get_total_progress (LwDictInst *di, double fraction)
 {
     //Declarations
@@ -903,7 +996,9 @@ double lw_dictinst_get_total_progress (LwDictInst *di, double fraction)
 
 //!
 //! @brief Gets the uris saved in the LwDictInfo in the form of an array.  It should not be freed.
-//! @param INDEX The LwDictInstUri index
+//! @param di The LwDictInfo object to get the source uri of.
+//! @param GROUP_INDEX The group index designates the process step in the install
+//! @param ATOM_INDEX The desired atom if there are multiple files being acted upon in a step
 //! @returns An allocated string internal to the LwDictInst that should not be freed
 //!
 char* lw_dictinst_get_source_uri (LwDictInst *di, const LwDictInstUri GROUP_INDEX, const int ATOM_INDEX)
@@ -942,7 +1037,9 @@ char* lw_dictinst_get_source_uri (LwDictInst *di, const LwDictInstUri GROUP_INDE
 
 //!
 //! @brief Gets the uris saved in the LwDictInfo in the form of an array.  It should not be freed.
-//! @param INDEX The LwDictInstUri index
+//! @param di The LwDictInfo object to get the source uri of.
+//! @param GROUP_INDEX The group index designates the process step in the install
+//! @param ATOM_INDEX The desired atom if there are multiple files being acted upon in a step
 //! @returns An allocated string internal to the LwDictInst that should not be freed
 //!
 char* lw_dictinst_get_target_uri (LwDictInst *di, const LwDictInstUri GROUP_INDEX, const int ATOM_INDEX)
@@ -978,7 +1075,11 @@ char* lw_dictinst_get_target_uri (LwDictInst *di, const LwDictInstUri GROUP_INDE
     return uri;
 }
 
-
+//!
+//! @brief Used to tell the LwDictInst installer to stop installation.
+//! @param di The LwDictInst object to stop or prevent the install on.
+//! @param state Whether to turn on the requested cancel operation or not.
+//!
 void lw_dictinst_set_cancel_operations (LwDictInst *di, gboolean state)
 {
     _cancel = state;

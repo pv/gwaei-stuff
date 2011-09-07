@@ -51,6 +51,8 @@ typedef struct _LwDictInfo LwDictInfo;
 
 LwDictInfo* lw_dictinfo_new (const LwDictType, const char*);
 void lw_dictinfo_free (LwDictInfo*);
+void lw_dictinfo_init (LwDictInfo*, const LwDictType, const char*);
+void lw_dictinfo_deinit (LwDictInfo*);
 
 gboolean lw_dictinfo_uninstall (LwDictInfo*, LwIoProgressCallback, GError**);
 char* lw_dictinfo_get_uri (LwDictInfo*);
