@@ -101,6 +101,8 @@ typedef struct _LwSearchItem LwSearchItem;
 //Methods
 LwSearchItem* lw_searchitem_new (const char*, LwDictInfo*, const LwOutputTarget, LwPrefManager*, GError**);
 void lw_searchitem_free (LwSearchItem*);
+void lw_searchitem_init (LwSearchItem*, const char*, LwDictInfo*, const LwOutputTarget, LwPrefManager*, GError**);
+void lw_searchitem_deinit (LwSearchItem*);
 
 void lw_searchitem_cleanup_search (LwSearchItem*);
 gboolean lw_searchitem_prepare_search (LwSearchItem*);

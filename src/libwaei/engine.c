@@ -168,13 +168,17 @@ static int _get_relevance (LwSearchItem *item) {
 //!
 static gpointer _stream_results_thread (gpointer data)
 {
+    //Declarations
     LwEngineData *enginedata;
     LwSearchItem *item;
     LwEngine *engine;
+    gboolean show_only_exact_matches;
 
+    //Initializations
     enginedata = LW_ENGINEDATA (data);
     engine = LW_ENGINE (enginedata->engine);
     item = LW_SEARCHITEM (enginedata->item);
+    show_only_exact_matches = enginedata->exact;
 
     if (item == NULL || item->fd == NULL) return NULL;
     char *line_pointer = NULL;
@@ -235,7 +239,7 @@ static gpointer _stream_results_thread (gpointer data)
               break;
           case LW_RELEVANCE_MEDIUM:
               if (item->total_irrelevant_results < LW_MAX_MEDIUM_IRRELEVENT_RESULTS &&
-//                  !item->show_only_exact_matches && 
+                  !show_only_exact_matches && 
                    (item->swap_resultline = lw_resultline_new ()) != NULL && item->target != LW_OUTPUTTARGET_KANJI)
               {
                 //Store the result line and create an empty one in its place
@@ -247,7 +251,7 @@ static gpointer _stream_results_thread (gpointer data)
               break;
           default:
               if (item->total_irrelevant_results < LW_MAX_LOW_IRRELEVENT_RESULTS &&
-//                    !item->show_only_exact_matches && 
+                    !show_only_exact_matches && 
                    (item->swap_resultline = lw_resultline_new ()) != NULL && item->target != LW_OUTPUTTARGET_KANJI)
               {
                 //Store the result line and create an empty one in its place

@@ -41,11 +41,11 @@ static gchar *_savepath = NULL;
 static gboolean _cancel = FALSE;
 
 struct _LwIoProcessFdData {
-  const char* uri;
-  int fd;
-  LwIoProgressCallback cb; //< Callback to update progress
-  gpointer data;           //< Data to be passed to the LwIoProgressCallback
-  GError *error;
+  const char* uri;         //!< The file path being passed
+  int fd;                  //!< The file descriptor to be used with the path
+  LwIoProgressCallback cb; //!< Callback to update progress
+  gpointer data;           //!< Data to be passed to the LwIoProgressCallback
+  GError *error;           //!< A GError
 };
 typedef struct _LwIoProcessFdData LwIoProcessFdData;
 

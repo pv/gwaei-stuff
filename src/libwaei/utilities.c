@@ -41,6 +41,7 @@
 //!        then it is just a path to a directory.  It must be freed with
 //!        g_free
 //! @param PATH Used to determine which folder path to return
+//! @param FILENAME The filename to be appended to the path or NULL
 //! @returns Returns a constant that should be freed with g_free
 //!
 gchar* lw_util_build_filename (const LwFolderPath PATH, const char *FILENAME) 
@@ -102,6 +103,12 @@ gchar* lw_util_build_filename (const LwFolderPath PATH, const char *FILENAME)
     return path;
 }
 
+
+//!
+//! @brief Converts a LwDictType to its string equivalent
+//! @param DICTTYPE The LwDictType that you want the string version of
+//! @returns A constant string that shouldn't be freed
+//!
 const char* lw_util_dicttype_to_string (const LwDictType DICTTYPE)
 {
     char *name;
@@ -129,6 +136,12 @@ const char* lw_util_dicttype_to_string (const LwDictType DICTTYPE)
     return name;
 }
 
+
+//!
+//! @brief Parses the dicttype from a string
+//! @param ENGINENAME The LwDictType in string form
+//! @returns A LwDictType value or -1 if it is invalid
+//!
 LwDictType lw_util_get_dicttype_from_string (const char *ENGINENAME)
 {
   //Declarations
@@ -168,11 +181,10 @@ LwDictType lw_util_get_dicttype_from_string (const char *ENGINENAME)
 }
 
 
-
 //!
 //! @brief Gets a dictionary folder path for the given engine
-//!
-//! @param ENGINE A LwDictType to get the dictinary folder for
+//! @param DICTTYPE A LwDictType to build the base directory structure
+//! @param FILENAME The name to prefix to the directory
 //! @return Returns a constant string that should be freed with g_free
 //!
 gchar* lw_util_build_filename_by_dicttype (const LwDictType DICTTYPE, const char* FILENAME)
@@ -205,6 +217,11 @@ gchar* lw_util_build_filename_by_dicttype (const LwDictType DICTTYPE, const char
 }
 
 
+//!
+//! @brief Gets the compression type as a string
+//! @param COMPRESSION The LwCompression type to use
+//! @returns A constant string that should not be freed
+//!
 const char* lw_util_get_compression_name (const LwCompression COMPRESSION)
 {
     char *type;
@@ -231,6 +248,12 @@ const char* lw_util_get_compression_name (const LwCompression COMPRESSION)
     return type;
 }
 
+
+//!
+//! @brief Gets the encoding type as a string
+//! @param ENCODING The LwEncoding type to use
+//! @returns A constant string that should not be freed
+//!
 const char* lw_util_get_encoding_name (const LwEncoding ENCODING)
 {
     char *type;
@@ -258,7 +281,6 @@ const char* lw_util_get_encoding_name (const LwEncoding ENCODING)
 
 //!
 //! @brief Convenience function for seeing if a string is hiragana
-//!
 //! @param input The string to check
 //! @return Returns true if it is in the range
 //! @see lw_util_is_katakana_str ()
@@ -292,7 +314,6 @@ gboolean lw_util_is_hiragana_str (const char *input)
 
 //!
 //! @brief Convenience function for seeing if a string is katakana
-//!
 //! @param input The string to check
 //! @return Returns true if it is in the range
 //! @see lw_util_is_hiragana_str ()
@@ -326,9 +347,6 @@ gboolean lw_util_is_katakana_str (const char *input)
 
 //!
 //! @brief Convenience function for seeing if a string is furigana
-//!
-//! Furigana are the characters containing both hiragana and katakana.
-//!
 //! @param input The string to check
 //! @return Returns true if it is in the range
 //! @see lw_util_is_hiragana_str ()
@@ -344,10 +362,6 @@ gboolean lw_util_is_furigana_str (const char *input)
 
 //!
 //! @brief Convenience function for seeing if a string *starts* with kanji
-//!
-//! The point of the function is to find a word that starts with kanji but
-//! may also have hiragana in it somewheres.
-//!
 //! @param input The string to check
 //! @return Returns true if the function things this is a kanji string
 //! @see lw_util_is_hiragana_str ()
@@ -382,7 +396,6 @@ gboolean lw_util_is_kanji_ish_str (const char *input)
 
 //!
 //! @brief Convenience function for seeing if a string is kanji
-//!
 //! @param input The string to check
 //! @return Returns true if it is in the range
 //! @see lw_util_is_hiragana_str ()
@@ -416,7 +429,6 @@ gboolean lw_util_is_kanji_str (const char *input)
 
 //!
 //! @brief Convenience function for seeing if a string is romaji
-//!
 //! @param input The string to check
 //! @return Returns true if it is in the range
 //! @see lw_util_is_hiragana_str ()
@@ -448,17 +460,19 @@ gboolean lw_util_is_romaji_str (const char *input)
 }
 
 
-gboolean lw_util_is_yojijukugo_str (const char* input)
+//!
+//! @brief Checks if a given string is yojijukugo (a four kanji phrase)
+//! @param INPUT
+//! @returns Returns TRUE if the text looks to be yojijukugo.  FALSE if it isn't.
+//!
+gboolean lw_util_is_yojijukugo_str (const char* INPUT)
 {
-  return (g_utf8_strlen (input, -1) == 4 && lw_util_is_kanji_str (input));
+  return (g_utf8_strlen (INPUT, -1) == 4 && lw_util_is_kanji_str (INPUT));
 }
 
 
 //!
 //! @brief Shifts the characters in a specific direction
-//!
-//! This function is used for hiragana to katakana conversions and vice versa.
-//!
 //! @param input The string to shift
 //! @param shift How much to shift by
 //! @see lw_util_str_shift_hira_to_kata ()
@@ -601,11 +615,8 @@ const char* lw_util_next_hira_char_from_roma (const char *input)
 
 //!
 //! @brief Converts a romaji string to hiragana.
-//!
-//! Attempts to convert a romaji string to hiragana.
-//!
 //! @param input The source romaji string
-//! @param input The string to write the hiragana equivalent to
+//! @param output The string to write the hiragana equivalent to
 //! @return Returns null on error/end
 //!
 char* lw_util_roma_char_to_hira (const char *input, char *output)
@@ -992,7 +1003,9 @@ char* lw_util_roma_char_to_hira (const char *input, char *output)
 //!
 //! @brief Convenience function to convert romaji to hiragana
 //!
-//! @param input The string to shift
+//! @param input The string to shift.
+//! @param output the string to output the changes to.
+//! @param max The max length of the string to output to.
 //! @see lw_util_shift_all_chars_in_str_by ()
 //! @see lw_util_str_shift_hira_to_kata ()
 //!
@@ -1033,7 +1046,7 @@ gboolean lw_util_str_roma_to_hira (const char* input, char* output, int max)
 //!  * Check for badly encoded UTF-8 or invalid character
 //!  * Replace halfwidth japanese characters with their normal wide counterpart
 //!
-//! @param text an utf8 encoded string to prepare
+//! @param input an utf8 encoded string to prepare
 //! @param strip if true remove leading and trailing spaces
 //! @return a newly allocated utf8 encoded string or NULL if text was too.
 //!         If the result is non-NULL it must be freed with g_free().
