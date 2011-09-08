@@ -22,7 +22,7 @@
 //!
 //! @file dictinfolist-callbacks.c
 //!
-//! @brief Unwritten
+//! @brief To be written
 //!
 
 #include <string.h>

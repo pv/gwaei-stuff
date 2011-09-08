@@ -22,10 +22,7 @@
 //!
 //! @file settings-window.c
 //!
-//! @brief Abstraction layer for gtk objects
-//!
-//! Used as a go between for functions interacting with GUI interface objects.
-//! widgets.
+//! @brief To be written
 //!
 
 

@@ -20,12 +20,9 @@
 *******************************************************************************/
 
 //!
-//! @file src/gtk/output-callbacks.c
+//! @file output-callbacks.c
 //!
-//! @brief Abstraction layer for gtk objects
-//!
-//! Used as a go between for functions interacting with GUI interface objects.
-//! This is the gtk version.
+//! @brief To be written
 //!
 
 

@@ -20,11 +20,9 @@
 *******************************************************************************/
 
 //!
-//! @file src/gwaei.c
+//! @file gwaei.c
 //!
-//! @brief Main entrance into the program.
-//!
-//! Main entrance into the program.
+//! @brief To be written
 //!
 
 #include <stdlib.h>

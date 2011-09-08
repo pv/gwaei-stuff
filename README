@@ -16,10 +16,10 @@ TABLE OF CONTENTS
 
 1.0 PREREQUISITES:
 
-  To run gWaei 3.0.x, an environment with at least gtk+-3.0.0/glib-2.25.0,
-  curl 7.19.6, gnome-doc-utils-0.14.0, libncurses5-5.7, and libunique-3.0
-  are required.  Additionally, you will want to have gunzip, unzip, and
-  enchant, and ttf-kanjistrokeorders available.
+  To run gWaei 3.1.x, an environment with at least gtk+-3.0.0/glib-2.25.0,
+  curl 7.19.6, gnome-doc-utils-0.14.0, and libunique-3.0 are required.
+  Additionally, you will want to have gunzip, enchant, and
+  ttf-kanjistrokeorders available.
 
   An example of a command that Ubuntu/Debian users might use to get the
   required runtime dependancies is:
@@ -88,12 +88,13 @@ TABLE OF CONTENTS
 
   3. Build gwaei by doing
     
-      mingw32-configure --without-libunique --without-ncurses --enable-win32
+      mingw32-configure --without-libunique --enable-win32
       mingw32-make
       sudo mingw32-make install
 
 
   The mingw32-configure script will take care of PKG_CONFIG_PATH and such for you.
+
 
 END
 

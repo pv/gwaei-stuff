@@ -22,7 +22,7 @@
 //!
 //! @file radicals-window.c
 //!
-//! @brief Abstraction layer for gtk objects 
+//! @brief To be written
 //!
 
 

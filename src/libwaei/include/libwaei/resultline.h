@@ -65,14 +65,15 @@ struct _LwResultLine {
 typedef struct _LwResultLine LwResultLine;
 
 
-LwResultLine* lw_resultline_new (void );
+LwResultLine* lw_resultline_new (void);
+void lw_resultline_free (LwResultLine*);
+void lw_resultline_init (LwResultLine*);
+void lw_resultline_deinit (LwResultLine*);
+
 void lw_resultline_parse_edict_result_string (LwResultLine*);
 void lw_resultline_parse_kanjidict_result_string (LwResultLine*);
 void lw_resultline_parse_radicaldict_result_string (LwResultLine*);
 void lw_resultline_parse_examplesdict_result_string (LwResultLine*);
 void lw_resultline_parse_unknowndict_result_string (LwResultLine*);
-
-void lw_resultline_free (LwResultLine*);
-
 
 #endif

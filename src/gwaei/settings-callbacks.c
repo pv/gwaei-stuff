@@ -20,11 +20,9 @@
 *******************************************************************************/
 
 //!
-//! @file src/gtk-settings-callbacks.c
+//! @file settings-callbacks.c
 //!
-//! @brief Abstraction layer for gtk callbacks
-//! Callbacks for activities initiated by the user. Most of the gtk code here
-//! should still be abstracted to the interface C file when possible.
+//! @brief To be written
 //!
 
 

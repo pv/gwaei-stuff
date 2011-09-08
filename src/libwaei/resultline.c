@@ -33,77 +33,84 @@
 
 static char *FIRST_DEFINITION_PREFIX_STR = "(1)";
 
+
+
+//!
+//! @brief Creates a new LwResultLine object
+//! @return An allocated LwResultLine that will be needed to be freed by lw_resultline_free.
+//!
 LwResultLine* lw_resultline_new ()
 {
     LwResultLine* temp;
 
-    if ((temp = (LwResultLine*) malloc(sizeof(LwResultLine))) == NULL) return NULL;
+    temp = (LwResultLine*) malloc(sizeof(LwResultLine));
 
-    //A place for a copy of the raw string
-    temp->string[0] = '\0';
-    
-    //General formatting
-    temp->def_start[0] = NULL;
-    temp->def_total = 0;
-    temp->kanji_start = NULL;
-    temp->furigana_start = NULL;
-    temp->classification_start = NULL;
-    temp->important = FALSE;
-
-    //Kanji things
-    temp->strokes = NULL;
-    temp->frequency = NULL;
-    temp->readings[0] = NULL;
-    temp->readings[1] = NULL;
-    temp->readings[2] = NULL;
-    temp->meanings = NULL;
-    temp->grade = NULL;
-    temp->jlpt = NULL;
-    temp->kanji = NULL;
-    temp->radicals = NULL;
+    if (temp != NULL)
+    {
+      lw_resultline_init (temp);
+    }
 
     return temp;
 }
 
-void lw_resultline_clear_variables (LwResultLine *temp)
+//!
+//! @brief Releases a LwResultLine object from memory.
+//! @param rl A LwResultLine object created by lw_resultline_new.
+//!
+void lw_resultline_free (LwResultLine *rl)
 {
-    //A place for a copy of the raw string
-    temp->string[0] = '\0';
-    
-    //General formatting
-    temp->def_start[0] = NULL;
-    temp->def_total = 0;
-    temp->kanji_start = NULL;
-    temp->furigana_start = NULL;
-    temp->classification_start = NULL;
-    temp->important = FALSE;
-
-    //Kanji things
-    temp->strokes = NULL;
-    temp->frequency = NULL;
-    temp->readings[0] = NULL;
-    temp->readings[1] = NULL;
-    temp->readings[2] = NULL;
-    temp->meanings = NULL;
-    temp->grade = NULL;
-    temp->jlpt = NULL;
-    temp->kanji = NULL;
-    temp->radicals = NULL;
+    lw_resultline_deinit (rl);
+    free (rl);
 }
 
-void lw_resultline_free (LwResultLine *item)
+
+//!
+//! @brief Used to initialize the memory inside of a new LwDictInfo
+//!        object.  Usually lw_dictinfo_new calls this for you.  It is also 
+//!        used in class implimentations that extends LwDictInfo.
+//! @param rl The LwResultline to initialize the memory of
+//!
+void lw_resultline_init (LwResultLine *rl)
 {
-    free (item);
+    //A place for a copy of the raw string
+    rl->string[0] = '\0';
+    
+    //General formatting
+    rl->def_start[0] = NULL;
+    rl->def_total = 0;
+    rl->kanji_start = NULL;
+    rl->furigana_start = NULL;
+    rl->classification_start = NULL;
+    rl->important = FALSE;
+
+    //Kanji things
+    rl->strokes = NULL;
+    rl->frequency = NULL;
+    rl->readings[0] = NULL;
+    rl->readings[1] = NULL;
+    rl->readings[2] = NULL;
+    rl->meanings = NULL;
+    rl->grade = NULL;
+    rl->jlpt = NULL;
+    rl->kanji = NULL;
+    rl->radicals = NULL;
+}
+
+
+//!
+//! @brief Used to free the memory inside of a LwResultLine object.
+//!         Usually lw_dictinfo_free calls this for you.  It is also used
+//!         in class implimentations that extends LwResultLine.
+//! @param rl The LwResultLine object to have it's inner memory freed.
+//!
+void lw_resultline_deinit (LwResultLine *rl)
+{
 }
 
 
 //!
 //! @brief Parses a string for a Edict format string
-//!
-//! String parsing for the Jim Breen Edict dictionary.
-//!
-//! @param line line
-//! @param string string
+//! @param rl The Resultline object this method works on
 //!
 void lw_resultline_parse_edict_result_string (LwResultLine *rl)
 {
@@ -220,12 +227,7 @@ void lw_resultline_parse_edict_result_string (LwResultLine *rl)
 
 //!
 //! @brief Parses a string for a Kanjidic format string
-//!
-//! String parsing for the Jim Breen Kanji dictionary.  It also supports the
-//! gWaei custom Mix dictionary.
-//!
-//! @param line line
-//! @param string string
+//! @param rl The Resultline object this method works on
 //!
 void lw_resultline_parse_kanjidict_result_string (LwResultLine *rl)
 {
@@ -373,11 +375,7 @@ void lw_resultline_parse_kanjidict_result_string (LwResultLine *rl)
 
 //!
 //! @brief Parses a string for an example format string
-//!
-//! String parsing for the Jim Breen Example dictionaries.
-//!
-//! @param line line
-//! @param string string
+//! @param rl The Resultline object this method works on
 //!
 void lw_resultline_parse_examplesdict_result_string (LwResultLine *rl)
 {
@@ -461,12 +459,7 @@ void lw_resultline_parse_examplesdict_result_string (LwResultLine *rl)
 
 //!
 //! @brief Parses a string for an unknown format string
-//!
-//! This is the fallback format for user installed unknown dictionaries. Should be generally
-//! compatible with anything.
-//!
-//! @param line line
-//! @param string string
+//! @param rl The Resultline object this method works on
 //!
 void lw_resultline_parse_unknowndict_result_string (LwResultLine *rl)
 {

@@ -22,12 +22,9 @@
 *******************************************************************************/
 
 //!
-//! @file src/gtk-kanjipad-interface.c
+//! @file kanjipad-window.c
 //!
-//! @brief Abstraction layer for gtk GUI element interaction
-//!
-//! Callbacks for activities initiated by the user. Most of the gtk code here
-//! should still be abstracted to the interface C file when possible.
+//! @brief To be written
 //!
 
 

@@ -308,12 +308,10 @@ static gpointer _stream_results_thread (gpointer data)
 
 //!
 //! @brief Start a dictionary search
-//!
-//! This is the entry point for starting a search.  It handles setting up the
-//! query, checking things that need to be checked before the final go, and
-//! initializing the search loop or thread.
-//!
-//! @param item a LwSearchItem argument.
+//! @param engine The LwEngine object to use to output the results
+//! @param item a LwSearchItem argument to calculate results
+//! @param create_thread Whether the search should run in a new thread.
+//! @param exact Whether to show only exact matches for this search
 //!
 void lw_engine_get_results (LwEngine *engine, LwSearchItem *item, gboolean create_thread, gboolean exact)
 {
@@ -373,6 +371,11 @@ LwEngine* lw_engine_new (
     return temp;
 }
 
+
+//!
+//! @brief Frees a LwEngine object
+//! @param engine the LwEngine to free the memory of
+//!
 void lw_engine_free (LwEngine *engine)
 {
     free (engine);

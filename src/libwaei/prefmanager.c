@@ -35,7 +35,8 @@
 
 
 //!
-//! @brief sets up preferences and makes sure they are in a sane state
+//! @brief Creates a new LwDictInfo object
+//! @return An allocated LwDictInfo that will be needed to be freed by lw_prefmanager_free.
 //!
 LwPrefManager* lw_prefmanager_new ()
 {
@@ -53,7 +54,8 @@ LwPrefManager* lw_prefmanager_new ()
 
 
 //!
-//! @brief Clears memory used by the preferences
+//! @brief Releases a LwPrefManager object from memory.
+//! @param pm A LwPrefManager object created by lw_prefmanager_new.
 //!
 void lw_prefmanager_free (LwPrefManager *pm)
 {
@@ -62,6 +64,13 @@ void lw_prefmanager_free (LwPrefManager *pm)
     free (pm);
 }
 
+
+//!
+//! @brief Used to initialize the memory inside of a new LwPrefManager
+//!        object.  Usually lw_prefmanager_new calls this for you.  It is also 
+//!        used in class implimentations that extends LwPrefManager.
+//! @param pm The LwPrefManager object to have it's inner memory initialized.
+//!
 void lw_prefmanager_init (LwPrefManager *pm)
 {
     pm->settingslist = NULL;
@@ -70,12 +79,22 @@ void lw_prefmanager_init (LwPrefManager *pm)
 }
 
 
+//!
+//! @brief Used to free the memory inside of a LwPrefManager object.
+//!         Usually lw_prefmanager_free calls this for you.  It is also used
+//!         in class implimentations that extends LwPrefManager.
+//! @param pm The LwPrefManager object to have it's inner memory freed.
+//!
 void lw_prefmanager_deinit (LwPrefManager *pm)
 {
     lw_prefmanager_free_settings (pm);
 }
 
 
+//!
+//! @brief Frees the GSettings objects held by LwPrefManager
+//! @param pm The instance of LwPrefManager to free
+//!
 void lw_prefmanager_free_settings (LwPrefManager *pm)
 {
     GList *iter;
@@ -143,8 +162,7 @@ GSettings* lw_prefmanager_get_settings_object (LwPrefManager *pm, const char *SC
 
 //!
 //! @brief Resets a value in a key
-//!
-//! @param schema A string identifying the schema there the key is
+//! @param settings The GSettings object to act on You will have to get it yourself using lw_prefmanager_get_settings_object
 //! @param key A string identifying the key to reset
 //!
 void lw_prefmanager_reset_value (GSettings* settings, const char *key)
@@ -155,7 +173,7 @@ void lw_prefmanager_reset_value (GSettings* settings, const char *key)
 
 //!
 //! @brief Resets a value in a key
-//!
+//! @param pm The LwPrefManager to fetch the GSettings object matching the schema
 //! @param schema A string identifying the schema there the key is
 //! @param key A string identifying the key to reset
 //!
@@ -173,10 +191,8 @@ void lw_prefmanager_reset_value_by_schema (LwPrefManager* pm, const char* schema
 
 //!
 //! @brief Returns an integer from the preference backend 
-//!
-//! @param schema The key to use to look up the pref
+//! @param settings The GSettings object to act on You will have to get it yourself using lw_prefmanager_get_settings_object
 //! @param key The key to use to look up the pref
-//! @param backup the value to return on failure
 //!
 int lw_prefmanager_get_int (GSettings *settings, const char *key)
 {
@@ -186,10 +202,9 @@ int lw_prefmanager_get_int (GSettings *settings, const char *key)
 
 //!
 //! @brief Returns an integer from the preference backend 
-//!
+//! @param pm The LwPrefManager to fetch the GSettings object matching the schema
 //! @param schema The key to use to look up the pref
 //! @param key The key to use to look up the pref
-//! @param backup the value to return on failure
 //!
 int lw_prefmanager_get_int_by_schema (LwPrefManager* pm, const char* schema, const char *key)
 {
@@ -210,8 +225,7 @@ int lw_prefmanager_get_int_by_schema (LwPrefManager* pm, const char* schema, con
 
 //!
 //! @brief Sets the int to the key in the preferences backend
-//!
-//! @param schema The key to use to look up the pref
+//! @param settings The GSettings object to act on You will have to get it yourself using lw_prefmanager_get_settings_object
 //! @param key The key to use to look up the pref
 //! @param request The value to set
 //!
@@ -223,9 +237,9 @@ void lw_prefmanager_set_int (GSettings *settings, const char *key, const int req
 
 //!
 //! @brief Sets the int to the key in the preferences backend
-//!
-//! @param schema The key to use to look up the pref
-//! @param key The key to use to look up the pref
+//! @param pm The LwPrefManager to fetch the GSettings object matching the schema
+//! @param schema The schema to look for
+//! @param key The key to use to look up the pref inside of the schema
 //! @param request The value to set
 //!
 void lw_prefmanager_set_int_by_schema (LwPrefManager* pm, const char* schema, const char *key, const int request)
@@ -242,8 +256,7 @@ void lw_prefmanager_set_int_by_schema (LwPrefManager* pm, const char* schema, co
 
 //!
 //! @brief Returns an boolean from the preference backend 
-//!
-//! @param schema The key to use to look up the pref
+//! @param settings The GSettings object to act on You will have to get it yourself using lw_prefmanager_get_settings_object
 //! @param key The key to use to look up the pref
 //!
 gboolean lw_prefmanager_get_boolean (GSettings *settings, const char *key)
@@ -254,7 +267,7 @@ gboolean lw_prefmanager_get_boolean (GSettings *settings, const char *key)
 
 //!
 //! @brief Returns an boolean from the preference backend 
-//!
+//! @param pm The LwPrefManager to fetch the GSettings object matching the schema
 //! @param schema The key to use to look up the pref
 //! @param key The key to use to look up the pref
 //!
@@ -277,8 +290,7 @@ gboolean lw_prefmanager_get_boolean_by_schema (LwPrefManager* pm, const char* sc
 
 //!
 //! @brief Sets the boolean to the key in the preferences backend
-//!
-//! @param schema The key to use to look up the pref
+//! @param settings The GSettings object to act on You will have to get it yourself using lw_prefmanager_get_settings_object
 //! @param key The key to use to look up the pref
 //! @param request The value to set
 //!
@@ -290,9 +302,9 @@ void lw_prefmanager_set_boolean (GSettings *settings, const char *key, const gbo
 
 //!
 //! @brief Sets the boolean to the key in the preferences backend
-//!
-//! @param schema The key to use to look up the pref
-//! @param key The key to use to look up the pref
+//! @param pm The LwPrefManager to fetch the GSettings object matching the schema
+//! @param schema The schema to look for
+//! @param key The key to use to look up the pref inside of the schema
 //! @param request The value to set
 //!
 void lw_prefmanager_set_boolean_by_schema (LwPrefManager* pm, const char* schema, const char *key, const gboolean request)
@@ -310,11 +322,9 @@ void lw_prefmanager_set_boolean_by_schema (LwPrefManager* pm, const char* schema
 
 //!
 //! @brief Returns an string from the preference backend 
-//!
-//! @output string to copy the pref to
-//! @param schema The key to use to look up the pref
+//! @param output string to copy the pref to
+//! @param settings The GSettings object to act on You will have to get it yourself using lw_prefmanager_get_settings_object
 //! @param key The key to use to look up the pref
-//! @param backup the value to return on failure
 //! @param n The max characters to copy to output
 //!
 void lw_prefmanager_get_string (char *output, GSettings *settings, const char *key, const int n)
@@ -333,11 +343,10 @@ void lw_prefmanager_get_string (char *output, GSettings *settings, const char *k
 
 //!
 //! @brief Returns an string from the preference backend 
-//!
-//! @output string to copy the pref to
+//! @param pm The LwPrefManager to fetch the GSettings object matching the schema
+//! @param output string to copy the pref to
 //! @param schema The key to use to look up the pref
 //! @param key The key to use to look up the pref
-//! @param backup the value to return on failure
 //! @param n The max characters to copy to output
 //!
 void lw_prefmanager_get_string_by_schema (LwPrefManager* pm, char *output, const char *schema, const char *key, const int n)
@@ -352,8 +361,7 @@ void lw_prefmanager_get_string_by_schema (LwPrefManager* pm, char *output, const
 
 //!
 //! @brief Sets the string to the key in the preferences backend
-//!
-//! @param schema The key to use to look up the pref
+//! @param settings The GSettings object to act on You will have to get it yourself using lw_prefmanager_get_settings_object
 //! @param key The key to use to look up the pref
 //! @param request The value to set
 //!
@@ -365,9 +373,9 @@ void lw_prefmanager_set_string (GSettings *settings, const char *key, const char
 
 //!
 //! @brief Sets the string to the key in the preferences backend
-//!
-//! @param schema The key to use to look up the pref
-//! @param key The key to use to look up the pref
+//! @param pm The LwPrefManager to fetch the GSettings object matching the schema
+//! @param schema The schema to look for
+//! @param key The key to use to look up the pref inside of the schema
 //! @param request The value to set
 //!
 void lw_prefmanager_set_string_by_schema (LwPrefManager *pm, const char* schema, const char *key, const char* request)
@@ -385,12 +393,10 @@ void lw_prefmanager_set_string_by_schema (LwPrefManager *pm, const char* schema,
 
 //!
 //! @brief Adds a preference change listener for the selected key
-//!
-//! @param schema The key to use to look up the pref
+//! @param settings The GSettings object to act on You will have to get it yourself using lw_prefmanager_get_settings_object
 //! @param key The preference key
 //! @param callback_function The function to call when the key changes
 //! @param data The userdata to pass to the callback function
-//!
 //! @returns A gulong used to remove a signal later if desired
 //!
 gulong lw_prefmanager_add_change_listener (GSettings *settings, const char *key, void (*callback_function) (GSettings*, gchar*, gpointer), gpointer data)
@@ -422,12 +428,11 @@ gulong lw_prefmanager_add_change_listener (GSettings *settings, const char *key,
 
 //!
 //! @brief Adds a preference change listener for the selected key
-//!
+//! @param pm The LwPrefManager to fetch the GSettings object matching the schema
 //! @param schema The key to use to look up the pref
 //! @param key The preference key
 //! @param callback_function The function to call when the key changes
 //! @param data The userdata to pass to the callback function
-//!
 //! @returns A gulong used to remove a signal later if desired
 //!
 gulong lw_prefmanager_add_change_listener_by_schema (LwPrefManager *pm, const char* schema, const char *key, void (*callback_function) (GSettings*, gchar*, gpointer), gpointer data)
@@ -447,8 +452,7 @@ gulong lw_prefmanager_add_change_listener_by_schema (LwPrefManager *pm, const ch
 
 //!
 //! @brief Used to remove a listener
-//!
-//! @param schema A schema of the GSettings object the signal was connected to
+//! @param settings The GSettings object to act on You will have to get it yourself using lw_prefmanager_get_settings_object
 //! @param id The signalid returned by lw_prefmanager_add_change_listener
 //!
 void lw_prefmanager_remove_change_listener (GSettings *settings, gulong id)
@@ -465,7 +469,7 @@ void lw_prefmanager_remove_change_listener (GSettings *settings, gulong id)
 
 //!
 //! @brief Used to remove a listener
-//!
+//! @param pm The LwPrefManager to fetch the GSettings object matching the schema
 //! @param schema A schema of the GSettings object the signal was connected to
 //! @param id The signalid returned by lw_prefmanager_add_change_listener
 //!

@@ -20,12 +20,9 @@
 *******************************************************************************/
 
 //!
-//! @file src/gtk-printing.c
+//! @file printing.c
 //!
-//! @brief Abstraction layer for gtk printing
-//!
-//! This is where the functions needed for printing are kept. This is the gtk
-//! version.
+//! @brief To be written
 //!
 
 

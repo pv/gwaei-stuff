@@ -20,9 +20,9 @@
 *******************************************************************************/
 
 //!
-//! @file src/gtk/main-callbacks.c
+//! @file search-callbacks.c
 //!
-//! @brief Abstraction layer for gtk callbacks
+//! @brief To be written
 //!
 
 

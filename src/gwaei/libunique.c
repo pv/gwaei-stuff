@@ -20,11 +20,9 @@
 *******************************************************************************/
 
 //! 
-//! @file src/gtk-main-interface-unique.c
+//! @file libunique.c
 //!
 //! @brief File to abstract out usage of the libunique library
-//!
-//! Libunique allows us to only have one instance of the application open if we want to.
 //!
 
 

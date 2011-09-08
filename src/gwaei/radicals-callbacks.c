@@ -20,11 +20,9 @@
 *******************************************************************************/
 
 //!
-//! @file src/gtk-radicals-callbacks.c
+//! @file radicals-callbacks.c
 //!
-//! @brief Abstraction layer for gtk callbacks 
-//!
-//! This file in specifically written for the radical search tool popup.
+//! @brief To be written
 //!
 
 

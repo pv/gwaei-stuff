@@ -38,31 +38,65 @@ static void _queryline_free_pointers (LwQueryLine*);
 static char** _queryline_initialize_pointers (LwQueryLine*, const char*);
 
 
+//!
+//! @brief Creates a new LwQueryLine object
+//! @return An allocated LwQueryLine that will be needed to be freed by lw_queryline_free.
+//!
 LwQueryLine* lw_queryline_new ()
 {
     LwQueryLine* temp;
 
     if ((temp = (LwQueryLine*) malloc(sizeof(LwQueryLine))) == NULL) return NULL;
 
-    //A place for a copy of the raw string
-    temp->string = NULL;
-    temp->re_kanji = NULL;
-    temp->re_furi = NULL;
-    temp->re_roma = NULL;
-    temp->re_mix = NULL;
-    temp->re_strokes = NULL;
-    temp->re_frequency = NULL;
-    temp->re_grade = NULL;
-    temp->re_jlpt = NULL;
+    if (temp != NULL)
+    {
+      lw_queryline_init (temp);
+    }
 
     return temp;
 }
 
 
+//!
+//! @brief Releases a LwQueryLine object from memory.
+//! @param ql A LwQueryLine object created by lw_queryline_new.
+//!
 void lw_queryline_free (LwQueryLine *ql)
 {
-    _queryline_free_pointers (ql);
+    lw_queryline_deinit (ql);
     free (ql);
+}
+
+
+//!
+//! @brief Used to initialize the memory inside of a new LwQueryLine
+//!        object.  Usually lw_queryline_new calls this for you.  It is also 
+//!        used in class implimentations that extends LwQueryLine.
+//! @param ql The LwQueryLine object to initialize the variables of
+//!
+void lw_queryline_init (LwQueryLine *ql)
+{
+    ql->string = NULL;
+    ql->re_kanji = NULL;
+    ql->re_furi = NULL;
+    ql->re_roma = NULL;
+    ql->re_mix = NULL;
+    ql->re_strokes = NULL;
+    ql->re_frequency = NULL;
+    ql->re_grade = NULL;
+    ql->re_jlpt = NULL;
+}
+
+
+//!
+//! @brief Used to free the memory inside of a new LwQueryLine
+//!        object.  Usually lw_queryline_free calls this for you.  It is also 
+//!        used in class implimentations that extends LwQueryLine.
+//! @param ql The LwQueryLine object to free the variables of
+//!
+void lw_queryline_deinit (LwQueryLine *ql)
+{
+    _queryline_free_pointers (ql);
 }
 
 
@@ -164,19 +198,19 @@ static GRegex*** _queryline_allocate_pointers (int length)
 
 //!
 //! @brief Parses a query using the edict style
-//!
-//! The program will (to be written)
-//!
 //! @param ql Pointer to a LwQueryLine object ot parse a query string into.
-//! @param string constant string that is the raw query.
+//! @param pm A LwPrefManager object to load preferences from
+//! @param STRING constant string that is the raw query.
+//! @param error A Pointer to a GError to load errors into or NULL
+//! @returns Returns true if the string was successfully parsed.
 //!
-gboolean lw_queryline_parse_edict_string (LwQueryLine *ql, LwPrefManager *pm, const char* string, GError **error)
+gboolean lw_queryline_parse_edict_string (LwQueryLine *ql, LwPrefManager *pm, const char* STRING, GError **error)
 {
    //Sanity check
    if (error != NULL && *error != NULL) return FALSE;
 
    //Sanity check
-   if (ql->string != NULL && strcmp(ql->string, string) == 0) return TRUE;
+   if (ql->string != NULL && strcmp(ql->string, STRING) == 0) return TRUE;
 
    //Free previously used memory
     _queryline_free_pointers (ql);
@@ -216,7 +250,7 @@ gboolean lw_queryline_parse_edict_string (LwQueryLine *ql, LwPrefManager *pm, co
      want_kh_conv = TRUE;
    }
 
-   atoms = _queryline_initialize_pointers (ql, string);
+   atoms = _queryline_initialize_pointers (ql, STRING);
    length = g_strv_length (atoms);
 
    //Setup the expression to be used in the base of the regex for kanji-ish strings
@@ -425,22 +459,19 @@ static GRegex*** _compile_and_allocate_number_search_regex (const char* subject,
 
 //!
 //! @brief Parses a query using the kanjidict style
-//!
-//! The kanjidict style puts an emphasis on separate
-//! atoms, linking them with AND.  Special cases the function
-//! will try to parse out are hiragana words, kanji/radicals, english
-//! phrases.
-//!
 //! @param ql Pointer to a LwQueryLine object ot parse a query string into.
-//! @param string constant string that is the raw query.
+//! @param pm A LwPrefManager object to load preferences from
+//! @param STRING constant string that is the raw query.
+//! @param error A Pointer to a GError to load errors into or NULL
+//! @returns Returns true if the string was successfully parsed.
 //!
-gboolean lw_queryline_parse_kanjidict_string (LwQueryLine *ql, LwPrefManager *pm, const char* string, GError **error)
+gboolean lw_queryline_parse_kanjidict_string (LwQueryLine *ql, LwPrefManager *pm, const char* STRING, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return FALSE;
 
     //Make sure it isn't already created
-    if (ql->string != NULL && strcmp(ql->string, string) == 0) return TRUE;
+    if (ql->string != NULL && strcmp(ql->string, STRING) == 0) return TRUE;
 
     //Free previously used memory
     _queryline_free_pointers (ql);
@@ -467,22 +498,22 @@ gboolean lw_queryline_parse_kanjidict_string (LwQueryLine *ql, LwPrefManager *pm
     want_rk_conv = (rk_conv_pref == 0 || (rk_conv_pref == 2 && !lw_util_is_japanese_locale()));
     all_regex_built = TRUE;
     if (ql->string != NULL) g_free (ql->string);
-    ql->string = lw_util_prepare_query (string, FALSE);
+    ql->string = lw_util_prepare_query (STRING, FALSE);
 
     //Get stroke
-    if ((ql->re_strokes = _compile_and_allocate_number_search_regex (string, LW_RE_STROKES, error)) == NULL)
+    if ((ql->re_strokes = _compile_and_allocate_number_search_regex (STRING, LW_RE_STROKES, error)) == NULL)
       all_regex_built = FALSE;
 
     //Get frequency
-    if ((ql->re_frequency = _compile_and_allocate_number_search_regex (string, LW_RE_FREQUENCY, error)) == NULL)
+    if ((ql->re_frequency = _compile_and_allocate_number_search_regex (STRING, LW_RE_FREQUENCY, error)) == NULL)
       all_regex_built = FALSE;
 
     //Get grade level
-    if ((ql->re_grade = _compile_and_allocate_number_search_regex (string, LW_RE_GRADE, error)) == NULL)
+    if ((ql->re_grade = _compile_and_allocate_number_search_regex (STRING, LW_RE_GRADE, error)) == NULL)
       all_regex_built = FALSE;
 
     //Get JLPT level
-    if ((ql->re_jlpt = _compile_and_allocate_number_search_regex (string, LW_RE_JLPT, error)) == NULL)
+    if ((ql->re_jlpt = _compile_and_allocate_number_search_regex (STRING, LW_RE_JLPT, error)) == NULL)
       all_regex_built = FALSE;
 
     //Get Kanji
@@ -576,19 +607,19 @@ gboolean lw_queryline_parse_kanjidict_string (LwQueryLine *ql, LwPrefManager *pm
 
 //!
 //! @brief Parses a query using the example style
-//!
-//! The program will (to be written)
-//!
 //! @param ql Pointer to a LwQueryLine object ot parse a query string into.
-//! @param string constant string that is the raw query.
+//! @param pm A LwPrefManager object to load preferences from
+//! @param STRING constant string that is the raw query.
+//! @param error A Pointer to a GError to load errors into or NULL
+//! @returns Returns true if the string was successfully parsed.
 //!
-gboolean lw_queryline_parse_exampledict_string (LwQueryLine *ql, LwPrefManager* pm, const char* string, GError **error)
+gboolean lw_queryline_parse_exampledict_string (LwQueryLine *ql, LwPrefManager* pm, const char* STRING, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return FALSE;
 
     //Make sure it isn't already created
-    if (ql->string != NULL && strcmp(ql->string, string) == 0) return TRUE;
+    if (ql->string != NULL && strcmp(ql->string, STRING) == 0) return TRUE;
 
     //Free previously used memory
     _queryline_free_pointers (ql);
@@ -626,7 +657,7 @@ gboolean lw_queryline_parse_exampledict_string (LwQueryLine *ql, LwPrefManager* 
       want_kh_conv = TRUE;
     }
  
-    atoms = _queryline_initialize_pointers (ql, string);
+    atoms = _queryline_initialize_pointers (ql, STRING);
     length = g_strv_length (atoms);
 
     re = ql->re_kanji;

@@ -49,6 +49,8 @@ typedef struct _LwHistoryList LwHistoryList;
 
 LwHistoryList* lw_historylist_new (const int);
 void lw_historylist_free (LwHistoryList*);
+void lw_historylist_init (LwHistoryList*, const int);
+void lw_historylist_deinit (LwHistoryList*);
 
 //Methods
 GList* lw_historylist_get_back_list (LwHistoryList*);

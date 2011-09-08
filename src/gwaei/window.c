@@ -20,9 +20,9 @@
 *******************************************************************************/
 
 //!
-//! @file src/window.c
+//! @file window.c
 //!
-//! @brief Determines some basics for windows for gWaei
+//! @brief To be written
 //!
 
 #include <stdlib.h>

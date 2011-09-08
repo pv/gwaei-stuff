@@ -33,8 +33,8 @@
 #include <libwaei/libwaei.h>
 
 
-static int _regex_expressions_reference_count = 0;
-GRegex *lw_re[LW_RE_TOTAL + 1];
+static int _regex_expressions_reference_count = 0; //!< Internal reference count for the regexes
+GRegex *lw_re[LW_RE_TOTAL + 1]; //!< Globally accessable pre-compiled regexes
 
 /*
 
@@ -143,10 +143,10 @@ void lw_regex_free ()
 
 //!
 //! @brief Builds a regex for finding kanji by relevance
-//!
 //! @param subject The query text to insert into the regex
-//! @param relevance How relevant a result to search for
-//! @param flags GRegexMatchFlags to apply to the regex compilation.  
+//! @param DICTTYPE The DICTTYPE to build the regex for
+//! @param RELEVANCE How relevant a result to search for
+//! @param error A pointer to a GError to write errors to or NULL
 //! @returns A newly allocated GRegex that needs to be freed with g_regex_unref ()
 //! 
 GRegex* lw_regex_kanji_new (const char *subject, const LwDictType DICTTYPE, const LwRelevance RELEVANCE, GError **error)
@@ -197,9 +197,10 @@ GRegex* lw_regex_kanji_new (const char *subject, const LwDictType DICTTYPE, cons
 
 //!
 //! @brief Builds a regex for finding furigana by relevance
-//!
 //! @param subject The query text to insert into the regex
-//! @param relevance How relevant a result to search for
+//! @param DICTTYPE The DICTTYPE to build the regex for
+//! @param RELEVANCE How relevant a result to search for
+//! @param error A pointer to a GError to write errors to or NULL
 //! @returns A newly allocated GRegex that needs to be freed with g_regex_unref ()
 //! 
 GRegex* lw_regex_furi_new (const char *subject, const LwDictType DICTTYPE, const LwRelevance RELEVANCE, GError **error)
@@ -250,9 +251,10 @@ GRegex* lw_regex_furi_new (const char *subject, const LwDictType DICTTYPE, const
 
 //!
 //! @brief Builds a regex for finding romaji by relevance
-//!
 //! @param subject The query text to insert into the regex
-//! @param relevance How relevant a result to search for
+//! @param DICTTYPE The DICTTYPE to build the regex for
+//! @param RELEVANCE How relevant a result to search for
+//! @param error A pointer to a GError to write errors to or NULL
 //! @returns A newly allocated GRegex that needs to be freed with g_regex_unref ()
 //! 
 GRegex* lw_regex_romaji_new (const char *subject, const LwDictType DICTTYPE, const LwRelevance RELEVANCE, GError **error)
@@ -303,9 +305,10 @@ GRegex* lw_regex_romaji_new (const char *subject, const LwDictType DICTTYPE, con
 
 //!
 //! @brief Builds a regex for finding mix by relevance
-//!
 //! @param subject The query text to insert into the regex
-//! @param relevance How relevant a result to search for
+//! @param DICTTYPE The DICTTYPE to build the regex for
+//! @param RELEVANCE How relevant a result to search for
+//! @param error A pointer to a GError to write errors to or NULL
 //! @returns A newly allocated GRegex that needs to be freed with g_regex_unref ()
 //! 
 GRegex* lw_regex_mix_new (const char *subject, const LwDictType DICTTYPE, const LwRelevance RELEVANCE, GError **error)
@@ -351,9 +354,10 @@ GRegex* lw_regex_mix_new (const char *subject, const LwDictType DICTTYPE, const 
 
 //!
 //! @brief Builds a regex for finding mix by relevance
-//!
 //! @param subject The query text to insert into the regex
-//! @param relevance How relevant a result to search for
+//! @param DICTTYPE The DICTTYPE to build the regex for
+//! @param RELEVANCE How relevant a result to search for
+//! @param error A pointer to a GError to write errors to or NULL
 //! @returns A newly allocated GRegex that needs to be freed with g_regex_unref ()
 //! 
 GRegex* lw_regex_new (const char *subject, const LwDictType DICTTYPE, const LwRelevance RELEVANCE, GError **error)

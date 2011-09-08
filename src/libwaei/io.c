@@ -47,7 +47,7 @@ struct _LwIoProcessFdData {
   gpointer data;           //!< Data to be passed to the LwIoProgressCallback
   GError *error;           //!< A GError
 };
-typedef struct _LwIoProcessFdData LwIoProcessFdData;
+typedef struct _LwIoProcessFdData LwIoProcessFdData; //!< Used for passing data to LwIo functions
 
 
 
@@ -67,6 +67,11 @@ void lw_io_set_savepath (const gchar *PATH)
       _savepath = g_strdup (PATH);
 }
 
+
+//!
+//! @brief Gets the savepath used with the save/save as functions
+//! @returns A constant path string that is not to be freed
+//!
 const gchar* lw_io_get_savepath ()
 {
   return _savepath;
@@ -75,8 +80,12 @@ const gchar* lw_io_get_savepath ()
 
 //!
 //! @brief Writes a file using the given text and write mode
-//! @param write_mode A constant char representing the write mode to be used (w,a)
-//! @param text A char pointer to some text to save.
+//! @param PATH The Path to write the file to
+//! @param mode A constant char representing the write mode to be used (w,a)
+//! @param text A char pointer to some text to write to the file.
+//! @param cb A LwIoProgressCallback function to give progress feedback or NULL
+//! @param data A generic pointer to data to pass to the callback
+//! @param error A pointer to a GError object to write errors to or NULL
 //!
 void lw_io_write_file (const char* PATH, const char* mode, gchar *text, LwIoProgressCallback cb, gpointer data, GError **error)
 {
@@ -112,15 +121,17 @@ void lw_io_write_file (const char* PATH, const char* mode, gchar *text, LwIoProg
 
 //!
 //! @brief Copies a file and creates a new one using the new encoding
-//! @param source_path The source file to change the encoding on.
-//! @param target_path The place to save the new file with the new encoding.
-//! @param source_encoding The encoding of the source file.
-//! @param target_encoding THe wanted encoding in the new file to be created.
-//!
+//! @param SOURCE_PATH The source file to change the encoding on.
+//! @param TARGET_PATH The place to save the new file with the new encoding.
+//! @param SOURCE_ENCODING The encoding of the source file.
+//! @param TARGET_ENCODING THe wanted encoding in the new file to be created.
+//! @param cb A LwIoProgressCallback to use to give progress feedback or NULL
+//! @param data A gpointer to data to pass to the LwIoProgressCallback
+//! @param error pointer to a GError to write errors to
 //! @return The status of the conversion opertaion
 //!
-gboolean lw_io_copy_with_encoding (const char *source_path, const char *target_path,
-                                   const char *source_encoding, const char *target_encoding,
+gboolean lw_io_copy_with_encoding (const char *SOURCE_PATH, const char *TARGET_PATH,
+                                   const char *SOURCE_ENCODING, const char *TARGET_ENCODING,
                                    LwIoProgressCallback cb, gpointer data, GError **error   )
 {
     if (*error != NULL) return FALSE;
@@ -141,12 +152,12 @@ gboolean lw_io_copy_with_encoding (const char *source_path, const char *target_p
     double fraction;
 
     //Initializations
-    readfd = fopen (source_path, "r");
-    writefd = fopen (target_path, "w");
-    conv = g_iconv_open (target_encoding, source_encoding);
+    readfd = fopen (SOURCE_PATH, "r");
+    writefd = fopen (TARGET_PATH, "w");
+    conv = g_iconv_open (TARGET_ENCODING, SOURCE_ENCODING);
     prev_inbytes = 0;
     written = 0;
-    end = lw_io_get_filesize (source_path);
+    end = lw_io_get_filesize (SOURCE_PATH);
     curpos = 0;
 
     while (ferror(readfd) == 0 && feof(readfd) == 0 && ferror(writefd) == 0 && feof(writefd) == 0)
@@ -252,7 +263,7 @@ static int _libcurl_update_progress (void  *custom,
 //! @brief Downloads a file using libcurl
 //! @param source_path String of the source url
 //! @param target_path String of the path to save the file locally
-//! @param cb Pointer to a function to update
+//! @param cb A LwIoProgressCallback to use to give progress feedback or NULL
 //! @param data gpointer to data to pass to the function pointer
 //! @param error Error handling
 //!
@@ -313,11 +324,13 @@ gboolean lw_io_download (char *source_path, char *target_path, LwIoProgressCallb
 
 //!
 //! @brief Copies a local file to another local location
-//! @param source_path String of the source url
-//! @param target_path String of the path to save the file locally
+//! @param SOURCE_PATH String of the source url
+//! @param TARGET_PATH String of the path to save the file locally
+//! @param cb A LwIoProgressCallback to use to give progress feedback or NULL
+//! @param data A gpointer to data to pass to the LwIoProgressCallback
 //! @param error Error handling
 //!
-gboolean lw_io_copy (const char *source_path, const char *target_path, 
+gboolean lw_io_copy (const char *SOURCE_PATH, const char *TARGET_PATH, 
                      LwIoProgressCallback cb, gpointer data, GError **error)
 {
     if (*error != NULL) return FALSE;
@@ -333,10 +346,10 @@ gboolean lw_io_copy (const char *source_path, const char *target_path,
     double fraction;
 
     //Initalizations
-    in = fopen(source_path, "rb");
-    out = fopen(target_path, "wb");
+    in = fopen(SOURCE_PATH, "rb");
+    out = fopen(TARGET_PATH, "wb");
     chunk = 1;
-    end = lw_io_get_filesize (source_path);
+    end = lw_io_get_filesize (SOURCE_PATH);
     curpos = 0;
     fraction = 0.0;
 
@@ -361,9 +374,11 @@ gboolean lw_io_copy (const char *source_path, const char *target_path,
 
 //!
 //! @brief Creates a single dictionary containing both the radical dict and kanji dict
-//! @param mpath Mix dictionary path to write to
-//! @param kpath Kanjidic dictionary path
-//! @param rpath raddic dictionary path
+//! @param output_path Mix dictionary path to write to
+//! @param kanji_dictionary_path Kanjidic dictionary path
+//! @param radicals_dictionary_path raddic dictionary path
+//! @param cb A LwIoProgressCallback to use to give progress feedback or NULL
+//! @param data A gpointer to data to pass to the LwIoProgressCallback
 //! @param error pointer to a GError to write errors to
 //!
 gboolean lw_io_create_mix_dictionary (const char *output_path, 
@@ -477,9 +492,18 @@ gboolean lw_io_create_mix_dictionary (const char *output_path,
 }
 
 
-gboolean lw_io_split_places_from_names_dictionary (const char *output_names_path, 
-                                                   const char* output_places_path,
-                                                   const char* input_names_places_path,
+//!
+//! @brief Splits the Names 
+//! @param OUTPUT_NAMES_PATH The path to write the new Names dictionary to
+//! @param OUTPUT_PLACES_PATH The path to write the new Places dictionary to
+//! @param INPUT_NAMES_PLACES_PATH The file to use to generate the split dictionaries
+//! @param cb A LwIoProgressCallback to use to give progress feedback or NULL
+//! @param data A gpointer to data to pass to the LwIoProgressCallback
+//! @param error pointer to a GError to write errors to
+//!
+gboolean lw_io_split_places_from_names_dictionary (const char *OUTPUT_NAMES_PATH, 
+                                                   const char* OUTPUT_PLACES_PATH,
+                                                   const char* INPUT_NAMES_PLACES_PATH,
                                                    LwIoProgressCallback cb,
                                                    gpointer data,
                                                    GError **error                    )
@@ -519,17 +543,17 @@ gboolean lw_io_split_places_from_names_dictionary (const char *output_names_path
     int  name_write_error;
 
     //Initializations
-    inputf = fopen(input_names_places_path, "r");
+    inputf = fopen(INPUT_NAMES_PLACES_PATH, "r");
     curpos = 0;
-    end = lw_io_get_filesize (input_names_places_path);
+    end = lw_io_get_filesize (INPUT_NAMES_PLACES_PATH);
     fraction = 0.0;
 
     re_place = g_regex_new (place_pattern,  LW_RE_COMPILE_FLAGS, LW_RE_LOCATE_FLAGS, error);
-    placesf = fopen(output_places_path, "w");
+    placesf = fopen(OUTPUT_PLACES_PATH, "w");
     place_write_error = 0;
 
     re_name = g_regex_new (name_pattern,  LW_RE_COMPILE_FLAGS, LW_RE_LOCATE_FLAGS, error);
-    namesf = fopen(output_names_path, "w");
+    namesf = fopen(OUTPUT_NAMES_PATH, "w");
     name_write_error  = 0;
 
 
@@ -565,10 +589,13 @@ gboolean lw_io_split_places_from_names_dictionary (const char *output_names_path
 
 //!
 //! @brief Decompresses a gzip file
-//! @param path String representing the path of the file to gunzip
-//! @param error Error handling
+//! @param SOURCE_PATH The path to the file that is gzipped
+//! @param TARGET_PATH The path to write the uncompressed file to
+//! @param cb A LwIoProgressCallback function to give progress feedback or NULL
+//! @param data A generic pointer to data to pass to the LwIoProgressCallback
+//! @param error A pointer to a GError object to write an error to or NULL
 //!
-gboolean lw_io_gunzip_file (const char *source_path, const char *target_path,
+gboolean lw_io_gunzip_file (const char *SOURCE_PATH, const char *TARGET_PATH,
                             LwIoProgressCallback cb, gpointer data, GError **error)
 {
     if (error != NULL && *error != NULL) return FALSE;
@@ -576,7 +603,7 @@ gboolean lw_io_gunzip_file (const char *source_path, const char *target_path,
     //Declarations
     char *argv[] = { GZIP, "-cd", NULL };
 
-    lw_io_pipe_data (argv, source_path, target_path, cb, data, error);
+    lw_io_pipe_data (argv, SOURCE_PATH, TARGET_PATH, cb, data, error);
 
     return (error == NULL || *error == NULL);
 } 
@@ -584,10 +611,12 @@ gboolean lw_io_gunzip_file (const char *source_path, const char *target_path,
 
 //!
 //! @brief Decompresses a zip file
-//! @param path String representing the path of the file to unzip
-//! @param error Error handling
+//! @param SOURCE_PATH The path to the file that is gzipped
+//! @param cb A LwIoProgressCallback function to give progress feedback or NULL
+//! @param data A generic pointer to data to pass to the LwIoProgressCallback
+//! @param error A pointer to a GError object to write an error to or NULL
 //!
-gboolean lw_io_unzip_file (char *path, LwIoProgressCallback cb, gpointer data, GError **error)
+gboolean lw_io_unzip_file (char *SOURCE_PATH, LwIoProgressCallback cb, gpointer data, GError **error)
 {
     return TRUE;
 }
@@ -636,7 +665,11 @@ char** lw_io_get_dictionary_file_list (const int MAX)
 }
 
 
-
+//!
+//! @brief Gets the size of a file in bytes
+//! @param URI The path to the file to calculate the size of
+//! @returns The size of the file in bytes
+//!
 size_t lw_io_get_filesize (const char *URI)
 {
     //Sanity check
@@ -662,6 +695,11 @@ size_t lw_io_get_filesize (const char *URI)
 }
 
 
+//!
+//! @brief Callback function to read data in from a file and send it to a stream
+//! @param data A pointer to a LwIoProcessFdData object
+//! @returns Returns if there was an error
+//!
 gpointer _stdin_func (gpointer data)
 {
     //Declarations
@@ -720,6 +758,11 @@ gpointer _stdin_func (gpointer data)
 }
 
 
+//!
+//! @brief Callback function to read data from a stream and write it to a file
+//! @param data A pointer to a LwIoProcessFdData object
+//! @returns Returns if there was an error
+//!
 gpointer _stdout_func (gpointer data)
 {
     //Declarations
@@ -770,13 +813,17 @@ gpointer _stdout_func (gpointer data)
 
 
 //!
-//! @brief Gunzips a file
-//! @param path String representing the path of the file to gunzip
-//! @param error Error handling
+//! @brief Pipes a source file through a program and sends the output to a target file.
+//! @param argv An array of strings representing a program path and flags
+//! @param SOURCE_PATH The path to the file file to be streamed to the program
+//! @param TARGET_PATH The path to write the uncompressed file to
+//! @param cb A LwIoProgressCallback function to give progress feedback or NULL
+//! @param data A generic pointer to data to pass to the LwIoProgressCallback
+//! @param error A pointer to a GError object to write an error to or NULL
 //!
 gboolean lw_io_pipe_data (char **argv, 
-                          const char *source_path, 
-                          const char *target_path, 
+                          const char *SOURCE_PATH, 
+                          const char *TARGET_PATH, 
                           LwIoProgressCallback cb, 
                           gpointer data, 
                           GError **error          )
@@ -808,13 +855,13 @@ gboolean lw_io_pipe_data (char **argv,
           error
     );
 
-    stdin_data.uri = source_path;
+    stdin_data.uri = SOURCE_PATH;
     stdin_data.fd = stdin_fd;
     stdin_data.cb = cb;
     stdin_data.data = data;
     stdin_data.error = NULL;
 
-    stdout_data.uri = target_path;
+    stdout_data.uri = TARGET_PATH;
     stdout_data.fd = stdout_fd;
     stdout_data.cb = cb;
     stdout_data.data = data;
@@ -850,8 +897,16 @@ gboolean lw_io_pipe_data (char **argv,
     return (*error == NULL);
 } 
 
+
+//!
+//! @brief Deletes a file from the filesystem
+//! @param URI The path to the file to delet
+//! @param error A pointer to a GError object to write errors to or NULL
+//!
 gboolean lw_io_remove (const char *URI, GError **error)
 {
+  if (error != NULL && *error != NULL) return FALSE;
+
   //Declarations
   int resolution;
 
@@ -862,12 +917,21 @@ gboolean lw_io_remove (const char *URI, GError **error)
 }
 
 
+//!
+//! @brief Sets the global IO state to cancel all operations
+//! @param state The cancel request state wanted
+//!
 void lw_io_set_cancel_operations (gboolean state)
 {
     _cancel = state;
 }
 
-int lw_io_get_total_lines_for_file (const char *filename)
+
+//!
+//! @brief A quick way to get the number of lines in a file for use in progress functions
+//! @param FILENAME The path to the file to see how many lines it has
+//!
+int lw_io_get_total_lines_for_file (const char *FILENAME)
 {
     //Declarations
     const int MAX = 512;
@@ -876,7 +940,7 @@ int lw_io_get_total_lines_for_file (const char *filename)
     int total;
 
     //Initializations
-    file = fopen (filename, "r");
+    file = fopen (FILENAME, "r");
     total = 0;
 
     while (fgets(buffer, MAX, file) != NULL)

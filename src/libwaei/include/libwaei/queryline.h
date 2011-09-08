@@ -25,6 +25,8 @@ typedef struct _LwQueryLine LwQueryLine;
 
 LwQueryLine* lw_queryline_new (void );
 void lw_queryline_free (LwQueryLine*);
+void lw_queryline_init (LwQueryLine*);
+void lw_queryline_deinit (LwQueryLine*);
 
 int lw_queryline_parse_edict_string (LwQueryLine*l, LwPrefManager*, const char*, GError**);
 int lw_queryline_parse_kanjidict_string (LwQueryLine*, LwPrefManager*, const char*, GError**);

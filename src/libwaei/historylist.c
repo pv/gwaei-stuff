@@ -34,12 +34,9 @@
 
 
 //!
-//! @brief Creates a new LwHistoryList object. 
-//!
-//! Creates a new history list object which null pointers
-//! a a back, forward history list and a current LwSearchItem.
-//!
-//! @return Returns the allocated LwHistoryList object.
+//! @brief Creates a new LwHistoryList object
+//! @param MAX The maximum items you want in the list before old ones are deleted
+//! @return An allocated LwHistoryList that will be needed to be freed by lw_historylist_free.
 //!
 LwHistoryList* lw_historylist_new (const int MAX)
 {
@@ -49,20 +46,49 @@ LwHistoryList* lw_historylist_new (const int MAX)
 
     if (temp != NULL)
     {
-      temp->back = NULL;
-      temp->forward = NULL;
-      temp->max = MAX;
+      lw_historylist_init (temp, MAX);
     }
 
     return temp;
 }
 
 
+//!
+//! @brief Releases a LwHistoryList object from memory.
+//! @param list A LwHistoryList object created by lw_historylist_new.
+//!
 void lw_historylist_free (LwHistoryList *list)
+{
+    lw_historylist_deinit (list);
+    free (list);
+}
+
+
+//!
+//! @brief Used to initialize the memory inside of a new LwHistoryList
+//!        object.  Usually lw_historylist_new calls this for you.  It is also 
+//!        used in class implimentations that extends LwHistoryList.
+//! @param list The LwHistoryList object to initialize the memory of.
+//! @param MAX The maximum items you want in the list before old ones are deleted
+//!
+void lw_historylist_init (LwHistoryList *list, const int MAX)
+{
+    list->back = NULL;
+    list->forward = NULL;
+    list->max = MAX;
+}
+
+
+//!
+//! @brief Used to free the memory inside of a LwHistoryList object.
+//!         Usually lw_historylist_free calls this for you.  It is also used
+//!         in class implimentations that extends LwHistoryList.
+//! @param list The LwHistoryList object to have it's inner memory freed.
+//!
+void lw_historylist_deinit (LwHistoryList *list)
 {
     lw_historylist_clear_forward_list (list);
     lw_historylist_clear_back_list (list);
-    free (list);
 }
 
 

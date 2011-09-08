@@ -21,6 +21,7 @@
 
 //!
 //!  @file dictinfo.c
+//!
 //!  @brief LwDictInfo objects represent a loaded dictionary that the program
 //!         can use to carry out searches.  You can uninstall dictionaries
 //!         by using the object, but you cannot install them. LwDictInst
