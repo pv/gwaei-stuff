@@ -242,12 +242,10 @@ static void _searchwindow_attach_signals (GwSearchWindow *window)
         window->toplevel 
     );
 
-    window->timeoutid[GW_SEARCHWINDOW_TIMEOUTID_KEEP_SEARCHING] = g_timeout_add_full (
-          G_PRIORITY_DEFAULT_IDLE, 
-          100, 
+    window->timeoutid[GW_SEARCHWINDOW_TIMEOUTID_KEEP_SEARCHING] = gdk_threads_add_timeout (
+          100,
           (GSourceFunc) gw_searchwindow_keep_searching_timeout, 
-          window, 
-          NULL
+          window
     );
 
     window->timeoutid[GW_SEARCHWINDOW_TIMEOUTID_PROGRESS] = g_timeout_add_full (
@@ -1765,6 +1763,7 @@ char* gw_searchwindow_get_text_by_target (GwSearchWindow *window, LwOutputTarget
 }
 
 
+
 //!
 //! @brief A simple window initiater function made to be looped by a timer
 //!
@@ -1787,7 +1786,7 @@ gboolean gw_searchwindow_keep_searching_timeout (GwSearchWindow *window)
     if (window->keepsearchingdata.delay >= GW_SEARCHWINDOW_KEEP_SEARCHING_MAX_DELAY || strlen(query) == 0)
     {
       window->keepsearchingdata.delay = 0;
-      gw_searchwindow_search_cb (GTK_WIDGET (window->toplevel), GTK_WIDGET (window->toplevel));
+      gtk_widget_activate (GTK_WIDGET (window->entry));
     }
     else
     {

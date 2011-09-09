@@ -71,6 +71,12 @@ void lw_engine_append_more_relevant_header (LwEngine *engine, LwSearchItem *item
 }
 
 
+//!
+//! @brief Sets up and allocateds memory for the specific LwEngine search
+//! @param engine The LwEngine to use
+//! @param item The LwSearchItem to prepare
+//! @param exact Whether the search should display less relevant results
+//!
 gpointer lw_engine_prepare_search (LwEngine *engine, LwSearchItem *item, gboolean exact)
 {
     LwEngineData *data;
@@ -86,6 +92,10 @@ gpointer lw_engine_prepare_search (LwEngine *engine, LwSearchItem *item, gboolea
 }
 
 
+//!
+//! @brief Frees memory allocated for the specific LwEngine search
+//! @param data  A pointer to a LwEngineData object
+//!
 void lw_engine_cleanup_search (gpointer data)
 {
   LwEngineData *enginedata;
@@ -338,6 +348,18 @@ void lw_engine_get_results (LwEngine *engine, LwSearchItem *item, gboolean creat
 }
 
 
+//!
+//! @brief Creates a new LwEngine object
+//! @param append_edict_result_cb A callback function to output edict results
+//! @param append_kanjidict_result_cb A callback function to output kanjidict results
+//! @param append_examplesdict_result_cb A callback function to output examplesdict results
+//! @param append_unknowndict_result_cb A callback function to output unknown dictionary results
+//! @param append_less_relevant_header_cb A callback function to output the less relevant results header
+//! @param append_more_relevant_header_cb A callback function to output he more relevant results header
+//! @param prepare_search_cb A callback function to prepare data in a LwSearchItem before a search
+//! @param cleanup_search_cb A callback function to cleanup data in a LwSearchItem after a search
+//! @return An allocated LwEngine that will be needed to be freed by lw_engine_free.
+//!
 LwEngine* lw_engine_new (
     void (*append_edict_result_cb)(LwSearchItem*),
     void (*append_kanjidict_result_cb)(LwSearchItem*),
