@@ -52,7 +52,8 @@ gboolean gw_searchwindow_focus_change_on_key_press_cb (GtkWidget*, GdkEvent*, gp
 gboolean gw_searchwindow_update_icons_for_selection_cb (GtkWidget*, GdkEvent*, gpointer); 
 
 //void gw_searchwindow_dictionaries_changed_cb (GtkTreeModel*, GtkTreePath*, GtkTreeIter*, gpointer);
-void gw_searchwindow_dictionaries_changed_cb (GtkTreeModel*, GtkTreePath*, gpointer);
+void gw_searchwindow_dictionaries_added_cb (GtkTreeModel*, GtkTreePath*, GtkTreeIter*, gpointer);
+void gw_searchwindow_dictionaries_deleted_cb (GtkTreeModel*, GtkTreePath*, gpointer);
 
 gboolean gw_searchwindow_scroll_or_zoom_cb (GtkWidget*, GdkEventScroll*, gpointer);
 

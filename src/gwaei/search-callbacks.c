@@ -1969,11 +1969,18 @@ G_MODULE_EXPORT void gw_searchwindow_open_radicalswindow_cb (GtkWidget *widget, 
 }
 
 
+G_MODULE_EXPORT void gw_searchwindow_dictionaries_added_cb (GtkTreeModel* model, GtkTreePath *path, GtkTreeIter* iter, gpointer data)
+{
+    //Lazy implimenation
+    gw_searchwindow_dictionaries_deleted_cb (model, path, data);
+}
+
+
 //!
 //! @brief Disables portions of the interface depending on the currently queued jobs.
 //!
 //G_MODULE_EXPORT void gw_searchwindow_dictionaries_changed_cb (GtkTreeModel* model, GtkTreePath *path, GtkTreeIter *iter, gpointer data)
-G_MODULE_EXPORT void gw_searchwindow_dictionaries_changed_cb (GtkTreeModel* model, GtkTreePath *path, gpointer data)
+G_MODULE_EXPORT void gw_searchwindow_dictionaries_deleted_cb (GtkTreeModel* model, GtkTreePath *path, gpointer data)
 {
     //Declarations
     GwSearchWindow *window;
@@ -1995,7 +2002,7 @@ G_MODULE_EXPORT void gw_searchwindow_dictionaries_changed_cb (GtkTreeModel* mode
     gw_searchwindow_initialize_dictionary_combobox (window);
 
     //Set the show state of the dictionaries required message
-    if (g_list_length (app->dictinfolist->list) > 0)
+    if (lw_dictinfolist_get_total (LW_DICTINFOLIST (app->dictinfolist)) > 0)
       gw_searchwindow_set_dictionary (window, 0);
 
 

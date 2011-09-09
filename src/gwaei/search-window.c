@@ -235,10 +235,18 @@ static void _searchwindow_attach_signals (GwSearchWindow *window)
         gw_searchwindow_sync_spellcheck_cb,
         window
     );
-    window->signalid[GW_SEARCHWINDOW_SIGNALID_DICTIONARIES_CHANGED] = g_signal_connect (
+
+    window->signalid[GW_SEARCHWINDOW_SIGNALID_DICTIONARIES_ADDED] = g_signal_connect (
+        G_OBJECT (app->dictinfolist->model),
+        "row-inserted",
+        G_CALLBACK (gw_searchwindow_dictionaries_added_cb),
+        window->toplevel 
+    );
+
+    window->signalid[GW_SEARCHWINDOW_SIGNALID_DICTIONARIES_DELETED] = g_signal_connect (
         G_OBJECT (app->dictinfolist->model),
         "row-deleted",
-        G_CALLBACK (gw_searchwindow_dictionaries_changed_cb),
+        G_CALLBACK (gw_searchwindow_dictionaries_deleted_cb),
         window->toplevel 
     );
 
@@ -301,8 +309,14 @@ static void _searchwindow_remove_signals (GwSearchWindow *window)
 
     g_signal_handler_disconnect (
         G_OBJECT (app->dictinfolist->model),
-        window->signalid[GW_SEARCHWINDOW_SIGNALID_DICTIONARIES_CHANGED]
+        window->signalid[GW_SEARCHWINDOW_SIGNALID_DICTIONARIES_ADDED]
     );
+
+    g_signal_handler_disconnect (
+        G_OBJECT (app->dictinfolist->model),
+        window->signalid[GW_SEARCHWINDOW_SIGNALID_DICTIONARIES_DELETED]
+    );
+
 
     for (i = 0; i < TOTAL_GW_SEARCHWINDOW_SIGNALIDS; i++)
       window->signalid[i] = 0;
