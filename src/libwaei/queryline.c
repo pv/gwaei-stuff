@@ -199,12 +199,12 @@ static GRegex*** _queryline_allocate_pointers (int length)
 //!
 //! @brief Parses a query using the edict style
 //! @param ql Pointer to a LwQueryLine object ot parse a query string into.
-//! @param pm A LwPrefManager object to load preferences from
+//! @param pm A LwPreferences object to load preferences from
 //! @param STRING constant string that is the raw query.
 //! @param error A Pointer to a GError to load errors into or NULL
 //! @returns Returns true if the string was successfully parsed.
 //!
-gboolean lw_queryline_parse_edict_string (LwQueryLine *ql, LwPrefManager *pm, const char* STRING, GError **error)
+gboolean lw_queryline_parse_edict_string (LwQueryLine *ql, LwPreferences *pm, const char* STRING, GError **error)
 {
    //Sanity check
    if (error != NULL && *error != NULL) return FALSE;
@@ -237,10 +237,10 @@ gboolean lw_queryline_parse_edict_string (LwQueryLine *ql, LwPrefManager *pm, co
 
    if (pm != NULL)
    {
-     rk_conv_pref = lw_prefmanager_get_int_by_schema (pm, LW_SCHEMA_BASE, LW_KEY_ROMAN_KANA);
+     rk_conv_pref = lw_preferences_get_int_by_schema (pm, LW_SCHEMA_BASE, LW_KEY_ROMAN_KANA);
      want_rk_conv = (rk_conv_pref == 0 || (rk_conv_pref == 2 && !lw_util_is_japanese_locale()));
-     want_hk_conv = lw_prefmanager_get_boolean_by_schema (pm, LW_SCHEMA_BASE, LW_KEY_HIRA_KATA);
-     want_kh_conv = lw_prefmanager_get_boolean_by_schema (pm, LW_SCHEMA_BASE, LW_KEY_KATA_HIRA);
+     want_hk_conv = lw_preferences_get_boolean_by_schema (pm, LW_SCHEMA_BASE, LW_KEY_HIRA_KATA);
+     want_kh_conv = lw_preferences_get_boolean_by_schema (pm, LW_SCHEMA_BASE, LW_KEY_KATA_HIRA);
    }
    else
    {
@@ -460,12 +460,12 @@ static GRegex*** _compile_and_allocate_number_search_regex (const char* subject,
 //!
 //! @brief Parses a query using the kanjidict style
 //! @param ql Pointer to a LwQueryLine object ot parse a query string into.
-//! @param pm A LwPrefManager object to load preferences from
+//! @param pm A LwPreferences object to load preferences from
 //! @param STRING constant string that is the raw query.
 //! @param error A Pointer to a GError to load errors into or NULL
 //! @returns Returns true if the string was successfully parsed.
 //!
-gboolean lw_queryline_parse_kanjidict_string (LwQueryLine *ql, LwPrefManager *pm, const char* STRING, GError **error)
+gboolean lw_queryline_parse_kanjidict_string (LwQueryLine *ql, LwPreferences *pm, const char* STRING, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return FALSE;
@@ -494,7 +494,7 @@ gboolean lw_queryline_parse_kanjidict_string (LwQueryLine *ql, LwPrefManager *pm
     GUnicodeScript script;
 
     //Initializations
-    rk_conv_pref = lw_prefmanager_get_int_by_schema (pm, LW_SCHEMA_BASE, LW_KEY_ROMAN_KANA);
+    rk_conv_pref = lw_preferences_get_int_by_schema (pm, LW_SCHEMA_BASE, LW_KEY_ROMAN_KANA);
     want_rk_conv = (rk_conv_pref == 0 || (rk_conv_pref == 2 && !lw_util_is_japanese_locale()));
     all_regex_built = TRUE;
     if (ql->string != NULL) g_free (ql->string);
@@ -608,12 +608,12 @@ gboolean lw_queryline_parse_kanjidict_string (LwQueryLine *ql, LwPrefManager *pm
 //!
 //! @brief Parses a query using the example style
 //! @param ql Pointer to a LwQueryLine object ot parse a query string into.
-//! @param pm A LwPrefManager object to load preferences from
+//! @param pm A LwPreferences object to load preferences from
 //! @param STRING constant string that is the raw query.
 //! @param error A Pointer to a GError to load errors into or NULL
 //! @returns Returns true if the string was successfully parsed.
 //!
-gboolean lw_queryline_parse_exampledict_string (LwQueryLine *ql, LwPrefManager* pm, const char* STRING, GError **error)
+gboolean lw_queryline_parse_exampledict_string (LwQueryLine *ql, LwPreferences* pm, const char* STRING, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return FALSE;
@@ -643,10 +643,10 @@ gboolean lw_queryline_parse_exampledict_string (LwQueryLine *ql, LwPrefManager* 
     //Initializations
     if (pm != NULL)
     {
-      rk_conv_pref = lw_prefmanager_get_int_by_schema (pm, LW_SCHEMA_BASE, LW_KEY_ROMAN_KANA);
+      rk_conv_pref = lw_preferences_get_int_by_schema (pm, LW_SCHEMA_BASE, LW_KEY_ROMAN_KANA);
       want_rk_conv = (rk_conv_pref == 0 || (rk_conv_pref == 2 && !lw_util_is_japanese_locale()));
-      want_hk_conv = lw_prefmanager_get_boolean_by_schema (pm, LW_SCHEMA_BASE, LW_KEY_HIRA_KATA);
-      want_kh_conv = lw_prefmanager_get_boolean_by_schema (pm, LW_SCHEMA_BASE, LW_KEY_KATA_HIRA);
+      want_hk_conv = lw_preferences_get_boolean_by_schema (pm, LW_SCHEMA_BASE, LW_KEY_HIRA_KATA);
+      want_kh_conv = lw_preferences_get_boolean_by_schema (pm, LW_SCHEMA_BASE, LW_KEY_KATA_HIRA);
       all_regex_built = TRUE;
     }
     else

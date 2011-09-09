@@ -111,7 +111,7 @@ void gw_searchwindow_init (GwSearchWindow *window)
 
     window->new_tab = FALSE; 
 
-    window->history = lw_historylist_new (20);
+    window->history = lw_history_new (20);
     window->tagtable = gtk_text_tag_table_new ();
     window->spellcheck = NULL;
 
@@ -162,7 +162,7 @@ void gw_searchwindow_deinit (GwSearchWindow *window)
     gw_searchwindow_cancel_all_searches (window);
 
     if (window->spellcheck != NULL) gw_spellcheck_free (window->spellcheck);
-    if (window->history != NULL) lw_historylist_free (window->history);
+    if (window->history != NULL) lw_history_free (window->history);
     if (window->tablist != NULL) g_list_free (window->tablist);
 
     _searchwindow_mousedata_deinit (&(window->mousedata));
@@ -181,7 +181,7 @@ static void _searchwindow_attach_signals (GwSearchWindow *window)
     for (i = 0; i < TOTAL_GW_SEARCHWINDOW_SIGNALIDS; i++)
       window->signalid[i] = 0;
 
-    window->signalid[GW_SEARCHWINDOW_SIGNALID_TOOLBAR_SHOW] = lw_prefmanager_add_change_listener_by_schema (
+    window->signalid[GW_SEARCHWINDOW_SIGNALID_TOOLBAR_SHOW] = lw_preferences_add_change_listener_by_schema (
         app->prefmanager,
         LW_SCHEMA_BASE,
         LW_KEY_TOOLBAR_SHOW,
@@ -189,7 +189,7 @@ static void _searchwindow_attach_signals (GwSearchWindow *window)
         window
     );
 
-    window->signalid[GW_SEARCHWINDOW_SIGNALID_STATUSBAR_SHOW] = lw_prefmanager_add_change_listener_by_schema (
+    window->signalid[GW_SEARCHWINDOW_SIGNALID_STATUSBAR_SHOW] = lw_preferences_add_change_listener_by_schema (
         app->prefmanager,
         LW_SCHEMA_BASE,
         LW_KEY_STATUSBAR_SHOW,
@@ -197,14 +197,14 @@ static void _searchwindow_attach_signals (GwSearchWindow *window)
         window
     );
 
-    window->signalid[GW_SEARCHWINDOW_SIGNALID_USE_GLOBAL_FONT] = lw_prefmanager_add_change_listener_by_schema (
+    window->signalid[GW_SEARCHWINDOW_SIGNALID_USE_GLOBAL_FONT] = lw_preferences_add_change_listener_by_schema (
         app->prefmanager,
         LW_SCHEMA_FONT,
         LW_KEY_FONT_USE_GLOBAL_FONT,
         gw_searchwindow_sync_font_cb,
         window
     );
-    window->signalid[GW_SEARCHWINDOW_SIGNALID_CUSTOM_FONT] = lw_prefmanager_add_change_listener_by_schema (
+    window->signalid[GW_SEARCHWINDOW_SIGNALID_CUSTOM_FONT] = lw_preferences_add_change_listener_by_schema (
         app->prefmanager,
         LW_SCHEMA_FONT,
         LW_KEY_FONT_CUSTOM_FONT,
@@ -212,7 +212,7 @@ static void _searchwindow_attach_signals (GwSearchWindow *window)
         window
     );
 
-    window->signalid[GW_SEARCHWINDOW_SIGNALID_FONT_MAGNIFICATION] = lw_prefmanager_add_change_listener_by_schema (
+    window->signalid[GW_SEARCHWINDOW_SIGNALID_FONT_MAGNIFICATION] = lw_preferences_add_change_listener_by_schema (
         app->prefmanager,
         LW_SCHEMA_FONT,
         LW_KEY_FONT_MAGNIFICATION,
@@ -220,7 +220,7 @@ static void _searchwindow_attach_signals (GwSearchWindow *window)
         window
     );
 
-    window->signalid[GW_SEARCHWINDOW_SIGNALID_KEEP_SEARCHING] = lw_prefmanager_add_change_listener_by_schema (
+    window->signalid[GW_SEARCHWINDOW_SIGNALID_KEEP_SEARCHING] = lw_preferences_add_change_listener_by_schema (
         app->prefmanager,
         LW_SCHEMA_BASE,
         LW_KEY_SEARCH_AS_YOU_TYPE,
@@ -228,7 +228,7 @@ static void _searchwindow_attach_signals (GwSearchWindow *window)
         window
     );
 
-    window->signalid[GW_SEARCHWINDOW_SIGNALID_SPELLCHECK] = lw_prefmanager_add_change_listener_by_schema (
+    window->signalid[GW_SEARCHWINDOW_SIGNALID_SPELLCHECK] = lw_preferences_add_change_listener_by_schema (
         app->prefmanager,
         LW_SCHEMA_BASE,
         LW_KEY_SPELLCHECK,
@@ -265,37 +265,37 @@ static void _searchwindow_remove_signals (GwSearchWindow *window)
     //Declarations
     int i;
 
-    lw_prefmanager_remove_change_listener_by_schema (
+    lw_preferences_remove_change_listener_by_schema (
         app->prefmanager,
         LW_SCHEMA_BASE,
         window->signalid[GW_SEARCHWINDOW_SIGNALID_TOOLBAR_SHOW]
     );
-    lw_prefmanager_remove_change_listener_by_schema (
+    lw_preferences_remove_change_listener_by_schema (
         app->prefmanager,
         LW_SCHEMA_BASE,
         window->signalid[GW_SEARCHWINDOW_SIGNALID_STATUSBAR_SHOW]
     );
-    lw_prefmanager_remove_change_listener_by_schema (
+    lw_preferences_remove_change_listener_by_schema (
         app->prefmanager,
         LW_SCHEMA_FONT,
         window->signalid[GW_SEARCHWINDOW_SIGNALID_USE_GLOBAL_FONT]
     );
-    lw_prefmanager_remove_change_listener_by_schema (
+    lw_preferences_remove_change_listener_by_schema (
         app->prefmanager,
         LW_SCHEMA_FONT,
         window->signalid[GW_SEARCHWINDOW_SIGNALID_CUSTOM_FONT]
     );
-    lw_prefmanager_remove_change_listener_by_schema (
+    lw_preferences_remove_change_listener_by_schema (
         app->prefmanager,
         LW_SCHEMA_FONT,
         window->signalid[GW_SEARCHWINDOW_SIGNALID_FONT_MAGNIFICATION]
     );
-    lw_prefmanager_remove_change_listener_by_schema (
+    lw_preferences_remove_change_listener_by_schema (
         app->prefmanager,
         LW_SCHEMA_BASE,
         window->signalid[GW_SEARCHWINDOW_SIGNALID_KEEP_SEARCHING]
     );
-    lw_prefmanager_remove_change_listener_by_schema (
+    lw_preferences_remove_change_listener_by_schema (
         app->prefmanager,
         LW_SCHEMA_BASE,
         window->signalid[GW_SEARCHWINDOW_SIGNALID_SPELLCHECK]
@@ -511,19 +511,19 @@ void gw_searchwindow_set_entry_text_by_searchitem (GwSearchWindow* window, LwSea
       }
 
       //Set the foreground color
-      lw_prefmanager_get_string_by_schema (app->prefmanager, hex_color_string, LW_SCHEMA_HIGHLIGHT, LW_KEY_MATCH_FG, 100);
+      lw_preferences_get_string_by_schema (app->prefmanager, hex_color_string, LW_SCHEMA_HIGHLIGHT, LW_KEY_MATCH_FG, 100);
       if (gdk_rgba_parse (&color, hex_color_string) == FALSE)
       {
-        lw_prefmanager_reset_value_by_schema (app->prefmanager, LW_SCHEMA_HIGHLIGHT, LW_KEY_MATCH_FG);
+        lw_preferences_reset_value_by_schema (app->prefmanager, LW_SCHEMA_HIGHLIGHT, LW_KEY_MATCH_FG);
         return;
       }
       //gtk_widget_override_color (GTK_WIDGET (window->entry), GTK_STATE_NORMAL, &color);
 
       //Set the background color
-      lw_prefmanager_get_string_by_schema (app->prefmanager, hex_color_string, LW_SCHEMA_HIGHLIGHT, LW_KEY_MATCH_BG, 100);
+      lw_preferences_get_string_by_schema (app->prefmanager, hex_color_string, LW_SCHEMA_HIGHLIGHT, LW_KEY_MATCH_BG, 100);
       if (gdk_rgba_parse (&color, hex_color_string) == FALSE)
       {
-        lw_prefmanager_reset_value_by_schema (app->prefmanager, LW_SCHEMA_HIGHLIGHT, LW_KEY_MATCH_BG);
+        lw_preferences_reset_value_by_schema (app->prefmanager, LW_SCHEMA_HIGHLIGHT, LW_KEY_MATCH_BG);
         return;
       }
       //gtk_widget_override_background_color (GTK_WIDGET (window->entry), GTK_STATE_NORMAL, &color);
@@ -809,7 +809,7 @@ void gw_searchwindow_update_history_menu_popup (GwSearchWindow *window)
     g_list_free (children);
 
 
-    list = lw_historylist_get_combined_list (window->history);
+    list = lw_history_get_combined_list (window->history);
 
     //Add a separator if there are some items in history
     if (list != NULL)
@@ -927,21 +927,21 @@ void gw_searchwindow_update_history_popups (GwSearchWindow* window)
 
     gw_searchwindow_update_history_menu_popup (window);
 
-    list = lw_historylist_get_forward_list (window->history);
+    list = lw_history_get_forward_list (window->history);
     _rebuild_history_button_popup(window, "forward_popup", list);
 
-    list = lw_historylist_get_back_list (window->history);
+    list = lw_history_get_back_list (window->history);
     _rebuild_history_button_popup(window, "back_popup", list);
 
     //Update back button
     id = "history_back_action";
     action = GTK_ACTION (gtk_builder_get_object (window->builder, id));
-    gtk_action_set_sensitive (action, lw_historylist_has_back (window->history));
+    gtk_action_set_sensitive (action, lw_history_has_back (window->history));
 
     //Update forward button
     id = "history_forward_action";
     action = GTK_ACTION (gtk_builder_get_object (window->builder, id));
-    gtk_action_set_sensitive (action, lw_historylist_has_forward (window->history));
+    gtk_action_set_sensitive (action, lw_history_has_forward (window->history));
 }
 
 
@@ -2158,7 +2158,7 @@ void gw_searchwindow_remove_tab (GwSearchWindow *window, int index)
       item = LW_SEARCHITEM (iter->data);
       if (lw_searchitem_has_history_relevance (item, window->keepsearchingdata.enabled))
       {
-        lw_historylist_add_searchitem (window->history, item);
+        lw_history_add_searchitem (window->history, item);
         gw_searchwindow_update_history_popups (window);
       }
       else if (item != NULL)
@@ -2297,13 +2297,13 @@ void gw_searchwindow_set_font (GwSearchWindow *window)
     gboolean enable;
 
     //Initializations
-    use_global_font_setting = lw_prefmanager_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_FONT, LW_KEY_FONT_USE_GLOBAL_FONT);
-    magnification = lw_prefmanager_get_int_by_schema (app->prefmanager, LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION);
+    use_global_font_setting = lw_preferences_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_FONT, LW_KEY_FONT_USE_GLOBAL_FONT);
+    magnification = lw_preferences_get_int_by_schema (app->prefmanager, LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION);
 
     if (use_global_font_setting)
-      lw_prefmanager_get_string_by_schema (app->prefmanager, font, LW_SCHEMA_GNOME_INTERFACE, LW_KEY_DOCUMENT_FONT_NAME, 50);
+      lw_preferences_get_string_by_schema (app->prefmanager, font, LW_SCHEMA_GNOME_INTERFACE, LW_KEY_DOCUMENT_FONT_NAME, 50);
     else
-      lw_prefmanager_get_string_by_schema (app->prefmanager, font, LW_SCHEMA_FONT, LW_KEY_FONT_CUSTOM_FONT, 50);
+      lw_preferences_get_string_by_schema (app->prefmanager, font, LW_SCHEMA_FONT, LW_KEY_FONT_CUSTOM_FONT, 50);
 
     desc = pango_font_description_from_string (font);
     if (desc != NULL)

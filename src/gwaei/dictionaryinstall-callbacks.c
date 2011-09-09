@@ -96,7 +96,7 @@ G_MODULE_EXPORT void gw_dictionaryinstallwindow_source_entry_changed_cb (GtkWidg
     //Update the preference if approprate
     if (window->di->schema != NULL && window->di->key != NULL)
     {
-      lw_prefmanager_set_string_by_schema (app->prefmanager, window->di->schema, window->di->key, value);
+      lw_preferences_set_string_by_schema (app->prefmanager, window->di->schema, window->di->key, value);
     }
 
     _dictinstwindow_update_add_button_sensitivity (window);
@@ -117,8 +117,8 @@ G_MODULE_EXPORT void gw_dictionaryinstallwindow_reset_default_uri_cb (GtkWidget 
 
     if (window->di->schema == NULL || window->di->key == NULL) return;
 
-    lw_prefmanager_reset_value_by_schema (app->prefmanager, window->di->schema, window->di->key);
-    lw_prefmanager_get_string_by_schema (app->prefmanager, value, window->di->schema, window->di->key, 200);
+    lw_preferences_reset_value_by_schema (app->prefmanager, window->di->schema, window->di->key);
+    lw_preferences_get_string_by_schema (app->prefmanager, value, window->di->schema, window->di->key, 200);
     gtk_entry_set_text (window->source_entry, value);
 }
 

@@ -48,9 +48,9 @@ struct _LwDictInfoList
 typedef struct _LwDictInfoList LwDictInfoList;
 
 
-LwDictInfoList* lw_dictinfolist_new (const int, LwPrefManager*);
+LwDictInfoList* lw_dictinfolist_new (const int, LwPreferences*);
 void lw_dictinfolist_free (LwDictInfoList*);
-void lw_dictinfolist_init (LwDictInfoList*, const int, LwPrefManager*);
+void lw_dictinfolist_init (LwDictInfoList*, const int, LwPreferences*);
 void lw_dictinfolist_deinit (LwDictInfoList*);
 
 void lw_dictinfolist_add_dictionary (LwDictInfoList*, const LwDictType, const char*);
@@ -66,8 +66,8 @@ int lw_dictinfolist_get_total (LwDictInfoList*);
 void lw_dictinfolist_clear (LwDictInfoList*);
 
 void lw_dictinfolist_preform_postprocessing_by_name (LwDictInfoList*, char*, GError**);
-void lw_dictinfolist_load_dictionary_order_from_pref (LwDictInfoList*, LwPrefManager*);
-void lw_dictinfolist_save_dictionary_order_pref (LwDictInfoList*, LwPrefManager*);
+void lw_dictinfolist_load_dictionary_order_from_pref (LwDictInfoList*, LwPreferences*);
+void lw_dictinfolist_save_dictionary_order_pref (LwDictInfoList*, LwPreferences*);
 
 void lw_dictinfolist_reload (LwDictInfoList*);
 

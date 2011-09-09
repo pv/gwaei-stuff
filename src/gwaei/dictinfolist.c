@@ -40,7 +40,7 @@ static void _dictinfolist_attach_signals (GwDictInfoList*);
 //!
 //! @brief Sets up the dictionary manager.  This is the backbone of every portion of the GUI that allows editing dictionaries
 //!
-GwDictInfoList* gw_dictinfolist_new (const int MAX, LwPrefManager *pm)
+GwDictInfoList* gw_dictinfolist_new (const int MAX, LwPreferences *pm)
 {
     GwDictInfoList *temp;
 
@@ -63,7 +63,7 @@ void gw_dictinfolist_free (GwDictInfoList *dil)
 }
 
 
-void gw_dictinfolist_init (GwDictInfoList *dil, LwPrefManager *pm)
+void gw_dictinfolist_init (GwDictInfoList *dil, LwPreferences *pm)
 {
     //Declarations
     int i;
@@ -157,7 +157,7 @@ void gw_dictinfolist_rebuild_liststore (GwDictInfoList *dil)
 //!
 //! Sets updates the list of dictionaries against the list in the global dictlist
 //!
-void gw_dictinfolist_reload (GwDictInfoList *dil, LwPrefManager *pm)
+void gw_dictinfolist_reload (GwDictInfoList *dil, LwPreferences *pm)
 {
     lw_dictinfolist_reload (LW_DICTINFOLIST (dil));
     lw_dictinfolist_load_dictionary_order_from_pref (LW_DICTINFOLIST (dil), pm);

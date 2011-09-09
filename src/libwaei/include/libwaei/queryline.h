@@ -28,9 +28,9 @@ void lw_queryline_free (LwQueryLine*);
 void lw_queryline_init (LwQueryLine*);
 void lw_queryline_deinit (LwQueryLine*);
 
-int lw_queryline_parse_edict_string (LwQueryLine*l, LwPrefManager*, const char*, GError**);
-int lw_queryline_parse_kanjidict_string (LwQueryLine*, LwPrefManager*, const char*, GError**);
-int lw_queryline_parse_exampledict_string (LwQueryLine*, LwPrefManager*, const char*, GError**);
-int lw_queryline_parse_edict_string (LwQueryLine*, LwPrefManager*, const char*, GError**);
+int lw_queryline_parse_edict_string (LwQueryLine*l, LwPreferences*, const char*, GError**);
+int lw_queryline_parse_kanjidict_string (LwQueryLine*, LwPreferences*, const char*, GError**);
+int lw_queryline_parse_exampledict_string (LwQueryLine*, LwPreferences*, const char*, GError**);
+int lw_queryline_parse_edict_string (LwQueryLine*, LwPreferences*, const char*, GError**);
 
 #endif

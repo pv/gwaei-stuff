@@ -10,7 +10,7 @@ struct _LwDictInstList {
 typedef struct _LwDictInstList LwDictInstList;
 
 
-LwDictInstList* lw_dictinstlist_new (LwPrefManager *pm);
+LwDictInstList* lw_dictinstlist_new (LwPreferences *pm);
 void lw_dictinstlist_free (LwDictInstList*);
 
 gboolean lw_dictinstlist_data_is_valid (LwDictInstList*);

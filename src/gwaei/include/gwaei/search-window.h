@@ -74,7 +74,7 @@ struct _GwSearchWindow {
   GList *tablist; //!< Stores the current search item set to each tab
 
   //History
-  LwHistoryList *history;
+  LwHistory *history;
 
   //Main variables
   guint timeoutid[TOTAL_GW_SEARCHWINDOW_TIMEOUTIDS];

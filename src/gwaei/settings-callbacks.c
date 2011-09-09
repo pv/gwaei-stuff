@@ -47,9 +47,9 @@ G_MODULE_EXPORT void gw_settingswindow_hira_kata_conv_toggled_cb (GtkWidget *wid
     gboolean request;
 
     //Initializations
-    request = lw_prefmanager_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_HIRA_KATA);
+    request = lw_preferences_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_HIRA_KATA);
 
-    lw_prefmanager_set_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_HIRA_KATA, !request);
+    lw_preferences_set_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_HIRA_KATA, !request);
 }
 
 
@@ -64,9 +64,9 @@ G_MODULE_EXPORT void gw_settingswindow_kata_hira_conv_toggled_cb (GtkWidget *wid
     gboolean request;
 
     //Initializations
-    request = lw_prefmanager_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_KATA_HIRA);
+    request = lw_preferences_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_KATA_HIRA);
 
-    lw_prefmanager_set_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_KATA_HIRA, !request);
+    lw_preferences_set_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_KATA_HIRA, !request);
 }
 
 
@@ -81,9 +81,9 @@ G_MODULE_EXPORT void gw_settingswindow_spellcheck_toggled_cb (GtkWidget *widget,
     gboolean request;
 
     //Initializations
-    request = lw_prefmanager_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_SPELLCHECK);
+    request = lw_preferences_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_SPELLCHECK);
 
-    lw_prefmanager_set_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_SPELLCHECK, !request);
+    lw_preferences_set_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_SPELLCHECK, !request);
 }
 
 
@@ -98,9 +98,9 @@ G_MODULE_EXPORT void gw_settingswindow_search_as_you_type_toggled_cb (GtkWidget 
     gboolean request;
 
     //Initializations
-    request = lw_prefmanager_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_SEARCH_AS_YOU_TYPE);
+    request = lw_preferences_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_SEARCH_AS_YOU_TYPE);
 
-    lw_prefmanager_set_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_SEARCH_AS_YOU_TYPE, !request);
+    lw_preferences_set_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_SEARCH_AS_YOU_TYPE, !request);
 }
 
 
@@ -118,7 +118,7 @@ G_MODULE_EXPORT void gw_settingswindow_romaji_kana_conv_changed_cb (GtkWidget *w
     //Initializations
     active = gtk_combo_box_get_active(GTK_COMBO_BOX (widget));
 
-    lw_prefmanager_set_int_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_ROMAN_KANA, active);
+    lw_preferences_set_int_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_ROMAN_KANA, active);
 }
 
 
@@ -146,7 +146,7 @@ G_MODULE_EXPORT void gw_settingswindow_swatch_color_changed_cb (GtkWidget *widge
     //Set the color in the prefs
     if (pref_key != NULL && hex_color_string != NULL)
     {
-      lw_prefmanager_set_string_by_schema (app->prefmanager, LW_SCHEMA_HIGHLIGHT, pref_key, hex_color_string);
+      lw_preferences_set_string_by_schema (app->prefmanager, LW_SCHEMA_HIGHLIGHT, pref_key, hex_color_string);
     }
 
     //Cleanup
@@ -176,7 +176,7 @@ G_MODULE_EXPORT void gw_settingswindow_reset_all_swatches_activated_cb (GtkWidge
     //Start setting the default values
     for (i = 0; pref_key[i] != NULL; i++)
     {
-      lw_prefmanager_reset_value_by_schema (app->prefmanager, LW_SCHEMA_HIGHLIGHT, pref_key[i]);
+      lw_preferences_reset_value_by_schema (app->prefmanager, LW_SCHEMA_HIGHLIGHT, pref_key[i]);
     }
 }
 
@@ -190,9 +190,9 @@ G_MODULE_EXPORT void gw_settingswindow_use_global_document_font_toggled_cb (GtkW
 {
     gboolean request;
 
-    request = lw_prefmanager_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_FONT, LW_KEY_FONT_USE_GLOBAL_FONT);
+    request = lw_preferences_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_FONT, LW_KEY_FONT_USE_GLOBAL_FONT);
 
-    lw_prefmanager_set_boolean_by_schema (app->prefmanager, LW_SCHEMA_FONT, LW_KEY_FONT_USE_GLOBAL_FONT, !request);
+    lw_preferences_set_boolean_by_schema (app->prefmanager, LW_SCHEMA_FONT, LW_KEY_FONT_USE_GLOBAL_FONT, !request);
 }
 
 
@@ -211,7 +211,7 @@ G_MODULE_EXPORT void gw_settingswindow_custom_document_font_changed_cb (GtkWidge
     button = GTK_WIDGET (gtk_builder_get_object (window->builder, "custom_font_fontbutton"));
     font = gtk_font_button_get_font_name (GTK_FONT_BUTTON (button));
 
-    lw_prefmanager_set_string_by_schema (app->prefmanager, LW_SCHEMA_FONT, LW_KEY_FONT_CUSTOM_FONT, font);
+    lw_preferences_set_string_by_schema (app->prefmanager, LW_SCHEMA_FONT, LW_KEY_FONT_CUSTOM_FONT, font);
 }
 
 
@@ -232,7 +232,7 @@ G_MODULE_EXPORT void gw_settingswindow_sync_use_global_document_font_cb (GSettin
     if (window == NULL) return;
     checkbox = GTK_TOGGLE_BUTTON (gtk_builder_get_object (window->builder, "system_font_checkbox"));
     hbox = GTK_WIDGET (gtk_builder_get_object (window->builder, "system_document_font_hbox"));
-    request = lw_prefmanager_get_boolean (settings, KEY);
+    request = lw_preferences_get_boolean (settings, KEY);
 
     //Updates
     g_signal_handlers_block_by_func (checkbox, gw_settingswindow_use_global_document_font_toggled_cb, window->toplevel);
@@ -254,7 +254,7 @@ G_MODULE_EXPORT void gw_settingswindow_sync_global_document_font_cb (GSettings *
     window = GW_SETTINGSWINDOW (data);
     if (window == NULL) return;
     button = GTK_CHECK_BUTTON (gtk_builder_get_object (window->builder, "system_font_checkbox"));
-    lw_prefmanager_get_string_by_schema (app->prefmanager, font, LW_SCHEMA_GNOME_INTERFACE, LW_KEY_DOCUMENT_FONT_NAME, 50);
+    lw_preferences_get_string_by_schema (app->prefmanager, font, LW_SCHEMA_GNOME_INTERFACE, LW_KEY_DOCUMENT_FONT_NAME, 50);
     text = g_strdup_printf (gettext("_Use the System Document Font (%s)"), font);
 
     if (text != NULL) 
@@ -280,7 +280,7 @@ G_MODULE_EXPORT void gw_settingswindow_sync_custom_font_cb (GSettings *settings,
     window = GW_SETTINGSWINDOW (data);
     if (window == NULL) return;
     button = GTK_FONT_BUTTON (gtk_builder_get_object (window->builder, "custom_font_fontbutton"));
-    lw_prefmanager_get_string_by_schema (app->prefmanager, font, LW_SCHEMA_FONT, LW_KEY_FONT_CUSTOM_FONT, 50);
+    lw_preferences_get_string_by_schema (app->prefmanager, font, LW_SCHEMA_FONT, LW_KEY_FONT_CUSTOM_FONT, 50);
 
     //Body
     g_signal_handlers_block_by_func (button, gw_settingswindow_custom_document_font_changed_cb, window->toplevel);
@@ -304,7 +304,7 @@ G_MODULE_EXPORT void gw_settingswindow_sync_search_as_you_type_cb (GSettings *se
     window = GW_SETTINGSWINDOW (data);
     if (window == NULL) return;
     checkbox = GTK_TOGGLE_BUTTON (gtk_builder_get_object(window->builder, "search_as_you_type_checkbox"));
-    request = lw_prefmanager_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_SEARCH_AS_YOU_TYPE);
+    request = lw_preferences_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_SEARCH_AS_YOU_TYPE);
 
     g_signal_handlers_block_by_func (checkbox, gw_settingswindow_search_as_you_type_toggled_cb, window->toplevel);
     gtk_toggle_button_set_active (checkbox, request);
@@ -338,7 +338,7 @@ G_MODULE_EXPORT void gw_settingswindow_sync_romaji_kana_conv_cb (GSettings *sett
 
     window = GW_SETTINGSWINDOW (data);
     combobox = GTK_COMBO_BOX (gtk_builder_get_object (window->builder, "query_romaji_to_kana"));
-    request = lw_prefmanager_get_int (settings, KEY);
+    request = lw_preferences_get_int (settings, KEY);
 
     gtk_combo_box_set_active(combobox, request);
 }
@@ -354,7 +354,7 @@ G_MODULE_EXPORT void gw_settingswindow_sync_hira_kata_conv_cb (GSettings *settin
     //Initializations
     window = GW_SETTINGSWINDOW (data);
     checkbox = GTK_TOGGLE_BUTTON (gtk_builder_get_object (window->builder, "query_hiragana_to_katakana"));
-    request = lw_prefmanager_get_boolean (settings, KEY);
+    request = lw_preferences_get_boolean (settings, KEY);
 
     g_signal_handlers_block_by_func (checkbox, gw_settingswindow_hira_kata_conv_toggled_cb, window->toplevel);
     gtk_toggle_button_set_active(checkbox, request);
@@ -372,7 +372,7 @@ G_MODULE_EXPORT void gw_settingswindow_sync_kata_hira_conv_cb (GSettings *settin
     //Initializations
     window = GW_SETTINGSWINDOW (data);
     checkbox = GTK_TOGGLE_BUTTON (gtk_builder_get_object (window->builder, "query_katakana_to_hiragana"));
-    request = lw_prefmanager_get_boolean (settings, KEY);
+    request = lw_preferences_get_boolean (settings, KEY);
 
     g_signal_handlers_block_by_func (checkbox, gw_settingswindow_kata_hira_conv_toggled_cb, window->toplevel);
     gtk_toggle_button_set_active (checkbox, request);
@@ -391,7 +391,7 @@ G_MODULE_EXPORT void gw_settingswindow_sync_swatch_color_cb (GSettings *settings
     //Initializations
     window = GW_SETTINGSWINDOW (data);
     swatch = GTK_COLOR_BUTTON (data);
-    lw_prefmanager_get_string (hex_color_string, settings, KEY, 20);
+    lw_preferences_get_string (hex_color_string, settings, KEY, 20);
     g_assert (swatch != NULL);
 
     if (gdk_color_parse (hex_color_string, &color) == TRUE)
@@ -413,7 +413,7 @@ G_MODULE_EXPORT void gw_settingswindow_sync_spellcheck_cb (GSettings *settings, 
     //Initializations
     window = GW_SETTINGSWINDOW (data);
     checkbox = GTK_TOGGLE_BUTTON (gtk_builder_get_object (window->builder, "query_spellcheck"));
-    request = lw_prefmanager_get_boolean (settings, KEY);
+    request = lw_preferences_get_boolean (settings, KEY);
 
     g_signal_handlers_block_by_func (checkbox, gw_settingswindow_spellcheck_toggled_cb, window->toplevel);
     gtk_toggle_button_set_active (checkbox, request);

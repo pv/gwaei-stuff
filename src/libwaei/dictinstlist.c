@@ -38,7 +38,7 @@
 //!
 //! @brief Sets up the built-in installabale dictionaries
 //!
-LwDictInstList* lw_dictinstlist_new (LwPrefManager *pm)
+LwDictInstList* lw_dictinstlist_new (LwPreferences *pm)
 {
   curl_global_init (CURL_GLOBAL_ALL);
 

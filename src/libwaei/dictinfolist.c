@@ -44,7 +44,7 @@ static void     _dictinfolist_sort_and_normalize_order (LwDictInfoList*);
 //! @brief Constructor for a dictionary list object.
 //! @return An allocated LwDictInfoList that will be needed to be freed by lw_dictinfolist_free ()
 //!
-LwDictInfoList* lw_dictinfolist_new (const int MAX, LwPrefManager *pm)
+LwDictInfoList* lw_dictinfolist_new (const int MAX, LwPreferences *pm)
 {
     LwDictInfoList *temp;
     temp = (LwDictInfoList*) malloc(sizeof(LwDictInfoList));
@@ -71,7 +71,7 @@ void lw_dictinfolist_free (LwDictInfoList *dil)
 
 
 
-void lw_dictinfolist_init (LwDictInfoList *dil, const int MAX, LwPrefManager* pm)
+void lw_dictinfolist_init (LwDictInfoList *dil, const int MAX, LwPreferences* pm)
 {
     dil->list = NULL;
     dil->mutex = g_mutex_new();
@@ -384,7 +384,7 @@ int lw_dictinfolist_get_total (LwDictInfoList *dil)
 //
 //! @brief Saves the current load order to the preferences
 //
-void lw_dictinfolist_save_dictionary_order_pref (LwDictInfoList *dil, LwPrefManager *pm)
+void lw_dictinfolist_save_dictionary_order_pref (LwDictInfoList *dil, LwPreferences *pm)
 {
     //Make sure things are sorted and normal
     _dictinfolist_sort_and_normalize_order (dil);
@@ -411,7 +411,7 @@ void lw_dictinfolist_save_dictionary_order_pref (LwDictInfoList *dil, LwPrefMana
     atom[i] = NULL;
 
     load_order = g_strjoinv (";", atom);
-    lw_prefmanager_set_string_by_schema (pm, LW_SCHEMA_DICTIONARY, LW_KEY_LOAD_ORDER, load_order);
+    lw_preferences_set_string_by_schema (pm, LW_SCHEMA_DICTIONARY, LW_KEY_LOAD_ORDER, load_order);
 
     //Free the used memory
     g_strfreev (atom);
@@ -424,7 +424,7 @@ void lw_dictinfolist_save_dictionary_order_pref (LwDictInfoList *dil, LwPrefMana
 //
 //! @brief Loads the load order from the preferences
 //
-void lw_dictinfolist_load_dictionary_order_from_pref (LwDictInfoList *dil, LwPrefManager *pm)
+void lw_dictinfolist_load_dictionary_order_from_pref (LwDictInfoList *dil, LwPreferences *pm)
 {
     if (pm == NULL) return; 
 
@@ -437,7 +437,7 @@ void lw_dictinfolist_load_dictionary_order_from_pref (LwDictInfoList *dil, LwPre
     LwDictInfo *di = NULL;
     int load_position = 0;
     
-    lw_prefmanager_get_string_by_schema (pm, load_order, LW_SCHEMA_DICTIONARY, LW_KEY_LOAD_ORDER, 1000);
+    lw_preferences_get_string_by_schema (pm, load_order, LW_SCHEMA_DICTIONARY, LW_KEY_LOAD_ORDER, 1000);
     load_order_array = g_strsplit_set (load_order, ";", dil->max);
     
     for (iter = load_order_array; *iter != NULL; iter++)
@@ -445,7 +445,7 @@ void lw_dictinfolist_load_dictionary_order_from_pref (LwDictInfoList *dil, LwPre
       //Sanity checking
       if (*iter == NULL || **iter == '\0') { 
         fprintf(stderr, "WARNING: failed sanity check 1. Resetting dictionary order prefs.\n");
-        lw_prefmanager_reset_value_by_schema (pm, LW_SCHEMA_DICTIONARY, LW_KEY_LOAD_ORDER);
+        lw_preferences_reset_value_by_schema (pm, LW_SCHEMA_DICTIONARY, LW_KEY_LOAD_ORDER);
         lw_dictinfolist_load_dictionary_order_from_pref (dil, pm);
         return;
       }
@@ -456,7 +456,7 @@ void lw_dictinfolist_load_dictionary_order_from_pref (LwDictInfoList *dil, LwPre
       if (engine_name_array[0] == NULL || engine_name_array[1] == NULL)
       {
         fprintf(stderr, "WARNING: failed sanity check 2. Resetting dictionary order prefs.\n");
-        lw_prefmanager_reset_value_by_schema (pm, LW_SCHEMA_DICTIONARY, LW_KEY_LOAD_ORDER);
+        lw_preferences_reset_value_by_schema (pm, LW_SCHEMA_DICTIONARY, LW_KEY_LOAD_ORDER);
         lw_dictinfolist_load_dictionary_order_from_pref (dil, pm);
         return;
       }

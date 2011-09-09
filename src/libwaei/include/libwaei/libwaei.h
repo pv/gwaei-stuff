@@ -4,7 +4,7 @@
 #include <libwaei/regex.h>
 #include <libwaei/utilities.h>
 #include <libwaei/io.h>
-#include <libwaei/prefmanager.h>
+#include <libwaei/preferences.h>
 #include <libwaei/dict.h>
 #include <libwaei/dictinfo.h>
 #include <libwaei/dictinfolist.h>
@@ -14,7 +14,7 @@
 #include <libwaei/queryline.h>
 #include <libwaei/searchitem.h>
 #include <libwaei/engine.h>
-#include <libwaei/historylist.h>
+#include <libwaei/history.h>
 
 
 #endif

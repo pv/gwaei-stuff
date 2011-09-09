@@ -31,7 +31,7 @@ struct _LwDictInst {
   char *uri[LW_DICTINST_TOTAL_URIS];
   double progress;
   gboolean selected;
-  LwPrefManager *pm;
+  LwPreferences *pm;
   char *schema;
   char *key;
   gboolean builtin;
@@ -52,7 +52,7 @@ LwDictInst* lw_dictinst_new_using_pref_uri (const char*,
                                             const char*,
                                             const char*,
                                             const char*,
-                                            LwPrefManager*,
+                                            LwPreferences*,
                                             const char*,
                                             const char*,
                                             const LwDictType,

@@ -32,12 +32,12 @@ struct _GwDictInfoList {
 };
 typedef struct _GwDictInfoList GwDictInfoList;
 
-GwDictInfoList* gw_dictinfolist_new (const int, LwPrefManager*);
+GwDictInfoList* gw_dictinfolist_new (const int, LwPreferences*);
 void gw_dictinfolist_free (GwDictInfoList*);
-void gw_dictinfolist_init (GwDictInfoList*, LwPrefManager*);
+void gw_dictinfolist_init (GwDictInfoList*, LwPreferences*);
 void gw_dictinfolist_deinit (GwDictInfoList*);
 
-void gw_dictinfolist_reload (GwDictInfoList*, LwPrefManager*);
+void gw_dictinfolist_reload (GwDictInfoList*, LwPreferences*);
 
 
 

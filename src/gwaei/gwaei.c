@@ -87,16 +87,16 @@ GwApplication* gw_app_new (int* argc, char** argv[])
                           );
 
 
-      temp->prefmanager = lw_prefmanager_new ();
+      temp->prefmanager = lw_preferences_new ();
       temp->dictinfolist = gw_dictinfolist_new (20, temp->prefmanager);
       temp->block_new_searches = 0;
 
       temp->tagtable = gw_texttagtable_new ();
-      lw_prefmanager_add_change_listener_by_schema (temp->prefmanager, LW_SCHEMA_HIGHLIGHT, LW_KEY_MATCH_FG, gw_app_sync_tag_cb, temp);
-      lw_prefmanager_add_change_listener_by_schema (temp->prefmanager, LW_SCHEMA_HIGHLIGHT, LW_KEY_MATCH_BG, gw_app_sync_tag_cb, temp);
-      lw_prefmanager_add_change_listener_by_schema (temp->prefmanager, LW_SCHEMA_HIGHLIGHT, LW_KEY_HEADER_FG, gw_app_sync_tag_cb, temp);
-      lw_prefmanager_add_change_listener_by_schema (temp->prefmanager, LW_SCHEMA_HIGHLIGHT, LW_KEY_HEADER_BG, gw_app_sync_tag_cb, temp);
-      lw_prefmanager_add_change_listener_by_schema (temp->prefmanager, LW_SCHEMA_HIGHLIGHT, LW_KEY_COMMENT_FG, gw_app_sync_tag_cb, temp);
+      lw_preferences_add_change_listener_by_schema (temp->prefmanager, LW_SCHEMA_HIGHLIGHT, LW_KEY_MATCH_FG, gw_app_sync_tag_cb, temp);
+      lw_preferences_add_change_listener_by_schema (temp->prefmanager, LW_SCHEMA_HIGHLIGHT, LW_KEY_MATCH_BG, gw_app_sync_tag_cb, temp);
+      lw_preferences_add_change_listener_by_schema (temp->prefmanager, LW_SCHEMA_HIGHLIGHT, LW_KEY_HEADER_FG, gw_app_sync_tag_cb, temp);
+      lw_preferences_add_change_listener_by_schema (temp->prefmanager, LW_SCHEMA_HIGHLIGHT, LW_KEY_HEADER_BG, gw_app_sync_tag_cb, temp);
+      lw_preferences_add_change_listener_by_schema (temp->prefmanager, LW_SCHEMA_HIGHLIGHT, LW_KEY_COMMENT_FG, gw_app_sync_tag_cb, temp);
 
       #ifdef WITH_LIBUNIQUE
       gw_libunique_initialize (temp->arg_new_window, temp->arg_dictionary, temp->arg_query);
@@ -145,7 +145,7 @@ void gw_app_free (GwApplication *app)
     g_option_context_free (app->context);
     g_free(app->arg_query);
     lw_engine_free (app->engine);
-    lw_prefmanager_free (app->prefmanager);
+    lw_preferences_free (app->prefmanager);
 
     free (app);
 }
@@ -536,11 +536,11 @@ void gw_app_sync_tag_cb (GSettings *settings, gchar *key, gpointer data)
     app = GW_APPLICATION (data);
 
     //Parse the color
-    lw_prefmanager_get_string (hex, settings, key, 20);
+    lw_preferences_get_string (hex, settings, key, 20);
     if (gdk_rgba_parse (&color, hex) == FALSE)
     {
       fprintf(stderr, "Failed to set tag to the tag table: %s\n", hex);
-      lw_prefmanager_reset_value_by_schema (app->prefmanager, LW_SCHEMA_HIGHLIGHT, key);
+      lw_preferences_reset_value_by_schema (app->prefmanager, LW_SCHEMA_HIGHLIGHT, key);
       return;
     }
 

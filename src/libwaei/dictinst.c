@@ -63,7 +63,7 @@ LwDictInst* lw_dictinst_new_using_pref_uri (const char* filename,
                                             const char* shortname,
                                             const char* longname,
                                             const char* description,
-                                            LwPrefManager* pm,
+                                            LwPreferences* pm,
                                             const char* schema,
                                             const char* key,
                                             const LwDictType DICTTYPE,
@@ -73,7 +73,7 @@ LwDictInst* lw_dictinst_new_using_pref_uri (const char* filename,
 {
     //Declarations
     char source_uri[200];
-    lw_prefmanager_get_string_by_schema (pm, source_uri, schema, key, 200);
+    lw_preferences_get_string_by_schema (pm, source_uri, schema, key, 200);
     LwDictInst *di = NULL;
 
     di = lw_dictinst_new (
@@ -92,7 +92,7 @@ LwDictInst* lw_dictinst_new_using_pref_uri (const char* filename,
 
     di->schema = g_strdup (schema);
     di->key = g_strdup (key);
-    di->listenerid = lw_prefmanager_add_change_listener_by_schema (pm, schema, key, gw_dictinst_update_source_uri_cb, di);
+    di->listenerid = lw_preferences_add_change_listener_by_schema (pm, schema, key, gw_dictinst_update_source_uri_cb, di);
     di->pm = pm;
 
     return di;
@@ -234,7 +234,7 @@ void lw_dictinst_deinit (LwDictInst *di)
 
     if (di->pm != NULL && di->listenerid != 0)
     {
-      lw_prefmanager_remove_change_listener_by_schema (di->pm, di->schema, di->listenerid);
+      lw_preferences_remove_change_listener_by_schema (di->pm, di->schema, di->listenerid);
       di->listenerid = 0;
     }
 
@@ -274,7 +274,7 @@ void gw_dictinst_update_source_uri_cb (GSettings *settings, char* key, gpointer 
 
     //Initialiations
     di = LW_DICTINST (data);
-    lw_prefmanager_get_string (source_uri, settings, key, 200);
+    lw_preferences_get_string (source_uri, settings, key, 200);
 
     if (di->uri[LW_DICTINST_NEEDS_DOWNLOADING] != NULL)
       g_free (di->uri[LW_DICTINST_NEEDS_DOWNLOADING]);

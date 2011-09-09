@@ -49,7 +49,7 @@ struct _GwApplication {
 
   GList *windowlist;
 
-  LwPrefManager *prefmanager;
+  LwPreferences *prefmanager;
   GwDictInfoList *dictinfolist;
   LwEngine *engine;
   GtkTextTagTable *tagtable;

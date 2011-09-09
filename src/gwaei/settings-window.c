@@ -133,7 +133,7 @@ void _settingswindow_attach_signals (GwSettingsWindow *window)
     for (i = 0; i < TOTAL_GW_SETTINGSWINDOW_SIGNALIDS; i++)
       window->signalids[i] = 0;
 
-    window->signalids[GW_SETTINGSWINDOW_SIGNALID_ROMAJI_KANA] = lw_prefmanager_add_change_listener_by_schema (
+    window->signalids[GW_SETTINGSWINDOW_SIGNALID_ROMAJI_KANA] = lw_preferences_add_change_listener_by_schema (
         app->prefmanager,
         LW_SCHEMA_BASE,
         LW_KEY_ROMAN_KANA,
@@ -141,7 +141,7 @@ void _settingswindow_attach_signals (GwSettingsWindow *window)
         window
     );
 
-    window->signalids[GW_SETTINGSWINDOW_SIGNALID_HIRA_KATA] = lw_prefmanager_add_change_listener_by_schema (
+    window->signalids[GW_SETTINGSWINDOW_SIGNALID_HIRA_KATA] = lw_preferences_add_change_listener_by_schema (
         app->prefmanager,
         LW_SCHEMA_BASE,
         LW_KEY_HIRA_KATA,
@@ -149,7 +149,7 @@ void _settingswindow_attach_signals (GwSettingsWindow *window)
         window
     );
 
-    window->signalids[GW_SETTINGSWINDOW_SIGNALID_KATA_HIRA] = lw_prefmanager_add_change_listener_by_schema (
+    window->signalids[GW_SETTINGSWINDOW_SIGNALID_KATA_HIRA] = lw_preferences_add_change_listener_by_schema (
         app->prefmanager,
         LW_SCHEMA_BASE,
         LW_KEY_KATA_HIRA,
@@ -157,7 +157,7 @@ void _settingswindow_attach_signals (GwSettingsWindow *window)
         window
     );
 
-    window->signalids[GW_SETTINGSWINDOW_SIGNALID_SPELLCHECK] = lw_prefmanager_add_change_listener_by_schema (
+    window->signalids[GW_SETTINGSWINDOW_SIGNALID_SPELLCHECK] = lw_preferences_add_change_listener_by_schema (
         app->prefmanager,
         LW_SCHEMA_BASE,
         LW_KEY_SPELLCHECK,
@@ -165,7 +165,7 @@ void _settingswindow_attach_signals (GwSettingsWindow *window)
         window
     );
 
-    window->signalids[GW_SETTINGSWINDOW_SIGNALID_USE_GLOBAL_DOCUMENT_FONT] = lw_prefmanager_add_change_listener_by_schema (
+    window->signalids[GW_SETTINGSWINDOW_SIGNALID_USE_GLOBAL_DOCUMENT_FONT] = lw_preferences_add_change_listener_by_schema (
         app->prefmanager,
         LW_SCHEMA_FONT,
         LW_KEY_FONT_USE_GLOBAL_FONT,
@@ -173,7 +173,7 @@ void _settingswindow_attach_signals (GwSettingsWindow *window)
         window
     );
 
-    window->signalids[GW_SETTINGSWINDOW_SIGNALID_GLOBAL_DOCUMENT_FONT] = lw_prefmanager_add_change_listener_by_schema (
+    window->signalids[GW_SETTINGSWINDOW_SIGNALID_GLOBAL_DOCUMENT_FONT] = lw_preferences_add_change_listener_by_schema (
         app->prefmanager,
         LW_SCHEMA_GNOME_INTERFACE,
         LW_KEY_DOCUMENT_FONT_NAME,
@@ -181,7 +181,7 @@ void _settingswindow_attach_signals (GwSettingsWindow *window)
         window
     );
 
-    window->signalids[GW_SETTINGSWINDOW_SIGNALID_CUSTOM_FONT] = lw_prefmanager_add_change_listener_by_schema (
+    window->signalids[GW_SETTINGSWINDOW_SIGNALID_CUSTOM_FONT] = lw_preferences_add_change_listener_by_schema (
         app->prefmanager,
         LW_SCHEMA_FONT,
         LW_KEY_FONT_CUSTOM_FONT,
@@ -189,7 +189,7 @@ void _settingswindow_attach_signals (GwSettingsWindow *window)
         window
     );
 
-    window->signalids[GW_SETTINGSWINDOW_SIGNALID_SEARCH_AS_YOU_TYPE] = lw_prefmanager_add_change_listener_by_schema (
+    window->signalids[GW_SETTINGSWINDOW_SIGNALID_SEARCH_AS_YOU_TYPE] = lw_preferences_add_change_listener_by_schema (
         app->prefmanager,
         LW_SCHEMA_BASE,
         LW_KEY_SEARCH_AS_YOU_TYPE,
@@ -197,7 +197,7 @@ void _settingswindow_attach_signals (GwSettingsWindow *window)
         window
     );
 
-    window->signalids[GW_SETTINGSWINDOW_SIGNALID_MATCH_FG] = lw_prefmanager_add_change_listener_by_schema (
+    window->signalids[GW_SETTINGSWINDOW_SIGNALID_MATCH_FG] = lw_preferences_add_change_listener_by_schema (
         app->prefmanager,
         LW_SCHEMA_HIGHLIGHT,
         LW_KEY_MATCH_FG,
@@ -205,7 +205,7 @@ void _settingswindow_attach_signals (GwSettingsWindow *window)
         gtk_builder_get_object (window->builder, "match_foreground")
     );
 
-    window->signalids[GW_SETTINGSWINDOW_SIGNALID_MATCH_BG] = lw_prefmanager_add_change_listener_by_schema (
+    window->signalids[GW_SETTINGSWINDOW_SIGNALID_MATCH_BG] = lw_preferences_add_change_listener_by_schema (
         app->prefmanager,
         LW_SCHEMA_HIGHLIGHT,
         LW_KEY_MATCH_BG,
@@ -213,7 +213,7 @@ void _settingswindow_attach_signals (GwSettingsWindow *window)
         gtk_builder_get_object (window->builder, "match_background")
     );
 
-    window->signalids[GW_SETTINGSWINDOW_SIGNALID_COMMENT_FG] = lw_prefmanager_add_change_listener_by_schema (
+    window->signalids[GW_SETTINGSWINDOW_SIGNALID_COMMENT_FG] = lw_preferences_add_change_listener_by_schema (
         app->prefmanager,
         LW_SCHEMA_HIGHLIGHT,
         LW_KEY_COMMENT_FG,
@@ -221,7 +221,7 @@ void _settingswindow_attach_signals (GwSettingsWindow *window)
         gtk_builder_get_object (window->builder, "comment_foreground")
     );
 
-    window->signalids[GW_SETTINGSWINDOW_SIGNALID_HEADER_FG] = lw_prefmanager_add_change_listener_by_schema (
+    window->signalids[GW_SETTINGSWINDOW_SIGNALID_HEADER_FG] = lw_preferences_add_change_listener_by_schema (
         app->prefmanager,
         LW_SCHEMA_HIGHLIGHT,
         LW_KEY_HEADER_FG,
@@ -229,7 +229,7 @@ void _settingswindow_attach_signals (GwSettingsWindow *window)
         gtk_builder_get_object (window->builder, "header_foreground")
     );
 
-    window->signalids[GW_SETTINGSWINDOW_SIGNALID_HEADER_BG] = lw_prefmanager_add_change_listener_by_schema (
+    window->signalids[GW_SETTINGSWINDOW_SIGNALID_HEADER_BG] = lw_preferences_add_change_listener_by_schema (
         app->prefmanager,
         LW_SCHEMA_HIGHLIGHT,
         LW_KEY_HEADER_BG,
@@ -244,79 +244,79 @@ void _settingswindow_remove_signals (GwSettingsWindow *window)
     //Declarations
     int i;
 
-    lw_prefmanager_remove_change_listener_by_schema (
+    lw_preferences_remove_change_listener_by_schema (
         app->prefmanager, 
         LW_SCHEMA_BASE, 
         window->signalids[GW_SETTINGSWINDOW_SIGNALID_ROMAJI_KANA]
     );
 
-    lw_prefmanager_remove_change_listener_by_schema (
+    lw_preferences_remove_change_listener_by_schema (
         app->prefmanager, 
         LW_SCHEMA_BASE, 
         window->signalids[GW_SETTINGSWINDOW_SIGNALID_HIRA_KATA]
     );
 
-    lw_prefmanager_remove_change_listener_by_schema (
+    lw_preferences_remove_change_listener_by_schema (
         app->prefmanager, 
         LW_SCHEMA_BASE, 
         window->signalids[GW_SETTINGSWINDOW_SIGNALID_KATA_HIRA]
     );
 
-    lw_prefmanager_remove_change_listener_by_schema (
+    lw_preferences_remove_change_listener_by_schema (
         app->prefmanager, 
         LW_SCHEMA_BASE, 
         window->signalids[GW_SETTINGSWINDOW_SIGNALID_SPELLCHECK]
     );
 
-    lw_prefmanager_remove_change_listener_by_schema (
+    lw_preferences_remove_change_listener_by_schema (
         app->prefmanager, 
         LW_SCHEMA_FONT, 
         window->signalids[GW_SETTINGSWINDOW_SIGNALID_USE_GLOBAL_DOCUMENT_FONT]
     );
 
-    lw_prefmanager_remove_change_listener_by_schema (
+    lw_preferences_remove_change_listener_by_schema (
         app->prefmanager, 
         LW_SCHEMA_GNOME_INTERFACE, 
         window->signalids[GW_SETTINGSWINDOW_SIGNALID_GLOBAL_DOCUMENT_FONT]
     );
 
-    lw_prefmanager_remove_change_listener_by_schema (
+    lw_preferences_remove_change_listener_by_schema (
         app->prefmanager, 
         LW_SCHEMA_FONT, 
         window->signalids[GW_SETTINGSWINDOW_SIGNALID_CUSTOM_FONT]
     );
 
-    lw_prefmanager_remove_change_listener_by_schema (
+    lw_preferences_remove_change_listener_by_schema (
         app->prefmanager, 
         LW_SCHEMA_BASE, 
         window->signalids[GW_SETTINGSWINDOW_SIGNALID_SEARCH_AS_YOU_TYPE]
     );
 
-    lw_prefmanager_remove_change_listener_by_schema (
+    lw_preferences_remove_change_listener_by_schema (
         app->prefmanager, 
         LW_SCHEMA_HIGHLIGHT, 
         window->signalids[GW_SETTINGSWINDOW_SIGNALID_MATCH_FG]
     );
 
-    lw_prefmanager_remove_change_listener_by_schema (
+    lw_preferences_remove_change_listener_by_schema (
         app->prefmanager, 
         LW_SCHEMA_HIGHLIGHT, 
         window->signalids[GW_SETTINGSWINDOW_SIGNALID_MATCH_BG]
     );
 
-    lw_prefmanager_remove_change_listener_by_schema (
+    lw_preferences_remove_change_listener_by_schema (
         app->prefmanager, 
         LW_SCHEMA_HIGHLIGHT, 
         window->signalids[GW_SETTINGSWINDOW_SIGNALID_COMMENT_FG]
     );
 
-    lw_prefmanager_remove_change_listener_by_schema (
+    lw_preferences_remove_change_listener_by_schema (
         app->prefmanager, 
         LW_SCHEMA_HIGHLIGHT, 
         window->signalids[GW_SETTINGSWINDOW_SIGNALID_HEADER_FG]
     );
 
-    lw_prefmanager_remove_change_listener_by_schema (
+    lw_preferences_remove_change_listener_by_schema (
         app->prefmanager, 
         LW_SCHEMA_HIGHLIGHT, 
         window->signalids[GW_SETTINGSWINDOW_SIGNALID_HEADER_BG]

@@ -1,5 +1,5 @@
-#ifndef LW_PREFMANAGER_INCLUDED
-#define LW_PREFMANAGER_INCLUDED
+#ifndef LW_PREFERENCES_INCLUDED
+#define LW_PREFERENCES_INCLUDED
 
 #include <gio/gio.h>
 
@@ -49,9 +49,9 @@
 #define LW_KEY_EXAMPLES_SOURCE     "examples-source"
 #define LW_KEY_LOAD_ORDER          "load-order"
 
-#define LW_PREFMANAGER(object) (LwPrefManager*) object
+#define LW_PREFMANAGER(object) (LwPreferences*) object
 
-struct _LwPrefManager {
+struct _LwPreferences {
   GList *settingslist;
   GList *callbacklist;
   GMutex *mutex;
@@ -82,44 +82,44 @@ struct _LwPrefManager {
   gchar *header_foreground;
   gchar *header_background;
 };
-typedef struct _LwPrefManager LwPrefManager;
+typedef struct _LwPreferences LwPreferences;
 
 
-LwPrefManager* lw_prefmanager_new (void);
-void lw_prefmanager_free (LwPrefManager*);
-void lw_prefmanager_init (LwPrefManager*);
-void lw_prefmanager_deinit (LwPrefManager*);
+LwPreferences* lw_preferences_new (void);
+void lw_preferences_free (LwPreferences*);
+void lw_preferences_init (LwPreferences*);
+void lw_preferences_deinit (LwPreferences*);
 
-void lw_prefmanager_free_settings (LwPrefManager*);
+void lw_preferences_free_settings (LwPreferences*);
 
-GSettings* lw_prefmanager_get_settings_object (LwPrefManager*, const char*);
+GSettings* lw_preferences_get_settings_object (LwPreferences*, const char*);
 
-void lw_prefmanager_reset_value (GSettings*, const char*);
-void lw_prefmanager_reset_value_by_schema (LwPrefManager*, const char*, const char*);
+void lw_preferences_reset_value (GSettings*, const char*);
+void lw_preferences_reset_value_by_schema (LwPreferences*, const char*, const char*);
 
-int lw_prefmanager_get_int (GSettings*, const char *);
-int lw_prefmanager_get_int_by_schema (LwPrefManager*, const char*, const char *);
+int lw_preferences_get_int (GSettings*, const char *);
+int lw_preferences_get_int_by_schema (LwPreferences*, const char*, const char *);
 
-void lw_prefmanager_set_int (GSettings*, const char*, const int);
-void lw_prefmanager_set_int_by_schema (LwPrefManager*, const char*, const char*, const int);
+void lw_preferences_set_int (GSettings*, const char*, const int);
+void lw_preferences_set_int_by_schema (LwPreferences*, const char*, const char*, const int);
 
-gboolean lw_prefmanager_get_boolean (GSettings*, const char *);
-gboolean lw_prefmanager_get_boolean_by_schema (LwPrefManager*, const char*, const char*);
+gboolean lw_preferences_get_boolean (GSettings*, const char *);
+gboolean lw_preferences_get_boolean_by_schema (LwPreferences*, const char*, const char*);
 
-void lw_prefmanager_set_boolean (GSettings*, const char*, const gboolean);
-void lw_prefmanager_set_boolean_by_schema (LwPrefManager*, const char*, const char*, const gboolean);
+void lw_preferences_set_boolean (GSettings*, const char*, const gboolean);
+void lw_preferences_set_boolean_by_schema (LwPreferences*, const char*, const char*, const gboolean);
 
-void lw_prefmanager_get_string (char*, GSettings*, const char*, const int);
-void lw_prefmanager_get_string_by_schema (LwPrefManager*, char*, const char*, const char*, const int);
+void lw_preferences_get_string (char*, GSettings*, const char*, const int);
+void lw_preferences_get_string_by_schema (LwPreferences*, char*, const char*, const char*, const int);
 
-void lw_prefmanager_set_string (GSettings*, const char*, const char*);
-void lw_prefmanager_set_string_by_schema (LwPrefManager*, const char*, const char*, const char*);
+void lw_preferences_set_string (GSettings*, const char*, const char*);
+void lw_preferences_set_string_by_schema (LwPreferences*, const char*, const char*, const char*);
 
-gulong lw_prefmanager_add_change_listener (GSettings*, const char*, void (*callback_function) (GSettings*, gchar*, gpointer), gpointer);
-gulong lw_prefmanager_add_change_listener_by_schema (LwPrefManager*, const char*, const char*, void (*callback_function) (GSettings*, gchar*, gpointer), gpointer);
+gulong lw_preferences_add_change_listener (GSettings*, const char*, void (*callback_function) (GSettings*, gchar*, gpointer), gpointer);
+gulong lw_preferences_add_change_listener_by_schema (LwPreferences*, const char*, const char*, void (*callback_function) (GSettings*, gchar*, gpointer), gpointer);
 
-void lw_prefmanager_remove_change_listener (GSettings*, gulong);
-void lw_prefmanager_remove_change_listener_by_schema (LwPrefManager*, const char*, gulong);
+void lw_preferences_remove_change_listener (GSettings*, gulong);
+void lw_preferences_remove_change_listener_by_schema (LwPreferences*, const char*, gulong);
 
 
 #endif

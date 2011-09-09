@@ -115,7 +115,7 @@ void w_app_init (WApplication* app, int *argc, char** argv[], GError **error)
         w_console_cleanup_search_cb
     );
 
-    app->prefmanager = lw_prefmanager_new ();
+    app->prefmanager = lw_preferences_new ();
     app->dictinstlist = lw_dictinstlist_new (app->prefmanager);
     app->dictinfolist = lw_dictinfolist_new (20, app->prefmanager);
 }
@@ -125,7 +125,7 @@ void w_app_deinit (WApplication *app)
 {
     lw_dictinfolist_free (app->dictinfolist);
     lw_dictinstlist_free (app->dictinstlist);
-    lw_prefmanager_free (app->prefmanager);
+    lw_preferences_free (app->prefmanager);
     lw_engine_free (app->engine);
 
     g_free (app->query_text_data);
