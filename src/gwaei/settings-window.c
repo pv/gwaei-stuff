@@ -51,7 +51,7 @@ GwSettingsWindow* gw_settingswindow_new (GwSearchWindow *transient_for, GList *l
 
     if (temp != NULL)
     {
-      gw_app_block_searches (app);
+      if (g_main_current_source () != NULL) gw_app_block_searches (app);
 
       gw_window_init (GW_WINDOW (temp), GW_WINDOW_SETTINGS, "settings.ui", "settings_window", link);
       gw_settingswindow_init (temp, GW_WINDOW (transient_for));
@@ -75,7 +75,7 @@ void gw_settingswindow_destroy (GwSettingsWindow *window)
     if (lw_dictinfolist_get_total (LW_DICTINFOLIST (app->dictinfolist)) == 0)
       gw_app_quit (app);
 
-    gw_app_unblock_searches (app);
+    if (g_main_current_source () != NULL) gw_app_unblock_searches (app);
 }
 
 

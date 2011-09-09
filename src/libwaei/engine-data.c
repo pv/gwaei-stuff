@@ -36,6 +36,13 @@
 #include <libwaei/engine-data.h>
 
 
+//!
+//! @brief Creates a new LwEngineData object
+//! @param engine The LwEngine to include with the LwEngineData 
+//! @param item The LwSearchItem to include with the LwEngineData
+//! @param exact Whether only exact matching results should be shown for the search
+//! @return An allocated LwEngineData that will be needed to be freed by lw_engindata_free.
+//!
 LwEngineData* lw_enginedata_new (LwEngine *engine, LwSearchItem *item, gboolean exact)
 {
     LwEngineData *temp;
@@ -53,6 +60,10 @@ LwEngineData* lw_enginedata_new (LwEngine *engine, LwSearchItem *item, gboolean 
 }
 
 
+//!
+//! @brief Releases a LwEngineData object from memory.
+//! @param di A LwEngineData object created by lw_enginedata_new.
+//!
 void lw_enginedata_free (LwEngineData *data)
 {
     if (data != NULL) free (data);

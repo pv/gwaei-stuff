@@ -225,7 +225,8 @@ GwApplicationResolution gw_app_run (GwApplication *app)
     gw_searchwindow_update_history_popups (window);
 
     //Show the settings dialog if no dictionaries are installed
-    if (lw_dictinfolist_get_total (LW_DICTINFOLIST (app->dictinfolist)) == 0) {
+    if (lw_dictinfolist_get_total (LW_DICTINFOLIST (app->dictinfolist)) == 0)
+    {
       gw_app_show_window (app, GW_WINDOW_SETTINGS, GW_WINDOW (window), FALSE);
     }
 

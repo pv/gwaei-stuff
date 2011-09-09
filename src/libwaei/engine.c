@@ -36,6 +36,11 @@
 #include <libwaei/engine-data.h>
 
 
+//!
+//! @brief Appends a result to the output
+//! @param engine The LwEngine to use for output
+//! @param item The data from the LwSearchItem
+//!
 void lw_engine_append_result (LwEngine* engine, LwSearchItem* item)
 {
     switch (item->dictionary->type)
