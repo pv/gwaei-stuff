@@ -148,7 +148,7 @@ static gpointer _installprogresswindow_install_thread (gpointer data)
     //Cleanup
 gdk_threads_enter ();
     gw_app_handle_error (app, GW_WINDOW (settingswindow), TRUE, &error);
-    gw_dictinfolist_reload (app->dictinfolist, app->prefmanager);
+    gw_dictinfolist_reload (app->dictinfolist, app->preferences);
     lw_dictinstlist_set_cancel_operations (settingswindow->dictinstlist, FALSE);
     if (settingswindow->dictinstlist != NULL)
     {

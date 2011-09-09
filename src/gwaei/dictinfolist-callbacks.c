@@ -68,8 +68,8 @@ G_MODULE_EXPORT void gw_dictinfolist_list_store_row_changed_action_cb (GtkTreeMo
       while (gtk_tree_model_iter_next (GTK_TREE_MODEL (model), &iter));
     }
 
-    lw_dictinfolist_save_dictionary_order_pref (LW_DICTINFOLIST (app->dictinfolist), app->prefmanager);
-    gw_dictinfolist_reload (app->dictinfolist, app->prefmanager);
+    lw_dictinfolist_save_dictionary_order_pref (LW_DICTINFOLIST (app->dictinfolist), app->preferences);
+    gw_dictinfolist_reload (app->dictinfolist, app->preferences);
 
     g_signal_handler_unblock (model, app->dictinfolist->signalids[GW_DICTINFOLIST_SIGNALID_ROW_CHANGED]);
 }

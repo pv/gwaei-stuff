@@ -202,7 +202,7 @@ G_MODULE_EXPORT gboolean gw_searchwindow_get_iter_for_button_release_cb (GtkWidg
             window->mousedata.item = NULL;
           }
 
-          window->mousedata.item = lw_searchitem_new (query, di, LW_OUTPUTTARGET_KANJI, app->prefmanager, &error);
+          window->mousedata.item = lw_searchitem_new (query, di, LW_OUTPUTTARGET_KANJI, app->preferences, &error);
           lw_searchitem_set_data (window->mousedata.item, gw_searchdata_new (NULL, window), LW_SEARCHITEM_DATA_FREE_FUNC (gw_searchdata_free));
           lw_engine_get_results (app->engine, window->mousedata.item, TRUE, FALSE);
 
@@ -588,10 +588,10 @@ G_MODULE_EXPORT void gw_searchwindow_save_cb (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void gw_searchwindow_zoom_in_cb (GtkWidget *widget, gpointer data)
 {
     int size;
-    size = lw_preferences_get_int_by_schema (app->prefmanager, LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION) + GW_FONT_ZOOM_STEP;
+    size = lw_preferences_get_int_by_schema (app->preferences, LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION) + GW_FONT_ZOOM_STEP;
     if (size <= GW_MAX_FONT_MAGNIFICATION)
     {
-      lw_preferences_set_int_by_schema (app->prefmanager, LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION, size);
+      lw_preferences_set_int_by_schema (app->preferences, LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION, size);
     }
 }
 
@@ -605,10 +605,10 @@ G_MODULE_EXPORT void gw_searchwindow_zoom_in_cb (GtkWidget *widget, gpointer dat
 G_MODULE_EXPORT void gw_searchwindow_zoom_out_cb (GtkWidget *widget, gpointer data)
 {
     int size;
-    size = lw_preferences_get_int_by_schema (app->prefmanager, LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION) - GW_FONT_ZOOM_STEP;
+    size = lw_preferences_get_int_by_schema (app->preferences, LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION) - GW_FONT_ZOOM_STEP;
     if (size >= GW_MIN_FONT_MAGNIFICATION)
     {
-      lw_preferences_set_int_by_schema (app->prefmanager, LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION, size);
+      lw_preferences_set_int_by_schema (app->preferences, LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION, size);
     }
 }
 
@@ -621,7 +621,7 @@ G_MODULE_EXPORT void gw_searchwindow_zoom_out_cb (GtkWidget *widget, gpointer da
 //!
 G_MODULE_EXPORT void gw_searchwindow_zoom_100_cb (GtkWidget *widget, gpointer data)
 {
-    lw_preferences_reset_value_by_schema (app->prefmanager, LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION);
+    lw_preferences_reset_value_by_schema (app->preferences, LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION);
 }
 
 
@@ -634,8 +634,8 @@ G_MODULE_EXPORT void gw_searchwindow_zoom_100_cb (GtkWidget *widget, gpointer da
 G_MODULE_EXPORT void gw_searchwindow_less_relevant_results_toggle_cb (GtkWidget *widget, gpointer data)
 {
     gboolean state;
-    state = lw_preferences_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_LESS_RELEVANT_SHOW);
-    lw_preferences_set_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_LESS_RELEVANT_SHOW, !state);
+    state = lw_preferences_get_boolean_by_schema (app->preferences, LW_SCHEMA_BASE, LW_KEY_LESS_RELEVANT_SHOW);
+    lw_preferences_set_boolean_by_schema (app->preferences, LW_SCHEMA_BASE, LW_KEY_LESS_RELEVANT_SHOW, !state);
 }
 
 
@@ -1229,7 +1229,7 @@ G_MODULE_EXPORT void gw_searchwindow_search_cb (GtkWidget *widget, gpointer data
     }
 
     view = gw_searchwindow_get_current_textview (window);
-    new_item = lw_searchitem_new (query, di, LW_OUTPUTTARGET_RESULTS, app->prefmanager, &error);
+    new_item = lw_searchitem_new (query, di, LW_OUTPUTTARGET_RESULTS, app->preferences, &error);
     if (new_item == NULL)
     {
       gw_app_handle_error (app, NULL, FALSE, &error);
@@ -1753,9 +1753,9 @@ G_MODULE_EXPORT void gw_searchwindow_toolbar_show_toggled_cb (GtkWidget *widget,
     gboolean request;
 
     //Initializations
-    request = lw_preferences_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_TOOLBAR_SHOW);
+    request = lw_preferences_get_boolean_by_schema (app->preferences, LW_SCHEMA_BASE, LW_KEY_TOOLBAR_SHOW);
 
-    lw_preferences_set_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_TOOLBAR_SHOW, !request);
+    lw_preferences_set_boolean_by_schema (app->preferences, LW_SCHEMA_BASE, LW_KEY_TOOLBAR_SHOW, !request);
 }
 
 
@@ -1819,9 +1819,9 @@ G_MODULE_EXPORT void gw_searchwindow_statusbar_show_toggled_cb (GtkWidget *widge
     gboolean request;
 
     //Initializations
-    request = lw_preferences_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_STATUSBAR_SHOW);
+    request = lw_preferences_get_boolean_by_schema (app->preferences, LW_SCHEMA_BASE, LW_KEY_STATUSBAR_SHOW);
 
-    lw_preferences_set_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_STATUSBAR_SHOW, !request);
+    lw_preferences_set_boolean_by_schema (app->preferences, LW_SCHEMA_BASE, LW_KEY_STATUSBAR_SHOW, !request);
 }
 
 
@@ -1879,10 +1879,10 @@ G_MODULE_EXPORT void gw_searchwindow_spellcheck_toggled_cb (GtkWidget *widget, g
     GwSearchWindow *window;
 
     //Initializations
-    state = lw_preferences_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_SPELLCHECK);
+    state = lw_preferences_get_boolean_by_schema (app->preferences, LW_SCHEMA_BASE, LW_KEY_SPELLCHECK);
     window = GW_SEARCHWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
 
-    lw_preferences_set_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_SPELLCHECK, !state);
+    lw_preferences_set_boolean_by_schema (app->preferences, LW_SCHEMA_BASE, LW_KEY_SPELLCHECK, !state);
 
     if (window->spellcheck != NULL)
     {
@@ -1906,7 +1906,7 @@ G_MODULE_EXPORT void gw_searchwindow_sync_spellcheck_cb (GSettings *settings, gc
     //Initializations
     window = GW_SEARCHWINDOW (data);
     toolbutton = GTK_TOGGLE_TOOL_BUTTON (gtk_builder_get_object (window->builder, "spellcheck_toolbutton"));
-    request = lw_preferences_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_SPELLCHECK);
+    request = lw_preferences_get_boolean_by_schema (app->preferences, LW_SCHEMA_BASE, LW_KEY_SPELLCHECK);
 
     g_signal_handlers_block_by_func (toolbutton, gw_searchwindow_spellcheck_toggled_cb, window->toplevel);
     gtk_toggle_tool_button_set_active (toolbutton, request);

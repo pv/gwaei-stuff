@@ -182,7 +182,7 @@ static void _searchwindow_attach_signals (GwSearchWindow *window)
       window->signalid[i] = 0;
 
     window->signalid[GW_SEARCHWINDOW_SIGNALID_TOOLBAR_SHOW] = lw_preferences_add_change_listener_by_schema (
-        app->prefmanager,
+        app->preferences,
         LW_SCHEMA_BASE,
         LW_KEY_TOOLBAR_SHOW,
         gw_searchwindow_sync_toolbar_show_cb,
@@ -190,7 +190,7 @@ static void _searchwindow_attach_signals (GwSearchWindow *window)
     );
 
     window->signalid[GW_SEARCHWINDOW_SIGNALID_STATUSBAR_SHOW] = lw_preferences_add_change_listener_by_schema (
-        app->prefmanager,
+        app->preferences,
         LW_SCHEMA_BASE,
         LW_KEY_STATUSBAR_SHOW,
         gw_searchwindow_sync_statusbar_show_cb,
@@ -198,14 +198,14 @@ static void _searchwindow_attach_signals (GwSearchWindow *window)
     );
 
     window->signalid[GW_SEARCHWINDOW_SIGNALID_USE_GLOBAL_FONT] = lw_preferences_add_change_listener_by_schema (
-        app->prefmanager,
+        app->preferences,
         LW_SCHEMA_FONT,
         LW_KEY_FONT_USE_GLOBAL_FONT,
         gw_searchwindow_sync_font_cb,
         window
     );
     window->signalid[GW_SEARCHWINDOW_SIGNALID_CUSTOM_FONT] = lw_preferences_add_change_listener_by_schema (
-        app->prefmanager,
+        app->preferences,
         LW_SCHEMA_FONT,
         LW_KEY_FONT_CUSTOM_FONT,
         gw_searchwindow_sync_font_cb,
@@ -213,7 +213,7 @@ static void _searchwindow_attach_signals (GwSearchWindow *window)
     );
 
     window->signalid[GW_SEARCHWINDOW_SIGNALID_FONT_MAGNIFICATION] = lw_preferences_add_change_listener_by_schema (
-        app->prefmanager,
+        app->preferences,
         LW_SCHEMA_FONT,
         LW_KEY_FONT_MAGNIFICATION,
         gw_searchwindow_sync_font_cb,
@@ -221,7 +221,7 @@ static void _searchwindow_attach_signals (GwSearchWindow *window)
     );
 
     window->signalid[GW_SEARCHWINDOW_SIGNALID_KEEP_SEARCHING] = lw_preferences_add_change_listener_by_schema (
-        app->prefmanager,
+        app->preferences,
         LW_SCHEMA_BASE,
         LW_KEY_SEARCH_AS_YOU_TYPE,
         gw_searchwindow_sync_search_as_you_type_cb,
@@ -229,7 +229,7 @@ static void _searchwindow_attach_signals (GwSearchWindow *window)
     );
 
     window->signalid[GW_SEARCHWINDOW_SIGNALID_SPELLCHECK] = lw_preferences_add_change_listener_by_schema (
-        app->prefmanager,
+        app->preferences,
         LW_SCHEMA_BASE,
         LW_KEY_SPELLCHECK,
         gw_searchwindow_sync_spellcheck_cb,
@@ -266,37 +266,37 @@ static void _searchwindow_remove_signals (GwSearchWindow *window)
     int i;
 
     lw_preferences_remove_change_listener_by_schema (
-        app->prefmanager,
+        app->preferences,
         LW_SCHEMA_BASE,
         window->signalid[GW_SEARCHWINDOW_SIGNALID_TOOLBAR_SHOW]
     );
     lw_preferences_remove_change_listener_by_schema (
-        app->prefmanager,
+        app->preferences,
         LW_SCHEMA_BASE,
         window->signalid[GW_SEARCHWINDOW_SIGNALID_STATUSBAR_SHOW]
     );
     lw_preferences_remove_change_listener_by_schema (
-        app->prefmanager,
+        app->preferences,
         LW_SCHEMA_FONT,
         window->signalid[GW_SEARCHWINDOW_SIGNALID_USE_GLOBAL_FONT]
     );
     lw_preferences_remove_change_listener_by_schema (
-        app->prefmanager,
+        app->preferences,
         LW_SCHEMA_FONT,
         window->signalid[GW_SEARCHWINDOW_SIGNALID_CUSTOM_FONT]
     );
     lw_preferences_remove_change_listener_by_schema (
-        app->prefmanager,
+        app->preferences,
         LW_SCHEMA_FONT,
         window->signalid[GW_SEARCHWINDOW_SIGNALID_FONT_MAGNIFICATION]
     );
     lw_preferences_remove_change_listener_by_schema (
-        app->prefmanager,
+        app->preferences,
         LW_SCHEMA_BASE,
         window->signalid[GW_SEARCHWINDOW_SIGNALID_KEEP_SEARCHING]
     );
     lw_preferences_remove_change_listener_by_schema (
-        app->prefmanager,
+        app->preferences,
         LW_SCHEMA_BASE,
         window->signalid[GW_SEARCHWINDOW_SIGNALID_SPELLCHECK]
     );
@@ -511,19 +511,19 @@ void gw_searchwindow_set_entry_text_by_searchitem (GwSearchWindow* window, LwSea
       }
 
       //Set the foreground color
-      lw_preferences_get_string_by_schema (app->prefmanager, hex_color_string, LW_SCHEMA_HIGHLIGHT, LW_KEY_MATCH_FG, 100);
+      lw_preferences_get_string_by_schema (app->preferences, hex_color_string, LW_SCHEMA_HIGHLIGHT, LW_KEY_MATCH_FG, 100);
       if (gdk_rgba_parse (&color, hex_color_string) == FALSE)
       {
-        lw_preferences_reset_value_by_schema (app->prefmanager, LW_SCHEMA_HIGHLIGHT, LW_KEY_MATCH_FG);
+        lw_preferences_reset_value_by_schema (app->preferences, LW_SCHEMA_HIGHLIGHT, LW_KEY_MATCH_FG);
         return;
       }
       //gtk_widget_override_color (GTK_WIDGET (window->entry), GTK_STATE_NORMAL, &color);
 
       //Set the background color
-      lw_preferences_get_string_by_schema (app->prefmanager, hex_color_string, LW_SCHEMA_HIGHLIGHT, LW_KEY_MATCH_BG, 100);
+      lw_preferences_get_string_by_schema (app->preferences, hex_color_string, LW_SCHEMA_HIGHLIGHT, LW_KEY_MATCH_BG, 100);
       if (gdk_rgba_parse (&color, hex_color_string) == FALSE)
       {
-        lw_preferences_reset_value_by_schema (app->prefmanager, LW_SCHEMA_HIGHLIGHT, LW_KEY_MATCH_BG);
+        lw_preferences_reset_value_by_schema (app->preferences, LW_SCHEMA_HIGHLIGHT, LW_KEY_MATCH_BG);
         return;
       }
       //gtk_widget_override_background_color (GTK_WIDGET (window->entry), GTK_STATE_NORMAL, &color);
@@ -2297,13 +2297,13 @@ void gw_searchwindow_set_font (GwSearchWindow *window)
     gboolean enable;
 
     //Initializations
-    use_global_font_setting = lw_preferences_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_FONT, LW_KEY_FONT_USE_GLOBAL_FONT);
-    magnification = lw_preferences_get_int_by_schema (app->prefmanager, LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION);
+    use_global_font_setting = lw_preferences_get_boolean_by_schema (app->preferences, LW_SCHEMA_FONT, LW_KEY_FONT_USE_GLOBAL_FONT);
+    magnification = lw_preferences_get_int_by_schema (app->preferences, LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION);
 
     if (use_global_font_setting)
-      lw_preferences_get_string_by_schema (app->prefmanager, font, LW_SCHEMA_GNOME_INTERFACE, LW_KEY_DOCUMENT_FONT_NAME, 50);
+      lw_preferences_get_string_by_schema (app->preferences, font, LW_SCHEMA_GNOME_INTERFACE, LW_KEY_DOCUMENT_FONT_NAME, 50);
     else
-      lw_preferences_get_string_by_schema (app->prefmanager, font, LW_SCHEMA_FONT, LW_KEY_FONT_CUSTOM_FONT, 50);
+      lw_preferences_get_string_by_schema (app->preferences, font, LW_SCHEMA_FONT, LW_KEY_FONT_CUSTOM_FONT, 50);
 
     desc = pango_font_description_from_string (font);
     if (desc != NULL)

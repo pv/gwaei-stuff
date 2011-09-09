@@ -250,7 +250,7 @@ WAppResolution w_console_search (WApplication *app, GError **error)
 
     //Initializations
     di = lw_dictinfolist_get_dictinfo_fuzzy (app->dictinfolist, app->dictionary_switch_data);
-    item = lw_searchitem_new (app->query_text_data, di, LW_OUTPUTTARGET_RESULTS, app->prefmanager, error);
+    item = lw_searchitem_new (app->query_text_data, di, LW_OUTPUTTARGET_RESULTS, app->preferences, error);
     resolution = W_APP_RESOLUTION_SUCCESS;
 
     //Sanity checks

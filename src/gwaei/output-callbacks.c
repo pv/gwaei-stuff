@@ -1042,7 +1042,7 @@ static GtkWidget* _searchwindow_results_popup_new (char* query_text)
     i = 0;
     while ((di = lw_dictinfolist_get_dictinfo_by_load_position (LW_DICTINFOLIST (app->dictinfolist), i)) != NULL)
     {
-      if (di != NULL && (item = lw_searchitem_new (query_text, di, LW_OUTPUTTARGET_RESULTS, app->prefmanager, NULL)) != NULL)
+      if (di != NULL && (item = lw_searchitem_new (query_text, di, LW_OUTPUTTARGET_RESULTS, app->preferences, NULL)) != NULL)
       {
         menu_text = g_strdup_printf ("%s", di->longname);
         if (menu_text != NULL)
@@ -1070,7 +1070,7 @@ static GtkWidget* _searchwindow_results_popup_new (char* query_text)
     di =  lw_dictinfolist_get_dictinfo_by_load_position (LW_DICTINFOLIST (app->dictinfolist), 0);
     while (website_url_menuitems[i] != NULL)
     {
-      if (di != NULL && (item = lw_searchitem_new (query_text, di, LW_OUTPUTTARGET_RESULTS, app->prefmanager, NULL)) != NULL)
+      if (di != NULL && (item = lw_searchitem_new (query_text, di, LW_OUTPUTTARGET_RESULTS, app->preferences, NULL)) != NULL)
       {
         //Create handy variables
         char *name = website_url_menuitems[i];
@@ -1211,7 +1211,7 @@ static void _searchwindow_new_tab_with_search_cb (GtkMenuItem *widget, gpointer 
     window = GW_SEARCHWINDOW (gw_app_get_window_by_type (app, GW_WINDOW_SEARCH));
     if (window == NULL) return;
     item = LW_SEARCHITEM (data);
-    item_new = lw_searchitem_new (item->queryline->string, item->dictionary, item->target, app->prefmanager, NULL);
+    item_new = lw_searchitem_new (item->queryline->string, item->dictionary, item->target, app->preferences, NULL);
     if (item_new != NULL)
     {
       view = gw_searchwindow_get_current_textview (window);

@@ -21,7 +21,7 @@ struct _WApplication {
 
     LwDictInfoList *dictinfolist;
     LwDictInstList *dictinstlist;
-    LwPreferences *prefmanager;
+    LwPreferences *preferences;
     LwEngine *engine;
 
     gboolean quiet_switch;

@@ -82,7 +82,7 @@ void gw_dictinstwindow_init (GwDictInstWindow *window, GwSettingsWindow *transie
     {
       lw_dictinstlist_free (transient_for->dictinstlist);
     }
-    transient_for->dictinstlist = lw_dictinstlist_new (app->prefmanager);
+    transient_for->dictinstlist = lw_dictinstlist_new (app->preferences);
 
     //Set up the dictionary liststore
     for (iter = transient_for->dictinstlist->list; iter != NULL; iter = iter->next)

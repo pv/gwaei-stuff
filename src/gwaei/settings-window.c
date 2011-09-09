@@ -134,7 +134,7 @@ void _settingswindow_attach_signals (GwSettingsWindow *window)
       window->signalids[i] = 0;
 
     window->signalids[GW_SETTINGSWINDOW_SIGNALID_ROMAJI_KANA] = lw_preferences_add_change_listener_by_schema (
-        app->prefmanager,
+        app->preferences,
         LW_SCHEMA_BASE,
         LW_KEY_ROMAN_KANA,
         gw_settingswindow_sync_romaji_kana_conv_cb,
@@ -142,7 +142,7 @@ void _settingswindow_attach_signals (GwSettingsWindow *window)
     );
 
     window->signalids[GW_SETTINGSWINDOW_SIGNALID_HIRA_KATA] = lw_preferences_add_change_listener_by_schema (
-        app->prefmanager,
+        app->preferences,
         LW_SCHEMA_BASE,
         LW_KEY_HIRA_KATA,
         gw_settingswindow_sync_hira_kata_conv_cb,
@@ -150,7 +150,7 @@ void _settingswindow_attach_signals (GwSettingsWindow *window)
     );
 
     window->signalids[GW_SETTINGSWINDOW_SIGNALID_KATA_HIRA] = lw_preferences_add_change_listener_by_schema (
-        app->prefmanager,
+        app->preferences,
         LW_SCHEMA_BASE,
         LW_KEY_KATA_HIRA,
         gw_settingswindow_sync_kata_hira_conv_cb,
@@ -158,7 +158,7 @@ void _settingswindow_attach_signals (GwSettingsWindow *window)
     );
 
     window->signalids[GW_SETTINGSWINDOW_SIGNALID_SPELLCHECK] = lw_preferences_add_change_listener_by_schema (
-        app->prefmanager,
+        app->preferences,
         LW_SCHEMA_BASE,
         LW_KEY_SPELLCHECK,
         gw_settingswindow_sync_spellcheck_cb,
@@ -166,7 +166,7 @@ void _settingswindow_attach_signals (GwSettingsWindow *window)
     );
 
     window->signalids[GW_SETTINGSWINDOW_SIGNALID_USE_GLOBAL_DOCUMENT_FONT] = lw_preferences_add_change_listener_by_schema (
-        app->prefmanager,
+        app->preferences,
         LW_SCHEMA_FONT,
         LW_KEY_FONT_USE_GLOBAL_FONT,
         gw_settingswindow_sync_use_global_document_font_cb,
@@ -174,7 +174,7 @@ void _settingswindow_attach_signals (GwSettingsWindow *window)
     );
 
     window->signalids[GW_SETTINGSWINDOW_SIGNALID_GLOBAL_DOCUMENT_FONT] = lw_preferences_add_change_listener_by_schema (
-        app->prefmanager,
+        app->preferences,
         LW_SCHEMA_GNOME_INTERFACE,
         LW_KEY_DOCUMENT_FONT_NAME,
         gw_settingswindow_sync_global_document_font_cb,
@@ -182,7 +182,7 @@ void _settingswindow_attach_signals (GwSettingsWindow *window)
     );
 
     window->signalids[GW_SETTINGSWINDOW_SIGNALID_CUSTOM_FONT] = lw_preferences_add_change_listener_by_schema (
-        app->prefmanager,
+        app->preferences,
         LW_SCHEMA_FONT,
         LW_KEY_FONT_CUSTOM_FONT,
         gw_settingswindow_sync_custom_font_cb,
@@ -190,7 +190,7 @@ void _settingswindow_attach_signals (GwSettingsWindow *window)
     );
 
     window->signalids[GW_SETTINGSWINDOW_SIGNALID_SEARCH_AS_YOU_TYPE] = lw_preferences_add_change_listener_by_schema (
-        app->prefmanager,
+        app->preferences,
         LW_SCHEMA_BASE,
         LW_KEY_SEARCH_AS_YOU_TYPE,
         gw_settingswindow_sync_search_as_you_type_cb,
@@ -198,7 +198,7 @@ void _settingswindow_attach_signals (GwSettingsWindow *window)
     );
 
     window->signalids[GW_SETTINGSWINDOW_SIGNALID_MATCH_FG] = lw_preferences_add_change_listener_by_schema (
-        app->prefmanager,
+        app->preferences,
         LW_SCHEMA_HIGHLIGHT,
         LW_KEY_MATCH_FG,
         gw_settingswindow_sync_swatch_color_cb,
@@ -206,7 +206,7 @@ void _settingswindow_attach_signals (GwSettingsWindow *window)
     );
 
     window->signalids[GW_SETTINGSWINDOW_SIGNALID_MATCH_BG] = lw_preferences_add_change_listener_by_schema (
-        app->prefmanager,
+        app->preferences,
         LW_SCHEMA_HIGHLIGHT,
         LW_KEY_MATCH_BG,
         gw_settingswindow_sync_swatch_color_cb,
@@ -214,7 +214,7 @@ void _settingswindow_attach_signals (GwSettingsWindow *window)
     );
 
     window->signalids[GW_SETTINGSWINDOW_SIGNALID_COMMENT_FG] = lw_preferences_add_change_listener_by_schema (
-        app->prefmanager,
+        app->preferences,
         LW_SCHEMA_HIGHLIGHT,
         LW_KEY_COMMENT_FG,
         gw_settingswindow_sync_swatch_color_cb,
@@ -222,7 +222,7 @@ void _settingswindow_attach_signals (GwSettingsWindow *window)
     );
 
     window->signalids[GW_SETTINGSWINDOW_SIGNALID_HEADER_FG] = lw_preferences_add_change_listener_by_schema (
-        app->prefmanager,
+        app->preferences,
         LW_SCHEMA_HIGHLIGHT,
         LW_KEY_HEADER_FG,
         gw_settingswindow_sync_swatch_color_cb,
@@ -230,7 +230,7 @@ void _settingswindow_attach_signals (GwSettingsWindow *window)
     );
 
     window->signalids[GW_SETTINGSWINDOW_SIGNALID_HEADER_BG] = lw_preferences_add_change_listener_by_schema (
-        app->prefmanager,
+        app->preferences,
         LW_SCHEMA_HIGHLIGHT,
         LW_KEY_HEADER_BG,
         gw_settingswindow_sync_swatch_color_cb,
@@ -245,79 +245,79 @@ void _settingswindow_remove_signals (GwSettingsWindow *window)
     int i;
 
     lw_preferences_remove_change_listener_by_schema (
-        app->prefmanager, 
+        app->preferences, 
         LW_SCHEMA_BASE, 
         window->signalids[GW_SETTINGSWINDOW_SIGNALID_ROMAJI_KANA]
     );
 
     lw_preferences_remove_change_listener_by_schema (
-        app->prefmanager, 
+        app->preferences, 
         LW_SCHEMA_BASE, 
         window->signalids[GW_SETTINGSWINDOW_SIGNALID_HIRA_KATA]
     );
 
     lw_preferences_remove_change_listener_by_schema (
-        app->prefmanager, 
+        app->preferences, 
         LW_SCHEMA_BASE, 
         window->signalids[GW_SETTINGSWINDOW_SIGNALID_KATA_HIRA]
     );
 
     lw_preferences_remove_change_listener_by_schema (
-        app->prefmanager, 
+        app->preferences, 
         LW_SCHEMA_BASE, 
         window->signalids[GW_SETTINGSWINDOW_SIGNALID_SPELLCHECK]
     );
 
     lw_preferences_remove_change_listener_by_schema (
-        app->prefmanager, 
+        app->preferences, 
         LW_SCHEMA_FONT, 
         window->signalids[GW_SETTINGSWINDOW_SIGNALID_USE_GLOBAL_DOCUMENT_FONT]
     );
 
     lw_preferences_remove_change_listener_by_schema (
-        app->prefmanager, 
+        app->preferences, 
         LW_SCHEMA_GNOME_INTERFACE, 
         window->signalids[GW_SETTINGSWINDOW_SIGNALID_GLOBAL_DOCUMENT_FONT]
     );
 
     lw_preferences_remove_change_listener_by_schema (
-        app->prefmanager, 
+        app->preferences, 
         LW_SCHEMA_FONT, 
         window->signalids[GW_SETTINGSWINDOW_SIGNALID_CUSTOM_FONT]
     );
 
     lw_preferences_remove_change_listener_by_schema (
-        app->prefmanager, 
+        app->preferences, 
         LW_SCHEMA_BASE, 
         window->signalids[GW_SETTINGSWINDOW_SIGNALID_SEARCH_AS_YOU_TYPE]
     );
 
     lw_preferences_remove_change_listener_by_schema (
-        app->prefmanager, 
+        app->preferences, 
         LW_SCHEMA_HIGHLIGHT, 
         window->signalids[GW_SETTINGSWINDOW_SIGNALID_MATCH_FG]
     );
 
     lw_preferences_remove_change_listener_by_schema (
-        app->prefmanager, 
+        app->preferences, 
         LW_SCHEMA_HIGHLIGHT, 
         window->signalids[GW_SETTINGSWINDOW_SIGNALID_MATCH_BG]
     );
 
     lw_preferences_remove_change_listener_by_schema (
-        app->prefmanager, 
+        app->preferences, 
         LW_SCHEMA_HIGHLIGHT, 
         window->signalids[GW_SETTINGSWINDOW_SIGNALID_COMMENT_FG]
     );
 
     lw_preferences_remove_change_listener_by_schema (
-        app->prefmanager, 
+        app->preferences, 
         LW_SCHEMA_HIGHLIGHT, 
         window->signalids[GW_SETTINGSWINDOW_SIGNALID_HEADER_FG]
     );
 
     lw_preferences_remove_change_listener_by_schema (
-        app->prefmanager, 
+        app->preferences, 
         LW_SCHEMA_HIGHLIGHT, 
         window->signalids[GW_SETTINGSWINDOW_SIGNALID_HEADER_BG]
     );

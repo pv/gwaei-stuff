@@ -474,11 +474,11 @@ gboolean gw_spellcheck_update_timeout (gpointer data)
     GwSpellcheckStreamWithData *outdata;
     
     //Initializations
-    rk_conv_pref = lw_preferences_get_int_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_ROMAN_KANA);
+    rk_conv_pref = lw_preferences_get_int_by_schema (app->preferences, LW_SCHEMA_BASE, LW_KEY_ROMAN_KANA);
     want_conv = (rk_conv_pref == 0 || (rk_conv_pref == 2 && !lw_util_is_japanese_locale()));
     query = gtk_entry_get_text (spellcheck->entry);
     is_convertable_to_hiragana = (want_conv && lw_util_str_roma_to_hira (query, kana, MAX));
-    spellcheck_pref = lw_preferences_get_boolean_by_schema (app->prefmanager, LW_SCHEMA_BASE, LW_KEY_SPELLCHECK);
+    spellcheck_pref = lw_preferences_get_boolean_by_schema (app->preferences, LW_SCHEMA_BASE, LW_KEY_SPELLCHECK);
     exists = g_file_test (ENCHANT, G_FILE_TEST_IS_REGULAR);
     error = NULL;
 
