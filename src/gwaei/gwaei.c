@@ -254,6 +254,22 @@ GwApplicationResolution gw_app_run (GwApplication *app)
 void gw_app_quit (GwApplication *app)
 {
     gw_app_block_searches (app);
+
+    //Declarations
+    GList *iter;
+    GwWindow *window;
+    
+    //Clear all of the windows *before* quiting the gtk main loop to avoid a gdk_thread_enter lock
+    for (iter = app->windowlist; iter != NULL; iter = iter->next)
+    {
+      window = GW_WINDOW (iter->data);
+      if (window != NULL)
+      {
+        gw_window_destroy (window);
+      }
+      app->windowlist = g_list_delete_link (app->windowlist, iter);
+    }
+
     gtk_main_quit ();
     gw_app_unblock_searches (app);
 }
@@ -455,7 +471,6 @@ int main (int argc, char *argv[])
         gw_app_print_about (app);
       else
         resolution = gw_app_run (app);
-
       gw_app_free (app);
     }
 
