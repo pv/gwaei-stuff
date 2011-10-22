@@ -45,13 +45,15 @@ G_DEFINE_TYPE (GwApplication, gw_application, GW_TYPE_APPLICATION);
 //!
 //! @brief creates a new instance of the gwaei applicaiton
 //!
-GtkApplication* gw_application_new (int* argc, char** argv[])
+GtkApplication* gw_application_new (const gchar *application_id, GApplicationFlags flags)
 {
     //Declarations
     GwApplication *application;
 
     //Initializations
-    application = GW_APPLICATION (g_object_new (GW_TYPE_APPLICATION, NULL));
+    application = GW_APPLICATION (g_object_new (GW_TYPE_APPLICATION, 
+                                                "application-id", application_id, 
+                                                "flags", flags, NULL));
 
     if (application != NULL)
     {

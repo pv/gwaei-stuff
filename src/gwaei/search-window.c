@@ -57,15 +57,14 @@ GtkWindow* gw_searchwindow_new ()
     //Initializations
     window = GTK_WINDOW (g_object_new (GW_TYPE_SEARCHWINDOW,
                                        "type", GTK_WINDOW_TOPLEVEL,
-                                       "xml-filename", "search.ui", 
                                        NULL));
     if (window != NULL)
     {
       window->priv = GW_WINDOW_GET_PRIVATE (window);
-      gw_searchwindow_init (temp);
+      gw_searchwindow_init (window);
     }
 
-    return temp;
+    return window;
 }
 
 
@@ -77,6 +76,7 @@ void gw_searchwindow_init (GwSearchWindow *window)
     priv = GW_WINDOW_GET_PRIVATE (window);
 
     gw_searchwindow_private_init (window);
+    gw_window_load_ui_xml (GW_WINDOW (window), "search.ui");
     gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_MOUSE);
 }
 

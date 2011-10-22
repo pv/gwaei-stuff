@@ -42,8 +42,7 @@ struct _GwApplicationClass {
 };
 
 //Methods
-GtkApplication *gw_application_new (int*, char***);
-void gw_application_free (GwApplication *app);
+GtkApplication* gw_application_new (const gchar*, GApplicationFlags);
 
 GwApplicationResolution gw_application_run (GwApplication*);
 void gw_application_parse_args (GwApplication*, int*, char***);

@@ -47,6 +47,11 @@ int main (int argc, char *argv[])
     int resolution;
 
     resolution = 0;
+
+    app = gw_application_new ("gtk.org.gWaei", G_APPLICATION_FLAGS_NONE);
+
+    g_object_unref (G_OBJECT (app));
+
     /*
       setlocale(LC_MESSAGES, "");
       setlocale(LC_CTYPE, "");
@@ -65,7 +70,6 @@ int main (int argc, char *argv[])
     int resolution;
 
     //Initializations
-    app = gw_app_new (&argc, &argv);
     resolution = GW_APP_RESOLUTION_OUT_OF_MEMORY;
 
     if (app != NULL)
