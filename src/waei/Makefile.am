@@ -15,11 +15,10 @@ waei_LDADD =  $(BASE_LIBS) ../libwaei/libwaei.la
 waei_CPPFLAGS = $(DEFINITIONS) $(BASE_CFLAGS) $(BASE_DEFS) -I$(top_srcdir)/src/libwaei/include -I$(top_srcdir)/src/waei/include
 
 
-##WINDOWS SETUP
-if ENABLE_WIN32
-WIN32_DEFS = -DENABLE_WIN32 -DLC_MESSAGES=LC_ALL -DCURL_STATICLIB 
-waei_LDADD += $(WIN32_LIBS)
-waei_CPPFLAGS += $(WIN32_CFLAGS) $(WIN32_DEFS)
+if OS_MINGW
+MINGW_DEFS = -DLC_MESSAGES=LC_ALL -DCURL_STATICLIB 
+waei_LDADD += $(MINGW_LIBS)
+waei_CPPFLAGS += $(MINGW_CFLAGS) $(MINGW_DEFS)
 endif
 
 

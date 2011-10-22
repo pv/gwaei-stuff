@@ -1,4 +1,4 @@
-AC_INIT(gwaei, 3.1.0)
+AC_INIT(gwaei, 3.1.0b1)
 AC_CONFIG_SRCDIR([src/libwaei/engine.c])
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE
@@ -18,20 +18,18 @@ GMODULE_EXPORT_REQUIRED_VERSION=2.25.0
 #GTK Base Dependencies
 GTK3_REQUIRED_VERSION=3.0.0
 GDU_REQUIRED_VERSION=0.13.0
-#GTK Optional Dependencies
-LIBUNIQUE_REQUIRED_VERSION=1.0.0
+
+AC_CANONICAL_HOST
+AM_CONDITIONAL([OS_MINGW],false)
+case $host_os in
+  *mingw*)
+  AC_DEFINE([OS_MINGW],[1],[Mingw Host])
+  AM_CONDITIONAL([OS_MINGW],true)
+  OS_MINGW=1
+  ;;
+esac
 
 #Custom arguments
-AC_ARG_ENABLE([win32],
-[  --enable-win32         turn on win32 (do not touch: experimental)],
-[case "${enableval}" in
-yes) win32=true ;;
-no)  win32=false ;;
-*) AC_MSG_ERROR([bad value ${enableval} for --enable-win32]) ;;
-esac],[win32=false])
-AM_CONDITIONAL([ENABLE_WIN32], [test x$win32 = xtrue])
-
-
 AC_ARG_WITH([gnome],
 [  --without-gnome         turn off the gnome gui interface],
 [case "${withval}" in
@@ -40,15 +38,6 @@ no)  gnome=false ;;
 *) AC_MSG_ERROR([bad value ${withval} for --without-gnome]) ;;
 esac],[gnome=true])
 AM_CONDITIONAL([WITH_GNOME], [test x$gnome = xtrue || test x$win32 = xtrue])
-
-AC_ARG_WITH([libunique],
-[  --without-libunique         disable libunique],
-[case "${withval}" in
-yes) libunique=true ;;
-no)  libunique=false ;;
-*) AC_MSG_ERROR([bad value ${withval} for --without-libunique]) ;;
-esac],[libunique=true])
-AM_CONDITIONAL([WITH_LIBUNIQUE], [test x$libunique = xtrue && test x$gnome = xtrue && test x$win32 = xfalse])
 
 AC_CHECK_LIB(m, sqrt)
 
@@ -75,13 +64,6 @@ if test $gnome = true || test $win32 = true; then
   AC_SUBST(GNOME_CFLAGS)
   AC_SUBST(GNOME_LIBS)
   GNOME_DOC_INIT
-fi
-
-
-if test $gnome = true && test $libunique = true && test $win32 = false; then
-  PKG_CHECK_MODULES(LIBUNIQUE, unique-3.0  >= $LIBUNIQUE_REQUIRED_VERSION)
-  AC_SUBST(LIBUNIQUE_CFLAGS)
-  AC_SUBST(LIBUNIQUE_LIBS)
 fi
 
 
@@ -124,27 +106,13 @@ AC_CONFIG_FILES([Makefile src/Makefile src/libwaei/Makefile src/libwaei/include/
 AC_OUTPUT
 
 
-
 echo ""
+
 if test $gnome = true || test $win32 = true; then
   echo -e "* Gnome is\tENABLED"
 else
   echo -e "* Gnome is\tDISABLED"
 fi
-if test $libunique = true && test $gnome = true && test $win32 = false; then
-  echo -e "* Libunique is\tENABLED"
-else
-  echo -e "* Libunique is\tDISABLED (Requires Gnome)"
-fi
-
-echo ""
-
-if test ${win32} = true; then
-  echo -e "* Win32 is\tENABLED (Not compatibile with Libunique)"
-else
-  echo -e "* Win32 is\tDISABLED (Only for developer use)"
-fi
-
 
 echo ""
 echo "If these aren't the options you wanted, please rerun the configure script."

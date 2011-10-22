@@ -37,19 +37,23 @@
 
 
 G_MODULE_EXPORT void gw_dictinfolist_list_store_row_changed_action_cb (GtkTreeModel *model,
-                                                                            GtkTreePath *path,
-                                                                            gpointer data)
+                                                                       GtkTreePath *path,
+                                                                       gpointer data)
 {
     //Declarations
     int position;
     LwDictInfo *di;
     gpointer ptr;
     GtkTreeIter iter;
+    GwDictInfoList *dictinfolist;
+    LwPreferences *preferences;
 
     //Initializations
+    dictinfolist = gw_application_get_dictinfolist (app);
+    preferences = gw_application_get_preferences (app);
     position = 0;
 
-    g_signal_handler_block (model, app->dictinfolist->signalids[GW_DICTINFOLIST_SIGNALID_ROW_CHANGED]);
+    g_signal_handler_block (model, dictinfolist->signalids[GW_DICTINFOLIST_SIGNALID_ROW_CHANGED]);
 
     if (gtk_tree_model_get_iter_first (GTK_TREE_MODEL (model), &iter))
     {
@@ -68,10 +72,10 @@ G_MODULE_EXPORT void gw_dictinfolist_list_store_row_changed_action_cb (GtkTreeMo
       while (gtk_tree_model_iter_next (GTK_TREE_MODEL (model), &iter));
     }
 
-    lw_dictinfolist_save_dictionary_order_pref (LW_DICTINFOLIST (app->dictinfolist), app->preferences);
-    gw_dictinfolist_reload (app->dictinfolist, app->preferences);
+    lw_dictinfolist_save_dictionary_order_pref (LW_DICTINFOLIST (dictinfolist), preferences);
+    gw_dictinfolist_reload (dictinfolist, preferences);
 
-    g_signal_handler_unblock (model, app->dictinfolist->signalids[GW_DICTINFOLIST_SIGNALID_ROW_CHANGED]);
+    g_signal_handler_unblock (model, dictinfolist->signalids[GW_DICTINFOLIST_SIGNALID_ROW_CHANGED]);
 }
 
 

@@ -1,104 +1,38 @@
-#ifndef GW_MAIN_INCLUDED
-#define GW_MAIN_INCLUDED
+#ifndef GW_SEARCHWINDOW_INCLUDED
+#define GW_SEARCHWINDOW_INCLUDED
 
 #include <gtk/gtk.h>
 
 #include <libwaei/searchitem.h>
 
+G_BEGIN_DECLS
 
-#define GW_SEARCHWINDOW(object) (GwSearchWindow*) object
+//Boilerplate
+typedef struct _GwSearchWindow GwSearchWindow;
+typedef struct _GwSearchWindowClass GwSearchWindowClass;
+typedef struct _GwSearchWindowPrivate GwSearchWindowPrivate;
+
+#define GW_TYPE_SEARCHWINDOW              (gw_window_get_type())
+#define GW_SEARCHWINDOW(obj)              (G_TYPE_CHECK_INSTANCE_CAST((obj), GW_TYPE_SEARCHWINDOW, GwSearchWindow))
+#define GW_SEARCHWINDOW_CLASS(klass)      (G_TYPE_CHECK_CLASS_CAST((klass), GW_TYPE_SEARCHWINDOW, GwSearchWindowClass))
+#define GW_IS_SEARCHWINDOW(obj)           (G_TYPE_CHECK_INSTANCE_TYPE((obj), GW_TYPE_SEARCHWINDOW))
+#define GW_IS_SEARCHWINDOW_CLASS(klass)   (G_TYPE_CHECK_CLASS_TYPE ((klass), GW_TYPE_SEARCHWINDOW))
+#define GW_SEARCHWINDOW_GET_CLASS(obj)    (G_TYPE_INSTANCE_GET_CLASS((obj), GW_TYPE_SEARCHWINDOW, GwSearchWindowClass))
+
 #define GW_SEARCHWINDOW_KEEP_SEARCHING_MAX_DELAY 3
 
-typedef enum {
-  GW_SEARCHWINDOW_TIMEOUTID_PROGRESS,
-  GW_SEARCHWINDOW_TIMEOUTID_KEEP_SEARCHING,
-  TOTAL_GW_SEARCHWINDOW_TIMEOUTIDS
-} GwSearchWindowTimeoutId;
-
-
-typedef enum {
-  GW_SEARCHWINDOW_SIGNALID_SPELLCHECK,
-  GW_SEARCHWINDOW_SIGNALID_KEEP_SEARCHING,
-  GW_SEARCHWINDOW_SIGNALID_TOOLBAR_SHOW,
-  GW_SEARCHWINDOW_SIGNALID_STATUSBAR_SHOW,
-  GW_SEARCHWINDOW_SIGNALID_USE_GLOBAL_FONT,
-  GW_SEARCHWINDOW_SIGNALID_CUSTOM_FONT,
-  GW_SEARCHWINDOW_SIGNALID_FONT_MAGNIFICATION,
-  GW_SEARCHWINDOW_SIGNALID_DICTIONARIES_ADDED,
-  GW_SEARCHWINDOW_SIGNALID_DICTIONARIES_DELETED,
-  TOTAL_GW_SEARCHWINDOW_SIGNALIDS
-} GwSearchWindowSignalId;
-
-
-struct _GwSearchWindowProgressFeedbackData {
-  LwSearchItem *item;
-  long line;
-  LwSearchStatus status;
-};
-typedef struct _GwSearchWindowProgressFeedbackData GwSearchWindowProgressFeedbackData;
-
-struct _GwSearchWindowMouseData {
-  LwSearchItem *item;
-  gint button_press_x;
-  gint button_press_y;
-  gunichar button_character;
-  char* hovered_word; 
-};
-typedef struct _GwSearchWindowMouseData GwSearchWindowMouseData;
-
-struct _GwSearchWindowKeepSearchingData {
-  int delay;
-  char *query;
-  gboolean enabled;
-};
-typedef struct _GwSearchWindowKeepSearchingData GwSearchWindowKeepSearchingData;
-
-
-struct _GwSearchWindowSelectionIconData {
-  gboolean selected;
-};
-typedef struct _GwSearchWindowSelectionIconData GwSearchWindowSelectionIconData;
-
-
 struct _GwSearchWindow {
-  EXTENDS_GW_WINDOW
-
-  GtkEntry *entry;
-  GtkNotebook *notebook;
-  GtkToolbar *toolbar;
-  GtkWidget *statusbar;
-  GtkComboBox *combobox;
-  LwDictInfo *dictinfo;
-  GtkTextTagTable *tagtable;
-
-  //Tabs
-  GList *tablist; //!< Stores the current search item set to each tab
-
-  //History
-  LwHistory *history;
-
-  //Main variables
-  guint timeoutid[TOTAL_GW_SEARCHWINDOW_TIMEOUTIDS];
-  guint signalid[TOTAL_GW_SEARCHWINDOW_SIGNALIDS];
-
-  int previous_tip;
-  int font_size;
-
-  gboolean new_tab; 
-
-  GwSearchWindowSelectionIconData selectionicondata;
-  GwSearchWindowProgressFeedbackData feedbackdata;
-  GwSearchWindowMouseData mousedata;
-  GwSearchWindowKeepSearchingData keepsearchingdata;
-  GwSpellcheck *spellcheck;
+  GwWindow window;
+  GwSearchWindowPrivate *priv;
 };
-typedef struct _GwSearchWindow GwSearchWindow;
+
+struct _GwSearchWindowClass {
+  GwWindowClass parent_class;
+}
 
 
-GwSearchWindow* gw_searchwindow_new (GList*);
-void gw_searchwindow_destroy (GwSearchWindow*);
+GwSearchWindow* gw_searchwindow_new ();
 void gw_searchwindow_init (GwSearchWindow*);
-void gw_searchwindow_deinit (GwSearchWindow*);
 
 gboolean gw_searchwindow_update_progress_feedback_timeout (GwSearchWindow*);
 gboolean gw_searchwindow_update_icons_for_selection_timeout (GwSearchWindow*);
@@ -189,5 +123,7 @@ void gw_searchwindow_initialize_dictionary_combobox (GwSearchWindow*);
 
 #include <gwaei/search-callbacks.h>
 #include <gwaei/search-data.h>
+
+G_END_DECLS
 
 #endif

@@ -24,10 +24,10 @@ kpengine_SOURCES = jstroke/scoring.c jstroke/util.c kpengine.c jstroke/jstroke.h
 kpengine_LDADD =  $(BASE_LIBS) 
 
 
-if ENABLE_WIN32
-WIN32_DEFS = -DWITH_GTK -DENABLE_WIN32 -DLC_MESSAGES=LC_ALL -DCURL_STATICLIB
-INCLUDES += $(WIN32_CFLAGS) $(WIN32_DEFS) 
-kpengine_LDADD += $(WIN32_LIBS) 
+if OS_MINGW
+MINGW_DEFS = -DLC_MESSAGES=LC_ALL -DCURL_STATICLIB
+INCLUDES += $(MINGW_CFLAGS) $(MINGW_DEFS) 
+kpengine_LDADD += $(MINGW_LIBS) 
 kpengine_LDFLAGS = -Wl,-subsystem,windows 
 endif
 

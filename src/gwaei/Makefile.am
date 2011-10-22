@@ -10,24 +10,16 @@ datadir = @datadir@
 localedir = $(datadir)/locale
 DEFINITIONS =-DLOCALEDIR=\"$(localedir)\" -DVERSION=\"$(VERSION)\" -DPACKAGE=\"$(PACKAGE)\" -DDATADIR2=\"$(datadir)\" -DLIBDIR=\"$(libdir)\" -DENCHANT=\"$(ENCHANT)\" -DGWAEI_LOCALEDIR=\"${GWAEI_LOCALEDIR}\" -DGTK_DISABLE_DEPRECATED -DG_SEAL_ENABLE
 
-#gwaei_SOURCES = dictionaryinstall-callbacks.c dictionaryinstall-window.c dictinfolist.c gwaei.c installprogress-callbacks.c installprogress-window.c kanjipad-callbacks.c kanjipad-candidatearea.c kanjipad-drawingarea.c kanjipad-window.c output-callbacks.c pluginmanager.c printing.c radicals-callbacks.c radicals-window.c search-callbacks.c search-tabs.c search-window.c settings-callbacks.c settings-listeners.c settings-window.c spellcheck.c
-gwaei_SOURCES = gwaei.c output-callbacks.c window.c search-callbacks.c search-window.c search-data.c dictinfolist.c dictinfolist-callbacks.c spellcheck.c spellcheck-callbacks.c settings-window.c settings-callbacks.c printing.c radicals-window.c radicals-callbacks.c kanjipad-window.c kanjipad-callbacks.c kanjipad-candidatearea.c kanjipad-drawingarea.c dictionaryinstall-window.c dictionaryinstall-callbacks.c installprogress-window.c installprogress-callbacks.c
+##gwaei_SOURCES = gwaei.c output-callbacks.c window.c search-callbacks.c search-window.c search-data.c dictinfolist.c dictinfolist-callbacks.c spellcheck.c spellcheck-callbacks.c settings-window.c settings-callbacks.c printing.c radicals-window.c radicals-callbacks.c kanjipad-window.c kanjipad-callbacks.c kanjipad-candidatearea.c kanjipad-drawingarea.c dictionaryinstall-window.c dictionaryinstall-callbacks.c installprogress-window.c installprogress-callbacks.c
+gwaei_SOURCES = gwaei.c application.c application-private.c application-callbacks.c output-callbacks.c window.c window-private.c dictinfolist.c dictinfolist-callbacks.c 
 
 gwaei_LDADD =  $(GNOME_LIBS) ../libwaei/libwaei.la
 gwaei_CPPFLAGS = $(DEFINITIONS) $(GNOME_CFLAGS) $(GNOME_DEFS) -I$(top_srcdir)/src/libwaei/include -I$(top_srcdir)/src/gwaei/include 
 
-if ENABLE_WIN32
+if OS_MINGW
 gwaei_LDFLAGS = -Wl,-subsystem,windows 
-WIN32_DEFS = -DENABLE_WIN32 -DLC_MESSAGES=LC_ALL -DCURL_STATICLIB 
-gwaei_LDADD += $(WIN32_LIBS) 
-gwaei_CPPFLAGS += $(WIN32_CFLAGS) $(WIN32_DEFS)
+MINGW_DEFS = -DLC_MESSAGES=LC_ALL -DCURL_STATICLIB 
+gwaei_LDADD += $(MINGW_LIBS) 
+gwaei_CPPFLAGS += $(MINGW_CFLAGS) $(MINGW_DEFS)
 endif
-
-if WITH_LIBUNIQUE
-LIBUNIQUE_DEFS =-DWITH_LIBUNIQUE
-gwaei_SOURCES += libunique.c
-gwaei_LDADD += $(LIBUNIQUE_LIBS)
-gwaei_CPPFLAGS +=$(LIBUNIQUE_CFLAGS)$(LIBUNIQUE_DEFS)
-endif
-
 

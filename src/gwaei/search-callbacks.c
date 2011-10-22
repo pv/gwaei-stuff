@@ -1569,25 +1569,21 @@ G_MODULE_EXPORT void gw_searchwindow_update_button_states_based_on_entry_text_cb
 //!
 G_MODULE_EXPORT gboolean gw_searchwindow_scroll_or_zoom_cb (GtkWidget *widget, GdkEventScroll *event, gpointer data)
 {
-    // If "control" is being pressed
     if( (event->state & GDK_CONTROL_MASK) == GDK_CONTROL_MASK )
     {
-	// On wheel direction up ~ zoom out
-	if(event->direction == GDK_SCROLL_UP)
-	{
-	  gw_searchwindow_zoom_out_cb (widget, data);
-	  return TRUE; // dont propagate event, no scroll
-	}
+      if(event->direction == GDK_SCROLL_UP)
+      {
+        gw_searchwindow_zoom_out_cb (widget, data);
+        return TRUE; // dont propagate event, no scroll
+      }
 
-	// On wheel direction down ~ zoom in
-	if(event->direction == GDK_SCROLL_DOWN)
-	{
-	  gw_searchwindow_zoom_in_cb (widget, data);
-	  return TRUE; // dont propagate event, no scroll
-	}
+      if(event->direction == GDK_SCROLL_DOWN)
+      {
+        gw_searchwindow_zoom_in_cb (widget, data);
+        return TRUE; // dont propagate event, no scroll
+      }
     }
 
-    // return false and propagate event for regular scroll
     return FALSE;
 }
 
@@ -2053,4 +2049,14 @@ G_MODULE_EXPORT gboolean gw_searchwindow_focus_in_event_cb (GtkWidget *widget, G
 
     return FALSE;
 }
+
+
+G_MODULE_EXPORT void gw_searchwindow_open_vocabulary_window_cb (GtkWidget *widget, gpointer data)
+{
+  GtkBuilder builder;
+  builder = gtk_builder_new ();
+  gtk_bueild
+  g_object_unref (builder);
+}
+
 

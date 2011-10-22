@@ -37,22 +37,14 @@
 #include <gtk/gtk.h>
 
 #include <gwaei/gwaei.h>
+#include <gwaei/windowprivate.h>
+
+G_DEFINE_TYPE (GwWindow, gw_window, GTK_TYPE_WINDOW);
 
 
-GwWindow* gw_window_new (const GwWindowType TYPE, GwWindow *transient_for, GList *link)
-{
-    //Declarations
-    GwWindow *window;
-
-    //Initializations
-    window = NULL;
-
+/*
     switch (TYPE)
     {
-      case GW_WINDOW_SEARCH:
-        window = GW_WINDOW (gw_searchwindow_new (link));
-        gtk_window_set_position (window->toplevel, GTK_WIN_POS_MOUSE);
-        break;
       case GW_WINDOW_SETTINGS:
         g_assert (transient_for != NULL);
         window = GW_WINDOW (gw_settingswindow_new (GW_SEARCHWINDOW (transient_for), link));
@@ -90,65 +82,43 @@ GwWindow* gw_window_new (const GwWindowType TYPE, GwWindow *transient_for, GList
         window = NULL;
         break;
     }
-    return window;
+    */
+
+
+void gw_window_init (GwWindow *window)
+{
+    //Declarations
+    GwWindowPrivate *priv;
+
+    //Initializations
+    priv = GW_WINDOW_GET_PRIVATE (window);
+
+    gw_window_private_init (priv);
 }
 
 
-void gw_window_init (GwWindow *window, const GwWindowType TYPE, const char* UI_XML_FILENAME, const char* WINDOW_ID, GList *link)
+void gw_window_finalize (GObject *object)
 {
-    if (link != NULL)
-      link->data = window;
+    GwWindow *window;
+    GwWindowPrivate *priv;
 
-    window->builder = gtk_builder_new ();
-    gw_window_load_ui_xml (window, UI_XML_FILENAME);
-    window->toplevel = GTK_WINDOW (gtk_builder_get_object (window->builder, WINDOW_ID));
-    window->type = TYPE;
-    gw_window_set_transient_for (window, NULL);
-}
+    priv = GW_WINDOW_GET_PRIVATE (window);
 
-void gw_window_deinit (GwWindow *window)
-{
-    gtk_widget_destroy (GTK_WIDGET (window->toplevel));
-    g_object_unref (window->builder);
+    gw_window_private_finalize (priv);
+    G_OBJECT_CLASS (gw_window_parent_class)->finalize (object);
 }
 
 
-void gw_window_destroy (GwWindow *window)
+static void
+gw_window_class_init (GwWindowClass *klass)
 {
-    switch (window->type)
-    {
-      case GW_WINDOW_SEARCH:
-        gw_searchwindow_destroy (GW_SEARCHWINDOW (window));
-        break;
-      case GW_WINDOW_SETTINGS:
-        gw_settingswindow_destroy (GW_SETTINGSWINDOW (window));
-        break;
-      case GW_WINDOW_RADICALS:
-        gw_radicalswindow_destroy (GW_RADICALSWINDOW (window));
-        break;
-      case GW_WINDOW_KANJIPAD:
-        gw_kanjipadwindow_destroy (GW_KANJIPADWINDOW (window));
-        break;
-      case GW_WINDOW_DICTIONARYINSTALL:
-        gw_dictinstwindow_destroy (GW_DICTINSTWINDOW (window));
-        break;
-      case GW_WINDOW_INSTALLPROGRESS:
-        gw_installprogresswindow_destroy (GW_INSTALLPROGRESSWINDOW (window));
-        break;
-      default:
-        g_assert_not_reached ();
-        break;
-    }
-}
+  GObjectClass *object_class;
 
+  object_class = G_OBJECT_CLASS (klass);
 
-void gw_window_set_transient_for (GwWindow *window, GwWindow *transient_for)
-{
-    window->transient_for = transient_for;
-    if (transient_for != NULL)
-    {
-      gtk_window_set_transient_for (window->toplevel, transient_for->toplevel);
-    }
+  object_class->finalize = gw_window_finalize;
+
+  g_type_class_add_private (object_class, sizeof (GwWindowPrivate));
 }
 
 
@@ -157,16 +127,19 @@ void gw_window_set_transient_for (GwWindow *window, GwWindow *transient_for)
 //!
 //! @param filename The filename of the xml file to look for
 //!
-gboolean gw_window_load_ui_xml (GwWindow *window, const char *filename) {
-    g_assert (window->builder != NULL && filename != NULL);
+gboolean gw_window_load_ui_xml (GwWindow *window, const char *filename)
+{
+    if (window == NULL || filename == NULL) return FALSE;
 
     //Declarations
+    GwWindowPrivate *priv;
     char *paths[4];
     char **iter;
     char *path;
     gboolean loaded;
 
     //Initializations
+    priv = GW_WINDOW_GET_PRIVATE (window);
     paths[0] = g_build_filename ("ui", filename, NULL);
     paths[1] = g_build_filename ("..", "share", PACKAGE, filename, NULL);
     paths[2] = g_build_filename (DATADIR2, PACKAGE, filename, NULL);
@@ -177,9 +150,9 @@ gboolean gw_window_load_ui_xml (GwWindow *window, const char *filename) {
     for (iter = paths; *iter != NULL && loaded == FALSE; iter++)
     {
       path = *iter;
-      if (g_file_test (path, G_FILE_TEST_IS_REGULAR) && gtk_builder_add_from_file (window->builder, path,  NULL))
+      if (g_file_test (path, G_FILE_TEST_IS_REGULAR) && gtk_builder_add_from_file (priv->builder, path,  NULL))
       {
-        gtk_builder_connect_signals (window->builder, NULL);
+        gtk_builder_connect_signals (priv->builder, NULL);
         loaded = TRUE;
       }
     }

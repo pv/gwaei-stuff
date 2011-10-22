@@ -53,6 +53,7 @@ static void _searchwindow_destroy_tab_menuitem_searchitem_data_cb (GObject*, gpo
 //!
 static void _set_header (LwSearchItem *item, char* text, char* mark_name)
 {
+/*
     //Sanity check
     g_assert (lw_searchitem_has_data (item));
 
@@ -97,6 +98,7 @@ static void _set_header (LwSearchItem *item, char* text, char* mark_name)
       new_text = NULL;
     }
   gdk_threads_leave();
+*/
 }
 
 
@@ -110,6 +112,7 @@ static void _set_header (LwSearchItem *item, char* text, char* mark_name)
 //!
 static void _add_match_highlights (gint line, gint start_offset, gint end_offset, LwSearchItem* item)
 {
+/*
     //Sanity check
     g_assert (lw_searchitem_has_data (item));
 
@@ -202,6 +205,7 @@ static void _add_match_highlights (gint line, gint start_offset, gint end_offset
 
     //Cleanup
     g_free (text);
+*/
 }
 
 
@@ -213,6 +217,7 @@ static void _add_match_highlights (gint line, gint start_offset, gint end_offset
 //!
 static void _shift_stay_mark (LwSearchItem *item, char *name)
 {
+/*
     //Sanity check
     g_assert (lw_searchitem_has_data (item));
 
@@ -234,6 +239,7 @@ static void _shift_stay_mark (LwSearchItem *item, char *name)
       gtk_text_buffer_create_mark (buffer, name, &iter, TRUE);
     else
       gtk_text_buffer_move_mark (buffer, mark, &iter);
+*/
 }
 
 
@@ -246,6 +252,7 @@ static void _shift_stay_mark (LwSearchItem *item, char *name)
 //!
 static void _shift_append_mark (LwSearchItem *item, char *stay_name, char *append_name)
 {
+/*
     //Sanity check
     g_assert (lw_searchitem_has_data (item));
 
@@ -267,6 +274,7 @@ static void _shift_append_mark (LwSearchItem *item, char *stay_name, char *appen
       gtk_text_buffer_create_mark (buffer, append_name, &iter, FALSE);
     else
       gtk_text_buffer_move_mark (buffer, append_mark, &iter);
+*/
 }
 
 
@@ -279,6 +287,7 @@ static void _shift_append_mark (LwSearchItem *item, char *stay_name, char *appen
 //!
 static void _append_def_same_to_buffer (LwSearchItem* item)
 {
+/*
     //Sanity check
     g_assert (lw_searchitem_has_data (item));
 
@@ -332,6 +341,7 @@ static void _append_def_same_to_buffer (LwSearchItem* item)
       end_offset = gtk_text_iter_get_line_offset (&iter);
       _add_match_highlights (line, start_offset, end_offset, item);
     }
+*/
 }
 
 
@@ -345,6 +355,7 @@ static void _append_def_same_to_buffer (LwSearchItem* item)
 //!
 void gw_output_append_edict_results_cb (LwSearchItem *item)
 {
+/*
     //Sanity check
     g_assert (lw_searchitem_has_data (item));
 
@@ -503,6 +514,7 @@ void gw_output_append_edict_results_cb (LwSearchItem *item)
     gtk_text_buffer_insert (buffer, &iter, "\n", -1);
 
   gdk_threads_leave();
+*/
 }
 
 
@@ -516,6 +528,7 @@ void gw_output_append_edict_results_cb (LwSearchItem *item)
 //!
 void gw_output_append_kanjidict_results_cb (LwSearchItem *item)
 {
+/*
     //Sanity check
     g_assert (lw_searchitem_has_data (item));
 
@@ -799,6 +812,7 @@ void gw_output_append_kanjidict_results_cb (LwSearchItem *item)
       g_free (markup);
       g_free (markup2);
     }
+*/
 }
 
 
@@ -812,6 +826,7 @@ void gw_output_append_kanjidict_results_cb (LwSearchItem *item)
 //!
 void gw_output_append_examplesdict_results_cb (LwSearchItem *item)
 {
+/*
     //Sanity check
     g_assert (lw_searchitem_has_data (item));
 
@@ -870,6 +885,7 @@ void gw_output_append_examplesdict_results_cb (LwSearchItem *item)
     gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark);
     gtk_text_buffer_insert (buffer, &iter, "\n\n", -1);
   gdk_threads_leave();
+*/
 }
 
 
@@ -883,6 +899,7 @@ void gw_output_append_examplesdict_results_cb (LwSearchItem *item)
 //!
 void gw_output_append_unknowndict_results_cb (LwSearchItem *item)
 {
+/*
     //Sanity check
     g_assert (lw_searchitem_has_data (item));
 
@@ -915,6 +932,7 @@ void gw_output_append_unknowndict_results_cb (LwSearchItem *item)
     gtk_text_buffer_insert (buffer, &iter, "\n\n", -1);
     gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); line = gtk_text_iter_get_line (&iter);
   gdk_threads_leave();
+*/
 }
 
 
@@ -923,6 +941,7 @@ void gw_output_append_unknowndict_results_cb (LwSearchItem *item)
 //!
 void gw_output_append_less_relevant_header_cb (LwSearchItem *item)
 {
+/*
     //Declarations
     int irrelevant;
     char *message;
@@ -936,6 +955,7 @@ void gw_output_append_less_relevant_header_cb (LwSearchItem *item)
       _set_header (item, message, "less_relevant_header_mark");
       g_free (message);
     }
+*/
 }
 
 
@@ -944,6 +964,7 @@ void gw_output_append_less_relevant_header_cb (LwSearchItem *item)
 //!
 void gw_output_append_more_relevant_header_cb (LwSearchItem *item)
 {
+/*
     //Declarations
     int relevant;
     char *message;
@@ -957,6 +978,7 @@ void gw_output_append_more_relevant_header_cb (LwSearchItem *item)
       _set_header (item, message, "more_relevant_header_mark");
       g_free (message);
     }
+*/
 }
 
 
@@ -966,6 +988,7 @@ void gw_output_append_more_relevant_header_cb (LwSearchItem *item)
 //!
 void gw_output_prepare_search_cb (LwSearchItem *item)
 {
+/*
     //Sanity check
     g_assert (lw_searchitem_has_data (item));
 
@@ -978,6 +1001,7 @@ void gw_output_prepare_search_cb (LwSearchItem *item)
 
     if (item->target == LW_OUTPUTTARGET_RESULTS)
       gw_searchwindow_initialize_buffer_by_searchitem (sdata->window, item);
+*/
 }
 
 
@@ -987,6 +1011,7 @@ void gw_output_prepare_search_cb (LwSearchItem *item)
 //!
 void gw_output_cleanup_search_cb (LwSearchItem *item)
 {
+/*
     //Sanity check
     g_assert (lw_searchitem_has_data (item));
 
@@ -1003,6 +1028,7 @@ void gw_output_cleanup_search_cb (LwSearchItem *item)
     {
       gw_searchwindow_display_no_results_found_page (sdata->window, item);
     }
+*/
 }
 
 
@@ -1015,6 +1041,7 @@ void gw_output_cleanup_search_cb (LwSearchItem *item)
 //!
 static GtkWidget* _searchwindow_results_popup_new (char* query_text)
 {
+/*
     if (query_text == NULL) return NULL;
 
     //Declarations
@@ -1110,10 +1137,12 @@ static GtkWidget* _searchwindow_results_popup_new (char* query_text)
     }
 
     return menu;
+*/
 }
 
 static void _searchwindow_show_popup_cb (GtkWidget *widget, gpointer data)
 {
+/*
     GtkMenu *popup;
     char *popup_text;
 
@@ -1124,6 +1153,7 @@ static void _searchwindow_show_popup_cb (GtkWidget *widget, gpointer data)
     gtk_menu_popup (popup, NULL, NULL, NULL, NULL, 0, gtk_get_current_event_time ());
 
     g_signal_connect_after (G_OBJECT (widget), "destroy", G_CALLBACK (_searchwindow_destroy_popup_cb), popup);
+*/
 }
 
 
@@ -1167,6 +1197,7 @@ static void _searchwindow_destroy_tab_menuitem_searchitem_data_cb (GObject *obje
 //!
 static void _searchwindow_search_for_searchitem_online_cb (GtkMenuItem *widget, gpointer data)
 {
+/*
     LwSearchItem *item;
     GError *error;
     GwSearchWindow *window;
@@ -1186,6 +1217,7 @@ static void _searchwindow_search_for_searchitem_online_cb (GtkMenuItem *widget, 
       gtk_show_uri (NULL, item->queryline->string, gtk_get_current_event_time (), &error);
       gw_app_handle_error (app, GW_WINDOW (window), TRUE, &error);
     }
+*/
 }
 
 
@@ -1197,6 +1229,7 @@ static void _searchwindow_search_for_searchitem_online_cb (GtkMenuItem *widget, 
 //!
 static void _searchwindow_new_tab_with_search_cb (GtkMenuItem *widget, gpointer data)
 {
+/*
     if (!gw_app_can_start_search (app)) return;
 
     //Declarations
@@ -1222,6 +1255,7 @@ static void _searchwindow_new_tab_with_search_cb (GtkMenuItem *widget, gpointer 
       gtk_notebook_set_current_page (window->notebook, index);
       gw_searchwindow_start_search (window, item_new);
     }
+*/
 }
 
 
