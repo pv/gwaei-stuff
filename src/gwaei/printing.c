@@ -435,11 +435,11 @@ G_MODULE_EXPORT void gw_print_cb (GtkWidget *widget, gpointer data)
 {
     GwSearchWindow *window;
 
-    window = GW_SEARCHWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
+    window = GW_SEARCHWINDOW (gw_application_get_window_by_widget (app, GTK_WIDGET (data)));
 
-    gw_app_block_searches (app);
+    gw_application_block_searches (app);
     gw_print (GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG, window);
-    gw_app_unblock_searches (app);
+    gw_application_unblock_searches (app);
 }
 
 
@@ -450,10 +450,10 @@ G_MODULE_EXPORT void gw_print_preview_cb (GtkWidget *widget, gpointer data)
 {
     GwSearchWindow *window;
 
-    window = GW_SEARCHWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
+    window = GW_SEARCHWINDOW (gw_application_get_window_by_widget (app, GTK_WIDGET (data)));
 
-    gw_app_block_searches (app);
+    gw_application_block_searches (app);
     gw_print (GTK_PRINT_OPERATION_ACTION_PREVIEW, window);
-    gw_app_unblock_searches (app);
+    gw_application_unblock_searches (app);
 }
 

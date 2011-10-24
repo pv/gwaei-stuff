@@ -13,7 +13,7 @@ struct _GwApplicationPrivate {
   GwDictInfoList *dictinfolist;
   LwEngine *engine;
   GtkTextTagTable *tagtable;
-//  GwSearchWindow *last_focused;
+  GwSearchWindow *last_focused;
 
   gchar   *arg_dictionary;
   gchar   *arg_query;

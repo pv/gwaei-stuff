@@ -5,6 +5,8 @@
 
 #include <libwaei/searchitem.h>
 
+#include "search-callbacks.h"
+
 G_BEGIN_DECLS
 
 //Boilerplate
@@ -12,7 +14,7 @@ typedef struct _GwSearchWindow GwSearchWindow;
 typedef struct _GwSearchWindowClass GwSearchWindowClass;
 typedef struct _GwSearchWindowPrivate GwSearchWindowPrivate;
 
-#define GW_TYPE_SEARCHWINDOW              (gw_window_get_type())
+#define GW_TYPE_SEARCHWINDOW              (gw_searchwindow_get_type())
 #define GW_SEARCHWINDOW(obj)              (G_TYPE_CHECK_INSTANCE_CAST((obj), GW_TYPE_SEARCHWINDOW, GwSearchWindow))
 #define GW_SEARCHWINDOW_CLASS(klass)      (G_TYPE_CHECK_CLASS_CAST((klass), GW_TYPE_SEARCHWINDOW, GwSearchWindowClass))
 #define GW_IS_SEARCHWINDOW(obj)           (G_TYPE_CHECK_INSTANCE_TYPE((obj), GW_TYPE_SEARCHWINDOW))
@@ -28,11 +30,10 @@ struct _GwSearchWindow {
 
 struct _GwSearchWindowClass {
   GwWindowClass parent_class;
-}
+};
 
-
-GwSearchWindow* gw_searchwindow_new ();
-void gw_searchwindow_init (GwSearchWindow*);
+GtkWindow* gw_searchwindow_new (GtkApplication *application);
+GType gw_searchwindow_get_type (void) G_GNUC_CONST;
 
 gboolean gw_searchwindow_update_progress_feedback_timeout (GwSearchWindow*);
 gboolean gw_searchwindow_update_icons_for_selection_timeout (GwSearchWindow*);

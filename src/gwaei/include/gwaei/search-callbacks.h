@@ -71,7 +71,8 @@ void gw_searchwindow_sync_toolbar_show_cb (GSettings*, gchar*, gpointer);
 void gw_searchwindow_sync_statusbar_show_cb (GSettings*, gchar*, gpointer);
 void gw_searchwindow_sync_font_cb (GSettings*, gchar*, gpointer);
 void gw_searchwindow_sync_search_as_you_type_cb (GSettings*, gchar*, gpointer);
-G_MODULE_EXPORT void gw_searchwindow_sync_spellcheck_cb (GSettings*, gchar*, gpointer);
+void gw_searchwindow_sync_spellcheck_cb (GSettings*, gchar*, gpointer);
+gboolean gw_searchwindow_delete_event_action_cb (GtkWidget*, GdkEvent*, gpointer);
 
 #endif
 

@@ -49,8 +49,8 @@ G_MODULE_EXPORT void gw_dictinfolist_list_store_row_changed_action_cb (GtkTreeMo
     LwPreferences *preferences;
 
     //Initializations
-    dictinfolist = gw_application_get_dictinfolist (app);
-    preferences = gw_application_get_preferences (app);
+    dictinfolist = gw_application_get_dictinfolist (GW_APPLICATION (app));
+    preferences = gw_application_get_preferences (GW_APPLICATION (app));
     position = 0;
 
     g_signal_handler_block (model, dictinfolist->signalids[GW_DICTINFOLIST_SIGNALID_ROW_CHANGED]);

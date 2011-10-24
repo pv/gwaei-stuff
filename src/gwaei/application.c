@@ -39,34 +39,48 @@
 #include <gwaei/gwaei.h>
 #include <gwaei/application-private.h>
 
+static void _application_activate (GApplication*);
 
-G_DEFINE_TYPE (GwApplication, gw_application, GW_TYPE_APPLICATION);
+G_DEFINE_TYPE (GwApplication, gw_application, GTK_TYPE_APPLICATION);
 
 //!
 //! @brief creates a new instance of the gwaei applicaiton
 //!
-GtkApplication* gw_application_new (const gchar *application_id, GApplicationFlags flags)
+GApplication* gw_application_new (const gchar *application_id, GApplicationFlags flags)
 {
+    //Initialize the environment
+    setlocale(LC_MESSAGES, "");
+    setlocale(LC_CTYPE, "");
+    setlocale(LC_COLLATE, "");
+
+    bindtextdomain(PACKAGE, LOCALEDIR);
+    bind_textdomain_codeset (PACKAGE, "UTF-8");
+    textdomain(PACKAGE);
+
+    g_type_init ();
+
     //Declarations
     GwApplication *application;
 
     //Initializations
-    application = GW_APPLICATION (g_object_new (GW_TYPE_APPLICATION, 
-                                                "application-id", application_id, 
-                                                "flags", flags, NULL));
+    application = g_object_new (GW_TYPE_APPLICATION, 
+                                "application-id", application_id, 
+                                "flags", flags, NULL);
 
-    if (application != NULL)
-    {
-      application->priv = GW_APPLICATION_GET_PRIVATE (application);
-    }
+    //Enable multithreading
+    gdk_threads_init ();
 
-    return GTK_APPLICATION (application);
+    application->priv = GW_APPLICATION_GET_PRIVATE (application);
+    gw_application_private_init (application);
+
+    g_signal_connect (G_OBJECT (application), "window-removed", G_CALLBACK (gw_application_window_removed_cb), NULL);
+
+    return G_APPLICATION (application);
 }
 
 
-static void gw_application_init (GwApplication *app)
+static void gw_application_init (GwApplication *application)
 {
-    gw_application_private_init (app);
 }
 
 
@@ -88,10 +102,13 @@ static void
 gw_application_class_init (GwApplicationClass *klass)
 {
   GObjectClass *object_class;
+  GApplicationClass *application_class;
 
   object_class = G_OBJECT_CLASS (klass);
+  application_class = G_APPLICATION_CLASS (klass);
 
   object_class->finalize = gw_application_finalize;
+  application_class->activate = _application_activate;
 
   g_type_class_add_private (object_class, sizeof (GwApplicationPrivate));
 }
@@ -256,42 +273,41 @@ void gw_application_cancel_all_searches (GwApplication *app)
 //!
 //!  @brief Will attempt to get the window of the specified type which is most at the front
 //!
-GwWindow* gw_application_get_window_by_type (GwApplication *app, GType TYPE)
+GtkWindow* gw_application_get_window_by_type (GwApplication *application, const GType TYPE)
 {
     //Declarations
     GList *iter;
-    GwWindow *window;
-    GwWindow *active;
-    GwWindow *fuzzy;
-    GtkWindow *toplevel;
+    GList *list;
+    GtkWindow *window;
+    GtkWindow *active;
+    GtkWindow *fuzzy;
 
     //Initializations
+    list = gtk_application_get_windows (GTK_APPLICATION (application));
     window = NULL;
     fuzzy = NULL;
-    toplevel = NULL;
     active = NULL;
 
-/*
-    for (iter = app->windowlist; iter != NULL; iter = iter->next)
+    for (iter = list; iter != NULL; iter = iter->next)
     {
-      fuzzy = GW_WINDOW (iter->data);
-      active = GW_WINDOW (iter->data);
+      fuzzy = GTK_WINDOW (iter->data);
+      active = GTK_WINDOW (iter->data);
 
       if (fuzzy == NULL)
       {
         continue;
       }
-      if (active->type == TYPE && gtk_window_is_active (active->toplevel))
+      if (G_OBJECT_TYPE (active) == TYPE && gtk_window_is_active (active))
       {
         window = active;
         break;
       }
-      if (fuzzy->type == TYPE)
+      if (G_OBJECT_TYPE (fuzzy) == TYPE)
       {
         window = fuzzy;
       }
     }
-*/
+
     return window;
 }
 
@@ -302,13 +318,13 @@ GwWindow* gw_application_get_window_by_type (GwApplication *app, GType TYPE)
 //! @param TYPE The window type to get
 //! @param widget A widget from the window so you can get a specific instance.  If NULL, you cet the first window to match the GwWindowType
 //!
-GwWindow* gw_application_get_window_by_widget (GwApplication *app, GtkWidget *widget)
+GtkWindow* gw_application_get_window_by_widget (GwApplication *app, GtkWidget *widget)
 {
     //Declarations
     GList *iter;
-    GwWindow *window;
-    GwWindow *active;
-    GwWindow *fuzzy;
+    GtkWindow *window;
+    GtkWindow *active;
+    GtkWindow *fuzzy;
     GtkWindow *toplevel;
 
     //Initializations
@@ -412,27 +428,30 @@ void gw_application_handle_error (GwApplication *app, GtkWindow *transient_for, 
 }
 
 
-/*
-void gw_application_set_last_focused_searchwindow (GwApplication *app, GwSearchWindow *window)
+void gw_application_set_last_focused_searchwindow (GwApplication *application, GwSearchWindow *window)
 {
-   app->last_focused = window; 
+   GwApplicationPrivate *priv;
+
+   priv = GW_APPLICATION_GET_PRIVATE (application);
+
+   priv->last_focused = window; 
 }
-*/
 
 
-/*
-GwSearchWindow* gw_application_get_last_focused_searchwindow (GwApplication *app)
+GwSearchWindow* gw_application_get_last_focused_searchwindow (GwApplication *application)
 {
+   GwApplicationPrivate *priv;
    GwSearchWindow *window;
 
-   if (app->last_focused != NULL)
-     window = app->last_focused;
+   priv = GW_APPLICATION_GET_PRIVATE (application);
+
+   if (priv->last_focused != NULL)
+     window = priv->last_focused;
    else
-     window = GW_SEARCHWINDOW (gw_application_get_window_by_type (app, GW_WINDOW_SEARCH));
+     window = GW_SEARCHWINDOW (gw_application_get_window_by_type (application, GW_TYPE_SEARCHWINDOW));
 
    return window;
 }
-*/
 
 
 LwPreferences* gw_application_get_preferences (GwApplication *app)
@@ -445,70 +464,43 @@ LwPreferences* gw_application_get_preferences (GwApplication *app)
 }
 
 
-GwDictInfoList* gw_application_get_dictinfolist (GwApplication *app)
+GwDictInfoList* gw_application_get_dictinfolist (GwApplication *application)
 {
   GwApplicationPrivate *priv;
 
-  priv = GW_APPLICATION_GET_PRIVATE (app);
+  priv = GW_APPLICATION_GET_PRIVATE (application);
 
   return priv->dictinfolist;
 }
 
 
-//!
-//! @brief Adds the tags to stylize the buffer text
-//!
-GtkTextTagTable* gw_texttagtable_new ()
+LwEngine* gw_application_get_engine (GwApplication *app)
 {
-    GtkTextTagTable *temp;
-    GtkTextTag *tag;
+  GwApplicationPrivate *priv;
 
-    temp = gtk_text_tag_table_new ();
+  priv = GW_APPLICATION_GET_PRIVATE (app);
 
-    if (temp != NULL)
-    {
-      tag = gtk_text_tag_new ("italic");
-      g_object_set (tag, "style", PANGO_STYLE_ITALIC, NULL);
-      gtk_text_tag_table_add (temp, tag);
-
-      tag = gtk_text_tag_new ("gray");
-      g_object_set (tag, "foreground", "#888888", NULL);
-      gtk_text_tag_table_add (temp, tag);
-
-      tag = gtk_text_tag_new ("smaller");
-      g_object_set (tag, "size", "smaller", NULL);
-      gtk_text_tag_table_add (temp, tag);
-
-      tag = gtk_text_tag_new ("small");
-      g_object_set (tag, "font", "Serif 6", NULL);
-      gtk_text_tag_table_add (temp, tag);
-
-      tag = gtk_text_tag_new ("important");
-      g_object_set (tag, "weight", PANGO_WEIGHT_BOLD, NULL);
-      gtk_text_tag_table_add (temp, tag);
-
-      tag = gtk_text_tag_new ("larger");
-      g_object_set (tag, "font", "Sans 20", NULL);
-      gtk_text_tag_table_add (temp, tag);
-
-      tag = gtk_text_tag_new ("large");
-      g_object_set (tag, "font", "Serif 40", NULL);
-      gtk_text_tag_table_add (temp, tag);
-
-      tag = gtk_text_tag_new ("center");
-      g_object_set (tag, "justification", GTK_JUSTIFY_LEFT, NULL);
-      gtk_text_tag_table_add (temp, tag);
-
-      tag = gtk_text_tag_new ("comment");
-      gtk_text_tag_table_add (temp, tag);
-
-      tag = gtk_text_tag_new ("match");
-      gtk_text_tag_table_add (temp, tag);
-
-      tag = gtk_text_tag_new ("header");
-      gtk_text_tag_table_add (temp, tag);
-    }
-
-    return temp;
+  return priv->engine;
 }
 
+
+GtkTextTagTable* gw_application_get_tagtable (GwApplication *app)
+{
+  GwApplicationPrivate *priv;
+
+  priv = GW_APPLICATION_GET_PRIVATE (app);
+
+  return priv->tagtable;
+}
+
+
+static void _application_activate (GApplication *application)
+{
+    GtkWindow *window;
+
+    if (gtk_application_get_windows (GTK_APPLICATION (application)) == NULL)
+    {
+      window = gw_searchwindow_new (GTK_APPLICATION (application));
+      gtk_widget_show (GTK_WIDGET (window));
+    }
+}

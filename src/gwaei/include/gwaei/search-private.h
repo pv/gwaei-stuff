@@ -23,35 +23,6 @@ typedef enum {
   TOTAL_GW_SEARCHWINDOW_SIGNALIDS
 } GwSearchWindowSignalId;
 
-struct _GwSearchWindowProgressFeedbackData {
-  LwSearchItem *item;
-  long line;
-  LwSearchStatus status;
-};
-typedef struct _GwSearchWindowProgressFeedbackData GwSearchWindowProgressFeedbackData;
-
-struct _GwSearchWindowMouseData {
-  LwSearchItem *item;
-  gint button_press_x;
-  gint button_press_y;
-  gunichar button_character;
-  char* hovered_word; 
-};
-typedef struct _GwSearchWindowMouseData GwSearchWindowMouseData;
-
-struct _GwSearchWindowKeepSearchingData {
-  int delay;
-  char *query;
-  gboolean enabled;
-};
-typedef struct _GwSearchWindowKeepSearchingData GwSearchWindowKeepSearchingData;
-
-
-struct _GwSearchWindowSelectionIconData {
-  gboolean selected;
-};
-typedef struct _GwSearchWindowSelectionIconData GwSearchWindowSelectionIconData;
-
 
 struct _GwSearchWindowPrivate {
   GtkEntry *entry;
@@ -59,6 +30,7 @@ struct _GwSearchWindowPrivate {
   GtkToolbar *toolbar;
   GtkWidget *statusbar;
   GtkComboBox *combobox;
+  GtkAccelGroup *accel_group;
   LwDictInfo *dictinfo;
 
   //Tabs
@@ -76,11 +48,31 @@ struct _GwSearchWindowPrivate {
 
   gboolean new_tab; 
 
-  GwSearchWindowSelectionIconData selectionicondata;
-  GwSearchWindowProgressFeedbackData feedbackdata;
-  GwSearchWindowMouseData mousedata;
-  GwSearchWindowKeepSearchingData keepsearchingdata;
   GwSpellcheck *spellcheck;
+
+  //Feedback variables
+  LwSearchItem *feedback_item;
+  long feedback_line;
+  LwSearchStatus feedback_status;
+
+  //Mouse variables
+  LwSearchItem *mouse_item;
+  gint mouse_button_press_x;
+  gint mouse_button_press_y;
+  gunichar mouse_button_character;
+  char* mouse_hovered_word; 
+
+  //Keep searching variables
+  int keep_searching_delay;
+  char *keep_searching_query;
+  gboolean keep_searching_enabled;
+
+  gboolean text_selected;
 };
+
+#define GW_SEARCHWINDOW_GET_PRIVATE(object)(G_TYPE_INSTANCE_GET_PRIVATE ((object), GW_TYPE_SEARCHWINDOW, GwSearchWindowPrivate))
+
+void gw_searchwindow_private_init (GwSearchWindow *);
+void gw_searchwindow_private_finalize (GwSearchWindow*);
 
 #endif

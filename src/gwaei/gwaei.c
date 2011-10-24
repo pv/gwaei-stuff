@@ -44,24 +44,17 @@ GwApplication *app;
 
 int main (int argc, char *argv[])
 {    
+    GApplication *application;
     int resolution;
 
-    resolution = 0;
+    application = gw_application_new ("gtk.org.gWaei", 0);
+    app = GW_APPLICATION (application);
 
-    app = gw_application_new ("gtk.org.gWaei", G_APPLICATION_FLAGS_NONE);
+    resolution = g_application_run (application, argc, argv);
 
-    g_object_unref (G_OBJECT (app));
+    g_object_unref (G_OBJECT (application));
 
     /*
-      setlocale(LC_MESSAGES, "");
-      setlocale(LC_CTYPE, "");
-      setlocale(LC_COLLATE, "");
-
-      bindtextdomain(PACKAGE, LOCALEDIR);
-      bind_textdomain_codeset (PACKAGE, "UTF-8");
-      textdomain(PACKAGE);
-
-      gdk_threads_init ();
       */
 
 

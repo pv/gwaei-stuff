@@ -420,9 +420,15 @@ gboolean gw_spellcheck_update_timeout (gpointer data)
 {
     //Declarations
     GwSpellcheck *spellcheck;
+    GtkWindow *window;
+    GwApplication *application;
+    LwPreferences *preferences;
 
     //Initializaitons
     spellcheck = GW_SPELLCHECK (data);
+    window = GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (spellcheck->entry)));
+    application = GW_APPLICATION (gtk_window_get_application (window));
+    preferences = gw_application_get_preferences (application);
 /*
     //Make sure any previous spellchecks have finished
     g_mutex_lock (spellcheck->mutex);
@@ -474,11 +480,11 @@ gboolean gw_spellcheck_update_timeout (gpointer data)
     GwSpellcheckStreamWithData *outdata;
     
     //Initializations
-    rk_conv_pref = lw_preferences_get_int_by_schema (app->preferences, LW_SCHEMA_BASE, LW_KEY_ROMAN_KANA);
+    rk_conv_pref = lw_preferences_get_int_by_schema (preferences, LW_SCHEMA_BASE, LW_KEY_ROMAN_KANA);
     want_conv = (rk_conv_pref == 0 || (rk_conv_pref == 2 && !lw_util_is_japanese_locale()));
     query = gtk_entry_get_text (spellcheck->entry);
     is_convertable_to_hiragana = (want_conv && lw_util_str_roma_to_hira (query, kana, MAX));
-    spellcheck_pref = lw_preferences_get_boolean_by_schema (app->preferences, LW_SCHEMA_BASE, LW_KEY_SPELLCHECK);
+    spellcheck_pref = lw_preferences_get_boolean_by_schema (preferences, LW_SCHEMA_BASE, LW_KEY_SPELLCHECK);
     exists = g_file_test (ENCHANT, G_FILE_TEST_IS_REGULAR);
     error = NULL;
 
@@ -529,7 +535,7 @@ gboolean gw_spellcheck_update_timeout (gpointer data)
       }
     }
     
-    gw_app_handle_error (app, NULL, FALSE, &error);
+    gw_application_handle_error (app, NULL, FALSE, &error);
 
     //gtk_widget_queue_draw (GTK_WIDGET (data));
   

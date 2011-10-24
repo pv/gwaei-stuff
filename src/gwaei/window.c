@@ -133,6 +133,7 @@ gboolean gw_window_load_ui_xml (GwWindow *window, const char *filename)
 
     //Declarations
     GwWindowPrivate *priv;
+    GtkWidget *toplevel;
     char *paths[4];
     char **iter;
     char *path;
@@ -152,6 +153,8 @@ gboolean gw_window_load_ui_xml (GwWindow *window, const char *filename)
       path = *iter;
       if (g_file_test (path, G_FILE_TEST_IS_REGULAR) && gtk_builder_add_from_file (priv->builder, path,  NULL))
       {
+        toplevel = GTK_WIDGET (gtk_builder_get_object (priv->builder, "toplevel"));
+        gtk_widget_reparent (toplevel, GTK_WIDGET (window));
         gtk_builder_connect_signals (priv->builder, NULL);
         loaded = TRUE;
       }
@@ -171,3 +174,11 @@ gboolean gw_window_load_ui_xml (GwWindow *window, const char *filename)
 }
 
 
+GObject* gw_window_get_object (GwWindow *window, const char *ID)
+{
+    GwWindowPrivate *priv;
+
+    priv = GW_WINDOW_GET_PRIVATE (window);
+
+    return G_OBJECT (gtk_builder_get_object (priv->builder, ID));
+}

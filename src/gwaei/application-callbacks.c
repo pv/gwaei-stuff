@@ -5,7 +5,7 @@
 //!
 //! @brief Resets the color tags according to the preferences
 //!
-void gw_application_sync_tag_cb (GSettings *settings, gchar *key, gpointer data)
+G_MODULE_EXPORT void gw_application_sync_tag_cb (GSettings *settings, gchar *key, gpointer data)
 {
     //Declarations
     char hex[20];
@@ -35,3 +35,24 @@ void gw_application_sync_tag_cb (GSettings *settings, gchar *key, gpointer data)
     }
 }
 
+
+G_MODULE_EXPORT void gw_application_window_removed_cb (GtkApplication *application, GtkWindow *window, gpointer data)
+{
+    GList *windowlist;
+    GList *iter;
+    gboolean quit;
+
+    windowlist = gtk_application_get_windows (GTK_APPLICATION (application));
+    quit = TRUE;
+
+    for (iter = windowlist; iter != NULL; iter = iter->next)
+    {
+      if (G_OBJECT_TYPE (iter->data) == GW_TYPE_SEARCHWINDOW)
+      {
+        quit = FALSE;
+        break;
+      }
+    }
+
+    if (quit) gtk_main_quit ();
+}

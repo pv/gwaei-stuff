@@ -42,14 +42,15 @@ struct _GwApplicationClass {
 };
 
 //Methods
-GtkApplication* gw_application_new (const gchar*, GApplicationFlags);
+GApplication* gw_application_new (const gchar*, GApplicationFlags);
+GType gw_application_get_type (void) G_GNUC_CONST;
 
 GwApplicationResolution gw_application_run (GwApplication*);
 void gw_application_parse_args (GwApplication*, int*, char***);
 void gw_application_quit (GwApplication*);
 
-GwWindow* gw_application_get_window_by_type (GwApplication*, GType);
-GwWindow* gw_application_get_window_by_widget (GwApplication*, GtkWidget*);
+GtkWindow* gw_application_get_window_by_type (GwApplication *application, const GType TYPE);
+GtkWindow* gw_application_get_window_by_widget (GwApplication*, GtkWidget*);
 
 const char* gw_application_get_program_name (GwApplication*);
 void gw_application_cancel_all_searches (GwApplication*);
@@ -62,12 +63,15 @@ gboolean gw_application_can_start_search (GwApplication*);
 
 void gw_application_handle_error (GwApplication*, GtkWindow*, gboolean, GError**);
 
-/*
 void gw_application_set_last_focused_searchwindow (GwApplication*, GwSearchWindow*);
 GwSearchWindow* gw_application_get_last_focused_searchwindow (GwApplication*);
-*/
+
 LwPreferences* gw_application_get_preferences (GwApplication*);
 GwDictInfoList* gw_application_get_dictinfolist (GwApplication*);
+LwEngine* gw_application_get_engine (GwApplication*);
+GtkTextTagTable* gw_application_get_tagtable (GwApplication*);
+
+void gw_application_window_removed_cb (GtkApplication*, GtkWindow*, gpointer);
 
 G_END_DECLS
 
