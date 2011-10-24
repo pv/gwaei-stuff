@@ -53,11 +53,11 @@ void gw_application_private_init (GwApplication *application)
 #endif
 }
 
-void gw_application_private_finalize (GwApplication *app)
+void gw_application_private_finalize (GwApplication *application)
 {
     GwApplicationPrivate *priv;
 
-    priv = GW_APPLICATION_GET_PRIVATE (priv);
+    priv = GW_APPLICATION_GET_PRIVATE (application);
 
     gw_dictinfolist_free (priv->dictinfolist);
     g_option_context_free (priv->context);

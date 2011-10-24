@@ -60,15 +60,98 @@ GtkWindow* gw_searchwindow_new (GtkApplication *application)
 
     window->priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
     gw_window_load_ui_xml (GW_WINDOW (window), "search.ui");
+    gw_window_set_application (GW_WINDOW (window), GW_APPLICATION (application));
     gw_searchwindow_private_init (window);
 
-    gtk_window_set_application (GTK_WINDOW (window), application);
     gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_MOUSE);
     gtk_window_set_default_size (GTK_WINDOW (window), 620, 500);
     gtk_window_set_icon_name (GTK_WINDOW (window), "gwaei");
-    gtk_window_add_accel_group (GTK_WINDOW (window), window->priv->accel_group);
+    gtk_window_add_accel_group (GTK_WINDOW (window), window->priv->accelgroup);
 
-    g_signal_connect (G_OBJECT (window), "delete-event", G_CALLBACK (gw_searchwindow_delete_event_action_cb), NULL);
+    g_signal_connect_after (G_OBJECT (window), "delete-event", G_CALLBACK (gw_searchwindow_delete_event_action_cb), NULL);
+
+    GtkWidget *widget;
+
+    //Set menu accelerators
+    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "new_window_menuitem"));
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", window->priv->accelgroup, (GDK_KEY_N), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+
+    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "new_tab_menuitem"));
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", window->priv->accelgroup, (GDK_KEY_T), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+
+    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "append_menuitem"));
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", window->priv->accelgroup, (GDK_KEY_S), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+
+    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "print_menuitem"));
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", window->priv->accelgroup, (GDK_KEY_P), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+
+    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "close_menuitem"));
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", window->priv->accelgroup, (GDK_KEY_W), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+
+    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "quit_menuitem"));
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", window->priv->accelgroup, (GDK_KEY_Q), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+
+    //Edit popup
+    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "cut_menuitem"));
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", window->priv->accelgroup, (GDK_KEY_X), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+
+    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "copy_menuitem"));
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", window->priv->accelgroup, (GDK_KEY_C), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+
+    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "paste_menuitem"));
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", window->priv->accelgroup, (GDK_KEY_P), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+
+    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "select_all_menuitem"));
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", window->priv->accelgroup, (GDK_KEY_A), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+
+    //View popup
+    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "zoom_in_menuitem"));
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", window->priv->accelgroup, (GDK_KEY_plus), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", window->priv->accelgroup, (GDK_KEY_KP_Add), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+
+    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "zoom_out_menuitem"));
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", window->priv->accelgroup, (GDK_KEY_minus), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", window->priv->accelgroup, (GDK_KEY_KP_Subtract), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+
+    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "zoom_100_menuitem"));
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", window->priv->accelgroup, (GDK_KEY_0), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", window->priv->accelgroup, (GDK_KEY_KP_0), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+
+    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "previous_tab_menuitem"));
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", window->priv->accelgroup, (GDK_KEY_Page_Up), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+
+    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "next_tab_menuitem"));
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", window->priv->accelgroup, (GDK_KEY_Page_Down), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+
+    //Insert popup
+    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "kanjipad_menuitem"));
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", window->priv->accelgroup, (GDK_KEY_K), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+
+    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "radicals_menuitem"));
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", window->priv->accelgroup, (GDK_KEY_R), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+
+    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "word_edge_menuitem"));
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", window->priv->accelgroup, (GDK_KEY_B), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+
+    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "not_word_edge_menuitem"));
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", window->priv->accelgroup, (GDK_KEY_B), GDK_SHIFT_MASK | GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+
+    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "clear_menuitem"));
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", window->priv->accelgroup, (GDK_KEY_L), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+
+    //History popup
+    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "back_menuitem"));
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", window->priv->accelgroup, (GDK_KEY_Left), GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
+
+    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "forward_menuitem"));
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", window->priv->accelgroup, (GDK_KEY_Right), GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
+
+    //Help popup
+    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "help_menuitem"));
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", window->priv->accelgroup, (GDK_KEY_F1), 0, GTK_ACCEL_VISIBLE);
+
+
+
 
     return GTK_WINDOW (window);
 }
@@ -161,7 +244,7 @@ void gw_searchwindow_set_entry_text_by_searchitem (GwSearchWindow* window, LwSea
     GdkRGBA color;
     LwPreferences *preferences;
 
-    application = GW_APPLICATION (gtk_window_get_application (GTK_WINDOW (window)));
+    application = gw_window_get_application (GW_WINDOW (window));
     priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
     preferences = gw_application_get_preferences (application);
 
@@ -359,7 +442,7 @@ void gw_searchwindow_set_dictionary (GwSearchWindow *window, int request)
     GtkWidget *radioitem;
     LwDictInfoList *dictinfolist;
 
-    application = GW_APPLICATION (gtk_window_get_application (GTK_WINDOW (window)));
+    application = gw_window_get_application (GW_WINDOW (window));
     priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
     dictinfolist = LW_DICTINFOLIST (gw_application_get_dictinfolist (application));
     di = lw_dictinfolist_get_dictinfo_by_load_position (dictinfolist, request);
@@ -1093,7 +1176,7 @@ void gw_searchwindow_display_no_results_found_page (GwSearchWindow *window, LwSe
     LwDictInfo *di;
     GwSearchData *sdata;
 
-    application = GW_APPLICATION (gtk_window_get_application (GTK_WINDOW (window)));
+    application = gw_window_get_application (GW_WINDOW (window));
     dictinfolist = LW_DICTINFOLIST (gw_application_get_dictinfolist (application));
     sdata = (GwSearchData*) lw_searchitem_get_data (item);
     view = GTK_TEXT_VIEW (sdata->view);
@@ -1786,7 +1869,7 @@ int gw_searchwindow_new_tab (GwSearchWindow *window)
     GtkTextTagTable *tagtable;
 
     //Initializations
-    application = GW_APPLICATION (gtk_window_get_application (GTK_WINDOW (window)));
+    application = gw_window_get_application (GW_WINDOW (window));
     priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
     tagtable = gw_application_get_tagtable (application);
     scrolledwindow = GTK_WIDGET (gtk_scrolled_window_new (NULL, NULL));
@@ -2039,7 +2122,7 @@ void gw_searchwindow_start_search (GwSearchWindow *window, LwSearchItem* item)
     GwApplication *application;
     LwEngine *engine;
 
-    application = GW_APPLICATION (gtk_window_get_application (GTK_WINDOW (window)));
+    application = gw_window_get_application (GW_WINDOW (window));
     engine = gw_application_get_engine (application);
 
     //Sanity check
@@ -2058,7 +2141,7 @@ void gw_searchwindow_start_search (GwSearchWindow *window, LwSearchItem* item)
 void gw_searchwindow_set_font (GwSearchWindow *window)
 {
     //Declarations
-    GtkApplication *application;
+    GwApplication *application;
     GwSearchWindowPrivate *priv;
     LwPreferences *preferences;
 
@@ -2076,9 +2159,9 @@ void gw_searchwindow_set_font (GwSearchWindow *window)
 
 
     //Initializations
-    application = gtk_window_get_application (GTK_WINDOW (window));
+    application = gw_window_get_application (GW_WINDOW (window));
     priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
-    preferences = gw_application_get_preferences (GW_APPLICATION (application));
+    preferences = gw_application_get_preferences (application);
 
     use_global_font_setting = lw_preferences_get_boolean_by_schema (preferences, LW_SCHEMA_FONT, LW_KEY_FONT_USE_GLOBAL_FONT);
     magnification = lw_preferences_get_int_by_schema (preferences, LW_SCHEMA_FONT, LW_KEY_FONT_MAGNIFICATION);

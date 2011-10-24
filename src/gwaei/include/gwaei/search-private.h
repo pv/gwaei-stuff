@@ -30,8 +30,8 @@ struct _GwSearchWindowPrivate {
   GtkToolbar *toolbar;
   GtkWidget *statusbar;
   GtkComboBox *combobox;
-  GtkAccelGroup *accel_group;
   LwDictInfo *dictinfo;
+  GtkAccelGroup *accelgroup;
 
   //Tabs
   GList *tablist; //!< Stores the current search item set to each tab

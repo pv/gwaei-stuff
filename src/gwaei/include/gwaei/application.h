@@ -71,7 +71,7 @@ GwDictInfoList* gw_application_get_dictinfolist (GwApplication*);
 LwEngine* gw_application_get_engine (GwApplication*);
 GtkTextTagTable* gw_application_get_tagtable (GwApplication*);
 
-void gw_application_window_removed_cb (GtkApplication*, GtkWindow*, gpointer);
+void gw_application_destroy_window (GwApplication*, GtkWindow*);
 
 G_END_DECLS
 

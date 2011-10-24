@@ -87,24 +87,18 @@ G_DEFINE_TYPE (GwWindow, gw_window, GTK_TYPE_WINDOW);
 
 void gw_window_init (GwWindow *window)
 {
-    //Declarations
-    GwWindowPrivate *priv;
-
-    //Initializations
-    priv = GW_WINDOW_GET_PRIVATE (window);
-
-    gw_window_private_init (priv);
+    window->priv = GW_WINDOW_GET_PRIVATE (window);
+    gw_window_private_init (window);
 }
 
 
 void gw_window_finalize (GObject *object)
 {
     GwWindow *window;
-    GwWindowPrivate *priv;
 
-    priv = GW_WINDOW_GET_PRIVATE (window);
+    window = GW_WINDOW (object);
 
-    gw_window_private_finalize (priv);
+    gw_window_private_finalize (window);
     G_OBJECT_CLASS (gw_window_parent_class)->finalize (object);
 }
 
@@ -153,9 +147,12 @@ gboolean gw_window_load_ui_xml (GwWindow *window, const char *filename)
       path = *iter;
       if (g_file_test (path, G_FILE_TEST_IS_REGULAR) && gtk_builder_add_from_file (priv->builder, path,  NULL))
       {
-        toplevel = GTK_WIDGET (gtk_builder_get_object (priv->builder, "toplevel"));
-        gtk_widget_reparent (toplevel, GTK_WIDGET (window));
         gtk_builder_connect_signals (priv->builder, NULL);
+
+        toplevel = GTK_WIDGET (gtk_builder_get_object (priv->builder, "toplevel"));
+        g_assert (toplevel != NULL);
+        gtk_widget_reparent (toplevel, GTK_WIDGET (window));
+
         loaded = TRUE;
       }
     }
@@ -182,3 +179,23 @@ GObject* gw_window_get_object (GwWindow *window, const char *ID)
 
     return G_OBJECT (gtk_builder_get_object (priv->builder, ID));
 }
+
+
+void gw_window_set_application (GwWindow *window, GwApplication *application)
+{
+    GwWindowPrivate *priv;
+
+    priv = GW_WINDOW_GET_PRIVATE (window);
+    priv->application = application;
+    gtk_window_set_application (GTK_WINDOW (window), GTK_APPLICATION (application));
+}
+
+
+GwApplication* gw_window_get_application (GwWindow *window)
+{
+    GwWindowPrivate *priv;
+
+    priv = GW_WINDOW_GET_PRIVATE (window);
+    return priv->application;
+}
+

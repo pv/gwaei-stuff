@@ -19,7 +19,7 @@ void gw_searchwindow_private_init (GwSearchWindow *window)
     priv->toolbar = GTK_TOOLBAR (gw_window_get_object (GW_WINDOW (window), "toolbar"));
     priv->statusbar = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "statusbar"));
     priv->combobox = GTK_COMBO_BOX (gw_window_get_object (GW_WINDOW (window), "dictionary_combobox"));
-    priv->accel_group = gtk_accel_group_new ();
+    priv->accelgroup = GTK_ACCEL_GROUP (gtk_accel_group_new ());
 
     gw_searchwindow_initialize_dictionary_combobox (window);
     gw_searchwindow_initialize_dictionary_menu (window);
@@ -120,6 +120,8 @@ void gw_searchwindow_private_finalize (GwSearchWindow *window)
       g_free (priv->keep_searching_query);
       priv->keep_searching_query = NULL;
     } 
+
+    g_object_unref (priv->accelgroup);
 }
 
 
@@ -132,7 +134,7 @@ static void _searchwindow_attach_signals (GwSearchWindow *window)
     LwPreferences *preferences;
     int i;
 
-    application = GW_APPLICATION (gtk_window_get_application (GTK_WINDOW (window)));
+    application = gw_window_get_application (GW_WINDOW (window));
     priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
     dictinfolist = gw_application_get_dictinfolist (application);
     preferences = gw_application_get_preferences (application);
@@ -234,7 +236,7 @@ static void _searchwindow_remove_signals (GwSearchWindow *window)
     LwPreferences *preferences;
     int i;
 
-    application = GW_APPLICATION (gtk_window_get_application (GTK_WINDOW (window)));
+    application = gw_window_get_application (GW_WINDOW (window));
     priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
     dictinfolist = gw_application_get_dictinfolist (application);
     preferences = gw_application_get_preferences (application);
@@ -300,7 +302,7 @@ void gw_searchwindow_initialize_dictionary_combobox (GwSearchWindow *window)
     GwDictInfoList *dictinfolist;
 
     //Initializations
-    application = GW_APPLICATION (gtk_window_get_application (GTK_WINDOW (window)));
+    application = gw_window_get_application (GW_WINDOW (window));
     priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
     renderer = gtk_cell_renderer_text_new ();
     dictinfolist = gw_application_get_dictinfolist (application);
@@ -317,13 +319,15 @@ void gw_searchwindow_initialize_dictionary_combobox (GwSearchWindow *window)
 
 void gw_searchwindow_initialize_dictionary_menu (GwSearchWindow *window)
 {
+    GwSearchWindowPrivate *priv;
     GwApplication *application;
     GtkMenuShell *shell;
     GList *list, *iter;
     GtkWidget *widget;
     GwDictInfoList *dictinfolist;
 
-    application = GW_APPLICATION (gtk_window_get_application (GTK_WINDOW (window)));
+    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    application = gw_window_get_application (GW_WINDOW (window));
     shell = GTK_MENU_SHELL (gw_window_get_object (GW_WINDOW (window), "dictionary_popup"));
     dictinfolist = gw_application_get_dictinfolist (application);
 
@@ -341,11 +345,9 @@ void gw_searchwindow_initialize_dictionary_menu (GwSearchWindow *window)
       g_list_free (list);
     }
 
-    GtkAccelGroup *accel_group;
     GSList *group;
     LwDictInfo *di;
 
-    accel_group = GTK_ACCEL_GROUP (gw_window_get_object (GW_WINDOW (window), "main_accelgroup"));
     group = NULL;
 
     //Refill the menu
@@ -361,7 +363,7 @@ void gw_searchwindow_initialize_dictionary_menu (GwSearchWindow *window)
           gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (widget), TRUE);
         g_signal_connect(G_OBJECT (widget), "toggled", G_CALLBACK (gw_searchwindow_dictionary_radio_changed_cb), window);
         if (di->load_position < 9)
-          gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", accel_group, (GDK_KEY_0 + di->load_position + 1), GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
+          gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", priv->accelgroup, (GDK_KEY_0 + di->load_position + 1), GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
         gtk_widget_show (widget);
       }
     }
@@ -374,13 +376,13 @@ void gw_searchwindow_initialize_dictionary_menu (GwSearchWindow *window)
     widget = GTK_WIDGET (gtk_menu_item_new_with_mnemonic(gettext("_Cycle Up")));
     gtk_menu_shell_append (GTK_MENU_SHELL (shell), GTK_WIDGET (widget));
     g_signal_connect (G_OBJECT (widget), "activate", G_CALLBACK (gw_searchwindow_cycle_dictionaries_backward_cb), window);
-    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", accel_group, GDK_KEY_Up, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", priv->accelgroup, GDK_KEY_Up, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
     gtk_widget_show (GTK_WIDGET (widget));
 
     widget = GTK_WIDGET (gtk_menu_item_new_with_mnemonic(gettext("Cycle _Down")));
     gtk_menu_shell_append (GTK_MENU_SHELL (shell), GTK_WIDGET (widget));
     g_signal_connect (G_OBJECT (widget), "activate", G_CALLBACK (gw_searchwindow_cycle_dictionaries_forward_cb), window);
-    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", accel_group, GDK_KEY_Down, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", priv->accelgroup, GDK_KEY_Down, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
     gtk_widget_show (GTK_WIDGET (widget));
 }
 

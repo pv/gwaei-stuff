@@ -194,7 +194,6 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
   </object>
-  <object class="GtkAccelGroup" id="main_accelgroup"/>
   <object class="GtkEntryBuffer" id="search_entrybuffer"/>
   <object class="GtkWindow" id="unused">
     <property name="can_focus">False</property>
@@ -203,9 +202,6 @@
     <property name="default_width">620</property>
     <property name="default_height">500</property>
     <property name="icon_name">gwaei</property>
-    <accel-groups>
-      <group name="main_accelgroup"/>
-    </accel-groups>
     <signal name="key-release-event" handler="gw_searchwindow_key_release_modify_status_update_cb" object="toplevel" swapped="no"/>
     <signal name="key-press-event" handler="gw_searchwindow_key_press_modify_status_update_cb" object="toplevel" swapped="no"/>
     <signal name="focus-in-event" handler="gw_searchwindow_focus_in_event_cb" swapped="no"/>
@@ -235,7 +231,6 @@
                         <property name="related_action">file_new_window_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="n" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -245,7 +240,6 @@
                         <property name="related_action">file_new_tab_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="t" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -270,7 +264,6 @@
                         <property name="related_action">file_append_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="s" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -326,7 +319,6 @@
                         <property name="related_action">file_print_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="p" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -351,7 +343,6 @@
                         <property name="related_action">file_close_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="w" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -361,7 +352,6 @@
                         <property name="related_action">file_quit_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="q" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                   </object>
@@ -388,7 +378,6 @@
                         <property name="related_action">edit_cut_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="x" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -398,7 +387,6 @@
                         <property name="related_action">edit_copy_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="c" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -408,7 +396,6 @@
                         <property name="related_action">edit_paste_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="p" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -424,7 +411,6 @@
                         <property name="related_action">edit_select_all_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="a" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -485,8 +471,6 @@
                         <property name="related_action">view_zoom_in_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="KP_Add" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                        <accelerator key="plus" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -496,8 +480,6 @@
                         <property name="related_action">view_zoom_out_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="KP_Subtract" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                        <accelerator key="minus" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -507,8 +489,6 @@
                         <property name="related_action">view_zoom_100_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="KP_0" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                        <accelerator key="0" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -529,7 +509,6 @@
                         <property name="use_action_appearance">False</property>
                         <property name="label" translatable="yes">_Previous Tab</property>
                         <property name="use_underline">True</property>
-                        <accelerator key="Page_Up" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                         <signal name="activate" handler="gw_searchwindow_previous_tab_cb" object="toplevel" swapped="no"/>
                       </object>
                     </child>
@@ -540,7 +519,6 @@
                         <property name="use_action_appearance">False</property>
                         <property name="label" translatable="yes">Ne_xt Tab</property>
                         <property name="use_underline">True</property>
-                        <accelerator key="Page_Down" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                         <signal name="activate" handler="gw_searchwindow_next_tab_cb" object="toplevel" swapped="no"/>
                       </object>
                     </child>
@@ -567,7 +545,6 @@
                         <property name="related_action">insert_kanjipad_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="k" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -577,7 +554,6 @@
                         <property name="related_action">insert_radicals_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="r" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -593,7 +569,6 @@
                         <property name="related_action">insert_word_edge_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="b" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -603,7 +578,6 @@
                         <property name="related_action">insert_not_word_edge_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="b" signal="activate" modifiers="GDK_SHIFT_MASK | GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -642,7 +616,6 @@
                         <property name="related_action">insert_clear_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="l" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                   </object>
@@ -667,7 +640,6 @@
                         <property name="related_action">history_back_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="Left" signal="activate" modifiers="GDK_MOD1_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -677,7 +649,6 @@
                         <property name="related_action">history_forward_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="Right" signal="activate" modifiers="GDK_MOD1_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -708,7 +679,6 @@
                         <property name="related_action">help_program_action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="F1" signal="activate"/>
                       </object>
                     </child>
                     <child>

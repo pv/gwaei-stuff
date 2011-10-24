@@ -5,6 +5,9 @@
 
 G_BEGIN_DECLS
 
+struct _GwApplication;
+typedef struct _GwApplication GwApplication;
+
 //Boilerplate
 typedef struct _GwWindow GwWindow;
 typedef struct _GwWindowClass GwWindowClass;
@@ -29,10 +32,11 @@ struct _GwWindowClass {
 //Methods
 GtkWindow* gw_window_new (void);
 GType gw_window_get_type (void) G_GNUC_CONST;
-GObject* gw_window_get_object (GwWindow*, const gchar*);
 
-void gw_window_set_transient_for (GwWindow*, GwWindow*);
+GObject* gw_window_get_object (GwWindow*, const gchar*);
 gboolean gw_window_load_ui_xml (GwWindow*, const char*);
+void gw_window_set_application (GwWindow*, GwApplication*);
+GwApplication* gw_window_get_application (GwWindow*);
 
 G_END_DECLS
 

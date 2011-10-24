@@ -427,7 +427,7 @@ gboolean gw_spellcheck_update_timeout (gpointer data)
     //Initializaitons
     spellcheck = GW_SPELLCHECK (data);
     window = GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (spellcheck->entry)));
-    application = GW_APPLICATION (gtk_window_get_application (window));
+    application = gw_window_get_application (GW_WINDOW (window));
     preferences = gw_application_get_preferences (application);
 /*
     //Make sure any previous spellchecks have finished

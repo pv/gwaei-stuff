@@ -1038,7 +1038,7 @@ static GtkWidget* _searchwindow_results_popup_new (char* query_text)
 
     //Initializations
     window = GW_SEARCHWINDOW (gw_application_get_window_by_type (app, GW_TYPE_SEARCHWINDOW));
-    application = GW_APPLICATION (gtk_window_get_application (GTK_WINDOW (window)));
+    application = gw_window_get_application (GW_WINDOW (window));
     dictinfolist = LW_DICTINFOLIST (gw_application_get_dictinfolist (application));
     preferences = gw_application_get_preferences (application);
     menu = gtk_menu_new ();
@@ -1222,7 +1222,7 @@ static void _searchwindow_new_tab_with_search_cb (GtkMenuItem *widget, gpointer 
 
     //Initializations
     window = GW_SEARCHWINDOW (gw_application_get_window_by_type (app, GW_TYPE_SEARCHWINDOW));
-    application = GW_APPLICATION (gtk_window_get_application (GTK_WINDOW (window)));
+    application = gw_window_get_application (GW_WINDOW (window));
     priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
     preferences = gw_application_get_preferences (application);
     item = LW_SEARCHITEM (data);

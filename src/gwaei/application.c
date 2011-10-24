@@ -40,6 +40,8 @@
 #include <gwaei/application-private.h>
 
 static void _application_activate (GApplication*);
+static gboolean _application_local_command_line (GApplication*, gchar***, gint*);
+static int _application_command_line (GApplication*, GApplicationCommandLine*);
 
 G_DEFINE_TYPE (GwApplication, gw_application, GTK_TYPE_APPLICATION);
 
@@ -72,8 +74,6 @@ GApplication* gw_application_new (const gchar *application_id, GApplicationFlags
 
     application->priv = GW_APPLICATION_GET_PRIVATE (application);
     gw_application_private_init (application);
-
-    g_signal_connect (G_OBJECT (application), "window-removed", G_CALLBACK (gw_application_window_removed_cb), NULL);
 
     return G_APPLICATION (application);
 }
@@ -108,6 +108,8 @@ gw_application_class_init (GwApplicationClass *klass)
   application_class = G_APPLICATION_CLASS (klass);
 
   object_class->finalize = gw_application_finalize;
+  application_class->local_command_line = _application_local_command_line;
+  application_class->command_line = _application_command_line;
   application_class->activate = _application_activate;
 
   g_type_class_add_private (object_class, sizeof (GwApplicationPrivate));
@@ -218,29 +220,13 @@ GwApplicationResolution gw_application_run (GwApplication *app)
 }
 
 
-void gw_application_quit (GwApplication *app)
+void gw_application_quit (GwApplication *application)
 {
-  /*
-    gw_application_block_searches (app);
-
-    //Declarations
-    GList *iter;
-    GwWindow *window;
-    
-    //Clear all of the windows *before* quiting the gtk main loop to avoid a gdk_thread_enter lock
-    for (iter = app->windowlist; iter != NULL; iter = iter->next)
-    {
-      window = GW_WINDOW (iter->data);
-      if (window != NULL)
-      {
-        gw_window_destroy (window);
-      }
-      app->windowlist = g_list_delete_link (app->windowlist, iter);
-    }
+    gw_application_block_searches (application);
 
     gtk_main_quit ();
-    gw_application_unblock_searches (app);
-    */
+
+    gw_application_unblock_searches (application);
 }
 
 
@@ -254,19 +240,20 @@ const char* gw_application_get_program_name (GwApplication *app)
 }
 
 
-void gw_application_cancel_all_searches (GwApplication *app)
+void gw_application_cancel_all_searches (GwApplication *application)
 {
-  /*
+    GList *list;
     GList *iter;
-    GwWindow *window;
+    GtkWindow *window;
 
-    for (iter = app->windowlist; iter != NULL; iter = iter->next)
+    list = gtk_application_get_windows (GTK_APPLICATION (application));
+
+    for (iter = list; iter != NULL; iter = iter->next)
     {
-      window = GW_WINDOW (iter->data);
-      if (window != NULL && window->type == GW_WINDOW_SEARCH)
+      window = GTK_WINDOW (iter->data);
+      if (window != NULL && G_OBJECT_TYPE (window) == GW_TYPE_SEARCHWINDOW)
         gw_searchwindow_cancel_all_searches (GW_SEARCHWINDOW (window));
     }
-    */
 }
 
 
@@ -318,10 +305,11 @@ GtkWindow* gw_application_get_window_by_type (GwApplication *application, const 
 //! @param TYPE The window type to get
 //! @param widget A widget from the window so you can get a specific instance.  If NULL, you cet the first window to match the GwWindowType
 //!
-GtkWindow* gw_application_get_window_by_widget (GwApplication *app, GtkWidget *widget)
+GtkWindow* gw_application_get_window_by_widget (GwApplication *application, GtkWidget *widget)
 {
     //Declarations
     GList *iter;
+    GList *list;
     GtkWindow *window;
     GtkWindow *active;
     GtkWindow *fuzzy;
@@ -330,26 +318,25 @@ GtkWindow* gw_application_get_window_by_widget (GwApplication *app, GtkWidget *w
     //Initializations
     window = NULL;
     fuzzy = NULL;
-    toplevel = NULL;
     active = NULL;
+    toplevel = GTK_WINDOW (gtk_widget_get_toplevel (widget));
+    list = gtk_application_get_windows (GTK_APPLICATION (application));
 
-/*
-    for (iter = app->windowlist; iter != NULL; iter = iter->next)
+    for (iter = list; iter != NULL; iter = iter->next)
     {
-      fuzzy = GW_WINDOW (iter->data);
-      toplevel = GTK_WINDOW (gtk_widget_get_toplevel (widget));
+      fuzzy = GTK_WINDOW (iter->data);
 
       if (fuzzy == NULL)
       {
         continue;
       }
-      else if (fuzzy->toplevel == toplevel)
+      else if (fuzzy == toplevel)
       {
         window = fuzzy;
         break;
       }
     }
-*/
+
     return window;
 }
 
@@ -503,4 +490,74 @@ static void _application_activate (GApplication *application)
       window = gw_searchwindow_new (GTK_APPLICATION (application));
       gtk_widget_show (GTK_WIDGET (window));
     }
+}
+
+
+static int _application_command_line (GApplication *application, GApplicationCommandLine *command_line)
+{
+    int argc;
+    char **argv;
+
+    argv = g_application_command_line_get_arguments (command_line, &argc);
+
+    gw_application_parse_args (GW_APPLICATION (application), &argc, &argv);
+
+    g_application_activate (application);
+
+    return 0;
+}
+
+
+static gboolean _application_local_command_line (GApplication *application, 
+                                                 gchar ***argv, gint *exit_status)
+{
+    gint argc;
+    gboolean handled;
+    int i;
+
+    argc = g_strv_length (*argv);
+    handled = FALSE;
+
+    for (i = 0; (*argv)[i] != NULL; i++)
+    {
+      if (strcmp((*argv)[i], "-v") == 0 || strcmp((*argv)[i], "--version") == 0)
+      {
+        gw_application_parse_args (GW_APPLICATION (application), &argc, argv);
+        handled = TRUE;
+        break;
+      }
+      else if (strcmp((*argv)[i], "-h") == 0 || strcmp((*argv)[i], "--help") == 0)
+      {
+        gw_application_parse_args (GW_APPLICATION (application), &argc, argv);
+        handled = TRUE;
+        break;
+      }
+    }
+
+    g_application_register (application, NULL, NULL);
+
+    return handled;
+} 
+
+
+void gw_application_destroy_window (GwApplication *application, GtkWindow *window)
+{
+    GList *windowlist;
+    GList *iter;
+    gboolean quit;
+
+    windowlist = gtk_application_get_windows (GTK_APPLICATION (application));
+    quit = TRUE;
+
+    for (iter = windowlist; iter != NULL; iter = iter->next)
+    {
+      if (G_OBJECT_TYPE (iter->data) == GW_TYPE_SEARCHWINDOW)
+      {
+        quit = FALSE;
+        break;
+      }
+    }
+
+    if (quit) gtk_main_quit ();
+    else gtk_widget_destroy (GTK_WIDGET (window));
 }
