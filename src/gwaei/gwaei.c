@@ -47,33 +47,26 @@ int main (int argc, char *argv[])
     GApplication *application;
     int resolution;
 
+    setlocale(LC_MESSAGES, "");
+    setlocale(LC_CTYPE, "");
+    setlocale(LC_COLLATE, "");
+
+    bindtextdomain(PACKAGE, LOCALEDIR);
+    bind_textdomain_codeset (PACKAGE, "UTF-8");
+    textdomain(PACKAGE);
+
+    g_thread_init (NULL);
+    gdk_threads_init ();
+    g_type_init ();
+
     application = gw_application_new ("gtk.org.gWaei", 0);
     app = GW_APPLICATION (application);
 
+gdk_threads_enter ();
     resolution = g_application_run (application, argc, argv);
+gdk_threads_leave ();
 
     g_object_unref (G_OBJECT (application));
-
-    /*
-      */
-
-
-/*
-    //Declarations
-    int resolution;
-
-    //Initializations
-    resolution = GW_APP_RESOLUTION_OUT_OF_MEMORY;
-
-    if (app != NULL)
-    {
-      if (app->arg_version_switch)
-        gw_app_print_about (app);
-      else
-        resolution = gw_app_run (app);
-      gw_app_free (app);
-    }
-*/
 
     return resolution;
 }

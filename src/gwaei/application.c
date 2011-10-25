@@ -39,9 +39,9 @@
 #include <gwaei/gwaei.h>
 #include <gwaei/application-private.h>
 
-static void _application_activate (GApplication*);
-static gboolean _application_local_command_line (GApplication*, gchar***, gint*);
-static int _application_command_line (GApplication*, GApplicationCommandLine*);
+static void gw_application_activate (GApplication*);
+static gboolean gw_application_local_command_line (GApplication*, gchar***, gint*);
+static int gw_application_command_line (GApplication*, GApplicationCommandLine*);
 
 G_DEFINE_TYPE (GwApplication, gw_application, GTK_TYPE_APPLICATION);
 
@@ -50,17 +50,6 @@ G_DEFINE_TYPE (GwApplication, gw_application, GTK_TYPE_APPLICATION);
 //!
 GApplication* gw_application_new (const gchar *application_id, GApplicationFlags flags)
 {
-    //Initialize the environment
-    setlocale(LC_MESSAGES, "");
-    setlocale(LC_CTYPE, "");
-    setlocale(LC_COLLATE, "");
-
-    bindtextdomain(PACKAGE, LOCALEDIR);
-    bind_textdomain_codeset (PACKAGE, "UTF-8");
-    textdomain(PACKAGE);
-
-    g_type_init ();
-
     //Declarations
     GwApplication *application;
 
@@ -70,7 +59,6 @@ GApplication* gw_application_new (const gchar *application_id, GApplicationFlags
                                 "flags", flags, NULL);
 
     //Enable multithreading
-    gdk_threads_init ();
 
     application->priv = GW_APPLICATION_GET_PRIVATE (application);
     gw_application_private_init (application);
@@ -108,9 +96,9 @@ gw_application_class_init (GwApplicationClass *klass)
   application_class = G_APPLICATION_CLASS (klass);
 
   object_class->finalize = gw_application_finalize;
-  application_class->local_command_line = _application_local_command_line;
-  application_class->command_line = _application_command_line;
-  application_class->activate = _application_activate;
+  application_class->local_command_line = gw_application_local_command_line;
+  application_class->command_line = gw_application_command_line;
+  application_class->activate = gw_application_activate;
 
   g_type_class_add_private (object_class, sizeof (GwApplicationPrivate));
 }
@@ -126,10 +114,13 @@ void gw_application_parse_args (GwApplication *application, int *argc, char** ar
 
     priv = GW_APPLICATION_GET_PRIVATE (application);
 
+    //Reset the switches to their default state
+    priv->arg_new_window_switch = FALSE;
     if (priv->arg_dictionary != NULL) g_free (priv->arg_dictionary);
+    priv->arg_dictionary = NULL;
     if (priv->arg_query != NULL) g_free (priv->arg_query);
-
-    printf("parsing arguments...\n");
+    priv->arg_query = NULL;
+    priv->arg_version_switch = NULL;
 
     GOptionEntry entries[] =
     {
@@ -161,9 +152,12 @@ void gw_application_parse_args (GwApplication *application, int *argc, char** ar
 //!
 //! @brief Prints to the terminal the about message for the program.
 //!
-void gw_application_print_about (GwApplication *app)
+void gw_application_print_about (GwApplication *application)
 {
-    printf ("gWaei version %s", VERSION);
+    const gchar *name;
+    name = gw_application_get_program_name (GW_APPLICATION (application));
+
+    printf (gettext ("%s version %s"), name, VERSION);
 
     printf ("\n\n");
 
@@ -431,7 +425,7 @@ GtkTextTagTable* gw_application_get_tagtable (GwApplication *app)
 }
 
 
-static void _application_activate (GApplication *application)
+static void gw_application_activate (GApplication *application)
 {
     GwSearchWindow *window;
     LwDictInfoList *dictinfolist;
@@ -461,7 +455,7 @@ static void _application_activate (GApplication *application)
 }
 
 
-static int _application_command_line (GApplication *application, GApplicationCommandLine *command_line)
+static int gw_application_command_line (GApplication *application, GApplicationCommandLine *command_line)
 {
     int argc;
     char **argv;
@@ -496,14 +490,17 @@ static int _application_command_line (GApplication *application, GApplicationCom
     if (priv->arg_query != NULL)
     {
       gw_searchwindow_set_entry_text (window, priv->arg_query);
-      //gw_searchwindow_search_cb (GTK_WIDGET (window), window);
+      gw_searchwindow_search_cb (GTK_WIDGET (window), window);
     }
+
+    //HACK
+    gdk_threads_leave ();
 
     return 0;
 }
 
 
-static gboolean _application_local_command_line (GApplication *application, 
+static gboolean gw_application_local_command_line (GApplication *application, 
                                                  gchar ***argv, gint *exit_status)
 {
     int argc;
