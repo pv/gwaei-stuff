@@ -202,9 +202,6 @@
     <property name="default_width">620</property>
     <property name="default_height">500</property>
     <property name="icon_name">gwaei</property>
-    <signal name="key-release-event" handler="gw_searchwindow_key_release_modify_status_update_cb" object="toplevel" swapped="no"/>
-    <signal name="key-press-event" handler="gw_searchwindow_key_press_modify_status_update_cb" object="toplevel" swapped="no"/>
-    <signal name="focus-in-event" handler="gw_searchwindow_focus_in_event_cb" swapped="no"/>
     <child>
       <object class="GtkVBox" id="toplevel">
         <property name="visible">True</property>

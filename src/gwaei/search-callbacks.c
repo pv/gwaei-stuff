@@ -1117,7 +1117,7 @@ G_MODULE_EXPORT void gw_searchwindow_cycle_dictionaries_backward_cb (GtkWidget *
 //!
 G_MODULE_EXPORT gboolean gw_searchwindow_key_press_modify_status_update_cb (GtkWidget *widget,
                                                                             GdkEvent  *event,
-                                                                            gpointer  *data  )
+                                                                            gpointer   data  )
 {
     //Declarations
     GwSearchWindow *window;
@@ -1164,7 +1164,7 @@ G_MODULE_EXPORT gboolean gw_searchwindow_key_press_modify_status_update_cb (GtkW
 //!
 G_MODULE_EXPORT gboolean gw_searchwindow_key_release_modify_status_update_cb (GtkWidget *widget,
                                                                               GdkEvent  *event,
-                                                                              gpointer  *data  )
+                                                                              gpointer   data  )
 {
     //Declarations
     GwSearchWindow *window;

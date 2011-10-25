@@ -15,10 +15,11 @@ struct _GwApplicationPrivate {
   GtkTextTagTable *tagtable;
   GwSearchWindow *last_focused;
 
+  GOptionContext *context;
+  gboolean arg_new_window_switch;
   gchar   *arg_dictionary;
   gchar   *arg_query;
   gboolean arg_version_switch;
-  GOptionContext *context;
 
   int block_new_searches;
 };

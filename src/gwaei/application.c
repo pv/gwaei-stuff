@@ -120,17 +120,20 @@ gw_application_class_init (GwApplicationClass *klass)
 //! @brief Loads the arguments from the command line into the app instance
 //!
 
-void gw_application_parse_args (GwApplication *app, int *argc, char** argv[])
+void gw_application_parse_args (GwApplication *application, int *argc, char** argv[])
 {
     GwApplicationPrivate *priv;
 
-    priv = GW_APPLICATION_GET_PRIVATE (app);
+    priv = GW_APPLICATION_GET_PRIVATE (application);
 
     if (priv->arg_dictionary != NULL) g_free (priv->arg_dictionary);
     if (priv->arg_query != NULL) g_free (priv->arg_query);
 
+    printf("parsing arguments...\n");
+
     GOptionEntry entries[] =
     {
+      { "new", 'n', 0, G_OPTION_ARG_NONE, &(priv->arg_new_window_switch), gettext("Force a new instance window"), NULL },
       { "dictionary", 'd', 0, G_OPTION_ARG_STRING, &(priv->arg_dictionary), gettext("Choose the dictionary to use"), "English" },
       { "version", 'v', 0, G_OPTION_ARG_NONE, &(priv->arg_version_switch), gettext("Check the gWaei version information"), NULL },
       { NULL }
@@ -138,6 +141,7 @@ void gw_application_parse_args (GwApplication *app, int *argc, char** argv[])
 
     //Program flags setup
     GError *error = NULL;
+    if (priv->context != NULL) g_option_context_free (priv->context);
     priv->context = g_option_context_new (gettext("- A dictionary program for Japanese-English translation."));
     g_option_context_add_main_entries (priv->context, entries, PACKAGE);
     g_option_context_add_group (priv->context, gtk_get_option_group (TRUE));
@@ -145,7 +149,7 @@ void gw_application_parse_args (GwApplication *app, int *argc, char** argv[])
 
     if (error != NULL)
     {
-      gw_application_handle_error (app, NULL, FALSE, &error);
+      gw_application_handle_error (application, NULL, FALSE, &error);
       exit(1);
     }
 
@@ -171,52 +175,6 @@ void gw_application_print_about (GwApplication *app)
             "GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\nThis"
             " is free software: you are free to change and redistribute it.\nThe"
             "re is NO WARRANTY, to the extent permitted by law.\n\n"             );
-}
-
-
-//!
-//! @brief Equivalent to the main function for many programs.  This is what starts the program
-//!
-//! @param argc Your argc from your main function
-//! @param argv Your array of strings from main
-//!
-GwApplicationResolution gw_application_run (GwApplication *app)
-{
-  /*
-    //Declarations
-    LwDictInfo *di;
-    GwSearchWindow *window;
-
-    window = GW_SEARCHWINDOW (gw_application_show_window (app, GW_WINDOW_SEARCH, NULL, FALSE));
-
-    gw_searchwindow_update_history_popups (window);
-
-    //Show the settings dialog if no dictionaries are installed
-    if (lw_dictinfolist_get_total (LW_DICTINFOLIST (app->dictinfolist)) == 0)
-    {
-      gw_application_show_window (app, GW_WINDOW_SETTINGS, GW_WINDOW (window), FALSE);
-    }
-
-    //Set the initial dictionary
-    if ((di = lw_dictinfolist_get_dictinfo_fuzzy (LW_DICTINFOLIST (app->dictinfolist), app->arg_dictionary)) != NULL)
-    {
-      gw_searchwindow_set_dictionary (window, di->load_position);
-    }
-
-    //Set the initial query text if it was passed as an argument to the program
-    if (app->arg_query != NULL)
-    {
-      gtk_entry_set_text (window->entry, app->arg_query);
-      gw_searchwindow_search_cb (GTK_WIDGET (window->entry), window->toplevel);
-    }
-
-    //Enter the main loop
-    gdk_threads_enter();
-      gtk_main ();
-    gdk_threads_leave();
-
-    return GW_APP_RESOLUTION_NO_ERRORS;
-    */
 }
 
 
@@ -374,24 +332,17 @@ gboolean gw_application_can_start_search (GwApplication *app)
 
 void gw_application_handle_error (GwApplication *app, GtkWindow *transient_for, gboolean show_dialog, GError **error)
 {
-  /*
     //Sanity checks
     if (error == NULL || *error == NULL) return;
 
     //Declarations
     GtkWidget *dialog;
-    GtkWindow *parent;
     gint response;
-
-    if (transient_for == NULL)
-      parent = NULL;
-    else
-      parent = transient_for->toplevel;
 
     //Handle the error
     if (show_dialog)
     {
-      dialog = gtk_message_dialog_new_with_markup (parent,
+      dialog = gtk_message_dialog_new_with_markup (transient_for,
                                                    GTK_DIALOG_MODAL,
                                                    GTK_MESSAGE_ERROR,
                                                    GTK_BUTTONS_CLOSE,
@@ -411,7 +362,6 @@ void gw_application_handle_error (GwApplication *app, GtkWindow *transient_for, 
     //Cleanup
     g_error_free (*error);
     *error = NULL;
-    */
 }
 
 
@@ -483,12 +433,30 @@ GtkTextTagTable* gw_application_get_tagtable (GwApplication *app)
 
 static void _application_activate (GApplication *application)
 {
-    GtkWindow *window;
+    GwSearchWindow *window;
+    LwDictInfoList *dictinfolist;
 
-    if (gtk_application_get_windows (GTK_APPLICATION (application)) == NULL)
+    window = gw_application_get_last_focused_searchwindow (GW_APPLICATION (application));
+    dictinfolist = LW_DICTINFOLIST (gw_application_get_dictinfolist (GW_APPLICATION (application)));
+
+    if (window == NULL)
     {
-      window = gw_searchwindow_new (GTK_APPLICATION (application));
+      window = GW_SEARCHWINDOW (gw_searchwindow_new (GTK_APPLICATION (application)));
       gtk_widget_show (GTK_WIDGET (window));
+
+      if (lw_dictinfolist_get_total (dictinfolist) == 0)
+      {
+        printf("to be written\n");
+        exit (1);
+        /*
+        window = GW_PREFWINDOW (gw_prefwindow_new (GTK_APPLICATION (application)));
+        gtk_widget_show (GTK_WIDGET (window));
+        */
+      }
+    }
+    else
+    {
+      gtk_window_present (GTK_WINDOW (window));
     }
 }
 
@@ -502,7 +470,34 @@ static int _application_command_line (GApplication *application, GApplicationCom
 
     gw_application_parse_args (GW_APPLICATION (application), &argc, &argv);
 
-    g_application_activate (application);
+    //Declarations
+    LwDictInfo *di;
+    GwSearchWindow *window;
+    LwDictInfoList *dictinfolist;
+    GwApplicationPrivate *priv;
+
+    priv = GW_APPLICATION_GET_PRIVATE (GW_APPLICATION (application));
+    dictinfolist = LW_DICTINFOLIST (gw_application_get_dictinfolist (GW_APPLICATION (application)));
+
+    window = gw_application_get_last_focused_searchwindow (GW_APPLICATION (application));
+    if (window == NULL || priv->arg_new_window_switch)
+    {
+      window = GW_SEARCHWINDOW (gw_searchwindow_new (GTK_APPLICATION (application)));
+      gtk_widget_show (GTK_WIDGET (window));
+    }
+
+    //Set the initial dictionary
+    if ((di = lw_dictinfolist_get_dictinfo_fuzzy (dictinfolist, priv->arg_dictionary)) != NULL)
+    {
+      gw_searchwindow_set_dictionary (window, di->load_position);
+    }
+
+    //Set the initial query text if it was passed as an argument to the program
+    if (priv->arg_query != NULL)
+    {
+      gw_searchwindow_set_entry_text (window, priv->arg_query);
+      //gw_searchwindow_search_cb (GTK_WIDGET (window), window);
+    }
 
     return 0;
 }
@@ -511,18 +506,20 @@ static int _application_command_line (GApplication *application, GApplicationCom
 static gboolean _application_local_command_line (GApplication *application, 
                                                  gchar ***argv, gint *exit_status)
 {
-    gint argc;
+    int argc;
     gboolean handled;
     int i;
 
     argc = g_strv_length (*argv);
     handled = FALSE;
 
+    g_set_application_name (gw_application_get_program_name (GW_APPLICATION (application)));
+
     for (i = 0; (*argv)[i] != NULL; i++)
     {
       if (strcmp((*argv)[i], "-v") == 0 || strcmp((*argv)[i], "--version") == 0)
       {
-        gw_application_parse_args (GW_APPLICATION (application), &argc, argv);
+        gw_application_print_about (GW_APPLICATION (application));
         handled = TRUE;
         break;
       }
@@ -535,7 +532,7 @@ static gboolean _application_local_command_line (GApplication *application,
     }
 
     g_application_register (application, NULL, NULL);
-
+    
     return handled;
 } 
 

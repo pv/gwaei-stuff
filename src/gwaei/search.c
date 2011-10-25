@@ -68,7 +68,10 @@ GtkWindow* gw_searchwindow_new (GtkApplication *application)
     gtk_window_set_icon_name (GTK_WINDOW (window), "gwaei");
     gtk_window_add_accel_group (GTK_WINDOW (window), window->priv->accelgroup);
 
-    g_signal_connect_after (G_OBJECT (window), "delete-event", G_CALLBACK (gw_searchwindow_delete_event_action_cb), NULL);
+    g_signal_connect_after (G_OBJECT (window), "delete-event", G_CALLBACK (gw_searchwindow_delete_event_action_cb), window);
+    g_signal_connect (G_OBJECT (window), "key-release-event", G_CALLBACK (gw_searchwindow_key_release_modify_status_update_cb), window);
+    g_signal_connect (G_OBJECT (window), "key-press-event", G_CALLBACK (gw_searchwindow_key_press_modify_status_update_cb), window);
+    g_signal_connect (G_OBJECT (window), "focus-in-event", G_CALLBACK (gw_searchwindow_focus_in_event_cb), window);
 
     GtkWidget *widget;
 
@@ -227,6 +230,16 @@ gboolean gw_searchwindow_update_progress_feedback_timeout (GwSearchWindow *windo
     }
 
    return TRUE;
+}
+
+
+void gw_searchwindow_set_entry_text (GwSearchWindow *window, const gchar *text)
+{
+    GwSearchWindowPrivate *priv;
+
+    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+
+    if (text != NULL) gtk_entry_set_text (priv->entry, text);
 }
 
 

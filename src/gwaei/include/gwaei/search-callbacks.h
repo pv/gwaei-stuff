@@ -74,5 +74,9 @@ void gw_searchwindow_sync_search_as_you_type_cb (GSettings*, gchar*, gpointer);
 void gw_searchwindow_sync_spellcheck_cb (GSettings*, gchar*, gpointer);
 gboolean gw_searchwindow_delete_event_action_cb (GtkWidget*, GdkEvent*, gpointer);
 
+gboolean gw_searchwindow_key_release_modify_status_update_cb (GtkWidget*, GdkEvent*, gpointer);
+gboolean gw_searchwindow_key_press_modify_status_update_cb (GtkWidget*, GdkEvent*, gpointer);
+gboolean gw_searchwindow_focus_in_event_cb (GtkWidget*, GdkEvent*, gpointer);
+
 #endif
 

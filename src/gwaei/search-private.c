@@ -21,9 +21,6 @@ void gw_searchwindow_private_init (GwSearchWindow *window)
     priv->combobox = GTK_COMBO_BOX (gw_window_get_object (GW_WINDOW (window), "dictionary_combobox"));
     priv->accelgroup = GTK_ACCEL_GROUP (gtk_accel_group_new ());
 
-    gw_searchwindow_initialize_dictionary_combobox (window);
-    gw_searchwindow_initialize_dictionary_menu (window);
-
     priv->dictinfo = NULL;
     priv->tablist = NULL;
     priv->font_size = 0;
@@ -68,6 +65,11 @@ void gw_searchwindow_private_init (GwSearchWindow *window)
 
     toolbutton = GTK_TOOL_BUTTON (gw_window_get_object (GW_WINDOW (window), "spellcheck_toolbutton")); 
     enchant_exists = g_file_test (ENCHANT, G_FILE_TEST_IS_REGULAR);
+
+    //This code should probalby be moved to when the window is realized
+    gw_searchwindow_initialize_dictionary_combobox (window);
+    gw_searchwindow_initialize_dictionary_menu (window);
+    gw_searchwindow_update_history_popups (window);
 
     gtk_widget_set_sensitive (GTK_WIDGET (priv->entry), enchant_exists);
     gtk_widget_set_sensitive (GTK_WIDGET (toolbutton), enchant_exists);

@@ -55,6 +55,7 @@ void gw_searchwindow_cancel_all_searches (GwSearchWindow*);
 void gw_searchwindow_display_no_results_found_page (GwSearchWindow*, LwSearchItem*);
 void gw_searchwindow_initialize_buffer_by_searchitem (GwSearchWindow*, LwSearchItem*);
 
+void gw_searchwindow_set_entry_text (GwSearchWindow*, const gchar*);
 void gw_searchwindow_set_entry_text_by_searchitem (GwSearchWindow*, LwSearchItem*);
 void gw_searchwindow_set_total_results_label_by_searchitem (GwSearchWindow*, LwSearchItem*);
 void gw_searchwindow_set_search_progressbar_by_searchitem (GwSearchWindow*, LwSearchItem*);
