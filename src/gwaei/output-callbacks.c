@@ -36,7 +36,7 @@
 #include <gwaei/gwaei.h>
 #include <gwaei/search-private.h>
 
-static GtkWidget* _searchwindow_results_popup_new (char*);
+static GtkWidget* _searchwindow_results_popup_new (GwSearchWindow *window, char*);
 static void _searchwindow_show_popup_cb (GtkWidget*, gpointer);
 static void _searchwindow_destroy_popup_cb (GtkWidget*, gpointer);
 static void _searchwindow_destroy_text_cb (GtkWidget*, gpointer);
@@ -466,6 +466,7 @@ void gw_output_append_edict_results_cb (LwSearchItem *item)
     char *markup;
 
     //Insert popup button
+    /*
     if (popup_text != NULL)
     {
       gtk_text_buffer_insert (buffer, &iter, "   ", -1);
@@ -486,6 +487,7 @@ void gw_output_append_edict_results_cb (LwSearchItem *item)
       anchor = gtk_text_buffer_create_child_anchor (buffer, &iter);
       gtk_text_view_add_child_at_anchor (view, GTK_WIDGET (button), anchor);
     }
+    */
 
     if (!remove_last_linebreak) gtk_text_buffer_insert (buffer, &iter, "\n", -1);
     _add_match_highlights (line, start_offset, end_offset, item);
@@ -1020,13 +1022,12 @@ void gw_output_cleanup_search_cb (LwSearchItem *item)
 //! @param menu The Popup menu to populate
 //! @param data  Currently unused gpointer containing user data
 //!
-static GtkWidget* _searchwindow_results_popup_new (char* query_text)
+static GtkWidget* _searchwindow_results_popup_new (GwSearchWindow *window, char* query_text)
 {
     if (query_text == NULL) return NULL;
 
     //Declarations
     GwApplication *application;
-    GwSearchWindow *window;
     LwDictInfoList *dictinfolist;
     LwPreferences *preferences;
     LwSearchItem *item = NULL;
@@ -1037,7 +1038,6 @@ static GtkWidget* _searchwindow_results_popup_new (char* query_text)
     int i;
 
     //Initializations
-    window = GW_SEARCHWINDOW (gw_application_get_window_by_type (app, GW_TYPE_SEARCHWINDOW));
     application = gw_window_get_application (GW_WINDOW (window));
     dictinfolist = LW_DICTINFOLIST (gw_application_get_dictinfolist (application));
     preferences = gw_application_get_preferences (application);
@@ -1125,11 +1125,14 @@ static GtkWidget* _searchwindow_results_popup_new (char* query_text)
 
 static void _searchwindow_show_popup_cb (GtkWidget *widget, gpointer data)
 {
+    GwSearchWindow *window;
     GtkMenu *popup;
     char *popup_text;
 
+    window = GW_SEARCHWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_SEARCHWINDOW));
+    if (window == NULL) return;
     popup_text = (char*) data;
-    popup = GTK_MENU (_searchwindow_results_popup_new (popup_text));
+    popup = GTK_MENU (_searchwindow_results_popup_new (window, popup_text));
     gtk_menu_attach_to_widget (GTK_MENU (popup), GTK_WIDGET (widget), NULL);
 
     gtk_menu_popup (popup, NULL, NULL, NULL, NULL, 0, gtk_get_current_event_time ());
@@ -1178,23 +1181,25 @@ static void _searchwindow_destroy_tab_menuitem_searchitem_data_cb (GObject *obje
 //!
 static void _searchwindow_search_for_searchitem_online_cb (GtkMenuItem *widget, gpointer data)
 {
+    GwApplication *application;
     LwSearchItem *item;
     GError *error;
     GwSearchWindow *window;
     GtkTextView *view;
     GwSearchData *sdata;
 
-    window = GW_SEARCHWINDOW (gw_application_get_window_by_type (app, GW_TYPE_SEARCHWINDOW));
     item = LW_SEARCHITEM (data);
     if (item != NULL)
     {
+      window = GW_SEARCHWINDOW (sdata->window);
+      application = GW_APPLICATION (gw_window_get_application (GW_WINDOW (window)));
       view = gw_searchwindow_get_current_textview (window);
       sdata = gw_searchdata_new (view, window);
       lw_searchitem_set_data (item, sdata, LW_SEARCHITEM_DATA_FREE_FUNC (gw_searchdata_free));
       error = NULL;
 
       gtk_show_uri (NULL, item->queryline->string, gtk_get_current_event_time (), &error);
-      gw_application_handle_error (app, GTK_WINDOW (window), TRUE, &error);
+      gw_application_handle_error (application, GTK_WINDOW (window), TRUE, &error);
     }
 }
 
@@ -1207,7 +1212,6 @@ static void _searchwindow_search_for_searchitem_online_cb (GtkMenuItem *widget, 
 //!
 static void _searchwindow_new_tab_with_search_cb (GtkMenuItem *widget, gpointer data)
 {
-    if (!gw_application_can_start_search (app)) return;
 
     //Declarations
     GwApplication *application;
@@ -1221,12 +1225,16 @@ static void _searchwindow_new_tab_with_search_cb (GtkMenuItem *widget, gpointer 
     int index;
 
     //Initializations
-    window = GW_SEARCHWINDOW (gw_application_get_window_by_type (app, GW_TYPE_SEARCHWINDOW));
+    item = LW_SEARCHITEM (data);
+    sdata = GW_SEARCHDATA (lw_searchitem_get_data (item));
+    window = GW_SEARCHWINDOW (sdata->window);
     application = gw_window_get_application (GW_WINDOW (window));
     priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
     preferences = gw_application_get_preferences (application);
-    item = LW_SEARCHITEM (data);
     item_new = lw_searchitem_new (item->queryline->string, item->dictionary, item->target, preferences, NULL);
+
+    if (!gw_application_can_start_search (application)) return;
+
     if (item_new != NULL)
     {
       view = gw_searchwindow_get_current_textview (window);

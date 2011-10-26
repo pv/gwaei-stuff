@@ -3,6 +3,8 @@
 
 #include <gwaei/dictinfolist-callbacks.h>
 
+#define GW_DICTINFOLIST(object) (GwDictInfoList*) object
+
 typedef enum {
   GW_DICTINFOLIST_SIGNALID_ROW_CHANGED,
   TOTAL_GW_DICTINFOLIST_SIGNALIDS
@@ -27,17 +29,17 @@ struct _GwDictInfoList {
   EXTENDS_LW_DICTINFOLIST
   GtkListStore *model;
   gulong list_update_handler_id;
-//  GwCallbackData callbacklist;
+  GwApplication *application;
   guint signalids[TOTAL_GW_DICTINFOLIST_SIGNALIDS];
 };
 typedef struct _GwDictInfoList GwDictInfoList;
 
-GwDictInfoList* gw_dictinfolist_new (const int, LwPreferences*);
+GwDictInfoList* gw_dictinfolist_new (const int, GwApplication*);
 void gw_dictinfolist_free (GwDictInfoList*);
-void gw_dictinfolist_init (GwDictInfoList*, LwPreferences*);
+void gw_dictinfolist_init (GwDictInfoList*, GwApplication*);
 void gw_dictinfolist_deinit (GwDictInfoList*);
 
-void gw_dictinfolist_reload (GwDictInfoList*, LwPreferences*);
+void gw_dictinfolist_reload (GwDictInfoList*);
 
 
 

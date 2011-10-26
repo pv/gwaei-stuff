@@ -38,9 +38,6 @@
 
 #include <gwaei/gwaei.h>
 
-GwApplication *app;
-
-
 
 int main (int argc, char *argv[])
 {    
@@ -60,7 +57,6 @@ int main (int argc, char *argv[])
     g_type_init ();
 
     application = gw_application_new ("gtk.org.gWaei", 0);
-    app = GW_APPLICATION (application);
 
 gdk_threads_enter ();
     resolution = g_application_run (application, argc, argv);

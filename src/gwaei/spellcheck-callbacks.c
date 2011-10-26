@@ -420,13 +420,14 @@ gboolean gw_spellcheck_update_timeout (gpointer data)
 {
     //Declarations
     GwSpellcheck *spellcheck;
-    GtkWindow *window;
+    GwSearchWindow *window;
     GwApplication *application;
     LwPreferences *preferences;
 
     //Initializaitons
     spellcheck = GW_SPELLCHECK (data);
-    window = GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (spellcheck->entry)));
+    window = GW_SEARCHWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_SEARCHWINDOW));
+    if (window == NULL) return FALSE;
     application = gw_window_get_application (GW_WINDOW (window));
     preferences = gw_application_get_preferences (application);
 /*
@@ -535,7 +536,7 @@ gboolean gw_spellcheck_update_timeout (gpointer data)
       }
     }
     
-    gw_application_handle_error (app, NULL, FALSE, &error);
+    gw_application_handle_error (application, NULL, FALSE, &error);
 
     //gtk_widget_queue_draw (GTK_WIDGET (data));
   

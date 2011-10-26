@@ -315,20 +315,23 @@ void gw_searchwindow_set_entry_text_by_searchitem (GwSearchWindow* window, LwSea
 char* gw_searchwindow_get_title_by_searchitem (GwSearchWindow* window, LwSearchItem *item)
 {
     //Declarations
+    GwApplication *application;
     char *title;
     const char *program_name;
     int num_relevant, num_total;
     char *query;
 
+    application = gw_window_get_application (GW_WINDOW (window));
+
     if (item == NULL || item->queryline == NULL)
     {
       //Initializations
-      title = g_strdup (gw_application_get_program_name (app));
+      title = g_strdup (gw_application_get_program_name (application));
     }
     else
     {
       //Initializations
-      program_name = gw_application_get_program_name(app);
+      program_name = gw_application_get_program_name(application);
       query = item->queryline->string;
       num_relevant = item->total_relevant_results;
       num_total = item->total_results;
@@ -1605,14 +1608,16 @@ char* gw_searchwindow_get_text_by_target (GwSearchWindow *window, LwOutputTarget
 gboolean gw_searchwindow_keep_searching_timeout (GwSearchWindow *window)
 {
     //Declarations
+    GwApplication *application;
     GwSearchWindowPrivate *priv;
     const char *query;
 
     //Initializations
+    application = gw_window_get_application (GW_WINDOW (window));
     priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
     query = gtk_entry_get_text (GTK_ENTRY (priv->entry));
     //Sanity check
-    if (!gw_application_can_start_search (app)) return TRUE;
+    if (!gw_application_can_start_search (application)) return TRUE;
     if (!priv->keep_searching_enabled) return TRUE;
     if (priv->timeoutid[GW_SEARCHWINDOW_TIMEOUTID_KEEP_SEARCHING] == 0) return FALSE;
 

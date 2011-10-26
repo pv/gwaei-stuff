@@ -434,12 +434,15 @@ void gw_print (const GtkPrintOperationAction ACTION, GwSearchWindow *window)
 G_MODULE_EXPORT void gw_print_cb (GtkWidget *widget, gpointer data)
 {
     GwSearchWindow *window;
+    GwApplication *application;
 
-    window = GW_SEARCHWINDOW (gw_application_get_window_by_widget (app, GTK_WIDGET (data)));
+    window = GW_SEARCHWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_SEARCHWINDOW));
+    if (window == NULL) return;
+    application = gw_window_get_application (GW_WINDOW (window));
 
-    gw_application_block_searches (app);
+    gw_application_block_searches (application);
     gw_print (GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG, window);
-    gw_application_unblock_searches (app);
+    gw_application_unblock_searches (application);
 }
 
 
@@ -449,11 +452,14 @@ G_MODULE_EXPORT void gw_print_cb (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void gw_print_preview_cb (GtkWidget *widget, gpointer data)
 {
     GwSearchWindow *window;
+    GwApplication *application;
 
-    window = GW_SEARCHWINDOW (gw_application_get_window_by_widget (app, GTK_WIDGET (data)));
+    window = GW_SEARCHWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_SEARCHWINDOW));
+    if (window == NULL) return;
+    application = gw_window_get_application (GW_WINDOW (window));
 
-    gw_application_block_searches (app);
+    gw_application_block_searches (application);
     gw_print (GTK_PRINT_OPERATION_ACTION_PREVIEW, window);
-    gw_application_unblock_searches (app);
+    gw_application_unblock_searches (application);
 }
 

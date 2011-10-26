@@ -40,16 +40,18 @@ static void _dictinfolist_attach_signals (GwDictInfoList*);
 //!
 //! @brief Sets up the dictionary manager.  This is the backbone of every portion of the GUI that allows editing dictionaries
 //!
-GwDictInfoList* gw_dictinfolist_new (const int MAX, LwPreferences *pm)
+GwDictInfoList* gw_dictinfolist_new (const int MAX, GwApplication *application)
 {
     GwDictInfoList *temp;
+    LwPreferences *preferences;
 
     temp = (GwDictInfoList*) malloc(sizeof(GwDictInfoList));
 
     if (temp != NULL)
     {
-      lw_dictinfolist_init (LW_DICTINFOLIST (temp), MAX, pm);
-      gw_dictinfolist_init (temp, pm);
+      preferences = gw_application_get_preferences (application);
+      lw_dictinfolist_init (LW_DICTINFOLIST (temp), MAX, preferences);
+      gw_dictinfolist_init (temp, application);
     }
     return temp;
 }
@@ -63,7 +65,7 @@ void gw_dictinfolist_free (GwDictInfoList *dil)
 }
 
 
-void gw_dictinfolist_init (GwDictInfoList *dil, LwPreferences *pm)
+void gw_dictinfolist_init (GwDictInfoList *dil, GwApplication *application)
 {
     //Declarations
     int i;
@@ -82,9 +84,11 @@ void gw_dictinfolist_init (GwDictInfoList *dil, LwPreferences *pm)
     for (i = 0; i < TOTAL_GW_DICTINFOLIST_SIGNALIDS; i++)
       dil->signalids[i] = 0;
 
+    dil->application = application;
+
     _dictinfolist_attach_signals (dil);
 
-    gw_dictinfolist_reload (dil, pm);
+    gw_dictinfolist_reload (dil);
 };
 
 
@@ -100,7 +104,7 @@ static void _dictinfolist_attach_signals (GwDictInfoList *dil)
           G_OBJECT (dil->model),
           "row-deleted", 
           G_CALLBACK (gw_dictinfolist_list_store_row_changed_action_cb),
-          NULL
+          dil
     );
 }
 
@@ -157,10 +161,14 @@ void gw_dictinfolist_rebuild_liststore (GwDictInfoList *dil)
 //!
 //! Sets updates the list of dictionaries against the list in the global dictlist
 //!
-void gw_dictinfolist_reload (GwDictInfoList *dil, LwPreferences *pm)
+void gw_dictinfolist_reload (GwDictInfoList *dil)
 {
+    LwPreferences *preferences;
+
+    preferences = gw_application_get_preferences (dil->application);
+
     lw_dictinfolist_reload (LW_DICTINFOLIST (dil));
-    lw_dictinfolist_load_dictionary_order_from_pref (LW_DICTINFOLIST (dil), pm);
+    lw_dictinfolist_load_dictionary_order_from_pref (LW_DICTINFOLIST (dil), preferences);
 
     if (dil->signalids[GW_DICTINFOLIST_SIGNALID_ROW_CHANGED] > 0)
       g_signal_handler_block (dil->model, dil->signalids[GW_DICTINFOLIST_SIGNALID_ROW_CHANGED]);

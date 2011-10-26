@@ -26,6 +26,5 @@
 
 #include <gwaei/output-callbacks.h>
 
-extern GwApplication *app;
 
 #endif

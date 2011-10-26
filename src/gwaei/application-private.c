@@ -29,7 +29,7 @@ void gw_application_private_init (GwApplication *application)
       );
 
       priv->preferences = lw_preferences_new ();
-      priv->dictinfolist = gw_dictinfolist_new (20, priv->preferences);
+      priv->dictinfolist = gw_dictinfolist_new (20, application);
       priv->block_new_searches = 0;
 
       priv->tagtable = _application_texttagtable_new ();

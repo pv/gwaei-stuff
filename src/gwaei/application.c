@@ -58,17 +58,14 @@ GApplication* gw_application_new (const gchar *application_id, GApplicationFlags
                                 "application-id", application_id, 
                                 "flags", flags, NULL);
 
-    //Enable multithreading
-
-    application->priv = GW_APPLICATION_GET_PRIVATE (application);
-    gw_application_private_init (application);
-
     return G_APPLICATION (application);
 }
 
 
 static void gw_application_init (GwApplication *application)
 {
+    application->priv = GW_APPLICATION_GET_PRIVATE (application);
+    gw_application_private_init (application);
 }
 
 
@@ -120,7 +117,7 @@ void gw_application_parse_args (GwApplication *application, int *argc, char** ar
     priv->arg_dictionary = NULL;
     if (priv->arg_query != NULL) g_free (priv->arg_query);
     priv->arg_query = NULL;
-    priv->arg_version_switch = NULL;
+    priv->arg_version_switch = FALSE;
 
     GOptionEntry entries[] =
     {

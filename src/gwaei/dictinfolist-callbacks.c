@@ -47,10 +47,13 @@ G_MODULE_EXPORT void gw_dictinfolist_list_store_row_changed_action_cb (GtkTreeMo
     GtkTreeIter iter;
     GwDictInfoList *dictinfolist;
     LwPreferences *preferences;
+    GwApplication *application;
 
     //Initializations
-    dictinfolist = gw_application_get_dictinfolist (GW_APPLICATION (app));
-    preferences = gw_application_get_preferences (GW_APPLICATION (app));
+
+    dictinfolist = GW_DICTINFOLIST (data);
+    application = dictinfolist->application;
+    preferences = gw_application_get_preferences (application);
     position = 0;
 
     g_signal_handler_block (model, dictinfolist->signalids[GW_DICTINFOLIST_SIGNALID_ROW_CHANGED]);
@@ -73,7 +76,7 @@ G_MODULE_EXPORT void gw_dictinfolist_list_store_row_changed_action_cb (GtkTreeMo
     }
 
     lw_dictinfolist_save_dictionary_order_pref (LW_DICTINFOLIST (dictinfolist), preferences);
-    gw_dictinfolist_reload (dictinfolist, preferences);
+    gw_dictinfolist_reload (dictinfolist);
 
     g_signal_handler_unblock (model, dictinfolist->signalids[GW_DICTINFOLIST_SIGNALID_ROW_CHANGED]);
 }
