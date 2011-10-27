@@ -268,15 +268,10 @@ G_MODULE_EXPORT void gw_searchwindow_close_cb (GtkWidget *widget, gpointer data)
     int pages;
     
     //Initializations
-    printf("BREAK1\n");
     window = GW_SEARCHWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_SEARCHWINDOW));
-    printf("BREAK2\n");
     if (window == NULL) return;
-    printf("BREAK3\n");
     priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
-    printf("BREAK4\n");
     pages = gtk_notebook_get_n_pages (priv->notebook);
-    printf("BREAK5\n");
 
     if (pages > 1)
       gw_searchwindow_remove_current_tab_cb (widget, data);

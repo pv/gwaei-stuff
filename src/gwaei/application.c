@@ -454,23 +454,23 @@ static void gw_application_activate (GApplication *application)
 
 static int gw_application_command_line (GApplication *application, GApplicationCommandLine *command_line)
 {
-    int argc;
-    char **argv;
-
-    argv = g_application_command_line_get_arguments (command_line, &argc);
-
-    gw_application_parse_args (GW_APPLICATION (application), &argc, &argv);
-
     //Declarations
     LwDictInfo *di;
     GwSearchWindow *window;
     LwDictInfoList *dictinfolist;
     GwApplicationPrivate *priv;
+    int argc;
+    char **argv;
 
+    //Initializations
     priv = GW_APPLICATION_GET_PRIVATE (GW_APPLICATION (application));
     dictinfolist = LW_DICTINFOLIST (gw_application_get_dictinfolist (GW_APPLICATION (application)));
-
+    argv = g_application_command_line_get_arguments (command_line, &argc);
     window = gw_application_get_last_focused_searchwindow (GW_APPLICATION (application));
+
+    gw_application_parse_args (GW_APPLICATION (application), &argc, &argv);
+
+    //Set up the window
     if (window == NULL || priv->arg_new_window_switch)
     {
       window = GW_SEARCHWINDOW (gw_searchwindow_new (GTK_APPLICATION (application)));
@@ -491,6 +491,7 @@ static int gw_application_command_line (GApplication *application, GApplicationC
     }
 
     //HACK
+    printf("this gdk_threads_leave call shouldn't have to exist\n");
     gdk_threads_leave ();
 
     return 0;
@@ -500,14 +501,14 @@ static int gw_application_command_line (GApplication *application, GApplicationC
 static gboolean gw_application_local_command_line (GApplication *application, 
                                                  gchar ***argv, gint *exit_status)
 {
+    //Declarations
     int argc;
     gboolean handled;
     int i;
 
+    //Initializations
     argc = g_strv_length (*argv);
     handled = FALSE;
-
-    g_set_application_name (gw_application_get_program_name (GW_APPLICATION (application)));
 
     for (i = 0; (*argv)[i] != NULL; i++)
     {
@@ -525,21 +526,22 @@ static gboolean gw_application_local_command_line (GApplication *application,
       }
     }
 
-    g_application_register (application, NULL, NULL);
-    
     return handled;
 } 
 
 
 void gw_application_destroy_window (GwApplication *application, GtkWindow *window)
 {
+    //Declarations
     GList *windowlist;
     GList *iter;
     gboolean quit;
 
+    //Initializations
     windowlist = gtk_application_get_windows (GTK_APPLICATION (application));
     quit = TRUE;
 
+    //See if there is still a GwSearchWindow open
     for (iter = windowlist; iter != NULL; iter = iter->next)
     {
       if (G_OBJECT_TYPE (iter->data) == GW_TYPE_SEARCHWINDOW)
@@ -552,3 +554,4 @@ void gw_application_destroy_window (GwApplication *application, GtkWindow *windo
     if (quit) gtk_main_quit ();
     else gtk_widget_destroy (GTK_WIDGET (window));
 }
+

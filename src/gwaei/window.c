@@ -65,20 +65,6 @@ void gw_window_finalize (GObject *object)
     G_OBJECT_CLASS (gw_window_parent_class)->finalize (object);
 }
 
-static GObject* gw_window_constructor (GType                  gtype, 
-                                       guint                  n_properties,
-                                       GObjectConstructParam *properties)
-{
-    guint i;
-    GObject *object;
-
-    {
-      object = G_OBJECT_CLASS (gw_window_parent_class)->constructor (gtype, n_properties, properties);
-    }
-
-    return object;
-}
-
 
 static void gw_window_set_property (GObject      *object,
                                     guint         property_id,
@@ -153,7 +139,6 @@ gw_window_class_init (GwWindowClass *klass)
   object_class = G_OBJECT_CLASS (klass);
   object_class->set_property = gw_window_set_property;
   object_class->get_property = gw_window_get_property;
-  object_class->constructor = gw_window_constructor;
   object_class->finalize = gw_window_finalize;
 
   g_type_class_add_private (object_class, sizeof (GwWindowPrivate));
@@ -167,7 +152,7 @@ gw_window_class_init (GwWindowClass *klass)
   g_object_class_install_property (object_class, PROP_APPLICATION, pspec);
 
   pspec = g_param_spec_string ("ui-xml",
-                               "Filename of gtkbuilder ui",
+                               "XML filename construct prop",
                                "Set GwWindow's ui xml",
                                "",
                                G_PARAM_CONSTRUCT | G_PARAM_READWRITE
