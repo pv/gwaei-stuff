@@ -54,15 +54,59 @@ GtkWindow* gw_searchwindow_new (GtkApplication *application)
 
     //Initializations
     window = GW_SEARCHWINDOW (g_object_new (GW_TYPE_SEARCHWINDOW,
-                                            "type", GTK_WINDOW_TOPLEVEL,
-                                            "application", application,
+                                            "type",        GTK_WINDOW_TOPLEVEL,
+                                            "application", GW_APPLICATION (application),
+                                            "ui-xml",      "search.ui",
                                             NULL));
 
+    return GTK_WINDOW (window);
+}
+
+
+void gw_searchwindow_init (GwSearchWindow *window)
+{
     window->priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
-    gw_window_load_ui_xml (GW_WINDOW (window), "search.ui");
-    gw_window_set_application (GW_WINDOW (window), GW_APPLICATION (application));
+}
+
+
+static void gw_searchwindow_finalize (GObject *object)
+{
+  GwSearchWindow *window;
+
+  window = GW_SEARCHWINDOW (object);
+
+  gw_searchwindow_private_finalize (window);
+  G_OBJECT_CLASS (gw_searchwindow_parent_class)->finalize (object);
+}
+
+
+static GObject* gw_searchwindow_constructor (GType                  gtype, 
+                                             guint                  n_properties,
+                                             GObjectConstructParam *properties)
+{
+    //Declarations
+    GwSearchWindow *window;
+    GwSearchWindowPrivate *priv;
+    GObject *object;
+    GtkToolButton *toolbutton;
+    gboolean enchant_exists;
+    GtkWidget *widget;
+
+    //Chain the parent class
+    {
+      object = G_OBJECT_CLASS (gw_searchwindow_parent_class)->constructor (gtype, n_properties, properties);
+    }
+
+    //Initializations
+    window = GW_SEARCHWINDOW (object);
+    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+
     gw_searchwindow_private_init (window);
 
+
+ //TODO move the things below to the constructed callback
+
+    //Set up the gtk window
     gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_MOUSE);
     gtk_window_set_default_size (GTK_WINDOW (window), 620, 500);
     gtk_window_set_icon_name (GTK_WINDOW (window), "gwaei");
@@ -73,7 +117,21 @@ GtkWindow* gw_searchwindow_new (GtkApplication *application)
     g_signal_connect (G_OBJECT (window), "key-press-event", G_CALLBACK (gw_searchwindow_key_press_modify_status_update_cb), window);
     g_signal_connect (G_OBJECT (window), "focus-in-event", G_CALLBACK (gw_searchwindow_focus_in_event_cb), window);
 
-    GtkWidget *widget;
+    gtk_widget_grab_focus (GTK_WIDGET (priv->entry));
+    gw_searchwindow_set_dictionary (window, 0);
+    gw_searchwindow_guarantee_first_tab (window);
+
+    //We are going to lazily update the sensitivity of the spellcheck buttons only when the window is created
+    toolbutton = GTK_TOOL_BUTTON (gw_window_get_object (GW_WINDOW (window), "spellcheck_toolbutton")); 
+    enchant_exists = g_file_test (ENCHANT, G_FILE_TEST_IS_REGULAR);
+
+    //This code should probalby be moved to when the window is realized
+    gw_searchwindow_initialize_dictionary_combobox (window);
+    gw_searchwindow_initialize_dictionary_menu (window);
+    gw_searchwindow_update_history_popups (window);
+
+    gtk_widget_set_sensitive (GTK_WIDGET (priv->entry), enchant_exists);
+    gtk_widget_set_sensitive (GTK_WIDGET (toolbutton), enchant_exists);
 
     //Set menu accelerators
     widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "new_window_menuitem"));
@@ -153,27 +211,9 @@ GtkWindow* gw_searchwindow_new (GtkApplication *application)
     widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "help_menuitem"));
     gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", window->priv->accelgroup, (GDK_KEY_F1), 0, GTK_ACCEL_VISIBLE);
 
-
-
-
-    return GTK_WINDOW (window);
+    return object;
 }
 
-
-void gw_searchwindow_init (GwSearchWindow *window)
-{
-}
-
-
-void gw_searchwindow_finalize (GObject *object)
-{
-  GwSearchWindow *window;
-
-  window = GW_SEARCHWINDOW (object);
-
-  gw_searchwindow_private_finalize (window);
-  G_OBJECT_CLASS (gw_searchwindow_parent_class)->finalize (object);
-}
 
 
 static void
@@ -183,6 +223,7 @@ gw_searchwindow_class_init (GwSearchWindowClass *klass)
 
   object_class = G_OBJECT_CLASS (klass);
 
+  object_class->constructor = gw_searchwindow_constructor;
   object_class->finalize = gw_searchwindow_finalize;
 
   g_type_class_add_private (object_class, sizeof (GwSearchWindowPrivate));

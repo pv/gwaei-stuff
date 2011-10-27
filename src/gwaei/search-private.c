@@ -54,25 +54,6 @@ void gw_searchwindow_private_init (GwSearchWindow *window)
     priv->spellcheck = NULL;
 
     _searchwindow_attach_signals (window);
-
-    gtk_widget_grab_focus (GTK_WIDGET (priv->entry));
-    gw_searchwindow_set_dictionary (window, 0);
-    gw_searchwindow_guarantee_first_tab (window);
-
-    //We are going to lazily update the sensitivity of the spellcheck buttons only when the window is created
-    GtkToolButton *toolbutton;
-    gboolean enchant_exists;
-
-    toolbutton = GTK_TOOL_BUTTON (gw_window_get_object (GW_WINDOW (window), "spellcheck_toolbutton")); 
-    enchant_exists = g_file_test (ENCHANT, G_FILE_TEST_IS_REGULAR);
-
-    //This code should probalby be moved to when the window is realized
-    gw_searchwindow_initialize_dictionary_combobox (window);
-    gw_searchwindow_initialize_dictionary_menu (window);
-    gw_searchwindow_update_history_popups (window);
-
-    gtk_widget_set_sensitive (GTK_WIDGET (priv->entry), enchant_exists);
-    gtk_widget_set_sensitive (GTK_WIDGET (toolbutton), enchant_exists);
 }
 
 

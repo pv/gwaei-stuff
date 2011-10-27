@@ -41,49 +41,12 @@
 
 G_DEFINE_TYPE (GwWindow, gw_window, GTK_TYPE_WINDOW);
 
-
-/*
-    switch (TYPE)
-    {
-      case GW_WINDOW_SETTINGS:
-        g_assert (transient_for != NULL);
-        window = GW_WINDOW (gw_settingswindow_new (GW_SEARCHWINDOW (transient_for), link));
-        gtk_window_set_destroy_with_parent (window->toplevel, TRUE);
-        gtk_window_set_position (window->toplevel, GTK_WIN_POS_CENTER_ON_PARENT);
-        gtk_window_set_modal (window->toplevel, FALSE);
-        break;
-      case GW_WINDOW_RADICALS:
-        g_assert (transient_for != NULL);
-        window = GW_WINDOW (gw_radicalswindow_new (transient_for, link));
-        gtk_window_set_destroy_with_parent (window->toplevel, TRUE);
-        gtk_window_set_position (window->toplevel, GTK_WIN_POS_MOUSE);
-        gtk_window_set_modal (window->toplevel, FALSE);
-        break;
-      case GW_WINDOW_KANJIPAD:
-        window = GW_WINDOW (gw_kanjipadwindow_new (GW_SEARCHWINDOW (transient_for), link));
-        gtk_window_set_destroy_with_parent (window->toplevel, TRUE);
-        gtk_window_set_position (window->toplevel, GTK_WIN_POS_MOUSE);
-        gtk_window_set_modal (window->toplevel, FALSE);
-      break;
-      case GW_WINDOW_DICTIONARYINSTALL:
-        window = GW_WINDOW (gw_dictinstwindow_new (GW_SETTINGSWINDOW (transient_for), link));
-        gtk_window_set_destroy_with_parent (window->toplevel, TRUE);
-        gtk_window_set_position (window->toplevel, GTK_WIN_POS_CENTER_ON_PARENT);
-        gtk_window_set_modal (window->toplevel, TRUE);
-        break;
-      case GW_WINDOW_INSTALLPROGRESS:
-        window = GW_WINDOW (gw_installprogresswindow_new (GW_SETTINGSWINDOW (transient_for), link));
-        gtk_window_set_destroy_with_parent (window->toplevel, TRUE);
-        gtk_window_set_position (window->toplevel, GTK_WIN_POS_CENTER_ON_PARENT);
-        gtk_window_set_modal (window->toplevel, TRUE);
-        break;
-      default:
-        g_assert_not_reached ();
-        window = NULL;
-        break;
-    }
-    */
-
+typedef enum
+{
+  PROP_0,
+  PROP_APPLICATION,
+  PROP_UI_XML
+} GwWindowProps;
 
 void gw_window_init (GwWindow *window)
 {
@@ -102,17 +65,114 @@ void gw_window_finalize (GObject *object)
     G_OBJECT_CLASS (gw_window_parent_class)->finalize (object);
 }
 
+static GObject* gw_window_constructor (GType                  gtype, 
+                                       guint                  n_properties,
+                                       GObjectConstructParam *properties)
+{
+    guint i;
+    GObject *object;
+
+    {
+      object = G_OBJECT_CLASS (gw_window_parent_class)->constructor (gtype, n_properties, properties);
+    }
+
+    return object;
+}
+
+
+static void gw_window_set_property (GObject      *object,
+                                    guint         property_id,
+                                    const GValue *value,
+                                    GParamSpec   *pspec)
+{
+    GwWindow *window;
+    GwWindowPrivate *priv;
+    GtkWidget *toplevel;
+
+    window = GW_WINDOW (object);
+    priv = GW_WINDOW_GET_PRIVATE (window);
+    toplevel = NULL;
+
+    switch (property_id)
+    {
+      case PROP_APPLICATION:
+        priv->application = GW_APPLICATION (g_value_get_object (value));
+        gtk_window_set_application (GTK_WINDOW (window), GTK_APPLICATION (priv->application));
+        break;
+      case PROP_UI_XML:
+        if (priv->ui_xml != NULL) 
+        {
+          toplevel = GTK_WIDGET (gtk_builder_get_object (priv->builder, "toplevel"));
+          gtk_widget_destroy (toplevel);
+          g_free (priv->ui_xml);
+        }
+        priv->ui_xml = g_value_dup_string (value);
+        gw_window_load_ui_xml (window, priv->ui_xml);
+        break;
+      default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+        break;
+    }
+}
+
+
+static void gw_window_get_property (GObject      *object,
+                                    guint         property_id,
+                                    GValue       *value,
+                                    GParamSpec   *pspec)
+{
+    GwWindow *window;
+    GwWindowPrivate *priv;
+
+    window = GW_WINDOW (object);
+    priv = GW_WINDOW_GET_PRIVATE (window);
+
+    switch (property_id)
+    {
+      case PROP_APPLICATION:
+        g_value_set_object (value, priv->application);
+        break;
+      case PROP_UI_XML:
+        g_value_set_string (value, priv->ui_xml);
+        break;
+      default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+        break;
+    }
+}
+
 
 static void
 gw_window_class_init (GwWindowClass *klass)
 {
+  //Declarations
+  GParamSpec *pspec;
   GObjectClass *object_class;
 
+  //Initializations
   object_class = G_OBJECT_CLASS (klass);
-
+  object_class->set_property = gw_window_set_property;
+  object_class->get_property = gw_window_get_property;
+  object_class->constructor = gw_window_constructor;
   object_class->finalize = gw_window_finalize;
 
   g_type_class_add_private (object_class, sizeof (GwWindowPrivate));
+
+  pspec = g_param_spec_object ("application",
+                               "Application construct prop",
+                               "Set GwWindow's Application",
+                               GW_TYPE_APPLICATION,
+                               G_PARAM_CONSTRUCT | G_PARAM_READWRITE
+  );
+  g_object_class_install_property (object_class, PROP_APPLICATION, pspec);
+
+  pspec = g_param_spec_string ("ui-xml",
+                               "Filename of gtkbuilder ui",
+                               "Set GwWindow's ui xml",
+                               "",
+                               G_PARAM_CONSTRUCT | G_PARAM_READWRITE
+  );
+  g_object_class_install_property (object_class, PROP_UI_XML, pspec);
 }
 
 
