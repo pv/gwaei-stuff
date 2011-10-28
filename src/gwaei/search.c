@@ -286,7 +286,6 @@ gboolean gw_searchwindow_update_progress_feedback_timeout (GwSearchWindow *windo
     {
       lw_searchitem_lock_mutex (item);
         if (
-            item->target != LW_OUTPUTTARGET_KANJI &&
             item->status != LW_SEARCHSTATUS_CANCELING &&
             (item != priv->feedback_item ||
              item->current_line != priv->feedback_line ||
@@ -479,10 +478,6 @@ void gw_searchwindow_set_total_results_label_by_searchitem (GwSearchWindow *wind
     if (item == NULL)
     {
       gtk_label_set_text(GTK_LABEL (label), "");
-    }
-    else if (item->target != LW_OUTPUTTARGET_RESULTS)
-    {
-      return;
     }
     else
     {
@@ -939,39 +934,36 @@ void gw_searchwindow_initialize_buffer_by_searchitem (GwSearchWindow *window, Lw
 
     gtk_text_buffer_set_text (buffer, "", -1);
 
-    if (item->target == LW_OUTPUTTARGET_RESULTS)
-    {
-      //Clear the target text buffer
-      GtkTextIter iter;
-      gtk_text_buffer_get_end_iter (buffer, &iter);
-      gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, "\n", -1, "small", NULL);
+    //Clear the target text buffer
+    GtkTextIter iter;
+    gtk_text_buffer_get_end_iter (buffer, &iter);
+    gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, "\n", -1, "small", NULL);
 
-      gtk_text_buffer_get_end_iter (buffer, &iter);
-      gtk_text_buffer_create_mark (buffer, "more_relevant_header_mark", &iter, TRUE);
-      gtk_text_buffer_insert (buffer, &iter, "\n\n", -1);
+    gtk_text_buffer_get_end_iter (buffer, &iter);
+    gtk_text_buffer_create_mark (buffer, "more_relevant_header_mark", &iter, TRUE);
+    gtk_text_buffer_insert (buffer, &iter, "\n\n", -1);
 
-      gtk_text_buffer_get_end_iter (buffer, &iter);
-      gtk_text_buffer_insert (buffer, &iter, "\n", -1);
-      gtk_text_buffer_get_end_iter (buffer, &iter); gtk_text_iter_backward_line (&iter);
-      gtk_text_buffer_create_mark (buffer, "more_rel_content_insertion_mark", &iter, FALSE);
-      gtk_text_buffer_create_mark (buffer, "content_insertion_mark", &iter, FALSE);
+    gtk_text_buffer_get_end_iter (buffer, &iter);
+    gtk_text_buffer_insert (buffer, &iter, "\n", -1);
+    gtk_text_buffer_get_end_iter (buffer, &iter); gtk_text_iter_backward_line (&iter);
+    gtk_text_buffer_create_mark (buffer, "more_rel_content_insertion_mark", &iter, FALSE);
+    gtk_text_buffer_create_mark (buffer, "content_insertion_mark", &iter, FALSE);
 
-      gtk_text_buffer_get_end_iter (buffer, &iter);
-      gtk_text_buffer_create_mark (buffer, "less_relevant_header_mark", &iter, TRUE);
-      gtk_text_buffer_insert (buffer, &iter, "\n\n", -1);
+    gtk_text_buffer_get_end_iter (buffer, &iter);
+    gtk_text_buffer_create_mark (buffer, "less_relevant_header_mark", &iter, TRUE);
+    gtk_text_buffer_insert (buffer, &iter, "\n\n", -1);
 
-      gtk_text_buffer_get_end_iter (buffer, &iter);
-      gtk_text_buffer_insert (buffer, &iter, "\n", -1);
-      gtk_text_buffer_get_end_iter (buffer, &iter); gtk_text_iter_backward_line (&iter);
-      gtk_text_buffer_create_mark (buffer, "less_rel_content_insertion_mark", &iter, FALSE);
+    gtk_text_buffer_get_end_iter (buffer, &iter);
+    gtk_text_buffer_insert (buffer, &iter, "\n", -1);
+    gtk_text_buffer_get_end_iter (buffer, &iter); gtk_text_iter_backward_line (&iter);
+    gtk_text_buffer_create_mark (buffer, "less_rel_content_insertion_mark", &iter, FALSE);
 
-      gtk_text_buffer_get_end_iter (buffer, &iter);
-      gtk_text_buffer_insert (buffer, &iter, "\n\n\n", -1);
-      gtk_text_buffer_get_end_iter (buffer, &iter);
-      gtk_text_buffer_create_mark (buffer, "footer_insertion_mark", &iter, FALSE);
+    gtk_text_buffer_get_end_iter (buffer, &iter);
+    gtk_text_buffer_insert (buffer, &iter, "\n\n\n", -1);
+    gtk_text_buffer_get_end_iter (buffer, &iter);
+    gtk_text_buffer_create_mark (buffer, "footer_insertion_mark", &iter, FALSE);
 
-      gw_searchwindow_set_total_results_label_by_searchitem (window, item);
-    }
+    gw_searchwindow_set_total_results_label_by_searchitem (window, item);
 }
 
 
@@ -1004,7 +996,7 @@ void gw_searchwindow_entry_insert (GwSearchWindow *window, char* text)
 //!
 //! @param TARGET The widget where to select all text
 //!
-void gw_searchwindow_select_all_by_target (GwSearchWindow* window, const LwOutputTarget TARGET)
+void gw_searchwindow_select_all (GwSearchWindow* window, GtkWidget *widget)
 {
     GwSearchWindowPrivate *priv;
     GtkTextView *view;
@@ -1013,6 +1005,7 @@ void gw_searchwindow_select_all_by_target (GwSearchWindow* window, const LwOutpu
 
     priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
 
+/*
     //GtkEntry
     if (TARGET == LW_OUTPUTTARGET_ENTRY)
     {
@@ -1031,6 +1024,7 @@ void gw_searchwindow_select_all_by_target (GwSearchWindow* window, const LwOutpu
 
       gtk_text_buffer_select_range (buffer, &start, &end);
     }
+    */
 }
 
 
@@ -1039,7 +1033,7 @@ void gw_searchwindow_select_all_by_target (GwSearchWindow* window, const LwOutpu
 //!
 //! @param TARGET The widget where to deselect all text
 //!
-void gw_searchwindow_select_none_by_target (GwSearchWindow *window, LwOutputTarget TARGET)
+void gw_searchwindow_select_none (GwSearchWindow *window, GtkWidget *widget)
 {
     //Declarations
     GwSearchWindowPrivate *priv;
@@ -1049,7 +1043,7 @@ void gw_searchwindow_select_none_by_target (GwSearchWindow *window, LwOutputTarg
 
     //Initializations
     priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
-
+/*
     //GtkEntry
     if (TARGET == LW_OUTPUTTARGET_ENTRY)
     {
@@ -1068,37 +1062,7 @@ void gw_searchwindow_select_none_by_target (GwSearchWindow *window, LwOutputTarg
 
       gtk_text_buffer_select_range (buffer, &start, &end);
     }
-}
-
-
-//!
-//! @brief Returns the target id corresponding to what widget has focus
-//!
-//! @param window_id The window to check the widgets against 
-//!
-LwOutputTarget gw_searchwindow_get_current_target_focus (GwSearchWindow* window)
-{
-    //Declarations
-    GwSearchWindowPrivate *priv;
-    GtkWidget *widget;
-    GtkTextView *view;
-    GtkEntry *entry;
-    LwOutputTarget target;
-
-    //Initializations
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
-    widget = GTK_WIDGET (gtk_window_get_focus (GTK_WINDOW (window))); 
-    view = gw_searchwindow_get_current_textview (window);
-    entry = priv->entry;
-
-    if (widget == GTK_WIDGET (view))
-      target = LW_OUTPUTTARGET_RESULTS;
-    else if (widget == GTK_WIDGET (entry))
-      target = LW_OUTPUTTARGET_ENTRY;
-    else
-      target = LW_OUTPUTTARGET_INVALID;
-
-    return target;
+    */
 }
 
 
@@ -1107,7 +1071,7 @@ LwOutputTarget gw_searchwindow_get_current_target_focus (GwSearchWindow* window)
 //!
 //! TARGET LwOutputTarget to specify where the text should come from
 //!
-void gw_searchwindow_copy_text (GwSearchWindow* window, LwOutputTarget TARGET)
+void gw_searchwindow_copy_text (GwSearchWindow* window, GtkWidget *widget)
 {
     GwSearchWindowPrivate *priv;
     GtkClipboard *clipbd;
@@ -1118,6 +1082,7 @@ void gw_searchwindow_copy_text (GwSearchWindow* window, LwOutputTarget TARGET)
     view = gw_searchwindow_get_current_textview (window);
     buffer = gtk_text_view_get_buffer (view);
 
+/*
     switch (TARGET)
     {
       case LW_OUTPUTTARGET_ENTRY:
@@ -1132,6 +1097,7 @@ void gw_searchwindow_copy_text (GwSearchWindow* window, LwOutputTarget TARGET)
       case LW_OUTPUTTARGET_INVALID:
         break;
     }
+    */
 }
 
 
@@ -1140,12 +1106,13 @@ void gw_searchwindow_copy_text (GwSearchWindow* window, LwOutputTarget TARGET)
 //!
 //! TARGET LwOutputTarget to specify where the text should come from
 //!
-void gw_searchwindow_cut_text (GwSearchWindow *window, LwOutputTarget TARGET)
+void gw_searchwindow_cut_text (GwSearchWindow *window, GtkWidget *widget)
 {
     GwSearchWindowPrivate *priv;
 
     priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
 
+/*
     switch (TARGET)
     {
       case LW_OUTPUTTARGET_ENTRY:
@@ -1157,6 +1124,7 @@ void gw_searchwindow_cut_text (GwSearchWindow *window, LwOutputTarget TARGET)
       case LW_OUTPUTTARGET_INVALID:
         break;
     }
+    */
 }
 
 
@@ -1165,14 +1133,14 @@ void gw_searchwindow_cut_text (GwSearchWindow *window, LwOutputTarget TARGET)
 //!
 //! TARGET LwOutputTarget to specify where the text should go
 //!
-void gw_searchwindow_paste_text (GwSearchWindow* window, LwOutputTarget TARGET)
+void gw_searchwindow_paste_text (GwSearchWindow* window, GtkWidget *widget)
 {
     //Declarations
     GwSearchWindowPrivate *priv;
 
     //Initializations
     priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
-
+/*
     switch (TARGET)
     {
       case LW_OUTPUTTARGET_ENTRY:
@@ -1184,6 +1152,7 @@ void gw_searchwindow_paste_text (GwSearchWindow* window, LwOutputTarget TARGET)
       case LW_OUTPUTTARGET_INVALID:
         break;
     }
+    */
 }
 
 
@@ -1195,7 +1164,7 @@ void gw_searchwindow_paste_text (GwSearchWindow* window, LwOutputTarget TARGET)
 //! @param sl The start line number
 //! @param el The end line number
 //!
-char* gw_searchwindow_buffer_get_text_slice_by_target (GwSearchWindow* window, LwOutputTarget TARGET, int sl, int el)
+char* gw_searchwindow_buffer_get_text_slice_from_current_view (GwSearchWindow* window, int sl, int el)
 {
     //Assertain the target text buffer
     GtkTextView *view;
@@ -1676,7 +1645,7 @@ void gw_searchwindow_cycle_dictionaries (GwSearchWindow* window, gboolean cycle_
 //!
 //! @param TARGET a LwOutputTarget to get the data from
 //!
-char* gw_searchwindow_get_text_by_target (GwSearchWindow *window, LwOutputTarget TARGET)
+char* gw_searchwindow_get_text (GwSearchWindow *window, GtkWidget *widget)
 {
     GtkTextView *view;
     GtkTextBuffer *buffer;
@@ -1755,7 +1724,7 @@ gboolean gw_searchwindow_keep_searching_timeout (GwSearchWindow *window)
 //!
 //! @param TARGET A LwOutputTarget
 //!
-gboolean gw_searchwindow_has_selection_by_target (GwSearchWindow *window, LwOutputTarget TARGET)
+gboolean gw_searchwindow_has_selection (GwSearchWindow *window, GtkWidget *widget)
 {
     //Declarations
     GtkTextView *view;

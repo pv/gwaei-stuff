@@ -221,7 +221,7 @@ G_MODULE_EXPORT gboolean gw_searchwindow_get_iter_for_button_release_cb (GtkWidg
             priv->mouse_item = NULL;
           }
 
-          priv->mouse_item = lw_searchitem_new (query, di, LW_OUTPUTTARGET_KANJI, preferences, &error);
+          priv->mouse_item = lw_searchitem_new (query, di, preferences, &error);
           lw_searchitem_set_data (priv->mouse_item, gw_searchdata_new (NULL, window), LW_SEARCHITEM_DATA_FREE_FUNC (gw_searchdata_free));
           lw_searchitem_start_search (priv->mouse_item, TRUE, FALSE);
 
@@ -404,7 +404,7 @@ G_MODULE_EXPORT void gw_searchwindow_search_from_history_cb (GtkWidget *widget, 
 
     //Set the search string in the GtkEntry
     gtk_widget_grab_focus (GTK_WIDGET (priv->entry));
-    gw_searchwindow_select_all_by_target (window, LW_OUTPUTTARGET_ENTRY);
+    gw_searchwindow_select_all (window, GTK_WIDGET (priv->entry));
 }
 
 
@@ -512,6 +512,7 @@ G_MODULE_EXPORT void gw_searchwindow_save_as_cb (GtkWidget *widget, gpointer dat
     //Declarations
     GwApplication *application;
     GwSearchWindow *window;
+    GtkTextView *view;
     const gchar *path;
     GtkWidget *dialog;
     GtkAction *edit;
@@ -526,7 +527,8 @@ G_MODULE_EXPORT void gw_searchwindow_save_as_cb (GtkWidget *widget, gpointer dat
     gw_application_block_searches (application);
     path = lw_io_get_savepath ();
     temp = NULL;
-    text = gw_searchwindow_get_text_by_target (window, LW_OUTPUTTARGET_RESULTS);
+    view = gw_searchwindow_get_current_textview (window);
+    text = gw_searchwindow_get_text (window, GTK_WIDGET (view));
     dialog = gtk_file_chooser_dialog_new (gettext ("Save As"),
                 GTK_WINDOW (window),
                 GTK_FILE_CHOOSER_ACTION_SAVE,
@@ -588,6 +590,7 @@ G_MODULE_EXPORT void gw_searchwindow_save_cb (GtkWidget *widget, gpointer data)
     GError *error;
     GwSearchWindow* window;
     GwApplication *application;
+    GtkTextView *view;
 
     //Initializations
     path = lw_io_get_savepath ();
@@ -606,7 +609,8 @@ G_MODULE_EXPORT void gw_searchwindow_save_cb (GtkWidget *widget, gpointer data)
     }
 
     //Carry out the save
-    text = gw_searchwindow_get_text_by_target (window, LW_OUTPUTTARGET_RESULTS);
+    view = gw_searchwindow_get_current_textview (window);
+    text = gw_searchwindow_get_text (window, GTK_WIDGET (view));
     lw_io_write_file (path, "a", text, NULL, NULL, &error);
     g_free (text);
     text = NULL;
@@ -783,13 +787,13 @@ G_MODULE_EXPORT void gw_searchwindow_dictionary_radio_changed_cb (GtkWidget *wid
 G_MODULE_EXPORT void gw_searchwindow_select_all_cb (GtkWidget *widget, gpointer data)
 {
     GwSearchWindow *window;
-    LwOutputTarget target;
+    GtkWidget *focus;
 
     window = GW_SEARCHWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_SEARCHWINDOW));
     if (window == NULL) return;
-    target = gw_searchwindow_get_current_target_focus (window);
+    focus = gtk_window_get_focus (GTK_WINDOW (window));
 
-    gw_searchwindow_select_all_by_target (window, target);
+    gw_searchwindow_select_all (window, focus);
 }
 
 
@@ -804,13 +808,13 @@ G_MODULE_EXPORT void gw_searchwindow_select_all_cb (GtkWidget *widget, gpointer 
 G_MODULE_EXPORT void gw_searchwindow_paste_cb (GtkWidget *widget, gpointer data)
 {
     GwSearchWindow *window;
-    LwOutputTarget target;
+    GtkWidget *focus;
 
     window = GW_SEARCHWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_SEARCHWINDOW));
     if (window == NULL) return;
-    target = gw_searchwindow_get_current_target_focus (window);
+    focus = gtk_window_get_focus (GTK_WINDOW (window));
 
-    gw_searchwindow_paste_text (window, target);
+    gw_searchwindow_paste_text (window, focus);
 }
 
 
@@ -825,13 +829,13 @@ G_MODULE_EXPORT void gw_searchwindow_paste_cb (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void gw_searchwindow_cut_cb (GtkWidget *widget, gpointer data)
 {
     GwSearchWindow *window;
-    LwOutputTarget target;
+    GtkWidget *focus;
 
     window = GW_SEARCHWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_SEARCHWINDOW));
     if (window == NULL) return;
-    target = gw_searchwindow_get_current_target_focus (window);
+    focus = gtk_window_get_focus (GTK_WINDOW (window));
 
-    gw_searchwindow_cut_text (window, target);
+    gw_searchwindow_cut_text (window, focus);
 }
 
 
@@ -846,13 +850,13 @@ G_MODULE_EXPORT void gw_searchwindow_cut_cb (GtkWidget *widget, gpointer data)
 G_MODULE_EXPORT void gw_searchwindow_copy_cb (GtkWidget *widget, gpointer data)
 {
     GwSearchWindow *window;
-    LwOutputTarget target;
+    GtkWidget *focus;
 
     window = GW_SEARCHWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_SEARCHWINDOW));
     if (window == NULL) return;
-    target = gw_searchwindow_get_current_target_focus (window);
+    focus = gtk_window_get_focus (GTK_WINDOW (window));
 
-    gw_searchwindow_copy_text (window, target);
+    gw_searchwindow_copy_text (window, focus);
 }
 
 
@@ -893,7 +897,7 @@ G_MODULE_EXPORT void gw_searchwindow_edit_popup_show_cb (GtkWidget *widget, gpoi
     }
     else if (view != NULL && gtk_widget_has_focus (GTK_WIDGET (view)))
     {
-      sensitive = (gw_searchwindow_has_selection_by_target (window, LW_OUTPUTTARGET_RESULTS));
+      sensitive = (gw_searchwindow_has_selection (window, GTK_WIDGET (view)));
       gtk_action_set_sensitive (action_cut, FALSE);
       gtk_action_set_sensitive (action_copy, sensitive);
       gtk_action_set_sensitive (action_paste, FALSE);
@@ -1266,7 +1270,7 @@ G_MODULE_EXPORT gboolean gw_searchwindow_focus_change_on_key_press_cb (GtkWidget
            )
          )
       {
-        gw_searchwindow_select_none_by_target (window, LW_OUTPUTTARGET_ENTRY);
+        gw_searchwindow_select_none (window, GTK_WIDGET (view));
         gtk_widget_grab_focus (GTK_WIDGET (view));
         return TRUE;
       }
@@ -1280,7 +1284,7 @@ G_MODULE_EXPORT gboolean gw_searchwindow_focus_change_on_key_press_cb (GtkWidget
                 widget != GTK_WIDGET (priv->entry)
               )
       {
-        gw_searchwindow_select_all_by_target (window, LW_OUTPUTTARGET_ENTRY);
+        gw_searchwindow_select_all (window, GTK_WIDGET (priv->entry));
         gtk_widget_grab_focus (GTK_WIDGET (priv->entry));
         return TRUE;
       }
@@ -1335,7 +1339,7 @@ G_MODULE_EXPORT void gw_searchwindow_search_cb (GtkWidget *widget, gpointer data
     }
 
     view = gw_searchwindow_get_current_textview (window);
-    new_item = lw_searchitem_new (query, di, LW_OUTPUTTARGET_RESULTS, preferences, &error);
+    new_item = lw_searchitem_new (query, di, preferences, &error);
     if (new_item == NULL)
     {
       gw_application_handle_error (application, NULL, FALSE, &error);

@@ -44,7 +44,7 @@ void gw_searchwindow_update_toolbar_buttons (GwSearchWindow*);
 void gw_searchwindow_update_total_results_label (GwSearchWindow*, LwSearchItem*);
 
 char* gw_searchwindow_get_text_slice_from_buffer (GwSearchWindow*, int, int, int);
-char* gw_searchwindow_get_text_by_target (GwSearchWindow*, LwOutputTarget);
+char* gw_searchwindow_get_text (GwSearchWindow*, GtkWidget*);
 
 void gw_searchwindow_cancel_search_by_searchitem (GwSearchWindow*, LwSearchItem*);
 void gw_searchwindow_cancel_search_by_tab_number (GwSearchWindow*, const int);
@@ -73,23 +73,21 @@ void gw_searchwindow_buffer_initialize_marks (GtkTextBuffer*);
 
 void gw_searchwindow_entry_insert (GwSearchWindow*, char*);
 void gw_searchwindow_clear_search_entry (GwSearchWindow*);
-void gw_searchwindow_select_all_by_target (GwSearchWindow*, LwOutputTarget);
 
 
 gunichar gw_searchwindow_get_hovered_character (GwSearchWindow*, int*, int*, GtkTextIter*);
 void gw_searchwindow_show_window (GwSearchWindow*, char*);
 void gw_searchwindow_set_cursor (GwSearchWindow*, GdkCursorType);
-LwOutputTarget gw_searchwindow_get_current_target_focus (GwSearchWindow*);
 
-void gw_searchwindow_paste_text (GwSearchWindow*, LwOutputTarget);
-void gw_searchwindow_cut_text (GwSearchWindow*, LwOutputTarget);
-void gw_searchwindow_copy_text (GwSearchWindow*, LwOutputTarget);
+void gw_searchwindow_paste_text (GwSearchWindow*, GtkWidget*);
+void gw_searchwindow_cut_text (GwSearchWindow*, GtkWidget*);
+void gw_searchwindow_copy_text (GwSearchWindow*, GtkWidget*);
 
 void gw_searchwindow_cycle_dictionaries (GwSearchWindow*, gboolean);
 
-void gw_searchwindow_select_none_by_target (GwSearchWindow*, LwOutputTarget);
-
-gboolean gw_searchwindow_has_selection_by_target (GwSearchWindow*, LwOutputTarget);
+void gw_searchwindow_select_all (GwSearchWindow*, GtkWidget*);
+void gw_searchwindow_select_none (GwSearchWindow*, GtkWidget*);
+gboolean gw_searchwindow_has_selection (GwSearchWindow*, GtkWidget*);
 
 void gw_searchwindow_reload_tagtable_tags (GwSearchWindow*);
 

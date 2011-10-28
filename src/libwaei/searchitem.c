@@ -66,9 +66,8 @@ static gboolean _query_is_sane (const char* query)
 //! @param error A GError to place errors into or NULL
 //! @return Returns an allocated LwSearchItem object that should be freed with lw_searchitem_free or NULL on error
 //!
-LwSearchItem* lw_searchitem_new (const char* query, LwDictInfo* dictionary, const LwOutputTarget TARGET, LwPreferences *pm, GError **error)
+LwSearchItem* lw_searchitem_new (const char* query, LwDictInfo* dictionary, LwPreferences *pm, GError **error)
 {
-    g_assert (TARGET == LW_OUTPUTTARGET_RESULTS || TARGET == LW_OUTPUTTARGET_KANJI);
     if (!_query_is_sane (query)) return NULL;
 
     LwSearchItem *temp;
@@ -77,7 +76,7 @@ LwSearchItem* lw_searchitem_new (const char* query, LwDictInfo* dictionary, cons
 
     if (temp != NULL)
     {
-      lw_searchitem_init (temp, query, dictionary, TARGET, pm, error);
+      lw_searchitem_init (temp, query, dictionary, pm, error);
 
       if (error != NULL && *error != NULL)
       {
@@ -120,7 +119,7 @@ void lw_searchitem_free (LwSearchItem* item)
 //! @param pm The Application preference manager to get information from
 //! @param error A GError to place errors into or NULL
 //!
-void lw_searchitem_init (LwSearchItem *item, const char* query, LwDictInfo* dictionary, const LwOutputTarget TARGET, LwPreferences *pm, GError **error)
+void lw_searchitem_init (LwSearchItem *item, const char* query, LwDictInfo* dictionary, LwPreferences *pm, GError **error)
 {
     item->results_high = NULL;
     item->results_medium = NULL;
@@ -133,7 +132,6 @@ void lw_searchitem_init (LwSearchItem *item, const char* query, LwDictInfo* dict
     item->status = LW_SEARCHSTATUS_IDLE;
     item->scratch_buffer = NULL;
     item->dictionary = dictionary;
-    item->target = TARGET;
     item->data = NULL;
     item->free_data_func = NULL;
     item->total_relevant_results = 0;

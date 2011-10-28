@@ -132,8 +132,7 @@ static gpointer _stream_results_thread (gpointer data)
               }
               break;
           case LW_RELEVANCE_MEDIUM:
-              if (item->total_irrelevant_results < LW_MAX_MEDIUM_IRRELEVENT_RESULTS &&
-                  !show_only_exact_matches && item->target != LW_OUTPUTTARGET_KANJI)
+              if (item->total_irrelevant_results < LW_MAX_MEDIUM_IRRELEVENT_RESULTS && !show_only_exact_matches)
               {
                 //Store the result line and create an empty one in its place
                 item->total_results++;
@@ -144,8 +143,7 @@ static gpointer _stream_results_thread (gpointer data)
               }
               break;
           default:
-              if (item->total_irrelevant_results < LW_MAX_LOW_IRRELEVENT_RESULTS &&
-                    !show_only_exact_matches && item->target != LW_OUTPUTTARGET_KANJI)
+              if (item->total_irrelevant_results < LW_MAX_LOW_IRRELEVENT_RESULTS && !show_only_exact_matches)
               {
                 //Store the result line and create an empty one in its place
                 item->total_results++;

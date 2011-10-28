@@ -50,18 +50,6 @@ typedef enum
   LW_SEARCHSTATUS_CANCELING
 } LwSearchStatus;
 
-//!
-//! @brief Used as a hint for output formatting
-//!
-typedef enum
-{
-  LW_OUTPUTTARGET_INVALID,
-  LW_OUTPUTTARGET_RESULTS,
-  LW_OUTPUTTARGET_KANJI,
-  LW_OUTPUTTARGET_ENTRY,
-  LW_OUTPUTTARGET_VOCABULARY
-} LwOutputTarget;
-
 typedef void(*LwSearchItemDataFreeFunc)(gpointer);
 
 //!
@@ -78,7 +66,6 @@ struct _LwSearchItem {
 
     LwSearchStatus status;                   //!< Used to test if a search is in progress.
     char *scratch_buffer;                   //!< Scratch space
-    LwOutputTarget target;                  //!< What gui element should be outputted to
     long current_line;                      //!< Current line in the dictionary file
     int history_relevance_idle_timer;       //!< Helps determine if something is added to the history or not
 
@@ -98,9 +85,9 @@ struct _LwSearchItem {
 typedef struct _LwSearchItem LwSearchItem;
 
 //Methods
-LwSearchItem* lw_searchitem_new (const char*, LwDictInfo*, const LwOutputTarget, LwPreferences*, GError**);
+LwSearchItem* lw_searchitem_new (const char*, LwDictInfo*, LwPreferences*, GError**);
 void lw_searchitem_free (LwSearchItem*);
-void lw_searchitem_init (LwSearchItem*, const char*, LwDictInfo*, const LwOutputTarget, LwPreferences*, GError**);
+void lw_searchitem_init (LwSearchItem*, const char*, LwDictInfo*, LwPreferences*, GError**);
 void lw_searchitem_deinit (LwSearchItem*);
 
 void lw_searchitem_cleanup_search (LwSearchItem*);
