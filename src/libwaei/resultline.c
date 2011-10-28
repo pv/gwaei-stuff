@@ -74,6 +74,8 @@ void lw_resultline_init (LwResultLine *rl)
 {
     //A place for a copy of the raw string
     rl->string[0] = '\0';
+
+    rl->relevance = LW_RESULTLINE_RELEVANCE_UNSET;
     
     //General formatting
     rl->def_start[0] = NULL;

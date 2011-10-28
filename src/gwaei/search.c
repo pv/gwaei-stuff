@@ -308,6 +308,33 @@ gboolean gw_searchwindow_update_progress_feedback_timeout (GwSearchWindow *windo
 }
 
 
+gboolean gw_searchwindow_append_result_timeout (GwSearchWindow *window)
+{
+    //Sanity check
+    if (gtk_widget_get_visible (GTK_WIDGET (window)) == FALSE) return TRUE;
+
+    //Declarations
+    LwSearchItem *item;
+
+    //Initializations
+    item = gw_searchwindow_get_current_searchitem (window);
+    
+    if (item != NULL && lw_searchitem_should_check_results (item))
+    {
+      LwResultLine *line;
+      line = lw_searchitem_get_result (item);
+      if (line != NULL)
+      {
+        gw_searchwindow_append_result (window, item, line);
+        lw_resultline_free (line);
+        line = NULL;
+      }
+    }
+
+    return TRUE;
+}
+
+
 void gw_searchwindow_set_entry_text (GwSearchWindow *window, const gchar *text)
 {
     GwSearchWindowPrivate *priv;
@@ -1275,7 +1302,6 @@ void gw_searchwindow_display_no_results_found_page (GwSearchWindow *window, LwSe
     query_text = gtk_entry_get_text (priv->entry);
     di_selected = gw_searchwindow_get_dictionary (window);
 
-  gdk_threads_enter ();
     gtk_text_buffer_set_text (buffer, "", -1);
 
     //Add the title
@@ -1595,7 +1621,6 @@ void gw_searchwindow_display_no_results_found_page (GwSearchWindow *window, LwSe
     gw_searchwindow_append_to_buffer (window, item,
                                "\n\n",
                                NULL, NULL, NULL, NULL         );
-gdk_threads_leave ();
 }
 
 
@@ -1746,9 +1771,7 @@ gboolean gw_searchwindow_has_selection_by_target (GwSearchWindow *window, LwOutp
 
 void gw_searchwindow_cancel_search_by_searchitem (GwSearchWindow *window, LwSearchItem *item)
 {
-    gdk_threads_leave ();
     lw_searchitem_cancel_search (item);
-    gdk_threads_enter ();
 }
 
 
@@ -2213,17 +2236,20 @@ void gw_searchwindow_start_search (GwSearchWindow *window, LwSearchItem* item)
 
     //Declarations
     GwApplication *application;
-    LwEngine *engine;
+    GwSearchData *sdata;
+    GtkTextView *view;
 
     application = gw_window_get_application (GW_WINDOW (window));
-    engine = gw_application_get_engine (application);
-
-    //Sanity check
     if (!gw_application_can_start_search (application)) return;
+    view = gw_searchwindow_get_current_textview (window);
+    sdata = GW_SEARCHDATA (gw_searchdata_new (view, window));
 
     gw_searchwindow_guarantee_first_tab (window);
+    lw_searchitem_set_data (item, sdata, LW_SEARCHITEM_DATA_FREE_FUNC (gw_searchdata_free));
     gw_searchwindow_set_current_searchitem (window, item);
-    lw_engine_get_results (engine, item, TRUE, FALSE);
+    gw_searchwindow_initialize_buffer_by_searchitem (sdata->window, item);
+
+    lw_searchitem_start_search (item, TRUE, FALSE);
     gw_searchwindow_update_history_popups (window);
 }
 
@@ -2417,6 +2443,13 @@ static void gw_searchwindow_attach_signals (GwSearchWindow *window)
           window, 
           NULL
     );
+    priv->timeoutid[GW_SEARCHWINDOW_TIMEOUTID_APPEND_RESULT] = g_timeout_add_full (
+          G_PRIORITY_LOW, 
+          10, 
+          (GSourceFunc) gw_searchwindow_append_result_timeout, 
+          window, 
+          NULL
+    );
 }
 
 
@@ -2435,7 +2468,6 @@ static void gw_searchwindow_remove_signals (GwSearchWindow *window)
     dictinfolist = gw_application_get_dictinfolist (application);
     preferences = gw_application_get_preferences (application);
 
-
     for (i = 0; i < TOTAL_GW_SEARCHWINDOW_TIMEOUTIDS; i++)
     {
       if (g_main_current_source () != NULL &&
@@ -2451,7 +2483,6 @@ static void gw_searchwindow_remove_signals (GwSearchWindow *window)
       }
       priv->timeoutid[i] = 0;
     }
-
 
     lw_preferences_remove_change_listener_by_schema (
         preferences,

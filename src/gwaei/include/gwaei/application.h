@@ -68,7 +68,7 @@ GwSearchWindow* gw_application_get_last_focused_searchwindow (GwApplication*);
 
 LwPreferences* gw_application_get_preferences (GwApplication*);
 GwDictInfoList* gw_application_get_dictinfolist (GwApplication*);
-LwEngine* gw_application_get_engine (GwApplication*);
+//LwEngine* gw_application_get_engine (GwApplication*);
 GtkTextTagTable* gw_application_get_tagtable (GwApplication*);
 
 void gw_application_destroy_window (GwApplication*, GtkWindow*);

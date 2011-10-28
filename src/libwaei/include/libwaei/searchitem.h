@@ -86,12 +86,11 @@ struct _LwSearchItem {
     int total_irrelevant_results;           //!< Total results guessed to be vaguely relevant to the query
     int total_results;                      //!< Total results returned from the search
 
+    GList *results_high;                    //!< Buffer storing mediumly relevant result for later display
     GList *results_medium;                  //!< Buffer storing mediumly relevant result for later display
     GList *results_low;                     //!< Buffer storing lowly relevant result for later display
 
     LwResultLine* resultline;               //!< Result line to store parsed result
-    LwResultLine* backup_resultline;        //!< Result line kept for comparison purposes from previosu result line
-    LwResultLine* swap_resultline;          //!< Swap space for swapping result line and backup_resultline
 
     gpointer data;                 //!< Pointer to a buffer that stays constant unlike when the target attribute is used
     LwSearchItemDataFreeFunc free_data_func;
@@ -105,7 +104,8 @@ void lw_searchitem_init (LwSearchItem*, const char*, LwDictInfo*, const LwOutput
 void lw_searchitem_deinit (LwSearchItem*);
 
 void lw_searchitem_cleanup_search (LwSearchItem*);
-gboolean lw_searchitem_prepare_search (LwSearchItem*);
+void lw_searchitem_clear_results (LwSearchItem*);
+void lw_searchitem_prepare_search (LwSearchItem*);
 
 gboolean lw_searchitem_run_comparison (LwSearchItem*, const LwRelevance);
 gboolean lw_searchitem_is_equal (LwSearchItem*, LwSearchItem*);
@@ -117,6 +117,8 @@ gpointer lw_searchitem_get_data (LwSearchItem*);
 void lw_searchitem_free_data (LwSearchItem*);
 gboolean lw_searchitem_has_data (LwSearchItem*);
 
+gboolean lw_searchitem_should_check_results (LwSearchItem*);
+LwResultLine* lw_searchitem_get_result (LwSearchItem*);
 void lw_searchitem_parse_result_string (LwSearchItem*);
 void lw_searchitem_cancel_search (LwSearchItem*);
 

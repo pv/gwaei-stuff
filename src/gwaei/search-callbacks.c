@@ -161,7 +161,6 @@ G_MODULE_EXPORT gboolean gw_searchwindow_get_iter_for_button_release_cb (GtkWidg
     GwSearchWindow *window;
     GwSearchWindowPrivate *priv;
     LwDictInfoList *dictinfolist;
-    LwEngine *engine;
     LwPreferences *preferences;
     gint x;
     gint y;
@@ -181,7 +180,6 @@ G_MODULE_EXPORT gboolean gw_searchwindow_get_iter_for_button_release_cb (GtkWidg
     if (window == NULL) return FALSE;
     priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
     application = gw_window_get_application (GW_WINDOW (window));
-    engine = gw_application_get_engine (application);
     dictinfolist = LW_DICTINFOLIST (gw_application_get_dictinfolist (application));
     preferences = gw_application_get_preferences (application);
     unic = gw_searchwindow_get_hovered_character (window, &x, &y, &iter);
@@ -225,7 +223,7 @@ G_MODULE_EXPORT gboolean gw_searchwindow_get_iter_for_button_release_cb (GtkWidg
 
           priv->mouse_item = lw_searchitem_new (query, di, LW_OUTPUTTARGET_KANJI, preferences, &error);
           lw_searchitem_set_data (priv->mouse_item, gw_searchdata_new (NULL, window), LW_SEARCHITEM_DATA_FREE_FUNC (gw_searchdata_free));
-          lw_engine_get_results (engine, priv->mouse_item, TRUE, FALSE);
+          lw_searchitem_start_search (priv->mouse_item, TRUE, FALSE);
 
           g_thread_join (priv->mouse_item->thread); 
 

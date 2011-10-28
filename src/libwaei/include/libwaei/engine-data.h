@@ -4,13 +4,12 @@
 #define LW_ENGINEDATA(object) (LwEngineData*) object
 
 struct _LwEngineData {
-    LwEngine *engine;
     LwSearchItem *item;
     gboolean exact;
 };
 typedef struct _LwEngineData LwEngineData;
 
-LwEngineData* lw_enginedata_new (LwEngine*, LwSearchItem*, gboolean);
+LwEngineData* lw_enginedata_new (LwSearchItem*, gboolean);
 void lw_enginedata_free (LwEngineData*);
 
 #endif

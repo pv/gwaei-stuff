@@ -34,6 +34,14 @@
 
 #define LW_RESULTLINE(object) (LwResultLine*) object
 
+typedef enum {
+  LW_RESULTLINE_RELEVANCE_UNSET,
+  LW_RESULTLINE_RELEVANCE_LOW,
+  LW_RESULTLINE_RELEVANCE_MEDIUM,
+  LW_RESULTLINE_RELEVANCE_HIGH,
+  TOTAL_RESULTLINE_RELEVANCE
+} LwResultLineRelevance;
+
 //!
 //! @brief Primitive for storing lists of dictionaries
 //!
@@ -42,6 +50,7 @@ struct _LwResultLine {
     char string[LW_IO_MAX_FGETS_LINE];     //!< Character array holding the result line for the pointers to reference
 
     //General result things
+    LwResultLineRelevance relevance;
     char *def_start[50];        //!< Pointer to the definitions
     int def_total;              //!< Total definitions found for a result
     char *number[50];           //!< Pointer to the numbers of the definitions

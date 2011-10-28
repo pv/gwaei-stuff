@@ -402,6 +402,7 @@ GwDictInfoList* gw_application_get_dictinfolist (GwApplication *application)
 }
 
 
+/*
 LwEngine* gw_application_get_engine (GwApplication *app)
 {
   GwApplicationPrivate *priv;
@@ -410,6 +411,7 @@ LwEngine* gw_application_get_engine (GwApplication *app)
 
   return priv->engine;
 }
+*/
 
 
 GtkTextTagTable* gw_application_get_tagtable (GwApplication *app)
@@ -489,10 +491,6 @@ static int gw_application_command_line (GApplication *application, GApplicationC
       gw_searchwindow_set_entry_text (window, priv->arg_query);
       gw_searchwindow_search_cb (GTK_WIDGET (window), window);
     }
-
-    //HACK
-    printf("this gdk_threads_leave call shouldn't have to exist\n");
-    gdk_threads_leave ();
 
     return 0;
 }

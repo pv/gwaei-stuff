@@ -17,17 +17,6 @@ void gw_application_private_init (GwApplication *application)
 
       priv->last_focused = NULL;
 
-      priv->engine = lw_engine_new (
-       gw_output_append_edict_results_cb,
-       gw_output_append_kanjidict_results_cb,
-       gw_output_append_examplesdict_results_cb,
-       gw_output_append_unknowndict_results_cb,
-       gw_output_append_less_relevant_header_cb,
-       gw_output_append_more_relevant_header_cb,
-       gw_output_prepare_search_cb,
-       gw_output_cleanup_search_cb
-      );
-
       priv->preferences = lw_preferences_new ();
       priv->dictinfolist = gw_dictinfolist_new (20, application);
       priv->block_new_searches = 0;
@@ -65,7 +54,7 @@ void gw_application_private_finalize (GwApplication *application)
     gw_dictinfolist_free (priv->dictinfolist);
     if (priv->context != NULL) g_option_context_free (priv->context);
     g_free(priv->arg_query);
-    lw_engine_free (priv->engine);
+//    lw_engine_free (priv->engine);
     lw_preferences_free (priv->preferences);
 }
 

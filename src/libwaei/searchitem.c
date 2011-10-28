@@ -122,6 +122,7 @@ void lw_searchitem_free (LwSearchItem* item)
 //!
 void lw_searchitem_init (LwSearchItem *item, const char* query, LwDictInfo* dictionary, const LwOutputTarget TARGET, LwPreferences *pm, GError **error)
 {
+    item->results_high = NULL;
     item->results_medium = NULL;
     item->results_low = NULL;
     item->thread = NULL;
@@ -140,8 +141,6 @@ void lw_searchitem_init (LwSearchItem *item, const char* query, LwDictInfo* dict
     item->total_results = 0;
     item->current_line = 0;
     item->resultline = NULL;
-    item->backup_resultline = NULL;
-    item->swap_resultline = NULL;
     item->queryline = lw_queryline_new ();
     item->history_relevance_idle_timer = 0;
 
@@ -178,6 +177,7 @@ void lw_searchitem_deinit (LwSearchItem *item)
       g_thread_join (item->thread);
       item->thread = NULL;
     }
+    lw_searchitem_clear_results (item);
     lw_searchitem_cleanup_search (item);
     lw_queryline_free (item->queryline);
     if (lw_searchitem_has_data (item))
@@ -185,6 +185,30 @@ void lw_searchitem_deinit (LwSearchItem *item)
 
     g_mutex_free (item->mutex);
     item->mutex = NULL;
+}
+
+
+void lw_searchitem_clear_results (LwSearchItem *item)
+{
+    item->total_relevant_results = 0;
+    item->total_irrelevant_results = 0;
+    item->total_results = 0;
+
+    while (item->results_low != NULL)
+    {
+      lw_resultline_free (LW_RESULTLINE (item->results_low->data));
+      item->results_low = g_list_delete_link (item->results_low, item->results_low);
+    }
+    while (item->results_medium != NULL)
+    {
+      lw_resultline_free (LW_RESULTLINE (item->results_medium->data));
+      item->results_medium = g_list_delete_link (item->results_medium, item->results_medium);
+    }
+    while (item->results_high != NULL)
+    {
+      lw_resultline_free (LW_RESULTLINE (item->results_high->data));
+      item->results_high = g_list_delete_link (item->results_high, item->results_high);
+    }
 }
 
 
@@ -199,43 +223,31 @@ void lw_searchitem_deinit (LwSearchItem *item)
 //! @param item The LwSearchItem to its variables prepared
 //! @return Returns false on seachitem prep failure.
 //!
-gboolean lw_searchitem_prepare_search (LwSearchItem* item)
+void  lw_searchitem_prepare_search (LwSearchItem* item)
 {
-    if (item->scratch_buffer != NULL || (item->scratch_buffer = malloc (LW_IO_MAX_FGETS_LINE)) == NULL)
-    {
-      return FALSE;
-    }
-    if (item->resultline != NULL || (item->resultline = lw_resultline_new ()) == NULL)
-    {
-      free (item->scratch_buffer);
-      item->scratch_buffer = NULL;
-      return FALSE;
-    }
-    if (item->backup_resultline != NULL || (item->backup_resultline = lw_resultline_new ()) == NULL)
-    {
-      lw_resultline_free (item->resultline);
-      item->resultline = NULL;
-      free (item->scratch_buffer);
-      item->scratch_buffer = NULL;
-      return FALSE;
-    }
+    lw_searchitem_clear_results (item);
+    lw_searchitem_cleanup_search (item);
 
-    //Reset internal variables
+    //Declarations
+    char *path;
+
+    //Initializations
+    item->scratch_buffer = (char*) malloc (sizeof(char*) * LW_IO_MAX_FGETS_LINE);
+    item->resultline = lw_resultline_new ();
     item->current_line = 0;
     item->total_relevant_results = 0;
     item->total_irrelevant_results = 0;
     item->total_results = 0;
     item->thread = NULL;
 
-    if (item->fd == NULL)
+    path = lw_dictinfo_get_uri (item->dictionary);
+    if (path != NULL)
     {
-      char *path = lw_dictinfo_get_uri (item->dictionary);
       item->fd = fopen (path, "r");
       g_free (path);
-      path = NULL;
     }
+
     item->status = LW_SEARCHSTATUS_SEARCHING;
-    return TRUE;
 }
 
 
@@ -260,20 +272,14 @@ void lw_searchitem_cleanup_search (LwSearchItem* item)
       free(item->scratch_buffer);
       item->scratch_buffer = NULL;
     }
+
     if (item->resultline != NULL)
     {
       lw_resultline_free (item->resultline);
       item->resultline = NULL;
     }
-    if (item->backup_resultline != NULL)
-    {
-      lw_resultline_free (item->backup_resultline);
-      item->backup_resultline = NULL;
-    }
 
     item->thread = NULL;
-
-    //item->thread = NULL;  This code creates multithreading problems
     item->status = LW_SEARCHSTATUS_IDLE;
 }
 
@@ -699,39 +705,6 @@ void lw_searchitem_parse_result_string (LwSearchItem *item)
     }
 }
 
-//!
-//! @brief Uses a searchitem to cancel a window
-//!
-//! @param item A LwSearchItem to gleam information from
-//!
-void lw_searchitem_cancel_search (LwSearchItem *item)
-{
-    if (item == NULL)
-    {
-      return;
-    }
-    else if (item->thread == NULL)
-    {
-      item->thread = NULL;
-      item->status = LW_SEARCHSTATUS_IDLE;
-      return;
-    }
-    else
-    {
-      lw_searchitem_lock_mutex (item);
-      item->status = LW_SEARCHSTATUS_CANCELING;
-      lw_searchitem_unlock_mutex (item);
-
-      g_thread_join (item->thread);
-      item->thread = NULL;
-
-      lw_searchitem_lock_mutex (item);
-      item->status = LW_SEARCHSTATUS_IDLE;
-      lw_searchitem_unlock_mutex (item);
-    }
-}
-
-
 static int _locks = 0;
 
 //!
@@ -755,4 +728,3 @@ void lw_searchitem_unlock_mutex (LwSearchItem *item)
 //  printf("LOCKS %d\n", _locks);
   g_mutex_unlock(item->mutex);
 }
-

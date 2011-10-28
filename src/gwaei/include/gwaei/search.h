@@ -123,6 +123,7 @@ void gw_searchwindow_start_search (GwSearchWindow*, LwSearchItem*);
 void gw_searchwindow_initialize_dictionary_menu (GwSearchWindow*);
 void gw_searchwindow_initialize_dictionary_combobox (GwSearchWindow*);
 
+
 #include <gwaei/search-callbacks.h>
 #include <gwaei/search-data.h>
 

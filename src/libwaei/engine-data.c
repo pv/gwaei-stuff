@@ -43,7 +43,7 @@
 //! @param exact Whether only exact matching results should be shown for the search
 //! @return An allocated LwEngineData that will be needed to be freed by lw_engindata_free.
 //!
-LwEngineData* lw_enginedata_new (LwEngine *engine, LwSearchItem *item, gboolean exact)
+LwEngineData* lw_enginedata_new (LwSearchItem *item, gboolean exact)
 {
     LwEngineData *temp;
 
@@ -51,7 +51,6 @@ LwEngineData* lw_enginedata_new (LwEngine *engine, LwSearchItem *item, gboolean 
 
     if (temp != NULL)
     {
-      temp->engine = engine;
       temp->item = item;
       temp->exact = exact;
     }
