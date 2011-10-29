@@ -91,6 +91,7 @@ static gpointer _stream_results_thread (gpointer data)
     {
       //Give a chance for something else to run
       lw_searchitem_unlock_mutex (item);
+      g_thread_yield ();
       lw_searchitem_lock_mutex (item);
 
       item->current_line++;
