@@ -85,4 +85,6 @@ void lw_resultline_parse_radicaldict_result_string (LwResultLine*);
 void lw_resultline_parse_examplesdict_result_string (LwResultLine*);
 void lw_resultline_parse_unknowndict_result_string (LwResultLine*);
 
+gboolean lw_resultline_is_similar (LwResultLine *rl1, LwResultLine *rl2);
+
 #endif

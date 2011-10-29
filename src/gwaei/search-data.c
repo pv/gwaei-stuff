@@ -48,15 +48,38 @@ GwSearchData* gw_searchdata_new (GtkTextView *view, GwSearchWindow *window)
     {
       temp->window = window;
       temp->view = view;
+      temp->resultline = NULL;
     }
     return temp;
 }
+
 
 void gw_searchdata_free (GwSearchData *data)
 {
     g_assert (data != NULL);
 
+    if (data->resultline != NULL) lw_resultline_free (data->resultline);
+
+    data->window = NULL;
+    data->view = NULL;
+    data->resultline = NULL;
+
     free (data);
+}
+
+
+void gw_searchdata_set_resultline (GwSearchData *data, LwResultLine *resultline)
+{
+    g_assert (data != NULL);
+
+    if (data->resultline != NULL) 
+      lw_resultline_free (data->resultline);
+    data->resultline = resultline;
+}
+
+LwResultLine* gw_searchdata_get_resultline (GwSearchData *data)
+{
+  return data->resultline;
 }
 
 

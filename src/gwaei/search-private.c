@@ -35,6 +35,8 @@ void gw_searchwindow_private_init (GwSearchWindow *window)
     priv->mouse_item = NULL;
     priv->mouse_button_press_x = 0;
     priv->mouse_button_press_y = 0;
+    priv->mouse_button_press_root_x = 0;
+    priv->mouse_button_press_root_y = 0;
     priv->mouse_button_character = 0;
     priv->mouse_hovered_word = NULL; 
 

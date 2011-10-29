@@ -169,8 +169,6 @@ G_MODULE_EXPORT gboolean gw_searchwindow_get_iter_for_button_release_cb (GtkWidg
     gunichar unic;
     LwDictInfo *di;
     GError *error;
-    GtkTextView *view;
-    GtkWidget *tooltip_window;
 
     //Initializations
     x = event->x;
@@ -189,7 +187,7 @@ G_MODULE_EXPORT gboolean gw_searchwindow_get_iter_for_button_release_cb (GtkWidg
 
     if (abs (priv->mouse_button_press_x - x) < 3 && abs (priv->mouse_button_press_y - y) < 3)
     {
-      // Characters above 0xFF00 represent inserted images
+      // Characters above 0xFF00 represent inserted images etc
       if (unic > L'ー' && unic < 0xFF00 )
       {
         //Convert the unicode character into to a utf8 string
@@ -197,50 +195,18 @@ G_MODULE_EXPORT gboolean gw_searchwindow_get_iter_for_button_release_cb (GtkWidg
         gint length = g_unichar_to_utf8 (unic, query);
         query[length] = '\0'; 
 
-        view = gw_searchwindow_get_current_textview (window);
-        tooltip_window = GTK_WIDGET (gtk_widget_get_tooltip_window (GTK_WIDGET (view)));
-
-        if (tooltip_window == NULL) {
-          priv->mouse_button_character = unic;
-          tooltip_window = gtk_window_new (GTK_WINDOW_POPUP);
-          gtk_window_set_skip_taskbar_hint (GTK_WINDOW (tooltip_window), TRUE);
-          gtk_window_set_skip_pager_hint (GTK_WINDOW (tooltip_window), TRUE);
-          gtk_window_set_accept_focus (GTK_WINDOW (tooltip_window), FALSE);
-          gtk_widget_set_tooltip_window (GTK_WIDGET (view), GTK_WINDOW (tooltip_window));
-          gtk_window_set_transient_for (GTK_WINDOW (tooltip_window), NULL);
-          gtk_window_set_type_hint (GTK_WINDOW (tooltip_window), GDK_WINDOW_TYPE_HINT_TOOLTIP);
-          gtk_widget_set_name (GTK_WIDGET (tooltip_window), "gtk-tooltip");
-        }
-        if (tooltip_window != NULL) {
-          priv->mouse_button_character = unic;
-
-          //Start the search
-          if (priv->mouse_item != NULL)
-          {
-            gw_searchwindow_cancel_search_by_searchitem (window, priv->mouse_item);
-            priv->mouse_item = NULL;
-          }
-
-          priv->mouse_item = lw_searchitem_new (query, di, preferences, &error);
-          lw_searchitem_set_data (priv->mouse_item, gw_searchdata_new (NULL, window), LW_SEARCHITEM_DATA_FREE_FUNC (gw_searchdata_free));
-          lw_searchitem_start_search (priv->mouse_item, TRUE, FALSE);
-
-          g_thread_join (priv->mouse_item->thread); 
-
-          int winx, winy;
-          gtk_window_get_position (GTK_WINDOW (tooltip_window), &winx, &winy);
-          gtk_window_move (GTK_WINDOW (tooltip_window), event->x_root + winx - 3, event->y_root + winy - 3);
-          gtk_widget_show_now (GTK_WIDGET (tooltip_window));
-        }
-      }
-      else {
-        view = gw_searchwindow_get_current_textview (window);
-        tooltip_window = GTK_WIDGET (gtk_widget_get_tooltip_window (GTK_WIDGET (view)));
-        if (tooltip_window != NULL && priv->mouse_button_character != unic) 
+        //Start the search
+        if (priv->mouse_item != NULL)
         {
-          gtk_widget_set_tooltip_window (GTK_WIDGET (view), NULL);
-          gtk_widget_destroy (tooltip_window);
+          lw_searchitem_cancel_search (priv->mouse_item);
+          lw_searchitem_free (priv->mouse_item);
+          priv->mouse_item = NULL;
         }
+        priv->mouse_button_press_root_x = event->x_root;
+        priv->mouse_button_press_root_y = event->y_root;
+        priv->mouse_button_character = unic;
+        priv->mouse_item = lw_searchitem_new (query, di, preferences, &error);
+        lw_searchitem_start_search (priv->mouse_item, TRUE, FALSE);
       }
 
       if (error != NULL)

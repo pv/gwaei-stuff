@@ -60,6 +60,8 @@ struct _GwSearchWindowPrivate {
   LwSearchItem *mouse_item;
   gint mouse_button_press_x;
   gint mouse_button_press_y;
+  gint mouse_button_press_root_x;
+  gint mouse_button_press_root_y;
   gunichar mouse_button_character;
   char* mouse_hovered_word; 
 

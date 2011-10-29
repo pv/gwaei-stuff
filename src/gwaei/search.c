@@ -313,22 +313,20 @@ gboolean gw_searchwindow_append_result_timeout (GwSearchWindow *window)
     if (gtk_widget_get_visible (GTK_WIDGET (window)) == FALSE) return TRUE;
 
     //Declarations
+    GwSearchWindowPrivate *priv;
     LwSearchItem *item;
 
     //Initializations
+    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
     item = gw_searchwindow_get_current_searchitem (window);
     
     if (item != NULL && lw_searchitem_should_check_results (item))
     {
-      LwResultLine *line;
-      line = lw_searchitem_get_result (item);
-      if (line != NULL)
-      {
-        gw_searchwindow_append_result (window, item, line);
-        lw_resultline_free (line);
-        line = NULL;
-      }
+        gw_searchwindow_append_result (window, item);
     }
+    
+    if (priv->mouse_item != NULL)
+      gw_searchwindow_append_kanjidict_tooltip_result (window, priv->mouse_item);
 
     return TRUE;
 }

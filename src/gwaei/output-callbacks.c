@@ -44,10 +44,10 @@ static void _searchwindow_new_tab_with_search_cb (GtkMenuItem*, gpointer);
 static void _searchwindow_search_for_searchitem_online_cb (GtkMenuItem*, gpointer);
 static void _searchwindow_destroy_tab_menuitem_searchitem_data_cb (GObject*, gpointer);
 
-static void gw_searchwindow_append_edict_result (GwSearchWindow*, LwSearchItem*, LwResultLine*);
-static void gw_searchwindow_append_kanjidict_result (GwSearchWindow*, LwSearchItem*, LwResultLine*);
-static void gw_searchwindow_append_examplesdict_result (GwSearchWindow*, LwSearchItem*, LwResultLine*);
-static void gw_searchwindow_append_unknowndict_result (GwSearchWindow*, LwSearchItem*, LwResultLine*);
+static void gw_searchwindow_append_edict_result (GwSearchWindow*, LwSearchItem*);
+static void gw_searchwindow_append_kanjidict_result (GwSearchWindow*, LwSearchItem*);
+static void gw_searchwindow_append_examplesdict_result (GwSearchWindow*, LwSearchItem*);
+static void gw_searchwindow_append_unknowndict_result (GwSearchWindow*, LwSearchItem*);
 static void gw_searchwindow_append_less_relevant_header (GwSearchWindow*, LwSearchItem*);
 static void gw_searchwindow_append_more_relevant_header (GwSearchWindow*, LwSearchItem*);
 
@@ -57,23 +57,23 @@ static void gw_searchwindow_append_more_relevant_header (GwSearchWindow*, LwSear
 //! @param engine The LwEngine to use for output
 //! @param item The data from the LwSearchItem
 //!
-void gw_searchwindow_append_result (GwSearchWindow *window, LwSearchItem* item, LwResultLine *resultline)
+void gw_searchwindow_append_result (GwSearchWindow *window, LwSearchItem* item)
 {
-    if (window == NULL || item == NULL || resultline == NULL) return;
+    if (window == NULL || item == NULL) return;
 
     switch (item->dictionary->type)
     {
       case LW_DICTTYPE_EDICT:
-        gw_searchwindow_append_edict_result (window, item, resultline);
+        gw_searchwindow_append_edict_result (window, item);
         break;
       case LW_DICTTYPE_KANJI:
-        gw_searchwindow_append_kanjidict_result (window, item, resultline);
+        gw_searchwindow_append_kanjidict_result (window, item);
         break;
       case LW_DICTTYPE_EXAMPLES:
-        gw_searchwindow_append_examplesdict_result (window, item, resultline);
+        gw_searchwindow_append_examplesdict_result (window, item);
         break;
       case LW_DICTTYPE_UNKNOWN:
-        gw_searchwindow_append_unknowndict_result (window, item, resultline);
+        gw_searchwindow_append_unknowndict_result (window, item);
         break;
       default:
         g_assert_not_reached ();
@@ -372,6 +372,20 @@ static void _searchwindow_append_def_same_to_buffer (GwSearchWindow *window, LwS
 }
 
 
+gboolean lw_searchitem_next_is_same (LwSearchItem *item, LwResultLine *current)
+{
+  //Declarations
+  GwSearchData *sdata;
+  LwResultLine *previous;
+
+  //Initializations
+  sdata = GW_SEARCHDATA (lw_searchitem_get_data (item));
+  previous = gw_searchdata_get_resultline (sdata);
+
+  return lw_resultline_is_similar (previous, current);
+}
+
+
 //!
 //! @brief Appends an edict style result to the buffer, adding nice formatting.
 //!
@@ -380,15 +394,15 @@ static void _searchwindow_append_def_same_to_buffer (GwSearchWindow *window, LwS
 //!
 //! @param item A LwSearchItem to gleam information from.
 //!
-static void gw_searchwindow_append_edict_result (GwSearchWindow *window, LwSearchItem *item, LwResultLine *resultline)
+static void gw_searchwindow_append_edict_result (GwSearchWindow *window, LwSearchItem *item)
 {
-    if (window == NULL || item == NULL || resultline == NULL) return;
-
     //Sanity check
+    if (window == NULL || item == NULL) return;
     g_assert (lw_searchitem_has_data (item));
 
     //Declarations
     GwSearchWindowPrivate *priv;
+    LwResultLine *resultline;
     GwSearchData *sdata;
     GtkTextView *view;
     GtkTextBuffer *buffer;
@@ -408,13 +422,24 @@ static void gw_searchwindow_append_edict_result (GwSearchWindow *window, LwSearc
     skip = FALSE;
 
     //Initializations
-    sdata = GW_SEARCHDATA (lw_searchitem_get_data (item));
+    resultline = lw_searchitem_get_result (item);
+    if (resultline == NULL) return;
     priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    sdata = GW_SEARCHDATA (lw_searchitem_get_data (item));
     view = GTK_TEXT_VIEW (sdata->view);
     buffer = gtk_text_view_get_buffer (view);
     kanji_exists = (resultline->kanji_start != NULL);
     furigana_exists = (resultline->furigana_start != NULL);
     popup_text = NULL;
+
+    if (lw_searchitem_next_is_same (item, resultline))
+    {
+      _searchwindow_append_def_same_to_buffer (window, item, resultline);
+      gw_searchdata_set_resultline (sdata, resultline);
+      return;
+    }
+
+    gw_searchdata_set_resultline (sdata, resultline);
 
     switch (resultline->relevance)
     {
@@ -524,13 +549,14 @@ static void gw_searchwindow_append_edict_result (GwSearchWindow *window, LwSearc
 //!
 //! @param item A LwSearchItem to gleam information from.
 //!
-static void gw_searchwindow_append_kanjidict_result (GwSearchWindow *window, LwSearchItem *item, LwResultLine *resultline)
+static void gw_searchwindow_append_kanjidict_result (GwSearchWindow *window, LwSearchItem *item)
 {
     //Sanity check
     g_assert (lw_searchitem_has_data (item));
 
     //Declarations
     GwSearchData *sdata;
+    LwResultLine *resultline;
     GtkTextView *view;
     GtkTextBuffer *buffer;
     GtkTextIter iter;
@@ -538,276 +564,135 @@ static void gw_searchwindow_append_kanjidict_result (GwSearchWindow *window, LwS
     int line, start_offset, end_offset;
 
     //Initializations
-    resultline = item->resultline;
     sdata = GW_SEARCHDATA (lw_searchitem_get_data (item));
     view = GTK_TEXT_VIEW (sdata->view);
     buffer = gtk_text_view_get_buffer (view);
 
+    gw_searchdata_set_resultline (sdata, resultline);
+
+    switch (resultline->relevance)
+    {
+      case LW_RESULTLINE_RELEVANCE_HIGH:
+        gw_searchwindow_append_more_relevant_header (window, item);
+        break;
+      case LW_RESULTLINE_RELEVANCE_MEDIUM:
+      case LW_RESULTLINE_RELEVANCE_LOW:
+        gw_searchwindow_append_less_relevant_header (window, item);
+        break;
+      default:
+        g_assert_not_reached ();
+        break;
+    }
+
+    mark = gtk_text_buffer_get_mark (buffer, "content_insertion_mark");
+    gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark);
+
+    //Kanji
+    gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); start_offset = gtk_text_iter_get_line_offset (&iter);
+    gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, resultline->kanji, -1, "large", "center", NULL);
+    gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, " ", -1, "large", "center", NULL);
+    gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
+    gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); line = gtk_text_iter_get_line (&iter);
+    _add_match_highlights (line, start_offset, end_offset, item);
+
+    gtk_text_buffer_insert (buffer, &iter, "\n", -1);
+    gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); line = gtk_text_iter_get_line (&iter);
+
+    //Radicals
+    if (resultline->radicals != NULL)
+    {
+      gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, gettext("Radicals:"), -1, "important", NULL);
+      gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); start_offset = gtk_text_iter_get_line_offset (&iter);
+      gtk_text_buffer_insert (buffer, &iter, resultline->radicals, -1);
+      gtk_text_buffer_insert (buffer, &iter, " ", -1);
+      gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
+      _add_match_highlights (line, start_offset, end_offset, item);
+
+      gtk_text_buffer_insert (buffer, &iter, "\n", -1);
+      gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); line = gtk_text_iter_get_line (&iter);
+
 /*
-    if (item->target == LW_OUTPUTTARGET_RESULTS)
+      GwRadicalsWindow *radicalswindow;
+      radicalswindow =  GW_RADICALSWINDOW (gw_application_get_window_by_type (app, GW_WINDOW_RADICALS));
+      if (radicalswindow != NULL)
+      {
+        gw_radicalswindow_set_button_sensitive_when_label_is (radicalswindow, resultline->radicals);
+      }
+*/
+    }
+
+    //Readings
+    if (resultline->readings[0] != NULL)
     {
-      mark = gtk_text_buffer_get_mark (buffer, "content_insertion_mark");
-      gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark);
-
-      //Kanji
+      gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, gettext("Readings:"), -1, "important", NULL);
       gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); start_offset = gtk_text_iter_get_line_offset (&iter);
-      gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, resultline->kanji, -1, "large", "center", NULL);
-      if (item->target == LW_OUTPUTTARGET_RESULTS) gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, " ", -1, "large", "center", NULL);
+      gtk_text_buffer_insert (buffer, &iter, resultline->readings[0], -1);
       gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
-      gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); line = gtk_text_iter_get_line (&iter);
-      if (item->target == LW_OUTPUTTARGET_RESULTS)
-        _add_match_highlights (line, start_offset, end_offset, item);
-
+      _add_match_highlights (line, start_offset, end_offset, item);
       gtk_text_buffer_insert (buffer, &iter, "\n", -1);
       gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); line = gtk_text_iter_get_line (&iter);
-
-      //Radicals
-      if (resultline->radicals != NULL)
-      {
-        gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, gettext("Radicals:"), -1, "important", NULL);
-        gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); start_offset = gtk_text_iter_get_line_offset (&iter);
-        gtk_text_buffer_insert (buffer, &iter, resultline->radicals, -1);
-        gtk_text_buffer_insert (buffer, &iter, " ", -1);
-        gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
-        if (item->target == LW_OUTPUTTARGET_RESULTS)
-          _add_match_highlights (line, start_offset, end_offset, item);
-
-        gtk_text_buffer_insert (buffer, &iter, "\n", -1);
-        gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); line = gtk_text_iter_get_line (&iter);
-
-        GwRadicalsWindow *radicalswindow;
-        radicalswindow =  GW_RADICALSWINDOW (gw_application_get_window_by_type (app, GW_WINDOW_RADICALS));
-        if (radicalswindow != NULL)
-        {
-          gw_radicalswindow_set_button_sensitive_when_label_is (radicalswindow, resultline->radicals);
-        }
-      }
-
-      //Readings
-      if (resultline->readings[0] != NULL)
-      {
-        gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, gettext("Readings:"), -1, "important", NULL);
-        gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); start_offset = gtk_text_iter_get_line_offset (&iter);
-        gtk_text_buffer_insert (buffer, &iter, resultline->readings[0], -1);
-        gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
-        if (item->target == LW_OUTPUTTARGET_RESULTS)
-          _add_match_highlights (line, start_offset, end_offset, item);
-        gtk_text_buffer_insert (buffer, &iter, "\n", -1);
-        gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); line = gtk_text_iter_get_line (&iter);
-      }
-      if (resultline->readings[1] != NULL)
-      {
-        gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, gettext("Name:"), -1, "important", NULL);
-        gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); start_offset = gtk_text_iter_get_line_offset (&iter);
-        gtk_text_buffer_insert (buffer, &iter, resultline->readings[1], -1);
-        gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
-        if (item->target == LW_OUTPUTTARGET_RESULTS)
-          _add_match_highlights (line, start_offset, end_offset, item);
-        gtk_text_buffer_insert (buffer, &iter, "\n", -1);
-        gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); line = gtk_text_iter_get_line (&iter);
-      }
-      if (resultline->readings[2] != NULL)
-      {
-        gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, gettext("Radical Name:"), -1, "important", NULL);
-        gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); start_offset = gtk_text_iter_get_line_offset (&iter);
-        gtk_text_buffer_insert (buffer, &iter, resultline->readings[2], -1);
-        gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
-        if (item->target == LW_OUTPUTTARGET_RESULTS)
-          _add_match_highlights (line, start_offset, end_offset, item);
-        gtk_text_buffer_insert (buffer, &iter, "\n", -1);
-        gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); line = gtk_text_iter_get_line (&iter);
-      }
-
-
-      //etc
-      gboolean line_started = FALSE;
-      if (resultline->strokes)
-      {
-        gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, gettext("Stroke:"), -1, "important", NULL);
-        gtk_text_buffer_insert (buffer, &iter, resultline->strokes, -1);
-        line_started = TRUE;
-      }
-      if (resultline->frequency)
-      {
-        if (line_started) gtk_text_buffer_insert (buffer, &iter, " ", -1);
-        gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, gettext("Freq:"), -1, "important", NULL);
-        gtk_text_buffer_insert (buffer, &iter, resultline->frequency, -1);
-        gtk_text_buffer_insert (buffer, &iter, " ", -1);
-      }
-      if (resultline->grade)
-      {
-        if (line_started) gtk_text_buffer_insert (buffer, &iter, " ", -1);
-        gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, gettext("Grade:"), -1, "important", NULL);
-        gtk_text_buffer_insert (buffer, &iter, resultline->grade, -1);
-      }
-      if (resultline->jlpt)
-      {
-        if (line_started) gtk_text_buffer_insert (buffer, &iter, " ", -1);
-        gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, gettext("JLPT:"), -1, "important", NULL);
-        gtk_text_buffer_insert (buffer, &iter, resultline->jlpt, -1);
-      }
-
+    }
+    if (resultline->readings[1] != NULL)
+    {
+      gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, gettext("Name:"), -1, "important", NULL);
+      gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); start_offset = gtk_text_iter_get_line_offset (&iter);
+      gtk_text_buffer_insert (buffer, &iter, resultline->readings[1], -1);
+      gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
+      _add_match_highlights (line, start_offset, end_offset, item);
       gtk_text_buffer_insert (buffer, &iter, "\n", -1);
       gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); line = gtk_text_iter_get_line (&iter);
-
-      //Meanings
-      gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); start_offset = gtk_text_iter_get_line_offset (&iter);
-      gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, gettext("Meanings:"), -1, "important", NULL);
-      gtk_text_buffer_insert (buffer, &iter, resultline->meanings, -1);
-      gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
-      if (item->target == LW_OUTPUTTARGET_RESULTS)
-        _add_match_highlights (line, start_offset, end_offset, item);
-
-      gtk_text_buffer_insert (buffer, &iter, "\n\n", -1);
     }
-    
-    if (item->target == LW_OUTPUTTARGET_KANJI)
+    if (resultline->readings[2] != NULL)
     {
-      char *markup;
-      char *new;
-      char *base;
-      char *linebreak;
-      gboolean first = TRUE;
-
-      markup = g_strdup ("");
-      new = NULL;
-      base = NULL;
-      linebreak = NULL;
-
-      if (resultline->radicals) {
-        first = FALSE;
-        base = markup;
-        new = g_markup_printf_escaped ("<b>%s </b>%s\n", gettext("Radicals:"), resultline->radicals);
-        markup = g_strjoin ("", base, new, NULL);
-        g_free (base);
-        base = NULL;
-        g_free (new);
-        new = NULL;
-      }
-      if (resultline->readings[0]) {
-        first = FALSE;
-        base = markup;
-        new = g_markup_printf_escaped ("<b>%s </b>%s\n", gettext("Readings:"), resultline->readings[0]);
-        markup = g_strjoin ("", base, new, NULL);
-        g_free (base);
-        base = NULL;
-        g_free (new);
-        new = NULL;
-      } 
-      if (resultline->readings[1]) {
-        first = FALSE;
-        base = markup;
-        new = g_markup_printf_escaped ("<b>%s </b>%s\n", gettext("Readings:"), resultline->readings[1]);
-        markup = g_strjoin ("", base, new, NULL);
-        g_free (base);
-        base = NULL;
-        g_free (new);
-        new = NULL;
-      }
-      if (resultline->readings[2]) {
-        first = FALSE;
-        base = markup;
-        new = g_markup_printf_escaped ("<b>%s: </b>%s\n", gettext("Radical Name"), resultline->readings[2]);
-        markup = g_strjoin ("", base, new, NULL);
-        g_free (base);
-        base = NULL;
-        g_free (new);
-        new = NULL;
-      }
-
-      if (resultline->strokes) {
-        base = markup;
-        new = g_markup_printf_escaped ("<b>%s </b>%s   ", gettext("Stroke:"), resultline->strokes);
-        markup = g_strjoin ("", base, new, NULL);
-        g_free (base);
-        base = NULL;
-        g_free (new);
-        new = NULL;
-      }
-      if (resultline->frequency) {
-        base = markup;
-        new = g_markup_printf_escaped ("<b>%s </b>%s   ", gettext("Freq:"), resultline->frequency);
-        markup = g_strjoin ("", base, new, NULL);
-        g_free (base);
-        base = NULL;
-        g_free (new);
-        new = NULL;
-      }
-      if (resultline->grade) {
-        base = markup;
-        new = g_markup_printf_escaped ("<b>%s </b>%s   ", gettext("Grade:"), resultline->grade);
-        markup = g_strjoin ("", base, new, NULL);
-        g_free (base);
-        base = NULL;
-        g_free (new);
-        new = NULL;
-      }
-      if (resultline->jlpt) {
-        base = markup;
-        new = g_markup_printf_escaped ("<b>%s </b>%s   ", gettext("JLPT:"), resultline->jlpt);
-        markup = g_strjoin ("", base, new, NULL);
-        g_free (base);
-        base = NULL;
-        g_free (new);
-        new = NULL;
-      }
-
-      base = markup;
-      new = g_markup_printf_escaped ("\n");
-      markup = g_strjoin ("", base, new, NULL);
-      g_free (base);
-      base = NULL;
-      g_free (new);
-      new = NULL;
-
-      if (resultline->meanings) {
-        base = markup;
-        new = g_markup_printf_escaped ("<b>%s </b>%s", gettext("Meanings:"), resultline->meanings);
-        markup = g_strjoin ("", base, new, NULL);
-        g_free (base);
-        base = NULL;
-        g_free (new);
-        new = NULL;
-      }
-
-      //Declarations
-      GtkWidget *child;
-      GtkWidget *label;
-      GtkWidget *window;
-      GtkWidget *hbox;
-      char *markup2;
-
-      markup2 = g_markup_printf_escaped ("<span font=\"KanjiStrokeOrders 80\">%s</span>", resultline->kanji);
-      window = GTK_WIDGET (gtk_widget_get_tooltip_window (GTK_WIDGET (view)));
-
-      if (window != NULL) {
-        child = gtk_bin_get_child (GTK_BIN (window));
-        if (child != NULL) gtk_widget_destroy (GTK_WIDGET (child));
-
-        hbox = GTK_WIDGET (gtk_hbox_new (FALSE, 3));
-        gtk_container_set_border_width (GTK_CONTAINER (hbox), 3);
-        gtk_container_add (GTK_CONTAINER (window), GTK_WIDGET (hbox));
-
-        label = GTK_WIDGET (gtk_label_new (NULL));
-        gtk_label_set_markup (GTK_LABEL (label), markup2);
-        gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (label), FALSE, TRUE, 3);
-        gtk_label_set_selectable (GTK_LABEL (label), TRUE);
-        gtk_widget_set_can_focus (GTK_WIDGET (label), FALSE);
-
-        label = GTK_WIDGET (gtk_label_new (NULL));
-        gtk_label_set_markup (GTK_LABEL (label), markup);
-        gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (label), FALSE, TRUE, 0);
-        gtk_label_set_selectable (GTK_LABEL (label), TRUE);
-        gtk_widget_set_can_focus (GTK_WIDGET (label), FALSE);
-
-        gtk_widget_show_all (hbox);
-
-      }
-
-      g_free (markup);
-      g_free (markup2);
+      gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, gettext("Radical Name:"), -1, "important", NULL);
+      gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); start_offset = gtk_text_iter_get_line_offset (&iter);
+      gtk_text_buffer_insert (buffer, &iter, resultline->readings[2], -1);
+      gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
+      _add_match_highlights (line, start_offset, end_offset, item);
+      gtk_text_buffer_insert (buffer, &iter, "\n", -1);
+      gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); line = gtk_text_iter_get_line (&iter);
     }
-    */
+
+
+    //etc
+    gboolean line_started = FALSE;
+    if (resultline->strokes)
+    {
+      gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, gettext("Stroke:"), -1, "important", NULL);
+      gtk_text_buffer_insert (buffer, &iter, resultline->strokes, -1);
+      line_started = TRUE;
+    }
+    if (resultline->frequency)
+    {
+      if (line_started) gtk_text_buffer_insert (buffer, &iter, " ", -1);
+      gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, gettext("Freq:"), -1, "important", NULL);
+      gtk_text_buffer_insert (buffer, &iter, resultline->frequency, -1);
+      gtk_text_buffer_insert (buffer, &iter, " ", -1);
+    }
+    if (resultline->grade)
+    {
+      if (line_started) gtk_text_buffer_insert (buffer, &iter, " ", -1);
+      gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, gettext("Grade:"), -1, "important", NULL);
+      gtk_text_buffer_insert (buffer, &iter, resultline->grade, -1);
+    }
+    if (resultline->jlpt)
+    {
+      if (line_started) gtk_text_buffer_insert (buffer, &iter, " ", -1);
+      gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, gettext("JLPT:"), -1, "important", NULL);
+      gtk_text_buffer_insert (buffer, &iter, resultline->jlpt, -1);
+    }
+
+    gtk_text_buffer_insert (buffer, &iter, "\n", -1);
+    gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); line = gtk_text_iter_get_line (&iter);
+
+    //Meanings
+    gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); start_offset = gtk_text_iter_get_line_offset (&iter);
+    gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, gettext("Meanings:"), -1, "important", NULL);
+    gtk_text_buffer_insert (buffer, &iter, resultline->meanings, -1);
+    gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
+    _add_match_highlights (line, start_offset, end_offset, item);
+
+    gtk_text_buffer_insert (buffer, &iter, "\n\n", -1);
 }
 
 
@@ -819,13 +704,14 @@ static void gw_searchwindow_append_kanjidict_result (GwSearchWindow *window, LwS
 //!
 //! @param item A LwSearchItem to gleam information from.
 //!
-static void gw_searchwindow_append_examplesdict_result (GwSearchWindow *window, LwSearchItem *item, LwResultLine *resultline)
+static void gw_searchwindow_append_examplesdict_result (GwSearchWindow *window, LwSearchItem *item)
 {
     //Sanity check
     g_assert (lw_searchitem_has_data (item));
 
     //Declarations
     GwSearchData *sdata;
+    LwResultLine *resultline;
     GtkTextView *view;
     GtkTextBuffer *buffer;
     int line, start_offset, end_offset;
@@ -833,12 +719,15 @@ static void gw_searchwindow_append_examplesdict_result (GwSearchWindow *window, 
     GtkTextIter iter;
 
     //Initializations
+    resultline = lw_searchitem_get_result (item);
+    if (resultline == NULL) return;
     sdata = GW_SEARCHDATA (lw_searchitem_get_data (item));
     view = GTK_TEXT_VIEW (sdata->view);
     buffer = gtk_text_view_get_buffer (view);
-    resultline = item->resultline;
     mark = gtk_text_buffer_get_mark (buffer, "content_insertion_mark");
     gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark);
+
+    gw_searchdata_set_resultline (sdata, resultline);
 
     if (resultline->def_start[0] != NULL)
     {
@@ -886,12 +775,13 @@ static void gw_searchwindow_append_examplesdict_result (GwSearchWindow *window, 
 //!
 //! @param item A LwSearchItem to gleam information from.
 //!
-static void gw_searchwindow_append_unknowndict_result (GwSearchWindow *window, LwSearchItem *item, LwResultLine *resultline)
+static void gw_searchwindow_append_unknowndict_result (GwSearchWindow *window, LwSearchItem *item)
 {
     //Sanity check
     g_assert (lw_searchitem_has_data (item));
 
     //Definitions
+    LwResultLine *resultline;
     GwSearchData *sdata;
     GtkTextView *view;
     GtkTextBuffer *buffer;
@@ -901,11 +791,14 @@ static void gw_searchwindow_append_unknowndict_result (GwSearchWindow *window, L
 
 
     //Initializations
+    resultline = lw_searchitem_get_result (item);
+    if (resultline == NULL) return;
     sdata = GW_SEARCHDATA (lw_searchitem_get_data (item));
     view = GTK_TEXT_VIEW (sdata->view);
     buffer = gtk_text_view_get_buffer (view);
-    resultline = item->resultline;
     mark = gtk_text_buffer_get_mark (buffer, "content_insertion_mark");
+
+    gw_searchdata_set_resultline (sdata, resultline);
 
     gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); start_offset = gtk_text_iter_get_line_offset (&iter);
     gtk_text_buffer_insert (buffer, &iter, resultline->string, -1);
@@ -1194,4 +1087,194 @@ static void _searchwindow_new_tab_with_search_cb (GtkMenuItem *widget, gpointer 
     }
 }
 
+
+
+void gw_searchwindow_append_kanjidict_tooltip_result (GwSearchWindow *window, LwSearchItem *item)
+{
+    //Declarations
+    GwSearchWindowPrivate *priv;
+    LwResultLine *resultline;
+    GtkTextView *view;
+    char *markup;
+    char *new;
+    char *base;
+    char *linebreak;
+    gboolean first = TRUE;
+    int x, y, width, height;
+
+    //Declarations
+    GtkWidget *child;
+    GtkWidget *label;
+    GtkWidget *tooltip_window;
+    GtkWidget *hbox;
+    char *markup2;
+
+    //Initializations
+    resultline = lw_searchitem_get_result (item);
+    if (resultline == NULL) return;
+    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    view = gw_searchwindow_get_current_textview (window);
+    if (view == NULL) return;
+    markup = g_strdup ("");
+    new = NULL;
+    base = NULL;
+    linebreak = NULL;
+    x = priv->mouse_button_press_root_x + 3;
+    y = priv->mouse_button_press_root_y + 3;
+
+    if (resultline->radicals) {
+      first = FALSE;
+      base = markup;
+      new = g_markup_printf_escaped ("<b>%s </b>%s\n", gettext("Radicals:"), resultline->radicals);
+      markup = g_strjoin ("", base, new, NULL);
+      g_free (base);
+      base = NULL;
+      g_free (new);
+      new = NULL;
+    }
+    if (resultline->readings[0]) {
+      first = FALSE;
+      base = markup;
+      new = g_markup_printf_escaped ("<b>%s </b>%s\n", gettext("Readings:"), resultline->readings[0]);
+      markup = g_strjoin ("", base, new, NULL);
+      g_free (base);
+      base = NULL;
+      g_free (new);
+      new = NULL;
+    } 
+    if (resultline->readings[1]) {
+      first = FALSE;
+      base = markup;
+      new = g_markup_printf_escaped ("<b>%s </b>%s\n", gettext("Readings:"), resultline->readings[1]);
+      markup = g_strjoin ("", base, new, NULL);
+      g_free (base);
+      base = NULL;
+      g_free (new);
+      new = NULL;
+    }
+    if (resultline->readings[2]) {
+      first = FALSE;
+      base = markup;
+      new = g_markup_printf_escaped ("<b>%s: </b>%s\n", gettext("Radical Name"), resultline->readings[2]);
+      markup = g_strjoin ("", base, new, NULL);
+      g_free (base);
+      base = NULL;
+      g_free (new);
+      new = NULL;
+    }
+
+    if (resultline->strokes) {
+      base = markup;
+      new = g_markup_printf_escaped ("<b>%s </b>%s   ", gettext("Stroke:"), resultline->strokes);
+      markup = g_strjoin ("", base, new, NULL);
+      g_free (base);
+      base = NULL;
+      g_free (new);
+      new = NULL;
+    }
+    if (resultline->frequency) {
+      base = markup;
+      new = g_markup_printf_escaped ("<b>%s </b>%s   ", gettext("Freq:"), resultline->frequency);
+      markup = g_strjoin ("", base, new, NULL);
+      g_free (base);
+      base = NULL;
+      g_free (new);
+      new = NULL;
+    }
+    if (resultline->grade) {
+      base = markup;
+      new = g_markup_printf_escaped ("<b>%s </b>%s   ", gettext("Grade:"), resultline->grade);
+      markup = g_strjoin ("", base, new, NULL);
+      g_free (base);
+      base = NULL;
+      g_free (new);
+      new = NULL;
+    }
+    if (resultline->jlpt) {
+      base = markup;
+      new = g_markup_printf_escaped ("<b>%s </b>%s   ", gettext("JLPT:"), resultline->jlpt);
+      markup = g_strjoin ("", base, new, NULL);
+      g_free (base);
+      base = NULL;
+      g_free (new);
+      new = NULL;
+    }
+
+    base = markup;
+    new = g_markup_printf_escaped ("\n");
+    markup = g_strjoin ("", base, new, NULL);
+    g_free (base);
+    base = NULL;
+    g_free (new);
+    new = NULL;
+
+    if (resultline->meanings) {
+      base = markup;
+      new = g_markup_printf_escaped ("<b>%s </b>%s", gettext("Meanings:"), resultline->meanings);
+      markup = g_strjoin ("", base, new, NULL);
+      g_free (base);
+      base = NULL;
+      g_free (new);
+      new = NULL;
+    }
+
+    markup2 = g_markup_printf_escaped ("<span font=\"KanjiStrokeOrders 80\">%s</span>", resultline->kanji);
+    tooltip_window = GTK_WIDGET (gtk_widget_get_tooltip_window (GTK_WIDGET (view)));
+
+    if (tooltip_window != NULL) {
+      gtk_widget_destroy (tooltip_window);
+      tooltip_window = NULL;
+    }
+
+    tooltip_window = gtk_window_new (GTK_WINDOW_POPUP);
+    gtk_window_set_skip_taskbar_hint (GTK_WINDOW (tooltip_window), TRUE);
+    gtk_window_set_skip_pager_hint (GTK_WINDOW (tooltip_window), TRUE);
+    gtk_window_set_accept_focus (GTK_WINDOW (tooltip_window), FALSE);
+    gtk_window_set_transient_for (GTK_WINDOW (tooltip_window), NULL);
+    gtk_window_set_type_hint (GTK_WINDOW (tooltip_window), GDK_WINDOW_TYPE_HINT_TOOLTIP);
+    gtk_widget_set_name (GTK_WIDGET (tooltip_window), "gtk-tooltip");
+    gtk_widget_set_tooltip_window (GTK_WIDGET (view), GTK_WINDOW (tooltip_window));
+    gtk_window_set_gravity (GTK_WINDOW (tooltip_window), GDK_GRAVITY_NORTH_WEST);
+    gtk_window_set_position (GTK_WINDOW (tooltip_window), GTK_WIN_POS_NONE);
+    gtk_window_move (GTK_WINDOW (tooltip_window), x, y);
+
+    child = gtk_bin_get_child (GTK_BIN (tooltip_window));
+    if (child != NULL) gtk_widget_destroy (GTK_WIDGET (child));
+
+    hbox = GTK_WIDGET (gtk_hbox_new (FALSE, 3));
+    gtk_container_set_border_width (GTK_CONTAINER (hbox), 3);
+    gtk_container_add (GTK_CONTAINER (tooltip_window), GTK_WIDGET (hbox));
+
+    label = GTK_WIDGET (gtk_label_new (NULL));
+    gtk_label_set_markup (GTK_LABEL (label), markup2);
+    gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (label), FALSE, TRUE, 3);
+    gtk_label_set_selectable (GTK_LABEL (label), TRUE);
+    gtk_widget_set_can_focus (GTK_WIDGET (label), FALSE);
+
+    label = GTK_WIDGET (gtk_label_new (NULL));
+    gtk_label_set_markup (GTK_LABEL (label), markup);
+    gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (label), FALSE, TRUE, 0);
+    gtk_label_set_selectable (GTK_LABEL (label), TRUE);
+    gtk_widget_set_can_focus (GTK_WIDGET (label), FALSE);
+
+    gtk_widget_show_all (GTK_WIDGET (tooltip_window));
+
+    //Move the tooltip onscreen if it is partially off
+    width = gtk_widget_get_allocated_width (GTK_WIDGET (tooltip_window));
+    height =gtk_widget_get_allocated_height (GTK_WIDGET (tooltip_window));
+    if (gdk_screen_width() < x + width)
+      x = gdk_screen_width() - width;
+    if (gdk_screen_height() < y + height)
+      y = gdk_screen_height() - height;
+    gtk_window_move (GTK_WINDOW (tooltip_window), x, y);
+
+
+    //Cleanup
+    g_free (markup);
+    g_free (markup2);
+    lw_resultline_free (resultline);
+    lw_searchitem_cancel_search (item);
+    lw_searchitem_free (priv->mouse_item);
+    priv->mouse_item = NULL;
+}
 

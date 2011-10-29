@@ -498,3 +498,25 @@ void lw_resultline_parse_unknowndict_result_string (LwResultLine *rl)
 */
 }
 
+
+gboolean lw_resultline_is_similar (LwResultLine *rl1, LwResultLine *rl2)
+{
+    //Declarations
+    gboolean furigana_exists, kanji_exists;
+    gboolean same_def_totals, same_first_def, same_furigana, same_kanji;
+
+    if (rl1 == NULL || rl2 == NULL) return FALSE;
+
+    //Initializations
+    kanji_exists = (rl1->kanji_start != NULL && rl2->kanji_start != NULL);
+    furigana_exists = (rl1->furigana_start != NULL && rl2->furigana_start != NULL);
+
+    //Initializations
+    same_def_totals = (rl1->def_total == rl2->def_total);
+    same_first_def = (strcmp(rl1->def_start[0], rl2->def_start[0]) == 0);
+    same_furigana = (!furigana_exists || strcmp(rl1->furigana_start, rl2->furigana_start) == 0);
+    same_kanji = (!kanji_exists || strcmp(rl1->kanji_start, rl2->kanji_start) == 0);
+
+    return (same_first_def && same_def_totals);
+}
+
