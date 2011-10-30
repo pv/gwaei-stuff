@@ -92,6 +92,7 @@ void lw_preferences_deinit (LwPreferences*);
 
 void lw_preferences_free_settings (LwPreferences*);
 
+gboolean lw_preferences_schema_is_installed (const char*);
 GSettings* lw_preferences_get_settings_object (LwPreferences*, const char*);
 
 void lw_preferences_reset_value (GSettings*, const char*);

@@ -385,6 +385,55 @@ gboolean lw_searchitem_next_is_same (LwSearchItem *item, LwResultLine *current)
   return lw_resultline_is_similar (previous, current);
 }
 
+static void _searchwindow_insert_popup_button (GwSearchWindow *window, LwSearchItem *item, 
+                                               LwResultLine *resultline, GtkTextIter *iter)
+{
+    //Declarations
+    GwSearchWindowPrivate *priv;
+    GwSearchData *sdata;
+    GtkTextView *view;
+    GtkTextBuffer *buffer;
+    char *popup_text;
+    GtkButton* button;
+    GtkLabel *label;
+    GtkTextChildAnchor *anchor;
+    char *markup;
+
+    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    sdata = GW_SEARCHDATA (lw_searchitem_get_data (item));
+    view = GTK_TEXT_VIEW (sdata->view);
+    buffer = gtk_text_view_get_buffer (view);
+    if (resultline->kanji_start != NULL)
+      popup_text = g_strdup (resultline->kanji_start);
+    else if (resultline->furigana_start != NULL)
+      popup_text = g_strdup (resultline->furigana_start);
+    else
+      popup_text = NULL;
+
+    if (popup_text != NULL)
+    {
+      gtk_text_buffer_insert (buffer, iter, "   ", -1);
+      button = GTK_BUTTON (gtk_button_new ());
+      g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (_searchwindow_show_popup_cb), popup_text);
+      g_signal_connect (G_OBJECT (button), "destroy", G_CALLBACK (_searchwindow_destroy_text_cb), popup_text);
+      label = GTK_LABEL (gtk_label_new (NULL));
+      markup = g_markup_printf_escaped ("<span size=\"%d\">▼</span>", priv->font_size * PANGO_SCALE * 3 / 4);
+      if (markup != NULL)
+      {
+        gtk_label_set_markup (label, markup);
+        g_free (markup);
+      }
+      gtk_button_set_relief (button, GTK_RELIEF_NONE);
+      gtk_container_add (GTK_CONTAINER (button), GTK_WIDGET (label));
+      gtk_widget_show (GTK_WIDGET (button));
+      gtk_widget_show (GTK_WIDGET (label));
+      anchor = gtk_text_buffer_create_child_anchor (buffer, iter);
+      gtk_text_view_add_child_at_anchor (view, GTK_WIDGET (button), anchor);
+
+      g_free (popup_text);
+    }
+}
+
 
 //!
 //! @brief Appends an edict style result to the buffer, adding nice formatting.
@@ -409,17 +458,7 @@ static void gw_searchwindow_append_edict_result (GwSearchWindow *window, LwSearc
     GtkTextMark *mark;
     GtkTextIter iter;
     gboolean furigana_exists, kanji_exists;
-    gboolean skip;
-    char *markup;
-    //gboolean remove_last_linebreak;
     int line, start_offset, end_offset;
-
-    char *popup_text;
-    GtkButton* button;
-    GtkLabel *label;
-    GtkTextChildAnchor *anchor;
-
-    skip = FALSE;
 
     //Initializations
     resultline = lw_searchitem_get_result (item);
@@ -430,7 +469,6 @@ static void gw_searchwindow_append_edict_result (GwSearchWindow *window, LwSearc
     buffer = gtk_text_view_get_buffer (view);
     kanji_exists = (resultline->kanji_start != NULL);
     furigana_exists = (resultline->furigana_start != NULL);
-    popup_text = NULL;
 
     if (lw_searchitem_next_is_same (item, resultline))
     {
@@ -456,7 +494,6 @@ static void gw_searchwindow_append_edict_result (GwSearchWindow *window, LwSearc
     }
 
     //Start output
-    //remove_last_linebreak = (!skip && same_kanji && same_first_def);
     mark = gtk_text_buffer_get_mark (buffer, "content_insertion_mark");
 
     gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark);
@@ -465,13 +502,11 @@ static void gw_searchwindow_append_edict_result (GwSearchWindow *window, LwSearc
     //Kanji
     if (resultline->kanji_start != NULL)
     {
-      if (popup_text == NULL) popup_text = g_strdup (resultline->kanji_start);
       gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, resultline->kanji_start, -1, "important", NULL);
     }
     //Furigana
     if (resultline->furigana_start != NULL)
     {
-      if (popup_text == NULL) popup_text = g_strdup (resultline->furigana_start);
       gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, " [", -1, "important", NULL);
       gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, resultline->furigana_start, -1, "important", NULL);
       gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, "]", -1, "important", NULL);
@@ -488,37 +523,13 @@ static void gw_searchwindow_append_edict_result (GwSearchWindow *window, LwSearc
       gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, gettext("Pop"), -1, "small", NULL);
     }
 
-
     _shift_stay_mark (item, "previous_result");
     start_offset = 0;
     end_offset = gtk_text_iter_get_line_offset (&iter);
 
+    //_searchwindow_insert_popup_button (window, item, resultline, &iter);
 
-    //Insert popup button
-    /*
-    if (popup_text != NULL)
-    {
-      gtk_text_buffer_insert (buffer, &iter, "   ", -1);
-      button = GTK_BUTTON (gtk_button_new ());
-      g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (_searchwindow_show_popup_cb), popup_text);
-      g_signal_connect (G_OBJECT (button), "destroy", G_CALLBACK (_searchwindow_destroy_text_cb), popup_text);
-      label = GTK_LABEL (gtk_label_new (NULL));
-      markup = g_markup_printf_escaped ("<span size=\"%d\">▼</span>", priv->font_size * PANGO_SCALE * 3 / 4);
-      if (markup != NULL)
-      {
-        gtk_label_set_markup (label, markup);
-        g_free (markup);
-      }
-      gtk_button_set_relief (button, GTK_RELIEF_NONE);
-      gtk_container_add (GTK_CONTAINER (button), GTK_WIDGET (label));
-      gtk_widget_show (GTK_WIDGET (button));
-      gtk_widget_show (GTK_WIDGET (label));
-      anchor = gtk_text_buffer_create_child_anchor (buffer, &iter);
-      gtk_text_view_add_child_at_anchor (view, GTK_WIDGET (button), anchor);
-    }
-    */
-
-    //if (!remove_last_linebreak) gtk_text_buffer_insert (buffer, &iter, "\n", -1);
+    gtk_text_buffer_insert (buffer, &iter, "\n", -1);
     _add_match_highlights (line, start_offset, end_offset, item);
 
     //Definitions

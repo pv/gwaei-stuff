@@ -112,6 +112,31 @@ void lw_preferences_free_settings (LwPreferences *pm)
 }
 
 
+gboolean lw_preferences_schema_is_installed (const char *SCHEMA)
+{
+    //Declarations
+    const gchar * const * iter;
+    gboolean exists;
+
+    //Initializations
+    iter = g_settings_list_schemas ();
+
+    while (iter != NULL && *iter != NULL && strcmp(*iter, SCHEMA) != 0)
+      iter++;
+
+    exists = (iter != NULL && *iter != NULL);
+
+    if (!exists)
+    {
+      g_critical ("The GSettings schema \"%s\" isn't installed!  You must make "
+                  "sure both gsettings-desktop-schemas from your package "
+                  "manager and org.gnome.gwaei.gschema.xml are installed at "
+                  "least locally if not globally. See the man page for "
+                  "glib-compile-schemas for more information.\n", SCHEMA);
+    }
+
+    return exists;
+}
 
 
 //!
@@ -149,6 +174,8 @@ GSettings* lw_preferences_get_settings_object (LwPreferences *pm, const char *SC
     //If not found, create our own and add it to the list
     if (settings == NULL)
     {
+      g_assert (lw_preferences_schema_is_installed (SCHEMA));
+
       settings = g_settings_new (SCHEMA);
       if (settings != NULL)
       {

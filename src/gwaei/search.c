@@ -996,33 +996,28 @@ void gw_searchwindow_entry_insert (GwSearchWindow *window, char* text)
 //!
 void gw_searchwindow_select_all (GwSearchWindow* window, GtkWidget *widget)
 {
-    GwSearchWindowPrivate *priv;
-    GtkTextView *view;
+    //Sanity check
+    g_assert (window != NULL && widget != NULL); 
+
+    //Declarations
     GtkTextBuffer *buffer;
     GtkTextIter start, end;
 
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
-
-/*
-    //GtkEntry
-    if (TARGET == LW_OUTPUTTARGET_ENTRY)
+    if (GTK_IS_ENTRY (widget))
     {
-      gtk_editable_select_region (GTK_EDITABLE (priv->entry), 0,-1);
+      gtk_editable_select_region (GTK_EDITABLE (widget), 0,-1);
     }
-
-    //GtkTextView
-    else if (TARGET == LW_OUTPUTTARGET_RESULTS ||
-             TARGET == LW_OUTPUTTARGET_KANJI     )
+    else if (GTK_IS_TEXT_VIEW (widget))
     {
-      view = gw_searchwindow_get_current_textview (window);
-      buffer = gtk_text_view_get_buffer (view);
-
+      buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (widget));
       gtk_text_buffer_get_start_iter (buffer, &start);
       gtk_text_buffer_get_end_iter (buffer, &end);
-
       gtk_text_buffer_select_range (buffer, &start, &end);
     }
-    */
+    else
+    {
+      g_warning ("Unsupported widget type for gw_searchwindow_select_all()\n");
+    }
 }
 
 
@@ -1033,132 +1028,109 @@ void gw_searchwindow_select_all (GwSearchWindow* window, GtkWidget *widget)
 //!
 void gw_searchwindow_select_none (GwSearchWindow *window, GtkWidget *widget)
 {
+    //Sanity check
+    g_assert (window != NULL && widget != NULL); 
+
     //Declarations
-    GwSearchWindowPrivate *priv;
-    GtkTextView *view;
     GtkTextBuffer *buffer;
     GtkTextIter start, end;
 
-    //Initializations
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
-/*
-    //GtkEntry
-    if (TARGET == LW_OUTPUTTARGET_ENTRY)
+    if (GTK_IS_ENTRY (widget))
     {
-      gtk_editable_select_region (GTK_EDITABLE (priv->entry), -1,-1);
+      gtk_editable_select_region (GTK_EDITABLE (widget), -1,-1);
     }
-
-    //GtkTextView
-    else if (TARGET == LW_OUTPUTTARGET_RESULTS ||
-             TARGET == LW_OUTPUTTARGET_KANJI     )
+    else if (GTK_IS_TEXT_VIEW (widget))
     {
-      view = gw_searchwindow_get_current_textview (window);
-      buffer = gtk_text_view_get_buffer (view);
-
+      buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (widget));
       gtk_text_buffer_get_end_iter (buffer, &start);
       gtk_text_buffer_get_end_iter (buffer, &end);
-
       gtk_text_buffer_select_range (buffer, &start, &end);
     }
-    */
+    else
+    {
+      g_warning ("Unsupported widget type for gw_searchwindow_select_none()\n");
+    }
 }
 
 
 //!
 //! @brief Copy Text into the target output
 //!
-//! TARGET LwOutputTarget to specify where the text should come from
-//!
 void gw_searchwindow_copy_text (GwSearchWindow* window, GtkWidget *widget)
 {
-    GwSearchWindowPrivate *priv;
+    //Sanity check
+    g_assert (window != NULL && widget != NULL); 
+
+    //Declarations
     GtkClipboard *clipbd;
-    GtkTextView *view;
     GtkTextBuffer *buffer;
 
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
-    view = gw_searchwindow_get_current_textview (window);
-    buffer = gtk_text_view_get_buffer (view);
-
-/*
-    switch (TARGET)
+    if (GTK_IS_ENTRY (widget))
     {
-      case LW_OUTPUTTARGET_ENTRY:
-        gtk_editable_copy_clipboard (GTK_EDITABLE (priv->entry));
-        break;
-      case LW_OUTPUTTARGET_RESULTS:
-        clipbd = gtk_clipboard_get (GDK_SELECTION_CLIPBOARD);
-        gtk_text_buffer_copy_clipboard (buffer, clipbd);
-        break;
-      case LW_OUTPUTTARGET_KANJI:
-      case LW_OUTPUTTARGET_VOCABULARY:
-      case LW_OUTPUTTARGET_INVALID:
-        break;
+      gtk_editable_copy_clipboard (GTK_EDITABLE (widget));
     }
-    */
+    else if (GTK_IS_TEXT_VIEW (widget))
+    {
+      buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (widget));
+      clipbd = gtk_clipboard_get (GDK_SELECTION_CLIPBOARD);
+      gtk_text_buffer_copy_clipboard (buffer, clipbd);
+    }
+    else
+    {
+      g_warning ("Unsupported widget type for gw_searchwindow_copy_text()\n");
+    }
 }
 
 
 //!
 //! @brief Cut Text into the target output
 //!
-//! TARGET LwOutputTarget to specify where the text should come from
-//!
 void gw_searchwindow_cut_text (GwSearchWindow *window, GtkWidget *widget)
 {
-    GwSearchWindowPrivate *priv;
+    //Sanity check
+    g_assert (window != NULL && widget != NULL); 
 
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
-
-/*
-    switch (TARGET)
+    if (GTK_IS_ENTRY (widget))
     {
-      case LW_OUTPUTTARGET_ENTRY:
-        gtk_editable_cut_clipboard (GTK_EDITABLE (priv->entry));
-        break;
-      case LW_OUTPUTTARGET_RESULTS:
-      case LW_OUTPUTTARGET_KANJI:
-      case LW_OUTPUTTARGET_VOCABULARY:
-      case LW_OUTPUTTARGET_INVALID:
-        break;
+        gtk_editable_cut_clipboard (GTK_EDITABLE (widget));
     }
-    */
+    else if (GTK_IS_TEXT_VIEW (widget))
+    {
+      //We don't allow user editing the textview
+    }
+    else
+    {
+      g_warning ("Unsupported widget type for gw_searchwindow_cut_text()\n");
+    }
 }
 
 
 //!
 //! @brief Pastes Text into the target output
 //!
-//! TARGET LwOutputTarget to specify where the text should go
-//!
 void gw_searchwindow_paste_text (GwSearchWindow* window, GtkWidget *widget)
 {
-    //Declarations
-    GwSearchWindowPrivate *priv;
+    //Sanity check
+    g_assert (window != NULL && widget != NULL); 
 
-    //Initializations
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
-/*
-    switch (TARGET)
+    if (GTK_IS_ENTRY (widget))
     {
-      case LW_OUTPUTTARGET_ENTRY:
-        gtk_editable_paste_clipboard (GTK_EDITABLE (priv->entry));
-        break;
-      case LW_OUTPUTTARGET_RESULTS:
-      case LW_OUTPUTTARGET_KANJI:
-      case LW_OUTPUTTARGET_VOCABULARY:
-      case LW_OUTPUTTARGET_INVALID:
-        break;
+      gtk_editable_paste_clipboard (GTK_EDITABLE (widget));
     }
-    */
+    else if (GTK_IS_TEXT_VIEW (widget))
+    {
+      //We don't allow user editing the textview
+    }
+    else
+    {
+      g_warning ("Unsupported widget type for gw_searchwindow_paste_text()\n");
+    }
 }
 
 
 
 //!
 //! @brief Returns the slice of characters between to line numbers in the target output buffer
-//!
-//! @param TARGET The LwOutputTarget to get the text slice from
 //! @param sl The start line number
 //! @param el The end line number
 //!
@@ -1169,6 +1141,7 @@ char* gw_searchwindow_buffer_get_text_slice_from_current_view (GwSearchWindow* w
     GtkTextBuffer *buffer;
 
     view = gw_searchwindow_get_current_textview (window);
+    if (view == NULL) return NULL;
     buffer = gtk_text_view_get_buffer (view);
 
     //Set up the text
@@ -1197,6 +1170,7 @@ gunichar gw_searchwindow_get_hovered_character (GwSearchWindow* window, int *x, 
     //Initializations
     trailing = 0;
     view = gw_searchwindow_get_current_textview (window);
+    if (view == NULL) return 0;
 
     gtk_text_view_window_to_buffer_coords (view, GTK_TEXT_WINDOW_TEXT, *x, *y, x, y);
     gtk_text_view_get_iter_at_position (view, start, &trailing, *x, *y);
@@ -1641,8 +1615,6 @@ void gw_searchwindow_cycle_dictionaries (GwSearchWindow* window, gboolean cycle_
 //! The fancy thing about this function is it will only return the
 //! highlighted text if some is highlighted.
 //!
-//! @param TARGET a LwOutputTarget to get the data from
-//!
 char* gw_searchwindow_get_text (GwSearchWindow *window, GtkWidget *widget)
 {
     GtkTextView *view;
@@ -1719,8 +1691,6 @@ gboolean gw_searchwindow_keep_searching_timeout (GwSearchWindow *window)
 //!
 //! It gets the requested text buffer and then returns if it has text selected
 //! or not.
-//!
-//! @param TARGET A LwOutputTarget
 //!
 gboolean gw_searchwindow_has_selection (GwSearchWindow *window, GtkWidget *widget)
 {
