@@ -824,60 +824,7 @@ G_MODULE_EXPORT void gw_searchwindow_copy_cb (GtkWidget *widget, gpointer data)
 
     gw_searchwindow_copy_text (window, focus);
 }
-
-
-
-G_MODULE_EXPORT void gw_searchwindow_edit_popup_show_cb (GtkWidget *widget, gpointer data) 
-{
-    //Declarations
-    GwSearchWindow *window;
-    GwSearchWindowPrivate *priv;
-    GtkAction *action_cut, *action_paste, *action_copy, *action_select_all;
-    GtkTextView *view;
-    const char *id;
-    gboolean sensitive;
-  
-    //Initializations
-    window = GW_SEARCHWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_SEARCHWINDOW));
-    if (window == NULL) return;
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
-    view = gw_searchwindow_get_current_textview (window);
-
-    id = "edit_cut_action";
-    action_cut = GTK_ACTION (gw_window_get_object (GW_WINDOW (window), id));
-    id = "edit_copy_action";
-    action_copy = GTK_ACTION (gw_window_get_object (GW_WINDOW (window), id));
-    id = "edit_paste_action";
-    action_paste = GTK_ACTION (gw_window_get_object (GW_WINDOW (window), id));
-    id = "edit_select_all_action";
-    action_select_all = GTK_ACTION (gw_window_get_object (GW_WINDOW (window), id));
-
-    //Set the sensitivity states
-    if (gtk_widget_has_focus (GTK_WIDGET (priv->entry)))
-    {
-      sensitive = (gtk_editable_get_selection_bounds (GTK_EDITABLE (priv->entry), NULL, NULL));
-      gtk_action_set_sensitive (action_cut, sensitive);
-      gtk_action_set_sensitive (action_copy, sensitive);
-      gtk_action_set_sensitive (action_paste, TRUE);
-      gtk_action_set_sensitive (action_select_all, TRUE);
-    }
-    else if (view != NULL && gtk_widget_has_focus (GTK_WIDGET (view)))
-    {
-      sensitive = (gw_searchwindow_has_selection (window, GTK_WIDGET (view)));
-      gtk_action_set_sensitive (action_cut, FALSE);
-      gtk_action_set_sensitive (action_copy, sensitive);
-      gtk_action_set_sensitive (action_paste, FALSE);
-      gtk_action_set_sensitive (action_select_all, TRUE);
-    }
-    else
-    {
-      gtk_action_set_sensitive (action_cut, FALSE);
-      gtk_action_set_sensitive (action_copy, FALSE);
-      gtk_action_set_sensitive (action_paste, FALSE);
-      gtk_action_set_sensitive (action_select_all, FALSE);
-    }
-}
-
+ 
 
 //!
 //! @brief Opens the saved vocab list in your default editor
@@ -2223,4 +2170,51 @@ G_MODULE_EXPORT void gw_searchwindow_open_vocabulary_window_cb (GtkWidget *widge
   */
 }
 
+
+G_MODULE_EXPORT void gw_searchwindow_event_after_cb (GtkWidget *widget, GdkEvent *event, gpointer data)
+{
+    //Declarations
+    GwSearchWindow *window;
+    GtkAction *action_cut, *action_paste, *action_copy, *action_select_all;
+    const char *ID;
+    gboolean has_selection;
+    GtkWidget *selectable;
+  
+    //Initializations
+    window = GW_SEARCHWINDOW (widget);
+    selectable = gtk_window_get_focus (GTK_WINDOW (window));
+    if (selectable == NULL) return;
+    ID = "edit_cut_action";
+    action_cut = GTK_ACTION (gw_window_get_object (GW_WINDOW (window), ID));
+    ID = "edit_copy_action";
+    action_copy = GTK_ACTION (gw_window_get_object (GW_WINDOW (window), ID));
+    ID = "edit_paste_action";
+    action_paste = GTK_ACTION (gw_window_get_object (GW_WINDOW (window), ID));
+    ID = "edit_select_all_action";
+    action_select_all = GTK_ACTION (gw_window_get_object (GW_WINDOW (window), ID));
+    has_selection = (gw_searchwindow_has_selection (window, selectable));
+
+    //Set the sensitivity states
+    if (GTK_IS_ENTRY (selectable))
+    {
+      gtk_action_set_sensitive (action_cut, has_selection);
+      gtk_action_set_sensitive (action_copy, has_selection);
+      gtk_action_set_sensitive (action_paste, TRUE);
+      gtk_action_set_sensitive (action_select_all, TRUE);
+    }
+    else if (GTK_IS_TEXT_VIEW (selectable))
+    {
+      gtk_action_set_sensitive (action_cut, FALSE);
+      gtk_action_set_sensitive (action_copy, has_selection);
+      gtk_action_set_sensitive (action_paste, FALSE);
+      gtk_action_set_sensitive (action_select_all, TRUE);
+    }
+    else
+    {
+      gtk_action_set_sensitive (action_cut, FALSE);
+      gtk_action_set_sensitive (action_copy, FALSE);
+      gtk_action_set_sensitive (action_paste, FALSE);
+      gtk_action_set_sensitive (action_select_all, FALSE);
+    }
+}
 

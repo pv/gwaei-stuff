@@ -77,6 +77,7 @@ gboolean gw_searchwindow_delete_event_action_cb (GtkWidget*, GdkEvent*, gpointer
 gboolean gw_searchwindow_key_release_modify_status_update_cb (GtkWidget*, GdkEvent*, gpointer);
 gboolean gw_searchwindow_key_press_modify_status_update_cb (GtkWidget*, GdkEvent*, gpointer);
 gboolean gw_searchwindow_focus_in_event_cb (GtkWidget*, GdkEvent*, gpointer);
+void gw_searchwindow_event_after_cb (GtkWidget*, GdkEvent*, gpointer);
 
 #endif
 

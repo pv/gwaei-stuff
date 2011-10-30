@@ -366,8 +366,6 @@
                   <object class="GtkMenu" id="edit_popup">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <signal name="show" handler="gw_searchwindow_edit_popup_show_cb" object="toplevel" swapped="no"/>
-                    <signal name="realize" handler="gw_searchwindow_edit_popup_show_cb" object="toplevel" swapped="no"/>
                     <child>
                       <object class="GtkImageMenuItem" id="cut_menuitem">
                         <property name="visible">True</property>

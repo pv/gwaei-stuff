@@ -124,6 +124,8 @@ static void gw_searchwindow_constructed (GObject *object)
                       G_CALLBACK (gw_searchwindow_key_press_modify_status_update_cb), window);
     g_signal_connect (G_OBJECT (window), "focus-in-event", 
                       G_CALLBACK (gw_searchwindow_focus_in_event_cb), window);
+    g_signal_connect (G_OBJECT (window), "event-after", 
+                      G_CALLBACK (gw_searchwindow_event_after_cb), window);
 
     gtk_widget_grab_focus (GTK_WIDGET (priv->entry));
     gw_searchwindow_set_dictionary (window, 0);
@@ -1695,14 +1697,22 @@ gboolean gw_searchwindow_keep_searching_timeout (GwSearchWindow *window)
 gboolean gw_searchwindow_has_selection (GwSearchWindow *window, GtkWidget *widget)
 {
     //Declarations
-    GtkTextView *view;
+    gboolean has_selection;
     GtkTextBuffer *buffer;
 
     //Initializations
-    view = gw_searchwindow_get_current_textview (window);
-    buffer = gtk_text_view_get_buffer (view);
 
-    return (buffer != NULL && gtk_text_buffer_get_has_selection (buffer));
+    if (GTK_IS_ENTRY (widget))
+    {
+      has_selection = gtk_editable_get_selection_bounds (GTK_EDITABLE (widget), NULL, NULL);
+    }
+    else if (GTK_IS_TEXT_VIEW (widget))
+    {
+      buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (widget));
+      has_selection = (buffer != NULL && gtk_text_buffer_get_has_selection (buffer));
+    }
+
+    return has_selection;
 }
 
 
