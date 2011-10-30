@@ -12,7 +12,7 @@ DEFINITIONS =-DLOCALEDIR=\"$(localedir)\" -DVERSION=\"$(VERSION)\" -DPACKAGE=\"$
 
 waei_SOURCES = waei.c console.c console-callbacks.c
 waei_LDADD =  $(BASE_LIBS) ../libwaei/libwaei.la
-waei_CPPFLAGS = $(DEFINITIONS) $(BASE_CFLAGS) $(BASE_DEFS) -I$(top_srcdir)/src/libwaei/include -I$(top_srcdir)/src/waei/include
+waei_CPPFLAGS = $(DEFINITIONS) $(BASE_CFLAGS) $(BASE_DEFS) -I$(top_srcdir)/src/libwaei/include -I$(top_srcdir)/src/waei/include -Wall
 
 
 if OS_MINGW

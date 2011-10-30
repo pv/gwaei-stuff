@@ -14,7 +14,7 @@ DEFINITIONS =-DLOCALEDIR=\"$(localedir)\" -DVERSION=\"$(VERSION)\" -DPACKAGE=\"$
 gwaei_SOURCES = gwaei.c application.c application-private.c application-callbacks.c output-callbacks.c window.c window-private.c dictinfolist.c dictinfolist-callbacks.c search.c search-callbacks.c search-private.c search-data.c spellcheck.c spellcheck-callbacks.c printing.c
 
 gwaei_LDADD =  $(GNOME_LIBS) ../libwaei/libwaei.la
-gwaei_CPPFLAGS = $(DEFINITIONS) $(GNOME_CFLAGS) $(GNOME_DEFS) -I$(top_srcdir)/src/libwaei/include -I$(top_srcdir)/src/gwaei/include 
+gwaei_CPPFLAGS = $(DEFINITIONS) $(GNOME_CFLAGS) $(GNOME_DEFS) -I$(top_srcdir)/src/libwaei/include -I$(top_srcdir)/src/gwaei/include -Wall
 
 if OS_MINGW
 gwaei_LDFLAGS = -Wl,-subsystem,windows 
