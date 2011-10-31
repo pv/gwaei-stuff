@@ -393,25 +393,20 @@ static void gw_searchwindow_append_edict_result (GwSearchWindow *window, LwSearc
     g_assert (lw_searchitem_has_data (item));
 
     //Declarations
-    GwSearchWindowPrivate *priv;
     LwResultLine *resultline;
     GwSearchData *sdata;
     GtkTextView *view;
     GtkTextBuffer *buffer;
     GtkTextMark *mark;
     GtkTextIter iter;
-    gboolean furigana_exists, kanji_exists;
     int line, start_offset, end_offset;
 
     //Initializations
     resultline = lw_searchitem_get_result (item);
     if (resultline == NULL) return;
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
     sdata = GW_SEARCHDATA (lw_searchitem_get_data (item));
     view = GTK_TEXT_VIEW (sdata->view);
     buffer = gtk_text_view_get_buffer (view);
-    kanji_exists = (resultline->kanji_start != NULL);
-    furigana_exists = (resultline->furigana_start != NULL);
 
     if (lw_searchitem_next_is_same (item, resultline))
     {
@@ -518,6 +513,7 @@ static void gw_searchwindow_append_kanjidict_result (GwSearchWindow *window, LwS
     int line, start_offset, end_offset;
 
     //Initializations
+    resultline = lw_searchitem_get_result (item);
     sdata = GW_SEARCHDATA (lw_searchitem_get_data (item));
     view = GTK_TEXT_VIEW (sdata->view);
     buffer = gtk_text_view_get_buffer (view);
@@ -818,8 +814,6 @@ void gw_searchwindow_append_kanjidict_tooltip_result (GwSearchWindow *window, Lw
     char *markup;
     char *new;
     char *base;
-    char *linebreak;
-    gboolean first = TRUE;
     int x, y, width, height;
 
     //Declarations
@@ -838,12 +832,10 @@ void gw_searchwindow_append_kanjidict_tooltip_result (GwSearchWindow *window, Lw
     markup = g_strdup ("");
     new = NULL;
     base = NULL;
-    linebreak = NULL;
     x = priv->mouse_button_press_root_x + 3;
     y = priv->mouse_button_press_root_y + 3;
 
     if (resultline->radicals) {
-      first = FALSE;
       base = markup;
       new = g_markup_printf_escaped ("<b>%s </b>%s\n", gettext("Radicals:"), resultline->radicals);
       markup = g_strjoin ("", base, new, NULL);
@@ -853,7 +845,6 @@ void gw_searchwindow_append_kanjidict_tooltip_result (GwSearchWindow *window, Lw
       new = NULL;
     }
     if (resultline->readings[0]) {
-      first = FALSE;
       base = markup;
       new = g_markup_printf_escaped ("<b>%s </b>%s\n", gettext("Readings:"), resultline->readings[0]);
       markup = g_strjoin ("", base, new, NULL);
@@ -863,7 +854,6 @@ void gw_searchwindow_append_kanjidict_tooltip_result (GwSearchWindow *window, Lw
       new = NULL;
     } 
     if (resultline->readings[1]) {
-      first = FALSE;
       base = markup;
       new = g_markup_printf_escaped ("<b>%s </b>%s\n", gettext("Readings:"), resultline->readings[1]);
       markup = g_strjoin ("", base, new, NULL);
@@ -873,7 +863,6 @@ void gw_searchwindow_append_kanjidict_tooltip_result (GwSearchWindow *window, Lw
       new = NULL;
     }
     if (resultline->readings[2]) {
-      first = FALSE;
       base = markup;
       new = g_markup_printf_escaped ("<b>%s: </b>%s\n", gettext("Radical Name"), resultline->readings[2]);
       markup = g_strjoin ("", base, new, NULL);

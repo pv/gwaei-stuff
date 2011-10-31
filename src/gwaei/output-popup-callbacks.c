@@ -4,6 +4,7 @@
 struct _GwResultPopupData {
   GwSearchWindow *window;
   GtkToggleButton *button;
+  GtkWidget *popup;
   LwSearchItem *item;
   gchar* text;
 };
@@ -11,16 +12,12 @@ typedef struct _GwResultPopupData GwResultPopupData;
 #define GW_RESULTPOPUPDATA(obj) (GwResultPopupData*)obj
 
 
-void gw_searchwindow_insert_resultpopup_button (GwSearchWindow*, LwSearchItem*, LwResultLine*, GtkTextIter*);
 
-static void _destroy_searchitem_cb (GtkWidget*, gpointer);
 static GtkToggleButton* gw_popupbutton_new (int, GwResultPopupData*);
 static GtkWidget* _resultpopup_new (GwResultPopupData*);
 static void _resultpopup_show_cb (GtkWidget*, gpointer);
-static void _resultpopup_destroy_data_cb (GtkWidget*, gpointer);
 static void _searchwindow_new_tab_with_search_cb (GtkMenuItem*, gpointer);
 static void _resultpopup_search_online_cb (GtkMenuItem*, gpointer);
-static void _searchwindow_destroy_tab_menuitem_searchitem_data_cb (GObject*, gpointer);
 
 
 
@@ -42,6 +39,7 @@ GwResultPopupData* gw_resultpopupdata_new (GwSearchWindow *window, LwSearchItem 
     {
       priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
       temp->window = window;
+      temp->popup = NULL;
       temp->button = gw_popupbutton_new (priv->font_size, temp);
       temp->item = item;
       if (resultline->kanji_start != NULL)
@@ -62,6 +60,7 @@ void gw_resultpopupdata_free (GwResultPopupData *data)
     if (data == NULL) return;
 
     if (data->text != NULL) g_free (data->text); data->text = NULL;
+    if (data->popup != NULL) gtk_widget_destroy (GTK_WIDGET (data->popup)); data->popup = NULL;
     g_free (data); data = NULL;
 }
 
@@ -78,7 +77,7 @@ static GtkToggleButton* gw_popupbutton_new (int font_size, GwResultPopupData *rp
     //Initializations
     button = GTK_TOGGLE_BUTTON (gtk_toggle_button_new ());
     g_signal_connect (G_OBJECT (button), "toggled", G_CALLBACK (_resultpopup_show_cb), rpdata);
-    g_signal_connect (G_OBJECT (button), "destroy", G_CALLBACK (_resultpopup_destroy_data_cb), rpdata);
+    g_signal_connect_swapped (G_OBJECT (button), "destroy", G_CALLBACK (gw_resultpopupdata_free), rpdata);
     label = GTK_LABEL (gtk_label_new (NULL));
     markup = g_markup_printf_escaped ("<span size=\"%d\">▼</span>", font_size * PANGO_SCALE * 3 / 4);
     if (markup != NULL)
@@ -87,7 +86,7 @@ static GtkToggleButton* gw_popupbutton_new (int font_size, GwResultPopupData *rp
       g_free (markup);
     }
 
-    gtk_button_set_relief (button, GTK_RELIEF_NONE);
+    gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
     gtk_container_add (GTK_CONTAINER (button), GTK_WIDGET (label));
     gtk_widget_show (GTK_WIDGET (label));
 
@@ -120,12 +119,11 @@ void gw_searchwindow_insert_resultpopup_button (GwSearchWindow *window,     LwSe
 }
 
 
-static void _resultpopup_destroy_cb (GtkWidget *widget, gpointer data)
+static void _resultpopup_hide_cb (GtkWidget *widget, gpointer data)
 {
     if (data == NULL) return;
 
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (data), FALSE);
-    gtk_widget_destroy (widget);
 }
 
 
@@ -148,7 +146,7 @@ static GtkWidget* _resultpopup_new (GwResultPopupData *rpdata)
     LwSearchItem *item;
     GwSearchData *sdata;
     LwDictInfo *di;
-    GtkWidget *menu;
+    GtkWidget *popup;
     char *menu_text;
     GtkWidget *menuitem;
     int i;
@@ -158,8 +156,8 @@ static GtkWidget* _resultpopup_new (GwResultPopupData *rpdata)
     application = gw_window_get_application (GW_WINDOW (window));
     dictinfolist = LW_DICTINFOLIST (gw_application_get_dictinfolist (application));
     preferences = gw_application_get_preferences (application);
-    menu = gtk_menu_new ();
-    g_signal_connect_after (G_OBJECT (menu), "hide", G_CALLBACK (_resultpopup_destroy_cb), rpdata->button);
+    popup = gtk_menu_new ();
+    g_signal_connect_after (G_OBJECT (popup), "hide", G_CALLBACK (_resultpopup_hide_cb), rpdata->button);
     char *website_url_menuitems[] = {
       "Wikipedia", "http://www.wikipedia.org/wiki/%s", "wikipedia.png",
       "Goo.ne.jp", "http://dictionary.goo.ne.jp/srch/all/%s/m0u/", "goo.png",
@@ -180,8 +178,8 @@ static GtkWidget* _resultpopup_new (GwResultPopupData *rpdata)
         {
           menuitem = GTK_WIDGET (gtk_image_menu_item_new_with_label (menu_text));
           g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (_searchwindow_new_tab_with_search_cb), item);
-          g_signal_connect_after (G_OBJECT (menuitem), "destroy", G_CALLBACK (_destroy_searchitem_cb), item);
-          gtk_menu_shell_append (GTK_MENU_SHELL (menu), GTK_WIDGET (menuitem));
+          g_signal_connect_swapped (G_OBJECT (menuitem), "destroy", G_CALLBACK (lw_searchitem_free), item);
+          gtk_menu_shell_append (GTK_MENU_SHELL (popup), GTK_WIDGET (menuitem));
           gtk_widget_show (GTK_WIDGET (menuitem));
 //          gtk_widget_show (GTK_WIDGET (menuimage));
           g_free (menu_text);
@@ -193,7 +191,7 @@ static GtkWidget* _resultpopup_new (GwResultPopupData *rpdata)
 
     //Separator
     menuitem = gtk_separator_menu_item_new ();
-    gtk_menu_shell_append (GTK_MENU_SHELL (menu), GTK_WIDGET (menuitem));
+    gtk_menu_shell_append (GTK_MENU_SHELL (popup), GTK_WIDGET (menuitem));
     gtk_widget_show (GTK_WIDGET (menuitem));
 
     //Add weblinks
@@ -231,8 +229,8 @@ static GtkWidget* _resultpopup_new (GwResultPopupData *rpdata)
             path = NULL;
           }
           g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (_resultpopup_search_online_cb), item);
-          g_signal_connect_after (G_OBJECT (menuitem), "destroy", G_CALLBACK (_destroy_searchitem_cb), item);
-          gtk_menu_shell_append (GTK_MENU_SHELL (menu), GTK_WIDGET (menuitem));
+          g_signal_connect_swapped (G_OBJECT (menuitem), "destroy", G_CALLBACK (lw_searchitem_free), item);
+          gtk_menu_shell_append (GTK_MENU_SHELL (popup), GTK_WIDGET (menuitem));
           gtk_widget_show (GTK_WIDGET (menuitem));
 //          gtk_widget_show (GTK_WIDGET (menuimage));
           g_free (menu_text);
@@ -242,7 +240,7 @@ static GtkWidget* _resultpopup_new (GwResultPopupData *rpdata)
       i += 3;
     }
 
-    return menu;
+    return popup;
 }
 
 
@@ -260,43 +258,10 @@ static void _resultpopup_show_cb (GtkWidget *widget, gpointer data)
     //Initializations
     rpdata = GW_RESULTPOPUPDATA (data);
     popup = GTK_MENU (_resultpopup_new (rpdata));
+    if (rpdata->popup != NULL) gtk_widget_destroy (rpdata->popup); rpdata->popup = GTK_WIDGET (popup);
 
     gtk_menu_attach_to_widget (GTK_MENU (popup), widget, NULL);
     gtk_menu_popup (popup, NULL, NULL, NULL, NULL, 0, gtk_get_current_event_time ());
-}
-
-
-static void _resultpopup_destroy_data_cb (GtkWidget *widget, gpointer data)
-{
-    gw_resultpopupdata_free (GW_RESULTPOPUPDATA (data));
-}
-
-
-
-//!
-//! @brief Frees the LwSearchItem memory that is attached to the activate tab callback
-//! @param widget Currently unused widget pointe
-//! @param data gpointer to a LwSearchItem to be freed
-//!
-static void _searchwindow_destroy_tab_menuitem_searchitem_data_cb (GObject *object, gpointer data)
-{
-    //Declarations
-    LwSearchItem *item;
-
-    //Initializations
-    item = LW_SEARCHITEM (data);
-
-    if (item != NULL)
-    {
-      lw_searchitem_free (item);
-      item = NULL;
-    }
-}
-
-static void _destroy_searchitem_cb (GtkWidget *widget, gpointer data)
-{
-  if (data != NULL)
-    lw_searchitem_free (LW_SEARCHITEM (data));
 }
 
 

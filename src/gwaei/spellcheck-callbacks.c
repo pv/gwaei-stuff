@@ -166,7 +166,6 @@ void gw_spellcheck_populate_cb (GtkEntry *entry, GtkMenu *menu, gpointer data)
     char **split;
     char **info;
     char **replacements;
-    const char *text;
     GList *iter;
 
     spellcheck = GW_SPELLCHECK (data);
@@ -177,7 +176,6 @@ void gw_spellcheck_populate_cb (GtkEntry *entry, GtkMenu *menu, gpointer data)
     int i;
 
     //Initializations
-    text = gtk_entry_get_text (GTK_ENTRY (entry));
     gtk_widget_get_pointer (GTK_WIDGET (entry), &xpointer, &ypointer);
     xoffset = gw_spellcheck_get_x_offset (spellcheck);
     yoffset = gw_spellcheck_get_y_offset (spellcheck);
@@ -236,7 +234,6 @@ gboolean gw_spellcheck_draw_underline_cb (GtkWidget *widget, cairo_t *cr, gpoint
     //Declarations
     GwSpellcheck *spellcheck;
     gint x, y, x2, y2;
-    PangoLayout *layout;
     GList *iter;
     char **info;
     char **atoms;
@@ -244,7 +241,6 @@ gboolean gw_spellcheck_draw_underline_cb (GtkWidget *widget, cairo_t *cr, gpoint
 
     //Initializations
     spellcheck = GW_SPELLCHECK (data);
-    layout = gtk_entry_get_layout (GTK_ENTRY (widget));
 
     g_mutex_lock (spellcheck->mutex);
     for (iter = spellcheck->corrections; iter != NULL; iter = iter->next)
@@ -336,7 +332,6 @@ static gpointer _infunc (gpointer data)
     //Declarations
     GwSpellcheckStreamWithData *swd;
     FILE *file;
-    size_t chunk;
     int stream;
     char *text;
 
@@ -350,7 +345,7 @@ static gpointer _infunc (gpointer data)
     {
       if (ferror(file) == 0 && feof(file) == 0)
       {
-        chunk = fwrite(text, sizeof(char), strlen(text), file);
+        fwrite(text, sizeof(char), strlen(text), file);
       }
 
       fclose(file);
@@ -368,14 +363,12 @@ static gpointer _outfunc (gpointer data)
     const int MAX = 500;
     GwSpellcheckStreamWithData *swd;
     FILE *file;
-    int stream;
     char buffer[MAX];
     GwSpellcheck *spellcheck;
 
     //Initializations
     swd = data;
     spellcheck = swd->spellcheck;
-    stream = swd->stream;
     file = fdopen (swd->stream, "r");
 
     if (file != NULL)

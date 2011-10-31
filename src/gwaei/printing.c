@@ -179,7 +179,6 @@ static void _draw_page_number (GtkPrintContext *context, gint page_nr, GwPageInf
     int height;
     cairo_t *cr;
     gdouble drawable_width;
-    gdouble drawable_height;
 
     //Initializations
     text = g_strdup_printf (gettext("Page %d/%d"), page_nr + 1, g_list_length (data->pages));
@@ -187,7 +186,6 @@ static void _draw_page_number (GtkPrintContext *context, gint page_nr, GwPageInf
     desc = pango_font_description_from_string ("sans 8");
     cr = gtk_print_context_get_cairo_context (context);
     drawable_width = gtk_print_context_get_width (context);
-    drawable_height = gtk_print_context_get_height (context);
 
     //Draw
     if (text != NULL && layout != NULL && desc != NULL)

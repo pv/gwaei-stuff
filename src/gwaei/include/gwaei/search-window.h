@@ -117,6 +117,8 @@ void gw_searchwindow_start_search (GwSearchWindow*, LwSearchItem*);
 void gw_searchwindow_initialize_dictionary_menu (GwSearchWindow*);
 void gw_searchwindow_initialize_dictionary_combobox (GwSearchWindow*);
 
+void gw_searchwindow_insert_resultpopup_button (GwSearchWindow*, LwSearchItem*, LwResultLine*, GtkTextIter*);
+
 #include "search-callbacks.h"
 #include "search-data.h"
 

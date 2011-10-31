@@ -175,16 +175,11 @@ int gw_spellcheck_get_x_offset (GwSpellcheck *spellcheck)
     //Declarations
     PangoRectangle rect;
     PangoLayout *layout;
-
-    int allocation_offset;
     int layout_offset;
-    int rect_offset;
 
     //Initializations
     layout = gtk_entry_get_layout (spellcheck->entry);
     pango_layout_get_pixel_extents (layout, &rect, NULL);
-    rect_offset = rect.width;
-    allocation_offset = gtk_widget_get_allocated_height (GTK_WIDGET (spellcheck->entry));
     gtk_entry_get_layout_offsets (spellcheck->entry, &layout_offset, NULL);
 
     return (layout_offset);

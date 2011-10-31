@@ -1720,6 +1720,10 @@ gboolean gw_searchwindow_has_selection (GwSearchWindow *window, GtkWidget *widge
       buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (widget));
       has_selection = (buffer != NULL && gtk_text_buffer_get_has_selection (buffer));
     }
+    else
+    {
+      has_selection = FALSE;
+    }
 
     return has_selection;
 }
@@ -2027,11 +2031,9 @@ int gw_searchwindow_new_tab (GwSearchWindow *window)
     gtk_widget_show_all (GTK_WIDGET (hbox));
 
     //Initializations
-    int current;
     int position;
 
     //Initializations
-    current = gtk_notebook_get_current_page (priv->notebook);
     position = gtk_notebook_append_page (priv->notebook, scrolledwindow, hbox);
     priv->tablist = g_list_append (priv->tablist, NULL);
 

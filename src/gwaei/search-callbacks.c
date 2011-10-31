@@ -164,7 +164,6 @@ G_MODULE_EXPORT gboolean gw_searchwindow_get_iter_for_button_release_cb (GtkWidg
     LwPreferences *preferences;
     gint x;
     gint y;
-    gint trailing;
     GtkTextIter iter;
     gunichar unic;
     LwDictInfo *di;
@@ -173,7 +172,6 @@ G_MODULE_EXPORT gboolean gw_searchwindow_get_iter_for_button_release_cb (GtkWidg
     //Initializations
     x = event->x;
     y = event->y;
-    trailing = 0;
     window = GW_SEARCHWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_SEARCHWINDOW));
     if (window == NULL) return FALSE;
     priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
@@ -689,16 +687,12 @@ G_MODULE_EXPORT void gw_searchwindow_dictionary_combobox_changed_cb (GtkWidget *
     //Declarations
     GwSearchWindow *window;
     GwSearchWindowPrivate *priv;
-    GwApplication *application;
-    LwPreferences *preferences;
     int active;
 
     //Initializations
     window = GW_SEARCHWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (widget), GW_TYPE_SEARCHWINDOW));
     if (window == NULL) return;
     priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
-    application = gw_window_get_application (GW_WINDOW (window));
-    preferences = gw_application_get_preferences (application);
     active = gtk_combo_box_get_active (GTK_COMBO_BOX (widget));
 
     gw_searchwindow_set_dictionary (window, active);
@@ -1635,12 +1629,12 @@ G_MODULE_EXPORT void gw_searchwindow_new_tab_cb (GtkWidget *widget, gpointer dat
 {
     //Declarations
     GwSearchWindow *window;
-    int position;
 
     //Initializations
     window = GW_SEARCHWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_SEARCHWINDOW));
     if (window == NULL) return;
-    position = gw_searchwindow_new_tab (window);
+    
+    gw_searchwindow_new_tab (window);
 }
 
 
@@ -1716,14 +1710,10 @@ G_MODULE_EXPORT void gw_searchwindow_switch_tab_cb (GtkNotebook *notebook, GtkWi
 {
     //Declarations
     GwSearchWindow *window;
-    GwSearchWindowPrivate *priv;
-    LwSearchItem *item;
 
     //Initializations
     window = GW_SEARCHWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_SEARCHWINDOW));
     if (window == NULL) return;
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
-    item =  LW_SEARCHITEM (g_list_nth_data (priv->tablist, page_num));
 
     gw_searchwindow_sync_current_searchitem (window);
 }
@@ -1738,14 +1728,10 @@ G_MODULE_EXPORT void gw_searchwindow_next_tab_cb (GtkWidget *widget, gpointer da
 {
     GwSearchWindow *window;
     GwSearchWindowPrivate *priv;
-    int page_num;
-    LwSearchItem *item;
 
     window = GW_SEARCHWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_SEARCHWINDOW));
     if (window == NULL) return;
     priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
-    page_num = gtk_notebook_get_current_page (priv->notebook);
-    item = LW_SEARCHITEM (g_list_nth_data (priv->tablist, page_num));
 
     gtk_notebook_next_page (priv->notebook);
     gw_searchwindow_sync_current_searchitem (window);
@@ -1761,14 +1747,10 @@ G_MODULE_EXPORT void gw_searchwindow_previous_tab_cb (GtkWidget *widget, gpointe
 {
     GwSearchWindow *window;
     GwSearchWindowPrivate *priv;
-    int page_num;
-    LwSearchItem *item;
 
     window = GW_SEARCHWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_SEARCHWINDOW));
     if (window == NULL) return;
     priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
-    page_num = gtk_notebook_get_current_page (priv->notebook);
-    item = LW_SEARCHITEM (g_list_nth_data (priv->tablist, page_num));
 
     gtk_notebook_prev_page (priv->notebook);
     gw_searchwindow_sync_current_searchitem (window);
@@ -2028,11 +2010,11 @@ G_MODULE_EXPORT void gw_searchwindow_sync_search_as_you_type_cb (GSettings *sett
 G_MODULE_EXPORT void gw_searchwindow_open_kanjipadwindow_cb (GtkWidget *widget, gpointer data)
 {
     GwSearchWindow *window;
-    GwApplication *application;
+    //GwApplication *application;
 
     window = GW_SEARCHWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_SEARCHWINDOW));
     if (window == NULL) return;
-    application = gw_window_get_application (GW_WINDOW (window));
+    //application = gw_window_get_application (GW_WINDOW (window));
 
 //    gw_application_show_window (application, GW_WINDOW_KANJIPAD, GW_WINDOW (window), FALSE);
 }
@@ -2042,11 +2024,11 @@ G_MODULE_EXPORT void gw_searchwindow_open_kanjipadwindow_cb (GtkWidget *widget, 
 G_MODULE_EXPORT void gw_searchwindow_open_settingswindow_cb (GtkWidget *widget, gpointer data)
 {
     GwSearchWindow *window;
-    GwApplication *application;
+    //GwApplication *application;
 
     window = GW_SEARCHWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_SEARCHWINDOW));
     if (window == NULL) return;
-    application = gw_window_get_application (GW_WINDOW (window));
+    //application = gw_window_get_application (GW_WINDOW (window));
 
 //    gw_application_show_window (application, GW_WINDOW_SETTINGS, GW_WINDOW (window), FALSE);
 }
@@ -2055,11 +2037,11 @@ G_MODULE_EXPORT void gw_searchwindow_open_settingswindow_cb (GtkWidget *widget, 
 G_MODULE_EXPORT void gw_searchwindow_open_radicalswindow_cb (GtkWidget *widget, gpointer data)
 {
     GwSearchWindow *window;
-    GwApplication *application;
+    //GwApplication *application;
 
     window = GW_SEARCHWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_SEARCHWINDOW));
     if (window == NULL) return;
-    application = gw_window_get_application (GW_WINDOW (window));
+    //application = gw_window_get_application (GW_WINDOW (window));
 
 //    gw_application_show_window (application, GW_WINDOW_RADICALS, GW_WINDOW (window), FALSE);
 }

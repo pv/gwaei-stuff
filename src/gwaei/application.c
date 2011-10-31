@@ -72,13 +72,11 @@ static void gw_application_init (GwApplication *application)
 static void gw_application_finalize (GObject *object)
 {
     //Declarations
-    GwApplication *app;
-    GList *iter;
-    GtkWidget *widget;
+    GwApplication *application;
 
-    app = GW_APPLICATION (object);
+    application = GW_APPLICATION (object);
 
-    gw_application_private_finalize (app);
+    gw_application_private_finalize (application);
     G_OBJECT_CLASS (gw_application_parent_class)->finalize (object);
 }
 
@@ -260,14 +258,12 @@ GtkWindow* gw_application_get_window_by_widget (GwApplication *application, GtkW
     GList *iter;
     GList *list;
     GtkWindow *window;
-    GtkWindow *active;
     GtkWindow *fuzzy;
     GtkWindow *toplevel;
 
     //Initializations
     window = NULL;
     fuzzy = NULL;
-    active = NULL;
     toplevel = GTK_WINDOW (gtk_widget_get_toplevel (widget));
     list = gtk_application_get_windows (GTK_APPLICATION (application));
 
@@ -328,7 +324,6 @@ void gw_application_handle_error (GwApplication *app, GtkWindow *transient_for, 
 
     //Declarations
     GtkWidget *dialog;
-    gint response;
 
     //Handle the error
     if (show_dialog)
@@ -343,7 +338,7 @@ void gw_application_handle_error (GwApplication *app, GtkWindow *transient_for, 
                                                   );
       g_signal_connect_swapped (dialog, "response", G_CALLBACK (gtk_widget_destroy), dialog);
       gtk_widget_show_all (GTK_WIDGET (dialog));
-      response = gtk_dialog_run (GTK_DIALOG (dialog));
+      gtk_dialog_run (GTK_DIALOG (dialog));
     }
     else
     {
