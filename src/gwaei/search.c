@@ -326,6 +326,11 @@ gboolean gw_searchwindow_append_result_timeout (GwSearchWindow *window)
     {
         gw_searchwindow_append_result (window, item);
     }
+    else
+    {
+        gw_searchwindow_display_no_results_found_page (window, item);
+    }
+
     
     if (priv->mouse_item != NULL)
       gw_searchwindow_append_kanjidict_tooltip_result (window, priv->mouse_item);
@@ -1210,8 +1215,11 @@ void gw_searchwindow_set_cursor (GwSearchWindow* window, GdkCursorType CURSOR)
 //!
 void gw_searchwindow_display_no_results_found_page (GwSearchWindow *window, LwSearchItem *item)
 {
-    if (item->status == LW_SEARCHSTATUS_CANCELING) return; 
+    //Sanity check
+    if (item == NULL || item->dictionary == NULL) return;
+    if (item->status != LW_SEARCHSTATUS_IDLE || item->current_line == 0 || item->total_results > 0) return; 
 
+    //Declarations
     GwApplication *application;
     GwSearchWindowPrivate *priv;
     priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
@@ -1244,6 +1252,7 @@ void gw_searchwindow_display_no_results_found_page (GwSearchWindow *window, LwSe
     buffer = gtk_text_view_get_buffer (view);
     query_text = gtk_entry_get_text (priv->entry);
     di_selected = gw_searchwindow_get_dictionary (window);
+    item->current_line = 0;
 
     gtk_text_buffer_set_text (buffer, "", -1);
 
