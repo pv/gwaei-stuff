@@ -13,6 +13,7 @@ typedef struct _GwResultPopupData GwResultPopupData;
 
 void gw_searchwindow_insert_resultpopup_button (GwSearchWindow*, LwSearchItem*, LwResultLine*, GtkTextIter*);
 
+static void _destroy_searchitem_cb (GtkWidget*, gpointer);
 static GtkToggleButton* gw_popupbutton_new (int, GwResultPopupData*);
 static GtkWidget* _resultpopup_new (GwResultPopupData*);
 static void _resultpopup_show_cb (GtkWidget*, gpointer);
@@ -76,7 +77,7 @@ static GtkToggleButton* gw_popupbutton_new (int font_size, GwResultPopupData *rp
 
     //Initializations
     button = GTK_TOGGLE_BUTTON (gtk_toggle_button_new ());
-    g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (_resultpopup_show_cb), rpdata);
+    g_signal_connect (G_OBJECT (button), "toggled", G_CALLBACK (_resultpopup_show_cb), rpdata);
     g_signal_connect (G_OBJECT (button), "destroy", G_CALLBACK (_resultpopup_destroy_data_cb), rpdata);
     label = GTK_LABEL (gtk_label_new (NULL));
     markup = g_markup_printf_escaped ("<span size=\"%d\">▼</span>", font_size * PANGO_SCALE * 3 / 4);
@@ -119,6 +120,13 @@ void gw_searchwindow_insert_resultpopup_button (GwSearchWindow *window,     LwSe
 }
 
 
+static void _resultpopup_destroy_cb (GtkWidget *widget, gpointer data)
+{
+    if (data == NULL) return;
+
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (data), FALSE);
+    gtk_widget_destroy (widget);
+}
 
 
 //!
@@ -138,6 +146,7 @@ static GtkWidget* _resultpopup_new (GwResultPopupData *rpdata)
     LwDictInfoList *dictinfolist;
     LwPreferences *preferences;
     LwSearchItem *item;
+    GwSearchData *sdata;
     LwDictInfo *di;
     GtkWidget *menu;
     char *menu_text;
@@ -150,6 +159,7 @@ static GtkWidget* _resultpopup_new (GwResultPopupData *rpdata)
     dictinfolist = LW_DICTINFOLIST (gw_application_get_dictinfolist (application));
     preferences = gw_application_get_preferences (application);
     menu = gtk_menu_new ();
+    g_signal_connect_after (G_OBJECT (menu), "hide", G_CALLBACK (_resultpopup_destroy_cb), rpdata->button);
     char *website_url_menuitems[] = {
       "Wikipedia", "http://www.wikipedia.org/wiki/%s", "wikipedia.png",
       "Goo.ne.jp", "http://dictionary.goo.ne.jp/srch/all/%s/m0u/", "goo.png",
@@ -163,11 +173,14 @@ static GtkWidget* _resultpopup_new (GwResultPopupData *rpdata)
     {
       if (di != NULL && (item = lw_searchitem_new (rpdata->text, di, preferences, NULL)) != NULL)
       {
+        sdata = gw_searchdata_new (gw_searchwindow_get_current_textview (window), window);
+        lw_searchitem_set_data (item, sdata, LW_SEARCHITEM_DATA_FREE_FUNC (gw_searchdata_free));
         menu_text = g_strdup_printf ("%s", di->longname);
         if (menu_text != NULL)
         {
           menuitem = GTK_WIDGET (gtk_image_menu_item_new_with_label (menu_text));
-          g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (_searchwindow_new_tab_with_search_cb), rpdata);
+          g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (_searchwindow_new_tab_with_search_cb), item);
+          g_signal_connect_after (G_OBJECT (menuitem), "destroy", G_CALLBACK (_destroy_searchitem_cb), item);
           gtk_menu_shell_append (GTK_MENU_SHELL (menu), GTK_WIDGET (menuitem));
           gtk_widget_show (GTK_WIDGET (menuitem));
 //          gtk_widget_show (GTK_WIDGET (menuimage));
@@ -191,6 +204,8 @@ static GtkWidget* _resultpopup_new (GwResultPopupData *rpdata)
       if (di != NULL && (item = lw_searchitem_new (rpdata->text, di, preferences, NULL)) != NULL)
       {
         //Create handy variables
+        sdata = gw_searchdata_new (gw_searchwindow_get_current_textview (window), window);
+        lw_searchitem_set_data (item, sdata, LW_SEARCHITEM_DATA_FREE_FUNC (gw_searchdata_free));
         char *name = website_url_menuitems[i];
         char *url = g_strdup_printf(website_url_menuitems[i + 1], rpdata->text);
         if (url != NULL)
@@ -215,7 +230,8 @@ static GtkWidget* _resultpopup_new (GwResultPopupData *rpdata)
             g_free (path);
             path = NULL;
           }
-          g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (_resultpopup_search_online_cb), rpdata);
+          g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (_resultpopup_search_online_cb), item);
+          g_signal_connect_after (G_OBJECT (menuitem), "destroy", G_CALLBACK (_destroy_searchitem_cb), item);
           gtk_menu_shell_append (GTK_MENU_SHELL (menu), GTK_WIDGET (menuitem));
           gtk_widget_show (GTK_WIDGET (menuitem));
 //          gtk_widget_show (GTK_WIDGET (menuimage));
@@ -234,6 +250,8 @@ static void _resultpopup_show_cb (GtkWidget *widget, gpointer data)
 {
     //Sanity check
     g_assert (data != NULL); 
+
+    if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)) == FALSE) return;
 
     //Declarations
     GwResultPopupData *rpdata;
@@ -275,6 +293,12 @@ static void _searchwindow_destroy_tab_menuitem_searchitem_data_cb (GObject *obje
     }
 }
 
+static void _destroy_searchitem_cb (GtkWidget *widget, gpointer data)
+{
+  if (data != NULL)
+    lw_searchitem_free (LW_SEARCHITEM (data));
+}
+
 
 //!
 //! @brief Searches for the word in a webbrower in an external dictionary
@@ -293,11 +317,9 @@ static void _resultpopup_search_online_cb (GtkMenuItem *widget, gpointer data)
     GwSearchWindow *window;
     GtkTextView *view;
     GwSearchData *sdata;
-    GwResultPopupData *rpdata;
 
     //Initializations
-    rpdata = GW_RESULTPOPUPDATA (data);
-    item = rpdata->item;
+    item = LW_SEARCHITEM (data);
     if (item != NULL)
     {
       sdata = GW_SEARCHDATA (lw_searchitem_get_data (item));
@@ -335,12 +357,10 @@ static void _searchwindow_new_tab_with_search_cb (GtkMenuItem *widget, gpointer 
     LwSearchItem *item_new;
     GtkTextView *view;
     GwSearchData *sdata;
-    GwResultPopupData *rpdata;
     int index;
 
     //Initializations
-    rpdata = GW_RESULTPOPUPDATA (data);
-    item = rpdata->item;
+    item = LW_SEARCHITEM (data);
     sdata = GW_SEARCHDATA (lw_searchitem_get_data (item));
     window = GW_SEARCHWINDOW (sdata->window);
     application = gw_window_get_application (GW_WINDOW (window));
