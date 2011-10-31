@@ -37,35 +37,26 @@
 
 static gpointer _installprogresswindow_install_thread (gpointer);
 
+G_DEFINE_TYPE (GwSearchWindow, gw_searchwindow, GW_TYPE_WINDOW);
 
 //!
-//! @brief Setup the installprogress.c source code
+//! @brief Sets up the variables in main-interface.c and main-callbacks.c for use
 //!
-GwInstallProgressWindow* gw_installprogresswindow_new (GwSettingsWindow *transient_for, GList *link)
+GtkWindow* gw_searchwindow_new (GtkApplication *application)
 {
-    GwInstallProgressWindow *temp;
+    g_assert (application != NULL);
 
-    temp = (GwInstallProgressWindow*) malloc(sizeof(GwInstallProgressWindow));
+    //Declarations
+    GwSearchWindow *window;
 
-    if (temp != NULL)
-    {
-      gw_window_init (GW_WINDOW (temp), GW_WINDOW_INSTALLPROGRESS, "installprogress.ui", "install_progress_dialog", link);
-      gw_installprogresswindow_init (temp, transient_for);
-    }
+    //Initializations
+    window = GW_SEARCHWINDOW (g_object_new (GW_TYPE_SEARCHWINDOW,
+                                            "type",        GTK_WINDOW_TOPLEVEL,
+                                            "application", GW_APPLICATION (application),
+                                            "ui-xml",      "search.ui",
+                                            NULL));
 
-    return temp;
-}
-
-
-//!
-//! @brief Free the memory used by the installprogress.c source code
-//!
-void gw_installprogresswindow_destroy (GwInstallProgressWindow *window)
-{
-    gw_window_deinit (GW_WINDOW (window));
-    gw_installprogresswindow_deinit (window);
-
-    free (window);
+    return GTK_WINDOW (window);
 }
 
 

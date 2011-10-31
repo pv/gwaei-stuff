@@ -1,8 +1,6 @@
 #ifndef GW_WINDOW_INCLUDED
 #define GW_WINDOW_INCLUDED
 
-#include <gtk/gtk.h>
-
 G_BEGIN_DECLS
 
 struct _GwApplication;

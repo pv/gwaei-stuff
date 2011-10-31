@@ -1,5 +1,5 @@
 #include <gwaei/gwaei.h>
-#include <gwaei/windowprivate.h>
+#include <gwaei/window-private.h>
 
 void gw_window_private_init (GwWindow *window)
 {
@@ -20,5 +20,4 @@ void gw_window_private_finalize (GwWindow *window)
     if (priv->builder != NULL) g_object_unref (priv->builder);
     if (priv->ui_xml != NULL) g_free (priv->ui_xml);
 }
-
 

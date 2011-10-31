@@ -1,30 +1,41 @@
 #ifndef GW_INSTALL_PROGRESS_WINDOW_INCLUDED
 #define GW_INSTALL_PROGRESS_WINDOW_INCLUDED
 
-struct _GwInstallProgressWindow {
-  EXTENDS_GW_WINDOW
+G_BEGIN_DECLS
 
-  LwDictInst *di;
-
-  GtkLabel *label;
-  GtkLabel *sublabel;
-  GtkProgressBar* progressbar;
-
-  double install_fraction;
-  GMutex *mutex;
-};
+//Boilerplate
 typedef struct _GwInstallProgressWindow GwInstallProgressWindow;
+typedef struct _GwInstallProgressWindowClass GwInstallProgressWindowClass;
+typedef struct _GwInstallProgressWindowPrivate GwInstallProgressWindowPrivate;
 
-#define GW_INSTALLPROGRESSWINDOW(object) (GwInstallProgressWindow*)object
+#define GW_TYPE_INSTALLPROGRESSWINDOW              (gw_installprogresswindow_get_type())
+#define GW_INSTALLPROGRESSWINDOW(obj)              (G_TYPE_CHECK_INSTANCE_CAST((obj), GW_TYPE_INSTALLPROGRESSWINDOW, GwInstallProgressWindow))
+#define GW_INSTALLPROGRESSWINDOW_CLASS(klass)      (G_TYPE_CHECK_CLASS_CAST((klass), GW_TYPE_INSTALLPROGRESSWINDOW, GwInstallProgressWindowClass))
+#define GW_IS_INSTALLPROGRESSWINDOW(obj)           (G_TYPE_CHECK_INSTANCE_TYPE((obj), GW_TYPE_INSTALLPROGRESSWINDOW))
+#define GW_IS_INSTALLPROGRESSWINDOW_CLASS(klass)   (G_TYPE_CHECK_CLASS_TYPE ((klass), GW_TYPE_INSTALLPROGRESSWINDOW))
+#define GW_INSTALLPROGRESSWINDOW_GET_CLASS(obj)    (G_TYPE_INSTANCE_GET_CLASS((obj), GW_TYPE_INSTALLPROGRESSWINDOW, GwInstallProgressWindowClass))
 
-GwInstallProgressWindow* gw_installprogresswindow_new (GwSettingsWindow*, GList*);
-void gw_installprogresswindow_destroy (GwInstallProgressWindow*);
-void gw_installprogresswindow_start_cb (GtkWidget*, gpointer);
+#define GW_INSTALLPROGRESSWINDOW_KEEP_SEARCHING_MAX_DELAY 3
+
+struct _GwInstallProgressWindow {
+  GwWindow window;
+  GwInstallProgressWindowPrivate *priv;
+};
+
+struct _GwInstallProgressWindowClass {
+  GwWindowClass parent_class;
+};
+
+GtkWindow* gw_installprogresswindow_new (GtkApplication *application);
+GType gw_installprogresswindow_get_type (void) G_GNUC_CONST;
+
 void gw_installprogresswindow_init (GwInstallProgressWindow*, GwSettingsWindow*);
 void gw_installprogresswindow_deinit (GwInstallProgressWindow*);
 
 void gw_installprogresswindow_start (GwInstallProgressWindow*);
 
-#include <gwaei/installprogress-callbacks.h>
+#include "installprogress-callbacks.h"
+
+G_END_DECLS
 
 #endif

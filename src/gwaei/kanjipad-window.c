@@ -46,34 +46,26 @@ static void _kanjipadwindow_initialize_engine (GwKanjipadWindow*);
 static gboolean _kanjipadwindow_engine_input_handler (GIOChannel*, GIOCondition, gpointer);
 
 
+G_DEFINE_TYPE (GwKanjipadWindow, gw_kanjipadwindow, GW_TYPE_WINDOW);
+
 //!
-//! @brief Sets up kanjipad, aquiring any needed resources
+//! @brief Sets up the variables in main-interface.c and main-callbacks.c for use
 //!
-GwKanjipadWindow* gw_kanjipadwindow_new (GwSearchWindow* transient_for, GList *link)
+GtkWindow* gw_kanjipadwindow_new (GtkApplication *application)
 {
-    GwKanjipadWindow *temp;
+    g_assert (application != NULL);
 
-    temp = (GwKanjipadWindow*) malloc(sizeof(GwKanjipadWindow));
+    //Declarations
+    GwKanjipadWindow *window;
 
-    if (temp != NULL)
-    {
-      gw_window_init (GW_WINDOW (temp), GW_WINDOW_KANJIPAD, "kanjipad.ui", "kanjipad_window", link);
-      gw_kanjipadwindow_init (temp, transient_for);
-    }
+    //Initializations
+    window = GW_KANJIPADWINDOW (g_object_new (GW_TYPE_KANJIPADWINDOW,
+                                            "type",        GTK_WINDOW_TOPLEVEL,
+                                            "application", GW_APPLICATION (application),
+                                            "ui-xml",      "kanjipad.ui",
+                                            NULL));
 
-    return temp;
-}
-
-
-//!
-//! @brief Frees any resources taken by the initialization of kanjipad
-//!
-void gw_kanjipadwindow_destroy (GwKanjipadWindow *window)
-{
-    gw_kanjipadwindow_deinit (window);
-    gw_window_deinit (GW_WINDOW (window));
-
-    free (window);
+    return GTK_WINDOW (window);
 }
 
 

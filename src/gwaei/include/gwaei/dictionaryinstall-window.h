@@ -62,6 +62,6 @@ void gw_dictinstwindow_destroy (GwDictInstWindow*);
 void gw_dictinstwindow_init (GwDictInstWindow*, GwSettingsWindow*);
 void gw_dictinstwindow_deinit (GwDictInstWindow*);
 
-#include <gwaei/dictionaryinstall-callbacks.h>
+#include "dictionaryinstall-callbacks.h"
 
 #endif

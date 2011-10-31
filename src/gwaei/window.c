@@ -37,7 +37,7 @@
 #include <gtk/gtk.h>
 
 #include <gwaei/gwaei.h>
-#include <gwaei/windowprivate.h>
+#include <gwaei/window-private.h>
 
 G_DEFINE_TYPE (GwWindow, gw_window, GTK_TYPE_WINDOW);
 

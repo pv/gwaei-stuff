@@ -10,7 +10,6 @@ typedef enum {
   TOTAL_GW_SEARCHWINDOW_TIMEOUTIDS
 } GwSearchWindowTimeoutId;
 
-
 typedef enum {
   GW_SEARCHWINDOW_SIGNALID_SPELLCHECK,
   GW_SEARCHWINDOW_SIGNALID_KEEP_SEARCHING,
@@ -23,7 +22,6 @@ typedef enum {
   GW_SEARCHWINDOW_SIGNALID_DICTIONARIES_DELETED,
   TOTAL_GW_SEARCHWINDOW_SIGNALIDS
 } GwSearchWindowSignalId;
-
 
 struct _GwSearchWindowPrivate {
   GtkEntry *entry;
@@ -75,7 +73,7 @@ struct _GwSearchWindowPrivate {
 
 #define GW_SEARCHWINDOW_GET_PRIVATE(object)(G_TYPE_INSTANCE_GET_PRIVATE ((object), GW_TYPE_SEARCHWINDOW, GwSearchWindowPrivate))
 
-void gw_searchwindow_private_init (GwSearchWindow *);
+void gw_searchwindow_private_init (GwSearchWindow*);
 void gw_searchwindow_private_finalize (GwSearchWindow*);
 
 #endif

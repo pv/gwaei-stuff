@@ -313,28 +313,24 @@ static char *_radical_array[][5] =
   {NULL}
 };
 
+G_DEFINE_TYPE (GwRadicalsWindow, gw_radicalswindow, GW_TYPE_WINDOW);
 
-GwRadicalsWindow* gw_radicalswindow_new (GwWindow* transient_for, GList *link)
+
+GtkWindow* gw_radicalswindow_new (GtkApplication *application)
 {
-    GwRadicalsWindow *temp;
+    g_assert (application != NULL);
 
-    temp = (GwRadicalsWindow*) malloc(sizeof(GwRadicalsWindow));
-    if (temp != NULL)
-    {
-      gw_window_init (GW_WINDOW (temp), GW_WINDOW_RADICALS, "radicals.ui", "radicals_window", link);
-      gw_radicalswindow_init (temp, transient_for);
-    }
+    //Declarations
+    GwSearchWindow *window;
 
-    return temp;
-}
+    //Initializations
+    window = GW_SEARCHWINDOW (g_object_new (GW_TYPE_SEARCHWINDOW,
+                                            "type",        GTK_WINDOW_TOPLEVEL,
+                                            "application", GW_APPLICATION (application),
+                                            "ui-xml",      "radicals.ui",
+                                            NULL));
 
-
-void gw_radicalswindow_destroy (GwRadicalsWindow* window)
-{
-    gw_window_deinit (GW_WINDOW (window));
-    gw_radicalswindow_deinit (window);
-
-    free(window);
+    return GTK_WINDOW (window);
 }
 
 

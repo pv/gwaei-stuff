@@ -1,7 +1,5 @@
-#ifndef GW_FRONTEND_INCLUDED
-#define GW_FRONTEND_INCLUDED
-
-
+#ifndef GWAEI_INCLUDED
+#define GWAEI_INCLUDED
 
 #include <libwaei/libwaei.h>
 
@@ -11,7 +9,7 @@
 #include <gwaei/spellcheck.h>
 #include <gwaei/dictinfolist.h>
 
-#include <gwaei/search.h>
+#include <gwaei/search-window.h>
 /*
 #include <gwaei/radicals-window.h>
 #include <gwaei/settings-window.h>

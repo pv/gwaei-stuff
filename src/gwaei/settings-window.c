@@ -40,43 +40,32 @@ void _settingswindow_initialize_dictionary_tree_view (GtkTreeView*);
 void _settingswindow_attach_signals (GwSettingsWindow*);
 void _settingswindow_remove_signals (GwSettingsWindow*);
 
+G_DEFINE_TYPE (GwSettingsWindow, gw_settingswindow, GW_TYPE_WINDOW);
+
 //!
-//! @brief Sets the initial status of the dictionaries in the settings dialog
+//! @brief Sets up the variables in main-interface.c and main-callbacks.c for use
 //!
-GwSettingsWindow* gw_settingswindow_new (GwSearchWindow *transient_for, GList *link) 
+GtkWindow* gw_settingswindow_new (GtkApplication *application)
 {
-    GwSettingsWindow *temp;
+    g_assert (application != NULL);
 
-    temp = (GwSettingsWindow*) malloc(sizeof(GwSettingsWindow));
+    //Declarations
+    GwSettingsWindow *window;
 
-    if (temp != NULL)
-    {
+    //Initializations
+    window = GW_settingsWINDOW (g_object_new (GW_TYPE_SETTINGSWINDOW,
+                                            "type",        GTK_WINDOW_TOPLEVEL,
+                                            "application", GW_APPLICATION (application),
+                                            "ui-xml",      "settings.ui",
+                                            NULL));
+
+    return GTK_WINDOW (window);
+}
+
       if (g_main_current_source () != NULL) gw_app_block_searches (app);
 
       gw_window_init (GW_WINDOW (temp), GW_WINDOW_SETTINGS, "settings.ui", "settings_window", link);
       gw_settingswindow_init (temp, GW_WINDOW (transient_for));
-    }
-
-    return temp;
-}
-
-
-//!
-//! @brief Frees the memory used by the settings
-//!
-void gw_settingswindow_destroy (GwSettingsWindow *window)
-{
-
-    gw_settingswindow_deinit (window);
-    gw_window_deinit (GW_WINDOW (window));
-
-    free(window);
-
-    if (lw_dictinfolist_get_total (LW_DICTINFOLIST (app->dictinfolist)) == 0)
-      gw_app_quit (app);
-
-    if (g_main_current_source () != NULL) gw_app_unblock_searches (app);
-}
 
 
 void gw_settingswindow_init (GwSettingsWindow *window, GwWindow *transient_for)

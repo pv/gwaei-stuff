@@ -1,8 +1,6 @@
 #ifndef GW_APPLICATION_PRIVATE_INCLUDED
 #define GW_APPLICATION_PRIVATE_INCLUDED
 
-#include <gtk/gtk.h>
-
 G_BEGIN_DECLS
 
 struct _GwApplicationPrivate {

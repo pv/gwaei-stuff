@@ -1,11 +1,7 @@
 #ifndef GW_SEARCHWINDOW_INCLUDED
 #define GW_SEARCHWINDOW_INCLUDED
 
-#include <gtk/gtk.h>
-
 #include <libwaei/searchitem.h>
-
-#include "search-callbacks.h"
 
 G_BEGIN_DECLS
 
@@ -121,9 +117,8 @@ void gw_searchwindow_start_search (GwSearchWindow*, LwSearchItem*);
 void gw_searchwindow_initialize_dictionary_menu (GwSearchWindow*);
 void gw_searchwindow_initialize_dictionary_combobox (GwSearchWindow*);
 
-
-#include <gwaei/search-callbacks.h>
-#include <gwaei/search-data.h>
+#include "search-callbacks.h"
+#include "search-data.h"
 
 G_END_DECLS
 
