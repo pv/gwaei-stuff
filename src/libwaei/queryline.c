@@ -478,7 +478,6 @@ gboolean lw_queryline_parse_kanjidict_string (LwQueryLine *ql, LwPreferences *pm
 
     //Declarations
     GMatchInfo *match_info;
-    int rk_conv_pref;
     int i;
     int length;
     char **atoms;
@@ -488,14 +487,11 @@ gboolean lw_queryline_parse_kanjidict_string (LwQueryLine *ql, LwPreferences *pm
     char *start;
     char *end;
     GRegex ***re;
-    gboolean want_rk_conv;
     gboolean all_regex_built;
     gunichar character;
     GUnicodeScript script;
 
     //Initializations
-    rk_conv_pref = lw_preferences_get_int_by_schema (pm, LW_SCHEMA_BASE, LW_KEY_ROMAN_KANA);
-    want_rk_conv = (rk_conv_pref == 0 || (rk_conv_pref == 2 && !lw_util_is_japanese_locale()));
     all_regex_built = TRUE;
     if (ql->string != NULL) g_free (ql->string);
     ql->string = lw_util_prepare_query (STRING, FALSE);

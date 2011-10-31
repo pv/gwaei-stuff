@@ -145,7 +145,6 @@ gboolean lw_io_copy_with_encoding (const char *SOURCE_PATH, const char *TARGET_P
     gsize inbytes_left, outbytes_left;
     char *inptr, *outptr;
     char prev_inbytes;
-    size_t written;
     size_t curpos;
     size_t end;
     GIConv conv;
@@ -156,7 +155,6 @@ gboolean lw_io_copy_with_encoding (const char *SOURCE_PATH, const char *TARGET_P
     writefd = fopen (TARGET_PATH, "w");
     conv = g_iconv_open (TARGET_ENCODING, SOURCE_ENCODING);
     prev_inbytes = 0;
-    written = 0;
     end = lw_io_get_filesize (SOURCE_PATH);
     curpos = 0;
 
@@ -184,7 +182,7 @@ gboolean lw_io_copy_with_encoding (const char *SOURCE_PATH, const char *TARGET_P
         inptr = inptr + strlen(inptr) - inbytes_left;
         outptr = outptr + strlen(outptr) - outbytes_left;
       }
-      written = fwrite(output, 1, strlen(output), writefd); 
+      fwrite(output, 1, strlen(output), writefd); 
     }
     fraction = ((double) curpos / (double) end);
     if (cb != NULL) cb (fraction, data);
@@ -907,11 +905,7 @@ gboolean lw_io_remove (const char *URI, GError **error)
 {
   if (error != NULL && *error != NULL) return FALSE;
 
-  //Declarations
-  int resolution;
-
-  //Initializations
-  resolution = g_remove (URI);
+  g_remove (URI);
 
   return (error == NULL && *error == NULL);
 }

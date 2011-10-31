@@ -579,14 +579,11 @@ gboolean lw_dictinst_decompress (LwDictInst *di, LwIoProgressCallback cb, gpoint
     g_assert (di != NULL);
 
     //Declarations
-    gint status;
     char *source;
     char *target;
-    int i;
     LwDictInstUri group_index;
 
     //Initializations
-    i = 0;
     group_index = LW_DICTINST_NEEDS_DECOMPRESSION;
 
     if ((source = lw_dictinst_get_source_uri (di, group_index, 0)) != NULL &&
@@ -600,10 +597,10 @@ gboolean lw_dictinst_decompress (LwDictInst *di, LwIoProgressCallback cb, gpoint
       switch (di->compression)
       {
         case LW_COMPRESSION_GZIP:
-          status = lw_io_gunzip_file (source, target, cb, data, error);
+          lw_io_gunzip_file (source, target, cb, data, error);
           break;
         case LW_COMPRESSION_NONE:
-          status =  lw_io_copy (source, target, cb, data, error);
+          lw_io_copy (source, target, cb, data, error);
           break;
         default:
           break;
@@ -617,7 +614,7 @@ gboolean lw_dictinst_decompress (LwDictInst *di, LwIoProgressCallback cb, gpoint
         //Sanity check
         g_assert (g_file_test (source, G_FILE_TEST_IS_REGULAR));
 
-        status = lw_io_gunzip_file (source, target, cb, data, error);
+        lw_io_gunzip_file (source, target, cb, data, error);
       }
     }
 
@@ -792,12 +789,10 @@ void lw_dictinst_clean (LwDictInst *di, LwIoProgressCallback cb, gpointer data)
     //Declarations
     LwDictInstUri group_index;
     int i;
-    char *uri;
     char *source;
 
     //Initializations
     group_index = 0;
-    uri = NULL;
 
     //Loop through all of the uris except the final destination
     while (group_index < LW_DICTINST_NEEDS_NOTHING)
