@@ -516,6 +516,7 @@ static void gw_searchwindow_append_kanjidict_result (GwSearchWindow *window, LwS
     //Initializations
     application = gw_window_get_application (GW_WINDOW (window));
     resultline = lw_searchitem_get_result (item);
+    if (resultline == NULL) return;
     sdata = GW_SEARCHDATA (lw_searchitem_get_data (item));
     view = GTK_TEXT_VIEW (sdata->view);
     buffer = gtk_text_view_get_buffer (view);
