@@ -251,7 +251,6 @@ static void gw_searchwindow_constructed (GObject *object)
 }
 
 
-
 static void
 gw_searchwindow_class_init (GwSearchWindowClass *klass)
 {
@@ -2197,6 +2196,7 @@ void gw_searchwindow_start_search (GwSearchWindow *window, LwSearchItem* item)
     GwSearchData *sdata;
     GtkTextView *view;
 
+    //Initializations
     application = gw_window_get_application (GW_WINDOW (window));
     if (!gw_application_can_start_search (application)) return;
     view = gw_searchwindow_get_current_textview (window);

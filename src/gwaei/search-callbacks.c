@@ -2036,14 +2036,32 @@ G_MODULE_EXPORT void gw_searchwindow_open_settingswindow_cb (GtkWidget *widget, 
 
 G_MODULE_EXPORT void gw_searchwindow_open_radicalswindow_cb (GtkWidget *widget, gpointer data)
 {
+    //Declarations
+    GwApplication *application;
     GwSearchWindow *window;
-    //GwApplication *application;
+    GtkWindow *radicalswindow;
+    GList *iter;
 
+    //Initializations
     window = GW_SEARCHWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_SEARCHWINDOW));
     if (window == NULL) return;
-    //application = gw_window_get_application (GW_WINDOW (window));
+    application = gw_window_get_application (GW_WINDOW (window));
+    iter = gtk_application_get_windows (GTK_APPLICATION (application));
 
-//    gw_application_show_window (application, GW_WINDOW_RADICALS, GW_WINDOW (window), FALSE);
+    while (iter != NULL && !GW_IS_RADICALSWINDOW (iter->data)) iter = iter->next;
+
+    if (iter != NULL)
+    {
+      radicalswindow = GTK_WINDOW (iter->data);
+      gtk_window_set_transient_for (GTK_WINDOW (radicalswindow), GTK_WINDOW (window));
+      gtk_window_present (GTK_WINDOW (radicalswindow));
+    }
+    else
+    {
+      radicalswindow = gw_radicalswindow_new (GTK_APPLICATION (application));
+      gtk_window_set_transient_for (GTK_WINDOW (radicalswindow), GTK_WINDOW (window));
+      gtk_widget_show (GTK_WIDGET (radicalswindow));
+    }
 }
 
 

@@ -504,6 +504,7 @@ static void gw_searchwindow_append_kanjidict_result (GwSearchWindow *window, LwS
     g_assert (lw_searchitem_has_data (item));
 
     //Declarations
+    GwApplication *application;
     GwSearchData *sdata;
     LwResultLine *resultline;
     GtkTextView *view;
@@ -513,6 +514,7 @@ static void gw_searchwindow_append_kanjidict_result (GwSearchWindow *window, LwS
     int line, start_offset, end_offset;
 
     //Initializations
+    application = gw_window_get_application (GW_WINDOW (window));
     resultline = lw_searchitem_get_result (item);
     sdata = GW_SEARCHDATA (lw_searchitem_get_data (item));
     view = GTK_TEXT_VIEW (sdata->view);
@@ -561,14 +563,12 @@ static void gw_searchwindow_append_kanjidict_result (GwSearchWindow *window, LwS
       gtk_text_buffer_insert (buffer, &iter, "\n", -1);
       gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); line = gtk_text_iter_get_line (&iter);
 
-/*
       GwRadicalsWindow *radicalswindow;
-      radicalswindow =  GW_RADICALSWINDOW (gw_application_get_window_by_type (app, GW_WINDOW_RADICALS));
-      if (radicalswindow != NULL)
+      radicalswindow =  GW_RADICALSWINDOW (gw_application_get_window_by_type (application, GW_TYPE_RADICALSWINDOW));
+      if (radicalswindow != NULL && resultline->radicals != NULL)
       {
         gw_radicalswindow_set_button_sensitive_when_label_is (radicalswindow, resultline->radicals);
       }
-*/
     }
 
     //Readings

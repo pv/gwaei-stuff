@@ -32,17 +32,7 @@
 #include <gtk/gtk.h>
 
 #include <gwaei/gwaei.h>
-
-
-//!
-//! @brief Brings up the search tool dialog
-//!
-//! @param widget Unused GtkWidget pointer
-//! @param data Unused gpointer
-//!
-G_MODULE_EXPORT void gw_radicalswindow_show_cb (GtkWidget *widget, gpointer data)
-{
-}
+#include <gwaei/radicals-private.h>
 
 
 //!
@@ -54,18 +44,22 @@ G_MODULE_EXPORT void gw_radicalswindow_show_cb (GtkWidget *widget, gpointer data
 G_MODULE_EXPORT void gw_radicalswindow_clear_cb (GtkWidget *widget, gpointer data)
 {
     //Declaratins
+    GwApplication *application;
     GwRadicalsWindow *window;
+    GwRadicalsWindowPrivate *priv;
 
     //Initializations
-    window = GW_RADICALSWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
+    window = GW_RADICALSWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_RADICALSWINDOW));
     if (window == NULL) return;
+    priv = GW_RADICALSWINDOW_GET_PRIVATE (window);
+    application = gw_window_get_application (GW_WINDOW (window));
 
-    gw_app_block_searches (app);
+    gw_application_block_searches (application);
 
     gw_radicalswindow_deselect_all_radicals (window);
-    gtk_toggle_button_set_active (window->strokes_checkbutton, FALSE);
+    gtk_toggle_button_set_active (priv->strokes_checkbutton, FALSE);
 
-    gw_app_unblock_searches (app);
+    gw_application_unblock_searches (application);
 }
 
 
@@ -81,35 +75,36 @@ G_MODULE_EXPORT void gw_radicalswindow_clear_cb (GtkWidget *widget, gpointer dat
 G_MODULE_EXPORT void gw_radicalswindow_search_cb (GtkWidget *widget, gpointer data)
 {
     //Declarations
+    GwApplication *application;
     GwRadicalsWindow *window;
     GwSearchWindow *searchwindow;
+    LwDictInfoList *dictinfolist;
     LwDictInfo *di;
     char *text_query;
     char *text_radicals;
     char *text_strokes;
-    GError *error;
 
     //Initializations
-    window = GW_RADICALSWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
+    window = GW_RADICALSWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_RADICALSWINDOW));
     if (window == NULL) return;
-    searchwindow = GW_SEARCHWINDOW (window->transient_for);
-    di = lw_dictinfolist_get_dictinfo (LW_DICTINFOLIST (app->dictinfolist), LW_DICTTYPE_KANJI, "Kanji");
+    searchwindow = GW_SEARCHWINDOW (gtk_window_get_transient_for (GTK_WINDOW (window)));
+    g_assert (searchwindow != NULL);
+    application = gw_window_get_application (GW_WINDOW (window));
+    dictinfolist = LW_DICTINFOLIST (gw_application_get_dictinfolist (application));
+    di = lw_dictinfolist_get_dictinfo (dictinfolist, LW_DICTTYPE_KANJI, "Kanji");
     if (di == NULL) return;
 
     text_radicals = gw_radicalswindow_strdup_all_selected (window);
     text_strokes = gw_radicalswindow_strdup_prefered_stroke_count (window);
     text_query = g_strdup_printf ("%s%s", text_radicals, text_strokes);
-    error = NULL;
 
     //Sanity checks
     if (text_query != NULL && strlen(text_query) > 0)
     {
-      gtk_entry_set_text (searchwindow->entry, "");
-      gw_searchwindow_entry_insert (searchwindow, text_query);
-      gw_searchwindow_select_all_by_target (searchwindow, LW_OUTPUTTARGET_ENTRY);
+      gw_searchwindow_set_entry_text (searchwindow, text_query);
       gw_searchwindow_set_dictionary (searchwindow, di->load_position);
 
-      gw_searchwindow_search_cb (GTK_WIDGET (searchwindow->toplevel), searchwindow->toplevel);
+      gw_searchwindow_search_cb (GTK_WIDGET (searchwindow), searchwindow);
     }
 
     //Cleanup
@@ -125,34 +120,66 @@ G_MODULE_EXPORT void gw_radicalswindow_search_cb (GtkWidget *widget, gpointer da
 G_MODULE_EXPORT void gw_radicalswindow_strokes_checkbox_toggled_cb (GtkWidget *widget, gpointer data)
 {
     //Declarations
-    gboolean request;
     GwRadicalsWindow *window;
+    GwRadicalsWindowPrivate *priv;
+    gboolean request;
 
     //Initializations
-    window = GW_RADICALSWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
+    window = GW_RADICALSWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_RADICALSWINDOW));
     if (window == NULL) return;
-    request = gtk_toggle_button_get_active (window->strokes_checkbutton);
+    priv = GW_RADICALSWINDOW_GET_PRIVATE (window);
+    request = gtk_toggle_button_get_active (priv->strokes_checkbutton);
 
-    gtk_widget_set_sensitive (GTK_WIDGET (window->strokes_spinbutton), request);
+    gtk_widget_set_sensitive (GTK_WIDGET (priv->strokes_spinbutton), request);
 
     gw_radicalswindow_search_cb (widget, data);
 }
 
 
-//!
-//! @brief Closes the window passed throught the widget pointer
-//! @param widget GtkWidget pointer to the window to close
-//! @param data Currently unused gpointer
-//!
-G_MODULE_EXPORT void gw_radicalswindow_close_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_radicalswindow_close_cb (GtkWidget* widget, gpointer data)
 {
     //Declarations
     GwRadicalsWindow *window;
-    
-    //Initializations
-    window = GW_RADICALSWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
 
-    gw_app_destroy_window (app, GW_WINDOW (window));
+    //Initializations
+    window = GW_RADICALSWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_RADICALSWINDOW));
+    if (window == NULL) return;
+
+    gtk_widget_hide (GTK_WIDGET (window));
 }
 
+
+G_MODULE_EXPORT void gw_radicalswindow_show_cb (GtkWidget *widget, gpointer data)
+{
+    //Declarations
+    GtkWindow *window;
+    GtkScrolledWindow *scrolledwindow;
+    GtkPolicyType policy;
+    int x, y, width, height, max_height;
+
+    //Initializations
+    window = GTK_WINDOW (widget);
+    if (window == NULL) return;
+    scrolledwindow = GTK_SCROLLED_WINDOW (data);
+    gtk_scrolled_window_get_policy (scrolledwindow, NULL, &policy);
+
+    gtk_scrolled_window_set_policy (scrolledwindow, GTK_POLICY_NEVER, GTK_POLICY_NEVER);
+    gtk_widget_queue_resize_no_redraw (GTK_WIDGET (window));
+    gtk_window_get_position (window, &x, &y);
+    gtk_window_get_size (window, &width, &height);
+    max_height = gdk_screen_height () - y;
+    if (max_height > 50) max_height -= 50;
+
+    if (height > max_height)
+    {
+      gtk_scrolled_window_set_policy (scrolledwindow, GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+      gtk_window_resize (GTK_WINDOW (window), width, max_height);
+    }
+    else
+    {
+      gtk_scrolled_window_set_policy (scrolledwindow, GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+    }
+
+    return;
+}
 
