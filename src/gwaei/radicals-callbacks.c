@@ -101,7 +101,7 @@ G_MODULE_EXPORT void gw_radicalswindow_search_cb (GtkWidget *widget, gpointer da
     //Sanity checks
     if (text_query != NULL && strlen(text_query) > 0)
     {
-      gw_searchwindow_set_entry_text (searchwindow, text_query);
+      gw_searchwindow_entry_set_text (searchwindow, text_query);
       gw_searchwindow_set_dictionary (searchwindow, di->load_position);
 
       gw_searchwindow_search_cb (GTK_WIDGET (searchwindow), searchwindow);

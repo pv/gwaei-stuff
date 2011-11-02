@@ -483,7 +483,7 @@ static int gw_application_command_line (GApplication *application, GApplicationC
     //Set the initial query text if it was passed as an argument to the program
     if (priv->arg_query != NULL)
     {
-      gw_searchwindow_set_entry_text (window, priv->arg_query);
+      gw_searchwindow_entry_set_text (window, priv->arg_query);
       gw_searchwindow_search_cb (GTK_WIDGET (window), window);
     }
 

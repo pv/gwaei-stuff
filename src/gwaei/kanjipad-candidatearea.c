@@ -352,7 +352,6 @@ G_MODULE_EXPORT gboolean gw_kanjipadwindow_candidatearea_button_press_event_cb (
     GwKanjipadWindow *window;
     GwKanjipadWindowPrivate *priv;
     GwSearchWindow *searchwindow;
-    gint start, end;
     int j;
     gint char_height;
     GtkClipboard *clipboard;
@@ -365,11 +364,6 @@ G_MODULE_EXPORT gboolean gw_kanjipadwindow_candidatearea_button_press_event_cb (
     searchwindow = GW_SEARCHWINDOW (gtk_window_get_transient_for (GTK_WINDOW (window)));
     g_assert (searchwindow != NULL);
     clipboard = gtk_clipboard_get (GDK_SELECTION_PRIMARY);
-
-/*
-    gtk_editable_get_selection_bounds (GTK_EDITABLE (searchwindow->entry), &start, &end);
-    gtk_editable_delete_text (GTK_EDITABLE (searchwindow->entry), start, end);
-*/
 
     static const GtkTargetEntry targets[] = {
       { "STRING", 0, 0 },
@@ -402,9 +396,9 @@ G_MODULE_EXPORT gboolean gw_kanjipadwindow_candidatearea_button_press_event_cb (
 
     gtk_widget_queue_draw (widget);
 
-/*
+
     //Copy to clipboard if output_widget is NULL
-    if ((priv->kselected[0] || priv->kselected[1]) && searchwindow->entry == NULL)
+    if ((priv->kselected[0] || priv->kselected[1]) && searchwindow == NULL)
     {
       string_utf = _kanjipadwindow_utf8_for_char (priv->kselected);
       gtk_clipboard_set_text (gtk_clipboard_get (GDK_SELECTION_CLIPBOARD), string_utf, -1);
@@ -413,13 +407,11 @@ G_MODULE_EXPORT gboolean gw_kanjipadwindow_candidatearea_button_press_event_cb (
     //Insert the text into the editable widget
     else if (priv->kselected[0] || priv->kselected[1])
     {
-      //Append the text at the cursor position
       string_utf = _kanjipadwindow_utf8_for_char (priv->kselected);
-      gtk_editable_insert_text (GTK_EDITABLE(searchwindow->entry), string_utf, -1, &start);
-      gtk_editable_set_position (GTK_EDITABLE(searchwindow->entry), start);
+      gw_searchwindow_entry_insert_text (searchwindow, string_utf);
       g_free (string_utf);
     }
-*/
+
     //Cleanup so the user can draw the next character
     gw_kanjipadwindow_clear_drawingarea (window);
 

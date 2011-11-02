@@ -338,7 +338,7 @@ gboolean gw_searchwindow_append_result_timeout (GwSearchWindow *window)
 }
 
 
-void gw_searchwindow_set_entry_text (GwSearchWindow *window, const gchar *text)
+void gw_searchwindow_entry_set_text (GwSearchWindow *window, const gchar *text)
 {
     GwSearchWindowPrivate *priv;
 
@@ -346,6 +346,28 @@ void gw_searchwindow_set_entry_text (GwSearchWindow *window, const gchar *text)
 
     if (text != NULL) gtk_entry_set_text (priv->entry, text);
 }
+
+
+void gw_searchwindow_entry_insert_text (GwSearchWindow *window, const gchar *TEXT)
+{
+    //Sanity checks
+    g_assert (window != NULL);
+    if (TEXT == NULL) return;
+
+    //Declarations
+    GwSearchWindowPrivate *priv;
+    gint start, end;
+
+    //Initializations
+    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+
+    gtk_editable_get_selection_bounds (GTK_EDITABLE (priv->entry), &start, &end);
+    gtk_editable_delete_text (GTK_EDITABLE (priv->entry), start, end);
+
+    gtk_editable_insert_text (GTK_EDITABLE (priv->entry), TEXT, -1, &start);
+    gtk_editable_set_position (GTK_EDITABLE (priv->entry), start + strlen(TEXT));
+}
+
 
 
 //!
