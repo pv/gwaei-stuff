@@ -290,7 +290,6 @@ static int _kanjipadwindow_erase_candidate_selection (GwKanjipadWindow *window)
     {
       for (i = 0; i < priv->total_candidates; i++)
       {
-printf("%d %d\n", i, priv->total_candidates);
         if (strncmp (priv->kselected, priv->kanji_candidates[i], 2))
         {
           _kanjipadwindow_draw_candidate_character (window, i, 0);

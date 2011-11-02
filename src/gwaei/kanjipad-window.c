@@ -100,6 +100,14 @@ static void gw_kanjipadwindow_constructed (GObject *object)
     window = GW_KANJIPADWINDOW (object);
     priv = GW_KANJIPADWINDOW_GET_PRIVATE (window);
 
+    gtk_window_set_title (GTK_WINDOW (window), gettext("gWaei Kanjipad"));
+    gtk_window_set_resizable (GTK_WINDOW (window), FALSE);
+    gtk_window_set_type_hint (GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_UTILITY);
+    gtk_window_set_skip_taskbar_hint (GTK_WINDOW (window), TRUE);
+    gtk_window_set_skip_pager_hint (GTK_WINDOW (window), TRUE);
+    gtk_window_set_destroy_with_parent (GTK_WINDOW (window), TRUE);
+    gtk_window_set_icon_name (GTK_WINDOW (window), "gwaei");
+
     priv->drawingarea = GTK_DRAWING_AREA (gw_window_get_object (GW_WINDOW (window), "kdrawing_area"));
     priv->candidates = GTK_DRAWING_AREA (gw_window_get_object (GW_WINDOW (window), "kguesses"));
 

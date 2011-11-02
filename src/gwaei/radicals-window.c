@@ -377,7 +377,6 @@ static void gw_radicalswindow_constructed (GObject *object)
 
     g_signal_connect (G_OBJECT (window), "show", G_CALLBACK (gw_radicalswindow_show_cb), scrolledwindow);
 
-
     gtk_window_set_title (GTK_WINDOW (window), gettext("gWaei Radical Search Tool"));
     gtk_window_set_resizable (GTK_WINDOW (window), TRUE);
     gtk_window_set_type_hint (GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_UTILITY);
