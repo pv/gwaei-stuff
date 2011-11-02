@@ -2007,6 +2007,7 @@ G_MODULE_EXPORT void gw_searchwindow_sync_search_as_you_type_cb (GSettings *sett
 }
 
 
+/*
 G_MODULE_EXPORT void gw_searchwindow_open_kanjipadwindow_cb (GtkWidget *widget, gpointer data)
 {
     GwSearchWindow *window;
@@ -2014,23 +2015,43 @@ G_MODULE_EXPORT void gw_searchwindow_open_kanjipadwindow_cb (GtkWidget *widget, 
 
     window = GW_SEARCHWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_SEARCHWINDOW));
     if (window == NULL) return;
-    //application = gw_window_get_application (GW_WINDOW (window));
+    application = gw_window_get_application (GW_WINDOW (window));
 
 //    gw_application_show_window (application, GW_WINDOW_KANJIPAD, GW_WINDOW (window), FALSE);
 }
+*/
 
 
 
-G_MODULE_EXPORT void gw_searchwindow_open_settingswindow_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_searchwindow_open_kanjipadwindow_cb (GtkWidget *widget, gpointer data)
 {
+    //Declarations
+    GwApplication *application;
     GwSearchWindow *window;
-    //GwApplication *application;
+    GtkWindow *kanjipadwindow;
+    GList *iter;
 
+    //Initializations
     window = GW_SEARCHWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_SEARCHWINDOW));
     if (window == NULL) return;
-    //application = gw_window_get_application (GW_WINDOW (window));
+    application = gw_window_get_application (GW_WINDOW (window));
+    iter = gtk_application_get_windows (GTK_APPLICATION (application));
 
-//    gw_application_show_window (application, GW_WINDOW_SETTINGS, GW_WINDOW (window), FALSE);
+    while (iter != NULL && !GW_IS_KANJIPADWINDOW (iter->data)) iter = iter->next;
+
+    if (iter != NULL)
+    {
+      kanjipadwindow = GTK_WINDOW (iter->data);
+      gtk_window_set_transient_for (GTK_WINDOW (kanjipadwindow), GTK_WINDOW (window));
+      gtk_window_present (GTK_WINDOW (kanjipadwindow));
+    }
+    else
+    {
+      kanjipadwindow = gw_kanjipadwindow_new (GTK_APPLICATION (application));
+      gtk_window_set_transient_for (GTK_WINDOW (kanjipadwindow), GTK_WINDOW (window));
+      gtk_widget_show (GTK_WIDGET (kanjipadwindow));
+    }
+
 }
 
 

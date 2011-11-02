@@ -38,13 +38,13 @@
 #include <gtk/gtk.h>
 
 #include <gwaei/gwaei.h>
+#include <gwaei/kanjipad-private.h>
 
 #define BUFLEN 256
 
 
 static void _kanjipadwindow_initialize_engine (GwKanjipadWindow*);
 static gboolean _kanjipadwindow_engine_input_handler (GIOChannel*, GIOCondition, gpointer);
-
 
 G_DEFINE_TYPE (GwKanjipadWindow, gw_kanjipadwindow, GW_TYPE_WINDOW);
 
@@ -69,76 +69,57 @@ GtkWindow* gw_kanjipadwindow_new (GtkApplication *application)
 }
 
 
-void gw_kanjipadwindow_init (GwKanjipadWindow *window, GwSearchWindow* transient_for)
+void gw_kanjipadwindow_init (GwKanjipadWindow *window)
 {
-      window->drawingarea = GTK_DRAWING_AREA (gtk_builder_get_object (window->builder, "kdrawing_area"));
-      window->candidates = GTK_DRAWING_AREA (gtk_builder_get_object (window->builder, "kguesses"));
-
-      window->total_candidates = 0;
-      window->strokes = NULL;
-      window->curstroke = NULL;
-      window->surface = NULL;
-      window->ksurface = NULL;
-      window->from_engine = NULL;
-      window->to_engine = NULL;
-      window->kselected[0] = 0;
-      window->kselected[1] = 0;
-      window->instroke = FALSE;
-
-      gw_kanjipadwindow_initialize_drawingarea (window);
-      gw_kanjipadwindow_initialize_candidates (window);
-
-      _kanjipadwindow_initialize_engine (window);
-
-      gw_window_set_transient_for (GW_WINDOW (window), GW_WINDOW (transient_for));
+    window->priv = GW_KANJIPADWINDOW_GET_PRIVATE (window);
+    gw_kanjipadwindow_private_init (window);
 }
 
 
-void gw_kanjipadwindow_deinit (GwKanjipadWindow *window)
+void gw_kanjipadwindow_finalize (GObject *object)
 {
-    gtk_widget_hide (GTK_WIDGET (window->toplevel));
+    GwKanjipadWindow *window;
 
-    //Declarations
-    GSource *source;
-    GError *error;
+    window = GW_KANJIPADWINDOW (object);
 
-    //Initializations
-    error = NULL;
+    gw_kanjipadwindow_private_finalize (window);
+    G_OBJECT_CLASS (gw_kanjipadwindow_parent_class)->finalize (object);
+}
 
-    if (g_main_current_source () != NULL &&
-        !g_source_is_destroyed (g_main_current_source ()) &&
-        window->iowatchid > 0
-       )
+
+static void gw_kanjipadwindow_constructed (GObject *object)
+{
+    GwKanjipadWindow *window;
+    GwKanjipadWindowPrivate *priv;
+
+    //Chain the parent class
     {
-      source = g_main_context_find_source_by_id (NULL, window->iowatchid);
-      if (source != NULL)
-      {
-        g_source_destroy (source);
-      }
-    }
-    window->iowatchid = 0;
-
-    if (error == NULL) 
-    {
-      g_io_channel_shutdown (window->from_engine, FALSE, &error);
-      g_io_channel_unref (window->from_engine);
-      window->from_engine = NULL;
+      G_OBJECT_CLASS (gw_kanjipadwindow_parent_class)->constructed (object);
     }
 
-    if (error == NULL)
-    {
-      g_io_channel_shutdown (window->to_engine, FALSE, &error);
-      g_io_channel_unref (window->to_engine);
-      window->to_engine = NULL;
-    }
+    window = GW_KANJIPADWINDOW (object);
+    priv = GW_KANJIPADWINDOW_GET_PRIVATE (window);
 
-    g_spawn_close_pid (window->engine_pid);
+    priv->drawingarea = GTK_DRAWING_AREA (gw_window_get_object (GW_WINDOW (window), "kdrawing_area"));
+    priv->candidates = GTK_DRAWING_AREA (gw_window_get_object (GW_WINDOW (window), "kguesses"));
 
-    if (error != NULL)
-    {
-      fprintf(stderr, "Errored: %s\n", error->message);
-      exit(EXIT_FAILURE);
-    }
+    gw_kanjipadwindow_initialize_drawingarea (window);
+    gw_kanjipadwindow_initialize_candidates (window);
+    _kanjipadwindow_initialize_engine (window);
+}
+
+
+static void
+gw_kanjipadwindow_class_init (GwKanjipadWindowClass *klass)
+{
+  GObjectClass *object_class;
+
+  object_class = G_OBJECT_CLASS (klass);
+
+  object_class->constructed = gw_kanjipadwindow_constructed;
+  object_class->finalize = gw_kanjipadwindow_finalize;
+
+  g_type_class_add_private (object_class, sizeof (GwKanjipadWindowPrivate));
 }
 
 
@@ -148,6 +129,8 @@ void gw_kanjipadwindow_deinit (GwKanjipadWindow *window)
 static void _kanjipadwindow_initialize_engine (GwKanjipadWindow *window)
 {
     //Declarations
+    GwApplication *application;
+    GwKanjipadWindowPrivate *priv;
     char *dir;
     char *path;
     char *argv[2];
@@ -156,6 +139,8 @@ static void _kanjipadwindow_initialize_engine (GwKanjipadWindow *window)
     int stdout_fd;
 
     //Initializations
+    application = gw_window_get_application (GW_WINDOW (window));
+    priv = GW_KANJIPADWINDOW_GET_PRIVATE (window);
     error = NULL;
     dir = g_get_current_dir ();
 #ifdef G_OS_WIN32
@@ -176,20 +161,20 @@ static void _kanjipadwindow_initialize_engine (GwKanjipadWindow *window)
            argv, NULL,  /* argv, envp */
            0,
            NULL, NULL,  /* child_setup */
-           (gpointer)&window->engine_pid,   /* child pid */
+           (gpointer)&priv->engine_pid,   /* child pid */
            &stdin_fd, &stdout_fd, NULL,
            &error))
     {
-      gw_app_handle_error (app, NULL, FALSE, &error);
+      gw_application_handle_error (application, NULL, FALSE, &error);
       exit (EXIT_FAILURE);
     }
 
-    if (!(window->to_engine = g_io_channel_unix_new (stdin_fd)))
+    if (!(priv->to_engine = g_io_channel_unix_new (stdin_fd)))
       g_error ("Couldn't create pipe to child process: %s", g_strerror(errno));
-    if (!(window->from_engine = g_io_channel_unix_new (stdout_fd)))
+    if (!(priv->from_engine = g_io_channel_unix_new (stdout_fd)))
       g_error ("Couldn't create pipe from child process: %s", g_strerror(errno));
 
-    window->iowatchid = g_io_add_watch (window->from_engine, G_IO_IN, _kanjipadwindow_engine_input_handler, window);
+    priv->iowatchid = g_io_add_watch (priv->from_engine, G_IO_IN, _kanjipadwindow_engine_input_handler, window);
 
     //Cleanup
     g_free(path);
@@ -202,16 +187,18 @@ static void _kanjipadwindow_initialize_engine (GwKanjipadWindow *window)
 //!
 static gboolean _kanjipadwindow_engine_input_handler (GIOChannel *source, GIOCondition condition, gpointer data)
 {
+    GwKanjipadWindow *window;
+    GwKanjipadWindowPrivate *priv;
     static gchar *p;
     static gchar *line;
     GError *error;
     GIOStatus status;
     int i;
-    GwKanjipadWindow *window;
 
     window = GW_KANJIPADWINDOW (data);
+    priv = GW_KANJIPADWINDOW_GET_PRIVATE (window);
     error = NULL;
-    status = g_io_channel_read_line (window->from_engine, &line, NULL, NULL, &error);
+    status = g_io_channel_read_line (priv->from_engine, &line, NULL, NULL, &error);
 
     switch (status)
     {
@@ -242,11 +229,11 @@ static gboolean _kanjipadwindow_engine_input_handler (GIOChannel *source, GIOCon
             i--;
             break;
         }
-        window->kanji_candidates[i][0] = t1;
-        window->kanji_candidates[i][1] = t2;
+        priv->kanji_candidates[i][0] = t1;
+        priv->kanji_candidates[i][1] = t2;
         while (*p && !isspace(*p)) p++;
       }
-      window->total_candidates = i + 1;
+      priv->total_candidates = i + 1;
 
       gw_kanjipadwindow_draw_candidates (window);
     }

@@ -22,16 +22,12 @@ struct _GwKanjipadWindow {
   GwKanjipadWindowPrivate *priv;
 };
 
-struct _GwKanjeipadWindowClass {
+struct _GwKanjipadWindowClass {
   GwWindowClass parent_class;
 };
 
 GtkWindow* gw_kanjipadwindow_new (GtkApplication *application);
 GType gw_kanjipadwindow_get_type (void) G_GNUC_CONST;
-
-void gw_kanjipadwindow_init (GwKanjipadWindow*, GwSearchWindow*);
-void gw_kanjipadwindow_deinit (GwKanjipadWindow*);
-
 
 #include "kanjipad-callbacks.h"
 #include "kanjipad-candidatearea.h"

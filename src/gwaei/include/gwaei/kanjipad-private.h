@@ -3,7 +3,6 @@
 
 G_BEGIN_DECLS
 
-
 struct _GwKanjipadWindowPrivate {
   GtkDrawingArea *drawingarea;
   GtkDrawingArea *candidates;
@@ -21,7 +20,7 @@ struct _GwKanjipadWindowPrivate {
   GIOChannel *from_engine;
   GIOChannel *to_engine;
   guint iowatchid;
-}
+};
 
 #define GW_KANJIPADWINDOW_GET_PRIVATE(object)(G_TYPE_INSTANCE_GET_PRIVATE ((object), GW_TYPE_KANJIPADWINDOW, GwKanjipadWindowPrivate))
 

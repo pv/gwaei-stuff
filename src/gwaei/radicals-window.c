@@ -343,13 +343,12 @@ void gw_radicalswindow_init (GwRadicalsWindow *window)
 
 void gw_radicalswindow_finalize (GObject *object)
 {
-  GwRadicalsWindow *window;
+    GwRadicalsWindow *window;
 
-  window = GW_RADICALSWINDOW (object);
+    window = GW_RADICALSWINDOW (object);
 
-  gw_radicalswindow_private_finalize (window);
-  G_OBJECT_CLASS (gw_radicalswindow_parent_class)->finalize (object);
-
+    gw_radicalswindow_private_finalize (window);
+    G_OBJECT_CLASS (gw_radicalswindow_parent_class)->finalize (object);
 }
 
 

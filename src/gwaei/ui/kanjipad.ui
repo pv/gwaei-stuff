@@ -6,7 +6,7 @@
     <property name="can_focus">False</property>
     <property name="stock">gtk-clear</property>
   </object>
-  <object class="GtkWindow" id="kanjipad_window">
+  <object class="GtkWindow" id="unused">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">gWaei Kanjipad</property>
     <property name="resizable">False</property>
@@ -14,9 +14,9 @@
     <property name="icon_name">gwaei</property>
     <property name="type_hint">utility</property>
     <property name="has_resize_grip">False</property>
-    <signal name="delete-event" handler="gw_kanjipadwindow_delete_event_action_cb" object="kanjipad_window" swapped="no"/>
+    <signal name="delete-event" handler="gw_kanjipadwindow_delete_event_action_cb" object="toplevel" swapped="no"/>
     <child>
-      <object class="GtkVBox" id="vbox1">
+      <object class="GtkVBox" id="toplevel">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="border_width">8</property>
@@ -92,7 +92,7 @@
                     <property name="use_action_appearance">False</property>
                     <property name="use_underline">True</property>
                     <property name="draw_indicator">True</property>
-                    <signal name="toggled" handler="do_kanjipad_annotate_toggled" object="kanjipad_window" swapped="no"/>
+                    <signal name="toggled" handler="do_kanjipad_annotate_toggled" object="toplevel" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -115,8 +115,8 @@
                         <property name="use_action_appearance">False</property>
                         <property name="image">image1</property>
                         <property name="use_underline">True</property>
-                        <signal name="activate" handler="gw_kanjipadwindow_clear_drawingarea_cb" object="kanjipad_window" swapped="no"/>
-                        <signal name="clicked" handler="gw_kanjipadwindow_clear_drawingarea_cb" object="kanjipad_window" swapped="no"/>
+                        <signal name="activate" handler="gw_kanjipadwindow_clear_drawingarea_cb" object="toplevel" swapped="no"/>
+                        <signal name="clicked" handler="gw_kanjipadwindow_clear_drawingarea_cb" object="toplevel" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -132,10 +132,10 @@
                         <property name="receives_default">True</property>
                         <property name="use_action_appearance">False</property>
                         <property name="use_stock">True</property>
-                        <accelerator key="Escape" signal="activate"/>
                         <accelerator key="w" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                        <signal name="activate" handler="gw_kanjipadwindow_close_cb" object="kanjipad_window" swapped="no"/>
-                        <signal name="clicked" handler="gw_kanjipadwindow_close_cb" object="kanjipad_window" swapped="no"/>
+                        <accelerator key="Escape" signal="activate"/>
+                        <signal name="activate" handler="gw_kanjipadwindow_close_cb" object="toplevel" swapped="no"/>
+                        <signal name="clicked" handler="gw_kanjipadwindow_close_cb" object="toplevel" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>

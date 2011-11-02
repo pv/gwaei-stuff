@@ -37,6 +37,7 @@
 #include <gtk/gtk.h>
 
 #include <gwaei/gwaei.h>
+#include <gwaei/kanjipad-private.h>
 
 
 //!
@@ -46,6 +47,7 @@ G_MODULE_EXPORT gboolean gw_kanjipadwindow_look_up_cb (GtkWidget *widget, GdkEve
 {
     //Declarations
     GwKanjipadWindow *window;
+    GwKanjipadWindowPrivate *priv;
     GList *iter;
     GList *inner_iter;
     GString *message;
@@ -54,15 +56,16 @@ G_MODULE_EXPORT gboolean gw_kanjipadwindow_look_up_cb (GtkWidget *widget, GdkEve
     gint16 y;
 
     //Initializations
-    window = GW_KANJIPADWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
+    window = GW_KANJIPADWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_KANJIPADWINDOW));
     if (window == NULL) return FALSE;
+    priv = GW_KANJIPADWINDOW_GET_PRIVATE (window);
 
-    if (window->to_engine == NULL)
+    if (priv->to_engine == NULL)
       return FALSE;
     message = g_string_new (NULL);
     error = NULL;
       
-    for (iter = window->strokes; iter != NULL; iter = iter->next)
+    for (iter = priv->strokes; iter != NULL; iter = iter->next)
     {
       for (inner_iter = iter->data; inner_iter != NULL; inner_iter = inner_iter->next)
       {
@@ -74,13 +77,13 @@ G_MODULE_EXPORT gboolean gw_kanjipadwindow_look_up_cb (GtkWidget *widget, GdkEve
     }
     g_string_append (message, "\n");
 
-    if (g_io_channel_write_chars (window->to_engine, message->str, message->len, NULL, &error) != G_IO_STATUS_NORMAL)
+    if (g_io_channel_write_chars (priv->to_engine, message->str, message->len, NULL, &error) != G_IO_STATUS_NORMAL)
     {
       fprintf (stderr, "Cannot write message to engine: %s\n", error->message);
       exit (EXIT_FAILURE);
     }
 
-    if (g_io_channel_flush (window->to_engine, &error) != G_IO_STATUS_NORMAL)
+    if (g_io_channel_flush (priv->to_engine, &error) != G_IO_STATUS_NORMAL)
     {
       fprintf (stderr, "Error flushing message to engine: %s\n", error->message);
       exit (EXIT_FAILURE);
@@ -99,7 +102,7 @@ G_MODULE_EXPORT void gw_kanjipadwindow_clear_drawingarea_cb (GtkWidget *widget, 
 {
     GwKanjipadWindow *window;
 
-    window = GW_KANJIPADWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
+    window = GW_KANJIPADWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_KANJIPADWINDOW));
     if (window == NULL) return;
 
     gw_kanjipadwindow_clear_drawingarea (window);
@@ -114,7 +117,7 @@ G_MODULE_EXPORT void do_kanjipad_annotate_toggled (GtkWidget *widget, gpointer d
     GwKanjipadWindow *window;
     gboolean request;
 
-    window = GW_KANJIPADWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
+    window = GW_KANJIPADWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_KANJIPADWINDOW));
     if (window == NULL) return;
     request = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
 
@@ -126,10 +129,10 @@ G_MODULE_EXPORT void gw_kanjipadwindow_close_cb (GtkWidget *widget, gpointer dat
 {
     GwKanjipadWindow *window;
 
-    window = GW_KANJIPADWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
+    window = GW_KANJIPADWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_KANJIPADWINDOW));
     if (window == NULL) return;
    
-    gw_app_destroy_window (app, GW_WINDOW (window));
+    gtk_widget_destroy (GTK_WIDGET (window));
 }
 
 
@@ -142,7 +145,7 @@ G_MODULE_EXPORT void gw_kanjipadwindow_close_cb (GtkWidget *widget, gpointer dat
 //!
 G_MODULE_EXPORT gboolean gw_kanjipadwindow_delete_event_action_cb (GtkWidget *widget, GdkEvent *event, gpointer data)
 { 
-    gw_settingswindow_close_cb (widget, data);
+    gw_kanjipadwindow_close_cb (widget, data);    
     return TRUE;
 }
 
