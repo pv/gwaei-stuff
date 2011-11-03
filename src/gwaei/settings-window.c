@@ -107,6 +107,15 @@ static void gw_settingswindow_constructed (GObject *object)
     dictinfolist = gw_application_get_dictinfolist (application);
     view = GTK_TREE_VIEW (gw_window_get_object (GW_WINDOW (window), "manage_dictionaries_treeview"));
 
+    gtk_window_set_title (GTK_WINDOW (window), gettext("gWaei Settings"));
+    gtk_window_set_resizable (GTK_WINDOW (window), FALSE);
+    gtk_window_set_type_hint (GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_DIALOG);
+    gtk_window_set_skip_taskbar_hint (GTK_WINDOW (window), TRUE);
+    gtk_window_set_skip_pager_hint (GTK_WINDOW (window), TRUE);
+    gtk_window_set_destroy_with_parent (GTK_WINDOW (window), TRUE);
+    gtk_window_set_icon_name (GTK_WINDOW (window), "gwaei");
+    gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER_ON_PARENT);
+
     if (g_main_current_source () != NULL) gw_application_block_searches (application);
 
     priv->notebook = GTK_NOTEBOOK (gw_window_get_object (GW_WINDOW (window), "settings_notebook"));

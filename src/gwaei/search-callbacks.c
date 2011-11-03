@@ -2105,11 +2105,13 @@ G_MODULE_EXPORT void gw_searchwindow_open_settingswindow_cb (GtkWidget *widget, 
     if (iter != NULL)
     {
       settingswindow = GTK_WINDOW (iter->data);
+      gtk_window_set_transient_for (GTK_WINDOW (settingswindow), GTK_WINDOW (window));
       gtk_window_present (GTK_WINDOW (settingswindow));
     }
     else
     {
       settingswindow = gw_settingswindow_new (GTK_APPLICATION (application));
+      gtk_window_set_transient_for (GTK_WINDOW (settingswindow), GTK_WINDOW (window));
       gtk_widget_show (GTK_WIDGET (settingswindow));
     }
 }

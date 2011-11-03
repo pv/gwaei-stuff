@@ -467,7 +467,8 @@ G_MODULE_EXPORT void gw_settingswindow_sync_swatch_color_cb (GSettings *settings
     char hex_color_string[20];
 
     //Initializations
-    window = GW_SETTINGSWINDOW (data);
+    window = GW_SETTINGSWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_SETTINGSWINDOW));
+    if (window == NULL) return;
     swatch = GTK_COLOR_BUTTON (data);
     lw_preferences_get_string (hex_color_string, settings, KEY, 20);
     g_assert (swatch != NULL);
