@@ -32,14 +32,13 @@ src/gwaei/kanjipad-callbacks.c
 src/gwaei/kanjipad-candidatearea.c
 src/gwaei/kanjipad-drawingarea.c
 src/gwaei/kanjipad-window.c
-src/gwaei/libunique.c
 src/gwaei/output-callbacks.c
 src/gwaei/printing.c
 src/gwaei/radicals-callbacks.c
 src/gwaei/radicals-window.c
 src/gwaei/search-callbacks.c
 src/gwaei/search-data.c
-src/gwaei/search-window.c
+src/gwaei/search.c
 src/gwaei/settings-callbacks.c
 src/gwaei/settings-window.c
 src/gwaei/spellcheck-callbacks.c

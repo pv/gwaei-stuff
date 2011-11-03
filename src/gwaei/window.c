@@ -73,11 +73,9 @@ static void gw_window_set_property (GObject      *object,
 {
     GwWindow *window;
     GwWindowPrivate *priv;
-    GtkWidget *toplevel;
 
     window = GW_WINDOW (object);
     priv = GW_WINDOW_GET_PRIVATE (window);
-    toplevel = NULL;
 
     switch (property_id)
     {
@@ -86,14 +84,13 @@ static void gw_window_set_property (GObject      *object,
         gtk_window_set_application (GTK_WINDOW (window), GTK_APPLICATION (priv->application));
         break;
       case PROP_UI_XML:
-        if (priv->ui_xml != NULL) 
-        {
-          toplevel = GTK_WIDGET (gtk_builder_get_object (priv->builder, "toplevel"));
-          gtk_widget_destroy (toplevel);
+        if (priv->toplevel != NULL)
+          gtk_widget_destroy (priv->toplevel);
+        if (priv->ui_xml != NULL)
           g_free (priv->ui_xml);
-        }
         priv->ui_xml = g_value_dup_string (value);
         gw_window_load_ui_xml (window, priv->ui_xml);
+        priv->toplevel = GTK_WIDGET (gtk_builder_get_object (priv->builder, "toplevel"));
         break;
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -242,5 +239,14 @@ GwApplication* gw_window_get_application (GwWindow *window)
 
     priv = GW_WINDOW_GET_PRIVATE (window);
     return priv->application;
+}
+
+
+GtkWidget* gw_window_get_toplevel (GwWindow *window)
+{
+    GwWindowPrivate *priv;
+
+    priv = GW_WINDOW_GET_PRIVATE (window);
+    return priv->toplevel;
 }
 

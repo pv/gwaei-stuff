@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2011-09-04 03:47-0400\n"
+"POT-Creation-Date: 2011-11-03 13:40-0700\n"
 "PO-Revision-Date: 2008-11-30 02:35+0500\n"
 "Last-Translator: Zachary Dovel pizzach@gmail.com\n"
 "Language-Team: Not Applicable\n"
@@ -17,156 +17,156 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../src/libwaei/dictinfo.c:83
+#: ../src/libwaei/dictinfo.c:107
 #, c-format
 msgid "%s Dictionary"
 msgstr "%s辞書"
 
-#: ../src/libwaei/dictinfo.c:128 ../src/libwaei/dictinstlist.c:60
+#: ../src/libwaei/dictinfo.c:158 ../src/libwaei/dictinstlist.c:58
 msgid "English Dictionary"
 msgstr "和英辞書"
 
-#: ../src/libwaei/dictinfo.c:129 ../src/libwaei/dictinstlist.c:59
+#: ../src/libwaei/dictinfo.c:159 ../src/libwaei/dictinstlist.c:57
 msgid "English"
 msgstr "和英"
 
-#: ../src/libwaei/dictinfo.c:134
+#: ../src/libwaei/dictinfo.c:164
 msgid "Names Dictionary"
 msgstr "名前辞書"
 
-#: ../src/libwaei/dictinfo.c:135
+#: ../src/libwaei/dictinfo.c:165
 msgid "Names"
 msgstr "名前"
 
-#: ../src/libwaei/dictinfo.c:140
+#: ../src/libwaei/dictinfo.c:170
 msgid "Places Dictionary"
 msgstr "場所辞書"
 
-#: ../src/libwaei/dictinfo.c:141
+#: ../src/libwaei/dictinfo.c:171
 msgid "Places"
 msgstr "場所"
 
-#: ../src/libwaei/dictinfo.c:149 ../src/libwaei/dictinstlist.c:77
+#: ../src/libwaei/dictinfo.c:179 ../src/libwaei/dictinstlist.c:75
 msgid "Kanji Dictionary"
 msgstr "漢字辞書"
 
-#: ../src/libwaei/dictinfo.c:150 ../src/libwaei/dictinstlist.c:76
+#: ../src/libwaei/dictinfo.c:180 ../src/libwaei/dictinstlist.c:74
 msgid "Kanji"
 msgstr "漢字"
 
-#: ../src/libwaei/dictinfo.c:158 ../src/libwaei/dictinstlist.c:111
+#: ../src/libwaei/dictinfo.c:188 ../src/libwaei/dictinstlist.c:109
 msgid "Examples Dictionary"
 msgstr "例文辞書"
 
-#: ../src/libwaei/dictinfo.c:159 ../src/libwaei/dictinstlist.c:110
+#: ../src/libwaei/dictinfo.c:189 ../src/libwaei/dictinstlist.c:108
 msgid "Examples"
 msgstr "例文"
 
-#: ../src/libwaei/dictinst.c:784
+#: ../src/libwaei/dictinst.c:860
 #, c-format
 msgid "Downloading %s..."
 msgstr "%sがダウンロード中..."
 
-#: ../src/libwaei/dictinst.c:786
+#: ../src/libwaei/dictinst.c:862
 #, c-format
 msgid "Downloading..."
 msgstr "ダウンロード中..."
 
-#: ../src/libwaei/dictinst.c:790
+#: ../src/libwaei/dictinst.c:866
 #, c-format
 msgid "Converting the encoding of %s from %s to UTF-8..."
 msgstr "%sのエンコーディングを%sからUTF-8に切り替え中..."
 
-#: ../src/libwaei/dictinst.c:792
+#: ../src/libwaei/dictinst.c:868
 #, c-format
 msgid "Converting the encoding to UTF-8..."
 msgstr "エンコーディングをUTF-8に切り替え中..."
 
-#: ../src/libwaei/dictinst.c:796
+#: ../src/libwaei/dictinst.c:872
 #, c-format
 msgid "Decompressing %s from %s file..."
 msgstr "%sが%sから凍結中..."
 
-#: ../src/libwaei/dictinst.c:798
+#: ../src/libwaei/dictinst.c:874
 #, c-format
 msgid "Decompressing..."
 msgstr "凍結中..."
 
-#: ../src/libwaei/dictinst.c:802
+#: ../src/libwaei/dictinst.c:878
 #, c-format
 msgid "Doing postprocessing on %s..."
 msgstr "%sがポストプロせスイング中..."
 
-#: ../src/libwaei/dictinst.c:804
+#: ../src/libwaei/dictinst.c:880
 #, c-format
 msgid "Postprocessing..."
 msgstr "ポストプロせスイング中..."
 
-#: ../src/libwaei/dictinst.c:807
+#: ../src/libwaei/dictinst.c:883
 #, c-format
 msgid "Finalizing installation of %s..."
 msgstr "%sを仕上げ中..."
 
-#: ../src/libwaei/dictinst.c:810
+#: ../src/libwaei/dictinst.c:886
 #, c-format
 msgid "Installed."
 msgstr "インストールされた"
 
-#: ../src/libwaei/dictinstlist.c:61
+#: ../src/libwaei/dictinstlist.c:59
 #, fuzzy
 msgid "The venerable Japanese-English Dictionary developed by Jim Breen."
 msgstr "gWaei 和英辞書"
 
-#: ../src/libwaei/dictinstlist.c:78
+#: ../src/libwaei/dictinstlist.c:76
 msgid ""
 "A Kanji dictionary based off of kanjidic with radical information combined."
 msgstr ""
 
-#: ../src/libwaei/dictinstlist.c:93
+#: ../src/libwaei/dictinstlist.c:91
 msgid "Names and Places"
 msgstr ""
 
-#: ../src/libwaei/dictinstlist.c:94
+#: ../src/libwaei/dictinstlist.c:92
 msgid "Names and Places Dictionary"
 msgstr "名前場所辞書"
 
-#: ../src/libwaei/dictinstlist.c:95
+#: ../src/libwaei/dictinstlist.c:93
 msgid ""
 "Based off of Enamdic, but with the names split from the places for 2 "
 "separate dictionaries."
 msgstr ""
 
-#: ../src/libwaei/dictinstlist.c:112
+#: ../src/libwaei/dictinstlist.c:110
 msgid ""
 "A collection of Japanese/English sentences initially compiled by Professor "
 "Yasuhito Tanaka at Hyogo University and his students."
 msgstr ""
 
-#: ../src/libwaei/dictinstlist.c:128
+#: ../src/libwaei/dictinstlist.c:126
 msgid "Other"
 msgstr "その他"
 
-#: ../src/libwaei/dictinstlist.c:129
+#: ../src/libwaei/dictinstlist.c:127
 msgid "Other Dictionary"
 msgstr "辞書のその他"
 
-#: ../src/libwaei/dictinstlist.c:130
+#: ../src/libwaei/dictinstlist.c:128
 msgid "Install a custom dictionary."
 msgstr "カスタムな 辞書をインストールする"
 
-#: ../src/libwaei/io.c:707
+#: ../src/libwaei/io.c:741
 msgid "Unable to read data from the input file."
 msgstr ""
 
-#: ../src/libwaei/io.c:713
+#: ../src/libwaei/io.c:747
 msgid "Unable to write to the external program's input stream."
 msgstr ""
 
-#: ../src/libwaei/io.c:755
+#: ../src/libwaei/io.c:794
 msgid "Unable to read data from the external program's pipe."
 msgstr ""
 
-#: ../src/libwaei/io.c:761
+#: ../src/libwaei/io.c:800
 msgid "Unable to write the stream's output to a file."
 msgstr ""
 
@@ -209,21 +209,90 @@ msgstr "望みの辞書が存在しない!\n"
 msgid "Searching for \"%s\" in %s...\n"
 msgstr "「%s」を%sで検索中...\n"
 
-#: ../src/waei/console.c:284 ../src/gwaei/search-window.c:613
+#: ../src/waei/console.c:284 ../src/gwaei/search.c:517
 #, c-format
 msgid "Found %d result"
 msgid_plural "Found %d results"
 msgstr[0] "候補を%dつ見出した。"
 
 #. TRANSLATORS: relevant what ? It's the number of "relevant" result(s) displayed while or after searching.
-#: ../src/waei/console.c:285 ../src/gwaei/search-window.c:617
+#: ../src/waei/console.c:285 ../src/gwaei/search.c:521
 #, c-format
 msgid "(%d Relevant)"
 msgid_plural "(%d Relevant)"
 msgstr[0] "(%dつが一致する)"
 
+#: ../src/waei/console-callbacks.c:107 ../src/gwaei/output-callbacks.c:557
+#: ../src/gwaei/output-callbacks.c:841
+msgid "Radicals:"
+msgstr "部首:"
+
+#: ../src/waei/console-callbacks.c:112 ../src/gwaei/output-callbacks.c:612
+#: ../src/gwaei/output-callbacks.c:878
+msgid "Stroke:"
+msgstr "画数:"
+
+#: ../src/waei/console-callbacks.c:120 ../src/gwaei/output-callbacks.c:619
+#: ../src/gwaei/output-callbacks.c:887
+msgid "Freq:"
+msgstr "頻数:"
+
+#: ../src/waei/console-callbacks.c:128 ../src/gwaei/output-callbacks.c:626
+#: ../src/gwaei/output-callbacks.c:896
+msgid "Grade:"
+msgstr "段階:"
+
+#: ../src/waei/console-callbacks.c:136 ../src/gwaei/output-callbacks.c:632
+#: ../src/gwaei/output-callbacks.c:905
+msgid "JLPT:"
+msgstr "JLPT:"
+
+#: ../src/waei/console-callbacks.c:143 ../src/gwaei/output-callbacks.c:578
+#: ../src/gwaei/output-callbacks.c:850 ../src/gwaei/output-callbacks.c:859
+msgid "Readings:"
+msgstr "読み:"
+
+#: ../src/waei/console-callbacks.c:145 ../src/gwaei/output-callbacks.c:588
+msgid "Name:"
+msgstr "名:"
+
+#: ../src/waei/console-callbacks.c:147 ../src/gwaei/output-callbacks.c:598
+msgid "Radical Name:"
+msgstr "部首名:"
+
+#: ../src/waei/console-callbacks.c:150 ../src/gwaei/output-callbacks.c:641
+#: ../src/gwaei/output-callbacks.c:923
+msgid "Meanings:"
+msgstr "意味:"
+
+#. TRANSLATORS: The "E" stands for "English"
+#: ../src/waei/console-callbacks.c:168 ../src/waei/console-callbacks.c:170
+#: ../src/gwaei/output-callbacks.c:686
+msgid "E:\t"
+msgstr ""
+
+#. TRANSLATORS: The "J" stands for "Japanese"
+#: ../src/waei/console-callbacks.c:177 ../src/waei/console-callbacks.c:179
+#: ../src/gwaei/output-callbacks.c:697
+msgid ""
+"\n"
+"J:\t"
+msgstr ""
+
+#. TRANSLATORS: The "D" stands for "Detail"
+#: ../src/waei/console-callbacks.c:186 ../src/waei/console-callbacks.c:188
+#: ../src/gwaei/output-callbacks.c:708
+msgid ""
+"\n"
+"D:\t"
+msgstr ""
+
+#: ../src/waei/console-callbacks.c:295 ../src/waei/console-callbacks.c:297
+msgid "Other Results"
+msgstr "他の候補"
+
 #. Initializations
-#: ../src/waei/waei.c:155 ../src/gwaei/gwaei.c:177
+#: ../src/waei/waei.c:155
 msgid "- A dictionary program for Japanese-English translation."
 msgstr ""
 
@@ -296,12 +365,9 @@ msgid "Installing Dictionaries..."
 msgstr "辞書がインストール中..."
 
 #: ../src/gwaei/ui/installprogress.ui.h:2
-msgid "Installing..."
+#, fuzzy
+msgid "Starting Install..."
 msgstr "インストール中..."
-
-#: ../src/gwaei/ui/installprogress.ui.h:3
-msgid "description"
-msgstr ""
 
 #: ../src/gwaei/ui/search.ui.h:1
 msgid "A_ppend"
@@ -471,8 +537,7 @@ msgstr "表示(_V)"
 msgid "_Word-edge Mark"
 msgstr "言葉端マーク(_W)"
 
-#: ../src/gwaei/ui/search.ui.h:43 ../src/gwaei/gwaei.c:343
-#: ../src/desktop/gwaei.desktop.in.h:2
+#: ../src/gwaei/ui/search.ui.h:43 ../src/desktop/gwaei.desktop.in.h:2
 msgid "gWaei Japanese-English Dictionary"
 msgstr "gWaei 和英辞書"
 
@@ -492,7 +557,7 @@ msgstr "クリア(_L)"
 msgid "_Restrict to Kanji of"
 msgstr "総画数を(_R)"
 
-#: ../src/gwaei/ui/radicals.ui.h:4
+#: ../src/gwaei/ui/radicals.ui.h:4 ../src/gwaei/radicals-window.c:380
 msgid "gWaei Radical Search Tool"
 msgstr "gWaei 部首検索ツール"
 
@@ -592,7 +657,7 @@ msgstr "辞書をRsyncでアップデートさせる(_U)"
 msgid "_Use the system document font (Sans 10)"
 msgstr "システムのデフォルトフォントを使う(_U)"
 
-#: ../src/gwaei/ui/settings.ui.h:25
+#: ../src/gwaei/ui/settings.ui.h:25 ../src/gwaei/settings-window.c:110
 msgid "gWaei Settings"
 msgstr "gWaeiの設定"
 
@@ -604,156 +669,87 @@ msgstr "gWaeiはインストールせれている辞書が必要です。"
 msgid "_Annotate Strokes"
 msgstr "画数付き(_A)"
 
-#: ../src/gwaei/ui/kanjipad.ui.h:3
+#: ../src/gwaei/ui/kanjipad.ui.h:3 ../src/gwaei/kanjipad-window.c:104
 msgid "gWaei Kanjipad"
 msgstr "gWaei 漢字パッド"
 
-#: ../src/gwaei/dictionaryinstall-callbacks.c:370
+#: ../src/gwaei/dictionaryinstall-callbacks.c:402
 #, c-format
 msgid "<b>%s Install Details</b>"
 msgstr "<b>%sインストール詳細</b>"
 
 #. Third row
-#: ../src/gwaei/dictionaryinstall-callbacks.c:392
+#: ../src/gwaei/dictionaryinstall-callbacks.c:424
 msgid "Filename: "
 msgstr "ファイル名: "
 
 #. Forth row
-#: ../src/gwaei/dictionaryinstall-callbacks.c:406
+#: ../src/gwaei/dictionaryinstall-callbacks.c:438
 msgid "Engine: "
 msgstr "エンジン: "
 
 #. Fifth row
-#: ../src/gwaei/dictionaryinstall-callbacks.c:426
+#: ../src/gwaei/dictionaryinstall-callbacks.c:458
 msgid "Source: "
 msgstr "ソース: "
 
 #. Sixth row
-#: ../src/gwaei/dictionaryinstall-callbacks.c:456
+#: ../src/gwaei/dictionaryinstall-callbacks.c:488
 msgid "Encoding: "
 msgstr "エンコーディング: "
 
 #. Seventh row
-#: ../src/gwaei/dictionaryinstall-callbacks.c:475
+#: ../src/gwaei/dictionaryinstall-callbacks.c:507
 msgid "Compression: "
 msgstr "圧縮: "
 
 #. Eighth row
-#: ../src/gwaei/dictionaryinstall-callbacks.c:494
+#: ../src/gwaei/dictionaryinstall-callbacks.c:526
 msgid "Split Places from Names Dictionary"
 msgstr "名前辞書を再分割させる(_N)"
 
 #. Ninth row
-#: ../src/gwaei/dictionaryinstall-callbacks.c:506
+#: ../src/gwaei/dictionaryinstall-callbacks.c:538
 msgid "Merge Radicals into Kanji Dictionary"
 msgstr "部首辞書合体させる"
 
-#: ../src/gwaei/gwaei.c:167
-msgid "Choose the dictionary to use"
-msgstr "望みの辞書を選んでください"
-
-#: ../src/gwaei/gwaei.c:169
-#, fuzzy
-msgid "Open a new search window"
-msgstr "マルチサーチウィンドで開く(β）"
-
-#: ../src/gwaei/gwaei.c:171
-msgid "Check the gWaei version information"
-msgstr "gWaeiヴァージョン情報を表示する"
-
-#: ../src/gwaei/installprogress-callbacks.c:100
+#: ../src/gwaei/installprogress-callbacks.c:127
 #, c-format
 msgid "Installing %s..."
 msgstr "%sがインストール中..."
 
-#: ../src/gwaei/installprogress-callbacks.c:101
+#: ../src/gwaei/installprogress-callbacks.c:128
 #, c-format
 msgid "Installing dictionary %d of %d..."
 msgstr "辞書の%d／%d冊目がインストール中..."
 
-#: ../src/gwaei/output-callbacks.c:333 ../src/gwaei/output-callbacks.c:455
+#: ../src/gwaei/output-callbacks.c:359 ../src/gwaei/output-callbacks.c:461
 msgid "Pop"
 msgstr ""
 
-#: ../src/gwaei/output-callbacks.c:560 ../src/gwaei/output-callbacks.c:674
-msgid "Radicals:"
-msgstr "部首:"
-
-#: ../src/gwaei/output-callbacks.c:582 ../src/gwaei/output-callbacks.c:684
-#: ../src/gwaei/output-callbacks.c:694
-msgid "Readings:"
-msgstr "読み:"
-
-#: ../src/gwaei/output-callbacks.c:593
-msgid "Name:"
-msgstr "名:"
-
-#: ../src/gwaei/output-callbacks.c:604
-msgid "Radical Name:"
-msgstr "部首名:"
-
-#: ../src/gwaei/output-callbacks.c:619 ../src/gwaei/output-callbacks.c:714
-msgid "Stroke:"
-msgstr "画数:"
-
-#: ../src/gwaei/output-callbacks.c:626 ../src/gwaei/output-callbacks.c:723
-msgid "Freq:"
-msgstr "頻数:"
-
-#: ../src/gwaei/output-callbacks.c:633 ../src/gwaei/output-callbacks.c:732
-msgid "Grade:"
-msgstr "段階:"
-
-#: ../src/gwaei/output-callbacks.c:639 ../src/gwaei/output-callbacks.c:741
-msgid "JLPT:"
-msgstr "JLPT:"
-
-#: ../src/gwaei/output-callbacks.c:648 ../src/gwaei/output-callbacks.c:759
-msgid "Meanings:"
-msgstr "意味:"
-
-#: ../src/gwaei/output-callbacks.c:704
-msgid "Radical Name"
-msgstr "部首名"
-
-#. TRANSLATORS: The "E" stands for "English"
-#: ../src/gwaei/output-callbacks.c:842
-msgid "E:\t"
-msgstr ""
-
-#. TRANSLATORS: The "J" stands for "Japanese"
-#: ../src/gwaei/output-callbacks.c:853
-msgid ""
-"\n"
-"J:\t"
-msgstr ""
-
-#. TRANSLATORS: The "D" stands for "Detail"
-#: ../src/gwaei/output-callbacks.c:864
-msgid ""
-"\n"
-"D:\t"
-msgstr ""
-
-#: ../src/gwaei/output-callbacks.c:934
+#: ../src/gwaei/output-callbacks.c:778
 #, c-format
 msgid "Other Result %d"
 msgid_plural "Other Results %d"
 msgstr[0] "他の候補 %d"
 
-#: ../src/gwaei/output-callbacks.c:955
+#: ../src/gwaei/output-callbacks.c:799
 #, c-format
 msgid "Main Result %d"
 msgid_plural "Main Results %d"
 msgstr[0] "一致する候補 %d"
 
+#: ../src/gwaei/output-callbacks.c:868
+msgid "Radical Name"
+msgstr "部首名"
+
 #. Initializations
-#: ../src/gwaei/printing.c:188
+#: ../src/gwaei/printing.c:184
 #, c-format
 msgid "Page %d/%d"
 msgstr "ページ %d/%d"
 
-#: ../src/gwaei/radicals-window.c:412
+#: ../src/gwaei/radicals-window.c:464
 #, c-format
 msgid ""
 "<b>Substitution Radical:</b> %s\n"
@@ -764,15 +760,15 @@ msgstr ""
 "<b>本当の部首:</b> %s\n"
 "<b>部首の名:</b> %s"
 
-#: ../src/gwaei/search-callbacks.c:498
+#: ../src/gwaei/search-callbacks.c:496
 msgid "Save As"
 msgstr "別名で保存"
 
-#: ../src/gwaei/search-callbacks.c:511
+#: ../src/gwaei/search-callbacks.c:509
 msgid "vocabulary.txt"
 msgstr "語彙.txt"
 
-#: ../src/gwaei/search-callbacks.c:986
+#: ../src/gwaei/search-callbacks.c:985
 msgid ""
 "Program for Japanese translation and reference. The\n"
 "dictionaries are supplied by Jim Breen's WWWJDIC.\n"
@@ -783,57 +779,49 @@ msgstr ""
 "WWWJDICから取られています."
 
 #. TRANSLATORS: You can add your own name to the translation of this field, it will be displayed in the "about" box when gwaei is run in your language
-#: ../src/gwaei/search-callbacks.c:990
+#: ../src/gwaei/search-callbacks.c:989
 msgid "translator-credits"
 msgstr "Zachary Dovel"
 
-#: ../src/gwaei/search-callbacks.c:2029
+#: ../src/gwaei/search-callbacks.c:2191
 msgid "_Close Tab"
 msgstr "タブを閉じる(_C)"
 
-#: ../src/gwaei/search-callbacks.c:2031
+#: ../src/gwaei/search-callbacks.c:2193
 msgid "_Close"
 msgstr "閉じる(_C)"
 
-#: ../src/gwaei/search-window.c:420
-msgid "_Cycle Up"
-msgstr "循環させる(_C)"
-
-#: ../src/gwaei/search-window.c:426
-msgid "Cycle _Down"
-msgstr "逆循環させる(_D)"
-
-#: ../src/gwaei/search-window.c:611
+#: ../src/gwaei/search.c:515
 msgid "Searching..."
 msgstr "検索中... "
 
-#: ../src/gwaei/search-window.c:614
+#: ../src/gwaei/search.c:518
 #, c-format
 msgid "Searching... %d result"
 msgid_plural "Searching... %d results"
 msgstr[0] "検索中... %dつの候補"
 
 #. TRANSLATORS: The argument is the dictionary long name
-#: ../src/gwaei/search-window.c:1392
+#: ../src/gwaei/search.c:1298
 #, c-format
 msgid "Nothing found in the %s!"
 msgstr "%sでマッチがなかった!"
 
-#: ../src/gwaei/search-window.c:1423
+#: ../src/gwaei/search.c:1329
 msgid "Search Other Dictionary: "
 msgstr "他の辞書で検索する: "
 
-#: ../src/gwaei/search-window.c:1460
+#: ../src/gwaei/search.c:1366
 msgid "Search Online: "
 msgstr "インターネットで検索する: "
 
-#: ../src/gwaei/search-window.c:1513
+#: ../src/gwaei/search.c:1419
 #, c-format
 msgid "gWaei Usage Tip #%d: "
 msgstr "gWaeiの利用チップ＃%d: "
 
 #. Tip 1
-#: ../src/gwaei/search-window.c:1526
+#: ../src/gwaei/search.c:1432
 #, c-format
 msgid ""
 "Use the Unknown Character from the Insert menu or toolbar in place of "
@@ -844,15 +832,15 @@ msgid ""
 "and drawing the strokes in the correct direction is very important."
 msgstr ""
 
-#: ../src/gwaei/search-window.c:1533
+#: ../src/gwaei/search.c:1439
 msgid "Inputting Unknown Kanji"
 msgstr "未知な漢字の入力"
 
-#: ../src/gwaei/search-window.c:1550
+#: ../src/gwaei/search.c:1456
 msgid "Getting More Exact Matches"
 msgstr "もっと適当な候補を見出す"
 
-#: ../src/gwaei/search-window.c:1556
+#: ../src/gwaei/search.c:1462
 msgid ""
 "Use the Word-edge Mark and the Not-word-edge Mark from the insert menu to "
 "get more relevant results.  fish\\b will return results like fish and "
@@ -860,7 +848,7 @@ msgid ""
 msgstr ""
 
 #. Tip 3
-#: ../src/gwaei/search-window.c:1564
+#: ../src/gwaei/search.c:1470
 #, c-format
 msgid ""
 "Use the And Character or Or Character to window for results that contain a "
@@ -869,15 +857,15 @@ msgid ""
 "does."
 msgstr ""
 
-#: ../src/gwaei/search-window.c:1570
+#: ../src/gwaei/search.c:1476
 msgid "Searching for Multiple Words"
 msgstr "直接繋がっていない語句の検索仕方"
 
-#: ../src/gwaei/search-window.c:1587
+#: ../src/gwaei/search.c:1493
 msgid "Make a Vocabulary List"
 msgstr "語彙リストを作ろう"
 
-#: ../src/gwaei/search-window.c:1593
+#: ../src/gwaei/search.c:1499
 msgid ""
 "Specific sections of results can be printed or saved by dragging the mouse "
 "to highlight them.  Using this in combination with the Append command from "
@@ -885,11 +873,11 @@ msgid ""
 "possible."
 msgstr ""
 
-#: ../src/gwaei/search-window.c:1603
+#: ../src/gwaei/search.c:1509
 msgid "Why Use the Mouse?"
 msgstr "モウスを使う必要がない"
 
-#: ../src/gwaei/search-window.c:1609
+#: ../src/gwaei/search.c:1515
 msgid ""
 "Typing something will move the focus to the window input box.  Hitting the "
 "Up or Down arrow key will move the focus to the results pane so you can "
@@ -897,11 +885,11 @@ msgid ""
 "installed dictionaries."
 msgstr ""
 
-#: ../src/gwaei/search-window.c:1619
+#: ../src/gwaei/search.c:1525
 msgid "Get Ready for the JLPT"
 msgstr "他の漢字の探し方"
 
-#: ../src/gwaei/search-window.c:1625
+#: ../src/gwaei/search.c:1531
 msgid ""
 "The Kanji dictionary has some hidden features.  One such one is the ability "
 "to filter out Kanji that don't meet a certain criteria.  If you are planning "
@@ -913,22 +901,22 @@ msgid ""
 "Japanese person would study it at in school."
 msgstr ""
 
-#: ../src/gwaei/search-window.c:1639
+#: ../src/gwaei/search.c:1545
 msgid "Just drag words in!"
 msgstr "ドラッグだけでいい！"
 
-#: ../src/gwaei/search-window.c:1645
+#: ../src/gwaei/search.c:1551
 msgid ""
 "If you drag and drop a highlighted word into gWaei's window result box, "
 "gWaei will automatically start a window using that text.  This can be a nice "
 "way to quickly look up words while browsing webpages. "
 msgstr ""
 
-#: ../src/gwaei/search-window.c:1656
+#: ../src/gwaei/search.c:1562
 msgid "What does (adj-i) mean?"
 msgstr "「(adj-i)」などはどうゆう意味だろう"
 
-#: ../src/gwaei/search-window.c:1662
+#: ../src/gwaei/search.c:1568
 msgid ""
 "It is part of the terminalogy used by the EDICT group of dictionaries to "
 "categorize words.  Some are obvious, but there are a number that there is no "
@@ -938,11 +926,11 @@ msgid ""
 "the Dictionary Terminology Glossary menuitem in the Help menu to get to it."
 msgstr ""
 
-#: ../src/gwaei/search-window.c:1674
+#: ../src/gwaei/search.c:1580
 msgid "Books are Heavy"
 msgstr ""
 
-#: ../src/gwaei/search-window.c:1680
+#: ../src/gwaei/search.c:1586
 msgid ""
 "Aways wear a construction helmet when working with books.  They are "
 "dangerous heavy objects that can at any point fall on and injure you.  "
@@ -950,30 +938,48 @@ msgid ""
 "Really."
 msgstr ""
 
-#: ../src/gwaei/search-window.c:1971
+#: ../src/gwaei/search.c:1913
 msgid "(Empty)"
 msgstr "(空っぽ)"
 
-#: ../src/gwaei/settings-callbacks.c:260
+#: ../src/gwaei/search.c:2599
+msgid "_Cycle Up"
+msgstr "循環させる(_C)"
+
+#: ../src/gwaei/search.c:2605
+msgid "Cycle _Down"
+msgstr "逆循環させる(_D)"
+
+#: ../src/gwaei/settings-callbacks.c:327
 #, c-format
 msgid "_Use the System Document Font (%s)"
 msgstr "システムのデフォルトフォントを使う(_U) (%s)"
 
-#: ../src/gwaei/settings-window.c:372
+#: ../src/gwaei/settings-window.c:419
 msgid "Name"
 msgstr "名前"
 
-#: ../src/gwaei/settings-window.c:378
+#: ../src/gwaei/settings-window.c:425
 msgid "Engine"
 msgstr "エンジン"
 
-#: ../src/gwaei/settings-window.c:383
+#: ../src/gwaei/settings-window.c:430
 msgid "Shortcut"
 msgstr "ショートカット"
 
 #: ../src/desktop/gwaei.desktop.in.h:1
 msgid "Enter a Japanese or English word to easily get translations."
 msgstr "英語か日本語の単語を入れて簡単に翻訳を調べます"
+
+#~ msgid "Choose the dictionary to use"
+#~ msgstr "望みの辞書を選んでください"
+
+#, fuzzy
+#~ msgid "Open a new search window"
+#~ msgstr "マルチサーチウィンドで開く(β）"
+
+#~ msgid "Check the gWaei version information"
+#~ msgstr "gWaeiヴァージョン情報を表示する"
 
 #~ msgid "Searching for \""
 #~ msgstr "「"
@@ -998,9 +1004,6 @@ msgstr "英語か日本語の単語を入れて簡単に翻訳を調べます"
 
 #~ msgid "Open a new instance of gWaei"
 #~ msgstr "gWaeiの新しいインスタンスを開く"
-
-#~ msgid "Other Results"
-#~ msgstr "他の候補"
 
 #~ msgid "A_ppend Selected"
 #~ msgstr "選択のを追加(_P)"

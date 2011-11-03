@@ -1805,6 +1805,7 @@ G_MODULE_EXPORT void gw_searchwindow_sync_toolbar_show_cb (GSettings *settings, 
     //Declarations
     GwSearchWindow *window;
     GwSearchWindowPrivate *priv;
+    GtkWidget *toplevel;
     GtkAction *action;
     gboolean request;
     GtkToolbar *search_toolbar;
@@ -1814,6 +1815,7 @@ G_MODULE_EXPORT void gw_searchwindow_sync_toolbar_show_cb (GSettings *settings, 
     window = GW_SEARCHWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_SEARCHWINDOW));
     if (window == NULL) return;
     priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    toplevel = gw_window_get_toplevel (GW_WINDOW (window));
     action = GTK_ACTION (gw_window_get_object (GW_WINDOW (window), "view_toggle_toolbar_action"));
     request = lw_preferences_get_boolean (settings, key);
     search_toolbar = GTK_TOOLBAR (gw_window_get_object (GW_WINDOW (window), "search_toolbar"));
@@ -1842,9 +1844,9 @@ G_MODULE_EXPORT void gw_searchwindow_sync_toolbar_show_cb (GSettings *settings, 
     gtk_widget_reset_style (GTK_WIDGET (search_toolbar));
     gtk_widget_reset_style (GTK_WIDGET (priv->toolbar));
 
-    g_signal_handlers_block_by_func (action, gw_searchwindow_toolbar_show_toggled_cb, window);
+    g_signal_handlers_block_by_func (action, gw_searchwindow_toolbar_show_toggled_cb, toplevel);
     gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), request);
-    g_signal_handlers_unblock_by_func (action, gw_searchwindow_toolbar_show_toggled_cb, window);
+    g_signal_handlers_unblock_by_func (action, gw_searchwindow_toolbar_show_toggled_cb, toplevel);
 }
 
 
@@ -1882,6 +1884,7 @@ G_MODULE_EXPORT void gw_searchwindow_sync_statusbar_show_cb (GSettings *settings
     //Declarations
     GwSearchWindow *window;
     GwSearchWindowPrivate *priv;
+    GtkWidget *toplevel;
     GtkAction *action;
     gboolean request;
 
@@ -1889,6 +1892,7 @@ G_MODULE_EXPORT void gw_searchwindow_sync_statusbar_show_cb (GSettings *settings
     window = GW_SEARCHWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_SEARCHWINDOW));
     if (window == NULL) return;
     priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    toplevel = gw_window_get_toplevel (GW_WINDOW (window));
     action = GTK_ACTION (gw_window_get_object (GW_WINDOW (window), "view_toggle_statusbar_action"));
     request = lw_preferences_get_boolean (settings, key);
 
@@ -1897,9 +1901,9 @@ G_MODULE_EXPORT void gw_searchwindow_sync_statusbar_show_cb (GSettings *settings
     else
       gtk_widget_hide (priv->statusbar);
 
-    g_signal_handlers_block_by_func (action, gw_searchwindow_statusbar_show_toggled_cb, window);
+    g_signal_handlers_block_by_func (action, gw_searchwindow_statusbar_show_toggled_cb, toplevel);
     gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), request);
-    g_signal_handlers_unblock_by_func (action, gw_searchwindow_statusbar_show_toggled_cb, window);
+    g_signal_handlers_unblock_by_func (action, gw_searchwindow_statusbar_show_toggled_cb, toplevel);
 }
 
 
@@ -1962,6 +1966,7 @@ G_MODULE_EXPORT void gw_searchwindow_sync_spellcheck_cb (GSettings *settings, gc
     GwSearchWindow *window;
     GwSearchWindowPrivate *priv;
     LwPreferences *preferences;
+    GtkWidget *toplevel;
     GtkToggleToolButton *toolbutton;
     gboolean request;
 
@@ -1971,16 +1976,17 @@ G_MODULE_EXPORT void gw_searchwindow_sync_spellcheck_cb (GSettings *settings, gc
     priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
     application = gw_window_get_application (GW_WINDOW (window));
     preferences = gw_application_get_preferences (application);
+    toplevel = gw_window_get_toplevel (GW_WINDOW (window));
     toolbutton = GTK_TOGGLE_TOOL_BUTTON (gw_window_get_object (GW_WINDOW (window), "spellcheck_toolbutton"));
     request = lw_preferences_get_boolean_by_schema (preferences, LW_SCHEMA_BASE, LW_KEY_SPELLCHECK);
 
-    g_signal_handlers_block_by_func (toolbutton, gw_searchwindow_spellcheck_toggled_cb, window);
+    g_signal_handlers_block_by_func (toolbutton, gw_searchwindow_spellcheck_toggled_cb, toplevel);
     gtk_toggle_tool_button_set_active (toolbutton, request);
-    g_signal_handlers_unblock_by_func (toolbutton, gw_searchwindow_spellcheck_toggled_cb, window);
+    g_signal_handlers_unblock_by_func (toolbutton, gw_searchwindow_spellcheck_toggled_cb, toplevel);
 
     if (request == TRUE && priv->spellcheck == NULL)
     {
-//      priv->spellcheck =  gw_spellcheck_new (priv->entry);
+      //priv->spellcheck =  gw_spellcheck_new (priv->entry);
     }
     else if (request == FALSE && priv->spellcheck != NULL)
     {

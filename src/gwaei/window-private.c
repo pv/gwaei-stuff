@@ -9,6 +9,7 @@ void gw_window_private_init (GwWindow *window)
     priv->builder = gtk_builder_new ();
     priv->application = NULL;
     priv->ui_xml = NULL;
+    priv->toplevel = NULL;
 }
 
 void gw_window_private_finalize (GwWindow *window)
@@ -19,5 +20,6 @@ void gw_window_private_finalize (GwWindow *window)
 
     if (priv->builder != NULL) g_object_unref (priv->builder);
     if (priv->ui_xml != NULL) g_free (priv->ui_xml);
+    priv->toplevel = NULL;
 }
 

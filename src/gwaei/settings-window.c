@@ -135,10 +135,7 @@ static void gw_settingswindow_constructed (GObject *object)
 
     gtk_widget_set_sensitive (GTK_WIDGET (checkbox), enchant_exists);
 
-
-
     gw_settingswindow_attach_signals (window);
-
 }
 
 
