@@ -8,6 +8,9 @@ typedef struct _GwApplication GwApplication;
 typedef struct _GwApplicationClass GwApplicationClass;
 typedef struct _GwApplicationPrivate GwApplicationPrivate;
 
+struct _GwSearchWindow; //Forward declaration
+struct _GwDictInfoList; //Forward declaration
+
 #define GW_TYPE_APPLICATION              (gw_application_get_type())
 #define GW_APPLICATION(obj)              (G_TYPE_CHECK_INSTANCE_CAST((obj), GW_TYPE_APPLICATION, GwApplication))
 #define GW_APPLICATION_CLASS(klass)      (G_TYPE_CHECK_CLASS_CAST((klass), GW_TYPE_APPLICATION, GwApplicationClass))
@@ -59,11 +62,11 @@ gboolean gw_application_can_start_search (GwApplication*);
 
 void gw_application_handle_error (GwApplication*, GtkWindow*, gboolean, GError**);
 
-void gw_application_set_last_focused_searchwindow (GwApplication*, GwSearchWindow*);
-GwSearchWindow* gw_application_get_last_focused_searchwindow (GwApplication*);
+void gw_application_set_last_focused_searchwindow (GwApplication*, struct _GwSearchWindow*);
+struct _GwSearchWindow* gw_application_get_last_focused_searchwindow (GwApplication*);
 
 LwPreferences* gw_application_get_preferences (GwApplication*);
-GwDictInfoList* gw_application_get_dictinfolist (GwApplication*);
+struct _GwDictInfoList* gw_application_get_dictinfolist (GwApplication*);
 GtkTextTagTable* gw_application_get_tagtable (GwApplication*);
 
 void gw_application_destroy_window (GwApplication*, GtkWindow*);

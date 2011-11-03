@@ -21,7 +21,6 @@ typedef enum {
   TOTAL_GW_SETTINGSWINDOW_SIGNALIDS
 } GwSettingsWindowSignalIds;
 
-
 struct _GwSettingsWindowPrivate {
   GtkNotebook *notebook;
   guint signalids[TOTAL_GW_SETTINGSWINDOW_SIGNALIDS];
@@ -33,6 +32,8 @@ struct _GwSettingsWindowPrivate {
 
 void gw_settingswindow_private_init (GwSettingsWindow*);
 void gw_settingswindow_private_finalize (GwSettingsWindow*);
+
+#include <gwaei/settings-callbacks.h>
 
 #endif
 

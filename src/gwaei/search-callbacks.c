@@ -2086,6 +2086,35 @@ G_MODULE_EXPORT void gw_searchwindow_open_radicalswindow_cb (GtkWidget *widget, 
 }
 
 
+G_MODULE_EXPORT void gw_searchwindow_open_settingswindow_cb (GtkWidget *widget, gpointer data)
+{
+    //Declarations
+    GwApplication *application;
+    GwSearchWindow *window;
+    GtkWindow *settingswindow;
+    GList *iter;
+
+    //Initializations
+    window = GW_SEARCHWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_SEARCHWINDOW));
+    if (window == NULL) return;
+    application = gw_window_get_application (GW_WINDOW (window));
+    iter = gtk_application_get_windows (GTK_APPLICATION (application));
+
+    while (iter != NULL && !GW_IS_SETTINGSWINDOW (iter->data)) iter = iter->next;
+
+    if (iter != NULL)
+    {
+      settingswindow = GTK_WINDOW (iter->data);
+      gtk_window_present (GTK_WINDOW (settingswindow));
+    }
+    else
+    {
+      settingswindow = gw_settingswindow_new (GTK_APPLICATION (application));
+      gtk_widget_show (GTK_WIDGET (settingswindow));
+    }
+}
+
+
 G_MODULE_EXPORT void gw_searchwindow_dictionaries_added_cb (GtkTreeModel* model, GtkTreePath *path, GtkTreeIter* iter, gpointer data)
 {
     //Lazy implimenation

@@ -29,9 +29,6 @@ struct _GwSettingsWindowClass {
 GtkWindow* gw_settingswindow_new (GtkApplication *application);
 GType gw_settingswindow_get_type (void) G_GNUC_CONST;
 
-void gw_settingswindow_init (GwSettingsWindow*, GwWindow*);
-void gw_settingswindow_deinit (GwSettingsWindow*);
-
 void gw_settingswindow_update_interface (GwSettingsWindow*);
 
 void gw_settingswindow_initialize_dictionary_order_list (GwSettingsWindow*);

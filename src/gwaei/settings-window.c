@@ -34,11 +34,12 @@
 #include <gtk/gtk.h>
 
 #include <gwaei/gwaei.h>
+#include <gwaei/settings-private.h>
 
 
-void _settingswindow_initialize_dictionary_tree_view (GtkTreeView*);
-void _settingswindow_attach_signals (GwSettingsWindow*);
-void _settingswindow_remove_signals (GwSettingsWindow*);
+static void gw_settingswindow_initialize_dictionary_tree_view (GwSettingsWindow*, GtkTreeView*);
+static void gw_settingswindow_attach_signals (GwSettingsWindow*);
+static void gw_settingswindow_remove_signals (GwSettingsWindow*);
 
 G_DEFINE_TYPE (GwSettingsWindow, gw_settingswindow, GW_TYPE_WINDOW);
 
@@ -53,7 +54,7 @@ GtkWindow* gw_settingswindow_new (GtkApplication *application)
     GwSettingsWindow *window;
 
     //Initializations
-    window = GW_settingsWINDOW (g_object_new (GW_TYPE_SETTINGSWINDOW,
+    window = GW_SETTINGSWINDOW (g_object_new (GW_TYPE_SETTINGSWINDOW,
                                             "type",        GTK_WINDOW_TOPLEVEL,
                                             "application", GW_APPLICATION (application),
                                             "ui-xml",      "settings.ui",
@@ -62,257 +63,303 @@ GtkWindow* gw_settingswindow_new (GtkApplication *application)
     return GTK_WINDOW (window);
 }
 
-      if (g_main_current_source () != NULL) gw_app_block_searches (app);
 
-      gw_window_init (GW_WINDOW (temp), GW_WINDOW_SETTINGS, "settings.ui", "settings_window", link);
-      gw_settingswindow_init (temp, GW_WINDOW (transient_for));
+void gw_settingswindow_init (GwSettingsWindow *window)
+{
+    window->priv = GW_SETTINGSWINDOW_GET_PRIVATE (window);
+    gw_settingswindow_private_init (window);
+}
 
 
-void gw_settingswindow_init (GwSettingsWindow *window, GwWindow *transient_for)
+void gw_settingswindow_finalize (GObject *object)
+{
+    GwSettingsWindow *window;
+    GwApplication *application;
+
+    window = GW_SETTINGSWINDOW (object);
+    application = gw_window_get_application (GW_WINDOW (window));
+
+    gw_settingswindow_remove_signals (window);
+    gw_settingswindow_private_finalize (window);
+    if (g_main_current_source () != NULL) gw_application_block_searches (application);
+    G_OBJECT_CLASS (gw_settingswindow_parent_class)->finalize (object);
+}
+
+
+static void gw_settingswindow_constructed (GObject *object)
 {
     //Declarations
+    GwSettingsWindow *window;
+    GwSettingsWindowPrivate *priv;
+    GwApplication *application;
     GtkTreeView *view;
+    GwDictInfoList *dictinfolist;
+
+    //Chain the parent class
+    {
+      G_OBJECT_CLASS (gw_settingswindow_parent_class)->constructed (object);
+    }
 
     //Initializations
-    view = GTK_TREE_VIEW (gtk_builder_get_object (window->builder, "manage_dictionaries_treeview"));
-    window->notebook = GTK_NOTEBOOK (gtk_builder_get_object (window->builder, "settings_notebook"));
-    window->dictinstlist = NULL;
+    window = GW_SETTINGSWINDOW (object);
+    priv = GW_SETTINGSWINDOW_GET_PRIVATE (window);
+    application = gw_window_get_application (GW_WINDOW (window));
+    dictinfolist = gw_application_get_dictinfolist (application);
+    view = GTK_TREE_VIEW (gw_window_get_object (GW_WINDOW (window), "manage_dictionaries_treeview"));
 
-    _settingswindow_initialize_dictionary_tree_view (view);
+    if (g_main_current_source () != NULL) gw_application_block_searches (application);
 
-    _settingswindow_attach_signals (window);
+    priv->notebook = GTK_NOTEBOOK (gw_window_get_object (GW_WINDOW (window), "settings_notebook"));
 
-    if (lw_dictinfolist_get_total (LW_DICTINFOLIST (app->dictinfolist)) == 0)
-      gtk_notebook_set_current_page (window->notebook, 1);
+    gw_settingswindow_initialize_dictionary_tree_view (window, view);
 
-    gw_window_set_transient_for (GW_WINDOW (window), transient_for);
-
+    if (lw_dictinfolist_get_total (LW_DICTINFOLIST (dictinfolist)) == 0)
+      gtk_notebook_set_current_page (priv->notebook, 1);
     gw_settingswindow_check_for_dictionaries (window);
 
     //We are going to lazily update the sensitivity of the spellcheck buttons only when the window is created
     GtkToggleButton *checkbox;
     gboolean enchant_exists;
 
-    checkbox = GTK_TOGGLE_BUTTON (gtk_builder_get_object (window->builder, "query_spellcheck")); 
+    checkbox = GTK_TOGGLE_BUTTON (gw_window_get_object (GW_WINDOW (window), "query_spellcheck")); 
     enchant_exists = g_file_test (ENCHANT, G_FILE_TEST_IS_REGULAR);
 
     gtk_widget_set_sensitive (GTK_WIDGET (checkbox), enchant_exists);
+
+
+
+    gw_settingswindow_attach_signals (window);
+
 }
 
 
-void gw_settingswindow_deinit (GwSettingsWindow *window)
+static void
+gw_settingswindow_class_init (GwSettingsWindowClass *klass)
 {
-    gtk_widget_hide (GTK_WIDGET (window->toplevel));
+  GObjectClass *object_class;
 
-    if (window->dictinstlist != NULL)
-    {
-      lw_dictinstlist_free (window->dictinstlist);
-      window->dictinstlist = NULL;
-    }
+  object_class = G_OBJECT_CLASS (klass);
 
-    _settingswindow_remove_signals (window);
+  object_class->constructed = gw_settingswindow_constructed;
+  object_class->finalize = gw_settingswindow_finalize;
+
+  g_type_class_add_private (object_class, sizeof (GwSettingsWindowPrivate));
 }
 
 
-void _settingswindow_attach_signals (GwSettingsWindow *window)
+static void gw_settingswindow_attach_signals (GwSettingsWindow *window)
 {
     //Declarations
+    GwSettingsWindowPrivate *priv;
+    GwApplication *application;
+    LwPreferences *preferences;
     int i;
 
-    for (i = 0; i < TOTAL_GW_SETTINGSWINDOW_SIGNALIDS; i++)
-      window->signalids[i] = 0;
+    priv = GW_SETTINGSWINDOW_GET_PRIVATE (window);
+    application = gw_window_get_application (GW_WINDOW (window));
+    preferences = gw_application_get_preferences (application);
 
-    window->signalids[GW_SETTINGSWINDOW_SIGNALID_ROMAJI_KANA] = lw_preferences_add_change_listener_by_schema (
-        app->preferences,
+    for (i = 0; i < TOTAL_GW_SETTINGSWINDOW_SIGNALIDS; i++)
+      priv->signalids[i] = 0;
+
+    priv->signalids[GW_SETTINGSWINDOW_SIGNALID_ROMAJI_KANA] = lw_preferences_add_change_listener_by_schema (
+        preferences,
         LW_SCHEMA_BASE,
         LW_KEY_ROMAN_KANA,
         gw_settingswindow_sync_romaji_kana_conv_cb,
         window
     );
 
-    window->signalids[GW_SETTINGSWINDOW_SIGNALID_HIRA_KATA] = lw_preferences_add_change_listener_by_schema (
-        app->preferences,
+    priv->signalids[GW_SETTINGSWINDOW_SIGNALID_HIRA_KATA] = lw_preferences_add_change_listener_by_schema (
+        preferences,
         LW_SCHEMA_BASE,
         LW_KEY_HIRA_KATA,
         gw_settingswindow_sync_hira_kata_conv_cb,
         window
     );
 
-    window->signalids[GW_SETTINGSWINDOW_SIGNALID_KATA_HIRA] = lw_preferences_add_change_listener_by_schema (
-        app->preferences,
+    priv->signalids[GW_SETTINGSWINDOW_SIGNALID_KATA_HIRA] = lw_preferences_add_change_listener_by_schema (
+        preferences,
         LW_SCHEMA_BASE,
         LW_KEY_KATA_HIRA,
         gw_settingswindow_sync_kata_hira_conv_cb,
         window
     );
 
-    window->signalids[GW_SETTINGSWINDOW_SIGNALID_SPELLCHECK] = lw_preferences_add_change_listener_by_schema (
-        app->preferences,
+    priv->signalids[GW_SETTINGSWINDOW_SIGNALID_SPELLCHECK] = lw_preferences_add_change_listener_by_schema (
+        preferences,
         LW_SCHEMA_BASE,
         LW_KEY_SPELLCHECK,
         gw_settingswindow_sync_spellcheck_cb,
         window
     );
 
-    window->signalids[GW_SETTINGSWINDOW_SIGNALID_USE_GLOBAL_DOCUMENT_FONT] = lw_preferences_add_change_listener_by_schema (
-        app->preferences,
+    priv->signalids[GW_SETTINGSWINDOW_SIGNALID_USE_GLOBAL_DOCUMENT_FONT] = lw_preferences_add_change_listener_by_schema (
+        preferences,
         LW_SCHEMA_FONT,
         LW_KEY_FONT_USE_GLOBAL_FONT,
         gw_settingswindow_sync_use_global_document_font_cb,
         window
     );
 
-    window->signalids[GW_SETTINGSWINDOW_SIGNALID_GLOBAL_DOCUMENT_FONT] = lw_preferences_add_change_listener_by_schema (
-        app->preferences,
+    priv->signalids[GW_SETTINGSWINDOW_SIGNALID_GLOBAL_DOCUMENT_FONT] = lw_preferences_add_change_listener_by_schema (
+        preferences,
         LW_SCHEMA_GNOME_INTERFACE,
         LW_KEY_DOCUMENT_FONT_NAME,
         gw_settingswindow_sync_global_document_font_cb,
         window
     );
 
-    window->signalids[GW_SETTINGSWINDOW_SIGNALID_CUSTOM_FONT] = lw_preferences_add_change_listener_by_schema (
-        app->preferences,
+    priv->signalids[GW_SETTINGSWINDOW_SIGNALID_CUSTOM_FONT] = lw_preferences_add_change_listener_by_schema (
+        preferences,
         LW_SCHEMA_FONT,
         LW_KEY_FONT_CUSTOM_FONT,
         gw_settingswindow_sync_custom_font_cb,
         window
     );
 
-    window->signalids[GW_SETTINGSWINDOW_SIGNALID_SEARCH_AS_YOU_TYPE] = lw_preferences_add_change_listener_by_schema (
-        app->preferences,
+    priv->signalids[GW_SETTINGSWINDOW_SIGNALID_SEARCH_AS_YOU_TYPE] = lw_preferences_add_change_listener_by_schema (
+        preferences,
         LW_SCHEMA_BASE,
         LW_KEY_SEARCH_AS_YOU_TYPE,
         gw_settingswindow_sync_search_as_you_type_cb,
         window
     );
 
-    window->signalids[GW_SETTINGSWINDOW_SIGNALID_MATCH_FG] = lw_preferences_add_change_listener_by_schema (
-        app->preferences,
+    priv->signalids[GW_SETTINGSWINDOW_SIGNALID_MATCH_FG] = lw_preferences_add_change_listener_by_schema (
+        preferences,
         LW_SCHEMA_HIGHLIGHT,
         LW_KEY_MATCH_FG,
         gw_settingswindow_sync_swatch_color_cb,
-        gtk_builder_get_object (window->builder, "match_foreground")
+        gw_window_get_object (GW_WINDOW (window), "match_foreground")
     );
 
-    window->signalids[GW_SETTINGSWINDOW_SIGNALID_MATCH_BG] = lw_preferences_add_change_listener_by_schema (
-        app->preferences,
+    priv->signalids[GW_SETTINGSWINDOW_SIGNALID_MATCH_BG] = lw_preferences_add_change_listener_by_schema (
+        preferences,
         LW_SCHEMA_HIGHLIGHT,
         LW_KEY_MATCH_BG,
         gw_settingswindow_sync_swatch_color_cb,
-        gtk_builder_get_object (window->builder, "match_background")
+        gw_window_get_object (GW_WINDOW (window), "match_background")
     );
 
-    window->signalids[GW_SETTINGSWINDOW_SIGNALID_COMMENT_FG] = lw_preferences_add_change_listener_by_schema (
-        app->preferences,
+    priv->signalids[GW_SETTINGSWINDOW_SIGNALID_COMMENT_FG] = lw_preferences_add_change_listener_by_schema (
+        preferences,
         LW_SCHEMA_HIGHLIGHT,
         LW_KEY_COMMENT_FG,
         gw_settingswindow_sync_swatch_color_cb,
-        gtk_builder_get_object (window->builder, "comment_foreground")
+        gw_window_get_object (GW_WINDOW (window), "comment_foreground")
     );
 
-    window->signalids[GW_SETTINGSWINDOW_SIGNALID_HEADER_FG] = lw_preferences_add_change_listener_by_schema (
-        app->preferences,
+    priv->signalids[GW_SETTINGSWINDOW_SIGNALID_HEADER_FG] = lw_preferences_add_change_listener_by_schema (
+        preferences,
         LW_SCHEMA_HIGHLIGHT,
         LW_KEY_HEADER_FG,
         gw_settingswindow_sync_swatch_color_cb,
-        gtk_builder_get_object (window->builder, "header_foreground")
+        gw_window_get_object (GW_WINDOW (window), "header_foreground")
     );
 
-    window->signalids[GW_SETTINGSWINDOW_SIGNALID_HEADER_BG] = lw_preferences_add_change_listener_by_schema (
-        app->preferences,
+    priv->signalids[GW_SETTINGSWINDOW_SIGNALID_HEADER_BG] = lw_preferences_add_change_listener_by_schema (
+        preferences,
         LW_SCHEMA_HIGHLIGHT,
         LW_KEY_HEADER_BG,
         gw_settingswindow_sync_swatch_color_cb,
-        gtk_builder_get_object (window->builder, "header_background")
+        gw_window_get_object (GW_WINDOW (window), "header_background")
     );
 }
 
 
-void _settingswindow_remove_signals (GwSettingsWindow *window)
+static void gw_settingswindow_remove_signals (GwSettingsWindow *window)
 {
     //Declarations
+    GwSettingsWindowPrivate *priv;
+    GwApplication *application;
+    LwPreferences *preferences;
     int i;
 
+    priv = GW_SETTINGSWINDOW_GET_PRIVATE (window);
+    application = gw_window_get_application (GW_WINDOW (window));
+    preferences = gw_application_get_preferences (application);
+
     lw_preferences_remove_change_listener_by_schema (
-        app->preferences, 
+        preferences, 
         LW_SCHEMA_BASE, 
-        window->signalids[GW_SETTINGSWINDOW_SIGNALID_ROMAJI_KANA]
+        priv->signalids[GW_SETTINGSWINDOW_SIGNALID_ROMAJI_KANA]
     );
 
     lw_preferences_remove_change_listener_by_schema (
-        app->preferences, 
+        preferences, 
         LW_SCHEMA_BASE, 
-        window->signalids[GW_SETTINGSWINDOW_SIGNALID_HIRA_KATA]
+        priv->signalids[GW_SETTINGSWINDOW_SIGNALID_HIRA_KATA]
     );
 
     lw_preferences_remove_change_listener_by_schema (
-        app->preferences, 
+        preferences, 
         LW_SCHEMA_BASE, 
-        window->signalids[GW_SETTINGSWINDOW_SIGNALID_KATA_HIRA]
+        priv->signalids[GW_SETTINGSWINDOW_SIGNALID_KATA_HIRA]
     );
 
     lw_preferences_remove_change_listener_by_schema (
-        app->preferences, 
+        preferences, 
         LW_SCHEMA_BASE, 
-        window->signalids[GW_SETTINGSWINDOW_SIGNALID_SPELLCHECK]
+        priv->signalids[GW_SETTINGSWINDOW_SIGNALID_SPELLCHECK]
     );
 
     lw_preferences_remove_change_listener_by_schema (
-        app->preferences, 
+        preferences, 
         LW_SCHEMA_FONT, 
-        window->signalids[GW_SETTINGSWINDOW_SIGNALID_USE_GLOBAL_DOCUMENT_FONT]
+        priv->signalids[GW_SETTINGSWINDOW_SIGNALID_USE_GLOBAL_DOCUMENT_FONT]
     );
 
     lw_preferences_remove_change_listener_by_schema (
-        app->preferences, 
+        preferences, 
         LW_SCHEMA_GNOME_INTERFACE, 
-        window->signalids[GW_SETTINGSWINDOW_SIGNALID_GLOBAL_DOCUMENT_FONT]
+        priv->signalids[GW_SETTINGSWINDOW_SIGNALID_GLOBAL_DOCUMENT_FONT]
     );
 
     lw_preferences_remove_change_listener_by_schema (
-        app->preferences, 
+        preferences, 
         LW_SCHEMA_FONT, 
-        window->signalids[GW_SETTINGSWINDOW_SIGNALID_CUSTOM_FONT]
+        priv->signalids[GW_SETTINGSWINDOW_SIGNALID_CUSTOM_FONT]
     );
 
     lw_preferences_remove_change_listener_by_schema (
-        app->preferences, 
+        preferences, 
         LW_SCHEMA_BASE, 
-        window->signalids[GW_SETTINGSWINDOW_SIGNALID_SEARCH_AS_YOU_TYPE]
+        priv->signalids[GW_SETTINGSWINDOW_SIGNALID_SEARCH_AS_YOU_TYPE]
     );
 
     lw_preferences_remove_change_listener_by_schema (
-        app->preferences, 
+        preferences, 
         LW_SCHEMA_HIGHLIGHT, 
-        window->signalids[GW_SETTINGSWINDOW_SIGNALID_MATCH_FG]
+        priv->signalids[GW_SETTINGSWINDOW_SIGNALID_MATCH_FG]
     );
 
     lw_preferences_remove_change_listener_by_schema (
-        app->preferences, 
+        preferences, 
         LW_SCHEMA_HIGHLIGHT, 
-        window->signalids[GW_SETTINGSWINDOW_SIGNALID_MATCH_BG]
+        priv->signalids[GW_SETTINGSWINDOW_SIGNALID_MATCH_BG]
     );
 
     lw_preferences_remove_change_listener_by_schema (
-        app->preferences, 
+        preferences, 
         LW_SCHEMA_HIGHLIGHT, 
-        window->signalids[GW_SETTINGSWINDOW_SIGNALID_COMMENT_FG]
+        priv->signalids[GW_SETTINGSWINDOW_SIGNALID_COMMENT_FG]
     );
 
     lw_preferences_remove_change_listener_by_schema (
-        app->preferences, 
+        preferences, 
         LW_SCHEMA_HIGHLIGHT, 
-        window->signalids[GW_SETTINGSWINDOW_SIGNALID_HEADER_FG]
+        priv->signalids[GW_SETTINGSWINDOW_SIGNALID_HEADER_FG]
     );
 
     lw_preferences_remove_change_listener_by_schema (
-        app->preferences, 
+        preferences, 
         LW_SCHEMA_HIGHLIGHT, 
-        window->signalids[GW_SETTINGSWINDOW_SIGNALID_HEADER_BG]
+        priv->signalids[GW_SETTINGSWINDOW_SIGNALID_HEADER_BG]
     );
 
     for (i = 0; i < TOTAL_GW_SETTINGSWINDOW_SIGNALIDS; i++)
-      window->signalids[i] = 0;
+      priv->signalids[i] = 0;
 }
 
 
@@ -331,13 +378,18 @@ void gw_settings_set_dictionary_source (GtkWidget *widget, const char* value)
 }
 
 
-void _settingswindow_initialize_dictionary_tree_view (GtkTreeView *view)
+static void gw_settingswindow_initialize_dictionary_tree_view (GwSettingsWindow *window, GtkTreeView *view)
 {
       //Declarations
+      GwApplication *application;
+      GwDictInfoList *dictinfolist;
       GtkCellRenderer *renderer;
       GtkTreeViewColumn *column;
 
-      gtk_tree_view_set_model (GTK_TREE_VIEW (view), GTK_TREE_MODEL (app->dictinfolist->model));
+      application = gw_window_get_application (GW_WINDOW (window));
+      dictinfolist = gw_application_get_dictinfolist (application);
+
+      gtk_tree_view_set_model (GTK_TREE_VIEW (view), GTK_TREE_MODEL (dictinfolist->model));
 
       //Create the columns and renderer for each column
       renderer = gtk_cell_renderer_pixbuf_new();
@@ -377,13 +429,17 @@ void _settingswindow_initialize_dictionary_tree_view (GtkTreeView *view)
 void gw_settingswindow_check_for_dictionaries (GwSettingsWindow *window)
 {
     //Declarations
+    GwApplication *application;
+    GwDictInfoList *dictinfolist;
     GtkWidget *message;
 
     //Initializations
-    message = GTK_WIDGET (gtk_builder_get_object (window->builder, "please_install_dictionary_hbox"));
+    application = gw_window_get_application (GW_WINDOW (window));
+    dictinfolist = gw_application_get_dictinfolist (application);
+    message = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "please_install_dictionary_hbox"));
 
     //Set the show state of the dictionaries required message
-    if (lw_dictinfolist_get_total (LW_DICTINFOLIST (app->dictinfolist)) > 0)
+    if (lw_dictinfolist_get_total (LW_DICTINFOLIST (dictinfolist)) > 0)
       gtk_widget_hide (message);
     else
       gtk_widget_show (message);
