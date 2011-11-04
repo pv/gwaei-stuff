@@ -74,13 +74,13 @@ void gw_searchwindow_init (GwSearchWindow *window)
 
 static void gw_searchwindow_finalize (GObject *object)
 {
-  GwSearchWindow *window;
+    GwSearchWindow *window;
 
-  window = GW_SEARCHWINDOW (object);
+    window = GW_SEARCHWINDOW (object);
 
-  gw_searchwindow_remove_signals (window);
-  gw_searchwindow_private_finalize (window);
-  G_OBJECT_CLASS (gw_searchwindow_parent_class)->finalize (object);
+    gw_searchwindow_remove_signals (window);
+    gw_searchwindow_private_finalize (window);
+    G_OBJECT_CLASS (gw_searchwindow_parent_class)->finalize (object);
 }
 
 

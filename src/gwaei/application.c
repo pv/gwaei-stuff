@@ -397,6 +397,19 @@ GwDictInfoList* gw_application_get_dictinfolist (GwApplication *application)
 }
 
 
+LwDictInstList* gw_application_get_dictinstlist (GwApplication *application)
+{
+  GwApplicationPrivate *priv;
+
+  priv = GW_APPLICATION_GET_PRIVATE (application);
+
+  if (priv->dictinstlist == NULL)
+    priv->dictinstlist = lw_dictinstlist_new (priv->preferences);
+
+  return priv->dictinstlist;
+}
+
+
 /*
 LwEngine* gw_application_get_engine (GwApplication *app)
 {

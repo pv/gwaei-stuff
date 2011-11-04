@@ -95,13 +95,11 @@ G_MODULE_EXPORT void gw_settingswindow_spellcheck_toggled_cb (GtkWidget *widget,
     GwSettingsWindow *window;
     GwApplication *application;
     LwPreferences *preferences;
-    GtkWidget *toplevel;
     gboolean request;
 
     //Initializations
     window = GW_SETTINGSWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_SETTINGSWINDOW));
     if (window == NULL) return;
-    toplevel = gw_window_get_toplevel (GW_WINDOW (window));
     application = gw_window_get_application (GW_WINDOW (window));
     preferences = gw_application_get_preferences (application);
     request = lw_preferences_get_boolean_by_schema (preferences, LW_SCHEMA_BASE, LW_KEY_SPELLCHECK);
@@ -585,11 +583,16 @@ G_MODULE_EXPORT void gw_settingswindow_remove_dictinfo_cb (GtkWidget *widget, gp
 G_MODULE_EXPORT void gw_settingswindow_open_dictionaryinstallwindow_cb (GtkWidget *widget, gpointer data)
 {
     GwSettingsWindow *window;
+    GtkWindow *dictionaryinstallwindow;
+    GwApplication *application;
 
     window = GW_SETTINGSWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_SETTINGSWINDOW));
     if (window == NULL) return;
+    application = gw_window_get_application (GW_WINDOW (window));
 
-    //gw_app_show_window (app, GW_WINDOW_DICTIONARYINSTALL, GW_WINDOW (window), FALSE);
+    dictionaryinstallwindow = gw_dictionaryinstallwindow_new (GTK_APPLICATION (application));
+    gtk_window_set_transient_for (GTK_WINDOW (dictionaryinstallwindow), GTK_WINDOW (window));
+    gtk_widget_show (GTK_WIDGET (dictionaryinstallwindow));
 }
 
 

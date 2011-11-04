@@ -9,6 +9,7 @@ struct _GwApplicationPrivate {
 
   LwPreferences *preferences;
   GwDictInfoList *dictinfolist;
+  LwDictInstList *dictinstlist;
 //  LwEngine *engine;
   GtkTextTagTable *tagtable;
   GwSearchWindow *last_focused;

@@ -1,5 +1,5 @@
-#ifndef GW_DICTIONARY_INSTALL_CALLBACKS_INCLUDED
-#define GW_DICTIONARY_INSTALL_CALLBACKS_INCLUDED
+#ifndef GW_DICTIONARYINSTALLWINDOW_CALLBACKS_INCLUDED
+#define GW_DICTIONARYINSTALLWINDOW_CALLBACKS_INCLUDED
 
 void gw_dictionaryinstallwindow_source_changed_cb (GSettings*, char*, gpointer);
 void gw_dictionaryinstallwindow_cursor_changed_cb (GtkTreeView*, gpointer);

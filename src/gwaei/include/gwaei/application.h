@@ -67,6 +67,7 @@ struct _GwSearchWindow* gw_application_get_last_focused_searchwindow (GwApplicat
 
 LwPreferences* gw_application_get_preferences (GwApplication*);
 struct _GwDictInfoList* gw_application_get_dictinfolist (GwApplication*);
+struct _LwDictInstList* gw_application_get_dictinstlist (GwApplication*);
 GtkTextTagTable* gw_application_get_tagtable (GwApplication*);
 
 void gw_application_destroy_window (GwApplication*, GtkWindow*);

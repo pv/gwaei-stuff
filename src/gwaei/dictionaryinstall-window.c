@@ -33,34 +33,56 @@
 #include <gtk/gtk.h>
 
 #include <gwaei/gwaei.h>
+#include <gwaei/dictionaryinstall-private.h>
 
+G_DEFINE_TYPE (GwDictionaryInstallWindow, gw_dictionaryinstallwindow, GW_TYPE_WINDOW);
 
-GwDictInstWindow* gw_dictinstwindow_new (GwSettingsWindow *transient_for, GList *link)
+//!
+//! @brief Sets up the variables in main-interface.c and main-callbacks.c for use
+//!
+GtkWindow* gw_dictionaryinstallwindow_new (GtkApplication *application)
 {
-    GwDictInstWindow *temp;
+    g_assert (application != NULL);
 
-    temp = (GwDictInstWindow*) malloc(sizeof(GwDictInstWindow));
-    if (temp != NULL)
-    {
-      gw_window_init (GW_WINDOW (temp), GW_WINDOW_DICTIONARYINSTALL, "dictionaryinstall.ui", "dictionary_install_dialog", link);
-      gw_dictinstwindow_init (temp, transient_for);
-    }
+    //Declarations
+    GwDictionaryInstallWindow *window;
 
-    return temp;
+    //Initializations
+    window = GW_DICTIONARYINSTALLWINDOW (g_object_new (GW_TYPE_SEARCHWINDOW,
+                                                       "type",        GTK_WINDOW_TOPLEVEL,
+                                                       "application", GW_APPLICATION (application),
+                                                       "ui-xml",      "dictionaryinstall.ui",
+                                                        NULL));
+
+    return GTK_WINDOW (window);
+}
+
+void gw_dictionaryinstallwindow_init (GwDictionaryInstallWindow *window)
+{
+    window->priv = GW_DICTIONARYINSTALLWINDOW_GET_PRIVATE (window);
+    gw_dictionaryinstallwindow_private_init (window);
 }
 
 
-void gw_dictinstwindow_destroy (GwDictInstWindow *window)
+void gw_dictionaryinstallwindow_finalize (GObject *object)
 {
-  gw_dictinstwindow_deinit (window);
-  gw_window_deinit (GW_WINDOW (window));
-  free (window);
+    GwDictionaryInstallWindow *window;
+
+    window = GW_DICTIONARYINSTALLWINDOW (object);
+
+//    gw_dictionaryinstallwindow_remove_signals (window);
+    gw_dictionaryinstallwindow_private_finalize (window);
+    G_OBJECT_CLASS (gw_dictionaryinstallwindow_parent_class)->finalize (object);
 }
 
 
-void gw_dictinstwindow_init (GwDictInstWindow *window, GwSettingsWindow *transient_for)
+void gw_dictionaryinstallwindow_constructed (GObject *object)
 {
     //Declarations
+    GwDictionaryInstallWindow *window;
+    GwDictionaryInstallWindowPrivate *priv;
+    GwApplication *application;
+    LwDictInstList *dictinstlist;
     GtkCellRenderer *renderer;
     GtkTreeViewColumn *column;
     GList *iter;
@@ -68,29 +90,32 @@ void gw_dictinstwindow_init (GwDictInstWindow *window, GwSettingsWindow *transie
     GtkTreeIter treeiter;
     int i;
 
-    //Initializations
-    window->di = NULL;
-    window->dictionary_store = gtk_list_store_new (TOTAL_GW_DICTINSTWINDOW_DICTSTOREFIELDS, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_INT);
-
-    window->view = GTK_TREE_VIEW (gtk_builder_get_object (window->builder, "dictionary_install_treeview"));
-    window->add_button = GTK_BUTTON (gtk_builder_get_object (window->builder, "dictionary_install_add_button"));
-    window->details_togglebutton = GTK_TOGGLE_BUTTON (gtk_builder_get_object (window->builder, "show_dictionary_detail_checkbutton"));
-
-    gw_window_set_transient_for (GW_WINDOW (window), GW_WINDOW (transient_for));
-
-    if (transient_for->dictinstlist != NULL)
+    //Chain the parent class
     {
-      lw_dictinstlist_free (transient_for->dictinstlist);
+      G_OBJECT_CLASS (gw_dictionaryinstallwindow_parent_class)->constructed (object);
     }
-    transient_for->dictinstlist = lw_dictinstlist_new (app->preferences);
+
+    window = GW_DICTIONARYINSTALLWINDOW (object);
+    priv = GW_DICTIONARYINSTALLWINDOW_GET_PRIVATE (window);
+    application = gw_window_get_application (GW_WINDOW (window));
+    dictinstlist = gw_application_get_dictinstlist (application);
+
+    //Initializations
+    priv->di = NULL;
+    priv->dictionary_store = gtk_list_store_new (TOTAL_GW_DICTINSTWINDOW_DICTSTOREFIELDS, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_INT);
+
+    priv->view = GTK_TREE_VIEW (gw_window_get_object (GW_WINDOW (window), "dictionary_install_treeview"));
+    priv->add_button = GTK_BUTTON (gw_window_get_object (GW_WINDOW (window), "dictionary_install_add_button"));
+    priv->details_togglebutton = GTK_TOGGLE_BUTTON (gw_window_get_object (GW_WINDOW (window), "show_dictionary_detail_checkbutton"));
+
 
     //Set up the dictionary liststore
-    for (iter = transient_for->dictinstlist->list; iter != NULL; iter = iter->next)
+    for (iter = dictinstlist->list; iter != NULL; iter = iter->next)
     {
       di = LW_DICTINST (iter->data);
-      gtk_list_store_append (GTK_LIST_STORE (window->dictionary_store), &treeiter);
+      gtk_list_store_append (GTK_LIST_STORE (priv->dictionary_store), &treeiter);
       gtk_list_store_set (
-        window->dictionary_store, &treeiter,
+        priv->dictionary_store, &treeiter,
         GW_DICTINSTWINDOW_DICTSTOREFIELD_SHORT_NAME, di->shortname,
         GW_DICTINSTWINDOW_DICTSTOREFIELD_LONG_NAME, di->longname,
         GW_DICTINSTWINDOW_DICTSTOREFIELD_DICTINST_PTR, di,
@@ -100,12 +125,12 @@ void gw_dictinstwindow_init (GwDictInstWindow *window, GwSettingsWindow *transie
     }
 
     //Set up the Engine liststore
-    window->engine_store = gtk_list_store_new (TOTAL_GW_DICTINSTWINDOW_ENGINESTOREFIELDS, G_TYPE_INT, G_TYPE_STRING);
+    priv->engine_store = gtk_list_store_new (TOTAL_GW_DICTINSTWINDOW_ENGINESTOREFIELDS, G_TYPE_INT, G_TYPE_STRING);
     for (i = 0; i < TOTAL_LW_DICTTYPES; i++)
     {
-      gtk_list_store_append (GTK_LIST_STORE (window->engine_store), &treeiter);
+      gtk_list_store_append (GTK_LIST_STORE (priv->engine_store), &treeiter);
       gtk_list_store_set (
-        window->engine_store, &treeiter,
+        priv->engine_store, &treeiter,
         GW_DICTINSTWINDOW_ENGINESTOREFIELD_ID, i,
         GW_DICTINSTWINDOW_ENGINESTOREFIELD_NAME, lw_util_dicttype_to_string (i),
         -1
@@ -113,12 +138,12 @@ void gw_dictinstwindow_init (GwDictInstWindow *window, GwSettingsWindow *transie
     }
 
     //Set up the Compression liststore
-    window->compression_store = gtk_list_store_new (TOTAL_GW_DICTINSTWINDOW_COMPRESSIONSTOREFIELDS, G_TYPE_INT, G_TYPE_STRING);
+    priv->compression_store = gtk_list_store_new (TOTAL_GW_DICTINSTWINDOW_COMPRESSIONSTOREFIELDS, G_TYPE_INT, G_TYPE_STRING);
     for (i = 0; i < LW_COMPRESSION_TOTAL; i++)
     {
-      gtk_list_store_append (GTK_LIST_STORE (window->compression_store), &treeiter);
+      gtk_list_store_append (GTK_LIST_STORE (priv->compression_store), &treeiter);
       gtk_list_store_set (
-        window->compression_store, &treeiter,
+        priv->compression_store, &treeiter,
         GW_DICTINSTWINDOW_COMPRESSIONSTOREFIELD_ID, i,
         GW_DICTINSTWINDOW_COMPRESSIONSTOREFIELD_NAME, lw_util_get_compression_name (i),
         -1
@@ -126,12 +151,12 @@ void gw_dictinstwindow_init (GwDictInstWindow *window, GwSettingsWindow *transie
     }
 
     //Set up the Encoding liststore
-    window->encoding_store = gtk_list_store_new (TOTAL_GW_DICTINSTWINDOW_ENCODINGSTOREFIELDS, G_TYPE_INT, G_TYPE_STRING);
+    priv->encoding_store = gtk_list_store_new (TOTAL_GW_DICTINSTWINDOW_ENCODINGSTOREFIELDS, G_TYPE_INT, G_TYPE_STRING);
     for (i = 0; i < LW_ENCODING_TOTAL; i++)
     {
-      gtk_list_store_append (GTK_LIST_STORE (window->encoding_store), &treeiter);
+      gtk_list_store_append (GTK_LIST_STORE (priv->encoding_store), &treeiter);
       gtk_list_store_set (
-        window->encoding_store, &treeiter,
+        priv->encoding_store, &treeiter,
         GW_DICTINSTWINDOW_ENCODINGSTOREFIELD_ID, i,
         GW_DICTINSTWINDOW_ENCODINGSTOREFIELD_NAME, lw_util_get_encoding_name(i),
         -1
@@ -139,28 +164,31 @@ void gw_dictinstwindow_init (GwDictInstWindow *window, GwSettingsWindow *transie
     }
 
     //Setup the dictionary list view
-    gtk_tree_view_set_model (window->view, GTK_TREE_MODEL (window->dictionary_store));
+    gtk_tree_view_set_model (priv->view, GTK_TREE_MODEL (priv->dictionary_store));
 
     renderer = gtk_cell_renderer_toggle_new ();
     gtk_cell_renderer_set_padding (GTK_CELL_RENDERER (renderer), 6, 5);
     column = gtk_tree_view_column_new_with_attributes (" ", renderer, "active", GW_DICTINSTWINDOW_DICTSTOREFIELD_CHECKBOX_STATE, NULL);
-    gtk_tree_view_append_column (window->view, column);
-    g_signal_connect (G_OBJECT (renderer), "toggled", G_CALLBACK (gw_dictionaryinstallwindow_listitem_toggled_cb), window->toplevel);
+    gtk_tree_view_append_column (priv->view, column);
+    g_signal_connect (G_OBJECT (renderer), "toggled", G_CALLBACK (gw_dictionaryinstallwindow_listitem_toggled_cb), window);
 
     renderer = gtk_cell_renderer_text_new ();
     gtk_cell_renderer_set_padding (GTK_CELL_RENDERER (renderer), 6, 0);
     column = gtk_tree_view_column_new_with_attributes ("Name", renderer, "text", GW_DICTINSTWINDOW_DICTSTOREFIELD_LONG_NAME, NULL);
-    gtk_tree_view_append_column (window->view, column);
+    gtk_tree_view_append_column (priv->view, column);
 }
 
 
-void gw_dictinstwindow_deinit (GwDictInstWindow *window)
+static void
+gw_dictionaryinstallwindow_class_init (GwDictionaryInstallWindowClass *klass)
 {
-    gtk_widget_hide (GTK_WIDGET (window->toplevel));
+  GObjectClass *object_class;
 
-    g_object_unref (window->encoding_store);
-    g_object_unref (window->compression_store);
-    g_object_unref (window->engine_store);
-    g_object_unref (window->dictionary_store);
+  object_class = G_OBJECT_CLASS (klass);
+
+  object_class->constructed = gw_dictionaryinstallwindow_constructed;
+  object_class->finalize = gw_dictionaryinstallwindow_finalize;
+
+  g_type_class_add_private (object_class, sizeof (GwDictionaryInstallWindowPrivate));
 }
 

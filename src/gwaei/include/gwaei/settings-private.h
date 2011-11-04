@@ -25,7 +25,6 @@ struct _GwSettingsWindowPrivate {
   GtkNotebook *notebook;
   guint signalids[TOTAL_GW_SETTINGSWINDOW_SIGNALIDS];
 //  guint timeoutids[TOTAL_GW_SETTINGSWINDOW_TIMEOUTIDS];
-  LwDictInstList *dictinstlist;
 };
 
 #define GW_SETTINGSWINDOW_GET_PRIVATE(object)(G_TYPE_INSTANCE_GET_PRIVATE ((object), GW_TYPE_SETTINGSWINDOW, GwSettingsWindowPrivate))

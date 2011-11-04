@@ -76,4 +76,6 @@ struct _GwSearchWindowPrivate {
 void gw_searchwindow_private_init (GwSearchWindow*);
 void gw_searchwindow_private_finalize (GwSearchWindow*);
 
+G_END_DECLS
+
 #endif
