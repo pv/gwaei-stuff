@@ -60,18 +60,24 @@ GtkWindow* gw_dictionaryinstallwindow_new (GtkApplication *application)
 void gw_dictionaryinstallwindow_init (GwDictionaryInstallWindow *window)
 {
     window->priv = GW_DICTIONARYINSTALLWINDOW_GET_PRIVATE (window);
-    gw_dictionaryinstallwindow_private_init (window);
 }
 
 
 void gw_dictionaryinstallwindow_finalize (GObject *object)
 {
     GwDictionaryInstallWindow *window;
+    GwDictionaryInstallWindowPrivate *priv;
 
     window = GW_DICTIONARYINSTALLWINDOW (object);
+    priv = window->priv;
 
 //    gw_dictionaryinstallwindow_remove_signals (window);
-    gw_dictionaryinstallwindow_private_finalize (window);
+
+    g_object_unref (priv->encoding_store);
+    g_object_unref (priv->compression_store);
+    g_object_unref (priv->engine_store);
+    g_object_unref (priv->dictionary_store);
+
     G_OBJECT_CLASS (gw_dictionaryinstallwindow_parent_class)->finalize (object);
 }
 

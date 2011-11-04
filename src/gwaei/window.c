@@ -51,17 +51,29 @@ typedef enum
 void gw_window_init (GwWindow *window)
 {
     window->priv = GW_WINDOW_GET_PRIVATE (window);
-    gw_window_private_init (window);
+
+    GwWindowPrivate *priv;
+    priv = window->priv;
+
+    priv->builder = gtk_builder_new ();
+    priv->application = NULL;
+    priv->ui_xml = NULL;
+    priv->toplevel = NULL;
 }
 
 
 void gw_window_finalize (GObject *object)
 {
     GwWindow *window;
+    GwWindowPrivate *priv;
 
     window = GW_WINDOW (object);
+    priv = window->priv;
 
-    gw_window_private_finalize (window);
+    if (priv->builder != NULL) g_object_unref (priv->builder);
+    if (priv->ui_xml != NULL) g_free (priv->ui_xml);
+    priv->toplevel = NULL;
+
     G_OBJECT_CLASS (gw_window_parent_class)->finalize (object);
 }
 

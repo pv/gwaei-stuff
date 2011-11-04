@@ -1,5 +1,5 @@
-#ifndef GWAEI_INCLUDED
-#define GWAEI_INCLUDED
+#ifndef GW_GWAEI_INCLUDED
+#define GW_GWAEI_INCLUDED
 
 #include <libwaei/libwaei.h>
 

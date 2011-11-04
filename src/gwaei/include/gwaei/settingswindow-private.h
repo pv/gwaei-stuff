@@ -29,10 +29,7 @@ struct _GwSettingsWindowPrivate {
 
 #define GW_SETTINGSWINDOW_GET_PRIVATE(object)(G_TYPE_INSTANCE_GET_PRIVATE ((object), GW_TYPE_SETTINGSWINDOW, GwSettingsWindowPrivate))
 
-void gw_settingswindow_private_init (GwSettingsWindow*);
-void gw_settingswindow_private_finalize (GwSettingsWindow*);
-
-#include <gwaei/settingswindow-callbacks.h>
+G_END_DECLS
 
 #endif
 

@@ -55,9 +55,6 @@ struct _GwDictionaryInstallWindowPrivate {
 
 #define GW_DICTIONARYINSTALLWINDOW_GET_PRIVATE(object)(G_TYPE_INSTANCE_GET_PRIVATE ((object), GW_TYPE_DICTIONARYINSTALLWINDOW, GwDictionaryInstallWindowPrivate))
 
-void gw_dictionaryinstallwindow_private_init (GwDictionaryInstallWindow*);
-void gw_dictionaryinstallwindow_private_finalize (GwDictionaryInstallWindow*);
-
 G_END_DECLS
 
 #endif

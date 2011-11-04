@@ -1,7 +1,6 @@
 #ifndef GW_SEARCHWINDOW_CALLBACKS_INCLUDED
 #define GW_SEARCHWINDOW_CALLBACKS_INCLUDED
 
-
 void gw_searchwindow_back_cb (GtkWidget *widget, gpointer data);
 void gw_searchwindow_forward_cb (GtkWidget *widget, gpointer data);
 void gw_searchwindow_save_cb (GtkWidget *widget, gpointer data);

@@ -21,9 +21,6 @@ typedef enum {
 
 #define GW_RADICALSWINDOW_GET_PRIVATE(object)(G_TYPE_INSTANCE_GET_PRIVATE ((object), GW_TYPE_RADICALSWINDOW, GwRadicalsWindowPrivate))
 
-void gw_radicalswindow_private_init (GwRadicalsWindow*);
-void gw_radicalswindow_private_finalize (GwRadicalsWindow*);
-
 G_END_DECLS
 
 #endif

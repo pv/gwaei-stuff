@@ -73,9 +73,6 @@ struct _GwSearchWindowPrivate {
 
 #define GW_SEARCHWINDOW_GET_PRIVATE(object)(G_TYPE_INSTANCE_GET_PRIVATE ((object), GW_TYPE_SEARCHWINDOW, GwSearchWindowPrivate))
 
-void gw_searchwindow_private_init (GwSearchWindow*);
-void gw_searchwindow_private_finalize (GwSearchWindow*);
-
 G_END_DECLS
 
 #endif

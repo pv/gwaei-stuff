@@ -68,18 +68,89 @@ GtkWindow* gw_searchwindow_new (GtkApplication *application)
 void gw_searchwindow_init (GwSearchWindow *window)
 {
     window->priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
-    gw_searchwindow_private_init (window);
+
+    //Declarations
+    GwSearchWindowPrivate *priv;
+    int i;
+
+    //Initializations
+    priv = window->priv;
+
+    priv->entry = NULL;
+    priv->notebook = NULL;
+    priv->toolbar = NULL;
+    priv->statusbar = NULL;
+    priv->combobox = NULL;
+    priv->accelgroup = NULL;
+
+    priv->dictinfo = NULL;
+    priv->tablist = NULL;
+    priv->font_size = 0;
+
+    priv->feedback_item = NULL;
+    priv->feedback_line = 0;
+    priv->feedback_status = LW_SEARCHSTATUS_IDLE;
+
+    for (i = 0; i < TOTAL_GW_SEARCHWINDOW_TIMEOUTIDS; i++)
+      priv->timeoutid[i] = 0;
+
+    priv->previous_tip = 0;
+
+    //Mouse initialize
+    priv->mouse_item = NULL;
+    priv->mouse_button_press_x = 0;
+    priv->mouse_button_press_y = 0;
+    priv->mouse_button_press_root_x = 0;
+    priv->mouse_button_press_root_y = 0;
+    priv->mouse_button_character = 0;
+    priv->mouse_hovered_word = NULL; 
+
+    //Init keep searching
+    priv->keep_searching_delay = 0;
+    priv->keep_searching_query = NULL;
+    priv->keep_searching_enabled = FALSE;
+
+    priv->text_selected = FALSE;
+
+    priv->new_tab = FALSE; 
+
+    priv->history = lw_history_new (20);
+    priv->spellcheck = NULL;
 }
 
 
 static void gw_searchwindow_finalize (GObject *object)
 {
     GwSearchWindow *window;
+    GwSearchWindowPrivate *priv;
 
     window = GW_SEARCHWINDOW (object);
+    priv = window->priv;
 
     gw_searchwindow_remove_signals (window);
-    gw_searchwindow_private_finalize (window);
+
+    gw_searchwindow_cancel_all_searches (window);
+
+    if (priv->spellcheck != NULL) gw_spellcheck_free (priv->spellcheck);
+    if (priv->history != NULL) lw_history_free (priv->history);
+    if (priv->tablist != NULL) g_list_free (priv->tablist);
+
+    //Mouse finalize
+    if (priv->mouse_hovered_word != NULL)
+    {
+      g_free (priv->mouse_hovered_word);
+      priv->mouse_hovered_word = NULL;
+    }
+
+    //Keep searching finalize
+    if (priv->keep_searching_query != NULL)
+    {
+      g_free (priv->keep_searching_query);
+      priv->keep_searching_query = NULL;
+    } 
+
+    g_object_unref (priv->accelgroup);
+
     G_OBJECT_CLASS (gw_searchwindow_parent_class)->finalize (object);
 }
 

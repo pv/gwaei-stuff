@@ -337,17 +337,16 @@ GtkWindow* gw_radicalswindow_new (GtkApplication *application)
 void gw_radicalswindow_init (GwRadicalsWindow *window)
 {
     window->priv = GW_RADICALSWINDOW_GET_PRIVATE (window);
-    gw_radicalswindow_private_init (window);
 }
 
 
 void gw_radicalswindow_finalize (GObject *object)
 {
+/*
     GwRadicalsWindow *window;
 
     window = GW_RADICALSWINDOW (object);
-
-    gw_radicalswindow_private_finalize (window);
+*/
     G_OBJECT_CLASS (gw_radicalswindow_parent_class)->finalize (object);
 }
 

@@ -1,5 +1,5 @@
-#ifndef GW_KANJIPAD_INTERFACE_CANDIDATEAREA_INCLUDED
-#define GW_KANJIPAD_INTERFACE_CANDIDATEAREA_INCLUDED
+#ifndef GW_KANJIPAD_CANDIDATEAREA_INCLUDED
+#define GW_KANJIPAD_CANDIDATEAREA_INCLUDED
 
 void gw_kanjipadwindow_initialize_candidates (GwKanjipadWindow*);
 void gw_kanjipadwindow_draw_candidates (GwKanjipadWindow*);

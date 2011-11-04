@@ -33,4 +33,6 @@ GType gw_kanjipadwindow_get_type (void) G_GNUC_CONST;
 #include "kanjipad-candidatearea.h"
 #include "kanjipad-drawingarea.h"
 
+G_END_DECLS
+
 #endif

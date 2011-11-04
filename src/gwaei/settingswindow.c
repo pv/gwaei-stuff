@@ -67,7 +67,6 @@ GtkWindow* gw_settingswindow_new (GtkApplication *application)
 void gw_settingswindow_init (GwSettingsWindow *window)
 {
     window->priv = GW_SETTINGSWINDOW_GET_PRIVATE (window);
-    gw_settingswindow_private_init (window);
 }
 
 
@@ -80,8 +79,9 @@ void gw_settingswindow_finalize (GObject *object)
     application = gw_window_get_application (GW_WINDOW (window));
 
     gw_settingswindow_remove_signals (window);
-    gw_settingswindow_private_finalize (window);
-    if (g_main_current_source () != NULL) gw_application_block_searches (application);
+
+    if (g_main_current_source () != NULL) gw_application_unblock_searches (application);
+
     G_OBJECT_CLASS (gw_settingswindow_parent_class)->finalize (object);
 }
 

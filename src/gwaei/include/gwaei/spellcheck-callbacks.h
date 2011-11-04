@@ -1,5 +1,5 @@
 #ifndef GW_SPELLCHECK_CALLBACKS_INCLUDED
-#define GW_SPELLCHECK_CALLBACKS_INCLCEDED
+#define GW_SPELLCHECK_CALLBACKS_INCLUDED
 
 void gw_spellcheck_queue_cb (GtkEditable*, gpointer);
 void gw_spellcheck_menuitem_activated_cb (GtkWidget*, gpointer);

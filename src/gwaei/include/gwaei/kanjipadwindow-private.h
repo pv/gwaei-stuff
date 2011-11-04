@@ -24,9 +24,6 @@ struct _GwKanjipadWindowPrivate {
 
 #define GW_KANJIPADWINDOW_GET_PRIVATE(object)(G_TYPE_INSTANCE_GET_PRIVATE ((object), GW_TYPE_KANJIPADWINDOW, GwKanjipadWindowPrivate))
 
-void gw_kanjipadwindow_private_init (GwKanjipadWindow*);
-void gw_kanjipadwindow_private_finalize (GwKanjipadWindow*);
-
 G_END_DECLS
 
 #endif

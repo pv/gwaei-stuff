@@ -17,9 +17,6 @@ struct _GwInstallProgressWindowPrivate {
 
 #define GW_INSTALLPROGRESSWINDOW_GET_PRIVATE(object)(G_TYPE_INSTANCE_GET_PRIVATE ((object), GW_TYPE_INSTALLPROGRESSWINDOW, GwInstallProgressWindowPrivate))
 
-void gw_installprogresswindow_private_init (GwInstallProgressWindow*);
-void gw_installprogresswindow_private_finalize (GwInstallProgressWindow*);
-
 G_END_DECLS
 
 #endif
