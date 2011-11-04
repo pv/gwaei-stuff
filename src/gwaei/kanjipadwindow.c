@@ -99,7 +99,7 @@ static void gw_kanjipadwindow_constructed (GObject *object)
     }
 
     window = GW_KANJIPADWINDOW (object);
-    priv = GW_KANJIPADWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
 
     gtk_window_set_title (GTK_WINDOW (window), gettext("gWaei Kanjipad"));
     gtk_window_set_resizable (GTK_WINDOW (window), FALSE);
@@ -149,7 +149,7 @@ static void _kanjipadwindow_initialize_engine (GwKanjipadWindow *window)
 
     //Initializations
     application = gw_window_get_application (GW_WINDOW (window));
-    priv = GW_KANJIPADWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     error = NULL;
     dir = g_get_current_dir ();
 #ifdef G_OS_WIN32
@@ -205,7 +205,7 @@ static gboolean _kanjipadwindow_engine_input_handler (GIOChannel *source, GIOCon
     int i;
 
     window = GW_KANJIPADWINDOW (data);
-    priv = GW_KANJIPADWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     error = NULL;
     status = g_io_channel_read_line (priv->from_engine, &line, NULL, NULL, &error);
 

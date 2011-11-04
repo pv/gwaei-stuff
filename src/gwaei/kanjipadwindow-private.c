@@ -7,7 +7,7 @@ void gw_kanjipadwindow_private_init (GwKanjipadWindow *window)
 {
     GwKanjipadWindowPrivate *priv;
 
-    priv = GW_KANJIPADWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
 
     priv->drawingarea = NULL;
     priv->candidates = NULL;
@@ -32,7 +32,7 @@ void gw_kanjipadwindow_private_finalize (GwKanjipadWindow *window)
     GError *error;
 
     //Initializations
-    priv = GW_KANJIPADWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     error = NULL;
 
     if (g_main_current_source () != NULL &&

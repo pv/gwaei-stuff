@@ -37,7 +37,7 @@ GwResultPopupData* gw_resultpopupdata_new (GwSearchWindow *window, LwSearchItem 
     
     if (temp != NULL)
     {
-      priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+      priv = window->priv;
       temp->window = window;
       temp->popup = NULL;
       temp->button = gw_popupbutton_new (priv->font_size, temp);
@@ -329,7 +329,7 @@ static void _searchwindow_new_tab_with_search_cb (GtkMenuItem *widget, gpointer 
     sdata = GW_SEARCHDATA (lw_searchitem_get_data (item));
     window = GW_SEARCHWINDOW (sdata->window);
     application = gw_window_get_application (GW_WINDOW (window));
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     preferences = gw_application_get_preferences (application);
     item_new = lw_searchitem_new (item->queryline->string, item->dictionary, preferences, NULL);
 

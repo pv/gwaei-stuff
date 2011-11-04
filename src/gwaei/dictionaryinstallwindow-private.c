@@ -10,7 +10,7 @@ void gw_dictionaryinstallwindow_private_finalize (GwDictionaryInstallWindow *win
 {
     GwDictionaryInstallWindowPrivate *priv;
 
-    priv = GW_DICTIONARYINSTALLWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
 
     g_object_unref (priv->encoding_store);
     g_object_unref (priv->compression_store);

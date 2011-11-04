@@ -102,7 +102,7 @@ static void gw_settingswindow_constructed (GObject *object)
 
     //Initializations
     window = GW_SETTINGSWINDOW (object);
-    priv = GW_SETTINGSWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     application = gw_window_get_application (GW_WINDOW (window));
     dictinfolist = gw_application_get_dictinfolist (application);
     view = GTK_TREE_VIEW (gw_window_get_object (GW_WINDOW (window), "manage_dictionaries_treeview"));
@@ -161,7 +161,7 @@ static void gw_settingswindow_attach_signals (GwSettingsWindow *window)
     LwPreferences *preferences;
     int i;
 
-    priv = GW_SETTINGSWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     application = gw_window_get_application (GW_WINDOW (window));
     preferences = gw_application_get_preferences (application);
 
@@ -282,7 +282,7 @@ static void gw_settingswindow_remove_signals (GwSettingsWindow *window)
     LwPreferences *preferences;
     int i;
 
-    priv = GW_SETTINGSWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     application = gw_window_get_application (GW_WINDOW (window));
     preferences = gw_application_get_preferences (application);
 

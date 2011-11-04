@@ -8,7 +8,7 @@ void gw_radicalswindow_private_init (GwRadicalsWindow *window)
     GwRadicalsWindowPrivate *priv;
 
     //Initializations
-    priv = GW_RADICALSWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     */
 }
 
@@ -19,6 +19,6 @@ void gw_radicalswindow_private_finalize (GwRadicalsWindow *radicals)
     GwRadicalsWindowPrivate *priv;
 
     //Initializations
-    priv = GW_RADICALSWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     */
 }

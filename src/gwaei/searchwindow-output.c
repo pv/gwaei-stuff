@@ -465,7 +465,7 @@ static void gw_searchwindow_append_edict_result (GwSearchWindow *window, LwSearc
     start_offset = 0;
     end_offset = gtk_text_iter_get_line_offset (&iter);
 
-    gw_searchwindow_insert_resultpopup_button (window, item, resultline, &iter);
+//    gw_searchwindow_insert_resultpopup_button (window, item, resultline, &iter);
 
     gtk_text_buffer_insert (buffer, &iter, "\n", -1);
     _add_match_highlights (line, start_offset, end_offset, item);
@@ -827,7 +827,7 @@ void gw_searchwindow_append_kanjidict_tooltip_result (GwSearchWindow *window, Lw
     //Initializations
     resultline = lw_searchitem_get_result (item);
     if (resultline == NULL) return;
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     view = gw_searchwindow_get_current_textview (window);
     if (view == NULL) return;
     markup = g_strdup ("");

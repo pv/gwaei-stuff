@@ -52,7 +52,7 @@ void gw_kanjipadwindow_initialize_candidates (GwKanjipadWindow *window)
     PangoFontDescription *desc;
 
     //Initializations
-    priv = GW_KANJIPADWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     mask = (GDK_EXPOSURE_MASK  | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK);
     desc = pango_font_description_from_string ("Sans 18");
 
@@ -77,7 +77,7 @@ static void _kanjipadwindow_get_candidate_character_size (GwKanjipadWindow *wind
     GwKanjipadWindowPrivate *priv;
     PangoLayout *layout;
 
-    priv = GW_KANJIPADWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     layout = gtk_widget_create_pango_layout (GTK_WIDGET (priv->candidates), "\xe6\xb6\x88");
 
     if (layout != NULL)
@@ -142,7 +142,7 @@ static void _kanjipadwindow_draw_candidate_character (GwKanjipadWindow *window, 
     GdkRGBA bgcolors;
 
     //Initializations
-    priv = GW_KANJIPADWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     cr = cairo_create (priv->ksurface);
     allocated_width = gtk_widget_get_allocated_width (GTK_WIDGET (priv->candidates));
     context = gtk_widget_get_style_context (GTK_WIDGET (priv->candidates));
@@ -205,7 +205,7 @@ void gw_kanjipadwindow_draw_candidates (GwKanjipadWindow *window)
     cairo_t *cr;
 
     //Initializations
-    priv = GW_KANJIPADWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     //height = gtk_widget_get_allocated_height (GTK_WIDGET (priv->candidates));
     //width = gtk_widget_get_allocated_width (GTK_WIDGET (priv->candidates));
     cr = cairo_create (priv->ksurface);
@@ -239,7 +239,7 @@ G_MODULE_EXPORT gboolean gw_kanjipadwindow_candidatearea_configure_event_cb (Gtk
 
     window = GW_KANJIPADWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_KANJIPADWINDOW));
     if (window == NULL) return FALSE;
-    priv = GW_KANJIPADWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
 
     if (priv->ksurface)
       cairo_surface_destroy (priv->ksurface);
@@ -262,7 +262,7 @@ G_MODULE_EXPORT gboolean gw_kanjipadwindow_candidatearea_draw_cb (GtkWidget *wid
 
     window = GW_KANJIPADWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_KANJIPADWINDOW));
     if (window == NULL) return FALSE;
-    priv = GW_KANJIPADWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
 
     //Sanity check
     if (priv->ksurface == NULL) return FALSE;
@@ -284,7 +284,7 @@ static int _kanjipadwindow_erase_candidate_selection (GwKanjipadWindow *window)
     int i;
 
     //Initializations
-    priv = GW_KANJIPADWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
 
     if (priv->kselected[0] || priv->kselected[1])
     {
@@ -310,7 +310,7 @@ static void _kanjipadwindow_primary_candidates_clear (GtkClipboard *clipboard, g
 
     window = GW_KANJIPADWINDOW (data);
     if (window == NULL) return;
-    priv = GW_KANJIPADWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
 
     _kanjipadwindow_erase_candidate_selection (window);
 
@@ -331,7 +331,7 @@ static void _kanjipadwindow_primary_candidates_get (GtkClipboard *clipboard, Gtk
     gchar *string_utf;
 
     window = GW_KANJIPADWINDOW (data);
-    priv = GW_KANJIPADWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
 
     if (priv->kselected[0] || priv->kselected[1])
     {
@@ -359,7 +359,7 @@ G_MODULE_EXPORT gboolean gw_kanjipadwindow_candidatearea_button_press_event_cb (
     //Initializations
     window = GW_KANJIPADWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_KANJIPADWINDOW));
     if (window == NULL) return FALSE;
-    priv = GW_KANJIPADWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     searchwindow = GW_SEARCHWINDOW (gtk_window_get_transient_for (GTK_WINDOW (window)));
     g_assert (searchwindow != NULL);
     clipboard = gtk_clipboard_get (GDK_SELECTION_PRIMARY);

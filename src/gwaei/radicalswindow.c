@@ -366,7 +366,7 @@ static void gw_radicalswindow_constructed (GObject *object)
     }
 
     window = GW_RADICALSWINDOW (object);
-    priv = GW_RADICALSWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
 
     toplevel = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "radical_selection_table"));
     gtk_widget_set_halign (toplevel, GTK_ALIGN_CENTER);
@@ -424,7 +424,7 @@ static void _radicalswindow_fill_radicals (GwRadicalsWindow *window)
     int nrows;
 
     //Initializations
-    priv = GW_RADICALSWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     total_columns = 14;
     g_object_get (G_OBJECT (priv->radicals_table), "n-columns", &ncols, "n-rows", &nrows, NULL);
     if (ncols < total_columns) gtk_table_resize (priv->radicals_table, nrows, total_columns);
@@ -502,7 +502,7 @@ char* gw_radicalswindow_strdup_all_selected (GwRadicalsWindow *window)
     gboolean a_button_was_in_pressed_state;
 
     //Initializations
-    priv = GW_RADICALSWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     list = gtk_container_get_children (GTK_CONTAINER (priv->radicals_table));
     temp_string = NULL;
     final_string = NULL;
@@ -571,7 +571,7 @@ void gw_radicalswindow_set_button_sensitive_when_label_is (GwRadicalsWindow *win
     GType type;
 
     //Initializations
-    priv = GW_RADICALSWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     label_text = NULL;
     jump = string;
     list = gtk_container_get_children (GTK_CONTAINER (priv->radicals_table));
@@ -630,7 +630,7 @@ char* gw_radicalswindow_strdup_prefered_stroke_count (GwRadicalsWindow *window)
     char *strokes;
 
     //If the checkbox is checked, get the stroke count from the spinner
-    priv = GW_RADICALSWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     if (gtk_toggle_button_get_active(priv->strokes_checkbutton))
       strokes = g_strdup_printf ("s%d", (int) gtk_spin_button_get_value (priv->strokes_spinbutton));
     else
@@ -651,7 +651,7 @@ void gw_radicalswindow_deselect_all_radicals (GwRadicalsWindow *window)
     GType type;
 
     //Initializations
-    priv = GW_RADICALSWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     list = gtk_container_get_children (GTK_CONTAINER (priv->radicals_table));
     type = g_type_from_name ("GtkToggleButton");
 

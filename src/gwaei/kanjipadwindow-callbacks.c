@@ -58,7 +58,7 @@ G_MODULE_EXPORT gboolean gw_kanjipadwindow_look_up_cb (GtkWidget *widget, GdkEve
     //Initializations
     window = GW_KANJIPADWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_KANJIPADWINDOW));
     if (window == NULL) return FALSE;
-    priv = GW_KANJIPADWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
 
     if (priv->to_engine == NULL)
       return FALSE;

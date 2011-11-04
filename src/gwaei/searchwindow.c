@@ -100,7 +100,7 @@ static void gw_searchwindow_constructed (GObject *object)
 
     //Initializations
     window = GW_SEARCHWINDOW (object);
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
 
     //Set up the gtkbuilder links
     priv->entry = GTK_ENTRY (gw_window_get_object (GW_WINDOW (window), "search_entry"));
@@ -280,7 +280,7 @@ gboolean gw_searchwindow_update_progress_feedback_timeout (GwSearchWindow *windo
     LwSearchItem *item;
 
     //Initializations
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     item = gw_searchwindow_get_current_searchitem (window);
 
     if (item != NULL) 
@@ -318,7 +318,7 @@ gboolean gw_searchwindow_append_result_timeout (GwSearchWindow *window)
     LwSearchItem *item;
 
     //Initializations
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     item = gw_searchwindow_get_current_searchitem (window);
     
     if (item != NULL && lw_searchitem_should_check_results (item))
@@ -342,7 +342,7 @@ void gw_searchwindow_entry_set_text (GwSearchWindow *window, const gchar *text)
 {
     GwSearchWindowPrivate *priv;
 
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
 
     if (text != NULL) gtk_entry_set_text (priv->entry, text);
 }
@@ -359,7 +359,7 @@ void gw_searchwindow_entry_insert_text (GwSearchWindow *window, const gchar *TEX
     gint start, end;
 
     //Initializations
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
 
     gtk_editable_get_selection_bounds (GTK_EDITABLE (priv->entry), &start, &end);
     gtk_editable_delete_text (GTK_EDITABLE (priv->entry), start, end);
@@ -385,7 +385,7 @@ void gw_searchwindow_set_entry_text_by_searchitem (GwSearchWindow* window, LwSea
     LwPreferences *preferences;
 
     application = gw_window_get_application (GW_WINDOW (window));
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     preferences = gw_application_get_preferences (application);
 
     //If there is no window, set the default colors
@@ -582,7 +582,7 @@ void gw_searchwindow_set_dictionary (GwSearchWindow *window, int request)
     LwDictInfoList *dictinfolist;
 
     application = gw_window_get_application (GW_WINDOW (window));
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     dictinfolist = LW_DICTINFOLIST (gw_application_get_dictinfolist (application));
     di = lw_dictinfolist_get_dictinfo_by_load_position (dictinfolist, request);
     if (di == NULL) return;
@@ -631,7 +631,7 @@ LwDictInfo* gw_searchwindow_get_dictionary (GwSearchWindow* window)
 {
     GwSearchWindowPrivate *priv;
 
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
 
     return priv->dictinfo;
 }
@@ -653,7 +653,7 @@ void gw_searchwindow_set_search_progressbar_by_searchitem (GwSearchWindow *windo
     double fraction;
 
     //Initializations
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     progressbar = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "search_progressbar"));
     statusbar = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "statusbar"));
     current = 0;
@@ -706,7 +706,7 @@ void gw_searchwindow_update_history_menu_popup (GwSearchWindow *window)
     GtkWidget *menuitem;
 
     //Initializations
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     ID = "history_popup";
     shell = GTK_MENU_SHELL (gw_window_get_object (GW_WINDOW (window), ID));
     children = gtk_container_get_children (GTK_CONTAINER (shell));
@@ -842,7 +842,7 @@ void gw_searchwindow_update_history_popups (GwSearchWindow* window)
     const char *id;
     GtkAction *action;
 
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
 
     gw_searchwindow_update_history_menu_popup (window);
 
@@ -874,7 +874,7 @@ void gw_searchwindow_set_toolbar_style (GwSearchWindow *window, const char *requ
     GwSearchWindowPrivate *priv;
     GtkToolbarStyle style;
 
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
 
     if (strcmp(request, "text") == 0)
       style = GTK_TOOLBAR_TEXT;
@@ -1007,7 +1007,7 @@ void gw_searchwindow_entry_insert (GwSearchWindow *window, char* text)
 
     //Initializations
     length = strlen (text);
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
 
     gtk_editable_get_selection_bounds (GTK_EDITABLE (priv->entry), &start, &end);
     gtk_editable_delete_text (GTK_EDITABLE (priv->entry), start, end);
@@ -1243,7 +1243,7 @@ void gw_searchwindow_display_no_results_found_page (GwSearchWindow *window, LwSe
     //Declarations
     GwApplication *application;
     GwSearchWindowPrivate *priv;
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     LwDictInfoList *dictinfolist;
     gint32 temp = g_random_int_range (0,9);
     while (temp == priv->previous_tip)
@@ -1617,7 +1617,7 @@ void gw_searchwindow_cycle_dictionaries (GwSearchWindow* window, gboolean cycle_
     gint active;
     gboolean set;
 
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     active = gtk_combo_box_get_active (priv->combobox);
     set = FALSE;
 
@@ -1685,7 +1685,7 @@ gboolean gw_searchwindow_keep_searching_timeout (GwSearchWindow *window)
 
     //Initializations
     application = gw_window_get_application (GW_WINDOW (window));
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     query = gtk_entry_get_text (GTK_ENTRY (priv->entry));
     //Sanity check
     if (!gw_application_can_start_search (application)) return TRUE;
@@ -1766,7 +1766,7 @@ void gw_searchwindow_cancel_all_searches (GwSearchWindow *window)
     GList *iter;
     LwSearchItem *item;
 
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
 
     for (iter = priv->tablist; iter != NULL; iter = iter->next)
     {
@@ -1789,7 +1789,7 @@ void gw_searchwindow_cancel_search_by_tab_number (GwSearchWindow *window, const 
     LwSearchItem *item;
 
     //Initializations
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     item = LW_SEARCHITEM (g_list_nth_data (priv->tablist, page_num));
 
     //Sanity check
@@ -1809,7 +1809,7 @@ void gw_searchwindow_cancel_search_for_current_tab (GwSearchWindow *window)
     int page_num;
 
     //Initializations
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     page_num = gtk_notebook_get_current_page (priv->notebook);
 
     gw_searchwindow_cancel_search_by_tab_number (window, page_num);
@@ -1828,7 +1828,7 @@ void gw_searchwindow_cancel_search_by_content (GwSearchWindow *window, gpointer 
     LwSearchItem *item;
 
     //Initializations
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     position = gtk_notebook_page_num (priv->notebook, container);
 
     //Sanity check
@@ -1855,7 +1855,7 @@ GtkTextView* gw_searchwindow_get_current_textview (GwSearchWindow *window)
     GtkTextView *view;
 
     //Initializations
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     view = NULL;
     page_num = gtk_notebook_get_current_page (priv->notebook);
     scrolledwindow = GTK_SCROLLED_WINDOW (gtk_notebook_get_nth_page (priv->notebook, page_num));
@@ -1876,7 +1876,7 @@ void gw_searchwindow_guarantee_first_tab (GwSearchWindow *window)
     int pages;
 
     //Initializations
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     pages = gtk_notebook_get_n_pages (priv->notebook);
 
     if (pages == 0)
@@ -1905,7 +1905,7 @@ void gw_searchwindow_set_tab_text_by_searchitem (GwSearchWindow *window, LwSearc
     const char *text;
     GList *iter;
 
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
 
     if (item == NULL)
     {
@@ -1967,7 +1967,7 @@ int gw_searchwindow_new_tab (GwSearchWindow *window)
 
     //Initializations
     application = gw_window_get_application (GW_WINDOW (window));
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     tagtable = gw_application_get_tagtable (application);
     scrolledwindow = GTK_WIDGET (gtk_scrolled_window_new (NULL, NULL));
     buffer = GTK_TEXT_BUFFER (gtk_text_buffer_new (tagtable));
@@ -2082,7 +2082,7 @@ void gw_searchwindow_remove_tab (GwSearchWindow *window, int index)
     LwSearchItem *item;
 
     //Initializations
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     pages = gtk_notebook_get_n_pages (priv->notebook);
 
     //Sanity check
@@ -2142,7 +2142,7 @@ void gw_searchwindow_set_current_searchitem (GwSearchWindow *window, LwSearchIte
     int page_num;
 
     //Initializations
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     page_num = gtk_notebook_get_current_page (priv->notebook);
     if (page_num == -1) return;
     link = g_list_nth (priv->tablist, page_num);
@@ -2197,7 +2197,7 @@ LwSearchItem* gw_searchwindow_get_current_searchitem (GwSearchWindow *window)
     LwSearchItem *item;
     int page_num;
 
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     page_num = gtk_notebook_get_current_page (priv->notebook);
     if (page_num == -1)
       item = NULL;
@@ -2259,7 +2259,7 @@ void gw_searchwindow_set_font (GwSearchWindow *window)
 
     //Initializations
     application = gw_window_get_application (GW_WINDOW (window));
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     preferences = gw_application_get_preferences (application);
 
     use_global_font_setting = lw_preferences_get_boolean_by_schema (preferences, LW_SCHEMA_FONT, LW_KEY_FONT_USE_GLOBAL_FONT);
@@ -2334,7 +2334,7 @@ static void gw_searchwindow_attach_signals (GwSearchWindow *window)
     int i;
 
     application = gw_window_get_application (GW_WINDOW (window));
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     dictinfolist = gw_application_get_dictinfolist (application);
     preferences = gw_application_get_preferences (application);
 
@@ -2444,7 +2444,7 @@ static void gw_searchwindow_remove_signals (GwSearchWindow *window)
     GSource *source;
 
     application = gw_window_get_application (GW_WINDOW (window));
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     dictinfolist = gw_application_get_dictinfolist (application);
     preferences = gw_application_get_preferences (application);
 
@@ -2526,7 +2526,7 @@ void gw_searchwindow_initialize_dictionary_combobox (GwSearchWindow *window)
 
     //Initializations
     application = gw_window_get_application (GW_WINDOW (window));
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     renderer = gtk_cell_renderer_text_new ();
     dictinfolist = gw_application_get_dictinfolist (application);
 
@@ -2549,7 +2549,7 @@ void gw_searchwindow_initialize_dictionary_menu (GwSearchWindow *window)
     GtkWidget *widget;
     GwDictInfoList *dictinfolist;
 
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     application = gw_window_get_application (GW_WINDOW (window));
     shell = GTK_MENU_SHELL (gw_window_get_object (GW_WINDOW (window), "dictionary_popup"));
     dictinfolist = gw_application_get_dictinfolist (application);

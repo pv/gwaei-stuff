@@ -75,7 +75,7 @@ static void gw_window_set_property (GObject      *object,
     GwWindowPrivate *priv;
 
     window = GW_WINDOW (object);
-    priv = GW_WINDOW_GET_PRIVATE (window);
+    priv = window->priv;
 
     switch (property_id)
     {
@@ -108,7 +108,7 @@ static void gw_window_get_property (GObject      *object,
     GwWindowPrivate *priv;
 
     window = GW_WINDOW (object);
-    priv = GW_WINDOW_GET_PRIVATE (window);
+    priv = window->priv;
 
     switch (property_id)
     {
@@ -176,7 +176,7 @@ gboolean gw_window_load_ui_xml (GwWindow *window, const char *filename)
     gboolean loaded;
 
     //Initializations
-    priv = GW_WINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     paths[0] = g_build_filename ("ui", filename, NULL);
     paths[1] = g_build_filename ("..", "share", PACKAGE, filename, NULL);
     paths[2] = g_build_filename (DATADIR2, PACKAGE, filename, NULL);
@@ -217,7 +217,7 @@ GObject* gw_window_get_object (GwWindow *window, const char *ID)
 {
     GwWindowPrivate *priv;
 
-    priv = GW_WINDOW_GET_PRIVATE (window);
+    priv = window->priv;
 
     return G_OBJECT (gtk_builder_get_object (priv->builder, ID));
 }
@@ -227,7 +227,7 @@ void gw_window_set_application (GwWindow *window, GwApplication *application)
 {
     GwWindowPrivate *priv;
 
-    priv = GW_WINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     priv->application = application;
     gtk_window_set_application (GTK_WINDOW (window), GTK_APPLICATION (application));
 }
@@ -237,7 +237,8 @@ GwApplication* gw_window_get_application (GwWindow *window)
 {
     GwWindowPrivate *priv;
 
-    priv = GW_WINDOW_GET_PRIVATE (window);
+    priv = window->priv;
+
     return priv->application;
 }
 
@@ -246,7 +247,8 @@ GtkWidget* gw_window_get_toplevel (GwWindow *window)
 {
     GwWindowPrivate *priv;
 
-    priv = GW_WINDOW_GET_PRIVATE (window);
+    priv = window->priv;
+
     return priv->toplevel;
 }
 

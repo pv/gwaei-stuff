@@ -6,7 +6,7 @@ void gw_settingswindow_private_init (GwSettingsWindow *window)
   /*
     GwSettingsWindowPrivate *priv;
 
-    priv = GW_SETTINGSWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     */
 }
 
@@ -15,6 +15,6 @@ void gw_settingswindow_private_finalize (GwSettingsWindow *window)
   /*
     GwSettingsWindowPrivate *priv;
 
-    priv = GW_SETTINGSWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     */
 }

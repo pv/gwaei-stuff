@@ -9,7 +9,7 @@ void gw_searchwindow_private_init (GwSearchWindow *window)
     int i;
 
     //Initializations
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
 
     priv->entry = NULL;
     priv->notebook = NULL;
@@ -59,7 +59,7 @@ void gw_searchwindow_private_finalize (GwSearchWindow *window)
     //Declarations
     GwSearchWindowPrivate *priv;
 
-    priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
 
     gw_searchwindow_cancel_all_searches (window);
 

@@ -1,13 +1,13 @@
 #include <gwaei/gwaei.h>
 #include <gwaei/application-private.h>
 
-static GtkTextTagTable* _application_texttagtable_new (void);
+static GtkTextTagTable* gw_application_texttagtable_new (void);
 
 void gw_application_private_init (GwApplication *application)
 {
       GwApplicationPrivate *priv;
 
-      priv = GW_APPLICATION_GET_PRIVATE (application);
+      priv = application->priv;
 
       priv->context = NULL;
       priv->arg_new_window_switch = FALSE;
@@ -22,7 +22,7 @@ void gw_application_private_init (GwApplication *application)
       priv->dictinstlist = NULL;
       priv->block_new_searches = 0;
 
-      priv->tagtable = _application_texttagtable_new ();
+      priv->tagtable = gw_application_texttagtable_new ();
       lw_preferences_add_change_listener_by_schema (
         priv->preferences, LW_SCHEMA_HIGHLIGHT, LW_KEY_MATCH_FG, gw_application_sync_tag_cb, application);
       lw_preferences_add_change_listener_by_schema (
@@ -50,7 +50,7 @@ void gw_application_private_finalize (GwApplication *application)
 {
     GwApplicationPrivate *priv;
 
-    priv = GW_APPLICATION_GET_PRIVATE (application);
+    priv = application->priv;
 
     if (priv->dictinstlist != NULL) lw_dictinstlist_free (priv->dictinstlist);
     if (priv->dictinfolist != NULL) gw_dictinfolist_free (priv->dictinfolist);
@@ -63,7 +63,7 @@ void gw_application_private_finalize (GwApplication *application)
 //!
 //! @brief Adds the tags to stylize the buffer text
 //!
-static GtkTextTagTable* _application_texttagtable_new ()
+static GtkTextTagTable* gw_application_texttagtable_new ()
 {
     GtkTextTagTable *temp;
     GtkTextTag *tag;

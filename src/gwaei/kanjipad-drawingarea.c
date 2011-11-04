@@ -69,7 +69,7 @@ static void gw_kanjipadwindow_annotate_drawingarea_stroke (GwKanjipadWindow *win
     // for placing the digit is pretty simple. The text is inscribed
     // in a circle tangent to the stroke. The circle will be above
     // and/or to the left of the line
-    priv = GW_KANJIPADWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
 
     if (stroke)
     {
@@ -143,7 +143,7 @@ static void _kanjipadwindow_initialize_drawingarea (GwKanjipadWindow *window)
     GdkRGBA bgcolors;
 
     //Initializations
-    priv = GW_KANJIPADWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     index = 1;
     cr = cairo_create (priv->surface);
     width = gtk_widget_get_allocated_width (GTK_WIDGET (priv->drawingarea));
@@ -235,7 +235,7 @@ G_MODULE_EXPORT int gw_kanjipadwindow_drawingarea_configure_event_cb (GtkWidget 
     //Initializations
     window = GW_KANJIPADWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_KANJIPADWINDOW));
     if (window == NULL) return FALSE;
-    priv = GW_KANJIPADWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
 
     if (priv->surface != NULL)
     {
@@ -260,7 +260,7 @@ G_MODULE_EXPORT int gw_kanjipadwindow_drawingarea_draw_cb (GtkWidget *widget, ca
 
     window = GW_KANJIPADWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_KANJIPADWINDOW));
     if (window == NULL) return FALSE;
-    priv = GW_KANJIPADWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     if (priv->surface == NULL)
       return FALSE;
 
@@ -282,7 +282,7 @@ G_MODULE_EXPORT int gw_kanjipadwindow_drawingarea_button_press_event_cb (GtkWidg
 
     window = GW_KANJIPADWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_KANJIPADWINDOW));
     if (window == NULL) return FALSE;
-    priv = GW_KANJIPADWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
 
     if (event->button == 1)
     {
@@ -309,7 +309,7 @@ G_MODULE_EXPORT int gw_kanjipadwindow_drawingarea_button_release_event_cb (GtkWi
     //Initializations
     window = GW_KANJIPADWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_KANJIPADWINDOW));
     if (window == NULL) return FALSE;
-    priv = GW_KANJIPADWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
 
     if (priv->annotate)
     {
@@ -349,7 +349,7 @@ G_MODULE_EXPORT int gw_kanjipadwindow_drawingarea_motion_event_cb (GtkWidget *wi
 
     window = GW_KANJIPADWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_KANJIPADWINDOW));
     if (window == NULL) return FALSE;
-    priv = GW_KANJIPADWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
 
     if (event->is_hint)
     {
@@ -408,7 +408,7 @@ void gw_kanjipadwindow_clear_drawingarea (GwKanjipadWindow *window)
     GwKanjipadWindowPrivate *priv;
     GList *iter;
 
-    priv = GW_KANJIPADWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
 
     for (iter = priv->strokes; iter != NULL; iter = iter->next)
     {
@@ -432,7 +432,7 @@ void gw_kanjipadwindow_set_drawingarea_annotate (GwKanjipadWindow *window, gbool
 {
     GwKanjipadWindowPrivate *priv;
 
-    priv = GW_KANJIPADWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
 
     if (priv->annotate != annotate)
     {
@@ -450,7 +450,7 @@ void gw_kanjipadwindow_initialize_drawingarea (GwKanjipadWindow *window)
     GwKanjipadWindowPrivate *priv;
     gint mask;
 
-    priv = GW_KANJIPADWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     mask = (
         GDK_EXPOSURE_MASK |
         GDK_BUTTON_PRESS_MASK |

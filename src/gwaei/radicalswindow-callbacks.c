@@ -51,7 +51,7 @@ G_MODULE_EXPORT void gw_radicalswindow_clear_cb (GtkWidget *widget, gpointer dat
     //Initializations
     window = GW_RADICALSWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_RADICALSWINDOW));
     if (window == NULL) return;
-    priv = GW_RADICALSWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     application = gw_window_get_application (GW_WINDOW (window));
 
     gw_application_block_searches (application);
@@ -127,7 +127,7 @@ G_MODULE_EXPORT void gw_radicalswindow_strokes_checkbox_toggled_cb (GtkWidget *w
     //Initializations
     window = GW_RADICALSWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_RADICALSWINDOW));
     if (window == NULL) return;
-    priv = GW_RADICALSWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     request = gtk_toggle_button_get_active (priv->strokes_checkbutton);
 
     gtk_widget_set_sensitive (GTK_WIDGET (priv->strokes_spinbutton), request);

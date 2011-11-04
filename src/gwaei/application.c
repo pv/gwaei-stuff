@@ -107,7 +107,7 @@ void gw_application_parse_args (GwApplication *application, int *argc, char** ar
 {
     GwApplicationPrivate *priv;
 
-    priv = GW_APPLICATION_GET_PRIVATE (application);
+    priv = application->priv;
 
     //Reset the switches to their default state
     priv->arg_new_window_switch = FALSE;
@@ -286,34 +286,34 @@ GtkWindow* gw_application_get_window_by_widget (GwApplication *application, GtkW
 }
 
 
-void gw_application_block_searches (GwApplication *app)
+void gw_application_block_searches (GwApplication *application)
 {
-  GwApplicationPrivate *priv;
+    GwApplicationPrivate *priv;
 
-  priv = GW_APPLICATION_GET_PRIVATE (app);
+    priv = application->priv;
 
-  priv->block_new_searches++;
-  gw_application_cancel_all_searches (app);
+    priv->block_new_searches++;
+    gw_application_cancel_all_searches (application);
 }
 
 
-void gw_application_unblock_searches (GwApplication *app)
+void gw_application_unblock_searches (GwApplication *application)
 {
-  GwApplicationPrivate *priv;
+    GwApplicationPrivate *priv;
 
-  priv = GW_APPLICATION_GET_PRIVATE (app);
+    priv = application->priv;
 
-  if (priv->block_new_searches > 0)
-    priv->block_new_searches--;
+    if (priv->block_new_searches > 0)
+      priv->block_new_searches--;
 }
 
-gboolean gw_application_can_start_search (GwApplication *app)
+gboolean gw_application_can_start_search (GwApplication *application)
 {
-  GwApplicationPrivate *priv;
+    GwApplicationPrivate *priv;
 
-  priv = GW_APPLICATION_GET_PRIVATE (app);
+    priv = application->priv;
 
-  return (priv->block_new_searches == 0);
+    return (priv->block_new_searches == 0);
 }
 
 
@@ -355,7 +355,7 @@ void gw_application_set_last_focused_searchwindow (GwApplication *application, G
 {
    GwApplicationPrivate *priv;
 
-   priv = GW_APPLICATION_GET_PRIVATE (application);
+   priv = application->priv;
 
    priv->last_focused = window; 
 }
@@ -366,7 +366,7 @@ GwSearchWindow* gw_application_get_last_focused_searchwindow (GwApplication *app
    GwApplicationPrivate *priv;
    GwSearchWindow *window;
 
-   priv = GW_APPLICATION_GET_PRIVATE (application);
+   priv = application->priv;
 
    if (priv->last_focused != NULL)
      window = priv->last_focused;
@@ -377,23 +377,23 @@ GwSearchWindow* gw_application_get_last_focused_searchwindow (GwApplication *app
 }
 
 
-LwPreferences* gw_application_get_preferences (GwApplication *app)
+LwPreferences* gw_application_get_preferences (GwApplication *application)
 {
-  GwApplicationPrivate *priv;
+    GwApplicationPrivate *priv;
 
-  priv = GW_APPLICATION_GET_PRIVATE (app);
+    priv = application->priv;
 
-  return priv->preferences;
+    return priv->preferences;
 }
 
 
 GwDictInfoList* gw_application_get_dictinfolist (GwApplication *application)
 {
-  GwApplicationPrivate *priv;
+    GwApplicationPrivate *priv;
 
-  priv = GW_APPLICATION_GET_PRIVATE (application);
+    priv = application->priv;
 
-  return priv->dictinfolist;
+    return priv->dictinfolist;
 }
 
 
@@ -401,7 +401,7 @@ LwDictInstList* gw_application_get_dictinstlist (GwApplication *application)
 {
   GwApplicationPrivate *priv;
 
-  priv = GW_APPLICATION_GET_PRIVATE (application);
+  priv = application->priv;
 
   if (priv->dictinstlist == NULL)
     priv->dictinstlist = lw_dictinstlist_new (priv->preferences);
@@ -410,25 +410,13 @@ LwDictInstList* gw_application_get_dictinstlist (GwApplication *application)
 }
 
 
-/*
-LwEngine* gw_application_get_engine (GwApplication *app)
+GtkTextTagTable* gw_application_get_tagtable (GwApplication *application)
 {
-  GwApplicationPrivate *priv;
+    GwApplicationPrivate *priv;
 
-  priv = GW_APPLICATION_GET_PRIVATE (app);
+    priv = application->priv;
 
-  return priv->engine;
-}
-*/
-
-
-GtkTextTagTable* gw_application_get_tagtable (GwApplication *app)
-{
-  GwApplicationPrivate *priv;
-
-  priv = GW_APPLICATION_GET_PRIVATE (app);
-
-  return priv->tagtable;
+    return priv->tagtable;
 }
 
 
@@ -473,7 +461,7 @@ static int gw_application_command_line (GApplication *application, GApplicationC
     char **argv;
 
     //Initializations
-    priv = GW_APPLICATION_GET_PRIVATE (GW_APPLICATION (application));
+    priv = GW_APPLICATION (application)->priv;
     dictinfolist = LW_DICTINFOLIST (gw_application_get_dictinfolist (GW_APPLICATION (application)));
     argv = g_application_command_line_get_arguments (command_line, &argc);
     window = gw_application_get_last_focused_searchwindow (GW_APPLICATION (application));

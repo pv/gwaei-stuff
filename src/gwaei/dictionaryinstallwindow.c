@@ -96,7 +96,7 @@ void gw_dictionaryinstallwindow_constructed (GObject *object)
     }
 
     window = GW_DICTIONARYINSTALLWINDOW (object);
-    priv = GW_DICTIONARYINSTALLWINDOW_GET_PRIVATE (window);
+    priv = window->priv;
     application = gw_window_get_application (GW_WINDOW (window));
     dictinstlist = gw_application_get_dictinstlist (application);
 
