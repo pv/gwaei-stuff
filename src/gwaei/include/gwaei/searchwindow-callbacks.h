@@ -1,5 +1,5 @@
-#ifndef GW_GTK_MAIN_CALLBACKS_INCLUDED
-#define GW_GTK_MAIN_CALLBACKS_INCLUDED
+#ifndef GW_SEARCHWINDOW_CALLBACKS_INCLUDED
+#define GW_SEARCHWINDOW_CALLBACKS_INCLUDED
 
 
 void gw_searchwindow_back_cb (GtkWidget *widget, gpointer data);

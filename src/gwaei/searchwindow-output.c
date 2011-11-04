@@ -34,7 +34,7 @@
 #include <gtk/gtk.h>
 
 #include <gwaei/gwaei.h>
-#include <gwaei/search-private.h>
+#include <gwaei/searchwindow-private.h>
 
 static void gw_searchwindow_append_edict_result (GwSearchWindow*, LwSearchItem*);
 static void gw_searchwindow_append_kanjidict_result (GwSearchWindow*, LwSearchItem*);

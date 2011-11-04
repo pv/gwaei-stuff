@@ -32,7 +32,7 @@ struct _GwSettingsWindowPrivate {
 void gw_settingswindow_private_init (GwSettingsWindow*);
 void gw_settingswindow_private_finalize (GwSettingsWindow*);
 
-#include <gwaei/settings-callbacks.h>
+#include <gwaei/settingswindow-callbacks.h>
 
 #endif
 

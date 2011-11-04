@@ -33,7 +33,7 @@
 #include <gtk/gtk.h>
 
 #include <gwaei/gwaei.h>
-#include <gwaei/dictionaryinstall-private.h>
+#include <gwaei/dictionaryinstallwindow-private.h>
 
 G_DEFINE_TYPE (GwDictionaryInstallWindow, gw_dictionaryinstallwindow, GW_TYPE_WINDOW);
 

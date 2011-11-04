@@ -34,7 +34,7 @@
 #include <gtk/gtk.h>
 
 #include <gwaei/gwaei.h>
-#include <gwaei/dictionaryinstall-private.h>
+#include <gwaei/dictionaryinstallwindow-private.h>
 
 
 static void _dictinstwindow_clear_details_box (GwDictionaryInstallWindow*);

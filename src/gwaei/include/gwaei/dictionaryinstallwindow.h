@@ -27,7 +27,7 @@ struct _GwDictionaryInstallWindowClass {
 GtkWindow* gw_dictionaryinstallwindow_new (GtkApplication *application);
 GType gw_dictionaryinstallwindow_get_type (void) G_GNUC_CONST;
 
-#include "dictionaryinstall-callbacks.h"
+#include "dictionaryinstallwindow-callbacks.h"
 
 G_END_DECLS
 

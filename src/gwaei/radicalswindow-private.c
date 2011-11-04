@@ -1,5 +1,5 @@
 #include <gwaei/gwaei.h>
-#include <gwaei/radicals-private.h>
+#include <gwaei/radicalswindow-private.h>
 
 
 void gw_radicalswindow_private_init (GwRadicalsWindow *window)

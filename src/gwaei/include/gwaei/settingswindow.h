@@ -43,7 +43,7 @@ void gw_settingswindow_set_search_as_you_type (GwSettingsWindow*, gboolean);
 gboolean gw_settingswindow_get_search_as_you_type (GwSettingsWindow*);
 void gw_settingswindow_check_for_dictionaries (GwSettingsWindow*);
 
-#include "settings-callbacks.h"
+#include "settingswindow-callbacks.h"
 
 G_END_DECLS
 

@@ -1,5 +1,5 @@
 #include <gwaei/gwaei.h>
-#include <gwaei/settings-private.h>
+#include <gwaei/settingswindow-private.h>
 
 void gw_settingswindow_private_init (GwSettingsWindow *window)
 {

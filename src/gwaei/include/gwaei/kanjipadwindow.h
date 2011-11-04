@@ -1,5 +1,5 @@
-#ifndef GW_KANJIPAD_WINDOW_INCLUDED
-#define GW_KANJIPAD_WINDOW_INCLUDED
+#ifndef GW_KANJIPADWINDOW_INCLUDED
+#define GW_KANJIPADWINDOW_INCLUDED
 
 G_BEGIN_DECLS
 
@@ -29,7 +29,7 @@ struct _GwKanjipadWindowClass {
 GtkWindow* gw_kanjipadwindow_new (GtkApplication *application);
 GType gw_kanjipadwindow_get_type (void) G_GNUC_CONST;
 
-#include "kanjipad-callbacks.h"
+#include "kanjipadwindow-callbacks.h"
 #include "kanjipad-candidatearea.h"
 #include "kanjipad-drawingarea.h"
 

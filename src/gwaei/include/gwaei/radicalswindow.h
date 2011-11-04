@@ -36,7 +36,7 @@ void gw_radicalswindow_set_strokes_checkbox_state (GwRadicalsWindow*, gboolean);
 void gw_radicalswindow_set_button_sensitive_when_label_is (GwRadicalsWindow*, const char*);
 void gw_radicalswindow_update_strokes_checkbox_state (GwRadicalsWindow*);
 
-#include "radicals-callbacks.h"
+#include "radicalswindow-callbacks.h"
 
 G_END_DECLS
 

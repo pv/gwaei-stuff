@@ -35,7 +35,7 @@
 #include <gtk/gtk.h>
 
 #include <gwaei/gwaei.h>
-#include <gwaei/search-private.h>
+#include <gwaei/searchwindow-private.h>
 
 //!
 //! @brief Sets the cursor type depending on the character hovered

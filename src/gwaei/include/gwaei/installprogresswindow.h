@@ -1,5 +1,5 @@
-#ifndef GW_INSTALL_PROGRESS_WINDOW_INCLUDED
-#define GW_INSTALL_PROGRESS_WINDOW_INCLUDED
+#ifndef GW_INSTALLPROGRESSWINDOW_INCLUDED
+#define GW_INSTALLPROGRESSWINDOW_INCLUDED
 
 G_BEGIN_DECLS
 
@@ -34,7 +34,7 @@ void gw_installprogresswindow_deinit (GwInstallProgressWindow*);
 
 void gw_installprogresswindow_start (GwInstallProgressWindow*);
 
-#include "installprogress-callbacks.h"
+#include "installprogresswindow-callbacks.h"
 
 G_END_DECLS
 

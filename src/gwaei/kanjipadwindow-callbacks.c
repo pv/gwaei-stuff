@@ -37,7 +37,7 @@
 #include <gtk/gtk.h>
 
 #include <gwaei/gwaei.h>
-#include <gwaei/kanjipad-private.h>
+#include <gwaei/kanjipadwindow-private.h>
 
 
 //!

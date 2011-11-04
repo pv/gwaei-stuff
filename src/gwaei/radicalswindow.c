@@ -34,7 +34,7 @@
 #include <gtk/gtk.h>
 
 #include <gwaei/gwaei.h>
-#include <gwaei/radicals-private.h>
+#include <gwaei/radicalswindow-private.h>
 
 static void _radicalswindow_fill_radicals (GwRadicalsWindow*);
 

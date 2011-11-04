@@ -35,7 +35,7 @@
 #include <gtk/gtk.h>
 
 #include <gwaei/gwaei.h>
-#include <gwaei/search-private.h>
+#include <gwaei/searchwindow-private.h>
 
 
 //Static declarations

@@ -1,7 +1,7 @@
 #include <stdlib.h>
 
 #include <gwaei/gwaei.h>
-#include <gwaei/kanjipad-private.h>
+#include <gwaei/kanjipadwindow-private.h>
 
 void gw_kanjipadwindow_private_init (GwKanjipadWindow *window)
 {

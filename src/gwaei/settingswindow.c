@@ -34,7 +34,7 @@
 #include <gtk/gtk.h>
 
 #include <gwaei/gwaei.h>
-#include <gwaei/settings-private.h>
+#include <gwaei/settingswindow-private.h>
 
 
 static void gw_settingswindow_initialize_dictionary_tree_view (GwSettingsWindow*, GtkTreeView*);

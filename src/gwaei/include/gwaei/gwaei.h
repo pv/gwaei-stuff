@@ -12,15 +12,14 @@
 #include <gwaei/printing.h>
 
 #include <gwaei/window.h>
-#include <gwaei/search-window.h>
-#include <gwaei/radicals-window.h>
-#include <gwaei/kanjipad-window.h>
-#include <gwaei/settings-window.h>
-#include <gwaei/dictionaryinstall-window.h>
+#include <gwaei/searchwindow.h>
+#include <gwaei/radicalswindow.h>
+#include <gwaei/kanjipadwindow.h>
+#include <gwaei/settingswindow.h>
+#include <gwaei/dictionaryinstallwindow.h>
 /*
-#include <gwaei/installprogress-window.h>
+#include <gwaei/installprogresswindow.h>
 */
-#include <gwaei/output-callbacks.h>
 
 
 

@@ -1,6 +1,6 @@
 #include <libintl.h>
 #include <gwaei/gwaei.h>
-#include <gwaei/search-private.h>
+#include <gwaei/searchwindow-private.h>
 
 void gw_searchwindow_private_init (GwSearchWindow *window)
 {

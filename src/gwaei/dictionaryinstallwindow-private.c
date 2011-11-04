@@ -1,5 +1,5 @@
 #include <gwaei/gwaei.h>
-#include <gwaei/dictionaryinstall-private.h>
+#include <gwaei/dictionaryinstallwindow-private.h>
 
 void gw_dictionaryinstallwindow_private_init (GwDictionaryInstallWindow *window)
 {
