@@ -36,6 +36,7 @@
 #include <gwaei/gwaei.h>
 
 static void _dictinfolist_attach_signals (GwDictInfoList*);
+static void gw_dictinfolist_rebuild_liststore (GwDictInfoList*);
 
 //!
 //! @brief Sets up the dictionary manager.  This is the backbone of every portion of the GUI that allows editing dictionaries
@@ -86,9 +87,9 @@ void gw_dictinfolist_init (GwDictInfoList *dil, GwApplication *application)
 
     dil->application = application;
 
-    _dictinfolist_attach_signals (dil);
+    gw_dictinfolist_rebuild_liststore (dil);
 
-    gw_dictinfolist_reload (dil);
+    _dictinfolist_attach_signals (dil);
 };
 
 
@@ -109,7 +110,7 @@ static void _dictinfolist_attach_signals (GwDictInfoList *dil)
 }
 
 
-void gw_dictinfolist_rebuild_liststore (GwDictInfoList *dil)
+static void gw_dictinfolist_rebuild_liststore (GwDictInfoList *dil)
 {
     //Declarations
     LwDictInfo *di;
