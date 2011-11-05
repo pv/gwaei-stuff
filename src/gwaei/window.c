@@ -51,6 +51,7 @@ typedef enum
 void gw_window_init (GwWindow *window)
 {
     window->priv = GW_WINDOW_GET_PRIVATE (window);
+    memset(window->priv, 0, sizeof(GwWindowPrivate));
 
     GwWindowPrivate *priv;
     priv = window->priv;

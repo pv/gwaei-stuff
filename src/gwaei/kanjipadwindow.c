@@ -73,6 +73,7 @@ GtkWindow* gw_kanjipadwindow_new (GtkApplication *application)
 void gw_kanjipadwindow_init (GwKanjipadWindow *window)
 {
     window->priv = GW_KANJIPADWINDOW_GET_PRIVATE (window);
+    memset(window->priv, 0, sizeof(GwKanjipadWindowPrivate));
 
     GwKanjipadWindowPrivate *priv;
     priv = window->priv;

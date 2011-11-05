@@ -48,7 +48,7 @@ GtkWindow* gw_dictionaryinstallwindow_new (GtkApplication *application)
     GwDictionaryInstallWindow *window;
 
     //Initializations
-    window = GW_DICTIONARYINSTALLWINDOW (g_object_new (GW_TYPE_SEARCHWINDOW,
+    window = GW_DICTIONARYINSTALLWINDOW (g_object_new (GW_TYPE_DICTIONARYINSTALLWINDOW,
                                                        "type",        GTK_WINDOW_TOPLEVEL,
                                                        "application", GW_APPLICATION (application),
                                                        "ui-xml",      "dictionaryinstall.ui",
@@ -60,6 +60,10 @@ GtkWindow* gw_dictionaryinstallwindow_new (GtkApplication *application)
 void gw_dictionaryinstallwindow_init (GwDictionaryInstallWindow *window)
 {
     window->priv = GW_DICTIONARYINSTALLWINDOW_GET_PRIVATE (window);
+    memset(window->priv, 0, sizeof(GwDictionaryInstallWindowPrivate));
+
+    GwDictionaryInstallWindowPrivate *priv;
+    priv = window->priv;
 }
 
 
@@ -71,12 +75,14 @@ void gw_dictionaryinstallwindow_finalize (GObject *object)
     window = GW_DICTIONARYINSTALLWINDOW (object);
     priv = window->priv;
 
-//    gw_dictionaryinstallwindow_remove_signals (window);
-
-    g_object_unref (priv->encoding_store);
-    g_object_unref (priv->compression_store);
-    g_object_unref (priv->engine_store);
-    g_object_unref (priv->dictionary_store);
+    if (priv->encoding_store != NULL) 
+      g_object_unref (priv->encoding_store); priv->encoding_store = NULL;
+    if (priv->compression_store != NULL)
+      g_object_unref (priv->compression_store); priv->compression_store = NULL;
+    if (priv->engine_store != NULL) 
+      g_object_unref (priv->engine_store); priv->engine_store = NULL;
+    if (priv->dictionary_store != NULL) 
+      g_object_unref (priv->dictionary_store); priv->dictionary_store = NULL;
 
     G_OBJECT_CLASS (gw_dictionaryinstallwindow_parent_class)->finalize (object);
 }
@@ -106,14 +112,22 @@ void gw_dictionaryinstallwindow_constructed (GObject *object)
     application = gw_window_get_application (GW_WINDOW (window));
     dictinstlist = gw_application_get_dictinstlist (application);
 
-    //Initializations
-    priv->di = NULL;
-    priv->dictionary_store = gtk_list_store_new (TOTAL_GW_DICTINSTWINDOW_DICTSTOREFIELDS, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_INT);
+    gtk_window_set_title (GTK_WINDOW (window), gettext("Select Dictionaries..."));
+    gtk_window_set_resizable (GTK_WINDOW (window), TRUE);
+    gtk_window_set_type_hint (GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_DIALOG);
+    gtk_window_set_skip_taskbar_hint (GTK_WINDOW (window), TRUE);
+    gtk_window_set_skip_pager_hint (GTK_WINDOW (window), TRUE);
+    gtk_window_set_destroy_with_parent (GTK_WINDOW (window), TRUE);
+    gtk_window_set_icon_name (GTK_WINDOW (window), "gwaei");
+    gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER_ON_PARENT);
+    gtk_window_set_modal (GTK_WINDOW (window), TRUE);
+    gtk_window_set_default_size (GTK_WINDOW (window), 200, 300);
 
+    //Initializations
+    priv->dictionary_store = gtk_list_store_new (TOTAL_GW_DICTINSTWINDOW_DICTSTOREFIELDS, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_INT);
     priv->view = GTK_TREE_VIEW (gw_window_get_object (GW_WINDOW (window), "dictionary_install_treeview"));
     priv->add_button = GTK_BUTTON (gw_window_get_object (GW_WINDOW (window), "dictionary_install_add_button"));
     priv->details_togglebutton = GTK_TOGGLE_BUTTON (gw_window_get_object (GW_WINDOW (window), "show_dictionary_detail_checkbutton"));
-
 
     //Set up the dictionary liststore
     for (iter = dictinstlist->list; iter != NULL; iter = iter->next)

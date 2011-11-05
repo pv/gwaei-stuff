@@ -67,6 +67,7 @@ GtkWindow* gw_settingswindow_new (GtkApplication *application)
 void gw_settingswindow_init (GwSettingsWindow *window)
 {
     window->priv = GW_SETTINGSWINDOW_GET_PRIVATE (window);
+    memset(window->priv, 0, sizeof(GwSettingsWindowPrivate));
 }
 
 

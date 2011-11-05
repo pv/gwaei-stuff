@@ -337,6 +337,7 @@ GtkWindow* gw_radicalswindow_new (GtkApplication *application)
 void gw_radicalswindow_init (GwRadicalsWindow *window)
 {
     window->priv = GW_RADICALSWINDOW_GET_PRIVATE (window);
+    memset(window->priv, 0, sizeof(GwRadicalsWindowPrivate));
 }
 
 

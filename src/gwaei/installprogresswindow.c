@@ -62,8 +62,11 @@ GtkWindow* gw_searchwindow_new (GtkApplication *application)
 
 void gw_installprogresswindow_init (GwInstallProgressWindow *window, GwSettingsWindow *transient_for)
 {
+    memset(window->priv, 0, sizeof(GwInstallProgressWindowPrivate));
+
     window->install_fraction = 0.0;
     window->mutex = g_mutex_new ();
+
 
     window->label = GTK_LABEL (gtk_builder_get_object (window->builder, "install_progress_label"));
     window->sublabel = GTK_LABEL (gtk_builder_get_object (window->builder, "sub_install_progress_label"));

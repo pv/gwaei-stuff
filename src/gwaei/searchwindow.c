@@ -68,6 +68,7 @@ GtkWindow* gw_searchwindow_new (GtkApplication *application)
 void gw_searchwindow_init (GwSearchWindow *window)
 {
     window->priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
+    memset(window->priv, 0, sizeof(GwSearchWindowPrivate));
 
     //Declarations
     GwSearchWindowPrivate *priv;
