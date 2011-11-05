@@ -190,7 +190,7 @@ gboolean gw_window_load_ui_xml (GwWindow *window, const char *filename)
 
     //Initializations
     priv = window->priv;
-    paths[0] = g_build_filename ("ui", filename, NULL);
+    paths[0] = g_build_filename (filename, NULL);
     paths[1] = g_build_filename ("..", "share", PACKAGE, filename, NULL);
     paths[2] = g_build_filename (DATADIR2, PACKAGE, filename, NULL);
     paths[3] = NULL;

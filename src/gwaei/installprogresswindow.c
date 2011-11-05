@@ -53,7 +53,7 @@ GtkWindow* gw_searchwindow_new (GtkApplication *application)
     window = GW_SEARCHWINDOW (g_object_new (GW_TYPE_SEARCHWINDOW,
                                             "type",        GTK_WINDOW_TOPLEVEL,
                                             "application", GW_APPLICATION (application),
-                                            "ui-xml",      "search.ui",
+                                            "ui-xml",      "searchwindow.ui",
                                             NULL));
 
     return GTK_WINDOW (window);

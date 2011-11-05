@@ -9,8 +9,8 @@ DEFINITIONS = -DVERSION=\"$(VERSION)\" -DPACKAGE=\"$(PACKAGE)\" -DUNZIP=\"$(UNZI
 
 lib_LTLIBRARIES = libwaei.la
 libwaei_la_SOURCES = libwaei.c dictinfo.c dictinfolist.c dictinst.c dictinstlist.c queryline.c engine.c engine-data.c utilities.c io.c regex.c searchitem.c history.c resultline.c preferences.c
-libwaei_la_LDFLAGS = -version-info $(LIBRARY_VERSION)  $(BASE_LIBS) -gall
-libwaei_la_CPPFLAGS = $(BASE_CFLAGS) -I$(top_srcdir)/src/libwaei/include $(DEFINITIONS) -Wall
+libwaei_la_LDFLAGS = -version-info $(LIBRARY_VERSION)  $(LIBWAEI_LIBS) -gall
+libwaei_la_CPPFLAGS = $(LIBWAEI_CFLAGS) -I$(top_srcdir)/src/libwaei/include $(DEFINITIONS) -Wall
 
 if OS_MINGW
 libwaei_la_LDFLAGS += -Wl,-subsystem,windows 

@@ -1,4 +1,4 @@
-AC_INIT(gwaei, 3.1.0b1)
+AC_INIT(gwaei, 3.1.0b2)
 AC_CONFIG_SRCDIR([src/libwaei/engine.c])
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE
@@ -41,19 +41,27 @@ AM_CONDITIONAL([WITH_GNOME], [test x$gnome = xtrue || test x$win32 = xtrue])
 
 AC_CHECK_LIB(m, sqrt)
 
-PKG_CHECK_MODULES(BASE, glib-2.0           >= $GLIB_REQUIRED_VERSION
+GNOME_DOC_INIT(,,[:]) 
+
+PKG_CHECK_MODULES(LIBWAEI, glib-2.0           >= $GLIB_REQUIRED_VERSION
                         gobject-2.0        >= $GLIB_REQUIRED_VERSION
                         gio-2.0            >= $GIO_REQUIRED_VERSION
                         gmodule-2.0        >= $GMODULE_EXPORT_REQUIRED_VERSION 
                         gthread-2.0        >= $GTHREAD_REQUIRED_VERSION       
                         libcurl            >= $LIBCURL_REQUIRED_VERSION       )
-AC_SUBST(BASE_CFLAGS)
-AC_SUBST(BASE_LIBS)
-GNOME_DOC_INIT(,,[:]) 
+AC_SUBST(LIBWAEI_CFLAGS)
+AC_SUBST(LIBWAEI_LIBS)
 
+PKG_CHECK_MODULES(WAEI, glib-2.0           >= $GLIB_REQUIRED_VERSION
+                        gobject-2.0        >= $GLIB_REQUIRED_VERSION
+                        gio-2.0            >= $GIO_REQUIRED_VERSION
+                        gmodule-2.0        >= $GMODULE_EXPORT_REQUIRED_VERSION 
+                        gthread-2.0        >= $GTHREAD_REQUIRED_VERSION       )
+AC_SUBST(WAEI_CFLAGS)
+AC_SUBST(WAEI_LIBS)
 
-if test $gnome = true || test $win32 = true; then
-  PKG_CHECK_MODULES(GNOME, gtk+-3.0           >= $GTK3_REQUIRED_VERSION
+if test $gnome = true; then
+  PKG_CHECK_MODULES(GWAEI, gtk+-3.0           >= $GTK3_REQUIRED_VERSION
                            glib-2.0           >= $GLIB_REQUIRED_VERSION
                            gobject-2.0        >= $GLIB_REQUIRED_VERSION
                            gio-2.0            >= $GIO_REQUIRED_VERSION
@@ -61,8 +69,8 @@ if test $gnome = true || test $win32 = true; then
                            gthread-2.0        >= $GTHREAD_REQUIRED_VERSION       
                            libcurl            >= $LIBCURL_REQUIRED_VERSION
                            gnome-doc-utils    >= $GDU_REQUIRED_VERSION           )
-  AC_SUBST(GNOME_CFLAGS)
-  AC_SUBST(GNOME_LIBS)
+  AC_SUBST(GWAEI_CFLAGS)
+  AC_SUBST(GWAEI_LIBS)
   GNOME_DOC_INIT
 fi
 

@@ -63,7 +63,7 @@ GtkWindow* gw_kanjipadwindow_new (GtkApplication *application)
     window = GW_KANJIPADWINDOW (g_object_new (GW_TYPE_KANJIPADWINDOW,
                                             "type",        GTK_WINDOW_TOPLEVEL,
                                             "application", GW_APPLICATION (application),
-                                            "ui-xml",      "kanjipad.ui",
+                                            "ui-xml",      "kanjipadwindow.ui",
                                             NULL));
 
     return GTK_WINDOW (window);

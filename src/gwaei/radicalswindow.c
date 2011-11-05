@@ -327,7 +327,7 @@ GtkWindow* gw_radicalswindow_new (GtkApplication *application)
     window = GW_RADICALSWINDOW (g_object_new (GW_TYPE_RADICALSWINDOW,
                                               "type",        GTK_WINDOW_TOPLEVEL,
                                               "application", GW_APPLICATION (application),
-                                              "ui-xml",      "radicals.ui",
+                                              "ui-xml",      "radicalswindow.ui",
                                               NULL));
 
     return GTK_WINDOW (window);

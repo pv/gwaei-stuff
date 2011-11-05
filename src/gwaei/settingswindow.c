@@ -57,7 +57,7 @@ GtkWindow* gw_settingswindow_new (GtkApplication *application)
     window = GW_SETTINGSWINDOW (g_object_new (GW_TYPE_SETTINGSWINDOW,
                                             "type",        GTK_WINDOW_TOPLEVEL,
                                             "application", GW_APPLICATION (application),
-                                            "ui-xml",      "settings.ui",
+                                            "ui-xml",      "settingswindow.ui",
                                             NULL));
 
     return GTK_WINDOW (window);

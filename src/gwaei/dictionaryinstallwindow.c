@@ -51,7 +51,7 @@ GtkWindow* gw_dictionaryinstallwindow_new (GtkApplication *application)
     window = GW_DICTIONARYINSTALLWINDOW (g_object_new (GW_TYPE_DICTIONARYINSTALLWINDOW,
                                                        "type",        GTK_WINDOW_TOPLEVEL,
                                                        "application", GW_APPLICATION (application),
-                                                       "ui-xml",      "dictionaryinstall.ui",
+                                                       "ui-xml",      "dictionaryinstallwindow.ui",
                                                         NULL));
 
     return GTK_WINDOW (window);
