@@ -726,3 +726,28 @@ void lw_searchitem_unlock_mutex (LwSearchItem *item)
 //  printf("LOCKS %d\n", _locks);
   g_mutex_unlock(item->mutex);
 }
+
+
+double lw_searchitem_get_progress (LwSearchItem *item)
+{
+    //Declarations
+    long current;
+    long length;
+    double fraction;
+
+    //Initializations
+    current = 0L;
+    length = 0L;
+    fraction = 0.0;
+
+    if (item != NULL && item->dictionary != NULL && item->status == LW_SEARCHSTATUS_SEARCHING)
+    {
+      current = item->current;
+      length = item->dictionary->length;
+
+      if (current > 0L && length > 0L && current != length) 
+        fraction = (double) current / (double) length;
+    }
+
+    return fraction;
+}

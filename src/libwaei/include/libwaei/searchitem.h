@@ -112,6 +112,7 @@ void lw_searchitem_cancel_search (LwSearchItem*);
 void lw_searchitem_lock_mutex (LwSearchItem*);
 void lw_searchitem_unlock_mutex (LwSearchItem*);
 
+double lw_searchitem_get_progress (LwSearchItem*);
 
 
 #endif

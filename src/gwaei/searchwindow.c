@@ -730,38 +730,15 @@ void gw_searchwindow_set_search_progressbar_by_searchitem (GwSearchWindow *windo
     GwSearchWindowPrivate *priv;
     GtkWidget *progressbar;
     GtkWidget *statusbar;
-    long current;
-    long length;
     double fraction;
 
     //Initializations
     priv = window->priv;
     progressbar = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "search_progressbar"));
     statusbar = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "statusbar"));
-    current = 0;
-    length = 0;
+    fraction = lw_searchitem_get_progress (item);
 
-
-    if (item != NULL && item->dictionary != NULL)
-    {
-      current = item->current;
-      length = item->dictionary->length;
-    }
-
-    if (current == 0) fraction = 0.0;
-    else fraction = (double)current / (double)length;
-
-    if (item == NULL ||
-        item->dictionary == NULL ||
-        length == 0 ||
-        fraction >= (1.0 - 0.00001) ||
-        item->status == LW_SEARCHSTATUS_IDLE ||
-        item->status == LW_SEARCHSTATUS_CANCELING   )
-    {
-      gtk_entry_set_progress_fraction (priv->entry, 0.0);
-      gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (progressbar), 0.0);
-    }
-    else if (gtk_widget_get_visible (statusbar))
+    if (gtk_widget_get_visible (statusbar))
     {
       gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (progressbar), fraction);
       gtk_entry_set_progress_fraction (priv->entry, 0.0);
