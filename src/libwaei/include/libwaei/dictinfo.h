@@ -42,7 +42,7 @@ struct _LwDictInfo
 {
     EXTENDS_LW_DICT
     int load_position;                //!< load position in the GUI
-    long total_lines;                 //!< total lines in the file
+    long length;                    //!< Length of the file
     LwResultLine *cached_resultlines; //!< Allocated resultline swapped with current_resultline when needed
     LwResultLine *current_resultline; //!< Allocated resultline where the current parsed result data resides
 };

@@ -925,26 +925,23 @@ void lw_io_set_cancel_operations (gboolean state)
 //! @brief A quick way to get the number of lines in a file for use in progress functions
 //! @param FILENAME The path to the file to see how many lines it has
 //!
-int lw_io_get_total_lines_for_file (const char *FILENAME)
+long lw_io_get_size_for_uri (const char *URI)
 {
     //Declarations
-    const int MAX = 512;
     FILE *file;
-    char buffer[MAX];
-    int total;
+    long length;
 
     //Initializations
-    file = fopen (FILENAME, "r");
-    total = 0;
+    file = fopen (URI, "r");
+    length = 0L;
 
-    while (fgets(buffer, MAX, file) != NULL)
+    if (file != NULL)
     {
-      total++;
+      fseek (file, 0L, SEEK_END);
+      length = ftell (file);
+      fclose(file);
     }
-
-    //Cleanup
-    fclose(file);
    
-    return total;
+    return length;
 }
 

@@ -41,6 +41,6 @@ const gchar* lw_io_get_savepath (void);
 
 gboolean lw_io_pipe_data (char**, const char *source_path, const char *target_path, LwIoProgressCallback cb, gpointer data, GError **error);
 void lw_io_set_cancel_operations (gboolean);
-int lw_io_get_total_lines_for_file (const char*);
+long lw_io_get_size_for_uri (const char*);
 
 #endif

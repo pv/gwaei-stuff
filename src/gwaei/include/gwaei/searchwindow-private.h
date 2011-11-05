@@ -51,7 +51,7 @@ struct _GwSearchWindowPrivate {
 
   //Feedback variables
   LwSearchItem *feedback_item;
-  long feedback_line;
+  long feedback;
   LwSearchStatus feedback_status;
 
   //Mouse variables

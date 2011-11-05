@@ -89,7 +89,7 @@ void gw_searchwindow_init (GwSearchWindow *window)
     priv->font_size = 0;
 
     priv->feedback_item = NULL;
-    priv->feedback_line = 0;
+    priv->feedback = 0L;
     priv->feedback_status = LW_SEARCHSTATUS_IDLE;
 
     for (i = 0; i < TOTAL_GW_SEARCHWINDOW_TIMEOUTIDS; i++)
@@ -361,7 +361,7 @@ gboolean gw_searchwindow_update_progress_feedback_timeout (GwSearchWindow *windo
         if (
             item->status != LW_SEARCHSTATUS_CANCELING &&
             (item != priv->feedback_item ||
-             item->current_line != priv->feedback_line ||
+             item->current != priv->feedback ||
              item->status != priv->feedback_status       )
             )
         {
@@ -370,7 +370,7 @@ gboolean gw_searchwindow_update_progress_feedback_timeout (GwSearchWindow *windo
           gw_searchwindow_set_title_by_searchitem (window, item);
 
           priv->feedback_item = item;
-          priv->feedback_line = item->current_line;
+          priv->feedback = item->current;
           priv->feedback_status = item->status;
         }
       lw_searchitem_unlock_mutex (item);
@@ -388,14 +388,22 @@ gboolean gw_searchwindow_append_result_timeout (GwSearchWindow *window)
     //Declarations
     GwSearchWindowPrivate *priv;
     LwSearchItem *item;
+    int chunk;
+    int max_chunk;
 
     //Initializations
     priv = window->priv;
     item = gw_searchwindow_get_current_searchitem (window);
+    chunk = 0;
+    max_chunk = 10;
     
     if (item != NULL && lw_searchitem_should_check_results (item))
     {
+      while (item != NULL && lw_searchitem_should_check_results (item) && chunk < max_chunk)
+      {
         gw_searchwindow_append_result (window, item);
+        chunk++;
+      }
     }
     else
     {
@@ -404,7 +412,9 @@ gboolean gw_searchwindow_append_result_timeout (GwSearchWindow *window)
 
     
     if (priv->mouse_item != NULL)
+    {
       gw_searchwindow_append_kanjidict_tooltip_result (window, priv->mouse_item);
+    }
 
     return TRUE;
 }
@@ -599,7 +609,7 @@ void gw_searchwindow_set_total_results_label_by_searchitem (GwSearchWindow *wind
       switch (item->status)
       {
         case LW_SEARCHSTATUS_IDLE:
-            if (item->current_line == 0)
+            if (item->current == 0L)
               gtk_label_set_text (GTK_LABEL (label), idle_message_none);
             else if (relevant == total)
               final_message = g_strdup_printf (idle_message_total, total);
@@ -721,7 +731,7 @@ void gw_searchwindow_set_search_progressbar_by_searchitem (GwSearchWindow *windo
     GtkWidget *progressbar;
     GtkWidget *statusbar;
     long current;
-    long total;
+    long length;
     double fraction;
 
     //Initializations
@@ -729,20 +739,21 @@ void gw_searchwindow_set_search_progressbar_by_searchitem (GwSearchWindow *windo
     progressbar = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "search_progressbar"));
     statusbar = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "statusbar"));
     current = 0;
-    total = 0;
+    length = 0;
+
 
     if (item != NULL && item->dictionary != NULL)
     {
-      current = item->current_line;
-      total = item->dictionary->total_lines;
+      current = item->current;
+      length = item->dictionary->length;
     }
 
     if (current == 0) fraction = 0.0;
-    else fraction = (double)current / (double)total;
+    else fraction = (double)current / (double)length;
 
     if (item == NULL ||
         item->dictionary == NULL ||
-        total == 0 ||
+        length == 0 ||
         fraction >= (1.0 - 0.00001) ||
         item->status == LW_SEARCHSTATUS_IDLE ||
         item->status == LW_SEARCHSTATUS_CANCELING   )
@@ -1310,7 +1321,7 @@ void gw_searchwindow_display_no_results_found_page (GwSearchWindow *window, LwSe
 {
     //Sanity check
     if (item == NULL || item->dictionary == NULL) return;
-    if (item->status != LW_SEARCHSTATUS_IDLE || item->current_line == 0 || item->total_results > 0) return; 
+    if (item->status != LW_SEARCHSTATUS_IDLE || item->current == 0L || item->total_results > 0) return; 
 
     //Declarations
     GwApplication *application;
@@ -1345,7 +1356,7 @@ void gw_searchwindow_display_no_results_found_page (GwSearchWindow *window, LwSe
     buffer = gtk_text_view_get_buffer (view);
     query_text = gtk_entry_get_text (priv->entry);
     di_selected = gw_searchwindow_get_dictionary (window);
-    item->current_line = 0;
+    item->current = 0L;
 
     gtk_text_buffer_set_text (buffer, "", -1);
 
@@ -2490,14 +2501,14 @@ static void gw_searchwindow_attach_signals (GwSearchWindow *window)
 
     priv->timeoutid[GW_SEARCHWINDOW_TIMEOUTID_PROGRESS] = g_timeout_add_full (
           G_PRIORITY_LOW, 
-          50, 
+          100, 
           (GSourceFunc) gw_searchwindow_update_progress_feedback_timeout, 
           window, 
           NULL
     );
     priv->timeoutid[GW_SEARCHWINDOW_TIMEOUTID_APPEND_RESULT] = g_timeout_add_full (
           G_PRIORITY_LOW, 
-          10, 
+          100, 
           (GSourceFunc) gw_searchwindow_append_result_timeout, 
           window, 
           NULL

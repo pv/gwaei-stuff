@@ -64,9 +64,9 @@ struct _LwSearchItem {
     GThread *thread;                        //!< Thread the search is processed in
     GMutex *mutex;                          //!< Mutext to help ensure threadsafe operation
 
-    LwSearchStatus status;                   //!< Used to test if a search is in progress.
+    LwSearchStatus status;                  //!< Used to test if a search is in progress.
     char *scratch_buffer;                   //!< Scratch space
-    long current_line;                      //!< Current line in the dictionary file
+    long current;                           //!< Current line in the dictionary file
     int history_relevance_idle_timer;       //!< Helps determine if something is added to the history or not
 
     int total_relevant_results;             //!< Total results guessed to be highly relevant to the query

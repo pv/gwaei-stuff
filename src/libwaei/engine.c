@@ -94,7 +94,7 @@ static gpointer _stream_results_thread (gpointer data)
       g_thread_yield ();
       lw_searchitem_lock_mutex (item);
 
-      item->current_line++;
+      item->current += strlen(item->resultline->string);
 
       //Commented input in the dictionary...we should skip over it
       if(item->resultline->string[0] == '#' || g_utf8_get_char(item->resultline->string) == L'？') 
@@ -104,6 +104,7 @@ static gpointer _stream_results_thread (gpointer data)
       else if (item->resultline->string[0] == 'A' && item->resultline->string[1] == ':' &&
                fgets(item->scratch_buffer, LW_IO_MAX_FGETS_LINE, item->fd) != NULL             )
       {
+        item->current += strlen(item->scratch_buffer);
         char *eraser = NULL;
         if ((eraser = g_utf8_strchr (item->resultline->string, -1, L'\n')) != NULL) { *eraser = '\0'; }
         if ((eraser = g_utf8_strchr (item->scratch_buffer, -1, L'\n')) != NULL) { *eraser = '\0'; }

@@ -137,7 +137,7 @@ void lw_searchitem_init (LwSearchItem *item, const char* query, LwDictInfo* dict
     item->total_relevant_results = 0;
     item->total_irrelevant_results = 0;
     item->total_results = 0;
-    item->current_line = 0;
+    item->current = 0L;
     item->resultline = NULL;
     item->queryline = lw_queryline_new ();
     item->history_relevance_idle_timer = 0;
@@ -232,7 +232,7 @@ void  lw_searchitem_prepare_search (LwSearchItem* item)
     //Initializations
     item->scratch_buffer = (char*) malloc (sizeof(char*) * LW_IO_MAX_FGETS_LINE);
     item->resultline = lw_resultline_new ();
-    item->current_line = 0;
+    item->current = 0L;
     item->total_relevant_results = 0;
     item->total_irrelevant_results = 0;
     item->total_results = 0;
