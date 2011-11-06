@@ -30,8 +30,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <locale.h>
-#include <libintl.h>
 
 #include <gdk/gdk.h>
 #include <gdk/gdkkeysyms.h>

@@ -16,12 +16,12 @@ pkgdata_DATA = jdata.dat
 DEFS = -DLOCALEDIR=\"$(localedir)\" -DVERSION=\"$(VERSION)\" -DPACKAGE=\"$(PACKAGE)\" -DFOR_PILOT_COMPAT -DKP_LIBDIR=\"$(LIBDIR)\" -DBINDIR=\"$(LIBDIR)\"
 
 
-AM_CFLAGS = $(BASE_CFLAGS) 
+AM_CFLAGS = $(LIBWAEI_CFLAGS) 
 INCLUDES =  -I jstroke
 
 
 kpengine_SOURCES = jstroke/scoring.c jstroke/util.c kpengine.c jstroke/jstroke.h
-kpengine_LDADD =  $(BASE_LIBS) 
+kpengine_LDADD =  $(LIBWAEI_LIBS) 
 
 
 if OS_MINGW

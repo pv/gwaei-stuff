@@ -28,7 +28,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <locale.h>
-#include <libintl.h>
 
 #include <glib.h>
 #include <glib/gstdio.h>

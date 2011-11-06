@@ -28,8 +28,6 @@
 
 #include <string.h>
 #include <stdlib.h>
-#include <locale.h>
-#include <libintl.h>
 
 #include <gtk/gtk.h>
 

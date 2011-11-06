@@ -1,6 +1,9 @@
 #ifndef GW_WAEI_INCLUDED
 #define GW_WAEI_INCLUDED
 
+#include "../../../../config.h"
+#include "gettext.h"
+
 #include <libwaei/libwaei.h>
 
 
@@ -28,9 +31,6 @@ struct _WApplication {
     gboolean exact_switch;
     gboolean list_switch;
     gboolean version_switch;
-#ifdef WITH_NCURSES
-    gboolean ncurses_switch;
-#endif
     gboolean color_switch;
 
     char* dictionary_switch_data;
@@ -54,10 +54,6 @@ WAppResolution w_app_start_console (WApplication*);
 
 extern WApplication *app;
 
-
 #include <waei/console.h>
-#ifdef WITH_NCURSES
-  #include <waei/ncurses.h>
-#endif
 
 #endif

@@ -25,8 +25,6 @@
 
 
 #include <string.h>
-#include <locale.h>
-#include <libintl.h>
 #include <stdlib.h>
 
 #include <gio/gio.h>

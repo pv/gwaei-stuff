@@ -28,7 +28,6 @@
 
 #include <string.h>
 #include <stdlib.h>
-#include <libintl.h>
 
 #include <gdk/gdkkeysyms.h>
 #include <gdk/gdk.h>

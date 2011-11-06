@@ -27,8 +27,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <locale.h>
-#include <libintl.h>
 
 #include <gdk/gdk.h>
 #include <gdk/gdkkeysyms.h>
@@ -594,13 +592,13 @@ void gw_searchwindow_set_total_results_label_by_searchitem (GwSearchWindow *wind
       int total = item->total_results;
 
       char *idle_message_none = "";
-      char *searching_message_none = gettext("Searching...");
+      const char *searching_message_none = gettext("Searching...");
 
-      char *idle_message_total = ngettext("Found %d result", "Found %d results", total);
-      char *searching_message_total = ngettext("Searching... %d result", "Searching... %d results", total);
+      const char *idle_message_total = ngettext("Found %d result", "Found %d results", total);
+      const char *searching_message_total = ngettext("Searching... %d result", "Searching... %d results", total);
 
       // TRANSLATORS: relevant what ? It's the number of "relevant" result(s) displayed while or after searching.
-      char *message_relevant = ngettext("(%d Relevant)", "(%d Relevant)", relevant);
+      const char *message_relevant = ngettext("(%d Relevant)", "(%d Relevant)", relevant);
 
       char *base_message = NULL;
       char *final_message = NULL;
@@ -959,7 +957,7 @@ void gw_searchwindow_set_toolbar_style (GwSearchWindow *window, const char *requ
 //! @param start_line Returns the start line of the text inserted
 //! @param end_line Returns the end line of the text inserted
 //!
-void gw_searchwindow_append_to_buffer (GwSearchWindow *window, LwSearchItem *item, char *text, char *tag1,
+void gw_searchwindow_append_to_buffer (GwSearchWindow *window, LwSearchItem *item, const char *text, char *tag1,
                                        char *tag2, int *start_line, int *end_line)
 {
     if (item == NULL) return;

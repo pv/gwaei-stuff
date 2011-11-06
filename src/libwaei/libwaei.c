@@ -27,8 +27,6 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdio.h>
-#include <locale.h>
-#include <libintl.h>
 
 #include <glib.h>
 #include <glib-object.h>

@@ -30,7 +30,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
-#include <libintl.h>
 
 #include <glib.h>
 
@@ -79,13 +78,10 @@ void w_app_init (WApplication* app, int *argc, char** argv[], GError **error)
     //Sanity check
     if (error != NULL && *error != NULL) return;
 
-    setlocale(LC_MESSAGES, "");
-    setlocale(LC_CTYPE, "");
-    setlocale(LC_COLLATE, "");
-
-    bindtextdomain(PACKAGE, LOCALEDIR);
-    bind_textdomain_codeset (PACKAGE, "UTF-8");
-    textdomain(PACKAGE);
+    setlocale(LC_ALL, "");
+    bindtextdomain(GETTEXT_PACKAGE, GWAEI_LOCALEDIR);
+    bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+    textdomain(GETTEXT_PACKAGE);
 
     g_thread_init (NULL);
     g_type_init ();
