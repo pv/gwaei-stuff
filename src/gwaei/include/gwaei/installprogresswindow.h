@@ -29,9 +29,6 @@ struct _GwInstallProgressWindowClass {
 GtkWindow* gw_installprogresswindow_new (GtkApplication *application);
 GType gw_installprogresswindow_get_type (void) G_GNUC_CONST;
 
-void gw_installprogresswindow_init (GwInstallProgressWindow*, GwSettingsWindow*);
-void gw_installprogresswindow_deinit (GwInstallProgressWindow*);
-
 void gw_installprogresswindow_start (GwInstallProgressWindow*);
 
 #include "installprogresswindow-callbacks.h"

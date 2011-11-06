@@ -40,7 +40,7 @@
 static void gw_searchwindow_attach_signals (GwSearchWindow*);
 static void gw_searchwindow_remove_signals (GwSearchWindow*);
 
-G_DEFINE_TYPE (GwSearchWindow, gw_searchwindow, GW_TYPE_WINDOW);
+G_DEFINE_TYPE (GwSearchWindow, gw_searchwindow, GW_TYPE_WINDOW)
 
 //!
 //! @brief Sets up the variables in main-interface.c and main-callbacks.c for use
@@ -70,51 +70,12 @@ void gw_searchwindow_init (GwSearchWindow *window)
 
     //Declarations
     GwSearchWindowPrivate *priv;
-    int i;
 
     //Initializations
     priv = window->priv;
 
-    priv->entry = NULL;
-    priv->notebook = NULL;
-    priv->toolbar = NULL;
-    priv->statusbar = NULL;
-    priv->combobox = NULL;
-    priv->accelgroup = NULL;
-
-    priv->dictinfo = NULL;
-    priv->tablist = NULL;
-    priv->font_size = 0;
-
-    priv->feedback_item = NULL;
-    priv->feedback = 0L;
     priv->feedback_status = LW_SEARCHSTATUS_IDLE;
-
-    for (i = 0; i < TOTAL_GW_SEARCHWINDOW_TIMEOUTIDS; i++)
-      priv->timeoutid[i] = 0;
-
-    priv->previous_tip = 0;
-
-    //Mouse initialize
-    priv->mouse_item = NULL;
-    priv->mouse_button_press_x = 0;
-    priv->mouse_button_press_y = 0;
-    priv->mouse_button_press_root_x = 0;
-    priv->mouse_button_press_root_y = 0;
-    priv->mouse_button_character = 0;
-    priv->mouse_hovered_word = NULL; 
-
-    //Init keep searching
-    priv->keep_searching_delay = 0;
-    priv->keep_searching_query = NULL;
-    priv->keep_searching_enabled = FALSE;
-
-    priv->text_selected = FALSE;
-
-    priv->new_tab = FALSE; 
-
     priv->history = lw_history_new (20);
-    priv->spellcheck = NULL;
 }
 
 

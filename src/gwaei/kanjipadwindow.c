@@ -46,7 +46,7 @@
 static void _kanjipadwindow_initialize_engine (GwKanjipadWindow*);
 static gboolean _kanjipadwindow_engine_input_handler (GIOChannel*, GIOCondition, gpointer);
 
-G_DEFINE_TYPE (GwKanjipadWindow, gw_kanjipadwindow, GW_TYPE_WINDOW);
+G_DEFINE_TYPE (GwKanjipadWindow, gw_kanjipadwindow, GW_TYPE_WINDOW)
 
 //!
 //! @brief Sets up the variables in main-interface.c and main-callbacks.c for use

@@ -39,7 +39,7 @@ static void gw_settingswindow_initialize_dictionary_tree_view (GwSettingsWindow*
 static void gw_settingswindow_attach_signals (GwSettingsWindow*);
 static void gw_settingswindow_remove_signals (GwSettingsWindow*);
 
-G_DEFINE_TYPE (GwSettingsWindow, gw_settingswindow, GW_TYPE_WINDOW);
+G_DEFINE_TYPE (GwSettingsWindow, gw_settingswindow, GW_TYPE_WINDOW)
 
 //!
 //! @brief Sets up the variables in main-interface.c and main-callbacks.c for use

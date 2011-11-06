@@ -3,9 +3,6 @@
 
 G_BEGIN_DECLS
 
-struct _GwApplication;
-typedef struct _GwApplication GwApplication;
-
 //Boilerplate
 typedef struct _GwWindow GwWindow;
 typedef struct _GwWindowClass GwWindowClass;

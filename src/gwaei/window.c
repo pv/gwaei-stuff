@@ -37,7 +37,7 @@
 #include <gwaei/gwaei.h>
 #include <gwaei/window-private.h>
 
-G_DEFINE_TYPE (GwWindow, gw_window, GTK_TYPE_WINDOW);
+G_DEFINE_TYPE (GwWindow, gw_window, GTK_TYPE_WINDOW)
 
 typedef enum
 {

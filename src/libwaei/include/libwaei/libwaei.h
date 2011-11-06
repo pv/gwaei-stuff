@@ -1,7 +1,9 @@
 #ifndef LW_LIBWAEI_INCLUDED
 #define LW_LIBWAEI_INCLUDED
 
+#ifdef HAVE_CONFIG_H
 #include "../../../../config.h"
+#endif
 #include "gettext.h"
 
 #include <libwaei/regex.h>

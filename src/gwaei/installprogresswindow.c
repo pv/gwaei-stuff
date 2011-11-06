@@ -31,54 +31,91 @@
 #include <gtk/gtk.h>
 
 #include <gwaei/gwaei.h>
+#include <gwaei/installprogresswindow-private.h>
 
 
 static gpointer _installprogresswindow_install_thread (gpointer);
 
-G_DEFINE_TYPE (GwSearchWindow, gw_searchwindow, GW_TYPE_WINDOW);
+G_DEFINE_TYPE (GwInstallProgressWindow, gw_installprogresswindow, GW_TYPE_WINDOW)
 
 //!
 //! @brief Sets up the variables in main-interface.c and main-callbacks.c for use
 //!
-GtkWindow* gw_searchwindow_new (GtkApplication *application)
+GtkWindow* gw_installprogresswindow_new (GtkApplication *application)
 {
     g_assert (application != NULL);
 
     //Declarations
-    GwSearchWindow *window;
+    GwInstallProgressWindow *window;
 
     //Initializations
-    window = GW_SEARCHWINDOW (g_object_new (GW_TYPE_SEARCHWINDOW,
+    window = GW_INSTALLPROGRESSWINDOW (g_object_new (GW_TYPE_INSTALLPROGRESSWINDOW,
                                             "type",        GTK_WINDOW_TOPLEVEL,
                                             "application", GW_APPLICATION (application),
-                                            "ui-xml",      "searchwindow.ui",
+                                            "ui-xml",      "installprogresswindow.ui",
                                             NULL));
 
     return GTK_WINDOW (window);
 }
 
 
-void gw_installprogresswindow_init (GwInstallProgressWindow *window, GwSettingsWindow *transient_for)
+static void gw_installprogresswindow_init (GwInstallProgressWindow *window)
 {
+    window->priv = GW_INSTALLPROGRESSWINDOW_GET_PRIVATE (window);
     memset(window->priv, 0, sizeof(GwInstallProgressWindowPrivate));
-
-    window->install_fraction = 0.0;
-    window->mutex = g_mutex_new ();
-
-
-    window->label = GTK_LABEL (gtk_builder_get_object (window->builder, "install_progress_label"));
-    window->sublabel = GTK_LABEL (gtk_builder_get_object (window->builder, "sub_install_progress_label"));
-    window->progressbar = GTK_PROGRESS_BAR (gtk_builder_get_object (window->builder, "install_progress_progressbar"));
-
-    gw_window_set_transient_for (GW_WINDOW (window), GW_WINDOW (transient_for));
 }
 
 
-void gw_installprogresswindow_deinit (GwInstallProgressWindow *window)
+static void gw_installprogresswindow_finalize (GObject *object)
 {
-    g_mutex_free (window->mutex);
+    GwInstallProgressWindow *window;
+    GwInstallProgressWindowPrivate *priv;
+
+    window = GW_INSTALLPROGRESSWINDOW (object);
+    priv = window->priv;
+ 
+    g_mutex_free (priv->mutex); priv->mutex = NULL;
+    priv->label = NULL;
+    priv->sublabel = NULL;
+    priv->progressbar = NULL;
+
+    G_OBJECT_CLASS (gw_installprogresswindow_parent_class)->finalize (object);
 }
 
+
+static void gw_installprogresswindow_constructed (GObject *object)
+{
+    //Declarations
+    GwInstallProgressWindow *window;
+    GwInstallProgressWindowPrivate *priv;
+
+    //Chain the parent class
+    {
+      G_OBJECT_CLASS (gw_installprogresswindow_parent_class)->constructed (object);
+    }
+
+    window = GW_INSTALLPROGRESSWINDOW (object);
+    priv = window->priv;
+
+    priv->mutex = g_mutex_new ();
+    priv->label = GTK_LABEL (gw_window_get_object (GW_WINDOW (window), "install_progress_label"));
+    priv->sublabel = GTK_LABEL (gw_window_get_object (GW_WINDOW (window), "sub_install_progress_label"));
+    priv->progressbar = GTK_PROGRESS_BAR (gw_window_get_object (GW_WINDOW (window), "install_progress_progressbar"));
+}
+
+
+static void
+gw_installprogresswindow_class_init (GwInstallProgressWindowClass *klass)
+{
+  GObjectClass *object_class;
+
+  object_class = G_OBJECT_CLASS (klass);
+
+  object_class->constructed = gw_installprogresswindow_constructed;
+  object_class->finalize = gw_installprogresswindow_finalize;
+
+  g_type_class_add_private (object_class, sizeof (GwInstallProgressWindowPrivate));
+}
 
 
 //!
@@ -90,15 +127,17 @@ void gw_installprogresswindow_start (GwInstallProgressWindow *window)
     g_assert (window != NULL);
 
     //Declarations
+    GwApplication *application;
     GError *error;
 
     //Initializations
+    application = gw_window_get_application (GW_WINDOW (window));
     error = NULL;
 
     //Set the new window
     g_thread_create (_installprogresswindow_install_thread, window, FALSE, &error);
 
-    gw_app_handle_error (app, GW_WINDOW (window->transient_for), TRUE, &error);
+    gw_application_handle_error (application, gtk_window_get_transient_for (GTK_WINDOW (window)), TRUE, &error);
 }
 
 
@@ -106,7 +145,11 @@ static gpointer _installprogresswindow_install_thread (gpointer data)
 {
     //Declarations
     GwInstallProgressWindow *window;
+    GwInstallProgressWindowPrivate *priv;
     GwSettingsWindow *settingswindow;
+    GwApplication *application;
+    LwDictInstList *dictinstlist;
+    GwDictInfoList *dictinfolist;
     GList *iter;
     LwDictInst *di;
     gint timeoutid;
@@ -115,37 +158,41 @@ static gpointer _installprogresswindow_install_thread (gpointer data)
     //Initializations
     window = GW_INSTALLPROGRESSWINDOW (data);
     if (window == NULL) return NULL;
-    settingswindow = GW_SETTINGSWINDOW (window->transient_for);
+    priv = window->priv;
+    settingswindow = GW_SETTINGSWINDOW (gtk_window_get_transient_for (GTK_WINDOW (window)));
+    application = gw_window_get_application (GW_WINDOW (window));
+    dictinstlist = gw_application_get_dictinstlist (application);
+    dictinfolist = gw_application_get_dictinfolist (application);
     error = NULL;
 
     //Do the installation
     timeoutid = g_timeout_add (100, gw_installprogresswindow_update_ui_timeout, window);
-    for (iter = settingswindow->dictinstlist->list; iter != NULL && error == NULL; iter = iter->next)
+    for (iter = dictinstlist->list; iter != NULL && error == NULL; iter = iter->next)
     {
       di = LW_DICTINST (iter->data);
       if (di->selected)
       {
-        g_mutex_lock (window->mutex);
-        window->di = di;
-        g_mutex_unlock (window->mutex);
+        g_mutex_lock (priv->mutex);
+        priv->di = di;
+        g_mutex_unlock (priv->mutex);
         lw_dictinst_install (di, gw_installprogresswindow_update_dictinst_cb, window, &error);
       }
     }
 
-    g_mutex_lock (window->mutex);
+    g_mutex_lock (priv->mutex);
     //This will clue the progress window to close itself
-    window->di = NULL;
-    g_mutex_unlock (window->mutex);
+    priv->di = NULL;
+    g_mutex_unlock (priv->mutex);
 
     //Cleanup
 gdk_threads_enter ();
-    gw_app_handle_error (app, GW_WINDOW (settingswindow), TRUE, &error);
-    gw_dictinfolist_reload (app->dictinfolist, app->preferences);
-    lw_dictinstlist_set_cancel_operations (settingswindow->dictinstlist, FALSE);
-    if (settingswindow->dictinstlist != NULL)
+    gw_application_handle_error (application, GTK_WINDOW (settingswindow), TRUE, &error);
+    gw_dictinfolist_reload (dictinfolist);
+    lw_dictinstlist_set_cancel_operations (dictinstlist, FALSE);
+    if (dictinstlist != NULL)
     {
-      lw_dictinstlist_free (settingswindow->dictinstlist);
-      settingswindow->dictinstlist = NULL;
+      lw_dictinstlist_free (dictinstlist);
+      dictinstlist = NULL;
     }
     gw_settingswindow_check_for_dictionaries (settingswindow);
 gdk_threads_leave ();

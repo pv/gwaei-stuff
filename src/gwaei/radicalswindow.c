@@ -311,7 +311,7 @@ static char *_radical_array[][5] =
   {NULL}
 };
 
-G_DEFINE_TYPE (GwRadicalsWindow, gw_radicalswindow, GW_TYPE_WINDOW);
+G_DEFINE_TYPE (GwRadicalsWindow, gw_radicalswindow, GW_TYPE_WINDOW)
 
 
 GtkWindow* gw_radicalswindow_new (GtkApplication *application)

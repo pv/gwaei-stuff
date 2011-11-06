@@ -33,7 +33,7 @@
 #include <gwaei/gwaei.h>
 #include <gwaei/dictionaryinstallwindow-private.h>
 
-G_DEFINE_TYPE (GwDictionaryInstallWindow, gw_dictionaryinstallwindow, GW_TYPE_WINDOW);
+G_DEFINE_TYPE (GwDictionaryInstallWindow, gw_dictionaryinstallwindow, GW_TYPE_WINDOW)
 
 //!
 //! @brief Sets up the variables in main-interface.c and main-callbacks.c for use

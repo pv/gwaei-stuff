@@ -31,18 +31,23 @@
 #include <gtk/gtk.h>
 
 #include <gwaei/gwaei.h>
+#include <gwaei/installprogresswindow-private.h>
 
 
-G_MODULE_EXPORT void gw_installprogress_cancel_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void gw_installprogresswindow_cancel_cb (GtkWidget *widget, gpointer data)
 {
     GwInstallProgressWindow *window;
-    GwSettingsWindow *settingswindow;
+    GwInstallProgressWindowPrivate *priv;
+    GwApplication *application;
+    LwDictInstList *dictinstlist;
 
-    window = GW_INSTALLPROGRESSWINDOW (gw_app_get_window_by_widget (app, GTK_WIDGET (data)));
+    window = GW_INSTALLPROGRESSWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_INSTALLPROGRESSWINDOW));
     if (window == NULL) return;
-    settingswindow = GW_SETTINGSWINDOW (window->transient_for);
+    priv = window->priv;
+    application = gw_window_get_application (GW_WINDOW (window));
+    dictinstlist = gw_application_get_dictinstlist (application);
 
-    lw_dictinstlist_set_cancel_operations (settingswindow->dictinstlist, TRUE);
+    lw_dictinstlist_set_cancel_operations (dictinstlist, TRUE);
 }
 
 
@@ -50,13 +55,16 @@ G_MODULE_EXPORT int gw_installprogresswindow_update_dictinst_cb (double fraction
 {
     //Declarations
     GwInstallProgressWindow *window;
+    GwInstallProgressWindowPrivate *priv;
 
     //Initializations
-    window = GW_INSTALLPROGRESSWINDOW (data);
+    window = GW_INSTALLPROGRESSWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_INSTALLPROGRESSWINDOW));
+    if (window == NULL) return 0;
+    priv = window->priv;
 
-    g_mutex_lock (window->mutex); 
-    window->install_fraction = lw_dictinst_get_total_progress (window->di, fraction);
-    g_mutex_unlock (window->mutex);
+    g_mutex_lock (priv->mutex); 
+    priv->install_fraction = lw_dictinst_get_total_progress (priv->di, fraction);
+    g_mutex_unlock (priv->mutex);
 
     return 0;
 }
@@ -73,7 +81,9 @@ G_MODULE_EXPORT gboolean gw_installprogresswindow_update_ui_timeout (gpointer da
 
     //Declarations
     GwInstallProgressWindow *window;
-    GwSettingsWindow *settingswindow;
+    GwInstallProgressWindowPrivate *priv;
+    GwApplication *application;
+    LwDictInstList *dictinstlist;
     LwDictInst *di;
     GList *iter;
     int current_to_install;
@@ -85,33 +95,36 @@ G_MODULE_EXPORT gboolean gw_installprogresswindow_update_ui_timeout (gpointer da
     char *text_progressbar;
 
     //Initializations
-    window = GW_INSTALLPROGRESSWINDOW (data);
-    settingswindow = GW_SETTINGSWINDOW (window->transient_for);
+    window = GW_INSTALLPROGRESSWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_INSTALLPROGRESSWINDOW));
+    if (window == NULL) return FALSE;
+    application = gw_window_get_application (GW_WINDOW (window));
+    dictinstlist = gw_application_get_dictinstlist (application);
+    priv = window->priv;
     current_to_install = 0;
     total_to_install = 0;
 
     //The install is complete close the window
-    if (window->di == NULL)
+    if (priv->di == NULL)
     {
-      gw_app_destroy_window (app, GW_WINDOW (window));
+      gtk_widget_destroy (GTK_WIDGET (window));
       return FALSE;
     }
 
-    g_mutex_lock (window->mutex);
+    g_mutex_lock (priv->mutex);
 
     //Calculate the number of dictionaries left to install
-    for (iter = settingswindow->dictinstlist->list; iter != NULL; iter = iter->next)
+    for (iter = dictinstlist->list; iter != NULL; iter = iter->next)
     {
       di = LW_DICTINST (iter->data);
       if (di != NULL && di->selected)
       {
         current_to_install++;
       }
-      if (iter->data == window->di) break;
+      if (iter->data == priv->di) break;
     }
 
     //Calculate the number of dictionaries left to install
-    for (iter = settingswindow->dictinstlist->list; iter != NULL; iter = iter->next)
+    for (iter = dictinstlist->list; iter != NULL; iter = iter->next)
     {
       di = LW_DICTINST (iter->data);
       if (di->selected)
@@ -120,7 +133,7 @@ G_MODULE_EXPORT gboolean gw_installprogresswindow_update_ui_timeout (gpointer da
       }
     }
     
-    di = window->di;
+    di = priv->di;
 
     text_progressbar =  g_markup_printf_escaped (gettext("Installing %s..."), di->filename);
     text_left = g_strdup_printf (gettext("Installing dictionary %d of %d..."), current_to_install, total_to_install);
@@ -128,12 +141,12 @@ G_MODULE_EXPORT gboolean gw_installprogresswindow_update_ui_timeout (gpointer da
     text_installing = lw_dictinst_get_status_string (di, TRUE);
     text_installing_markup = g_markup_printf_escaped ("<small>%s</small>", text_installing);
 
-    gtk_label_set_markup (window->label, text_left_markup);
-    gtk_label_set_markup (window->sublabel, text_installing_markup);
-    gtk_progress_bar_set_fraction (window->progressbar, window->install_fraction);
-    gtk_progress_bar_set_text (window->progressbar, text_progressbar);
+    gtk_label_set_markup (priv->label, text_left_markup);
+    gtk_label_set_markup (priv->sublabel, text_installing_markup);
+    gtk_progress_bar_set_fraction (priv->progressbar, priv->install_fraction);
+    gtk_progress_bar_set_text (priv->progressbar, text_progressbar);
 
-    g_mutex_unlock (window->mutex);
+    g_mutex_unlock (priv->mutex);
 
     //Cleanup
     g_free (text_progressbar);

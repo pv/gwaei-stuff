@@ -42,7 +42,7 @@ static gboolean gw_application_local_command_line (GApplication*, gchar***, gint
 static int gw_application_command_line (GApplication*, GApplicationCommandLine*);
 static GtkTextTagTable* gw_application_texttagtable_new (void);
 
-G_DEFINE_TYPE (GwApplication, gw_application, GTK_TYPE_APPLICATION);
+G_DEFINE_TYPE (GwApplication, gw_application, GTK_TYPE_APPLICATION)
 
 //!
 //! @brief creates a new instance of the gwaei applicaiton

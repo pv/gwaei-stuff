@@ -88,7 +88,7 @@ void gw_dictinfolist_init (GwDictInfoList *dil, GwApplication *application)
     gw_dictinfolist_rebuild_liststore (dil);
 
     _dictinfolist_attach_signals (dil);
-};
+}
 
 
 void gw_dictinfolist_deinit (GwDictInfoList *dil)

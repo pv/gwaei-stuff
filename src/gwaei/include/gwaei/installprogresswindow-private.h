@@ -14,7 +14,6 @@ struct _GwInstallProgressWindowPrivate {
   GMutex *mutex;
 };
 
-
 #define GW_INSTALLPROGRESSWINDOW_GET_PRIVATE(object)(G_TYPE_INSTANCE_GET_PRIVATE ((object), GW_TYPE_INSTALLPROGRESSWINDOW, GwInstallProgressWindowPrivate))
 
 G_END_DECLS
