@@ -305,6 +305,18 @@ int w_console_search (WApplication *application, GError **error)
     //Print the results
     lw_searchitem_start_search (item, FALSE, exact_switch);
 
+    GMainLoop *loop = g_main_loop_new (NULL, FALSE);
+
+    priv->timeoutid[W_CONSOLE_OUTPUT_TIMEOUTID] = g_timeout_add_full (
+        G_PRIORITY_LOW,
+        100,
+        (GSourceFunc) gw_console_append_result_timeout,
+        item,
+        NULL
+    );
+
+    g_main_loop_run (loop);
+
     //Print final header
     if (quiet_switch == FALSE)
     {

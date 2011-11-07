@@ -80,8 +80,10 @@ G_MODULE_EXPORT gboolean gw_installprogresswindow_update_ui_timeout (gpointer da
     //Declarations
     GwInstallProgressWindow *window;
     GwInstallProgressWindowPrivate *priv;
+    GtkWindow *settingswindow;
     GwApplication *application;
     LwDictInstList *dictinstlist;
+    GwDictInfoList *dictinfolist;
     LwDictInst *di;
     GList *iter;
     int current_to_install;
@@ -104,7 +106,18 @@ G_MODULE_EXPORT gboolean gw_installprogresswindow_update_ui_timeout (gpointer da
     //The install is complete close the window
     if (priv->di == NULL)
     {
+      settingswindow = gtk_window_get_transient_for (GTK_WINDOW (window));
+      dictinfolist = gw_application_get_dictinfolist (application);
+
+      gw_dictinfolist_reload (dictinfolist);
+
       gtk_widget_destroy (GTK_WIDGET (window));
+
+      gw_application_handle_error (application, GTK_WINDOW (settingswindow), TRUE, NULL);
+
+      lw_dictinstlist_set_cancel_operations (dictinstlist, FALSE);
+      gw_settingswindow_check_for_dictionaries (GW_SETTINGSWINDOW (settingswindow));
+
       return FALSE;
     }
 

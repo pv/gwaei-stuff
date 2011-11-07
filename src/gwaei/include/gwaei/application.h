@@ -60,6 +60,8 @@ void gw_application_block_searches (GwApplication*);
 void gw_application_unblock_searches (GwApplication*);
 gboolean gw_application_can_start_search (GwApplication*);
 
+void gw_application_set_error (GwApplication*, GError*);
+gboolean gw_application_has_error (GwApplication*);
 void gw_application_handle_error (GwApplication*, GtkWindow*, gboolean, GError**);
 
 void gw_application_set_last_focused_searchwindow (GwApplication*, struct _GwSearchWindow*);

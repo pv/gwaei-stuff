@@ -117,6 +117,8 @@ gw_application_finalize (GObject *object)
 
     gw_application_remove_signals (application);
 
+    if (priv->error != NULL) g_error_free (priv->error); priv->error = NULL;
+
     if (priv->dictinstlist != NULL) lw_dictinstlist_free (priv->dictinstlist); priv->dictinstlist = NULL;
     if (priv->dictinfolist != NULL) gw_dictinfolist_free (priv->dictinfolist); priv->dictinfolist = NULL;
     if (priv->context != NULL) g_option_context_free (priv->context); priv->context = NULL;
@@ -321,7 +323,7 @@ void gw_application_quit (GwApplication *application)
 //! @brief Returns the program name.  It should not be freed or modified
 //! @returns A constanst string representing the program name
 //!
-const char* gw_application_get_program_name (GwApplication *app) 
+const char* gw_application_get_program_name (GwApplication *application) 
 {
   return gettext("gWaei Japanese-English Dictionary");
 }
@@ -457,8 +459,31 @@ gboolean gw_application_can_start_search (GwApplication *application)
 }
 
 
-void gw_application_handle_error (GwApplication *app, GtkWindow *transient_for, gboolean show_dialog, GError **error)
+void gw_application_set_error (GwApplication *application, GError *error)
 {
+  GwApplicationPrivate *priv;
+  priv = application->priv;
+  if (priv->error != NULL) g_error_free (priv->error);
+  priv->error = error;
+}
+
+
+gboolean gw_application_has_error (GwApplication *application)
+{
+  GwApplicationPrivate *priv;
+  priv = application->priv;
+  return (priv->error != NULL);
+}
+
+
+void gw_application_handle_error (GwApplication *application, GtkWindow *transient_for, gboolean show_dialog, GError **error)
+{
+    GwApplicationPrivate *priv;
+    priv = application->priv;
+
+    //If error is null, we check if the GwApplication had an internal error set
+    if (error == NULL) error = &(priv->error);
+
     //Sanity checks
     if (error == NULL || *error == NULL) return;
 

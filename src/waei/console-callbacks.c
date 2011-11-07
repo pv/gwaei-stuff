@@ -60,4 +60,9 @@ int w_console_install_progress_cb (double fraction, gpointer data)
   return FALSE;
 }
 
-
+gw_console_output
+gboolean gw_console_append_result_timeout (gpointer data)
+{
+  g_main_loop_quit (loop);
+  return TRUE;
+}

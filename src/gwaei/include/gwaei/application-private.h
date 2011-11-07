@@ -16,6 +16,8 @@ struct _GwApplicationPrivate {
   int* argc;
   char*** argv;
 
+  GError *error;
+
   LwPreferences *preferences;
   GwDictInfoList *dictinfolist;
   LwDictInstList *dictinstlist;

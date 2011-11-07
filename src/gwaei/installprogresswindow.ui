@@ -48,7 +48,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkLabel" id="install_progress_label">
+                      <object class="GtkLabel" id="progress_label">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Starting Install...</property>
@@ -68,7 +68,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkProgressBar" id="install_progress_progressbar">
+                  <object class="GtkProgressBar" id="progress_progressbar">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                   </object>
@@ -83,7 +83,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkLabel" id="sub_install_progress_label">
+                      <object class="GtkLabel" id="sub_progress_label">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                       </object>
@@ -121,7 +121,7 @@
             <property name="can_focus">False</property>
             <property name="layout_style">end</property>
             <child>
-              <object class="GtkButton" id="install_progress_cancel_button">
+              <object class="GtkButton" id="cancel_button">
                 <property name="label">gtk-cancel</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>

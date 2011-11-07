@@ -100,12 +100,12 @@ static void gw_installprogresswindow_constructed (GObject *object)
     accelgroup = gw_window_get_accel_group (GW_WINDOW (window));
 
     priv->mutex = g_mutex_new ();
-    priv->label = GTK_LABEL (gw_window_get_object (GW_WINDOW (window), "install_progress_label"));
-    priv->sublabel = GTK_LABEL (gw_window_get_object (GW_WINDOW (window), "sub_install_progress_label"));
-    priv->progressbar = GTK_PROGRESS_BAR (gw_window_get_object (GW_WINDOW (window), "install_progress_progressbar"));
+    priv->label = GTK_LABEL (gw_window_get_object (GW_WINDOW (window), "progress_label"));
+    priv->sublabel = GTK_LABEL (gw_window_get_object (GW_WINDOW (window), "sub_progress_label"));
+    priv->progressbar = GTK_PROGRESS_BAR (gw_window_get_object (GW_WINDOW (window), "progress_progressbar"));
 
     gtk_window_set_title (GTK_WINDOW (window), gettext("Installing Dictionaries..."));
-    gtk_window_set_resizable (GTK_WINDOW (window), FALSE);
+    gtk_window_set_resizable (GTK_WINDOW (window), TRUE);
     gtk_window_set_type_hint (GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_DIALOG);
     gtk_window_set_skip_taskbar_hint (GTK_WINDOW (window), TRUE);
     gtk_window_set_skip_pager_hint (GTK_WINDOW (window), TRUE);
@@ -113,9 +113,12 @@ static void gw_installprogresswindow_constructed (GObject *object)
     gtk_window_set_icon_name (GTK_WINDOW (window), "gwaei");
     gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER_ON_PARENT);
     gtk_window_set_modal (GTK_WINDOW (window), TRUE);
-    gtk_window_set_default_size (GTK_WINDOW (window), -1, 400);
+    gtk_window_set_default_size (GTK_WINDOW (window), 500, -1);
+    gtk_window_set_has_resize_grip (GTK_WINDOW (window), FALSE);
+    gtk_container_set_border_width (GTK_CONTAINER (window), 4);
 
-    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "install_progress_cancel_button"));
+
+    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "cancel_button"));
     gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
       accelgroup, (GDK_KEY_W), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
     gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
@@ -166,27 +169,22 @@ static gpointer _installprogresswindow_install_thread (gpointer data)
     //Declarations
     GwInstallProgressWindow *window;
     GwInstallProgressWindowPrivate *priv;
-    GwSettingsWindow *settingswindow;
     GwApplication *application;
     LwDictInstList *dictinstlist;
-    GwDictInfoList *dictinfolist;
     GList *iter;
     LwDictInst *di;
-    gint timeoutid;
     GError *error;
 
     //Initializations
     window = GW_INSTALLPROGRESSWINDOW (data);
     if (window == NULL) return NULL;
     priv = window->priv;
-    settingswindow = GW_SETTINGSWINDOW (gtk_window_get_transient_for (GTK_WINDOW (window)));
     application = gw_window_get_application (GW_WINDOW (window));
     dictinstlist = gw_application_get_dictinstlist (application);
-    dictinfolist = gw_application_get_dictinfolist (application);
     error = NULL;
 
     //Do the installation
-    timeoutid = g_timeout_add (100, gw_installprogresswindow_update_ui_timeout, window);
+    g_timeout_add (100, gw_installprogresswindow_update_ui_timeout, window);
     for (iter = dictinstlist->list; iter != NULL && error == NULL; iter = iter->next)
     {
       di = LW_DICTINST (iter->data);
@@ -199,18 +197,13 @@ static gpointer _installprogresswindow_install_thread (gpointer data)
       }
     }
 
+    gw_application_set_error (application, error);
+    error = NULL;
+
     g_mutex_lock (priv->mutex);
     //This will clue the progress window to close itself
     priv->di = NULL;
     g_mutex_unlock (priv->mutex);
-
-    //Cleanup
-gdk_threads_enter ();
-    gw_application_handle_error (application, GTK_WINDOW (settingswindow), TRUE, &error);
-    gw_dictinfolist_reload (dictinfolist);
-    lw_dictinstlist_set_cancel_operations (dictinstlist, FALSE);
-    gw_settingswindow_check_for_dictionaries (settingswindow);
-gdk_threads_leave ();
 
     return NULL;
 }

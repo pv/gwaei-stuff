@@ -120,6 +120,8 @@ void gw_dictionaryinstallwindow_constructed (GObject *object)
     gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER_ON_PARENT);
     gtk_window_set_modal (GTK_WINDOW (window), TRUE);
     gtk_window_set_default_size (GTK_WINDOW (window), 200, 300);
+    gtk_window_set_has_resize_grip (GTK_WINDOW (window), FALSE);
+    gtk_container_set_border_width (GTK_CONTAINER (window), 4);
 
     //Initializations
     priv->dictionary_store = gtk_list_store_new (TOTAL_GW_DICTINSTWINDOW_DICTSTOREFIELDS, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_INT);
