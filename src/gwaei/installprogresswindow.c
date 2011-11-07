@@ -199,11 +199,6 @@ gdk_threads_enter ();
     gw_application_handle_error (application, GTK_WINDOW (settingswindow), TRUE, &error);
     gw_dictinfolist_reload (dictinfolist);
     lw_dictinstlist_set_cancel_operations (dictinstlist, FALSE);
-    if (dictinstlist != NULL)
-    {
-      lw_dictinstlist_free (dictinstlist);
-      dictinstlist = NULL;
-    }
     gw_settingswindow_check_for_dictionaries (settingswindow);
 gdk_threads_leave ();
 

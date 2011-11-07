@@ -558,30 +558,28 @@ GtkTextTagTable* gw_application_get_tagtable (GwApplication *application)
 
 static void gw_application_activate (GApplication *application)
 {
-    GwSearchWindow *window;
+    GwSearchWindow *searchwindow;
+    GwSettingsWindow *settingswindow;
     LwDictInfoList *dictinfolist;
 
-    window = gw_application_get_last_focused_searchwindow (GW_APPLICATION (application));
+    searchwindow = gw_application_get_last_focused_searchwindow (GW_APPLICATION (application));
     dictinfolist = LW_DICTINFOLIST (gw_application_get_dictinfolist (GW_APPLICATION (application)));
 
-    if (window == NULL)
+    if (searchwindow == NULL)
     {
-      window = GW_SEARCHWINDOW (gw_searchwindow_new (GTK_APPLICATION (application)));
-      gtk_widget_show (GTK_WIDGET (window));
+      searchwindow = GW_SEARCHWINDOW (gw_searchwindow_new (GTK_APPLICATION (application)));
+      gtk_widget_show (GTK_WIDGET (searchwindow));
 
       if (lw_dictinfolist_get_total (dictinfolist) == 0)
       {
-        printf("to be written\n");
-        exit (1);
-        /*
-        window = GW_PREFWINDOW (gw_prefwindow_new (GTK_APPLICATION (application)));
-        gtk_widget_show (GTK_WIDGET (window));
-        */
+        settingswindow = GW_SETTINGSWINDOW (gw_settingswindow_new (GTK_APPLICATION (application)));
+        gtk_window_set_transient_for (GTK_WINDOW (settingswindow), GTK_WINDOW (searchwindow));
+        gtk_widget_show (GTK_WIDGET (settingswindow));
       }
     }
     else
     {
-      gtk_window_present (GTK_WINDOW (window));
+      gtk_window_present (GTK_WINDOW (searchwindow));
     }
 }
 
@@ -600,16 +598,13 @@ static int gw_application_command_line (GApplication *application, GApplicationC
     priv = GW_APPLICATION (application)->priv;
     dictinfolist = LW_DICTINFOLIST (gw_application_get_dictinfolist (GW_APPLICATION (application)));
     argv = g_application_command_line_get_arguments (command_line, &argc);
-    window = gw_application_get_last_focused_searchwindow (GW_APPLICATION (application));
+
+    g_application_activate (G_APPLICATION (application));
 
     gw_application_parse_args (GW_APPLICATION (application), &argc, &argv);
+    window = gw_application_get_last_focused_searchwindow (GW_APPLICATION (application));
 
-    //Set up the window
-    if (window == NULL || priv->arg_new_window_switch)
-    {
-      window = GW_SEARCHWINDOW (gw_searchwindow_new (GTK_APPLICATION (application)));
-      gtk_widget_show (GTK_WIDGET (window));
-    }
+    g_assert (window != NULL);
 
     //Set the initial dictionary
     if ((di = lw_dictinfolist_get_dictinfo_fuzzy (dictinfolist, priv->arg_dictionary)) != NULL)

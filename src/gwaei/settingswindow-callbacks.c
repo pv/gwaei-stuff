@@ -32,6 +32,7 @@
 #include <gtk/gtk.h>
 
 #include <gwaei/gwaei.h>
+#include <gwaei/settingswindow-private.h>
 
 
 //!
@@ -402,12 +403,19 @@ G_MODULE_EXPORT void gw_settingswindow_close_cb (GtkWidget *widget, gpointer dat
 {
     //Declarations
     GwSettingsWindow *window;
+    GwApplication *application;
+    LwDictInfoList *dictinfolist;
     
     //Initializations
     window = GW_SETTINGSWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_SETTINGSWINDOW));
     if (window == NULL) return;
+    application = gw_window_get_application (GW_WINDOW (window));
+    dictinfolist = LW_DICTINFOLIST (gw_application_get_dictinfolist (GW_APPLICATION (application)));
 
     gtk_widget_destroy (GTK_WIDGET (window));
+
+    if (lw_dictinfolist_get_total (dictinfolist) == 0)
+      gw_application_quit (application);
 }
 
 
