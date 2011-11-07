@@ -419,7 +419,7 @@ gboolean gw_spellcheck_update_timeout (gpointer data)
 
     //Initializaitons
     spellcheck = GW_SPELLCHECK (data);
-    window = GW_SEARCHWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_SEARCHWINDOW));
+    window = GW_SEARCHWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (spellcheck->entry), GW_TYPE_SEARCHWINDOW));
     if (window == NULL) return FALSE;
     application = gw_window_get_application (GW_WINDOW (window));
     preferences = gw_application_get_preferences (application);

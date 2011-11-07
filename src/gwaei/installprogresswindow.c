@@ -33,7 +33,6 @@
 #include <gwaei/gwaei.h>
 #include <gwaei/installprogresswindow-private.h>
 
-
 static gpointer _installprogresswindow_install_thread (gpointer);
 
 G_DEFINE_TYPE (GwInstallProgressWindow, gw_installprogresswindow, GW_TYPE_WINDOW)
@@ -101,6 +100,17 @@ static void gw_installprogresswindow_constructed (GObject *object)
     priv->label = GTK_LABEL (gw_window_get_object (GW_WINDOW (window), "install_progress_label"));
     priv->sublabel = GTK_LABEL (gw_window_get_object (GW_WINDOW (window), "sub_install_progress_label"));
     priv->progressbar = GTK_PROGRESS_BAR (gw_window_get_object (GW_WINDOW (window), "install_progress_progressbar"));
+
+    gtk_window_set_title (GTK_WINDOW (window), gettext("Installing Dictionaries..."));
+    gtk_window_set_resizable (GTK_WINDOW (window), FALSE);
+    gtk_window_set_type_hint (GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_DIALOG);
+    gtk_window_set_skip_taskbar_hint (GTK_WINDOW (window), TRUE);
+    gtk_window_set_skip_pager_hint (GTK_WINDOW (window), TRUE);
+    gtk_window_set_destroy_with_parent (GTK_WINDOW (window), TRUE);
+    gtk_window_set_icon_name (GTK_WINDOW (window), "gwaei");
+    gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER_ON_PARENT);
+    gtk_window_set_modal (GTK_WINDOW (window), TRUE);
+    gtk_window_set_default_size (GTK_WINDOW (window), -1, 400);
 }
 
 

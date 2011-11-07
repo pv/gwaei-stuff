@@ -77,8 +77,6 @@ void gw_settingswindow_finalize (GObject *object)
     window = GW_SETTINGSWINDOW (object);
     application = gw_window_get_application (GW_WINDOW (window));
 
-    gw_settingswindow_remove_signals (window);
-
     if (g_main_current_source () != NULL) gw_application_unblock_searches (application);
 
     G_OBJECT_CLASS (gw_settingswindow_parent_class)->finalize (object);
@@ -114,6 +112,9 @@ static void gw_settingswindow_constructed (GObject *object)
     gtk_window_set_destroy_with_parent (GTK_WINDOW (window), TRUE);
     gtk_window_set_icon_name (GTK_WINDOW (window), "gwaei");
     gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER_ON_PARENT);
+
+    g_signal_connect (G_OBJECT (window), "destroy",
+                      G_CALLBACK (gw_settingswindow_remove_signals), NULL);
 
     if (g_main_current_source () != NULL) gw_application_block_searches (application);
 

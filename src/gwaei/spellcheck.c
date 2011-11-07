@@ -33,8 +33,8 @@
 
 #include <gwaei/gwaei.h>
 
-void  _spellcheck_attach_signals (GwSpellcheck*);
-void  _spellcheck_remove_signals (GwSpellcheck*);
+static void gw_spellcheck_attach_signals (GwSpellcheck*);
+static void gw_spellcheck_remove_signals (GwSpellcheck*);
 
 GwSpellcheck* gw_spellcheck_new (GtkEntry *entry)
 {
@@ -69,13 +69,13 @@ void gw_spellcheck_init (GwSpellcheck *spellcheck, GtkEntry *entry)
     spellcheck->timeout = 0;
     spellcheck->thread = NULL;
 
-    _spellcheck_attach_signals (spellcheck);
+    gw_spellcheck_attach_signals (spellcheck);
 }
 
 
 void gw_spellcheck_deinit (GwSpellcheck *spellcheck)
 {
-    _spellcheck_remove_signals (spellcheck);
+    gw_spellcheck_remove_signals (spellcheck);
 
     if (spellcheck->thread != NULL) g_thread_join (spellcheck->thread);
     spellcheck->thread = NULL;
@@ -85,38 +85,67 @@ void gw_spellcheck_deinit (GwSpellcheck *spellcheck)
 }
 
 
-void  _spellcheck_attach_signals (GwSpellcheck *spellcheck)
+static void  gw_spellcheck_attach_signals (GwSpellcheck *spellcheck)
 {
     //Declarations
+    GtkEntry *entry;
     int i;
+
+    entry = spellcheck->entry;
 
     for (i = 0; i < TOTAL_GW_SPELLCHECK_SIGNALIDS; i++)
       spellcheck->signalid[i] = 0;
-
-    spellcheck->signalid[GW_SPELLCHECK_SIGNALID_DRAW] = g_signal_connect_after (
-        G_OBJECT (spellcheck->entry), "draw", G_CALLBACK (gw_spellcheck_draw_underline_cb), spellcheck);
-    spellcheck->signalid[GW_SPELLCHECK_SIGNALID_CHANGED] = g_signal_connect (
-        G_OBJECT (spellcheck->entry), "changed", G_CALLBACK (gw_spellcheck_queue_cb), spellcheck);
-    spellcheck->signalid[GW_SPELLCHECK_SIGNALID_POPULATE_POPUP] = g_signal_connect (
-        G_OBJECT (spellcheck->entry), "populate-popup", G_CALLBACK (gw_spellcheck_populate_cb), spellcheck);
-
     for (i = 0; i < TOTAL_GW_SPELLCHECK_TIMEOUTIDS; i++)
       spellcheck->timeoutid[i] = 0;
 
+    spellcheck->signalid[GW_SPELLCHECK_SIGNALID_DRAW] = g_signal_connect_after (
+        G_OBJECT (entry), 
+        "draw", 
+        G_CALLBACK (gw_spellcheck_draw_underline_cb), 
+        spellcheck
+    );
+    spellcheck->signalid[GW_SPELLCHECK_SIGNALID_CHANGED] = g_signal_connect (
+        G_OBJECT (entry), 
+        "changed", 
+        G_CALLBACK (gw_spellcheck_queue_cb), 
+        spellcheck
+    );
+    spellcheck->signalid[GW_SPELLCHECK_SIGNALID_POPULATE_POPUP] = g_signal_connect (
+        G_OBJECT (entry), 
+        "populate-popup", 
+        G_CALLBACK (gw_spellcheck_populate_cb), 
+        spellcheck
+    );
+
     spellcheck->timeoutid[GW_SPELLCHECK_TIMEOUTID_UPDATE] = g_timeout_add_full (
-        G_PRIORITY_LOW, 100, (GSourceFunc) gw_spellcheck_update_timeout, spellcheck, NULL);
+        G_PRIORITY_LOW, 
+        100, (GSourceFunc) 
+        gw_spellcheck_update_timeout, 
+        spellcheck, 
+        NULL
+    );
+
+    g_signal_connect_swapped (G_OBJECT (entry), "destroy", G_CALLBACK (gw_spellcheck_remove_signals), spellcheck);
 }
 
 
-void _spellcheck_remove_signals (GwSpellcheck *spellcheck)
+static void gw_spellcheck_remove_signals (GwSpellcheck *spellcheck)
 {
     //Declarations
+    GtkEntry *entry;
     GSource *source;
     int i;
 
-    g_signal_handler_disconnect (G_OBJECT (spellcheck->entry), spellcheck->signalid[GW_SPELLCHECK_SIGNALID_DRAW]);
-    g_signal_handler_disconnect (G_OBJECT (spellcheck->entry), spellcheck->signalid[GW_SPELLCHECK_SIGNALID_CHANGED]);
-    g_signal_handler_disconnect (G_OBJECT (spellcheck->entry), spellcheck->signalid[GW_SPELLCHECK_SIGNALID_POPULATE_POPUP]);
+    entry = spellcheck->entry;
+
+    for (i = 0; i < TOTAL_GW_SPELLCHECK_SIGNALIDS; i++)
+    {
+      if (spellcheck->signalid[i] > 0)
+      {
+        g_signal_handler_disconnect (G_OBJECT (entry), spellcheck->signalid[i]);
+        spellcheck->signalid[i] = 0;
+      }
+    }
 
     for (i = 0; i < TOTAL_GW_SPELLCHECK_TIMEOUTIDS; i++)
     {

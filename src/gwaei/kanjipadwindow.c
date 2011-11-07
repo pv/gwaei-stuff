@@ -73,22 +73,6 @@ void gw_kanjipadwindow_init (GwKanjipadWindow *window)
 {
     window->priv = GW_KANJIPADWINDOW_GET_PRIVATE (window);
     memset(window->priv, 0, sizeof(GwKanjipadWindowPrivate));
-
-    GwKanjipadWindowPrivate *priv;
-    priv = window->priv;
-
-    priv->drawingarea = NULL;
-    priv->candidates = NULL;
-    priv->total_candidates = 0;
-    priv->strokes = NULL;
-    priv->curstroke = NULL;
-    priv->surface = NULL;
-    priv->ksurface = NULL;
-    priv->from_engine = NULL;
-    priv->to_engine = NULL;
-    priv->kselected[0] = 0;
-    priv->kselected[1] = 0;
-    priv->instroke = FALSE;
 }
 
 

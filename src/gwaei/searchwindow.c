@@ -68,14 +68,10 @@ void gw_searchwindow_init (GwSearchWindow *window)
     window->priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
     memset(window->priv, 0, sizeof(GwSearchWindowPrivate));
 
-    //Declarations
     GwSearchWindowPrivate *priv;
-
-    //Initializations
     priv = window->priv;
 
     priv->feedback_status = LW_SEARCHSTATUS_IDLE;
-    priv->history = lw_history_new (20);
 }
 
 
@@ -87,29 +83,14 @@ static void gw_searchwindow_finalize (GObject *object)
     window = GW_SEARCHWINDOW (object);
     priv = window->priv;
 
-    gw_searchwindow_remove_signals (window);
-
     gw_searchwindow_cancel_all_searches (window);
 
-    if (priv->spellcheck != NULL) gw_spellcheck_free (priv->spellcheck);
-    if (priv->history != NULL) lw_history_free (priv->history);
-    if (priv->tablist != NULL) g_list_free (priv->tablist);
-
-    //Mouse finalize
-    if (priv->mouse_hovered_word != NULL)
-    {
-      g_free (priv->mouse_hovered_word);
-      priv->mouse_hovered_word = NULL;
-    }
-
-    //Keep searching finalize
-    if (priv->keep_searching_query != NULL)
-    {
-      g_free (priv->keep_searching_query);
-      priv->keep_searching_query = NULL;
-    } 
-
-    g_object_unref (priv->accelgroup);
+    if (priv->spellcheck) gw_spellcheck_free (priv->spellcheck); priv->spellcheck = NULL;
+    if (priv->history) lw_history_free (priv->history); priv->history = NULL;
+    if (priv->tablist) g_list_free (priv->tablist); priv->tablist = NULL;
+    if (priv->mouse_hovered_word) g_free (priv->mouse_hovered_word); priv->mouse_hovered_word = NULL;
+    if (priv->keep_searching_query) g_free (priv->keep_searching_query); priv->keep_searching_query = NULL;
+    if (priv->accelgroup) g_object_unref (priv->accelgroup); priv->accelgroup = NULL;
 
     G_OBJECT_CLASS (gw_searchwindow_parent_class)->finalize (object);
 }
@@ -140,23 +121,13 @@ static void gw_searchwindow_constructed (GObject *object)
     priv->statusbar = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "statusbar"));
     priv->combobox = GTK_COMBO_BOX (gw_window_get_object (GW_WINDOW (window), "dictionary_combobox"));
     priv->accelgroup = gtk_accel_group_new ();
+    priv->history = lw_history_new (20);
 
     //Set up the gtk window
     gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_MOUSE);
     gtk_window_set_default_size (GTK_WINDOW (window), 620, 500);
     gtk_window_set_icon_name (GTK_WINDOW (window), "gwaei");
     gtk_window_add_accel_group (GTK_WINDOW (window), window->priv->accelgroup);
-
-    g_signal_connect_after (G_OBJECT (window), "delete-event", 
-                            G_CALLBACK (gw_searchwindow_delete_event_action_cb), window);
-    g_signal_connect (G_OBJECT (window), "key-release-event", 
-                      G_CALLBACK (gw_searchwindow_key_release_modify_status_update_cb), window);
-    g_signal_connect (G_OBJECT (window), "key-press-event", 
-                      G_CALLBACK (gw_searchwindow_key_press_modify_status_update_cb), window);
-    g_signal_connect (G_OBJECT (window), "focus-in-event", 
-                      G_CALLBACK (gw_searchwindow_focus_in_event_cb), window);
-    g_signal_connect (G_OBJECT (window), "event-after", 
-                      G_CALLBACK (gw_searchwindow_event_after_cb), window);
 
     gtk_widget_grab_focus (GTK_WIDGET (priv->entry));
     gw_searchwindow_set_dictionary (window, 0);
@@ -2350,15 +2321,25 @@ static void gw_searchwindow_attach_signals (GwSearchWindow *window)
     GwSearchWindowPrivate *priv;
     GwDictInfoList *dictinfolist;
     LwPreferences *preferences;
-    int i;
 
     application = gw_window_get_application (GW_WINDOW (window));
     priv = window->priv;
     dictinfolist = gw_application_get_dictinfolist (application);
     preferences = gw_application_get_preferences (application);
 
-    for (i = 0; i < TOTAL_GW_SEARCHWINDOW_SIGNALIDS; i++)
-      priv->signalid[i] = 0;
+
+    g_signal_connect_after (G_OBJECT (window), "delete-event", 
+                            G_CALLBACK (gw_searchwindow_delete_event_action_cb), window);
+    g_signal_connect (G_OBJECT (window), "key-release-event", 
+                      G_CALLBACK (gw_searchwindow_key_release_modify_status_update_cb), window);
+    g_signal_connect (G_OBJECT (window), "key-press-event", 
+                      G_CALLBACK (gw_searchwindow_key_press_modify_status_update_cb), window);
+    g_signal_connect (G_OBJECT (window), "focus-in-event", 
+                      G_CALLBACK (gw_searchwindow_focus_in_event_cb), window);
+    g_signal_connect (G_OBJECT (window), "event-after", 
+                      G_CALLBACK (gw_searchwindow_event_after_cb), window);
+    g_signal_connect (G_OBJECT (window), "destroy",
+                      G_CALLBACK (gw_searchwindow_remove_signals), NULL);
 
     priv->signalid[GW_SEARCHWINDOW_SIGNALID_TOOLBAR_SHOW] = lw_preferences_add_change_listener_by_schema (
         preferences,
@@ -2459,8 +2440,8 @@ static void gw_searchwindow_remove_signals (GwSearchWindow *window)
     GwSearchWindowPrivate *priv;
     GwDictInfoList *dictinfolist;
     LwPreferences *preferences;
-    int i;
     GSource *source;
+    gint i;
 
     application = gw_window_get_application (GW_WINDOW (window));
     priv = window->priv;
@@ -2528,10 +2509,6 @@ static void gw_searchwindow_remove_signals (GwSearchWindow *window)
         G_OBJECT (dictinfolist->model),
         priv->signalid[GW_SEARCHWINDOW_SIGNALID_DICTIONARIES_DELETED]
     );
-
-
-    for (i = 0; i < TOTAL_GW_SEARCHWINDOW_SIGNALIDS; i++)
-      priv->signalid[i] = 0;
 }
 
 

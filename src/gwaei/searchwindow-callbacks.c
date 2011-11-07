@@ -226,18 +226,23 @@ G_MODULE_EXPORT void gw_searchwindow_close_cb (GtkWidget *widget, gpointer data)
     //Declarations
     GwSearchWindow *window;
     GwSearchWindowPrivate *priv;
+    GwApplication *application;
     int pages;
     
     //Initializations
     window = GW_SEARCHWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_SEARCHWINDOW));
     if (window == NULL) return;
     priv = window->priv;
+    application = gw_window_get_application (GW_WINDOW (window));
     pages = gtk_notebook_get_n_pages (priv->notebook);
 
     if (pages > 1)
       gw_searchwindow_remove_current_tab_cb (widget, data);
     else
       gtk_widget_destroy (GTK_WIDGET (window));
+
+    if (gw_application_get_window_by_type (application, GW_TYPE_SEARCHWINDOW) == NULL)
+      gw_application_quit (application);
 }
 
 
@@ -257,7 +262,10 @@ G_MODULE_EXPORT gboolean gw_searchwindow_delete_event_action_cb (GtkWidget *widg
     if (window == NULL) return FALSE;
     application = gw_window_get_application (GW_WINDOW (window));
 
-    gw_application_destroy_window (application, GTK_WINDOW (window));
+    gtk_widget_destroy (GTK_WIDGET (window));
+
+    if (gw_application_get_window_by_type (application, GW_TYPE_SEARCHWINDOW) == NULL)
+      gw_application_quit (application);
 
     return TRUE;
 }
@@ -1985,12 +1993,11 @@ G_MODULE_EXPORT void gw_searchwindow_sync_spellcheck_cb (GSettings *settings, gc
 
     if (request == TRUE && priv->spellcheck == NULL)
     {
-      //priv->spellcheck =  gw_spellcheck_new (priv->entry);
+      priv->spellcheck =  gw_spellcheck_new (priv->entry);
     }
     else if (request == FALSE && priv->spellcheck != NULL)
     {
-      gw_spellcheck_free (priv->spellcheck);
-      priv->spellcheck = NULL;
+      gw_spellcheck_free (priv->spellcheck); priv->spellcheck = NULL;
     }
 }
 

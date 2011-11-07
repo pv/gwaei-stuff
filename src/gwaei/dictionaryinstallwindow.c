@@ -59,9 +59,6 @@ void gw_dictionaryinstallwindow_init (GwDictionaryInstallWindow *window)
 {
     window->priv = GW_DICTIONARYINSTALLWINDOW_GET_PRIVATE (window);
     memset(window->priv, 0, sizeof(GwDictionaryInstallWindowPrivate));
-
-    GwDictionaryInstallWindowPrivate *priv;
-    priv = window->priv;
 }
 
 

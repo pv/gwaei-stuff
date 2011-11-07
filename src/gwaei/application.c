@@ -37,6 +37,8 @@
 #include <gwaei/gwaei.h>
 #include <gwaei/application-private.h>
 
+static void gw_application_attach_signals (GwApplication*);
+static void gw_application_remove_signals (GwApplication*);
 static void gw_application_activate (GApplication*);
 static gboolean gw_application_local_command_line (GApplication*, gchar***, gint*);
 static int gw_application_command_line (GApplication*, GApplicationCommandLine*);
@@ -64,35 +66,27 @@ GApplication* gw_application_new (const gchar *application_id, GApplicationFlags
 static void gw_application_init (GwApplication *application)
 {
     application->priv = GW_APPLICATION_GET_PRIVATE (application);
+    memset(application->priv, 0, sizeof(GwApplicationPrivate));
+}
 
+static void gw_application_constructed (GObject *object)
+{
+    //Declarations
+    GwApplication *application;
     GwApplicationPrivate *priv;
 
+    //Chain the parent class
+    {
+      G_OBJECT_CLASS (gw_application_parent_class)->constructed (object);
+    }
+
+    //Initialization
+    application = GW_APPLICATION (object);
     priv = application->priv;
-
-    priv->context = NULL;
-    priv->arg_new_window_switch = FALSE;
-    priv->arg_dictionary = NULL;
-    priv->arg_query = NULL;
-    priv->arg_version_switch = FALSE;
-
-    priv->last_focused = NULL;
 
     priv->preferences = lw_preferences_new ();
     priv->dictinfolist = gw_dictinfolist_new (20, application);
-    priv->dictinstlist = NULL;
-    priv->block_new_searches = 0;
-
     priv->tagtable = gw_application_texttagtable_new ();
-    lw_preferences_add_change_listener_by_schema (
-      priv->preferences, LW_SCHEMA_HIGHLIGHT, LW_KEY_MATCH_FG, gw_application_sync_tag_cb, application);
-    lw_preferences_add_change_listener_by_schema (
-      priv->preferences, LW_SCHEMA_HIGHLIGHT, LW_KEY_MATCH_BG, gw_application_sync_tag_cb, application);
-    lw_preferences_add_change_listener_by_schema (
-      priv->preferences, LW_SCHEMA_HIGHLIGHT, LW_KEY_HEADER_FG, gw_application_sync_tag_cb, application);
-    lw_preferences_add_change_listener_by_schema (
-      priv->preferences, LW_SCHEMA_HIGHLIGHT, LW_KEY_HEADER_BG, gw_application_sync_tag_cb, application);
-    lw_preferences_add_change_listener_by_schema (
-      priv->preferences, LW_SCHEMA_HIGHLIGHT, LW_KEY_COMMENT_FG, gw_application_sync_tag_cb, application);
 
 #ifdef OS_MINGW
     GtkSettings *settings;
@@ -104,10 +98,13 @@ static void gw_application_init (GwApplication *application)
     g_object_set (settings, "gtk-alternative-button-order", TRUE, NULL);
     g_object_unref (settings);
 #endif
+
+    gw_application_attach_signals (application);
 }
 
 
-static void gw_application_finalize (GObject *object)
+static void 
+gw_application_finalize (GObject *object)
 {
     //Declarations
     GwApplication *application;
@@ -116,11 +113,13 @@ static void gw_application_finalize (GObject *object)
     application = GW_APPLICATION (object);
     priv = application->priv;
 
-    if (priv->dictinstlist != NULL) lw_dictinstlist_free (priv->dictinstlist);
-    if (priv->dictinfolist != NULL) gw_dictinfolist_free (priv->dictinfolist);
-    if (priv->context != NULL)      g_option_context_free (priv->context);
-    if (priv->arg_query != NULL)    g_free(priv->arg_query);
-    if (priv->preferences != NULL)  lw_preferences_free (priv->preferences);
+    gw_application_remove_signals (application);
+
+    if (priv->dictinstlist != NULL) lw_dictinstlist_free (priv->dictinstlist); priv->dictinstlist = NULL;
+    if (priv->dictinfolist != NULL) gw_dictinfolist_free (priv->dictinfolist); priv->dictinfolist = NULL;
+    if (priv->context != NULL) g_option_context_free (priv->context); priv->context = NULL;
+    if (priv->arg_query != NULL) g_free(priv->arg_query); priv->arg_query = NULL;
+    if (priv->preferences != NULL) lw_preferences_free (priv->preferences); priv->preferences = NULL;
 
     G_OBJECT_CLASS (gw_application_parent_class)->finalize (object);
 }
@@ -135,12 +134,99 @@ gw_application_class_init (GwApplicationClass *klass)
   object_class = G_OBJECT_CLASS (klass);
   application_class = G_APPLICATION_CLASS (klass);
 
+  object_class->constructed = gw_application_constructed;
   object_class->finalize = gw_application_finalize;
   application_class->local_command_line = gw_application_local_command_line;
   application_class->command_line = gw_application_command_line;
   application_class->activate = gw_application_activate;
 
   g_type_class_add_private (object_class, sizeof (GwApplicationPrivate));
+}
+
+
+static void gw_application_attach_signals (GwApplication *application)
+{
+    //Declarations
+    GwApplicationPrivate* priv;
+    LwPreferences *preferences;
+
+    //Initializations
+    priv = application->priv;
+    preferences = gw_application_get_preferences (application);
+
+    priv->signalid[GW_APPLICATION_SIGNALID_MATCH_FG] = lw_preferences_add_change_listener_by_schema (
+        preferences, 
+        LW_SCHEMA_HIGHLIGHT, 
+        LW_KEY_MATCH_FG, 
+        gw_application_sync_tag_cb, 
+        application
+    );
+    priv->signalid[GW_APPLICATION_SIGNALID_MATCH_BG] = lw_preferences_add_change_listener_by_schema (
+        preferences, 
+        LW_SCHEMA_HIGHLIGHT, 
+        LW_KEY_MATCH_BG, 
+        gw_application_sync_tag_cb, 
+        application
+    );
+    priv->signalid[GW_APPLICATION_SIGNALID_HEADER_FG] = lw_preferences_add_change_listener_by_schema (
+        preferences, 
+        LW_SCHEMA_HIGHLIGHT, 
+        LW_KEY_HEADER_FG, 
+        gw_application_sync_tag_cb, 
+        application
+    );
+    priv->signalid[GW_APPLICATION_SIGNALID_HEADER_BG] = lw_preferences_add_change_listener_by_schema (
+        preferences, 
+        LW_SCHEMA_HIGHLIGHT, 
+        LW_KEY_HEADER_BG, 
+        gw_application_sync_tag_cb, 
+        application
+    );
+    priv->signalid[GW_APPLICATION_SIGNALID_COMMENT_FG] = lw_preferences_add_change_listener_by_schema (
+        preferences, 
+        LW_SCHEMA_HIGHLIGHT, 
+        LW_KEY_COMMENT_FG, 
+        gw_application_sync_tag_cb, 
+        application
+    );
+}
+
+
+static void gw_application_remove_signals (GwApplication *application)
+{
+    //Declarations
+    GwApplicationPrivate* priv;
+    LwPreferences *preferences;
+
+    //Initializations
+    priv = application->priv;
+    preferences = gw_application_get_preferences (application);
+
+    lw_preferences_remove_change_listener_by_schema (
+        preferences,
+        LW_SCHEMA_HIGHLIGHT,
+        priv->signalid[GW_APPLICATION_SIGNALID_MATCH_FG]
+    );
+    lw_preferences_remove_change_listener_by_schema (
+        preferences,
+        LW_SCHEMA_HIGHLIGHT,
+        priv->signalid[GW_APPLICATION_SIGNALID_MATCH_BG]
+    );
+    lw_preferences_remove_change_listener_by_schema (
+        preferences,
+        LW_SCHEMA_HIGHLIGHT,
+        priv->signalid[GW_APPLICATION_SIGNALID_HEADER_FG]
+    );
+    lw_preferences_remove_change_listener_by_schema (
+        preferences,
+        LW_SCHEMA_HIGHLIGHT,
+        priv->signalid[GW_APPLICATION_SIGNALID_HEADER_BG]
+    );
+    lw_preferences_remove_change_listener_by_schema (
+        preferences,
+        LW_SCHEMA_HIGHLIGHT,
+        priv->signalid[GW_APPLICATION_SIGNALID_COMMENT_FG]
+    );
 }
 
 
@@ -176,7 +262,10 @@ void gw_application_parse_args (GwApplication *application, int *argc, char** ar
     priv->context = g_option_context_new (gettext("- A dictionary program for Japanese-English translation."));
     g_option_context_add_main_entries (priv->context, entries, PACKAGE);
     g_option_context_add_group (priv->context, gtk_get_option_group (TRUE));
+    g_option_context_set_ignore_unknown_options (priv->context, TRUE);
     g_option_context_parse (priv->context, argc, argv, &error);
+
+    g_log_set_always_fatal (G_LOG_LEVEL_WARNING);
 
     if (error != NULL)
     {
@@ -216,7 +305,9 @@ void gw_application_quit (GwApplication *application)
 {
     gw_application_block_searches (application);
 
-    gtk_main_quit ();
+    GList *iter;
+    while ((iter = gtk_application_get_windows (GTK_APPLICATION (application))) != NULL)
+      gtk_widget_destroy (GTK_WIDGET (iter->data));
 
     gw_application_unblock_searches (application);
 }
@@ -567,32 +658,6 @@ static gboolean gw_application_local_command_line (GApplication *application,
 
     return handled;
 } 
-
-
-void gw_application_destroy_window (GwApplication *application, GtkWindow *window)
-{
-    //Declarations
-    GList *windowlist;
-    GList *iter;
-    gboolean quit;
-
-    //Initializations
-    windowlist = gtk_application_get_windows (GTK_APPLICATION (application));
-    quit = TRUE;
-
-    //See if there is still a GwSearchWindow open
-    for (iter = windowlist; iter != NULL; iter = iter->next)
-    {
-      if (G_OBJECT_TYPE (iter->data) == GW_TYPE_SEARCHWINDOW)
-      {
-        quit = FALSE;
-        break;
-      }
-    }
-
-    if (quit) gtk_main_quit ();
-    else gtk_widget_destroy (GTK_WIDGET (window));
-}
 
 
 //!

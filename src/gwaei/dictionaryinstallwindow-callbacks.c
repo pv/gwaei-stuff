@@ -620,21 +620,23 @@ G_MODULE_EXPORT void gw_dictionaryinstallwindow_close_cb (GtkWidget *widget, gpo
 
 G_MODULE_EXPORT void gw_dictionaryinstallwindow_add_cb (GtkWidget *widget, gpointer data)
 {
-    /*
     //Declarations
     GwDictionaryInstallWindow *window;
     GwSettingsWindow *settingswindow;
     GwInstallProgressWindow *installprogresswindow;
+    GwApplication *application;
     
     //Initializations
     window = GW_DICTIONARYINSTALLWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_DICTIONARYINSTALLWINDOW));
     if (window == NULL) return;
     settingswindow = GW_SETTINGSWINDOW (gtk_window_get_transient_for (GTK_WINDOW (window)));
+    application = gw_window_get_application (GW_WINDOW (window));
+    installprogresswindow = GW_INSTALLPROGRESSWINDOW (gw_installprogresswindow_new (GTK_APPLICATION (application)));
 
     gtk_widget_destroy (GTK_WIDGET (window));
 
-    installprogresswindow = GW_INSTALLPROGRESSWINDOW (gw_app_show_window (app, GW_WINDOW_INSTALLPROGRESS, GW_WINDOW (settingswindow), FALSE));
-    gw_installprogresswindow_start (GW_INSTALLPROGRESSWINDOW (installprogresswindow));
-*/
+    gtk_window_set_transient_for (GTK_WINDOW (installprogresswindow), GTK_WINDOW (settingswindow));
+    gtk_widget_show (GTK_WIDGET (installprogresswindow));
+    gw_installprogresswindow_start (installprogresswindow);
 }
 

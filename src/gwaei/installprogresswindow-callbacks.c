@@ -37,13 +37,11 @@
 G_MODULE_EXPORT void gw_installprogresswindow_cancel_cb (GtkWidget *widget, gpointer data)
 {
     GwInstallProgressWindow *window;
-    GwInstallProgressWindowPrivate *priv;
     GwApplication *application;
     LwDictInstList *dictinstlist;
 
     window = GW_INSTALLPROGRESSWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_INSTALLPROGRESSWINDOW));
     if (window == NULL) return;
-    priv = window->priv;
     application = gw_window_get_application (GW_WINDOW (window));
     dictinstlist = gw_application_get_dictinstlist (application);
 
