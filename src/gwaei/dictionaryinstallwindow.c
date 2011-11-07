@@ -96,6 +96,8 @@ void gw_dictionaryinstallwindow_constructed (GObject *object)
     LwDictInst *di;
     GtkTreeIter treeiter;
     int i;
+    GtkAccelGroup *accelgroup;
+    GtkWidget *widget;
 
     //Chain the parent class
     {
@@ -104,6 +106,7 @@ void gw_dictionaryinstallwindow_constructed (GObject *object)
 
     window = GW_DICTIONARYINSTALLWINDOW (object);
     priv = window->priv;
+    accelgroup = gw_window_get_accel_group (GW_WINDOW (window));
     application = gw_window_get_application (GW_WINDOW (window));
     dictinstlist = gw_application_get_dictinstlist (application);
 
@@ -191,6 +194,12 @@ void gw_dictionaryinstallwindow_constructed (GObject *object)
     gtk_cell_renderer_set_padding (GTK_CELL_RENDERER (renderer), 6, 0);
     column = gtk_tree_view_column_new_with_attributes ("Name", renderer, "text", GW_DICTINSTWINDOW_DICTSTOREFIELD_LONG_NAME, NULL);
     gtk_tree_view_append_column (priv->view, column);
+
+    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "dictionary_install_cancel_button"));
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
+      accelgroup, (GDK_KEY_W), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
+      accelgroup, (GDK_KEY_Escape), 0, GTK_ACCEL_VISIBLE);
 }
 
 

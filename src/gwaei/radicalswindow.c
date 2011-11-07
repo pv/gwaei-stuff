@@ -357,6 +357,8 @@ static void gw_radicalswindow_constructed (GObject *object)
     GwRadicalsWindowPrivate *priv;
     GtkWidget *toplevel;
     GtkWidget *scrolledwindow;
+    GtkAccelGroup *accelgroup;
+    GtkWidget *widget;
 
     //Chain the parent class
     {
@@ -365,6 +367,7 @@ static void gw_radicalswindow_constructed (GObject *object)
 
     window = GW_RADICALSWINDOW (object);
     priv = window->priv;
+    accelgroup = gw_window_get_accel_group (GW_WINDOW (window));
 
     toplevel = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "radical_selection_table"));
     gtk_widget_set_halign (toplevel, GTK_ALIGN_CENTER);
@@ -390,6 +393,12 @@ static void gw_radicalswindow_constructed (GObject *object)
     gtk_spin_button_set_value (priv->strokes_spinbutton, 1.0);
     _radicalswindow_fill_radicals (window);
     gtk_widget_show_all (GTK_WIDGET (priv->radicals_table));
+
+    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "close_button"));
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
+      accelgroup, (GDK_KEY_W), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
+      accelgroup, (GDK_KEY_Escape), 0, GTK_ACCEL_VISIBLE);
 }
 
 static void

@@ -87,6 +87,8 @@ static void gw_installprogresswindow_constructed (GObject *object)
     //Declarations
     GwInstallProgressWindow *window;
     GwInstallProgressWindowPrivate *priv;
+    GtkAccelGroup *accelgroup;
+    GtkWidget *widget;
 
     //Chain the parent class
     {
@@ -95,6 +97,7 @@ static void gw_installprogresswindow_constructed (GObject *object)
 
     window = GW_INSTALLPROGRESSWINDOW (object);
     priv = window->priv;
+    accelgroup = gw_window_get_accel_group (GW_WINDOW (window));
 
     priv->mutex = g_mutex_new ();
     priv->label = GTK_LABEL (gw_window_get_object (GW_WINDOW (window), "install_progress_label"));
@@ -111,6 +114,13 @@ static void gw_installprogresswindow_constructed (GObject *object)
     gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER_ON_PARENT);
     gtk_window_set_modal (GTK_WINDOW (window), TRUE);
     gtk_window_set_default_size (GTK_WINDOW (window), -1, 400);
+
+    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "install_progress_cancel_button"));
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
+      accelgroup, (GDK_KEY_W), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
+      accelgroup, (GDK_KEY_Escape), 0, GTK_ACCEL_VISIBLE);
+
 }
 
 

@@ -90,7 +90,6 @@ static void gw_searchwindow_finalize (GObject *object)
     if (priv->tablist) g_list_free (priv->tablist); priv->tablist = NULL;
     if (priv->mouse_hovered_word) g_free (priv->mouse_hovered_word); priv->mouse_hovered_word = NULL;
     if (priv->keep_searching_query) g_free (priv->keep_searching_query); priv->keep_searching_query = NULL;
-    if (priv->accelgroup) g_object_unref (priv->accelgroup); priv->accelgroup = NULL;
 
     G_OBJECT_CLASS (gw_searchwindow_parent_class)->finalize (object);
 }
@@ -104,6 +103,7 @@ static void gw_searchwindow_constructed (GObject *object)
     GtkToolButton *toolbutton;
     gboolean enchant_exists;
     GtkWidget *widget;
+    GtkAccelGroup *accelgroup;
 
     //Chain the parent class
     {
@@ -120,14 +120,12 @@ static void gw_searchwindow_constructed (GObject *object)
     priv->toolbar = GTK_TOOLBAR (gw_window_get_object (GW_WINDOW (window), "toolbar"));
     priv->statusbar = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "statusbar"));
     priv->combobox = GTK_COMBO_BOX (gw_window_get_object (GW_WINDOW (window), "dictionary_combobox"));
-    priv->accelgroup = gtk_accel_group_new ();
     priv->history = lw_history_new (20);
 
     //Set up the gtk window
     gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_MOUSE);
     gtk_window_set_default_size (GTK_WINDOW (window), 620, 500);
     gtk_window_set_icon_name (GTK_WINDOW (window), "gwaei");
-    gtk_window_add_accel_group (GTK_WINDOW (window), window->priv->accelgroup);
 
     gtk_widget_grab_focus (GTK_WIDGET (priv->entry));
     gw_searchwindow_set_dictionary (window, 0);
@@ -136,6 +134,7 @@ static void gw_searchwindow_constructed (GObject *object)
     //We are going to lazily update the sensitivity of the spellcheck buttons only when the window is created
     toolbutton = GTK_TOOL_BUTTON (gw_window_get_object (GW_WINDOW (window), "spellcheck_toolbutton")); 
     enchant_exists = g_file_test (ENCHANT, G_FILE_TEST_IS_REGULAR);
+    accelgroup = gw_window_get_accel_group (GW_WINDOW (window));
 
     //This code should probalby be moved to when the window is realized
     gw_searchwindow_initialize_dictionary_combobox (window);
@@ -148,106 +147,106 @@ static void gw_searchwindow_constructed (GObject *object)
     //Set menu accelerators
     widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "new_window_menuitem"));
     gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
-      window->priv->accelgroup, (GDK_KEY_N), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+      accelgroup, (GDK_KEY_N), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 
     widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "new_tab_menuitem"));
     gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
-      window->priv->accelgroup, (GDK_KEY_T), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+      accelgroup, (GDK_KEY_T), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 
     widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "append_menuitem"));
     gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
-      window->priv->accelgroup, (GDK_KEY_S), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+      accelgroup, (GDK_KEY_S), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 
     widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "print_menuitem"));
     gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
-      window->priv->accelgroup, (GDK_KEY_P), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+      accelgroup, (GDK_KEY_P), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 
     widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "close_menuitem"));
     gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
-      window->priv->accelgroup, (GDK_KEY_W), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+      accelgroup, (GDK_KEY_W), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 
     widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "quit_menuitem"));
     gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
-      window->priv->accelgroup, (GDK_KEY_Q), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+      accelgroup, (GDK_KEY_Q), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 
     //Edit popup
     widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "cut_menuitem"));
     gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
-      window->priv->accelgroup, (GDK_KEY_X), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+      accelgroup, (GDK_KEY_X), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 
     widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "copy_menuitem"));
     gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
-      window->priv->accelgroup, (GDK_KEY_C), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+      accelgroup, (GDK_KEY_C), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 
     widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "paste_menuitem"));
     gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
-      window->priv->accelgroup, (GDK_KEY_P), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+      accelgroup, (GDK_KEY_P), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 
     widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "select_all_menuitem"));
     gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
-      window->priv->accelgroup, (GDK_KEY_A), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+      accelgroup, (GDK_KEY_A), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 
     //View popup
     widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "zoom_in_menuitem"));
     gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
-      window->priv->accelgroup, (GDK_KEY_plus), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+      accelgroup, (GDK_KEY_plus), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
     gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
-      window->priv->accelgroup, (GDK_KEY_KP_Add), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+      accelgroup, (GDK_KEY_KP_Add), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 
     widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "zoom_out_menuitem"));
     gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
-      window->priv->accelgroup, (GDK_KEY_minus), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+      accelgroup, (GDK_KEY_minus), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
     gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
-      window->priv->accelgroup, (GDK_KEY_KP_Subtract), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+      accelgroup, (GDK_KEY_KP_Subtract), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 
     widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "zoom_100_menuitem"));
     gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
-      window->priv->accelgroup, (GDK_KEY_0), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+      accelgroup, (GDK_KEY_0), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
     gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
-      window->priv->accelgroup, (GDK_KEY_KP_0), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+      accelgroup, (GDK_KEY_KP_0), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 
     widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "previous_tab_menuitem"));
     gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
-      window->priv->accelgroup, (GDK_KEY_Page_Up), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+      accelgroup, (GDK_KEY_Page_Up), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 
     widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "next_tab_menuitem"));
     gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
-      window->priv->accelgroup, (GDK_KEY_Page_Down), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+      accelgroup, (GDK_KEY_Page_Down), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 
     //Insert popup
     widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "kanjipad_menuitem"));
     gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
-      window->priv->accelgroup, (GDK_KEY_K), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+      accelgroup, (GDK_KEY_K), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 
     widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "radicals_menuitem"));
     gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
-      window->priv->accelgroup, (GDK_KEY_R), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+      accelgroup, (GDK_KEY_R), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 
     widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "word_edge_menuitem"));
     gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
-      window->priv->accelgroup, (GDK_KEY_B), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+      accelgroup, (GDK_KEY_B), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 
     widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "not_word_edge_menuitem"));
     gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
-      window->priv->accelgroup, (GDK_KEY_B), GDK_SHIFT_MASK | GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+      accelgroup, (GDK_KEY_B), GDK_SHIFT_MASK | GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 
     widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "clear_menuitem"));
     gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
-      window->priv->accelgroup, (GDK_KEY_L), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+      accelgroup, (GDK_KEY_L), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 
     //History popup
     widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "back_menuitem"));
     gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
-      window->priv->accelgroup, (GDK_KEY_Left), GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
+      accelgroup, (GDK_KEY_Left), GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
 
     widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "forward_menuitem"));
     gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
-      window->priv->accelgroup, (GDK_KEY_Right), GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
+      accelgroup, (GDK_KEY_Right), GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
 
     //Help popup
     widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "help_menuitem"));
     gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
-      window->priv->accelgroup, (GDK_KEY_F1), 0, GTK_ACCEL_VISIBLE);
+      accelgroup, (GDK_KEY_F1), 0, GTK_ACCEL_VISIBLE);
 
     gw_searchwindow_attach_signals (window);
 }
@@ -2538,17 +2537,17 @@ void gw_searchwindow_initialize_dictionary_combobox (GwSearchWindow *window)
 
 void gw_searchwindow_initialize_dictionary_menu (GwSearchWindow *window)
 {
-    GwSearchWindowPrivate *priv;
     GwApplication *application;
     GtkMenuShell *shell;
     GList *list, *iter;
     GtkWidget *widget;
     GwDictInfoList *dictinfolist;
+    GtkAccelGroup *accelgroup;
 
-    priv = window->priv;
     application = gw_window_get_application (GW_WINDOW (window));
     shell = GTK_MENU_SHELL (gw_window_get_object (GW_WINDOW (window), "dictionary_popup"));
     dictinfolist = gw_application_get_dictinfolist (application);
+    accelgroup = gw_window_get_accel_group (GW_WINDOW (window));
 
     if (shell != NULL)
     {
@@ -2582,7 +2581,7 @@ void gw_searchwindow_initialize_dictionary_menu (GwSearchWindow *window)
           gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (widget), TRUE);
         g_signal_connect(G_OBJECT (widget), "toggled", G_CALLBACK (gw_searchwindow_dictionary_radio_changed_cb), window);
         if (di->load_position < 9)
-          gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", priv->accelgroup, (GDK_KEY_0 + di->load_position + 1), GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
+          gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", accelgroup, (GDK_KEY_0 + di->load_position + 1), GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
         gtk_widget_show (widget);
       }
     }
@@ -2595,13 +2594,13 @@ void gw_searchwindow_initialize_dictionary_menu (GwSearchWindow *window)
     widget = GTK_WIDGET (gtk_menu_item_new_with_mnemonic(gettext("_Cycle Up")));
     gtk_menu_shell_append (GTK_MENU_SHELL (shell), GTK_WIDGET (widget));
     g_signal_connect (G_OBJECT (widget), "activate", G_CALLBACK (gw_searchwindow_cycle_dictionaries_backward_cb), window);
-    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", priv->accelgroup, GDK_KEY_Up, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", accelgroup, GDK_KEY_Up, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
     gtk_widget_show (GTK_WIDGET (widget));
 
     widget = GTK_WIDGET (gtk_menu_item_new_with_mnemonic(gettext("Cycle _Down")));
     gtk_menu_shell_append (GTK_MENU_SHELL (shell), GTK_WIDGET (widget));
     g_signal_connect (G_OBJECT (widget), "activate", G_CALLBACK (gw_searchwindow_cycle_dictionaries_forward_cb), window);
-    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", priv->accelgroup, GDK_KEY_Down, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", accelgroup, GDK_KEY_Down, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
     gtk_widget_show (GTK_WIDGET (widget));
 }
 

@@ -91,6 +91,8 @@ static void gw_settingswindow_constructed (GObject *object)
     GwApplication *application;
     GtkTreeView *view;
     GwDictInfoList *dictinfolist;
+    GtkAccelGroup *accelgroup;
+    GtkWidget *widget;
 
     //Chain the parent class
     {
@@ -100,6 +102,7 @@ static void gw_settingswindow_constructed (GObject *object)
     //Initializations
     window = GW_SETTINGSWINDOW (object);
     priv = window->priv;
+    accelgroup = gw_window_get_accel_group (GW_WINDOW (window));
     application = gw_window_get_application (GW_WINDOW (window));
     dictinfolist = gw_application_get_dictinfolist (application);
     view = GTK_TREE_VIEW (gw_window_get_object (GW_WINDOW (window), "manage_dictionaries_treeview"));
@@ -136,6 +139,12 @@ static void gw_settingswindow_constructed (GObject *object)
     gtk_widget_set_sensitive (GTK_WIDGET (checkbox), enchant_exists);
 
     gw_settingswindow_attach_signals (window);
+
+    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "settings_close_button"));
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
+      accelgroup, (GDK_KEY_W), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
+      accelgroup, (GDK_KEY_Escape), 0, GTK_ACCEL_VISIBLE);
 }
 
 

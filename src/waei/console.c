@@ -51,18 +51,22 @@ void w_console_no_result (LwSearchItem *item)
 //!
 //! @param name A string of the name of the dictionary to uninstall.
 //!
-WAppResolution w_console_uninstall_dictinfo (WApplication* app, GError **error)
+int w_console_uninstall_dictinfo (WApplication* application, GError **error)
 {
     //Sanity check
-    if (error != NULL && *error != NULL) return W_APP_RESOLUTION_DICTIONARY_UNINSTALL_ERROR;
+    if (error != NULL && *error != NULL) return 1;
 
     //Declarations
+    LwDictInfoList *dictinfolist;
     LwDictInfo *di;
-    WAppResolution resolution;
+    int resolution;
+    const gchar *uninstall_switch_data;
 
     //Initializations
-    di = lw_dictinfolist_get_dictinfo_fuzzy (app->dictinfolist, app->uninstall_switch_data);
-    resolution = W_APP_RESOLUTION_SUCCESS;
+    uninstall_switch_data = w_application_get_uninstall_switch_data (application);
+    dictinfolist = w_application_get_dictinfolist (application);
+    di = lw_dictinfolist_get_dictinfo_fuzzy (dictinfolist, uninstall_switch_data);
+    resolution = 0;
 
     if (di != NULL)
     {
@@ -71,13 +75,13 @@ WAppResolution w_console_uninstall_dictinfo (WApplication* app, GError **error)
     }
     else
     {
-      printf("\n%s was not found!\n\n", app->uninstall_switch_data);
-      w_console_print_available_dictionaries (app);
+      printf("\n%s was not found!\n\n", uninstall_switch_data);
+      w_console_print_available_dictionaries (application);
     }
 
     if (*error != NULL)
     {
-      resolution = W_APP_RESOLUTION_DICTIONARY_UNINSTALL_ERROR;
+      resolution = 1;
     }
 
     return resolution;
@@ -89,18 +93,22 @@ WAppResolution w_console_uninstall_dictinfo (WApplication* app, GError **error)
 //!
 //! @param name A string of the name of the dictionary to install.
 //!
-WAppResolution w_console_install_dictinst (WApplication *app, GError **error)
+int w_console_install_dictinst (WApplication *application, GError **error)
 {
     //Sanity check
-    if (error != NULL && *error != NULL) return W_APP_RESOLUTION_DICTIONARY_INSTALL_ERROR;
+    if (error != NULL && *error != NULL) return 1;
 
     //Declarations
+    LwDictInstList *dictinstlist;
     LwDictInst *di;
-    WAppResolution resolution;
+    int resolution;
+    const gchar *install_switch_data;
 
     //Initializations
-    di = lw_dictinstlist_get_dictinst_fuzzy (app->dictinstlist, app->install_switch_data);
-    resolution = W_APP_RESOLUTION_SUCCESS;
+    install_switch_data = w_application_get_install_switch_data (application);
+    dictinstlist = w_application_get_dictinstlist (application);
+    di = lw_dictinstlist_get_dictinst_fuzzy (dictinstlist, install_switch_data);
+    resolution = 0;
 
     if (di != NULL)
     {
@@ -109,13 +117,13 @@ WAppResolution w_console_install_dictinst (WApplication *app, GError **error)
     }
     else
     {
-      printf("\n%s was not found!\n\n", app->install_switch_data);
-      w_console_print_installable_dictionaries (app);
+      printf("\n%s was not found!\n\n", install_switch_data);
+      w_console_print_installable_dictionaries (application);
     }
 
     if (*error != NULL)
     {
-      resolution = W_APP_RESOLUTION_DICTIONARY_INSTALL_ERROR;
+      resolution = 1;
     }
 
     return resolution;
@@ -142,7 +150,7 @@ void w_console_about (WApplication* app)
 //!
 //! @brief Prints out the yet uninstalled available dictionaries.
 //!
-void w_console_print_installable_dictionaries (WApplication *app)
+void w_console_print_installable_dictionaries (WApplication *application)
 {
     printf(gettext("Installable dictionaries are:\n"));
 
@@ -150,11 +158,13 @@ void w_console_print_installable_dictionaries (WApplication *app)
     int i;
     int j;
     GList *iter;
+    LwDictInstList *dictinstlist;
     LwDictInst* di;
 
     //Initializations
     i = 0; 
-    iter = app->dictinstlist->list;
+    dictinstlist = w_application_get_dictinstlist (application);
+    iter = dictinstlist->list;
 
     while (iter != NULL)
     {
@@ -179,18 +189,20 @@ void w_console_print_installable_dictionaries (WApplication *app)
 //!
 //! @brief Not yet written
 //!
-void w_console_print_available_dictionaries (WApplication *app)
+void w_console_print_available_dictionaries (WApplication *application)
 {
     //Declarations
     int i;
     int j;
+    LwDictInstList *dictinstlist;
     LwDictInfo* di;
     GList *iter;
 
     //Initializations
     i = 0;
     j = 0;
-	  iter = app->dictinstlist->list;
+    dictinstlist = w_application_get_dictinstlist (application);
+	  iter = dictinstlist->list;
 
     printf(gettext("Available dictionaries are:\n"));
 
@@ -235,50 +247,66 @@ void w_console_handle_error (WApplication* app, GError **error)
 }
 
 
-WAppResolution w_console_search (WApplication *app, GError **error)
+int w_console_search (WApplication *application, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return FALSE;
 
     //Declarations
     LwSearchItem *item;
+    LwDictInfoList *dictinfolist;
+    LwPreferences* preferences;
+
+    const gchar* dictionary_switch_data;
+    const gchar* query_text_data;
+    gboolean quiet_switch;
+    gboolean exact_switch;
+
     char *message_total;
     char *message_relevant;
     LwDictInfo *di;
-    WAppResolution resolution;
+    int resolution;
 
     //Initializations
-    di = lw_dictinfolist_get_dictinfo_fuzzy (app->dictinfolist, app->dictionary_switch_data);
-    item = lw_searchitem_new (app->query_text_data, di, LW_OUTPUTTARGET_RESULTS, app->preferences, error);
-    resolution = W_APP_RESOLUTION_SUCCESS;
+    dictinfolist = w_application_get_dictinfolist (application);
+    preferences = w_application_get_preferences (application);
+
+    dictionary_switch_data = w_application_get_dictionary_switch_data (application);
+    query_text_data = w_application_get_query_text_data (application);
+    quiet_switch = w_application_get_quiet_switch (application);
+    exact_switch = w_application_get_exact_switch (application);
+
+    di = lw_dictinfolist_get_dictinfo_fuzzy (dictinfolist, dictionary_switch_data);
+    item = lw_searchitem_new (query_text_data, di, preferences, error);
+    resolution = 0;
 
     //Sanity checks
     if (di == NULL)
     {
-      resolution = W_APP_RESOLUTION_INVALID_DICTIONARY;
+      resolution = 1;
       fprintf (stderr, gettext("Requested dictionary not found!\n"));
       return resolution;
     }
 
     if (item == NULL)
     {
-      resolution = W_APP_RESOLUTION_INVALID_QUERY;
+      resolution = 1;
       return resolution;
     }
 
     //Print the search intro
-    if (!app->quiet_switch)
+    if (!quiet_switch)
     {
       // TRANSLATORS: 'Searching for "${query}" in ${dictionary long name}'
-      printf(gettext("Searching for \"%s\" in %s...\n"), app->query_text_data, di->longname);
+      printf(gettext("Searching for \"%s\" in %s...\n"), query_text_data, di->longname);
       printf("\n");
     }
 
     //Print the results
-    lw_engine_get_results (app->engine, item, FALSE, app->exact_switch);
+    lw_searchitem_start_search (item, FALSE, exact_switch);
 
     //Print final header
-    if (app->quiet_switch == FALSE)
+    if (quiet_switch == FALSE)
     {
       message_total = ngettext("Found %d result", "Found %d results", item->total_results);
       message_relevant = ngettext("(%d Relevant)", "(%d Relevant)", item->total_relevant_results);

@@ -88,6 +88,8 @@ static void gw_application_constructed (GObject *object)
     priv->dictinfolist = gw_dictinfolist_new (20, application);
     priv->tagtable = gw_application_texttagtable_new ();
 
+    lw_regex_initialize ();
+
 #ifdef OS_MINGW
     GtkSettings *settings;
     settings = gtk_settings_get_default ();
@@ -120,6 +122,8 @@ gw_application_finalize (GObject *object)
     if (priv->context != NULL) g_option_context_free (priv->context); priv->context = NULL;
     if (priv->arg_query != NULL) g_free(priv->arg_query); priv->arg_query = NULL;
     if (priv->preferences != NULL) lw_preferences_free (priv->preferences); priv->preferences = NULL;
+
+    lw_regex_free ();
 
     G_OBJECT_CLASS (gw_application_parent_class)->finalize (object);
 }

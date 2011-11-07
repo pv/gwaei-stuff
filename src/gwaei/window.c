@@ -65,6 +65,7 @@ void gw_window_finalize (GObject *object)
     if (priv->builder != NULL) g_object_unref (priv->builder);
     if (priv->ui_xml != NULL) g_free (priv->ui_xml);
     priv->toplevel = NULL;
+    if (priv->accelgroup) g_object_unref (priv->accelgroup); priv->accelgroup = NULL;
 
     G_OBJECT_CLASS (gw_window_parent_class)->finalize (object);
 }
@@ -82,10 +83,14 @@ static void gw_window_constructed (GObject *object)
 
     window = GW_WINDOW (object);
     priv = window->priv;
+
+    priv->accelgroup = gtk_accel_group_new ();
+    gtk_window_add_accel_group (GTK_WINDOW (window), priv->accelgroup);
     gtk_window_set_application (GTK_WINDOW (window), GTK_APPLICATION (priv->application));
     priv->builder = gtk_builder_new ();
     gw_window_load_ui_xml (window, priv->ui_xml);
     priv->toplevel = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "toplevel"));
+
 }
 
 
@@ -271,3 +276,12 @@ GtkWidget* gw_window_get_toplevel (GwWindow *window)
     return priv->toplevel;
 }
 
+
+GtkAccelGroup *gw_window_get_accel_group (GwWindow *window)
+{
+    GwWindowPrivate *priv;
+
+    priv = window->priv;
+
+    return priv->accelgroup;
+}

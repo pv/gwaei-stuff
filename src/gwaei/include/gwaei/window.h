@@ -33,6 +33,7 @@ gboolean gw_window_load_ui_xml (GwWindow*, const char*);
 void gw_window_set_application (GwWindow*, GwApplication*);
 GwApplication* gw_window_get_application (GwWindow*);
 GtkWidget* gw_window_get_toplevel (GwWindow*);
+GtkAccelGroup *gw_window_get_accel_group (GwWindow*);
 
 G_END_DECLS
 
