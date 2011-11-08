@@ -90,6 +90,8 @@ w_console_append_edict_result (WApplication *application, LwSearchItem *item)
     color_switch = w_application_get_color_switch (application);
     cont = 0;
 
+    w_console_append_less_relevant_header (application, item);
+
     //Kanji
     if (resultline->kanji_start)
     {
@@ -152,6 +154,8 @@ w_console_append_kanjidict_result (WApplication *application, LwSearchItem *item
     if (resultline == NULL) return;
     color_switch = w_application_get_color_switch (application);
     line_started = FALSE;
+
+    w_console_append_less_relevant_header (application, item);
 
     //Kanji
     if (color_switch)
@@ -228,6 +232,8 @@ w_console_append_examplesdict_result (WApplication *application, LwSearchItem *i
     if (resultline == NULL) return;
     color_switch = w_application_get_color_switch (application);
 
+    w_console_append_less_relevant_header (application, item);
+
     if (resultline->def_start[0] != NULL)
     {
       if (color_switch)
@@ -276,6 +282,8 @@ w_console_append_unknowndict_result (WApplication *application, LwSearchItem *it
     //Initializations
     resultline = lw_searchitem_get_result (item);
     if (resultline == NULL) return;
+
+    w_console_append_less_relevant_header (application, item);
 
     printf("%s\n", item->resultline->string);
 
@@ -341,25 +349,53 @@ int w_console_install_progress (double fraction, gpointer data)
 static void 
 w_console_append_less_relevant_header (WApplication *application, LwSearchItem *item)
 {
+    //Sanity check
+    if (application == NULL || item == NULL) return;
+
+    //Declarations
+    WSearchData *sdata;
     gboolean color_switch;
     gboolean quiet_switch;
 
+    //Initializations
     color_switch = w_application_get_color_switch (application);
     quiet_switch = w_application_get_quiet_switch (application);
+    sdata = W_SEARCHDATA (lw_searchitem_get_data (item));
 
     if (quiet_switch) return;
+    if (sdata->less_relevant_header_set || item->status != LW_SEARCHSTATUS_IDLE || item->results_high != NULL) return;
 
     if (color_switch)
       printf("\n[0;31m***[0m[1m%s[0;31m***************************[0m\n\n\n", gettext("Other Results"));
     else
       printf("\n***%s***************************\n\n\n", gettext("Other Results"));
+
+    sdata->less_relevant_header_set = TRUE;
 }
 
 
 //!
 //! @brief Print the "no result" message where necessary.
 //!
-void w_console_no_result (WApplication *application, LwSearchItem *item)
+void 
+w_console_no_result (WApplication *application, LwSearchItem *item)
 {
-    printf("%s\n\n", gettext("No results found!"));
+    //Sanity check
+    if (application == NULL || item == NULL || item->dictionary == NULL) return;
+    if (item->status != LW_SEARCHSTATUS_IDLE || item->current == 0L || item->total_results > 0) return; 
+
+    //Declarations
+    gboolean color_switch;
+    gboolean quiet_switch;
+
+    //Initializations
+    color_switch = w_application_get_color_switch (application);
+    quiet_switch = w_application_get_quiet_switch (application);
+
+    if (quiet_switch) return;
+
+    if (color_switch)
+      printf("%s\n\n", gettext("No results found!"));
+    else
+      printf("%s\n\n", gettext("No results found!"));
 }

@@ -38,6 +38,7 @@
 static void w_application_activate (GApplication*);
 static gboolean w_application_local_command_line (GApplication*, gchar***, gint*);
 static int w_application_command_line (GApplication*, GApplicationCommandLine*);
+static gint w_application_run (WApplication*);
 
 G_DEFINE_TYPE (WApplication, w_application, G_TYPE_APPLICATION)
 
@@ -297,7 +298,7 @@ static gboolean w_application_local_command_line (GApplication *application,
 
     w_application_parse_args (W_APPLICATION (application), &argc, argv);
 
-    *exit_status = w_application_run (application);
+    *exit_status = w_application_run (W_APPLICATION (application));
 
     return TRUE;
 } 
@@ -308,7 +309,7 @@ static gboolean w_application_local_command_line (GApplication *application,
 //! @param argc Your argc from your main function
 //! @param argv Your array of strings from main
 //!
-int w_application_run (WApplication *application)
+static gint w_application_run (WApplication *application)
 {
     //Declarations
     WApplicationPrivate *priv;

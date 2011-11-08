@@ -16,6 +16,7 @@ WSearchData* w_searchdata_new (GMainLoop *loop, WApplication *application)
     {
       temp->loop = loop;
       temp->application = application;
+      temp->less_relevant_header_set = FALSE;
     }
 
     return temp;

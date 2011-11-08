@@ -502,14 +502,9 @@ void lw_resultline_parse_unknowndict_result_string (LwResultLine *rl)
 gboolean lw_resultline_is_similar (LwResultLine *rl1, LwResultLine *rl2)
 {
     //Declarations
-    gboolean furigana_exists, kanji_exists;
     gboolean same_def_totals, same_first_def;
 
     if (rl1 == NULL || rl2 == NULL) return FALSE;
-
-    //Initializations
-    kanji_exists = (rl1->kanji_start != NULL && rl2->kanji_start != NULL);
-    furigana_exists = (rl1->furigana_start != NULL && rl2->furigana_start != NULL);
 
     //Initializations
     same_def_totals = (rl1->def_total == rl2->def_total);

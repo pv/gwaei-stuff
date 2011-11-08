@@ -48,7 +48,6 @@ void gw_searchwindow_cancel_search_for_current_tab (GwSearchWindow*);
 void gw_searchwindow_cancel_search_by_content (GwSearchWindow*, gpointer);
 void gw_searchwindow_cancel_all_searches (GwSearchWindow*);
 
-void gw_searchwindow_display_no_results_found_page (GwSearchWindow*, LwSearchItem*);
 void gw_searchwindow_initialize_buffer_by_searchitem (GwSearchWindow*, LwSearchItem*);
 
 void gw_searchwindow_entry_set_text (GwSearchWindow*, const gchar*);
@@ -119,6 +118,8 @@ void gw_searchwindow_initialize_dictionary_menu (GwSearchWindow*);
 void gw_searchwindow_initialize_dictionary_combobox (GwSearchWindow*);
 
 void gw_searchwindow_insert_resultpopup_button (GwSearchWindow*, LwSearchItem*, LwResultLine*, GtkTextIter*);
+
+void gw_searchwindow_append_to_buffer (GwSearchWindow*, LwSearchItem*, const char *, char*, char*, int*, int*);
 
 #include "searchwindow-callbacks.h"
 #include "searchwindow-output.h"

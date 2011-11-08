@@ -6,6 +6,7 @@
 struct _WSearchData {
   GMainLoop *loop;
   WApplication *application;
+  gboolean less_relevant_header_set;
 };
 typedef struct _WSearchData WSearchData;
 

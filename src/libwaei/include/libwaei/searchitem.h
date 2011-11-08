@@ -115,4 +115,5 @@ void lw_searchitem_unlock_mutex (LwSearchItem*);
 double lw_searchitem_get_progress (LwSearchItem*);
 
 
+
 #endif
