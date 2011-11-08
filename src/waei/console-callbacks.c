@@ -53,16 +53,41 @@ int w_console_install_progress_cb (double fraction, gpointer data)
   }
 
   status = lw_dictinst_get_status_string (di, TRUE);
-  printf("\r [%d%] %s", current_percent, status);
+  printf("\r [%d%%] %s", current_percent, status);
   _previous_percent = current_percent;
   g_free (status);
 
   return FALSE;
 }
 
-gw_console_output
-gboolean gw_console_append_result_timeout (gpointer data)
+gboolean w_console_append_result_timeout (gpointer data)
 {
-  g_main_loop_quit (loop);
-  return TRUE;
+  LwSearchItem *item;
+  WSearchData *sdata;
+  int chunk;
+  int max_chunk;
+  gboolean is_still_searching;
+
+  item = LW_SEARCHITEM (data);
+  sdata = W_SEARCHDATA (lw_searchitem_get_data (item));
+  chunk = 0;
+  max_chunk = 10;
+
+  if (item != NULL && lw_searchitem_should_check_results (item))
+  {
+    while (item != NULL && lw_searchitem_should_check_results (item) && chunk < max_chunk)
+    {
+      w_console_append_result (sdata->application, item);
+      chunk++;
+    }
+    is_still_searching = TRUE;
+  }
+  else
+  {
+      w_console_no_result (sdata->application, item);
+      g_main_loop_quit (sdata->loop);
+      is_still_searching = FALSE;
+  }
+
+  return is_still_searching;
 }

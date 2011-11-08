@@ -949,7 +949,7 @@ void gw_searchwindow_append_kanjidict_tooltip_result (GwSearchWindow *window, Lw
     child = gtk_bin_get_child (GTK_BIN (tooltip_window));
     if (child != NULL) gtk_widget_destroy (GTK_WIDGET (child));
 
-    hbox = GTK_WIDGET (gtk_hbox_new (FALSE, 3));
+    hbox = GTK_WIDGET (gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 3));
     gtk_container_set_border_width (GTK_CONTAINER (hbox), 3);
     gtk_container_add (GTK_CONTAINER (tooltip_window), GTK_WIDGET (hbox));
 

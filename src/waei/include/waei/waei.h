@@ -8,6 +8,7 @@
 
 #include <libwaei/libwaei.h>
 #include <waei/application.h>
+#include <waei/search-data.h>
 #include <waei/console.h>
 
 #endif

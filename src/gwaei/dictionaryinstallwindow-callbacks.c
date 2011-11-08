@@ -447,7 +447,7 @@ static void _dictinstwindow_fill_details_box (GwDictionaryInstallWindow *window,
     priv->di = di;
 
     //First row
-    hbox = GTK_WIDGET (gtk_hbox_new (FALSE, 0));
+    hbox = GTK_WIDGET (gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0));
     markup = g_strdup_printf(gettext("<b>%s Install Details</b>"), di->longname);
     label = gtk_label_new (NULL);
     gtk_label_set_markup (GTK_LABEL (label), markup);
@@ -457,7 +457,7 @@ static void _dictinstwindow_fill_details_box (GwDictionaryInstallWindow *window,
     gtk_widget_show_all (GTK_WIDGET (hbox));
 
     //Second row
-    hbox = GTK_WIDGET (gtk_hbox_new (FALSE, 0));
+    hbox = GTK_WIDGET (gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0));
     markup = g_strdup_printf("%s", di->description);
     label = gtk_label_new (NULL);
     gtk_widget_set_size_request (GTK_WIDGET (label), 300, -1);
@@ -471,7 +471,7 @@ static void _dictinstwindow_fill_details_box (GwDictionaryInstallWindow *window,
 
     //Third row
     label = gtk_label_new (gettext("Filename: "));
-    hbox = GTK_WIDGET (gtk_hbox_new (FALSE, 0));
+    hbox = GTK_WIDGET (gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0));
     gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (label), FALSE, FALSE, 0);
     gtk_table_attach_defaults (GTK_TABLE (table), hbox, 0, 1, 0, 1);
 
@@ -485,7 +485,7 @@ static void _dictinstwindow_fill_details_box (GwDictionaryInstallWindow *window,
 
     //Forth row
     label = gtk_label_new (gettext("Engine: "));
-    hbox = GTK_WIDGET (gtk_hbox_new (FALSE, 0));
+    hbox = GTK_WIDGET (gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0));
     gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (label), FALSE, FALSE, 0);
     gtk_table_attach_defaults (GTK_TABLE (table), hbox, 0, 1, 1, 2);
 
@@ -505,11 +505,11 @@ static void _dictinstwindow_fill_details_box (GwDictionaryInstallWindow *window,
 
     //Fifth row
     label = gtk_label_new (gettext("Source: "));
-    hbox = GTK_WIDGET (gtk_hbox_new (FALSE, 0));
+    hbox = GTK_WIDGET (gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0));
     gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (label), FALSE, FALSE, 0);
     gtk_table_attach_defaults (GTK_TABLE (table), hbox, 0, 1, 2, 3);
 
-    hbox = GTK_WIDGET (gtk_hbox_new (FALSE, 0));
+    hbox = GTK_WIDGET (gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0));
 
     entry = gtk_entry_new ();
     gtk_entry_set_text (GTK_ENTRY (entry), di->uri[LW_DICTINST_NEEDS_DOWNLOADING]);
@@ -535,7 +535,7 @@ static void _dictinstwindow_fill_details_box (GwDictionaryInstallWindow *window,
 
     //Sixth row
     label = gtk_label_new (gettext("Encoding: "));
-    hbox = GTK_WIDGET (gtk_hbox_new (FALSE, 0));
+    hbox = GTK_WIDGET (gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0));
     gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (label), FALSE, FALSE, 0);
     gtk_table_attach_defaults (GTK_TABLE (table), hbox, 0, 1, 3, 4);
 
@@ -554,7 +554,7 @@ static void _dictinstwindow_fill_details_box (GwDictionaryInstallWindow *window,
 
     //Seventh row
     label = gtk_label_new (gettext("Compression: "));
-    hbox = GTK_WIDGET (gtk_hbox_new (FALSE, 0));
+    hbox = GTK_WIDGET (gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0));
     gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (label), FALSE, FALSE, 0);
     gtk_table_attach_defaults (GTK_TABLE (table), hbox, 0, 1, 4, 5);
 
@@ -577,7 +577,7 @@ static void _dictinstwindow_fill_details_box (GwDictionaryInstallWindow *window,
     g_signal_connect (G_OBJECT (checkbox), "toggled", G_CALLBACK (gw_dictionaryinstallwindow_split_checkbox_toggled_cb), window);
     priv->split_checkbutton = GTK_CHECK_BUTTON (checkbox);
 
-    hbox = GTK_WIDGET (gtk_hbox_new (FALSE, 0));
+    hbox = GTK_WIDGET (gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0));
     gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (checkbox), FALSE, FALSE, 0);
     gtk_table_attach_defaults (GTK_TABLE (table), hbox, 0, 2, 5, 6);
     gtk_widget_set_sensitive (GTK_WIDGET (checkbox), editable);
@@ -589,7 +589,7 @@ static void _dictinstwindow_fill_details_box (GwDictionaryInstallWindow *window,
     g_signal_connect (G_OBJECT (checkbox), "toggled", G_CALLBACK (gw_dictionaryinstallwindow_merge_checkbox_toggled_cb), window);
     priv->merge_checkbutton = GTK_CHECK_BUTTON (checkbox);
 
-    hbox = GTK_WIDGET (gtk_hbox_new (FALSE, 0));
+    hbox = GTK_WIDGET (gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0));
     gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (checkbox), FALSE, FALSE, 0);
     gtk_table_attach_defaults (GTK_TABLE (table), hbox, 0, 2, 6, 7);
     gtk_widget_set_sensitive (GTK_WIDGET (checkbox), editable);

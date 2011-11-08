@@ -39,23 +39,65 @@
 static gboolean _group_index_changed = FALSE;
 static int _previous_percent = -1;
 
+
+static void w_console_append_edict_result (WApplication*, LwSearchItem*);
+static void w_console_append_kanjidict_result (WApplication*, LwSearchItem*);
+static void w_console_append_examplesdict_result (WApplication*, LwSearchItem*);
+static void w_console_append_unknowndict_result (WApplication*, LwSearchItem*);
+static void w_console_append_less_relevant_header (WApplication*, LwSearchItem*);
+
+void 
+w_console_append_result (WApplication *application, LwSearchItem *item)
+{
+    if (application == NULL || item == NULL) return;
+
+    switch (item->dictionary->type)
+    {
+      case LW_DICTTYPE_EDICT:
+        w_console_append_edict_result (application, item);
+        break;
+      case LW_DICTTYPE_KANJI:
+        w_console_append_kanjidict_result (application, item);
+        break;
+      case LW_DICTTYPE_EXAMPLES:
+        w_console_append_examplesdict_result (application, item);
+        break;
+      case LW_DICTTYPE_UNKNOWN:
+        w_console_append_unknowndict_result (application, item);
+        break;
+      default:
+        g_assert_not_reached ();
+        break;
+    }
+
+}
+
+
 //!
 //! @brief Not yet written
 //!
-void w_console_append_edict_result (WApplication *application, LwSearchItem *item)
+static void 
+w_console_append_edict_result (WApplication *application, LwSearchItem *item)
 {
     //Definitions
-    int cont = 0;
-    LwResultLine *resultline = item->resultline;
+    LwResultLine *resultline;
     gboolean color_switch;
+    gint cont;
 
+    //Initializations
+    resultline = lw_searchitem_get_result (item);
+    if (resultline == NULL) return;
     color_switch = w_application_get_color_switch (application);
+    cont = 0;
 
     //Kanji
-    if (color_switch)
-      printf("[32m%s", resultline->kanji_start);
-    else
-      printf("%s", resultline->kanji_start);
+    if (resultline->kanji_start)
+    {
+      if (color_switch)
+        printf("[32m%s", resultline->kanji_start);
+      else
+        printf("%s", resultline->kanji_start);
+    }
     //Furigana
     if (resultline->furigana_start)
       printf(" [%s]", resultline->furigana_start);
@@ -86,20 +128,30 @@ void w_console_append_edict_result (WApplication *application, LwSearchItem *ite
       cont++;
     }
     printf("\n");
+
+    //Cleanup
+    lw_resultline_free (resultline);
 }
 
 
 //!
 //! @brief Not yet written
 //!
-void w_console_append_kanjidict_result (WApplication *application, LwSearchItem *item)
+static void 
+w_console_append_kanjidict_result (WApplication *application, LwSearchItem *item)
 {
     if (item == NULL) return;
 
+    //Definitions
+    LwResultLine *resultline;
     gboolean color_switch;
+    gboolean line_started;
+
+    //Initializations
+    resultline = lw_searchitem_get_result (item);
+    if (resultline == NULL) return;
     color_switch = w_application_get_color_switch (application);
-    char line_started = FALSE;
-    LwResultLine *resultline = item->resultline;
+    line_started = FALSE;
 
     //Kanji
     if (color_switch)
@@ -153,20 +205,28 @@ void w_console_append_kanjidict_result (WApplication *application, LwSearchItem 
     if (resultline->meanings)
       printf("%s%s\n", gettext("Meanings:"), resultline->meanings);
     printf("\n");
+
+    //Cleanup
+    lw_resultline_free (resultline);
 }
 
 
 //!
 //! @brief Not yet written
 //!
-void w_console_append_examplesdict_result (WApplication *application, LwSearchItem *item)
+static void 
+w_console_append_examplesdict_result (WApplication *application, LwSearchItem *item)
 {
     if (item == NULL) return;
 
+    //Definitions
+    LwResultLine *resultline;
     gboolean color_switch;
-    color_switch = w_application_get_color_switch (application);
-    LwResultLine *resultline = item->resultline;
 
+    //Initializations
+    resultline = lw_searchitem_get_result (item);
+    if (resultline == NULL) return;
+    color_switch = w_application_get_color_switch (application);
 
     if (resultline->def_start[0] != NULL)
     {
@@ -196,25 +256,31 @@ void w_console_append_examplesdict_result (WApplication *application, LwSearchIt
     }
 
     printf("\n\n");
+
+    //Cleanup
+    lw_resultline_free (resultline);
 }
 
 
 //!
 //! @brief Not yet written
 //!
-void w_console_append_unknowndict_result (WApplication *application, LwSearchItem *item)
+static void 
+w_console_append_unknowndict_result (WApplication *application, LwSearchItem *item)
 {
     if (item == NULL) return;
 
+    //Definitions
+    LwResultLine *resultline;
+
+    //Initializations
+    resultline = lw_searchitem_get_result (item);
+    if (resultline == NULL) return;
+
     printf("%s\n", item->resultline->string);
-}
 
-
-//!
-//! @brief Not yet written
-//!
-void w_console_append_more_relevant_header (WApplication *application, LwSearchItem *item)
-{
+    //Cleanup
+    lw_resultline_free (resultline);
 }
 
 
@@ -261,7 +327,7 @@ int w_console_install_progress (double fraction, gpointer data)
   }
 
   status = lw_dictinst_get_status_string (di, TRUE);
-  printf("\r [%d%] %s", current_percent, status);
+  printf("\r [%d%%] %s", current_percent, status);
   _previous_percent = current_percent;
   g_free (status);
 
@@ -272,11 +338,16 @@ int w_console_install_progress (double fraction, gpointer data)
 //!
 //! @brief Print the "less relevant" header where necessary.
 //!
-void w_console_append_less_relevant_header (WApplication *application, LwSearchItem *item)
+static void 
+w_console_append_less_relevant_header (WApplication *application, LwSearchItem *item)
 {
     gboolean color_switch;
+    gboolean quiet_switch;
 
     color_switch = w_application_get_color_switch (application);
+    quiet_switch = w_application_get_quiet_switch (application);
+
+    if (quiet_switch) return;
 
     if (color_switch)
       printf("\n[0;31m***[0m[1m%s[0;31m***************************[0m\n\n\n", gettext("Other Results"));
@@ -285,3 +356,10 @@ void w_console_append_less_relevant_header (WApplication *application, LwSearchI
 }
 
 
+//!
+//! @brief Print the "no result" message where necessary.
+//!
+void w_console_no_result (WApplication *application, LwSearchItem *item)
+{
+    printf("%s\n\n", gettext("No results found!"));
+}

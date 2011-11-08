@@ -736,8 +736,8 @@ void gw_searchwindow_update_history_menu_popup (GwSearchWindow *window)
       gtk_widget_set_sensitive (GTK_WIDGET (accel_label), FALSE);
       label = gtk_label_new (item->queryline->string);
 
-      GtkWidget *hbox;
-      hbox = gtk_hbox_new (FALSE, 0);
+      GtkWidget *box;
+      box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 
       menu_item = gtk_menu_item_new();
       g_signal_connect (GTK_WIDGET (menu_item), 
@@ -746,13 +746,13 @@ void gw_searchwindow_update_history_menu_popup (GwSearchWindow *window)
                         window                                    );
 
       gtk_menu_shell_append(GTK_MENU_SHELL (shell), GTK_WIDGET (menu_item));
-      gtk_container_add (GTK_CONTAINER (menu_item), hbox);
-      gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
-      gtk_box_pack_end (GTK_BOX (hbox), accel_label, FALSE, FALSE, 0);
+      gtk_container_add (GTK_CONTAINER (menu_item), box);
+      gtk_box_pack_start (GTK_BOX (box), label, FALSE, FALSE, 0);
+      gtk_box_pack_end (GTK_BOX (box), accel_label, FALSE, FALSE, 0);
 
       gtk_widget_show(label);
       gtk_widget_show(accel_label);
-      gtk_widget_show(hbox);
+      gtk_widget_show(box);
       gtk_widget_show(menu_item);
     }
     g_list_free (list);
@@ -1245,7 +1245,7 @@ void gw_searchwindow_display_no_results_found_page (GwSearchWindow *window, LwSe
     GtkTextIter iter;
     GtkTextChildAnchor *anchor = NULL;
     GtkWidget *label = NULL;
-    GtkWidget *hbox = NULL;
+    GtkWidget *box = NULL;
     char *body = NULL;
     const char *query_text;
     int i = 0;
@@ -1271,14 +1271,14 @@ void gw_searchwindow_display_no_results_found_page (GwSearchWindow *window, LwSe
 
 
     //Set the header message
-    hbox = gtk_hbox_new (FALSE, 10);
+    box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 10);
     gtk_text_buffer_get_end_iter (buffer, &iter);
     anchor = gtk_text_buffer_create_child_anchor (buffer, &iter);
-    gtk_text_view_add_child_at_anchor (GTK_TEXT_VIEW (view), hbox, anchor);
-    gtk_widget_show (hbox);
+    gtk_text_view_add_child_at_anchor (GTK_TEXT_VIEW (view), box, anchor);
+    gtk_widget_show (box);
 
     image = gtk_image_new_from_stock (GTK_STOCK_FIND, GTK_ICON_SIZE_DIALOG);
-    gtk_container_add (GTK_CONTAINER (hbox), GTK_WIDGET (image));
+    gtk_container_add (GTK_CONTAINER (box), GTK_WIDGET (image));
     gtk_widget_show (image);
 
     label = gtk_label_new (NULL);
@@ -1291,7 +1291,7 @@ void gw_searchwindow_display_no_results_found_page (GwSearchWindow *window, LwSe
       if (markup != NULL)
       {
         gtk_label_set_markup (GTK_LABEL (label), markup);
-        gtk_container_add (GTK_CONTAINER (hbox), GTK_WIDGET (label));
+        gtk_container_add (GTK_CONTAINER (box), GTK_WIDGET (label));
         gtk_widget_show (label);
         g_free (markup);
         markup = NULL;
@@ -1308,18 +1308,18 @@ void gw_searchwindow_display_no_results_found_page (GwSearchWindow *window, LwSe
     if (lw_dictinfolist_get_total (dictinfolist) > 1)
     {
       //Add label for links
-      hbox = gtk_hbox_new (FALSE, 0);
+      box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
       gtk_text_buffer_get_end_iter (buffer, &iter);
       anchor = gtk_text_buffer_create_child_anchor (buffer, &iter);
-      gtk_text_view_add_child_at_anchor (view, hbox, anchor);
-      gtk_widget_show (hbox);
+      gtk_text_view_add_child_at_anchor (view, box, anchor);
+      gtk_widget_show (box);
 
       label = gtk_label_new (NULL);
       markup = g_markup_printf_escaped ("<b>%s</b>", gettext("Search Other Dictionary: "));
       if (markup != NULL)
       {
         gtk_label_set_markup (GTK_LABEL (label), markup);
-        gtk_container_add (GTK_CONTAINER (hbox), GTK_WIDGET (label));
+        gtk_container_add (GTK_CONTAINER (box), GTK_WIDGET (label));
         gtk_widget_show (label);
         g_free (markup);
         markup = NULL;
@@ -1335,7 +1335,7 @@ void gw_searchwindow_display_no_results_found_page (GwSearchWindow *window, LwSe
         {
           button = gtk_button_new_with_label (di->shortname);
           g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (gw_searchwindow_no_results_search_for_dictionary_cb), di);
-          gtk_container_add (GTK_CONTAINER (hbox), GTK_WIDGET (button));
+          gtk_container_add (GTK_CONTAINER (box), GTK_WIDGET (button));
           gtk_widget_show (GTK_WIDGET (button));
         }
         i++;
@@ -1345,18 +1345,18 @@ void gw_searchwindow_display_no_results_found_page (GwSearchWindow *window, LwSe
     }
 
     //Add label for links
-    hbox = gtk_hbox_new (FALSE, 0);
+    box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_text_buffer_get_end_iter (buffer, &iter);
     anchor = gtk_text_buffer_create_child_anchor (buffer, &iter);
-    gtk_text_view_add_child_at_anchor (view, hbox, anchor);
-    gtk_widget_show (hbox);
+    gtk_text_view_add_child_at_anchor (view, box, anchor);
+    gtk_widget_show (box);
 
     label = gtk_label_new (NULL);
     markup = g_markup_printf_escaped ("<b>%s</b>", gettext("Search Online: "));
     if (markup != NULL)
     {
       gtk_label_set_markup (GTK_LABEL (label), markup);
-      gtk_container_add (GTK_CONTAINER (hbox), GTK_WIDGET (label));
+      gtk_container_add (GTK_CONTAINER (box), GTK_WIDGET (label));
       gtk_widget_show (label);
       g_free (markup);
       markup = NULL;
@@ -1390,7 +1390,7 @@ void gw_searchwindow_display_no_results_found_page (GwSearchWindow *window, LwSe
         g_free (path);
         path = NULL;
       }
-      gtk_container_add (GTK_CONTAINER (hbox), GTK_WIDGET (button));
+      gtk_container_add (GTK_CONTAINER (box), GTK_WIDGET (button));
       gtk_widget_show (button);
       i += 3;
     }
@@ -1886,7 +1886,7 @@ void gw_searchwindow_set_tab_text_by_searchitem (GwSearchWindow *window, LwSearc
     GwSearchWindowPrivate *priv;
     int page_num;
     GtkWidget *container;
-    GtkWidget *hbox;
+    GtkWidget *box;
     GtkWidget *vbox;
     GList *hchildren;
     GList *vchildren;
@@ -1905,8 +1905,8 @@ void gw_searchwindow_set_tab_text_by_searchitem (GwSearchWindow *window, LwSearc
         if (iter->data == NULL)
         {
           container = gtk_notebook_get_nth_page (priv->notebook, page_num);
-          hbox = GTK_WIDGET (gtk_notebook_get_tab_label(priv->notebook, GTK_WIDGET (container)));
-          hchildren = gtk_container_get_children (GTK_CONTAINER (hbox));
+          box = GTK_WIDGET (gtk_notebook_get_tab_label(priv->notebook, GTK_WIDGET (container)));
+          hchildren = gtk_container_get_children (GTK_CONTAINER (box));
           vbox = GTK_WIDGET (hchildren->data);
           vchildren = gtk_container_get_children (GTK_CONTAINER (vbox));
           label = GTK_WIDGET (vchildren->data);
@@ -1923,8 +1923,8 @@ void gw_searchwindow_set_tab_text_by_searchitem (GwSearchWindow *window, LwSearc
       page_num = g_list_index (priv->tablist, item);
       g_assert (page_num != -1);
       container = gtk_notebook_get_nth_page (priv->notebook, page_num);
-      hbox = GTK_WIDGET (gtk_notebook_get_tab_label (priv->notebook, GTK_WIDGET (container)));
-      hchildren = gtk_container_get_children (GTK_CONTAINER (hbox));
+      box = GTK_WIDGET (gtk_notebook_get_tab_label (priv->notebook, GTK_WIDGET (container)));
+      hchildren = gtk_container_get_children (GTK_CONTAINER (box));
       vbox = GTK_WIDGET (hchildren->data);
       vchildren = gtk_container_get_children (GTK_CONTAINER (vbox));
       label = GTK_WIDGET (vchildren->data);
@@ -2004,7 +2004,7 @@ int gw_searchwindow_new_tab (GwSearchWindow *window)
     GtkStyleContext *context;
 
     //Initializations
-    hbox = GTK_WIDGET (gtk_hbox_new(FALSE, 3));
+    hbox = GTK_WIDGET (gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 3));
     label = GTK_WIDGET (gtk_label_new (NULL));
     close_button = GTK_WIDGET (gtk_button_new ());
     button_image = GTK_WIDGET (gtk_image_new_from_stock (GTK_STOCK_CLOSE, GTK_ICON_SIZE_MENU));
@@ -2032,10 +2032,10 @@ int gw_searchwindow_new_tab (GwSearchWindow *window)
     //Put all the elements together
     gtk_container_add (GTK_CONTAINER (close_button), button_image);
     g_signal_connect (G_OBJECT (close_button), "clicked", G_CALLBACK (gw_searchwindow_remove_tab_cb), scrolledwindow);
-    vbox = GTK_WIDGET (gtk_vbox_new(FALSE, 0));
+    vbox = GTK_WIDGET (gtk_box_new(GTK_ORIENTATION_VERTICAL, 0));
     gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 1);
     gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, TRUE, 0);
-    vbox = GTK_WIDGET (gtk_vbox_new(FALSE, 0));
+    vbox = GTK_WIDGET (gtk_box_new (GTK_ORIENTATION_VERTICAL, 0));
     gtk_box_pack_start (GTK_BOX (vbox), close_button, FALSE, FALSE, 1);
     gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, TRUE, 0);
     gtk_widget_show_all (GTK_WIDGET (hbox));

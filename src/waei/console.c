@@ -38,15 +38,6 @@
 
 
 //!
-//! @brief Print the "no result" message where necessary.
-//!
-void w_console_no_result (LwSearchItem *item)
-{
-    printf("%s\n\n", gettext("No results found!"));
-}
-
-
-//!
 //! @brief Uninstalls the named dictionary, deleting it.
 //!
 //! @param name A string of the name of the dictionary to uninstall.
@@ -249,10 +240,12 @@ void w_console_handle_error (WApplication* app, GError **error)
 
 int w_console_search (WApplication *application, GError **error)
 {
+  printf("start search!\n");
     //Sanity check
     if (error != NULL && *error != NULL) return FALSE;
 
     //Declarations
+    WSearchData *sdata;
     LwSearchItem *item;
     LwDictInfoList *dictinfolist;
     LwPreferences* preferences;
@@ -266,6 +259,7 @@ int w_console_search (WApplication *application, GError **error)
     char *message_relevant;
     LwDictInfo *di;
     int resolution;
+    GMainLoop *loop;
 
     //Initializations
     dictinfolist = w_application_get_dictinfolist (application);
@@ -303,14 +297,17 @@ int w_console_search (WApplication *application, GError **error)
     }
 
     //Print the results
-    lw_searchitem_start_search (item, FALSE, exact_switch);
+    lw_searchitem_start_search (item, TRUE, exact_switch);
 
-    GMainLoop *loop = g_main_loop_new (NULL, FALSE);
+    loop = g_main_loop_new (NULL, FALSE);
 
-    priv->timeoutid[W_CONSOLE_OUTPUT_TIMEOUTID] = g_timeout_add_full (
+    sdata = w_searchdata_new (loop, application);
+    lw_searchitem_set_data (item, sdata, LW_SEARCHITEM_DATA_FREE_FUNC (w_searchdata_free));
+
+    g_timeout_add_full (
         G_PRIORITY_LOW,
         100,
-        (GSourceFunc) gw_console_append_result_timeout,
+        (GSourceFunc) w_console_append_result_timeout,
         item,
         NULL
     );
@@ -327,6 +324,8 @@ int w_console_search (WApplication *application, GError **error)
         printf(message_relevant, item->total_relevant_results);
       printf("\n");
     }
+
+    lw_searchitem_cancel_search (item);
 
     //Cleanup
     lw_searchitem_free (item);

@@ -297,6 +297,8 @@ static gboolean w_application_local_command_line (GApplication *application,
 
     w_application_parse_args (W_APPLICATION (application), &argc, argv);
 
+    *exit_status = w_application_run (application);
+
     return TRUE;
 } 
 
