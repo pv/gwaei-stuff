@@ -43,7 +43,7 @@ struct _GwApplicationClass {
 };
 
 //Methods
-GApplication* gw_application_new (const gchar*, GApplicationFlags);
+GApplication* gw_application_new (void);
 GType gw_application_get_type (void) G_GNUC_CONST;
 
 GwApplicationResolution gw_application_run (GwApplication*);

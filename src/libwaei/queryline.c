@@ -42,7 +42,8 @@ static char** _queryline_initialize_pointers (LwQueryLine*, const char*);
 //! @brief Creates a new LwQueryLine object
 //! @return An allocated LwQueryLine that will be needed to be freed by lw_queryline_free.
 //!
-LwQueryLine* lw_queryline_new ()
+LwQueryLine* 
+lw_queryline_new ()
 {
     LwQueryLine* temp;
 
@@ -61,7 +62,8 @@ LwQueryLine* lw_queryline_new ()
 //! @brief Releases a LwQueryLine object from memory.
 //! @param ql A LwQueryLine object created by lw_queryline_new.
 //!
-void lw_queryline_free (LwQueryLine *ql)
+void 
+lw_queryline_free (LwQueryLine *ql)
 {
     lw_queryline_deinit (ql);
     free (ql);
@@ -74,7 +76,8 @@ void lw_queryline_free (LwQueryLine *ql)
 //!        used in class implimentations that extends LwQueryLine.
 //! @param ql The LwQueryLine object to initialize the variables of
 //!
-void lw_queryline_init (LwQueryLine *ql)
+void 
+lw_queryline_init (LwQueryLine *ql)
 {
     ql->string = NULL;
     ql->re_kanji = NULL;
@@ -94,7 +97,8 @@ void lw_queryline_init (LwQueryLine *ql)
 //!        used in class implimentations that extends LwQueryLine.
 //! @param ql The LwQueryLine object to free the variables of
 //!
-void lw_queryline_deinit (LwQueryLine *ql)
+void 
+lw_queryline_deinit (LwQueryLine *ql)
 {
     _queryline_free_pointers (ql);
 }
@@ -204,7 +208,8 @@ static GRegex*** _queryline_allocate_pointers (int length)
 //! @param error A Pointer to a GError to load errors into or NULL
 //! @returns Returns true if the string was successfully parsed.
 //!
-gboolean lw_queryline_parse_edict_string (LwQueryLine *ql, LwPreferences *pm, const char* STRING, GError **error)
+gboolean 
+lw_queryline_parse_edict_string (LwQueryLine *ql, LwPreferences *pm, const char* STRING, GError **error)
 {
    //Sanity check
    if (error != NULL && *error != NULL) return FALSE;
@@ -465,7 +470,8 @@ static GRegex*** _compile_and_allocate_number_search_regex (const char* subject,
 //! @param error A Pointer to a GError to load errors into or NULL
 //! @returns Returns true if the string was successfully parsed.
 //!
-gboolean lw_queryline_parse_kanjidict_string (LwQueryLine *ql, LwPreferences *pm, const char* STRING, GError **error)
+gboolean 
+lw_queryline_parse_kanjidict_string (LwQueryLine *ql, LwPreferences *pm, const char* STRING, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return FALSE;
@@ -609,7 +615,8 @@ gboolean lw_queryline_parse_kanjidict_string (LwQueryLine *ql, LwPreferences *pm
 //! @param error A Pointer to a GError to load errors into or NULL
 //! @returns Returns true if the string was successfully parsed.
 //!
-gboolean lw_queryline_parse_exampledict_string (LwQueryLine *ql, LwPreferences* pm, const char* STRING, GError **error)
+gboolean 
+lw_queryline_parse_exampledict_string (LwQueryLine *ql, LwPreferences* pm, const char* STRING, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return FALSE;

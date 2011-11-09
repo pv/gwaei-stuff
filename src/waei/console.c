@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file src/console/console.c
+//! @file console.c
 //!
 //! @brief Abstraction layer for the console
 //!
@@ -42,7 +42,8 @@
 //!
 //! @param name A string of the name of the dictionary to uninstall.
 //!
-int w_console_uninstall_dictinfo (WApplication* application, GError **error)
+int 
+w_console_uninstall_dictinfo (WApplication* application, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return 1;
@@ -84,7 +85,8 @@ int w_console_uninstall_dictinfo (WApplication* application, GError **error)
 //!
 //! @param name A string of the name of the dictionary to install.
 //!
-int w_console_install_dictinst (WApplication *application, GError **error)
+int 
+w_console_install_dictinst (WApplication *application, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return 1;
@@ -124,7 +126,8 @@ int w_console_install_dictinst (WApplication *application, GError **error)
 //!
 //! @brief Prints to the terminal the about message for the program.
 //!
-void w_console_about (WApplication* app)
+void 
+w_console_about (WApplication* app)
 {
     printf ("waei version %s", VERSION);
 
@@ -141,7 +144,8 @@ void w_console_about (WApplication* app)
 //!
 //! @brief Prints out the yet uninstalled available dictionaries.
 //!
-void w_console_print_installable_dictionaries (WApplication *application)
+void 
+w_console_print_installable_dictionaries (WApplication *application)
 {
     printf(gettext("Installable dictionaries are:\n"));
 
@@ -180,7 +184,8 @@ void w_console_print_installable_dictionaries (WApplication *application)
 //!
 //! @brief Not yet written
 //!
-void w_console_print_available_dictionaries (WApplication *application)
+void 
+w_console_print_available_dictionaries (WApplication *application)
 {
     //Declarations
     int i;
@@ -216,7 +221,8 @@ void w_console_print_available_dictionaries (WApplication *application)
 //!
 //! @brief Lists the available and installable dictionaries
 //!
-void w_console_list (WApplication *app)
+void 
+w_console_list (WApplication *app)
 {
     w_console_print_available_dictionaries (app);
     w_console_print_installable_dictionaries (app);
@@ -227,7 +233,8 @@ void w_console_list (WApplication *app)
 //! @brief If the GError is set, it prints it and frees the memory
 //! @param error A pointer to a gerror pointer
 //!
-void w_console_handle_error (WApplication* app, GError **error)
+void 
+w_console_handle_error (WApplication* app, GError **error)
 {
     if (error != NULL && *error != NULL)
     {
@@ -238,7 +245,8 @@ void w_console_handle_error (WApplication* app, GError **error)
 }
 
 
-int w_console_search (WApplication *application, GError **error)
+int 
+w_console_search (WApplication *application, GError **error)
 {
   printf("start search!\n");
     //Sanity check

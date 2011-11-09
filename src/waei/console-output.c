@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file console-callbacks.c
+//! @file console-output.c
 //!
 //! @brief Abstraction layer for the console
 //!
@@ -292,7 +292,8 @@ w_console_append_unknowndict_result (WApplication *application, LwSearchItem *it
 }
 
 
-int w_console_uninstall_progress (double fraction, gpointer data)
+int 
+w_console_uninstall_progress (double fraction, gpointer data)
 {
   //Declarations
   LwDictInfo *di;
@@ -310,7 +311,8 @@ int w_console_uninstall_progress (double fraction, gpointer data)
 }
 
 
-int w_console_install_progress (double fraction, gpointer data)
+int 
+w_console_install_progress (double fraction, gpointer data)
 {
   //Declarations
   LwDictInst *di;

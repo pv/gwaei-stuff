@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file radicals-callbacks.c
+//! @file radicalswindow-callbacks.c
 //!
 //! @brief To be written
 //!
@@ -41,7 +41,8 @@
 //! @param widget Currently unused GtkWidget pointer
 //! @param data Currently unused gpointer
 //!
-G_MODULE_EXPORT void gw_radicalswindow_clear_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void 
+gw_radicalswindow_clear_cb (GtkWidget *widget, gpointer data)
 {
     //Declaratins
     GwApplication *application;
@@ -72,7 +73,8 @@ G_MODULE_EXPORT void gw_radicalswindow_clear_cb (GtkWidget *widget, gpointer dat
 //! @param widget Currently unused GtkWidget pointer
 //! @param data Currently unused gpointer
 //!
-G_MODULE_EXPORT void gw_radicalswindow_search_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void 
+gw_radicalswindow_search_cb (GtkWidget *widget, gpointer data)
 {
     //Declarations
     GwApplication *application;
@@ -117,7 +119,8 @@ G_MODULE_EXPORT void gw_radicalswindow_search_cb (GtkWidget *widget, gpointer da
 //!
 //! @brief Forces a search when the checkbox sensitivity is changed
 //!
-G_MODULE_EXPORT void gw_radicalswindow_strokes_checkbox_toggled_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void 
+gw_radicalswindow_strokes_checkbox_toggled_cb (GtkWidget *widget, gpointer data)
 {
     //Declarations
     GwRadicalsWindow *window;
@@ -136,7 +139,8 @@ G_MODULE_EXPORT void gw_radicalswindow_strokes_checkbox_toggled_cb (GtkWidget *w
 }
 
 
-G_MODULE_EXPORT void gw_radicalswindow_close_cb (GtkWidget* widget, gpointer data)
+G_MODULE_EXPORT void 
+gw_radicalswindow_close_cb (GtkWidget* widget, gpointer data)
 {
     //Declarations
     GwRadicalsWindow *window;
@@ -149,7 +153,8 @@ G_MODULE_EXPORT void gw_radicalswindow_close_cb (GtkWidget* widget, gpointer dat
 }
 
 
-G_MODULE_EXPORT void gw_radicalswindow_show_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void 
+gw_radicalswindow_show_cb (GtkWidget *widget, gpointer data)
 {
     //Declarations
     GtkWindow *window;

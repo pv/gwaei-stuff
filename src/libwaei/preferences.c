@@ -36,7 +36,8 @@
 //! @brief Creates a new LwDictInfo object
 //! @return An allocated LwDictInfo that will be needed to be freed by lw_preferences_free.
 //!
-LwPreferences* lw_preferences_new ()
+LwPreferences* 
+lw_preferences_new ()
 {
   LwPreferences *temp;
 
@@ -55,7 +56,8 @@ LwPreferences* lw_preferences_new ()
 //! @brief Releases a LwPreferences object from memory.
 //! @param pm A LwPreferences object created by lw_preferences_new.
 //!
-void lw_preferences_free (LwPreferences *pm)
+void 
+lw_preferences_free (LwPreferences *pm)
 {
     lw_preferences_deinit (pm);
 
@@ -69,7 +71,8 @@ void lw_preferences_free (LwPreferences *pm)
 //!        used in class implimentations that extends LwPreferences.
 //! @param pm The LwPreferences object to have it's inner memory initialized.
 //!
-void lw_preferences_init (LwPreferences *pm)
+void 
+lw_preferences_init (LwPreferences *pm)
 {
     pm->settingslist = NULL;
     pm->callbacklist = NULL;
@@ -83,7 +86,8 @@ void lw_preferences_init (LwPreferences *pm)
 //!         in class implimentations that extends LwPreferences.
 //! @param pm The LwPreferences object to have it's inner memory freed.
 //!
-void lw_preferences_deinit (LwPreferences *pm)
+void 
+lw_preferences_deinit (LwPreferences *pm)
 {
     lw_preferences_free_settings (pm);
 }
@@ -93,7 +97,8 @@ void lw_preferences_deinit (LwPreferences *pm)
 //! @brief Frees the GSettings objects held by LwPreferences
 //! @param pm The instance of LwPreferences to free
 //!
-void lw_preferences_free_settings (LwPreferences *pm)
+void 
+lw_preferences_free_settings (LwPreferences *pm)
 {
     GList *iter;
     GSettings *settings;
@@ -110,7 +115,8 @@ void lw_preferences_free_settings (LwPreferences *pm)
 }
 
 
-gboolean lw_preferences_schema_is_installed (const char *SCHEMA)
+gboolean 
+lw_preferences_schema_is_installed (const char *SCHEMA)
 {
     //Declarations
     const gchar * const * iter;
@@ -140,7 +146,8 @@ gboolean lw_preferences_schema_is_installed (const char *SCHEMA)
 //!
 //! @brief Fetches a gsettings object by id, and stores it, using the cached one if available
 //!
-GSettings* lw_preferences_get_settings_object (LwPreferences *pm, const char *SCHEMA)
+GSettings* 
+lw_preferences_get_settings_object (LwPreferences *pm, const char *SCHEMA)
 {
     //Declarations
     GList *iter;
@@ -190,7 +197,8 @@ GSettings* lw_preferences_get_settings_object (LwPreferences *pm, const char *SC
 //! @param settings The GSettings object to act on You will have to get it yourself using lw_preferences_get_settings_object
 //! @param key A string identifying the key to reset
 //!
-void lw_preferences_reset_value (GSettings* settings, const char *key)
+void 
+lw_preferences_reset_value (GSettings* settings, const char *key)
 {
     g_settings_reset (settings, key);
 }
@@ -202,7 +210,8 @@ void lw_preferences_reset_value (GSettings* settings, const char *key)
 //! @param schema A string identifying the schema there the key is
 //! @param key A string identifying the key to reset
 //!
-void lw_preferences_reset_value_by_schema (LwPreferences* pm, const char* schema, const char *key)
+void 
+lw_preferences_reset_value_by_schema (LwPreferences* pm, const char* schema, const char *key)
 {
     GSettings* settings;
     
@@ -219,7 +228,8 @@ void lw_preferences_reset_value_by_schema (LwPreferences* pm, const char* schema
 //! @param settings The GSettings object to act on You will have to get it yourself using lw_preferences_get_settings_object
 //! @param key The key to use to look up the pref
 //!
-int lw_preferences_get_int (GSettings *settings, const char *key)
+int 
+lw_preferences_get_int (GSettings *settings, const char *key)
 {
     return g_settings_get_int (settings, key);
 }
@@ -231,7 +241,8 @@ int lw_preferences_get_int (GSettings *settings, const char *key)
 //! @param schema The key to use to look up the pref
 //! @param key The key to use to look up the pref
 //!
-int lw_preferences_get_int_by_schema (LwPreferences* pm, const char* schema, const char *key)
+int 
+lw_preferences_get_int_by_schema (LwPreferences* pm, const char* schema, const char *key)
 {
     GSettings* settings;
     int value;
@@ -254,7 +265,8 @@ int lw_preferences_get_int_by_schema (LwPreferences* pm, const char* schema, con
 //! @param key The key to use to look up the pref
 //! @param request The value to set
 //!
-void lw_preferences_set_int (GSettings *settings, const char *key, const int request)
+void 
+lw_preferences_set_int (GSettings *settings, const char *key, const int request)
 {
     g_settings_set_int (settings, key, request);
 }
@@ -267,7 +279,8 @@ void lw_preferences_set_int (GSettings *settings, const char *key, const int req
 //! @param key The key to use to look up the pref inside of the schema
 //! @param request The value to set
 //!
-void lw_preferences_set_int_by_schema (LwPreferences* pm, const char* schema, const char *key, const int request)
+void 
+lw_preferences_set_int_by_schema (LwPreferences* pm, const char* schema, const char *key, const int request)
 {
     GSettings* settings;
     
@@ -284,7 +297,8 @@ void lw_preferences_set_int_by_schema (LwPreferences* pm, const char* schema, co
 //! @param settings The GSettings object to act on You will have to get it yourself using lw_preferences_get_settings_object
 //! @param key The key to use to look up the pref
 //!
-gboolean lw_preferences_get_boolean (GSettings *settings, const char *key)
+gboolean 
+lw_preferences_get_boolean (GSettings *settings, const char *key)
 {
     return g_settings_get_boolean (settings, key);
 }
@@ -296,7 +310,8 @@ gboolean lw_preferences_get_boolean (GSettings *settings, const char *key)
 //! @param schema The key to use to look up the pref
 //! @param key The key to use to look up the pref
 //!
-gboolean lw_preferences_get_boolean_by_schema (LwPreferences* pm, const char* schema, const char *key)
+gboolean 
+lw_preferences_get_boolean_by_schema (LwPreferences* pm, const char* schema, const char *key)
 {
     GSettings* settings;
     gboolean value;
@@ -319,7 +334,8 @@ gboolean lw_preferences_get_boolean_by_schema (LwPreferences* pm, const char* sc
 //! @param key The key to use to look up the pref
 //! @param request The value to set
 //!
-void lw_preferences_set_boolean (GSettings *settings, const char *key, const gboolean request)
+void 
+lw_preferences_set_boolean (GSettings *settings, const char *key, const gboolean request)
 {
     g_settings_set_boolean (settings, key, request);
 }
@@ -332,7 +348,8 @@ void lw_preferences_set_boolean (GSettings *settings, const char *key, const gbo
 //! @param key The key to use to look up the pref inside of the schema
 //! @param request The value to set
 //!
-void lw_preferences_set_boolean_by_schema (LwPreferences* pm, const char* schema, const char *key, const gboolean request)
+void 
+lw_preferences_set_boolean_by_schema (LwPreferences* pm, const char* schema, const char *key, const gboolean request)
 {
     GSettings* settings;
     
@@ -352,7 +369,8 @@ void lw_preferences_set_boolean_by_schema (LwPreferences* pm, const char* schema
 //! @param key The key to use to look up the pref
 //! @param n The max characters to copy to output
 //!
-void lw_preferences_get_string (char *output, GSettings *settings, const char *key, const int n)
+void 
+lw_preferences_get_string (char *output, GSettings *settings, const char *key, const int n)
 {
     gchar *value = NULL; 
 
@@ -374,7 +392,8 @@ void lw_preferences_get_string (char *output, GSettings *settings, const char *k
 //! @param key The key to use to look up the pref
 //! @param n The max characters to copy to output
 //!
-void lw_preferences_get_string_by_schema (LwPreferences* pm, char *output, const char *schema, const char *key, const int n)
+void 
+lw_preferences_get_string_by_schema (LwPreferences* pm, char *output, const char *schema, const char *key, const int n)
 {
     GSettings* settings;
     
@@ -390,7 +409,8 @@ void lw_preferences_get_string_by_schema (LwPreferences* pm, char *output, const
 //! @param key The key to use to look up the pref
 //! @param request The value to set
 //!
-void lw_preferences_set_string (GSettings *settings, const char *key, const char* request)
+void 
+lw_preferences_set_string (GSettings *settings, const char *key, const char* request)
 {
     g_settings_set_string (settings, key, request);
 }
@@ -403,7 +423,8 @@ void lw_preferences_set_string (GSettings *settings, const char *key, const char
 //! @param key The key to use to look up the pref inside of the schema
 //! @param request The value to set
 //!
-void lw_preferences_set_string_by_schema (LwPreferences *pm, const char* schema, const char *key, const char* request)
+void 
+lw_preferences_set_string_by_schema (LwPreferences *pm, const char* schema, const char *key, const char* request)
 {
     GSettings *settings;
 
@@ -424,7 +445,8 @@ void lw_preferences_set_string_by_schema (LwPreferences *pm, const char* schema,
 //! @param data The userdata to pass to the callback function
 //! @returns A gulong used to remove a signal later if desired
 //!
-gulong lw_preferences_add_change_listener (GSettings *settings, const char *key, void (*callback_function) (GSettings*, gchar*, gpointer), gpointer data)
+gulong 
+lw_preferences_add_change_listener (GSettings *settings, const char *key, void (*callback_function) (GSettings*, gchar*, gpointer), gpointer data)
 {
     g_assert (key != NULL);
 
@@ -460,7 +482,8 @@ gulong lw_preferences_add_change_listener (GSettings *settings, const char *key,
 //! @param data The userdata to pass to the callback function
 //! @returns A gulong used to remove a signal later if desired
 //!
-gulong lw_preferences_add_change_listener_by_schema (LwPreferences *pm, const char* schema, const char *key, void (*callback_function) (GSettings*, gchar*, gpointer), gpointer data)
+gulong 
+lw_preferences_add_change_listener_by_schema (LwPreferences *pm, const char* schema, const char *key, void (*callback_function) (GSettings*, gchar*, gpointer), gpointer data)
 {
     g_assert (schema != NULL && key != NULL);
 
@@ -480,7 +503,8 @@ gulong lw_preferences_add_change_listener_by_schema (LwPreferences *pm, const ch
 //! @param settings The GSettings object to act on You will have to get it yourself using lw_preferences_get_settings_object
 //! @param id The signalid returned by lw_preferences_add_change_listener
 //!
-void lw_preferences_remove_change_listener (GSettings *settings, gulong id)
+void 
+lw_preferences_remove_change_listener (GSettings *settings, gulong id)
 {
     if (g_signal_handler_is_connected (G_OBJECT (settings), id))
     {
@@ -498,7 +522,8 @@ void lw_preferences_remove_change_listener (GSettings *settings, gulong id)
 //! @param schema A schema of the GSettings object the signal was connected to
 //! @param id The signalid returned by lw_preferences_add_change_listener
 //!
-void lw_preferences_remove_change_listener_by_schema (LwPreferences *pm, const char* schema, gulong id)
+void 
+lw_preferences_remove_change_listener_by_schema (LwPreferences *pm, const char* schema, gulong id)
 {
     GSettings *settings;
 

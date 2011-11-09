@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file dictionaryinstall-callbacks.c
+//! @file dictionaryinstallwindow-callbacks.c
 //!
 //! @brief To be written
 //!
@@ -39,7 +39,8 @@ static void _dictinstwindow_clear_details_box (GwDictionaryInstallWindow*);
 static void _dictinstwindow_fill_details_box (GwDictionaryInstallWindow*, LwDictInst*);
 static void _dictinstwindow_update_add_button_sensitivity (GwDictionaryInstallWindow*);
 
-G_MODULE_EXPORT void gw_dictionaryinstallwindow_filename_entry_changed_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void 
+gw_dictionaryinstallwindow_filename_entry_changed_cb (GtkWidget *widget, gpointer data)
 {
     //Sanity check
     g_assert (data != NULL);
@@ -61,7 +62,8 @@ G_MODULE_EXPORT void gw_dictionaryinstallwindow_filename_entry_changed_cb (GtkWi
 }
 
 
-G_MODULE_EXPORT void gw_dictionaryinstallwindow_engine_combobox_changed_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void 
+gw_dictionaryinstallwindow_engine_combobox_changed_cb (GtkWidget *widget, gpointer data)
 {
     //Sanity check
     g_assert (data != NULL);
@@ -81,7 +83,8 @@ G_MODULE_EXPORT void gw_dictionaryinstallwindow_engine_combobox_changed_cb (GtkW
 }
 
 
-G_MODULE_EXPORT void gw_dictionaryinstallwindow_source_entry_changed_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void 
+gw_dictionaryinstallwindow_source_entry_changed_cb (GtkWidget *widget, gpointer data)
 {
     //Sanity check
     g_assert (data != NULL);
@@ -114,7 +117,8 @@ G_MODULE_EXPORT void gw_dictionaryinstallwindow_source_entry_changed_cb (GtkWidg
 }
 
 
-G_MODULE_EXPORT void gw_dictionaryinstallwindow_reset_default_uri_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void 
+gw_dictionaryinstallwindow_reset_default_uri_cb (GtkWidget *widget, gpointer data)
 {
     //Sanity check
     g_assert (data != NULL);
@@ -141,7 +145,8 @@ G_MODULE_EXPORT void gw_dictionaryinstallwindow_reset_default_uri_cb (GtkWidget 
 }
 
 
-G_MODULE_EXPORT void gw_dictionaryinstallwindow_select_file_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void 
+gw_dictionaryinstallwindow_select_file_cb (GtkWidget *widget, gpointer data)
 {
     //Sanity check
     g_assert (data != NULL);
@@ -178,7 +183,8 @@ G_MODULE_EXPORT void gw_dictionaryinstallwindow_select_file_cb (GtkWidget *widge
 }
 
 
-G_MODULE_EXPORT void gw_dictionaryinstallwindow_encoding_combobox_changed_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void 
+gw_dictionaryinstallwindow_encoding_combobox_changed_cb (GtkWidget *widget, gpointer data)
 {
     //Sanity check
     g_assert (data != NULL);
@@ -198,7 +204,8 @@ G_MODULE_EXPORT void gw_dictionaryinstallwindow_encoding_combobox_changed_cb (Gt
 }
 
 
-G_MODULE_EXPORT void gw_dictionaryinstallwindow_compression_combobox_changed_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void 
+gw_dictionaryinstallwindow_compression_combobox_changed_cb (GtkWidget *widget, gpointer data)
 {
     //Sanity check
     g_assert (data != NULL);
@@ -217,7 +224,8 @@ G_MODULE_EXPORT void gw_dictionaryinstallwindow_compression_combobox_changed_cb 
 }
 
 
-G_MODULE_EXPORT void gw_dictionaryinstallwindow_split_checkbox_toggled_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void 
+gw_dictionaryinstallwindow_split_checkbox_toggled_cb (GtkWidget *widget, gpointer data)
 {
     //Sanity check
     g_assert (data != NULL);
@@ -237,7 +245,8 @@ G_MODULE_EXPORT void gw_dictionaryinstallwindow_split_checkbox_toggled_cb (GtkWi
 }
 
 
-G_MODULE_EXPORT void gw_dictionaryinstallwindow_merge_checkbox_toggled_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void 
+gw_dictionaryinstallwindow_merge_checkbox_toggled_cb (GtkWidget *widget, gpointer data)
 {
     //Sanity check
     g_assert (data != NULL);
@@ -257,7 +266,8 @@ G_MODULE_EXPORT void gw_dictionaryinstallwindow_merge_checkbox_toggled_cb (GtkWi
 }
 
 
-G_MODULE_EXPORT void gw_dictionaryinstallwindow_cursor_changed_cb (GtkTreeView *view, gpointer data)
+G_MODULE_EXPORT void 
+gw_dictionaryinstallwindow_cursor_changed_cb (GtkTreeView *view, gpointer data)
 {
     //Sanity check
     g_assert (data != NULL);
@@ -309,7 +319,8 @@ G_MODULE_EXPORT void gw_dictionaryinstallwindow_cursor_changed_cb (GtkTreeView *
 }
 
 
-G_MODULE_EXPORT void gw_dictionaryinstallwindow_listitem_toggled_cb (GtkCellRendererToggle *renderer, 
+G_MODULE_EXPORT void 
+gw_dictionaryinstallwindow_listitem_toggled_cb (GtkCellRendererToggle *renderer, 
                                                                      gchar *path,
                                                                      gpointer data)
 {
@@ -336,7 +347,8 @@ G_MODULE_EXPORT void gw_dictionaryinstallwindow_listitem_toggled_cb (GtkCellRend
 }
 
 
-G_MODULE_EXPORT void gw_dictionaryinstallwindow_detail_checkbox_toggled_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void 
+gw_dictionaryinstallwindow_detail_checkbox_toggled_cb (GtkWidget *widget, gpointer data)
 {
     //Sanity check
     g_assert (data != NULL);
@@ -605,7 +617,8 @@ static void _dictinstwindow_fill_details_box (GwDictionaryInstallWindow *window,
 //! @param widget GtkWidget pointer to the window to close
 //! @param data Currently unused gpointer
 //!
-G_MODULE_EXPORT void gw_dictionaryinstallwindow_close_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void 
+gw_dictionaryinstallwindow_close_cb (GtkWidget *widget, gpointer data)
 {
     //Declarations
     GwDictionaryInstallWindow *window;
@@ -618,7 +631,8 @@ G_MODULE_EXPORT void gw_dictionaryinstallwindow_close_cb (GtkWidget *widget, gpo
 }
 
 
-G_MODULE_EXPORT void gw_dictionaryinstallwindow_add_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void 
+gw_dictionaryinstallwindow_add_cb (GtkWidget *widget, gpointer data)
 {
     //Declarations
     GwDictionaryInstallWindow *window;

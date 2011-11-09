@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file settings-window.c
+//! @file settingswindow.c
 //!
 //! @brief To be written
 //!
@@ -44,7 +44,8 @@ G_DEFINE_TYPE (GwSettingsWindow, gw_settingswindow, GW_TYPE_WINDOW)
 //!
 //! @brief Sets up the variables in main-interface.c and main-callbacks.c for use
 //!
-GtkWindow* gw_settingswindow_new (GtkApplication *application)
+GtkWindow* 
+gw_settingswindow_new (GtkApplication *application)
 {
     g_assert (application != NULL);
 
@@ -62,14 +63,16 @@ GtkWindow* gw_settingswindow_new (GtkApplication *application)
 }
 
 
-void gw_settingswindow_init (GwSettingsWindow *window)
+static void 
+gw_settingswindow_init (GwSettingsWindow *window)
 {
     window->priv = GW_SETTINGSWINDOW_GET_PRIVATE (window);
     memset(window->priv, 0, sizeof(GwSettingsWindowPrivate));
 }
 
 
-void gw_settingswindow_finalize (GObject *object)
+static void 
+gw_settingswindow_finalize (GObject *object)
 {
     GwSettingsWindow *window;
     GwApplication *application;
@@ -83,7 +86,8 @@ void gw_settingswindow_finalize (GObject *object)
 }
 
 
-static void gw_settingswindow_constructed (GObject *object)
+static void 
+gw_settingswindow_constructed (GObject *object)
 {
     //Declarations
     GwSettingsWindow *window;
@@ -162,7 +166,8 @@ gw_settingswindow_class_init (GwSettingsWindowClass *klass)
 }
 
 
-static void gw_settingswindow_attach_signals (GwSettingsWindow *window)
+static void 
+gw_settingswindow_attach_signals (GwSettingsWindow *window)
 {
     //Declarations
     GwSettingsWindowPrivate *priv;
@@ -283,7 +288,8 @@ static void gw_settingswindow_attach_signals (GwSettingsWindow *window)
 }
 
 
-static void gw_settingswindow_remove_signals (GwSettingsWindow *window)
+static void 
+gw_settingswindow_remove_signals (GwSettingsWindow *window)
 {
     //Declarations
     GwSettingsWindowPrivate *priv;
@@ -384,7 +390,8 @@ static void gw_settingswindow_remove_signals (GwSettingsWindow *window)
 //! @param widget Pointer to a GtkEntry to set the text of
 //! @param value The constant string to use as the source for the text
 //!
-void gw_settings_set_dictionary_source (GtkWidget *widget, const char* value)
+void 
+gw_settings_set_dictionary_source (GtkWidget *widget, const char* value)
 {
     if (widget != NULL && value != NULL)
     {
@@ -393,7 +400,8 @@ void gw_settings_set_dictionary_source (GtkWidget *widget, const char* value)
 }
 
 
-static void gw_settingswindow_initialize_dictionary_tree_view (GwSettingsWindow *window, GtkTreeView *view)
+static void 
+gw_settingswindow_initialize_dictionary_tree_view (GwSettingsWindow *window, GtkTreeView *view)
 {
       //Declarations
       GwApplication *application;
@@ -441,7 +449,8 @@ static void gw_settingswindow_initialize_dictionary_tree_view (GwSettingsWindow 
 //!
 //! @brief Disables portions of the interface depending on the currently queued jobs.
 //!
-void gw_settingswindow_check_for_dictionaries (GwSettingsWindow *window)
+void 
+gw_settingswindow_check_for_dictionaries (GwSettingsWindow *window)
 {
     //Declarations
     GwApplication *application;

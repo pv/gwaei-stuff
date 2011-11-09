@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file dictionaryinstally-window.c
+//! @file dictionaryinstallwindow.c
 //!
 //! @brief To be written
 //!
@@ -38,7 +38,8 @@ G_DEFINE_TYPE (GwDictionaryInstallWindow, gw_dictionaryinstallwindow, GW_TYPE_WI
 //!
 //! @brief Sets up the variables in main-interface.c and main-callbacks.c for use
 //!
-GtkWindow* gw_dictionaryinstallwindow_new (GtkApplication *application)
+GtkWindow* 
+gw_dictionaryinstallwindow_new (GtkApplication *application)
 {
     g_assert (application != NULL);
 
@@ -55,14 +56,16 @@ GtkWindow* gw_dictionaryinstallwindow_new (GtkApplication *application)
     return GTK_WINDOW (window);
 }
 
-void gw_dictionaryinstallwindow_init (GwDictionaryInstallWindow *window)
+static void 
+gw_dictionaryinstallwindow_init (GwDictionaryInstallWindow *window)
 {
     window->priv = GW_DICTIONARYINSTALLWINDOW_GET_PRIVATE (window);
     memset(window->priv, 0, sizeof(GwDictionaryInstallWindowPrivate));
 }
 
 
-void gw_dictionaryinstallwindow_finalize (GObject *object)
+static void 
+gw_dictionaryinstallwindow_finalize (GObject *object)
 {
     GwDictionaryInstallWindow *window;
     GwDictionaryInstallWindowPrivate *priv;
@@ -83,7 +86,8 @@ void gw_dictionaryinstallwindow_finalize (GObject *object)
 }
 
 
-void gw_dictionaryinstallwindow_constructed (GObject *object)
+static void 
+gw_dictionaryinstallwindow_constructed (GObject *object)
 {
     //Declarations
     GwDictionaryInstallWindow *window;

@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file installprogress-callbacks.c
+//! @file installprogresswindow-callbacks.c
 //!
 //! @brief To be written
 //!
@@ -34,7 +34,8 @@
 #include <gwaei/installprogresswindow-private.h>
 
 
-G_MODULE_EXPORT void gw_installprogresswindow_cancel_cb (GtkWidget *widget, gpointer data)
+G_MODULE_EXPORT void 
+gw_installprogresswindow_cancel_cb (GtkWidget *widget, gpointer data)
 {
     GwInstallProgressWindow *window;
     GwApplication *application;
@@ -49,7 +50,8 @@ G_MODULE_EXPORT void gw_installprogresswindow_cancel_cb (GtkWidget *widget, gpoi
 }
 
 
-G_MODULE_EXPORT int gw_installprogresswindow_update_dictinst_cb (double fraction, gpointer data)
+G_MODULE_EXPORT int 
+gw_installprogresswindow_update_dictinst_cb (double fraction, gpointer data)
 {
     //Declarations
     GwInstallProgressWindow *window;
@@ -72,7 +74,8 @@ G_MODULE_EXPORT int gw_installprogresswindow_update_dictinst_cb (double fraction
 //! @brief Callback to update the install dialog progress.  The data passed to it should be
 //!        in the form of a LwDictInst.  If it is NULL, the progress window will be closed.
 //!
-G_MODULE_EXPORT gboolean gw_installprogresswindow_update_ui_timeout (gpointer data)
+G_MODULE_EXPORT gboolean 
+gw_installprogresswindow_update_ui_timeout (gpointer data)
 {
     //Sanity check
     g_assert (data != NULL);

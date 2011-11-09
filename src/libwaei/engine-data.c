@@ -41,7 +41,8 @@
 //! @param exact Whether only exact matching results should be shown for the search
 //! @return An allocated LwEngineData that will be needed to be freed by lw_engindata_free.
 //!
-LwEngineData* lw_enginedata_new (LwSearchItem *item, gboolean exact)
+LwEngineData* 
+lw_enginedata_new (LwSearchItem *item, gboolean exact)
 {
     LwEngineData *temp;
 
@@ -61,7 +62,8 @@ LwEngineData* lw_enginedata_new (LwSearchItem *item, gboolean exact)
 //! @brief Releases a LwEngineData object from memory.
 //! @param di A LwEngineData object created by lw_enginedata_new.
 //!
-void lw_enginedata_free (LwEngineData *data)
+void 
+lw_enginedata_free (LwEngineData *data)
 {
     if (data != NULL) free (data);
 }

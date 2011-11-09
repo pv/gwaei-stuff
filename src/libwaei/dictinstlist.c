@@ -37,7 +37,8 @@
 //!
 //! @brief Sets up the built-in installabale dictionaries
 //!
-LwDictInstList* lw_dictinstlist_new (LwPreferences *pm)
+LwDictInstList* 
+lw_dictinstlist_new (LwPreferences *pm)
 {
   curl_global_init (CURL_GLOBAL_ALL);
 
@@ -141,7 +142,8 @@ LwDictInstList* lw_dictinstlist_new (LwPreferences *pm)
 }
 
 
-void lw_dictinstlist_free (LwDictInstList* dil)
+void 
+lw_dictinstlist_free (LwDictInstList* dil)
 {
     GList *iter;
     LwDictInst *di;
@@ -167,7 +169,8 @@ void lw_dictinstlist_free (LwDictInstList* dil)
 //!
 //! @brief Checks to see if the current DictInstList is installation ready
 //!
-gboolean lw_dictinstlist_data_is_valid (LwDictInstList *dil)
+gboolean 
+lw_dictinstlist_data_is_valid (LwDictInstList *dil)
 {
     //Declarations
     GList *iter;
@@ -194,7 +197,8 @@ gboolean lw_dictinstlist_data_is_valid (LwDictInstList *dil)
 //!  @param FUZZY_DESCRIPTION A fuzzy description of the wanted dictionary.
 //!  @returns A matching LwDictInst object or NULL
 //!
-LwDictInst* lw_dictinstlist_get_dictinst_fuzzy (LwDictInstList *dil, const char* FUZZY_DESCRIPTION)
+LwDictInst* 
+lw_dictinstlist_get_dictinst_fuzzy (LwDictInstList *dil, const char* FUZZY_DESCRIPTION)
 {
     //Declarations
     LwDictInst *di;
@@ -232,7 +236,8 @@ LwDictInst* lw_dictinstlist_get_dictinst_fuzzy (LwDictInstList *dil, const char*
 //!             This is a fuzzy search, ignoring DICTTYPE and case
 //! @returns The requested LwDictInst object if found or null.
 //!
-LwDictInst* lw_dictinstlist_get_dictinst_by_filename (LwDictInstList *dil, const char* FILENAME)
+LwDictInst* 
+lw_dictinstlist_get_dictinst_by_filename (LwDictInstList *dil, const char* FILENAME)
 {
     //Declarations
     GList *iter;
@@ -257,7 +262,8 @@ LwDictInst* lw_dictinstlist_get_dictinst_by_filename (LwDictInstList *dil, const
 //!                            used to search for a dictionary
 //! @returns The requested LwDictInst object if found or NULL.
 //!
-LwDictInst* lw_dictinstlist_get_dictinst_by_idstring (LwDictInstList *dil, const char* ENGINE_AND_FILENAME)
+LwDictInst* 
+lw_dictinstlist_get_dictinst_by_idstring (LwDictInstList *dil, const char* ENGINE_AND_FILENAME)
 {
     //Declarations
     GList *iter;
@@ -291,7 +297,8 @@ LwDictInst* lw_dictinstlist_get_dictinst_by_idstring (LwDictInstList *dil, const
 }
 
 
-void lw_dictinstlist_set_cancel_operations (LwDictInstList *dil, gboolean state)
+void 
+lw_dictinstlist_set_cancel_operations (LwDictInstList *dil, gboolean state)
 {
     LwDictInst *di;
     GList *iter;

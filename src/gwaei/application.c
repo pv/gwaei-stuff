@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file gwaei.c
+//! @file application.c
 //!
 //! @brief To be written
 //!
@@ -49,27 +49,34 @@ G_DEFINE_TYPE (GwApplication, gw_application, GTK_TYPE_APPLICATION)
 //!
 //! @brief creates a new instance of the gwaei applicaiton
 //!
-GApplication* gw_application_new (const gchar *application_id, GApplicationFlags flags)
+GApplication* 
+gw_application_new ()
 {
     //Declarations
     GwApplication *application;
+    const gchar *id;
+    GApplicationFlags flags;
 
     //Initializations
+    id = "gtk.org.gWaei";
+    flags = G_APPLICATION_FLAGS_NONE;
     application = g_object_new (GW_TYPE_APPLICATION, 
-                                "application-id", application_id, 
+                                "application-id", id, 
                                 "flags", flags, NULL);
 
     return G_APPLICATION (application);
 }
 
 
-static void gw_application_init (GwApplication *application)
+static void 
+gw_application_init (GwApplication *application)
 {
     application->priv = GW_APPLICATION_GET_PRIVATE (application);
     memset(application->priv, 0, sizeof(GwApplicationPrivate));
 }
 
-static void gw_application_constructed (GObject *object)
+static void 
+gw_application_constructed (GObject *object)
 {
     //Declarations
     GwApplication *application;
@@ -150,7 +157,8 @@ gw_application_class_init (GwApplicationClass *klass)
 }
 
 
-static void gw_application_attach_signals (GwApplication *application)
+static void 
+gw_application_attach_signals (GwApplication *application)
 {
     //Declarations
     GwApplicationPrivate* priv;
@@ -198,7 +206,8 @@ static void gw_application_attach_signals (GwApplication *application)
 }
 
 
-static void gw_application_remove_signals (GwApplication *application)
+static void 
+gw_application_remove_signals (GwApplication *application)
 {
     //Declarations
     GwApplicationPrivate* priv;
@@ -240,7 +249,8 @@ static void gw_application_remove_signals (GwApplication *application)
 //! @brief Loads the arguments from the command line into the app instance
 //!
 
-void gw_application_parse_args (GwApplication *application, int *argc, char** argv[])
+void 
+gw_application_parse_args (GwApplication *application, int *argc, char** argv[])
 {
     GwApplicationPrivate *priv;
 
@@ -287,7 +297,8 @@ void gw_application_parse_args (GwApplication *application, int *argc, char** ar
 //!
 //! @brief Prints to the terminal the about message for the program.
 //!
-void gw_application_print_about (GwApplication *application)
+void 
+gw_application_print_about (GwApplication *application)
 {
     const gchar *name;
     name = gw_application_get_program_name (GW_APPLICATION (application));
@@ -307,7 +318,8 @@ void gw_application_print_about (GwApplication *application)
 }
 
 
-void gw_application_quit (GwApplication *application)
+void 
+gw_application_quit (GwApplication *application)
 {
     gw_application_block_searches (application);
 
@@ -323,13 +335,15 @@ void gw_application_quit (GwApplication *application)
 //! @brief Returns the program name.  It should not be freed or modified
 //! @returns A constanst string representing the program name
 //!
-const char* gw_application_get_program_name (GwApplication *application) 
+const char* 
+gw_application_get_program_name (GwApplication *application) 
 {
   return gettext("gWaei Japanese-English Dictionary");
 }
 
 
-void gw_application_cancel_all_searches (GwApplication *application)
+void 
+gw_application_cancel_all_searches (GwApplication *application)
 {
     GList *list;
     GList *iter;
@@ -349,7 +363,8 @@ void gw_application_cancel_all_searches (GwApplication *application)
 //!
 //!  @brief Will attempt to get the window of the specified type which is most at the front
 //!
-GtkWindow* gw_application_get_window_by_type (GwApplication *application, const GType TYPE)
+GtkWindow* 
+gw_application_get_window_by_type (GwApplication *application, const GType TYPE)
 {
     //Declarations
     GList *iter;
@@ -394,7 +409,8 @@ GtkWindow* gw_application_get_window_by_type (GwApplication *application, const 
 //! @param TYPE The window type to get
 //! @param widget A widget from the window so you can get a specific instance.  If NULL, you cet the first window to match the GwWindowType
 //!
-GtkWindow* gw_application_get_window_by_widget (GwApplication *application, GtkWidget *widget)
+GtkWindow* 
+gw_application_get_window_by_widget (GwApplication *application, GtkWidget *widget)
 {
     //Declarations
     GList *iter;
@@ -428,7 +444,8 @@ GtkWindow* gw_application_get_window_by_widget (GwApplication *application, GtkW
 }
 
 
-void gw_application_block_searches (GwApplication *application)
+void 
+gw_application_block_searches (GwApplication *application)
 {
     GwApplicationPrivate *priv;
 
@@ -439,7 +456,8 @@ void gw_application_block_searches (GwApplication *application)
 }
 
 
-void gw_application_unblock_searches (GwApplication *application)
+void 
+gw_application_unblock_searches (GwApplication *application)
 {
     GwApplicationPrivate *priv;
 
@@ -449,7 +467,8 @@ void gw_application_unblock_searches (GwApplication *application)
       priv->block_new_searches--;
 }
 
-gboolean gw_application_can_start_search (GwApplication *application)
+gboolean 
+gw_application_can_start_search (GwApplication *application)
 {
     GwApplicationPrivate *priv;
 
@@ -459,7 +478,8 @@ gboolean gw_application_can_start_search (GwApplication *application)
 }
 
 
-void gw_application_set_error (GwApplication *application, GError *error)
+void 
+gw_application_set_error (GwApplication *application, GError *error)
 {
   GwApplicationPrivate *priv;
   priv = application->priv;
@@ -468,7 +488,8 @@ void gw_application_set_error (GwApplication *application, GError *error)
 }
 
 
-gboolean gw_application_has_error (GwApplication *application)
+gboolean 
+gw_application_has_error (GwApplication *application)
 {
   GwApplicationPrivate *priv;
   priv = application->priv;
@@ -476,7 +497,8 @@ gboolean gw_application_has_error (GwApplication *application)
 }
 
 
-void gw_application_handle_error (GwApplication *application, GtkWindow *transient_for, gboolean show_dialog, GError **error)
+void 
+gw_application_handle_error (GwApplication *application, GtkWindow *transient_for, gboolean show_dialog, GError **error)
 {
     GwApplicationPrivate *priv;
     priv = application->priv;
@@ -516,7 +538,8 @@ void gw_application_handle_error (GwApplication *application, GtkWindow *transie
 }
 
 
-void gw_application_set_last_focused_searchwindow (GwApplication *application, GwSearchWindow *window)
+void 
+gw_application_set_last_focused_searchwindow (GwApplication *application, GwSearchWindow *window)
 {
    GwApplicationPrivate *priv;
 
@@ -526,7 +549,8 @@ void gw_application_set_last_focused_searchwindow (GwApplication *application, G
 }
 
 
-GwSearchWindow* gw_application_get_last_focused_searchwindow (GwApplication *application)
+GwSearchWindow* 
+gw_application_get_last_focused_searchwindow (GwApplication *application)
 {
    GwApplicationPrivate *priv;
    GwSearchWindow *window;
@@ -542,7 +566,8 @@ GwSearchWindow* gw_application_get_last_focused_searchwindow (GwApplication *app
 }
 
 
-LwPreferences* gw_application_get_preferences (GwApplication *application)
+LwPreferences* 
+gw_application_get_preferences (GwApplication *application)
 {
     GwApplicationPrivate *priv;
 
@@ -552,7 +577,8 @@ LwPreferences* gw_application_get_preferences (GwApplication *application)
 }
 
 
-GwDictInfoList* gw_application_get_dictinfolist (GwApplication *application)
+GwDictInfoList* 
+gw_application_get_dictinfolist (GwApplication *application)
 {
     GwApplicationPrivate *priv;
 
@@ -562,7 +588,8 @@ GwDictInfoList* gw_application_get_dictinfolist (GwApplication *application)
 }
 
 
-LwDictInstList* gw_application_get_dictinstlist (GwApplication *application)
+LwDictInstList* 
+gw_application_get_dictinstlist (GwApplication *application)
 {
   GwApplicationPrivate *priv;
 
@@ -575,7 +602,8 @@ LwDictInstList* gw_application_get_dictinstlist (GwApplication *application)
 }
 
 
-GtkTextTagTable* gw_application_get_tagtable (GwApplication *application)
+GtkTextTagTable* 
+gw_application_get_tagtable (GwApplication *application)
 {
     GwApplicationPrivate *priv;
 
@@ -585,7 +613,8 @@ GtkTextTagTable* gw_application_get_tagtable (GwApplication *application)
 }
 
 
-static void gw_application_activate (GApplication *application)
+static void 
+gw_application_activate (GApplication *application)
 {
     GwSearchWindow *searchwindow;
     GwSettingsWindow *settingswindow;
@@ -613,7 +642,8 @@ static void gw_application_activate (GApplication *application)
 }
 
 
-static int gw_application_command_line (GApplication *application, GApplicationCommandLine *command_line)
+static int 
+gw_application_command_line (GApplication *application, GApplicationCommandLine *command_line)
 {
     //Declarations
     LwDictInfo *di;
@@ -652,7 +682,8 @@ static int gw_application_command_line (GApplication *application, GApplicationC
 }
 
 
-static gboolean gw_application_local_command_line (GApplication *application, 
+static gboolean 
+gw_application_local_command_line (GApplication *application, 
                                                  gchar ***argv, gint *exit_status)
 {
     //Declarations
@@ -687,7 +718,8 @@ static gboolean gw_application_local_command_line (GApplication *application,
 //!
 //! @brief Adds the tags to stylize the buffer text
 //!
-static GtkTextTagTable* gw_application_texttagtable_new ()
+static GtkTextTagTable* 
+gw_application_texttagtable_new ()
 {
     GtkTextTagTable *temp;
     GtkTextTag *tag;

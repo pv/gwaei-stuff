@@ -75,7 +75,8 @@ GRegex *lw_re[LW_RE_TOTAL + 1]; //!< Globally accessable pre-compiled regexes
 //!
 //! @brief Initializes often used prebuilt regex expressions
 //!
-void lw_regex_initialize ()
+void 
+lw_regex_initialize ()
 {
     _regex_expressions_reference_count++;
     if (_regex_expressions_reference_count > 1) return;
@@ -124,7 +125,8 @@ void lw_regex_initialize ()
 //!
 //! @brief Frees often used prebuilt regex expressions
 //!
-void lw_regex_free ()
+void 
+lw_regex_free ()
 {
     _regex_expressions_reference_count--;
     if (_regex_expressions_reference_count <= 1) return;
@@ -149,7 +151,8 @@ void lw_regex_free ()
 //! @param error A pointer to a GError to write errors to or NULL
 //! @returns A newly allocated GRegex that needs to be freed with g_regex_unref ()
 //! 
-GRegex* lw_regex_kanji_new (const char *subject, const LwDictType DICTTYPE, const LwRelevance RELEVANCE, GError **error)
+GRegex* 
+lw_regex_kanji_new (const char *subject, const LwDictType DICTTYPE, const LwRelevance RELEVANCE, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return NULL;
@@ -203,7 +206,8 @@ GRegex* lw_regex_kanji_new (const char *subject, const LwDictType DICTTYPE, cons
 //! @param error A pointer to a GError to write errors to or NULL
 //! @returns A newly allocated GRegex that needs to be freed with g_regex_unref ()
 //! 
-GRegex* lw_regex_furi_new (const char *subject, const LwDictType DICTTYPE, const LwRelevance RELEVANCE, GError **error)
+GRegex* 
+lw_regex_furi_new (const char *subject, const LwDictType DICTTYPE, const LwRelevance RELEVANCE, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return NULL;
@@ -257,7 +261,8 @@ GRegex* lw_regex_furi_new (const char *subject, const LwDictType DICTTYPE, const
 //! @param error A pointer to a GError to write errors to or NULL
 //! @returns A newly allocated GRegex that needs to be freed with g_regex_unref ()
 //! 
-GRegex* lw_regex_romaji_new (const char *subject, const LwDictType DICTTYPE, const LwRelevance RELEVANCE, GError **error)
+GRegex* 
+lw_regex_romaji_new (const char *subject, const LwDictType DICTTYPE, const LwRelevance RELEVANCE, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return NULL;
@@ -311,7 +316,8 @@ GRegex* lw_regex_romaji_new (const char *subject, const LwDictType DICTTYPE, con
 //! @param error A pointer to a GError to write errors to or NULL
 //! @returns A newly allocated GRegex that needs to be freed with g_regex_unref ()
 //! 
-GRegex* lw_regex_mix_new (const char *subject, const LwDictType DICTTYPE, const LwRelevance RELEVANCE, GError **error)
+GRegex* 
+lw_regex_mix_new (const char *subject, const LwDictType DICTTYPE, const LwRelevance RELEVANCE, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return NULL;
@@ -360,7 +366,8 @@ GRegex* lw_regex_mix_new (const char *subject, const LwDictType DICTTYPE, const 
 //! @param error A pointer to a GError to write errors to or NULL
 //! @returns A newly allocated GRegex that needs to be freed with g_regex_unref ()
 //! 
-GRegex* lw_regex_new (const char *subject, const LwDictType DICTTYPE, const LwRelevance RELEVANCE, GError **error)
+GRegex* 
+lw_regex_new (const char *subject, const LwDictType DICTTYPE, const LwRelevance RELEVANCE, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return NULL;

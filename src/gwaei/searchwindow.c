@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file search.c
+//! @file searchwindow.c
 //!
 //! @brief To be written
 //!
@@ -45,7 +45,8 @@ G_DEFINE_TYPE (GwSearchWindow, gw_searchwindow, GW_TYPE_WINDOW)
 //!
 //! @brief Sets up the variables in main-interface.c and main-callbacks.c for use
 //!
-GtkWindow* gw_searchwindow_new (GtkApplication *application)
+GtkWindow* 
+gw_searchwindow_new (GtkApplication *application)
 {
     g_assert (application != NULL);
 
@@ -63,7 +64,8 @@ GtkWindow* gw_searchwindow_new (GtkApplication *application)
 }
 
 
-void gw_searchwindow_init (GwSearchWindow *window)
+static void 
+gw_searchwindow_init (GwSearchWindow *window)
 {
     window->priv = GW_SEARCHWINDOW_GET_PRIVATE (window);
     memset(window->priv, 0, sizeof(GwSearchWindowPrivate));
@@ -75,7 +77,8 @@ void gw_searchwindow_init (GwSearchWindow *window)
 }
 
 
-static void gw_searchwindow_finalize (GObject *object)
+static void 
+gw_searchwindow_finalize (GObject *object)
 {
     GwSearchWindow *window;
     GwSearchWindowPrivate *priv;
@@ -95,7 +98,8 @@ static void gw_searchwindow_finalize (GObject *object)
 }
 
 
-static void gw_searchwindow_constructed (GObject *object)
+static void 
+gw_searchwindow_constructed (GObject *object)
 {
     //Declarations
     GwSearchWindow *window;
@@ -272,7 +276,8 @@ gw_searchwindow_class_init (GwSearchWindowClass *klass)
 //! @param item A LwSearchItem pointer to gleam information from.
 //! @returns Currently always returns TRUE
 //!
-gboolean gw_searchwindow_update_progress_feedback_timeout (GwSearchWindow *window)
+gboolean 
+gw_searchwindow_update_progress_feedback_timeout (GwSearchWindow *window)
 {
     //Sanity checks
     if (gtk_widget_get_visible (GTK_WIDGET (window)) == FALSE) return TRUE;
@@ -310,7 +315,8 @@ gboolean gw_searchwindow_update_progress_feedback_timeout (GwSearchWindow *windo
 }
 
 
-gboolean gw_searchwindow_append_result_timeout (GwSearchWindow *window)
+gboolean 
+gw_searchwindow_append_result_timeout (GwSearchWindow *window)
 {
     //Sanity check
     if (gtk_widget_get_visible (GTK_WIDGET (window)) == FALSE) return TRUE;
@@ -350,7 +356,8 @@ gboolean gw_searchwindow_append_result_timeout (GwSearchWindow *window)
 }
 
 
-void gw_searchwindow_entry_set_text (GwSearchWindow *window, const gchar *text)
+void 
+gw_searchwindow_entry_set_text (GwSearchWindow *window, const gchar *text)
 {
     GwSearchWindowPrivate *priv;
 
@@ -360,7 +367,8 @@ void gw_searchwindow_entry_set_text (GwSearchWindow *window, const gchar *text)
 }
 
 
-void gw_searchwindow_entry_insert_text (GwSearchWindow *window, const gchar *TEXT)
+void 
+gw_searchwindow_entry_insert_text (GwSearchWindow *window, const gchar *TEXT)
 {
     //Sanity checks
     g_assert (window != NULL);
@@ -387,7 +395,8 @@ void gw_searchwindow_entry_insert_text (GwSearchWindow *window, const gchar *TEX
 //!
 //! @param item a LwSearchItem argument.
 //!
-void gw_searchwindow_set_entry_text_by_searchitem (GwSearchWindow* window, LwSearchItem *item)
+void 
+gw_searchwindow_set_entry_text_by_searchitem (GwSearchWindow* window, LwSearchItem *item)
 {
     //Declarations
     GwApplication *application;
@@ -451,7 +460,8 @@ void gw_searchwindow_set_entry_text_by_searchitem (GwSearchWindow* window, LwSea
 //!
 //! @param item a LwSearchItem argument.
 //!
-char* gw_searchwindow_get_title_by_searchitem (GwSearchWindow* window, LwSearchItem *item)
+char* 
+gw_searchwindow_get_title_by_searchitem (GwSearchWindow* window, LwSearchItem *item)
 {
     //Declarations
     GwApplication *application;
@@ -485,7 +495,8 @@ char* gw_searchwindow_get_title_by_searchitem (GwSearchWindow* window, LwSearchI
 //!
 //! @param item a LwSearchItem argument.
 //!
-void gw_searchwindow_set_title_by_searchitem (GwSearchWindow* window, LwSearchItem *item)
+void 
+gw_searchwindow_set_title_by_searchitem (GwSearchWindow* window, LwSearchItem *item)
 {
     //Declarations
     char *title;
@@ -505,7 +516,8 @@ void gw_searchwindow_set_title_by_searchitem (GwSearchWindow* window, LwSearchIt
 //!
 //! @param item A LwSearchItem pointer to gleam information from
 //!
-void gw_searchwindow_set_total_results_label_by_searchitem (GwSearchWindow *window, LwSearchItem* item)
+void 
+gw_searchwindow_set_total_results_label_by_searchitem (GwSearchWindow *window, LwSearchItem* item)
 {
     //Declarations
     GtkWidget *label;
@@ -583,7 +595,8 @@ void gw_searchwindow_set_total_results_label_by_searchitem (GwSearchWindow *wind
 //!
 //! @param request Sets the current dictionary by the number here
 //!
-void gw_searchwindow_set_dictionary (GwSearchWindow *window, int request)
+void 
+gw_searchwindow_set_dictionary (GwSearchWindow *window, int request)
 {
     GwApplication *application;
     GwSearchWindowPrivate *priv;
@@ -630,7 +643,8 @@ void gw_searchwindow_set_dictionary (GwSearchWindow *window, int request)
 //!
 //! @param item A lnSearchItem to gleam information from
 //!
-void gw_searchwindow_set_dictionary_by_searchitem (GwSearchWindow *window, LwSearchItem *item)
+void 
+gw_searchwindow_set_dictionary_by_searchitem (GwSearchWindow *window, LwSearchItem *item)
 {
     if (item == NULL)
       gw_searchwindow_set_dictionary (window, 0);
@@ -639,7 +653,8 @@ void gw_searchwindow_set_dictionary_by_searchitem (GwSearchWindow *window, LwSea
 }
 
 
-LwDictInfo* gw_searchwindow_get_dictionary (GwSearchWindow* window)
+LwDictInfo* 
+gw_searchwindow_get_dictionary (GwSearchWindow* window)
 {
     GwSearchWindowPrivate *priv;
 
@@ -654,7 +669,8 @@ LwDictInfo* gw_searchwindow_get_dictionary (GwSearchWindow* window)
 //!
 //! @param item A LwSearchItem to gleam information from
 //!
-void gw_searchwindow_set_search_progressbar_by_searchitem (GwSearchWindow *window, LwSearchItem *item)
+void 
+gw_searchwindow_set_search_progressbar_by_searchitem (GwSearchWindow *window, LwSearchItem *item)
 {
     //Declarations
     GwSearchWindowPrivate *priv;
@@ -683,7 +699,8 @@ void gw_searchwindow_set_search_progressbar_by_searchitem (GwSearchWindow *windo
 //!
 //! @brief Updates the history menu popup menu
 //!
-void gw_searchwindow_update_history_menu_popup (GwSearchWindow *window)
+void 
+gw_searchwindow_update_history_menu_popup (GwSearchWindow *window)
 {
     //Declarations
     GwSearchWindowPrivate *priv;
@@ -825,7 +842,8 @@ static void _rebuild_history_button_popup (GwSearchWindow *window, char* id, GLi
 //!
 //! @brief Convenience function to update both the back and forward histories etc
 //!
-void gw_searchwindow_update_history_popups (GwSearchWindow* window)
+void 
+gw_searchwindow_update_history_popups (GwSearchWindow* window)
 {
     GwSearchWindowPrivate *priv;
     GList* list;
@@ -859,7 +877,8 @@ void gw_searchwindow_update_history_popups (GwSearchWindow* window)
 //!
 //! @param request The name of the style
 //!
-void gw_searchwindow_set_toolbar_style (GwSearchWindow *window, const char *request) 
+void 
+gw_searchwindow_set_toolbar_style (GwSearchWindow *window, const char *request) 
 {
     GwSearchWindowPrivate *priv;
     GtkToolbarStyle style;
@@ -889,7 +908,8 @@ void gw_searchwindow_set_toolbar_style (GwSearchWindow *window, const char *requ
 //! @param start_line Returns the start line of the text inserted
 //! @param end_line Returns the end line of the text inserted
 //!
-void gw_searchwindow_append_to_buffer (GwSearchWindow *window, LwSearchItem *item, const char *text, char *tag1,
+void 
+gw_searchwindow_append_to_buffer (GwSearchWindow *window, LwSearchItem *item, const char *text, char *tag1,
                                        char *tag2, int *start_line, int *end_line)
 {
     if (item == NULL) return;
@@ -932,7 +952,8 @@ void gw_searchwindow_append_to_buffer (GwSearchWindow *window, LwSearchItem *ite
 //!
 //! @param item A LwSearchItem to gleam information from
 //!
-void gw_searchwindow_initialize_buffer_by_searchitem (GwSearchWindow *window, LwSearchItem *item)
+void 
+gw_searchwindow_initialize_buffer_by_searchitem (GwSearchWindow *window, LwSearchItem *item)
 {
     //Sanity check
     g_assert (lw_searchitem_has_data (item));
@@ -988,7 +1009,8 @@ void gw_searchwindow_initialize_buffer_by_searchitem (GwSearchWindow *window, Lw
 //!
 //! @param text The text to insert
 //!
-void gw_searchwindow_entry_insert (GwSearchWindow *window, char* text)
+void 
+gw_searchwindow_entry_insert (GwSearchWindow *window, char* text)
 {
     //Declarations
     GwSearchWindowPrivate *priv;
@@ -1012,7 +1034,8 @@ void gw_searchwindow_entry_insert (GwSearchWindow *window, char* text)
 //!
 //! @param TARGET The widget where to select all text
 //!
-void gw_searchwindow_select_all (GwSearchWindow* window, GtkWidget *widget)
+void 
+gw_searchwindow_select_all (GwSearchWindow* window, GtkWidget *widget)
 {
     //Sanity check
     g_assert (window != NULL && widget != NULL); 
@@ -1044,7 +1067,8 @@ void gw_searchwindow_select_all (GwSearchWindow* window, GtkWidget *widget)
 //!
 //! @param TARGET The widget where to deselect all text
 //!
-void gw_searchwindow_select_none (GwSearchWindow *window, GtkWidget *widget)
+void 
+gw_searchwindow_select_none (GwSearchWindow *window, GtkWidget *widget)
 {
     //Sanity check
     g_assert (window != NULL && widget != NULL); 
@@ -1074,7 +1098,8 @@ void gw_searchwindow_select_none (GwSearchWindow *window, GtkWidget *widget)
 //!
 //! @brief Copy Text into the target output
 //!
-void gw_searchwindow_copy_text (GwSearchWindow* window, GtkWidget *widget)
+void 
+gw_searchwindow_copy_text (GwSearchWindow* window, GtkWidget *widget)
 {
     //Sanity check
     g_assert (window != NULL && widget != NULL); 
@@ -1103,7 +1128,8 @@ void gw_searchwindow_copy_text (GwSearchWindow* window, GtkWidget *widget)
 //!
 //! @brief Cut Text into the target output
 //!
-void gw_searchwindow_cut_text (GwSearchWindow *window, GtkWidget *widget)
+void 
+gw_searchwindow_cut_text (GwSearchWindow *window, GtkWidget *widget)
 {
     //Sanity check
     g_assert (window != NULL && widget != NULL); 
@@ -1126,7 +1152,8 @@ void gw_searchwindow_cut_text (GwSearchWindow *window, GtkWidget *widget)
 //!
 //! @brief Pastes Text into the target output
 //!
-void gw_searchwindow_paste_text (GwSearchWindow* window, GtkWidget *widget)
+void 
+gw_searchwindow_paste_text (GwSearchWindow* window, GtkWidget *widget)
 {
     //Sanity check
     g_assert (window != NULL && widget != NULL); 
@@ -1152,7 +1179,8 @@ void gw_searchwindow_paste_text (GwSearchWindow* window, GtkWidget *widget)
 //! @param sl The start line number
 //! @param el The end line number
 //!
-char* gw_searchwindow_buffer_get_text_slice_from_current_view (GwSearchWindow* window, int sl, int el)
+char* 
+gw_searchwindow_buffer_get_text_slice_from_current_view (GwSearchWindow* window, int sl, int el)
 {
     //Assertain the target text buffer
     GtkTextView *view;
@@ -1179,7 +1207,8 @@ char* gw_searchwindow_buffer_get_text_slice_from_current_view (GwSearchWindow* w
 //!
 //! @return Returns the character that is being moused over
 //!
-gunichar gw_searchwindow_get_hovered_character (GwSearchWindow* window, int *x, int *y, GtkTextIter *start)
+gunichar 
+gw_searchwindow_get_hovered_character (GwSearchWindow* window, int *x, int *y, GtkTextIter *start)
 {
     //Declarations;
     gint trailing;
@@ -1202,7 +1231,8 @@ gunichar gw_searchwindow_get_hovered_character (GwSearchWindow* window, int *x, 
 //!
 //! @param GdkCursorType The prefered cursor to set
 //!
-void gw_searchwindow_set_cursor (GwSearchWindow* window, GdkCursorType CURSOR)
+void 
+gw_searchwindow_set_cursor (GwSearchWindow* window, GdkCursorType CURSOR)
 {
     //Declarations
     GdkWindow* gdkwindow;
@@ -1224,7 +1254,8 @@ void gw_searchwindow_set_cursor (GwSearchWindow* window, GdkCursorType CURSOR)
 //!
 //! @param cycle_forward A boolean to choose the cycle direction
 //!
-void gw_searchwindow_cycle_dictionaries (GwSearchWindow* window, gboolean cycle_forward)
+void 
+gw_searchwindow_cycle_dictionaries (GwSearchWindow* window, gboolean cycle_forward)
 {
     int increment;
 
@@ -1269,7 +1300,8 @@ void gw_searchwindow_cycle_dictionaries (GwSearchWindow* window, gboolean cycle_
 //! The fancy thing about this function is it will only return the
 //! highlighted text if some is highlighted.
 //!
-char* gw_searchwindow_get_text (GwSearchWindow *window, GtkWidget *widget)
+char* 
+gw_searchwindow_get_text (GwSearchWindow *window, GtkWidget *widget)
 {
     GtkTextView *view;
     GtkTextBuffer *buffer;
@@ -1298,7 +1330,8 @@ char* gw_searchwindow_get_text (GwSearchWindow *window, GtkWidget *widget)
 //!
 //! @param data An unused gpointer.  It should always be NULL
 //!
-gboolean gw_searchwindow_keep_searching_timeout (GwSearchWindow *window)
+gboolean 
+gw_searchwindow_keep_searching_timeout (GwSearchWindow *window)
 {
     //Declarations
     GwApplication *application;
@@ -1346,7 +1379,8 @@ gboolean gw_searchwindow_keep_searching_timeout (GwSearchWindow *window)
 //! It gets the requested text buffer and then returns if it has text selected
 //! or not.
 //!
-gboolean gw_searchwindow_has_selection (GwSearchWindow *window, GtkWidget *widget)
+gboolean 
+gw_searchwindow_has_selection (GwSearchWindow *window, GtkWidget *widget)
 {
     //Declarations
     gboolean has_selection;
@@ -1372,7 +1406,8 @@ gboolean gw_searchwindow_has_selection (GwSearchWindow *window, GtkWidget *widge
 }
 
 
-void gw_searchwindow_cancel_search_by_searchitem (GwSearchWindow *window, LwSearchItem *item)
+void 
+gw_searchwindow_cancel_search_by_searchitem (GwSearchWindow *window, LwSearchItem *item)
 {
     lw_searchitem_cancel_search (item);
 }
@@ -1381,7 +1416,8 @@ void gw_searchwindow_cancel_search_by_searchitem (GwSearchWindow *window, LwSear
 //!
 //! @brief Cancels all searches in all currently open tabs
 //!
-void gw_searchwindow_cancel_all_searches (GwSearchWindow *window)
+void 
+gw_searchwindow_cancel_all_searches (GwSearchWindow *window)
 {
     //Declarations
     GwSearchWindowPrivate *priv;
@@ -1404,7 +1440,8 @@ void gw_searchwindow_cancel_all_searches (GwSearchWindow *window)
 //! @brief Cancels the search of the tab number
 //! @param page_num The page number of the tab to cancel the search of
 //!
-void gw_searchwindow_cancel_search_by_tab_number (GwSearchWindow *window, const int page_num)
+void 
+gw_searchwindow_cancel_search_by_tab_number (GwSearchWindow *window, const int page_num)
 {
     //Declarations
     GwSearchWindowPrivate *priv;
@@ -1424,7 +1461,8 @@ void gw_searchwindow_cancel_search_by_tab_number (GwSearchWindow *window, const 
 //!
 //! @brief Cancels the search of the currently visibile tab
 //!
-void gw_searchwindow_cancel_search_for_current_tab (GwSearchWindow *window)
+void 
+gw_searchwindow_cancel_search_for_current_tab (GwSearchWindow *window)
 {
     //Declarations
     GwSearchWindowPrivate *priv;
@@ -1442,7 +1480,8 @@ void gw_searchwindow_cancel_search_for_current_tab (GwSearchWindow *window)
 //! @brief Cancels a search by identifying matching gpointer
 //! @param container A pointer to the top-most widget in the desired tab to cancel the search of.
 //!
-void gw_searchwindow_cancel_search_by_content (GwSearchWindow *window, gpointer container)
+void 
+gw_searchwindow_cancel_search_by_content (GwSearchWindow *window, gpointer container)
 {
     //Declarations
     GwSearchWindowPrivate *priv;
@@ -1465,7 +1504,8 @@ void gw_searchwindow_cancel_search_by_content (GwSearchWindow *window, gpointer 
 }
 
 
-GtkTextView* gw_searchwindow_get_current_textview (GwSearchWindow *window)
+GtkTextView* 
+gw_searchwindow_get_current_textview (GwSearchWindow *window)
 {
     //Sanity check
     g_assert (window != NULL);
@@ -1491,7 +1531,8 @@ GtkTextView* gw_searchwindow_get_current_textview (GwSearchWindow *window)
 //!
 //! @brief Makes sure that at least one tab is available to output search results.
 //!
-void gw_searchwindow_guarantee_first_tab (GwSearchWindow *window)
+void 
+gw_searchwindow_guarantee_first_tab (GwSearchWindow *window)
 {
     //Declarations
     GwSearchWindowPrivate *priv;
@@ -1513,7 +1554,8 @@ void gw_searchwindow_guarantee_first_tab (GwSearchWindow *window)
 //! @brief Sets the title text of the current tab.
 //! @param TEXT The text to set to the tab
 //!
-void gw_searchwindow_set_tab_text_by_searchitem (GwSearchWindow *window, LwSearchItem *item)
+void 
+gw_searchwindow_set_tab_text_by_searchitem (GwSearchWindow *window, LwSearchItem *item)
 {
     //Declarations
     GwSearchWindowPrivate *priv;
@@ -1576,7 +1618,8 @@ void gw_searchwindow_set_tab_text_by_searchitem (GwSearchWindow *window, LwSearc
 //!
 //! @brief Creats a new tab.  The focus and other details are handled by gw_tabs_new_cb ()
 //!
-int gw_searchwindow_new_tab (GwSearchWindow *window)
+int 
+gw_searchwindow_new_tab (GwSearchWindow *window)
 {
     //Declarations
     GwApplication *application;
@@ -1692,7 +1735,8 @@ int gw_searchwindow_new_tab (GwSearchWindow *window)
 }
 
 
-void gw_searchwindow_remove_tab (GwSearchWindow *window, int index)
+void 
+gw_searchwindow_remove_tab (GwSearchWindow *window, int index)
 {
     //Sanity check
     g_assert (window != NULL && index > -1);
@@ -1736,7 +1780,8 @@ void gw_searchwindow_remove_tab (GwSearchWindow *window, int index)
 }
 
 
-void gw_searchwindow_sync_current_searchitem (GwSearchWindow *window)
+void 
+gw_searchwindow_sync_current_searchitem (GwSearchWindow *window)
 {
   //Declarations
   LwSearchItem *item;
@@ -1752,7 +1797,8 @@ void gw_searchwindow_sync_current_searchitem (GwSearchWindow *window)
 //! @brief The searchwindow searchitem should be set when a new search takes place
 //!        using a newly made searchitem.
 //!
-void gw_searchwindow_set_current_searchitem (GwSearchWindow *window, LwSearchItem *item)
+void 
+gw_searchwindow_set_current_searchitem (GwSearchWindow *window, LwSearchItem *item)
 {
     //Declarations
     GwSearchWindowPrivate *priv;
@@ -1813,7 +1859,8 @@ void gw_searchwindow_set_current_searchitem (GwSearchWindow *window, LwSearchIte
 //!
 //! @brief The searchwindow searchitem will be the one currently loaded in the current tab
 //!
-LwSearchItem* gw_searchwindow_get_current_searchitem (GwSearchWindow *window)
+LwSearchItem* 
+gw_searchwindow_get_current_searchitem (GwSearchWindow *window)
 {
     GwSearchWindowPrivate *priv;
     LwSearchItem *item;
@@ -1830,7 +1877,8 @@ LwSearchItem* gw_searchwindow_get_current_searchitem (GwSearchWindow *window)
 }
 
 
-void gw_searchwindow_start_search (GwSearchWindow *window, LwSearchItem* item)
+void 
+gw_searchwindow_start_search (GwSearchWindow *window, LwSearchItem* item)
 {
     //Sanity check
     g_assert (window != NULL && item != NULL);
@@ -1859,7 +1907,8 @@ void gw_searchwindow_start_search (GwSearchWindow *window, LwSearchItem* item)
 //!
 //! @brief Sets the requested font with magnification applied
 //!
-void gw_searchwindow_set_font (GwSearchWindow *window)
+void 
+gw_searchwindow_set_font (GwSearchWindow *window)
 {
     //Declarations
     GwApplication *application;
@@ -1946,7 +1995,8 @@ void gw_searchwindow_set_font (GwSearchWindow *window)
 
 
 
-static void gw_searchwindow_attach_signals (GwSearchWindow *window)
+static void 
+gw_searchwindow_attach_signals (GwSearchWindow *window)
 {
     //Declarations
     GwApplication *application;
@@ -2065,7 +2115,8 @@ static void gw_searchwindow_attach_signals (GwSearchWindow *window)
 }
 
 
-static void gw_searchwindow_remove_signals (GwSearchWindow *window)
+static void 
+gw_searchwindow_remove_signals (GwSearchWindow *window)
 {
     //Declarations
     GwApplication *application;
@@ -2144,7 +2195,8 @@ static void gw_searchwindow_remove_signals (GwSearchWindow *window)
 }
 
 
-void gw_searchwindow_initialize_dictionary_combobox (GwSearchWindow *window)
+void 
+gw_searchwindow_initialize_dictionary_combobox (GwSearchWindow *window)
 {
     //Declarations
     GwApplication *application;
@@ -2168,7 +2220,8 @@ void gw_searchwindow_initialize_dictionary_combobox (GwSearchWindow *window)
 }
 
 
-void gw_searchwindow_initialize_dictionary_menu (GwSearchWindow *window)
+void 
+gw_searchwindow_initialize_dictionary_menu (GwSearchWindow *window)
 {
     GwApplication *application;
     GtkMenuShell *shell;

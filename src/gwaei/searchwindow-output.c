@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file output-callbacks.c
+//! @file searchwindow-output.c
 //!
 //! @brief To be written
 //!
@@ -47,7 +47,8 @@ static void gw_searchwindow_append_more_relevant_header (GwSearchWindow*, LwSear
 //! @param engine The LwEngine to use for output
 //! @param item The data from the LwSearchItem
 //!
-void gw_searchwindow_append_result (GwSearchWindow *window, LwSearchItem* item)
+void 
+gw_searchwindow_append_result (GwSearchWindow *window, LwSearchItem* item)
 {
     if (window == NULL || item == NULL) return;
 
@@ -82,7 +83,8 @@ void gw_searchwindow_append_result (GwSearchWindow *window, LwSearchItem* item)
 //! @param mark_name The name of the mark to set the new attributes to
 //!
 //!
-static void _searchwindow_set_header (LwSearchItem *item, char* text, char* mark_name)
+static void 
+gw_searchwindow_set_header (LwSearchItem *item, char* text, char* mark_name)
 {
     //Sanity check
     g_assert (lw_searchitem_has_data (item));
@@ -137,7 +139,8 @@ static void _searchwindow_set_header (LwSearchItem *item, char* text, char* mark
 //! @param end_offset The ending character in the line to highlight
 //! @param item A LwSearchItem to get general information from
 //!
-static void _add_match_highlights (gint line, gint start_offset, gint end_offset, LwSearchItem* item)
+static void 
+gw_add_match_highlights (gint line, gint start_offset, gint end_offset, LwSearchItem* item)
 {
     //Sanity check
     g_assert (lw_searchitem_has_data (item));
@@ -240,7 +243,8 @@ static void _add_match_highlights (gint line, gint start_offset, gint end_offset
 //! @param item A LwSearchItem pointer to gleam information from
 //! @param name The name of the mark to move the content insertion mark to
 //!
-static void _shift_stay_mark (LwSearchItem *item, char *name)
+static void 
+gw_shift_stay_mark (LwSearchItem *item, char *name)
 {
     //Sanity check
     g_assert (lw_searchitem_has_data (item));
@@ -273,7 +277,8 @@ static void _shift_stay_mark (LwSearchItem *item, char *name)
 //! @param stay_name The name of the mark that stays in place before the new result.
 //! @param append_name The name of the mark that moves to the end after the new result is added.
 //!
-static void _searchwindow_shift_append_mark (GwSearchWindow *window, LwSearchItem *item, char *stay_name, char *append_name)
+static void 
+gw_searchwindow_shift_append_mark (GwSearchWindow *window, LwSearchItem *item, char *stay_name, char *append_name)
 {
     //Sanity check
     g_assert (lw_searchitem_has_data (item));
@@ -306,7 +311,8 @@ static void _searchwindow_shift_append_mark (GwSearchWindow *window, LwSearchIte
 //!
 //! @param item A LwSearchItem pointer to use for sdata.
 //!
-static void _searchwindow_append_def_same_to_buffer (GwSearchWindow *window, LwSearchItem* item, LwResultLine *resultline)
+static void 
+gw_searchwindow_append_def_same_to_buffer (GwSearchWindow *window, LwSearchItem* item, LwResultLine *resultline)
 {
     //Sanity check
     g_assert (lw_searchitem_has_data (item));
@@ -322,7 +328,7 @@ static void _searchwindow_append_def_same_to_buffer (GwSearchWindow *window, LwS
     view = GTK_TEXT_VIEW (sdata->view);
     buffer = gtk_text_view_get_buffer (view);
 
-    _searchwindow_shift_append_mark (window, item, "previous_result", "new_result");
+    gw_searchwindow_shift_append_mark (window, item, "previous_result", "new_result");
     if ((mark = gtk_text_buffer_get_mark (buffer, "previous_result")) != NULL)
     {
       GtkTextIter iter;
@@ -357,7 +363,7 @@ static void _searchwindow_append_def_same_to_buffer (GwSearchWindow *window, LwS
         gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, gettext("Pop"), -1, "small", NULL);
       }
       end_offset = gtk_text_iter_get_line_offset (&iter);
-      _add_match_highlights (line, start_offset, end_offset, item);
+      gw_add_match_highlights (line, start_offset, end_offset, item);
     }
 }
 
@@ -384,7 +390,8 @@ gboolean lw_searchitem_next_is_same (LwSearchItem *item, LwResultLine *current)
 //!
 //! @param item A LwSearchItem to gleam information from.
 //!
-static void gw_searchwindow_append_edict_result (GwSearchWindow *window, LwSearchItem *item)
+static void 
+gw_searchwindow_append_edict_result (GwSearchWindow *window, LwSearchItem *item)
 {
     //Sanity check
     if (window == NULL || item == NULL) return;
@@ -408,7 +415,7 @@ static void gw_searchwindow_append_edict_result (GwSearchWindow *window, LwSearc
 
     if (lw_searchitem_next_is_same (item, resultline))
     {
-      _searchwindow_append_def_same_to_buffer (window, item, resultline);
+      gw_searchwindow_append_def_same_to_buffer (window, item, resultline);
       gw_searchdata_set_resultline (sdata, resultline);
       return;
     }
@@ -459,14 +466,14 @@ static void gw_searchwindow_append_edict_result (GwSearchWindow *window, LwSearc
       gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, gettext("Pop"), -1, "small", NULL);
     }
 
-    _shift_stay_mark (item, "previous_result");
+    gw_shift_stay_mark (item, "previous_result");
     start_offset = 0;
     end_offset = gtk_text_iter_get_line_offset (&iter);
 
 //    gw_searchwindow_insert_resultpopup_button (window, item, resultline, &iter);
 
     gtk_text_buffer_insert (buffer, &iter, "\n", -1);
-    _add_match_highlights (line, start_offset, end_offset, item);
+    gw_add_match_highlights (line, start_offset, end_offset, item);
 
     //Definitions
     int i = 0;
@@ -479,7 +486,7 @@ static void gw_searchwindow_append_edict_result (GwSearchWindow *window, LwSearc
       gtk_text_buffer_insert                   (buffer, &iter, resultline->def_start[i], -1);
       end_offset = gtk_text_iter_get_line_offset (&iter);
       line = gtk_text_iter_get_line (&iter);
-      _add_match_highlights (line, start_offset, end_offset, item);
+      gw_add_match_highlights (line, start_offset, end_offset, item);
       gtk_text_buffer_insert                   (buffer, &iter, "\n", -1);
       i++;
     }
@@ -496,7 +503,8 @@ static void gw_searchwindow_append_edict_result (GwSearchWindow *window, LwSearc
 //!
 //! @param item A LwSearchItem to gleam information from.
 //!
-static void gw_searchwindow_append_kanjidict_result (GwSearchWindow *window, LwSearchItem *item)
+static void 
+gw_searchwindow_append_kanjidict_result (GwSearchWindow *window, LwSearchItem *item)
 {
     //Sanity check
     g_assert (lw_searchitem_has_data (item));
@@ -544,7 +552,7 @@ static void gw_searchwindow_append_kanjidict_result (GwSearchWindow *window, LwS
     gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, " ", -1, "large", "center", NULL);
     gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
     gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); line = gtk_text_iter_get_line (&iter);
-    _add_match_highlights (line, start_offset, end_offset, item);
+    gw_add_match_highlights (line, start_offset, end_offset, item);
 
     gtk_text_buffer_insert (buffer, &iter, "\n", -1);
     gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); line = gtk_text_iter_get_line (&iter);
@@ -557,7 +565,7 @@ static void gw_searchwindow_append_kanjidict_result (GwSearchWindow *window, LwS
       gtk_text_buffer_insert (buffer, &iter, resultline->radicals, -1);
       gtk_text_buffer_insert (buffer, &iter, " ", -1);
       gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
-      _add_match_highlights (line, start_offset, end_offset, item);
+      gw_add_match_highlights (line, start_offset, end_offset, item);
 
       gtk_text_buffer_insert (buffer, &iter, "\n", -1);
       gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); line = gtk_text_iter_get_line (&iter);
@@ -577,7 +585,7 @@ static void gw_searchwindow_append_kanjidict_result (GwSearchWindow *window, LwS
       gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); start_offset = gtk_text_iter_get_line_offset (&iter);
       gtk_text_buffer_insert (buffer, &iter, resultline->readings[0], -1);
       gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
-      _add_match_highlights (line, start_offset, end_offset, item);
+      gw_add_match_highlights (line, start_offset, end_offset, item);
       gtk_text_buffer_insert (buffer, &iter, "\n", -1);
       gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); line = gtk_text_iter_get_line (&iter);
     }
@@ -587,7 +595,7 @@ static void gw_searchwindow_append_kanjidict_result (GwSearchWindow *window, LwS
       gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); start_offset = gtk_text_iter_get_line_offset (&iter);
       gtk_text_buffer_insert (buffer, &iter, resultline->readings[1], -1);
       gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
-      _add_match_highlights (line, start_offset, end_offset, item);
+      gw_add_match_highlights (line, start_offset, end_offset, item);
       gtk_text_buffer_insert (buffer, &iter, "\n", -1);
       gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); line = gtk_text_iter_get_line (&iter);
     }
@@ -597,7 +605,7 @@ static void gw_searchwindow_append_kanjidict_result (GwSearchWindow *window, LwS
       gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); start_offset = gtk_text_iter_get_line_offset (&iter);
       gtk_text_buffer_insert (buffer, &iter, resultline->readings[2], -1);
       gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
-      _add_match_highlights (line, start_offset, end_offset, item);
+      gw_add_match_highlights (line, start_offset, end_offset, item);
       gtk_text_buffer_insert (buffer, &iter, "\n", -1);
       gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); line = gtk_text_iter_get_line (&iter);
     }
@@ -639,7 +647,7 @@ static void gw_searchwindow_append_kanjidict_result (GwSearchWindow *window, LwS
     gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, gettext("Meanings:"), -1, "important", NULL);
     gtk_text_buffer_insert (buffer, &iter, resultline->meanings, -1);
     gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
-    _add_match_highlights (line, start_offset, end_offset, item);
+    gw_add_match_highlights (line, start_offset, end_offset, item);
 
     gtk_text_buffer_insert (buffer, &iter, "\n\n", -1);
 }
@@ -653,7 +661,8 @@ static void gw_searchwindow_append_kanjidict_result (GwSearchWindow *window, LwS
 //!
 //! @param item A LwSearchItem to gleam information from.
 //!
-static void gw_searchwindow_append_examplesdict_result (GwSearchWindow *window, LwSearchItem *item)
+static void 
+gw_searchwindow_append_examplesdict_result (GwSearchWindow *window, LwSearchItem *item)
 {
     //Sanity check
     g_assert (lw_searchitem_has_data (item));
@@ -686,7 +695,7 @@ static void gw_searchwindow_append_examplesdict_result (GwSearchWindow *window, 
       gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, resultline->def_start[0], -1, "important", NULL, NULL);
       gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
       gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); line = gtk_text_iter_get_line (&iter);
-      _add_match_highlights (line, start_offset, end_offset, item);
+      gw_add_match_highlights (line, start_offset, end_offset, item);
     }
 
     if (resultline->kanji_start != NULL)
@@ -697,7 +706,7 @@ static void gw_searchwindow_append_examplesdict_result (GwSearchWindow *window, 
       gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, resultline->kanji_start, -1, NULL, NULL, NULL);
       gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
       gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); line = gtk_text_iter_get_line (&iter);
-      _add_match_highlights (line, start_offset, end_offset, item);
+      gw_add_match_highlights (line, start_offset, end_offset, item);
     }
 
     if (resultline->furigana_start != NULL)
@@ -708,7 +717,7 @@ static void gw_searchwindow_append_examplesdict_result (GwSearchWindow *window, 
       gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, resultline->furigana_start, -1, NULL, NULL, NULL);
       gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
       gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); line = gtk_text_iter_get_line (&iter);
-      _add_match_highlights (line, start_offset, end_offset, item);
+      gw_add_match_highlights (line, start_offset, end_offset, item);
     }
 
     gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark);
@@ -724,7 +733,8 @@ static void gw_searchwindow_append_examplesdict_result (GwSearchWindow *window, 
 //!
 //! @param item A LwSearchItem to gleam information from.
 //!
-static void gw_searchwindow_append_unknowndict_result (GwSearchWindow *window, LwSearchItem *item)
+static void 
+gw_searchwindow_append_unknowndict_result (GwSearchWindow *window, LwSearchItem *item)
 {
     //Sanity check
     g_assert (lw_searchitem_has_data (item));
@@ -754,7 +764,7 @@ static void gw_searchwindow_append_unknowndict_result (GwSearchWindow *window, L
     gtk_text_buffer_insert (buffer, &iter, " ", -1);
     gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); end_offset = gtk_text_iter_get_line_offset (&iter);
     gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark); line = gtk_text_iter_get_line (&iter);
-    _add_match_highlights (line, start_offset, end_offset, item);
+    gw_add_match_highlights (line, start_offset, end_offset, item);
 
     gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark);
     gtk_text_buffer_insert (buffer, &iter, "\n\n", -1);
@@ -765,7 +775,8 @@ static void gw_searchwindow_append_unknowndict_result (GwSearchWindow *window, L
 //!
 //! @brief Add an header to irrelevant "other" results with number of matches
 //!
-static void gw_searchwindow_append_less_relevant_header (GwSearchWindow *window, LwSearchItem *item)
+static void 
+gw_searchwindow_append_less_relevant_header (GwSearchWindow *window, LwSearchItem *item)
 {
     //Declarations
     int irrelevant;
@@ -777,7 +788,7 @@ static void gw_searchwindow_append_less_relevant_header (GwSearchWindow *window,
 
     if (message != NULL)
     {
-      _searchwindow_set_header (item, message, "less_relevant_header_mark");
+      gw_searchwindow_set_header (item, message, "less_relevant_header_mark");
       g_free (message);
     }
 }
@@ -786,7 +797,8 @@ static void gw_searchwindow_append_less_relevant_header (GwSearchWindow *window,
 //!
 //! @brief Add an header to relevant "main" results with number of matches
 //!
-static void gw_searchwindow_append_more_relevant_header (GwSearchWindow *window, LwSearchItem *item)
+static void 
+gw_searchwindow_append_more_relevant_header (GwSearchWindow *window, LwSearchItem *item)
 {
     //Declarations
     int relevant;
@@ -798,13 +810,14 @@ static void gw_searchwindow_append_more_relevant_header (GwSearchWindow *window,
 
     if (message != NULL)
     {
-      _searchwindow_set_header (item, message, "more_relevant_header_mark");
+      gw_searchwindow_set_header (item, message, "more_relevant_header_mark");
       g_free (message);
     }
 }
 
 
-void gw_searchwindow_append_kanjidict_tooltip_result (GwSearchWindow *window, LwSearchItem *item)
+void 
+gw_searchwindow_append_kanjidict_tooltip_result (GwSearchWindow *window, LwSearchItem *item)
 {
     //Declarations
     GwSearchWindowPrivate *priv;
@@ -992,7 +1005,8 @@ void gw_searchwindow_append_kanjidict_tooltip_result (GwSearchWindow *window, Lw
 //!
 //! @param item A LwSearchItem pointer to gleam information from
 //!
-void gw_searchwindow_display_no_results_found_page (GwSearchWindow *window, LwSearchItem *item)
+void 
+gw_searchwindow_display_no_results_found_page (GwSearchWindow *window, LwSearchItem *item)
 {
     //Sanity check
     if (item == NULL || item->dictionary == NULL) return;

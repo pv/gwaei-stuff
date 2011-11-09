@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file src/console/waei.c
+//! @file waei.c
 //!
 //! @brief Main entrance into the program.
 //!
@@ -36,7 +36,8 @@
 #include <waei/waei.h>
 
 
-int main (int argc, char *argv[])
+int 
+main (int argc, char *argv[])
 {
     GApplication *application;
     int resolution;
@@ -50,7 +51,7 @@ int main (int argc, char *argv[])
 
     g_thread_init (NULL);
 
-    application = w_application_new ("gtk.org.waei", G_APPLICATION_FLAGS_NONE);
+    application = w_application_new ();
 
     resolution = g_application_run (application, argc, argv);
 

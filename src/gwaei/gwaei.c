@@ -53,7 +53,7 @@ int main (int argc, char *argv[])
     g_thread_init (NULL);
     gdk_threads_init ();
 
-    application = gw_application_new ("gtk.org.gWaei", G_APPLICATION_HANDLES_COMMAND_LINE);
+    application = gw_application_new ();
 
 gdk_threads_enter ();
     resolution = g_application_run (application, argc, argv);

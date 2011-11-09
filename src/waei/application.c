@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file gwaei.c
+//! @file application.c
 //!
 //! @brief To be written
 //!
@@ -35,9 +35,7 @@
 #include <waei/waei.h>
 #include <waei/application-private.h>
 
-static void w_application_activate (GApplication*);
 static gboolean w_application_local_command_line (GApplication*, gchar***, gint*);
-static int w_application_command_line (GApplication*, GApplicationCommandLine*);
 static gint w_application_run (WApplication*);
 
 G_DEFINE_TYPE (WApplication, w_application, G_TYPE_APPLICATION)
@@ -45,27 +43,36 @@ G_DEFINE_TYPE (WApplication, w_application, G_TYPE_APPLICATION)
 //!
 //! @brief creates a new instance of the gwaei applicaiton
 //!
-GApplication* w_application_new (const gchar *application_id, GApplicationFlags flags)
+GApplication* 
+w_application_new ()
 {
     //Declarations
     WApplication *application;
+    const gchar *id;
+    GApplicationFlags flags;
+
 
     //Initializations
+    id = "gtk.org.waei";
+    flags = G_APPLICATION_NON_UNIQUE;
     application = g_object_new (W_TYPE_APPLICATION, 
-                                "application-id", application_id, 
+                                "application-id", id, 
                                 "flags", flags, NULL);
 
     return G_APPLICATION (application);
 }
 
 
-static void w_application_init (WApplication *application)
+static void 
+w_application_init (WApplication *application)
 {
     application->priv = W_APPLICATION_GET_PRIVATE (application);
     memset(application->priv, 0, sizeof(WApplicationPrivate));
 }
 
-static void w_application_constructed (GObject *object)
+
+static void 
+w_application_constructed (GObject *object)
 {
     //Declarations
     WApplication *application;
@@ -121,8 +128,6 @@ w_application_class_init (WApplicationClass *klass)
   object_class->constructed = w_application_constructed;
   object_class->finalize = w_application_finalize;
   application_class->local_command_line = w_application_local_command_line;
-  application_class->command_line = w_application_command_line;
-  application_class->activate = w_application_activate;
 
   g_type_class_add_private (object_class, sizeof (WApplicationPrivate));
 }
@@ -131,8 +136,8 @@ w_application_class_init (WApplicationClass *klass)
 //!
 //! @brief Loads the arguments from the command line into the app instance
 //!
-
-void w_application_parse_args (WApplication *application, int *argc, char** argv[])
+void 
+w_application_parse_args (WApplication *application, int *argc, char** argv[])
 {
     WApplicationPrivate *priv;
     const gchar *summary_text;
@@ -146,8 +151,8 @@ void w_application_parse_args (WApplication *application, int *argc, char** argv
     if (priv->arg_query_text_data != NULL) g_free (priv->arg_query_text_data); priv->arg_query_text_data = NULL;
     priv->arg_version_switch = FALSE;
     error = NULL;
+    if (priv->context != NULL) g_option_context_free (priv->context); priv->context = NULL;
 
-    if (priv->context != NULL) g_option_context_free (priv->context);
     priv->context = g_option_context_new (gettext("- A dictionary program for Japanese-English translation."));
     summary_text = gettext("waei generally outputs directly to the console.");
     description_text = g_strdup_printf(
@@ -200,7 +205,8 @@ void w_application_parse_args (WApplication *application, int *argc, char** argv
 //!
 //! @brief Prints to the terminal the about message for the program.
 //!
-void w_application_print_about (WApplication *application)
+void 
+w_application_print_about (WApplication *application)
 {
     const gchar *name;
     name = w_application_get_program_name (W_APPLICATION (application));
@@ -224,13 +230,15 @@ void w_application_print_about (WApplication *application)
 //! @brief Returns the program name.  It should not be freed or modified
 //! @returns A constanst string representing the program name
 //!
-const char* w_application_get_program_name (WApplication *application) 
+const char*
+w_application_get_program_name (WApplication *application) 
 {
   return gettext("Waei Japanese-English Dictionary");
 }
 
 
-void w_application_handle_error (WApplication *application, GError **error)
+void 
+w_application_handle_error (WApplication *application, GError **error)
 {
     //Sanity checks
     if (error == NULL || *error == NULL) return;
@@ -243,7 +251,8 @@ void w_application_handle_error (WApplication *application, GError **error)
 }
 
 
-LwPreferences* w_application_get_preferences (WApplication *application)
+LwPreferences* 
+w_application_get_preferences (WApplication *application)
 {
     WApplicationPrivate *priv;
 
@@ -253,7 +262,8 @@ LwPreferences* w_application_get_preferences (WApplication *application)
 }
 
 
-LwDictInfoList* w_application_get_dictinfolist (WApplication *application)
+LwDictInfoList* 
+w_application_get_dictinfolist (WApplication *application)
 {
     WApplicationPrivate *priv;
 
@@ -263,7 +273,8 @@ LwDictInfoList* w_application_get_dictinfolist (WApplication *application)
 }
 
 
-LwDictInstList* w_application_get_dictinstlist (WApplication *application)
+LwDictInstList* 
+w_application_get_dictinstlist (WApplication *application)
 {
   WApplicationPrivate *priv;
 
@@ -276,20 +287,11 @@ LwDictInstList* w_application_get_dictinstlist (WApplication *application)
 }
 
 
-static void w_application_activate (GApplication *application)
+static gboolean 
+w_application_local_command_line (GApplication *application, 
+                                  gchar ***argv, gint *exit_status)
 {
-}
-
-
-static int w_application_command_line (GApplication *application, GApplicationCommandLine *command_line)
-{
-    return 0;
-}
-
-
-static gboolean w_application_local_command_line (GApplication *application, 
-                                                 gchar ***argv, gint *exit_status)
-{
+  printf("local command line\n");
     //Declarations
     int argc;
 
@@ -309,7 +311,8 @@ static gboolean w_application_local_command_line (GApplication *application,
 //! @param argc Your argc from your main function
 //! @param argv Your array of strings from main
 //!
-static gint w_application_run (WApplication *application)
+static gint 
+w_application_run (WApplication *application)
 {
     //Declarations
     WApplicationPrivate *priv;
@@ -360,6 +363,7 @@ w_application_get_quiet_switch (WApplication *application)
   return priv->arg_quiet_switch;
 }
 
+
 gboolean
 w_application_get_exact_switch (WApplication *application)
 {
@@ -367,6 +371,7 @@ w_application_get_exact_switch (WApplication *application)
   priv = application->priv;
   return priv->arg_exact_switch;
 }
+
 
 gboolean
 w_application_get_list_switch (WApplication *application)
@@ -376,6 +381,7 @@ w_application_get_list_switch (WApplication *application)
   return priv->arg_list_switch;
 }
 
+
 gboolean
 w_application_get_version_switch (WApplication *application)
 {
@@ -383,6 +389,7 @@ w_application_get_version_switch (WApplication *application)
   priv = application->priv;
   return priv->arg_version_switch;
 }
+
 
 gboolean
 w_application_get_color_switch (WApplication *application)
@@ -392,6 +399,7 @@ w_application_get_color_switch (WApplication *application)
   return priv->arg_color_switch;
 }
 
+
 const gchar*
 w_application_get_dictionary_switch_data (WApplication *application)
 {
@@ -399,6 +407,7 @@ w_application_get_dictionary_switch_data (WApplication *application)
   priv = application->priv;
   return priv->arg_dictionary_switch_data;
 }
+
 
 const gchar*
 w_application_get_install_switch_data (WApplication *application)
@@ -408,6 +417,7 @@ w_application_get_install_switch_data (WApplication *application)
   return priv->arg_install_switch_data;
 }
 
+
 const gchar*
 w_application_get_uninstall_switch_data (WApplication *application)
 {
@@ -415,6 +425,7 @@ w_application_get_uninstall_switch_data (WApplication *application)
   priv = application->priv;
   return priv->arg_uninstall_switch_data;
 }
+
 
 const gchar*
 w_application_get_query_text_data (WApplication *application)

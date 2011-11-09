@@ -25,7 +25,7 @@ struct _WApplicationClass {
 };
 
 //Methods
-GApplication* w_application_new (const gchar*, GApplicationFlags);
+GApplication* w_application_new ();
 GType w_application_get_type (void) G_GNUC_CONST;
 
 void w_application_parse_args (WApplication*, int*, char***);

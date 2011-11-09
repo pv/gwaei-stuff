@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file radicals-window.c
+//! @file radicalswindow.c
 //!
 //! @brief To be written
 //!
@@ -34,7 +34,7 @@
 #include <gwaei/gwaei.h>
 #include <gwaei/radicalswindow-private.h>
 
-static void _radicalswindow_fill_radicals (GwRadicalsWindow*);
+static void gw_radicalswindow_fill_radicals (GwRadicalsWindow*);
 
 static char *_radical_array[][5] =
 {
@@ -314,7 +314,8 @@ static char *_radical_array[][5] =
 G_DEFINE_TYPE (GwRadicalsWindow, gw_radicalswindow, GW_TYPE_WINDOW)
 
 
-GtkWindow* gw_radicalswindow_new (GtkApplication *application)
+GtkWindow* 
+gw_radicalswindow_new (GtkApplication *application)
 {
     g_assert (application != NULL);
 
@@ -332,14 +333,16 @@ GtkWindow* gw_radicalswindow_new (GtkApplication *application)
 }
 
 
-void gw_radicalswindow_init (GwRadicalsWindow *window)
+static void 
+gw_radicalswindow_init (GwRadicalsWindow *window)
 {
     window->priv = GW_RADICALSWINDOW_GET_PRIVATE (window);
     memset(window->priv, 0, sizeof(GwRadicalsWindowPrivate));
 }
 
 
-void gw_radicalswindow_finalize (GObject *object)
+static void 
+gw_radicalswindow_finalize (GObject *object)
 {
 /*
     GwRadicalsWindow *window;
@@ -350,7 +353,8 @@ void gw_radicalswindow_finalize (GObject *object)
 }
 
 
-static void gw_radicalswindow_constructed (GObject *object)
+static void 
+gw_radicalswindow_constructed (GObject *object)
 {
     //Declarations
     GwRadicalsWindow *window;
@@ -391,7 +395,7 @@ static void gw_radicalswindow_constructed (GObject *object)
     priv->strokes_spinbutton = GTK_SPIN_BUTTON (gw_window_get_object (GW_WINDOW (window), "strokes_spinbutton"));
 
     gtk_spin_button_set_value (priv->strokes_spinbutton, 1.0);
-    _radicalswindow_fill_radicals (window);
+    gw_radicalswindow_fill_radicals (window);
     gtk_widget_show_all (GTK_WIDGET (priv->radicals_table));
 
     widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "close_button"));
@@ -416,7 +420,8 @@ gw_radicalswindow_class_init (GwRadicalsWindowClass *klass)
 
 
 
-static void _radicalswindow_fill_radicals (GwRadicalsWindow *window)
+static void 
+gw_radicalswindow_fill_radicals (GwRadicalsWindow *window)
 {
     //Declarations
     GwRadicalsWindowPrivate *priv;
@@ -497,7 +502,8 @@ static void _radicalswindow_fill_radicals (GwRadicalsWindow *window)
 //! @brief Copies all the lables of the depressed buttons in the radicals window
 //!
 //!
-char* gw_radicalswindow_strdup_all_selected (GwRadicalsWindow *window)
+char* 
+gw_radicalswindow_strdup_all_selected (GwRadicalsWindow *window)
 {
     //Declarations
     GwRadicalsWindowPrivate *priv;
@@ -563,7 +569,8 @@ char* gw_radicalswindow_strdup_all_selected (GwRadicalsWindow *window)
 //!
 //! @param string The label to search for
 //!
-void gw_radicalswindow_set_button_sensitive_when_label_is (GwRadicalsWindow *window, const char *string)
+void 
+gw_radicalswindow_set_button_sensitive_when_label_is (GwRadicalsWindow *window, const char *string)
 {
     //Sanity check
     if (string == NULL) return;
@@ -630,7 +637,8 @@ void gw_radicalswindow_set_button_sensitive_when_label_is (GwRadicalsWindow *win
 //!
 //! @param output The string to copy the prefered stroke count to
 //! @param MAX The max characters to copy
-char* gw_radicalswindow_strdup_prefered_stroke_count (GwRadicalsWindow *window)
+char* 
+gw_radicalswindow_strdup_prefered_stroke_count (GwRadicalsWindow *window)
 {
     //Declarations
     GwRadicalsWindowPrivate *priv;
@@ -650,7 +658,8 @@ char* gw_radicalswindow_strdup_prefered_stroke_count (GwRadicalsWindow *window)
 //!
 //! @brief Resets the states of all the radical buttons
 //!
-void gw_radicalswindow_deselect_all_radicals (GwRadicalsWindow *window)
+void 
+gw_radicalswindow_deselect_all_radicals (GwRadicalsWindow *window)
 {
     //Declarations
     GwRadicalsWindowPrivate *priv;

@@ -38,7 +38,8 @@
 #include <gwaei/gwaei.h>
 
 
-GwSearchData* gw_searchdata_new (GtkTextView *view, GwSearchWindow *window)
+GwSearchData* 
+gw_searchdata_new (GtkTextView *view, GwSearchWindow *window)
 {
     GwSearchData *temp;
     temp = (GwSearchData*) malloc(sizeof(GwSearchData));
@@ -52,7 +53,8 @@ GwSearchData* gw_searchdata_new (GtkTextView *view, GwSearchWindow *window)
 }
 
 
-void gw_searchdata_free (GwSearchData *data)
+void 
+gw_searchdata_free (GwSearchData *data)
 {
     g_assert (data != NULL);
 
@@ -66,7 +68,8 @@ void gw_searchdata_free (GwSearchData *data)
 }
 
 
-void gw_searchdata_set_resultline (GwSearchData *data, LwResultLine *resultline)
+void 
+gw_searchdata_set_resultline (GwSearchData *data, LwResultLine *resultline)
 {
     g_assert (data != NULL);
 
@@ -75,7 +78,8 @@ void gw_searchdata_set_resultline (GwSearchData *data, LwResultLine *resultline)
     data->resultline = resultline;
 }
 
-LwResultLine* gw_searchdata_get_resultline (GwSearchData *data)
+LwResultLine* 
+gw_searchdata_get_resultline (GwSearchData *data)
 {
   return data->resultline;
 }

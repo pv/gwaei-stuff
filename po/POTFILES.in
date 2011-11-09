@@ -20,7 +20,6 @@ src/waei/waei.c
 [type: gettext/glade] src/gwaei/radicalswindow.ui
 [type: gettext/glade] src/gwaei/settingswindow.ui
 [type: gettext/glade] src/gwaei/kanjipadwindow.ui
-[type: gettext/glade] src/gwaei/vocabularywindow.ui
 
 src/gwaei/application-callbacks.c
 src/gwaei/application.c
@@ -35,8 +34,6 @@ src/gwaei/kanjipad-candidatearea.c
 src/gwaei/kanjipad-drawingarea.c
 src/gwaei/kanjipadwindow-callbacks.c
 src/gwaei/kanjipadwindow.c
-src/gwaei/output-popup-callbacks.c
-src/gwaei/pluginmanager.c
 src/gwaei/printing.c
 src/gwaei/radicalswindow-callbacks.c
 src/gwaei/radicalswindow.c

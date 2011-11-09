@@ -58,17 +58,18 @@ static gboolean _cancel = FALSE;
 //! @param builtin Denotes if the dictionary is built in. The user can only adjust the uri when the dictionary is built in.
 //! @returns A newly allocated LwDictInst object that should be freed with lw_dictinst_free.
 //!
-LwDictInst* lw_dictinst_new_using_pref_uri (const char* filename,
-                                            const char* shortname,
-                                            const char* longname,
-                                            const char* description,
-                                            LwPreferences* pm,
-                                            const char* schema,
-                                            const char* key,
-                                            const LwDictType DICTTYPE,
-                                            const LwCompression COMPRESSION,
-                                            const LwEncoding ENCODING,
-                                            gboolean split, gboolean merge, gboolean builtin)
+LwDictInst* 
+lw_dictinst_new_using_pref_uri (const char* filename,
+                                const char* shortname,
+                                const char* longname,
+                                const char* description,
+                                LwPreferences* pm,
+                                const char* schema,
+                                const char* key,
+                                const LwDictType DICTTYPE,
+                                const LwCompression COMPRESSION,
+                                const LwEncoding ENCODING,
+                                gboolean split, gboolean merge, gboolean builtin)
 {
     //Declarations
     char source_uri[200];
@@ -116,15 +117,16 @@ LwDictInst* lw_dictinst_new_using_pref_uri (const char* filename,
 //! @param builtin Denotes if the dictionary is built in. The user can only adjust the uri when the dictionary is built in.
 //! @returns A newly allocated LwDictInst object that should be freed with lw_dictinst_free.
 //!
-LwDictInst* lw_dictinst_new (const char* filename,
-                             const char* shortname,
-                             const char* longname,
-                             const char* description,
-                             const char* source_uri,
-                             const LwDictType DICTTYPE,
-                             const LwCompression COMPRESSION,
-                             const LwEncoding ENCODING,
-                             gboolean split, gboolean merge, gboolean builtin)
+LwDictInst* 
+lw_dictinst_new (const char* filename,
+                 const char* shortname,
+                 const char* longname,
+                 const char* description,
+                 const char* source_uri,
+                 const LwDictType DICTTYPE,
+                 const LwCompression COMPRESSION,
+                 const LwEncoding ENCODING,
+                 gboolean split, gboolean merge, gboolean builtin)
 {
     LwDictInst *temp;
 
@@ -154,7 +156,8 @@ LwDictInst* lw_dictinst_new (const char* filename,
 //! @brief Releases a LwDictInst object from memory.
 //! @param di A LwDictInst object created by lw_dictinst_new.
 //!
-void lw_dictinst_free (LwDictInst* di)
+void 
+lw_dictinst_free (LwDictInst* di)
 {
     lw_dictinst_deinit (di);
     free (di);
@@ -176,7 +179,8 @@ void lw_dictinst_free (LwDictInst* di)
 //! @param merge This should only be optionally set when you are installing both Kanjidic/Kraddic
 //! @param builtin Denotes if the dictionary is built in. The user can only adjust the uri when the dictionary is built in.
 //!
-void lw_dictinst_init (LwDictInst *di,
+void 
+lw_dictinst_init (LwDictInst *di,
                        const char* filename,
                        const char* shortname,
                        const char* longname,
@@ -226,7 +230,8 @@ void lw_dictinst_init (LwDictInst *di,
 //!         Usually lw_dictinst_free calls this for you.  It is also used
 //!         in class implimentations that extends LwDictInst.
 //! @param di The LwDictInst object to have it's inner memory freed.
-void lw_dictinst_deinit (LwDictInst *di)
+void 
+lw_dictinst_deinit (LwDictInst *di)
 {
     //Declarations
     int i;
@@ -286,7 +291,8 @@ void gw_dictinst_update_source_uri_cb (GSettings *settings, char* key, gpointer 
 //! @param di The LwDictInst object to set the filename to
 //! @param FILENAME The filename to copy to the LwDictInst object and use to generate uris
 //!
-void lw_dictinst_set_filename (LwDictInst *di, const char *FILENAME)
+void 
+lw_dictinst_set_filename (LwDictInst *di, const char *FILENAME)
 {
     g_free (di->filename);
     di->filename = g_strdup (FILENAME);
@@ -300,7 +306,8 @@ void lw_dictinst_set_filename (LwDictInst *di, const char *FILENAME)
 //! @param di The LwDictInst object to set the DICTTYPE to
 //! @param DICTTYPE the engine that you want to set
 //!
-void lw_dictinst_set_engine (LwDictInst *di, const LwDictType DICTTYPE)
+void 
+lw_dictinst_set_engine (LwDictInst *di, const LwDictType DICTTYPE)
 {
     di->type = DICTTYPE;
 
@@ -313,7 +320,8 @@ void lw_dictinst_set_engine (LwDictInst *di, const LwDictType DICTTYPE)
 //! @param di The LwDictInfo object to set the ENCODING to
 //! @param ENCODING Tells the LwDictInfo object what the initial character encoding of the downloaded file will be
 //!
-void lw_dictinst_set_encoding (LwDictInst *di, const LwEncoding ENCODING)
+void 
+lw_dictinst_set_encoding (LwDictInst *di, const LwEncoding ENCODING)
 {
     di->encoding = ENCODING;
 
@@ -326,7 +334,8 @@ void lw_dictinst_set_encoding (LwDictInst *di, const LwEncoding ENCODING)
 //! @param di The LwDictInfo objcet to set the COMPRESSION variable on
 //! @param COMPRESSION Tells the LwDictInfo object what kind of compression the downloaded dictionary file will have.
 //!
-void lw_dictinst_set_compression (LwDictInst *di, const LwCompression COMPRESSION)
+void 
+lw_dictinst_set_compression (LwDictInst *di, const LwCompression COMPRESSION)
 {
     di->compression = COMPRESSION;
 
@@ -341,7 +350,8 @@ void lw_dictinst_set_compression (LwDictInst *di, const LwCompression COMPRESSIO
 //! @param di The LwDictInfo objcet to set the SOURCE variable on
 //! @param SOURCE The source string to copy to the LwDictInst object.
 //!
-void lw_dictinst_set_download_source (LwDictInst *di, const char *SOURCE)
+void 
+lw_dictinst_set_download_source (LwDictInst *di, const char *SOURCE)
 {
     if (di->uri[LW_DICTINST_NEEDS_DOWNLOADING] != NULL)
       g_free (di->uri[LW_DICTINST_NEEDS_DOWNLOADING]);
@@ -354,7 +364,8 @@ void lw_dictinst_set_download_source (LwDictInst *di, const char *SOURCE)
 //! @param di The LwDictInfo objcet to set the MERGE variable on.
 //! @param MERGE The merge setting to copy to the LwDictInst.
 //!
-void lw_dictinst_set_merge (LwDictInst *di, const gboolean MERGE)
+void 
+lw_dictinst_set_merge (LwDictInst *di, const gboolean MERGE)
 {
     di->merge = MERGE;
 
@@ -367,7 +378,8 @@ void lw_dictinst_set_merge (LwDictInst *di, const gboolean MERGE)
 //! @param di The LwDictInfo objcet to set the SPLIT variable on
 //! @param SPLIT The split setting to copy to the LwDictInst.
 //!
-void lw_dictinst_set_split (LwDictInst *di, const gboolean SPLIT)
+void 
+lw_dictinst_set_split (LwDictInst *di, const gboolean SPLIT)
 {
     di->split = SPLIT;
 
@@ -380,7 +392,8 @@ void lw_dictinst_set_split (LwDictInst *di, const gboolean SPLIT)
 //!        or encoding members of the LwDictInst is changed to sync the new paths
 //! @di The LwDictInfo object to regenerate the save target uris of.
 //!
-void lw_dictinst_regenerate_save_target_uris (LwDictInst *di)
+void 
+lw_dictinst_regenerate_save_target_uris (LwDictInst *di)
 {
     //Sanity check
     g_assert (di != NULL && di->filename != NULL);
@@ -468,7 +481,8 @@ void lw_dictinst_regenerate_save_target_uris (LwDictInst *di)
 //!        if the LWDictInst object can have the lw_dictinst_install method
 //!        called without crashing.
 //!
-gboolean lw_dictinst_data_is_valid (LwDictInst *di)
+gboolean 
+lw_dictinst_data_is_valid (LwDictInst *di)
 {
     //Declarations
     char *ptr;
@@ -524,7 +538,8 @@ gboolean lw_dictinst_data_is_valid (LwDictInst *di)
 //! @see lw_dictinst_postprocess
 //! @see lw_dictinst_install
 //!
-gboolean lw_dictinst_download (LwDictInst *di, LwIoProgressCallback cb, gpointer data, GError **error)
+gboolean 
+lw_dictinst_download (LwDictInst *di, LwIoProgressCallback cb, gpointer data, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return FALSE;
@@ -570,7 +585,8 @@ gboolean lw_dictinst_download (LwDictInst *di, LwIoProgressCallback cb, gpointer
 //! @see lw_dictinst_postprocess
 //! @see lw_dictinst_install
 //!
-gboolean lw_dictinst_decompress (LwDictInst *di, LwIoProgressCallback cb, gpointer data, GError **error)
+gboolean 
+lw_dictinst_decompress (LwDictInst *di, LwIoProgressCallback cb, gpointer data, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return FALSE;
@@ -633,7 +649,8 @@ gboolean lw_dictinst_decompress (LwDictInst *di, LwIoProgressCallback cb, gpoint
 //! @see lw_dictinst_postprocess
 //! @see lw_dictinst_install
 //!
-gboolean lw_dictinst_convert_encoding (LwDictInst *di, LwIoProgressCallback cb, gpointer data, GError **error)
+gboolean 
+lw_dictinst_convert_encoding (LwDictInst *di, LwIoProgressCallback cb, gpointer data, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return FALSE;
@@ -682,7 +699,8 @@ gboolean lw_dictinst_convert_encoding (LwDictInst *di, LwIoProgressCallback cb, 
 //! @see lw_dictinst_postprocess
 //! @see lw_dictinst_install
 //!
-gboolean lw_dictinst_postprocess (LwDictInst *di, LwIoProgressCallback cb, gpointer data, GError **error)
+gboolean 
+lw_dictinst_postprocess (LwDictInst *di, LwIoProgressCallback cb, gpointer data, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return FALSE;
@@ -747,7 +765,8 @@ gboolean lw_dictinst_postprocess (LwDictInst *di, LwIoProgressCallback cb, gpoin
 //! @see lw_dictinst_postprocess
 //! @see lw_dictinst_install
 //!
-gboolean lw_dictinst_finalize (LwDictInst *di, LwIoProgressCallback cb, gpointer data, GError **error)
+gboolean 
+lw_dictinst_finalize (LwDictInst *di, LwIoProgressCallback cb, gpointer data, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return FALSE;
@@ -783,7 +802,8 @@ gboolean lw_dictinst_finalize (LwDictInst *di, LwIoProgressCallback cb, gpointer
 //! @param cb A LwIoProgressCallback used to giver user feedback on how far the finalization is.
 //! @param data A gpointer to data to pass to the LwIoProgressCallback.
 //!
-void lw_dictinst_clean (LwDictInst *di, LwIoProgressCallback cb, gpointer data)
+void 
+lw_dictinst_clean (LwDictInst *di, LwIoProgressCallback cb, gpointer data)
 {
     //Declarations
     LwDictInstUri group_index;
@@ -826,7 +846,8 @@ void lw_dictinst_clean (LwDictInst *di, LwIoProgressCallback cb, gpointer data)
 //! @see lw_dictinst_postprocess
 //! @see lw_dictinst_install
 //!
-gboolean lw_dictinst_install (LwDictInst *di, LwIoProgressCallback cb, gpointer data, GError **error)
+gboolean 
+lw_dictinst_install (LwDictInst *di, LwIoProgressCallback cb, gpointer data, GError **error)
 {
     g_assert (*error == NULL && di != NULL);
 
@@ -848,7 +869,8 @@ gboolean lw_dictinst_install (LwDictInst *di, LwIoProgressCallback cb, gpointer 
 //! @param long_form Whether you want the long or short form of the status messages.
 //! @returns An allocated string that should be freed with gfree when finished
 //!
-gchar* lw_dictinst_get_status_string (LwDictInst *di, gboolean long_form)
+gchar* 
+lw_dictinst_get_status_string (LwDictInst *di, gboolean long_form)
 {
     //Declarations
     gchar *string;
@@ -936,7 +958,8 @@ double lw_dictinst_get_process_progress (LwDictInst *di, double fraction)
 //! @param di The LwDictInfo object to get the total progress of
 //! @param fraction The fraction progress of the current process.
 //!
-double lw_dictinst_get_total_progress (LwDictInst *di, double fraction)
+double 
+lw_dictinst_get_total_progress (LwDictInst *di, double fraction)
 {
     //Declarations
     double output_fraction, current, final;
@@ -995,7 +1018,8 @@ double lw_dictinst_get_total_progress (LwDictInst *di, double fraction)
 //! @param ATOM_INDEX The desired atom if there are multiple files being acted upon in a step
 //! @returns An allocated string internal to the LwDictInst that should not be freed
 //!
-char* lw_dictinst_get_source_uri (LwDictInst *di, const LwDictInstUri GROUP_INDEX, const int ATOM_INDEX)
+char* 
+lw_dictinst_get_source_uri (LwDictInst *di, const LwDictInstUri GROUP_INDEX, const int ATOM_INDEX)
 {
     //Sanity check
     g_assert (GROUP_INDEX >= 0 && GROUP_INDEX < LW_DICTINST_NEEDS_NOTHING);
@@ -1036,7 +1060,8 @@ char* lw_dictinst_get_source_uri (LwDictInst *di, const LwDictInstUri GROUP_INDE
 //! @param ATOM_INDEX The desired atom if there are multiple files being acted upon in a step
 //! @returns An allocated string internal to the LwDictInst that should not be freed
 //!
-char* lw_dictinst_get_target_uri (LwDictInst *di, const LwDictInstUri GROUP_INDEX, const int ATOM_INDEX)
+char* 
+lw_dictinst_get_target_uri (LwDictInst *di, const LwDictInstUri GROUP_INDEX, const int ATOM_INDEX)
 {
     //Sanity check
     g_assert (GROUP_INDEX >= 0 && GROUP_INDEX < LW_DICTINST_NEEDS_NOTHING);
@@ -1074,7 +1099,8 @@ char* lw_dictinst_get_target_uri (LwDictInst *di, const LwDictInstUri GROUP_INDE
 //! @param di The LwDictInst object to stop or prevent the install on.
 //! @param state Whether to turn on the requested cancel operation or not.
 //!
-void lw_dictinst_set_cancel_operations (LwDictInst *di, gboolean state)
+void 
+lw_dictinst_set_cancel_operations (LwDictInst *di, gboolean state)
 {
     _cancel = state;
     lw_io_set_cancel_operations (state);

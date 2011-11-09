@@ -39,7 +39,8 @@ static char *FIRST_DEFINITION_PREFIX_STR = "(1)";
 //! @brief Creates a new LwResultLine object
 //! @return An allocated LwResultLine that will be needed to be freed by lw_resultline_free.
 //!
-LwResultLine* lw_resultline_new ()
+LwResultLine* 
+lw_resultline_new ()
 {
     LwResultLine* temp;
 
@@ -57,7 +58,8 @@ LwResultLine* lw_resultline_new ()
 //! @brief Releases a LwResultLine object from memory.
 //! @param rl A LwResultLine object created by lw_resultline_new.
 //!
-void lw_resultline_free (LwResultLine *rl)
+void 
+lw_resultline_free (LwResultLine *rl)
 {
     lw_resultline_deinit (rl);
     free (rl);
@@ -70,7 +72,8 @@ void lw_resultline_free (LwResultLine *rl)
 //!        used in class implimentations that extends LwDictInfo.
 //! @param rl The LwResultline to initialize the memory of
 //!
-void lw_resultline_init (LwResultLine *rl)
+void 
+lw_resultline_init (LwResultLine *rl)
 {
     //A place for a copy of the raw string
     rl->string[0] = '\0';
@@ -105,7 +108,8 @@ void lw_resultline_init (LwResultLine *rl)
 //!         in class implimentations that extends LwResultLine.
 //! @param rl The LwResultLine object to have it's inner memory freed.
 //!
-void lw_resultline_deinit (LwResultLine *rl)
+void 
+lw_resultline_deinit (LwResultLine *rl)
 {
 }
 
@@ -114,7 +118,8 @@ void lw_resultline_deinit (LwResultLine *rl)
 //! @brief Parses a string for a Edict format string
 //! @param rl The Resultline object this method works on
 //!
-void lw_resultline_parse_edict_result_string (LwResultLine *rl)
+void 
+lw_resultline_parse_edict_result_string (LwResultLine *rl)
 {
     //Reinitialize Variables to help prevent craziness
     rl->def_start[0] = NULL;
@@ -231,7 +236,8 @@ void lw_resultline_parse_edict_result_string (LwResultLine *rl)
 //! @brief Parses a string for a Kanjidic format string
 //! @param rl The Resultline object this method works on
 //!
-void lw_resultline_parse_kanjidict_result_string (LwResultLine *rl)
+void 
+lw_resultline_parse_kanjidict_result_string (LwResultLine *rl)
 {
     GMatchInfo* match_info;
     int start[LW_RE_TOTAL];
@@ -379,7 +385,8 @@ void lw_resultline_parse_kanjidict_result_string (LwResultLine *rl)
 //! @brief Parses a string for an example format string
 //! @param rl The Resultline object this method works on
 //!
-void lw_resultline_parse_examplesdict_result_string (LwResultLine *rl)
+void 
+lw_resultline_parse_examplesdict_result_string (LwResultLine *rl)
 {
     //Reinitialize Variables to help prevent craziness
     rl->def_start[0] = NULL;
@@ -463,43 +470,14 @@ void lw_resultline_parse_examplesdict_result_string (LwResultLine *rl)
 //! @brief Parses a string for an unknown format string
 //! @param rl The Resultline object this method works on
 //!
-void lw_resultline_parse_unknowndict_result_string (LwResultLine *rl)
+void 
+lw_resultline_parse_unknowndict_result_string (LwResultLine *rl)
 {
-/*
-    //Reinitialize Variables to help prevent craziness
-    rl->def_start[0] = NULL;
-    rl->def_total = 0;
-    rl->kanji_start = NULL;
-    rl->furigana_start = NULL;
-    rl->classification_start = NULL;
-    rl->important = FALSE;
-    rl->strokes = NULL;
-    rl->frequency = NULL;
-    rl->readings[0] = NULL;
-    rl->readings[1] = NULL;
-    rl->readings[2] = NULL;
-    rl->meanings = NULL;
-    rl->grade = NULL;
-    rl->jlpt = NULL;
-    rl->kanji = NULL;
-    rl->radicals = NULL;
-
-    char *temp = NULL;
-    if (temp = g_utf8_strchr (rl->string, -1, L'\n'))
-    {
-      *temp = '\0';
-    }
-
-    rl->def_start[0] = rl->string;
-    rl->def_start[1] = NULL;
-    rl->def_total = 1;
-    rl->kanji_start = rl->string;
-    rl->furigana_start = rl->string;
-*/
 }
 
 
-gboolean lw_resultline_is_similar (LwResultLine *rl1, LwResultLine *rl2)
+gboolean 
+lw_resultline_is_similar (LwResultLine *rl1, LwResultLine *rl2)
 {
     //Declarations
     gboolean same_def_totals, same_first_def;

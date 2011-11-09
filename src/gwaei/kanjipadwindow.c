@@ -22,7 +22,7 @@
 *******************************************************************************/
 
 //!
-//! @file kanjipad-window.c
+//! @file kanjipadwindow.c
 //!
 //! @brief To be written
 //!

@@ -46,14 +46,19 @@ typedef enum
   PROP_UI_XML
 } GwWindowProps;
 
-void gw_window_init (GwWindow *window)
+static gboolean gw_window_load_ui_xml (GwWindow*, const char*);
+
+
+static void 
+gw_window_init (GwWindow *window)
 {
     window->priv = GW_WINDOW_GET_PRIVATE (window);
     memset(window->priv, 0, sizeof(GwWindowPrivate));
 }
 
 
-void gw_window_finalize (GObject *object)
+static void 
+gw_window_finalize (GObject *object)
 {
     GwWindow *window;
     GwWindowPrivate *priv;
@@ -71,7 +76,8 @@ void gw_window_finalize (GObject *object)
 }
 
 
-static void gw_window_constructed (GObject *object)
+static void 
+gw_window_constructed (GObject *object)
 {
     GwWindow *window;
     GwWindowPrivate *priv;
@@ -94,10 +100,11 @@ static void gw_window_constructed (GObject *object)
 }
 
 
-static void gw_window_set_property (GObject      *object,
-                                    guint         property_id,
-                                    const GValue *value,
-                                    GParamSpec   *pspec)
+static void 
+gw_window_set_property (GObject      *object,
+                        guint         property_id,
+                        const GValue *value,
+                        GParamSpec   *pspec)
 {
     GwWindow *window;
     GwWindowPrivate *priv;
@@ -122,10 +129,11 @@ static void gw_window_set_property (GObject      *object,
 }
 
 
-static void gw_window_get_property (GObject      *object,
-                                    guint         property_id,
-                                    GValue       *value,
-                                    GParamSpec   *pspec)
+static void 
+gw_window_get_property (GObject      *object,
+                        guint         property_id,
+                        GValue       *value,
+                        GParamSpec   *pspec)
 {
     GwWindow *window;
     GwWindowPrivate *priv;
@@ -187,7 +195,8 @@ gw_window_class_init (GwWindowClass *klass)
 //!
 //! @param filename The filename of the xml file to look for
 //!
-gboolean gw_window_load_ui_xml (GwWindow *window, const char *filename)
+static gboolean 
+gw_window_load_ui_xml (GwWindow *window, const char *filename)
 {
     if (window == NULL || filename == NULL) return FALSE;
 
@@ -237,7 +246,8 @@ gboolean gw_window_load_ui_xml (GwWindow *window, const char *filename)
 }
 
 
-GObject* gw_window_get_object (GwWindow *window, const char *ID)
+GObject* 
+gw_window_get_object (GwWindow *window, const char *ID)
 {
     GwWindowPrivate *priv;
 
@@ -247,7 +257,8 @@ GObject* gw_window_get_object (GwWindow *window, const char *ID)
 }
 
 
-void gw_window_set_application (GwWindow *window, GwApplication *application)
+void 
+gw_window_set_application (GwWindow *window, GwApplication *application)
 {
     GwWindowPrivate *priv;
 
@@ -257,7 +268,8 @@ void gw_window_set_application (GwWindow *window, GwApplication *application)
 }
 
 
-GwApplication* gw_window_get_application (GwWindow *window)
+GwApplication* 
+gw_window_get_application (GwWindow *window)
 {
     GwWindowPrivate *priv;
 
@@ -267,7 +279,8 @@ GwApplication* gw_window_get_application (GwWindow *window)
 }
 
 
-GtkWidget* gw_window_get_toplevel (GwWindow *window)
+GtkWidget*
+gw_window_get_toplevel (GwWindow *window)
 {
     GwWindowPrivate *priv;
 
@@ -277,7 +290,8 @@ GtkWidget* gw_window_get_toplevel (GwWindow *window)
 }
 
 
-GtkAccelGroup *gw_window_get_accel_group (GwWindow *window)
+GtkAccelGroup*
+gw_window_get_accel_group (GwWindow *window)
 {
     GwWindowPrivate *priv;
 

@@ -54,7 +54,8 @@ typedef struct _LwIoProcessFdData LwIoProcessFdData; //!< Used for passing data 
 //! @brief Creates a savepath that is used with the save/save as functions
 //! @param PATH a path to save to
 //!
-void lw_io_set_savepath (const gchar *PATH)
+void 
+lw_io_set_savepath (const gchar *PATH)
 {
     if (_savepath != NULL)
     {
@@ -71,7 +72,8 @@ void lw_io_set_savepath (const gchar *PATH)
 //! @brief Gets the savepath used with the save/save as functions
 //! @returns A constant path string that is not to be freed
 //!
-const gchar* lw_io_get_savepath ()
+const gchar* 
+lw_io_get_savepath ()
 {
   return _savepath;
 }
@@ -86,7 +88,8 @@ const gchar* lw_io_get_savepath ()
 //! @param data A generic pointer to data to pass to the callback
 //! @param error A pointer to a GError object to write errors to or NULL
 //!
-void lw_io_write_file (const char* PATH, const char* mode, gchar *text, LwIoProgressCallback cb, gpointer data, GError **error)
+void 
+lw_io_write_file (const char* PATH, const char* mode, gchar *text, LwIoProgressCallback cb, gpointer data, GError **error)
 {
     //Sanity checks
     g_assert (PATH != NULL && mode != NULL && text != NULL);
@@ -129,7 +132,8 @@ void lw_io_write_file (const char* PATH, const char* mode, gchar *text, LwIoProg
 //! @param error pointer to a GError to write errors to
 //! @return The status of the conversion opertaion
 //!
-gboolean lw_io_copy_with_encoding (const char *SOURCE_PATH, const char *TARGET_PATH,
+gboolean 
+lw_io_copy_with_encoding (const char *SOURCE_PATH, const char *TARGET_PATH,
                                    const char *SOURCE_ENCODING, const char *TARGET_ENCODING,
                                    LwIoProgressCallback cb, gpointer data, GError **error   )
 {
@@ -264,8 +268,9 @@ static int _libcurl_update_progress (void  *custom,
 //! @param data gpointer to data to pass to the function pointer
 //! @param error Error handling
 //!
-gboolean lw_io_download (char *source_path, char *target_path, LwIoProgressCallback cb,
-                              gpointer data, GError **error)
+gboolean 
+lw_io_download (char *source_path, char *target_path, LwIoProgressCallback cb,
+                gpointer data, GError **error)
 {
     if (error != NULL && *error != NULL) return FALSE;
 
@@ -327,8 +332,9 @@ gboolean lw_io_download (char *source_path, char *target_path, LwIoProgressCallb
 //! @param data A gpointer to data to pass to the LwIoProgressCallback
 //! @param error Error handling
 //!
-gboolean lw_io_copy (const char *SOURCE_PATH, const char *TARGET_PATH, 
-                     LwIoProgressCallback cb, gpointer data, GError **error)
+gboolean 
+lw_io_copy (const char *SOURCE_PATH, const char *TARGET_PATH, 
+            LwIoProgressCallback cb, gpointer data, GError **error)
 {
     if (*error != NULL) return FALSE;
 
@@ -378,12 +384,13 @@ gboolean lw_io_copy (const char *SOURCE_PATH, const char *TARGET_PATH,
 //! @param data A gpointer to data to pass to the LwIoProgressCallback
 //! @param error pointer to a GError to write errors to
 //!
-gboolean lw_io_create_mix_dictionary (const char *output_path, 
-                                      const char *kanji_dictionary_path, 
-                                      const char *radicals_dictionary_path, 
-                                      LwIoProgressCallback cb,
-                                      gpointer data,
-                                      GError **error)
+gboolean 
+lw_io_create_mix_dictionary (const char *output_path, 
+                             const char *kanji_dictionary_path, 
+                             const char *radicals_dictionary_path, 
+                             LwIoProgressCallback cb,
+                             gpointer data,
+                             GError **error)
 {
     //Sanity check
     if (*error != NULL) return FALSE;
@@ -498,12 +505,13 @@ gboolean lw_io_create_mix_dictionary (const char *output_path,
 //! @param data A gpointer to data to pass to the LwIoProgressCallback
 //! @param error pointer to a GError to write errors to
 //!
-gboolean lw_io_split_places_from_names_dictionary (const char *OUTPUT_NAMES_PATH, 
-                                                   const char* OUTPUT_PLACES_PATH,
-                                                   const char* INPUT_NAMES_PLACES_PATH,
-                                                   LwIoProgressCallback cb,
-                                                   gpointer data,
-                                                   GError **error                    )
+gboolean 
+lw_io_split_places_from_names_dictionary (const char *OUTPUT_NAMES_PATH, 
+                                          const char* OUTPUT_PLACES_PATH,
+                                          const char* INPUT_NAMES_PLACES_PATH,
+                                          LwIoProgressCallback cb,
+                                          gpointer data,
+                                          GError **error                    )
 {
     if (error != NULL && *error != NULL) return FALSE;
 
@@ -592,8 +600,9 @@ gboolean lw_io_split_places_from_names_dictionary (const char *OUTPUT_NAMES_PATH
 //! @param data A generic pointer to data to pass to the LwIoProgressCallback
 //! @param error A pointer to a GError object to write an error to or NULL
 //!
-gboolean lw_io_gunzip_file (const char *SOURCE_PATH, const char *TARGET_PATH,
-                            LwIoProgressCallback cb, gpointer data, GError **error)
+gboolean 
+lw_io_gunzip_file (const char *SOURCE_PATH, const char *TARGET_PATH,
+                   LwIoProgressCallback cb, gpointer data, GError **error)
 {
     if (error != NULL && *error != NULL) return FALSE;
 
@@ -613,7 +622,8 @@ gboolean lw_io_gunzip_file (const char *SOURCE_PATH, const char *TARGET_PATH,
 //! @param data A generic pointer to data to pass to the LwIoProgressCallback
 //! @param error A pointer to a GError object to write an error to or NULL
 //!
-gboolean lw_io_unzip_file (char *SOURCE_PATH, LwIoProgressCallback cb, gpointer data, GError **error)
+gboolean 
+lw_io_unzip_file (char *SOURCE_PATH, LwIoProgressCallback cb, gpointer data, GError **error)
 {
     return TRUE;
 }
@@ -626,7 +636,8 @@ gboolean lw_io_unzip_file (char *SOURCE_PATH, LwIoProgressCallback cb, gpointer 
 //!
 //! @returns An array of strings that must be freed.  We recommend g_strfreev() from glib
 //!
-char** lw_io_get_dictionary_file_list (const int MAX)
+char** 
+lw_io_get_dictionary_file_list (const int MAX)
 {
     //Declarations and initializations
     LwDictType type;
@@ -667,7 +678,8 @@ char** lw_io_get_dictionary_file_list (const int MAX)
 //! @param URI The path to the file to calculate the size of
 //! @returns The size of the file in bytes
 //!
-size_t lw_io_get_filesize (const char *URI)
+size_t 
+lw_io_get_filesize (const char *URI)
 {
     //Sanity check
     g_assert (g_file_test (URI, G_FILE_TEST_IS_REGULAR));
@@ -818,12 +830,13 @@ gpointer _stdout_func (gpointer data)
 //! @param data A generic pointer to data to pass to the LwIoProgressCallback
 //! @param error A pointer to a GError object to write an error to or NULL
 //!
-gboolean lw_io_pipe_data (char **argv, 
-                          const char *SOURCE_PATH, 
-                          const char *TARGET_PATH, 
-                          LwIoProgressCallback cb, 
-                          gpointer data, 
-                          GError **error          )
+gboolean 
+lw_io_pipe_data (char                 **argv, 
+                 const char            *SOURCE_PATH, 
+                 const char            *TARGET_PATH, 
+                 LwIoProgressCallback   cb, 
+                 gpointer               data, 
+                 GError               **error          )
 {
     //Sanity check
     if (error != NULL && *error != NULL) return FALSE;
@@ -900,7 +913,8 @@ gboolean lw_io_pipe_data (char **argv,
 //! @param URI The path to the file to delet
 //! @param error A pointer to a GError object to write errors to or NULL
 //!
-gboolean lw_io_remove (const char *URI, GError **error)
+gboolean 
+lw_io_remove (const char *URI, GError **error)
 {
   if (error != NULL && *error != NULL) return FALSE;
 
@@ -914,7 +928,8 @@ gboolean lw_io_remove (const char *URI, GError **error)
 //! @brief Sets the global IO state to cancel all operations
 //! @param state The cancel request state wanted
 //!
-void lw_io_set_cancel_operations (gboolean state)
+void 
+lw_io_set_cancel_operations (gboolean state)
 {
     _cancel = state;
 }
@@ -924,7 +939,8 @@ void lw_io_set_cancel_operations (gboolean state)
 //! @brief A quick way to get the number of lines in a file for use in progress functions
 //! @param FILENAME The path to the file to see how many lines it has
 //!
-long lw_io_get_size_for_uri (const char *URI)
+long 
+lw_io_get_size_for_uri (const char *URI)
 {
     //Declarations
     FILE *file;

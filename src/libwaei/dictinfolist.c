@@ -43,7 +43,8 @@ static void     _dictinfolist_sort_and_normalize_order (LwDictInfoList*);
 //! @brief Constructor for a dictionary list object.
 //! @return An allocated LwDictInfoList that will be needed to be freed by lw_dictinfolist_free ()
 //!
-LwDictInfoList* lw_dictinfolist_new (const int MAX, LwPreferences *pm)
+LwDictInfoList* 
+lw_dictinfolist_new (const int MAX, LwPreferences *pm)
 {
     LwDictInfoList *temp;
     temp = (LwDictInfoList*) malloc(sizeof(LwDictInfoList));
@@ -62,7 +63,8 @@ LwDictInfoList* lw_dictinfolist_new (const int MAX, LwPreferences *pm)
 //! The work of freeing each individual dictionary is automatically handled,
 //! removing the chance for mistakes.
 //!
-void lw_dictinfolist_free (LwDictInfoList *dil)
+void 
+lw_dictinfolist_free (LwDictInfoList *dil)
 {
     lw_dictinfolist_deinit (dil);
     free(dil);
@@ -70,7 +72,8 @@ void lw_dictinfolist_free (LwDictInfoList *dil)
 
 
 
-void lw_dictinfolist_init (LwDictInfoList *dil, const int MAX, LwPreferences* pm)
+void 
+lw_dictinfolist_init (LwDictInfoList *dil, const int MAX, LwPreferences* pm)
 {
     dil->list = NULL;
     dil->mutex = g_mutex_new();
@@ -81,14 +84,16 @@ void lw_dictinfolist_init (LwDictInfoList *dil, const int MAX, LwPreferences* pm
 }
 
 
-void lw_dictinfolist_deinit (LwDictInfoList *dil)
+void 
+lw_dictinfolist_deinit (LwDictInfoList *dil)
 {
     lw_dictinfolist_clear (dil);
     g_mutex_free (dil->mutex);
 }
 
 
-void lw_dictinfolist_clear (LwDictInfoList *dil)
+void 
+lw_dictinfolist_clear (LwDictInfoList *dil)
 {
     LwDictInfo *di;
     GList *iter;
@@ -108,7 +113,8 @@ void lw_dictinfolist_clear (LwDictInfoList *dil)
     }
 }
 
-void lw_dictinfolist_reload (LwDictInfoList *dil)
+void 
+lw_dictinfolist_reload (LwDictInfoList *dil)
 {
     //Declarations
     gchar** dictionarylist;
@@ -142,7 +148,8 @@ void lw_dictinfolist_reload (LwDictInfoList *dil)
 //! @param request The GUI load position of the desired dictionary
 //! @return The position in the LwDictInfoList of the LwDictInfo
 //!
-LwDictInfo* lw_dictinfolist_get_dictinfo_by_load_position (LwDictInfoList* dil, int request)
+LwDictInfo* 
+lw_dictinfolist_get_dictinfo_by_load_position (LwDictInfoList* dil, int request)
 {
     GList *iter;
     LwDictInfo *di;
@@ -168,7 +175,8 @@ LwDictInfo* lw_dictinfolist_get_dictinfo_by_load_position (LwDictInfoList* dil, 
 //! @param DICTTYPE Engine of the dictionary to add
 //! @param FILENAME Name of the dictionary to add
 //!
-void lw_dictinfolist_add_dictionary (LwDictInfoList *dil, const LwDictType DICTTYPE, const char *FILENAME)
+void 
+lw_dictinfolist_add_dictionary (LwDictInfoList *dil, const LwDictType DICTTYPE, const char *FILENAME)
 {
     //Sanity check
     if (lw_dictinfolist_check_if_loaded (dil, DICTTYPE, FILENAME) == TRUE) return;
@@ -194,7 +202,8 @@ void lw_dictinfolist_add_dictionary (LwDictInfoList *dil, const LwDictType DICTT
 //! @param NAME A constant string to search for in the dictionary names.
 //! @returns The requested LwDictInfo object if found or null.
 //!
-LwDictInfo* lw_dictinfolist_get_dictinfo (LwDictInfoList *dil, const LwDictType DICTTYPE, const char* FILENAME)
+LwDictInfo* 
+lw_dictinfolist_get_dictinfo (LwDictInfoList *dil, const LwDictType DICTTYPE, const char* FILENAME)
 {
     //Sanity checks
     g_assert (DICTTYPE >= 0 && FILENAME != NULL);
@@ -226,7 +235,8 @@ LwDictInfo* lw_dictinfolist_get_dictinfo (LwDictInfoList *dil, const LwDictType 
 //!  @param FUZZY_DESCRIPTION A fuzzy description of the wanted dictionary.
 //!  @returns A matching LwDictInfo object or NULL
 //!
-LwDictInfo* lw_dictinfolist_get_dictinfo_fuzzy (LwDictInfoList *dil, const char* FUZZY_DESCRIPTION)
+LwDictInfo* 
+lw_dictinfolist_get_dictinfo_fuzzy (LwDictInfoList *dil, const char* FUZZY_DESCRIPTION)
 {
     //Declarations
     LwDictInfo *di;
@@ -264,7 +274,8 @@ LwDictInfo* lw_dictinfolist_get_dictinfo_fuzzy (LwDictInfoList *dil, const char*
 //!             This is a fuzzy search, ignoring DICTTYPE and case
 //! @returns The requested LwDictInfo object if found or null.
 //!
-LwDictInfo* lw_dictinfolist_get_dictinfo_by_filename (LwDictInfoList *dil, const char* FILENAME)
+LwDictInfo* 
+lw_dictinfolist_get_dictinfo_by_filename (LwDictInfoList *dil, const char* FILENAME)
 {
     //Sanity checks
     g_assert (FILENAME != NULL);
@@ -295,7 +306,8 @@ LwDictInfo* lw_dictinfolist_get_dictinfo_by_filename (LwDictInfoList *dil, const
 //!                            used to search for a dictionary
 //! @returns The requested LwDictInfo object if found or NULL.
 //!
-LwDictInfo* lw_dictinfolist_get_dictinfo_by_idstring (LwDictInfoList *dil, const char* ENGINE_AND_FILENAME)
+LwDictInfo* 
+lw_dictinfolist_get_dictinfo_by_idstring (LwDictInfoList *dil, const char* ENGINE_AND_FILENAME)
 {
     //Sanity checks
     g_assert (ENGINE_AND_FILENAME != NULL);
@@ -338,7 +350,8 @@ LwDictInfo* lw_dictinfolist_get_dictinfo_by_idstring (LwDictInfoList *dil, const
 //! @param NAME request a const string to search for in the dictionary names
 //! @return returns true if the dictionary is installed
 //!
-gboolean lw_dictinfolist_check_if_loaded (LwDictInfoList *dil, const LwDictType DICTTYPE, const char* FILENAME)
+gboolean 
+lw_dictinfolist_check_if_loaded (LwDictInfoList *dil, const LwDictType DICTTYPE, const char* FILENAME)
 {
     //Sanity checks
     g_assert (DICTTYPE >= 0 && FILENAME != NULL);
@@ -372,7 +385,8 @@ gboolean lw_dictinfolist_check_if_loaded (LwDictInfoList *dil, const LwDictType 
 //!
 //! @return Integer representing the number of installed dictionaries
 //!
-int lw_dictinfolist_get_total (LwDictInfoList *dil)
+int 
+lw_dictinfolist_get_total (LwDictInfoList *dil)
 {
     if (dil == NULL) return 0;
 
@@ -383,7 +397,8 @@ int lw_dictinfolist_get_total (LwDictInfoList *dil)
 //
 //! @brief Saves the current load order to the preferences
 //
-void lw_dictinfolist_save_dictionary_order_pref (LwDictInfoList *dil, LwPreferences *pm)
+void 
+lw_dictinfolist_save_dictionary_order_pref (LwDictInfoList *dil, LwPreferences *pm)
 {
     //Make sure things are sorted and normal
     _dictinfolist_sort_and_normalize_order (dil);
@@ -423,7 +438,8 @@ void lw_dictinfolist_save_dictionary_order_pref (LwDictInfoList *dil, LwPreferen
 //
 //! @brief Loads the load order from the preferences
 //
-void lw_dictinfolist_load_dictionary_order_from_pref (LwDictInfoList *dil, LwPreferences *pm)
+void 
+lw_dictinfolist_load_dictionary_order_from_pref (LwDictInfoList *dil, LwPreferences *pm)
 {
     if (pm == NULL) return; 
 

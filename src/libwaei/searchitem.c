@@ -66,7 +66,8 @@ static gboolean _query_is_sane (const char* query)
 //! @param error A GError to place errors into or NULL
 //! @return Returns an allocated LwSearchItem object that should be freed with lw_searchitem_free or NULL on error
 //!
-LwSearchItem* lw_searchitem_new (const char* query, LwDictInfo* dictionary, LwPreferences *pm, GError **error)
+LwSearchItem* 
+lw_searchitem_new (const char* query, LwDictInfo* dictionary, LwPreferences *pm, GError **error)
 {
     if (!_query_is_sane (query)) return NULL;
 
@@ -97,7 +98,8 @@ LwSearchItem* lw_searchitem_new (const char* query, LwDictInfo* dictionary, LwPr
 //!
 //! @param item The LwSearchItem to have it's memory freed.
 //!
-void lw_searchitem_free (LwSearchItem* item)
+void 
+lw_searchitem_free (LwSearchItem* item)
 {
     //Sanity check
     g_assert (item != NULL && item->status == LW_SEARCHSTATUS_IDLE);
@@ -119,7 +121,8 @@ void lw_searchitem_free (LwSearchItem* item)
 //! @param pm The Application preference manager to get information from
 //! @param error A GError to place errors into or NULL
 //!
-void lw_searchitem_init (LwSearchItem *item, const char* query, LwDictInfo* dictionary, LwPreferences *pm, GError **error)
+void 
+lw_searchitem_init (LwSearchItem *item, const char* query, LwDictInfo* dictionary, LwPreferences *pm, GError **error)
 {
     item->results_high = NULL;
     item->results_medium = NULL;
@@ -167,7 +170,8 @@ void lw_searchitem_init (LwSearchItem *item, const char* query, LwDictInfo* dict
 //!         in class implimentations that extends LwSearchItem.
 //! @param item The LwSearchItem object to have it's inner memory freed.
 //!
-void lw_searchitem_deinit (LwSearchItem *item)
+void 
+lw_searchitem_deinit (LwSearchItem *item)
 {
     if (item->thread != NULL) 
     {
@@ -186,7 +190,8 @@ void lw_searchitem_deinit (LwSearchItem *item)
 }
 
 
-void lw_searchitem_clear_results (LwSearchItem *item)
+void 
+lw_searchitem_clear_results (LwSearchItem *item)
 {
     item->total_relevant_results = 0;
     item->total_irrelevant_results = 0;
@@ -221,7 +226,8 @@ void lw_searchitem_clear_results (LwSearchItem *item)
 //! @param item The LwSearchItem to its variables prepared
 //! @return Returns false on seachitem prep failure.
 //!
-void  lw_searchitem_prepare_search (LwSearchItem* item)
+void  
+lw_searchitem_prepare_search (LwSearchItem* item)
 {
     lw_searchitem_clear_results (item);
     lw_searchitem_cleanup_search (item);
@@ -257,7 +263,8 @@ void  lw_searchitem_prepare_search (LwSearchItem* item)
 //!
 //! @param item The LwSearchItem to its state reset.
 //!
-void lw_searchitem_cleanup_search (LwSearchItem* item)
+void 
+lw_searchitem_cleanup_search (LwSearchItem* item)
 {
     if (item->fd != NULL)
     {
@@ -529,7 +536,8 @@ static gboolean _kanji_existance_comparison (LwQueryLine *ql, LwResultLine *rl, 
 //! @param RELEVANCE A LwRelevance
 //! @returns Returns true according to the relevance level
 //!
-gboolean lw_searchitem_run_comparison (LwSearchItem *item, const LwRelevance RELEVANCE)
+gboolean 
+lw_searchitem_run_comparison (LwSearchItem *item, const LwRelevance RELEVANCE)
 {
     //Declarations
     LwResultLine *rl;
@@ -560,7 +568,8 @@ gboolean lw_searchitem_run_comparison (LwSearchItem *item, const LwRelevance REL
 //! @param item2 The second item
 //! @returns Returns true when both items are either the same item or have similar innards
 //!
-gboolean lw_searchitem_is_equal (LwSearchItem *item1, LwSearchItem *item2)
+gboolean 
+lw_searchitem_is_equal (LwSearchItem *item1, LwSearchItem *item2)
 {
   //Declarations
   gboolean queries_are_equal;
@@ -592,7 +601,8 @@ gboolean lw_searchitem_is_equal (LwSearchItem *item1, LwSearchItem *item2)
 //! @brief a method for incrementing an internal integer for determining if a result set has worth
 //! @param item The LwSearchItem to increment the timer on
 //!
-void lw_searchitem_increment_history_relevance_timer (LwSearchItem *item)
+void 
+lw_searchitem_increment_history_relevance_timer (LwSearchItem *item)
 {
   if (item != NULL && item->history_relevance_idle_timer < LW_HISTORY_TIME_TO_RELEVANCE)
     item->history_relevance_idle_timer++;
@@ -604,7 +614,8 @@ void lw_searchitem_increment_history_relevance_timer (LwSearchItem *item)
 //! @param item The LwSearchItem to check for history relevance
 //! @param use_idle_timer This variable shoud be set to true if the program does automatic searches so it checks the timer
 //!
-gboolean lw_searchitem_has_history_relevance (LwSearchItem *item, gboolean use_idle_timer)
+gboolean 
+lw_searchitem_has_history_relevance (LwSearchItem *item, gboolean use_idle_timer)
 {
   return (item != NULL && 
           item->total_results > 0 && 
@@ -618,7 +629,8 @@ gboolean lw_searchitem_has_history_relevance (LwSearchItem *item, gboolean use_i
 //! @param data The data to set.
 //! @param free_data_func A callback to use to free the data automatically as needed
 //!
-void lw_searchitem_set_data (LwSearchItem *item, gpointer data, LwSearchItemDataFreeFunc free_data_func)
+void 
+lw_searchitem_set_data (LwSearchItem *item, gpointer data, LwSearchItemDataFreeFunc free_data_func)
 {
     //Sanity check
     g_assert (item != NULL);
@@ -636,7 +648,8 @@ void lw_searchitem_set_data (LwSearchItem *item, gpointer data, LwSearchItemData
 //! @param item The LwSearchItem object to retrieve the data on.
 //! @returns A generic pointer to the data that should be cast.
 //!
-gpointer lw_searchitem_get_data (LwSearchItem *item)
+gpointer 
+lw_searchitem_get_data (LwSearchItem *item)
 {
     //Sanity check
     g_assert (item != NULL);
@@ -649,7 +662,8 @@ gpointer lw_searchitem_get_data (LwSearchItem *item)
 //! @brief Frees the data on an LwSearchItem object if it exists
 //! @param item The LwSearchItem to free the data on
 //!
-void lw_searchitem_free_data (LwSearchItem *item)
+void 
+lw_searchitem_free_data (LwSearchItem *item)
 {
     //Sanity check
     g_assert (item != NULL);
@@ -669,7 +683,8 @@ void lw_searchitem_free_data (LwSearchItem *item)
 //! @param item An LwSearchItem to check for data
 //! @returns Returns true if the data is not NULL
 //!
-gboolean lw_searchitem_has_data (LwSearchItem *item)
+gboolean 
+lw_searchitem_has_data (LwSearchItem *item)
 {
     g_assert (item != NULL);
 
@@ -681,7 +696,8 @@ gboolean lw_searchitem_has_data (LwSearchItem *item)
 //! @brief Parses a line from the dictionary using edict rules
 //! @param item A LwSearchItem to parse and store the result string into
 //!
-void lw_searchitem_parse_result_string (LwSearchItem *item)
+void 
+lw_searchitem_parse_result_string (LwSearchItem *item)
 {
     switch (item->dictionary->type)
     {
@@ -709,7 +725,8 @@ static int _locks = 0;
 //! @brief A wrapper around gmutex made for LwSearchItem objects
 //! @param item An LwSearchItem to lock the mutex on
 //!
-void lw_searchitem_lock_mutex (LwSearchItem *item)
+void 
+lw_searchitem_lock_mutex (LwSearchItem *item)
 {
   _locks++;
 //  printf("LOCKS %d\n", _locks);
@@ -720,7 +737,8 @@ void lw_searchitem_lock_mutex (LwSearchItem *item)
 //! @brief A wrapper around gmutex made for LwSearchItem objects
 //! @param item An LwSearchItem to unlock the mutex on
 //!
-void lw_searchitem_unlock_mutex (LwSearchItem *item)
+void 
+lw_searchitem_unlock_mutex (LwSearchItem *item)
 {
   _locks--;
 //  printf("LOCKS %d\n", _locks);
@@ -728,7 +746,8 @@ void lw_searchitem_unlock_mutex (LwSearchItem *item)
 }
 
 
-double lw_searchitem_get_progress (LwSearchItem *item)
+double 
+lw_searchitem_get_progress (LwSearchItem *item)
 {
     //Declarations
     long current;

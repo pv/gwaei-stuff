@@ -38,7 +38,8 @@
 //! @param MAX The maximum items you want in the list before old ones are deleted
 //! @return An allocated LwHistory that will be needed to be freed by lw_history_free.
 //!
-LwHistory* lw_history_new (const int MAX)
+LwHistory* 
+lw_history_new (const int MAX)
 {
     LwHistory *temp;
 
@@ -57,7 +58,8 @@ LwHistory* lw_history_new (const int MAX)
 //! @brief Releases a LwHistory object from memory.
 //! @param list A LwHistory object created by lw_history_new.
 //!
-void lw_history_free (LwHistory *list)
+void 
+lw_history_free (LwHistory *list)
 {
     lw_history_deinit (list);
     free (list);
@@ -71,7 +73,8 @@ void lw_history_free (LwHistory *list)
 //! @param list The LwHistory object to initialize the memory of.
 //! @param MAX The maximum items you want in the list before old ones are deleted
 //!
-void lw_history_init (LwHistory *list, const int MAX)
+void 
+lw_history_init (LwHistory *list, const int MAX)
 {
     list->back = NULL;
     list->forward = NULL;
@@ -85,7 +88,8 @@ void lw_history_init (LwHistory *list, const int MAX)
 //!         in class implimentations that extends LwHistory.
 //! @param list The LwHistory object to have it's inner memory freed.
 //!
-void lw_history_deinit (LwHistory *list)
+void 
+lw_history_deinit (LwHistory *list)
 {
     lw_history_clear_forward_list (list);
     lw_history_clear_back_list (list);
@@ -95,7 +99,8 @@ void lw_history_deinit (LwHistory *list)
 //!
 //! @brief Clears the forward history of the desired target.
 //!
-void lw_history_clear_forward_list (LwHistory *list)
+void 
+lw_history_clear_forward_list (LwHistory *list)
 {
     //Declarations
     LwSearchItem *item;
@@ -119,7 +124,8 @@ void lw_history_clear_forward_list (LwHistory *list)
 //!
 //! @brief Clears the back history of the desired target.
 //!
-void lw_history_clear_back_list (LwHistory *list)
+void 
+lw_history_clear_back_list (LwHistory *list)
 {
     //Declarations
     LwSearchItem *item;
@@ -144,7 +150,8 @@ void lw_history_clear_back_list (LwHistory *list)
 //! @brief Gets the back history of the target history list
 //! @return Returns a GList containing the LwSearchItem back history
 //!
-GList* lw_history_get_back_list (LwHistory *list)
+GList* 
+lw_history_get_back_list (LwHistory *list)
 {
     return list->back;
 }
@@ -154,7 +161,8 @@ GList* lw_history_get_back_list (LwHistory *list)
 //! @brief Gets the forward history of the target history list
 //! @return Returns a GList containing the LwSearchItem forward history
 //!
-GList* lw_history_get_forward_list (LwHistory *list)
+GList* 
+lw_history_get_forward_list (LwHistory *list)
 {
     return list->forward;
 }
@@ -170,7 +178,8 @@ GList* lw_history_get_forward_list (LwHistory *list)
 //! @see lw_history_get_forward_list ()
 //! @return Returns an allocated GList containing the back and forward history
 //!
-GList* lw_history_get_combined_list (LwHistory *list)
+GList* 
+lw_history_get_combined_list (LwHistory *list)
 {
     //Declarations
     GList *combined;
@@ -188,7 +197,8 @@ GList* lw_history_get_combined_list (LwHistory *list)
 //!
 //! @brief Moves an item to the back history
 //!
-void lw_history_add_searchitem (LwHistory *list, LwSearchItem *item)
+void 
+lw_history_add_searchitem (LwHistory *list, LwSearchItem *item)
 { 
     //Declarations
     GList *link;
@@ -211,7 +221,8 @@ void lw_history_add_searchitem (LwHistory *list, LwSearchItem *item)
 //!
 //! @brief Returns true if it is possible to go forward on a history list
 //!
-gboolean lw_history_has_forward (LwHistory *list)
+gboolean 
+lw_history_has_forward (LwHistory *list)
 {
     return (list->forward != NULL);
 }
@@ -220,7 +231,8 @@ gboolean lw_history_has_forward (LwHistory *list)
 //!
 //! @brief Returns true if it is possible to go back on a history list
 //!
-gboolean lw_history_has_back (LwHistory *list)
+gboolean 
+lw_history_has_back (LwHistory *list)
 {
     return (list->back != NULL);
 }
@@ -229,7 +241,8 @@ gboolean lw_history_has_back (LwHistory *list)
 //!
 //! @brief Go back 1 in history
 //!
-LwSearchItem* lw_history_go_back (LwHistory *list, LwSearchItem *pushed)
+LwSearchItem* 
+lw_history_go_back (LwHistory *list, LwSearchItem *pushed)
 { 
     //Sanity check
     if (!lw_history_has_back (list)) return pushed;
@@ -254,7 +267,8 @@ LwSearchItem* lw_history_go_back (LwHistory *list, LwSearchItem *pushed)
 //!
 //! @brief Go forward 1 in history
 //!
-LwSearchItem* lw_history_go_forward (LwHistory *list, LwSearchItem *pushed)
+LwSearchItem* 
+lw_history_go_forward (LwHistory *list, LwSearchItem *pushed)
 { 
     //Sanity check
     if (!lw_history_has_forward (list)) return pushed;

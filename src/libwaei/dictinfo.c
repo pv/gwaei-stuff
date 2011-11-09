@@ -47,7 +47,8 @@ static gboolean _overlay_default_builtin_dictionary_settings (LwDictInfo*);
 //! @param FILENAME The filename of the dictionary.
 //! @return An allocated LwDictInfo that will be needed to be freed by lw_dictinfo_free.
 //!
-LwDictInfo* lw_dictinfo_new (LwDictType DICTTYPE, const char *FILENAME)
+LwDictInfo* 
+lw_dictinfo_new (LwDictType DICTTYPE, const char *FILENAME)
 {
     //Sanity check
     g_assert (DICTTYPE >= 0 && DICTTYPE <= TOTAL_LW_DICTTYPES && FILENAME != NULL);
@@ -69,7 +70,8 @@ LwDictInfo* lw_dictinfo_new (LwDictType DICTTYPE, const char *FILENAME)
 //! @brief Releases a LwDictInfo object from memory.
 //! @param di A LwDictInfo object created by lw_dictinfo_new.
 //!
-void lw_dictinfo_free (LwDictInfo* di)
+void 
+lw_dictinfo_free (LwDictInfo* di)
 {
     lw_dictinfo_deinit (di);
 
@@ -84,7 +86,8 @@ void lw_dictinfo_free (LwDictInfo* di)
 //! @param DICTTYPE The dictionary type used for the save folder and parsing engine.
 //! @param FILENAME The filename of the dictionary.
 //!
-void lw_dictinfo_init (LwDictInfo *di, const LwDictType DICTTYPE, const char *FILENAME)
+void 
+lw_dictinfo_init (LwDictInfo *di, const LwDictType DICTTYPE, const char *FILENAME)
 {
     //Declarations
     char *uri;
@@ -119,7 +122,8 @@ void lw_dictinfo_init (LwDictInfo *di, const LwDictType DICTTYPE, const char *FI
 //!         in class implimentations that extends LwDictInfo.
 //! @param di The LwDictInfo object to have it's inner memory freed.
 //!
-void lw_dictinfo_deinit (LwDictInfo *di)
+void 
+lw_dictinfo_deinit (LwDictInfo *di)
 {
     if (di->filename != NULL)
     {
@@ -202,7 +206,8 @@ static gboolean _overlay_default_builtin_dictionary_settings (LwDictInfo *di)
 //! @param cb A LwIoProgresSCallback to show dictionary uninstall progress or NULL.
 //! @param error A pointer to a GError object to pass errors to or NULL.
 //!
-gboolean lw_dictinfo_uninstall (LwDictInfo *di, LwIoProgressCallback cb, GError **error)
+gboolean 
+lw_dictinfo_uninstall (LwDictInfo *di, LwIoProgressCallback cb, GError **error)
 {
     //Sanity check
     if (error != NULL && *error != NULL) return FALSE;
@@ -228,7 +233,8 @@ gboolean lw_dictinfo_uninstall (LwDictInfo *di, LwIoProgressCallback cb, GError 
 //! @param di A LwDictInfo object to get the current uri of.
 //! @returns An allocated string containing the uri that must be freed with gfree.
 //!
-char* lw_dictinfo_get_uri (LwDictInfo *di)
+char* 
+lw_dictinfo_get_uri (LwDictInfo *di)
 {
     //Declarations
     char *path;

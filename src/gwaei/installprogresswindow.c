@@ -20,7 +20,7 @@
 *******************************************************************************/
 
 //!
-//! @file installprogress-window.c
+//! @file installprogresswindow.c
 //!
 //! @brief To be written
 //!
@@ -40,7 +40,8 @@ G_DEFINE_TYPE (GwInstallProgressWindow, gw_installprogresswindow, GW_TYPE_WINDOW
 //!
 //! @brief Sets up the variables in main-interface.c and main-callbacks.c for use
 //!
-GtkWindow* gw_installprogresswindow_new (GtkApplication *application)
+GtkWindow* 
+gw_installprogresswindow_new (GtkApplication *application)
 {
     g_assert (application != NULL);
 
@@ -58,14 +59,16 @@ GtkWindow* gw_installprogresswindow_new (GtkApplication *application)
 }
 
 
-static void gw_installprogresswindow_init (GwInstallProgressWindow *window)
+static void 
+gw_installprogresswindow_init (GwInstallProgressWindow *window)
 {
     window->priv = GW_INSTALLPROGRESSWINDOW_GET_PRIVATE (window);
     memset(window->priv, 0, sizeof(GwInstallProgressWindowPrivate));
 }
 
 
-static void gw_installprogresswindow_finalize (GObject *object)
+static void 
+gw_installprogresswindow_finalize (GObject *object)
 {
     GwInstallProgressWindow *window;
     GwInstallProgressWindowPrivate *priv;
@@ -82,7 +85,8 @@ static void gw_installprogresswindow_finalize (GObject *object)
 }
 
 
-static void gw_installprogresswindow_constructed (GObject *object)
+static void 
+gw_installprogresswindow_constructed (GObject *object)
 {
     //Declarations
     GwInstallProgressWindow *window;
@@ -144,7 +148,8 @@ gw_installprogresswindow_class_init (GwInstallProgressWindowClass *klass)
 //!
 //! @brief Starts the install when the add button on the dictionary chooser is selected
 //!
-void gw_installprogresswindow_start (GwInstallProgressWindow *window)
+void 
+gw_installprogresswindow_start (GwInstallProgressWindow *window)
 {
     //Sanity check
     g_assert (window != NULL);

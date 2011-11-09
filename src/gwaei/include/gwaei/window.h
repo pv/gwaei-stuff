@@ -29,7 +29,6 @@ GtkWindow* gw_window_new (void);
 GType gw_window_get_type (void) G_GNUC_CONST;
 
 GObject* gw_window_get_object (GwWindow*, const gchar*);
-gboolean gw_window_load_ui_xml (GwWindow*, const char*);
 void gw_window_set_application (GwWindow*, GwApplication*);
 GwApplication* gw_window_get_application (GwWindow*);
 GtkWidget* gw_window_get_toplevel (GwWindow*);

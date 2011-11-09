@@ -22,7 +22,7 @@
 *******************************************************************************/
 
 //!
-//! @file kanjipad-callbacks.c
+//! @file kanjipadwindow-callbacks.c
 //!
 //! @brief To be written
 //!
