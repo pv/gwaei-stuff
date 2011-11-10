@@ -75,8 +75,8 @@ static void
 w_application_constructed (GObject *object)
 {
     //Declarations
-    WApplication *application;
-    WApplicationPrivate *priv;
+//    WApplication *application;
+//    WApplicationPrivate *priv;
 
     //Chain the parent class
     {
@@ -84,11 +84,8 @@ w_application_constructed (GObject *object)
     }
 
     //Initialization
-    application = W_APPLICATION (object);
-    priv = application->priv;
-
-    priv->preferences = lw_preferences_new ();
-    priv->dictinfolist = lw_dictinfolist_new (20, priv->preferences);
+//    application = W_APPLICATION (object);
+//    priv = application->priv;
 
     lw_regex_initialize ();
 }
@@ -258,6 +255,9 @@ w_application_get_preferences (WApplication *application)
 
     priv = application->priv;
 
+    if (priv->preferences == NULL)
+      priv->preferences = lw_preferences_new ();
+
     return priv->preferences;
 }
 
@@ -266,8 +266,15 @@ LwDictInfoList*
 w_application_get_dictinfolist (WApplication *application)
 {
     WApplicationPrivate *priv;
+    LwPreferences *preferences;
 
     priv = application->priv;
+
+    if (priv->dictinfolist == NULL)
+    {
+      preferences = w_application_get_preferences (application);
+      priv->dictinfolist = lw_dictinfolist_new (20, preferences);
+    }
 
     return priv->dictinfolist;
 }
@@ -291,7 +298,6 @@ static gboolean
 w_application_local_command_line (GApplication *application, 
                                   gchar ***argv, gint *exit_status)
 {
-  printf("local command line\n");
     //Declarations
     int argc;
 

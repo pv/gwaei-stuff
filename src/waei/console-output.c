@@ -46,6 +46,7 @@ static void w_console_append_examplesdict_result (WApplication*, LwSearchItem*);
 static void w_console_append_unknowndict_result (WApplication*, LwSearchItem*);
 static void w_console_append_less_relevant_header (WApplication*, LwSearchItem*);
 
+
 void 
 w_console_append_result (WApplication *application, LwSearchItem *item)
 {
@@ -107,17 +108,17 @@ w_console_append_edict_result (WApplication *application, LwSearchItem *item)
     if (resultline->classification_start)
     {
       if (color_switch)
-        printf("[0m %s", resultline->classification_start);
+        printf(" [0m %s", resultline->classification_start);
       else
-        printf("%s", resultline->classification_start);
+        printf(" %s", resultline->classification_start);
     }
     //Important Flag
     if (resultline->important)
     {
       if (color_switch)
-        printf("[0m %s", "P");
+        printf(" [0m %s", "P");
       else
-        printf("%s", "P");
+        printf(" %s", "P");
     }
 
     printf("\n");

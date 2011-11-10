@@ -4,7 +4,7 @@ SUBDIRS = include/libwaei
 LIBRARY_VERSION = 2:0:0
 ACLOCAL_AMFLAGS = -I m4
 datadir = @datadir@
-DEFINITIONS =-DGZIP=\"$(GZIP)\" -DDATADIR2=\"$(datadir)\" -DGWAEI_LOCALEDIR=\"$(GWAEI_LOCALEDIR)\" -DG_SEAL_ENABLE -Wall
+DEFINITIONS =-DGZIP=\"$(GZIP)\" -DDATADIR2=\"$(datadir)\" -DGWAEI_LOCALEDIR=\"$(GWAEI_LOCALEDIR)\" -DG_SEAL_ENABLE -Wall -g
 
 lib_LTLIBRARIES = libwaei.la
 libwaei_la_SOURCES = libwaei.c dictinfo.c dictinfolist.c dictinst.c dictinstlist.c queryline.c engine.c engine-data.c utilities.c io.c regex.c searchitem.c history.c resultline.c preferences.c

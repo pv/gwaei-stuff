@@ -248,7 +248,6 @@ w_console_handle_error (WApplication* app, GError **error)
 int 
 w_console_search (WApplication *application, GError **error)
 {
-  printf("start search!\n");
     //Sanity check
     if (error != NULL && *error != NULL) return FALSE;
 

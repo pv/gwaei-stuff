@@ -42,7 +42,7 @@ main (int argc, char *argv[])
     GApplication *application;
     int resolution;
 
-    setlocale(LC_ALL, "");
+    setlocale(LC_MESSAGES, "");
     bindtextdomain(GETTEXT_PACKAGE, GWAEI_LOCALEDIR);
     bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
     textdomain(GETTEXT_PACKAGE);
