@@ -284,11 +284,15 @@ LwDictInstList*
 w_application_get_dictinstlist (WApplication *application)
 {
   WApplicationPrivate *priv;
+  LwPreferences *preferences;
 
   priv = application->priv;
 
   if (priv->dictinstlist == NULL)
-    priv->dictinstlist = lw_dictinstlist_new (priv->preferences);
+  {
+    preferences = w_application_get_preferences (application);
+    priv->dictinstlist = lw_dictinstlist_new (preferences);
+  }
 
   return priv->dictinstlist;
 }
