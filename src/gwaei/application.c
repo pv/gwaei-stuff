@@ -277,7 +277,6 @@ gw_application_parse_args (GwApplication *application, int *argc, char** argv[])
     if (priv->context != NULL) g_option_context_free (priv->context);
     priv->context = g_option_context_new (gettext("- A dictionary program for Japanese-English translation."));
     g_option_context_add_main_entries (priv->context, entries, PACKAGE);
-    g_option_context_add_group (priv->context, gtk_get_option_group (TRUE));
     g_option_context_set_ignore_unknown_options (priv->context, TRUE);
     g_option_context_parse (priv->context, argc, argv, &error);
 
