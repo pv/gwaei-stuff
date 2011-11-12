@@ -303,10 +303,10 @@ w_console_search (WApplication *application, GError **error)
       printf("\n");
     }
 
+    loop = g_main_loop_new (NULL, FALSE); 
+
     //Print the results
     lw_searchitem_start_search (item, TRUE, exact_switch);
-
-    loop = g_main_loop_new (NULL, FALSE);
 
     sdata = w_searchdata_new (loop, application);
     lw_searchitem_set_data (item, sdata, LW_SEARCHITEM_DATA_FREE_FUNC (w_searchdata_free));

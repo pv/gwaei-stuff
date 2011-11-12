@@ -281,7 +281,7 @@ gw_application_parse_args (GwApplication *application, int *argc, char** argv[])
     g_option_context_set_ignore_unknown_options (priv->context, TRUE);
     g_option_context_parse (priv->context, argc, argv, &error);
 
-    g_log_set_always_fatal (G_LOG_LEVEL_WARNING);
+    //g_log_set_always_fatal (G_LOG_LEVEL_WARNING);
 
     if (error != NULL)
     {
@@ -705,8 +705,8 @@ gw_application_local_command_line (GApplication *application,
       }
       else if (strcmp((*argv)[i], "-h") == 0 || strcmp((*argv)[i], "--help") == 0)
       {
-        gw_application_parse_args (GW_APPLICATION (application), &argc, argv);
         handled = TRUE;
+        gw_application_parse_args (GW_APPLICATION (application), &argc, argv);
         break;
       }
     }

@@ -89,7 +89,10 @@ static gpointer _stream_results_thread (gpointer data)
     {
       //Give a chance for something else to run
       lw_searchitem_unlock_mutex (item);
-      g_thread_yield ();
+      if (g_main_context_pending (NULL))
+      {
+        g_main_context_iteration (NULL, FALSE);
+      }
       lw_searchitem_lock_mutex (item);
 
       item->current += strlen(item->resultline->string);

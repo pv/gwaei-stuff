@@ -9,5 +9,4 @@
 
 void lw_searchitem_start_search (LwSearchItem*, gboolean, gboolean);
 
-
 #endif

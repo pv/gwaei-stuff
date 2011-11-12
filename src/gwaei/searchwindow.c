@@ -2093,7 +2093,7 @@ gw_searchwindow_attach_signals (GwSearchWindow *window)
     );
 
     priv->timeoutid[GW_SEARCHWINDOW_TIMEOUTID_KEEP_SEARCHING] = gdk_threads_add_timeout (
-          100,
+          500,
           (GSourceFunc) gw_searchwindow_keep_searching_timeout, 
           window
     );
