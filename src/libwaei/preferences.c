@@ -37,7 +37,7 @@
 //! @return An allocated LwDictInfo that will be needed to be freed by lw_preferences_free.
 //!
 LwPreferences* 
-lw_preferences_new ()
+lw_preferences_new (GSettingsBackend *backend)
 {
   LwPreferences *temp;
 
@@ -45,7 +45,7 @@ lw_preferences_new ()
 
   if (temp != NULL)
   {
-    lw_preferences_init (temp);
+    lw_preferences_init (temp, backend);
   }
 
   return temp;
@@ -72,10 +72,10 @@ lw_preferences_free (LwPreferences *pm)
 //! @param pm The LwPreferences object to have it's inner memory initialized.
 //!
 void 
-lw_preferences_init (LwPreferences *pm)
+lw_preferences_init (LwPreferences *pm, GSettingsBackend *backend)
 {
     pm->settingslist = NULL;
-    pm->callbacklist = NULL;
+    pm->backend = backend;
     pm->mutex = g_mutex_new ();
 }
 
@@ -112,6 +112,12 @@ lw_preferences_free_settings (LwPreferences *pm)
 
     g_list_free (pm->settingslist);
     pm->settingslist = NULL;
+
+    if (pm->backend != NULL)
+    {
+      g_object_unref (pm->backend);
+      pm->backend = NULL;
+    }
 }
 
 
@@ -181,7 +187,10 @@ lw_preferences_get_settings_object (LwPreferences *pm, const char *SCHEMA)
     {
       g_assert (lw_preferences_schema_is_installed (SCHEMA));
 
-      settings = g_settings_new (SCHEMA);
+      if (pm->backend == NULL)
+        settings = g_settings_new (SCHEMA);
+      else
+        settings = g_settings_new_with_backend (SCHEMA, pm->backend);
       if (settings != NULL)
       {
         pm->settingslist = g_list_append (pm->settingslist, settings);

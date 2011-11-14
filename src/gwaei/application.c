@@ -91,7 +91,7 @@ gw_application_constructed (GObject *object)
     application = GW_APPLICATION (object);
     priv = application->priv;
 
-    priv->preferences = lw_preferences_new ();
+    priv->preferences = lw_preferences_new (NULL);
     priv->dictinfolist = gw_dictinfolist_new (20, application);
     priv->tagtable = gw_application_texttagtable_new ();
 

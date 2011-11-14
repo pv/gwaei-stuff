@@ -243,8 +243,12 @@ w_application_get_preferences (WApplication *application)
 
     priv = application->priv;
 
+
     if (priv->preferences == NULL)
-      priv->preferences = lw_preferences_new ();
+    {
+      g_io_extension_point_register ("gsettings-backend");
+      priv->preferences = lw_preferences_new (g_memory_settings_backend_new ());
+    }
 
     return priv->preferences;
 }

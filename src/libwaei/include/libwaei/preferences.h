@@ -2,6 +2,8 @@
 #define LW_PREFERENCES_INCLUDED
 
 #include <gio/gio.h>
+#define G_SETTINGS_ENABLE_BACKEND
+#include <gio/gsettingsbackend.h>
 
 //GSettings
 #define LW_SCHEMA_GNOME_INTERFACE   "org.gnome.desktop.interface"
@@ -53,8 +55,8 @@
 
 struct _LwPreferences {
   GList *settingslist;
-  GList *callbacklist;
   GMutex *mutex;
+  GSettingsBackend *backend;
 
   gboolean toolbar_show; 
   gboolean statusbar_show;
@@ -85,9 +87,9 @@ struct _LwPreferences {
 typedef struct _LwPreferences LwPreferences;
 
 
-LwPreferences* lw_preferences_new (void);
+LwPreferences* lw_preferences_new (GSettingsBackend*);
 void lw_preferences_free (LwPreferences*);
-void lw_preferences_init (LwPreferences*);
+void lw_preferences_init (LwPreferences*, GSettingsBackend*);
 void lw_preferences_deinit (LwPreferences*);
 
 void lw_preferences_free_settings (LwPreferences*);
