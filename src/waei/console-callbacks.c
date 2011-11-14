@@ -103,7 +103,7 @@ w_console_append_result_timeout (gpointer data)
   item = LW_SEARCHITEM (data);
   sdata = W_SEARCHDATA (lw_searchitem_get_data (item));
   chunk = 0;
-  max_chunk = 10;
+  max_chunk = 50;
 
   if (item != NULL && lw_searchitem_should_check_results (item))
   {

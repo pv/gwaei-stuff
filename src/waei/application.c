@@ -35,31 +35,24 @@
 #include <waei/waei.h>
 #include <waei/application-private.h>
 
-static gboolean w_application_local_command_line (GApplication*, gchar***, gint*);
-static gint w_application_run (WApplication*);
 
-G_DEFINE_TYPE (WApplication, w_application, G_TYPE_APPLICATION)
+G_DEFINE_TYPE (WApplication, w_application, G_TYPE_OBJECT)
+
+static void w_application_parse_args (WApplication*, int*, char***);
 
 //!
 //! @brief creates a new instance of the gwaei applicaiton
 //!
-GApplication* 
+GObject* 
 w_application_new ()
 {
     //Declarations
     WApplication *application;
-    const gchar *id;
-    GApplicationFlags flags;
-
 
     //Initializations
-    id = "gtk.org.waei";
-    flags = G_APPLICATION_NON_UNIQUE;
-    application = g_object_new (W_TYPE_APPLICATION, 
-                                "application-id", id, 
-                                "flags", flags, NULL);
+    application = g_object_new (W_TYPE_APPLICATION, NULL);
 
-    return G_APPLICATION (application);
+    return G_OBJECT (application);
 }
 
 
@@ -117,14 +110,11 @@ static void
 w_application_class_init (WApplicationClass *klass)
 {
   GObjectClass *object_class;
-  GApplicationClass *application_class;
 
   object_class = G_OBJECT_CLASS (klass);
-  application_class = G_APPLICATION_CLASS (klass);
 
   object_class->constructed = w_application_constructed;
   object_class->finalize = w_application_finalize;
-  application_class->local_command_line = w_application_local_command_line;
 
   g_type_class_add_private (object_class, sizeof (WApplicationPrivate));
 }
@@ -133,7 +123,7 @@ w_application_class_init (WApplicationClass *klass)
 //!
 //! @brief Loads the arguments from the command line into the app instance
 //!
-void 
+static void 
 w_application_parse_args (WApplication *application, int *argc, char** argv[])
 {
     WApplicationPrivate *priv;
@@ -185,8 +175,6 @@ w_application_parse_args (WApplication *application, int *argc, char** argv[])
     g_option_context_add_main_entries (priv->context, entries, PACKAGE);
     g_option_context_set_ignore_unknown_options (priv->context, TRUE);
     g_option_context_parse (priv->context, argc, argv, &error);
-
-    g_log_set_always_fatal (G_LOG_LEVEL_WARNING);
 
     if (error != NULL)
     {
@@ -298,32 +286,16 @@ w_application_get_dictinstlist (WApplication *application)
 }
 
 
-static gboolean 
-w_application_local_command_line (GApplication *application, 
-                                  gchar ***argv, gint *exit_status)
-{
-    //Declarations
-    int argc;
-
-    //Initializations
-    argc = g_strv_length (*argv);
-
-    w_application_parse_args (W_APPLICATION (application), &argc, argv);
-
-    *exit_status = w_application_run (W_APPLICATION (application));
-
-    return TRUE;
-} 
-
-
 //!
 //! @brief Equivalent to the main function for many programs.  This is what starts the program
 //! @param argc Your argc from your main function
 //! @param argv Your array of strings from main
 //!
-static gint 
-w_application_run (WApplication *application)
+gint 
+w_application_run (WApplication *application, int *argc, char **argv[])
 {
+    w_application_parse_args (application, argc, argv);
+
     //Declarations
     WApplicationPrivate *priv;
     GError *error;

@@ -304,12 +304,11 @@ w_console_search (WApplication *application, GError **error)
     }
 
     loop = g_main_loop_new (NULL, FALSE); 
+    sdata = w_searchdata_new (loop, application);
+    lw_searchitem_set_data (item, sdata, LW_SEARCHITEM_DATA_FREE_FUNC (w_searchdata_free));
 
     //Print the results
     lw_searchitem_start_search (item, TRUE, exact_switch);
-
-    sdata = w_searchdata_new (loop, application);
-    lw_searchitem_set_data (item, sdata, LW_SEARCHITEM_DATA_FREE_FUNC (w_searchdata_free));
 
     g_timeout_add_full (
         G_PRIORITY_LOW,
@@ -337,5 +336,5 @@ w_console_search (WApplication *application, GError **error)
     //Cleanup
     lw_searchitem_free (item);
 
-    return resolution;
+    return 0;
 }

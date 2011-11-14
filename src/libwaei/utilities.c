@@ -1232,15 +1232,15 @@ lw_util_enlarge_halfwidth_japanese (const gchar* text)
 gboolean 
 lw_util_is_japanese_locale ()
 {
-    return (setlocale(LC_MESSAGES, NULL) != NULL &&
+    return (setlocale(LC_ALL, NULL) != NULL &&
              (
-               strcmp(setlocale(LC_MESSAGES, NULL), "ja_JP.UTF8")  == 0 ||
-               strcmp(setlocale(LC_MESSAGES, NULL), "ja_JP.UTF-8") == 0 ||
-               strcmp(setlocale(LC_MESSAGES, NULL), "ja_JP.utf8")  == 0 ||
-               strcmp(setlocale(LC_MESSAGES, NULL), "ja_JP.utf-8") == 0 ||
-               strcmp(setlocale(LC_MESSAGES, NULL), "ja_JP")       == 0 ||
-               strcmp(setlocale(LC_MESSAGES, NULL), "ja")          == 0 ||
-               strcmp(setlocale(LC_MESSAGES, NULL), "japanese")    == 0
+               strcmp(setlocale(LC_ALL, NULL), "ja_JP.UTF8")  == 0 ||
+               strcmp(setlocale(LC_ALL, NULL), "ja_JP.UTF-8") == 0 ||
+               strcmp(setlocale(LC_ALL, NULL), "ja_JP.utf8")  == 0 ||
+               strcmp(setlocale(LC_ALL, NULL), "ja_JP.utf-8") == 0 ||
+               strcmp(setlocale(LC_ALL, NULL), "ja_JP")       == 0 ||
+               strcmp(setlocale(LC_ALL, NULL), "ja")          == 0 ||
+               strcmp(setlocale(LC_ALL, NULL), "japanese")    == 0
              )
            );
 }

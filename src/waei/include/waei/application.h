@@ -1,5 +1,5 @@
-#ifndef G_APPLICATION_INCLUDED
-#define G_APPLICATION_INCLUDED
+#ifndef W_APPLICATION_INCLUDED
+#define W_APPLICATION_INCLUDED
 
 G_BEGIN_DECLS
 
@@ -16,19 +16,19 @@ typedef struct _WApplicationPrivate WApplicationPrivate;
 #define W_APPLICATION_GET_CLASS(obj)    (G_TYPE_INSTANCE_GET_CLASS((obj), W_TYPE_APPLICATION, WApplicationClass))
 
 struct _WApplication {
-  GApplication application;
+  GObject application;
   WApplicationPrivate *priv;
 };
 
 struct _WApplicationClass {
-  GApplicationClass parent_class;
+  GObjectClass parent_class;
 };
 
 //Methods
-GApplication* w_application_new ();
+GObject* w_application_new ();
 GType w_application_get_type (void) G_GNUC_CONST;
 
-void w_application_parse_args (WApplication*, int*, char***);
+gint w_application_run (WApplication *application, int *argc, char **argv[]);
 
 const char* w_application_get_program_name (WApplication*);
 
