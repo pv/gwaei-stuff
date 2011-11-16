@@ -387,7 +387,7 @@ gw_radicalswindow_constructed (GObject *object)
     gtk_window_set_type_hint (GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_UTILITY);
     gtk_window_set_skip_taskbar_hint (GTK_WINDOW (window), TRUE);
     gtk_window_set_skip_pager_hint (GTK_WINDOW (window), TRUE);
-    gtk_window_set_destroy_with_parent (GTK_WINDOW (window), TRUE);
+    gtk_window_set_destroy_with_parent (GTK_WINDOW (window), FALSE);
     gtk_window_set_icon_name (GTK_WINDOW (window), "gwaei");
 
     priv->radicals_table = GTK_TABLE (gw_window_get_object (GW_WINDOW (window), "radical_selection_table"));

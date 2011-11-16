@@ -123,10 +123,8 @@ static gpointer _stream_results_thread (gpointer data)
         switch(relevance)
         {
           case LW_RELEVANCE_HIGH:
-              
               if (item->total_relevant_results < LW_MAX_HIGH_RELEVENT_RESULTS)
               {
-                //Store the result line and create an empty one in its place
                 item->total_results++;
                 item->total_relevant_results++;
                 item->resultline->relevance = LW_RESULTLINE_RELEVANCE_HIGH;
@@ -134,10 +132,11 @@ static gpointer _stream_results_thread (gpointer data)
                 item->resultline = lw_resultline_new ();
               }
               break;
+          if (!show_only_exact_matches)
+          {
           case LW_RELEVANCE_MEDIUM:
-              if (item->total_irrelevant_results < LW_MAX_MEDIUM_IRRELEVENT_RESULTS && !show_only_exact_matches)
+              if (item->total_irrelevant_results < LW_MAX_MEDIUM_IRRELEVENT_RESULTS)
               {
-                //Store the result line and create an empty one in its place
                 item->total_results++;
                 item->total_irrelevant_results++;
                 item->resultline->relevance = LW_RESULTLINE_RELEVANCE_MEDIUM;
@@ -146,9 +145,8 @@ static gpointer _stream_results_thread (gpointer data)
               }
               break;
           default:
-              if (item->total_irrelevant_results < LW_MAX_LOW_IRRELEVENT_RESULTS && !show_only_exact_matches)
+              if (item->total_irrelevant_results < LW_MAX_LOW_IRRELEVENT_RESULTS)
               {
-                //Store the result line and create an empty one in its place
                 item->total_results++;
                 item->total_irrelevant_results++;
                 item->resultline->relevance = LW_RESULTLINE_RELEVANCE_LOW;
@@ -156,6 +154,7 @@ static gpointer _stream_results_thread (gpointer data)
                 item->resultline = lw_resultline_new ();
               }
               break;
+          }
         }
       }
     }

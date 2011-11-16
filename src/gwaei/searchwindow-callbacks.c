@@ -2114,16 +2114,12 @@ gw_searchwindow_open_kanjipadwindow_cb (GtkWidget *widget, gpointer data)
     if (iter != NULL)
     {
       kanjipadwindow = GTK_WINDOW (iter->data);
-      gtk_window_set_transient_for (GTK_WINDOW (kanjipadwindow), GTK_WINDOW (window));
-      gtk_window_present (GTK_WINDOW (kanjipadwindow));
-    }
-    else
-    {
-      kanjipadwindow = gw_kanjipadwindow_new (GTK_APPLICATION (application));
-      gtk_window_set_transient_for (GTK_WINDOW (kanjipadwindow), GTK_WINDOW (window));
-      gtk_widget_show (GTK_WIDGET (kanjipadwindow));
+      gtk_widget_destroy (GTK_WIDGET (kanjipadwindow));
     }
 
+    kanjipadwindow = gw_kanjipadwindow_new (GTK_APPLICATION (application));
+    gtk_window_set_transient_for (GTK_WINDOW (kanjipadwindow), GTK_WINDOW (window));
+    gtk_widget_show (GTK_WIDGET (kanjipadwindow));
 }
 
 
@@ -2148,6 +2144,7 @@ gw_searchwindow_open_radicalswindow_cb (GtkWidget *widget, gpointer data)
     {
       radicalswindow = GTK_WINDOW (iter->data);
       gtk_window_set_transient_for (GTK_WINDOW (radicalswindow), GTK_WINDOW (window));
+      gw_radicalswindow_deselect_all_radicals (GW_RADICALSWINDOW (radicalswindow));
       gtk_window_present (GTK_WINDOW (radicalswindow));
     }
     else
