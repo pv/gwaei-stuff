@@ -1,14 +1,2 @@
-2011-08-12  Zachary Dovel  <pizzach@gmail.com>
-
-	* Made gWaei object orented.  All objects are created/freed using *_new/*_free commands.
-	* The program now uses much less memory.
-  * Updated the interface a bit more to comply better with Gnome 3
-	* NCurses interface has become unsupported
-	* Hardcore valgrind checking for memory leaks
-	* Program defaults to hitting enter for searches instead of automatically
-	updated
-	* Moved dconf schemas position to org/gnome/gwaei
-	* The program should use less CPU when idle now thanks to better use of
-	signals
-	* Various fixes for compiling under mingw32 for windows
-
+2011-11-18  Zachary Dovel  <pizzach@gmail.com>
+	* Updated the change log.  You would be best off looking at the git log.

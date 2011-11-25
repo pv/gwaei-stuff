@@ -16,8 +16,8 @@ TABLE OF CONTENTS
 
 1.0 PREREQUISITES:
 
-  To run gWaei 3.1.x, an environment with at least gtk+-3.0.0/glib-2.25.0,
-  curl 7.19.6, gnome-doc-utils-0.14.0, and gsettings-desktop-schemas are
+  To run gWaei 3.2.x, an environment with at least gtk+-3.2.0/glib-2.30.0,
+  curl 7.20.0, gnome-doc-utils-0.14.0, and gsettings-desktop-schemas are
   required. Additionally, you will want to have gunzip, enchant, and
   ttf-kanjistrokeorders available.
 
@@ -88,12 +88,12 @@ TABLE OF CONTENTS
 
   3. Build gwaei by doing
     
-      mingw32-configure 
+      mingw32-configure --disable-scrollkeeper
       mingw32-make
       sudo mingw32-make install
 
 
-  The mingw32-configure script will take care of PKG_CONFIG_PATH and such for you.
+  The mingw32-configure script will take care of PKG_CONFIG_PATH and such for you.  You should in general compile any needed deps with --disable-scrollkeeper.
 
 
 END
