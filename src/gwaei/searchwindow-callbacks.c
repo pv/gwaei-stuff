@@ -2297,15 +2297,33 @@ gw_searchwindow_focus_in_event_cb (GtkWidget *widget,
 
 
 G_MODULE_EXPORT void 
-gw_searchwindow_open_vocabulary_window_cb (GtkWidget *widget, 
+gw_searchwindow_open_vocabularywindow_cb (GtkWidget *widget, 
                                            gpointer   data   )
 {
-  /*
-  GtkBuilder builder;
-  builder = gtk_builder_new ();
-  gtk_bueild
-  g_object_unref (builder);
-  */
+    //Declarations
+    GwSearchWindow *window;
+    GwApplication *application;
+    GtkWindow *vocabularywindow;
+    GList *iter;
+
+    //Initializations
+    window = GW_SEARCHWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_SEARCHWINDOW));
+    if (window == NULL);
+    application = gw_window_get_application (GW_WINDOW (window));
+    iter = gtk_application_get_windows (GTK_APPLICATION (application));
+
+    while (iter != NULL && !GW_IS_VOCABULARYWINDOW (iter->data)) iter = iter->next;
+
+    if (iter != NULL)
+    {
+      vocabularywindow = GTK_WINDOW (iter->data);
+      gtk_window_present (GTK_WINDOW (vocabularywindow));
+    }
+    else
+    {
+      vocabularywindow = gw_vocabularywindow_new (GTK_APPLICATION (application));
+      gtk_widget_show (GTK_WIDGET (vocabularywindow));
+    }
 }
 
 

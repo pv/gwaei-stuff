@@ -23,6 +23,7 @@
 #include <gwaei/settingswindow.h>
 #include <gwaei/dictionaryinstallwindow.h>
 #include <gwaei/installprogresswindow.h>
+#include <gwaei/vocabularywindow.h>
 
 
 #endif
