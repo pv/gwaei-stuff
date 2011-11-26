@@ -263,7 +263,7 @@ gw_vocabularywindow_init_list_treeview (GwVocabularyWindow *window)
     //Set up the columns
     column = gtk_tree_view_column_new ();
     renderer = gtk_cell_renderer_text_new ();
-    gtk_tree_view_column_set_title (column, gettext("List"));
+    gtk_tree_view_column_set_title (column, gettext("Lists"));
     gtk_tree_view_column_pack_start (column, renderer, TRUE);
     gtk_tree_view_column_set_attributes (column, renderer, "text", GW_VOCABULARYLIST_COLUMN_NAME, NULL);
     gtk_tree_view_append_column (priv->list_treeview, column);
@@ -295,7 +295,7 @@ gw_vocabularywindow_init_item_treeview (GwVocabularyWindow *window)
     //Set up the columns
     column = gtk_tree_view_column_new ();
     renderer = gtk_cell_renderer_text_new ();
-    gtk_tree_view_column_set_title (column, gettext("Vocabulary"));
+    gtk_tree_view_column_set_title (column, gettext("Vocabulary Detail"));
     gtk_tree_view_column_pack_start (column, renderer, FALSE);
     gtk_tree_view_column_set_attributes (column, renderer, "text", GW_VOCABULARYITEM_COLUMN_KANJI, NULL);
     gtk_tree_view_append_column (priv->item_treeview, column);

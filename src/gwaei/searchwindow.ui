@@ -672,7 +672,7 @@
                         <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Add</property>
+                        <property name="label" translatable="yes">_Add a New Word</property>
                         <property name="use_underline">True</property>
                       </object>
                     </child>
@@ -688,7 +688,7 @@
                         <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Manage</property>
+                        <property name="label" translatable="yes">_Manage and Study Vocabulary Lists</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="gw_searchwindow_open_vocabularywindow_cb" object="toplevel" swapped="no"/>
                       </object>
