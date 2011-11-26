@@ -225,6 +225,7 @@
                           <object class="GtkTreeView" id="vocabulary_list_treeview">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
+                            <signal name="cursor-changed" handler="gw_vocabularywindow_list_cursor_changed_cb" object="toplevel" swapped="no"/>
                             <child internal-child="selection">
                               <object class="GtkTreeSelection" id="vocabulary_list_treeview_selection"/>
                             </child>
@@ -244,6 +245,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="toolbar_style">icons</property>
+                    <property name="show_arrow">False</property>
                     <property name="icon_size">1</property>
                     <child>
                       <object class="GtkToolButton" id="vocabulary_list_add_toolbutton">
@@ -324,41 +326,95 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkToolbar" id="vocabulary_item_toolbar">
+                  <object class="GtkBox" id="box1">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="toolbar_style">icons</property>
-                    <property name="icon_size">1</property>
                     <child>
-                      <object class="GtkToolButton" id="vocabulary_item_add_toolbutton">
-                        <property name="use_action_appearance">False</property>
+                      <object class="GtkToolbar" id="vocabulary_item_toolbar">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="use_action_appearance">False</property>
-                        <property name="label" translatable="yes">Add</property>
-                        <property name="use_underline">True</property>
-                        <property name="icon_name">list-add-symbolic</property>
-                        <signal name="clicked" handler="gw_vocabularywindow_item_add_cb" object="toplevel" swapped="no"/>
+                        <property name="toolbar_style">icons</property>
+                        <property name="show_arrow">False</property>
+                        <property name="icon_size">1</property>
+                        <child>
+                          <object class="GtkToolButton" id="vocabulary_item_add_toolbutton">
+                            <property name="use_action_appearance">False</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="use_action_appearance">False</property>
+                            <property name="label" translatable="yes">Add</property>
+                            <property name="use_underline">True</property>
+                            <property name="icon_name">list-add-symbolic</property>
+                            <signal name="clicked" handler="gw_vocabularywindow_item_add_cb" object="toplevel" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="homogeneous">True</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkToolButton" id="vocabulary_item_remove_toolbutton">
+                            <property name="use_action_appearance">False</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="use_action_appearance">False</property>
+                            <property name="label" translatable="yes">Remove</property>
+                            <property name="use_underline">True</property>
+                            <property name="icon_name">list-remove-symbolic</property>
+                            <signal name="clicked" handler="gw_vocabularywindow_item_remove_cb" object="toplevel" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="homogeneous">True</property>
+                          </packing>
+                        </child>
                       </object>
                       <packing>
                         <property name="expand">False</property>
-                        <property name="homogeneous">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkToolButton" id="vocabulary_item_remove_toolbutton">
-                        <property name="use_action_appearance">False</property>
+                      <object class="GtkToolbar" id="study_toolbar">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="use_action_appearance">False</property>
-                        <property name="label" translatable="yes">Remove</property>
-                        <property name="use_underline">True</property>
-                        <property name="icon_name">list-remove-symbolic</property>
-                        <signal name="clicked" handler="gw_vocabularywindow_item_remove_cb" object="toplevel" swapped="no"/>
+                        <property name="toolbar_style">icons</property>
+                        <property name="icon_size">1</property>
+                        <child>
+                          <object class="GtkToolButton" id="Study">
+                            <property name="use_action_appearance">False</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="use_action_appearance">False</property>
+                            <property name="label" translatable="yes">Study</property>
+                            <property name="use_underline">True</property>
+                            <property name="icon_name">media-playback-start-symbolic</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkToolButton" id="Shuffle">
+                            <property name="use_action_appearance">False</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="use_action_appearance">False</property>
+                            <property name="label" translatable="yes">Shuffle</property>
+                            <property name="use_underline">True</property>
+                            <property name="icon_name">media-playlist-shuffle-symbolic</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="homogeneous">True</property>
+                          </packing>
+                        </child>
                       </object>
                       <packing>
-                        <property name="expand">False</property>
-                        <property name="homogeneous">True</property>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
                       </packing>
                     </child>
                   </object>

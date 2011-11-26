@@ -3,6 +3,21 @@
 
 G_BEGIN_DECLS
 
+
+typedef enum { 
+  GW_VOCABULARYLIST_COLUMN_NAME,
+  TOTAL_GW_VOCABULARYLIST_COLUMNS
+} GwVocabularyListColumn;
+
+
+typedef enum { 
+  GW_VOCABULARYITEM_COLUMN_KANJI,
+  GW_VOCABULARYITEM_COLUMN_FURIGANA,
+  GW_VOCABULARYITEM_COLUMN_DEFINITIONS,
+  TOTAL_GW_VOCABULARYITEM_COLUMNS
+} GwVocabularyItemColumn;
+
+
 typedef enum {
 //  GW_VOCABULARYWINDOW_TIMEOUTID_PROGRESS,
   TOTAL_GW_VOCABULARYWINDOW_TIMEOUTIDS
@@ -14,15 +29,12 @@ typedef enum {
 } GwVocabularyWindowSignalId;
 
 struct _GwVocabularyWindowPrivate {
-  GtkToolbar   *toolbar;
-
   GtkTreeView  *list_treeview;
   GtkToolbar   *list_toolbar;
-  GtkListStore *list_model;
 
   GtkTreeView  *item_treeview;
-  GtkListStore *item_model;
   GtkToolbar   *item_toolbar;
+  GtkToolbar   *study_toolbar;
 
   //Main variables
   guint timeoutid[TOTAL_GW_VOCABULARYWINDOW_TIMEOUTIDS];
