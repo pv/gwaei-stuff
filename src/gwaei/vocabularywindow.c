@@ -29,7 +29,6 @@
 #include <string.h>
 
 #include <gdk/gdk.h>
-#include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
 #include <gwaei/gwaei.h>
@@ -221,11 +220,6 @@ gw_vocabularywindow_init_styles (GwVocabularyWindow *window)
     //Initializations
     priv = window->priv;
 
-    //Primary Toolbar
-    context = gtk_widget_get_style_context (GTK_WIDGET (priv->toolbar));
-    gtk_style_context_add_class (context, GTK_STYLE_CLASS_PRIMARY_TOOLBAR);
-    gtk_widget_reset_style (GTK_WIDGET (priv->toolbar));
-
     //Vocabulary list pane
     widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "vocabulary_list_scrolledwindow"));
     context = gtk_widget_get_style_context (widget);
@@ -263,6 +257,8 @@ gw_vocabularywindow_init_list_treeview (GwVocabularyWindow *window)
     //Set up the columns
     column = gtk_tree_view_column_new ();
     renderer = gtk_cell_renderer_text_new ();
+    g_object_set (G_OBJECT (renderer), "editable", TRUE, NULL);
+    g_signal_connect (G_OBJECT (renderer), "edited", G_CALLBACK (gw_vocabularywindow_cell_edited_cb), NULL);
     gtk_tree_view_column_set_title (column, gettext("Lists"));
     gtk_tree_view_column_pack_start (column, renderer, TRUE);
     gtk_tree_view_column_set_attributes (column, renderer, "text", GW_VOCABULARYLIST_COLUMN_NAME, NULL);
@@ -295,6 +291,8 @@ gw_vocabularywindow_init_item_treeview (GwVocabularyWindow *window)
     //Set up the columns
     column = gtk_tree_view_column_new ();
     renderer = gtk_cell_renderer_text_new ();
+    g_object_set (G_OBJECT (renderer), "editable", TRUE, NULL);
+    g_signal_connect (G_OBJECT (renderer), "edited", G_CALLBACK (gw_vocabularywindow_cell_edited_cb), NULL);
     gtk_tree_view_column_set_title (column, gettext("Vocabulary Detail"));
     gtk_tree_view_column_pack_start (column, renderer, FALSE);
     gtk_tree_view_column_set_attributes (column, renderer, "text", GW_VOCABULARYITEM_COLUMN_KANJI, NULL);
