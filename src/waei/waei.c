@@ -51,7 +51,6 @@ main (int argc, char *argv[])
     g_thread_init (NULL);
 
     application = w_application_new ();
-
     resolution = w_application_run (W_APPLICATION (application), &argc, &argv);
 
     g_object_unref (application);

@@ -81,6 +81,10 @@ lw_util_build_filename (const LwFolderPath PATH, const char *FILENAME)
         folder = g_build_filename (base, "dictionaries", lw_util_dicttype_to_string (LW_DICTTYPE_UNKNOWN), NULL);
         path = g_build_filename (base, "dictionaries", lw_util_dicttype_to_string (LW_DICTTYPE_UNKNOWN), FILENAME, NULL);
         break;
+      case LW_PATH_VOCABULARY:
+        folder = g_build_filename (base, "vocabulary", NULL);
+        path = g_build_filename (base, "vocabulary", FILENAME, NULL);
+        break;
       case LW_PATH_PLUGIN:
         folder = g_build_filename (base, "plugins", NULL);
         path = g_build_filename (base, "plugins", FILENAME, NULL);
