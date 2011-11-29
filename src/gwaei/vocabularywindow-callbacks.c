@@ -151,7 +151,49 @@ gw_vocabularywindow_cell_edited_cb (GtkCellRendererText *renderer,
     model = GTK_TREE_MODEL (gtk_tree_view_get_model (view));
     gtk_tree_model_get_iter_from_string (model, &iter, path_string);
     column = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (renderer), "column"));
+
     gtk_list_store_set (GTK_LIST_STORE (model), &iter, column, new_text, -1);
+}
+
+
+G_MODULE_EXPORT void
+gw_vocabularywindow_list_cell_edited_cb (GtkCellRendererText *renderer,
+                                         gchar               *path_string,
+                                         gchar               *new_text,
+                                         gpointer             data       )
+{
+    //Declarations
+    GtkTreeView *view;
+    GtkTreeModel *model;
+    GtkTreeIter iter;
+    gint column;
+    gchar *text;
+    gboolean exists;
+
+    //Initializations
+    view = GTK_TREE_VIEW (data);
+    model = GTK_TREE_MODEL (gtk_tree_view_get_model (view));
+    column = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (renderer), "column"));
+    exists = FALSE;
+
+    if (gtk_tree_model_get_iter_first (GTK_TREE_MODEL (model), &iter))
+    {
+      do
+      {
+        gtk_tree_model_get (GTK_TREE_MODEL (model), &iter, column, &text, -1);
+        if (text != NULL)
+        {
+          if (strcmp(text, new_text) == 0) exists = TRUE;
+          g_free (text);
+        }
+      } while (gtk_tree_model_iter_next (GTK_TREE_MODEL (model), &iter) && !exists);
+    }
+
+    if (!exists)
+    {
+      gtk_tree_model_get_iter_from_string (model, &iter, path_string);
+      gtk_list_store_set (GTK_LIST_STORE (model), &iter, column, new_text, -1);
+    }
 }
 
 
@@ -166,5 +208,21 @@ gw_vocabularywindow_save_cb (GtkWidget *widget, gpointer data)
     if (window == NULL) return;
 
     gw_vocabularywindow_save (window);
+}
+
+
+G_MODULE_EXPORT void
+gw_vocabularywindow_reset_cb (GtkWidget *widget, gpointer data)
+{
+    //Declarations
+    GwVocabularyWindow *window;
+
+    //Initializations
+    window = GW_VOCABULARYWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_VOCABULARYWINDOW));
+    if (window == NULL) return;
+
+    //TODO add code to remove lists that didn't exist before reset
+
+    gw_vocabularywindow_reset (window);
 }
 

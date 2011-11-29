@@ -260,7 +260,13 @@ gw_vocabularymodel_reset (GwVocabularyModel *model)
     GwVocabularyModelPrivate *priv;
 
     priv = model->priv;
-    priv->needs_sync = FALSE;
+    priv->loaded = FALSE;
+
+    if (priv->vocabulary_list != NULL) lw_vocabularylist_free (priv->vocabulary_list);
+    priv->vocabulary_list = lw_vocabularylist_new (priv->name);
+    lw_vocabularylist_load (priv->vocabulary_list, NULL);
+    gtk_list_store_clear (GTK_LIST_STORE (model));
+    gw_vocabularymodel_load (model);
 }
 
 

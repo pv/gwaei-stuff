@@ -40,6 +40,7 @@ void gw_vocabularywindow_remove_selected_lists (GwVocabularyWindow*);
 void gw_vocabularywindow_set_selected_vocabulary (GwVocabularyWindow*);
 void gw_vocabularywindow_clean_files (GwVocabularyWindow*);
 gboolean gw_vocabularywindow_list_exists (GwVocabularyWindow*, const gchar*);
+void gw_vocabularywindow_reset (GwVocabularyWindow*);
 
 #include "vocabularywindow-callbacks.h"
 

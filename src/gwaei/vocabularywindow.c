@@ -277,7 +277,7 @@ gw_vocabularywindow_init_list_treeview (GwVocabularyWindow *window)
     renderer = gtk_cell_renderer_text_new ();
     g_object_set (G_OBJECT (renderer), "editable", TRUE, NULL);
     g_object_set_data (G_OBJECT (renderer), "column", GINT_TO_POINTER (GW_VOCABULARYLIST_COLUMN_NAME));
-    g_signal_connect (G_OBJECT (renderer), "edited", G_CALLBACK (gw_vocabularywindow_cell_edited_cb), priv->list_treeview);
+    g_signal_connect (G_OBJECT (renderer), "edited", G_CALLBACK (gw_vocabularywindow_list_cell_edited_cb), priv->list_treeview);
     gtk_tree_view_column_set_title (column, gettext("Lists"));
     gtk_tree_view_column_pack_start (column, renderer, TRUE);
     gtk_tree_view_column_set_attributes (column, renderer, "text", GW_VOCABULARYLIST_COLUMN_NAME, NULL);
@@ -485,10 +485,12 @@ gw_vocabularywindow_set_selected_vocabulary (GwVocabularyWindow *window)
 void
 gw_vocabularywindow_save (GwVocabularyWindow *window)
 {
+    //Declarations
     GwVocabularyWindowClass *klass;
     GwVocabularyModel *model;
     GList *iter;
 
+    //Initializations
     klass = GW_VOCABULARYWINDOW_CLASS (G_OBJECT_GET_CLASS (window));
 
     gw_vocabularywindow_clean_files (window);
@@ -500,13 +502,34 @@ gw_vocabularywindow_save (GwVocabularyWindow *window)
 }
 
 
-gboolean
-gw_vocabularywindow_list_exists (GwVocabularyWindow *window, const gchar *NAME)
+void
+gw_vocabularywindow_reset (GwVocabularyWindow *window)
 {
+    //Declarations
     GwVocabularyWindowClass *klass;
     GwVocabularyModel *model;
     GList *iter;
 
+    //Initializations
+    klass = GW_VOCABULARYWINDOW_CLASS (G_OBJECT_GET_CLASS (window));
+
+    for (iter = klass->item_models; iter != NULL; iter = iter->next)
+    {
+      model = GW_VOCABULARYMODEL (iter->data);
+      gw_vocabularymodel_reset (model);
+    }
+}
+
+
+gboolean
+gw_vocabularywindow_list_exists (GwVocabularyWindow *window, const gchar *NAME)
+{
+    //Declarations
+    GwVocabularyWindowClass *klass;
+    GwVocabularyModel *model;
+    GList *iter;
+      
+    //Initializations
     klass = GW_VOCABULARYWINDOW_CLASS (G_OBJECT_GET_CLASS (window));
 
     for (iter = klass->item_models; iter != NULL; iter = iter->next)
@@ -547,6 +570,5 @@ gw_vocabularywindow_clean_files (GwVocabularyWindow *window)
       }
       g_free (uri); uri = NULL;
     }
-
 }
 
