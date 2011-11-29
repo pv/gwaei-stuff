@@ -20,4 +20,13 @@ typedef struct _LwVocabularyItem LwVocabularyItem;
 LwVocabularyItem* lw_vocabularyitem_new_from_string (const gchar*);
 void lw_vocabularyitem_free (LwVocabularyItem*);
 
+void lw_vocabularyitem_set_kanji (LwVocabularyItem*, const gchar *);
+const gchar* lw_vocabularyitem_get_kanji (LwVocabularyItem*);
+
+void lw_vocabularyitem_set_furigana (LwVocabularyItem*, const gchar *);
+const gchar* lw_vocabularyitem_get_furigana (LwVocabularyItem*);
+
+void lw_vocabularyitem_set_definitions (LwVocabularyItem*, const gchar *);
+const gchar* lw_vocabularyitem_get_definitions (LwVocabularyItem*);
+
 #endif

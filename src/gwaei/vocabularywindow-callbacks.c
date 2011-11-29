@@ -32,16 +32,9 @@
 #include <gtk/gtk.h>
 
 #include <gwaei/gwaei.h>
+#include <gwaei/vocabularymodel.h>
 #include <gwaei/vocabularywindow-private.h>
 
-
-G_MODULE_EXPORT void
-gw_vocabularywindow_cell_edited_cb (GtkCellRendererText *renderer,
-                                    gchar               *path_string,
-                                    gchar               *new_text,
-                                    gpointer             data       )
-{
-}
 
 
 G_MODULE_EXPORT void
@@ -89,9 +82,9 @@ gw_vocabularywindow_item_add_cb (GtkWidget *widget, gpointer data)
 
     gtk_list_store_append (GTK_LIST_STORE (model), &iter);
     gtk_list_store_set (GTK_LIST_STORE (model), &iter, 
-        GW_VOCABULARYITEM_COLUMN_KANJI, gettext("(Click to set Kanji)"), 
-        GW_VOCABULARYITEM_COLUMN_FURIGANA, gettext("(Click to set Furigana)"),
-        GW_VOCABULARYITEM_COLUMN_DEFINITIONS, gettext("(Click to set Definitions)"),
+        GW_VOCABULARYMODEL_COLUMN_KANJI, gettext("(Click to set Kanji)"), 
+        GW_VOCABULARYMODEL_COLUMN_FURIGANA, gettext("(Click to set Furigana)"),
+        GW_VOCABULARYMODEL_COLUMN_DEFINITIONS, gettext("(Click to set Definitions)"),
     -1);
 }
 
@@ -104,10 +97,7 @@ gw_vocabularywindow_item_remove_cb (GtkWidget *widget, gpointer data)
     GwVocabularyWindowPrivate *priv;
     GtkTreeModel *model;
     GtkTreeSelection *selection;
-    GList *rowpathlist;
-    GList *rowreflist;
-    GList *listiter;
-    GtkTreeRowReference *rowref;
+    GList *list;
     GtkTreePath *path;
     GtkTreeIter treeiter;
 
@@ -117,34 +107,17 @@ gw_vocabularywindow_item_remove_cb (GtkWidget *widget, gpointer data)
     priv = window->priv;
     model = gtk_tree_view_get_model (priv->item_treeview);
     selection = gtk_tree_view_get_selection (priv->item_treeview);
-    rowpathlist = gtk_tree_selection_get_selected_rows (selection, &model);
-    rowreflist = NULL;
 
-    //Convert the tree paths to row references
-    if (rowpathlist != NULL) {
-      for (listiter = rowpathlist; listiter != NULL; listiter = listiter->next)
-      {
-        path = rowpathlist->data;
-        rowref = gtk_tree_row_reference_new (model, path);
-        rowreflist = g_list_append (rowreflist, rowref);
-        gtk_tree_path_free (path);
-      }
-      g_list_free (rowpathlist); rowpathlist = NULL;
-    }
-
-    //Use the row references to clear the selected rows in the model
-    if (rowreflist != NULL)
+    while (gtk_tree_selection_count_selected_rows (selection))
     {
-      for (listiter = rowreflist; listiter != NULL; listiter = listiter->next)
-      {
-        rowref = listiter->data;
-        path = gtk_tree_row_reference_get_path (rowref);
-        gtk_tree_model_get_iter (model, &treeiter, path);
-        gtk_list_store_remove (GTK_LIST_STORE (model), &treeiter);
-        gtk_tree_path_free (path);
-        gtk_tree_row_reference_free (rowref);
-      }
-      g_list_free (rowreflist); rowreflist = NULL;
+      list = gtk_tree_selection_get_selected_rows (selection, &model);
+      path = list->data;
+
+      gtk_tree_model_get_iter (model, &treeiter, path);
+      gtk_list_store_remove (GTK_LIST_STORE (model), &treeiter);
+
+      g_list_foreach (list, (GFunc) gtk_tree_path_free, NULL);
+      g_list_free (list); list = NULL;
     }
 }
 
@@ -159,6 +132,29 @@ gw_vocabularywindow_list_cursor_changed_cb (GtkTreeView *view, gpointer data)
     window = GW_VOCABULARYWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_VOCABULARYWINDOW));
     if (window == NULL) return;
 
-    gw_vocabularywindow_load_selected_vocabulary (window);
+    gw_vocabularywindow_set_selected_vocabulary (window);
 }
+
+
+G_MODULE_EXPORT void
+gw_vocabularywindow_cell_edited_cb (GtkCellRendererText *renderer,
+                                    gchar               *path_string,
+                                    gchar               *new_text,
+                                    gpointer             data       )
+{
+    //Declarations
+    GtkTreeView *view;
+    GtkTreeModel *model;
+    GtkTreePath *path;
+    GtkTreeIter iter;
+    gint column;
+
+    //Initializations
+    view = GTK_TREE_VIEW (data);
+    model = GTK_TREE_MODEL (gtk_tree_view_get_model (view));
+    gtk_tree_model_get_iter_from_string (model, &iter, path_string);
+    column = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (renderer), "column"));
+    gtk_list_store_set (GTK_LIST_STORE (model), &iter, column, new_text, -1);
+}
+
 

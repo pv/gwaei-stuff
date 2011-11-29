@@ -24,7 +24,7 @@ struct _GwVocabularyWindow {
 
 struct _GwVocabularyWindowClass {
   GwWindowClass parent_class;
-  GtkListStore *list_model;
+  GtkTreeModel *list_model;
   GList *item_models;
   guint list_new_index;
 };
@@ -32,10 +32,11 @@ struct _GwVocabularyWindowClass {
 GtkWindow* gw_vocabularywindow_new (GtkApplication *application);
 GType gw_vocabularywindow_get_type (void) G_GNUC_CONST;
 
-GtkTreeModel* gw_vocabularywindow_load_selected_vocabulary (GwVocabularyWindow*);
-GtkTreeModel* gw_vocabularywindow_load_vocabulary_by_index (GwVocabularyWindow*, gint);
+void gw_vocabularywindow_load_selected_vocabulary (GwVocabularyWindow*);
+void gw_vocabularywindow_load_vocabulary_by_index (GwVocabularyWindow*, gint);
 void gw_vocabularywindow_create_new_list (GwVocabularyWindow*);
-void gw_vocabularywindow_remove_selected_lists (GwVocabularyWindow *window);
+void gw_vocabularywindow_remove_selected_lists (GwVocabularyWindow*);
+void gw_vocabularywindow_set_selected_vocabulary (GwVocabularyWindow*);
 
 #include "vocabularywindow-callbacks.h"
 

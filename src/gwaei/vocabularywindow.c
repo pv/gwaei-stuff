@@ -32,6 +32,7 @@
 #include <gtk/gtk.h>
 
 #include <gwaei/gwaei.h>
+#include <gwaei/vocabularymodel.h>
 #include <gwaei/vocabularywindow-private.h>
 
 
@@ -93,9 +94,11 @@ gw_vocabularywindow_constructed (GObject *object)
     //Declarations
     GwVocabularyWindow *window;
     GwVocabularyWindowPrivate *priv;
+    /*
     GtkToolButton *toolbutton;
     GtkWidget *widget;
     GtkAccelGroup *accelgroup;
+    */
 
     //Chain the parent class
     {
@@ -139,19 +142,32 @@ gw_vocabularywindow_constructed (GObject *object)
 static void
 gw_vocabularywindow_class_init (GwVocabularyWindowClass *klass)
 {
-  GObjectClass *object_class;
+    GObjectClass *object_class;
 
+    object_class = G_OBJECT_CLASS (klass);
 
-  object_class = G_OBJECT_CLASS (klass);
+    object_class->constructed = gw_vocabularywindow_constructed;
+    object_class->finalize = gw_vocabularywindow_finalize;
 
-  object_class->constructed = gw_vocabularywindow_constructed;
-  object_class->finalize = gw_vocabularywindow_finalize;
+    klass->list_model = GTK_TREE_MODEL (gtk_list_store_new (1, G_TYPE_STRING));
+    klass->item_models = NULL;
+    klass->list_new_index = 0;
 
-  klass->list_model = NULL;
-  klass->item_models = NULL;
-  klass->list_new_index = 0;
+    GtkTreeIter iter;
+    gchar **lists;
+    int i;
+    if ((lists = lw_vocabularylist_get_lists ()) != NULL)
+    {
+      for (i = 0; lists[i] != NULL; i++)
+      {
+        gtk_list_store_append (GTK_LIST_STORE (klass->list_model), &iter);
+        gtk_list_store_set (GTK_LIST_STORE (klass->list_model), &iter, GW_VOCABULARYLIST_COLUMN_NAME, lists[i], -1);
+        klass->item_models = g_list_append (klass->item_models, gw_vocabularymodel_new (lists[i]));
+      }
+      g_strfreev (lists); lists = NULL;
+    }
 
-  g_type_class_add_private (object_class, sizeof (GwVocabularyWindowPrivate));
+    g_type_class_add_private (object_class, sizeof (GwVocabularyWindowPrivate));
 }
 
 
@@ -160,10 +176,8 @@ gw_vocabularywindow_attach_signals (GwVocabularyWindow *window)
 {
     //Declarations
 //    GwApplication *application;
-    GwVocabularyWindowPrivate *priv;
 
 //    application = gw_window_get_application (GW_WINDOW (window));
-    priv = window->priv;
 
     g_signal_connect (G_OBJECT (window), "destroy",
                       G_CALLBACK (gw_vocabularywindow_remove_signals), NULL);
@@ -174,12 +188,10 @@ static void
 gw_vocabularywindow_remove_signals (GwVocabularyWindow *window)
 {
     //Declarations
-    GwApplication *application;
     GwVocabularyWindowPrivate *priv;
     GSource *source;
     gint i;
 
-    application = gw_window_get_application (GW_WINDOW (window));
     priv = window->priv;
 
     for (i = 0; i < TOTAL_GW_VOCABULARYWINDOW_TIMEOUTIDS; i++)
@@ -263,29 +275,14 @@ gw_vocabularywindow_init_list_treeview (GwVocabularyWindow *window)
 
     renderer = gtk_cell_renderer_text_new ();
     g_object_set (G_OBJECT (renderer), "editable", TRUE, NULL);
-    g_signal_connect (G_OBJECT (renderer), "edited", G_CALLBACK (gw_vocabularywindow_cell_edited_cb), NULL);
+    g_object_set_data (G_OBJECT (renderer), "column", GINT_TO_POINTER (GW_VOCABULARYLIST_COLUMN_NAME));
+    g_signal_connect (G_OBJECT (renderer), "edited", G_CALLBACK (gw_vocabularywindow_cell_edited_cb), priv->list_treeview);
     gtk_tree_view_column_set_title (column, gettext("Lists"));
     gtk_tree_view_column_pack_start (column, renderer, TRUE);
     gtk_tree_view_column_set_attributes (column, renderer, "text", GW_VOCABULARYLIST_COLUMN_NAME, NULL);
 
     //Set up the model
-    if (klass->list_model != NULL) g_object_unref (klass->list_model);
-    klass->list_model = gtk_list_store_new (1, G_TYPE_STRING);
-    gtk_tree_view_set_model (priv->list_treeview, GTK_TREE_MODEL (klass->list_model));
-
-    //Temp code remove later
-    GtkTreeIter iter;
-    gchar **lists;
-    int i;
-    if ((lists = lw_vocabularylist_get_lists ()) != NULL)
-    {
-      for (i = 0; lists[i] != NULL; i++)
-      {
-        gtk_list_store_append (klass->list_model, &iter);
-        gtk_list_store_set (klass->list_model, &iter, GW_VOCABULARYLIST_COLUMN_NAME, lists[i], -1);
-      }
-      g_strfreev (lists); lists = NULL;
-    }
+    gtk_tree_view_set_model (priv->list_treeview, klass->list_model);
 
     gtk_tree_selection_set_mode (selection, GTK_SELECTION_BROWSE);
 }
@@ -307,46 +304,34 @@ gw_vocabularywindow_init_item_treeview (GwVocabularyWindow *window)
     column = gtk_tree_view_column_new ();
     renderer = gtk_cell_renderer_text_new ();
     g_object_set (G_OBJECT (renderer), "editable", TRUE, NULL);
-    g_signal_connect (G_OBJECT (renderer), "edited", G_CALLBACK (gw_vocabularywindow_cell_edited_cb), NULL);
+    g_object_set_data (G_OBJECT (renderer), "column", GINT_TO_POINTER (GW_VOCABULARYMODEL_COLUMN_KANJI));
+    g_signal_connect (G_OBJECT (renderer), "edited", G_CALLBACK (gw_vocabularywindow_cell_edited_cb), priv->item_treeview);
     gtk_tree_view_column_set_title (column, gettext("Word"));
     gtk_tree_view_column_pack_start (column, renderer, FALSE);
-    gtk_tree_view_column_set_attributes (column, renderer, "text", GW_VOCABULARYITEM_COLUMN_KANJI, NULL);
+    gtk_tree_view_column_set_attributes (column, renderer, "text", GW_VOCABULARYMODEL_COLUMN_KANJI, NULL);
     gtk_tree_view_append_column (priv->item_treeview, column);
 
     column = gtk_tree_view_column_new ();
     renderer = gtk_cell_renderer_text_new ();
     g_object_set (G_OBJECT (renderer), "editable", TRUE, NULL);
-    g_signal_connect (G_OBJECT (renderer), "edited", G_CALLBACK (gw_vocabularywindow_cell_edited_cb), NULL);
+    g_object_set_data (G_OBJECT (renderer), "column", GINT_TO_POINTER (GW_VOCABULARYMODEL_COLUMN_FURIGANA));
+    g_signal_connect (G_OBJECT (renderer), "edited", G_CALLBACK (gw_vocabularywindow_cell_edited_cb), priv->item_treeview);
     gtk_tree_view_column_set_title (column, gettext("Reading"));
     gtk_tree_view_column_pack_start (column, renderer, FALSE);
-    gtk_tree_view_column_set_attributes (column, renderer, "text", GW_VOCABULARYITEM_COLUMN_FURIGANA, NULL);
+    gtk_tree_view_column_set_attributes (column, renderer, "text", GW_VOCABULARYMODEL_COLUMN_FURIGANA, NULL);
     gtk_tree_view_append_column (priv->item_treeview, column);
 
     column = gtk_tree_view_column_new ();
     renderer = gtk_cell_renderer_text_new ();
     g_object_set (G_OBJECT (renderer), "editable", TRUE, NULL);
-    g_signal_connect (G_OBJECT (renderer), "edited", G_CALLBACK (gw_vocabularywindow_cell_edited_cb), NULL);
+    g_object_set_data (G_OBJECT (renderer), "column", GINT_TO_POINTER (GW_VOCABULARYMODEL_COLUMN_DEFINITIONS));
+    g_signal_connect (G_OBJECT (renderer), "edited", G_CALLBACK (gw_vocabularywindow_cell_edited_cb), priv->item_treeview);
     gtk_tree_view_column_set_title (column, gettext("Definitions"));
     gtk_tree_view_column_pack_start (column, renderer, FALSE);
-    gtk_tree_view_column_set_attributes (column, renderer, "text", GW_VOCABULARYITEM_COLUMN_DEFINITIONS, NULL);
+    gtk_tree_view_column_set_attributes (column, renderer, "text", GW_VOCABULARYMODEL_COLUMN_DEFINITIONS, NULL);
     gtk_tree_view_append_column (priv->item_treeview, column);
 
     gtk_tree_selection_set_mode (selection, GTK_SELECTION_MULTIPLE);
-
-    //Add other renderers
-
-  /*
-    if (klass->item_model != NULL) g_object_unref (klass->item_model);
-    klass->item_model = gtk_list_store_new (3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
-    gtk_tree_view_set_model (priv->item_treeview, GTK_TREE_MODEL (klass->item_model));
-
-    //Temp code remove later
-    GtkTreeIter iter;
-    gtk_list_store_append (klass->item_model, &iter);
-    gtk_list_store_set (klass->item_model, &iter, GW_VOCABULARYITEM_COLUMN_KANJI, "サカナ", -1);
-    gtk_list_store_append (klass->item_model, &iter);
-    gtk_list_store_set (klass->item_model, &iter, GW_VOCABULARYITEM_COLUMN_KANJI, "日本語", -1);
-    */
 }
 
 
@@ -366,15 +351,16 @@ gw_vocabularywindow_create_new_list (GwVocabularyWindow *window)
     selection = gtk_tree_view_get_selection (priv->list_treeview);
     name = g_strdup_printf (gettext("New List %d"), ++klass->list_new_index);
 
-    gtk_list_store_append (klass->list_model, &iter);
-    gtk_list_store_set (klass->list_model, &iter, 
+    gtk_list_store_append (GTK_LIST_STORE (klass->list_model), &iter);
+    gtk_list_store_set (GTK_LIST_STORE (klass->list_model), &iter, 
         GW_VOCABULARYLIST_COLUMN_NAME, name, 
     -1);
     gtk_tree_selection_select_iter (selection, &iter);
+    klass->item_models = g_list_append (klass->item_models, gw_vocabularymodel_new (name));
 
     g_free (name);
 
-    gw_vocabularywindow_load_selected_vocabulary (window);
+    gw_vocabularywindow_set_selected_vocabulary (window);
 }
 
 
@@ -382,17 +368,21 @@ void
 gw_vocabularywindow_remove_selected_lists (GwVocabularyWindow *window)
 {
     //Declarations
+    GwVocabularyWindowClass *klass;
     GwVocabularyWindowPrivate *priv;
     GtkTreeModel *model;
     GtkTreeSelection *selection;
     GList *rowpathlist;
     GList *rowreflist;
     GList *listiter;
+    GList *link;
     GtkTreeRowReference *rowref;
     GtkTreePath *path;
     GtkTreeIter treeiter;
+    gint *indices;
 
     //Initializations
+    klass = GW_VOCABULARYWINDOW_CLASS (G_OBJECT_GET_CLASS (window));
     priv = window->priv;
     model = gtk_tree_view_get_model (priv->list_treeview);
     selection = gtk_tree_view_get_selection (priv->list_treeview);
@@ -404,6 +394,15 @@ gw_vocabularywindow_remove_selected_lists (GwVocabularyWindow *window)
       for (listiter = rowpathlist; listiter != NULL; listiter = listiter->next)
       {
         path = rowpathlist->data;
+
+        indices = gtk_tree_path_get_indices (path);
+        if (indices != NULL)
+        {
+          link = g_list_nth (klass->item_models, *indices);
+          g_object_unref (G_OBJECT (link->data));
+          klass->item_models = g_list_delete_link (klass->item_models, link);
+        }
+
         rowref = gtk_tree_row_reference_new (model, path);
         rowreflist = g_list_append (rowreflist, rowref);
         gtk_tree_path_free (path);
@@ -425,77 +424,31 @@ gw_vocabularywindow_remove_selected_lists (GwVocabularyWindow *window)
       }
       g_list_free (rowreflist); rowreflist = NULL;
     }
+
+    gtk_tree_view_set_model (priv->item_treeview, NULL);
 }
 
 
-GtkTreeModel*
-gw_vocabularywindow_load_vocabulary_by_index (GwVocabularyWindow *window, gint index)
+void
+gw_vocabularywindow_set_vocabulary_by_index (GwVocabularyWindow *window, gint index)
 {
     //Declarations
     GwVocabularyWindowPrivate *priv;
     GwVocabularyWindowClass *klass;
     GtkTreeModel *model;
-    gboolean sensitive;
-    GList *listiter;
-    GtkTreeIter treeiter;
-    int i;
-    gchar *name;
 
     //Initializations
     priv = window->priv;
     klass = GW_VOCABULARYWINDOW_CLASS (G_OBJECT_GET_CLASS (window));
-    i = index + 1 - g_list_length (klass->item_models);
-    while (i-- > 0) klass->item_models = g_list_append (klass->item_models, NULL);
-    listiter = g_list_nth (klass->item_models, index);
+    model = GTK_TREE_MODEL (g_list_nth_data (klass->item_models, index));
 
-    gtk_tree_model_get_iter_first (klass->list_model, &treeiter);
-    while (index-- > 0 && gtk_tree_model_iter_next (klass->list_model, &treeiter));
-    gtk_tree_model_get (klass->list_model, &treeiter, GW_VOCABULARYLIST_COLUMN_NAME, &name, -1);
-
-    if (name != NULL)
-    {
-      if (listiter != NULL)
-      {
-        if (listiter->data == NULL) 
-        {
-          GList *listitemiter;
-          LwVocabularyItem *item;
-
-          listiter->data = gtk_list_store_new (3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
-          model = GTK_TREE_MODEL (listiter->data);
-          LwVocabularyList *list = lw_vocabularylist_new (name); lw_vocabularylist_load (list);
-          for (listitemiter = list->items; listitemiter != NULL; listitemiter = listitemiter->next)
-          {
-            item = LW_VOCABULARYITEM (listitemiter->data);
-            gtk_list_store_append (GTK_LIST_STORE (model), &treeiter);
-            gtk_list_store_set (GTK_LIST_STORE (model), &treeiter, 
-                GW_VOCABULARYITEM_COLUMN_KANJI, item->fields[LW_VOCABULARYITEM_FIELD_KANJI], 
-                GW_VOCABULARYITEM_COLUMN_FURIGANA, item->fields[LW_VOCABULARYITEM_FIELD_FURIGANA], 
-                GW_VOCABULARYITEM_COLUMN_DEFINITIONS, item->fields[LW_VOCABULARYITEM_FIELD_DEFINITIONS], 
-            -1);
-          }
-          lw_vocabularylist_free (list); list = NULL;
-        }
-        model = GTK_TREE_MODEL (listiter->data);
-      }
-      else
-      {
-        model = NULL;
-      }
-      sensitive = (model != NULL);
-
-      gtk_tree_view_set_model (priv->item_treeview, model);
-      gtk_widget_set_sensitive (GTK_WIDGET (priv->item_treeview), sensitive);
-
-      g_free (name); name = NULL;
-    }
-
-    return model;
+    gtk_tree_view_set_model (priv->item_treeview, model);
+    gw_vocabularymodel_load (GW_VOCABULARYMODEL (model));
 }
 
 
-GtkTreeModel*
-gw_vocabularywindow_load_selected_vocabulary (GwVocabularyWindow *window)
+void
+gw_vocabularywindow_set_selected_vocabulary (GwVocabularyWindow *window)
 {
     //Declarations
     GwVocabularyWindowPrivate *priv;
@@ -515,11 +468,9 @@ gw_vocabularywindow_load_selected_vocabulary (GwVocabularyWindow *window)
     path = gtk_tree_model_get_path (model, &iter);
     indices = gtk_tree_path_get_indices (path);
 
-    gw_vocabularywindow_load_vocabulary_by_index (window, indices[0]);
+    gw_vocabularywindow_set_vocabulary_by_index (window, indices[0]);
 
     //Cleanup
     gtk_tree_path_free (path);
-
-    return model;
 }
 
