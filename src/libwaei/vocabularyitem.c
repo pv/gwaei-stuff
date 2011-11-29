@@ -38,6 +38,17 @@ void lw_vocabularyitem_set_definitions (LwVocabularyItem *item, const gchar *tex
 
 
 LwVocabularyItem*
+lw_vocabularyitem_new ()
+{
+    LwVocabularyItem *item;
+
+    item = g_new0 (LwVocabularyItem, 1);
+
+    return item;
+}
+
+
+LwVocabularyItem*
 lw_vocabularyitem_new_from_string (const gchar *text)
 {
     LwVocabularyItem *item;

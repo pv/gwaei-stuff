@@ -70,14 +70,12 @@ gw_vocabularywindow_item_add_cb (GtkWidget *widget, gpointer data)
 {
     GwVocabularyWindow *window;
     GwVocabularyWindowPrivate *priv;
-    GwVocabularyWindowClass *klass;
     GtkTreeIter iter;
     GtkTreeModel *model;
 
     window = GW_VOCABULARYWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_VOCABULARYWINDOW));
     if (window == NULL) return;
     priv = window->priv;
-    klass = G_OBJECT_GET_CLASS (window);
     model = gtk_tree_view_get_model (priv->item_treeview);
 
     gtk_list_store_append (GTK_LIST_STORE (model), &iter);
@@ -145,7 +143,6 @@ gw_vocabularywindow_cell_edited_cb (GtkCellRendererText *renderer,
     //Declarations
     GtkTreeView *view;
     GtkTreeModel *model;
-    GtkTreePath *path;
     GtkTreeIter iter;
     gint column;
 
@@ -157,4 +154,17 @@ gw_vocabularywindow_cell_edited_cb (GtkCellRendererText *renderer,
     gtk_list_store_set (GTK_LIST_STORE (model), &iter, column, new_text, -1);
 }
 
+
+G_MODULE_EXPORT void
+gw_vocabularywindow_save_cb (GtkWidget *widget, gpointer data)
+{
+    //Declarations
+    GwVocabularyWindow *window;
+
+    //Initializations
+    window = GW_VOCABULARYWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_VOCABULARYWINDOW));
+    if (window == NULL) return;
+
+    gw_vocabularywindow_save (window);
+}
 

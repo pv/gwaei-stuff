@@ -17,6 +17,7 @@ typedef struct _LwVocabularyItem LwVocabularyItem;
 
 #define LW_VOCABULARYITEM(obj) (LwVocabularyItem*)obj
 
+LwVocabularyItem* lw_vocabularyitem_new ();
 LwVocabularyItem* lw_vocabularyitem_new_from_string (const gchar*);
 void lw_vocabularyitem_free (LwVocabularyItem*);
 

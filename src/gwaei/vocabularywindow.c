@@ -28,6 +28,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <glib/gstdio.h>
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 
@@ -349,7 +350,13 @@ gw_vocabularywindow_create_new_list (GwVocabularyWindow *window)
     priv = window->priv;
     klass = GW_VOCABULARYWINDOW_CLASS (G_OBJECT_GET_CLASS (window));
     selection = gtk_tree_view_get_selection (priv->list_treeview);
+    
     name = g_strdup_printf (gettext("New List %d"), ++klass->list_new_index);
+    while (gw_vocabularywindow_list_exists (window, name))
+    {
+      g_free (name);
+      name = g_strdup_printf (gettext("New List %d"), ++klass->list_new_index);
+    }
 
     gtk_list_store_append (GTK_LIST_STORE (klass->list_model), &iter);
     gtk_list_store_set (GTK_LIST_STORE (klass->list_model), &iter, 
@@ -472,5 +479,74 @@ gw_vocabularywindow_set_selected_vocabulary (GwVocabularyWindow *window)
 
     //Cleanup
     gtk_tree_path_free (path);
+}
+
+
+void
+gw_vocabularywindow_save (GwVocabularyWindow *window)
+{
+    GwVocabularyWindowClass *klass;
+    GwVocabularyModel *model;
+    GList *iter;
+
+    klass = GW_VOCABULARYWINDOW_CLASS (G_OBJECT_GET_CLASS (window));
+
+    gw_vocabularywindow_clean_files (window);
+    for (iter = klass->item_models; iter != NULL; iter = iter->next)
+    {
+      model = GW_VOCABULARYMODEL (iter->data);
+      gw_vocabularymodel_save (model);
+    }
+}
+
+
+gboolean
+gw_vocabularywindow_list_exists (GwVocabularyWindow *window, const gchar *NAME)
+{
+    GwVocabularyWindowClass *klass;
+    GwVocabularyModel *model;
+    GList *iter;
+
+    klass = GW_VOCABULARYWINDOW_CLASS (G_OBJECT_GET_CLASS (window));
+
+    for (iter = klass->item_models; iter != NULL; iter = iter->next)
+    {
+      model = GW_VOCABULARYMODEL (iter->data);
+      if (strcmp(NAME, gw_vocabularymodel_get_name (model)) == 0) return TRUE;
+    }
+
+    return FALSE;
+}
+
+
+void
+gw_vocabularywindow_clean_files (GwVocabularyWindow *window)
+{
+    //Definitions
+    GDir *dir;
+    gchar *uri;
+    gchar *filename;
+    const gchar *name;
+
+    if ((uri = lw_util_build_filename (LW_PATH_VOCABULARY, NULL)) != NULL)
+    {
+      if ((dir = g_dir_open (uri, 0, NULL)) != NULL)
+      {
+        while ((name = g_dir_read_name (dir)) != NULL)
+        {
+          if (!gw_vocabularywindow_list_exists (window, name))
+          {
+            if ((filename = g_build_filename (uri, name, NULL)) != NULL)
+            {
+              g_remove (filename);
+              g_free (filename); filename = NULL;
+            }
+          }
+        }
+        g_dir_close (dir); dir = NULL;
+      }
+      g_free (uri); uri = NULL;
+    }
+
 }
 

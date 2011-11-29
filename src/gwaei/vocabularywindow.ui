@@ -286,6 +286,7 @@
                 <property name="label" translatable="yes">toolbutton2</property>
                 <property name="use_underline">True</property>
                 <property name="stock_id">gtk-save</property>
+                <signal name="clicked" handler="gw_vocabularywindow_save_cb" object="toplevel" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>

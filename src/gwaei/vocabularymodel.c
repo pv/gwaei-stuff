@@ -166,8 +166,51 @@ void
 gw_vocabularymodel_save (GwVocabularyModel *model)
 {
     GwVocabularyModelPrivate *priv;
+    LwVocabularyItem *item;
+    gchar *text;
+    GtkTreeIter iter;
 
     priv = model->priv;
+
+    if (priv->vocabulary_list != NULL) lw_vocabularylist_free (priv->vocabulary_list);
+
+    if ((priv->vocabulary_list = lw_vocabularylist_new (priv->name)) != NULL)
+    {
+      if (gtk_tree_model_get_iter_first (GTK_TREE_MODEL (model), &iter))
+      {
+        do
+        {
+          if ((item = lw_vocabularyitem_new ()) != NULL)
+          {
+            gtk_tree_model_get (GTK_TREE_MODEL (model), &iter,  GW_VOCABULARYMODEL_COLUMN_KANJI, &text, -1);
+            if (text != NULL)
+            {
+              lw_vocabularyitem_set_kanji (item, text);
+              g_free (text);
+            }
+
+            gtk_tree_model_get (GTK_TREE_MODEL (model), &iter,  GW_VOCABULARYMODEL_COLUMN_FURIGANA, &text, -1);
+            if (text != NULL)
+            {
+              lw_vocabularyitem_set_furigana (item, text);
+              g_free (text);
+            }
+
+
+            gtk_tree_model_get (GTK_TREE_MODEL (model), &iter,  GW_VOCABULARYMODEL_COLUMN_DEFINITIONS, &text, -1);
+            if (text != NULL)
+            {
+              lw_vocabularyitem_set_definitions (item, text);
+              g_free (text);
+            }
+
+            priv->vocabulary_list->items = g_list_append (priv->vocabulary_list->items, item);
+          }
+        } while (gtk_tree_model_iter_next (GTK_TREE_MODEL (model), &iter));
+      }
+      lw_vocabularylist_save (priv->vocabulary_list, NULL);
+    }
+
     priv->needs_sync = FALSE;
 }
 
@@ -207,6 +250,7 @@ gw_vocabularymodel_load (GwVocabularyModel *model)
     }
 
     priv->loaded = TRUE;
+    priv->needs_sync = FALSE;
 }
 
 
@@ -238,7 +282,12 @@ gw_vocabularymodel_set_name (GwVocabularyModel *model, const gchar *name)
 gboolean
 gw_vocabularymodel_loaded (GwVocabularyModel *model)
 {
-    GwVocabularyModelPrivate *priv;
-    priv = model->priv;
-    return priv->loaded;
+    return model->priv->loaded;
+}
+
+
+const gchar*
+gw_vocabularymodel_get_name (GwVocabularyModel *model)
+{
+    return model->priv->name;
 }

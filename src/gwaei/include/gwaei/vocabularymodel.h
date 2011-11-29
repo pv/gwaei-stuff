@@ -36,8 +36,10 @@ struct _GwVocabularyModelClass {
 GtkListStore* gw_vocabularymodel_new (const gchar*);
 GType gw_vocabularymodel_get_type (void) G_GNUC_CONST;
 
+void gw_vocabularymodel_save (GwVocabularyModel*);
 void gw_vocabularymodel_load (GwVocabularyModel*);
 gboolean gw_vocabularymodel_loaded (GwVocabularyModel*);
+const gchar* gw_vocabularymodel_get_name (GwVocabularyModel*);
 
 G_END_DECLS
 
