@@ -5,8 +5,9 @@ G_BEGIN_DECLS
 
 struct _GwVocabularyModelPrivate {
   gchar* name;
+  gchar* filename;
   LwVocabularyList *vocabulary_list;
-  gboolean needs_sync;
+  gboolean has_changes;
   gboolean loaded;
 };
 

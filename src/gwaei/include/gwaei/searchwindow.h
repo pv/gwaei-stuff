@@ -114,12 +114,12 @@ int gw_searchwindow_new_tab (GwSearchWindow*);
 void gw_searchwindow_remove_tab (GwSearchWindow*, int);
 
 void gw_searchwindow_start_search (GwSearchWindow*, LwSearchItem*);
-void gw_searchwindow_initialize_dictionary_menu (GwSearchWindow*);
-void gw_searchwindow_initialize_dictionary_combobox (GwSearchWindow*);
 
 void gw_searchwindow_insert_resultpopup_button (GwSearchWindow*, LwSearchItem*, LwResultLine*, GtkTextIter*);
 
 void gw_searchwindow_append_to_buffer (GwSearchWindow*, LwSearchItem*, const char *, char*, char*, int*, int*);
+void gw_searchwindow_initialize_dictionary_menu (GwSearchWindow*);
+void gw_searchwindow_initialize_dictionary_combobox (GwSearchWindow*);
 
 #include "searchwindow-callbacks.h"
 #include "searchwindow-output.h"

@@ -13,32 +13,34 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
-              <object class="GtkMenuItem" id="menuitem1">
+              <object class="GtkMenuItem" id="file_menuitem">
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">_File</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
-                  <object class="GtkMenu" id="menu1">
+                  <object class="GtkMenu" id="file_menu">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkMenuItem" id="menuitem4">
+                      <object class="GtkMenuItem" id="new_list_menuitem">
                         <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">New _List</property>
                         <property name="use_underline">True</property>
+                        <signal name="activate" handler="gw_vocabularywindow_new_list_cb" object="toplevel" swapped="no"/>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkMenuItem" id="menuitem3">
+                      <object class="GtkMenuItem" id="new_word_menuitem">
                         <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">New _Word</property>
                         <property name="use_underline">True</property>
+                        <signal name="activate" handler="gw_vocabularywindow_new_word_cb" object="toplevel" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -49,13 +51,15 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="menuitem12">
+                      <object class="GtkImageMenuItem" id="save_menuitem">
                         <property name="label">gtk-save</property>
                         <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
+                        <property name="sensitive">False</property>
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <signal name="activate" handler="gw_vocabularywindow_save_cb" object="toplevel" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -66,21 +70,23 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkMenuItem" id="imagemenuitem1">
+                      <object class="GtkMenuItem" id="import_menuitem">
                         <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">_Import</property>
                         <property name="use_underline">True</property>
+                        <signal name="activate" handler="gw_vocabularywindow_import_cb" object="toplevel" swapped="no"/>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkMenuItem" id="imagemenuitem4">
+                      <object class="GtkMenuItem" id="export_menuitem">
                         <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">_Export</property>
                         <property name="use_underline">True</property>
+                        <signal name="activate" handler="gw_vocabularywindow_export_cb" object="toplevel" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -91,13 +97,14 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="imagemenuitem5">
+                      <object class="GtkImageMenuItem" id="close_menuitem">
                         <property name="label">gtk-close</property>
                         <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <signal name="activate" handler="gw_vocabularywindow_close_cb" object="toplevel" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -105,24 +112,26 @@
               </object>
             </child>
             <child>
-              <object class="GtkMenuItem" id="menuitem2">
+              <object class="GtkMenuItem" id="edit_menuitem">
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">_Edit</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
-                  <object class="GtkMenu" id="menu2">
+                  <object class="GtkMenu" id="edit_menu">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkImageMenuItem" id="menuitem14">
+                      <object class="GtkImageMenuItem" id="revert_menuitem">
                         <property name="label">gtk-revert-to-saved</property>
                         <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
+                        <property name="sensitive">False</property>
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <signal name="activate" handler="gw_vocabularywindow_reset_cb" object="toplevel" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -133,50 +142,54 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="imagemenuitem6">
+                      <object class="GtkImageMenuItem" id="cut_menuitem">
                         <property name="label">gtk-cut</property>
                         <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <signal name="activate" handler="gw_vocabularywindow_cut_cb" object="toplevel" swapped="no"/>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="imagemenuitem7">
+                      <object class="GtkImageMenuItem" id="copy_menuitem">
                         <property name="label">gtk-copy</property>
                         <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <signal name="activate" handler="gw_vocabularywindow_copy_cb" object="toplevel" swapped="no"/>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="imagemenuitem8">
+                      <object class="GtkImageMenuItem" id="paste_menuitem">
                         <property name="label">gtk-paste</property>
                         <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <signal name="activate" handler="gw_vocabularywindow_paste_cb" object="toplevel" swapped="no"/>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkSeparatorMenuItem" id="separatormenuitem3">
+                      <object class="GtkSeparatorMenuItem" id="menuitem1">
                         <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="menuitem6">
+                      <object class="GtkImageMenuItem" id="delete_menuitem">
                         <property name="label">gtk-delete</property>
                         <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <signal name="activate" handler="gw_vocabularywindow_delete_cb" object="toplevel" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -184,14 +197,14 @@
               </object>
             </child>
             <child>
-              <object class="GtkMenuItem" id="menuitem7">
+              <object class="GtkMenuItem" id="study_menuitem">
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">_Study</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
-                  <object class="GtkMenu" id="menu3">
+                  <object class="GtkMenu" id="study_menu">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
@@ -295,6 +308,7 @@
                 <property name="label" translatable="yes">Export</property>
                 <property name="use_underline">True</property>
                 <property name="stock_id">gtk-convert</property>
+                <signal name="clicked" handler="gw_vocabularywindow_export_cb" object="toplevel" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -302,9 +316,10 @@
               </packing>
             </child>
             <child>
-              <object class="GtkToolButton" id="toolbutton2">
+              <object class="GtkToolButton" id="save_toolbutton">
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="can_focus">False</property>
                 <property name="use_action_appearance">False</property>
                 <property name="label" translatable="yes">toolbutton2</property>
@@ -330,9 +345,10 @@
               </packing>
             </child>
             <child>
-              <object class="GtkToolButton" id="toolbutton3">
+              <object class="GtkToolButton" id="revert_toolbutton">
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="can_focus">False</property>
                 <property name="use_action_appearance">False</property>
                 <property name="label" translatable="yes">toolbutton3</property>
@@ -372,7 +388,8 @@
                       <object class="GtkTreeView" id="vocabulary_list_treeview">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <signal name="cursor-changed" handler="gw_vocabularywindow_list_cursor_changed_cb" object="toplevel" swapped="no"/>
+                        <property name="has_focus">True</property>
+                        <signal name="cursor-changed" handler="gw_vocabularywindow_list_selection_changed_cb" object="toplevel" swapped="no"/>
                         <child internal-child="selection">
                           <object class="GtkTreeSelection" id="treeview-selection1"/>
                         </child>
@@ -401,7 +418,7 @@
                         <property name="label" translatable="yes">Add</property>
                         <property name="use_underline">True</property>
                         <property name="icon_name">list-add-symbolic</property>
-                        <signal name="clicked" handler="gw_vocabularywindow_list_add_cb" object="toplevel" swapped="no"/>
+                        <signal name="clicked" handler="gw_vocabularywindow_new_list_cb" object="toplevel" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -417,7 +434,7 @@
                         <property name="label" translatable="yes">Remove</property>
                         <property name="use_underline">True</property>
                         <property name="icon_name">list-remove-symbolic</property>
-                        <signal name="clicked" handler="gw_vocabularywindow_list_remove_cb" object="toplevel" swapped="no"/>
+                        <signal name="clicked" handler="gw_vocabularywindow_remove_list_cb" object="toplevel" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -479,7 +496,7 @@
                         <property name="label" translatable="yes">Add</property>
                         <property name="use_underline">True</property>
                         <property name="icon_name">list-add-symbolic</property>
-                        <signal name="clicked" handler="gw_vocabularywindow_item_add_cb" object="toplevel" swapped="no"/>
+                        <signal name="clicked" handler="gw_vocabularywindow_new_word_cb" object="toplevel" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -495,7 +512,7 @@
                         <property name="label" translatable="yes">Remove</property>
                         <property name="use_underline">True</property>
                         <property name="icon_name">list-remove-symbolic</property>
-                        <signal name="clicked" handler="gw_vocabularywindow_item_remove_cb" object="toplevel" swapped="no"/>
+                        <signal name="clicked" handler="gw_vocabularywindow_remove_word_cb" object="toplevel" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>

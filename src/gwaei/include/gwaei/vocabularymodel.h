@@ -40,6 +40,12 @@ void gw_vocabularymodel_save (GwVocabularyModel*);
 void gw_vocabularymodel_load (GwVocabularyModel*);
 gboolean gw_vocabularymodel_loaded (GwVocabularyModel*);
 const gchar* gw_vocabularymodel_get_name (GwVocabularyModel*);
+gchar* gw_vocabularymodel_get_filename (GwVocabularyModel*);
+gboolean gw_vocabularymodel_file_exists (GwVocabularyModel*);
+void gw_vocabularymodel_reset (GwVocabularyModel*);
+gboolean gw_vocabularymodel_has_changes (GwVocabularyModel*);
+void gw_vocabularymodel_set_has_changes (GwVocabularyModel*, gboolean);
+void gw_vocabularymodel_set_name (GwVocabularyModel*, const gchar*);
 
 G_END_DECLS
 

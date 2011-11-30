@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 3.1.0\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2011-11-25 16:30-0800\n"
+"POT-Creation-Date: 2011-11-29 16:25-0800\n"
 "PO-Revision-Date: 2011-09-11 18:23+0100\n"
 "Last-Translator: Nicolas Laurent\n"
 "Language-Team: none\n"
@@ -367,7 +367,7 @@ msgstr "_Sommaire"
 msgid "_Dictionaries"
 msgstr "_Dictionnaires"
 
-#: ../src/gwaei/searchwindow.ui.h:31 ../src/gwaei/vocabularywindow.ui.h:5
+#: ../src/gwaei/searchwindow.ui.h:31 ../src/gwaei/vocabularywindow.ui.h:12
 msgid "_Edit"
 msgstr "É_dition"
 
@@ -375,7 +375,7 @@ msgstr "É_dition"
 msgid "_Enlarge Text"
 msgstr "_Agrandir la taille du texte"
 
-#: ../src/gwaei/searchwindow.ui.h:33 ../src/gwaei/vocabularywindow.ui.h:7
+#: ../src/gwaei/searchwindow.ui.h:33 ../src/gwaei/vocabularywindow.ui.h:14
 msgid "_File"
 msgstr "_Fichier"
 
@@ -570,35 +570,66 @@ msgid "Add"
 msgstr ""
 
 #: ../src/gwaei/vocabularywindow.ui.h:2
-msgid "Export"
+msgid "Connect the Words"
 msgstr ""
 
 #: ../src/gwaei/vocabularywindow.ui.h:3
-msgid "Remove"
+msgid "English->Japanese Flashcards"
 msgstr ""
 
 #: ../src/gwaei/vocabularywindow.ui.h:4
-msgid "Study"
+msgid "Export"
 msgstr ""
+
+#: ../src/gwaei/vocabularywindow.ui.h:5
+#, fuzzy
+msgid "Japanese->English Flashcards"
+msgstr "Dictionnaire Japonais-Anglais gWaei"
 
 #: ../src/gwaei/vocabularywindow.ui.h:6
-msgid "_Export"
+msgid "Kanji->Furigana Flashcards"
 msgstr ""
+
+#: ../src/gwaei/vocabularywindow.ui.h:7
+#, fuzzy
+msgid "New _List"
+msgstr "Nouvelle Fe&nêtre"
 
 #: ../src/gwaei/vocabularywindow.ui.h:8
-msgid "_Import"
-msgstr ""
+#, fuzzy
+msgid "New _Word"
+msgstr "Nouvelle Fe&nêtre"
 
 #: ../src/gwaei/vocabularywindow.ui.h:9
-msgid "_Item"
+msgid "Remove"
 msgstr ""
 
 #: ../src/gwaei/vocabularywindow.ui.h:10
-msgid "_List"
+msgid "Shuffle"
 msgstr ""
 
 #: ../src/gwaei/vocabularywindow.ui.h:11
+msgid "Study"
+msgstr ""
+
+#: ../src/gwaei/vocabularywindow.ui.h:13
+msgid "_Export"
+msgstr ""
+
+#: ../src/gwaei/vocabularywindow.ui.h:15
+msgid "_Import"
+msgstr ""
+
+#: ../src/gwaei/vocabularywindow.ui.h:16
 msgid "_Study"
+msgstr ""
+
+#: ../src/gwaei/vocabularywindow.ui.h:17
+msgid "toolbutton2"
+msgstr ""
+
+#: ../src/gwaei/vocabularywindow.ui.h:18
+msgid "toolbutton3"
 msgstr ""
 
 #: ../src/gwaei/application.c:269
@@ -1049,25 +1080,64 @@ msgid "Shortcut"
 msgstr "Raccourci"
 
 #. Set up the gtk window
-#: ../src/gwaei/vocabularywindow.c:131
+#: ../src/gwaei/vocabularywindow.c:116
 #, fuzzy
 msgid "gWaei Vocabulary Manager"
 msgstr "Faire une liste de vocabulaire"
 
-#: ../src/gwaei/vocabularywindow.c:266
+#: ../src/gwaei/vocabularywindow.c:375
 msgid "Lists"
 msgstr ""
 
-#: ../src/gwaei/vocabularywindow.c:298
+#: ../src/gwaei/vocabularywindow.c:404
+msgid "Word"
+msgstr ""
+
+#: ../src/gwaei/vocabularywindow.c:414
 #, fuzzy
-msgid "Vocabulary Detail"
-msgstr "vocabulaire.txt"
+msgid "Reading"
+msgstr "Lectures :"
+
+#: ../src/gwaei/vocabularywindow.c:424
+#, fuzzy
+msgid "Definitions"
+msgstr "Dictionnaires"
+
+#: ../src/gwaei/vocabularywindow.c:449 ../src/gwaei/vocabularywindow.c:453
+#, c-format
+msgid "New List %d"
+msgstr ""
+
+#: ../src/gwaei/vocabularywindow-callbacks.c:85
+#, fuzzy
+msgid "(Click to set Kanji)"
+msgstr "Cliquer pour lancer une recherche"
+
+#: ../src/gwaei/vocabularywindow-callbacks.c:86
+msgid "(Click to set Furigana)"
+msgstr ""
+
+#: ../src/gwaei/vocabularywindow-callbacks.c:87
+msgid "(Click to set Definitions)"
+msgstr ""
+
+#: ../src/gwaei/vocabularywindow-callbacks.c:330
+msgid "Save Changes before Closing?"
+msgstr ""
+
+#: ../src/gwaei/vocabularywindow-callbacks.c:331
+msgid "Some of your vocabulary lists have changed since your last save."
+msgstr ""
 
 #: ../src/desktop/gwaei.desktop.in.h:1
 msgid "Enter a Japanese or English word to easily get translations."
 msgstr ""
 "Entrer un mot en japonais ou en anglais pour facilement obtenir une "
 "traduction."
+
+#, fuzzy
+#~ msgid "Vocabulary Detail"
+#~ msgstr "vocabulaire.txt"
 
 #~ msgid "No results found!"
 #~ msgstr "Aucun résultat trouvé."
@@ -1172,9 +1242,6 @@ msgstr ""
 #~ "waei affiche les résultats directement depuis la console. Si vous voulez\n"
 #~ "faire de multiples recherches, veuillez utilisez le paramètre « -n »."
 
-#~ msgid "Click to start search"
-#~ msgstr "Cliquer pour lancer une recherche"
-
 #~ msgid "Open a new instance of gWaei"
 #~ msgstr "Ouvrir une nouvelle instance de gWaei"
 
@@ -1202,10 +1269,6 @@ msgstr ""
 
 #~ msgid "Radicals"
 #~ msgstr "Radicaux"
-
-#, fuzzy
-#~ msgid "Readings"
-#~ msgstr "Lectures :"
 
 #, fuzzy
 #~ msgid "Stroke"

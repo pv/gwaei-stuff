@@ -496,7 +496,6 @@ gw_searchwindow_save_as_cb (GtkWidget *widget, gpointer data)
     GtkTextView *view;
     const gchar *path;
     GtkWidget *dialog;
-    GtkAction *edit;
     gchar *text;
     gchar *temp;
     GError *error;
@@ -542,9 +541,6 @@ gw_searchwindow_save_as_cb (GtkWidget *widget, gpointer data)
         path = lw_io_get_savepath ();
 
         lw_io_write_file (path, "w", text, NULL, NULL, &error);
-
-        edit = GTK_ACTION (gw_window_get_object (GW_WINDOW (window), "file_edit_action"));
-        gtk_action_set_sensitive (edit, TRUE);
     }
 
     //Cleanup
@@ -847,38 +843,6 @@ gw_searchwindow_copy_cb (GtkWidget *widget, gpointer data)
     gw_searchwindow_copy_text (window, focus);
 }
  
-
-//!
-//! @brief Opens the saved vocab list in your default editor
-//! @param widget Unused GtkWidget pointer
-//! @param data Unused gpointer
-//!
-G_MODULE_EXPORT void 
-gw_searchwindow_edit_cb (GtkWidget *widget, gpointer data)
-{
-    //Declarations
-    char *uri;
-    GError *error;
-    const char *savepath;
-    GwSearchWindow *window;
-    GwApplication *application;
-
-    //Initializations
-    window = GW_SEARCHWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_SEARCHWINDOW));
-    if (window == NULL) return;
-    application = gw_window_get_application (GW_WINDOW (window));
-    savepath = lw_io_get_savepath ();
-    uri = g_build_filename ("file://", savepath, NULL);
-    error = NULL;
-
-    gtk_show_uri (NULL, uri, gtk_get_current_event_time (), &error);
-
-    gw_application_handle_error (application, GTK_WINDOW (window), TRUE, &error);
-
-    //Cleanup
-    g_free (uri);
-}
-
 
 //!
 //! @brief Sends the user to the gWaei irc channel for help

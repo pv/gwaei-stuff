@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2011-11-25 16:30-0800\n"
+"POT-Creation-Date: 2011-11-29 16:25-0800\n"
 "PO-Revision-Date: 2008-11-30 02:35+0500\n"
 "Last-Translator: Zachary Dovel pizzach@gmail.com\n"
 "Language-Team: Not Applicable\n"
@@ -355,7 +355,7 @@ msgstr "目次(_C)"
 msgid "_Dictionaries"
 msgstr "辞書(_D)"
 
-#: ../src/gwaei/searchwindow.ui.h:31 ../src/gwaei/vocabularywindow.ui.h:5
+#: ../src/gwaei/searchwindow.ui.h:31 ../src/gwaei/vocabularywindow.ui.h:12
 msgid "_Edit"
 msgstr "編集(_E)"
 
@@ -363,7 +363,7 @@ msgstr "編集(_E)"
 msgid "_Enlarge Text"
 msgstr "文字を拡大する(_E)"
 
-#: ../src/gwaei/searchwindow.ui.h:33 ../src/gwaei/vocabularywindow.ui.h:7
+#: ../src/gwaei/searchwindow.ui.h:33 ../src/gwaei/vocabularywindow.ui.h:14
 msgid "_File"
 msgstr "ファイル(_F)"
 
@@ -557,35 +557,64 @@ msgid "Add"
 msgstr "追加"
 
 #: ../src/gwaei/vocabularywindow.ui.h:2
-msgid "Export"
+msgid "Connect the Words"
 msgstr ""
 
 #: ../src/gwaei/vocabularywindow.ui.h:3
-msgid "Remove"
+msgid "English->Japanese Flashcards"
 msgstr ""
 
 #: ../src/gwaei/vocabularywindow.ui.h:4
-msgid "Study"
+msgid "Export"
 msgstr ""
+
+#: ../src/gwaei/vocabularywindow.ui.h:5
+#, fuzzy
+msgid "Japanese->English Flashcards"
+msgstr "gWaei 和英辞書"
 
 #: ../src/gwaei/vocabularywindow.ui.h:6
-msgid "_Export"
+msgid "Kanji->Furigana Flashcards"
 msgstr ""
+
+#: ../src/gwaei/vocabularywindow.ui.h:7
+msgid "New _List"
+msgstr "新しい語彙リストを作成(_L)"
 
 #: ../src/gwaei/vocabularywindow.ui.h:8
-msgid "_Import"
-msgstr ""
+msgid "New _Word"
+msgstr "新しい語彙単語を作成(_W)"
 
 #: ../src/gwaei/vocabularywindow.ui.h:9
-msgid "_Item"
-msgstr ""
+msgid "Remove"
+msgstr "削除"
 
 #: ../src/gwaei/vocabularywindow.ui.h:10
-msgid "_List"
-msgstr ""
+msgid "Shuffle"
+msgstr "シャフル"
 
 #: ../src/gwaei/vocabularywindow.ui.h:11
+msgid "Study"
+msgstr "練習"
+
+#: ../src/gwaei/vocabularywindow.ui.h:13
+msgid "_Export"
+msgstr "エクスポート(_E)"
+
+#: ../src/gwaei/vocabularywindow.ui.h:15
+msgid "_Import"
+msgstr "インポート(_I)"
+
+#: ../src/gwaei/vocabularywindow.ui.h:16
 msgid "_Study"
+msgstr ""
+
+#: ../src/gwaei/vocabularywindow.ui.h:17
+msgid "toolbutton2"
+msgstr ""
+
+#: ../src/gwaei/vocabularywindow.ui.h:18
+msgid "toolbutton3"
 msgstr ""
 
 #: ../src/gwaei/application.c:269
@@ -607,7 +636,7 @@ msgstr ""
 #: ../src/gwaei/application.c:305
 #, c-format
 msgid "%s version %s"
-msgstr ""
+msgstr "% ヴァージョン %s"
 
 #: ../src/gwaei/dictionaryinstallwindow-callbacks.c:463
 #, c-format
@@ -972,21 +1001,57 @@ msgid "Shortcut"
 msgstr "ショートカット"
 
 #. Set up the gtk window
-#: ../src/gwaei/vocabularywindow.c:131
+#: ../src/gwaei/vocabularywindow.c:116
 msgid "gWaei Vocabulary Manager"
 msgstr "gWaei語彙管理"
 
-#: ../src/gwaei/vocabularywindow.c:266
+#: ../src/gwaei/vocabularywindow.c:375
 msgid "Lists"
 msgstr "リストの一覧表"
 
-#: ../src/gwaei/vocabularywindow.c:298
-msgid "Vocabulary Detail"
-msgstr "語彙の詳細"
+#: ../src/gwaei/vocabularywindow.c:404
+msgid "Word"
+msgstr "単語"
+
+#: ../src/gwaei/vocabularywindow.c:414
+msgid "Reading"
+msgstr "読み"
+
+#: ../src/gwaei/vocabularywindow.c:424
+msgid "Definitions"
+msgstr "意味"
+
+#: ../src/gwaei/vocabularywindow.c:449 ../src/gwaei/vocabularywindow.c:453
+#, c-format
+msgid "New List %d"
+msgstr "新規リスト%d"
+
+#: ../src/gwaei/vocabularywindow-callbacks.c:85
+msgid "(Click to set Kanji)"
+msgstr "(クリックで漢字の設定)"
+
+#: ../src/gwaei/vocabularywindow-callbacks.c:86
+msgid "(Click to set Furigana)"
+msgstr "(クリックでふりがの設定)"
+
+#: ../src/gwaei/vocabularywindow-callbacks.c:87
+msgid "(Click to set Definitions)"
+msgstr "(クリックで意味の設定)"
+
+#: ../src/gwaei/vocabularywindow-callbacks.c:330
+msgid "Save Changes before Closing?"
+msgstr "閉じる前に変更を保存しますか？"
+
+#: ../src/gwaei/vocabularywindow-callbacks.c:331
+msgid "Some of your vocabulary lists have changed since your last save."
+msgstr "幾つかの語彙リストは保存をしたから変更がありました。"
 
 #: ../src/desktop/gwaei.desktop.in.h:1
 msgid "Enter a Japanese or English word to easily get translations."
 msgstr "英語か日本語の単語を入れて簡単に翻訳を調べます"
+
+#~ msgid "Vocabulary Detail"
+#~ msgstr "語彙の詳細"
 
 #~ msgid "No results found!"
 #~ msgstr "検討がありません!"
@@ -1036,9 +1101,6 @@ msgstr "英語か日本語の単語を入れて簡単に翻訳を調べます"
 #~ msgid "Option parsing failed: %s\n"
 #~ msgstr "解読失敗: %s\n"
 
-#~ msgid "Click to start search"
-#~ msgstr "サーチを開始する"
-
 #~ msgid "Open a new instance of gWaei"
 #~ msgstr "gWaeiの新しいインスタンスを開く"
 
@@ -1066,9 +1128,6 @@ msgstr "英語か日本語の単語を入れて簡単に翻訳を調べます"
 
 #~ msgid "Radicals"
 #~ msgstr "部首"
-
-#~ msgid "Readings"
-#~ msgstr "読み"
 
 #~ msgid "Stroke"
 #~ msgstr "画数"

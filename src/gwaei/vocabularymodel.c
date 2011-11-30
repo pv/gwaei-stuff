@@ -82,6 +82,7 @@ gw_vocabularymodel_finalize (GObject *object)
     priv = model->priv;
 
     if (priv->name != NULL) g_free (priv->name); 
+    if (priv->filename != NULL) g_free (priv->filename);
     if (priv->vocabulary_list != NULL) lw_vocabularylist_free (priv->vocabulary_list); 
 
     G_OBJECT_CLASS (gw_vocabularymodel_parent_class)->finalize (object);
@@ -211,7 +212,7 @@ gw_vocabularymodel_save (GwVocabularyModel *model)
       lw_vocabularylist_save (priv->vocabulary_list, NULL);
     }
 
-    priv->needs_sync = FALSE;
+    priv->has_changes = FALSE;
 }
 
 
@@ -230,7 +231,7 @@ gw_vocabularymodel_load (GwVocabularyModel *model)
 
     //Initializations
     priv = model->priv;
-    priv->needs_sync = FALSE;
+    priv->has_changes = FALSE;
 
     g_assert (priv->name != NULL);
 
@@ -250,7 +251,7 @@ gw_vocabularymodel_load (GwVocabularyModel *model)
     }
 
     priv->loaded = TRUE;
-    priv->needs_sync = FALSE;
+    priv->has_changes = FALSE;
 }
 
 
@@ -280,8 +281,21 @@ gw_vocabularymodel_get_vocabularylist (GwVocabularyModel *model)
 
 
 void
-gw_vocabularymodel_set_name (GwVocabularyModel *model, const gchar *name)
+gw_vocabularymodel_set_name (GwVocabularyModel *model, const gchar *NAME)
 {
+    GwVocabularyModelPrivate *priv;
+
+    priv = model->priv;
+
+    if (priv->name != NULL) g_free (priv->name);
+    priv->name = g_strdup (NAME);
+
+    if (priv->filename != NULL)
+    {
+      g_warning ("add code here to move the file if a new same is set\n");
+      g_free (priv->filename);
+      priv->filename = NULL;
+    }
 }
 
 
@@ -296,4 +310,53 @@ const gchar*
 gw_vocabularymodel_get_name (GwVocabularyModel *model)
 {
     return model->priv->name;
+}
+
+
+gchar*
+gw_vocabularymodel_get_filename (GwVocabularyModel *model)
+{
+    //Declarations
+    GwVocabularyModelPrivate *priv;
+    const gchar *name;
+
+    //Initializations
+    priv = model->priv;
+
+    if (priv->filename == NULL)
+    {
+      name = gw_vocabularymodel_get_name (model);
+      priv->filename = lw_util_build_filename (LW_PATH_VOCABULARY, name);
+    }
+
+    return priv->filename;
+}
+
+
+gboolean 
+gw_vocabularymodel_file_exists (GwVocabularyModel *model)
+{
+    //Declarations
+    gchar *filename;
+    gboolean exists;
+
+    if ((filename = gw_vocabularymodel_get_filename (model)) != NULL)
+      exists = g_file_test (filename, G_FILE_TEST_IS_REGULAR);
+    else
+      exists = FALSE;
+
+    return exists;
+}
+
+
+void
+gw_vocabularymodel_set_has_changes (GwVocabularyModel *model, gboolean has_changes)
+{
+  model->priv->has_changes = has_changes;
+}
+
+gboolean
+gw_vocabularymodel_has_changes (GwVocabularyModel *model)
+{
+  return model->priv->has_changes;
 }

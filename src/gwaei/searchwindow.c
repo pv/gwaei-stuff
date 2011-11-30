@@ -40,6 +40,8 @@
 static void gw_searchwindow_attach_signals (GwSearchWindow*);
 static void gw_searchwindow_remove_signals (GwSearchWindow*);
 
+static void gw_searchwindow_init_accelerators (GwSearchWindow*);
+
 G_DEFINE_TYPE (GwSearchWindow, gw_searchwindow, GW_TYPE_WINDOW)
 
 //!
@@ -106,8 +108,6 @@ gw_searchwindow_constructed (GObject *object)
     GwSearchWindowPrivate *priv;
     GtkToolButton *toolbutton;
     gboolean enchant_exists;
-    GtkWidget *widget;
-    GtkAccelGroup *accelgroup;
 
     //Chain the parent class
     {
@@ -138,7 +138,6 @@ gw_searchwindow_constructed (GObject *object)
     //We are going to lazily update the sensitivity of the spellcheck buttons only when the window is created
     toolbutton = GTK_TOOL_BUTTON (gw_window_get_object (GW_WINDOW (window), "spellcheck_toolbutton")); 
     enchant_exists = g_file_test (ENCHANT, G_FILE_TEST_IS_REGULAR);
-    accelgroup = gw_window_get_accel_group (GW_WINDOW (window));
 
     //This code should probalby be moved to when the window is realized
     gw_searchwindow_initialize_dictionary_combobox (window);
@@ -148,6 +147,33 @@ gw_searchwindow_constructed (GObject *object)
     gtk_widget_set_sensitive (GTK_WIDGET (priv->entry), enchant_exists);
     gtk_widget_set_sensitive (GTK_WIDGET (toolbutton), enchant_exists);
     if (!enchant_exists) g_warning ("Enchant is not installed or support wasn't compiled in.  Spellcheck will be disabled.");
+    gw_searchwindow_init_accelerators (window);
+
+    gw_searchwindow_attach_signals (window);
+}
+
+
+static void
+gw_searchwindow_class_init (GwSearchWindowClass *klass)
+{
+  GObjectClass *object_class;
+
+  object_class = G_OBJECT_CLASS (klass);
+
+  object_class->constructed = gw_searchwindow_constructed;
+  object_class->finalize = gw_searchwindow_finalize;
+
+  g_type_class_add_private (object_class, sizeof (GwSearchWindowPrivate));
+}
+
+
+static void
+gw_searchwindow_init_accelerators (GwSearchWindow *window)
+{
+    GtkWidget *widget;
+    GtkAccelGroup *accelgroup;
+
+    accelgroup = gw_window_get_accel_group (GW_WINDOW (window));
 
     //Set menu accelerators
     widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "new_window_menuitem"));
@@ -252,22 +278,6 @@ gw_searchwindow_constructed (GObject *object)
     widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "help_menuitem"));
     gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
       accelgroup, (GDK_KEY_F1), 0, GTK_ACCEL_VISIBLE);
-
-    gw_searchwindow_attach_signals (window);
-}
-
-
-static void
-gw_searchwindow_class_init (GwSearchWindowClass *klass)
-{
-  GObjectClass *object_class;
-
-  object_class = G_OBJECT_CLASS (klass);
-
-  object_class->constructed = gw_searchwindow_constructed;
-  object_class->finalize = gw_searchwindow_finalize;
-
-  g_type_class_add_private (object_class, sizeof (GwSearchWindowPrivate));
 }
 
 
@@ -1105,7 +1115,7 @@ gw_searchwindow_copy_text (GwSearchWindow* window, GtkWidget *widget)
     g_assert (window != NULL && widget != NULL); 
 
     //Declarations
-    GtkClipboard *clipbd;
+    GtkClipboard *clipboard;
     GtkTextBuffer *buffer;
 
     if (GTK_IS_ENTRY (widget))
@@ -1115,8 +1125,8 @@ gw_searchwindow_copy_text (GwSearchWindow* window, GtkWidget *widget)
     else if (GTK_IS_TEXT_VIEW (widget))
     {
       buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (widget));
-      clipbd = gtk_clipboard_get (GDK_SELECTION_CLIPBOARD);
-      gtk_text_buffer_copy_clipboard (buffer, clipbd);
+      clipboard = gtk_clipboard_get (GDK_SELECTION_CLIPBOARD);
+      gtk_text_buffer_copy_clipboard (buffer, clipboard);
     }
     else
     {
