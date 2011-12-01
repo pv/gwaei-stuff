@@ -416,7 +416,7 @@ gw_vocabularywindow_paste_cb (GtkWidget *widget, gpointer data)
     clipboard = gtk_clipboard_get (GDK_SELECTION_CLIPBOARD);
     text = gtk_clipboard_wait_for_text (clipboard);
 
-    gw_vocabularywindow_append_text (window, text);
+    gw_vocabularywindow_append_text (window, -1, text);
 
     g_free (text);
 }

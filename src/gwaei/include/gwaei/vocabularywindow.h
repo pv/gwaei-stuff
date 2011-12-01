@@ -48,7 +48,7 @@ void gw_vocabularywindow_reset (GwVocabularyWindow*);
 void gw_vocabularywindow_set_has_changes (GwVocabularyWindow*, gboolean);
 gboolean gw_vocabularywindow_has_changes (GwVocabularyWindow*);
 gchar* gw_vocabularywindow_selected_words_to_string (GwVocabularyWindow*);
-void gw_vocabularywindow_append_text (GwVocabularyWindow*, const gchar*);
+void gw_vocabularywindow_append_text (GwVocabularyWindow*, gint, const gchar*);
 
 #include "vocabularywindow-callbacks.h"
 
