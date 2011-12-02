@@ -16,7 +16,6 @@ typedef enum {
 } GwVocabularyWindowTimeoutId;
 
 typedef enum {
-  GW_VOCABULARYWINDOW_SIGNALID_LIST_ROW_DELETED,
   TOTAL_GW_VOCABULARYWINDOW_SIGNALIDS
 } GwVocabularyWindowSignalId;
 

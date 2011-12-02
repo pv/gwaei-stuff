@@ -131,6 +131,7 @@ gw_application_finalize (GObject *object)
     if (priv->context != NULL) g_option_context_free (priv->context); priv->context = NULL;
     if (priv->arg_query != NULL) g_free(priv->arg_query); priv->arg_query = NULL;
     if (priv->preferences != NULL) lw_preferences_free (priv->preferences); priv->preferences = NULL;
+    //if (priv->vocabulary != NULL) g_object_unref (priv->vocabulary); priv->vocabulary = NULL;
 
     lw_regex_free ();
 
@@ -580,7 +581,6 @@ GwDictInfoList*
 gw_application_get_dictinfolist (GwApplication *application)
 {
     GwApplicationPrivate *priv;
-
     priv = application->priv;
 
     return priv->dictinfolist;
@@ -590,14 +590,26 @@ gw_application_get_dictinfolist (GwApplication *application)
 LwDictInstList* 
 gw_application_get_dictinstlist (GwApplication *application)
 {
-  GwApplicationPrivate *priv;
+    GwApplicationPrivate *priv;
+    priv = application->priv;
 
+    if (priv->dictinstlist == NULL)
+      priv->dictinstlist = lw_dictinstlist_new (priv->preferences);
+
+    return priv->dictinstlist;
+}
+
+
+GtkListStore*
+gw_application_get_vocabularyliststore (GwApplication *application)
+{
+  GwApplicationPrivate *priv;
   priv = application->priv;
 
-  if (priv->dictinstlist == NULL)
-    priv->dictinstlist = lw_dictinstlist_new (priv->preferences);
+  if (priv->vocabulary == NULL)
+    priv->vocabulary = gw_vocabularyliststore_new ();
 
-  return priv->dictinstlist;
+  return priv->vocabulary;
 }
 
 

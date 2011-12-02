@@ -1,6 +1,8 @@
 #ifndef GW_APPLICATION_PRIVATE_INCLUDED
 #define GW_APPLICATION_PRIVATE_INCLUDED
 
+#include <gwaei/vocabularyliststore.h>
+
 G_BEGIN_DECLS
 
 typedef enum {
@@ -31,6 +33,8 @@ struct _GwApplicationPrivate {
   gchar   *arg_dictionary;
   gchar   *arg_query;
   gboolean arg_version_switch;
+
+  GtkListStore *vocabulary;
 
   gint block_new_searches;
 };

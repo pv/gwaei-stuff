@@ -4,6 +4,7 @@
 gchar**
 lw_vocabularylist_get_lists ()
 {
+    //Declarations
     GDir *dir;
     gchar **atoms;
     gchar *buffer;
@@ -11,6 +12,7 @@ lw_vocabularylist_get_lists ()
     guint chars;
     gchar *uri;
 
+    //Initializations
     chars = 0;
     buffer = NULL;
     atoms = NULL;
@@ -25,7 +27,7 @@ lw_vocabularylist_get_lists ()
           chars += strlen(name) + 1;
         }
 
-        if ((buffer = g_new0 (gchar, chars)) != NULL)
+        if ((buffer = g_new0 (gchar, chars + 1)) != NULL)
         {
           g_dir_rewind (dir);
 
@@ -70,7 +72,7 @@ void
 lw_vocabularylist_free (LwVocabularyList *list)
 {
     if (list->name != NULL) g_free (list->name);
-    g_list_foreach (list->items, lw_vocabularyitem_free, NULL);
+    g_list_foreach (list->items, (GFunc) lw_vocabularyitem_free, NULL);
     g_list_free (list->items); list->items = NULL;
 }
 

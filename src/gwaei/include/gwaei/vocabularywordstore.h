@@ -1,0 +1,56 @@
+#ifndef GW_VOCABULARYWORDSTORE_INCLUDED
+#define GW_VOCABULARYWORDSTORE_INCLUDED
+
+G_BEGIN_DECLS
+
+
+typedef enum { 
+  GW_VOCABULARYWORDSTORE_COLUMN_KANJI,
+  GW_VOCABULARYWORDSTORE_COLUMN_FURIGANA,
+  GW_VOCABULARYWORDSTORE_COLUMN_DEFINITIONS,
+  TOTAL_GW_VOCABULARYWORDSTORE_COLUMNS
+} GwVocabularyWordStoreColumn;
+
+//Boilerplate
+typedef struct _GwVocabularyWordStore GwVocabularyWordStore;
+typedef struct _GwVocabularyWordStoreClass GwVocabularyWordStoreClass;
+typedef struct _GwVocabularyWordStorePrivate GwVocabularyWordStorePrivate;
+
+#define GW_TYPE_VOCABULARYWORDSTORE              (gw_vocabularywordstore_get_type())
+#define GW_VOCABULARYWORDSTORE(obj)              (G_TYPE_CHECK_INSTANCE_CAST((obj), GW_TYPE_VOCABULARYWORDSTORE, GwVocabularyWordStore))
+#define GW_VOCABULARYWORDSTORE_CLASS(klass)      (G_TYPE_CHECK_CLASS_CAST((klass), GW_TYPE_VOCABULARYWORDSTORE, GwVocabularyWordStoreClass))
+#define GW_IS_VOCABULARYWORDSTORE(obj)                    (G_TYPE_CHECK_INSTANCE_TYPE((obj), GW_TYPE_VOCABULARYWORDSTORE))
+#define GW_IS_VOCABULARYWORDSTORE_CLASS(klass)            (G_TYPE_CHECK_CLASS_TYPE ((klass), GW_TYPE_VOCABULARYWORDSTORE))
+#define GW_VOCABULARYWORDSTORE_GET_CLASS(obj)    (G_TYPE_INSTANCE_GET_CLASS((obj), GW_TYPE_VOCABULARYWORDSTORE, GwVocabularyWordStoreClass))
+
+struct _GwVocabularyWordStore {
+  GtkListStore model;
+  GwVocabularyWordStorePrivate *priv;
+};
+
+struct _GwVocabularyWordStoreClass {
+  GtkListStoreClass parent_class;
+};
+
+//Methods
+GtkListStore* gw_vocabularywordstore_new (const gchar*);
+GType gw_vocabularywordstore_get_type (void) G_GNUC_CONST;
+
+void gw_vocabularywordstore_save (GwVocabularyWordStore*);
+void gw_vocabularywordstore_load (GwVocabularyWordStore*);
+gboolean gw_vocabularywordstore_loaded (GwVocabularyWordStore*);
+const gchar* gw_vocabularywordstore_get_name (GwVocabularyWordStore*);
+gchar* gw_vocabularywordstore_get_filename (GwVocabularyWordStore*);
+gboolean gw_vocabularywordstore_file_exists (GwVocabularyWordStore*);
+void gw_vocabularywordstore_reset (GwVocabularyWordStore*);
+gboolean gw_vocabularywordstore_has_changes (GwVocabularyWordStore*);
+void gw_vocabularywordstore_set_has_changes (GwVocabularyWordStore*, gboolean);
+void gw_vocabularywordstore_set_name (GwVocabularyWordStore*, const gchar*);
+
+gchar* gw_vocabularywordstore_path_list_to_string (GwVocabularyWordStore*, GList*);
+void gw_vocabularywordstore_remove_path_list (GwVocabularyWordStore*, GList*);
+void gw_vocabularywordstore_append_text (GwVocabularyWordStore*, GtkTreeIter*, gboolean, const gchar*);
+
+G_END_DECLS
+
+#endif
