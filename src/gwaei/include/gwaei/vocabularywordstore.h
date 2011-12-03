@@ -3,11 +3,16 @@
 
 G_BEGIN_DECLS
 
+typedef enum {
+  GW_VOCABULARYWORDSTORE_CLASS_SIGNALID_CHANGED,
+  TOTAL_GW_VOCABULARYWORDSTORE_CLASS_SIGNALIDS
+} GwVocabularyWordStoreClassSignalId;
 
 typedef enum { 
   GW_VOCABULARYWORDSTORE_COLUMN_KANJI,
   GW_VOCABULARYWORDSTORE_COLUMN_FURIGANA,
   GW_VOCABULARYWORDSTORE_COLUMN_DEFINITIONS,
+  GW_VOCABULARYWORDSTORE_COLUMN_CHANGED,
   TOTAL_GW_VOCABULARYWORDSTORE_COLUMNS
 } GwVocabularyWordStoreColumn;
 
@@ -30,6 +35,8 @@ struct _GwVocabularyWordStore {
 
 struct _GwVocabularyWordStoreClass {
   GtkListStoreClass parent_class;
+  guint signalid[TOTAL_GW_VOCABULARYWORDSTORE_CLASS_SIGNALIDS];
+  void (*changed) (GwVocabularyWordStore *store);
 };
 
 //Methods
@@ -50,6 +57,8 @@ void gw_vocabularywordstore_set_name (GwVocabularyWordStore*, const gchar*);
 gchar* gw_vocabularywordstore_path_list_to_string (GwVocabularyWordStore*, GList*);
 void gw_vocabularywordstore_remove_path_list (GwVocabularyWordStore*, GList*);
 void gw_vocabularywordstore_append_text (GwVocabularyWordStore*, GtkTreeIter*, gboolean, const gchar*);
+void gw_vocabularywordstore_new_word (GwVocabularyWordStore*, GtkTreeIter*, GtkTreeIter*, const gchar*, const gchar*, const gchar*);
+void gw_vocabularywordstore_set_string (GwVocabularyWordStore*, GtkTreeIter*, gint, const gchar*);
 
 G_END_DECLS
 

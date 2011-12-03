@@ -5,6 +5,10 @@
 
 G_BEGIN_DECLS
 
+typedef enum {
+  GW_VOCABULARYLISTSTORE_CLASS_SIGNALID_CHANGED,
+  TOTAL_GW_VOCABULARYLISTSTORE_CLASS_SIGNALIDS
+} GwVocabularyListStoreClassSignalId;
 
 typedef enum { 
   GW_VOCABULARYLISTSTORE_COLUMN_NAME,
@@ -32,18 +36,23 @@ struct _GwVocabularyListStore {
 
 struct _GwVocabularyListStoreClass {
   GtkListStoreClass parent_class;
+  guint signalid[TOTAL_GW_VOCABULARYLISTSTORE_CLASS_SIGNALIDS];
+  void (*changed) (GwVocabularyListStore *store);
 };
 
 //Methods
 GtkListStore* gw_vocabularyliststore_new (void);
 GType gw_vocabularyliststore_get_type (void) G_GNUC_CONST;
 
+void gw_vocabularyliststore_save_all (GwVocabularyListStore*);
 void gw_vocabularyliststore_revert_all (GwVocabularyListStore*);
 GtkListStore* gw_vocabularyliststore_get_wordstore_by_iter (GwVocabularyListStore*, GtkTreeIter*);
 GtkListStore* gw_vocabularyliststore_get_wordstore_by_index (GwVocabularyListStore*, gint);
+GtkListStore* gw_vocabularyliststore_get_wordstore_by_name (GwVocabularyListStore*, const gchar*);
 void gw_vocabularyliststore_remove_path_list (GwVocabularyListStore*, GList*);
 void gw_vocabularyliststore_new_list (GwVocabularyListStore*, GtkTreeIter*);
 gboolean gw_vocabularyliststore_list_exists (GwVocabularyListStore*, const gchar*);
 gboolean gw_vocabularyliststore_has_changes (GwVocabularyListStore*);
+void gw_vocabularyliststore_set_has_changes (GwVocabularyListStore*, gboolean);
 
 #endif

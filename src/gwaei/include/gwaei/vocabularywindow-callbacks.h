@@ -5,3 +5,4 @@ void gw_vocabularywindow_cell_edited_cb (GtkCellRendererText*, gchar*, gchar*, g
 void gw_vocabularywindow_list_cell_edited_cb (GtkCellRendererText*, gchar*, gchar*, gpointer);
 void gw_vocabularywindow_list_row_deleted_cb (GtkTreeModel*, GtkTreePath*, gpointer);
 gboolean gw_vocabularywindow_event_after_cb (GtkWidget*, GdkEvent*, gpointer);
+void gw_vocabularywindow_liststore_changed_cb (GwVocabularyListStore*, gpointer);

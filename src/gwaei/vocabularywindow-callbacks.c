@@ -60,8 +60,6 @@ gw_vocabularywindow_new_list_cb (GtkWidget *widget, gpointer data)
     gtk_tree_selection_select_iter (selection, &iter);
     wordstore = gw_vocabularyliststore_get_wordstore_by_iter (GW_VOCABULARYLISTSTORE (liststore), &iter);
     gtk_tree_view_set_model (priv->item_treeview, GTK_TREE_MODEL (wordstore));
-
-    gw_vocabularywindow_set_has_changes (window, TRUE);
 }
 
 
@@ -99,8 +97,6 @@ gw_vocabularywindow_remove_list_cb (GtkWidget *widget, gpointer data)
 
     g_list_foreach (rowlist, (GFunc) gtk_tree_path_free, NULL);
     g_list_free (rowlist); rowlist = NULL;
-
-    gw_vocabularywindow_set_has_changes (window, TRUE);
 }
 
 
@@ -119,17 +115,10 @@ gw_vocabularywindow_new_word_cb (GtkWidget *widget, gpointer data)
     model = gtk_tree_view_get_model (priv->item_treeview);
     selection = gtk_tree_view_get_selection (priv->item_treeview);
 
-    gtk_list_store_append (GTK_LIST_STORE (model), &iter);
-    gtk_list_store_set (GTK_LIST_STORE (model), &iter, 
-        GW_VOCABULARYWORDSTORE_COLUMN_KANJI, gettext("(Click to set Kanji)"), 
-        GW_VOCABULARYWORDSTORE_COLUMN_FURIGANA, gettext("(Click to set Furigana)"),
-        GW_VOCABULARYWORDSTORE_COLUMN_DEFINITIONS, gettext("(Click to set Definitions)"),
-    -1);
+    gw_vocabularywordstore_new_word (GW_VOCABULARYWORDSTORE (model), &iter, NULL, NULL, NULL, NULL);
+
     gtk_tree_selection_unselect_all (selection);
     gtk_tree_selection_select_iter (selection, &iter);
-    gw_vocabularywordstore_set_has_changes (GW_VOCABULARYWORDSTORE (model), TRUE);
-
-    gw_vocabularywindow_set_has_changes (window, TRUE);
 }
 
 
@@ -155,8 +144,6 @@ gw_vocabularywindow_remove_word_cb (GtkWidget *widget, gpointer data)
 
     g_list_foreach (rowlist, (GFunc) gtk_tree_path_free, NULL);
     g_list_free (rowlist); rowlist = NULL;
-
-    gw_vocabularywindow_set_has_changes (window, TRUE);
 }
 
 
@@ -200,23 +187,16 @@ gw_vocabularywindow_cell_edited_cb (GtkCellRendererText *renderer,
     GtkTreeModel *model;
     GtkTreeIter iter;
     gint column;
-    gchar *text;
 
     //Initializations
     window = GW_VOCABULARYWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_VOCABULARYWINDOW));
     if (window == NULL) return;
     view = GTK_TREE_VIEW (data);
-    model = GTK_TREE_MODEL (gtk_tree_view_get_model (view));
+    model = gtk_tree_view_get_model (view);
     gtk_tree_model_get_iter_from_string (model, &iter, path_string);
     column = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (renderer), "column"));
 
-    gtk_tree_model_get (GTK_TREE_MODEL (model), &iter, column, &text, -1);
-    if (strcmp(text, new_text) != 0)
-    {
-      gtk_list_store_set (GTK_LIST_STORE (model), &iter, column, new_text, -1);
-      gw_vocabularywordstore_set_has_changes (GW_VOCABULARYWORDSTORE (model), TRUE);
-      gw_vocabularywindow_set_has_changes (window, TRUE);
-    }
+    gw_vocabularywordstore_set_string (GW_VOCABULARYWORDSTORE (model), &iter, column, new_text);
 }
 
 
@@ -263,8 +243,6 @@ gw_vocabularywindow_list_cell_edited_cb (GtkCellRendererText *renderer,
       gtk_list_store_set (GTK_LIST_STORE (model), &iter, column, new_text, -1);
       wordstore = gw_vocabularyliststore_get_wordstore_by_iter (GW_VOCABULARYLISTSTORE (model), &iter);
       gw_vocabularywordstore_set_name (GW_VOCABULARYWORDSTORE (wordstore), new_text);
-      gw_vocabularywordstore_set_has_changes (GW_VOCABULARYWORDSTORE (wordstore), TRUE);
-      gw_vocabularywindow_set_has_changes (window, TRUE);
     }
 }
 
@@ -284,7 +262,6 @@ gw_vocabularywindow_save_cb (GtkWidget *widget, gpointer data)
     liststore = gw_application_get_vocabularyliststore (application);
 
     gw_vocabularyliststore_save_all (GW_VOCABULARYLISTSTORE (liststore));
-    gw_vocabularywindow_set_has_changes (window, FALSE);
 }
 
 
@@ -318,7 +295,6 @@ gw_vocabularywindow_reset_cb (GtkWidget *widget, gpointer data)
       wordstore = gw_vocabularyliststore_get_wordstore_by_iter (GW_VOCABULARYLISTSTORE (liststore), &iter);
       gtk_tree_view_set_model (priv->item_treeview, GTK_TREE_MODEL (wordstore));
     }
-    gw_vocabularywindow_set_has_changes (window, FALSE);
 }
 
 
@@ -336,12 +312,16 @@ gw_vocabularywindow_close_cb (GtkWidget *widget, gpointer data)
 {
     //Declarations
     GwVocabularyWindow *window;
+    GwApplication *application;
+    GtkListStore *store;
     GtkWidget *dialog;
     gint response;
 
     //Initializations
     window = GW_VOCABULARYWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_VOCABULARYWINDOW));
     if (window == NULL) return;
+    application = gw_window_get_application (GW_WINDOW (window));
+    store = gw_application_get_vocabularyliststore (application);
 
     if (gw_vocabularywindow_has_changes (window))
     {
@@ -385,7 +365,7 @@ gw_vocabularywindow_close_cb (GtkWidget *widget, gpointer data)
       switch (response)
       {
         case GTK_RESPONSE_APPLY:
-          //gw_vocabularywindow_save (window); 
+          gw_vocabularyliststore_save_all (GW_VOCABULARYLISTSTORE (store)); 
           gtk_widget_destroy (GTK_WIDGET (window));
           break;
         case GTK_RESPONSE_CANCEL:
@@ -445,8 +425,6 @@ gw_vocabularywindow_delete_cb (GtkWidget *widget, gpointer data)
 
       g_list_foreach (rowlist, (GFunc) gtk_tree_path_free, NULL);
       g_list_free (rowlist); rowlist = NULL;
-
-      gw_vocabularywindow_set_has_changes (window, TRUE);
     }
 }
 
@@ -481,8 +459,6 @@ gw_vocabularywindow_cut_cb (GtkWidget *widget, gpointer data)
       g_list_foreach (rowlist, (GFunc) gtk_tree_path_free, NULL);
       g_list_free (rowlist); rowlist = NULL;
       g_free (text); text = NULL;
-
-      gw_vocabularywindow_set_has_changes (window, TRUE);
     }
 }
 
@@ -515,8 +491,6 @@ gw_vocabularywindow_copy_cb (GtkWidget *widget, gpointer data)
       g_list_foreach (rowlist, (GFunc) gtk_tree_path_free, NULL);
       g_list_free (rowlist); rowlist = NULL;
       g_free (text); text = NULL;
-
-      gw_vocabularywindow_set_has_changes (window, TRUE);
     }
 }
 
@@ -542,12 +516,10 @@ gw_vocabularywindow_paste_cb (GtkWidget *widget, gpointer data)
       selection = gtk_tree_view_get_selection (priv->item_treeview);
       text = gtk_clipboard_wait_for_text (clipboard);
 
-      gw_vocabularywordstore_append_text (GW_VOCABULARYWORDSTORE (store), NULL, FALSE, text);
+      gw_vocabularywordstore_append_text (GW_VOCABULARYWORDSTORE (store), NULL, TRUE, text);
       gtk_tree_selection_unselect_all (selection);
 
       g_free (text);
-
-      gw_vocabularywindow_set_has_changes (window, TRUE);
     }
 }
 
@@ -578,4 +550,16 @@ gw_vocabularywindow_event_after_cb (GtkWidget *widget, GdkEvent *event, gpointer
     return FALSE;
 }
 
+
+G_MODULE_EXPORT void
+gw_vocabularywindow_liststore_changed_cb (GwVocabularyListStore *store, gpointer data)
+{
+  GwVocabularyWindow *window;
+  gboolean has_changes;
+
+  window = GW_VOCABULARYWINDOW (data);
+  has_changes = gw_vocabularyliststore_has_changes (store);
+
+  gw_vocabularywindow_set_has_changes (window, has_changes);
+}
 

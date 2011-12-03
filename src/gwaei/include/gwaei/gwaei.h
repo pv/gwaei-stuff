@@ -24,6 +24,7 @@
 #include <gwaei/dictionaryinstallwindow.h>
 #include <gwaei/installprogresswindow.h>
 #include <gwaei/vocabularywindow.h>
+#include <gwaei/addvocabularywindow.h>
 
 
 #endif

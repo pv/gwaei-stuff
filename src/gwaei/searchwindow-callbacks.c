@@ -2341,3 +2341,22 @@ gw_searchwindow_event_after_cb (GtkWidget *widget,
     }
 }
 
+
+G_MODULE_EXPORT void
+gw_searchwindow_add_vocabulary_word_cb (GtkWidget *widget, gpointer data)
+{
+    //Declarations
+    GwSearchWindow *window;
+    GwApplication *application;
+    GtkWindow *addvocabularywindow;
+
+    //Initializations
+    window = GW_SEARCHWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_SEARCHWINDOW));
+    if (window == NULL);
+    application = gw_window_get_application (GW_WINDOW (window));
+
+    addvocabularywindow = gw_addvocabularywindow_new (GTK_APPLICATION (application));
+    gtk_window_set_transient_for (addvocabularywindow, GTK_WINDOW (window));
+    gtk_widget_show (GTK_WIDGET (addvocabularywindow));
+}
+
