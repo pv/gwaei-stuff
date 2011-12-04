@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2011-12-03 17:04-0800\n"
+"POT-Creation-Date: 2011-12-03 17:24-0800\n"
 "PO-Revision-Date: 2008-11-30 02:35+0500\n"
 "Last-Translator: Zachary Dovel pizzach@gmail.com\n"
 "Language-Team: Not Applicable\n"
@@ -578,7 +578,7 @@ msgstr "追加"
 
 #: ../src/gwaei/vocabularywindow.ui.h:2
 msgid "Export"
-msgstr ""
+msgstr "エクスポート"
 
 #: ../src/gwaei/vocabularywindow.ui.h:3
 msgid "New _List"
@@ -1024,21 +1024,39 @@ msgstr "読み"
 msgid "Definitions"
 msgstr "意味"
 
-#: ../src/gwaei/vocabularywindow-callbacks.c:341
+#: ../src/gwaei/vocabularywindow-callbacks.c:344
 msgid "Save changes before closing?"
 msgstr "閉じる前に変更を保存しますか？"
 
-#: ../src/gwaei/vocabularywindow-callbacks.c:342
+#: ../src/gwaei/vocabularywindow-callbacks.c:345
 msgid "Close _without Saving"
-msgstr ""
+msgstr "保存せずに閉じる(_W)"
 
-#: ../src/gwaei/vocabularywindow-callbacks.c:356
+#: ../src/gwaei/vocabularywindow-callbacks.c:359
 msgid "Save Changes before Closing?"
 msgstr "閉じる前に変更を保存しますか？"
 
-#: ../src/gwaei/vocabularywindow-callbacks.c:357
+#: ../src/gwaei/vocabularywindow-callbacks.c:360
 msgid "Some of your vocabulary lists have changed since your last save."
 msgstr "幾つかの語彙リストは保存をしたから変更がありました。"
+
+#: ../src/gwaei/vocabularyliststore.c:338
+#: ../src/gwaei/vocabularyliststore.c:343
+#, c-format
+msgid "New List %d"
+msgstr "新規リスト%d"
+
+#: ../src/gwaei/vocabularywordstore.c:530
+msgid "(Click to set Kanji)"
+msgstr ""
+
+#: ../src/gwaei/vocabularywordstore.c:531
+msgid "(Click to set Furigana)"
+msgstr ""
+
+#: ../src/gwaei/vocabularywordstore.c:532
+msgid "(Click to set Definitions)"
+msgstr ""
 
 #: ../src/desktop/gwaei.desktop.in.h:1
 msgid "Enter a Japanese or English word to easily get translations."

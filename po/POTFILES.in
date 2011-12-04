@@ -50,5 +50,7 @@ src/gwaei/spellcheck.c
 src/gwaei/window.c
 src/gwaei/vocabularywindow.c
 src/gwaei/vocabularywindow-callbacks.c
+src/gwaei/vocabularyliststore.c
+src/gwaei/vocabularywordstore.c
 
 src/desktop/gwaei.desktop.in

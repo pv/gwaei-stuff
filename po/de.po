@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 3.0.0\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2011-12-03 17:04-0800\n"
+"POT-Creation-Date: 2011-12-03 17:24-0800\n"
 "PO-Revision-Date: 2011-06-06 21:36+0100\n"
 "Last-Translator: Carsten Pfuhl <taltos02@gmail.com>\n"
 "Language-Team: none\\n <LL@li.org>\n"
@@ -1114,21 +1114,42 @@ msgstr "Lesungen:"
 msgid "Definitions"
 msgstr "Wörterbücher"
 
-#: ../src/gwaei/vocabularywindow-callbacks.c:341
+#: ../src/gwaei/vocabularywindow-callbacks.c:344
 msgid "Save changes before closing?"
 msgstr ""
 
-#: ../src/gwaei/vocabularywindow-callbacks.c:342
+#: ../src/gwaei/vocabularywindow-callbacks.c:345
 msgid "Close _without Saving"
 msgstr ""
 
-#: ../src/gwaei/vocabularywindow-callbacks.c:356
+#: ../src/gwaei/vocabularywindow-callbacks.c:359
 msgid "Save Changes before Closing?"
 msgstr ""
 
-#: ../src/gwaei/vocabularywindow-callbacks.c:357
+#: ../src/gwaei/vocabularywindow-callbacks.c:360
 msgid "Some of your vocabulary lists have changed since your last save."
 msgstr ""
+
+#: ../src/gwaei/vocabularyliststore.c:338
+#: ../src/gwaei/vocabularyliststore.c:343
+#, c-format
+msgid "New List %d"
+msgstr ""
+
+#: ../src/gwaei/vocabularywordstore.c:530
+#, fuzzy
+msgid "(Click to set Kanji)"
+msgstr "Drücken, um die Suche zu beginnen"
+
+#: ../src/gwaei/vocabularywordstore.c:531
+#, fuzzy
+msgid "(Click to set Furigana)"
+msgstr "Drücken, um die Suche zu beginnen"
+
+#: ../src/gwaei/vocabularywordstore.c:532
+#, fuzzy
+msgid "(Click to set Definitions)"
+msgstr "Drücken, um die Suche zu beginnen"
 
 #: ../src/desktop/gwaei.desktop.in.h:1
 msgid "Enter a Japanese or English word to easily get translations."
@@ -1142,10 +1163,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "Japanese->English Flashcards"
 #~ msgstr "gWaei Japanisch-Englisches/ Japanisch-Deutsches Wörterbuch"
-
-#, fuzzy
-#~ msgid "(Click to set Kanji)"
-#~ msgstr "Drücken, um die Suche zu beginnen"
 
 #, fuzzy
 #~ msgid "Vocabulary Detail"

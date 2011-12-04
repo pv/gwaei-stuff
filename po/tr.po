@@ -29,7 +29,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gwaei 0.15.1\n"
 "Report-Msgid-Bugs-To: pizzach@gmail.com\n"
-"POT-Creation-Date: 2011-12-03 17:04-0800\n"
+"POT-Creation-Date: 2011-12-03 17:24-0800\n"
 "PO-Revision-Date: 2010-10-25 14:50+0200\n"
 "Last-Translator: Yusuf BARAN <info@barancolor.net>\n"
 "Language-Team: none\n"
@@ -1121,21 +1121,42 @@ msgstr "Okunuş:"
 msgid "Definitions"
 msgstr "_Sözlük"
 
-#: ../src/gwaei/vocabularywindow-callbacks.c:341
+#: ../src/gwaei/vocabularywindow-callbacks.c:344
 msgid "Save changes before closing?"
 msgstr ""
 
-#: ../src/gwaei/vocabularywindow-callbacks.c:342
+#: ../src/gwaei/vocabularywindow-callbacks.c:345
 msgid "Close _without Saving"
 msgstr ""
 
-#: ../src/gwaei/vocabularywindow-callbacks.c:356
+#: ../src/gwaei/vocabularywindow-callbacks.c:359
 msgid "Save Changes before Closing?"
 msgstr ""
 
-#: ../src/gwaei/vocabularywindow-callbacks.c:357
+#: ../src/gwaei/vocabularywindow-callbacks.c:360
 msgid "Some of your vocabulary lists have changed since your last save."
 msgstr ""
+
+#: ../src/gwaei/vocabularyliststore.c:338
+#: ../src/gwaei/vocabularyliststore.c:343
+#, c-format
+msgid "New List %d"
+msgstr ""
+
+#: ../src/gwaei/vocabularywordstore.c:530
+#, fuzzy
+msgid "(Click to set Kanji)"
+msgstr "Tıklayıp aramaya başlayın"
+
+#: ../src/gwaei/vocabularywordstore.c:531
+#, fuzzy
+msgid "(Click to set Furigana)"
+msgstr "Tıklayıp aramaya başlayın"
+
+#: ../src/gwaei/vocabularywordstore.c:532
+#, fuzzy
+msgid "(Click to set Definitions)"
+msgstr "Tıklayıp aramaya başlayın"
 
 #: ../src/desktop/gwaei.desktop.in.h:1
 msgid "Enter a Japanese or English word to easily get translations."
@@ -1147,10 +1168,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "Japanese->English Flashcards"
 #~ msgstr "gWaei Japonca-İngilizce Sözlük"
-
-#, fuzzy
-#~ msgid "(Click to set Kanji)"
-#~ msgstr "Tıklayıp aramaya başlayın"
 
 #, fuzzy
 #~ msgid "Vocabulary Detail"

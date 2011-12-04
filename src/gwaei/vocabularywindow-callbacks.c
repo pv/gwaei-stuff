@@ -74,6 +74,9 @@ gw_vocabularywindow_remove_list_cb (GtkWidget *widget, gpointer data)
     GtkTreeModel *model;
     GList *rowlist;
     GtkListStore *store;
+    GtkTreeIter iter;
+    GtkTreePath *path;
+    gboolean valid;
 
     //Initializations
     window = GW_VOCABULARYWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_VOCABULARYWINDOW));
@@ -85,17 +88,17 @@ gw_vocabularywindow_remove_list_cb (GtkWidget *widget, gpointer data)
 
     gw_vocabularyliststore_remove_path_list (GW_VOCABULARYLISTSTORE (model), rowlist);
 
-    GtkTreeIter iter;
-    GtkTreePath *path;
-
     path = (GtkTreePath*) rowlist->data;
     gtk_tree_path_prev (path);
+    valid = gtk_tree_model_get_iter (model, &iter, path);
 
-    gtk_tree_model_get_iter (model, &iter, path);
-    gtk_tree_selection_select_iter (selection, &iter);
-    store = gw_vocabularyliststore_get_wordstore_by_iter (GW_VOCABULARYLISTSTORE (model), &iter);
-    gtk_tree_view_set_model (priv->item_treeview, GTK_TREE_MODEL (store));
-    gtk_tree_view_set_search_column (priv->item_treeview, GW_VOCABULARYWORDSTORE_COLUMN_DEFINITIONS);
+    if (valid)
+    {
+      gtk_tree_selection_select_iter (selection, &iter);
+      store = gw_vocabularyliststore_get_wordstore_by_iter (GW_VOCABULARYLISTSTORE (model), &iter);
+      gtk_tree_view_set_model (priv->item_treeview, GTK_TREE_MODEL (store));
+      gtk_tree_view_set_search_column (priv->item_treeview, GW_VOCABULARYWORDSTORE_COLUMN_DEFINITIONS);
+    }
 
     g_list_foreach (rowlist, (GFunc) gtk_tree_path_free, NULL);
     g_list_free (rowlist); rowlist = NULL;

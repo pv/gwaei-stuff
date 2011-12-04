@@ -118,8 +118,11 @@ gw_vocabularyliststore_get_wordstore_by_iter (GwVocabularyListStore *store, GtkT
     GtkTreeModel *model;
     model = GTK_TREE_MODEL (store);
     gtk_tree_model_get (model, iter, GW_VOCABULARYLISTSTORE_COLUMN_OBJECT, &wordstore, -1);
-    gw_vocabularywordstore_load (GW_VOCABULARYWORDSTORE (wordstore));
-    g_object_unref (wordstore);
+    if (wordstore != NULL)
+    {
+      gw_vocabularywordstore_load (GW_VOCABULARYWORDSTORE (wordstore));
+      g_object_unref (wordstore);
+    }
     return wordstore;
 }
 
