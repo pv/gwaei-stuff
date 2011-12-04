@@ -176,6 +176,8 @@ gw_vocabularywindow_constructed (GObject *object)
         gtk_tree_view_set_model (priv->item_treeview, GTK_TREE_MODEL (store));
       }
     }
+
+    gtk_widget_grab_focus (GTK_WIDGET (priv->list_treeview));
 }
 
 

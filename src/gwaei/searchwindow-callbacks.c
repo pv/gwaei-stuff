@@ -91,15 +91,26 @@ gboolean gw_searchwindow_get_iter_for_motion_cb (GtkWidget      *widget,
 
     di = lw_dictinfolist_get_dictinfo (dictinfolist, LW_DICTTYPE_KANJI, "Kanji");
     if (di == NULL) return FALSE;
-  
-    // Characters above 0xFF00 represent inserted images
-    if (unic > L'ー' && unic < 0xFF00)
-      gw_searchwindow_set_cursor (window, GDK_HAND2);
-    else
-      gw_searchwindow_set_cursor (window, GDK_XTERM);
 
     view = gw_searchwindow_get_current_textview (window);
     tooltip_window = GTK_WIDGET (gtk_widget_get_tooltip_window (GTK_WIDGET (view)));
+  
+    // Characters above 0xFF00 represent inserted images
+    if (unic > L'ー' && unic < 0xFF00)
+    {
+      GdkWindow* gdkwindow;
+      GdkCursor* cursor;
+      gdkwindow = gtk_text_view_get_window (view, GTK_TEXT_WINDOW_TEXT);
+      cursor = gdk_cursor_new (GDK_HAND1);
+      gdk_window_set_cursor (gdkwindow, cursor);
+      gdk_cursor_unref (cursor);
+    }
+    else
+    {
+      GdkWindow* gdkwindow;
+      gdkwindow = gtk_text_view_get_window (view, GTK_TEXT_WINDOW_TEXT);
+      gdk_window_set_cursor (gdkwindow, NULL);
+    }
 
     if (tooltip_window != NULL && priv->mouse_button_character != unic) 
     {

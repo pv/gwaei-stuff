@@ -33,6 +33,7 @@
 
 #include <gwaei/gwaei.h>
 #include <gwaei/searchwindow-private.h>
+#include <gwaei/addbutton.h>
 
 static void gw_searchwindow_append_edict_result (GwSearchWindow*, LwSearchItem*);
 static void gw_searchwindow_append_kanjidict_result (GwSearchWindow*, LwSearchItem*);
@@ -41,6 +42,31 @@ static void gw_searchwindow_append_unknowndict_result (GwSearchWindow*, LwSearch
 static void gw_searchwindow_append_less_relevant_header (GwSearchWindow*, LwSearchItem*);
 static void gw_searchwindow_append_more_relevant_header (GwSearchWindow*, LwSearchItem*);
 
+
+static void
+gw_searchwindow_add_addbutton (GwSearchWindow *window, LwResultLine *resultline, GtkTextView *view, GtkTextIter *iter)
+{
+    GtkTextBuffer *buffer;
+    GtkWidget *addbutton;
+    GtkTextChildAnchor *anchor = NULL;
+    gchar *kanji, *furigana, *definitions;
+
+    buffer = gtk_text_view_get_buffer (view);
+    kanji = resultline->kanji_start;
+    furigana = resultline->furigana_start;
+    definitions = g_strjoinv ("/", resultline->def_start);
+    addbutton = gw_addbutton_new (GW_WINDOW (window), kanji, furigana, definitions);
+
+    gtk_text_buffer_insert (buffer, iter, " ", -1);
+
+    anchor = gtk_text_buffer_create_child_anchor (buffer, iter);
+
+    gtk_text_view_add_child_at_anchor (view, addbutton, anchor);
+    gtk_widget_show (addbutton);
+    gtk_text_buffer_insert (buffer, iter, " ", -1);
+
+    g_free (definitions);
+}
 
 //!
 //! @brief Appends a result to the output
@@ -364,7 +390,10 @@ gw_searchwindow_append_def_same_to_buffer (GwSearchWindow *window, LwSearchItem*
       }
       end_offset = gtk_text_iter_get_line_offset (&iter);
       gw_add_match_highlights (line, start_offset, end_offset, item);
+
+      gw_searchwindow_add_addbutton (window, resultline, view, &iter);
     }
+
 }
 
 
@@ -447,6 +476,7 @@ gw_searchwindow_append_edict_result (GwSearchWindow *window, LwSearchItem *item)
     {
       gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, resultline->kanji_start, -1, "important", NULL);
     }
+
     //Furigana
     if (resultline->furigana_start != NULL)
     {
@@ -466,11 +496,11 @@ gw_searchwindow_append_edict_result (GwSearchWindow *window, LwSearchItem *item)
       gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, gettext("Pop"), -1, "small", NULL);
     }
 
+    gw_searchwindow_add_addbutton (window, resultline, view, &iter);
+
     gw_shift_stay_mark (item, "previous_result");
     start_offset = 0;
     end_offset = gtk_text_iter_get_line_offset (&iter);
-
-//    gw_searchwindow_insert_resultpopup_button (window, item, resultline, &iter);
 
     gtk_text_buffer_insert (buffer, &iter, "\n", -1);
     gw_add_match_highlights (line, start_offset, end_offset, item);
@@ -491,7 +521,6 @@ gw_searchwindow_append_edict_result (GwSearchWindow *window, LwSearchItem *item)
       i++;
     }
     gtk_text_buffer_insert (buffer, &iter, "\n", -1);
-
 }
 
 

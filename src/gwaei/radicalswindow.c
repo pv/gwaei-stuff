@@ -35,6 +35,7 @@
 #include <gwaei/radicalswindow-private.h>
 
 static void gw_radicalswindow_fill_radicals (GwRadicalsWindow*);
+static void gw_radicalswindow_init_accelerators (GwRadicalsWindow*);
 
 static char *_radical_array[][5] =
 {
@@ -361,8 +362,6 @@ gw_radicalswindow_constructed (GObject *object)
     GwRadicalsWindowPrivate *priv;
     GtkWidget *toplevel;
     GtkWidget *scrolledwindow;
-    GtkAccelGroup *accelgroup;
-    GtkWidget *widget;
 
     //Chain the parent class
     {
@@ -371,7 +370,6 @@ gw_radicalswindow_constructed (GObject *object)
 
     window = GW_RADICALSWINDOW (object);
     priv = window->priv;
-    accelgroup = gw_window_get_accel_group (GW_WINDOW (window));
 
     toplevel = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "radical_selection_table"));
     gtk_widget_set_halign (toplevel, GTK_ALIGN_CENTER);
@@ -398,11 +396,7 @@ gw_radicalswindow_constructed (GObject *object)
     gw_radicalswindow_fill_radicals (window);
     gtk_widget_show_all (GTK_WIDGET (priv->radicals_table));
 
-    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "close_button"));
-    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
-      accelgroup, (GDK_KEY_W), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
-    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
-      accelgroup, (GDK_KEY_Escape), 0, GTK_ACCEL_VISIBLE);
+    gw_radicalswindow_init_accelerators (window);
 }
 
 static void
@@ -418,6 +412,21 @@ gw_radicalswindow_class_init (GwRadicalsWindowClass *klass)
   g_type_class_add_private (object_class, sizeof (GwRadicalsWindowPrivate));
 }
 
+
+static void
+gw_radicalswindow_init_accelerators (GwRadicalsWindow *window)
+{
+    GtkWidget *widget;
+    GtkAccelGroup *accelgroup;
+
+    accelgroup = gw_window_get_accel_group (GW_WINDOW (window));
+
+    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "close_button"));
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
+      accelgroup, (GDK_KEY_W), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
+      accelgroup, (GDK_KEY_Escape), 0, GTK_ACCEL_VISIBLE);
+}
 
 
 static void 

@@ -274,6 +274,12 @@ gw_searchwindow_init_accelerators (GwSearchWindow *window)
     gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
       accelgroup, (GDK_KEY_Right), GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
 
+    //Vocabulary popup
+    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "manage_vocabulary_menuitem"));
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
+      accelgroup, (GDK_KEY_M), GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+
+
     //Help popup
     widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "help_menuitem"));
     gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
@@ -1234,29 +1240,6 @@ gw_searchwindow_get_hovered_character (GwSearchWindow* window, int *x, int *y, G
 
     return gtk_text_iter_get_char (start);
 } 
-
-
-//!
-//! @brief A convenience function to set the gdk cursor
-//!
-//! @param GdkCursorType The prefered cursor to set
-//!
-void 
-gw_searchwindow_set_cursor (GwSearchWindow* window, GdkCursorType CURSOR)
-{
-    //Declarations
-    GdkWindow* gdkwindow;
-    GtkTextView *view;
-    GdkCursor* cursor;
-
-    //Initializations
-    view = gw_searchwindow_get_current_textview (window);
-    gdkwindow = gtk_text_view_get_window (view, GTK_TEXT_WINDOW_TEXT);
-    cursor = gdk_cursor_new (CURSOR);
-
-    gdk_window_set_cursor (gdkwindow, cursor);
-    gdk_cursor_unref (cursor);
-}
 
 
 //!

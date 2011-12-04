@@ -60,6 +60,7 @@ gw_vocabularywindow_new_list_cb (GtkWidget *widget, gpointer data)
     gtk_tree_selection_select_iter (selection, &iter);
     wordstore = gw_vocabularyliststore_get_wordstore_by_iter (GW_VOCABULARYLISTSTORE (liststore), &iter);
     gtk_tree_view_set_model (priv->item_treeview, GTK_TREE_MODEL (wordstore));
+    gtk_tree_view_set_search_column (priv->item_treeview, GW_VOCABULARYWORDSTORE_COLUMN_DEFINITIONS);
 }
 
 
@@ -94,6 +95,7 @@ gw_vocabularywindow_remove_list_cb (GtkWidget *widget, gpointer data)
     gtk_tree_selection_select_iter (selection, &iter);
     store = gw_vocabularyliststore_get_wordstore_by_iter (GW_VOCABULARYLISTSTORE (model), &iter);
     gtk_tree_view_set_model (priv->item_treeview, GTK_TREE_MODEL (store));
+    gtk_tree_view_set_search_column (priv->item_treeview, GW_VOCABULARYWORDSTORE_COLUMN_DEFINITIONS);
 
     g_list_foreach (rowlist, (GFunc) gtk_tree_path_free, NULL);
     g_list_free (rowlist); rowlist = NULL;
@@ -172,6 +174,7 @@ gw_vocabularywindow_list_selection_changed_cb (GtkTreeView *view, gpointer data)
 
     model = GTK_TREE_MODEL (gw_vocabularyliststore_get_wordstore_by_iter (GW_VOCABULARYLISTSTORE (store), &iter));
     gtk_tree_view_set_model (window->priv->item_treeview, model);
+    gtk_tree_view_set_search_column (window->priv->item_treeview, GW_VOCABULARYWORDSTORE_COLUMN_DEFINITIONS);
 }
 
 
@@ -294,6 +297,7 @@ gw_vocabularywindow_reset_cb (GtkWidget *widget, gpointer data)
       gtk_tree_selection_select_iter (selection, &iter);
       wordstore = gw_vocabularyliststore_get_wordstore_by_iter (GW_VOCABULARYLISTSTORE (liststore), &iter);
       gtk_tree_view_set_model (priv->item_treeview, GTK_TREE_MODEL (wordstore));
+      gtk_tree_view_set_search_column (priv->item_treeview, GW_VOCABULARYWORDSTORE_COLUMN_DEFINITIONS);
     }
 }
 
@@ -332,16 +336,13 @@ gw_vocabularywindow_close_cb (GtkWidget *widget, gpointer data)
       gchar *markup, *header, *description;
 
 
-      dialog = gtk_dialog_new_with_buttons ("Save changes before closing?",
-                                            GTK_WINDOW (window),
-                                            GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-                                            GTK_STOCK_CLOSE,
-                                            GTK_RESPONSE_CLOSE,
-                                            GTK_STOCK_CANCEL,
-                                            GTK_RESPONSE_CANCEL,
-                                            GTK_STOCK_SAVE,
-                                            GTK_RESPONSE_APPLY,
-                                            NULL);
+      dialog = gtk_dialog_new ();
+      gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (window));
+      gtk_window_set_title (GTK_WINDOW (dialog), gettext("Save changes before closing?"));
+      gtk_dialog_add_button (GTK_DIALOG (dialog), gettext("Close _without Saving"), GTK_RESPONSE_NO);
+      gtk_dialog_add_button (GTK_DIALOG (dialog), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
+      gtk_dialog_add_button (GTK_DIALOG (dialog), GTK_STOCK_SAVE, GTK_RESPONSE_YES);
+      gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_YES);
       content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
 
       box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 16);
@@ -364,20 +365,20 @@ gw_vocabularywindow_close_cb (GtkWidget *widget, gpointer data)
 
       switch (response)
       {
-        case GTK_RESPONSE_APPLY:
+        case GTK_RESPONSE_YES:
           gw_vocabularyliststore_save_all (GW_VOCABULARYLISTSTORE (store)); 
           gtk_widget_destroy (GTK_WIDGET (window));
           break;
         case GTK_RESPONSE_CANCEL:
-          gtk_widget_destroy (GTK_WIDGET (dialog));
           break;
-        case GTK_RESPONSE_CLOSE:
+        case GTK_RESPONSE_NO:
+          gw_vocabularyliststore_revert_all (GW_VOCABULARYLISTSTORE (store)); 
           gtk_widget_destroy (GTK_WIDGET (window));
           break;
         default:
-          gtk_widget_destroy (GTK_WIDGET (dialog));
           break;
       }
+      gtk_widget_destroy (GTK_WIDGET (dialog));
     }
     else
     {
