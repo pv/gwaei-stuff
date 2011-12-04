@@ -39,6 +39,15 @@ no)  gnome=false ;;
 esac],[gnome=true])
 AM_CONDITIONAL([WITH_GNOME], [test x$gnome = xtrue || test x$win32 = xtrue])
 
+AC_ARG_WITH([mecab],
+[  --without-mecab        turn off Mecab morphological analysis],
+[case "${withval}" in
+yes) mecab=true ;;
+no)  mecab=false ;;
+*) AC_MSG_ERROR([bad value ${withval} for --with-mecab]) ;;
+esac],[mecab=true])
+AM_CONDITIONAL([WITH_MECAB], [test x$mecab = xtrue || test x$mecab = xtrue])
+
 AC_CHECK_LIB(m, sqrt)
 
 GNOME_DOC_INIT(,,[:]) 
@@ -72,6 +81,11 @@ if test $gnome = true; then
   AC_SUBST(GWAEI_CFLAGS)
   AC_SUBST(GWAEI_LIBS)
   GNOME_DOC_INIT
+fi
+
+if test $mecab = true; then
+  AC_CHECK_HEADER([mecab.h],
+         [AC_DEFINE([HAVE_MECAB], [1], [Mecab]) LIBS="-lmecab -lstdc++ $LIBS"])
 fi
 
 

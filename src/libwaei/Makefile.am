@@ -7,7 +7,7 @@ datadir = @datadir@
 DEFINITIONS =-DGZIP=\"$(GZIP)\" -DDATADIR2=\"$(datadir)\" -DGWAEI_LOCALEDIR=\"$(GWAEI_LOCALEDIR)\" -DG_SEAL_ENABLE -Wall -pedantic
 
 lib_LTLIBRARIES = libwaei.la
-libwaei_la_SOURCES = libwaei.c dictinfo.c dictinfolist.c dictinst.c dictinstlist.c queryline.c engine.c engine-data.c utilities.c io.c regex.c searchitem.c history.c resultline.c preferences.c vocabularylist.c vocabularyitem.c
+libwaei_la_SOURCES = libwaei.c dictinfo.c dictinfolist.c dictinst.c dictinstlist.c queryline.c engine.c engine-data.c utilities.c io.c regex.c searchitem.c history.c morphology.c resultline.c preferences.c vocabularylist.c vocabularyitem.c
 libwaei_la_LDFLAGS = -version-info $(LIBRARY_VERSION)  $(LIBWAEI_LIBS) 
 libwaei_la_CPPFLAGS = $(LIBWAEI_CFLAGS) -I$(top_srcdir)/src/libwaei/include $(DEFINITIONS) 
 
