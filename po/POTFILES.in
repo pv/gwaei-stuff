@@ -14,6 +14,7 @@ src/waei/console.c
 src/waei/console-callbacks.c
 src/waei/waei.c
 
+[type: gettext/glade] src/gwaei/addvocabularywindow.ui
 [type: gettext/glade] src/gwaei/dictionaryinstallwindow.ui
 [type: gettext/glade] src/gwaei/installprogresswindow.ui
 [type: gettext/glade] src/gwaei/searchwindow.ui

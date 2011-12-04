@@ -21,6 +21,6 @@ gwaei_LDADD += $(MINGW_LIBS)
 gwaei_CPPFLAGS += $(MINGW_CFLAGS) $(MINGW_DEFS)
 endif
 
-pkgdata_DATA = searchwindow.ui radicalswindow.ui settingswindow.ui dictionaryinstallwindow.ui installprogresswindow.ui kanjipadwindow.ui vocabularywindow.ui
-EXTRA_DIST =  searchwindow.ui radicalswindow.ui settingswindow.ui dictionaryinstallwindow.ui installprogresswindow.ui kanjipadwindow.ui
+pkgdata_DATA = addvocabularywindow.ui dictionaryinstallwindow.ui installprogresswindow.ui kanjipadwindow.ui radicalswindow.ui searchwindow.ui settingswindow.ui vocabularywindow.ui
+EXTRA_DIST = addvocabularywindow.ui dictionaryinstallwindow.ui installprogresswindow.ui kanjipadwindow.ui radicalswindow.ui searchwindow.ui settingswindow.ui vocabularywindow.ui
 
