@@ -54,7 +54,6 @@ gw_searchwindow_insert_addlink (GwSearchWindow   *window,
     //Declarations
     GtkTextTag *tag;
     gchar *data;
-    gchar *text;
     
     //Initializations
     tag = gtk_text_buffer_create_tag (buffer, NULL, 
@@ -62,13 +61,14 @@ gw_searchwindow_insert_addlink (GwSearchWindow   *window,
         "scale",  0.75, 
         "weight", PANGO_WEIGHT_BOLD,
         NULL);
-    text = " + ";
     data = lw_vocabularyitem_to_string (item);
     g_object_set_data_full (G_OBJECT (tag), 
         "vocabulary-data", 
         data, g_free);
 
-    gtk_text_buffer_insert_with_tags (buffer, iter, text, -1, tag, NULL);
+    gtk_text_buffer_insert (buffer, iter, " ", -1);
+    gtk_text_buffer_insert_with_tags (buffer, iter, "+", -1, tag, NULL);
+    gtk_text_buffer_insert (buffer, iter, " ", -1 );
 }
 
 

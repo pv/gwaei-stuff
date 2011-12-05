@@ -92,7 +92,6 @@ gw_searchwindow_motion_notify_event_cb (GtkWidget       *widget,
     GwSearchWindow *window;
     GwApplication *application;
     GtkTextView *view;
-    GtkTextTag *tag;
     GtkTextIter iter;
     gint x;
     gint y;
@@ -192,14 +191,12 @@ gw_searchwindow_get_iter_for_button_release_cb (GtkWidget      *widget,
     GwApplication *application;
     LwPreferences *preferences;
     GtkTextView *view;
-    GtkTextTag *tag;
     GtkTextIter iter;
     gint x;
     gint y;
     const gchar *vocabulary_data;
     LwDictInfoList *dictinfolist;
     LwDictInfo *dictinfo;
-    gboolean is_hovering_kanji_character;
     GtkTextWindowType type;
     gboolean within_movement_threshold;
     gunichar character;
@@ -240,8 +237,8 @@ gw_searchwindow_get_iter_for_button_release_cb (GtkWidget      *widget,
       }
       priv->mouse_button_press_x = event->x;
       priv->mouse_button_press_y = event->y;
-      priv->mouse_button_press_root_x = event->x_root;
-      priv->mouse_button_press_root_y = event->y_root;
+      priv->mouse_button_press_root_x = event->x_root; //x position of the tooltip
+      priv->mouse_button_press_root_y = event->y_root; //y position of the tooltip
       priv->mouse_button_character = character;
       priv->mouse_item = lw_searchitem_new (query, dictinfo, preferences, NULL);
       lw_searchitem_start_search (priv->mouse_item, TRUE, FALSE);
