@@ -70,6 +70,7 @@ lw_vocabularyitem_new_from_string (const gchar *text)
         g_strfreev (atoms); atoms = NULL;
       }
     }
+
     return item;
 }
 
@@ -88,3 +89,11 @@ lw_vocabularyitem_free (LwVocabularyItem *item)
   g_free (item);
 }
 
+
+gchar* 
+lw_vocabularyitem_to_string (LwVocabularyItem *item)
+{
+    gchar* text;
+    text = lw_strjoinv (';', item->fields, TOTAL_LW_VOCABULARYITEM_FIELDS);
+    return text;
+}

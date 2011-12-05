@@ -42,7 +42,6 @@ gboolean gw_searchwindow_close_on_escape_cb (GtkWidget*, GdkEvent*, gpointer*);
 gboolean gw_searchwindow_drag_motion_1_cb (GtkWidget*, GdkDragContext*, gint, gint, guint, gpointer);
 gboolean gw_searchwindow_update_clipboard_on_focus_change_cb (GtkWidget*, GtkDirectionType, gpointer);
 gboolean gw_searchwindow_get_position_for_button_press_cb (GtkWidget*, GdkEventButton*, gpointer);
-gboolean gw_searchwindow_get_iter_for_motion_cb (GtkWidget*, GdkEventButton*, gpointer);
 gboolean gw_searchwindow_drag_drop_1_cb (GtkWidget*, GdkDragContext*, gint, gint, guint, gpointer);
 gboolean gw_searchwindow_get_iter_for_button_release_cb (GtkWidget*, GdkEventButton*, gpointer);
 void gw_searchwindow_drag_leave_1_cb (GtkWidget*, GdkDragContext*, guint, gpointer);
@@ -77,6 +76,8 @@ gboolean gw_searchwindow_key_release_modify_status_update_cb (GtkWidget*, GdkEve
 gboolean gw_searchwindow_key_press_modify_status_update_cb (GtkWidget*, GdkEvent*, gpointer);
 gboolean gw_searchwindow_focus_in_event_cb (GtkWidget*, GdkEvent*, gpointer);
 void gw_searchwindow_event_after_cb (GtkWidget*, GdkEvent*, gpointer);
+
+gboolean gw_searchwindow_motion_notify_event_cb (GtkWidget*, GdkEventButton*, gpointer);
 
 #endif
 

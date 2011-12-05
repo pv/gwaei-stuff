@@ -1439,3 +1439,55 @@ lw_util_get_query_from_args (int argc, char** argv)
     return query;
 }
 
+
+gchar*
+lw_strjoinv (gchar delimitor, gchar** array, gint array_length)
+{
+    g_assert (array != NULL);
+
+    //Declarations
+    gint text_length;
+    gint delimitor_length;
+    gchar *text, *src_ptr, *tgt_ptr;
+    gint i;
+
+    //Initializations
+    text_length = 0;
+    delimitor_length = sizeof (delimitor);
+    i = 0;
+
+    //Calculate the needed size
+    while (i < array_length)
+    {
+      src_ptr = *(array + i);
+      if (src_ptr != NULL) 
+      {
+        text_length += strlen (src_ptr);
+      }
+      text_length += delimitor_length;
+      i++;
+    }
+
+    text = g_new (gchar, text_length);
+
+    //Concatinate the strings
+    if (text != NULL)
+    {
+      tgt_ptr = text;
+      i = 0;
+
+      while (i < array_length)
+      {
+        src_ptr = *(array + i);
+        if (src_ptr != NULL)
+          while (*src_ptr != '\0')
+            *(tgt_ptr++) = *(src_ptr++);
+        *(tgt_ptr++) = delimitor;
+        i++;
+      }
+      *(--tgt_ptr) = '\0';
+    }
+
+    return text;
+}
+

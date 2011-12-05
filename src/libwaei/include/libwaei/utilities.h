@@ -72,4 +72,6 @@ char** lw_util_get_romaji_atoms_from_string (const char*);
 char** lw_util_get_furigana_atoms_from_string (const char*);
 gchar* lw_util_get_query_from_args (int, char**);
 
+gchar* lw_strjoinv (gchar, gchar**, gint);
+
 #endif

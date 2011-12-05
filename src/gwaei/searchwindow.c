@@ -93,7 +93,6 @@ gw_searchwindow_finalize (GObject *object)
     if (priv->spellcheck) gw_spellcheck_free (priv->spellcheck); priv->spellcheck = NULL;
     if (priv->history) lw_history_free (priv->history); priv->history = NULL;
     if (priv->tablist) g_list_free (priv->tablist); priv->tablist = NULL;
-    if (priv->mouse_hovered_word) g_free (priv->mouse_hovered_word); priv->mouse_hovered_word = NULL;
     if (priv->keep_searching_query) g_free (priv->keep_searching_query); priv->keep_searching_query = NULL;
 
     G_OBJECT_CLASS (gw_searchwindow_parent_class)->finalize (object);
@@ -961,6 +960,28 @@ gw_searchwindow_append_to_buffer (GwSearchWindow *window, LwSearchItem *item, co
 }
 
 
+static void
+gw_searchwindow_remove_anonymous_tags (GtkTextTag *tag, gpointer data)
+{
+    GtkTextTagTable *table;
+    gchar *name;
+
+    g_object_get (G_OBJECT (tag), "name", &name, NULL);
+
+    //This is not the tag we were looking for
+    if (name != NULL)
+    {
+      g_free (name);
+    }
+    //Remove the anonymous tag
+    else
+    {
+      table = GTK_TEXT_TAG_TABLE (data);
+      gtk_text_tag_table_remove (table, tag);
+    }
+}
+
+
 //!
 //! @brief Performs initializations absolutely necessary before a window can take place
 //!
@@ -1017,6 +1038,10 @@ gw_searchwindow_initialize_buffer_by_searchitem (GwSearchWindow *window, LwSearc
     gtk_text_buffer_create_mark (buffer, "footer_insertion_mark", &iter, FALSE);
 
     gw_searchwindow_set_total_results_label_by_searchitem (window, item);
+
+    GtkTextTagTable *table;
+    table = gtk_text_buffer_get_tag_table (buffer);
+    gtk_text_tag_table_foreach (table, gw_searchwindow_remove_anonymous_tags, table);
 }
 
 
@@ -1213,33 +1238,6 @@ gw_searchwindow_buffer_get_text_slice_from_current_view (GwSearchWindow* window,
 
     return gtk_text_buffer_get_slice (buffer, &si, &ei, TRUE);
 }
-
-
-//!
-//! @brief Returns the character currently under the cursor in the main results window
-//!
-//! @param x Pointer to the x coordinate
-//! @param y Pointer to the y coordinate
-//!
-//! @return Returns the character that is being moused over
-//!
-gunichar 
-gw_searchwindow_get_hovered_character (GwSearchWindow* window, int *x, int *y, GtkTextIter *start)
-{
-    //Declarations;
-    gint trailing;
-    GtkTextView* view;
-
-    //Initializations
-    trailing = 0;
-    view = gw_searchwindow_get_current_textview (window);
-    if (view == NULL) return 0;
-
-    gtk_text_view_window_to_buffer_coords (view, GTK_TEXT_WINDOW_TEXT, *x, *y, x, y);
-    gtk_text_view_get_iter_at_position (view, start, &trailing, *x, *y);
-
-    return gtk_text_iter_get_char (start);
-} 
 
 
 //!
@@ -1650,7 +1648,7 @@ gw_searchwindow_new_tab (GwSearchWindow *window)
 
     g_signal_connect (G_OBJECT (view), "drag_motion", G_CALLBACK (gw_searchwindow_drag_motion_1_cb), window);
     g_signal_connect (G_OBJECT (view), "button_press_event", G_CALLBACK (gw_searchwindow_get_position_for_button_press_cb), window);
-    g_signal_connect (G_OBJECT (view), "motion_notify_event", G_CALLBACK (gw_searchwindow_get_iter_for_motion_cb), window);
+    g_signal_connect (G_OBJECT (view), "motion_notify_event", G_CALLBACK (gw_searchwindow_motion_notify_event_cb), window);
     g_signal_connect (G_OBJECT (view), "drag_drop", G_CALLBACK (gw_searchwindow_drag_drop_1_cb), window);
     g_signal_connect (G_OBJECT (view), "button_release_event", G_CALLBACK (gw_searchwindow_get_iter_for_button_release_cb), window);
     g_signal_connect (G_OBJECT (view), "drag_leave", G_CALLBACK (gw_searchwindow_drag_leave_1_cb), window);

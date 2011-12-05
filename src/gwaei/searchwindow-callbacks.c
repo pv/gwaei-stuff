@@ -36,67 +36,90 @@
 #include <gwaei/gwaei.h>
 #include <gwaei/searchwindow-private.h>
 
-//!
-//! @brief Sets the cursor type depending on the character hovered
-//! @see gw_searchwindow_get_position_for_button_press_cb ()
-//! @see gw_searchwindow_get_iter_for_button_release_cb ()
-//! @param widget Currently unused widget pointer
-//! @param data Currently unused gpointer
-//! @return Always returns false
-//!
-G_MODULE_EXPORT 
-gboolean gw_searchwindow_get_iter_for_motion_cb (GtkWidget      *widget,
-                                                 GdkEventButton *event,
-                                                 gpointer        data   )
+
+static const gchar*
+gw_searchwindow_hovering_vocabulary_data_tag (GtkTextIter *iter)
+{
+    GSList *taglist;
+    GSList *link;
+    GtkTextTag *tag;
+    gchar *data;
+
+    taglist = gtk_text_iter_get_tags (iter);
+    data = NULL;
+
+    if (taglist != NULL)
+    {
+      for (link = taglist;  link != NULL && data == NULL;  link = link->next)
+      {
+        tag = GTK_TEXT_TAG (link->data);
+        if (tag != NULL) 
+        {
+          data = g_object_get_data (G_OBJECT (tag), "vocabulary-data");
+        }
+      }
+      g_slist_free (taglist); taglist = NULL;
+    }
+
+    return data;
+}
+
+
+static gunichar
+gw_searchwindow_hovering_kanji_character (GtkTextIter *iter)
+{
+    gunichar character;
+
+    character = gtk_text_iter_get_char (iter);
+
+    if (!g_unichar_validate (character))
+      character = 0;
+    else if (g_unichar_get_script (character) != G_UNICODE_SCRIPT_HAN)
+      character = 0;
+
+    return character;
+}
+
+
+
+
+G_MODULE_EXPORT gboolean
+gw_searchwindow_motion_notify_event_cb (GtkWidget       *widget,
+                                        GdkEventButton  *event,
+                                        gpointer         data   )
 {
     //Declarations
-    GwApplication *application;
     GwSearchWindow *window;
-    GwSearchWindowPrivate *priv;
-    LwDictInfoList *dictinfolist;
-
-    gunichar unic;
-    GtkTextIter iter, start, end;
+    GwApplication *application;
+    GtkTextView *view;
+    GtkTextTag *tag;
+    GtkTextIter iter;
     gint x;
     gint y;
-    GtkTextView *view;
+    const gchar *vocabulary_data;
+    LwDictInfoList *dictinfolist;
+    LwDictInfo *dictinfo;
     GtkWidget *tooltip_window;
-    LwDictInfo *di;
+    gboolean is_hovering_kanji_character;
+    GtkTextWindowType type;
 
     //Initializations
     window = GW_SEARCHWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_SEARCHWINDOW));
     if (window == NULL) return FALSE;
-    priv = window->priv;
     application = gw_window_get_application (GW_WINDOW (window));
-    dictinfolist = LW_DICTINFOLIST (gw_application_get_dictinfolist (application));
-
-    x = event->x;
-    y = event->y;
-    unic = gw_searchwindow_get_hovered_character (window, &x, &y, &iter);
-
-    //get word
-    if (gtk_text_iter_starts_word (&iter) == FALSE)
-      gtk_text_iter_backward_word_start (&iter);
-    start = iter;
-    if (gtk_text_iter_ends_word (&iter) == FALSE)
-      gtk_text_iter_forward_word_end (&iter);
-    end = iter;
-
-    if (priv->mouse_hovered_word != NULL)
-    {
-      g_free (priv->mouse_hovered_word);
-      priv->mouse_hovered_word = NULL;
-    }
-    priv->mouse_hovered_word = gtk_text_iter_get_visible_slice (&start, &end);
-
-    di = lw_dictinfolist_get_dictinfo (dictinfolist, LW_DICTTYPE_KANJI, "Kanji");
-    if (di == NULL) return FALSE;
-
     view = gw_searchwindow_get_current_textview (window);
+    type = gtk_text_view_get_window_type (view, event->window);
+    gtk_text_view_window_to_buffer_coords (view, type, (gint) event->x, (gint) event->y, &x, &y);
+    gtk_text_view_get_iter_at_position (view, &iter, NULL, x, y);
+    dictinfolist = LW_DICTINFOLIST (gw_application_get_dictinfolist (application));
+    dictinfo = lw_dictinfolist_get_dictinfo (dictinfolist, LW_DICTTYPE_KANJI, "Kanji");
     tooltip_window = GTK_WIDGET (gtk_widget_get_tooltip_window (GTK_WIDGET (view)));
-  
+
+    is_hovering_kanji_character = gw_searchwindow_hovering_kanji_character (&iter);
+    vocabulary_data = gw_searchwindow_hovering_vocabulary_data_tag (&iter);
+ 
     // Characters above 0xFF00 represent inserted images
-    if (unic > L'ー' && unic < 0xFF00)
+    if ((is_hovering_kanji_character && dictinfo != NULL) || vocabulary_data)
     {
       GdkWindow* gdkwindow;
       GdkCursor* cursor;
@@ -112,7 +135,7 @@ gboolean gw_searchwindow_get_iter_for_motion_cb (GtkWidget      *widget,
       gdk_window_set_cursor (gdkwindow, NULL);
     }
 
-    if (tooltip_window != NULL && priv->mouse_button_character != unic) 
+    if (tooltip_window != NULL && !is_hovering_kanji_character) 
     {
       gtk_widget_destroy (tooltip_window);
       gtk_widget_set_tooltip_window (GTK_WIDGET (view), NULL);
@@ -137,21 +160,15 @@ gw_searchwindow_get_position_for_button_press_cb (GtkWidget      *widget,
     //Declarations
     GwSearchWindow *window;
     GwSearchWindowPrivate *priv;
-    GtkTextIter iter;
-    int x;
-    int y;
 
     //Window coordinates
     window = GW_SEARCHWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_SEARCHWINDOW));
     if (window == NULL) return FALSE;
     priv = window->priv;
-    x = event->x;
-    y = event->y;
 
-    gw_searchwindow_get_hovered_character (window, &x, &y, &iter);
 
-    priv->mouse_button_press_x = x;
-    priv->mouse_button_press_y = y;
+    priv->mouse_button_press_x = event->x;
+    priv->mouse_button_press_y = event->y;
 
     return FALSE;
 }
@@ -170,60 +187,75 @@ gw_searchwindow_get_iter_for_button_release_cb (GtkWidget      *widget,
                                                 gpointer        data    )
 {
     //Declarations
-    GwApplication *application;
     GwSearchWindow *window;
     GwSearchWindowPrivate *priv;
-    LwDictInfoList *dictinfolist;
+    GwApplication *application;
     LwPreferences *preferences;
+    GtkTextView *view;
+    GtkTextTag *tag;
+    GtkTextIter iter;
     gint x;
     gint y;
-    GtkTextIter iter;
-    gunichar unic;
-    LwDictInfo *di;
-    GError *error;
+    const gchar *vocabulary_data;
+    LwDictInfoList *dictinfolist;
+    LwDictInfo *dictinfo;
+    gboolean is_hovering_kanji_character;
+    GtkTextWindowType type;
+    gboolean within_movement_threshold;
+    gunichar character;
 
     //Initializations
-    x = event->x;
-    y = event->y;
     window = GW_SEARCHWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_SEARCHWINDOW));
     if (window == NULL) return FALSE;
     priv = window->priv;
     application = gw_window_get_application (GW_WINDOW (window));
-    dictinfolist = LW_DICTINFOLIST (gw_application_get_dictinfolist (application));
     preferences = gw_application_get_preferences (application);
-    unic = gw_searchwindow_get_hovered_character (window, &x, &y, &iter);
-    di = lw_dictinfolist_get_dictinfo (dictinfolist, LW_DICTTYPE_KANJI, "Kanji");
-    if (di == NULL) return FALSE;
-    error = NULL;
+    view = gw_searchwindow_get_current_textview (window);
+    type = gtk_text_view_get_window_type (view, event->window);
+    gtk_text_view_window_to_buffer_coords (view, type, (gint) event->x, (gint) event->y, &x, &y);
+    gtk_text_view_get_iter_at_position (view, &iter, NULL, x, y);
+    dictinfolist = LW_DICTINFOLIST (gw_application_get_dictinfolist (application));
+    dictinfo = lw_dictinfolist_get_dictinfo (dictinfolist, LW_DICTTYPE_KANJI, "Kanji");
+    within_movement_threshold = (abs (priv->mouse_button_press_x - x) < 3 && abs (priv->mouse_button_press_y - y) < 3);
 
-    if (abs (priv->mouse_button_press_x - x) < 3 && abs (priv->mouse_button_press_y - y) < 3)
+    character = gw_searchwindow_hovering_kanji_character (&iter);
+    vocabulary_data = gw_searchwindow_hovering_vocabulary_data_tag (&iter);
+
+    if (!within_movement_threshold) return FALSE;
+ 
+    // Characters above 0xFF00 represent inserted images
+    if (character && dictinfo != NULL)
     {
-      // Characters above 0xFF00 represent inserted images etc
-      if (unic > L'ー' && unic < 0xFF00 )
-      {
-        //Convert the unicode character into to a utf8 string
-        gchar query[7];
-        gint length = g_unichar_to_utf8 (unic, query);
-        query[length] = '\0'; 
+      //Convert the unicode character into to a utf8 string
+      gchar query[7];
+      gint length = g_unichar_to_utf8 (character, query);
+      query[length] = '\0'; 
 
-        //Start the search
-        if (priv->mouse_item != NULL)
-        {
-          lw_searchitem_cancel_search (priv->mouse_item);
-          lw_searchitem_free (priv->mouse_item);
-          priv->mouse_item = NULL;
-        }
-        priv->mouse_button_press_root_x = event->x_root;
-        priv->mouse_button_press_root_y = event->y_root;
-        priv->mouse_button_character = unic;
-        priv->mouse_item = lw_searchitem_new (query, di, preferences, &error);
-        lw_searchitem_start_search (priv->mouse_item, TRUE, FALSE);
-      }
-
-      if (error != NULL)
+      //Start the search
+      if (priv->mouse_item != NULL)
       {
-        gw_application_handle_error (application, NULL, FALSE, &error);
+        lw_searchitem_cancel_search (priv->mouse_item);
+        lw_searchitem_free (priv->mouse_item);
+        priv->mouse_item = NULL;
       }
+      priv->mouse_button_press_x = event->x;
+      priv->mouse_button_press_y = event->y;
+      priv->mouse_button_press_root_x = event->x_root;
+      priv->mouse_button_press_root_y = event->y_root;
+      priv->mouse_button_character = character;
+      priv->mouse_item = lw_searchitem_new (query, dictinfo, preferences, NULL);
+      lw_searchitem_start_search (priv->mouse_item, TRUE, FALSE);
+    }
+    else if (vocabulary_data)
+    {
+      GtkWindow *avw = gw_addvocabularywindow_new (GTK_APPLICATION (application));
+      LwVocabularyItem *vi = lw_vocabularyitem_new_from_string (vocabulary_data);
+      gtk_window_set_transient_for (avw, GTK_WINDOW (window));
+      gw_addvocabularywindow_set_kanji (GW_ADDVOCABULARYWINDOW (avw), lw_vocabularyitem_get_kanji (vi));
+      gw_addvocabularywindow_set_furigana (GW_ADDVOCABULARYWINDOW (avw), lw_vocabularyitem_get_furigana (vi));
+      gw_addvocabularywindow_set_definitions (GW_ADDVOCABULARYWINDOW (avw), lw_vocabularyitem_get_definitions (vi));
+      lw_vocabularyitem_free (vi); vi = NULL;
+      gtk_widget_show (GTK_WIDGET (avw));
     }
 
     return FALSE; 

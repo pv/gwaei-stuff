@@ -33,7 +33,6 @@
 
 #include <gwaei/gwaei.h>
 #include <gwaei/searchwindow-private.h>
-#include <gwaei/addbutton.h>
 
 static void gw_searchwindow_append_edict_result (GwSearchWindow*, LwSearchItem*);
 static void gw_searchwindow_append_kanjidict_result (GwSearchWindow*, LwSearchItem*);
@@ -44,28 +43,60 @@ static void gw_searchwindow_append_more_relevant_header (GwSearchWindow*, LwSear
 
 
 static void
-gw_searchwindow_add_addbutton (GwSearchWindow *window, LwResultLine *resultline, GtkTextView *view, GtkTextIter *iter)
+gw_searchwindow_insert_addlink (GwSearchWindow   *window,
+                                GtkTextBuffer    *buffer,
+                                GtkTextIter      *iter,
+                                LwVocabularyItem *item   )
 {
-    GtkTextBuffer *buffer;
-    GtkWidget *addbutton;
-    GtkTextChildAnchor *anchor = NULL;
-    gchar *kanji, *furigana, *definitions;
+    //Sanity check
+    g_assert (item != NULL);
 
-    buffer = gtk_text_view_get_buffer (view);
+    //Declarations
+    GtkTextTag *tag;
+    gchar *data;
+    gchar *text;
+    
+    //Initializations
+    tag = gtk_text_buffer_create_tag (buffer, NULL, 
+        "rise",   5000, 
+        "scale",  0.75, 
+        "weight", PANGO_WEIGHT_BOLD,
+        NULL);
+    text = " + ";
+    data = lw_vocabularyitem_to_string (item);
+    g_object_set_data_full (G_OBJECT (tag), 
+        "vocabulary-data", 
+        data, g_free);
+
+    gtk_text_buffer_insert_with_tags (buffer, iter, text, -1, tag, NULL);
+}
+
+
+void
+gw_searchwindow_insert_edict_addlink (GwSearchWindow *window, LwResultLine *resultline, GtkTextBuffer *buffer, GtkTextIter *iter)
+{
+    //Declarations
+    gchar *kanji, *furigana, *definitions;
+    LwVocabularyItem *item;
+
+    //Initializations
     kanji = resultline->kanji_start;
     furigana = resultline->furigana_start;
     definitions = g_strjoinv ("/", resultline->def_start);
-    addbutton = gw_addbutton_new (GW_WINDOW (window), kanji, furigana, definitions);
 
-    gtk_text_buffer_insert (buffer, iter, " ", -1);
+    if (definitions != NULL)
+    {
+      item = lw_vocabularyitem_new ();
+      if (item != NULL)
+      {
+        lw_vocabularyitem_set_kanji (item, kanji);
+        lw_vocabularyitem_set_furigana (item, furigana);
+        lw_vocabularyitem_set_definitions (item, definitions);
 
-    anchor = gtk_text_buffer_create_child_anchor (buffer, iter);
-
-    gtk_text_view_add_child_at_anchor (view, addbutton, anchor);
-    gtk_widget_show (addbutton);
-    gtk_text_buffer_insert (buffer, iter, " ", -1);
-
-    g_free (definitions);
+        gw_searchwindow_insert_addlink (window, buffer, iter, item);
+      }
+      g_free (definitions);
+    }
 }
 
 //!
@@ -391,7 +422,7 @@ gw_searchwindow_append_def_same_to_buffer (GwSearchWindow *window, LwSearchItem*
       end_offset = gtk_text_iter_get_line_offset (&iter);
       gw_add_match_highlights (line, start_offset, end_offset, item);
 
-      gw_searchwindow_add_addbutton (window, resultline, view, &iter);
+      gw_searchwindow_insert_edict_addlink (window, resultline, buffer, &iter);
     }
 
 }
@@ -496,7 +527,7 @@ gw_searchwindow_append_edict_result (GwSearchWindow *window, LwSearchItem *item)
       gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, gettext("Pop"), -1, "small", NULL);
     }
 
-    gw_searchwindow_add_addbutton (window, resultline, view, &iter);
+    gw_searchwindow_insert_edict_addlink (window, resultline, buffer, &iter);
 
     gw_shift_stay_mark (item, "previous_result");
     start_offset = 0;
