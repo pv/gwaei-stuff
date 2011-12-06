@@ -141,6 +141,7 @@ gw_vocabularywindow_constructed (GObject *object)
     priv->item_treeview = GTK_TREE_VIEW (gw_window_get_object (GW_WINDOW (window), "vocabulary_item_treeview"));
     priv->item_toolbar =  GTK_TOOLBAR (gw_window_get_object (GW_WINDOW (window), "vocabulary_item_toolbar"));
     priv->study_toolbar =  GTK_TOOLBAR (gw_window_get_object (GW_WINDOW (window), "study_toolbar"));
+    priv->edit_toolbutton = GTK_TOGGLE_TOOL_BUTTON (gw_window_get_object (GW_WINDOW (window), "edit_toolbutton"));
 
     //Set up the gtk window
     gtk_window_set_title (GTK_WINDOW (window), gettext("gWaei Vocabulary Manager"));
@@ -767,14 +768,16 @@ gw_vocabularywindow_init_word_treeview (GwVocabularyWindow *window)
     GtkTreeViewColumn *column;
     GtkCellRenderer *renderer;
     GtkTreeSelection *selection;
+    gboolean editable;
 
     priv = window->priv;
     selection = gtk_tree_view_get_selection (priv->item_treeview);
 
     //Set up the columns
+    editable = gtk_toggle_tool_button_get_active (priv->edit_toolbutton);
     column = gtk_tree_view_column_new ();
     renderer = gtk_cell_renderer_text_new ();
-    g_object_set (G_OBJECT (renderer), "editable", TRUE, NULL);
+    g_object_set (G_OBJECT (renderer), "editable", editable, NULL);
     g_object_set_data (G_OBJECT (renderer), "column", GINT_TO_POINTER (GW_VOCABULARYWORDSTORE_COLUMN_KANJI));
     g_signal_connect (G_OBJECT (renderer), "edited", G_CALLBACK (gw_vocabularywindow_cell_edited_cb), priv->item_treeview);
     gtk_tree_view_column_set_title (column, gettext("Word"));
@@ -788,7 +791,7 @@ gw_vocabularywindow_init_word_treeview (GwVocabularyWindow *window)
 
     column = gtk_tree_view_column_new ();
     renderer = gtk_cell_renderer_text_new ();
-    g_object_set (G_OBJECT (renderer), "editable", TRUE, NULL);
+    g_object_set (G_OBJECT (renderer), "editable", editable, NULL);
     g_object_set_data (G_OBJECT (renderer), "column", GINT_TO_POINTER (GW_VOCABULARYWORDSTORE_COLUMN_FURIGANA));
     g_signal_connect (G_OBJECT (renderer), "edited", G_CALLBACK (gw_vocabularywindow_cell_edited_cb), priv->item_treeview);
     gtk_tree_view_column_set_title (column, gettext("Reading"));
@@ -802,7 +805,7 @@ gw_vocabularywindow_init_word_treeview (GwVocabularyWindow *window)
 
     column = gtk_tree_view_column_new ();
     renderer = gtk_cell_renderer_text_new ();
-    g_object_set (G_OBJECT (renderer), "editable", TRUE, NULL);
+    g_object_set (G_OBJECT (renderer), "editable", editable, NULL);
     g_object_set (G_OBJECT (renderer), "wrap-mode", PANGO_WRAP_WORD, NULL);
     g_object_set_data (G_OBJECT (renderer), "column", GINT_TO_POINTER (GW_VOCABULARYWORDSTORE_COLUMN_DEFINITIONS));
     g_signal_connect (G_OBJECT (renderer), "edited", G_CALLBACK (gw_vocabularywindow_cell_edited_cb), priv->item_treeview);

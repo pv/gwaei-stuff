@@ -21,6 +21,7 @@ struct _GwVocabularyWindowPrivate {
   GtkTreeView  *item_treeview;
   GtkToolbar   *item_toolbar;
   GtkToolbar   *study_toolbar;
+  GtkToggleToolButton *edit_toolbutton;
 
   gboolean has_changes;
 

@@ -653,14 +653,12 @@ gw_vocabularywindow_toggle_editing_cb (GtkWidget *widget, gpointer data)
 {
     GwVocabularyWindow *window;
     GwVocabularyWindowPrivate *priv;
-    GtkToggleToolButton *button;
     gboolean state;
 
     window = GW_VOCABULARYWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_VOCABULARYWINDOW));
     if (window == NULL) return;
     priv = window->priv;
-    button = GTK_TOGGLE_TOOL_BUTTON (widget);
-    state = gtk_toggle_tool_button_get_active (button);
+    state = gtk_toggle_tool_button_get_active (priv->edit_toolbutton);
 
     g_object_set (G_OBJECT (priv->renderer[GW_VOCABULARYWORDSTORE_COLUMN_KANJI]), "editable", state, NULL);
     g_object_set (G_OBJECT (priv->renderer[GW_VOCABULARYWORDSTORE_COLUMN_FURIGANA]), "editable", state, NULL);
