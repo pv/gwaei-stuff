@@ -784,6 +784,7 @@ gw_vocabularywindow_init_word_treeview (GwVocabularyWindow *window)
         "weight", GW_VOCABULARYWORDSTORE_COLUMN_CHANGED,
         NULL);
     gtk_tree_view_append_column (priv->item_treeview, column);
+    priv->renderer[GW_VOCABULARYWORDSTORE_COLUMN_KANJI] = renderer;
 
     column = gtk_tree_view_column_new ();
     renderer = gtk_cell_renderer_text_new ();
@@ -797,6 +798,7 @@ gw_vocabularywindow_init_word_treeview (GwVocabularyWindow *window)
         "weight", GW_VOCABULARYWORDSTORE_COLUMN_CHANGED,
         NULL);
     gtk_tree_view_append_column (priv->item_treeview, column);
+    priv->renderer[GW_VOCABULARYWORDSTORE_COLUMN_FURIGANA] = renderer;
 
     column = gtk_tree_view_column_new ();
     renderer = gtk_cell_renderer_text_new ();
@@ -811,6 +813,7 @@ gw_vocabularywindow_init_word_treeview (GwVocabularyWindow *window)
         "weight", GW_VOCABULARYWORDSTORE_COLUMN_CHANGED,
         NULL);
     gtk_tree_view_append_column (priv->item_treeview, column);
+    priv->renderer[GW_VOCABULARYWORDSTORE_COLUMN_DEFINITIONS] = renderer;
 
     GtkEntry *entry = GTK_ENTRY (gw_window_get_object (GW_WINDOW (window), "vocabulary_search_entry"));
     gtk_tree_view_set_search_entry (priv->item_treeview, entry);
@@ -847,24 +850,56 @@ gw_vocabularywindow_init_word_treeview (GwVocabularyWindow *window)
 }
 
 
+gboolean
+gw_vocabularywindow_current_wordstore_has_changes (GwVocabularyWindow *window)
+{
+   GwVocabularyWindowPrivate *priv;
+   GtkTreeModel *model;
+   GtkTreeSelection *selection;
+   gboolean valid;
+   gboolean has_changes;
+   GtkTreeIter iter;
+   GtkListStore *wordstore;
+
+   priv = window->priv;
+   model = gtk_tree_view_get_model (priv->list_treeview);
+   selection = gtk_tree_view_get_selection (priv->list_treeview);
+   valid = gtk_tree_selection_get_selected (selection, &model, &iter);
+   has_changes = FALSE;
+
+   if (valid)
+   {
+     wordstore = gw_vocabularyliststore_get_wordstore_by_iter (GW_VOCABULARYLISTSTORE (model), &iter);
+     has_changes = gw_vocabularywordstore_has_changes (GW_VOCABULARYWORDSTORE (wordstore));
+   }
+
+   return has_changes;
+}
+
+
 void
 gw_vocabularywindow_set_has_changes (GwVocabularyWindow *window, gboolean has_changes)
 {
+   GwVocabularyWindowPrivate *priv;
    GtkWidget *widget;
+   gboolean wordstore_has_changes;
 
-   window->priv->has_changes = has_changes;
+
+   priv = window->priv;
+   priv->has_changes = has_changes;
+   wordstore_has_changes = gw_vocabularywindow_current_wordstore_has_changes (window);
 
    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "save_toolbutton"));
    gtk_widget_set_sensitive (widget, has_changes);
 
    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "revert_toolbutton"));
-   gtk_widget_set_sensitive (widget, has_changes);
+   gtk_widget_set_sensitive (widget, wordstore_has_changes);
 
    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "save_menuitem"));
    gtk_widget_set_sensitive (widget, has_changes);
 
    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "revert_menuitem"));
-   gtk_widget_set_sensitive (widget, has_changes);
+   gtk_widget_set_sensitive (widget, wordstore_has_changes);
 }
 
 

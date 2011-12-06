@@ -131,7 +131,7 @@
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <signal name="activate" handler="gw_vocabularywindow_reset_cb" object="toplevel" swapped="no"/>
+                        <signal name="activate" handler="gw_vocabularywindow_revert_wordstore_cb" object="toplevel" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -491,14 +491,16 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkToolButton" id="revert_toolbutton1">
+                      <object class="GtkToolButton" id="revert_toolbutton">
                         <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
+                        <property name="sensitive">False</property>
                         <property name="can_focus">False</property>
                         <property name="use_action_appearance">False</property>
                         <property name="label" translatable="yes">Revert</property>
                         <property name="use_underline">True</property>
                         <property name="icon_name">edit-undo-symbolic</property>
+                        <signal name="clicked" handler="gw_vocabularywindow_revert_wordstore_cb" object="toplevel" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -514,6 +516,7 @@
                         <property name="label" translatable="yes">Edit</property>
                         <property name="use_underline">True</property>
                         <property name="stock_id">gtk-edit</property>
+                        <signal name="toggled" handler="gw_vocabularywindow_toggle_editing_cb" object="toplevel" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>

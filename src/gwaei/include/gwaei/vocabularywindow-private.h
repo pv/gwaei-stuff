@@ -27,6 +27,8 @@ struct _GwVocabularyWindowPrivate {
   //Main variables
   guint timeoutid[TOTAL_GW_VOCABULARYWINDOW_TIMEOUTIDS];
   guint signalid[TOTAL_GW_VOCABULARYWINDOW_SIGNALIDS];
+
+  GtkCellRenderer *renderer[TOTAL_GW_VOCABULARYWORDSTORE_COLUMNS];
 };
 
 #define GW_VOCABULARYWINDOW_GET_PRIVATE(object)(G_TYPE_INSTANCE_GET_PRIVATE ((object), GW_TYPE_VOCABULARYWINDOW, GwVocabularyWindowPrivate))

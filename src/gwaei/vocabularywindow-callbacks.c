@@ -159,7 +159,7 @@ gw_vocabularywindow_new_word_cb (GtkWidget *widget, gpointer data)
       if (list != NULL)
       {
         gw_addvocabularywindow_set_list (GW_ADDVOCABULARYWINDOW (avw), list);
-        gw_addvocabularywindow_set_focus (avw, GW_ADDVOCABULARYWINDOW_FOCUS_KANJI);
+        gw_addvocabularywindow_set_focus (GW_ADDVOCABULARYWINDOW (avw), GW_ADDVOCABULARYWINDOW_FOCUS_KANJI);
         g_free (list);
       }
       gtk_window_set_transient_for (avw, GTK_WINDOW (window));
@@ -220,6 +220,15 @@ gw_vocabularywindow_list_selection_changed_cb (GtkTreeView *view, gpointer data)
     model = GTK_TREE_MODEL (gw_vocabularyliststore_get_wordstore_by_iter (GW_VOCABULARYLISTSTORE (store), &iter));
     gtk_tree_view_set_model (window->priv->item_treeview, model);
     gtk_tree_view_set_search_column (window->priv->item_treeview, GW_VOCABULARYWORDSTORE_COLUMN_DEFINITIONS);
+
+    gboolean has_changes;
+    has_changes = gw_vocabularywindow_current_wordstore_has_changes (window);
+
+    GtkWidget *widget;
+    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "revert_menuitem"));
+    gtk_widget_set_sensitive (widget, has_changes);
+    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "revert_toolbutton"));
+    gtk_widget_set_sensitive (widget, has_changes);
 }
 
 
@@ -609,3 +618,51 @@ gw_vocabularywindow_liststore_changed_cb (GwVocabularyListStore *store, gpointer
   gw_vocabularywindow_set_has_changes (window, has_changes);
 }
 
+
+G_MODULE_EXPORT void
+gw_vocabularywindow_revert_wordstore_cb (GtkWidget *widget, gpointer data)
+{
+    GwVocabularyWindow *window;
+    GwVocabularyWindowPrivate *priv;
+    GwVocabularyListStore *liststore;
+    GtkListStore *wordstore;
+    GtkTreeSelection *selection;
+    GtkTreeIter iter;
+    GtkTreeModel *model;
+    gboolean valid;
+
+    window = GW_VOCABULARYWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_VOCABULARYWINDOW));
+    if (window == NULL) return;
+    priv = window->priv;
+    liststore = GW_VOCABULARYLISTSTORE (gtk_tree_view_get_model (priv->list_treeview));
+    selection = gtk_tree_view_get_selection (priv->list_treeview);
+    model = GTK_TREE_MODEL (liststore);
+    valid = gtk_tree_selection_get_selected (selection, &model, &iter);
+
+    if (valid)
+    {
+      wordstore = gw_vocabularyliststore_get_wordstore_by_iter (liststore, &iter);
+      gw_vocabularywordstore_reset (GW_VOCABULARYWORDSTORE (wordstore));
+      gw_vocabularywordstore_load (GW_VOCABULARYWORDSTORE (wordstore));
+    }
+}
+
+
+G_MODULE_EXPORT void
+gw_vocabularywindow_toggle_editing_cb (GtkWidget *widget, gpointer data)
+{
+    GwVocabularyWindow *window;
+    GwVocabularyWindowPrivate *priv;
+    GtkToggleToolButton *button;
+    gboolean state;
+
+    window = GW_VOCABULARYWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_VOCABULARYWINDOW));
+    if (window == NULL) return;
+    priv = window->priv;
+    button = GTK_TOGGLE_TOOL_BUTTON (widget);
+    state = gtk_toggle_tool_button_get_active (button);
+
+    g_object_set (G_OBJECT (priv->renderer[GW_VOCABULARYWORDSTORE_COLUMN_KANJI]), "editable", state, NULL);
+    g_object_set (G_OBJECT (priv->renderer[GW_VOCABULARYWORDSTORE_COLUMN_FURIGANA]), "editable", state, NULL);
+    g_object_set (G_OBJECT (priv->renderer[GW_VOCABULARYWORDSTORE_COLUMN_DEFINITIONS]), "editable", state, NULL);
+}
