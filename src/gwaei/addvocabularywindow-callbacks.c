@@ -6,27 +6,30 @@ G_MODULE_EXPORT void
 gw_addvocabularywindow_add_cb (GtkWidget *widget, gpointer data)
 {
     GwAddVocabularyWindow *window;
+    GwAddVocabularyWindowPrivate *priv;
     GwAddVocabularyWindowClass *klass;
     GtkListStore *wordstore;
     const gchar *kanji, *furigana, *definitions;
-    GtkTreeIter iter;
 
     window = GW_ADDVOCABULARYWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_ADDVOCABULARYWINDOW));
     if (window == NULL) return;
+    priv = window->priv;
     klass = GW_ADDVOCABULARYWINDOW_CLASS (G_OBJECT_GET_CLASS (window));
 
     kanji = gw_addvocabularywindow_get_kanji (window);
     furigana = gw_addvocabularywindow_get_furigana (window);
     definitions = gw_addvocabularywindow_get_definitions (window);
     wordstore = gw_addvocabularywindow_get_wordstore (window);
+    priv->wordstore = GW_VOCABULARYWORDSTORE (wordstore);
 
-    gw_vocabularywordstore_load (GW_VOCABULARYWORDSTORE (wordstore));
-    gw_vocabularywordstore_new_word (GW_VOCABULARYWORDSTORE (wordstore), &iter, NULL, kanji, furigana, definitions);
-    gw_vocabularywordstore_save (GW_VOCABULARYWORDSTORE (wordstore));
+    gw_vocabularywordstore_load (priv->wordstore);
+    gw_vocabularywordstore_new_word (priv->wordstore, &(priv->iter), NULL, kanji, furigana, definitions);
 
     if (klass->last_selected_list_name != NULL)
       g_free (klass->last_selected_list_name);
     klass->last_selected_list_name = g_strdup (gw_addvocabularywindow_get_list (window));
+
+    priv->valid = TRUE;
 
     gtk_widget_destroy (GTK_WIDGET (window));
 }
@@ -79,26 +82,94 @@ gw_addvocabularywindow_furigana_changed_cb (GtkWidget *widget, gpointer data)
     gw_addvocabularywindow_validate (window);
 }
 
+
+void gw_addvocabularywindow_definitions_event_after_cb (GtkWidget*, GdkEvent*, gpointer);
+
+
 G_MODULE_EXPORT void
-gw_addvocabularywindow_definitions_changed_cb (GtkWidget *widget, gpointer data)
+gw_addvocabularywindow_definitions_paste_done_cb (GtkTextBuffer *buffer,
+                                                  GtkClipboard  *clipboard,
+                                                  gpointer       data      )
 {
     GwAddVocabularyWindow *window;
     GwAddVocabularyWindowPrivate *priv;
-    GtkTextBuffer *buffer;
     GtkTextIter start, end;
+    gchar *text;
 
     window = GW_ADDVOCABULARYWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_ADDVOCABULARYWINDOW));
     if (window == NULL) return;
     priv = window->priv;
+
+    gtk_text_buffer_get_start_iter (buffer, &start);
+    gtk_text_buffer_get_end_iter (buffer, &end);
+
+
+    text = gtk_text_buffer_get_text (buffer, &start, &end, FALSE);
+    g_strdelimit (text, "\n", ' ');
+    g_strstrip (text);
+
+    gtk_text_buffer_set_text (buffer, text, -1);
+
+    priv->pasted = TRUE;
+
+    g_free (text);
+}
+
+
+G_MODULE_EXPORT void
+gw_addvocabularywindow_definitions_event_after_cb (GtkWidget *widget, GdkEvent *event, gpointer data)
+{
+
+    GwAddVocabularyWindow *window;
+    GwAddVocabularyWindowPrivate *priv;
+    GtkTextIter start, end;
+    GtkTextBuffer *buffer;
+    gboolean valid;
+    gboolean activate;
+
+    window = GW_ADDVOCABULARYWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_ADDVOCABULARYWINDOW));
+    if (window == NULL) return;
+    priv = window->priv;
+
+    if (priv->pasted == TRUE) { priv->pasted = FALSE; return; }
 
     buffer = gtk_text_view_get_buffer (priv->definitions_textview);
     gtk_text_buffer_get_start_iter (buffer, &start);
     gtk_text_buffer_get_end_iter (buffer, &end);
 
     if (priv->definitions_text != NULL) g_free (priv->definitions_text);
-    priv->definitions_text =  gtk_text_buffer_get_text (buffer, &start, &end, FALSE);
+    priv->definitions_text = gtk_text_buffer_get_text (buffer, &start, &end, FALSE);
+    activate = (strchr (priv->definitions_text, '\n') != NULL);
+    g_strstrip (priv->definitions_text);
 
-    gw_addvocabularywindow_validate (window);
+    gchar *source_ptr, *target_ptr;
+    source_ptr = target_ptr = priv->definitions_text;
+    while (*target_ptr != '\0')
+    {
+      if (*target_ptr == '\n') target_ptr++;
+      else if (source_ptr == target_ptr)
+      {
+        source_ptr = ++target_ptr;
+      }
+      else
+      {
+        *(source_ptr++) = *(target_ptr++);
+      }
+    }
+    *source_ptr = '\0';
+
+    valid = gw_addvocabularywindow_validate (window);
+
+    if (activate)
+    {
+      g_signal_handlers_block_by_func (widget, gw_addvocabularywindow_definitions_event_after_cb, data);
+      gtk_text_buffer_set_text (buffer, priv->definitions_text, -1);
+      g_signal_handlers_unblock_by_func (widget, gw_addvocabularywindow_definitions_event_after_cb, data);
+      if (valid)
+      {
+        gtk_button_clicked (priv->add_button);
+      }
+    }
 }
 
 
@@ -106,9 +177,17 @@ G_MODULE_EXPORT void
 gw_addvocabularywindow_list_changed_cb (GtkWidget *widget, gpointer data)
 {
     GwAddVocabularyWindow *window;
+    GwAddVocabularyWindowPrivate *priv;
+    GtkEntry *entry;
 
     window = GW_ADDVOCABULARYWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_ADDVOCABULARYWINDOW));
     if (window == NULL) return;
+    priv = window->priv;
+    entry = GTK_ENTRY (gtk_bin_get_child (GTK_BIN (priv->vocabulary_list_combobox)));
+
+    if (priv->list_text != NULL) g_free (priv->list_text);
+    priv->list_text = g_strdup (gtk_entry_get_text (entry));
+    g_strstrip (priv->list_text);
 
     gw_addvocabularywindow_validate (window);
 }

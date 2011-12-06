@@ -49,6 +49,8 @@ void gw_vocabularyliststore_revert_all (GwVocabularyListStore*);
 GtkListStore* gw_vocabularyliststore_get_wordstore_by_iter (GwVocabularyListStore*, GtkTreeIter*);
 GtkListStore* gw_vocabularyliststore_get_wordstore_by_index (GwVocabularyListStore*, gint);
 GtkListStore* gw_vocabularyliststore_get_wordstore_by_name (GwVocabularyListStore*, const gchar*);
+gchar* gw_vocabularyliststore_get_name_by_iter (GwVocabularyListStore*, GtkTreeIter*);
+
 void gw_vocabularyliststore_remove_path_list (GwVocabularyListStore*, GList*);
 void gw_vocabularyliststore_new_list (GwVocabularyListStore*, GtkTreeIter*);
 gboolean gw_vocabularyliststore_list_exists (GwVocabularyListStore*, const gchar*);

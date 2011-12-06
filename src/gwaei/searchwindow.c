@@ -1087,7 +1087,7 @@ gw_searchwindow_select_all (GwSearchWindow* window, GtkWidget *widget)
 
     if (GTK_IS_ENTRY (widget))
     {
-      gtk_editable_select_region (GTK_EDITABLE (widget), 0,-1);
+      gtk_editable_select_region (GTK_EDITABLE (widget), 0, -1);
     }
     else if (GTK_IS_TEXT_VIEW (widget))
     {
@@ -1120,7 +1120,7 @@ gw_searchwindow_select_none (GwSearchWindow *window, GtkWidget *widget)
 
     if (GTK_IS_ENTRY (widget))
     {
-      gtk_editable_select_region (GTK_EDITABLE (widget), -1,-1);
+      gtk_editable_select_region (GTK_EDITABLE (widget), -1, -1);
     }
     else if (GTK_IS_TEXT_VIEW (widget))
     {

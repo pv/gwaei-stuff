@@ -17,6 +17,7 @@ struct _GwAddVocabularyWindowPrivate {
   GtkTextView *definitions_textview;
 
   GtkComboBox *vocabulary_list_combobox;
+  GtkEntry *list_entry;
 
   GtkButton *add_button;
   GtkButton *cancel_button;
@@ -28,6 +29,14 @@ struct _GwAddVocabularyWindowPrivate {
   gchar *kanji_text;
   gchar *furigana_text;
   gchar *definitions_text;
+  gchar *list_text;
+
+  GtkTreeIter iter;
+  gboolean valid;
+
+  GwVocabularyWordStore *wordstore;
+
+  gboolean pasted;
 };
 
 #define GW_ADDVOCABULARYWINDOW_GET_PRIVATE(object)(G_TYPE_INSTANCE_GET_PRIVATE ((object), GW_TYPE_ADDVOCABULARYWINDOW, GwAddVocabularyWindowPrivate))

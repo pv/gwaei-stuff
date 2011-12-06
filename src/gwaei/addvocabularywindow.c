@@ -82,6 +82,7 @@ gw_addvocabularywindow_finalize (GObject *object)
     if (priv->kanji_text != NULL) g_free (priv->kanji_text);
     if (priv->furigana_text != NULL) g_free (priv->furigana_text);
     if (priv->definitions_text != NULL) g_free (priv->definitions_text);
+    if (priv->list_text != NULL) g_free (priv->list_text);
 
     G_OBJECT_CLASS (gw_addvocabularywindow_parent_class)->finalize (object);
 }
@@ -122,6 +123,7 @@ gw_addvocabularywindow_constructed (GObject *object)
     gtk_window_set_skip_pager_hint (GTK_WINDOW (window), TRUE);
     gtk_window_set_destroy_with_parent (GTK_WINDOW (window), FALSE);
     gtk_window_set_modal (GTK_WINDOW (window), TRUE);
+    gtk_window_set_default (GTK_WINDOW (window), GTK_WIDGET (priv->add_button));
 
     gw_addvocabularywindow_init_accelerators (window);
     gw_addvocabularywindow_init_combobox (window);
@@ -156,6 +158,10 @@ gw_addvocabularywindow_init_accelerators (GwAddVocabularyWindow *window)
     widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "cancel_button"));
     gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
       accelgroup, (GDK_KEY_Escape), 0, GTK_ACCEL_VISIBLE);
+
+    widget = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "add_button"));
+    gtk_widget_add_accelerator (GTK_WIDGET (widget), "activate", 
+      accelgroup, (GDK_KEY_ISO_Enter), 0, GTK_ACCEL_VISIBLE);
 }
 
 
@@ -167,7 +173,6 @@ gw_addvocabularywindow_init_combobox (GwAddVocabularyWindow *window)
     GwApplication *application;
     GtkListStore *store;
     GtkTreeModel *model;
-    GtkEntry *entry;
 
     priv = window->priv;
     klass = GW_ADDVOCABULARYWINDOW_CLASS (G_OBJECT_GET_CLASS (window));
@@ -179,26 +184,27 @@ gw_addvocabularywindow_init_combobox (GwAddVocabularyWindow *window)
     gtk_combo_box_set_model (priv->vocabulary_list_combobox, model); 
 
     //Remove the default entry since it doesn't seem to be editable for some reason
-    entry = GTK_ENTRY (gtk_bin_get_child (GTK_BIN (priv->vocabulary_list_combobox)));
-    gtk_widget_destroy (GTK_WIDGET (entry));
+    priv->list_entry = GTK_ENTRY (gtk_bin_get_child (GTK_BIN (priv->vocabulary_list_combobox)));
+    gtk_widget_destroy (GTK_WIDGET (priv->list_entry));
 
     //Add our entry
-    entry = GTK_ENTRY (gtk_entry_new ());
-    g_signal_connect (G_OBJECT (entry), "changed", G_CALLBACK (gw_addvocabularywindow_list_changed_cb), window);
-    gtk_widget_show (GTK_WIDGET (entry));
+    priv->list_entry = GTK_ENTRY (gtk_entry_new ());
+    gtk_entry_set_activates_default (priv->list_entry, TRUE);
+    g_signal_connect (G_OBJECT (priv->list_entry), "changed", G_CALLBACK (gw_addvocabularywindow_list_changed_cb), window);
+    gtk_widget_show (GTK_WIDGET (priv->list_entry));
     gtk_combo_box_set_entry_text_column (priv->vocabulary_list_combobox, GW_VOCABULARYLISTSTORE_COLUMN_NAME);
-    gtk_container_add (GTK_CONTAINER (priv->vocabulary_list_combobox), GTK_WIDGET (entry));
+    gtk_container_add (GTK_CONTAINER (priv->vocabulary_list_combobox), GTK_WIDGET (priv->list_entry));
 
     //Set the correct initial selection
     if (klass->last_selected_list_name != NULL)
     {
-      gtk_entry_set_text (entry, klass->last_selected_list_name);
+      gtk_entry_set_text (priv->list_entry, klass->last_selected_list_name);
     }
     else
     {
       gtk_combo_box_set_active (priv->vocabulary_list_combobox, 0);
     }
-
+    gtk_editable_select_region (GTK_EDITABLE (priv->list_entry), 0, 0);
 }
 
 
@@ -266,9 +272,8 @@ gw_addvocabularywindow_set_definitions (GwAddVocabularyWindow *window, const gch
 const gchar*
 gw_addvocabularywindow_get_list (GwAddVocabularyWindow *window)
 {
-    GtkEntry *entry;
-    entry = GTK_ENTRY (gtk_bin_get_child (GTK_BIN (window->priv->vocabulary_list_combobox)));
-    return gtk_entry_get_text (entry);
+    if (window->priv->list_text == NULL) window->priv->list_text = g_strdup ("");
+    return window->priv->list_text;
 }
 
 
@@ -279,7 +284,8 @@ gw_addvocabularywindow_set_list (GwAddVocabularyWindow *window, const gchar *LIS
 
     GtkEntry *entry;
     entry = GTK_ENTRY (gtk_bin_get_child (GTK_BIN (window->priv->vocabulary_list_combobox)));
-    return gtk_entry_set_text (entry, LIST);
+    gtk_entry_set_text (entry, LIST);
+    gtk_editable_select_region (GTK_EDITABLE (window->priv->list_entry), 0, 0);
 }
 
 
@@ -333,4 +339,56 @@ gw_addvocabularywindow_focus_add_button (GwAddVocabularyWindow *window)
 {
     if (gw_addvocabularywindow_validate (window))
       gtk_widget_grab_focus (GTK_WIDGET (window->priv->add_button));
+}
+
+
+gboolean
+gw_addvocabularywindow_get_iter (GwAddVocabularyWindow *window, GtkTreeIter *iter)
+{
+    g_assert (iter != NULL);
+
+    *iter = window->priv->iter;
+
+    return window->priv->valid;
+}
+
+
+void
+gw_addvocabularywindow_save (GwAddVocabularyWindow *window)
+{
+   if (window->priv->wordstore != NULL)
+   {
+     gw_vocabularywordstore_save (window->priv->wordstore);
+   }
+}
+
+
+void
+gw_addvocabularywindow_set_focus (GwAddVocabularyWindow *window, GwAddVocabularyWindowFocus focus)
+{
+    GwAddVocabularyWindowPrivate *priv;
+
+    priv = window->priv;
+
+    switch (focus)
+    {
+      case GW_ADDVOCABULARYWINDOW_FOCUS_LIST:
+        gtk_widget_grab_focus (GTK_WIDGET (priv->list_entry));
+        break;
+      case GW_ADDVOCABULARYWINDOW_FOCUS_KANJI:
+        gtk_widget_grab_focus (GTK_WIDGET (priv->kanji_entry));
+        break;
+      case GW_ADDVOCABULARYWINDOW_FOCUS_FURIGANA:
+        gtk_widget_grab_focus (GTK_WIDGET (priv->furigana_entry));
+        break;
+      case GW_ADDVOCABULARYWINDOW_FOCUS_DEFINITIONS:
+        gtk_widget_grab_focus (GTK_WIDGET (priv->definitions_textview));
+        break;
+      case GW_ADDVOCABULARYWINDOW_FOCUS_ADD_BUTTON:
+        gtk_widget_grab_focus (GTK_WIDGET (priv->add_button));
+        break;
+      default:
+        g_assert_not_reached ();
+        break;
+    }
 }

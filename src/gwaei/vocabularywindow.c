@@ -876,4 +876,3 @@ gw_vocabularywindow_has_changes (GwVocabularyWindow *window)
 
 
 
-

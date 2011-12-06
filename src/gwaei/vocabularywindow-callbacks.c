@@ -105,25 +105,67 @@ gw_vocabularywindow_remove_list_cb (GtkWidget *widget, gpointer data)
 }
 
 
+static void
+gw_vocabularywindow_select_new_word_from_dialog_cb (GtkWidget *widget, gpointer data)
+{
+    GwVocabularyWindow *window;
+    GwVocabularyWindowPrivate *priv;
+    GwAddVocabularyWindow *avw;
+    GtkTreeIter iter;
+    GtkTreeSelection *selection;
+    gboolean valid;
+
+    window = GW_VOCABULARYWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_VOCABULARYWINDOW));
+    if (window == NULL) return;
+    priv = window->priv;
+    avw = GW_ADDVOCABULARYWINDOW (widget);
+    selection = gtk_tree_view_get_selection (priv->item_treeview);
+    valid = gw_addvocabularywindow_get_iter (GW_ADDVOCABULARYWINDOW (avw), &iter);
+
+    if (valid)
+    {
+      gtk_tree_selection_unselect_all (selection);
+      gtk_tree_selection_select_iter (selection, &iter);
+    }
+}
+
+
 G_MODULE_EXPORT void
 gw_vocabularywindow_new_word_cb (GtkWidget *widget, gpointer data)
 {
     GwVocabularyWindow *window;
     GwVocabularyWindowPrivate *priv;
-    GtkTreeIter iter;
+    GwApplication *application;
+    GtkWindow *avw;
     GtkTreeModel *model;
     GtkTreeSelection *selection;
+    GtkTreeIter iter;
+    gboolean valid;
+    gchar *list;
 
     window = GW_VOCABULARYWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_VOCABULARYWINDOW));
     if (window == NULL) return;
     priv = window->priv;
-    model = gtk_tree_view_get_model (priv->item_treeview);
-    selection = gtk_tree_view_get_selection (priv->item_treeview);
+    application = gw_window_get_application (GW_WINDOW (window));
+    model = gtk_tree_view_get_model (priv->list_treeview);
+    if (model == NULL) return;
+    selection = gtk_tree_view_get_selection (priv->list_treeview);
+    valid = gtk_tree_selection_get_selected (selection, &model, &iter);
 
-    gw_vocabularywordstore_new_word (GW_VOCABULARYWORDSTORE (model), &iter, NULL, NULL, NULL, NULL);
-
-    gtk_tree_selection_unselect_all (selection);
-    gtk_tree_selection_select_iter (selection, &iter);
+    if (valid)
+    {
+      avw = gw_addvocabularywindow_new (GTK_APPLICATION (application));
+      list = gw_vocabularyliststore_get_name_by_iter (GW_VOCABULARYLISTSTORE (model), &iter);
+      if (list != NULL)
+      {
+        gw_addvocabularywindow_set_list (GW_ADDVOCABULARYWINDOW (avw), list);
+        gw_addvocabularywindow_set_focus (avw, GW_ADDVOCABULARYWINDOW_FOCUS_KANJI);
+        g_free (list);
+      }
+      gtk_window_set_transient_for (avw, GTK_WINDOW (window));
+      g_signal_connect (G_OBJECT (avw), "destroy", G_CALLBACK (gw_vocabularywindow_select_new_word_from_dialog_cb), window);
+      gtk_widget_show (GTK_WIDGET (avw));
+    }
 }
 
 

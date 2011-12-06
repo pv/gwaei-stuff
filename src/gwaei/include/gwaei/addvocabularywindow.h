@@ -5,6 +5,17 @@
 
 G_BEGIN_DECLS
 
+
+typedef enum {
+  GW_ADDVOCABULARYWINDOW_FOCUS_LIST,
+  GW_ADDVOCABULARYWINDOW_FOCUS_KANJI,
+  GW_ADDVOCABULARYWINDOW_FOCUS_FURIGANA,
+  GW_ADDVOCABULARYWINDOW_FOCUS_DEFINITIONS,
+  GW_ADDVOCABULARYWINDOW_FOCUS_ADD_BUTTON,
+  TOTAL_GW_ADDVOCABULARYWINDOW_FOCUSES
+} GwAddVocabularyWindowFocus;
+
+
 //Boilerplate
 typedef struct _GwAddVocabularyWindow GwAddVocabularyWindow;
 typedef struct _GwAddVocabularyWindowClass GwAddVocabularyWindowClass;
@@ -45,6 +56,9 @@ GtkListStore* gw_addvocabularywindow_get_wordstore (GwAddVocabularyWindow*);
 
 gboolean gw_addvocabularywindow_validate (GwAddVocabularyWindow*);
 void gw_addvocabularywindow_focus_add_button (GwAddVocabularyWindow*);
+
+gboolean gw_addvocabularywindow_get_iter (GwAddVocabularyWindow*, GtkTreeIter*);
+void gw_addvocabularywindow_set_focus (GwAddVocabularyWindow*, GwAddVocabularyWindowFocus);
 
 #include "addvocabularywindow-callbacks.h"
 

@@ -110,6 +110,18 @@ gw_vocabularyliststore_class_init (GwVocabularyListStoreClass *klass)
     );
 }
 
+gchar*
+gw_vocabularyliststore_get_name_by_iter (GwVocabularyListStore *store, GtkTreeIter *iter)
+{
+    g_assert (iter != NULL);
+
+    gchar *name;
+
+    gtk_tree_model_get (GTK_TREE_MODEL (store), iter, GW_VOCABULARYLISTSTORE_COLUMN_NAME, &name, -1);
+
+    return name;
+}
+
 
 GtkListStore*
 gw_vocabularyliststore_get_wordstore_by_iter (GwVocabularyListStore *store, GtkTreeIter *iter)

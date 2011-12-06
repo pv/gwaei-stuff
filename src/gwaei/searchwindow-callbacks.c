@@ -253,6 +253,7 @@ gw_searchwindow_get_iter_for_button_release_cb (GtkWidget      *widget,
       gw_addvocabularywindow_set_definitions (GW_ADDVOCABULARYWINDOW (avw), lw_vocabularyitem_get_definitions (vi));
       lw_vocabularyitem_free (vi); vi = NULL;
       gtk_widget_show (GTK_WIDGET (avw));
+      gw_addvocabularywindow_set_focus (GW_ADDVOCABULARYWINDOW (avw), GW_ADDVOCABULARYWINDOW_FOCUS_ADD_BUTTON);
     }
 
     return FALSE; 
