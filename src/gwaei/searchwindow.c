@@ -635,19 +635,19 @@ gw_searchwindow_set_dictionary (GwSearchWindow *window, int request)
     {
       list = gtk_container_get_children (GTK_CONTAINER (shell));
       radioitem = GTK_WIDGET (g_list_nth_data (list, request));
-      g_signal_handlers_block_by_func (radioitem, gw_searchwindow_dictionary_radio_changed_cb, window);
+      G_GNUC_EXTENSION g_signal_handlers_block_by_func (radioitem, gw_searchwindow_dictionary_radio_changed_cb, window);
       if (g_list_length (list) > 3 && radioitem != NULL)
       {
         gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (radioitem), TRUE);
       }
-      g_signal_handlers_unblock_by_func (radioitem, gw_searchwindow_dictionary_radio_changed_cb, window);
+      G_GNUC_EXTENSION g_signal_handlers_unblock_by_func (radioitem, gw_searchwindow_dictionary_radio_changed_cb, window);
       g_list_free (list);
     }
 
     //Make sure the correct combobox item is selected
-    g_signal_handlers_block_by_func (priv->combobox, gw_searchwindow_dictionary_combobox_changed_cb, NULL);
+    G_GNUC_EXTENSION g_signal_handlers_block_by_func (priv->combobox, gw_searchwindow_dictionary_combobox_changed_cb, NULL);
     gtk_combo_box_set_active (priv->combobox, request);
-    g_signal_handlers_unblock_by_func (priv->combobox, gw_searchwindow_dictionary_combobox_changed_cb, NULL);
+    G_GNUC_EXTENSION g_signal_handlers_unblock_by_func (priv->combobox, gw_searchwindow_dictionary_combobox_changed_cb, NULL);
 }
 
 

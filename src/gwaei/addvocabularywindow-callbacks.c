@@ -164,9 +164,9 @@ gw_addvocabularywindow_definitions_event_after_cb (GtkWidget *widget, GdkEvent *
 
     if (activate)
     {
-      g_signal_handlers_block_by_func (widget, gw_addvocabularywindow_definitions_event_after_cb, data);
+      G_GNUC_EXTENSION g_signal_handlers_block_by_func (widget, gw_addvocabularywindow_definitions_event_after_cb, data);
       gtk_text_buffer_set_text (buffer, priv->definitions_text, -1);
-      g_signal_handlers_unblock_by_func (widget, gw_addvocabularywindow_definitions_event_after_cb, data);
+      G_GNUC_EXTENSION g_signal_handlers_unblock_by_func (widget, gw_addvocabularywindow_definitions_event_after_cb, data);
       if (valid)
       {
         gtk_button_clicked (priv->add_button);

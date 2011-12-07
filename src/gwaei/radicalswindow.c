@@ -683,10 +683,10 @@ gw_radicalswindow_deselect_all_radicals (GwRadicalsWindow *window)
     //Reset all of the toggle buttons
     for (iter = list; iter != NULL; iter = iter->next)
     {
-      g_signal_handlers_block_by_func (iter->data, gw_radicalswindow_search_cb, window);
+      G_GNUC_EXTENSION g_signal_handlers_block_by_func (iter->data, gw_radicalswindow_search_cb, window);
       if (G_OBJECT_TYPE (iter->data) == type)
          gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(iter->data), FALSE);
-      g_signal_handlers_unblock_by_func (iter->data, gw_radicalswindow_search_cb, window);
+      G_GNUC_EXTENSION g_signal_handlers_unblock_by_func (iter->data, gw_radicalswindow_search_cb, window);
       gtk_widget_set_sensitive (GTK_WIDGET (iter->data), TRUE);
     }
 

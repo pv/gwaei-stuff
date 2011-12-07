@@ -1921,9 +1921,9 @@ gw_searchwindow_sync_toolbar_show_cb (GSettings *settings, gchar *key, gpointer 
     gtk_widget_reset_style (GTK_WIDGET (search_toolbar));
     gtk_widget_reset_style (GTK_WIDGET (priv->toolbar));
 
-    g_signal_handlers_block_by_func (action, gw_searchwindow_toolbar_show_toggled_cb, toplevel);
+    G_GNUC_EXTENSION g_signal_handlers_block_by_func (action, gw_searchwindow_toolbar_show_toggled_cb, toplevel);
     gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), request);
-    g_signal_handlers_unblock_by_func (action, gw_searchwindow_toolbar_show_toggled_cb, toplevel);
+    G_GNUC_EXTENSION g_signal_handlers_unblock_by_func (action, gw_searchwindow_toolbar_show_toggled_cb, toplevel);
 }
 
 
@@ -1980,9 +1980,9 @@ gw_searchwindow_sync_statusbar_show_cb (GSettings *settings, gchar *key, gpointe
     else
       gtk_widget_hide (priv->statusbar);
 
-    g_signal_handlers_block_by_func (action, gw_searchwindow_statusbar_show_toggled_cb, toplevel);
+    G_GNUC_EXTENSION g_signal_handlers_block_by_func (action, gw_searchwindow_statusbar_show_toggled_cb, toplevel);
     gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), request);
-    g_signal_handlers_unblock_by_func (action, gw_searchwindow_statusbar_show_toggled_cb, toplevel);
+    G_GNUC_EXTENSION g_signal_handlers_unblock_by_func (action, gw_searchwindow_statusbar_show_toggled_cb, toplevel);
 }
 
 
@@ -2062,9 +2062,9 @@ gw_searchwindow_sync_spellcheck_cb (GSettings *settings, gchar *KEY, gpointer da
     toolbutton = GTK_TOGGLE_TOOL_BUTTON (gw_window_get_object (GW_WINDOW (window), "spellcheck_toolbutton"));
     request = lw_preferences_get_boolean_by_schema (preferences, LW_SCHEMA_BASE, LW_KEY_SPELLCHECK);
 
-    g_signal_handlers_block_by_func (toolbutton, gw_searchwindow_spellcheck_toggled_cb, toplevel);
+    G_GNUC_EXTENSION g_signal_handlers_block_by_func (toolbutton, gw_searchwindow_spellcheck_toggled_cb, toplevel);
     gtk_toggle_tool_button_set_active (toolbutton, request);
-    g_signal_handlers_unblock_by_func (toolbutton, gw_searchwindow_spellcheck_toggled_cb, toplevel);
+    G_GNUC_EXTENSION g_signal_handlers_unblock_by_func (toolbutton, gw_searchwindow_spellcheck_toggled_cb, toplevel);
 
     if (request == TRUE && priv->spellcheck == NULL)
     {
