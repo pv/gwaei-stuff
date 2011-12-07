@@ -5,6 +5,10 @@
 
 G_BEGIN_DECLS
 
+typedef enum {
+  GW_ADDVOCABULARYWINDOW_CLASS_SIGNALID_WORD_ADDED,
+  TOTAL_GW_ADDVOCABULARYWINDOW_CLASS_SIGNALIDS
+} GwAddVocabularyWindowClassSignalId;
 
 typedef enum {
   GW_ADDVOCABULARYWINDOW_FOCUS_LIST,
@@ -35,6 +39,8 @@ struct _GwAddVocabularyWindow {
 
 struct _GwAddVocabularyWindowClass {
   GwWindowClass parent_class;
+  guint signalid[TOTAL_GW_ADDVOCABULARYWINDOW_CLASS_SIGNALIDS];
+  void (*word_added) (GwAddVocabularyWindow *window);
   gchar *last_selected_list_name;
 };
 

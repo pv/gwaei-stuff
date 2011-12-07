@@ -31,6 +31,8 @@ gw_addvocabularywindow_add_cb (GtkWidget *widget, gpointer data)
 
     priv->valid = TRUE;
 
+    g_signal_emit (G_OBJECT (window), klass->signalid[GW_ADDVOCABULARYWINDOW_CLASS_SIGNALID_WORD_ADDED], 0);
+
     gtk_widget_destroy (GTK_WIDGET (window));
 }
 

@@ -208,6 +208,7 @@ gw_vocabularyliststore_get_wordstore_by_name (GwVocabularyListStore *store, cons
         GW_VOCABULARYLISTSTORE_COLUMN_OBJECT,  wordstore,
         -1);
       g_signal_connect (G_OBJECT (wordstore), "changed", G_CALLBACK (gw_vocabularyliststore_wordstore_changed_cb), store);
+      gw_vocabularywordstore_set_has_changes (GW_VOCABULARYWORDSTORE (wordstore), TRUE);
     }
 
     return wordstore;

@@ -163,7 +163,7 @@ gw_vocabularywindow_new_word_cb (GtkWidget *widget, gpointer data)
         g_free (list);
       }
       gtk_window_set_transient_for (avw, GTK_WINDOW (window));
-      g_signal_connect (G_OBJECT (avw), "destroy", G_CALLBACK (gw_vocabularywindow_select_new_word_from_dialog_cb), window);
+      g_signal_connect (G_OBJECT (avw), "word-added", G_CALLBACK (gw_vocabularywindow_select_new_word_from_dialog_cb), window);
       gtk_widget_show (GTK_WIDGET (avw));
     }
 }

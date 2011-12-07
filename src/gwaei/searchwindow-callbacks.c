@@ -36,6 +36,7 @@
 #include <gwaei/gwaei.h>
 #include <gwaei/searchwindow-private.h>
 
+static void gw_searchwindow_add_vocabulary_destroy_cb (GwAddVocabularyWindow*, gpointer);
 
 static const gchar*
 gw_searchwindow_hovering_vocabulary_data_tag (GtkTextIter *iter)
@@ -253,7 +254,8 @@ gw_searchwindow_get_iter_for_button_release_cb (GtkWidget      *widget,
       gw_addvocabularywindow_set_definitions (GW_ADDVOCABULARYWINDOW (avw), lw_vocabularyitem_get_definitions (vi));
       lw_vocabularyitem_free (vi); vi = NULL;
       gtk_widget_show (GTK_WIDGET (avw));
-      gw_addvocabularywindow_set_focus (GW_ADDVOCABULARYWINDOW (avw), GW_ADDVOCABULARYWINDOW_FOCUS_ADD_BUTTON);
+      gw_addvocabularywindow_set_focus (GW_ADDVOCABULARYWINDOW (avw), GW_ADDVOCABULARYWINDOW_FOCUS_LIST);
+      g_signal_connect (G_OBJECT (avw), "word-added", G_CALLBACK (gw_searchwindow_add_vocabulary_destroy_cb), NULL);
     }
 
     return FALSE; 
@@ -2382,6 +2384,20 @@ gw_searchwindow_event_after_cb (GtkWidget *widget,
     }
 }
 
+static void
+gw_searchwindow_add_vocabulary_destroy_cb (GwAddVocabularyWindow *window, gpointer data)
+{
+  printf("word added\n");
+  GtkListStore *wordstore;
+
+  wordstore = gw_addvocabularywindow_get_wordstore (window);
+  if (wordstore != NULL)
+  {
+    gw_vocabularywordstore_save (GW_VOCABULARYWORDSTORE (wordstore));
+    printf("save\n");
+  }
+}
+
 
 G_MODULE_EXPORT void
 gw_searchwindow_add_vocabulary_word_cb (GtkWidget *widget, gpointer data)
@@ -2397,6 +2413,7 @@ gw_searchwindow_add_vocabulary_word_cb (GtkWidget *widget, gpointer data)
     application = gw_window_get_application (GW_WINDOW (window));
 
     addvocabularywindow = gw_addvocabularywindow_new (GTK_APPLICATION (application));
+    g_signal_connect (G_OBJECT (addvocabularywindow), "word-added", G_CALLBACK (gw_searchwindow_add_vocabulary_destroy_cb), NULL);
     gtk_window_set_transient_for (addvocabularywindow, GTK_WINDOW (window));
     gtk_widget_show (GTK_WIDGET (addvocabularywindow));
 }
