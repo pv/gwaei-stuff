@@ -18,8 +18,8 @@ struct _GwVocabularyWindowPrivate {
   GtkTreeView  *list_treeview;
   GtkToolbar   *list_toolbar;
 
-  GtkTreeView  *item_treeview;
-  GtkToolbar   *item_toolbar;
+  GtkTreeView  *word_treeview;
+  GtkToolbar   *word_toolbar;
   GtkToolbar   *study_toolbar;
   GtkToggleToolButton *edit_toolbutton;
 
