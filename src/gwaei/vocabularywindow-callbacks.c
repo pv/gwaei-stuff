@@ -715,3 +715,46 @@ gw_vocabularywindow_toggle_editing_cb (GtkWidget *widget, gpointer data)
     g_object_set (G_OBJECT (priv->renderer[GW_VOCABULARYWORDSTORE_COLUMN_FURIGANA]), "editable", state, NULL);
     g_object_set (G_OBJECT (priv->renderer[GW_VOCABULARYWORDSTORE_COLUMN_DEFINITIONS]), "editable", state, NULL);
 }
+
+
+G_MODULE_EXPORT gboolean
+gw_vocabularywindow_set_word_tooltip_text (GtkWidget  *widget,
+                                           gint        x,
+                                           gint        y,
+                                           gboolean    keyboard_mode,
+                                           GtkTooltip *tooltip,
+                                           gpointer    data)
+{
+    GwVocabularyWindow *window;
+    GwVocabularyWindowPrivate *priv;
+    GwVocabularyWordStore *store;
+    LwVocabularyItem *item;
+    GtkTreeIter iter;
+    gchar *text;
+    GtkTreePath *path;
+    gboolean valid;
+    gchar *markup;
+
+    window = GW_VOCABULARYWINDOW (gtk_widget_get_ancestor (GTK_WIDGET (data), GW_TYPE_VOCABULARYWINDOW));
+    if (window == NULL) return FALSE;
+    priv = window->priv;
+    store = GW_VOCABULARYWORDSTORE (gtk_tree_view_get_model (priv->word_treeview));
+    valid = gtk_tree_view_get_tooltip_context (priv->word_treeview, &x, &y, keyboard_mode, NULL, &path, &iter);
+    if (valid) 
+    {
+      text = gw_vocabularywordstore_iter_to_string (store, &iter);
+      item = lw_vocabularyitem_new_from_string (text);
+      markup = g_markup_printf_escaped ("<b>%s [%s]</b>\n%s", 
+        lw_vocabularyitem_get_kanji (item), 
+        lw_vocabularyitem_get_furigana (item), 
+        lw_vocabularyitem_get_definitions (item));
+      gtk_tree_view_set_tooltip_row (priv->word_treeview, tooltip, path);
+      gtk_tooltip_set_markup (tooltip, markup);
+      g_free (text);
+      g_free (markup);
+      gtk_tree_path_free (path);
+      lw_vocabularyitem_free (item);
+    }
+
+    return valid;
+}

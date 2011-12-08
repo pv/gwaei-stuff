@@ -59,6 +59,7 @@ void gw_vocabularywordstore_remove_path_list (GwVocabularyWordStore*, GList*);
 void gw_vocabularywordstore_append_text (GwVocabularyWordStore*, GtkTreeIter*, gboolean, const gchar*);
 void gw_vocabularywordstore_new_word (GwVocabularyWordStore*, GtkTreeIter*, GtkTreeIter*, const gchar*, const gchar*, const gchar*);
 void gw_vocabularywordstore_set_string (GwVocabularyWordStore*, GtkTreeIter*, gint, const gchar*);
+gchar* gw_vocabularywordstore_iter_to_string (GwVocabularyWordStore*, GtkTreeIter*);
 
 G_END_DECLS
 

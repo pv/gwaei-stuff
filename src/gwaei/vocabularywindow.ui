@@ -439,6 +439,7 @@
                       <object class="GtkTreeView" id="vocabulary_word_treeview">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <signal name="query-tooltip" handler="gw_vocabularywindow_set_word_tooltip_text" object="toplevel" swapped="no"/>
                         <child internal-child="selection">
                           <object class="GtkTreeSelection" id="treeview-selection2"/>
                         </child>

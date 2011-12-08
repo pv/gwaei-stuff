@@ -773,6 +773,11 @@ gw_vocabularywindow_init_word_treeview (GwVocabularyWindow *window)
     priv = window->priv;
     selection = gtk_tree_view_get_selection (priv->word_treeview);
 
+    //g_object_set (G_OBJECT (priv->word_treeview), "even-row-color", "#eeeeee", NULL);
+    //gtk_tree_view_set_grid_lines (priv->word_treeview, GTK_TREE_VIEW_GRID_LINES_HORIZONTAL);
+    gtk_tree_view_set_rules_hint (priv->word_treeview, TRUE);
+    gtk_widget_set_has_tooltip (GTK_WIDGET (priv->word_treeview), TRUE);
+
     //Set up the columns
     editable = gtk_toggle_tool_button_get_active (priv->edit_toolbutton);
     column = gtk_tree_view_column_new ();
@@ -805,12 +810,11 @@ gw_vocabularywindow_init_word_treeview (GwVocabularyWindow *window)
 
     column = gtk_tree_view_column_new ();
     renderer = gtk_cell_renderer_text_new ();
-    g_object_set (G_OBJECT (renderer), "editable", editable, NULL);
-    g_object_set (G_OBJECT (renderer), "wrap-mode", PANGO_WRAP_WORD, NULL);
+    g_object_set (G_OBJECT (renderer), "ellipsize", PANGO_ELLIPSIZE_END, NULL);
     g_object_set_data (G_OBJECT (renderer), "column", GINT_TO_POINTER (GW_VOCABULARYWORDSTORE_COLUMN_DEFINITIONS));
     g_signal_connect (G_OBJECT (renderer), "edited", G_CALLBACK (gw_vocabularywindow_cell_edited_cb), priv->word_treeview);
     gtk_tree_view_column_set_title (column, gettext("Definitions"));
-    gtk_tree_view_column_pack_start (column, renderer, FALSE);
+    gtk_tree_view_column_pack_start (column, renderer, TRUE);
     gtk_tree_view_column_set_attributes (column, renderer, 
         "text", GW_VOCABULARYWORDSTORE_COLUMN_DEFINITIONS, 
         "weight", GW_VOCABULARYWORDSTORE_COLUMN_CHANGED,
