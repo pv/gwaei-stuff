@@ -8,6 +8,9 @@ struct _LwQueryLine {
     //Storage for the original query string
     char *string;
 
+    //Result from morphological parsing (NULL if none or not relevant)
+    char *morphology;
+
     //General search regexes
     GRegex*** re_kanji;
     GRegex*** re_furi;

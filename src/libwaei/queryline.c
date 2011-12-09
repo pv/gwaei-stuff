@@ -80,6 +80,7 @@ void
 lw_queryline_init (LwQueryLine *ql)
 {
     ql->string = NULL;
+    ql->morphology = NULL;
     ql->re_kanji = NULL;
     ql->re_furi = NULL;
     ql->re_roma = NULL;
@@ -201,6 +202,83 @@ static GRegex*** _queryline_allocate_pointers (int length)
 
 
 //!
+//! @brief Construct a regexp for getting the morphologically deduced base forms of words
+//!
+//! @param ql Queryline whose ql->string has been initialized
+//! @returns Newly allocated string, or NULL if nothing to add
+//!
+//! The regexp is of form ^WORD1$|^WORD2$|...
+//!
+static char *_queryline_get_morphology_regexp(LwQueryLine *ql)
+{
+   LwMorphology *morph;
+   GList *it;
+   gchar *result;
+   const char *ptr;
+
+   if (ql->morphology) {
+       g_free(ql->morphology);
+   }
+
+   ql->morphology = NULL;
+   result = NULL;
+
+   // Do analysis only on alpha-kana-kanji strings
+   for (ptr = ql->string; *ptr != '\0'; ptr = g_utf8_next_char (ptr))
+   {
+       gunichar character;
+       GUnicodeScript script;
+       character = g_utf8_get_char (ptr);
+       script = g_unichar_get_script (character);
+       if (script != G_UNICODE_SCRIPT_HAN &&
+           script != G_UNICODE_SCRIPT_HIRAGANA &&
+           script != G_UNICODE_SCRIPT_KATAKANA &&
+           !g_unichar_isalnum(character) &&
+           !g_unichar_isspace(character))
+           return result;
+   }
+
+   morph = lw_morphology_new (ql->string);
+
+   for (it = morph->items; it; it = it->next) {
+       LwMorphologyItem *item = (LwMorphologyItem *)it->data;
+       char *temp;
+
+       if (it == morph->items && it->next == NULL
+               && strcmp(item->base_form, ql->string) == 0) {
+           // Don't add any results for a single word in base form
+           break;
+       }
+
+       if (item->base_form) {
+           if (result == NULL) {
+               result = g_strdup_printf("^%s$", item->base_form);
+           }
+           else {
+               temp = g_strdup_printf ("%s|^%s$", result, item->base_form);
+               g_free (result);
+               result = temp;
+           }
+       }
+       if (item->explanation) {
+           if (ql->morphology == NULL) {
+               ql->morphology = g_strdup(item->explanation);
+           }
+           else {
+               temp = g_strdup_printf ("%s + %s", ql->morphology, item->explanation);
+               g_free (ql->morphology);
+               ql->morphology = temp;
+           }
+       }
+   }
+
+   lw_morphology_free (morph);
+
+   return result;
+}
+
+
+//!
 //! @brief Parses a query using the edict style
 //! @param ql Pointer to a LwQueryLine object ot parse a query string into.
 //! @param pm A LwPreferences object to load preferences from
@@ -227,6 +305,7 @@ lw_queryline_parse_edict_string (LwQueryLine *ql, LwPreferences *pm, const char*
    char *temp;
    char *expression;
    char *half;
+   char *morpho_expression, *expression_low;
    char buffer[300];
    int rk_conv_pref;
    gboolean want_rk_conv;
@@ -255,7 +334,10 @@ lw_queryline_parse_edict_string (LwQueryLine *ql, LwPreferences *pm, const char*
      want_kh_conv = TRUE;
    }
 
+   //Start analysis
    atoms = _queryline_initialize_pointers (ql, STRING);
+   morpho_expression = _queryline_get_morphology_regexp(ql);
+
    length = g_strv_length (atoms);
 
    //Setup the expression to be used in the base of the regex for kanji-ish strings
@@ -263,6 +345,8 @@ lw_queryline_parse_edict_string (LwQueryLine *ql, LwPreferences *pm, const char*
    for (iter = atoms; *iter != NULL && re < (ql->re_kanji + length); iter++)
    {
      atom = *iter;
+     expression = NULL;
+     expression_low = NULL;
 
      if (lw_util_is_kanji_ish_str (atom) || lw_util_is_kanji_str (atom)) //Figures out if the string may contain hiragana
      {
@@ -290,12 +374,34 @@ lw_queryline_parse_edict_string (LwQueryLine *ql, LwPreferences *pm, const char*
           }
           g_free (half);
        }
+     }
 
+     if (morpho_expression && iter == atoms) {
+         // Stuff morphology regexp to the first atom
+         if (expression == NULL) {
+             expression_low = g_strdup(morpho_expression);
+         }
+         else {
+             expression_low = g_strdup_printf("%s|%s", expression, morpho_expression);
+         }
+     }
+
+     if (expression_low && expression == NULL) {
+         expression = g_strdup("----------------");
+     }
+
+     if (expression) {
        //Compile the regexes
-       for (i = 0; i < LW_RELEVANCE_TOTAL; i++)
-         if (((*re)[i] = lw_regex_kanji_new (expression, LW_DICTTYPE_EDICT, i, error)) == NULL) all_regex_built = FALSE;
+       temp = expression;
+       for (i = 0; i < LW_RELEVANCE_TOTAL; i++) {
+         if (expression_low && i == LW_RELEVANCE_LOW)
+             temp = expression_low;
+         if (((*re)[i] = lw_regex_kanji_new (temp, LW_DICTTYPE_EDICT, i, error)) == NULL) all_regex_built = FALSE;
+       }
 
        g_free (expression);
+       if (expression_low)
+           g_free (expression_low);
        re++;
      }
    }
@@ -306,6 +412,9 @@ lw_queryline_parse_edict_string (LwQueryLine *ql, LwPreferences *pm, const char*
    for (iter = atoms; *iter != NULL && re < (ql->re_furi + length); iter++)
    {
      atom = *iter;
+     expression = NULL;
+     expression_low = NULL;
+
      if (lw_util_is_furigana_str (atom))
      {
        expression = g_strdup_printf ("(%s)", atom);
@@ -326,13 +435,6 @@ lw_queryline_parse_edict_string (LwQueryLine *ql, LwPreferences *pm, const char*
          expression = g_strdup_printf("(%s)|(%s)", atom, temp);
          g_free (temp);
        }
-
-       //Compile the regexes
-       for (i = 0; i < LW_RELEVANCE_TOTAL; i++)
-         if (((*re)[i] = lw_regex_furi_new (expression, LW_DICTTYPE_EDICT, i, error)) == NULL) all_regex_built = FALSE;
-
-       g_free (expression);
-       re++;
      }
      else if (lw_util_is_romaji_str (atom) && lw_util_str_roma_to_hira (atom, buffer, 300) && want_rk_conv)
      {
@@ -346,12 +448,34 @@ lw_queryline_parse_edict_string (LwQueryLine *ql, LwPreferences *pm, const char*
          expression = g_strdup_printf("(%s)|(%s)", buffer, temp);
          g_free (temp);
        }
+     }
 
+     if (morpho_expression && iter == atoms) {
+         // Stuff morphology regexp to the first atom
+         if (expression == NULL) {
+             expression_low = g_strdup(morpho_expression);
+         }
+         else {
+             expression_low = g_strdup_printf("%s|%s", expression, morpho_expression);
+         }
+     }
+
+     if (expression_low && expression == NULL) {
+         expression = g_strdup("----------------");
+     }
+
+     if (expression) {
        //Compile the regexes
-       for (i = 0; i < LW_RELEVANCE_TOTAL; i++)
-         if (((*re)[i] = lw_regex_furi_new (expression, LW_DICTTYPE_EDICT, i, error)) == NULL) all_regex_built = FALSE;
+       temp = expression;
+       for (i = 0; i < LW_RELEVANCE_TOTAL; i++) {
+         if (expression_low && i == LW_RELEVANCE_LOW)
+             temp = expression_low;
+         if (((*re)[i] = lw_regex_furi_new (temp, LW_DICTTYPE_EDICT, i, error)) == NULL) all_regex_built = FALSE;
+       }
 
        g_free (expression);
+       if (expression_low)
+           g_free (expression_low);
        re++;
      }
    }
@@ -401,6 +525,9 @@ lw_queryline_parse_edict_string (LwQueryLine *ql, LwPreferences *pm, const char*
    //Cleanup
    g_strfreev (atoms);
    atoms = NULL;
+
+   if (morpho_expression)
+       g_free(morpho_expression);
 
    return all_regex_built;
 }
