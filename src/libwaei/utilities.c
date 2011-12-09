@@ -489,20 +489,20 @@ lw_util_is_yojijukugo_str (const char* INPUT)
 
 
 //!
-//! @brief Shifts the characters in a specific direction
+//! @brief Shifts kana characters in a specific direction
 //! @param input The string to shift
 //! @param shift How much to shift by
 //! @see lw_util_str_shift_hira_to_kata ()
 //! @see lw_util_str_shift_kata_to_hira ()
 //!
 void 
-lw_util_shift_all_chars_in_str_by (char *input, int shift)
+lw_util_shift_kana_chars_in_str_by (char *input, int shift)
 {
     //Setup
     char *input_ptr;
     input_ptr = input;
 
-    char output[strlen(input)];
+    char output[strlen(input) + 1];
     char *output_ptr;
     output_ptr = output;
 
@@ -514,10 +514,14 @@ lw_util_shift_all_chars_in_str_by (char *input, int shift)
     //Start the conversion
     while (*input_ptr != '\0')
     {
-      if (unic == L'ー')
-        offset = g_unichar_to_utf8((unic), output_ptr);
-      else
+      if (unic >= 0x3041 && unic <= 0x30ff &&
+          unic + shift >= 0x3041 && unic + shift <= 0x30ff &&
+          unic != L'ー') {
         offset = g_unichar_to_utf8((unic + shift), output_ptr);
+      }
+      else {
+        offset = g_unichar_to_utf8((unic), output_ptr);
+      }
       output_ptr = output_ptr + offset;
 
       input_ptr = g_utf8_next_char(input_ptr);
@@ -533,13 +537,13 @@ lw_util_shift_all_chars_in_str_by (char *input, int shift)
 //! @brief Convenience function to shift hiragana to katakana
 //!
 //! @param input The string to shift
-//! @see lw_util_shift_all_chars_in_str_by ()
+//! @see lw_util_shift_kana_chars_in_str_by ()
 //! @see lw_util_str_shift_kata_to_hira ()
 //!
 void 
 lw_util_str_shift_hira_to_kata (char input[])
 {
-    lw_util_shift_all_chars_in_str_by (input, (L'ア' - L'あ'));
+    lw_util_shift_kana_chars_in_str_by (input, (L'ア' - L'あ'));
 }
 
 
@@ -547,13 +551,13 @@ lw_util_str_shift_hira_to_kata (char input[])
 //! @brief Convenience function to shift katakana to hiragana
 //!
 //! @param input The string to shift
-//! @see lw_util_shift_all_chars_in_str_by ()
+//! @see lw_util_shift_kana_chars_in_str_by ()
 //! @see lw_util_str_shift_hira_to_kata ()
 //!
 void 
 lw_util_str_shift_kata_to_hira (char input[])
 {
-    lw_util_shift_all_chars_in_str_by (input, (L'あ' - L'ア'));
+    lw_util_shift_kana_chars_in_str_by (input, (L'あ' - L'ア'));
 }
 
 
@@ -1028,7 +1032,7 @@ lw_util_roma_char_to_hira (const char *input, char *output)
 //! @param input The string to shift.
 //! @param output the string to output the changes to.
 //! @param max The max length of the string to output to.
-//! @see lw_util_shift_all_chars_in_str_by ()
+//! @see lw_util_shift_kana_chars_in_str_by ()
 //! @see lw_util_str_shift_hira_to_kata ()
 //!
 gboolean 
