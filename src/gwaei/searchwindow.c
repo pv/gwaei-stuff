@@ -42,6 +42,9 @@ static void gw_searchwindow_remove_signals (GwSearchWindow*);
 
 static void gw_searchwindow_init_accelerators (GwSearchWindow*);
 
+static GtkInfoBar *_construct_info_bar (GwSearchWindow *window);
+
+
 G_DEFINE_TYPE (GwSearchWindow, gw_searchwindow, GW_TYPE_WINDOW)
 
 //!
@@ -106,6 +109,8 @@ gw_searchwindow_constructed (GObject *object)
     GwSearchWindow *window;
     GwSearchWindowPrivate *priv;
     GtkToolButton *toolbutton;
+    GtkInfoBar *infobar;
+    GtkWidget *toplevel;
     gboolean enchant_exists;
 
     //Chain the parent class
@@ -117,11 +122,19 @@ gw_searchwindow_constructed (GObject *object)
     window = GW_SEARCHWINDOW (object);
     priv = window->priv;
 
+    //Construct up the info bar and insert it to the correct position
+    //-- have to do that here, since Glade doesn't support GtkInfoBars yet
+    infobar = _construct_info_bar (window);
+    toplevel = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "toplevel"));
+    gtk_box_pack_start (GTK_BOX (toplevel), GTK_WIDGET (infobar), FALSE, TRUE, 0);
+    gtk_box_reorder_child (GTK_BOX (toplevel), GTK_WIDGET (infobar), 3);
+
     //Set up the gtkbuilder links
     priv->entry = GTK_ENTRY (gw_window_get_object (GW_WINDOW (window), "search_entry"));
     priv->notebook = GTK_NOTEBOOK (gw_window_get_object (GW_WINDOW (window), "notebook"));
     priv->toolbar = GTK_TOOLBAR (gw_window_get_object (GW_WINDOW (window), "toolbar"));
     priv->statusbar = GTK_WIDGET (gw_window_get_object (GW_WINDOW (window), "statusbar"));
+    priv->infobar = GTK_INFO_BAR (infobar);
     priv->combobox = GTK_COMBO_BOX (gw_window_get_object (GW_WINDOW (window), "dictionary_combobox"));
     priv->history = lw_history_new (20);
 
@@ -2282,3 +2295,57 @@ gw_searchwindow_initialize_dictionary_menu (GwSearchWindow *window)
 }
 
 
+static GtkInfoBar *
+_construct_info_bar (GwSearchWindow *window)
+{
+    GtkInfoBar *infobar;
+    GtkWidget *content_area;
+    GtkWidget *message_label;
+
+    infobar = GTK_INFO_BAR (gtk_info_bar_new());
+    gtk_widget_set_no_show_all (GTK_WIDGET (infobar), TRUE);
+
+    message_label = gtk_label_new ("");
+    gtk_label_set_selectable (GTK_LABEL (message_label), TRUE);
+    gtk_widget_show (GTK_WIDGET (message_label));
+
+    content_area = gtk_info_bar_get_content_area (infobar);
+    gtk_container_add (GTK_CONTAINER (content_area), message_label);
+
+    gtk_info_bar_add_button (infobar, GTK_STOCK_CLOSE, GTK_RESPONSE_OK);
+    g_signal_connect (infobar, "response",
+                     G_CALLBACK (gtk_widget_hide), NULL);
+
+    return infobar;
+}
+
+void
+gw_searchwindow_show_info_message (GwSearchWindow *window, char *message)
+{
+    GtkLabel *label;
+    GtkContainer *container;
+    GList *children;
+    GwSearchWindowPrivate *priv;
+
+    priv = window->priv;
+
+    container = GTK_CONTAINER (gtk_info_bar_get_content_area (priv->infobar));
+    children = gtk_container_get_children (container);
+    label = GTK_LABEL (g_list_nth_data (children, 0));
+
+    gtk_label_set_text (label, message);
+    gtk_info_bar_set_message_type (priv->infobar,
+                                   GTK_MESSAGE_INFO);
+
+    if (!gtk_widget_get_visible (GTK_WIDGET (priv->infobar)))
+      gtk_widget_show (GTK_WIDGET (priv->infobar));
+}
+
+void
+gw_searchwindow_hide_info_message (GwSearchWindow *window)
+{
+    GwSearchWindowPrivate *priv;
+
+    priv = window->priv;
+    gtk_widget_hide (GTK_WIDGET (priv->infobar));
+}

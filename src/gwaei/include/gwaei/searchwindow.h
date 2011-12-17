@@ -104,6 +104,9 @@ void gw_searchwindow_guarantee_first_tab (GwSearchWindow*);
 
 GtkTextView* gw_searchwindow_get_current_textview (GwSearchWindow*);
 
+void gw_searchwindow_show_info_message (GwSearchWindow*, char*);
+void gw_searchwindow_hide_info_message (GwSearchWindow*);
+
 void gw_searchwindow_set_tab_text_by_searchitem (GwSearchWindow*, LwSearchItem*);
 void gw_searchwindow_set_current_searchitem (GwSearchWindow*, LwSearchItem*);
 LwSearchItem* gw_searchwindow_get_current_searchitem (GwSearchWindow*);

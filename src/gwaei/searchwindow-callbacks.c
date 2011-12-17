@@ -219,6 +219,8 @@ gw_searchwindow_get_iter_for_button_release_cb (GtkWidget      *widget,
     character = gw_searchwindow_hovering_kanji_character (&iter);
     vocabulary_data = gw_searchwindow_hovering_vocabulary_data_tag (&iter);
 
+    gw_searchwindow_hide_info_message (window);
+
     if (!within_movement_threshold) return FALSE;
  
     // Characters above 0xFF00 represent inserted images
@@ -1338,6 +1340,18 @@ gw_searchwindow_search_cb (GtkWidget *widget, gpointer data)
       lw_searchitem_free (item);
     }
 
+    if (new_item->queryline->morphology)
+    {
+      char *message;
+      message = g_strdup_printf (gettext ("Phrase understood as \"%s\""), new_item->queryline->morphology);
+      gw_searchwindow_show_info_message (window, message);
+      g_free (message);
+    }
+    else
+    {
+      gw_searchwindow_hide_info_message (window);
+    }
+
     gw_searchwindow_start_search (window, new_item);
 }
 
@@ -1680,6 +1694,8 @@ gw_searchwindow_scroll_or_zoom_cb (GtkWidget *widget, GdkEventScroll *event, gpo
       }
     }
 
+    gw_searchwindow_hide_info_message (GW_SEARCHWINDOW (data));
+
     return FALSE;
 }
 
@@ -1766,6 +1782,8 @@ gw_searchwindow_remove_current_tab_cb (GtkWidget *widget, gpointer data)
 
     if (page_num != -1)
       gw_searchwindow_remove_tab (window, page_num);
+
+    gw_searchwindow_hide_info_message (window);
 }
 
 
@@ -1788,6 +1806,7 @@ gw_searchwindow_switch_tab_cb (GtkNotebook *notebook,
     if (window == NULL) return;
 
     gw_searchwindow_sync_current_searchitem (window);
+    gw_searchwindow_hide_info_message (window);
 }
 
 

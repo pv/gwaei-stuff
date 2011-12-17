@@ -28,6 +28,7 @@ struct _GwSearchWindowPrivate {
   GtkNotebook *notebook;
   GtkToolbar *toolbar;
   GtkWidget *statusbar;
+  GtkInfoBar *infobar;
   GtkComboBox *combobox;
   LwDictInfo *dictinfo;
 
