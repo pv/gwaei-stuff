@@ -102,7 +102,14 @@ void gw_searchwindow_set_color_to_swatch (GwSearchWindow*, const char*, const ch
 
 void gw_searchwindow_guarantee_first_tab (GwSearchWindow*);
 
+GtkTextView* gw_searchwindow_get_textview (GwSearchWindow*, int);
+GtkInfoBar* gw_searchwindow_get_infobar (GwSearchWindow*, int);
 GtkTextView* gw_searchwindow_get_current_textview (GwSearchWindow*);
+GtkInfoBar* gw_searchwindow_get_current_infobar (GwSearchWindow*);
+
+void gw_searchwindow_show_current_infobar (GwSearchWindow*, char*);
+void gw_searchwindow_hide_current_infobar (GwSearchWindow*);
+void gw_searchwindow_hide_infobars (GwSearchWindow*);
 
 void gw_searchwindow_set_tab_text_by_searchitem (GwSearchWindow*, LwSearchItem*);
 void gw_searchwindow_set_current_searchitem (GwSearchWindow*, LwSearchItem*);

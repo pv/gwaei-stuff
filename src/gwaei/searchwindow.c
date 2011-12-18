@@ -42,6 +42,9 @@ static void gw_searchwindow_remove_signals (GwSearchWindow*);
 
 static void gw_searchwindow_init_accelerators (GwSearchWindow*);
 
+static GtkInfoBar* _construct_infobar ();
+
+
 G_DEFINE_TYPE (GwSearchWindow, gw_searchwindow, GW_TYPE_WINDOW)
 
 //!
@@ -1495,27 +1498,83 @@ gw_searchwindow_cancel_search_by_content (GwSearchWindow *window, gpointer conta
 }
 
 
-GtkTextView* 
-gw_searchwindow_get_current_textview (GwSearchWindow *window)
+static GtkWidget*
+_get_searchwindow_child_widget (GwSearchWindow *window, int page_num, int child_idx)
 {
     //Sanity check
     g_assert (window != NULL);
 
     //Declarations
     GwSearchWindowPrivate *priv;
-    int page_num;
+    GtkWidget *child;
     GtkScrolledWindow *scrolledwindow;
-    GtkTextView *view;
+    GtkViewport *viewport;
+    GtkBox *scrollbox;
+    GList *children;
 
     //Initializations
     priv = window->priv;
-    view = NULL;
-    page_num = gtk_notebook_get_current_page (priv->notebook);
-    scrolledwindow = GTK_SCROLLED_WINDOW (gtk_notebook_get_nth_page (priv->notebook, page_num));
-    if (scrolledwindow != NULL)
-      view = GTK_TEXT_VIEW (gtk_bin_get_child (GTK_BIN (scrolledwindow)));
+    child = NULL;
 
-    return view;
+    scrolledwindow = GTK_SCROLLED_WINDOW (gtk_notebook_get_nth_page (priv->notebook, page_num));
+    if (scrolledwindow == NULL)
+      return NULL;
+
+    viewport = GTK_VIEWPORT (gtk_bin_get_child (GTK_BIN (scrolledwindow)));
+    if (viewport == NULL)
+      return NULL;
+
+    scrollbox = GTK_BOX (gtk_bin_get_child (GTK_BIN (viewport)));
+    if (scrollbox == NULL)
+      return NULL;
+
+    children = gtk_container_get_children (GTK_CONTAINER (scrollbox));
+    child = GTK_WIDGET (g_list_nth_data (children, child_idx));
+    g_list_free (children);
+
+    return child;
+}
+
+
+GtkTextView*
+gw_searchwindow_get_textview (GwSearchWindow *window, int page_num)
+{
+    return GTK_TEXT_VIEW (_get_searchwindow_child_widget (window, page_num, 1));
+}
+
+
+GtkTextView*
+gw_searchwindow_get_current_textview (GwSearchWindow *window)
+{
+    g_assert (window != NULL);
+
+    GwSearchWindowPrivate *priv;
+    int page_num;
+
+    priv = window->priv;
+    page_num = gtk_notebook_get_current_page (priv->notebook);
+    return gw_searchwindow_get_textview (window, page_num);
+}
+
+
+GtkInfoBar*
+gw_searchwindow_get_infobar (GwSearchWindow *window, int page_num)
+{
+    return GTK_INFO_BAR (_get_searchwindow_child_widget (window, page_num, 0));
+}
+
+
+GtkInfoBar*
+gw_searchwindow_get_current_infobar (GwSearchWindow *window)
+{
+    g_assert (window != NULL);
+
+    GwSearchWindowPrivate *priv;
+    int page_num;
+
+    priv = window->priv;
+    page_num = gtk_notebook_get_current_page (priv->notebook);
+    return gw_searchwindow_get_infobar (window, page_num);
 }
 
 
@@ -1615,6 +1674,9 @@ gw_searchwindow_new_tab (GwSearchWindow *window)
     //Declarations
     GwApplication *application;
     GwSearchWindowPrivate *priv;
+    GtkWidget *scrollbox;
+    GtkWidget *viewport;
+    GtkWidget *infobar;
     GtkWidget *scrolledwindow;
     GtkTextView *view;
     GtkTextBuffer *buffer;
@@ -1628,6 +1690,9 @@ gw_searchwindow_new_tab (GwSearchWindow *window)
     scrolledwindow = GTK_WIDGET (gtk_scrolled_window_new (NULL, NULL));
     buffer = GTK_TEXT_BUFFER (gtk_text_buffer_new (tagtable));
     view = GTK_TEXT_VIEW (gtk_text_view_new_with_buffer (buffer));
+    infobar = GTK_WIDGET (_construct_infobar());
+    scrollbox = GTK_WIDGET (gtk_box_new (GTK_ORIENTATION_VERTICAL, 0));
+    viewport = GTK_WIDGET (gtk_viewport_new (NULL, NULL));
 
     //Set up the text buffer
     gtk_text_buffer_get_start_iter (buffer, &iter);
@@ -1657,7 +1722,13 @@ gw_searchwindow_new_tab (GwSearchWindow *window)
     g_signal_connect (G_OBJECT (view), "scroll_event", G_CALLBACK (gw_searchwindow_scroll_or_zoom_cb), window);
 
 
-    gtk_container_add (GTK_CONTAINER (scrolledwindow), GTK_WIDGET (view));
+    //Set up the scrolled window
+    gtk_box_pack_start (GTK_BOX (scrollbox), GTK_WIDGET (infobar), FALSE, TRUE, 0);
+    gtk_box_pack_start (GTK_BOX (scrollbox), GTK_WIDGET (view), TRUE, TRUE, 0);
+
+    gtk_container_add (GTK_CONTAINER (viewport), GTK_WIDGET (scrollbox));
+
+    gtk_container_add (GTK_CONTAINER (scrolledwindow), GTK_WIDGET (viewport));
     gtk_widget_show_all (GTK_WIDGET (scrolledwindow));
 
     //Create the tab label
@@ -1892,6 +1963,18 @@ gw_searchwindow_start_search (GwSearchWindow *window, LwSearchItem* item)
 
     lw_searchitem_start_search (item, TRUE, FALSE);
     gw_searchwindow_update_history_popups (window);
+
+    if (item->queryline->morphology)
+    {
+      char *message;
+      message = g_strdup_printf (gettext ("Phrase understood as \"%s\""), item->queryline->morphology);
+      gw_searchwindow_show_current_infobar (window, message);
+      g_free(message);
+    }
+    else
+    {
+      gw_searchwindow_hide_current_infobar (window);
+    }
 }
 
 
@@ -1913,7 +1996,6 @@ gw_searchwindow_set_font (GwSearchWindow *window)
     char font[50];
     PangoFontDescription *desc;
     int i;
-    GtkContainer *container;
     const char *id;
     GtkAction *action;
     gboolean enable;
@@ -1952,11 +2034,9 @@ gw_searchwindow_set_font (GwSearchWindow *window)
 
       //Set it
       i = 0;
-      while ((container = GTK_CONTAINER (gtk_notebook_get_nth_page (priv->notebook, i))) != NULL)
+      while ((view = gw_searchwindow_get_textview (window, i)) != NULL)
       {
-        view = GTK_TEXT_VIEW (gtk_bin_get_child (GTK_BIN (container)));
-        if (view != NULL)
-          gtk_widget_override_font (GTK_WIDGET (view), desc);
+        gtk_widget_override_font (GTK_WIDGET (view), desc);
         i++;
       }
 
@@ -2282,3 +2362,52 @@ gw_searchwindow_initialize_dictionary_menu (GwSearchWindow *window)
 }
 
 
+static GtkInfoBar* _construct_infobar ()
+{
+    GtkInfoBar *infobar;
+    GtkWidget *message_label;
+    GtkWidget *content_area;
+
+    infobar = GTK_INFO_BAR (gtk_info_bar_new ());
+
+    gtk_widget_set_no_show_all (GTK_WIDGET (infobar), TRUE);
+
+    message_label = gtk_label_new ("");
+    gtk_widget_show (message_label);
+    content_area = gtk_info_bar_get_content_area (infobar);
+    gtk_label_set_selectable (GTK_LABEL (message_label), TRUE);
+    gtk_container_add (GTK_CONTAINER (content_area), message_label);
+    g_signal_connect (G_OBJECT (infobar), "response",
+		      G_CALLBACK (gtk_widget_hide), NULL);
+
+    return infobar;
+}
+
+void gw_searchwindow_show_current_infobar (GwSearchWindow *window, char *message)
+{
+    GtkContainer *container;
+    GtkLabel *label;
+    GList *children;
+    GtkInfoBar *infobar;
+
+    infobar = gw_searchwindow_get_current_infobar (window);
+
+    container = GTK_CONTAINER (gtk_info_bar_get_content_area (infobar));
+    children = gtk_container_get_children (container);
+    label = GTK_LABEL (g_list_nth_data (children, 0));
+
+    gtk_label_set_text (label, message);
+    gtk_info_bar_set_message_type (infobar,
+                                   GTK_MESSAGE_INFO);
+
+    if (!gtk_widget_get_visible (GTK_WIDGET (infobar)))
+      gtk_widget_show (GTK_WIDGET (infobar));
+}
+
+void gw_searchwindow_hide_current_infobar (GwSearchWindow *window)
+{
+    GtkInfoBar *infobar;
+
+    infobar = gw_searchwindow_get_current_infobar (window);
+    gtk_widget_hide (GTK_WIDGET (infobar));
+}
