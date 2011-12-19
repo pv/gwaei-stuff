@@ -130,6 +130,10 @@ static void _init_analysis()
 {
     char *argv[] = {"mecab", NULL};
     mecab = mecab_new(sizeof(argv)/sizeof(char*)-1, argv);
+    if (mecab == NULL) {
+        // Report that something went wrong
+        g_warning("Failed to initialize Mecab engine: %s", mecab_strerror(NULL));
+    }
 }
 
 //!
