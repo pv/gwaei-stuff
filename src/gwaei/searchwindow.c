@@ -2373,9 +2373,12 @@ static GtkInfoBar* _construct_infobar ()
     gtk_widget_set_no_show_all (GTK_WIDGET (infobar), TRUE);
 
     message_label = gtk_label_new ("");
+
+    gtk_label_set_selectable (GTK_LABEL (message_label), TRUE);
+    gtk_widget_set_can_focus (GTK_WIDGET (message_label), FALSE);
+
     gtk_widget_show (message_label);
     content_area = gtk_info_bar_get_content_area (infobar);
-    gtk_label_set_selectable (GTK_LABEL (message_label), TRUE);
     gtk_container_add (GTK_CONTAINER (content_area), message_label);
     g_signal_connect (G_OBJECT (infobar), "response",
 		      G_CALLBACK (gtk_widget_hide), NULL);
@@ -2389,6 +2392,7 @@ void gw_searchwindow_show_current_infobar (GwSearchWindow *window, char *message
     GtkLabel *label;
     GList *children;
     GtkInfoBar *infobar;
+    char *markup;
 
     infobar = gw_searchwindow_get_current_infobar (window);
 
@@ -2396,9 +2400,11 @@ void gw_searchwindow_show_current_infobar (GwSearchWindow *window, char *message
     children = gtk_container_get_children (container);
     label = GTK_LABEL (g_list_nth_data (children, 0));
 
-    gtk_label_set_text (label, message);
-    gtk_info_bar_set_message_type (infobar,
-                                   GTK_MESSAGE_INFO);
+    markup = g_markup_printf_escaped ("<small>%s</small>", message);
+    gtk_label_set_markup (GTK_LABEL (label), markup);
+    g_free (markup);
+
+    gtk_info_bar_set_message_type (infobar, GTK_MESSAGE_INFO);
 
     if (!gtk_widget_get_visible (GTK_WIDGET (infobar)))
       gtk_widget_show (GTK_WIDGET (infobar));
