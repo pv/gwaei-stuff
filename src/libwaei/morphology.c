@@ -57,7 +57,7 @@ LwMorphology *lw_morphology_new (const gchar *input)
         g_static_mutex_unlock(&_morphology_mutex);
     }
 
-    result = (LwMorphology*) malloc(sizeof(LwMorphology));
+    result = g_new0(LwMorphology, 1);
     result->items = NULL;
     _analyse(result, input);
     return result;
@@ -70,7 +70,7 @@ LwMorphology *lw_morphology_new (const gchar *input)
 void lw_morphology_free (LwMorphology *item)
 {
     if (item->items)
-        g_list_free_full(item->items, lw_morphology_item_free);
+        g_list_free_full(item->items, (GDestroyNotify)lw_morphology_item_free);
     free(item);
 }
 
@@ -80,7 +80,7 @@ void lw_morphology_free (LwMorphology *item)
 static LwMorphologyItem *lw_morphology_item_new()
 {
     LwMorphologyItem *item;
-    item = (LwMorphology*) malloc(sizeof(LwMorphology));
+    item = g_new0(LwMorphologyItem, 1);
     item->word = NULL;
     item->base_form = NULL;
     item->explanation = NULL;
@@ -139,7 +139,7 @@ static void _init_analysis()
 //!
 //! @brief Convert string from UTF-8 to Mecab's charset.
 //!
-static char *_encode_to_mecab(char *word, int nbytes)
+static char *_encode_to_mecab(const char *word, int nbytes)
 {
     const mecab_dictionary_info_t *info = mecab_dictionary_info(mecab);
     gsize bytes_read, bytes_written;
@@ -149,7 +149,7 @@ static char *_encode_to_mecab(char *word, int nbytes)
 //!
 //! @brief Convert string from Mecab's charset to UTF-8.
 //!
-static char *_decode_from_mecab(char *word, int nbytes)
+static char *_decode_from_mecab(const char *word, int nbytes)
 {
     const mecab_dictionary_info_t *info = mecab_dictionary_info(mecab);
     gsize bytes_read, bytes_written;
@@ -165,7 +165,6 @@ static void _analyse(LwMorphology *result, const char *input_raw)
     const mecab_node_t *node;
     char **fields = NULL, *surface = NULL;
     char *temp;
-    char *output = NULL;
     char *input = NULL;
     LwMorphologyItem *item = NULL;
 
