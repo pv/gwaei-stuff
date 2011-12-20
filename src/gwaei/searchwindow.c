@@ -1967,7 +1967,7 @@ gw_searchwindow_start_search (GwSearchWindow *window, LwSearchItem* item)
     if (item->queryline->morphology)
     {
       char *message;
-      message = g_strdup_printf (gettext ("Phrase understood as \"%s\""), item->queryline->morphology);
+      message = g_strdup_printf (gettext ("Showing results also for 「%s」"), item->queryline->morphology);
       gw_searchwindow_show_current_infobar (window, message);
       g_free(message);
     }

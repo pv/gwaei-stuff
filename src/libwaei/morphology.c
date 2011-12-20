@@ -183,7 +183,7 @@ static void _analyse(LwMorphology *result, const char *input_raw)
 #define FLUSH_ITEM                                                                            \
         do {                                                                                  \
             if (item->explanation && !g_str_has_prefix(item->explanation, item->base_form)) { \
-                temp = g_strdup_printf("%s[%s]", item->explanation, item->base_form);         \
+                temp = g_strdup_printf("%s(%s)", item->explanation, item->base_form);         \
                 g_free(item->explanation);                                                    \
                 item->explanation = temp;                                                     \
             }                                                                                 \
